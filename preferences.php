@@ -1,0 +1,230 @@
+<?
+/*
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+print "<div class='trail'>" ;
+print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > </div><div class='trailEnd'>Preferences</div>" ;
+print "</div>" ;
+	
+$forceReset=$_GET["forceReset"] ;
+$forceResetReturn=$_GET["forceResetReturn"] ;
+$forceResetReturnMessage="" ;
+$class="error" ;
+if ($forceResetReturn!="" OR $forceReset=="Y") {
+	if ($forceReset=="Y") {
+		$forceResetReturnMessage="<b><u>Your account has been flagged for a password reset. You cannot continue into the system until you change your password.</b></u>";
+	}
+	if ($forceResetReturn=="fail0") {
+		$forceResetReturnMessage="<b><u>Your account status could not be updated, and so you cannot continue to use the system. Please contact <a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a> if you have any questions.</b></u>";
+	}
+	if ($forceResetReturn=="success0") {
+		$forceResetReturnMessage="<b><u>Your account has been successfully updated. You can now continue to use the system as per normal.</b></u>";
+		$class="success" ;
+	}
+	print "<div class='$class'>" ;
+		print $forceResetReturnMessage ;
+	print "</div>" ;
+}
+
+
+$eidtReturn = $_GET["editReturn"] ;
+$editReturnMessage ="" ;
+$class="error" ;
+if (!($eidtReturn=="")) {
+	if ($eidtReturn=="fail0") {
+		$editReturnMessage ="Required fields not set." ;	
+	}
+	else if ($eidtReturn=="fail1") {
+		$editReturnMessage ="Update failed due to database error." ;	
+	}
+	else if ($eidtReturn=="fail2") {
+		$editReturnMessage ="Update failed due to non-matching passwords." ;	
+	}
+	else if ($eidtReturn=="fail3") {
+		$editReturnMessage ="Update failed due to incorrect current password." ;	
+	}
+	else if ($eidtReturn=="fail6") {
+		$editReturnMessage ="Update failed because your password to not meet the minimum requirements for strength." ;	
+	}
+	else if ($eidtReturn=="fail7") {
+		$editReturnMessage ="Update failed because your new password is the same as your old password." ;	
+	}	
+	else if ($eidtReturn=="success0") {
+		$editReturnMessage ="Update was successful." ;	
+		$class="success" ;
+	}
+	print "<div class='$class'>" ;
+		print $editReturnMessage;
+	print "</div>" ;
+} 
+
+try {
+	$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+	$sql="SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+	$result=$connection2->prepare($sql);
+	$result->execute($data);
+}
+catch(PDOException $e) { 
+	print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+}
+if ($result->rowCount()==1) {
+	$row=$result->fetch() ;
+}
+?>
+
+<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] ?>/preferencesPasswordProcess.php">
+	<table style="width: 100%">	
+		<tr>
+			<td colspan=2>
+				<h3 class='top'>
+					Reset Password
+				</h3>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=2>
+				<?
+				$policy=getPasswordPolicy($connection2) ;
+				if ($policy!=FALSE) {
+					print "<div class='warning'>" ;
+						print $policy ;
+					print "</div>" ;
+				}
+				?>
+			</td>
+		</tr>
+		<tr>
+			<td> 
+				<b>Current Password *</b><br/>
+				<span style="font-size: 90%"><i></i></span>
+			</td>
+			<td class="right">
+				<input name="password" id="password" maxlength=20 value="" type="password" style="width: 300px">
+				<script type="text/javascript">
+					var password = new LiveValidation('password');
+					password.add(Validate.Presence);
+				 </script>
+			</td>
+		</tr>
+		<tr>
+			<td> 
+				<b>New Password *</b><br/>
+				<span style="font-size: 90%"><i></i></span>
+			</td>
+			<td class="right">
+				<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" style="width: 300px">
+				<script type="text/javascript">
+					var passwordNew = new LiveValidation('passwordNew');
+					passwordNew.add(Validate.Presence);
+				 </script>
+			</td>
+		</tr>
+		<tr>
+			<td> 
+				<b>Confirm New Password *</b><br/>
+				<span style="font-size: 90%"><i></i></span>
+			</td>
+			<td class="right">
+				<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" style="width: 300px">
+				<script type="text/javascript">
+					var passwordConfirm = new LiveValidation('passwordConfirm');
+					passwordConfirm.add(Validate.Presence);
+					passwordConfirm.add(Validate.Confirmation, { match: 'passwordNew' } );
+				 </script>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=2 class="right">
+				<?
+				if ($forceReset=="Y") {
+					print "<input type='hidden' name='forceReset' value='$forceReset'>" ;
+				}
+				?>
+				<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+				<input type="reset" value="Reset">
+				<input type="submit" value="Submit">
+			</td>
+		</tr>
+		<tr>
+			<td class="right" colspan=2>
+				<span style="font-size: 90%"><i>* denotes a required field</i></span>
+			</td>
+		</tr>
+	</table>
+</form>
+	
+	
+<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] ?>/preferencesProcess.php">
+	<table style="width: 100%">	
+		<tr>
+			<td colspan=2>
+				<h3>
+					Settings
+				</h3>
+			</td>
+		</tr>
+		<tr>
+			<td> 
+				<b>Personal Calendar Feed</b><br/>
+				<span style="font-size: 90%"><i>XML feed for the your calendar (Google Calendar only)</i></span>
+			</td>
+			<td class="right">
+				<input name="calendarFeedPersonal" id="calendarFeedPersonal" value="<? print $row["calendarFeedPersonal"] ?>" type="text" style="width: 300px">
+				<script type="text/javascript">
+					var calendarFeedPersonal = new LiveValidation('calendarFeedPersonal');
+					calendarFeedPersonal.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
+				</script>	
+			</td>
+		</tr>
+		
+		<?
+		$personalBackground=getSettingByScope($connection2, "User Admin", "personalBackground") ;
+		if ($personalBackground=="Y") {
+			?>
+			<tr>
+				<td> 
+					<b>Personal Background</b><br/>
+					<span style="font-size: 90%"><i>Set your own custom background image.<br/>Please provide URL to image.</i></span>
+				</td>
+				<td class="right">
+					<input name="personalBackground" id="personalBackground" value="<? print $row["personalBackground"] ?>" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var personalBackground = new LiveValidation('personalBackground');
+						personalBackground.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
+					</script>	
+				</td>
+			</tr>
+			<?
+		}
+		?>
+		
+		
+		<tr>
+			<td colspan=2 class="right">
+				<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+				<input type="reset" value="Reset">
+				<input type="submit" value="Submit">
+			</td>
+		</tr>
+		<tr>
+			<td class="right" colspan=2>
+				<span style="font-size: 90%"><i>* denotes a required field</i></span>
+			</td>
+		</tr>
+	</table>
+</form>

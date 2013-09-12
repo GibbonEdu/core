@@ -1,0 +1,228 @@
+<?
+/*
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+session_start() ;
+
+//Module includes
+include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+
+if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_future_byPerson.php")==FALSE) {
+	//Acess denied
+	print "<div class='error'>" ;
+		print "You do not have access to this action." ;
+	print "</div>" ;
+}
+else {
+	//Proceed!
+	print "<div class='trail'>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Ser Future Absence</div>" ;
+	print "</div>" ;
+	
+	$updateReturn = $_GET["updateReturn"] ;
+	$updateReturnMessage ="" ;
+	$class="error" ;
+	if (!($updateReturn=="")) {
+		if ($updateReturn=="fail0") {
+			$updateReturnMessage ="Update failed because you do not have access to this action." ;	
+		}
+		else if ($updateReturn=="fail1") {
+			$updateReturnMessage ="Update failed because a required parameter was not set." ;	
+		}
+		else if ($updateReturn=="fail2") {
+			$updateReturnMessage ="Update failed due to a database error." ;	
+		}
+		else if ($updateReturn=="fail3") {
+			$updateReturnMessage ="Update failed because specified date is not in the future, or is not a school day." ;	
+		}
+		else if ($updateReturn=="fail4") {
+			$updateReturnMessage ="Update failed because specified date already has a record associated with it." ;	
+		}
+		else if ($updateReturn=="success0") {
+			$updateReturnMessage ="Update was successful." ;	
+			$class="success" ;
+		}
+		print "<div class='$class'>" ;
+			print $updateReturnMessage;
+		print "</div>" ;
+	} 
+	
+	print "<h2 class='top'>" ;
+	print "Choose Student" ;
+	print "</h2>" ;
+	
+	$gibbonPersonID=$_GET["gibbonPersonID"] ;	 
+	
+	?>
+	
+	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+		<table style="width: 100%">	
+			<tr><td style="width: 30%"></td><td></td></tr>
+			<tr>
+				<td> 
+					<b>Student</b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<select style="width: 302px" name="gibbonPersonID">
+						<?
+						print "<option value=''></option>" ;
+						try {
+							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+							$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+						while ($rowSelect=$resultSelect->fetch()) {
+							if ($gibbonPersonID==$rowSelect["gibbonPersonID"]) {
+								print "<option selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;
+							}
+							else {
+								print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;
+							}
+						}
+						?>				
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=2 class="right">
+					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/attendance_future_byPerson.php">
+					<input type="submit" value="Search">
+				</td>
+			</tr>
+		</table>
+	</form>
+	<?
+	
+	if ($gibbonPersonID!="") {
+		print "<h2 class='top'>" ;
+		print "Take Attendance" ;
+		print "</h2>" ;
+		
+		$today=date("Y-m-d");
+		
+		//Show attendance log for future days
+		
+		try {
+			$dataLog=array("gibbonPersonID"=>$gibbonPersonID, "date"=>"$today-23-59-59"); 
+			$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND type='Absent' AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date>:date ORDER BY date" ;
+			$resultLog=$connection2->prepare($sqlLog);
+			$resultLog->execute($dataLog);
+		}
+		catch(PDOException $e) { 
+			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+		}
+		
+		if ($resultLog->rowCount()>0) {
+			print "<div class='success'>" ;
+				print "The following future absences have been set for the selected student. To edit these, please contact <a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>.";
+				print "<ul>" ;
+				while ($rowLog=$resultLog->fetch()) {
+					print "<li><b>" . dateConvertBack(substr($rowLog["date"],0,10)) . "</b> | Recorded at " . substr($rowLog["timestampTaken"],11) . " on " . dateConvertBack(substr($rowLog["timestampTaken"],0,10)) . " by " . formatName($rowLog["title"], $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true) ."</li>" ;
+				}
+				print "</ul>" ;
+			print "</div>" ;
+		}
+		
+		//Show student form
+		?>
+		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_future_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
+			<table style="width: 100%">	
+				<tr><td style="width: 30%"></td><td></td></tr>
+				<tr>
+					<td> 
+						<b>Type *</b><br/>
+						<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+					</td>
+					<td class="right">
+						<input readonly name="type" id="type" maxlength=10 value="Absent" type="text" style="width: 300px">
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b>Absence Date *</b><br/>
+						<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
+					</td>
+					<td class="right">
+						<input name="date" id="date" maxlength=10 value="" type="text" style="width: 300px">
+						<script type="text/javascript">
+							var date = new LiveValidation('date');
+							date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+						 	date.add(Validate.Presence);
+						 </script>
+						 <script type="text/javascript">
+							$(function() {
+								$( "#date" ).datepicker();
+							});
+						</script>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b>Reason</b><br/>
+						<span style="font-size: 90%"><i></i></span>
+					</td>
+					<td class="right">
+						<?
+						print "<select style='float: none; width: 302px; margin-bottom: 10px' name='reason'>" ;
+							print "<option " ; if ($lastReason=="") { print "selected " ; } ; print "value=''></option>" ;
+							print "<option " ; if ($lastReason=="Pending") { print "selected " ; } ; print "value='Pending'>Pending</option>" ;
+							print "<option " ; if ($lastReason=="Education") { print "selected " ; } ; print "value='Education'>Education</option>" ;
+							print "<option " ; if ($lastReason=="Family") { print "selected " ; } ; print "value='Family'>Family</option>" ;
+							print "<option " ; if ($lastReason=="Medical") { print "selected " ; } ; print "value='Medical'>Medical</option>" ;
+							print "<option " ; if ($lastReason=="Other") { print "selected " ; } ; print "value='Other'>Other</option>" ;
+						print "</select>" ;
+						?>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b>Comment</b><br/>
+						<span style="font-size: 90%"><i>255 character limit</i></span>
+					</td>
+					<td class="right">
+						<?
+						print "<textarea name='comment' id='comment' rows=3 style='width: 300px'>$lastComment</textarea>" ;
+						?>
+						<script type="text/javascript">
+							var comment = new LiveValidation('comment');
+							comment.add( Validate.Length, { maximum: 255 } );
+						 </script>
+					</td>
+				</tr>
+				<tr>
+					<td class="right" colspan=2>
+						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+						<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					</td>
+				</tr>
+				<tr>
+					<td class="right" colspan=2>
+						<span style="font-size: 90%"><i>* denotes a required field</i></span>
+					</td>
+				</tr>
+			</table>
+		</form>
+		<?
+	}
+}
+?>

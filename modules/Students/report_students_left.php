@@ -1,0 +1,181 @@
+<?
+/*
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+session_start() ;
+
+//Module includes
+include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+
+if (isActionAccessible($guid, $connection2, "/modules/Students/report_students_new")==FALSE) {
+	//Acess denied
+	print "<div class='error'>" ;
+		print "You do not have access to this action." ;
+	print "</div>" ;
+}
+else {
+	//Proceed!
+	print "<div class='trail'>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Left Students</div>" ;
+	print "</div>" ;
+	
+	print "<h2 class='top'>" ;
+	print "Choose Options" ;
+	print "</h2>" ;
+	
+	$endDateFrom=$_GET["endDateFrom"] ;
+	$endDateTo=$_GET["endDateTo"] ;
+	$ignoreStatus=$_GET["ignoreStatus"] ;
+	?>
+	
+	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+		<table style="width: 100%">	
+			<tr><td style="width: 30%"></td><td></td></tr>
+			<tr>
+				<td> 
+					<b>From Date</b><br/>
+					<span style="font-size: 90%"><i>Earlest student end date to include.<br/>dd/mm/yyyy</i></span>
+				</td>
+				<td class="right">
+					<input name="endDateFrom" id="endDateFrom" maxlength=10 value="<? print $_GET["endDateFrom"] ?>" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var endDateFrom = new LiveValidation('endDateFrom');
+						endDateFrom.add(Validate.Presence);
+						endDateFrom.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+					</script>
+					<script type="text/javascript">
+						$(function() {
+							$( "#endDateFrom" ).datepicker();
+						});
+					</script>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>To Date</b><br/>
+					<span style="font-size: 90%"><i>Latest student end date to include.<br/>dd/mm/yyyy</i></span>
+				</td>
+				<td class="right">
+					<input name="endDateTo" id="endDateTo" maxlength=10 value="<? print $_GET["endDateTo"] ?>" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var endDateTo = new LiveValidation('endDateTo');
+						endDateTo.add(Validate.Presence);
+						endDateTo.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+					</script>
+					<script type="text/javascript">
+						$(function() {
+							$( "#endDateTo" ).datepicker();
+						});
+					</script>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Ignore Status</b><br/>
+					<span style="font-size: 90%"><i>This is useful for picking up students who have not yet left, but have an End Date set.</span>
+				</td>
+				<td class="right">
+					<input <? if ($ignoreStatus=="on") { print "checked" ; } ?> name="ignoreStatus" id="ignoreStatus" type="checkbox">
+				</td>
+			</tr>
+			<tr>
+				<td colspan=2 class="right">
+					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/report_students_left.php">
+					<input type="submit" value="Submit">
+				</td>
+			</tr>
+		</table>
+	</form>
+	<?
+	
+	if ($endDateFrom!="" AND $endDateTo!="") {
+		print "<h2 class='top'>" ;
+		print "Results" ;
+		print "</h2>" ;
+		
+		try {
+			$data=array("endDateFrom"=>dateConvert($endDateFrom), "endDateTo"=>dateConvert($endDateTo)); 
+			if ($ignoreStatus=="on") {
+				$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateEnd, nextSchool FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE dateEnd>=:endDateFrom AND dateEnd<=:endDateTo ORDER BY surname, preferredName" ;
+			}
+			else {
+				$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateEnd, nextSchool FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE dateEnd>=:endDateFrom AND dateEnd<=:endDateTo AND status='Left' ORDER BY surname, preferredName" ;
+			}
+			$result=$connection2->prepare($sql);
+			$result->execute($data); 
+		}
+		catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
+		if ($result->rowCount()>0) {
+			print "<table style='width: 100%'>" ;
+				print "<tr class='head'>" ;
+					print "<th>" ;
+						print "Count" ;
+					print "</th>" ;
+					print "<th>" ;
+						print "Name" ;
+					print "</th>" ;
+					print "<th>" ;
+						print "Username" ;
+					print "</th>" ;
+					print "<th>" ;
+						print "End Date" ;
+					print "</th>" ;
+					print "<th>" ;
+						print "Next School" ;
+					print "</th>" ;
+				print "</tr>" ;
+		
+				$count=0;
+				$rowNum="odd" ;
+				while ($row=$result->fetch()) {
+					if ($count%2==0) {
+						$rowNum="even" ;
+					}
+					else {
+						$rowNum="odd" ;
+					}
+				
+					$count++ ;
+					print "<tr class=$rowNum>" ;
+						print "<td>" ;
+							print $count ;
+						print "</td>" ;
+						print "<td>" ;
+							print formatName("", $row["preferredName"], $row["surname"], "Student", TRUE) ;
+						print "</td>" ;
+						print "<td>" ;
+							print $row["username"] ;
+						print "</td>" ;
+						print "<td>" ;
+							print dateConvertBack($row["dateEnd"]) ;
+						print "</td>" ;
+						print "<td>" ;
+							print $row["nextSchool"] ;
+						print "</td>" ;
+					print "</tr>" ;
+				}
+			print "</table>" ; 
+		}
+		else {
+			print "<div class='warning'>" ;
+				print "There are no records in this report." ;
+			print "</div>" ;
+		}
+	}
+}
+?>

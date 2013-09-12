@@ -1,0 +1,205 @@
+<?
+/*
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+session_start() ;
+
+//Module includes
+include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+
+
+if (isActionAccessible($guid, $connection2, "/modules/User Admin/data_family_edit.php")==FALSE) {
+	//Acess denied
+	print "<div class='error'>" ;
+		print "You do not have access to this action." ;
+	print "</div>" ;
+}
+else {
+	//Proceed!
+	print "<div class='trail'>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/data_family.php'>Family Data Updates</a> > </div><div class='trailEnd'>Edit Request</div>" ;
+	print "</div>" ;
+	
+	//Check if school year specified
+	$gibbonFamilyUpdateID=$_GET["gibbonFamilyUpdateID"];
+	if ($gibbonFamilyUpdateID=="Y") {
+		print "<div class='error'>" ;
+			print "You have not specified an activity." ;
+		print "</div>" ;
+	}
+	else {
+		try {
+			$data=array("gibbonFamilyUpdateID"=>$gibbonFamilyUpdateID); 
+			$sql="SELECT gibbonFamilyUpdate.gibbonFamilyID, gibbonFamily.name AS name, gibbonFamily.nameAddress AS nameAddress, gibbonFamily.homeAddress AS homeAddress, gibbonFamily.homeAddressDistrict AS homeAddressDistrict, gibbonFamily.homeAddressCountry AS homeAddressCountry, gibbonFamilyUpdate.nameAddress AS newnameAddress, gibbonFamilyUpdate.homeAddress AS newhomeAddress, gibbonFamilyUpdate.homeAddressDistrict AS newhomeAddressDistrict, gibbonFamilyUpdate.homeAddressCountry AS newhomeAddressCountry FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+		}
+
+		if ($result->rowCount()!=1) {
+			print "<div class='error'>" ;
+				print "The selected activity does not exist, is in a previous school year, or you do not have access to it." ;
+			print "</div>" ;
+		}
+		else {
+			$updateReturn = $_GET["updateReturn"] ;
+			$updateReturnMessage ="" ;
+			$class="error" ;
+			if (!($updateReturn=="")) {
+				if ($updateReturn=="fail0") {
+					$updateReturnMessage ="Update failed because you do not have access to this action." ;	
+				}
+				else if ($updateReturn=="fail1") {
+					$updateReturnMessage ="Update failed because a required parameter was not set." ;	
+				}
+				else if ($updateReturn=="fail2") {
+					$updateReturnMessage ="Update failed due to a database error." ;	
+				}
+				else if ($updateReturn=="fail3") {
+					$updateReturnMessage ="Update failed because your inputs were invalid." ;	
+				}
+				else if ($updateReturn=="success1") {
+					$updateReturnMessage ="Update was successful, but status could not be updated." ;	
+				}
+				else if ($updateReturn=="success0") {
+					$updateReturnMessage ="Update was successful." ;	
+					$class="success" ;
+				}
+				print "<div class='$class'>" ;
+					print $updateReturnMessage;
+				print "</div>" ;
+			} 
+
+			//Let's go!
+			$row=$result->fetch() ;
+			?>
+			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_family_editProcess.php?gibbonFamilyUpdateID=$gibbonFamilyUpdateID" ?>">
+				<?
+				print "<table style='width: 100%'>" ;
+					print "<tr class='head'>" ;
+						print "<th>" ;
+							print "Field" ;
+						print "</th>" ;
+						print "<th>" ;
+							print "Current Value" ;
+						print "</th>" ;
+						print "<th>" ;
+							print "New Value" ;
+						print "</th>" ;
+						print "<th>" ;
+							print "Accept" ;
+						print "</th>" ;
+					print "</tr>" ;
+					
+					$rowNum="even" ;
+						
+					//COLOR ROW BY STATUS!
+					print "<tr class='odd'>" ;
+						print "<td>" ;
+							print "Address Name" ;
+						print "</td>" ;
+						print "<td>" ;
+							print $row["nameAddress"] ;
+						print "</td>" ;
+						print "<td>" ;
+							$style="" ;
+							if ($row["nameAddress"]!=$row["newnameAddress"]) {
+								$style="style='color: #ff0000'" ;
+							}
+							print "<span $style>" ;
+							print $row["newnameAddress"] ;
+						print "</td>" ;
+						print "<td>" ;
+							if ($row["nameAddress"]!=$row["newnameAddress"]) { print "<input checked type='checkbox' name='newnameAddressOn'><input name='newnameAddress' type='hidden' value='" . htmlprep($row["newnameAddress"]) . "'>" ; }
+						print "</td>" ;
+					print "</tr>" ;
+					print "<tr class='even'>" ;
+						print "<td>" ;
+							print "Home Address" ;
+						print "</td>" ;
+						print "<td>" ;
+							print $row["homeAddress"] ;
+						print "</td>" ;
+						print "<td>" ;
+							$style="" ;
+							if ($row["homeAddress"]!=$row["newhomeAddress"]) {
+								$style="style='color: #ff0000'" ;
+							}
+							print "<span $style>" ;
+							print $row["newhomeAddress"] ;
+						print "</td>" ;
+						print "<td>" ;
+							if ($row["homeAddress"]!=$row["newhomeAddress"]) { print "<input checked type='checkbox' name='newhomeAddressOn'><input name='newhomeAddress' type='hidden' value='" . htmlprep($row["newhomeAddress"]) . "'>" ; }
+						print "</td>" ;
+					print "</tr>" ;
+					print "<tr class='odd'>" ;
+						print "<td>" ;
+							print "Home Address (District)" ;
+						print "</td>" ;
+						print "<td>" ;
+							print $row["homeAddressDistrict"] ;
+						print "</td>" ;
+						print "<td>" ;
+							$style="" ;
+							if ($row["homeAddressDistrict"]!=$row["newhomeAddressDistrict"]) {
+								$style="style='color: #ff0000'" ;
+							}
+							print "<span $style>" ;
+							print $row["newhomeAddressDistrict"] ;
+						print "</td>" ;
+						print "<td>" ;
+							if ($row["homeAddressDistrict"]!=$row["newhomeAddressDistrict"]) { print "<input checked type='checkbox' name='newhomeAddressDistrictOn'><input name='newhomeAddressDistrict' type='hidden' value='" . htmlprep($row["newhomeAddressDistrict"]) . "'>" ; }
+						print "</td>" ;
+					print "</tr>" ;
+					print "<tr class='even'>" ;
+						print "<td>" ;
+							print "Home Address (Country)" ;
+						print "</td>" ;
+						print "<td>" ;
+							print $row["homeAddressCountry"] ;
+						print "</td>" ;
+						print "<td>" ;
+							$style="" ;
+							if ($row["homeAddressCountry"]!=$row["newhomeAddressCountry"]) {
+								$style="style='color: #ff0000'" ;
+							}
+							print "<span $style>" ;
+							print $row["newhomeAddressCountry"] ;
+						print "</td>" ;
+						print "<td>" ;
+							if ($row["homeAddressCountry"]!=$row["newhomeAddressCountry"]) { print "<input checked type='checkbox' name='newhomeAddressCountryOn'><input name='newhomeAddressCountry' type='hidden' value='" . htmlprep($row["newhomeAddressCountry"]) . "'>" ; }
+						print "</td>" ;
+					print "</tr>" ;
+					
+					print "<tr>" ;
+							print "<td class='right' colspan=4>" ;
+								print "<input name='gibbonFamilyID' type='hidden' value='" . $row["gibbonFamilyID"] . "'>" ;
+								print "<input name='address' type='hidden' value='" . $_GET["q"] . "'>" ;
+								print "<input type='reset' value='Reset'> <input type='submit' value='Submit'>" ;
+							print "</td>" ;
+						print "</tr>" ;
+				print "</table>" ;
+				?>
+			</form>
+			<?
+		}
+	}
+}
+?>
