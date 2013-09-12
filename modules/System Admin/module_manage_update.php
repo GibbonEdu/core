@@ -114,7 +114,7 @@ else {
 				print "</h3>" ;
 				print "<ol>" ;
 					print "<li>You are currently using " . htmlPrep($row["name"]) . " v$versionCode.</i></li>" ;
-					print "<li>Check <a target='_blank' href='http://www.thegibbon.org'>thegibbon.org</a> for a newer version of this module.</li>" ;
+					print "<li>Check <a target='_blank' href='http://www.gibbonedu.org'>gibbonedu.org</a> for a newer version of this module.</li>" ;
 					print "<li>Download the latest version, and unzip it on your computer.</li>" ;
 					print "<li>Use an FTP client to upload the new files to your server\'s modules folder</li>" ;
 					print "<li>Reload this page and follow the instructions to update your database to the latest version.</li>" ;

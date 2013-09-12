@@ -231,6 +231,8 @@ Messenger: fixed bug which prevents viewing of other days in Message Wall
 Students: added parent information to leaver report
 	Edited file report_students_left.php
 
+General: changed all references of thegibbon.org to gibbonedu.org
+	Edited various files
 	
 
 v6.0.00

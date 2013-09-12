@@ -38,7 +38,7 @@ else {
 			$absolutePathProtocol="https" ;
 			$absolutePath=substr($_SESSION[$guid]["absoluteURL"],8) ;
 		}
-		print "<iframe style='display: none; height: 10px; width: 10px' src='http://thegibbon.org/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($_SESSION[$guid]['organisationName']) . "&type=" . urlencode($_SESSION[$guid]['installType']) . "&version=" . urlencode($version) . "'></iframe>" ;
+		print "<iframe style='display: none; height: 10px; width: 10px' src='http://gibbonedu.org/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($_SESSION[$guid]['organisationName']) . "&type=" . urlencode($_SESSION[$guid]['installType']) . "&version=" . urlencode($version) . "'></iframe>" ;
 	}
 
 	//Proceed!

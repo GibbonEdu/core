@@ -1375,7 +1375,7 @@ else {
 						?>
 					</div>
 					<div id="footer">
-						Powered by <a href="http://thegibbon.org">Gibbon</a> v<? print $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<? print date("Y") ?><br/>
+						Powered by <a href="http://gibbonedu.org">Gibbon</a> v<? print $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<? print date("Y") ?><br/>
 						<span style='font-size: 90%; '>Created under the <a href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a></span><br/>
 						<img style='z-index: 100; margin-bottom: -57px; margin-right: -50px' alt='Logo Small' src='./themes/Default/img/logoFooter.png'/>
 					</div>
