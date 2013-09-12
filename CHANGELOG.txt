@@ -228,6 +228,10 @@ Staff: new module to provide staff profiles
 Messenger: fixed bug which prevents viewing of other days in Message Wall
 	Edited file /modules/messageWall_view.php
 	
+Students: added parent information to leaver report
+	Edited file report_students_left.php
+
+	
 
 v6.0.00
 -------
