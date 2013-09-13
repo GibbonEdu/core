@@ -110,7 +110,7 @@ else {
 				</i></span>
 			</td>
 			<td class="right">
-				<input type='checkbox' name='nonCompliant' value='Y'/>
+				<input <? if ($_POST["nonCompliant"]=="Y") { print "checked" ; } ?> type='checkbox' name='nonCompliant' value='Y'/>
 			</td>
 		</tr>
 			<tr>
@@ -150,6 +150,9 @@ else {
 		
 		print "<table style='width: 100%'>" ;
 			print "<tr class='head'>" ;
+				print "<th>" ;
+					
+				print "</th>" ;
 				print "<th>" ;
 					print "Student" ;
 				print "</th>" ;
@@ -234,6 +237,9 @@ else {
 					
 						//COLOR ROW BY STATUS!
 						print "<tr class=$rowNum>" ;
+							print "<td>" ;
+								print $count ;
+							print "</td>" ;
 							print "<td>" ;
 								print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
 							print "</td>" ;
