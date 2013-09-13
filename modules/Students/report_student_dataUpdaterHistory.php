@@ -151,6 +151,9 @@ else {
 				print "<th>" ;
 					print "Medical<br/>Data" ;
 				print "</th>" ;
+					print "<th>" ;
+						print "Parent Emails" ;
+					print "</th>" ;
 			print "</tr>" ;
 			
 			$count=0;
@@ -217,6 +220,44 @@ else {
 							}
 							else {
 								print "<span style='color: #ff0000; font-weight: bold'>NA</span>" ;
+							}
+						print "</td>" ;
+						print "<td>" ;
+							try {
+								$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+								$sqlFamily="SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID" ;
+								$resultFamily=$connection2->prepare($sqlFamily);
+								$resultFamily->execute($dataFamily);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+							while ($rowFamily=$resultFamily->fetch()) {
+								try {
+									$dataFamily2=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
+									$sqlFamily2="SELECT * FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName" ;
+									$resultFamily2=$connection2->prepare($sqlFamily2);
+									$resultFamily2->execute($dataFamily2);
+								}
+								catch(PDOException $e) { 
+									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+								}
+								$emails="" ;
+								while ($rowFamily2=$resultFamily2->fetch()) {
+									if ($rowFamily2["contactPriority"]==1) {
+										if ($rowFamily2["email"]!="") {
+											$emails.=$rowFamily2["email"] . ", " ;
+										}
+									}
+									else if ($rowFamily2["contactEmail"]=="Y") {
+										if ($rowFamily2["email"]!="") {
+											$emails.=$rowFamily2["email"] . ", " ;
+										}
+									}
+								}
+								if ($emails!="") {
+									print substr($emails,0,-2) ;
+								}
 							}
 						print "</td>" ;
 						
