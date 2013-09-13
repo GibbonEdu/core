@@ -237,6 +237,10 @@ General: changed all references of thegibbon.org to gibbonedu.org
 Students: added parental emails to data update history, to allow for emailing of recalcitrant parents
 	Edited file /modules/Students/report_students_dataUpdaterHistory.php
 	
+Students: add filter to data update history to show only non-compliant students, or to show all students.
+	Edited file /modules/Students/report_students_dataUpdaterHistory.php
+
+	
 
 v6.0.00
 -------

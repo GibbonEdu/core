@@ -104,6 +104,16 @@ else {
 				</td>
 			</tr>
 			<tr>
+			<td> 
+				<b>Show Only Non-Compliant?</b><br/>
+				<span style="font-size: 90%"><i>If not checked, show all. If checked, show only non-compliant students.</i><br/>
+				</i></span>
+			</td>
+			<td class="right">
+				<input type='checkbox' name='nonCompliant' value='Y'/>
+			</td>
+		</tr>
+			<tr>
 				<td colspan=2 class="right">
 					<input type="submit" value="Submit">
 				</td>
@@ -113,6 +123,7 @@ else {
 	<?
 	
 	$choices=$_POST["Members"] ;
+	$nonCompliant=$_POST["nonCompliant"] ;
 	
 	if (count($choices)>0) {
 		
@@ -160,108 +171,122 @@ else {
 			$rowNum="odd" ;
 			while ($row=$result->fetch()) {
 				if (is_null($log[$row["gibbonYearGroupID"]])) {
-					if ($count%2==0) {
-						$rowNum="even" ;
+					//Calculate personal
+					$personal="" ;
+					$personalFail=FALSE ;
+					try {
+						$dataPersonal=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+						$sqlPersonal="SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonID=:gibbonPersonID AND status='Complete' ORDER BY timestamp DESC" ;
+						$resultPersonal=$connection2->prepare($sqlPersonal);
+						$resultPersonal->execute($dataPersonal);
+					}
+					catch(PDOException $e) { }
+					if ($resultPersonal->rowCount()>0) {
+						$rowPersonal=$resultPersonal->fetch() ;
+						if (dateConvert($_POST["date"])<=substr($rowPersonal["timestamp"],0,10)) {
+							$personal=dateConvertBack(substr($rowPersonal["timestamp"],0,10)) ;
+						}
+						else {
+							$personal="<span style='color: #ff0000; font-weight: bold'>" . dateConvertBack(substr($rowPersonal["timestamp"],0,10)) . "</span>" ;
+							$personalFail=TRUE ;
+						}
 					}
 					else {
-						$rowNum="odd" ;
+						$personal="<span style='color: #ff0000; font-weight: bold'>NA</span>" ;
+						$personalFail=TRUE ;
 					}
-					$count++ ;
 					
-					//COLOR ROW BY STATUS!
-					print "<tr class=$rowNum>" ;
-						print "<td>" ;
-							print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
-						print "</td>" ;
-						print "<td>" ;
-							print $row["name"] ;
-						print "</td>" ;
-						print "<td>" ;
-							try {
-								$dataPersonal=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
-								$sqlPersonal="SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonID=:gibbonPersonID AND status='Complete' ORDER BY timestamp DESC" ;
-								$resultPersonal=$connection2->prepare($sqlPersonal);
-								$resultPersonal->execute($dataPersonal);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							if ($resultPersonal->rowCount()>0) {
-								$rowPersonal=$resultPersonal->fetch() ;
-								if (dateConvert($_POST["date"])<=substr($rowPersonal["timestamp"],0,10)) {
-									print dateConvertBack(substr($rowPersonal["timestamp"],0,10)) ;
-								}
-								else {
-									print "<span style='color: #ff0000; font-weight: bold'>" . dateConvertBack(substr($rowPersonal["timestamp"],0,10)) . "</span>" ;
-								}
-							}
-							else {
-								print "<span style='color: #ff0000; font-weight: bold'>NA</span>" ;
-							}
-						print "</td>" ;
-						print "<td>" ;
-							try {
-								$dataMedical=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
-								$sqlMedical="SELECT * FROM gibbonPersonMedicalUpdate WHERE gibbonPersonID=:gibbonPersonID AND status='Complete' ORDER BY timestamp DESC" ;
-								$resultMedical=$connection2->prepare($sqlMedical);
-								$resultMedical->execute($dataMedical);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							if ($resultMedical->rowCount()>0) {
-								$rowMedical=$resultMedical->fetch() ;
-								if (dateConvert($_POST["date"])<=substr($rowMedical["timestamp"],0,10)) {
-									print dateConvertBack(substr($rowMedical["timestamp"],0,10)) ;
-								}
-								else {
-									print "<span style='color: #ff0000; font-weight: bold'>" . dateConvertBack(substr($rowMedical["timestamp"],0,10)) . "</span>" ;
-								}
-							}
-							else {
-								print "<span style='color: #ff0000; font-weight: bold'>NA</span>" ;
-							}
-						print "</td>" ;
-						print "<td>" ;
-							try {
-								$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
-								$sqlFamily="SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID" ;
-								$resultFamily=$connection2->prepare($sqlFamily);
-								$resultFamily->execute($dataFamily);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							while ($rowFamily=$resultFamily->fetch()) {
+					//Calculate medical
+					$medical="" ;
+					$medicalFail=FALSE ;
+					try {
+						$dataMedical=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+						$sqlMedical="SELECT * FROM gibbonPersonMedicalUpdate WHERE gibbonPersonID=:gibbonPersonID AND status='Complete' ORDER BY timestamp DESC" ;
+						$resultMedical=$connection2->prepare($sqlMedical);
+						$resultMedical->execute($dataMedical);
+					}
+					catch(PDOException $e) { 
+						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					}
+					if ($resultMedical->rowCount()>0) {
+						$rowMedical=$resultMedical->fetch() ;
+						if (dateConvert($_POST["date"])<=substr($rowMedical["timestamp"],0,10)) {
+							$medical=dateConvertBack(substr($rowMedical["timestamp"],0,10)) ;
+						}
+						else {
+							$medical="<span style='color: #ff0000; font-weight: bold'>" . dateConvertBack(substr($rowMedical["timestamp"],0,10)) . "</span>" ;
+							$medicalFail=TRUE ;
+						}
+					}
+					else {
+						$medical="<span style='color: #ff0000; font-weight: bold'>NA</span>" ;
+						$medicalFail=TRUE ;
+					}
+				
+					if ($personFail OR $medicalFail OR $nonCompliant=="") {
+						if ($count%2==0) {
+							$rowNum="even" ;
+						}
+						else {
+							$rowNum="odd" ;
+						}
+						$count++ ;
+					
+						//COLOR ROW BY STATUS!
+						print "<tr class=$rowNum>" ;
+							print "<td>" ;
+								print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
+							print "</td>" ;
+							print "<td>" ;
+								print $row["name"] ;
+							print "</td>" ;
+							print "<td>" ;
+								print $personal ;
+							print "</td>" ;
+							print "<td>" ;
+								print $medical ;
+							print "</td>" ;
+							print "<td>" ;
 								try {
-									$dataFamily2=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
-									$sqlFamily2="SELECT * FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName" ;
-									$resultFamily2=$connection2->prepare($sqlFamily2);
-									$resultFamily2->execute($dataFamily2);
+									$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+									$sqlFamily="SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID" ;
+									$resultFamily=$connection2->prepare($sqlFamily);
+									$resultFamily->execute($dataFamily);
 								}
 								catch(PDOException $e) { 
 									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 								}
-								$emails="" ;
-								while ($rowFamily2=$resultFamily2->fetch()) {
-									if ($rowFamily2["contactPriority"]==1) {
-										if ($rowFamily2["email"]!="") {
-											$emails.=$rowFamily2["email"] . ", " ;
+								while ($rowFamily=$resultFamily->fetch()) {
+									try {
+										$dataFamily2=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
+										$sqlFamily2="SELECT * FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName" ;
+										$resultFamily2=$connection2->prepare($sqlFamily2);
+										$resultFamily2->execute($dataFamily2);
+									}
+									catch(PDOException $e) { 
+										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									}
+									$emails="" ;
+									while ($rowFamily2=$resultFamily2->fetch()) {
+										if ($rowFamily2["contactPriority"]==1) {
+											if ($rowFamily2["email"]!="") {
+												$emails.=$rowFamily2["email"] . ", " ;
+											}
+										}
+										else if ($rowFamily2["contactEmail"]=="Y") {
+											if ($rowFamily2["email"]!="") {
+												$emails.=$rowFamily2["email"] . ", " ;
+											}
 										}
 									}
-									else if ($rowFamily2["contactEmail"]=="Y") {
-										if ($rowFamily2["email"]!="") {
-											$emails.=$rowFamily2["email"] . ", " ;
-										}
+									if ($emails!="") {
+										print substr($emails,0,-2) ;
 									}
 								}
-								if ($emails!="") {
-									print substr($emails,0,-2) ;
-								}
-							}
-						print "</td>" ;
+							print "</td>" ;
 						
-					print "</tr>" ;
+						print "</tr>" ;
+					}
 				}
 			}
 			if ($count==0) {
