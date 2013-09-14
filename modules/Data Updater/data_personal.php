@@ -213,6 +213,36 @@ else {
 				print "</div>" ;
 			}
 			else {
+				//Get categories
+				try {
+					$dataSelect=array("gibbonPersonID"=>$gibbonPersonID); 
+					$sqlSelect="SELECT gibbonRoleIDAll FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName" ;
+					$resultSelect=$connection2->prepare($sqlSelect);
+					$resultSelect->execute($dataSelect);
+				}
+				catch(PDOException $e) { }
+				if ($resultSelect->rowCount()==1) {
+					$rowSelect=$resultSelect->fetch() ;
+					$staff=FALSE ;
+					$student=FALSE ;
+					$parent=FALSE ;
+					$roles=explode(",", $rowSelect["gibbonRoleIDAll"]) ;
+					foreach ($roles AS $role) {
+						$roleCategory=getRoleCategory($role, $connection2) ;
+						if ($roleCategory=="Staff") {
+							$staff=TRUE ;
+						} 
+						if ($roleCategory=="Student") {
+							$student=TRUE ;
+						} 
+						if ($roleCategory=="Parent") {
+							$parent=TRUE ;
+						} 
+					}
+				}
+				
+			
+			
 				//Check if there is already a pending form for this user
 				$existing=FALSE ;
 				$proceed=FALSE;
@@ -453,171 +483,176 @@ else {
 								</td>
 							</tr>
 							
-							<tr>
-								<td colspan=2> 
-									<h3>Emergency Contacts</h3>
-								</td>
-							</tr>
-							<tr>
-								<td colspan=2> 
-									These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. <u>Please try to avoid listing immediate family members</u>. 
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b>Contact 1 Name<? if ($required["emergency1Name"]=="Y") { print " *" ; } ?></b><br/>
-								</td>
-								<td class="right">
-									<input name="emergency1Name" id="emergency1Name" maxlength=30 value="<? print htmlPrep($row["emergency1Name"]) ?>" type="text" style="width: 300px">
-									<?
-									$fieldName="emergency1Name" ; 
-									if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
-										 print "</script>" ;
-									}
-									?>									
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b>Contact 1 Relationship<? if ($required["emergency1Relationship"]=="Y") { print " *" ; } ?></b><br/>
-								</td>
-								<td class="right">
-									<select name="emergency1Relationship" id="emergency1Relationship" style="width: 302px">
-										<? if ($required["emergency1Relationship"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; } ?>
-										<option <? if ($row["emergency1Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
-										<option <? if ($row["emergency1Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
-										<option <? if ($row["emergency1Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
-										<option <? if ($row["emergency1Relationship"]=="Friend") {print "selected ";}?>value="Friend">Friend</option>
-										<option <? if ($row["emergency1Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation">Other Relation</option>
-										<option <? if ($row["emergency1Relationship"]=="Doctor") {print "selected ";}?>value="Doctor">Doctor</option>
-										<option <? if ($row["emergency1Relationship"]=="Other") {print "selected ";}?>value="Other">Other</option>
-									</select>
-									<?
-									$fieldName="emergency1Relationship" ; 
-									if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
-										 print "</script>" ;
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b>Contact 1 Number 1<? if ($required["emergency1Number1"]=="Y") { print " *" ; } ?></b><br/>
-								</td>
-								<td class="right">
-									<input name="emergency1Number1" id="emergency1Number1" maxlength=30 value="<? print htmlPrep($row["emergency1Number1"]) ?>" type="text" style="width: 300px">
-									<?
-									$fieldName="emergency1Number1" ; 
-									if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
-										 print "</script>" ;
-									}
-									?>									
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b>Contact 1 Number 2<? if ($required["emergency1Number2"]=="Y") { print " *" ; } ?></b><br/>
-								</td>
-								<td class="right">
-									<input name="emergency1Number2" id="emergency1Number2" maxlength=30 value="<? print htmlPrep($row["emergency1Number2"]) ?>" type="text" style="width: 300px">
-									<?
-									$fieldName="emergency1Number2" ; 
-									if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
-										 print "</script>" ;
-									}
-									?>									
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b>Contact 2 Name<? if ($required["emergency2Name"]=="Y") { print " *" ; } ?></b><br/>
-								</td>
-								<td class="right">
-									<input name="emergency2Name" id="emergency2Name" maxlength=30 value="<? print htmlPrep($row["emergency2Name"]) ?>" type="text" style="width: 300px">
-									<?
-									$fieldName="emergency2Name" ; 
-									if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
-										 print "</script>" ;
-									}
-									?>									
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b>Contact 2 Relationship<? if ($required["emergency2Relationship"]=="Y") { print " *" ; } ?></b><br/>
-								</td>
-								<td class="right">
-									<select name="emergency2Relationship" id="emergency2Relationship" style="width: 302px">
-										<? if ($required["emergency2Relationship"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; } ?>
-										<option <? if ($row["emergency2Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
-										<option <? if ($row["emergency2Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
-										<option <? if ($row["emergency2Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
-										<option <? if ($row["emergency2Relationship"]=="Friend") {print "selected ";}?>value="Friend">Friend</option>
-										<option <? if ($row["emergency2Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation">Other Relation</option>
-										<option <? if ($row["emergency2Relationship"]=="Doctor") {print "selected ";}?>value="Doctor">Doctor</option>
-										<option <? if ($row["emergency2Relationship"]=="Other") {print "selected ";}?>value="Other">Other</option>
-									</select>
-									<?
-									$fieldName="emergency2Relationship" ; 
-									if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
-										 print "</script>" ;
-									}
-									?>	
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b>Contact 2 Number 1<? if ($required["emergency2Number1"]=="Y") { print " *" ; } ?></b><br/>
-								</td>
-								<td class="right">
-									<input name="emergency2Number1" id="emergency2Number1" maxlength=30 value="<? print htmlPrep($row["emergency2Number1"]) ?>" type="text" style="width: 300px">
-									<?
-									$fieldName="emergency2Number1" ; 
-									if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
-										 print "</script>" ;
-									}
-									?>									
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b>Contact 2 Number 2<? if ($required["emergency2Number2"]=="Y") { print " *" ; } ?></b><br/>
-								</td>
-								<td class="right">
-									<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="<? print htmlPrep($row["emergency2Number2"]) ?>" type="text" style="width: 300px">
-									<?
-									$fieldName="emergency2Number2" ; 
-									if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
-										 print "</script>" ;
-									}
-									?>									
-								</td>
-							</tr>
-							
+							<?
+							if ($student OR $staff) {
+								?> 
+								<tr>
+									<td colspan=2> 
+										<h3>Emergency Contacts</h3>
+									</td>
+								</tr>
+								<tr>
+									<td colspan=2> 
+										These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. <u>Please try to avoid listing immediate family members</u>. 
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>Contact 1 Name<? if ($required["emergency1Name"]=="Y") { print " *" ; } ?></b><br/>
+									</td>
+									<td class="right">
+										<input name="emergency1Name" id="emergency1Name" maxlength=30 value="<? print htmlPrep($row["emergency1Name"]) ?>" type="text" style="width: 300px">
+										<?
+										$fieldName="emergency1Name" ; 
+										if ($required[$fieldName]=="Y") {
+											print "<script type=\"text/javascript\">" ;
+												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print $fieldName . ".add(Validate.Presence);" ;
+											 print "</script>" ;
+										}
+										?>									
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>Contact 1 Relationship<? if ($required["emergency1Relationship"]=="Y") { print " *" ; } ?></b><br/>
+									</td>
+									<td class="right">
+										<select name="emergency1Relationship" id="emergency1Relationship" style="width: 302px">
+											<? if ($required["emergency1Relationship"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; } ?>
+											<option <? if ($row["emergency1Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
+											<option <? if ($row["emergency1Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
+											<option <? if ($row["emergency1Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
+											<option <? if ($row["emergency1Relationship"]=="Friend") {print "selected ";}?>value="Friend">Friend</option>
+											<option <? if ($row["emergency1Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation">Other Relation</option>
+											<option <? if ($row["emergency1Relationship"]=="Doctor") {print "selected ";}?>value="Doctor">Doctor</option>
+											<option <? if ($row["emergency1Relationship"]=="Other") {print "selected ";}?>value="Other">Other</option>
+										</select>
+										<?
+										$fieldName="emergency1Relationship" ; 
+										if ($required[$fieldName]=="Y") {
+											print "<script type=\"text/javascript\">" ;
+												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
+											 print "</script>" ;
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>Contact 1 Number 1<? if ($required["emergency1Number1"]=="Y") { print " *" ; } ?></b><br/>
+									</td>
+									<td class="right">
+										<input name="emergency1Number1" id="emergency1Number1" maxlength=30 value="<? print htmlPrep($row["emergency1Number1"]) ?>" type="text" style="width: 300px">
+										<?
+										$fieldName="emergency1Number1" ; 
+										if ($required[$fieldName]=="Y") {
+											print "<script type=\"text/javascript\">" ;
+												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print $fieldName . ".add(Validate.Presence);" ;
+											 print "</script>" ;
+										}
+										?>									
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>Contact 1 Number 2<? if ($required["emergency1Number2"]=="Y") { print " *" ; } ?></b><br/>
+									</td>
+									<td class="right">
+										<input name="emergency1Number2" id="emergency1Number2" maxlength=30 value="<? print htmlPrep($row["emergency1Number2"]) ?>" type="text" style="width: 300px">
+										<?
+										$fieldName="emergency1Number2" ; 
+										if ($required[$fieldName]=="Y") {
+											print "<script type=\"text/javascript\">" ;
+												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print $fieldName . ".add(Validate.Presence);" ;
+											 print "</script>" ;
+										}
+										?>									
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>Contact 2 Name<? if ($required["emergency2Name"]=="Y") { print " *" ; } ?></b><br/>
+									</td>
+									<td class="right">
+										<input name="emergency2Name" id="emergency2Name" maxlength=30 value="<? print htmlPrep($row["emergency2Name"]) ?>" type="text" style="width: 300px">
+										<?
+										$fieldName="emergency2Name" ; 
+										if ($required[$fieldName]=="Y") {
+											print "<script type=\"text/javascript\">" ;
+												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print $fieldName . ".add(Validate.Presence);" ;
+											 print "</script>" ;
+										}
+										?>									
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>Contact 2 Relationship<? if ($required["emergency2Relationship"]=="Y") { print " *" ; } ?></b><br/>
+									</td>
+									<td class="right">
+										<select name="emergency2Relationship" id="emergency2Relationship" style="width: 302px">
+											<? if ($required["emergency2Relationship"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; } ?>
+											<option <? if ($row["emergency2Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
+											<option <? if ($row["emergency2Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
+											<option <? if ($row["emergency2Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
+											<option <? if ($row["emergency2Relationship"]=="Friend") {print "selected ";}?>value="Friend">Friend</option>
+											<option <? if ($row["emergency2Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation">Other Relation</option>
+											<option <? if ($row["emergency2Relationship"]=="Doctor") {print "selected ";}?>value="Doctor">Doctor</option>
+											<option <? if ($row["emergency2Relationship"]=="Other") {print "selected ";}?>value="Other">Other</option>
+										</select>
+										<?
+										$fieldName="emergency2Relationship" ; 
+										if ($required[$fieldName]=="Y") {
+											print "<script type=\"text/javascript\">" ;
+												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
+											 print "</script>" ;
+										}
+										?>	
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>Contact 2 Number 1<? if ($required["emergency2Number1"]=="Y") { print " *" ; } ?></b><br/>
+									</td>
+									<td class="right">
+										<input name="emergency2Number1" id="emergency2Number1" maxlength=30 value="<? print htmlPrep($row["emergency2Number1"]) ?>" type="text" style="width: 300px">
+										<?
+										$fieldName="emergency2Number1" ; 
+										if ($required[$fieldName]=="Y") {
+											print "<script type=\"text/javascript\">" ;
+												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print $fieldName . ".add(Validate.Presence);" ;
+											 print "</script>" ;
+										}
+										?>									
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>Contact 2 Number 2<? if ($required["emergency2Number2"]=="Y") { print " *" ; } ?></b><br/>
+									</td>
+									<td class="right">
+										<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="<? print htmlPrep($row["emergency2Number2"]) ?>" type="text" style="width: 300px">
+										<?
+										$fieldName="emergency2Number2" ; 
+										if ($required[$fieldName]=="Y") {
+											print "<script type=\"text/javascript\">" ;
+												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print $fieldName . ".add(Validate.Presence);" ;
+											 print "</script>" ;
+										}
+										?>									
+									</td>
+								</tr>
+								<?
+							}
+							?>
 							
 							<tr>
 								<td colspan=2> 
@@ -1461,63 +1496,68 @@ else {
 								</td>
 							</tr>
 					
-							
-							<tr>
-								<td colspan=2> 
-									<h3>Employment</h3>
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b>Profession<? if ($required["profession"]=="Y") { print " *" ; } ?></b><br/>
-								</td>
-								<td class="right">
-									<input name="profession" id="profession" maxlength=30 value="<? print htmlPrep($row["profession"]) ?>" type="text" style="width: 300px">
-									<?
-									$fieldName="profession" ; 
-									if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
-										 print "</script>" ;
-									}
-									?>									
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b>Employer<? if ($required["employer"]=="Y") { print " *" ; } ?></b><br/>
-								</td>
-								<td class="right">
-									<input name="employer" id="employer" maxlength=30 value="<? print htmlPrep($row["employer"]) ?>" type="text" style="width: 300px">
-									<?
-									$fieldName="employer" ; 
-									if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
-										 print "</script>" ;
-									}
-									?>									
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b>Job Title<? if ($required["jobTitle"]=="Y") { print " *" ; } ?></b><br/>
-								</td>
-								<td class="right">
-									<input name="jobTitle" id="jobTitle" maxlength=30 value="<? print htmlPrep($row["jobTitle"]) ?>" type="text" style="width: 300px">
-									<?
-									$fieldName="jobTitle" ; 
-									if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
-										 print "</script>" ;
-									}
-									?>									
-								</td>
-							</tr>
+							<?
+							if ($parent) {
+								?> 
+								<tr>
+									<td colspan=2> 
+										<h3>Employment</h3>
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>Profession<? if ($required["profession"]=="Y") { print " *" ; } ?></b><br/>
+									</td>
+									<td class="right">
+										<input name="profession" id="profession" maxlength=30 value="<? print htmlPrep($row["profession"]) ?>" type="text" style="width: 300px">
+										<?
+										$fieldName="profession" ; 
+										if ($required[$fieldName]=="Y") {
+											print "<script type=\"text/javascript\">" ;
+												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print $fieldName . ".add(Validate.Presence);" ;
+											 print "</script>" ;
+										}
+										?>									
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>Employer<? if ($required["employer"]=="Y") { print " *" ; } ?></b><br/>
+									</td>
+									<td class="right">
+										<input name="employer" id="employer" maxlength=30 value="<? print htmlPrep($row["employer"]) ?>" type="text" style="width: 300px">
+										<?
+										$fieldName="employer" ; 
+										if ($required[$fieldName]=="Y") {
+											print "<script type=\"text/javascript\">" ;
+												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print $fieldName . ".add(Validate.Presence);" ;
+											 print "</script>" ;
+										}
+										?>									
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>Job Title<? if ($required["jobTitle"]=="Y") { print " *" ; } ?></b><br/>
+									</td>
+									<td class="right">
+										<input name="jobTitle" id="jobTitle" maxlength=30 value="<? print htmlPrep($row["jobTitle"]) ?>" type="text" style="width: 300px">
+										<?
+										$fieldName="jobTitle" ; 
+										if ($required[$fieldName]=="Y") {
+											print "<script type=\"text/javascript\">" ;
+												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print $fieldName . ".add(Validate.Presence);" ;
+											 print "</script>" ;
+										}
+										?>									
+									</td>
+								</tr>
+								<?
+							}
+							?>
 							
 							<tr>
 								<td colspan=2> 
@@ -1544,54 +1584,36 @@ else {
 							<?
 							//Check if any roles are "Student"
 							$privacySet=false ;
-							try {
-								$dataRoles=array("gibbonPersonID"=>$gibbonPersonID); 
-								$sqlRoles="SELECT gibbonRoleIDAll FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
-								$resultRoles=$connection2->prepare($sqlRoles);
-								$resultRoles->execute($dataRoles);
-							}
-							catch(PDOException $e) { }
-							if ($resultRoles->rowCount()==1) {
-								$rowRoles=$resultRoles->fetch() ;
-							
-								$isStudent=false ;
-								$roles=explode(",", $rowRoles["gibbonRoleIDAll"]) ;
-								foreach ($roles as $role) {
-									if (getRoleCategory($role, $connection2)=="Student") {
-										$isStudent=true ;
-									}
-								}
-								if ($isStudent) {
-									$privacySetting=getSettingByScope( $connection2, "User Admin", "privacy" ) ;
-									$privacyBlurb=getSettingByScope( $connection2, "User Admin", "privacyBlurb" ) ;
-									$privacyOptions=getSettingByScope( $connection2, "User Admin", "privacyOptions" ) ;
-									if ($privacySetting=="Y" AND $privacyBlurb!="" AND $privacyOptions!="") {
-										?>
-										<tr>
-											<td> 
-												<b>Privacy *</b><br/>
-												<span style="font-size: 90%"><i><? print htmlPrep($privacyBlurb) ?><br/>
-												</i></span>
-											</td>
-											<td class="right">
-												<?
-												$options=explode(",",$privacyOptions) ;
-												$privacyChecks=explode(",",$row["privacy"]) ;
-												foreach ($options AS $option) {
-													$checked="" ;
-													foreach ($privacyChecks AS $privacyCheck) {
-														if ($option==$privacyCheck) {
-															$checked="checked" ;
-														}
+							if ($student) {
+								$privacySetting=getSettingByScope( $connection2, "User Admin", "privacy" ) ;
+								$privacyBlurb=getSettingByScope( $connection2, "User Admin", "privacyBlurb" ) ;
+								$privacyOptions=getSettingByScope( $connection2, "User Admin", "privacyOptions" ) ;
+								if ($privacySetting=="Y" AND $privacyBlurb!="" AND $privacyOptions!="") {
+									?>
+									<tr>
+										<td> 
+											<b>Privacy *</b><br/>
+											<span style="font-size: 90%"><i><? print htmlPrep($privacyBlurb) ?><br/>
+											</i></span>
+										</td>
+										<td class="right">
+											<?
+											$options=explode(",",$privacyOptions) ;
+											$privacyChecks=explode(",",$row["privacy"]) ;
+											foreach ($options AS $option) {
+												$checked="" ;
+												foreach ($privacyChecks AS $privacyCheck) {
+													if ($option==$privacyCheck) {
+														$checked="checked" ;
 													}
-													print $option . " <input $checked type='checkbox' name='privacyOptions[]' value='" . htmlPrep($option) . "'/><br/>" ;
 												}
-												?>
-						
-											</td>
-										</tr>
-										<?
-									}
+												print $option . " <input $checked type='checkbox' name='privacyOptions[]' value='" . htmlPrep($option) . "'/><br/>" ;
+											}
+											?>
+					
+										</td>
+									</tr>
+									<?
 								}
 							}
 							?>

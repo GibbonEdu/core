@@ -1531,57 +1531,39 @@ else {
 					<?
 					//Check if any roles are "Student"
 					$imagePrivacySet=false ;
-					try {
-						$dataRoles=array("gibbonPersonID"=>$gibbonPersonID); 
-						$sqlRoles="SELECT gibbonRoleIDAll FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
-						$resultRoles=$connection2->prepare($sqlRoles);
-						$resultRoles->execute($dataRoles);
-					}
-					catch(PDOException $e) { }
-					if ($resultRoles->rowCount()==1) {
-						$rowRoles=$resultRoles->fetch() ;
-					
-						$isStudent=false ;
-						$roles=explode(",", $rowRoles["gibbonRoleIDAll"]) ;
-						foreach ($roles as $role) {
-							if (getRoleCategory($role, $connection2)=="Student") {
-								$isStudent=true ;
-							}
-						}
-						if ($isStudent) {
-							$privacySetting=getSettingByScope( $connection2, "User Admin", "privacy" ) ;
-							$privacyBlurb=getSettingByScope( $connection2, "User Admin", "privacyBlurb" ) ;
-							$privacyOptions=getSettingByScope( $connection2, "User Admin", "privacyOptions" ) ;
-							if ($privacySetting=="Y" AND $privacyBlurb!="" AND $privacyOptions!="") {
-								?>
-								<tr>
-									<td> 
-										<b>Privacy *</b><br/>
-										<span style="font-size: 90%"><i><? print htmlPrep($privacyBlurb) ?><br/>
-										</i></span>
-									</td>
-									<td class="right">
-										<?
-										$options=explode(",",$privacyOptions) ;
-										$privacyChecks=explode(",",$row["privacy"]) ;
-										foreach ($options AS $option) {
-											$checked="" ;
-											foreach ($privacyChecks AS $privacyCheck) {
-												if ($option==$privacyCheck) {
-													$checked="checked" ;
-												}
+					if ($student) {
+						$privacySetting=getSettingByScope( $connection2, "User Admin", "privacy" ) ;
+						$privacyBlurb=getSettingByScope( $connection2, "User Admin", "privacyBlurb" ) ;
+						$privacyOptions=getSettingByScope( $connection2, "User Admin", "privacyOptions" ) ;
+						if ($privacySetting=="Y" AND $privacyBlurb!="" AND $privacyOptions!="") {
+							?>
+							<tr>
+								<td> 
+									<b>Privacy *</b><br/>
+									<span style="font-size: 90%"><i><? print htmlPrep($privacyBlurb) ?><br/>
+									</i></span>
+								</td>
+								<td class="right">
+									<?
+									$options=explode(",",$privacyOptions) ;
+									$privacyChecks=explode(",",$row["privacy"]) ;
+									foreach ($options AS $option) {
+										$checked="" ;
+										foreach ($privacyChecks AS $privacyCheck) {
+											if ($option==$privacyCheck) {
+												$checked="checked" ;
 											}
-											print $option . " <input $checked type='checkbox' name='privacyOptions[]' value='" . htmlPrep($option) . "'/><br/>" ;
 										}
-										?>
-						
-									</td>
-								</tr>
-								<?
-							}
-							else {
-								print "<input type=\"hidden\" name=\"privacy\" value=\"\">" ;
-							}
+										print $option . " <input $checked type='checkbox' name='privacyOptions[]' value='" . htmlPrep($option) . "'/><br/>" ;
+									}
+									?>
+					
+								</td>
+							</tr>
+							<?
+						}
+						else {
+							print "<input type=\"hidden\" name=\"privacy\" value=\"\">" ;
 						}
 					}
 					if ($imagePrivacySet==false) {
