@@ -254,6 +254,10 @@ Data Updater: added role category-relevance to field, so certain fields are hidd
 General: added in database export of last stable version (v6) to use for developers running pre-release software
 	New file /gibbon.sql
 	Edited file /README.md
+
+General: removed old .webloc files to make core cross platform for admins/devs
+	Edited file /README.md
+	Removed files /*.webloc
 	
 
 v6.0.00
