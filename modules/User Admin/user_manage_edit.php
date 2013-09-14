@@ -722,68 +722,74 @@ else {
 					
 					<tr>
 						<td colspan=2> 
-							<h3>Education Information</h3>
+							<h3>School Information</h3>
 						</td>
 					</tr>
 					<?
-					$dayTypeOptions=getSettingByScope($connection2, 'User Admin', 'dayTypeOptions') ;
-					if ($dayTypeOptions!="") {
+					if ($student) {
+						$dayTypeOptions=getSettingByScope($connection2, 'User Admin', 'dayTypeOptions') ;
+						if ($dayTypeOptions!="") {
+							?>
+							<tr>
+								<td> 
+									<b>Day Type</b><br/>
+									<span style="font-size: 90%"><i><? print getSettingByScope($connection2, 'User Admin', 'dayTypeText') ; ?></i></span>
+								</td>
+								<td class="right">
+									<select name="dayType" id="dayType" style="width: 302px">
+										<option value=''></option>
+										<?
+										$dayTypes=explode(",", $dayTypeOptions) ;
+										foreach ($dayTypes as $dayType) {
+											$selected="" ;
+											if ($row["dayType"]==$dayType) {
+												$selected="selected" ;
+											}
+											print "<option $selected value='" . trim($dayType) . "'>" . trim($dayType) . "</option>" ;
+										}
+										?>				
+									</select>
+								</td>
+							</tr>
+							<?
+						}	
+					}
+					if ($student or $staff) {
 						?>
 						<tr>
 							<td> 
-								<b>Day Type</b><br/>
-								<span style="font-size: 90%"><i><? print getSettingByScope($connection2, 'User Admin', 'dayTypeText') ; ?></i></span>
+								<b>Last School</b><br/>
 							</td>
 							<td class="right">
-								<select name="dayType" id="dayType" style="width: 302px">
-									<option value=''></option>
-									<?
-									$dayTypes=explode(",", $dayTypeOptions) ;
-									foreach ($dayTypes as $dayType) {
-										$selected="" ;
-										if ($row["dayType"]==$dayType) {
-											$selected="selected" ;
-										}
-										print "<option $selected value='" . trim($dayType) . "'>" . trim($dayType) . "</option>" ;
-									}
-									?>				
-								</select>
+								<input name="lastSchool" id="lastSchool" maxlength=30 value="<? print $row["lastSchool"] ?>" type="text" style="width: 300px">
 							</td>
+							<script type="text/javascript">
+								$(function() {
+									var availableTags = [
+										<?
+										try {
+											$dataAuto=array(); 
+											$sqlAuto="SELECT DISTINCT lastSchool FROM gibbonPerson ORDER BY lastSchool" ;
+											$resultAuto=$connection2->prepare($sqlAuto);
+											$resultAuto->execute($dataAuto);
+										}
+										catch(PDOException $e) { }
+										while ($rowAuto=$resultAuto->fetch()) {
+											print "\"" . $rowAuto["lastSchool"] . "\", " ;
+										}
+										?>
+									];
+									$( "#lastSchool" ).autocomplete({source: availableTags});
+								});
+							</script>
 						</tr>
 						<?
-					}	
+					}
 					?>
 					<tr>
 						<td> 
-							<b>Last School</b><br/>
-						</td>
-						<td class="right">
-							<input name="lastSchool" id="lastSchool" maxlength=30 value="<? print $row["lastSchool"] ?>" type="text" style="width: 300px">
-						</td>
-						<script type="text/javascript">
-							$(function() {
-								var availableTags = [
-									<?
-									try {
-										$dataAuto=array(); 
-										$sqlAuto="SELECT DISTINCT lastSchool FROM gibbonPerson ORDER BY lastSchool" ;
-										$resultAuto=$connection2->prepare($sqlAuto);
-										$resultAuto->execute($dataAuto);
-									}
-									catch(PDOException $e) { }
-									while ($rowAuto=$resultAuto->fetch()) {
-										print "\"" . $rowAuto["lastSchool"] . "\", " ;
-									}
-									?>
-								];
-								$( "#lastSchool" ).autocomplete({source: availableTags});
-							});
-						</script>
-					</tr>
-					<tr>
-						<td> 
 							<b>Start Date</b><br/>
-							<span style="font-size: 90%"><i>Student's first day at school.<br/>dd/mm/yyyy</i></span>
+							<span style="font-size: 90%"><i>Users's first day at school.<br/>dd/mm/yyyy</i></span>
 						</td>
 						<td class="right">
 							<input name="dateStart" id="dateStart" maxlength=10 value="<? print dateConvertBack($row["dateStart"]) ?>" type="text" style="width: 300px">
@@ -801,7 +807,7 @@ else {
 					<tr>
 						<td> 
 							<b>End Date</b><br/>
-							<span style="font-size: 90%"><i>Student's last day at school.<br/>dd/mm/yyyy</i></span>
+							<span style="font-size: 90%"><i>Users's last day at school.<br/>dd/mm/yyyy</i></span>
 						</td>
 						<td class="right">
 							<input name="dateEnd" id="dateEnd" maxlength=10 value="<? print dateConvertBack($row["dateEnd"]) ?>" type="text" style="width: 300px">
@@ -816,90 +822,103 @@ else {
 							</script>
 						</td>
 					</tr>
-					<tr>
-						<td> 
-							<b>Class Of</b><br/>
-							<span style="font-size: 90%"><i>When is the student expected to graduate?</i></span>
-						</td>
-						<td class="right">
-							<select name="gibbonSchoolYearIDClassOf" id="gibbonSchoolYearIDClassOf" style="width: 302px">
-								<?
-								print "<option value=''></option>" ;
-								try {
-									$dataSelect=array(); 
-									$sqlSelect="SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber" ;
-									$resultSelect=$connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
-								while ($rowSelect=$resultSelect->fetch()) {
-									$selected="" ;
-									if ($row["gibbonSchoolYearIDClassOf"]==$rowSelect["gibbonSchoolYearID"]) {
-										$selected="selected" ;
-									}
-									print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
-								}
-								?>				
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Next School</b><br/>
-						</td>
-						<td class="right">
-							<input name="nextSchool" id="nextSchool" maxlength=30 value="<? print $row["nextSchool"] ?>" type="text" style="width: 300px">
-						</td>
-						<script type="text/javascript">
-							$(function() {
-								var availableTags = [
+					<?
+					if ($student) {
+						?>
+						<tr>
+							<td> 
+								<b>Class Of</b><br/>
+								<span style="font-size: 90%"><i>When is the student expected to graduate?</i></span>
+							</td>
+							<td class="right">
+								<select name="gibbonSchoolYearIDClassOf" id="gibbonSchoolYearIDClassOf" style="width: 302px">
 									<?
+									print "<option value=''></option>" ;
 									try {
-										$dataAuto=array(); 
-										$sqlAuto="SELECT DISTINCT nextSchool FROM gibbonPerson ORDER BY nextSchool" ;
-										$resultAuto=$connection2->prepare($sqlAuto);
-										$resultAuto->execute($dataAuto);
+										$dataSelect=array(); 
+										$sqlSelect="SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber" ;
+										$resultSelect=$connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
 									}
-									catch(PDOException $e) { }
-									while ($rowAuto=$resultAuto->fetch()) {
-										print "\"" . $rowAuto["nextSchool"] . "\", " ;
+									catch(PDOException $e) { 
+										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 									}
-									?>
-								];
-								$( "#nextSchool" ).autocomplete({source: availableTags});
-							});
-						</script>
-					</tr>
-					<tr>
-						<td> 
-							<b>Departure Reason</b><br/>
-						</td>
-						<td class="right">
-							<input name="departureReason" id="departureReason" maxlength=30 value="<? print $row["departureReason"] ?>" type="text" style="width: 300px">
-						</td>
-						<script type="text/javascript">
-							$(function() {
-								var availableTags = [
-									<?
-									try {
-										$dataAuto=array(); 
-										$sqlAuto="SELECT DISTINCT departureReason FROM gibbonPerson ORDER BY departureReason" ;
-										$resultAuto=$connection2->prepare($sqlAuto);
-										$resultAuto->execute($dataAuto);
+									while ($rowSelect=$resultSelect->fetch()) {
+										$selected="" ;
+										if ($row["gibbonSchoolYearIDClassOf"]==$rowSelect["gibbonSchoolYearID"]) {
+											$selected="selected" ;
+										}
+										print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 									}
-									catch(PDOException $e) { }
-									while ($rowAuto=$resultAuto->fetch()) {
-										print "\"" . $rowAuto["departureReason"] . "\", " ;
-									}
-									?>
-								];
-								$( "#departureReason" ).autocomplete({source: availableTags});
-							});
-						</script>
-					</tr>
-		
+									?>				
+								</select>
+							</td>
+						</tr>
+						<?
+					}
+					if ($student OR $staff) {
+						?>
+						<tr>
+							<td> 
+								<b>Next School</b><br/>
+							</td>
+							<td class="right">
+								<input name="nextSchool" id="nextSchool" maxlength=30 value="<? print $row["nextSchool"] ?>" type="text" style="width: 300px">
+							</td>
+							<script type="text/javascript">
+								$(function() {
+									var availableTags = [
+										<?
+										try {
+											$dataAuto=array(); 
+											$sqlAuto="SELECT DISTINCT nextSchool FROM gibbonPerson ORDER BY nextSchool" ;
+											$resultAuto=$connection2->prepare($sqlAuto);
+											$resultAuto->execute($dataAuto);
+										}
+										catch(PDOException $e) { }
+										while ($rowAuto=$resultAuto->fetch()) {
+											print "\"" . $rowAuto["nextSchool"] . "\", " ;
+										}
+										?>
+									];
+									$( "#nextSchool" ).autocomplete({source: availableTags});
+								});
+							</script>
+						</tr>
+						<?
+					}
+					if ($student OR $staff) {
+						?>
+						<tr>
+							<td> 
+								<b>Departure Reason</b><br/>
+							</td>
+							<td class="right">
+								<input name="departureReason" id="departureReason" maxlength=30 value="<? print $row["departureReason"] ?>" type="text" style="width: 300px">
+							</td>
+							<script type="text/javascript">
+								$(function() {
+									var availableTags = [
+										<?
+										try {
+											$dataAuto=array(); 
+											$sqlAuto="SELECT DISTINCT departureReason FROM gibbonPerson ORDER BY departureReason" ;
+											$resultAuto=$connection2->prepare($sqlAuto);
+											$resultAuto->execute($dataAuto);
+										}
+										catch(PDOException $e) { }
+										while ($rowAuto=$resultAuto->fetch()) {
+											print "\"" . $rowAuto["departureReason"] . "\", " ;
+										}
+										?>
+									];
+									$( "#departureReason" ).autocomplete({source: availableTags});
+								});
+							</script>
+						</tr>
+						<?
+					}
+					?>
 					
 					<tr>
 						<td colspan=2> 
@@ -1453,37 +1472,39 @@ else {
 						</tr>
 						<?
 					}
-					?>
-					<tr>
-						<td> 
-							<b>Transport</b><br/>
-							<span style="font-size: 90%"><i></i></span>
-						</td>
-						<td class="right">
-							<input name="transport" id="transport" maxlength=255 value="<? print htmlPrep($row["transport"]) ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
-					<script type="text/javascript">
-						$(function() {
-							var availableTags = [
-								<?
-								try {
-									$dataAuto=array(); 
-									$sqlAuto="SELECT DISTINCT transport FROM gibbonPerson ORDER BY lastSchool" ;
-									$resultAuto=$connection2->prepare($sqlAuto);
-									$resultAuto->execute($dataAuto);
-								}
-								catch(PDOException $e) { }
-								while ($rowAuto=$resultAuto->fetch()) {
-									print "\"" . $rowAuto["transport"] . "\", " ;
-								}
-								?>
-							];
-							$( "#transport" ).autocomplete({source: availableTags});
-						});
-					</script>
+					if ($student OR $staff) {
+						?>
+						<tr>
+							<td> 
+								<b>Transport</b><br/>
+								<span style="font-size: 90%"><i></i></span>
+							</td>
+							<td class="right">
+								<input name="transport" id="transport" maxlength=255 value="<? print htmlPrep($row["transport"]) ?>" type="text" style="width: 300px">
+							</td>
+						</tr>
+						<script type="text/javascript">
+							$(function() {
+								var availableTags = [
+									<?
+									try {
+										$dataAuto=array(); 
+										$sqlAuto="SELECT DISTINCT transport FROM gibbonPerson ORDER BY lastSchool" ;
+										$resultAuto=$connection2->prepare($sqlAuto);
+										$resultAuto->execute($dataAuto);
+									}
+									catch(PDOException $e) { }
+									while ($rowAuto=$resultAuto->fetch()) {
+										print "\"" . $rowAuto["transport"] . "\", " ;
+									}
+									?>
+								];
+								$( "#transport" ).autocomplete({source: availableTags});
+							});
+						</script>
 					<?
-					if ($parent OR $staff) {
+					}
+					if ($student OR $staff) {
 						?> 
 						<tr>
 							<td> 

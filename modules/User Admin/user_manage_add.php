@@ -583,7 +583,7 @@ else {
 			
 			<tr>
 				<td colspan=2> 
-					<h3>Education Information</h3>
+					<h3>School Information</h3>
 				</td>
 			</tr>
 			<?
