@@ -101,12 +101,34 @@ else {
 		else {
 			//Let's go!
 			$row=$result->fetch() ;
+			
+			//Get categories
+			$staff=FALSE ;
+			$student=FALSE ;
+			$parent=FALSE ;
+			$roles=explode(",", $row["gibbonRoleIDAll"]) ;
+			foreach ($roles AS $role) {
+				$roleCategory=getRoleCategory($role, $connection2) ;
+				if ($roleCategory=="Staff") {
+					$staff=TRUE ;
+				} 
+				if ($roleCategory=="Student") {
+					$student=TRUE ;
+				} 
+				if ($roleCategory=="Parent") {
+					$parent=TRUE ;
+				} 
+			}
+			
 			if ($_GET["search"]!="") {
 				print "<div class='linkTop'>" ;
 					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php&search=" . $_GET["search"] . "'>Back to Search Results</a>" ;
 				print "</div>" ;
 			}
 			?>
+			<div class='warning'>
+				Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and stunders/staff do not get Employment fields.
+			</div>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/user_manage_editProcess.php?gibbonPersonID=" . $gibbonPersonID . "&search=" . $_GET["search"] ?>" enctype="multipart/form-data">
 				<table style="width: 100%">	
 					<tr><td style="width: 30%"></td><td></td></tr>
@@ -1191,129 +1213,141 @@ else {
 					</tr>
 					
 					
-					<tr>
-						<td colspan=2> 
-							<h3>Employment</h3>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Profession</b><br/>
-						</td>
-						<td class="right">
-							<input name="profession" id="profession" maxlength=30 value="<? print htmlPrep($row["profession"]) ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Employer</b><br/>
-						</td>
-						<td class="right">
-							<input name="employer" id="employer" maxlength=30 value="<? print htmlPrep($row["employer"]) ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Job Title</b><br/>
-						</td>
-						<td class="right">
-							<input name="jobTitle" id="jobTitle" maxlength=30 value="<? print htmlPrep($row["jobTitle"]) ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
+					<?
+					if ($parent) {
+						?> 
+						<tr>
+							<td colspan=2> 
+								<h3>Employment</h3>
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b>Profession</b><br/>
+							</td>
+							<td class="right">
+								<input name="profession" id="profession" maxlength=30 value="<? print htmlPrep($row["profession"]) ?>" type="text" style="width: 300px">
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b>Employer</b><br/>
+							</td>
+							<td class="right">
+								<input name="employer" id="employer" maxlength=30 value="<? print htmlPrep($row["employer"]) ?>" type="text" style="width: 300px">
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b>Job Title</b><br/>
+							</td>
+							<td class="right">
+								<input name="jobTitle" id="jobTitle" maxlength=30 value="<? print htmlPrep($row["jobTitle"]) ?>" type="text" style="width: 300px">
+							</td>
+						</tr>
+						<?
+					}
+					?>
 					
 					
-					<tr>
-						<td colspan=2> 
-							<h3>Emergency Contacts</h3>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2> 
-							These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members. 
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Contact 1 Name</b><br/>
-						</td>
-						<td class="right">
-							<input name="emergency1Name" id="emergency1Name" maxlength=30 value="<? print htmlPrep($row["emergency1Name"]) ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Contact 1 Relationship</b><br/>
-						</td>
-						<td class="right">
-							<select name="emergency1Relationship" id="emergency1Relationship" style="width: 302px">
-								<option <? if ($row["emergency1Relationship"]=="") {print "selected ";}?>value=""></option>
-								<option <? if ($row["emergency1Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
-								<option <? if ($row["emergency1Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
-								<option <? if ($row["emergency1Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
-								<option <? if ($row["emergency1Relationship"]=="Friend") {print "selected ";}?>value="Friend">Friend</option>
-								<option <? if ($row["emergency1Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation">Other Relation</option>
-								<option <? if ($row["emergency1Relationship"]=="Doctor") {print "selected ";}?>value="Doctor">Doctor</option>
-								<option <? if ($row["emergency1Relationship"]=="Other") {print "selected ";}?>value="Other">Other</option>
-							</select>	
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Contact 1 Number 1</b><br/>
-						</td>
-						<td class="right">
-							<input name="emergency1Number1" id="emergency1Number1" maxlength=30 value="<? print htmlPrep($row["emergency1Number1"]) ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Contact 1 Number 2</b><br/>
-						</td>
-						<td class="right">
-							<input name="emergency1Number2" id="emergency1Number2" maxlength=30 value="<? print htmlPrep($row["emergency1Number2"]) ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Contact 2 Name</b><br/>
-						</td>
-						<td class="right">
-							<input name="emergency2Name" id="emergency2Name" maxlength=30 value="<? print htmlPrep($row["emergency2Name"]) ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Contact 2 Relationship</b><br/>
-						</td>
-						<td class="right">
-							<select name="emergency2Relationship" id="emergency2Relationship" style="width: 302px">
-								<option <? if ($row["emergency2Relationship"]=="") {print "selected ";}?>value=""></option>
-								<option <? if ($row["emergency2Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
-								<option <? if ($row["emergency2Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
-								<option <? if ($row["emergency2Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
-								<option <? if ($row["emergency2Relationship"]=="Friend") {print "selected ";}?>value="Friend">Friend</option>
-								<option <? if ($row["emergency2Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation">Other Relation</option>
-								<option <? if ($row["emergency2Relationship"]=="Doctor") {print "selected ";}?>value="Doctor">Doctor</option>
-								<option <? if ($row["emergency2Relationship"]=="Other") {print "selected ";}?>value="Other">Other</option>
-							</select>	
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Contact 2 Number 1</b><br/>
-						</td>
-						<td class="right">
-							<input name="emergency2Number1" id="emergency2Number1" maxlength=30 value="<? print htmlPrep($row["emergency2Number1"]) ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Contact 2 Number 2</b><br/>
-						</td>
-						<td class="right">
-							<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="<? print htmlPrep($row["emergency2Number2"]) ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
+					<?
+					if ($student OR $staff) {
+						?> 
+						<tr>
+							<td colspan=2> 
+								<h3>Emergency Contacts</h3>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2> 
+								These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members. 
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b>Contact 1 Name</b><br/>
+							</td>
+							<td class="right">
+								<input name="emergency1Name" id="emergency1Name" maxlength=30 value="<? print htmlPrep($row["emergency1Name"]) ?>" type="text" style="width: 300px">
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b>Contact 1 Relationship</b><br/>
+							</td>
+							<td class="right">
+								<select name="emergency1Relationship" id="emergency1Relationship" style="width: 302px">
+									<option <? if ($row["emergency1Relationship"]=="") {print "selected ";}?>value=""></option>
+									<option <? if ($row["emergency1Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
+									<option <? if ($row["emergency1Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
+									<option <? if ($row["emergency1Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
+									<option <? if ($row["emergency1Relationship"]=="Friend") {print "selected ";}?>value="Friend">Friend</option>
+									<option <? if ($row["emergency1Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation">Other Relation</option>
+									<option <? if ($row["emergency1Relationship"]=="Doctor") {print "selected ";}?>value="Doctor">Doctor</option>
+									<option <? if ($row["emergency1Relationship"]=="Other") {print "selected ";}?>value="Other">Other</option>
+								</select>	
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b>Contact 1 Number 1</b><br/>
+							</td>
+							<td class="right">
+								<input name="emergency1Number1" id="emergency1Number1" maxlength=30 value="<? print htmlPrep($row["emergency1Number1"]) ?>" type="text" style="width: 300px">
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b>Contact 1 Number 2</b><br/>
+							</td>
+							<td class="right">
+								<input name="emergency1Number2" id="emergency1Number2" maxlength=30 value="<? print htmlPrep($row["emergency1Number2"]) ?>" type="text" style="width: 300px">
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b>Contact 2 Name</b><br/>
+							</td>
+							<td class="right">
+								<input name="emergency2Name" id="emergency2Name" maxlength=30 value="<? print htmlPrep($row["emergency2Name"]) ?>" type="text" style="width: 300px">
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b>Contact 2 Relationship</b><br/>
+							</td>
+							<td class="right">
+								<select name="emergency2Relationship" id="emergency2Relationship" style="width: 302px">
+									<option <? if ($row["emergency2Relationship"]=="") {print "selected ";}?>value=""></option>
+									<option <? if ($row["emergency2Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
+									<option <? if ($row["emergency2Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
+									<option <? if ($row["emergency2Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
+									<option <? if ($row["emergency2Relationship"]=="Friend") {print "selected ";}?>value="Friend">Friend</option>
+									<option <? if ($row["emergency2Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation">Other Relation</option>
+									<option <? if ($row["emergency2Relationship"]=="Doctor") {print "selected ";}?>value="Doctor">Doctor</option>
+									<option <? if ($row["emergency2Relationship"]=="Other") {print "selected ";}?>value="Other">Other</option>
+								</select>	
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b>Contact 2 Number 1</b><br/>
+							</td>
+							<td class="right">
+								<input name="emergency2Number1" id="emergency2Number1" maxlength=30 value="<? print htmlPrep($row["emergency2Number1"]) ?>" type="text" style="width: 300px">
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b>Contact 2 Number 2</b><br/>
+							</td>
+							<td class="right">
+								<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="<? print htmlPrep($row["emergency2Number2"]) ?>" type="text" style="width: 300px">
+							</td>
+						</tr>
+						<?
+					}
+					?>
 					
 					<tr>
 						<td colspan=2> 
@@ -1405,15 +1439,21 @@ else {
 							</select>
 						</td>
 					</tr>
-					<tr>
-						<td> 
-							<b>Student ID</b><br/>
-							<span style="font-size: 90%"><i>If set, must be unqiue.</i></span>
-						</td>
-						<td class="right">
-							<input name="studentID" id="studentID" maxlength=10 value="<? print htmlPrep($row["studentID"]) ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
+					<?
+					if ($student) {
+						?> 
+						<tr>
+							<td> 
+								<b>Student ID</b><br/>
+								<span style="font-size: 90%"><i>If set, must be unqiue.</i></span>
+							</td>
+							<td class="right">
+								<input name="studentID" id="studentID" maxlength=10 value="<? print htmlPrep($row["studentID"]) ?>" type="text" style="width: 300px">
+							</td>
+						</tr>
+						<?
+					}
+					?>
 					<tr>
 						<td> 
 							<b>Transport</b><br/>
@@ -1442,15 +1482,21 @@ else {
 							$( "#transport" ).autocomplete({source: availableTags});
 						});
 					</script>
-					<tr>
-						<td> 
-							<b>Locker Number</b><br/>
-							<span style="font-size: 90%"></span>
-						</td>
-						<td class="right">
-							<input name="lockerNumber" id="lockerNumber" maxlength=20 value="<? print $row["lockerNumber"] ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
+					<?
+					if ($parent OR $staff) {
+						?> 
+						<tr>
+							<td> 
+								<b>Locker Number</b><br/>
+								<span style="font-size: 90%"></span>
+							</td>
+							<td class="right">
+								<input name="lockerNumber" id="lockerNumber" maxlength=20 value="<? print $row["lockerNumber"] ?>" type="text" style="width: 300px">
+							</td>
+						</tr>
+						<?
+					}
+					?>
 					<tr>
 						<td> 
 							<b>Vehicle Registration</b><br/>

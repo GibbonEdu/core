@@ -243,6 +243,9 @@ Students: add filter to data update history to show only non-compliant students,
 Students: add numbering to data update history for easy counting of students.
 	Edited file /modules/Students/report_students_dataUpdaterHistory.php
 
+User Admin: added role category-relevance to field, so certain fields are hidden/revealed based on user's role assignments.
+	Edited file /modules/User Admin/user_manage_edit.php
+
 	
 
 v6.0.00
