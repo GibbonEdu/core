@@ -2479,7 +2479,7 @@ else {
 					}
 					
 					//Show alerts
-					$alert=getAlertBar($guid, $connection2, $gibbonPersonID, "N", "", FALSE) ;
+					$alert=getAlertBar($guid, $connection2, $gibbonPersonID, $row["privacy"], "", FALSE) ;
 					$_SESSION[$guid]["sidebarExtra"].="<div style='border-top: 1px solid #c00; background-color: none; font-size: 12px; margin: 3px 0 0px 0; width: 240px; text-align: left; height: 16px; padding: 5px 5px;'>" ;
 					if ($alert=="") {
 						$_SESSION[$guid]["sidebarExtra"].="<b>No Current Alerts</b>" ; 
