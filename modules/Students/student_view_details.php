@@ -84,7 +84,7 @@ else {
 								}
 								if ($resultDetail->rowCount()==1) {
 									$rowDetail=$resultDetail->fetch() ;
-									print "<i>" . $rowDetail["name"] . "</i>" ;
+									print $rowDetail["name"] ;
 								}
 							print "</td>" ;
 							print "<td style='width: 34%; vertical-align: top'>" ;
@@ -100,7 +100,7 @@ else {
 								}
 								if ($resultDetail->rowCount()==1) {
 									$rowDetail=$resultDetail->fetch() ;
-									print "<i>" . $rowDetail["name"] . "</i>" ;
+									print $rowDetail["name"] ;
 								}
 							print "</td>" ;
 							print "<td style='width: 34%; vertical-align: top'>" ;
@@ -116,7 +116,7 @@ else {
 								}
 								if ($resultDetail->rowCount()==1) {
 									$rowDetail=$resultDetail->fetch() ;
-									print "<i>" . $rowDetail["name"] . "</i>" ;
+									print $rowDetail["name"] ;
 								}
 							print "</td>" ;
 						print "</tr>" ;
@@ -239,7 +239,7 @@ else {
 									}
 									if ($resultDetail->rowCount()==1) {
 										$rowDetail=$resultDetail->fetch() ;
-										print "<i>" . $rowDetail["name"] ;
+										print $rowDetail["name"] ;
 										$dayTypeOptions=getSettingByScope($connection2, 'User Admin', 'dayTypeOptions') ;
 										if ($dayTypeOptions!="") {
 											print " (" . $row["dayType"] . ")" ;
@@ -260,14 +260,20 @@ else {
 									}
 									if ($resultDetail->rowCount()==1) {
 										$rowDetail=$resultDetail->fetch() ;
-										print "<i>" . $rowDetail["name"] . "</i>" ;
+										if (isActionAccessible($guid, $connection2, "/modules/Roll Groups/rollGroups_details.php")) {
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $rowDetail["gibbonRollGroupID"] . "'>" . $rowDetail["name"] . "</a>" ;
+										}
+										else {
+											print $rowDetail["name"] ;
+										}
+										$primaryTutor=$rowDetail["gibbonPersonIDTutor"] ;
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Tutors</span><br/>" ;
 									try {
 										$dataDetail=array("gibbonPersonIDTutor"=>$rowDetail["gibbonPersonIDTutor"], "gibbonPersonIDTutor2"=>$rowDetail["gibbonPersonIDTutor2"], "gibbonPersonIDTutor3"=>$rowDetail["gibbonPersonIDTutor3"]); 
-										$sqlDetail="SELECT title, surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonIDTutor OR gibbonPersonID=:gibbonPersonIDTutor2 OR gibbonPersonID=:gibbonPersonIDTutor3" ;
+										$sqlDetail="SELECT gibbonPersonID, title, surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonIDTutor OR gibbonPersonID=:gibbonPersonIDTutor2 OR gibbonPersonID=:gibbonPersonIDTutor3" ;
 										$resultDetail=$connection2->prepare($sqlDetail);
 										$resultDetail->execute($dataDetail);
 									}
@@ -275,14 +281,23 @@ else {
 										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 									}
 									while ($rowDetail=$resultDetail->fetch()) {
-										print formatName($rowDetail["title"], $rowDetail["preferredName"], $rowDetail["surname"], "Staff") . "<br>" ;
+										if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_view_details.php")) {
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $rowDetail["gibbonPersonID"] . "'>" . formatName("", $rowDetail["preferredName"], $rowDetail["surname"], "Staff", false, true) . "</a>" ;
+										}
+										else {
+											print formatName($rowDetail["title"], $rowDetail["preferredName"], $rowDetail["surname"], "Staff") ;
+										}
+										if ($rowDetail["gibbonPersonID"]==$primaryTutor AND $resultDetail->rowCount()>1) {
+											print " (Main Tutor)" ;
+										}
+										print "<br>" ;
 									}
 								print "</td>" ;
 							print "</tr>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Username</span><br/>" ;
-									print "<i>" . $row["username"] . "</i>" ;
+									print $row["username"] ;
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Age</span><br/>" ;
@@ -323,7 +338,7 @@ else {
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Locker Number</span><br/>" ;
 									if ($row["email"]!="") {
-										print "<i>" . $row["lockerNumber"] . "</i>" ;
+										print $row["lockerNumber"] ;
 									}
 								print "</td>" ;
 							print "</tr>" ;
@@ -420,7 +435,7 @@ else {
 											print "<td width: 33%; style='vertical-align: top'>" ;
 												print "<span style='font-size: 115%; font-weight: bold'>Phone $numberCount</span><br/>" ;
 												if ($row["phone" . $i . "Type"]!="") {
-													print "<i>" . $row["phone" . $i . "Type"] . ":</i> " ;
+													print $row["phone" . $i . "Type"] . ":</i> " ;
 												}
 												if ($row["phone" . $i . "CountryCode"]!="") {
 													print "+" . $row["phone" . $i . "CountryCode"] . " " ;
@@ -650,14 +665,20 @@ else {
 									}
 									if ($resultDetail->rowCount()==1) {
 										$rowDetail=$resultDetail->fetch() ;
-										print $rowDetail["name"] ;
+										if (isActionAccessible($guid, $connection2, "/modules/Roll Groups/rollGroups_details.php")) {
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $rowDetail["gibbonRollGroupID"] . "'>" . $rowDetail["name"] . "</a>" ;
+										}
+										else {
+											print $rowDetail["name"] ;
+										}
+										$primaryTutor=$rowDetail["gibbonPersonIDTutor"] ;
 									}
 								print "</td>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Tutors</span><br/>" ;
 									try {
 										$dataDetail=array("gibbonPersonIDTutor"=>$rowDetail["gibbonPersonIDTutor"], "gibbonPersonIDTutor2"=>$rowDetail["gibbonPersonIDTutor2"], "gibbonPersonIDTutor3"=>$rowDetail["gibbonPersonIDTutor3"]); 
-										$sqlDetail="SELECT title, surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonIDTutor OR gibbonPersonID=:gibbonPersonIDTutor2 OR gibbonPersonID=:gibbonPersonIDTutor3" ;
+										$sqlDetail="SELECT gibbonPersonID, title, surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonIDTutor OR gibbonPersonID=:gibbonPersonIDTutor2 OR gibbonPersonID=:gibbonPersonIDTutor3" ;
 										$resultDetail=$connection2->prepare($sqlDetail);
 										$resultDetail->execute($dataDetail);
 									}
@@ -665,7 +686,16 @@ else {
 										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 									}
 									while ($rowDetail=$resultDetail->fetch()) {
-										print formatName($rowDetail["title"], $rowDetail["preferredName"], $rowDetail["surname"], "Staff") . "<br>" ;
+										if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_view_details.php")) {
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $rowDetail["gibbonPersonID"] . "'>" . formatName("", $rowDetail["preferredName"], $rowDetail["surname"], "Staff", false, true) . "</a>" ;
+										}
+										else {
+											print formatName($rowDetail["title"], $rowDetail["preferredName"], $rowDetail["surname"], "Staff") ;
+										}
+										if ($rowDetail["gibbonPersonID"]==$primaryTutor AND $resultDetail->rowCount()>1) {
+											print " (Main Tutor)" ;
+										}
+										print "<br>" ;
 									}
 								print "</td>" ;
 							print "<tr>" ;
@@ -876,7 +906,7 @@ else {
 													for ($i=1; $i<5; $i++) {
 														if ($rowMember["phone" . $i]!="") {
 															if ($rowMember["phone" . $i . "Type"]!="") {
-																print "<i>" . $rowMember["phone" . $i . "Type"] . ":</i> " ;
+																print $rowMember["phone" . $i . "Type"] . ":</i> " ;
 															}
 															if ($rowMember["phone" . $i . "CountryCode"]!="") {
 																print "+" . $rowMember["phone" . $i . "CountryCode"] . " " ;
@@ -895,7 +925,7 @@ else {
 													for ($i=1; $i<5; $i++) {
 														if ($rowMember["phone" . $i]!="" AND $rowMember["phone" . $i . "Type"]=="Mobile") {
 															if ($rowMember["phone" . $i . "Type"]!="") {
-																print "<i>" . $rowMember["phone" . $i . "Type"] . ":</i> " ;
+																print $rowMember["phone" . $i . "Type"] . ":</i> " ;
 															}
 															if ($rowMember["phone" . $i . "CountryCode"]!="") {
 																print "+" . $rowMember["phone" . $i . "CountryCode"] . " " ;
@@ -1080,7 +1110,7 @@ else {
 											for ($i=1; $i<5; $i++) {
 												if ($rowMember["phone" . $i]!="") {
 													if ($rowMember["phone" . $i . "Type"]!="") {
-														print "<i>" . $rowMember["phone" . $i . "Type"] . ":</i> " ;
+														print $rowMember["phone" . $i . "Type"] . ":</i> " ;
 													}
 													if ($rowMember["phone" . $i . "CountryCode"]!="") {
 														print "+" . $rowMember["phone" . $i . "CountryCode"] . " " ;
@@ -1102,7 +1132,7 @@ else {
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Contact 1</span><br/>" ;
-									print "<i>" . $row["emergency1Name"] . "</i>" ;
+									print $row["emergency1Name"] ;
 									if ($row["emergency1Relationship"]!="") {
 										print " (" . $row["emergency1Relationship"] . ")" ;
 									}
@@ -1121,7 +1151,7 @@ else {
 							print "<tr>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Contact 2</span><br/>" ;
-									print "<i>" . $row["emergency2Name"] . "</i>" ;
+									print $row["emergency2Name"] ;
 									if ($row["emergency2Relationship"]!="") {
 										print " (" . $row["emergency2Relationship"] . ")" ;
 									}
@@ -1622,7 +1652,7 @@ else {
 														$unit=getUnit($connection2, $rowEntry["gibbonUnitID"], $rowEntry["gibbonHookID"], $rowEntry["gibbonCourseClassID"]) ;
 														print $unit[0] . "<br/>" ;
 														if ($unit[1]!="") {
-															print "<i>" . $unit[1] . " Unit</i><br/>" ;
+															print $unit[1] . " Unit</i><br/>" ;
 														}
 														if ($rowEntry["completeDate"]!="") {
 															print "Marked on " . dateConvertBack($rowEntry["completeDate"]) . "<br/>" ;
@@ -1851,11 +1881,11 @@ else {
 										print "</td>" ;
 										print "<td style='width: 33%; vertical-align: top'>" ;
 											print "<span style='font-size: 115%; font-weight: bold'>Year Group</span><br/>" ;
-											print "<i>" . $row["yearGroup"] . "</i>" ;
+											print $row["yearGroup"] ;
 										print "</td>" ;
 										print "<td style='width: 34%; vertical-align: top'>" ;
 											print "<span style='font-size: 115%; font-weight: bold'>Roll Group</span><br/>" ;
-											print "<i>" . $row["rollGroup"] . "</i>" ;
+											print $row["rollGroup"] ;
 										print "</td>" ;
 									print "</tr>" ;
 								print "</table>" ;

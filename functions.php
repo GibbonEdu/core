@@ -1775,7 +1775,7 @@ function getUserPhoto($guid, $path, $size) {
 }
 
 //Gets Members of a roll group and prints them as a table.
-function printRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2) {
+function printRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $confidential=TRUE) {
 	try {
 		$dataRollGroup=array("gibbonRollGroupID"=>$gibbonRollGroupID); 
 		$sqlRollGroup="SELECT * FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ;
@@ -1787,12 +1787,14 @@ function printRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2) 
 	print "<table style='width:100%'>" ;
 	$count=0 ;
 	
-	print "<tr>" ;
-		print "<td style='text-align: right' colspan='$columns'>" ;
-			print "<input checked type='checkbox' name='confidential' class='confidential' value='Yes' />" ;
-			print "<span style='font-size: 85%; font-weight: normal; font-style: italic'> Show Confidential Data</span>" ;
-		print "</td>" ;
-	print "</tr>" ;
+	if ($confidential) {
+		print "<tr>" ;
+			print "<td style='text-align: right' colspan='$columns'>" ;
+				print "<input checked type='checkbox' name='confidential' class='confidential' value='Yes' />" ;
+				print "<span style='font-size: 85%; font-weight: normal; font-style: italic'> Show Confidential Data</span>" ;
+			print "</td>" ;
+		print "</tr>" ;
+	}
 	
 	while ($rowRollGroup=$resultRollGroup->fetch()) {
 		if ($count%$columns==0) {
@@ -1801,7 +1803,9 @@ function printRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2) 
 		print "<td style='width:20%; text-align: center; vertical-align: top'>" ;
 		
 		//Alerts, if permission allows
-		print getAlertBar($guid, $connection2, $rowRollGroup["gibbonPersonID"], $rowRollGroup["privacy"], "id='confidential$count'") ;
+		if ($confidential) {
+			print getAlertBar($guid, $connection2, $rowRollGroup["gibbonPersonID"], $rowRollGroup["privacy"], "id='confidential$count'") ;
+		}
 		
 		//User photo
 		printUserPhoto($guid, $rowRollGroup["image_75"], 75) ;

@@ -70,7 +70,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonRollGroupID"=>$gibbonRollGroupID); 
-			$sql="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonRollGroupIDNext FROM gibbonRollGroup JOIN gibbonSchoolYear ON gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY sequenceNumber, gibbonRollGroup.name" ; 
+			$sql="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonSpaceID, gibbonRollGroupIDNext FROM gibbonRollGroup JOIN gibbonSchoolYear ON gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY sequenceNumber, gibbonRollGroup.name" ; 
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -132,7 +132,7 @@ else {
 					<tr>
 						<td rowspan=3> 
 							<b>Form Tutors</b><br/>
-							<span style="font-size: 90%"><i>Up to 3 per form.</i></span>
+							<span style="font-size: 90%"><i>Up to 3 per form. The first-listed will be marked as "Main Tutor".</i></span>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="gibbonPersonIDTutor">
@@ -200,6 +200,33 @@ else {
 									else {
 										print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Staff", true, true) . "</option>" ;
 									}
+								}
+								?>				
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b>Location</b><br/>
+							<span style="font-size: 90%"><i></i></span>
+						</td>
+						<td class="right">
+							<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
+								<?
+								print "<option value=''></option>" ;
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT * FROM gibbonSpace ORDER BY name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									$selected="" ;
+									if ($row["gibbonSpaceID"]==$rowSelect["gibbonSpaceID"]) {
+										$selected="selected" ;
+									}
+									print "<option $selected value='" . $rowSelect["gibbonSpaceID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 								}
 								?>				
 							</select>

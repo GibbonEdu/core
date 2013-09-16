@@ -258,6 +258,17 @@ General: added in database export of last stable version (v6) to use for develop
 General: removed old .webloc files to make core cross platform for admins/devs
 	Edited file /README.md
 	Removed files /*.webloc
+
+School Admin: added room to roll groups in Manage Roll Groups
+	Edited table gibbonRollGroup
+	Edited files /modules/School Admin/rollGroup_manage*.php
+
+Roll Groups: new module to provide listing of roll groups (better late than never!), plus links from other areas to use it.
+	New values in gibbonModule, gibbonAction, gibbonPermission
+	New folder /modules/Roll Groups
+	Edited file /functions.php
+	Edited file /modules/Students/student_view_details.php
+	Edited file /modules/Departments/department.php
 	
 
 v6.0.00

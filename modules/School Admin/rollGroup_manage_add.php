@@ -127,7 +127,7 @@ else {
 					<tr>
 						<td rowspan=3> 
 							<b>Form Tutors</b><br/>
-							<span style="font-size: 90%"><i>Up to 3 per form.</i></span>
+							<span style="font-size: 90%"><i>Up to 3 per form. The first-listed will be marked as "Main Tutor".</i></span>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="gibbonPersonIDTutor">
@@ -180,6 +180,33 @@ else {
 								catch(PDOException $e) { }
 								while ($row=$result->fetch()) {
 									print "<option value='" . $row["gibbonPersonID"] . "'>" . formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Staff", true, true) . "</option>" ;
+								}
+								?>				
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b>Location</b><br/>
+							<span style="font-size: 90%"><i></i></span>
+						</td>
+						<td class="right">
+							<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
+								<?
+								print "<option value=''></option>" ;
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT * FROM gibbonSpace ORDER BY name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									$selected="" ;
+									if ($row["gibbonSpaceID"]==$rowSelect["gibbonSpaceID"]) {
+										$selected="selected" ;
+									}
+									print "<option $selected value='" . $rowSelect["gibbonSpaceID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 								}
 								?>				
 							</select>

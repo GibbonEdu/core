@@ -60,6 +60,10 @@ else {
 	if ($_POST["gibbonPersonIDTutor3"]!="") {
 		$gibbonPersonIDTutor3=$_POST["gibbonPersonIDTutor3"] ;
 	}
+	$gibbonSpaceID=NULL ;
+	if ($_POST["gibbonSpaceID"]!="") {
+		$gibbonSpaceID=$_POST["gibbonSpaceID"] ;
+	}
 	$gibbonRollGroupIDNext=NULL ;
 	if ($_POST["gibbonRollGroupIDNext"]!="") {
 		$gibbonRollGroupIDNext=$_POST["gibbonRollGroupIDNext"] ;
@@ -93,8 +97,8 @@ else {
 		else {	
 			//Write to database
 			try {
-				$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "name"=>$name, "nameShort"=>$nameShort, "gibbonPersonIDTutor"=>$gibbonPersonIDTutor, "gibbonPersonIDTutor2"=>$gibbonPersonIDTutor2, "gibbonPersonIDTutor3"=>$gibbonPersonIDTutor3, "gibbonRollGroupIDNext"=>$gibbonRollGroupIDNext); 
-				$sql="INSERT INTO gibbonRollGroup SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, gibbonPersonIDTutor=:gibbonPersonIDTutor, gibbonPersonIDTutor2=:gibbonPersonIDTutor2, gibbonPersonIDTutor3=:gibbonPersonIDTutor3, gibbonRollGroupIDNext=:gibbonRollGroupIDNext" ;
+				$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "name"=>$name, "nameShort"=>$nameShort, "gibbonPersonIDTutor"=>$gibbonPersonIDTutor, "gibbonPersonIDTutor2"=>$gibbonPersonIDTutor2, "gibbonPersonIDTutor3"=>$gibbonPersonIDTutor3, "gibbonSpaceID"=>$gibbonSpaceID, "gibbonRollGroupIDNext"=>$gibbonRollGroupIDNext); 
+				$sql="INSERT INTO gibbonRollGroup SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, gibbonPersonIDTutor=:gibbonPersonIDTutor, gibbonPersonIDTutor2=:gibbonPersonIDTutor2, gibbonPersonIDTutor3=:gibbonPersonIDTutor3, gibbonSpaceID=:gibbonSpaceID, gibbonRollGroupIDNext=:gibbonRollGroupIDNext" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}

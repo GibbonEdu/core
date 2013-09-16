@@ -104,7 +104,12 @@ else {
 						else {
 							print "<img style='height: 100px; width: 75px' class='user' title='User Photo' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowStaff["image_75"] ."'/><br/>" ;
 						}
-						print "<div style='padding-top: 5px'><b><a href='" .  $_SESSION[$guid]["absoluteURL"]. "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $rowStaff["gibbonPersonID"] . "'>" . formatName($rowStaff["title"], $rowStaff["preferredName"], $rowStaff["surname"], "Staff") . "</a></b><br/><i>" ;
+						if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_view_details.php")) {
+							print "<div style='padding-top: 5px'><b><a href='" .  $_SESSION[$guid]["absoluteURL"]. "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $rowStaff["gibbonPersonID"] . "'>" . formatName($rowStaff["title"], $rowStaff["preferredName"], $rowStaff["surname"], "Staff") . "</a></b><br/><i>" ;
+						}
+						else {
+							print "<div style='padding-top: 5px'><b>" . formatName($rowStaff["title"], $rowStaff["preferredName"], $rowStaff["surname"], "Staff") . "</b><br/><i>" ;
+						}
 						if ($rowStaff["jobTitle"]!="") {
 							print $rowStaff["jobTitle"] ;
 						}

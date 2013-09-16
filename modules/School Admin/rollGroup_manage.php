@@ -96,7 +96,7 @@ else {
 	
 		try {
 			$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
-			$sql="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonRollGroup JOIN gibbonSchoolYear ON gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber, gibbonRollGroup.name" ; 
+			$sql="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonSpace.name AS space FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber, gibbonRollGroup.name" ; 
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -127,6 +127,9 @@ else {
 					print "</th>" ;
 					print "<th>" ;
 						print "Form Tutors" ;
+					print "</th>" ;
+					print "<th>" ;
+						print "Room" ;
 					print "</th>" ;
 					print "<th>" ;
 						print "Actions" ;
@@ -167,6 +170,9 @@ else {
 							while ($rowTutor=$resultTutor->fetch()) {
 								print formatName("", $rowTutor["preferredName"], $rowTutor["surname"], "Staff", false, true) . "<br>" ;
 							}
+						print "</td>" ;
+						print "<td>" ;
+							print $row["space"] ;
 						print "</td>" ;
 						print "<td>" ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage_edit.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
