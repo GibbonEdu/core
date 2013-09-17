@@ -271,7 +271,11 @@ Roll Groups: new module to provide listing of roll groups (better late than neve
 	Edited file /modules/Departments/department.php
 
 Students: fixed bug which caused privacy alert to show when it should not have
-	Edited file /modules/Students/student_view_details
+	Edited file /modules/Students/student_view_details.php
+
+Markbook: edited default view for parents and students to filter to current year only, rather than showing all years
+	Edited file /modules/Markbook/markbook_view.php
+	Edited file /modules/Students/student_view_details.php
 	
 
 v6.0.00

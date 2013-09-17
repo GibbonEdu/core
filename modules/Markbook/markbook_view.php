@@ -624,7 +624,10 @@ else {
 			else if ($_POST["filter"]!="") {
 				$filter=$_POST["filter"] ;
 			}
-			if ($filter!="") {
+			if ($filter=="") {
+				$filter=$_SESSION[$guid]["gibbonSchoolYearID"] ;
+			}
+			if ($filter!="*") {
 				$and=" AND gibbonSchoolYearID='$filter'" ;
 			}
 			
@@ -683,7 +686,7 @@ else {
 							print"</td>" ;
 							print"<td style='vertical-align: top'>" ; 
 								print "<select name='filter' id='filter' style='width:160px'>" ;
-									print "<option value=''>All Years</option>" ;
+									print "<option value='*'>All Years</option>" ;
 									try {
 										$dataSelect=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
 										$sqlSelect="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber" ;
@@ -1108,7 +1111,10 @@ else {
 						
 						$and="" ;
 						$filter=$_POST["filter"] ;
-						if ($filter!="") {
+						if ($filter=="") {
+							$filter=$_SESSION[$guid]["gibbonSchoolYearID"] ;
+						}
+						if ($filter!="*") {
 							$and=" AND gibbonSchoolYearID='$filter'" ;
 						}
 						$filter2=$_POST["filter2"] ;
@@ -1161,7 +1167,7 @@ else {
 										print"</td>" ;
 										print"<td style='vertical-align: top'>" ; 
 											print "<select name='filter' id='filter' style='width:160px'>" ;
-												print "<option value=''>All Years</option>" ;
+												print "<option value='*'>All Years</option>" ;
 												try {
 													$dataSelect=array("gibbonPersonID"=>$gibbonPersonID); 
 													$sqlSelect="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber" ;

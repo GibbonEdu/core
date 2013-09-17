@@ -1418,6 +1418,7 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 
 -- LAST ICHK UPDATE
 -- LAST HLY UPDATE
+-- LAST JIS UPDATE
 
 
 ";
