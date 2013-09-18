@@ -1415,6 +1415,29 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '2', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Roll Groups' AND gibbonAction.name='View Roll Groups'));end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '3', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Roll Groups' AND gibbonAction.name='View Roll Groups'));end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '6', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Roll Groups' AND gibbonAction.name='View Roll Groups'));end
+ALTER TABLE `gibbonCourse` ADD INDEX ( `gibbonSchoolYearID` ) ;end
+ALTER TABLE `gibbonPlannerEntry` ADD INDEX ( `gibbonCourseClassID` ) ;end
+ALTER TABLE `gibbonCourseClass` ADD INDEX ( `gibbonCourseID` ) ;end
+ALTER TABLE `gibbonCourseClassPerson` ADD INDEX ( `gibbonCourseClassID` ) ;end
+ALTER TABLE `gibbonAction` ADD INDEX ( `gibbonModuleID` ) ;end
+ALTER TABLE `gibbonPermission` ADD INDEX ( `gibbonRoleID` ) ;end
+ALTER TABLE `gibbonPermission` ADD INDEX ( `gibbonActionID` ) ;end
+ALTER TABLE `gibbonTTColumnRow` ADD INDEX ( `gibbonTTColumnID` ) ;end
+ALTER TABLE `gibbonTTDayRowClass` ADD INDEX ( `gibbonTTColumnRowID` ) ;end
+ALTER TABLE `gibbonTTDayRowClass` ADD INDEX ( `gibbonCourseClassID` ) ;end
+ALTER TABLE `gibbonTTDayRowClass` ADD INDEX ( `gibbonSpaceID` ) ;end
+ALTER TABLE `gibbonTTDayDate` ADD INDEX ( `gibbonTTDayID` ) ;end
+ALTER TABLE `gibbonStudentEnrolment` ADD INDEX ( `gibbonSchoolYearID` ) ;end
+ALTER TABLE `gibbonStudentEnrolment` ADD INDEX ( `gibbonYearGroupID` ) ;end
+ALTER TABLE `gibbonStudentEnrolment` ADD INDEX ( `gibbonRollGroupID` ) ;end
+ALTER TABLE `gibbonBehaviour` ADD INDEX ( `gibbonPersonID` ) ;end
+ALTER TABLE `gibbonResourceTag` ADD INDEX ( `tag` ) ;end
+ALTER TABLE `gibbonPersonMedical` ADD INDEX ( `gibbonPersonID` ) ;end
+ALTER TABLE `gibbonPersonMedicalCondition` ADD INDEX ( `gibbonPersonMedicalID` ) ;end
+ALTER TABLE `gibbonMarkbookEntry` ADD INDEX ( `gibbonPersonIDStudent` );end
+ALTER TABLE `gibbonMarkbookEntry` ADD INDEX ( `gibbonMarkbookColumnID` ) ;end
+ALTER TABLE `gibbonMarkbookColumn` ADD INDEX ( `gibbonCourseClassID` ) ;end
+OPTIMIZE TABLE `gibbonAction`, `gibbonActivity`, `gibbonActivitySlot`, `gibbonActivityStaff`, `gibbonActivityStudent`, `gibbonActivityStudentPayment`, `gibbonAlertLevel`, `gibbonApplicationForm`, `gibbonApplicationFormFile`, `gibbonApplicationFormRelationship`, `gibbonAttendanceLogPerson`, `gibbonAttendanceLogRollGroup`, `gibbonBehaviour`, `gibbonCountry`, `gibbonCourse`, `gibbonCourseClass`, `gibbonCourseClassPerson`, `gibbonCrowdAssessDiscuss`, `gibbonCrowdAssessLike`, `gibbonDaysOfWeek`, `gibbonDepartment`, `gibbonDepartmentResource`, `gibbonDepartmentStaff`, `gibbonExternalAssessment`, `gibbonExternalAssessmentField`, `gibbonExternalAssessmentStudent`, `gibbonExternalAssessmentStudentEntry`, `gibbonFamily`, `gibbonFamilyAdult`, `gibbonFamilyChild`, `gibbonFamilyRelationship`, `gibbonFamilyUpdate`, `gibbonFileExtension`, `gibbonFinanceBillingSchedule`, `gibbonFinanceFee`, `gibbonFinanceFeeCategory`, `gibbonFinanceInvoice`, `gibbonFinanceInvoicee`, `gibbonFinanceInvoiceeUpdate`, `gibbonFinanceInvoiceFee`, `gibbonHook`, `gibbonHouse`, `gibbonIN`, `gibbonINDescriptor`, `gibbonINPersonDescriptor`, `gibbonLibraryItem`, `gibbonLibraryItemEvent`, `gibbonLibraryType`, `gibbonMarkbookColumn`, `gibbonMarkbookEntry`, `gibbonMedicalCondition`, `gibbonMessenger`, `gibbonMessengerTarget`, `gibbonModule`, `gibbonOutcome`, `gibbonPermission`, `gibbonPerson`, `gibbonPersonMedical`, `gibbonPersonMedicalCondition`, `gibbonPersonMedicalConditionUpdate`, `gibbonPersonMedicalUpdate`, `gibbonPersonUpdate`, `gibbonPlannerEntry`, `gibbonPlannerEntryAttendance`, `gibbonPlannerEntryAttendanceLog`, `gibbonPlannerEntryDiscuss`, `gibbonPlannerEntryGuest`, `gibbonPlannerEntryHomework`, `gibbonPlannerEntryLike`, `gibbonPlannerEntryOutcome`, `gibbonPlannerEntryStudentTracker`, `gibbonResource`, `gibbonResourceTag`, `gibbonRole`, `gibbonRollGroup`, `gibbonRubric`, `gibbonRubricCell`, `gibbonRubricColumn`, `gibbonRubricEntry`, `gibbonRubricRow`, `gibbonScale`, `gibbonScaleGrade`, `gibbonSchoolYear`, `gibbonSchoolYearSpecialDay`, `gibbonSchoolYearTerm`, `gibbonSetting`, `gibbonSpace`, `gibbonStaff`, `gibbonStudentEnrolment`, `gibbonStudentNote`, `gibbonTheme`, `gibbonTT`, `gibbonTTColumn`, `gibbonTTColumnRow`, `gibbonTTDay`, `gibbonTTDayDate`, `gibbonTTDayRowClass`, `gibbonTTDayRowClassException`, `gibbonTTImport`, `gibbonUnit`, `gibbonUnitBlock`, `gibbonUnitClass`, `gibbonUnitClassBlock`, `gibbonUnitOutcome`, `gibbonYearGroup`;end
 
 -- LAST ICHK UPDATE
 -- LAST HLY UPDATE

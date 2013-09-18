@@ -15,7 +15,7 @@ ul.token-input-list-facebook {
     list-style-type: none;
     float: right;
     border: 1px solid #BFBFBF;
-	background:#dfdfdf url("../img/ed-bg.gif") repeat-x left top;
+	background:#dfdfdf url("../../../themes/Default/img/ed-bg.gif") repeat-x left top;
 }
 
 ul.token-input-list-facebook li input {
