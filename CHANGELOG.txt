@@ -292,6 +292,8 @@ Students: added day type to Personal subpage of student profile
 User Admin: prevented address fields being set to required in personal data update, as sometimes it means user cannot submit the form
 	Edited file /modules/Date Updater/dataUpdaterSettings.php
 
+Markbook: increased usability for school leaders with no classes
+	Edited files /modules/Markbook/moduleFunctions.php, markbook_view.php, markbook_edit.php, markbook_edit_addMulti*.php
 	
 
 v6.0.00

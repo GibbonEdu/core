@@ -105,11 +105,13 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 				$output.="</tr>" ;
 			}
 		$output.="</table>" ;
-		
+	}	
+	
+	if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php", "View Markbook_allClassesAllData")) {
 		$output=$output . "<h2>" ;
 		$output=$output . "View Any Class" ;
 		$output=$output . "</h2>" ;
-		
+	
 		$output=$output . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
 			$output=$output . "<table style='width: 100%; margin: 0px 0px'>" ;	
 				$output=$output . "<tr>" ;
@@ -141,7 +143,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 				$output=$output . "</tr>" ;
 			$output=$output . "</table>" ;
 		$output=$output . "</form>" ;
-	}	
+	}
 	
 	return $output ;
 }

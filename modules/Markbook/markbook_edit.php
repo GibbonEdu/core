@@ -88,20 +88,40 @@ else {
 				print "</div>" ;
 			
 				$deleteReturn = $_GET["deleteReturn"] ;
-					$deleteReturnMessage ="" ;
-					$class="error" ;
-					if (!($deleteReturn=="")) {
-						if ($deleteReturn=="success0") {
-							$deleteReturnMessage ="Delete was successful." ;	
-							$class="success" ;
-						}
-						print "<div class='$class'>" ;
-							print $deleteReturnMessage;
-						print "</div>" ;
-					} 
+				$deleteReturnMessage ="" ;
+				$class="error" ;
+				if (!($deleteReturn=="")) {
+					if ($deleteReturn=="success0") {
+						$deleteReturnMessage ="Delete was successful." ;	
+						$class="success" ;
+					}
+					print "<div class='$class'>" ;
+						print $deleteReturnMessage;
+					print "</div>" ;
+				} 
 	
+				//Add multiple columns
+				if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php")) {
+					$highestAction2=getHighestGroupedAction($guid, "/modules/Markbook/markbook_edit.php", $connection2) ;
+					if ($highestAction2=="Edit Markbook_multipleClassesAcrossSchool" OR $highestAction2=="Edit Markbook_multipleClassesInDepartment") {
+						//Check highest role in any department
+						try {
+							$dataRole=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+							$sqlRole="SELECT role FROM gibbonDepartmentStaff WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)')" ;
+							$resultRole=$connection2->prepare($sqlRole);
+							$resultRole->execute($dataRole);
+						}
+						catch(PDOException $e) { }
+						if ($resultRole->rowCount()>=1 OR $highestAction2=="Edit Markbook_multipleClassesAcrossSchool") {
+							print "<div class='linkTop'>" ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-right: 3px' title='Add Multiple Columns' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.gif'/></a>" ;
+							print "</div>" ;
+						}
+					}
+				}
 			
 				//Get teacher list
+				$teaching=FALSE ;
 				try {
 					$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
 					$sql="SELECT title, surname, preferredName FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName" ;
@@ -118,6 +138,9 @@ else {
 					print "<ul>" ;
 						while ($row=$result->fetch()) {
 							print "<li>" . formatName($row["title"], $row["preferredName"], $row["surname"], Staff) . "</li>" ;
+						}
+						if ($row["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
+							$teaching=TRUE ;
 						}
 					print "</ul>" ;
 				}
@@ -143,22 +166,11 @@ else {
 					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 				}
 
-				print "<div class='linkTop'>" ;
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'><img title='Add Column' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
-					if ($highestAction=="Edit Markbook_multipleClassesAcrossSchool" OR $highestAction=="Edit Markbook_multipleClassesInDepartment") {
-						//Check highest role in any department
-						try {
-							$dataRole=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-							$sqlRole="SELECT role FROM gibbonDepartmentStaff WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)')" ;
-							$resultRole=$connection2->prepare($sqlRole);
-							$resultRole->execute($dataRole);
-						}
-						catch(PDOException $e) { }
-						if ($resultRole->rowCount()>=1 OR $highestAction=="Edit Markbook_multipleClassesAcrossSchool") {
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-right: 3px' title='Add Multiple Columns' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.gif'/></a>" ;
-						}
-					}
-				print "</div>" ;
+				if ($teaching) {
+					print "<div class='linkTop'>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'><img title='Add Column' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+					print "</div>" ;
+				}
 			
 				if ($result->rowCount()<1) {
 					print "<div class='error'>" ;

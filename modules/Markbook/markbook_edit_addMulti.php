@@ -31,9 +31,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_add
 else {	
 	//Get action with highest precendence
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
-	if ($highestAction==FALSE) {
+	if ($highestAction==FALSE OR ($highestAction!="Edit Markbook_multipleClassesAcrossSchool" AND $highestAction!="Edit Markbook_multipleClassesInDepartment")) {
 		print "<div class='error'>" ;
-		print "The highest grouped action cannot be determined." ;
+		print "The highest grouped action cannot be determined, or you do not have high enough permission to accces this page." ;
 		print "</div>" ;
 	}
 	else {
@@ -45,14 +45,15 @@ else {
 		}
 		else {
 			try {
-				$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
-				$sql="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class" ;
+				$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
+				$sql="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
 				print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 			}
+			
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
 					print "The specified class does not exist, or you do not have access to it." ;
