@@ -491,7 +491,7 @@ else {
 						print "</table>" ;	
 						
 						print "<h4>" ;
-						print "Education Information" ;
+						print "School Information" ;
 						print "</h4>" ;
 						
 						print "<table style='width: 100%'>" ;
@@ -541,6 +541,21 @@ else {
 									print $row["departureReason"] ;
 								print "</td>" ;
 							print "</tr>" ;
+							$dayTypeOptions=getSettingByScope($connection2, 'User Admin', 'dayTypeOptions') ;
+							if ($dayTypeOptions!="") {
+								print "<tr>" ;
+									print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>Day Type</span><br/>" ;
+										print $row["dayType"] ;
+									print "</td>" ;
+									print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+										
+									print "</td>" ;
+									print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+										
+									print "</td>" ;
+								print "</tr>" ;
+							}
 						print "</table>" ;
 						
 						print "<h4>" ;
