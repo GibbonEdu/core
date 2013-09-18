@@ -282,6 +282,11 @@ Performance: added index to some computationally intensive data structures, fixe
 	Optimised all tables
 	Edited file /lib/jquery-tokeninput/styles/token-input-facebook.css
 
+Data Updater: allow staff to update their own data
+	Edited values in gibbonAction, gibbonPermission
+	Edited files /modules/Data Updater/data_personal.php
+	
+
 v6.0.00
 -------
 Library: added new status 'In Use'

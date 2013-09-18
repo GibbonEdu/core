@@ -62,6 +62,7 @@ else {
 		else {
 			//Check access to person
 			$checkCount=0 ;
+			$self=FALSE ;
 			if ($highestAction=="Update Personal Data_any") {
 				try {
 					$dataSelect=array(); 
@@ -71,6 +72,7 @@ else {
 				}
 				catch(PDOException $e) { }
 				$checkCount=$resultSelect->rowCount() ;
+				$self=TRUE ;
 			}
 			else {
 				try {
@@ -92,8 +94,16 @@ else {
 						if ($gibbonPersonID==$rowCheck2["gibbonPersonID"]) {
 							$checkCount++ ;
 						}
+						//Check for self
+						if ($rowSelect2["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
+							$self=TRUE ;
+						}
 					}
 				}
+			}
+			
+			if ($self==FALSE AND $gibbonPersonID==$_SESSION[$guid]["gibbonPersonID"]) {
+				$checkCount++ ;
 			}
 			
 			if ($checkCount<1) {

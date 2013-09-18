@@ -107,6 +107,7 @@ else {
 					<td class="right">
 						<select style="width: 302px" name="gibbonPersonID">
 							<?
+							$self=FALSE ;
 							if ($highestAction=="Update Personal Data_any") {
 								try {
 									$dataSelect=array(); 
@@ -123,6 +124,7 @@ else {
 									else {
 										print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
 									}
+									$self=TRUE ;
 								}
 							}
 							else {
@@ -149,7 +151,20 @@ else {
 										else {
 											print "<option value='" . $rowSelect2["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect2["preferredName"]), htmlPrep($rowSelect2["surname"]), "Student", true) . "</option>" ;
 										}
+										//Check for self
+										if ($rowSelect2["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
+											$self=TRUE ;
+										}
 									}
+								}
+							}
+							
+							if ($self==FALSE) {
+								if ($gibbonPersonID==$_SESSION[$guid]["gibbonPersonID"]) {
+									print "<option selected value='" . $_SESSION[$guid]["gibbonPersonID"] . "'>" . formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Student", true) . "</option>" ;
+								}
+								else {
+									print "<option value='" . $_SESSION[$guid]["gibbonPersonID"] . "'>" . formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Student", true) . "</option>" ;
 								}
 							}
 							?>				
@@ -173,6 +188,7 @@ else {
 			
 			//Check access to person
 			$checkCount=0 ;
+			$self=FALSE ;
 			if ($highestAction=="Update Personal Data_any") {
 				try {
 					$dataSelect=array(); 
@@ -182,6 +198,7 @@ else {
 				}
 				catch(PDOException $e) { }
 				$checkCount=$resultSelect->rowCount() ;
+				$self=TRUE ;
 			}
 			else {
 				try {
@@ -203,8 +220,16 @@ else {
 						if ($gibbonPersonID==$rowCheck2["gibbonPersonID"]) {
 							$checkCount++ ;
 						}
+						//Check for self
+						if ($rowSelect2["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
+							$self=TRUE ;
+						}
 					}
 				}
+			}
+			
+			if ($self==FALSE AND $gibbonPersonID==$_SESSION[$guid]["gibbonPersonID"]) {
+				$checkCount++ ;
 			}
 			
 			if ($checkCount<1) {

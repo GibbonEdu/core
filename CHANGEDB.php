@@ -1443,6 +1443,9 @@ OPTIMIZE TABLE `gibbonAction`, `gibbonActivity`, `gibbonActivitySlot`, `gibbonAc
 -- LAST HLY UPDATE
 -- LAST JIS UPDATE
 
+UPDATE gibbonAction SET defaultPermissionTeacher='Y', defaultPermissionSupport='Y' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonModule.name='Data Updater') AND gibbonAction.name='Update Personal Data_family';end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '2', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Data Updater' AND gibbonAction.name='Update Personal Data_family'));end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '6', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Data Updater' AND gibbonAction.name='Update Personal Data_family'));end
 
 ";
 
