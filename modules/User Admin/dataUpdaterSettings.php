@@ -203,11 +203,7 @@ else {
 					print "Address 1" ;
 				print "</td>" ;
 				print "<td>" ;
-					$checked="" ;
-					if (is_array($required) AND $required["address1"]=="Y") {
-						$checked="checked" ;
-					}
-					print "<input $checked type='checkbox' name='address1'>" ;
+					print "<input disabled='disabled' type='checkbox' name='address1'> <i>This field cannot be required</i>." ;
 				print "</td>" ;
 			print "</tr>" ;
 			print "<tr class='even'>" ;
@@ -215,11 +211,7 @@ else {
 					print "Address 1 District" ;
 				print "</td>" ;
 				print "<td>" ;
-					$checked="" ;
-					if (is_array($required) AND $required["address1District"]=="Y") {
-						$checked="checked" ;
-					}
-					print "<input $checked type='checkbox' name='address1District'>" ;
+					print "<input disabled='disabled' type='checkbox' name='address1District'> <i>This field cannot be required</i>." ;
 				print "</td>" ;
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
@@ -227,11 +219,7 @@ else {
 					print "Address 1 Country" ;
 				print "</td>" ;
 				print "<td>" ;
-					$checked="" ;
-					if (is_array($required) AND $required["address1Country"]=="Y") {
-						$checked="checked" ;
-					}
-					print "<input $checked type='checkbox' name='address1Country'>" ;
+					print "<input disabled='disabled' type='checkbox' name='address1Country'> <i>This field cannot be required</i>." ;
 				print "</td>" ;
 			print "</tr>" ;
 			print "<tr class='even'>" ;
@@ -239,11 +227,7 @@ else {
 					print "Address 2" ;
 				print "</td>" ;
 				print "<td>" ;
-					$checked="" ;
-					if (is_array($required) AND $required["address2"]=="Y") {
-						$checked="checked" ;
-					}
-					print "<input $checked type='checkbox' name='address2'>" ;
+					print "<input disabled='disabled' type='checkbox' name='address2'> <i>This field cannot be required</i>." ;
 				print "</td>" ;
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
@@ -251,11 +235,7 @@ else {
 					print "Address 2 District" ;
 				print "</td>" ;
 				print "<td>" ;
-					$checked="" ;
-					if (is_array($required) AND $required["address2District"]=="Y") {
-						$checked="checked" ;
-					}
-					print "<input $checked type='checkbox' name='address2District'>" ;
+					print "<input disabled='disabled' type='checkbox' name='address2District'> <i>This field cannot be required</i>." ;
 				print "</td>" ;
 			print "</tr>" ;
 			print "<tr class='even'>" ;
@@ -263,11 +243,7 @@ else {
 					print "Address 2 Country" ;
 				print "</td>" ;
 				print "<td>" ;
-					$checked="" ;
-					if (is_array($required) AND $required["address2Country"]=="Y") {
-						$checked="checked" ;
-					}
-					print "<input $checked type='checkbox' name='address2Country'>" ;
+					print "<input disabled='disabled' type='checkbox' name='address2Country'> <i>This field cannot be required</i>." ;
 				print "</td>" ;
 			print "</tr>" ;
 			$phoneCount=0 ;

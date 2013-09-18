@@ -289,6 +289,9 @@ Data Updater: allow staff to update their own data
 Students: added day type to Personal subpage of student profile
 	Edited file /modules/Students/student_view_details.php
 
+User Admin: prevented address fields being set to required in personal data update, as sometimes it means user cannot submit the form
+	Edited file /modules/Date Updater/dataUpdaterSettings.php
+
 	
 
 v6.0.00
