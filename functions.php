@@ -71,7 +71,7 @@ function daysUntilNextBirthday($birthday) {
 		$bts = strtotime(date("y",strtotime("+1 year")) . "-" . substr($birthday, 5));
 	}
 
-	$days=round(($bts - $ts) / 86400);
+	$days=ceil(($bts - $ts) / 86400);
 	if ($days==365) {
 		$days=0 ;
 	}

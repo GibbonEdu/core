@@ -294,6 +294,9 @@ User Admin: prevented address fields being set to required in personal data upda
 
 Markbook: increased usability for school leaders with no classes
 	Edited files /modules/Markbook/moduleFunctions.php, markbook_view.php, markbook_edit.php, markbook_edit_addMulti*.php
+
+General: fixed rounding bug in birthday calculation, which caused birthday to appear 1 day sooner than anticipated
+	Edited file /functions.php
 	
 
 v6.0.00
