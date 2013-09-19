@@ -297,6 +297,9 @@ Markbook: increased usability for school leaders with no classes
 
 General: fixed rounding bug in birthday calculation, which caused birthday to appear 1 day sooner than anticipated
 	Edited file /functions.php
+
+Planner: fixed outcome filtering issue, which prevented user from selecting the first item in the list when filter was applied
+	Edited files /modules/Planner/planner_add.php, planner_edit.php, units_add.php, units_edit.php
 	
 
 v6.0.00

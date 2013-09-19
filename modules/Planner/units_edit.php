@@ -659,6 +659,7 @@ else {
 																		$currentCategory=$rowSelect["category"] ;
 																		if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 																			print "<optgroup label='--" . $currentCategory . "--'>" ;
+																			print "<option class='$currentCategory' value='0'>Choose an outcome to add it to this lesson</option>" ;
 																			$categories[$categoryCount]= $currentCategory ;
 																			$categoryCount++ ;
 																		}
@@ -700,6 +701,7 @@ else {
 																		}
 																		if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 																			print "<optgroup label='--" . $currentCategory . "--'>" ;
+																			print "<option class='$currentCategory' value='0'>Choose an outcome to add it to this lesson</option>" ;
 																			$categories[$categoryCount]= $currentCategory ;
 																			$categoryCount++ ;
 																		}
