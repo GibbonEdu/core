@@ -142,10 +142,10 @@ else {
 						print "<ul>" ;
 							while ($row=$result->fetch()) {
 								print "<li>" . formatName($row["title"], $row["preferredName"], $row["surname"], Staff) . "</li>" ;
-							}
-							if ($row["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
-								$teaching=TRUE ;
-							}
+								if ($row["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
+									$teaching=TRUE ;
+								}
+							}							
 						print "</ul>" ;
 					}
 					
@@ -170,15 +170,15 @@ else {
 						$columns=3 ;
 					}
 					if ($columns<1) {
-						print "<div class='warning'>" ;
-							print "There is currently no data to view in this markbook." ;
+						print "<div class='linkTop'>" ;
+							if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php") AND $teaching) {
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-right: 3px' title='Add Column' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+							}
 						print "</div>" ;
 						
-						print "<div class='linkTop'>" ;
-						if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") AND $teaching) {
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-right: 3px' title='Add Column' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
-						}
-						print "</div>" ;
+						print "<div class='warning'>" ;
+							print "There is currently no data to view in this markbook." ;
+						print "</div>" ;	
 					}
 					else {
 						//Work out details for external assessment display

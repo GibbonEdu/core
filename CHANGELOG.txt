@@ -310,6 +310,9 @@ Messenger & Finance: attempted to fix HTML email random space bug, where some ta
 Planner: fixed breadcrumb issue in block copy back
 	Edited files /modules/Planner/moduleFunctions.php, units_edit_working_copyback*.php
 
+Markbook: fixed newly-introduced bug which prevented add button from showing in Markbook view and edit when no columns exist.
+	Edited files /modules/Markbook/markbook_view.php, markbook_edit.php
+
 
 v6.0.00
 -------

@@ -124,7 +124,7 @@ else {
 				$teaching=FALSE ;
 				try {
 					$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
-					$sql="SELECT title, surname, preferredName FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName" ;
+					$sql="SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -138,9 +138,9 @@ else {
 					print "<ul>" ;
 						while ($row=$result->fetch()) {
 							print "<li>" . formatName($row["title"], $row["preferredName"], $row["surname"], Staff) . "</li>" ;
-						}
-						if ($row["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
-							$teaching=TRUE ;
+							if ($row["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
+								$teaching=TRUE ;
+							}
 						}
 					print "</ul>" ;
 				}
