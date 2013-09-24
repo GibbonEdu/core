@@ -1463,8 +1463,8 @@ else {
 				$mail->CharSet="UTF-8"; 
 				$mail->IsHTML(true);                            
 				$mail->Subject=$subject ;
-				$mail->Body=htmlwrap($body, 70) ;
-				$mail->AltBody=wordwrap($bodyPlain, 70) ;
+				$mail->Body=$body ;
+				$mail->AltBody=$bodyPlain ;
 
 				if(!$mail->Send()) {
 				 	$partialFail=TRUE ;

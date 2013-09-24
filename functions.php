@@ -17,49 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Like PHP wordwrap() but does not break up HTML tags
-function htmlwrap(&$str, $maxLength, $char='<br />'){
-    $count = 0;
-    $newStr = '';
-    $openTag = false;
-    $lenstr = strlen($str);
-    for($i=0; $i<$lenstr; $i++){
-        $newStr .= $str{$i};
-        if($str{$i} == '<'){
-            $openTag = true;
-            continue;
-        }
-        if(($openTag) && ($str{$i} == '>')){
-            $openTag = false;
-            continue;
-        }
-        if(!$openTag){
-            if($str{$i} == ' '){
-                if ($count == 0) {
-                    $newStr = substr($newStr,0, -1);
-                    continue;
-                } else {
-                    $lastspace = $count + 1;
-                }
-            }
-            $count++;
-            if($count==$maxLength){
-                if ($str{$i+1} != ' ' && $lastspace && ($lastspace < $count)) {
-                    $tmp = ($count - $lastspace)* -1;
-                    $newStr = substr($newStr,0, $tmp) . $char . substr($newStr,$tmp);
-                    $count = $tmp * -1;
-                } else {
-                    $newStr .= $char;
-                    $count = 0;
-                }
-                $lastspace = 0;
-            }
-        } 
-    }
-
-    return $newStr;
-}
-
 //Accepts birthday in mysql date (YYYY-MM-DD) ;
 function daysUntilNextBirthday($birthday) {
 	$today=date("Y-m-d") ;

@@ -214,8 +214,8 @@ else {
 							$mail->CharSet="UTF-8"; 
 							$mail->IsHTML(true);                            
 							$mail->Subject="Receipt From " . $_SESSION[$guid]["organisationNameShort"] . " via " . $_SESSION[$guid]["systemName"] ;
-							$mail->Body=htmlwrap($body, 70) ;
-							$mail->AltBody=wordwrap($bodyPlain, 70) ;
+							$mail->Body=$body ;
+							$mail->AltBody=$bodyPlain ;
 
 							if(!$mail->Send()) {
 								$emailFail=TRUE ;
@@ -275,8 +275,8 @@ else {
 							$mail->CharSet="UTF-8"; 
 							$mail->IsHTML(true);                            
 							$mail->Subject="Reminder From " . $_SESSION[$guid]["organisationNameShort"] . " via " . $_SESSION[$guid]["systemName"] ;
-							$mail->Body=htmlwrap($body, 70) ;
-							$mail->AltBody=wordwrap($bodyPlain, 70) ;
+							$mail->Body=$body ;
+							$mail->AltBody=$bodyPlain ;
 
 							if(!$mail->Send()) {
 								$emailFail=TRUE ;
