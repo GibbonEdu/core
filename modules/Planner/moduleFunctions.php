@@ -138,7 +138,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
 							if ($resultCheck->rowCount()==1) {
-								print "<a onclick='return confirm(\"Are you sure you want to leave this page? Any unsaved changes will be lost.\")' style='font-weight: normal; font-style: normal; color: #fff' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID'><img id='copyback$i' title='Copy Back' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copyback.png'/></a>" ;
+								print "<a onclick='return confirm(\"Are you sure you want to leave this page? Any unsaved changes will be lost.\")' style='font-weight: normal; font-style: normal; color: #fff' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=" . $_GET["gibbonUnitClassID"] . "'><img id='copyback$i' title='Copy Back' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copyback.png'/></a>" ;
 							}
 						}
 						if ($mode!="embed") {

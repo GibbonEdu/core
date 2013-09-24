@@ -307,6 +307,10 @@ Messenger & Finance: attempted to fix HTML email random space bug, where some ta
 	Edited files /modules/Finance/invoices_manage_editProcess.php, invoices_manage_issueProcess.php, invoices_manage_processBulk.php
 	Updated library files /lib/PHPMailer
 
+Planner: fixed breadcrumb issue in block copy back
+	Edited files /modules/Planner/moduleFunctions.php, units_edit_working_copyback*.php
+
+
 v6.0.00
 -------
 Library: added new status 'In Use'

@@ -41,8 +41,9 @@ $gibbonCourseClassID=$_GET["gibbonCourseClassID"];
 $gibbonUnitID=$_GET["gibbonUnitID"]; 
 $gibbonUnitBlockID=$_GET["gibbonUnitBlockID"]; 
 $gibbonUnitClassBlockID=$_GET["gibbonUnitClassBlockID"]; 
+$gibbonUnitClassID=$_GET["gibbonUnitClassID"]; 
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=$gibbonUnitID&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=$gibbonUnitID&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=$gibbonUnitClassID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_edit_working_copyback.php")==FALSE) {
 	//Fail 0
@@ -59,7 +60,7 @@ else {
 	else {
 		//Proceed!
 		//Validate Inputs
-		if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $gibbonUnitID=="" OR $gibbonCourseClassID=="") {
+		if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $gibbonUnitID=="" OR $gibbonCourseClassID=="" OR $gibbonUnitClassID=="") {
 			//Fail 3
 			$URL = $URL . "&copyReturn=fail3" ;
 			header("Location: {$URL}");
