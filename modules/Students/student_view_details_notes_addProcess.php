@@ -51,10 +51,13 @@ else {
 	else {
 		//Proceed!
 		//Validate Inputs
-		$category=$_POST["category"] ;
+		$gibbonStudentNoteCategoryID=$_POST["gibbonStudentNoteCategoryID"] ;
+		if ($gibbonStudentNoteCategoryID=="") {
+			$gibbonStudentNoteCategoryID=NULL ;
+		}
 		$note=$_POST["note"] ;
 		
-		if ($category=="" OR $note=="") {
+		if ($note=="") {
 			//Fail 3
 			$URL = $URL . "&addReturn=fail3" ;
 			header("Location: {$URL}");
@@ -62,8 +65,8 @@ else {
 		else {
 			//Write to database
 			try {
-				$data=array("category"=>$category, "note"=>$note, "gibbonPersonID"=>$gibbonPersonID, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "timestamp"=>date('Y-m-d H:i:s', time())); 
-				$sql="INSERT INTO gibbonStudentNote SET category=:category, note=:note, gibbonPersonID=:gibbonPersonID, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp" ;
+				$data=array("gibbonStudentNoteCategoryID"=>$gibbonStudentNoteCategoryID, "note"=>$note, "gibbonPersonID"=>$gibbonPersonID, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "timestamp"=>date('Y-m-d H:i:s', time())); 
+				$sql="INSERT INTO gibbonStudentNote SET gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID, note=:note, gibbonPersonID=:gibbonPersonID, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}

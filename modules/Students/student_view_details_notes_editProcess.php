@@ -72,10 +72,13 @@ else {
 		}
 		else {
 			//Validate Inputs
-			$category=$_POST["category"] ;
+			$gibbonStudentNoteCategoryID=$_POST["gibbonStudentNoteCategoryID"] ;
+			if ($gibbonStudentNoteCategoryID=="") {
+				$gibbonStudentNoteCategoryID=NULL ;
+			}
 			$note=$_POST["note"] ;
 			
-			if ($category=="" OR $note=="") {
+			if ($note=="") {
 				//Fail 3
 				$URL = $URL . "&updateReturn=fail3" ;
 				header("Location: {$URL}");
@@ -83,8 +86,8 @@ else {
 			else {
 				//Write to database
 				try {
-					$data=array("category"=>$category, "note"=>$note, "gibbonStudentNoteID"=>$gibbonStudentNoteID); 
-					$sql="UPDATE gibbonStudentNote SET category=:category, note=:note WHERE gibbonStudentNoteID=:gibbonStudentNoteID" ;
+					$data=array("gibbonStudentNoteCategoryID"=>$gibbonStudentNoteCategoryID, "note"=>$note, "gibbonStudentNoteID"=>$gibbonStudentNoteID); 
+					$sql="UPDATE gibbonStudentNote SET gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID, note=:note WHERE gibbonStudentNoteID=:gibbonStudentNoteID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}

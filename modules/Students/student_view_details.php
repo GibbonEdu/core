@@ -1356,7 +1356,7 @@ else {
 						
 							try {
 								$data=array("gibbonPersonID"=>$gibbonPersonID); 
-								$sql="SELECT gibbonStudentNote.*, surname, preferredName FROM gibbonStudentNote JOIN gibbonPerson ON (gibbonStudentNote.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) WHERE gibbonStudentNote.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC" ; 
+								$sql="SELECT gibbonStudentNote.*, gibbonStudentNoteCategory.name AS category, surname, preferredName FROM gibbonStudentNote LEFT JOIN gibbonStudentNoteCategory ON (gibbonStudentNote.gibbonStudentNoteCategoryID=gibbonStudentNoteCategory.gibbonStudentNoteCategoryID) JOIN gibbonPerson ON (gibbonStudentNote.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) WHERE gibbonStudentNote.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC" ; 
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}
@@ -1424,17 +1424,17 @@ else {
 												if ($row["gibbonPersonIDCreator"]==$_SESSION[$guid]["gibbonPersonID"]) {
 													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_edit.php&search=" . $_GET["search"] . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&subpage=Notes'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_delete.php&search=" . $_GET["search"] . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&subpage=Notes'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
-													print "<script type='text/javascript'>" ;	
-														print "$(document).ready(function(){" ;
-															print "\$(\".note-$count\").hide();" ;
-															print "\$(\".show_hide-$count\").fadeIn(1000);" ;
-															print "\$(\".show_hide-$count\").click(function(){" ;
-															print "\$(\".note-$count\").fadeToggle(1000);" ;
-															print "});" ;
-														print "});" ;
-													print "</script>" ;
-													print "<a title='View Description' class='show_hide-$count' onclick='return false;' href='#'><img title='View Note' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png'/></a></span><br/>" ;
 												}
+												print "<script type='text/javascript'>" ;	
+													print "$(document).ready(function(){" ;
+														print "\$(\".note-$count\").hide();" ;
+														print "\$(\".show_hide-$count\").fadeIn(1000);" ;
+														print "\$(\".show_hide-$count\").click(function(){" ;
+														print "\$(\".note-$count\").fadeToggle(1000);" ;
+														print "});" ;
+													print "});" ;
+												print "</script>" ;
+												print "<a title='View Description' class='show_hide-$count' onclick='return false;' href='#'><img title='View Note' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png'/></a></span><br/>" ;
 											print "</td>" ;
 										print "</tr>" ;
 										print "<tr class='note-$count' id='note-$count'>" ;

@@ -35,50 +35,62 @@ session_start() ;
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/studentsSettings.php" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/studentsSettings_noteCategory_add.php" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/studentsSettings.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/School Admin/studentsSettings_noteCategory_add.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&updateReturn=fail0" ;
+	$URL = $URL . "&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
-	$noteCategories="" ; 
-	foreach (explode(",", $_POST["noteCategories"]) as $noteCategory) {
-		$noteCategories.=trim($noteCategory) . "," ;
-	}
-	$noteCategories=substr($noteCategories,0,-1) ;
+	$name=$_POST["name"] ; 	
+	$active=$_POST["active"] ; 	
+	$template=$_POST["template"] ;
 	
 	//Validate Inputs
-	if ($noteCategories=="") {
+	if ($name=="" OR $active=="") {
 		//Fail 3
-		$URL = $URL . "&updateReturn=fail3" ;
+		$URL = $URL . "&addReturn=fail3" ;
 		header("Location: {$URL}");
 	}
-	else {	
-		//Write to database
-		$fail=FALSE ;
-		
+	else {
+		//Check unique inputs for uniquness
 		try {
-			$data=array("value"=>$noteCategories); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='noteCategories'" ;
+			$data=array("name"=>$name); 
+			$sql="SELECT * FROM gibbonStudentNoteCategory WHERE name=:name" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			$fail=TRUE ;
+			//Fail 2
+			$URL = $URL . "&addReturn=fail2" ;
+			header("Location: {$URL}");
+			break ;
 		}
 		
-		if ($fail==TRUE) {
-			//Fail 2
-			$URL = $URL . "&updateReturn=fail2" ;
+		if ($result->rowCount()>0) {
+			//Fail 4
+			$URL = $URL . "&addReturn=fail4" ;
 			header("Location: {$URL}");
 		}
 		else {
+			//Write to database
+			try {
+				$data=array("name"=>$name, "active"=>$active, "template"=>$template); 
+				$sql="INSERT INTO gibbonStudentNoteCategory SET name=:name, active=:active, template=:template" ;
+				$result=$connection2->prepare($sql);
+				$result->execute($data);
+			}
+			catch(PDOException $e) { 
+				//Fail 2
+				$URL = $URL . "&addReturn=fail2" ;
+				header("Location: {$URL}");
+				break ;
+			}
+			
 			//Success 0
-			getSystemSettings($guid, $connection2) ;
-			$URL = $URL . "&updateReturn=success0" ;
+			$URL = $URL . "&addReturn=success0" ;
 			header("Location: {$URL}");
 		}
 	}

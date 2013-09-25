@@ -31,72 +31,89 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Students Settings</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
-	$updateReturnMessage ="" ;
+	$deleteReturn = $_GET["deleteReturn"] ;
+	$deleteReturnMessage ="" ;
 	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage ="Update failed because you do not have access to this action." ;	
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage ="Update failed because a required parameter was not set." ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage ="Update of one or more fields failed due to a database error." ;	
-		}
-		else if ($updateReturn=="fail3") {
-			$updateReturnMessage ="Update failed because your inputs were invalid." ;	
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage ="Update was successful." ;	
+	if (!($deleteReturn=="")) {
+		if ($deleteReturn=="success0") {
+			$deleteReturnMessage ="Delete was successful." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
-			print $updateReturnMessage;
+			print $deleteReturnMessage;
 		print "</div>" ;
 	} 
-	?>
 	
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/studentsSettingsProcess.php" ?>">
-		<table style="width: 100%">	
-			<tr><td style="width: 30%"></td><td></td></tr>
-			<tr>
-				<?
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Students' AND name='noteCategories'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
-				</td>
-				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" type="text" style="width: 300px" rows=4><? print $row["value"] ?></textarea>
-					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
-				</td>
-			</tr>
+	print "<h3 class='top'>" ;
+		print "Student Note Categories" ;
+	print "</h3>" ;
+	print "<p>" ;
+		print "This section allows you to manage the categories which can be associated with student notes. Categories can be given templates, which will pre-populate the student not on selection." ;
+	print "</p>" ;	
+	
+	try {
+		$data=array(); 
+		$sql="SELECT * FROM gibbonStudentNoteCategory ORDER BY name" ; 
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+	}
+	
+	print "<div class='linkTop'>" ;
+	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentsSettings_noteCategory_add.php'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+	print "</div>" ;
+	
+	if ($result->rowCount()<1) {
+		print "<div class='error'>" ;
+		print "There are no categories to display." ;
+		print "</div>" ;
+	}
+	else {
+		print "<table style='width: 100%'>" ;
+			print "<tr class='head'>" ;
+				print "<th>" ;
+					print "Name" ;
+				print "</th>" ;
+				print "<th>" ;
+					print "Active" ;
+				print "</th>" ;
+				print "<th>" ;
+					print "Actions" ;
+				print "</th>" ;
+			print "</tr>" ;
 			
-			<tr>
-				<td class="right" colspan=2>
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
-				</td>
-			</tr>
-			<tr>
-				<td class="right" colspan=2>
-					<span style="font-size: 90%"><i>* denotes a required field</i></span>
-				</td>
-			</tr>
-		</table>
-	</form>
-<?
+			$count=0;
+			$rowNum="odd" ;
+			while ($row=$result->fetch()) {
+				if ($count%2==0) {
+					$rowNum="even" ;
+				}
+				else {
+					$rowNum="odd" ;
+				}
+				$count++ ;
+				
+				if ($row["active"]=="N") {
+					$rowNum="error" ;
+				}
+				
+				//COLOR ROW BY STATUS!
+				print "<tr class=$rowNum>" ;
+					print "<td>" ;
+						print $row["name"] ;
+					print "</td>" ;
+					print "<td>" ;
+						print $row["active"] ;
+					print "</td>" ;
+					print "<td>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentsSettings_noteCategory_edit.php&gibbonStudentNoteCategoryID=" . $row["gibbonStudentNoteCategoryID"] . "'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentsSettings_noteCategory_delete.php&gibbonStudentNoteCategoryID=" . $row["gibbonStudentNoteCategoryID"] . "'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+					print "</td>" ;
+				print "</tr>" ;
+			}
+		print "</table>" ;
+	}
 }
 ?>

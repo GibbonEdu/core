@@ -121,33 +121,36 @@ else {
 						<table style="width: 100%">	
 							<tr><td style="width: 30%"></td><td></td></tr>
 							<?
-							$optionsCategories=getSettingByScope($connection2, "Students", "noteCategories") ;
-							if ($optionsCategories!="") {
-								$optionsCategories=explode(",", $optionsCategories) ;
+							try {
+								$dataCategories=array(); 
+								$sqlCategories="SELECT * FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name" ;
+								$resultCategories=$connection2->prepare($sqlCategories);
+								$resultCategories->execute($dataCategories);
+							}
+							catch(PDOException $e) { }
+							if ($resultCategories->rowCount()>0) {
 								?>
 								<tr>
 									<td> 
-										<b>Level *</b><br/>
+										<b>Category *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
-										<select name="category" id="category" style="width: 302px">
+										<select name="gibbonStudentNoteCategoryID" id="gibbonStudentNoteCategoryID" style="width: 302px">
 											<option value="Please select...">Please select...</option>
 											<?
-											for ($i=0; $i<count($optionsCategories); $i++) {
+											while ($rowCategories=$resultCategories->fetch()) {
 												$selected="" ;
-												if ($row["category"]==trim($optionsCategories[$i])) {
+												if ($rowCategories["gibbonStudentNoteCategoryID"]==$row["gibbonStudentNoteCategoryID"]) {
 													$selected="selected" ;
 												}
-											?>
-												<option <? print $selected ?> value="<? print trim($optionsCategories[$i]) ?>"><? print trim($optionsCategories[$i]) ?></option>
-											<?
+												print "<option $selected value='" . $rowCategories["gibbonStudentNoteCategoryID"] . "'>" . $rowCategories["name"] . "</option>" ;
 											}
 											?>
 										</select>
 										<script type="text/javascript">
-											var category = new LiveValidation('category');
-											category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+											var gibbonStudentNoteCategoryID = new LiveValidation('gibbonStudentNoteCategoryID');
+											gibbonStudentNoteCategoryID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 										 </script>
 									</td>
 								</tr>

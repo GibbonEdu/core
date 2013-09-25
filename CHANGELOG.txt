@@ -313,6 +313,17 @@ Planner: fixed breadcrumb issue in block copy back
 Markbook: fixed newly-introduced bug which prevented add button from showing in Markbook view and edit when no columns exist.
 	Edited files /modules/Markbook/markbook_view.php, markbook_edit.php
 
+Student Notes: added ability to have category templates (be warned, old categories will be lost in the upgrade)
+	Added table gibbonStudentNoteCategory
+	Deleted value from table gibbonSetting
+	Updated value in table gibbonAction
+	Edited table gibbonStudentNote
+	Updated values in table gibbonStudentNote
+	Deleted file /modules/School Admin/studentsSettingsProcess.php
+	Edit file /modules/School Admin/studentsSettings.php
+	Added files /modules/School Admin/studentSettings_noteCategory*.php
+	Edited files /modules/student_view_details*.php
+
 
 v6.0.00
 -------

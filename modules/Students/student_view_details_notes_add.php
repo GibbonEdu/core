@@ -92,29 +92,51 @@ else {
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_addProcess.php?gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage" ?>">
 				<table style="width: 100%">	
 					<?
-					$optionsCategories=getSettingByScope($connection2, "Students", "noteCategories") ;
-					if ($optionsCategories!="") {
-						$optionsCategories=explode(",", $optionsCategories) ;
+					try {
+						$dataCategories=array(); 
+						$sqlCategories="SELECT * FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name" ;
+						$resultCategories=$connection2->prepare($sqlCategories);
+						$resultCategories->execute($dataCategories);
+					}
+					catch(PDOException $e) { }
+					if ($resultCategories->rowCount()>0) {
 						?>
 						<tr>
 							<td> 
-								<b>Level *</b><br/>
+								<b>Category *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
-								<select name="category" id="category" style="width: 302px">
+								<select name="gibbonStudentNoteCategoryID" id="gibbonStudentNoteCategoryID" style="width: 302px">
 									<option value="Please select...">Please select...</option>
 									<?
-									for ($i=0; $i<count($optionsCategories); $i++) {
-									?>
-										<option value="<? print trim($optionsCategories[$i]) ?>"><? print trim($optionsCategories[$i]) ?></option>
-									<?
+									while ($rowCategories=$resultCategories->fetch()) {
+										print "<option value='" . $rowCategories["gibbonStudentNoteCategoryID"] . "'>" . $rowCategories["name"] . "</option>" ;
 									}
 									?>
 								</select>
 								<script type="text/javascript">
-									var category = new LiveValidation('category');
-									category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+									var gibbonStudentNoteCategoryID = new LiveValidation('gibbonStudentNoteCategoryID');
+									gibbonStudentNoteCategoryID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								 </script>
+								 <script type="text/javascript">
+								 	$("#gibbonStudentNoteCategoryID").change(function() {
+										if ($("#gibbonStudentNoteCategoryID").val()!="Please select...") {
+											$.get('<? print $_SESSION[$guid]["absoluteURL"] . "/modules/Students/student_view_details_notes_addAjax.php?gibbonStudentNoteCategoryID=" ?>' + $("#gibbonStudentNoteCategoryID").val(), function(data){
+												if (tinyMCE.activeEditor==null) {
+													if ($("textarea#note").val()=="") {
+														$("textarea#note").val(data) ;
+													}
+												}
+												else {
+													if (tinyMCE.get('note').getContent()=="") {
+														tinyMCE.get('note').setContent(data) ;
+													}
+												}
+											});
+											
+										}
+									});
 								 </script>
 							</td>
 						</tr>

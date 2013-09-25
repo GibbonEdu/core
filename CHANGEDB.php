@@ -1441,9 +1441,15 @@ OPTIMIZE TABLE `gibbonAction`, `gibbonActivity`, `gibbonActivitySlot`, `gibbonAc
 UPDATE gibbonAction SET defaultPermissionTeacher='Y', defaultPermissionSupport='Y' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonModule.name='Data Updater') AND gibbonAction.name='Update Personal Data_family';end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '2', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Data Updater' AND gibbonAction.name='Update Personal Data_family'));end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '6', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Data Updater' AND gibbonAction.name='Update Personal Data_family'));end
+CREATE TABLE `gibbonStudentNoteCategory` (  `gibbonStudentNoteCategoryID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,  `name` varchar(30) NOT NULL,  `template` text NOT NULL,  `active` enum('Y','N') NOT NULL DEFAULT 'Y',  PRIMARY KEY (`gibbonStudentNoteCategoryID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;end
+DELETE FROM `gibbonSetting` WHERE `scope`='Students' AND `name`='noteCategories' ;end
+INSERT INTO `gibbonStudentNoteCategory` (`gibbonStudentNoteCategoryID` ,`name` ,`template` ,`active`)VALUES (NULL , 'Academic', '', 'Y'), (NULL , 'Pastoral', '', 'Y'), (NULL , 'Behaviour', '', 'Y'), (NULL , 'Other', '', 'Y');end
+UPDATE gibbonAction SET URLList='studentsSettings.php,studentsSettings_noteCategory_add.php,studentsSettings_noteCategory_edit.php,studentsSettings_noteCategory_delete.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonModule.name='School Admin') AND gibbonAction.name='Manage Students Settings';end
+ALTER TABLE `gibbonStudentNote` CHANGE `category` `gibbonStudentNoteCategoryID` INT( 5 ) UNSIGNED ZEROFILL NULL DEFAULT NULL ;end
+UPDATE `gibbonStudentNote` SET gibbonStudentNoteCategoryID=NULL ;end
 
--- LAST ICHK UPDATE
 -- LAST HLY UPDATE
+-- LAST ICHK UPDATE
 -- LAST JIS UPDATE
 
 ";
