@@ -324,6 +324,9 @@ Student Notes: added ability to have category templates (be warned, old categori
 	Added files /modules/School Admin/studentSettings_noteCategory*.php
 	Edited files /modules/student_view_details*.php
 
+General: fixed issue displaying some uploaded files that have spaces in names
+	Edited a variety of files across the system
+
 
 v6.0.00
 -------

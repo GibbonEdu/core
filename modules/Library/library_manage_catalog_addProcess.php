@@ -148,7 +148,7 @@ else {
 					$unique=FALSE;
 					while ($unique==FALSE) {
 						$suffix=randomPassword(16) ;
-						$imageLocation="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9\s]/", "", $id) . "_$suffix" . strrchr($_FILES["imageFile"]["name"], ".") ;
+						$imageLocation="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $id) . "_$suffix" . strrchr($_FILES["imageFile"]["name"], ".") ;
 						if (!(file_exists($path . "/" . $imageLocation))) {
 							$unique=TRUE ;
 						}

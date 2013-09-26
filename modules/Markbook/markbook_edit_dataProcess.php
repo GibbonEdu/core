@@ -164,7 +164,7 @@ else {
 						$unique=FALSE;
 						while ($unique==FALSE) {
 							$suffix=randomPassword(16) ;
-							$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9\s]/", "", $name) . "_Uploaded Response_$suffix" . strrchr($_FILES["response$i"]["name"], ".") ;
+							$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $name) . "_Uploaded Response_$suffix" . strrchr($_FILES["response$i"]["name"], ".") ;
 							if (!(file_exists($path . "/" . $attachment))) {
 								$unique=TRUE ;
 							}

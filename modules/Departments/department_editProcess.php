@@ -123,7 +123,7 @@ else {
 										$unique=FALSE;
 										while ($unique==FALSE) {
 											$suffix=randomPassword(16) ;
-											$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9\s]/", "", $resourceName) . "_$suffix" . strrchr($_FILES["file" . $i]["name"], ".") ;
+											$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $resourceName) . "_$suffix" . strrchr($_FILES["file" . $i]["name"], ".") ;
 											if (!(file_exists($path . "/" . $attachment))) {
 												$unique=TRUE ;
 											}

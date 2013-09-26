@@ -159,7 +159,7 @@ else {
 										$unique=FALSE;
 										while ($unique==FALSE) {
 											$suffix=randomPassword(16) ;
-											$location="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . $_SESSION[$guid]["username"] . "_" . preg_replace("/[^a-zA-Z0-9\s]/", "", $lesson) . "_$suffix" . strrchr($_FILES["file"]["name"], ".") ;
+											$location="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . $_SESSION[$guid]["username"] . "_" . preg_replace("/[^a-zA-Z0-9]/", "", $lesson) . "_$suffix" . strrchr($_FILES["file"]["name"], ".") ;
 											if (!(file_exists($path . "/" . $location))) {
 												$unique=TRUE ;
 											}
