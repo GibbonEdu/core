@@ -330,6 +330,9 @@ General: fixed issue displaying some uploaded files that have spaces in names
 Staff: fixed bug preventing email address and website address from displaying in brief staff profile
 	Edited file /modules/Staff/staff_view_details.php
 
+Timetable: added lesson name to mouseover on planner overlay
+	Edited file /modules/Planner/moduleFunctions.php
+
 
 v6.0.00
 -------
