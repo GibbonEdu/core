@@ -48,7 +48,7 @@ else {
 				//Proceed!
 				try {
 					$data=array("gibbonPersonID"=>$gibbonPersonID); 
-					$sql="SELECT title, surname, preferredName, type, gibbonStaff.jobTitle FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
+					$sql="SELECT title, surname, preferredName, type, gibbonStaff.jobTitle, email, website FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
