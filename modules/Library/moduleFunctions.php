@@ -33,7 +33,7 @@ function getBorrowingRecord($guid, $connection2, $gibbonPersonID) {
 		$output.="</div>" ;
 	}
 	else {
-		$output.="<table cellspacing='0' style='width: 100%'>" ;
+		$output.="<table class='mini' cellspacing='0' style='width: 100%'>" ;
 			$output.="<tr class='head'>" ;
 				$output.="<th style='text-align: center'>" ;
 						

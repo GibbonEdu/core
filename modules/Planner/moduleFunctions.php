@@ -425,7 +425,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 		$output=$output . "</table>" ;
 		
 		$output=$output . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-			$output=$output . "<table class='mini' cellspacing='0' style='width: 200px; margin: 0px 0px'>" ;	
+			$output=$output . "<table class='smallIntBorder' cellspacing='0' style='width: 200px; margin: 0px 0px'>" ;	
 				$output=$output . "<tr>" ;
 					$output=$output . "<td style='width: 200px'>" ; 
 						$output=$output . "<input name='q' id='q' type='hidden' value='/modules/Planner/planner.php'>" ;
@@ -458,7 +458,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 		
 		$selectCount=0 ;
 		$output=$output . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-			$output=$output . "<table class='mini' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
+			$output=$output . "<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
 				$output=$output . "<tr>" ;
 					$output=$output . "<td style='width: 190px'>" ; 
 						$output=$output . "<input name='q' id='q' type='hidden' value='/modules/Planner/planner.php'>" ;

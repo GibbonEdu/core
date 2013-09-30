@@ -98,8 +98,7 @@ else {
 		?>
 		
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-			<table cellspacing='0' style="width: 100%">	
-				<tr><td style="width: 30%"></td><td></td></tr>
+			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
 						<b>Family *</b><br/>
@@ -250,8 +249,7 @@ else {
 					$row=$result->fetch() ;
 					?>
 					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_familyProcess.php?gibbonFamilyID=" . $gibbonFamilyID ?>">
-						<table cellspacing='0' style="width: 100%">	
-							<tr><td style="width: 30%"></td><td></td></tr>
+						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
 									<b>Address Name *</b><br/>
@@ -342,12 +340,10 @@ else {
 							</tr>
 							
 							<tr>
-								<td class="right" colspan=2>
+								<td>
 									<span style="font-size: 90%"><i>* denotes a required field</i></span>
 								</td>
-							</tr>
-							<tr>
-								<td class="right" colspan=2>
+								<td class="right">
 									<?php
 									if ($existing) {
 										print "<input type='hidden' name='existing' value='" . $row["gibbonFamilyUpdateID"] . "'>" ;

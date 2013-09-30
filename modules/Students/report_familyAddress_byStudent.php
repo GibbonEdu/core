@@ -47,8 +47,7 @@ else {
 	?>
 	
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_familyAddress_byStudent.php"?>">
-		<table cellspacing='0' style="width: 100%">	
-			<tr><td style="width: 30%"></td><td></td></tr>
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
 					<b>Students *</b><br/>

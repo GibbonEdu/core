@@ -42,8 +42,7 @@ else {
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table cellspacing='0' style="width: 100%">	
-			<tr><td style="width: 30%"></td><td></td></tr>
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
 					<b>Roll Group *</b><br/>
@@ -153,7 +152,7 @@ else {
 		print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_students_byRollGroup_print.php&gibbonRollGroupID=$gibbonRollGroupID'><img title='Print' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 		print "</div>" ;
 	
-		print "<table cellspacing='0' style='width: 100%'>" ;
+		print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Roll Group" ;

@@ -50,7 +50,7 @@ else {
 		print "<h2>" ;
 			print "Learning Areas" ;
 		print "</h2>" ;
-		print "<table cellspacing='0' style='width:100%; margin-top: 20px'>" ;
+		print "<table class='blank' cellspacing='0' style='width:100%; margin-top: 20px'>" ;
 		$count=0 ;
 		$columns=3 ;
 		
@@ -99,7 +99,7 @@ else {
 		print "<h2>" ;
 			print "Administration" ;
 		print "</h2>" ;
-		print "<table cellspacing='0' style='width:100%; margin-top: 20px'>" ;
+		print "<table class='blank' cellspacing='0' style='width:100%; margin-top: 20px'>" ;
 		$count=0 ;
 		$columns=3 ;
 		

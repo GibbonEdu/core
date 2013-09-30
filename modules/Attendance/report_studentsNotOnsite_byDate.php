@@ -47,8 +47,7 @@ else {
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table cellspacing='0' style="width: 100%">	
-			<tr><td style="width: 30%"></td><td></td></tr>
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
 					<b>Date *</b><br/>
@@ -70,7 +69,7 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/report_studentsNotPresent_byDate.php">
+					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/report_studentsNotOnsite_byDate.php">
 					<input type="submit" value="Submit">
 				</td>
 			</tr>

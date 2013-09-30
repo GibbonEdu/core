@@ -69,7 +69,7 @@ else {
 					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/student_view.php'>View Student Profiles</a> > </div><div class='trailEnd'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</div>" ;
 					print "</div>" ;
 					
-					print "<table cellspacing='0' style='width: 100%'>" ;
+					print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 						print "<tr>" ;
 							print "<td style='width: 33%; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Year Group</span><br/>" ;
@@ -210,7 +210,7 @@ else {
 							print "</div>" ;
 						}
 						
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Preferred Name</span><br/>" ;
@@ -370,7 +370,7 @@ else {
 							print "</div>" ;
 						}
 						
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Surname</span><br/>" ;
@@ -416,8 +416,6 @@ else {
 										print getAge(dateConvertToTimestamp($row["dob"])) ;
 									}
 								print "</td>" ;
-								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-								print "</td>" ;
 							print "</tr>" ;
 						print "</table>" ;
 							
@@ -425,7 +423,7 @@ else {
 						print "Contacts" ;
 						print "</h4>" ;
 						
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							$numberCount=0 ;
 							if ($row["phone1"]!="" OR $row["phone2"]!="" OR $row["phone3"]!="" OR $row["phone4"]!="") {
 								print "<tr>" ;
@@ -441,6 +439,11 @@ else {
 													print "+" . $row["phone" . $i . "CountryCode"] . " " ;
 												}
 												print $row["phone" . $i] . "<br/>" ;
+											print "</td>" ;
+										}
+										else {
+											print "<td width: 33%; style='vertical-align: top'>" ;
+										
 											print "</td>" ;
 										}
 									}
@@ -459,7 +462,7 @@ else {
 										print "<i><a href='mailto:" . $row["emailAlternate"] . "'>" . $row["emailAlternate"] . "</a></i>" ;
 									}
 								print "</td>" ;
-								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+								print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=2>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Website</span><br/>" ;
 									if ($row["website"]!="") {
 										print "<i><a href='" . $row["website"] . "'>" . $row["website"] . "</a></i>" ;
@@ -468,7 +471,7 @@ else {
 							print "</tr>" ;
 							if ($row["address1"]!="") {
 								print "<tr>" ;
-									print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
+									print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=4>" ;
 										print "<span style='font-size: 115%; font-weight: bold'>Address 1</span><br/>" ;
 										$address1=addressFormat( $row["address1"], $row["address1District"], $row["address1Country"] ) ;
 										if ($address1!=FALSE) {
@@ -494,7 +497,7 @@ else {
 						print "School Information" ;
 						print "</h4>" ;
 						
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Last School</span><br/>" ;
@@ -562,7 +565,7 @@ else {
 						print "Background" ;
 						print "</h4>" ;
 						
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td width: 33%; style='vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Country of Birth</span><br/>" ;
@@ -648,7 +651,7 @@ else {
 						print "<h4>" ;
 						print "School Data" ;
 						print "</h4>" ;
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Year Group</span><br/>" ;
@@ -744,7 +747,7 @@ else {
 						print "System Data" ;
 						print "</h4>" ;
 						
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td width: 33%; style='vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Username</span><br/>" ;
@@ -765,7 +768,7 @@ else {
 						print "Miscellaneous" ;
 						print "</h4>" ;
 						
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Transport</span><br/>" ;
@@ -809,7 +812,7 @@ else {
 								}
 								
 								//Print family information
-								print "<table cellspacing='0' style='width: 100%'>" ;
+								print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 									print "<tr>" ;
 										print "<td style='width: 33%; vertical-align: top'>" ;
 											print "<span style='font-size: 115%; font-weight: bold'>Family Name</span><br/>" ;
@@ -867,7 +870,7 @@ else {
 									print "<h4>" ;
 									print "Adult $count" ;
 									print "</h4>" ;
-									print "<table cellspacing='0' style='width: 100%'>" ;
+									print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 										print "<tr>" ;
 											print "<td style='width: 33%; vertical-align: top'>" ;
 												print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -1011,7 +1014,7 @@ else {
 									print "Siblings" ;
 									print "</h4>" ;
 								
-									print "<table cellspacing='0' style='width:100%'>" ;
+									print "<table class='smallIntBorder' cellspacing='0' style='width:100%'>" ;
 										$count=0 ;
 										$columns=3 ;
 	
@@ -1097,7 +1100,7 @@ else {
 							}
 							
 							while ($rowMember=$resultMember->fetch()) {
-								print "<table cellspacing='0' style='width: 100%'>" ;
+								print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 									print "<tr>" ;
 										print "<td style='width: 33%; vertical-align: top'>" ;
 											print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -1143,7 +1146,7 @@ else {
 						print "<h4>" ;
 						print "2. Emergency Contacts" ;
 						print "</h4>" ;
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Contact 1</span><br/>" ;
@@ -1237,7 +1240,7 @@ else {
 								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
 
-							print "<table cellspacing='0' style='width: 100%'>" ;
+							print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 								print "<tr>" ;
 									print "<td style='width: 33%; vertical-align: top'>" ;
 										print "<span style='font-size: 115%; font-weight: bold'>Long Term Medication?</span><br/>" ;
@@ -1287,7 +1290,7 @@ else {
 								}
 								print "</h4>" ;
 								
-								print "<table cellspacing='0' style='width: 100%'>" ;
+								print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 								print "<tr>" ;
 									print "<td style='width: 50%; vertical-align: top'>" ;
 										print "<span style='font-size: 115%; font-weight: bold'>Triggers</span><br/>" ;
@@ -2267,7 +2270,7 @@ else {
 							else {
 								print "<div class='linkTop'>" ;
 									print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-										print"<table cellspacing='0' style='float: right; width: 250px; margin: 0px 0px'>" ;	
+										print"<table class='blank' cellspacing='0' style='float: right; width: 250px; margin: 0px 0px'>" ;	
 											print"<tr>" ;
 												print"<td style='width: 190px'>" ; 
 													print"<select name='gibbonCourseClassIDFilter' id='gibbonCourseClassIDFilter' style='width:190px'>" ;

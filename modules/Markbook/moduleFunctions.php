@@ -111,12 +111,12 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 		$output=$output . "<h2>" ;
 		$output=$output . "View Any Class" ;
 		$output=$output . "</h2>" ;
-	
+		
 		$output=$output . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-			$output=$output . "<table cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
+			$output=$output . "<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
 				$output=$output . "<tr>" ;
-					$output=$output . "<td class='right'>" ;
-						$output=$output . "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:230px'>" ;
+					$output=$output . "<td style='width: 190px'>" ; 
+						$output=$output . "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:160px; float: none'>" ;
 							$output=$output . "<option value='Please select...'>Please select...</option>" ;
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -134,11 +134,9 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 							}		
 						$output=$output . "</select>" ;
 					$output=$output . "</td>" ;
-				$output=$output . "</tr>" ;
-				$output=$output . "<tr>" ;
-					$output=$output . "<td class='right' colspan=2>" ;
+					$output=$output . "<td class='right'>" ;
 						$output=$output . "<input type='hidden' name='q' id='q' value='/modules/Markbook/markbook_view.php'>" ;
-						$output=$output . "<input type='submit' value='Submit'>" ;
+						$output=$output . "<input type='submit' value='Go'>" ;
 					$output=$output . "</td>" ;
 				$output=$output . "</tr>" ;
 			$output=$output . "</table>" ;

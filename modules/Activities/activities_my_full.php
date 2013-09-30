@@ -85,7 +85,7 @@ else {
 						}
 					print "</h1>" ;
 					
-					print "<table cellspacing='0' style='width: 550px; float: left;'>" ;
+					print "<table class='blank' cellspacing='0' style='width: 550px; float: left;'>" ;
 						print "<tr>" ;
 							if ($dateType!="Date") {
 								print "<td style='width: 33%; vertical-align: top'>" ;

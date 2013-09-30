@@ -42,8 +42,7 @@ else {
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table cellspacing='0' style="width: 100%">	
-			<tr><td style="width: 30%"></td><td></td></tr>
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
 					<b>Activity</b><br/>
@@ -123,7 +122,7 @@ else {
 		
 			$lastPerson="" ;
 			
-			print "<table cellspacing='0' style='width: 100%'>" ;
+			print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
 						print "Student" ;

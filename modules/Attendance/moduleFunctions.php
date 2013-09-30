@@ -135,7 +135,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 			$weeks=2;
 			
 			$output=$output . "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manageProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID'>" ;
-			$output=$output . "<table cellspacing='0' style='width: 100%'>" ;
+			$output=$output . "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 			$output=$output . "<tr class='head'>" ;
 				for ($w=0; $w<$weeks; $w++) {
 					if ($days["Mon"]=="Y") {

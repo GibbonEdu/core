@@ -153,10 +153,10 @@ else {
 				print "</tr>" ;
 			}
 			print "<tr style='background-color: #FFD2A9'>" ;
-				print "<td style='border-bottom: 1px solid #000'>" ;
+				print "<td>" ;
 					print "<b>All Roll Groups</b>" ;
 				print "</td>" ;
-				print "<td style='border-bottom: 1px solid #000'>" ;
+				print "<td>" ;
 						$cellCount=0 ;
 						$total=0 ;
 						foreach ($everything as $thing) {
@@ -167,7 +167,7 @@ else {
 							print "<b>" . round(($total/$cellCount),1) . "</b>" ;
 						}
 				print "</td>" ;
-				print "<td style='border-bottom: 1px solid #000'>" ;
+				print "<td>" ;
 						$cellCount=0 ;
 						foreach ($everything as $thing) {
 							if ($thing[1]=="M") {
@@ -178,7 +178,7 @@ else {
 							print "<b>" . $cellCount . "</b>" ;
 						}
 				print "</td>" ;
-				print "<td style='border-bottom: 1px solid #000'>" ;
+				print "<td>" ;
 						$cellCount=0 ;
 						foreach ($everything as $thing) {
 							if ($thing[1]=="F") {
@@ -189,7 +189,7 @@ else {
 							print "<b>" . $cellCount . "</b>" ;
 						}
 				print "</td>" ;
-				print "<td style='border-bottom: 1px solid #000'>" ;
+				print "<td>" ;
 						if (count($everything)!=0) {
 							print "<b>" . count($everything) . "</b>" ;
 						}

@@ -511,13 +511,14 @@ else {
 						</tr>
 						<tr>
 							<?
-							print "<td class='right' colspan=$span>" ;
+							print "<td>" ;
+								print getMaxUpload(TRUE) ;
+							print "</td>" ;
+							print "<td class='right' colspan=" . ($span-1) . ">" ;
 							?>
 								<input name="count" id="count" value="<? print $count ?>" type="hidden">
 								<input type="reset" value="Reset"> <input type="submit" value="Submit">
-								<?
-								print getMaxUpload(TRUE) ;
-								?>
+								
 							</td>
 						</tr>
 						<?

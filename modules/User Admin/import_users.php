@@ -49,8 +49,7 @@ else {
 			This page allows you to import user data from a CSV file. The import includes all users, whether they be students, staff, parents or other. The system will take the import and set any existing users not present in the file to "Left", whilst importing new users into the system. New users will be assigned a random password, unless a default is set. Select the CSV file you wish to use for the synchronise operation.<br/>
 		</p>
 		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/import_users.php&step=2" ?>" enctype="multipart/form-data">
-			<table cellspacing='0' style="width: 100%">	
-				<tr><td style="width: 30%"></td><td></td></tr>
+			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
 						<b>CSV File *</b><br/>
@@ -100,15 +99,13 @@ else {
 					</td>
 				</tr>
 				<tr>
-					<td class="right" colspan=2>
+					<td>
+						<span style="font-size: 90%"><i>* denotes a required field</i></span>
+					</td>
+					<td class="right">
 						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
 						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 						<input type="reset" value="Reset"> <input type="submit" value="Submit">
-					</td>
-				</tr>
-				<tr>
-					<td class="right" colspan=2>
-						<span style="font-size: 90%"><i>* denotes a required field</i></span>
 					</td>
 				</tr>
 			</table>

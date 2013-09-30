@@ -89,7 +89,7 @@ else {
 				print "<h2>" ;
 				print "Staff" ;
 				print "</h2>" ;
-				print "<table cellspacing='0' style='width:100%; margin-top: 20px'>" ;
+				print "<table class='noIntBorder' cellspacing='0' style='width:100%; margin-top: 20px'>" ;
 				$count=0 ;
 				$columns=5 ;
 				

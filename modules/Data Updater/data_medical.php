@@ -95,8 +95,7 @@ else {
 		?>
 		
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-			<table cellspacing='0' style="width: 100%">	
-				<tr><td style="width: 30%"></td><td></td></tr>
+			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
 						<b>Person *</b><br/>
@@ -273,8 +272,7 @@ else {
 						$rowForm=$resultForm->fetch() ;
 						?>
 						<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_medicalProcess.php?gibbonPersonID=" . $gibbonPersonID ?>">
-							<table cellspacing='0' style="width: 100%">	
-								<tr><td style="width: 30%"></td><td></td></tr>
+							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr>
 									<td> 
 										<b>Blood Type</b><br/>
@@ -357,7 +355,7 @@ else {
 
 									while ($rowCond=$resultCond->fetch()) {
 										?>
-										<tr>
+										<tr class='break'>
 											<td colspan=2> 
 												<h3>Medical Condition <? print ($count+1) ?></h3>
 											</td>
@@ -513,7 +511,7 @@ else {
 									print "<input name='count' id='count' value='$count' type='hidden'>" ;
 								}
 								?>
-								<tr>
+								<tr class='break'>
 									<td colspan=2> 
 										<h3>Add Medical Condition</h3>
 									</td>
@@ -640,12 +638,10 @@ else {
 									</td>
 								</tr>
 								<tr>
-									<td class="right" colspan=2>
+									<td>
 										<span style="font-size: 90%"><i>* denotes a required field</i></span>
 									</td>
-								</tr>
-								<tr>
-									<td class="right" colspan=2>
+									<td class="right">
 										<?php
 										if ($existing) {
 											print "<input type='hidden' name='existing' value='" . $rowForm["gibbonPersonMedicalUpdateID"] . "'>" ;

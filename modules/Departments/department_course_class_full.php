@@ -118,7 +118,7 @@ else {
 					}
 				print "</h1>" ;
 				
-				print "<table cellspacing='0' style='width: 550px; float: left;'>" ;
+				print "<table class='blank' cellspacing='0' style='width: 550px; float: left;'>" ;
 					print "<tr>" ;
 						print "<td style='width: 33%; vertical-align: top'>" ;
 							print "<span style='font-size: 115%; font-weight: bold'>Class</span><br/>" ;

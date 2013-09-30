@@ -75,7 +75,7 @@ else {
 						print "</div>" ;
 					}
 					
-					print "<table cellspacing='0' style='width: 100%'>" ;
+					print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 						print "<tr>" ;
 							print "<td style='width: 33%; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -157,7 +157,7 @@ else {
 							print "</div>" ;
 						}
 					
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -199,7 +199,7 @@ else {
 							print "</div>" ;
 						}
 						
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -232,7 +232,7 @@ else {
 						print "Contacts" ;
 						print "</h4>" ;
 						
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							$numberCount=0 ;
 							if ($row["phone1"]!="" OR $row["phone2"]!="" OR $row["phone3"]!="" OR $row["phone4"]!="") {
 								print "<tr>" ;
@@ -248,6 +248,11 @@ else {
 													print "+" . $row["phone" . $i . "CountryCode"] . " " ;
 												}
 												print $row["phone" . $i] . "<br/>" ;
+											print "</td>" ;
+										}
+										else {
+											print "<td width: 33%; style='vertical-align: top'>" ;
+											
 											print "</td>" ;
 										}
 									}
@@ -271,6 +276,9 @@ else {
 									if ($row["website"]!="") {
 										print "<i><a href='" . $row["website"] . "'>" . $row["website"] . "</a></i>" ;
 									}
+								print "</td>" ;
+								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+									
 								print "</td>" ;
 							print "</tr>" ;
 							if ($row["address1"]!="") {
@@ -301,7 +309,7 @@ else {
 						print "Miscellaneous" ;
 						print "</h4>" ;
 						
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Transport</span><br/>" ;
@@ -363,7 +371,7 @@ else {
 							}
 							
 							while ($rowMember=$resultMember->fetch()) {
-								print "<table cellspacing='0' style='width: 100%'>" ;
+								print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 									print "<tr>" ;
 										print "<td style='width: 33%; vertical-align: top'>" ;
 											print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -409,7 +417,7 @@ else {
 						print "<h4>" ;
 						print "2. Emergency Contacts" ;
 						print "</h4>" ;
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Contact 1</span><br/>" ;
@@ -919,7 +927,7 @@ else {
 					}
 					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=Personal'>Personal</a></li>" ;
 					$style="" ;
-					if ($subpage=="Family") {
+					if ($subpage=="Emergency Contacts") {
 						$style="style='font-weight: bold'" ;
 					}
 					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=Emergency Contacts'>Emergency Contacts</a></li>" ;

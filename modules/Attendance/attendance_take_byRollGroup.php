@@ -306,7 +306,7 @@ else {
 										for ($i=4; $i>=0; $i--) {
 											$link="" ;
 											if ($i>($last5SchoolDaysCount-1)) {
-												$extraStyle="border: 1px solid #555; color: #555; background-color: #eee;" ;
+												$extraStyle="color: #555; background-color: #eee;" ;
 												
 												print "<td style='" . $extraStyle . "height: 25px; width: 20%'>" ;
 												print "<i>NA</i>" ;
@@ -323,18 +323,18 @@ else {
 													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 												}
 												if ($resultLast5SchoolDays->rowCount()==0) {
-													$extraStyle="border: 1px solid #555; color: #555; background-color: #eee; " ;
+													$extraStyle="color: #555; background-color: #eee; " ;
 												}
 												else {
 													$link="./index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byPerson.php&gibbonPersonID=" . $rowRollGroup["gibbonPersonID"] . "&currentDate=" . date("d/m/Y", dateConvertToTimestamp($last5SchoolDays[$i])) ;
 													$rowLast5SchoolDays=$resultLast5SchoolDays->fetch() ;
 													if ($rowLast5SchoolDays["type"]=="Absent") {
 														$color="#c00" ;
-														$extraStyle="border: 1px solid #c00; color: #c00; background-color: #F6CECB; " ;
+														$extraStyle="color: #c00; background-color: #F6CECB; " ;
 													}
 													else {
 														$color="#390" ;
-														$extraStyle="border: 1px solid #390; color: #390; background-color: #D4F6DC; " ;
+														$extraStyle="color: #390; background-color: #D4F6DC; " ;
 													}
 												}
 												

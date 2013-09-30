@@ -119,11 +119,11 @@ else {
 						});
 					</script>
 					<tr>
-						<td style='border-top: 1px solid #666'> 
+						<td> 
 							<b>Email *</b><br/>
 							<span style="font-size: 90%"><i>Deliver this message to user's email account?<br/></i></span>
 						</td>
-						<td style='border-top: 1px solid #666' class="right">
+						<td class="right">
 							<input type="radio" name="email" class="email" value="Y"/> Yes
 							<input checked type="radio" name="email" class="email" value="N"/> No
 						</td>
@@ -160,11 +160,11 @@ else {
 						});
 					</script>
 					<tr>
-						<td style='border-top: 1px solid #666'> 
+						<td> 
 							<b>Message Wall *</b><br/>
 							<span style="font-size: 90%"><i>Place this message on user's message wall?<br/></i></span>
 						</td>
-						<td style='border-top: 1px solid #666' class="right">
+						<td class="right">
 							<input type="radio" name="messageWall" class="messageWall" value="Y"/> Yes
 							<input checked type="radio" name="messageWall" class="messageWall" value="N"/> No
 						</td>
@@ -231,11 +231,11 @@ else {
 							});
 						</script>
 						<tr>
-							<td style='border-top: 1px solid #666; border-bottom: 1px solid #666'> 
+							<td> 
 								<b>SMS *</b><br/>
 								<span style="font-size: 90%"><i>Deliver this message to user's mobile phone?<br/></i></span>
 							</td>
-							<td style='border-top: 1px solid #666; border-bottom: 1px solid #666' class="right">
+							<td class="right">
 								<input type="radio" id="sms" name="sms" class="sms" value="Y"/> Yes
 								<input checked type="radio" id="sms" name="sms" class="sms" value="N"/> No
 							</td>
@@ -263,7 +263,7 @@ else {
 					else {
 						?>
 						<tr>
-							<td style='border-top: 1px solid #666; border-bottom: 1px solid #666' colspan=2> 
+							<td colspan=2> 
 								<div class='error' style='margin-top: 3px'>SMS NOT CONFIGURED. Please contact <a href='mailto:<? print $_SESSION[$guid]["organisationAdministratorEmail"] ?>'><? print $_SESSION[$guid]["organisationAdministratorName"] ?></a> for help.</div>
 							</td>
 						</tr>
@@ -319,21 +319,21 @@ else {
 						});
 					</script>
 					<tr>
-						<td style='border-top: 1px solid #666'> 
+						<td> 
 							<b>Role</b><br/>
 							<span style="font-size: 90%"><i>Users of a certain type<br/></i></span>
 						</td>
-						<td style='border-top: 1px solid #666' class="right">
+						<td class="right">
 							<input type="radio" name="role" class="role" value="Y"/> Yes
 							<input checked type="radio" name="role" class="role" value="N"/> No
 						</td>
 					</tr>
 					<tr id="roleRow">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Roles</b><br/>
 							<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="roles[]" id="roles[]" multiple style="width: 302px; height: 100px">
 								<?
 								try {
@@ -377,21 +377,21 @@ else {
 						});
 					</script>
 					<tr>
-						<td style='border-top: 1px solid #666'> 
+						<td> 
 							<b>Year Group</b><br/>
 							<span style="font-size: 90%"><i>Students in year; all staff<br/></i></span>
 						</td>
-						<td style='border-top: 1px solid #666' class="right">
+						<td class="right">
 							<input type="radio" name="yearGroup" class="yearGroup" value="Y"/> Yes
 							<input checked type="radio" name="yearGroup" class="yearGroup" value="N"/> No
 						</td>
 					</tr>
 					<tr id="yearGroupRow">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Year Groups</b><br/>
 							<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="yearGroups[]" id="yearGroups[]" multiple style="width: 302px; height: 100px">
 								<?
 								try {
@@ -409,10 +409,10 @@ else {
 						</td>
 					</tr>
 					<tr id="yearGroupRow3">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Include staff?</b><br/>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="yearGroupsStaff" id="yearGroupsStaff" style="width: 302px">
 								<?
 								print "<option value='Y'>Yes</option>" ;
@@ -422,10 +422,10 @@ else {
 						</td>
 					</tr>
 					<tr id="yearGroupRow4">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Include students?</b><br/>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="yearGroupsStudents" id="yearGroupsStudents" style="width: 302px">
 								<?
 								print "<option value='Y'>Yes</option>" ;
@@ -438,10 +438,10 @@ else {
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_parents")) {
 						?>
 						<tr id="yearGroupRow2">
-							<td> 
+							<td style='background: none; background-color: #EDF7FF;'> 
 								<b>Include parents?</b><br/>
 							</td>
-							<td class="right">
+							<td style='background: none; background-color: #EDF7FF;' class="right">
 								<select name="yearGroupsParents" id="yearGroupsParents" style="width: 302px">
 									<?
 									print "<option value='Y'>Yes</option>" ;
@@ -478,21 +478,21 @@ else {
 						});
 					</script>
 					<tr>
-						<td style='border-top: 1px solid #666'> 
+						<td> 
 							<b>Roll Group</b><br/>
 							<span style="font-size: 90%"><i>Tutees and tutors<br/></i></span>
 						</td>
-						<td style='border-top: 1px solid #666' class="right">
+						<td class="right">
 							<input type="radio" name="rollGroup" class="rollGroup" value="Y"/> Yes
 							<input checked type="radio" name="rollGroup" class="rollGroup" value="N"/> No
 						</td>
 					</tr>
 					<tr id="rollGroupRow">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Roll Groups</b><br/>
 							<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="rollGroups[]" id="rollGroups[]" multiple style="width: 302px; height: 100px">
 								<?
 								try {
@@ -522,10 +522,10 @@ else {
 						</td>
 					</tr>
 					<tr id="rollGroupRow3">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Include staff?</b><br/>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="rollGroupsStaff" id="rollGroupsStaff" style="width: 302px">
 								<?
 								print "<option value='Y'>Yes</option>" ;
@@ -535,10 +535,10 @@ else {
 						</td>
 					</tr>
 					<tr id="rollGroupRow4">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Include student?</b><br/>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="rollGroupsStudents" id="rollGroupsStudents" style="width: 302px">
 								<?
 								print "<option value='Y'>Yes</option>" ;
@@ -551,10 +551,10 @@ else {
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_parents")) {
 						?>
 						<tr id="rollGroupRow2">
-							<td> 
+							<td style='background: none; background-color: #EDF7FF;'> 
 								<b>Include parents?</b><br/>
 							</td>
-							<td class="right">
+							<td style='background: none; background-color: #EDF7FF;' class="right">
 								<select name="rollGroupsParents" id="rollGroupsParents" style="width: 302px">
 									<?
 									print "<option value='Y'>Yes</option>" ;
@@ -591,21 +591,21 @@ else {
 						});
 					</script>
 					<tr>
-						<td style='border-top: 1px solid #666'> 
+						<td> 
 							<b>Course</b><br/>
 							<span style="font-size: 90%"><i>Members of a course<br/></i></span>
 						</td>
-						<td style='border-top: 1px solid #666' class="right">
+						<td class="right">
 							<input type="radio" name="course" class="course" value="Y"/> Yes
 							<input checked type="radio" name="course" class="course" value="N"/> No
 						</td>
 					</tr>
 					<tr id="courseRow">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Courses</b><br/>
 							<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="courses[]" id="courses[]" multiple style="width: 302px; height: 100px">
 								<?
 								try {
@@ -629,10 +629,10 @@ else {
 						</td>
 					</tr>
 					<tr id="courseRow3">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Include staff?</b><br/>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="coursesStaff" id="coursesStaff" style="width: 302px">
 								<?
 								print "<option value='Y'>Yes</option>" ;
@@ -642,10 +642,10 @@ else {
 						</td>
 					</tr>
 					<tr id="courseRow4">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Include students?</b><br/>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="coursesStudents" id="coursesStudents" style="width: 302px">
 								<?
 								print "<option value='Y'>Yes</option>" ;
@@ -658,10 +658,10 @@ else {
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_parents")) {
 						?>
 						<tr id="courseRow2">
-							<td> 
+							<td style='background: none; background-color: #EDF7FF;'> 
 								<b>Include parents?</b><br/>
 							</td>
-							<td class="right">
+							<td style='background: none; background-color: #EDF7FF;' class="right">
 								<select name="coursesParents" id="coursesParents" style="width: 302px">
 									<?
 									print "<option value='Y'>Yes</option>" ;
@@ -698,21 +698,21 @@ else {
 						});
 					</script>
 					<tr>
-						<td style='border-top: 1px solid #666'> 
+						<td> 
 							<b>Class</b><br/>
 							<span style="font-size: 90%"><i>Members of a class<br/></i></span>
 						</td>
-						<td style='border-top: 1px solid #666' class="right">
+						<td class="right">
 							<input type="radio" name="class" class="class" value="Y"/> Yes
 							<input checked type="radio" name="class" class="class" value="N"/> No
 						</td>
 					</tr>
 					<tr id="classRow">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Classes</b><br/>
 							<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="classes[]" id="classes[]" multiple style="width: 302px; height: 100px">
 								<?
 								try {
@@ -736,10 +736,10 @@ else {
 						</td>
 					</tr>
 					<tr id="classRow3">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Include staff?</b><br/>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="classesStaff" id="classesStaff" style="width: 302px">
 								<?
 								print "<option value='Y'>Yes</option>" ;
@@ -749,10 +749,10 @@ else {
 						</td>
 					</tr>
 					<tr id="classRow4">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Include students?</b><br/>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="classesStudents" id="classesStudents" style="width: 302px">
 								<?
 								print "<option value='Y'>Yes</option>" ;
@@ -765,10 +765,10 @@ else {
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_parents")) {
 						?>
 						<tr id="classRow2">
-							<td> 
+							<td style='background: none; background-color: #EDF7FF;'> 
 								<b>Include parents?</b><br/>
 							</td>
-							<td class="right">
+							<td style='background: none; background-color: #EDF7FF;' class="right">
 								<select name="classesParents" id="classesParents" style="width: 302px">
 									<?
 									print "<option value='Y'>Yes</option>" ;
@@ -805,21 +805,21 @@ else {
 						});
 					</script>
 					<tr>
-						<td style='border-top: 1px solid #666'> 
+						<td> 
 							<b>Activity</b><br/>
 							<span style="font-size: 90%"><i>Members of an activity<br/></i></span>
 						</td>
-						<td style='border-top: 1px solid #666' class="right">
+						<td class="right">
 							<input type="radio" name="activity" class="activity" value="Y"/> Yes
 							<input checked type="radio" name="activity" class="activity" value="N"/> No
 						</td>
 					</tr>
 					<tr id="activitiesRow">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Activities</b><br/>
 							<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
 						</td>
-						<td activities="right">
+						<td style='background: none; background-color: #EDF7FF;' activities="right">
 							<select name="activities[]" id="activities[]" multiple style="width: 302px; height: 100px">
 								<?
 								try {
@@ -849,10 +849,10 @@ else {
 						</td>
 					</tr>
 					<tr id="activitiesRow3">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Include staff?</b><br/>
 						</td>
-						<td activities="right">
+						<td style='background: none; background-color: #EDF7FF;' activities="right">
 							<select name="activitiesStaff" id="activitiesStaff" style="width: 302px">
 								<?
 								print "<option value='Y'>Yes</option>" ;
@@ -862,10 +862,10 @@ else {
 						</td>
 					</tr>
 					<tr id="activitiesRow4">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Include students?</b><br/>
 						</td>
-						<td activities="right">
+						<td style='background: none; background-color: #EDF7FF;' activities="right">
 							<select name="activitiesStudents" id="activitiesStudents" style="width: 302px">
 								<?
 								print "<option value='Y'>Yes</option>" ;
@@ -878,10 +878,10 @@ else {
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_parents")) {
 						?>
 						<tr id="activitiesRow2">
-							<td> 
+							<td style='background: none; background-color: #EDF7FF;'> 
 								<b>Include parents?</b><br/>
 							</td>
-							<td activities="right">
+							<td style='background: none; background-color: #EDF7FF;' activities="right">
 								<select name="activitiesParents" id="activitiesParents" style="width: 302px">
 									<?
 									print "<option value='Y'>Yes</option>" ;
@@ -909,21 +909,21 @@ else {
 						});
 					</script>
 					<tr>
-						<td style='border-top: 1px solid #666'> 
+						<td> 
 							<b>Applicants</b><br/>
 							<span style="font-size: 90%"><i>Applicants from a given year.<br/>Does not apply to the message wall.</i></span>
 						</td>
-						<td style='border-top: 1px solid #666' class="right">
+						<td class="right">
 							<input type="radio" name="applicants" class="applicants" value="Y"/> Yes
 							<input checked type="radio" name="applicants" class="applicants" value="N"/> No
 						</td>
 					</tr>
 					<tr id="applicantsRow">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Years</b><br/>
 							<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="applicantList[]" id="applicantList[]" multiple style="width: 302px; height: 100px">
 								<?
 								try {
@@ -958,21 +958,21 @@ else {
 						});
 					</script>
 					<tr>
-						<td style='border-top: 1px solid #666'> 
+						<td> 
 							<b>Houses</b><br/>
 							<span style="font-size: 90%"><i>Houses for competitions, etc.<br/></i></span>
 						</td>
-						<td style='border-top: 1px solid #666' class="right">
+						<td class="right">
 							<input type="radio" name="houses" class="houses" value="Y"/> Yes
 							<input checked type="radio" name="houses" class="houses" value="N"/> No
 						</td>
 					</tr>
 					<tr id="housesRow">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Houses</b><br/>
 							<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="houseList[]" id="houseList[]" multiple style="width: 302px; height: 100px">
 								<?
 								try {
@@ -1014,21 +1014,21 @@ else {
 						});
 					</script>
 					<tr>
-						<td style='border-top: 1px solid #666'> 
+						<td> 
 							<b>Indviduals</b><br/>
 							<span style="font-size: 90%"><i>Individuals from the whole school<br/></i></span>
 						</td>
-						<td style='border-top: 1px solid #666' class="right">
+						<td class="right">
 							<input type="radio" name="individuals" class="individuals" value="Y"/> Yes
 							<input checked type="radio" name="individuals" class="individuals" value="N"/> No
 						</td>
 					</tr>
 					<tr id="individualsRow">
-						<td> 
+						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Individuals</b><br/>
 							<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
 						</td>
-						<td class="right">
+						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="individualList[]" id="individualList[]" multiple style="width: 302px; height: 100px">
 								<?
 								try {

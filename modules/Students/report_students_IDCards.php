@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/report_student_da
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Student Data Updater History</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Student ID Cards</div>" ;
 	print "</div>" ;
 	print "<p>" ;
 	print "This report allows a user to select a range of students and create ID cards for those students." ;
@@ -45,8 +45,7 @@ else {
 	?>
 	
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_students_IDCards.php"?>" enctype="multipart/form-data">
-		<table cellspacing='0' style="width: 100%">	
-			<tr><td style="width: 30%"></td><td></td></tr>
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
 					<b>Students *</b><br/>
@@ -176,7 +175,7 @@ else {
 				}
 			}
 
-			print "<table cellspacing='0' style='width: 100%'>" ;
+			print "<table class='blank' cellspacing='0' style='width: 100%'>" ;
 			
 			$count=0;
 			$columns=1 ;
@@ -187,7 +186,7 @@ else {
 				}
 				print "<td style='width:" . (100/$columns) . "%; text-align: center; vertical-align: top'>" ;
 					print "<div style='width: 488px; height: 308px; border: 1px solid black; $bg'>" ;
-						print "<table cellspacing='0' style='width 448px; max-width 448px; height: 268px; max-height: 268px; margin: 45px 10px 10px 10px'>" ; 
+						print "<table class='blank' cellspacing='0' style='width 448px; max-width 448px; height: 268px; max-height: 268px; margin: 45px 10px 10px 10px'>" ; 
 							print "<tr>" ;
 								print "<td style='padding: 0px ; width: 150px; height: 200px; vertical-align: top' rowspan=5>" ;
 									if ($row["image_240"]=="" OR file_exists($_SESSION[$guid]["absolutePath"] . "/" . $row["image_240"])==FALSE) {  

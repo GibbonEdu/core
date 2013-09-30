@@ -60,7 +60,7 @@ else {
 		print "<a href='javascript:window.print()'><img title='Print' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 		print "</div>" ;
 
-		print "<table cellspacing='0' style='width: 100%'>" ;
+		print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Student" ;

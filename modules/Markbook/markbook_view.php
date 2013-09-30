@@ -242,7 +242,7 @@ else {
 						print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view_full.php&gibbonCourseClassID=$gibbonCourseClassID&width=1100&height=550'><img title='Full Screen' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/zoom.png'/></a>" ;
 						print "</div>" ;
 				
-						print "<table cellspacing='0' style='width: 100%; margin-top: 0px'>" ;
+						print "<table class='mini' cellspacing='0' style='width: 100%; margin-top: 0px'>" ;
 							print "<tr class='head'>" ;
 								print "<th rowspan=2>" ;
 									print "Student" ;
@@ -347,7 +347,7 @@ else {
 							
 							print "<tr class='head'>" ;
 								for ($i=0;$i<$columns;$i++) {
-									print "<th style='text-align: center; width: 40px; border-left: 1px solid #000'>" ;
+									print "<th style='text-align: center; width: 40px'>" ;
 										try {
 											$dataScale=array("gibbonScaleID"=>$attainmentID[$i]); 
 											$sqlScale="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
@@ -471,7 +471,7 @@ else {
 												if ($rowEntry["attainmentConcern"]=="Y") {
 													$styleAttainment="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
 												}
-												print "<td style='text-align: center; border-left: 1px solid #000'>" ;
+												print "<td style='text-align: center'>" ;
 													$attainment=$rowEntry["attainmentValue"] ;
 													if ($rowEntry["attainmentValue"]=="Complete") {
 														$attainment="CO" ;
@@ -520,7 +520,7 @@ else {
 												if ($gibbonRubricID[$i]!="") {
 													$span=5 ;
 												}
-												print "<td style='text-align: center; border-left: 1px solid #000' colspan=$span>" ;
+												print "<td style='text-align: center' colspan=$span>" ;
 												print "</td>" ;
 											}
 											if ($submission[$i]==TRUE) {

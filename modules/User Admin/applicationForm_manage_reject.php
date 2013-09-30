@@ -97,24 +97,18 @@ else {
 			
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_rejectProcess.php?gibbonApplicationFormID=$gibbonApplicationFormID&search=$search" ?>">
-				<table cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
 							<b>Are you sure you want to reject the application for <? print formatName("", $row["preferredName"], $row["surname"], "Student") ?>?</b><br/>
 						</td>
-						<td class="right">
-							
-						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td class="right"> 
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
 							<input name="gibbonApplicationFormID" id="gibbonApplicationFormID" value="<? print $gibbonApplicationFormID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<input type="submit" value="Yes">
-						</td>
-						<td class="right">
-							
 						</td>
 					</tr>
 				</table>

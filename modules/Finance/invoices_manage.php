@@ -452,13 +452,13 @@ else {
 
 			print "<form onsubmit='return confirm(\"Are you sure you wish to process this action? It cannot be undone.\")' method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_processBulk.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" ;
 				print "<fieldset style='border: none'>" ;
-					print "<div class='linkTop' style='text-align: right'>" ;
+					print "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>" ;
 						print "<div style='margin: 0 0 3px 0'>" ;
 							print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='New Fees & Invoices' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.gif'/></a><br/>" ;
 						print "</div>" ;
 						?>
 						<input style='margin-top: 0px; float: right' type='submit' value='Go'>
-						<select name="action" id="action" style='width:100px; float: right; margin-right: 1px;'>
+						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
 							<option value="Select action">Select action</option>
 							<?
 							if ($status=="Pending") {

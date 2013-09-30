@@ -118,12 +118,7 @@ else {
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_medical_editProcess.php?gibbonPersonMedicalUpdateID=$gibbonPersonMedicalUpdateID" ?>">
 					<?
 							
-					print "<table cellspacing='0' style='width: 100%'>" ;
-						print "<tr>" ;
-							print "<td colspan=4> " ;
-								print "<h3>Basic Information</h3>" ;
-							print "</td>" ;
-						print "</tr>" ;
+					print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
 								print "Field" ;
@@ -138,7 +133,11 @@ else {
 								print "Accept" ;
 							print "</th>" ;
 						print "</tr>" ;
-						
+						print "<tr class='break'>" ;
+							print "<td colspan=4> " ;
+								print "<h3>Basic Information</h3>" ;
+							print "</td>" ;
+						print "</tr>" ;
 						
 						$rowNum="odd" ;
 						$rowNum="even" ;
@@ -250,24 +249,10 @@ else {
 								$rowCond2=$resultCond2->fetch() ;
 							}
 				
-							print "<tr>" ;
+							print "<tr class='break'>" ;
 								print "<td colspan=4> " ;
 									print "<h3>Existing Condition " . ($count+1) . "</h3>" ;
 								print "</td>" ;
-							print "</tr>" ;
-							print "<tr class='head'>" ;
-								print "<th>" ;
-									print "Field" ;
-								print "</th>" ;
-								print "<th>" ;
-									print "Current Value" ;
-								print "</th>" ;
-								print "<th>" ;
-									print "New Value" ;
-								print "</th>" ;
-								print "<th>" ;
-									print "Accept" ;
-								print "</th>" ;
 							print "</tr>" ;
 							print "<tr class='odd'>" ;
 								print "<td>" ;
@@ -478,24 +463,10 @@ else {
 							$count2++ ;
 							$resultCond2=NULL ;
 							$rowCond2=NULL ;
-							print "<tr>" ;
+							print "<tr class='break'>" ;
 								print "<td colspan=4> " ;
 									print "<h3>New Condition $count2</h3>" ;
 								print "</td>" ;
-							print "</tr>" ;
-							print "<tr class='head'>" ;
-								print "<th>" ;
-									print "Field" ;
-								print "</th>" ;
-								print "<th>" ;
-									print "Current Value" ;
-								print "</th>" ;
-								print "<th>" ;
-									print "New Value" ;
-								print "</th>" ;
-								print "<th>" ;
-									print "Accept" ;
-								print "</th>" ;
 							print "</tr>" ;
 							print "<tr class='odd'>" ;
 								print "<td>" ;

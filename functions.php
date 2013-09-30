@@ -251,12 +251,12 @@ function getStudentFastFinder($connection2, $guid) {
 			$list=$list . "{id: \"" . $rowList["gibbonPersonID"] . "\", name: \"" . formatName("", htmlPrep($rowList["preferredName"]), htmlPrep($rowList["surname"]), "Student", true) . " (" . htmlPrep($rowList["name"]) . ")\"}," ;
 		}
 		$output.="<style>" ;
-			$output.="ul.token-input-list-facebook { width: 187px; float: left; height: 25px!important; }" ;
-			$output.="div.token-input-dropdown-facebook { width: 187px }" ;
+			$output.="ul.token-input-list-facebook { width: 157px; float: left; height: 25px!important; }" ;
+			$output.="div.token-input-dropdown-facebook { width: 157px }" ;
 		$output.="</style>" ;
-		$output.="<div style='padding-bottom: 15px; height: 40px; margin-top: 10px'>" ;
+		$output.="<div style='padding-bottom: 15px; height: 40px; margin-top: 0px'>" ;
 			$output.="<form method='get'>" ;
-				$output.="<table class='blank' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
+				$output.="<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
 					$output.="<tr>" ;
 						$output.="<td style='vertical-align: top'>" ; 
 							$output.="<input type='text' id='gibbonPersonID' name='gibbonPersonID' />" ;

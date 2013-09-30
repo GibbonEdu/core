@@ -98,8 +98,7 @@ else {
 		?>
 		
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-			<table cellspacing='0' style="width: 100%">	
-				<tr><td style="width: 30%"></td><td></td></tr>
+			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
 						<b>Person *</b><br/>
@@ -338,9 +337,8 @@ else {
 					$row=$result->fetch() ;
 					?>
 					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_personalProcess.php?gibbonPersonID=" . $gibbonPersonID ?>">
-						<table cellspacing='0' style="width: 100%">	
-							<tr><td style="width: 30%"></td><td></td></tr>
-							<tr>
+						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+							<tr class='break'>
 								<td colspan=2> 
 									<h3>Basic Information</h3>
 								</td>
@@ -511,7 +509,7 @@ else {
 							<?
 							if ($student OR $staff) {
 								?> 
-								<tr>
+								<tr class='break'>
 									<td colspan=2> 
 										<h3>Emergency Contacts</h3>
 									</td>
@@ -679,7 +677,7 @@ else {
 							}
 							?>
 							
-							<tr>
+							<tr class='break'>
 								<td colspan=2> 
 									<h3>Contact Information</h3>
 								</td>
@@ -1081,7 +1079,7 @@ else {
 									<?
 								}
 								?>
-							<tr>
+							<tr class='break'>
 								<td colspan=2> 
 									<h3>Background Information</h3>
 								</td>
@@ -1524,7 +1522,7 @@ else {
 							<?
 							if ($parent) {
 								?> 
-								<tr>
+								<tr class='break'>
 									<td colspan=2> 
 										<h3>Employment</h3>
 									</td>
@@ -1584,7 +1582,7 @@ else {
 							}
 							?>
 							
-							<tr>
+							<tr class='break'>
 								<td colspan=2> 
 									<h3>Miscellaneous</h3>
 								</td>
@@ -1645,12 +1643,10 @@ else {
 							
 							
 							<tr>
-								<td class="right" colspan=2>
+								<td>
 									<span style="font-size: 90%"><i>* denotes a required field</i></span>
 								</td>
-							</tr>
-							<tr>
-								<td class="right" colspan=2>
+								<td class="right">
 									<?php
 									if ($existing) {
 										print "<input type='hidden' name='existing' value='" . $row["gibbonPersonUpdateID"] . "'>" ;

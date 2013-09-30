@@ -249,7 +249,7 @@ else {
 					print "<div class='linkTop' style='height: 27px'>" ;
 						?>
 						<input style='margin-top: 0px; float: right' type='submit' value='Go'>
-						<select name="action" id="action" style='width:100px; float: right; margin-right: 1px;'>
+						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
 							<option value="Select action">Select action</option>
 							<option value="Mark as left">Mark as left</option>
 							<option value="Delete">Delete</option>

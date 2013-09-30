@@ -49,8 +49,7 @@ else {
 			This page allows you to import student enrolment data from a CSV file. The import includes all current students, giving their school year and roll group. The system will remove all enrolments in the current year, and add those provided in the import file. Select the CSV file you wish to use for the synchronise operation.<br/>
 		</p>
 		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/import_families.php&step=2" ?>" enctype="multipart/form-data">
-			<table cellspacing='0' style="width: 100%">	
-				<tr><td style="width: 30%"></td><td></td></tr>
+			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
 						<b>Family CSV File *</b><br/>
@@ -118,21 +117,17 @@ else {
 					</td>
 				</tr>
 				<tr>
-					<td class="right" colspan=2>
+					<td>
+						<span style="font-size: 90%"><i>* denotes a required field</i></span>
+					</td>
+					<td class="right">
 						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
 						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 						<input type="reset" value="Reset"> <input type="submit" value="Submit">
 					</td>
 				</tr>
-				<tr>
-					<td class="right" colspan=2>
-						<span style="font-size: 90%"><i>* denotes a required field</i></span>
-					</td>
-				</tr>
 			</table>
 		</form>
-		
-		
 		
 		<h4>
 			Notes

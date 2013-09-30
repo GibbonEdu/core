@@ -51,8 +51,7 @@ else {
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table cellspacing='0' style="width: 100%">	
-			<tr><td style="width: 30%"></td><td></td></tr>
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
 					<b>Timetable</b><br/>
@@ -271,11 +270,11 @@ else {
 	
 			//Final calc
 			$diffTime=strtotime($timeEnd)-strtotime($timeStart) ;
-			$width=(ceil(690/$daysInWeek)-12) . "px" ;
+			$width=(ceil(690/$daysInWeek)-20) . "px" ;
 	
 			$count=0;
 	
-			print "<table cellspacing='0' style='width: 760px; margin: 0px 0px 30px 0px;'>" ;
+			print "<table class='mini' cellspacing='0' style='width: 760px; margin: 0px 0px 30px 0px;'>" ;
 				print "<tr class='head'>" ;
 					print "<th style='vertical-align: top; width: 70px; text-align: center'>" ;
 						//Calculate week number
@@ -493,7 +492,7 @@ else {
 										if ($resultDay->rowCount()==1) {
 											$rowDay=$resultDay->fetch() ;
 											$zCount=0 ;
-											$day=$day . "<div style='position: relative'>" ;
+											$day=$day . "<div style='position: relative;'>" ;
 		
 											//Draw outline of the day
 											try {
@@ -527,7 +526,7 @@ else {
 														$effectiveEnd=$dayTimeEnd ;
 													}
 				
-													$width=(ceil(690/$daysInWeek)-12) . "px" ;
+													$width=(ceil(690/$daysInWeek)-20) . "px" ;
 													$height=ceil((strtotime($effectiveEnd)-strtotime($effectiveStart))/60) . "px" ;
 													$top=ceil(((strtotime($effectiveStart)-strtotime($dayTimeStart))+$startPad)/60) . "px" ;
 													$title="" ;

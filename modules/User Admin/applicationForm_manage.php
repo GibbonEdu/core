@@ -179,7 +179,7 @@ else {
 						print "Student<br/><span style='font-style: italic; font-size: 85%'>Application Date</span>" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Year of Birth<br/><span style='font-style: italic; font-size: 85%'>Year of Entry</span>" ;
+						print "Birth Year<br/><span style='font-style: italic; font-size: 85%'>Entry Year</span>" ;
 					print "</th>" ;
 					print "<th>" ;
 						print "Parents" ;

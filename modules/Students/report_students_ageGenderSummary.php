@@ -70,7 +70,7 @@ else {
 	else {
 		
 		
-		print "<table cellspacing='0' style='width: 100%'>" ;
+		print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th rowspan=2>" ;
 					print "Age<br/>" ;
@@ -170,7 +170,7 @@ else {
 				}
 			}
 			print "<tr style='background-color: #FFD2A9'>" ;
-				print "<td rowspan=2 style='border-bottom: 1px solid #000'>" ;
+				print "<td rowspan=2>" ;
 					print "<b>All Ages</b>" ;
 				print "</td>" ;
 				for ($i=1; $i<count($years); $i=$i+2) {
@@ -222,7 +222,7 @@ else {
 			print "</tr>" ;
 			print "<tr style='background-color: #FFD2A9'>" ;
 				for ($i=1; $i<count($years); $i=$i+2) {
-					print "<td colspan=2 style='text-align: center; border-bottom: 1px solid #000; font-weight: bold'>" ;
+					print "<td colspan=2 style='text-align: center; font-weight: bold'>" ;
 						$cellCount=0 ;
 						foreach ($everything as $thing) {
 							if ($thing[2]==$years[$i-1]) {
@@ -234,7 +234,7 @@ else {
 						}
 					print "</td>" ;
 				}
-				print "<td colspan=2 style='text-align: center; border-bottom: 1px solid #000; font-weight: bold'>" ;
+				print "<td colspan=2 style='text-align: center; font-weight: bold'>" ;
 					if (count($everything)!=0) {
 						print count($everything) ;
 					}
