@@ -88,8 +88,8 @@ if ($result->rowCount()==1) {
 ?>
 
 <form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] ?>/preferencesPasswordProcess.php">
-	<table cellspacing='0' style="width: 100%">	
-		<tr>
+	<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<tr class='break'>
 			<td colspan=2>
 				<h3>
 					Reset Password
@@ -149,7 +149,10 @@ if ($result->rowCount()==1) {
 			</td>
 		</tr>
 		<tr>
-			<td colspan=2 class="right">
+			<td>
+				<span style="font-size: 90%"><i>* denotes a required field</i></span>
+			</td>
+			<td class="right">
 				<?
 				if ($forceReset=="Y") {
 					print "<input type='hidden' name='forceReset' value='$forceReset'>" ;
@@ -160,18 +163,13 @@ if ($result->rowCount()==1) {
 				<input type="submit" value="Submit">
 			</td>
 		</tr>
-		<tr>
-			<td class="right" colspan=2>
-				<span style="font-size: 90%"><i>* denotes a required field</i></span>
-			</td>
-		</tr>
 	</table>
 </form>
 	
 	
 <form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] ?>/preferencesProcess.php">
-	<table cellspacing='0' style="width: 100%">	
-		<tr>
+	<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<tr class='break'>
 			<td colspan=2>
 				<h3>
 					Settings
@@ -215,15 +213,13 @@ if ($result->rowCount()==1) {
 		
 		
 		<tr>
-			<td colspan=2 class="right">
+			<td>
+				<span style="font-size: 90%"><i>* denotes a required field</i></span>
+			</td>
+			<td class='right'>
 				<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 				<input type="reset" value="Reset">
 				<input type="submit" value="Submit">
-			</td>
-		</tr>
-		<tr>
-			<td class="right" colspan=2>
-				<span style="font-size: 90%"><i>* denotes a required field</i></span>
 			</td>
 		</tr>
 	</table>
