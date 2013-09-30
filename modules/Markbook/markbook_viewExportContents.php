@@ -43,7 +43,7 @@ else {
 	$alert=getAlert($connection2, 002) ;
 	
 	//Proceed!
-	print "<table>" ;
+	print "<table cellspacing='0'>" ;
 		print "<tr>" ;
 			print "<td colspan=4>" ;
 				print "<h1 style='margin-bottom: 20px'>" ;

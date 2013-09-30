@@ -39,7 +39,7 @@ else {
 	print "This report prints a summary of emergency data for the selected students. In case of emergency, please try to contact parents first, and if they cannot be reached then contact the listed emergency contacts." ;
 	print "</p>" ;
 	
-	print "<h2 class='top'>" ;
+	print "<h2>" ;
 	print "Choose Students" ;
 	print "</h2>" ;
 	
@@ -47,7 +47,7 @@ else {
 	?>
 	
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_student_emergencySummary.php"?>">
-		<table style="width: 100%">	
+		<table cellspacing='0' style="width: 100%">	
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td> 
@@ -100,7 +100,7 @@ else {
 	if (count($choices)>0) {
 		$_SESSION[$guid]["report_student_emergencySummary.php_choices"]=$choices ;
 		
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 		print "Report Data" ;
 		print "</h2>" ;
 		
@@ -125,7 +125,7 @@ else {
 		print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_student_emergencySummary_print.php'><img title='Print' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 		print "</div>" ;
 	
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Student" ;

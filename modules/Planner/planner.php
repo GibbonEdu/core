@@ -146,12 +146,12 @@ else {
 					$_GET["search"]=$gibbonPersonID[0] ;
 				}
 				else {
-					print "<h2 class='top'>" ;
+					print "<h2>" ;
 					print "Choose" ;
 					print "</h2>" ;
 					?>
 					<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-						<table style="width: 100%">	
+						<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 							<tr><td style="width: 30%"></td><td></td></tr>
 							<tr>
 								<td> 
@@ -202,7 +202,7 @@ else {
 						$rowChild=$resultChild->fetch() ;
 						
 						if ($count>1) {
-							print "<h2 class='top'>" ;
+							print "<h2>" ;
 							print "Lessons" ;
 							print "</h2>" ;
 						}
@@ -251,7 +251,7 @@ else {
 									print "</div>" ;
 								}
 								else {
-									print "<table style='width: 100%'>" ;
+									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
 												print "Class" ;
@@ -418,7 +418,7 @@ else {
 										print "</div>" ;
 									}
 									else {
-										print "<table style='width: 100%'>" ;
+										print "<table cellspacing='0' style='width: 100%'>" ;
 											print "<tr class='head'>" ;
 												print "<th>" ;
 													print "Date" ;
@@ -629,7 +629,7 @@ else {
 						print "</div>" ;
 					}
 					else {
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
 									print "Class" ;
@@ -911,7 +911,7 @@ else {
 						else {
 							//PRINT LESSON VIEW
 							if ($subView=="lesson" OR $subView=="") {
-								print "<table style='width: 100%'>" ;
+								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
 											print "Date" ;
@@ -1191,7 +1191,7 @@ else {
 										$lastDate=$rowSpecial["date"] ;
 									}
 								
-									print "<table style='width: 100%'>" ;
+									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
 												print "Lesson<br/>Number" ;

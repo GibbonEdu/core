@@ -135,14 +135,14 @@ else {
 					print "});" ;
 				print "});" ;
 			print "</script>" ;
-			print "<div class='top' style='text-align: right'>" ;
+			print "<div style='text-align: right'>" ;
 				print "<a class='gbooks' onclick='return false' href='#'>Get Book Data From Google</a>" ;
 			print "</div>" ;
 		}
 		
 		//Create fields
 		$fields=unserialize($row["fields"]) ;
-		$output.="<table style='text-align: left; width: 100%'>" ;
+		$output.="<table cellspacing='0' style='text-align: left; width: 100%'>" ;
 			$output.="<tr><td style='width: 30%'></td><td></td></tr>" ;
 			foreach ($fields as $field) {
 				$fieldName=preg_replace("/ /", "", $field["name"]) ;

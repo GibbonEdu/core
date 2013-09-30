@@ -145,7 +145,7 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_editProcess.php?gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ?>">
-					<table style="width: 100%">	
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
 								<b>Student *</b><br/>
@@ -369,14 +369,12 @@ else {
 						</tr>
 						
 						<tr>
-							<td class="right" colspan=2>
+							<td>
+								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+							</td>
+							<td class="right">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 								<input type="reset" value="Reset"> <input type="submit" value="Submit">
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
 							</td>
 						</tr>
 					</table>

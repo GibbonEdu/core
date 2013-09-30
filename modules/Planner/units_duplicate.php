@@ -150,16 +150,15 @@ else {
 							
 							//Step 1
 							if ($step==1) {
-								print "<h3>" ;
+								print "<h2>" ;
 								print "Step 1" ;
-								print "</h3>" ;
+								print "</h2>" ;
 								?>
 								<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_duplicate.php&step=2&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID" ?>">
-									<table style="width: 100%">	
-										<tr><td style="width: 30%"></td><td></td></tr>
-										<tr>
+									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+										<tr class='break'>
 											<td colspan=2> 
-												<h3 class='top'>Source</h3>
+												<h3>Source</h3>
 											</td>
 										</tr>
 										<tr>
@@ -208,9 +207,9 @@ else {
 											</td>
 										</tr>
 										
-										<tr>
+										<tr class='break'>
 											<td colspan=2> 
-												<h3 class='top'>Target</h3>
+												<h3>Target</h3>
 											</td>
 										</tr>
 												
@@ -294,14 +293,12 @@ else {
 										</tr>
 										
 										<tr>
-											<td class="right" colspan=2>
+											<td>
+												<span style="font-size: 90%"><i>* denotes a required field</i></span>
+											</td>
+											<td class="right">
 												<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 												<input type="reset" value="Reset"> <input type="submit" value="Submit">
-											</td>
-										</tr>
-										<tr>
-											<td class="right" colspan=2>
-												<span style="font-size: 90%"><i>* denotes a required field</i></span>
 											</td>
 										</tr>
 									</table>
@@ -309,9 +306,9 @@ else {
 								<?
 							}
 							else if ($step==2) {
-								print "<h3>" ;
+								print "<h2>" ;
 								print "Step 2" ;
-								print "</h3>" ;
+								print "</h2>" ;
 								
 								$gibbonCourseIDTarget=$_POST["gibbonCourseIDTarget"] ;
 								if ($gibbonCourseIDTarget=="") {
@@ -328,9 +325,7 @@ else {
 									else {
 										?>
 										<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_duplicateProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=" . $_GET["q"] ?>">
-											<table style="width: 100%">	
-												<tr><td style="width: 30%"></td><td></td></tr>
-												
+											<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 												<script type="text/javascript">
 													/* Resource 1 Option Control */
 													$(document).ready(function(){
@@ -355,9 +350,9 @@ else {
 														<input type="radio" name="copyLessons" value="No" class="copyLessons" /> No
 													</td>
 												</tr>
-												<tr>
+												<tr class='break'>
 													<td colspan=2> 
-														<h3 class='top'>Source</h3>
+														<h3>Source</h3>
 													</td>
 												</tr>
 												<tr>
@@ -443,9 +438,9 @@ else {
 												}
 												?>
 												
-												<tr>
+												<tr class='break'>
 													<td colspan=2> 
-														<h3 class='top'>Target</h3>
+														<h3>Target</h3>
 													</td>
 												</tr>
 												
@@ -499,15 +494,13 @@ else {
 													</td>
 												</tr>
 												<tr>
-													<td class="right" colspan=2>
+													<td>
+														<span style="font-size: 90%"><i>* denotes a required field</i></span>
+													</td>
+													<td class="right">
 														<input type="hidden" name="gibbonCourseIDTarget" value="<? print $gibbonCourseIDTarget ?>">
 														<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 														<input type="reset" value="Reset"> <input type="submit" value="Submit">
-													</td>
-												</tr>
-												<tr>
-													<td class="right" colspan=2>
-														<span style="font-size: 90%"><i>* denotes a required field</i></span>
 													</td>
 												</tr>
 											</table>

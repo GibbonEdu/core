@@ -87,7 +87,7 @@ else {
 			print "</div>" ;
 		} 
 		
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 		print "Choose User" ;
 		print "</h2>" ;
 		
@@ -95,7 +95,7 @@ else {
 		?>
 		
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-			<table style="width: 100%">	
+			<table cellspacing='0' style="width: 100%">	
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
 					<td> 
@@ -164,7 +164,7 @@ else {
 		<?
 		
 		if ($gibbonPersonID!="") {
-			print "<h2 class='top'>" ;
+			print "<h2>" ;
 			print "Update Data" ;
 			print "</h2>" ;
 			
@@ -273,7 +273,7 @@ else {
 						$rowForm=$resultForm->fetch() ;
 						?>
 						<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_medicalProcess.php?gibbonPersonID=" . $gibbonPersonID ?>">
-							<table style="width: 100%">	
+							<table cellspacing='0' style="width: 100%">	
 								<tr><td style="width: 30%"></td><td></td></tr>
 								<tr>
 									<td> 

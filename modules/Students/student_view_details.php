@@ -69,7 +69,7 @@ else {
 					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/student_view.php'>View Student Profiles</a> > </div><div class='trailEnd'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</div>" ;
 					print "</div>" ;
 					
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr>" ;
 							print "<td style='width: 33%; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Year Group</span><br/>" ;
@@ -183,7 +183,7 @@ else {
 						print "</div>" ;
 					}
 					
-					print "<h2 class='top'>" ;
+					print "<h2>" ;
 						if ($subpage!="") {
 							print $subpage ;
 						}
@@ -210,7 +210,7 @@ else {
 							print "</div>" ;
 						}
 						
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Preferred Name</span><br/>" ;
@@ -370,7 +370,7 @@ else {
 							print "</div>" ;
 						}
 						
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Surname</span><br/>" ;
@@ -425,7 +425,7 @@ else {
 						print "Contacts" ;
 						print "</h4>" ;
 						
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							$numberCount=0 ;
 							if ($row["phone1"]!="" OR $row["phone2"]!="" OR $row["phone3"]!="" OR $row["phone4"]!="") {
 								print "<tr>" ;
@@ -494,7 +494,7 @@ else {
 						print "School Information" ;
 						print "</h4>" ;
 						
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Last School</span><br/>" ;
@@ -562,7 +562,7 @@ else {
 						print "Background" ;
 						print "</h4>" ;
 						
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td width: 33%; style='vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Country of Birth</span><br/>" ;
@@ -648,7 +648,7 @@ else {
 						print "<h4>" ;
 						print "School Data" ;
 						print "</h4>" ;
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Year Group</span><br/>" ;
@@ -744,7 +744,7 @@ else {
 						print "System Data" ;
 						print "</h4>" ;
 						
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td width: 33%; style='vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Username</span><br/>" ;
@@ -765,7 +765,7 @@ else {
 						print "Miscellaneous" ;
 						print "</h4>" ;
 						
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Transport</span><br/>" ;
@@ -809,7 +809,7 @@ else {
 								}
 								
 								//Print family information
-								print "<table style='width: 100%'>" ;
+								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr>" ;
 										print "<td style='width: 33%; vertical-align: top'>" ;
 											print "<span style='font-size: 115%; font-weight: bold'>Family Name</span><br/>" ;
@@ -867,7 +867,7 @@ else {
 									print "<h4>" ;
 									print "Adult $count" ;
 									print "</h4>" ;
-									print "<table style='width: 100%'>" ;
+									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr>" ;
 											print "<td style='width: 33%; vertical-align: top'>" ;
 												print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -1011,7 +1011,7 @@ else {
 									print "Siblings" ;
 									print "</h4>" ;
 								
-									print "<table style='width:100%'>" ;
+									print "<table cellspacing='0' style='width:100%'>" ;
 										$count=0 ;
 										$columns=3 ;
 	
@@ -1097,7 +1097,7 @@ else {
 							}
 							
 							while ($rowMember=$resultMember->fetch()) {
-								print "<table style='width: 100%'>" ;
+								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr>" ;
 										print "<td style='width: 33%; vertical-align: top'>" ;
 											print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -1143,7 +1143,7 @@ else {
 						print "<h4>" ;
 						print "2. Emergency Contacts" ;
 						print "</h4>" ;
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Contact 1</span><br/>" ;
@@ -1237,7 +1237,7 @@ else {
 								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
 
-							print "<table style='width: 100%'>" ;
+							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr>" ;
 									print "<td style='width: 33%; vertical-align: top'>" ;
 										print "<span style='font-size: 115%; font-weight: bold'>Long Term Medication?</span><br/>" ;
@@ -1287,7 +1287,7 @@ else {
 								}
 								print "</h4>" ;
 								
-								print "<table style='width: 100%'>" ;
+								print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr>" ;
 									print "<td style='width: 50%; vertical-align: top'>" ;
 										print "<span style='font-size: 115%; font-weight: bold'>Triggers</span><br/>" ;
@@ -1374,7 +1374,7 @@ else {
 								print "</div>" ;
 							}
 							else {
-								print "<table style='width: 100%'>" ;
+								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
 											print "Date<br/>" ;
@@ -1512,77 +1512,89 @@ else {
 									print "This page displays academic results for a student throughout their school career. Only subjects with published results are shown." ;
 								print "</p>" ;
 								
-								print "<div class='linkTop'>" ;
-									print "<input checked type='checkbox' name='details' class='details' value='Yes' />" ;
-									print "<span style='font-size: 85%; font-weight: normal; font-style: italic'> Show/Hide Details</span>" ;
-									?>
-									<script type="text/javascript">
-										/* Show/Hide detail control */
-										$(document).ready(function(){
-											$(".details").click(function(){
-												if ($('input[name=details]:checked').val() == "Yes" ) {
-													$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
-												} 
-												else {
-													$(".detailItem").slideUp("fast"); 
-												}
-											 });
-										});
-									</script>
-									<?
-								print "</div>" ;
-									
-								print "<div style='width: 100%; height: 20px'>" ;
-									print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&subpage=Markbook'>" ;
-										print"<table style='float: right; margin: 0px 0px'>" ;	
-											print"<tr>" ;
-												print"<td style='vertical-align: top'>" ; 
-													print "<select name='filter2' id='filter2' style='width:160px'>" ;
-														print "<option value=''>All Learning Areas</option>" ;
-														try {
-															$dataSelect=array(); 
-															$sqlSelect="SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name" ;
-															$resultSelect=$connection2->prepare($sqlSelect);
-															$resultSelect->execute($dataSelect);
+								print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&subpage=Markbook'>" ;
+									print"<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;	
+										?>
+										<tr>
+											<td> 
+												<b>Learning Areas</b><br/>
+												<span style="font-size: 90%"><i></i></span>
+											</td>
+											<td class="right">
+												<?
+												print "<select name='filter2' id='filter2' style='width:302px'>" ;
+													print "<option value=''>All Learning Areas</option>" ;
+													try {
+														$dataSelect=array(); 
+														$sqlSelect="SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name" ;
+														$resultSelect=$connection2->prepare($sqlSelect);
+														$resultSelect->execute($dataSelect);
+													}
+													catch(PDOException $e) { }
+													while ($rowSelect=$resultSelect->fetch()) {
+														$selected="" ;
+														if ($rowSelect["gibbonDepartmentID"]==$filter2) {
+															$selected="selected" ;
 														}
-														catch(PDOException $e) { }
-														while ($rowSelect=$resultSelect->fetch()) {
-															$selected="" ;
-															if ($rowSelect["gibbonDepartmentID"]==$filter2) {
-																$selected="selected" ;
+														print "<option $selected value='" . $rowSelect["gibbonDepartmentID"] . "'>" . $rowSelect["name"] . "</option>" ;
+													}
+												print "</select>" ;
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td> 
+												<b>School Years</b><br/>
+												<span style="font-size: 90%"><i></i></span>
+											</td>
+											<td class="right">
+												<?
+												print "<select name='filter' id='filter' style='width:302px'>" ;
+													print "<option value='*'>All Years</option>" ;
+													try {
+														$dataSelect=array("gibbonPersonID"=>$gibbonPersonID); 
+														$sqlSelect="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber" ;
+														$resultSelect=$connection2->prepare($sqlSelect);
+														$resultSelect->execute($dataSelect);
+													}
+													catch(PDOException $e) { }
+													while ($rowSelect=$resultSelect->fetch()) {
+														$selected="" ;
+														if ($rowSelect["gibbonSchoolYearID"]==$filter) {
+															$selected="selected" ;
+														}
+														print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . $rowSelect["year"] . " (" . $rowSelect["yearGroup"] . ")</option>" ;
+													}
+												print "</select>" ;
+												?>
+											</td>
+										</tr>
+										<?
+										print "<tr>" ;
+											print "<td class='right' colspan=2>" ;
+												print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
+												print "<input checked type='checkbox' name='details' class='details' value='Yes' />" ;
+												print "<span style='font-size: 85%; font-weight: normal; font-style: italic'> Show/Hide Details</span>" ;
+												?>
+												<script type="text/javascript">
+													/* Show/Hide detail control */
+													$(document).ready(function(){
+														$(".details").click(function(){
+															if ($('input[name=details]:checked').val() == "Yes" ) {
+																$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
+															} 
+															else {
+																$(".detailItem").slideUp("fast"); 
 															}
-															print "<option $selected value='" . $rowSelect["gibbonDepartmentID"] . "'>" . $rowSelect["name"] . "</option>" ;
-														}
-													print "</select>" ;
-												print"</td>" ;
-												print"<td style='vertical-align: top'>" ; 
-													print "<select name='filter' id='filter' style='width:160px'>" ;
-														print "<option value='*'>All Years</option>" ;
-														try {
-															$dataSelect=array("gibbonPersonID"=>$gibbonPersonID); 
-															$sqlSelect="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber" ;
-															$resultSelect=$connection2->prepare($sqlSelect);
-															$resultSelect->execute($dataSelect);
-														}
-														catch(PDOException $e) { }
-														while ($rowSelect=$resultSelect->fetch()) {
-															$selected="" ;
-															if ($rowSelect["gibbonSchoolYearID"]==$filter) {
-																$selected="selected" ;
-															}
-															print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . $rowSelect["year"] . " (" . $rowSelect["yearGroup"] . ")</option>" ;
-														}
-													print "</select>" ;
-												print"</td>" ;
-												print"<td class='right' style='vertical-align: top; width: 54px'>" ;
-													?>
-													<input style='margin-top: 0px; margin-right: -2px' type='submit' value='Filter'>
-													<?
-												print"</td>" ;
-											print"</tr>" ;
-										print"</table>" ;
-									print "</form>" ;
-								print "</div>" ;
+														 });
+													});
+												</script>
+												<?
+												print "<input type='submit' value='Go'>" ;
+											print "</td>" ;
+										print "</tr>" ;
+									print"</table>" ;
+								print "</form>" ;
 								
 								//Get class list
 								try {
@@ -1633,7 +1645,7 @@ else {
 											$teachers=$teachers . "</p>" ;
 											print $teachers ;
 						
-											print "<table style='width: 100%'>" ;
+											print "<table cellspacing='0' style='width: 100%'>" ;
 											print "<tr class='head'>" ;
 												print "<th style='width: 120px'>" ;
 													print "Assessment" ;
@@ -1891,7 +1903,7 @@ else {
 							else {
 								$row=$result->fetch() ;
 								
-								print "<table style='width: 100%'>" ;
+								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr>" ;
 										print "<td style='width: 34%; vertical-align: top'>" ;
 											print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -2080,7 +2092,7 @@ else {
 										print "</div>" ;
 									}
 									else {
-										print "<table style='width: 100%'>" ;
+										print "<table cellspacing='0' style='width: 100%'>" ;
 											print "<tr class='head'>" ;
 												print "<th>" ;
 													print "Activity" ;
@@ -2183,7 +2195,7 @@ else {
 							print "</div>" ;
 						}
 						else {
-							print "<h4 class='top'>" ;
+							print "<h4>" ;
 							print "Upcoming Deadlines" ;
 							print "</h4>" ;
 							
@@ -2255,7 +2267,7 @@ else {
 							else {
 								print "<div class='linkTop'>" ;
 									print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-										print"<table style='float: right; width: 250px; margin: 0px 0px'>" ;	
+										print"<table cellspacing='0' style='float: right; width: 250px; margin: 0px 0px'>" ;	
 											print"<tr>" ;
 												print"<td style='width: 190px'>" ; 
 													print"<select name='gibbonCourseClassIDFilter' id='gibbonCourseClassIDFilter' style='width:190px'>" ;
@@ -2286,7 +2298,7 @@ else {
 										print"</table>" ;
 									print"</form>" ;
 								print "</div>" ; 
-								print "<table style='width: 100%'>" ;
+								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
 											print "Class/Date" ;
@@ -2513,7 +2525,7 @@ else {
 					
 				
 					//PERSONAL DATA MENU ITEMS
-					$_SESSION[$guid]["sidebarExtra"].= "<h4 class='top'>Personal</h4>" ;
+					$_SESSION[$guid]["sidebarExtra"].= "<h4>Personal</h4>" ;
 					$_SESSION[$guid]["sidebarExtra"].= "<ul>" ;
 					$style="" ;
 					if ($subpage=="Summary") {

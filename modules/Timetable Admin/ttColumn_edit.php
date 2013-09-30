@@ -103,47 +103,44 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/ttColumn_editProcess.php?gibbonTTColumnID=$gibbonTTColumnID" ?>">
-			<table style="width: 100%">	
-				<tr><td style="width: 30%"></td><td></td></tr>
-				<tr>
-					<td> 
-						<b>Name *</b><br/>
-						<span style="font-size: 90%"><i>Must be unique for this school year.</i></span>
-					</td>
-					<td class="right">
-						<input name="name" id="name" maxlength=30 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
-						<script type="text/javascript">
-							var name = new LiveValidation('name');
-							name.add(Validate.Presence);
-						 </script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b>Short Name *</b><br/>
-						<span style="font-size: 90%"><i></i></span>
-					</td>
-					<td class="right">
-						<input name="nameShort" id="nameShort" maxlength=12 value="<? print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
-						<script type="text/javascript">
-							var nameShort = new LiveValidation('nameShort');
-							nameShort.add(Validate.Presence);
-						 </script>
-					</td>
-				</tr>
-				<tr>
-					<td class="right" colspan=2>
-						<input name="gibbonTTColumnID" id="gibbonTTColumnID" value="<? print $_GET["gibbonTTColumnID"] ?>" type="hidden">
-						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="reset" value="Reset"> <input type="submit" value="Submit">
-					</td>
-				</tr>
-				<tr>
-					<td class="right" colspan=2>
-						<span style="font-size: 90%"><i>* denotes a required field</i></span>
-					</td>
-				</tr>
-			</table>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr>
+						<td> 
+							<b>Name *</b><br/>
+							<span style="font-size: 90%"><i>Must be unique for this school year.</i></span>
+						</td>
+						<td class="right">
+							<input name="name" id="name" maxlength=30 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var name = new LiveValidation('name');
+								name.add(Validate.Presence);
+							 </script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b>Short Name *</b><br/>
+							<span style="font-size: 90%"><i></i></span>
+						</td>
+						<td class="right">
+							<input name="nameShort" id="nameShort" maxlength=12 value="<? print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var nameShort = new LiveValidation('nameShort');
+								nameShort.add(Validate.Presence);
+							 </script>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
+							<input name="gibbonTTColumnID" id="gibbonTTColumnID" value="<? print $_GET["gibbonTTColumnID"] ?>" type="hidden">
+							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+						</td>
+					</tr>
+				</table>
 			</form>
 			<?
 			
@@ -171,7 +168,7 @@ else {
 				print "</div>" ;
 			}
 			else {
-				print "<table style='width: 100%'>" ;
+				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
 							print "Name" ;

@@ -119,8 +119,7 @@ else {
 			$dateType=getSettingByScope($connection2, "Activities", "dateType") ;
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_editProcess.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
 							<b>Name</b><br/>
@@ -206,7 +205,7 @@ else {
 				print "</div>" ;
 			}
 			else {
-				print "<table style='width: 100%'>" ;
+				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
 							print "Student" ;

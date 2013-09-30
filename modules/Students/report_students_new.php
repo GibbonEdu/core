@@ -34,7 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>New Students</div>" ;
 	print "</div>" ;
 	
-	print "<h2 class='top'>" ;
+	print "<h2>" ;
 	print "Choose Options" ;
 	print "</h2>" ;
 	
@@ -43,7 +43,7 @@ else {
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table style="width: 100%">	
+		<table cellspacing='0' style="width: 100%">	
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<!-- FIELDS & CONTROLS FOR TYPE -->
 			<script type="text/javascript">
@@ -128,7 +128,7 @@ else {
 	<?
 	
 	if ($type!="") {
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 		print "Results" ;
 		print "</h2>" ;
 		
@@ -178,7 +178,7 @@ else {
 			catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
 			if ($result->rowCount()>0) {
 				if ($type=="Current School Year") {
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
 								print "Count" ;
@@ -243,7 +243,7 @@ else {
 					print "</table>" ; 			
 				}
 				else if ($type=="Date Range") {
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
 								print "Count" ;

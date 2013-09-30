@@ -65,11 +65,11 @@ else {
 				print "</div>" ;
 			}
 		
-			print "<h3 class='top'>" ;
+			print "<h3>" ;
 				print "Basic Information" ;
 			print "</h3>" ;
 			
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;

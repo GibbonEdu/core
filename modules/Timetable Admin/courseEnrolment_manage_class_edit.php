@@ -102,7 +102,7 @@ else {
 				print "</div>" ;
 			} 
 	
-			print "<h2 class='top'>" ;
+			print "<h2>" ;
 			print "Add Participants" ;
 			print "</h2>" ;
 			print "<p>" ;
@@ -110,8 +110,7 @@ else {
 			print "</p>" ;
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_class_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
 							<b>Participants</b><br/>
@@ -191,7 +190,10 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td class="right" colspan=2>
+						<td>
+							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<input type="reset" value="Reset"> <input type="submit" value="Submit">
 						</td>
@@ -200,7 +202,7 @@ else {
 			</form>
 
 			<?	
-			print "<h2 class='top'>" ;
+			print "<h2>" ;
 			print "Current Participants" ;
 			print "</h2>" ;
 			
@@ -237,7 +239,7 @@ else {
 						<?
 					print "</div>" ;
 					
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
 								print "Name" ;
@@ -309,7 +311,7 @@ else {
 				print "</form>" ;
 			}
 			
-			print "<h2 class='top'>" ;
+			print "<h2>" ;
 			print "Former Participants" ;
 			print "</h2>" ;
 			
@@ -330,7 +332,7 @@ else {
 			}
 			else {
 				print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_class_editProcessBulk.php'>" ;
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
 								print "Name" ;

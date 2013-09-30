@@ -49,7 +49,7 @@ else {
 			This page allows you to import student enrolment data from a CSV file. The import includes all current students, giving their school year and roll group. The system will remove all enrolments in the current year, and add those provided in the import file. Select the CSV file you wish to use for the synchronise operation.<br/>
 		</p>
 		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/import_studentEnrolment.php&step=2" ?>" enctype="multipart/form-data">
-			<table style="width: 100%">	
+			<table cellspacing='0' style="width: 100%">	
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
 					<td> 

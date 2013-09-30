@@ -33,7 +33,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Resources</div>" ;
 	print "</div>" ;
 	
-	print "<h3 class='top'>" ;
+	print "<h3>" ;
 		print "Filters" ;
 	print "</h3>" ;
 	
@@ -49,18 +49,13 @@ else {
 	$gibbonYearGroupID=trim($_POST["gibbonYearGroupID"]) ;
 	
 	//Display filters
-	print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_view.php'>Clear Filters</a>" ;
-	print "</div>" ;
 	print "<form method='post'>" ;
-		print "<table style='width: 100%'>" ;
+		print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
 			print "<tr>" ;
 				print "<td>" ;
 					print "<b>Tags</b>" ;
 				print "</td>" ;
-			print "</tr>" ;
-			print "<tr>" ;
-				print "<td style='padding: 0px 2px 0px 0px' colspan=4>" ;
+				print "<td style='padding: 0px 2px 0px 0px'>" ;
 					//Tag selector
 					try {
 						$dataList=array(); 
@@ -78,8 +73,8 @@ else {
 					}
 					?>
 					<style>
-						ul.token-input-list-facebook { width: 755px; height: 25px!important; float: none }
-						div.token-input-dropdown-facebook { width: 755px }
+						ul.token-input-list-facebook { width: 300px; height: 25px!important; float: right }
+						div.token-input-dropdown-facebook { width: 300px }
 					</style>
 					<input type="text" id="tag" name="tag" />
 					<script type="text/javascript">
@@ -108,20 +103,9 @@ else {
 				print "</td>" ;
 			print "</tr>" ;
 			print "<tr>" ;
-				print "<td style='padding-top: 10px'>" ;
+				print "<td>" ;
 					print "<b>Category</b>" ;
 				print "</td>" ;
-				print "<td style='padding-top: 10px'>" ;
-					print "<b>Purpose</b>" ;
-				print "</td>" ;
-				print "<td style='padding-top: 10px'>" ;
-					print "<b>Year Group</b>" ;
-				print "</td>" ;
-				print "<td style='padding-top: 10px'>" ;
-					
-				print "</td>" ;
-			print "</tr>" ;
-			print "<tr>" ;
 				print "<td style='padding: 0px 2px 0px 0px'>" ;
 					try {
 						$dataCategory=array(); 
@@ -132,7 +116,7 @@ else {
 					catch(PDOException $e) { 
 						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 					}
-					print "<select name='category' id='category' style='width:220px; height: 27px; margin-left: 0px; float: left'>" ;
+					print "<select name='category' id='category' style='width:302px'>" ;
 						print "<option value=''></option>" ;
 						if ($resultCategory->rowCount()==1) {
 							$rowCategory=$resultCategory->fetch() ;
@@ -150,6 +134,11 @@ else {
 							}
 						}
 					print "</select>" ;
+				print "</td>" ;
+			print "</tr>" ;
+			print "<tr>" ;
+				print "<td>" ;
+					print "<b>Purpose</b>" ;
 				print "</td>" ;
 				print "<td style='padding: 0px 2px 0px 0px'>" ;
 					try {
@@ -172,7 +161,7 @@ else {
 							$options=explode(",", $options) ;
 						}
 					}
-					print "<select name='purpose' id='purpose' style='width:220px; height: 27px; margin-left: 0px; float: left'>" ;
+					print "<select name='purpose' id='purpose' style='width:302px'>" ;
 						print "<option value=''></option>" ;
 						for ($i=0; $i<count($options); $i++) {
 							$selected="" ;
@@ -182,6 +171,11 @@ else {
 							print "<option $selected value='" . trim($options[$i]) . "'>" . trim($options[$i]) . "</option>" ;
 						}
 					print "</select>" ;
+				print "</td>" ;
+			print "</tr>" ;
+			print "<tr>" ;
+				print "<td>" ;
+					print "<b>Year Group</b>" ;
 				print "</td>" ;
 				print "<td style='padding: 0px 2px 0px 0px'>" ;
 					try {
@@ -193,7 +187,7 @@ else {
 					catch(PDOException $e) { 
 						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 					}
-					print "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width:220px; height: 27px; margin-left: 0px; float: left'>" ;
+					print "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width:302px'>" ;
 						print "<option value=''></option>" ;
 						while ($rowPurpose=$resultPurpose->fetch()) {
 							$selected="" ;
@@ -204,8 +198,11 @@ else {
 						}
 					print "</select>" ;
 				print "</td>" ;
-				print "<td style='padding: 0px 0px 0px 2px'>" ;
+			print "</tr>" ;
+			print "<tr>" ;
+				print "<td class='right' colspan=2>" ;
 					print "<input type='hidden' name='q' value='/modules/Resources/resources_view.php'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_view.php'>Clear Filters</a> " ;
 					print "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='Go'>" ;
 				print "</td>" ;
 			print "</tr>" ;
@@ -218,7 +215,7 @@ else {
 		$page=1 ;
 	}
 		
-	print "<h3 class='top'>" ;
+	print "<h3>" ;
 		print "View" ;
 	print "</h3>" ;
 	
@@ -276,7 +273,7 @@ else {
 			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top") ;
 		}
 	
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Name &<br/>Contributor" ;

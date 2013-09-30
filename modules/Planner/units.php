@@ -117,7 +117,7 @@ else {
 			}
 		
 			
-			print "<h2 class='top'>" ;
+			print "<h2>" ;
 				print $gibbonSchoolYearName ;
 			print "</h2>" ;
 			
@@ -163,7 +163,7 @@ else {
 				else {
 					$row=$result->fetch() ;
 				
-					print "<h4 class='top'>" ;
+					print "<h4>" ;
 						print $row["name"] ;
 					print "</h4>" ;
 					
@@ -188,7 +188,7 @@ else {
 						print "</div>" ;
 					}
 					else {
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th style='width: 150px'>" ;
 									print "Name" ;
@@ -196,7 +196,7 @@ else {
 								print "<th style='width: 450px'>" ;
 									print "Description" ;
 								print "</th>" ;
-								print "<th>" ;
+								print "<th style='width: 120px'>" ;
 									print "Actions" ;
 								print "</th>" ;
 							print "</tr>" ;
@@ -252,7 +252,7 @@ else {
 							catch(PDOException $e) { }
 							if ($resultHookUnits->rowCount()>0) {
 								print "<h4>" . $rowHooks["name"] . " Units</h4>" ;
-									print "<table style='width: 100%'>" ;
+									print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th style='width: 150px'>" ;
 											print "Name" ;

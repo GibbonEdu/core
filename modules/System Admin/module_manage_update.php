@@ -130,7 +130,7 @@ else {
 				print "</p>" ;
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_updateProcess.php?&gibbonModuleID=$gibbonModuleID" ?>">
-					<table style="width: 100%">	
+					<table cellspacing='0' style="width: 100%">	
 						<tr>
 							<td class="right"> 
 								<input type="hidden" name="versionDB" value="<? print $versionDB ?>">

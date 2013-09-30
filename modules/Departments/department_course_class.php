@@ -168,7 +168,7 @@ else {
 						}
 						
 						if ($resultLessons->rowCount()>0) {
-							print "<table style='width: 100%'>" ;
+							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr class='head'>" ;
 									print "<th>" ;
 										print "Lesson" ;
@@ -284,7 +284,7 @@ else {
 							
 							//Only show add if user has edit rights
 							if ($resultLessons->rowCount()>0) {
-								print "<table style='width: 100%'>" ;
+								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
 											print "Lesson" ;
@@ -368,7 +368,7 @@ else {
 					print "Other Lessons" ;
 					print "</h4>" ;
 				
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
 								print "Lesson" ;
@@ -505,7 +505,7 @@ else {
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "Current Classes" ;
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<table style='width: 100px'>" ;
+				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<table cellspacing='0' style='width: 100px'>" ;
 					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<tr>" ;
 						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<td class='right'>" ;
 							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<select style='width:240px' name='gibbonCourseClassID'>" ;

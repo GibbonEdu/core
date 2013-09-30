@@ -126,7 +126,7 @@ else {
 					} 
 					?>
 					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_bumpProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID" ?>">
-						<table style="width: 100%">	
+						<table cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
 									Pressing "Yes" below will move this lesson, and all succeeding lessons in this class, forward to the next available time slot. <b>Are you sure you want to bump "<? print $row["name"] ?>" forward?</b><br/>

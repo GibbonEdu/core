@@ -27,13 +27,13 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 		<script type="text/javascript">
 			$(document).ready(function(){
 				$("#blockInner<? print $i ?>").css("display","none");
-				$("#block<? print $i ?>").css("height","58px")
+				$("#block<? print $i ?>").css("height","72px")
 				
 				//Block contents control
 				$('#show<? print $i ?>').unbind('click').click(function() {
 					if ($("#blockInner<? print $i ?>").is(":visible")) {
 						$("#blockInner<? print $i ?>").css("display","none");
-						$("#block<? print $i ?>").css("height","58px")
+						$("#block<? print $i ?>").css("height","72px")
 						$('#show<? print $i ?>').css("background-image", "<? print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)"); 
 					} else {
 						$("#blockInner<? print $i ?>").slideDown("fast", $("#blockInner<? print $i ?>").css("display","table-row")); 
@@ -70,8 +70,8 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 				});
 			});
 		</script>
-		<div class="odd" style='border: 1px solid #d8dcdf; margin: 0 0 5px' id="block<? print $i ?>" style='padding: 0px'>
-			<table style='width: 100%'>
+		<div style='background-color: #EDF7FF; border: 1px solid #d8dcdf; margin: 0 0 5px' id="block<? print $i ?>" style='padding: 0px'>
+			<table class='blank' cellspacing='0' style='width: 100%'>
 				<tr>
 					<td style='width: 70%'>
 						<input name='order[]' type='hidden' value='<? print $i ?>'>
@@ -174,7 +174,7 @@ function invoiceContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYea
 		}
 
 		//Invoice Details
-		$return.="<table style='width: 100%'>" ;
+		$return.="<table cellspacing='0' style='width: 100%'>" ;
 			$return.="<tr>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top;' colspan=3>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>Invoice To (" .$row["invoiceTo"] . ")</span><br/>" ;
@@ -305,7 +305,7 @@ function invoiceContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYea
 			$return.="</div>" ;
 		}
 		else {
-			$return.="<table style='width: 100%'>" ;
+			$return.="<table cellspacing='0' style='width: 100%'>" ;
 				$return.="<tr class='head'>" ;
 					$return.="<th style='text-align: left'>" ;
 						$return.="Name" ;
@@ -409,7 +409,7 @@ function receiptContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYea
 		}
 
 		//Invoice Details
-		$return.="<table style='width: 100%'>" ;
+		$return.="<table cellspacing='0' style='width: 100%'>" ;
 			$return.="<tr>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top;' colspan=3>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>Receipt To (" .$row["invoiceTo"] . ")</span><br/>" ;
@@ -541,7 +541,7 @@ function receiptContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYea
 			$return.="</div>" ;
 		}
 		else {
-			$return.="<table style='width: 100%'>" ;
+			$return.="<table cellspacing='0' style='width: 100%'>" ;
 				$return.="<tr class='head'>" ;
 					$return.="<th style='text-align: left'>" ;
 						$return.="Name" ;

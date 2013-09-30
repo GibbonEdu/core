@@ -90,7 +90,7 @@ else {
 			print "</div>" ;
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_deleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search" ?>">
-				<table style="width: 100%">	
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
 							<b>Are you sure you want to delete <? print formatName("", $row["preferredName"], $row["surname"], "Student") . " from " . $row["courseNameShort"] . "." . $row["name"] ?>?</b><br/>

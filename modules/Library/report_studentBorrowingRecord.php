@@ -36,7 +36,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Student Borrowing Record</div>" ;
 	print "</div>" ;
 	
-	print "<h2 class='top'>" ;
+	print "<h2>" ;
 	print "Choose Student" ;
 	print "</h2>" ;
 	
@@ -44,7 +44,7 @@ else {
 	?>
 	
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentBorrowingRecord.php"?>">
-		<table style="width: 100%">	
+		<table cellspacing='0' style="width: 100%">	
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td> 
@@ -84,7 +84,7 @@ else {
 	if ($gibbonPersonID!="") {
 		$_SESSION[$guid]["report_student_emergencySummary.php_choices"]=$choices ;
 		
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 		print "Report Data" ;
 		print "</h2>" ;
 		

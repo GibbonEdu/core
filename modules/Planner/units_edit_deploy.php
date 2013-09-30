@@ -177,7 +177,7 @@ else {
 							$step=1 ;
 						}
 						
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>School Year</span><br/>" ;
@@ -346,7 +346,7 @@ else {
 								
 							
 								print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_deploy.php&step=2&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID'>" ;
-									print "<table style='width: 100%'>" ;
+									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
 												print "Lesson<br/>Number" ;
@@ -647,7 +647,7 @@ else {
 									
 									?>
 									<b>Access</b><br/>
-									<table style="width: 100%">	
+									<table cellspacing='0' style="width: 100%">	
 										<tr id="accessRowStudents">
 											<td> 
 												<b>Viewable to Students *</b><br/>

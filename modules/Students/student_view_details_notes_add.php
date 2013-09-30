@@ -90,7 +90,7 @@ else {
 
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_addProcess.php?gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage" ?>">
-				<table style="width: 100%">	
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<?
 					try {
 						$dataCategories=array(); 
@@ -150,14 +150,12 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td class="right" colspan=2>
+						<td>
+							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<input type="reset" value="Reset"> <input type="submit" value="Submit">
-						</td>
-					</tr>
-					<tr>
-						<td class="right" colspan=2>
-							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 					</tr>
 				</table>

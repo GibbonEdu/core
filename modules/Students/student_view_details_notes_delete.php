@@ -111,7 +111,7 @@ else {
 					}
 					?>
 					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_deleteProcess.php?gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&gibbonStudentNoteID=$gibbonStudentNoteID" ?>">
-						<table style="width: 100%">	
+						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
 									<b>Are you sure you want to delete this note?</b><br/>

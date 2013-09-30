@@ -100,7 +100,7 @@ else {
 	}
 	
 	if ($gibbonSchoolYearID!="") {
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 			print $gibbonSchoolYearName ;
 		print "</h2>" ;
 		
@@ -217,7 +217,7 @@ else {
 				$count=1;
 				
 				print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manageProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID'>" ;
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th style='width: 14px'>" ;
 							print "Monday" ;
@@ -253,7 +253,7 @@ else {
 						}
 						
 						if ($i<$firstDayStamp OR $i>$lastDayStamp OR $days[date("D",$i)]=="N") {
-							print "<td style='background-color: #bbbbbb; border-bottom: 1px solid black!important'>" ;
+							print "<td style='background-color: #bbbbbb'>" ;
 							print "</td>" ;
 								
 							if ($i==$specialDayStamp) {
@@ -263,14 +263,14 @@ else {
 						}
 						else {
 							if ($i==$specialDayStamp AND $rowSpecial["type"]=="School Closure") {
-								print "<td style='vertical-align: top; text-align: center; background-color: #bbbbbb; font-size: 10px; border-bottom: 1px solid black!important'>" ;
+								print "<td style='vertical-align: top; text-align: center; background-color: #bbbbbb; font-size: 10px'>" ;
 									print "<span style='color: #fff'>" . date("d/m/Y",$i) . "<br/>" . $rowSpecial["name"] . "</span>" ;
 									print "<br/>" ;
 									$rowSpecial=$resultSpecial->fetch() ;
 								print "</td>" ;
 							}
 							else {
-								print "<td style='vertical-align: top; text-align: center; background-color: #eeeeee; font-size: 10px; border-bottom: 1px solid black!important'>" ;
+								print "<td style='vertical-align: top; text-align: center; background-color: #eeeeee; font-size: 10px'>" ;
 									if ($i==$specialDayStamp AND $rowSpecial["type"]=="Timing Change") {
 										 print "<span style='color: #000000'>" . date("d/m/Y",$i) . "<br/></span><span style='color: #f00'>Timing Change</span>" ;
 									}

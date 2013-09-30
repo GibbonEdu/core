@@ -75,7 +75,7 @@ else {
 			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "search=$search") ;
 		}
 	
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Name" ;

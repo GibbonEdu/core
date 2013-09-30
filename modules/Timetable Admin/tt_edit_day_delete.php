@@ -81,7 +81,7 @@ else {
 			} 
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_deleteProcess.php?gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
-				<table style="width: 100%">	
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
 							<b>Are you sure you want to delete timetable day "<? print $row["name"] ?>"?</b><br/>

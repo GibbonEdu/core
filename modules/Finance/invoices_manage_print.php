@@ -107,7 +107,7 @@ else {
 				print "</div>" ;
 			}
 			else {
-				print "<table style='width: 100%'>" ;
+				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th style='width: 120px'>" ;
 							print "Item</span>" ;

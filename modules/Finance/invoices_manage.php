@@ -124,7 +124,7 @@ else {
 	}
 	
 	if ($gibbonSchoolYearID!="") {
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 			print $gibbonSchoolYearName ;
 		print "</h2>" ;
 		
@@ -156,31 +156,17 @@ else {
 		print "<h3>" ;
 			print "Filters" ;
 		print "</h3>" ;
-		print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php'>Clear Filters</a>" ;
-		print "</div>" ;
 		print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php'>" ;
-			print "<table style='width: 100%'>" ;
-				print "<tr>" ;
-					print "<td style='padding-top: 15px'>" ;
-						print "<b>Status</b>" ;
-					print "</td>" ;
-					print "<td style='padding-top: 15px'>" ;
-						print "<b>Student</b>" ;
-					print "</td>" ;
-					print "<td style='padding-top: 15px'>" ;
-						print "<b>Month of Issue</b>" ;
-					print "</td>" ;
-					print "<td style='padding-top: 15px'>" ;
-						print "<b>Billing Schedule</b>" ;
-					print "</td>" ;
-					print "<td style='padding-top: 15px'>" ;
-						
-					print "</td>" ;
-				print "</tr>" ;
-				print "<tr>" ;
-					print "<td style='padding: 0px 2px 0px 0px'>" ;
-						print "<select name='status' id='status' style='width:120px; margin-left: 0px'>" ;
+			print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
+				?>
+				<tr>
+					<td> 
+						<b>Status</b><br/>
+						<span style="font-size: 90%"><i></i></span>
+					</td>
+					<td class="right">
+						<?
+						print "<select name='status' id='status' style='width:302px'>" ;
 							$selected="" ;
 							if ($status=="%") {
 								$selected="selected" ;
@@ -222,8 +208,16 @@ else {
 							}
 							print "<option $selected value='Refunded'>Refunded</option>" ;
 						print "</select>" ;
-					print "</td>" ;
-					print "<td style='padding: 0px 2px 0px 0px'>" ;
+						?>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b>Student</b><br/>
+						<span style="font-size: 90%"><i></i></span>
+					</td>
+					<td class="right">
+						<?
 						try {
 							$dataPurpose=array(); 
 							$sqlPurpose="SELECT surname, preferredName, gibbonFinanceInvoiceeID FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) ORDER BY surname, preferredName" ;
@@ -232,7 +226,7 @@ else {
 						}
 						catch(PDOException $e) { }
 					
-						print "<select name='gibbonFinanceInvoiceeID' id='gibbonFinanceInvoiceeID' style='width:235px; margin-left: 0px'>" ;
+						print "<select name='gibbonFinanceInvoiceeID' id='gibbonFinanceInvoiceeID' style='width:302px'>" ;
 							print "<option value=''></option>" ;
 							while ($rowPurpose=$resultPurpose->fetch()) {
 								$selected="" ;
@@ -242,9 +236,17 @@ else {
 								print "<option $selected value='" . $rowPurpose["gibbonFinanceInvoiceeID"] . "'>" .  formatName("", htmlPrep($rowPurpose["preferredName"]), htmlPrep($rowPurpose["surname"]), "Student", true) . "</option>" ;
 							}
 						print "</select>" ;
-					print "</td>" ;
-					print "<td style='padding: 0px 2px 0px 0px'>" ;
-						print "<select name='monthOfIssue' id='monthOfIssue' style='width:165px; margin-left: 0px'>" ;
+						?>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b>Month of Issue</b><br/>
+						<span style="font-size: 90%"><i></i></span>
+					</td>
+					<td class="right">
+						<?
+						print "<select name='monthOfIssue' id='monthOfIssue' style='width:302px'>" ;
 							print "<option value=''></option>" ;
 							for ($i=1; $i<=12; $i++) {
 								$selected="" ;
@@ -254,8 +256,16 @@ else {
 								print "<option $selected value=\"" . date("m",mktime(0,0,0,$i,1,0)) . "\">" . date("m",mktime(0,0,0,$i,1,0)) . " - " . date("F",mktime(0,0,0,$i,1,0)) . "</option>" ;
 							}
 						print "</select>" ;
-					print "</td>" ;
-					print "<td style='padding: 0px 2px 0px 0px'>" ;
+						?>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b>Billing Schedule</b><br/>
+						<span style="font-size: 90%"><i></i></span>
+					</td>
+					<td class="right">
+						<?
 						try {
 							$dataPurpose=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
 							$sqlPurpose="SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
@@ -264,7 +274,7 @@ else {
 						}
 						catch(PDOException $e) { }
 					
-						print "<select name='gibbonFinanceBillingScheduleID' id='gibbonFinanceBillingScheduleID' style='width:165px; margin-left: 0px'>" ;
+						print "<select name='gibbonFinanceBillingScheduleID' id='gibbonFinanceBillingScheduleID' style='width:302px'>" ;
 							print "<option value=''></option>" ;
 							while ($rowPurpose=$resultPurpose->fetch()) {
 								$selected="" ;
@@ -279,9 +289,15 @@ else {
 							}
 							print "<option $selected value='Ad Hoc'>Ad Hoc</option>" ;
 						print "</select>" ;
-					print "</td>" ;
-					print "<td style='padding: 0px 0px 0px 2px'>" ;
+						?>
+					</td>
+				</tr>
+				<?
+				
+				print "<tr>" ;
+					print "<td class='right' colspan=2>" ;
 						print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php'>Clear Filters</a> " ;
 						print "<input type='submit' value='Go'>" ;
 					print "</td>" ;
 				print "</tr>" ;
@@ -462,7 +478,7 @@ else {
 						<?
 					print "</div>" ;	
 					
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th style='width: 120px'>" ;
 								print "Student<br/><span style='font-style: italic; font-size: 85%'>Invoice To</span>" ;
@@ -477,12 +493,10 @@ else {
 								print "Total Value<br/><span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 							print "</th>" ;
 							print "<th style='width: 80px'>" ;
-								print "Issue Date" ;
+								print "Issue Date<br/>" ;
+								print "<span style='font-style: italic; font-size: 75%'>Due Date</span>" ;
 							print "</th>" ;
-							print "<th style='width: 80px'>" ;
-								print "Due Date" ;
-							print "</th>" ;
-							print "<th>" ;
+							print "<th style='width: 130px'>" ;
 								print "Actions" ;
 							print "</th>" ;
 							print "<th>" ;
@@ -578,10 +592,13 @@ else {
 									}
 								print "</td>" ;
 								print "<td>" ;
-									print dateConvertBack($row["invoiceIssueDate"]) ;
-								print "</td>" ;
-								print "<td>" ;
-									print dateConvertBack($row["invoiceDueDate"]) ;
+									if (is_null($row["invoiceIssueDate"])) {
+										print "NA<br/>" ;
+									}
+									else {
+										print dateConvertBack($row["invoiceIssueDate"]) . "<br/>" ;
+									}
+									print "<span style='font-style: italic; font-size: 75%'>" . dateConvertBack($row["invoiceDueDate"]) . "</span>" ;
 								print "</td>" ;
 								print "<td>" ;
 									if ($row["status"]!="Cancelled" AND $row["status"]!="Refunded") {

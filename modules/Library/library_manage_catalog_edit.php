@@ -97,11 +97,10 @@ else {
 			}
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_editProcess.php?name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] ?>" enctype="multipart/form-data">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
-					<tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr class='break'>
 						<td colspan=2>
-							<h2 class='top'>Catalog Type</h2>
+							<h3>Catalog Type</h3>
 						</td>
 					</tr>
 					<tr>
@@ -115,9 +114,9 @@ else {
 						</td>
 					</tr>
 					
-					<tr id='generalDetailsRow'>
+					<tr class='break' id='generalDetailsRow'>
 						<td colspan=2>
-							<h2>General Details</h2>
+							<h3>General Details</h3>
 						</td>
 					</tr>
 					<tr id='nameRow'>
@@ -497,9 +496,9 @@ else {
 					</tr>
 					
 					
-					<tr id='entryDisplayTitleRow'>
+					<tr class='break' id='entryDisplayTitleRow'>
 						<td colspan=2>
-							<h2>Type-Specific Details</h2>
+							<h3>Type-Specific Details</h3>
 						</td>
 					</tr>
 					
@@ -606,15 +605,13 @@ else {
 					}
 					?>
 					<tr>
-						<td class="right" colspan=2>
+						<td>
+							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
 							<input type="hidden" name="gibbonLibraryItemID" value="<? print $row["gibbonLibraryItemID"] ?>">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<input type="reset" value="Reset"> <input type="submit" value="Submit">
-						</td>
-					</tr>
-					<tr>
-						<td class="right" colspan=2>
-							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 					</tr>
 				</table>

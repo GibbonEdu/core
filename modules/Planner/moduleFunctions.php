@@ -33,7 +33,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 			
 				$( "#sortable" ).bind( "sortstart", function(event, ui) { 
 					$("#blockInner<? print $i ?>").css("display","none") ;
-					$("#block<? print $i ?>").css("height","58px") ;
+					$("#block<? print $i ?>").css("height","72px") ;
 					$('#show<? print $i ?>').css("background-image", "<? print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)"); 
 					tinyMCE.execCommand('mceRemoveControl', false, 'contents<? print $i ?>') ;
 					tinyMCE.execCommand('mceRemoveControl', false, 'teachersNotes<? print $i ?>') ;
@@ -44,20 +44,20 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 					//These two lines have been removed to improve performance with long lists
 					//tinyMCE.execCommand('mceAddControl', false, 'contents<? print $i ?>') ;
 					//tinyMCE.execCommand('mceAddControl', false, 'teachersNotes<? print $i ?>') ;
-					$("#block<? print $i ?>").css("height","58px") ;
+					$("#block<? print $i ?>").css("height","72px") ;
 				});
 			});
 		</script>
 		<script type="text/javascript">
 			$(<? print $target ?>).ready(function(){
 				$("#blockInner<? print $i ?>").css("display","none");
-				$("#block<? print $i ?>").css("height","58px")
+				$("#block<? print $i ?>").css("height","72px")
 			
 				//Block contents control
 				$('#show<? print $i ?>').unbind('click').click(function() {
 					if ($("#blockInner<? print $i ?>").is(":visible")) {
 						$("#blockInner<? print $i ?>").css("display","none");
-						$("#block<? print $i ?>").css("height","58px")
+						$("#block<? print $i ?>").css("height","72px")
 						$('#show<? print $i ?>').css("background-image", "<? print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)"); 
 						tinyMCE.execCommand('mceRemoveControl', false, 'contents<? print $i ?>') ;
 						tinyMCE.execCommand('mceRemoveControl', false, 'teachersNotes<? print $i ?>') ;
@@ -111,8 +111,8 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 		<?
 	}
 	?>
-	<div class="odd" style='border: 1px solid #d8dcdf; margin: 0 0 5px' id="block<? print $i ?>" style='padding: 0px'>
-		<table style='width: 100%'>
+	<div style='background-color: #EDF7FF; border: 1px solid #d8dcdf; margin: 0 0 5px' id="block<? print $i ?>" style='padding: 0px'>
+		<table class='blank' cellspacing='0' style='width: 100%'>
 			<tr>
 				<td style='width: 50%'>
 					<input name='order[]' type='hidden' value='<? print $i ?>'>
@@ -227,7 +227,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 				$margintop="0px" ;
 			}
 			$output=$output . "<a name='" . $rowDiscuss["gibbonPlannerEntryDiscussID"] . "'></a>" ; 
-			$output=$output . "<table style='width: " . (755-($level*15)) . "px ; padding: 1px 3px; margin-bottom: -2px; margin-top: $margintop; margin-left: " . ($level*15) . "px; border: $border ; background-color: #f9f9f9'>" ;
+			$output=$output . "<table cellspacing='0' style='width: " . (755-($level*15)) . "px ; padding: 1px 3px; margin-bottom: -2px; margin-top: $margintop; margin-left: " . ($level*15) . "px; border: $border ; background-color: #f9f9f9'>" ;
 				$output=$output . "<tr>" ;
 					$output=$output . "<td style='color: #777'><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) . " said</i>:</td>" ;
 					$output=$output . "<td style='color: #777; text-align: right'><i>Posted at <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack(substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;
@@ -341,7 +341,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 		
 		$count=1;
 		
-		$output=$output . "<table style='width: 250px; margin-bottom: 0px'>" ;
+		$output=$output . "<table class='mini' cellspacing='0' style='width: 250px; margin-bottom: 0px'>" ;
 			$output=$output . "<tr class='head'>" ;
 				$output=$output . "<th style='width: 35px; text-align: center'>" ;
 					$output=$output . "Mo" ;
@@ -372,7 +372,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 				}
 				
 				if ($days[date("D",$i)]=="N" OR isSchoolOpen($guid, date("Y-m-d", $i), $connection2)==FALSE) {
-					$output=$output . "<td style='text-align: center; background-color: #bbbbbb; font-size: 10px; color: #ffffff'>" ;
+					$output=$output . "<td style='text-align: center; background-color: #bbbbbb; font-size: 10px; color: #858586'>" ;
 						if ($i==$dateStamp) {
 							$output=$output . "<span style='border: 1px solid #ffffff; padding: 0px 2px 0px 1px'>" . date("d", $i) . "</span><br/>" ;
 							$output=$output . "<span style='font-size: 65%'>" . date("M", $i) . "</span>" ;
@@ -425,18 +425,18 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 		$output=$output . "</table>" ;
 		
 		$output=$output . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-			$output=$output . "<table style='width: 100%; margin: 0px 0px'>" ;	
+			$output=$output . "<table class='mini' cellspacing='0' style='width: 200px; margin: 0px 0px'>" ;	
 				$output=$output . "<tr>" ;
-					$output=$output . "<td style='width: 190px'>" ; 
-						$output=$output . "<input name='q' id='q' type='hidden' value='/modules/Planner/planner.php' style='width:120px'>" ;
-						$output=$output . "<input name='search' id='search' type='hidden' value='$gibbonPersonID' style='width:120px'>" ;
+					$output=$output . "<td style='width: 200px'>" ; 
+						$output=$output . "<input name='q' id='q' type='hidden' value='/modules/Planner/planner.php'>" ;
+						$output=$output . "<input name='search' id='search' type='hidden' value='$gibbonPersonID'>" ;
 						if ($dateStamp=="") {
 							$dateHuman="" ;
 						}
 						else {
 							$dateHuman=date("d/m/Y", $dateStamp) ;
 						}
-						$output=$output . "<input name='dateHuman' id='dateHuman' maxlength=20 type='text' value='$dateHuman' style='width:178px'>" ;
+						$output=$output . "<input name='dateHuman' id='dateHuman' maxlength=20 type='text' value='$dateHuman' style='width:161px'>" ;
 						$output=$output . "<script type='text/javascript'>" ;
 							$output=$output . "$(function() {" ;
 								$output=$output . "$( '#dateHuman' ).datepicker();" ;
@@ -458,13 +458,13 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 		
 		$selectCount=0 ;
 		$output=$output . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-			$output=$output . "<table style='width: 100%; margin: 0px 0px'>" ;	
+			$output=$output . "<table class='mini' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
 				$output=$output . "<tr>" ;
 					$output=$output . "<td style='width: 190px'>" ; 
 						$output=$output . "<input name='q' id='q' type='hidden' value='/modules/Planner/planner.php'>" ;
 						$output=$output . "<input name='search' id='search' type='hidden' value='$gibbonPersonID'>" ;
 						$output=$output . "<input name='viewBy' id='viewBy' type='hidden' value='class'>" ;
-						$output=$output . "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:178px'>" ;
+						$output=$output . "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:161px'>" ;
 							
 							$output=$output . "<option value=''></option>" ;
 							try {
@@ -597,12 +597,12 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
 		
 		$selectCount=0 ;
 		$output=$output . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-			$output=$output . "<table style='width: 100%; margin: 0px 0px'>" ;	
+			$output=$output . "<table class='mini' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
 				$output=$output . "<tr>" ;
 					$output=$output . "<td style='width: 190px'>" ; 
-						$output=$output . "<input name='q' id='q' type='hidden' value='/modules/Planner/units.php' style='width:120px'>" ;
-						$output=$output . "<input name='gibbonSchoolYearID' id='gibbonSchoolYearID' type='hidden' value='$gibbonSchoolYearID' style='width:120px'>" ;
-						$output=$output . "<select name='gibbonCourseID' id='gibbonCourseID' style='width:120px'>" ;
+						$output=$output . "<input name='q' id='q' type='hidden' value='/modules/Planner/units.php'>" ;
+						$output=$output . "<input name='gibbonSchoolYearID' id='gibbonSchoolYearID' type='hidden' value='$gibbonSchoolYearID'>" ;
+						$output=$output . "<select name='gibbonCourseID' id='gibbonCourseID' style='width:161px'>" ;
 							$output=$output . "<option value=''></option>" ;
 							try {
 								if ($highestAction=="Manage Units_all") {
@@ -653,7 +653,7 @@ function makeBlockOutcome($guid,  $i, $type="", $gibbonOutcomeID="", $title="", 
 				
 				$( "#<? print $type ?>" ).bind( "sortstart", function(event, ui) { 
 					$("#<? print $type ?>BlockInner<? print $i ?>").css("display","none");
-					$("#<? print $type ?>Block<? print $i ?>").css("height","58px") ;
+					$("#<? print $type ?>Block<? print $i ?>").css("height","72px") ;
 					$('#<? print $type ?>show<? print $i ?>').css("background-image", "<? print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)");  
 					tinyMCE.execCommand('mceRemoveControl', false, '<? print $type ?>contents<? print $i ?>') ;
 					$("#<? print $type ?>").sortable( "refreshPositions" ) ;
@@ -662,20 +662,20 @@ function makeBlockOutcome($guid,  $i, $type="", $gibbonOutcomeID="", $title="", 
 				$( "#<? print $type ?>" ).bind( "sortstop", function(event, ui) {
 					//This line has been removed to improve performance with long lists
 					//tinyMCE.execCommand('mceAddControl', false, '<? print $type ?>contents<? print $i ?>') ;
-					$("#<? print $type ?>Block<? print $i ?>").css("height","58px") ;
+					$("#<? print $type ?>Block<? print $i ?>").css("height","72px") ;
 				});
 			});
 		</script>
 		<script type="text/javascript">
 			$(document).ready(function(){
 				$("#<? print $type ?>BlockInner<? print $i ?>").css("display","none");
-				$("#<? print $type ?>Block<? print $i ?>").css("height","58px") ;
+				$("#<? print $type ?>Block<? print $i ?>").css("height","72px") ;
 				
 				//Block contents control
 				$('#<? print $type ?>show<? print $i ?>').unbind('click').click(function() {
 					if ($("#<? print $type ?>BlockInner<? print $i ?>").is(":visible")) {
 						$("#<? print $type ?>BlockInner<? print $i ?>").css("display","none");
-						$("#<? print $type ?>Block<? print $i ?>").css("height","58px") ;
+						$("#<? print $type ?>Block<? print $i ?>").css("height","72px") ;
 						$('#<? print $type ?>show<? print $i ?>').css("background-image", "<? print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)");  
 						tinyMCE.execCommand('mceRemoveControl', false, '<? print $type ?>contents<? print $i ?>') ;
 					} else {
@@ -697,8 +697,8 @@ function makeBlockOutcome($guid,  $i, $type="", $gibbonOutcomeID="", $title="", 
 				
 			});
 		</script>
-		<div class="odd" style='border: 1px solid #d8dcdf; margin: 0 0 5px' id="<? print $type ?>Block<? print $i ?>" style='padding: 0px'>
-			<table style='width: 100%'>
+		<div style='background-color: #EDF7FF; border: 1px solid #d8dcdf; margin: 0 0 5px' id="<? print $type ?>Block<? print $i ?>" style='padding: 0px'>
+			<table class='blank' cellspacing='0' style='width: 100%'>
 				<tr>
 					<td style='width: 50%'>
 						<input name='<? print $type ?>order[]' type='hidden' value='<? print $i ?>'>

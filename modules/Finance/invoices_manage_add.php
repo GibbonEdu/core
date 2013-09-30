@@ -92,11 +92,10 @@ else {
 		}
 		?>
 		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID" ?>">
-			<table style="width: 100%">	
-				<tr><td style="width: 30%"></td><td></td></tr>
-				<tr>
+			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<tr class='break'>
 					<td colspan=2> 
-						<h3 class='top'>Basic Information</h3>
+						<h3>Basic Information</h3>
 					</td>
 				</tr>
 				<tr>
@@ -251,7 +250,7 @@ else {
 					</td>
 				</tr>
 				
-				<tr>
+				<tr class='break'>
 					<td colspan=2> 
 						<h3>Fees</h3>
 					</td>
@@ -269,14 +268,14 @@ else {
 				</style>
 				<tr>
 					<td colspan=2> 
-						<div class="fee" id="fee" style='width: 100%; padding: 5px 0px 0px 0px; border-top: 1px solid #333; border-bottom: 1px solid #333; min-height: 66px'>
+						<div class="fee" id="fee" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
 							<div id="feeOuter0">
 								<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'>Fees will be listed here...</div>
 							</div>
 						</div>
-						<div style='width: 100%; padding: 0px 0px 0px 0px; border-bottom: 1px solid #333'>
-							<div class="ui-state-default_dud odd" style='padding: 0px; height: 60px'>
-								<table style='width: 100%'>
+						<div style='width: 100%; padding: 0px 0px 0px 0px'>
+							<div class="ui-state-default_dud" style='padding: 0px; height: 40px'>
+								<table class='blank' cellspacing='0' style='width: 100%'>
 									<tr>
 										<td style='width: 50%'>
 											<script type="text/javascript">
@@ -345,15 +344,13 @@ else {
 				</tr>
 				
 				<tr>
-					<td class="right" colspan=2>
+					<td>
+						<span style="font-size: 90%"><i>* denotes a required field</i></span>
+					</td>
+					<td class="right">
 						<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<? print $gibbonFinanceInvoiceID ?>" type="hidden">
 						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 						<input type="reset" value="Reset"> <input type="submit" value="Submit">
-					</td>
-				</tr>
-				<tr>
-					<td class="right" colspan=2>
-						<span style="font-size: 90%"><i>* denotes a required field</i></span>
 					</td>
 				</tr>
 			</table>

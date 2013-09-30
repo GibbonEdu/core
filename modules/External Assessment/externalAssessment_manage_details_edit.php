@@ -94,8 +94,7 @@ else {
 			}
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_editProcess.php?search=$search" ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td><td></td></tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
 							<b>Assessment Type *</b><br/>
@@ -182,9 +181,9 @@ else {
 						
 						while ($rowField=$resultField->fetch()) {
 							if ($rowField["category"]!=$lastCategory) {
-								print "<tr>" ;
+								print "<tr class='break' >" ;
 									print "<td> " ;
-										print "<h3 class='top'>" . substr($rowField["category"], (strpos($rowField["category"], "_")+1)) . "</h3>" ;
+										print "<h3>" . substr($rowField["category"], (strpos($rowField["category"], "_")+1)) . "</h3>" ;
 									print "</td>" ;
 									print "<td class='right'>" ;
 										print "<span style='font-weight: bold'>Grade</span>" ;
@@ -263,17 +262,15 @@ else {
 					}
 					?>
 					<tr>
-						<td class="right" colspan=3>
+						<td>
+							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right" colspan=2>
 							<input name="count" id="count" value="<? print $count ?>" type="hidden">
 							<input name="gibbonPersonID" id="gibbonPersonID" value="<? print $gibbonPersonID ?>" type="hidden">
 							<input name="gibbonExternalAssessmentStudentID" id="gibbonExternalAssessmentStudentID" value="<? print $gibbonExternalAssessmentStudentID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<input type="reset" value="Reset"> <input type="submit" value="Submit">
-						</td>
-					</tr>
-					<tr>
-						<td class="right" colspan=3>
-							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 					</tr>
 				</table>

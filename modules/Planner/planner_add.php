@@ -150,11 +150,10 @@ else {
 			?>
 	
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
-					<tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr class='break'>
 						<td colspan=2> 
-							<h3 class='top'>Basic Information</h3>
+							<h3>Basic Information</h3>
 						</td>
 					</tr>
 					<tr>
@@ -618,7 +617,7 @@ else {
 						});
 					</script>
 						
-					<tr id="homeworkHeaderRow">
+					<tr class='break' id="homeworkHeaderRow">
 						<td colspan=2> 
 							<h3>Homework</h3>
 						</td>
@@ -776,7 +775,7 @@ else {
 							</td>
 							<td class="right">
 								<?
-								print "<table style='width: 308px' align=right>" ;
+								print "<table cellspacing='0' style='width: 308px' align=right>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
 											print "Role" ;
@@ -860,9 +859,13 @@ else {
 					//OUTCOMES
 					if ($viewBy=="date") {
 						?>
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Outcomes</h3>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2> 
 								<div class='warning'>
 									Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.
 								</div>
@@ -872,7 +875,7 @@ else {
 					}
 					else {
 						?>
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Outcomes</h3>
 								<p>Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.</p>
@@ -902,14 +905,14 @@ else {
 						</script>
 						<tr>
 							<td colspan=2> 
-								<div class="outcome" id="outcome" style='width: 100%; padding: 5px 0px 0px 0px; border-top: 1px solid #333; border-bottom: 1px solid #333; min-height: 66px'>
+								<div class="outcome" id="outcome" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
 										<div id="outcomeOuter0">
 											<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'>Key outcomes listed here...</div>
 										</div>
 									</div>
-								<div style='width: 100%; padding: 0px 0px 0px 0px; border-bottom: 1px solid #333'>
-									<div class="ui-state-default_dud odd" style='padding: 0px; height: 60px'>
-										<table style='width: 100%'>
+								<div style='width: 100%; padding: 0px 0px 0px 0px'>
+									<div class="ui-state-default_dud" style='padding: 0px; min-height: 66px'>
+										<table class='blank' cellspacing='0' style='width: 100%'>
 											<tr>
 												<td style='width: 50%'>
 													<script type="text/javascript">
@@ -1059,12 +1062,9 @@ else {
 					?>
 					
 								
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>Markbook</h3>
-						</td>
-						<td class="right">
-							
 						</td>
 					</tr>
 					<tr>
@@ -1080,47 +1080,43 @@ else {
 					
 					
 					
-					<tr>
-						<td style='text-align: right' colspan=2> 
-							<script type="text/javascript">
-								/* Advanced Options Control */
-								$(document).ready(function(){
-									$("#accessRow").css("display","none");
-									$("#accessRowStudents").css("display","none");
-									$("#accessRowParents").css("display","none");
-									$("#guestRow").css("display","none");
-									$("#guestListRow").css("display","none");
-									$("#guestRoleRow").css("display","none");
-									$("#twitterRow").css("display","none");
-									$("#twitterRowDetails").css("display","none");
-									
-									$(".advanced").click(function(){
-										if ($('input[name=advanced]:checked').val() == "Yes" ) {
-											$("#accessRow").slideDown("fast", $("#accessRow").css("display","table-row")); 
-											$("#accessRowStudents").slideDown("fast", $("#accessRowStudents").css("display","table-row")); 
-											$("#accessRowParents").slideDown("fast", $("#accessRowParents").css("display","table-row")); 
-											$("#guestRow").slideDown("fast", $("#guestRow").css("display","table-row")); 
-											$("#guestListRow").slideDown("fast", $("#guestListRow").css("display","table-row")); 
-											$("#guestRoleRow").slideDown("fast", $("#guestRoleRow").css("display","table-row")); 
-											$("#twitterRow").slideDown("fast", $("#twitterRow").css("display","table-row")); 
-											$("#twitterRowDetails").slideDown("fast", $("#twitterRowDetails").css("display","table-row")); 
-										} 
-										else {
-											$("#accessRow").slideUp("fast"); 
-											$("#accessRowStudents").slideUp("fast"); 
-											$("#accessRowParents").slideUp("fast"); 
-											$("#guestRow").slideUp("fast"); 
-											$("#guestListRow").slideUp("fast"); 
-											$("#guestRoleRow").slideUp("fast"); 
-											$("#twitterRow").slideUp("fast"); 
-											$("#twitterRowDetails").slideUp("fast"); 
-										}
-									 });
-								});
-							</script>
-						</td>
-					</tr>
-					<tr>
+					<tr class='break'>
+						<script type="text/javascript">
+							/* Advanced Options Control */
+							$(document).ready(function(){
+								$("#accessRow").css("display","none");
+								$("#accessRowStudents").css("display","none");
+								$("#accessRowParents").css("display","none");
+								$("#guestRow").css("display","none");
+								$("#guestListRow").css("display","none");
+								$("#guestRoleRow").css("display","none");
+								$("#twitterRow").css("display","none");
+								$("#twitterRowDetails").css("display","none");
+								
+								$(".advanced").click(function(){
+									if ($('input[name=advanced]:checked').val() == "Yes" ) {
+										$("#accessRow").slideDown("fast", $("#accessRow").css("display","table-row")); 
+										$("#accessRowStudents").slideDown("fast", $("#accessRowStudents").css("display","table-row")); 
+										$("#accessRowParents").slideDown("fast", $("#accessRowParents").css("display","table-row")); 
+										$("#guestRow").slideDown("fast", $("#guestRow").css("display","table-row")); 
+										$("#guestListRow").slideDown("fast", $("#guestListRow").css("display","table-row")); 
+										$("#guestRoleRow").slideDown("fast", $("#guestRoleRow").css("display","table-row")); 
+										$("#twitterRow").slideDown("fast", $("#twitterRow").css("display","table-row")); 
+										$("#twitterRowDetails").slideDown("fast", $("#twitterRowDetails").css("display","table-row")); 
+									} 
+									else {
+										$("#accessRow").slideUp("fast"); 
+										$("#accessRowStudents").slideUp("fast"); 
+										$("#accessRowParents").slideUp("fast"); 
+										$("#guestRow").slideUp("fast"); 
+										$("#guestListRow").slideUp("fast"); 
+										$("#guestRoleRow").slideUp("fast"); 
+										$("#twitterRow").slideUp("fast"); 
+										$("#twitterRowDetails").slideUp("fast"); 
+									}
+								 });
+							});
+						</script>
 						<td colspan=2> 
 							<h3>Advanced Options</h3>
 						</td>
@@ -1135,9 +1131,9 @@ else {
 						</td>
 					</tr>
 					
-					<tr id="accessRow">
+					<tr class='break' id="accessRow">
 						<td colspan=2> 
-							<h3>Access</h3>
+							<h4>Access</h4>
 						</td>
 					</tr>
 					<tr id="accessRowStudents">
@@ -1171,32 +1167,33 @@ else {
 						</td>
 					</tr>
 					
-					<tr id="guestRow">
+					<tr class='break' id="guestRow">
 						<td colspan=2> 
-							<h3>Guests</h3>
+							<h4>Guests</h4>
 						</td>
 					</tr>
 					<tr id="guestListRow">
-					<td> 
-						<b>Guest List</b><br/>
-						<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
-					</td>
-					<td class="right">
-						<select name="guests[]" id="guests[]" multiple style="width: 302px; height: 150px">
-							<?
-							try {
-								$dataSelect=array(); 
-								$sqlSelect="SELECT title, surname, preferredName, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Full' ORDER BY surname, preferredName" ;
-								$resultSelect=$connection2->prepare($sqlSelect);
-								$resultSelect->execute($dataSelect);
-							}
-							catch(PDOException $e) { }
-							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName(htmlPrep($rowSelect["title"]), htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), htmlPrep($rowSelect["category"]), true, true). "</option>" ;
-							}
-							?>
-						</select>
-					</td>
+						<td> 
+							<b>Guest List</b><br/>
+							<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+						</td>
+						<td class="right">
+							<select name="guests[]" id="guests[]" multiple style="width: 302px; height: 150px">
+								<?
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT title, surname, preferredName, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Full' ORDER BY surname, preferredName" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName(htmlPrep($rowSelect["title"]), htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), htmlPrep($rowSelect["category"]), true, true). "</option>" ;
+								}
+								?>
+							</select>
+						</td>
+					</tr>
 					<tr id="guestRoleRow">
 						<td> 
 							<b>Role</b><br/>
@@ -1212,12 +1209,9 @@ else {
 							</select>
 						</td>
 					</tr>
-					<tr id="twitterRow">
+					<tr class='break' id="twitterRow">
 						<td colspan=2> 
-							<h3>Twitter</h3>
-						</td>
-						<td class="right">
-							
+							<h4>Twitter</h4>
 						</td>
 					</tr>
 					<tr id="twitterRowDetails">
@@ -1232,13 +1226,11 @@ else {
 					
 					
 					<tr>
-						<td class="right" colspan=2>
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
-						</td>
-					</tr>
-					<tr>
-						<td class="right" colspan=2>
+						<td>
 							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
+							<input type="reset" value="Reset"> <input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>

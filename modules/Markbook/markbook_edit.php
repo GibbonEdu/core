@@ -132,7 +132,7 @@ else {
 					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 				}
 				if ($result->rowCount()>0) {
-					print "<h3 class='top'>" ;
+					print "<h3>" ;
 						print "Teachers" ;
 					print "</h3>" ;	
 					print "<ul>" ;
@@ -178,7 +178,7 @@ else {
 					print "</div>" ;
 				}
 				else {
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
 								print "Name/Unit" ;

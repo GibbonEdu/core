@@ -34,7 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Class Enrolment by Roll Group</div>" ;
 	print "</div>" ;
 	
-	print "<h2 class='top'>" ;
+	print "<h2>" ;
 	print "Choose Roll Group" ;
 	print "</h2>" ;
 	
@@ -42,7 +42,7 @@ else {
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table style="width: 100%">	
+		<table cellspacing='0' style="width: 100%">	
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td> 
@@ -82,7 +82,7 @@ else {
 	<?
 	
 	if ($gibbonRollGroupID!="") {
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 		print "Report Data" ;
 		print "</h2>" ;
 		
@@ -100,7 +100,7 @@ else {
 		print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_students_byRollGroup_print.php&gibbonRollGroupID=$gibbonRollGroupID'><img title='Print' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 		print "</div>" ;
 	
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Roll Group" ;

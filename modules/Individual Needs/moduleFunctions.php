@@ -86,7 +86,7 @@ function printINStatusTable($connection2, $gibbonPersonID, $mode="") {
 		}
 		
 		//Print IN Status table
-		$output.="<table style='width: 100%'>" ;
+		$output.="<table cellspacing='0' style='width: 100%'>" ;
 			$output.="<tr class='head'>" ;
 				$output.="<th>" ;
 					$output.="Descriptor" ;

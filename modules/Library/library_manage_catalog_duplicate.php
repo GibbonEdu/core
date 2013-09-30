@@ -98,7 +98,7 @@ else {
 			//Step 1
 			if ($step==1) {
 				?>
-				<h2 class='top'>
+				<h2>
 					Step 1 - Quantity
 				</h2> 
 				<?
@@ -109,7 +109,7 @@ else {
 				}
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicate.php&step=2&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] ?>">
-					<table style="width: 100%">	
+					<table cellspacing='0' style="width: 100%">	
 						<tr><td style="width: 30%"></td><td></td></tr>
 						<tr>
 							<td> 
@@ -183,7 +183,7 @@ else {
 			//Step 1
 			else if ($step==2) {
 				?>
-				<h2 class='top'>
+				<h2>
 					Step 2 - Details
 				</h2> 
 				<?
@@ -194,14 +194,14 @@ else {
 				}
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicateProcess.php" ?>">
-					<table style="width: 100%">	
+					<table cellspacing='0' style="width: 100%">	
 						<tr><td style="width: 30%"></td><td></td></tr>
 						<?
 						$number=$_POST["number"] ;
 						for ($i=1; $i<=$number; $i++) {
 							print "<tr>" ;
 								print "<td colspan=2>" ; 
-									print "<h3 class='top'>" ;
+									print "<h3>" ;
 										print "Copy $i" ;
 									print "</h3>" ;
 								print "</td>" ;

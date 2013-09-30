@@ -100,7 +100,7 @@ else {
 	}
 	
 	if ($gibbonSchoolYearID!="") {
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 			print $gibbonSchoolYearName ;
 		print "</h2>" ;
 		
@@ -217,7 +217,7 @@ else {
 				$count=1;
 				
 				print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manageProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID'>" ;
-				print "<table style='width: 100%'>" ;
+				print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th style='width: 14px'>" ;
 						print "Monday" ;
@@ -253,7 +253,7 @@ else {
 					}
 					
 					if ($i<$firstDayStamp OR $i>$lastDayStamp OR $days[date("D",$i)]=="N") {
-						print "<td style='background-color: #bbbbbb; border-bottom: 1px solid black!important'>" ;
+						print "<td style='background-color: #bbbbbb'>" ;
 						print "</td>" ;
 							
 						if ($i==$specialDayStamp) {
@@ -262,7 +262,7 @@ else {
 						
 					}
 					else {
-						print "<td style='text-align: center; background-color: #eeeeee; font-size: 10px; border-bottom: 1px solid black'>" ;
+						print "<td style='text-align: center; background-color: #eeeeee; font-size: 10px'>" ;
 							if ($i==$specialDayStamp) {
 								print "<span style='color: #ff0000'>" . date("d/m/Y",$i) . "<br/>" . $rowSpecial["name"] . "</span>" ;
 								print "<br/>" ;

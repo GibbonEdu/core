@@ -140,7 +140,7 @@ else {
 						//Let's go!
 						$row=$result->fetch() ;
 						
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>School Year</span><br/>" ;
@@ -177,7 +177,7 @@ else {
 						
 						?>
 						<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/units_edit_working_copybackProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=$gibbonUnitID&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=$gibbonUnitClassID" ; ?>">
-							<table style="width: 100%">	
+							<table cellspacing='0' style="width: 100%">	
 								<tr><td style="width: 30%"></td><td></td></tr>
 								<tr>
 									<td> 

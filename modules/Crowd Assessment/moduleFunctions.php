@@ -431,7 +431,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
 				$margintop="0px" ;
 			}
 			$output=$output . "<a name='" . $rowDiscuss["gibbonCrowdAssessDiscussID"] . "'></a>" ; 
-			$output=$output . "<table style='width: " . (760-($level*15)) . "px ; padding: 1px 3px; margin-bottom: -2px; margin-top: $margintop; margin-left: " . ($level*15) . "px; border: $border ; background-color: #f9f9f9'>" ;
+			$output=$output . "<table cellspacing='0' style='width: " . (760-($level*15)) . "px ; padding: 1px 3px; margin-bottom: -2px; margin-top: $margintop; margin-left: " . ($level*15) . "px; border: $border ; background-color: #f9f9f9'>" ;
 				$output=$output . "<tr>" ;
 					$output=$output . "<td style='color: #777'><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) ." said</i>:</td>" ;
 					$output=$output . "<td style='color: #777; text-align: right'><i>Posted at <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack(substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;

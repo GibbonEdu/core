@@ -72,7 +72,7 @@ else {
 	$primaryExternalAssessmentByYearGroup=unserialize(getSettingByScope($connection2, "School Admin", "primaryExternalAssessmentByYearGroup")) ;
 	//Let's go!
 	?>
-	<h2 class='top'>
+	<h2>
 		Primary External Assessement
 	</h2>
 	<p>
@@ -80,7 +80,7 @@ else {
 	</p>
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessmentSettingsProcess.php"?>">
 		<?
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Year Group" ;
@@ -110,7 +110,7 @@ else {
 						print "<input type='hidden' name='gibbonYearGroupID[]' value='" . $row["gibbonYearGroupID"] . "'>" ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<select style='float: none; width: 302px' name='gibbonExternalAssessmentID[]' id='gibbonExternalAssessmentID$count'>" ;
+						print "<select style='float: none; width: 270px' name='gibbonExternalAssessmentID[]' id='gibbonExternalAssessmentID$count'>" ;
 							try {
 								$dataSelect=array(); 
 								$sqlSelect="SELECT * FROM gibbonExternalAssessment WHERE active='Y' ORDER BY name" ;
@@ -129,7 +129,7 @@ else {
 						print "</select>" ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<select style='float: none; width: 302px' name='category[]' id='category$count'>" ;
+						print "<select style='float: none; width: 270px' name='category[]' id='category$count'>" ;
 							try {
 								$dataSelect=array(); 
 								$sqlSelect="SELECT DISTINCT gibbonExternalAssessment.gibbonExternalAssessmentID, category FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE active='Y' ORDER BY gibbonExternalAssessmentID, category" ;

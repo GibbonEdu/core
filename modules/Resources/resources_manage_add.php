@@ -80,12 +80,10 @@ else {
 		
 		?>
 		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_addProcess.php?search=" . $_GET["search"] ?>" enctype="multipart/form-data">
-			<table style="width: 100%">	
-				<tr><td style="width: 30%"></td><td></td></tr>
-				
-				<tr>
+			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<tr class='break'>
 					<td colspan=2> 
-						<h3 class="top">Resource Contents</h3>
+						<h3>Resource Contents</h3>
 					</td>
 				</tr>
 				<script type="text/javascript">
@@ -198,7 +196,7 @@ else {
 				</tr>
 				
 				
-				<tr>
+				<tr class='break'>
 					<td colspan=2> 
 						<h3>Resource Details</h3>
 					</td>
@@ -393,14 +391,12 @@ else {
 				</tr>
 				
 				<tr>
-					<td class="right" colspan=2>
+					<td>
+						<span style="font-size: 90%"><i>* denotes a required field</i></span>
+					</td>
+					<td class="right">
 						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 						<input type="reset" value="Reset"> <input type="submit" value="Submit">
-					</td>
-				</tr>
-				<tr>
-					<td class="right" colspan=2>
-						<span style="font-size: 90%"><i>* denotes a required field</i></span>
 					</td>
 				</tr>
 			</table>

@@ -133,11 +133,11 @@ else {
 						
 						?>
 						<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_edit_copyForwardProcess.php?gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
-							<table style="width: 100%">	
+							<table cellspacing='0' style="width: 100%">	
 								<tr><td style="width: 30%"></td><td></td></tr>
 								<tr>
 											<td colspan=2> 
-												<h3 class='top'>Source</h3>
+												<h3>Source</h3>
 											</td>
 										</tr>
 										<tr>
@@ -172,7 +172,7 @@ else {
 										
 										<tr>
 									<td colspan=2> 
-										<h3 class='top'>Target</h3>
+										<h3>Target</h3>
 									</td>
 								</tr>
 										

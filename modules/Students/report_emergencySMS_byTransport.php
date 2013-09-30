@@ -37,7 +37,7 @@ else {
 	print "This report prints all parent mobile phone numbers, whether or not they are set to receive messages from the school. It is useful when send emergency SMS messages to groups of students. If no parent mobile is available it will display the emergency numbers given in the student record, and this will appear in red." ;
 	print "</p>" ;
 	
-	print "<h2 class='top'>" ;
+	print "<h2>" ;
 	print "Choose Transport Group" ;
 	print "</h2>" ;
 	
@@ -45,7 +45,7 @@ else {
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table style="width: 100%">	
+		<table cellspacing='0' style="width: 100%">	
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td> 
@@ -124,7 +124,7 @@ else {
 	<?
 	
 	if ($transport!="") {
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 		print "Report Data" ;
 		print "</h2>" ;
 		
@@ -144,7 +144,7 @@ else {
 			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 		}
 		
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				if ($_GET["hideName"]!="on") {
 					print "<th>" ;

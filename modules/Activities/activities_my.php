@@ -32,7 +32,7 @@ else {
 	print "<div class='trail'>" ;
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>My Activities</div>" ;
 	print "</div>" ;
-	print "<p class='top'>" ;
+	print "<p>" ;
 	print "This list shows all the activities you are involved in this school year." ;
 	print "</p>" ;
 	
@@ -52,7 +52,7 @@ else {
 		print "</div>" ;
 	}
 	else {
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Activity" ;

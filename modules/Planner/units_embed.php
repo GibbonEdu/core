@@ -123,11 +123,11 @@ else {
 					$row=$result->fetch() ;
 					
 					if ($_GET["title"]=="true") {
-						print "<h1 class='top'>" . $row["name"] . "</h1>" ;
+						print "<h1>" . $row["name"] . "</h1>" ;
 					}
 
 					if ($row["details"]!="") {
-						print "<h3 class='top'>Unit Overview</h3>" ;
+						print "<h3>Unit Overview</h3>" ;
 						print "<p>" ;
 							print $row["details"] ;
 						print "</p>" ;
@@ -169,7 +169,7 @@ else {
 					}
 					if ($resultBlocks->rowCount()>0) {
 						print "<h3>Outcomes</h3>" ;
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
 									print "Name" ;

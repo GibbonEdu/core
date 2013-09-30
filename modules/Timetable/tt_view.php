@@ -87,7 +87,7 @@ else {
 				}
 			}
 
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;

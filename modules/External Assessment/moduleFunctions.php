@@ -75,7 +75,7 @@ function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbo
 						print substr($rowResults["category"], (strpos($rowResults["category"], "_")+1)) ;
 						print "</p>" ;
 						
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th style='width:40%'>" ;
 								print "Item" ;

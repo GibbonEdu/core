@@ -95,8 +95,7 @@ else {
 			}
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_editAdultProcess.php?gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=$gibbonPersonID&search=$search" ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
 							<b>Adult's Name *</b><br/>
@@ -227,14 +226,14 @@ else {
 							</select>
 						</td>
 					</tr>
-					<tr><td colspan="4" class="right">
-						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="Reset" value="Reset">
-						<input type="Submit" value="Submit">
-					</td></tr>
 					<tr>
-						<td class="right" colspan=2>
+						<td>
 							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
+							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+							<input type="Reset" value="Reset">
+							<input type="Submit" value="Submit">
 						</td>
 					</tr>
 				</table>

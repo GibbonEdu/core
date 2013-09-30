@@ -85,46 +85,59 @@ else {
 			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 		}
 	
+		print "<h3>" ;
+		print "Filter" ;
+		print "</h3>" ;
+		print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "'>" ;
+			print"<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;	
+				?>
+				<tr>
+					<td> 
+						<b>Learning Areas</b><br/>
+						<span style="font-size: 90%"><i></i></span>
+					</td>
+					<td class="right">
+						<?
+						print "<select name='filter2' id='filter2' style='width:302px'>" ;
+							print "<option value=''>All Learning Areas</option>" ;
+							try {
+								$dataSelect=array(); 
+								$sqlSelect="SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name" ;
+								$resultSelect=$connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							}
+							catch(PDOException $e) { }
+							while ($rowSelect=$resultSelect->fetch()) {
+								$selected="" ;
+								if ($rowSelect["gibbonDepartmentID"]==$filter2) {
+									$selected="selected" ;
+								}
+								print "<option $selected value='" . $rowSelect["gibbonDepartmentID"] . "'>" . $rowSelect["name"] . "</option>" ;
+							}
+						print "</select>" ;
+						?>
+					</td>
+				</tr>
+				<?
+				print "<tr>" ;
+					print "<td class='right' colspan=2>" ;
+						print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
+						print "<input type='submit' value='Go'>" ;
+					print "</td>" ;
+				print "</tr>" ;
+			print"</table>" ;
+		print "</form>" ;
+		
+		
+		print "<h3>" ;
+		print "Outcomes" ;
+		print "</h3>" ;
+		
 		if ($highestAction=="Manage Outcomes_viewEditAll" OR $highestAction=="Manage Outcomes_viewAllEditLearningArea") {
 			print "<div class='linkTop'>" ;
 			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_add.php'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 			print "</div>" ;
 		}
-		print "<div style='width: 100%; height: 20px'>" ;
-			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "'>" ;
-				print"<table style='float: right; margin: 0px 0px'>" ;	
-					print"<tr>" ;
-						print"<td style='vertical-align: top'>" ; 
-							print "<select name='filter2' id='filter2' style='width:160px'>" ;
-								print "<option value=''>All Learning Areas</option>" ;
-								try {
-									$dataSelect=array(); 
-									$sqlSelect="SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name" ;
-									$resultSelect=$connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								}
-								catch(PDOException $e) { }
-								while ($rowSelect=$resultSelect->fetch()) {
-									$selected="" ;
-									if ($rowSelect["gibbonDepartmentID"]==$filter2) {
-										$selected="selected" ;
-									}
-									print "<option $selected value='" . $rowSelect["gibbonDepartmentID"] . "'>" . $rowSelect["name"] . "</option>" ;
-								}
-							print "</select>" ;
-						print"</td>" ;
-						print"<td class='right' style='vertical-align: top; width: 54px'>" ;
-							?>
-							<input style='margin-top: 0px; margin-right: -2px' type='submit' value='Filter'>
-							<?
-						print"</td>" ;
-					print"</tr>" ;
-				print"</table>" ;
-			print "</form>" ;
-		print "</div>" ;
-		
-			
-		
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
 			print "There are no outcomes to display." ;
@@ -135,7 +148,7 @@ else {
 				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top") ;
 			}
 			
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
 						print "Scope" ;

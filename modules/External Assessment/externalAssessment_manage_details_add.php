@@ -91,7 +91,7 @@ else {
 			}
 			$row=$result->fetch() ;
 		
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -117,11 +117,10 @@ else {
 			if ($step==1) {
 				?>
 				<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_add.php" ?>">
-					<table style="width: 100%">	
-						<tr><td style="width: 30%"></td><td></td></tr>
-						<tr>
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<tr class='break'>
 							<td colspan=2> 
-								<h3 class='top'>Assessment Type</h3>
+								<h3>Assessment Type</h3>
 							</td>
 						</tr>
 						
@@ -208,17 +207,15 @@ else {
 						</tr>
 						
 						<tr>
-							<td class="right" colspan=2>
+							<td>
+								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+							</td>
+							<td class="right">
 								<input type="hidden" name="step" value="2">
 								<input type="hidden" name="search" value="<? print $search ?>">
 								<input type="hidden" name="gibbonPersonID" value="<? print $gibbonPersonID ?>">
 								<input type="hidden" name="q" value="<? print $_GET["q"] ?>">
 								<input type="reset" value="Reset"> <input type="submit" value="Go">
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
 							</td>
 						</tr>
 					</table>
@@ -448,8 +445,7 @@ else {
 					
 					?>
 					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_addProcess.php?search=$search" ?>">
-						<table style="width: 100%">	
-							<tr><td style="width: 30%"></td><td></td><td></td></tr>
+						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
 									<b>Assessment Type *</b><br/>
@@ -501,9 +497,9 @@ else {
 								
 								while ($rowField=$resultField->fetch()) {
 									if ($rowField["category"]!=$lastCategory) {
-										print "<tr>" ;
+										print "<tr class='break'>" ;
 											print "<td colspan=3> " ;
-												print "<h3 class='top'>" . substr($rowField["category"], (strpos($rowField["category"], "_")+1)) . "</h3>" ;
+												print "<h3>" . substr($rowField["category"], (strpos($rowField["category"], "_")+1)) . "</h3>" ;
 											print "</td>" ;
 										print "</tr>" ;
 										print "<tr>" ;
@@ -614,17 +610,15 @@ else {
 						}
 						?>
 						<tr>
-							<td class="right" colspan=3>
+							<td>
+								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+							</td>
+							<td class="right" colspan=2>
 								<input name="count" id="count" value="<? print $count ?>" type="hidden">
 								<input name="gibbonPersonID" id="gibbonPersonID" value="<? print $gibbonPersonID ?>" type="hidden">
 								<input name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID" value="<? print $gibbonExternalAssessmentID ?>" type="hidden">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 								<input type="reset" value="Reset"> <input type="submit" value="Submit">
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=3>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
 							</td>
 						</tr>
 					</table>

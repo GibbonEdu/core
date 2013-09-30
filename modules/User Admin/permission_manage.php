@@ -112,7 +112,7 @@ else {
 		$totalCount=0 ;
 		print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/permission_manageProcess.php'>" ;
 			print "<input type='hidden' name='address' value='" .$_SESSION[$guid]["address"] . "'>" ;
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 			while ($rowModules=$resultModules->fetch()) {
 				print "<tr>" ;
 					print "<td colspan=" . ($resultRoles->rowCount()+1) . ">" ;

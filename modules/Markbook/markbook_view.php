@@ -136,7 +136,7 @@ else {
 					}
 
 					if ($result->rowCount()>0) {
-						print "<h3 class='top'>" ;
+						print "<h3>" ;
 							print "Teachers" ;
 						print "</h3>" ;	
 						print "<ul>" ;
@@ -242,7 +242,7 @@ else {
 						print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view_full.php&gibbonCourseClassID=$gibbonCourseClassID&width=1100&height=550'><img title='Full Screen' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/zoom.png'/></a>" ;
 						print "</div>" ;
 				
-						print "<table style='width: 100%; margin-top: 0px'>" ;
+						print "<table cellspacing='0' style='width: 100%; margin-top: 0px'>" ;
 							print "<tr class='head'>" ;
 								print "<th rowspan=2>" ;
 									print "Student" ;
@@ -637,77 +637,91 @@ else {
 				$and.=" AND gibbonDepartmentID='$filter2'" ;
 			}
 			
-			print "<div class='linkTop'>" ;
-				print "<input checked type='checkbox' name='details' class='details' value='Yes' />" ;
-				print "<span style='font-size: 85%; font-weight: normal; font-style: italic'> Show/Hide Details</span>" ;
-				?>
-				<script type="text/javascript">
-					/* Show/Hide detail control */
-					$(document).ready(function(){
-						$(".details").click(function(){
-							if ($('input[name=details]:checked').val() == "Yes" ) {
-								$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
-							} 
-							else {
-								$(".detailItem").slideUp("fast"); 
-							}
-						 });
-					});
-				</script>
-				<?
-			print "</div>" ;
-								
-			print "<div style='width: 100%; height: 20px'>" ;
-				print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&search=$gibbonPersonID'>" ;
-					print"<table style='float: right; margin: 0px 0px'>" ;	
-						print"<tr>" ;
-							print"<td style='vertical-align: top'>" ; 
-								print "<select name='filter2' id='filter2' style='width:160px'>" ;
-									print "<option value=''>All Learning Areas</option>" ;
-									try {
-										$dataSelect=array(); 
-										$sqlSelect="SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name" ;
-										$resultSelect=$connection2->prepare($sqlSelect);
-										$resultSelect->execute($dataSelect);
+			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&search=$gibbonPersonID'>" ;
+				print"<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;	
+					?>
+					<tr>
+						<td> 
+							<b>Learning Area</b><br/>
+							<span style="font-size: 90%"><i></i></span>
+						</td>
+						<td class="right">
+							<?
+							print "<select name='filter2' id='filter2' style='width:302px'>" ;
+								print "<option value=''>All Learning Areas</option>" ;
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									$selected="" ;
+									if ($rowSelect["gibbonDepartmentID"]==$filter2) {
+										$selected="selected" ;
 									}
-									catch(PDOException $e) { }
-									while ($rowSelect=$resultSelect->fetch()) {
-										$selected="" ;
-										if ($rowSelect["gibbonDepartmentID"]==$filter2) {
-											$selected="selected" ;
+									print "<option $selected value='" . $rowSelect["gibbonDepartmentID"] . "'>" . $rowSelect["name"] . "</option>" ;
+								}
+							print "</select>" ;
+							?>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b>School Year</b><br/>
+							<span style="font-size: 90%"><i></i></span>
+						</td>
+						<td class="right">
+							<?
+							print "<select name='filter' id='filter' style='width:302px'>" ;
+								print "<option value='*'>All Years</option>" ;
+								try {
+									$dataSelect=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+									$sqlSelect="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { 
+									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+								}
+								while ($rowSelect=$resultSelect->fetch()) {
+									$selected="" ;
+									if ($rowSelect["gibbonSchoolYearID"]==$filter) {
+										$selected="selected" ;
+									}
+									print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . $rowSelect["year"] . " (" . $rowSelect["yearGroup"] . ")</option>" ;
+								}
+							print "</select>" ;
+							?>
+						</td>
+					</tr>
+					<?
+					print "<tr>" ;
+						print "<td class='right' colspan=2>" ;
+							print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
+							print "<input checked type='checkbox' name='details' class='details' value='Yes' />" ;
+							print "<span style='font-size: 85%; font-weight: normal; font-style: italic'> Show/Hide Details</span>" ;
+							?>
+							<script type="text/javascript">
+								/* Show/Hide detail control */
+								$(document).ready(function(){
+									$(".details").click(function(){
+										if ($('input[name=details]:checked').val() == "Yes" ) {
+											$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
+										} 
+										else {
+											$(".detailItem").slideUp("fast"); 
 										}
-										print "<option $selected value='" . $rowSelect["gibbonDepartmentID"] . "'>" . $rowSelect["name"] . "</option>" ;
-									}
-								print "</select>" ;
-							print"</td>" ;
-							print"<td style='vertical-align: top'>" ; 
-								print "<select name='filter' id='filter' style='width:160px'>" ;
-									print "<option value='*'>All Years</option>" ;
-									try {
-										$dataSelect=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-										$sqlSelect="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber" ;
-										$resultSelect=$connection2->prepare($sqlSelect);
-										$resultSelect->execute($dataSelect);
-									}
-									catch(PDOException $e) { }
-									while ($rowSelect=$resultSelect->fetch()) {
-										$selected="" ;
-										if ($rowSelect["gibbonSchoolYearID"]==$filter) {
-											$selected="selected" ;
-										}
-										print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . $rowSelect["year"] . " (" . $rowSelect["yearGroup"] . ")</option>" ;
-									}
-								print "</select>" ;
-							print"</td>" ;
-							print"<td class='right' style='vertical-align: top; width: 54px'>" ;
-								?>
-								<input style='margin-top: 0px; margin-right: -2px' type='submit' value='Filter'>
-								<?
-							print"</td>" ;
-						print"</tr>" ;
-					print"</table>" ;
-				print "</form>" ;
-			print "</div>" ;
+									 });
+								});
+							</script>
+							<?
+							print "<input type='submit' value='Go'>" ;
+						print "</td>" ;
+					print "</tr>" ;
+				print"</table>" ;
+			print "</form>" ;
 			
 			//Get class list
 			
@@ -752,7 +766,7 @@ else {
 						$teachers=$teachers . "</p>" ;
 						print $teachers ;
 	
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th style='width: 120px'>" ;
 								print "Assessment" ;
@@ -1039,16 +1053,13 @@ else {
 					$_GET["search"]=$gibbonPersonID[0] ;
 				}
 				else {
-					print "<h2 class='top'>" ;
-					print "Choose" ;
+					print "<h2>" ;
+					print "Choose Student" ;
 					print "</h2>" ;
 					
-					print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php'>Clear Search</a>" ;
-					print "</div>" ;
 					?>
 					<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-						<table style="width: 100%">	
+						<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 							<tr><td style="width: 30%"></td><td></td></tr>
 							<tr>
 								<td> 
@@ -1066,6 +1077,9 @@ else {
 								<td colspan=2 class="right">
 									<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/markbook_view.php">
 									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+									<?
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php'>Clear Search</a>" ;
+									?>
 									<input type="submit" value="Submit">
 								</td>
 							</tr>
@@ -1100,8 +1114,8 @@ else {
 						$rowChild=$resultChild->fetch() ;
 						
 						if ($count>1) {
-							print "<h2 class='top'>" ;
-							print "Marks" ;
+							print "<h2>" ;
+							print "Filter & Options" ;
 							print "</h2>" ;
 						}
 						
@@ -1118,79 +1132,91 @@ else {
 							$and.=" AND gibbonDepartmentID='$filter2'" ;
 						}
 						
-						print "<div class='linkTop'>" ;
-							print "<input checked type='checkbox' name='details' class='details' value='Yes' />" ;
-							print "<span style='font-size: 85%; font-weight: normal; font-style: italic'> Show/Hide Details</span>" ;
-							?>
-							<script type="text/javascript">
-								/* Show/Hide detail control */
-								$(document).ready(function(){
-									$(".details").click(function(){
-										if ($('input[name=details]:checked').val() == "Yes" ) {
-											$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
-										} 
-										else {
-											$(".detailItem").slideUp("fast"); 
-										}
-									 });
-								});
-							</script>
-							<?
-						print "</div>" ;
-						
-						print "<div style='width: 100%; height: 20px'>" ;
-							print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&search=$gibbonPersonID'>" ;
-								print"<table style='float: right; margin: 0px 0px'>" ;	
-									print"<tr>" ;
-										print"<td style='vertical-align: top'>" ; 
-											print "<select name='filter2' id='filter2' style='width:160px'>" ;
-												print "<option value=''>All Learning Areas</option>" ;
-												try {
-													$dataSelect=array(); 
-													$sqlSelect="SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name" ;
-													$resultSelect=$connection2->prepare($sqlSelect);
-													$resultSelect->execute($dataSelect);
+						print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&search=$gibbonPersonID'>" ;
+							print"<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;	
+								?>
+								<tr>
+									<td> 
+										<b>Learning Area</b><br/>
+										<span style="font-size: 90%"><i></i></span>
+									</td>
+									<td class="right">
+										<?
+										print "<select name='filter2' id='filter2' style='width:302px'>" ;
+											print "<option value=''>All Learning Areas</option>" ;
+											try {
+												$dataSelect=array(); 
+												$sqlSelect="SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name" ;
+												$resultSelect=$connection2->prepare($sqlSelect);
+												$resultSelect->execute($dataSelect);
+											}
+											catch(PDOException $e) { }
+											while ($rowSelect=$resultSelect->fetch()) {
+												$selected="" ;
+												if ($rowSelect["gibbonDepartmentID"]==$filter2) {
+													$selected="selected" ;
 												}
-												catch(PDOException $e) { }
-												while ($rowSelect=$resultSelect->fetch()) {
-													$selected="" ;
-													if ($rowSelect["gibbonDepartmentID"]==$filter2) {
-														$selected="selected" ;
+												print "<option $selected value='" . $rowSelect["gibbonDepartmentID"] . "'>" . $rowSelect["name"] . "</option>" ;
+											}
+										print "</select>" ;
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>School Year</b><br/>
+										<span style="font-size: 90%"><i></i></span>
+									</td>
+									<td class="right">
+										<?
+										print "<select name='filter' id='filter' style='width:302px'>" ;
+											print "<option value='*'>All Years</option>" ;
+											try {
+												$dataSelect=array("gibbonPersonID"=>$gibbonPersonID); 
+												$sqlSelect="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber" ;
+												$resultSelect=$connection2->prepare($sqlSelect);
+												$resultSelect->execute($dataSelect);
+											}
+											catch(PDOException $e) { 
+												print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+											}
+											while ($rowSelect=$resultSelect->fetch()) {
+												$selected="" ;
+												if ($rowSelect["gibbonSchoolYearID"]==$filter) {
+													$selected="selected" ;
+												}
+												print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . $rowSelect["year"] . " (" . $rowSelect["yearGroup"] . ")</option>" ;
+											}
+										print "</select>" ;
+										?>
+									</td>
+								</tr>
+								<?
+								print "<tr>" ;
+									print "<td class='right' colspan=2>" ;
+										print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
+										print "<input checked type='checkbox' name='details' class='details' value='Yes' />" ;
+										print "<span style='font-size: 85%; font-weight: normal; font-style: italic'> Show/Hide Details</span>" ;
+										?>
+										<script type="text/javascript">
+											/* Show/Hide detail control */
+											$(document).ready(function(){
+												$(".details").click(function(){
+													if ($('input[name=details]:checked').val() == "Yes" ) {
+														$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
+													} 
+													else {
+														$(".detailItem").slideUp("fast"); 
 													}
-													print "<option $selected value='" . $rowSelect["gibbonDepartmentID"] . "'>" . $rowSelect["name"] . "</option>" ;
-												}
-											print "</select>" ;
-										print"</td>" ;
-										print"<td style='vertical-align: top'>" ; 
-											print "<select name='filter' id='filter' style='width:160px'>" ;
-												print "<option value='*'>All Years</option>" ;
-												try {
-													$dataSelect=array("gibbonPersonID"=>$gibbonPersonID); 
-													$sqlSelect="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber" ;
-													$resultSelect=$connection2->prepare($sqlSelect);
-													$resultSelect->execute($dataSelect);
-												}
-												catch(PDOException $e) { 
-													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-												}
-												while ($rowSelect=$resultSelect->fetch()) {
-													$selected="" ;
-													if ($rowSelect["gibbonSchoolYearID"]==$filter) {
-														$selected="selected" ;
-													}
-													print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . $rowSelect["year"] . " (" . $rowSelect["yearGroup"] . ")</option>" ;
-												}
-											print "</select>" ;
-										print"</td>" ;
-										print"<td class='right' style='vertical-align: top; width: 54px'>" ;
-											?>
-											<input style='margin-top: 0px; margin-right: -2px' type='submit' value='Filter'>
-											<?
-										print"</td>" ;
-									print"</tr>" ;
-								print"</table>" ;
-							print "</form>" ;
-						print "</div>" ;
+												 });
+											});
+										</script>
+										<?
+										print "<input type='submit' value='Go'>" ;
+									print "</td>" ;
+								print "</tr>" ;
+							print"</table>" ;
+						print "</form>" ;
 	
 						//Get class list
 						try {
@@ -1234,7 +1260,7 @@ else {
 									$teachers=$teachers . "</p>" ;
 									print $teachers ;
 				
-									print "<table style='width: 100%'>" ;
+									print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th style='width: 120px'>" ;
 											print "Assessment" ;

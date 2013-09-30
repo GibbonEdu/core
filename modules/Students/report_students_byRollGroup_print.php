@@ -32,7 +32,7 @@ else {
 	$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
 	
 	//Proceed!
-	print "<h2 class='top'>" ;
+	print "<h2>" ;
 	print "Students by Roll Group" ;
 	print "</h2>" ;
 	
@@ -98,7 +98,7 @@ else {
 		print "<a href='javascript:window.print()'><img title='Print' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 		print "</div>" ;
 	
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Roll Group" ;

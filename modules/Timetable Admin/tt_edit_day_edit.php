@@ -88,8 +88,7 @@ else {
 			
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_editProcess.php?gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
 							<b>School Year *</b><br/>
@@ -167,17 +166,15 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td class="right" colspan=2>
+						<td>
+							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
 							<input name="gibbonTTID" id="gibbonTTID" value="<? print $gibbonTTID ?>" type="hidden">
 							<input name="gibbonTTColumnID" id="gibbonTTColumnID" value="<? print $row["gibbonTTColumnID"] ?>" type="hidden">
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<input type="reset" value="Reset"> <input type="submit" value="Submit">
-						</td>
-					</tr>
-					<tr>
-						<td class="right" colspan=2>
-							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 					</tr>
 				</table>
@@ -204,7 +201,7 @@ else {
 				print "</div>" ;
 			}
 			else {
-				print "<table style='width: 100%'>" ;
+				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
 							print "Name" ;

@@ -53,7 +53,7 @@ function getSmartWorkflowHelp($connection2, $guid, $step="") {
 					$output.="<span style='font-size: 175%'><i><b>Smart Workflow</b></i> Getting Started</span><br/>" ;
 					$output.="Designed and built by teachers, Gibbon's Smart Workflow takes care of the boring stuff, so you can get on with teaching.<br/>" ;
 				$output.="</div>" ;
-				$output.="<table style='width: 100%; margin: 10px 0px; border-spacing: 4px;'>" ;
+				$output.="<table cellspacing='0' style='width: 100%; margin: 10px 0px; border-spacing: 4px;'>" ;
 					$output.="<tr>" ;
 						if ($step==1) {
 							$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
@@ -241,7 +241,7 @@ function getStudentFastFinder($connection2, $guid) {
 		$output.="<h2>" ;
 		$output.="Fast Student Finder<br/>" ;
 		if (getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2)=="Staff") {
-			$output.="<span style='font-size: 50%; font-weight: normal; font-style: italic; line-height: 70%'>Total Enrollment: " . $resultList->rowCount() . "</span>" ;
+			$output.="<span style='font-size: 50%; font-weight: normal; font-style: italic; line-height: 80%'>Total Enrollment: " . $resultList->rowCount() . "</span>" ;
 		}
 		$output.="</h2>" ;
 		
@@ -254,9 +254,9 @@ function getStudentFastFinder($connection2, $guid) {
 			$output.="ul.token-input-list-facebook { width: 187px; float: left; height: 25px!important; }" ;
 			$output.="div.token-input-dropdown-facebook { width: 187px }" ;
 		$output.="</style>" ;
-		$output.="<div style='padding-bottom: 15px; height: 40px'>" ;
+		$output.="<div style='padding-bottom: 15px; height: 40px; margin-top: 10px'>" ;
 			$output.="<form method='get'>" ;
-				$output.="<table style='width: 100%; margin: 0px 0px'>" ;	
+				$output.="<table class='blank' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
 					$output.="<tr>" ;
 						$output.="<td style='vertical-align: top'>" ; 
 							$output.="<input type='text' id='gibbonPersonID' name='gibbonPersonID' />" ;
@@ -800,11 +800,11 @@ function sidebar($connection2, $guid) {
 	
 	if ($_SESSION[$guid]["username"]=="") {
 		?>
-		<h2 class="top">
+		<h2>
 			Login
 		</h2>
 		<form name="loginForm" method="post" action="./login.php?q=<? print $_GET["q"] ?>">
-			<table style="width: 100%; margin: 0px 0px">	
+			<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">	
 				<tr>
 					<td> 
 						<b>Username</b>
@@ -871,7 +871,7 @@ function sidebar($connection2, $guid) {
 							print "});" ;
 						print "</script>" ;
 						?>
-						<span style='font-size: 10px'><a title='View Description' class='show_hide' onclick='false' href='#'>Options</a> . <a href="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php?q=passwordReset.php">Forgot Password?</a></span>
+						<span style='font-size: 10px'><a class='show_hide' onclick='false' href='#'>Options</a> . <a href="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php?q=passwordReset.php">Forgot Password?</a></span>
 					</td>
 				</tr>
 				<tr>
@@ -1286,7 +1286,7 @@ function sidebar($connection2, $guid) {
 			print "My Classes" ;
 			print "</h2>" ;
 			
-			print "<table style='width: 100%'>" ;
+			print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 						print "<th style='width: 40%'>" ;
 						print "Class" ;
@@ -1741,7 +1741,7 @@ function printRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, 
 	}
 	catch(PDOException $e) { }
 	
-	print "<table style='width:100%'>" ;
+	print "<table class='noIntBorder' cellspacing='0' style='width:100%'>" ;
 	$count=0 ;
 	
 	if ($confidential) {
@@ -1838,7 +1838,7 @@ function printClassGroupTable($guid, $gibbonCourseClassID, $columns, $connection
 	}
 	catch(PDOException $e) { }
 	
-	print "<table style='width:100%'>" ;
+	print "<table class='noIntBorder' cellspacing='0' style='width:100%'>" ;
 	$count=0 ;
 	while ($rowClassGroup=$resultClassGroup->fetch()) {
 		if ($count%$columns==0) {
@@ -2458,7 +2458,7 @@ class ExportToExcel
 		}
 		catch(PDOException $e) { }
 
-		$header="<center><table border=1px>";
+		$header="<center><table cellspacing='0' border=1px>";
 		$num_field=$tmprst->columnCount();
 		while($row=$tmprst->fetch())
 		{

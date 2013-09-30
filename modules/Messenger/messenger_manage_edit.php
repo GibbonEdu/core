@@ -105,22 +105,21 @@ else {
 				</div>
 				
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_editProcess.php?gibbonMessengerID=$gibbonMessengerID&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
-					<table style="width: 100%">	
-						<tr><td style="width: 30%"></td><td></td></tr>
-						<tr>
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<tr class='break'>
 							<td colspan=2> 
-								<h3 class='top'>Delivery Mode</h3>
+								<h3>Delivery Mode</h3>
 							</td>
 						</tr>
 						<?
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byEmail")) {
 							?>
 							<tr>
-								<td style='border-top: 1px solid #666'> 
+								<td> 
 									<b>Email *</b><br/>
 									<span style="font-size: 90%"><i>Deliver this message to user's email account?<br/></i></span>
 								</td>
-								<td style='border-top: 1px solid #666' class="right">
+								<td class="right">
 									<? 
 									if ($row["email"]=="Y") {
 										print "<img title='Sent by email.' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
@@ -147,11 +146,11 @@ else {
 								});
 							</script>
 							<tr>
-								<td style='border-top: 1px solid #666'> 
+								<td> 
 									<b>Message Wall *</b><br/>
 									<span style="font-size: 90%"><i>Place this message on user's message wall?<br/></i></span>
 								</td>
-								<td style='border-top: 1px solid #666' class="right">
+								<td class="right">
 									<input <? if ($row["messageWall"]=="Y") { print "checked" ; } ?> type="radio" name="messageWall" class="messageWall" value="Y"/> Yes
 									<input <? if ($row["messageWall"]=="N") { print "checked" ; } ?> type="radio" name="messageWall" class="messageWall" value="N"/> No
 								</td>
@@ -201,11 +200,11 @@ else {
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_bySMS")) {
 							?>
 							<tr>
-								<td style='border-top: 1px solid #666; border-bottom: 1px solid #666'> 
+								<td> 
 									<b>SMS *</b><br/>
 									<span style="font-size: 90%"><i>Deliver this message to user's mobile phone?<br/></i></span>
 								</td>
-								<td style='border-top: 1px solid #666; border-bottom: 1px solid #666' class="right">
+								<td class="right">
 									<?
 									if ($row["SMS"]=="Y") {
 										print "<img title='Sent by sms.' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
@@ -221,7 +220,7 @@ else {
 						?>
 						
 						
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Message Details</h3>
 							</td>
@@ -246,7 +245,7 @@ else {
 							</td>
 						</tr>
 						
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Targets</h3>
 							</td>
@@ -279,11 +278,11 @@ else {
 								});
 							</script>
 							<tr>
-								<td style='border-top: 1px solid #666'> 
+								<td> 
 									<b>Role</b><br/>
 									<span style="font-size: 90%"><i>Users of a certain type<br/></i></span>
 								</td>
-								<td style='border-top: 1px solid #666' class="right">
+								<td class="right">
 									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="role" class="role" value="Y"/> Yes
 									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="role" class="role" value="N"/> No
 								</td>
@@ -360,11 +359,11 @@ else {
 								});
 							</script>
 							<tr>
-								<td style='border-top: 1px solid #666'> 
+								<td> 
 									<b>Year Group</b><br/>
 									<span style="font-size: 90%"><i>Students in year; all staff<br/></i></span>
 								</td>
-								<td style='border-top: 1px solid #666' class="right">
+								<td class="right">
 									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="yearGroup" class="yearGroup" value="Y"/> Yes
 									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="yearGroup" class="yearGroup" value="N"/> No
 								</td>
@@ -507,11 +506,11 @@ else {
 								});
 							</script>
 							<tr>
-								<td style='border-top: 1px solid #666'> 
+								<td> 
 									<b>Roll Group</b><br/>
 									<span style="font-size: 90%"><i>Tutees and tutors<br/></i></span>
 								</td>
-								<td style='border-top: 1px solid #666' class="right">
+								<td class="right">
 									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="rollGroup" class="rollGroup" value="Y"/> Yes
 									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="rollGroup" class="rollGroup" value="N"/> No
 								</td>
@@ -666,11 +665,11 @@ else {
 								});
 							</script>
 							<tr>
-								<td style='border-top: 1px solid #666'> 
+								<td> 
 									<b>Course</b><br/>
 									<span style="font-size: 90%"><i>Members of a course<br/></i></span>
 								</td>
-								<td style='border-top: 1px solid #666' class="right">
+								<td class="right">
 									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="course" class="course" value="Y"/> Yes
 									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="course" class="course" value="N"/> No
 								</td>
@@ -819,11 +818,11 @@ else {
 								});
 							</script>
 							<tr>
-								<td style='border-top: 1px solid #666'> 
+								<td> 
 									<b>Class</b><br/>
 									<span style="font-size: 90%"><i>Members of a class<br/></i></span>
 								</td>
-								<td style='border-top: 1px solid #666' class="right">
+								<td class="right">
 									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="class" class="class" value="Y"/> Yes
 									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="class" class="class" value="N"/> No
 								</td>
@@ -972,11 +971,11 @@ else {
 								});
 							</script>
 							<tr>
-								<td style='border-top: 1px solid #666'> 
+								<td> 
 									<b>Activity</b><br/>
 									<span style="font-size: 90%"><i>Members of an activity<br/></i></span>
 								</td>
-								<td style='border-top: 1px solid #666' class="right">
+								<td class="right">
 									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="activity" class="activity" value="Y"/> Yes
 									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="activity" class="activity" value="N"/> No
 								</td>
@@ -1122,11 +1121,11 @@ else {
 								});
 							</script>
 							<tr>
-								<td style='border-top: 1px solid #666'> 
+								<td> 
 									<b>Applicants</b><br/>
 									<span style="font-size: 90%"><i>Applicants from a given year.<br/>Does not apply to the message wall.</i></span>
 								</td>
-								<td style='border-top: 1px solid #666' class="right">
+								<td class="right">
 									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="applicants" class="applicants" value="Y"/> Yes
 									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="applicants" class="applicants" value="N"/> No
 								</td>
@@ -1193,11 +1192,11 @@ else {
 								});
 							</script>
 							<tr>
-								<td style='border-top: 1px solid #666'> 
+								<td> 
 									<b>Houses</b><br/>
 									<span style="font-size: 90%"><i>Houses for competitions, etc.<br/></i></span>
 								</td>
-								<td style='border-top: 1px solid #666' class="right">
+								<td class="right">
 									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="houses" class="houses" value="Y"/> Yes
 									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="houses" class="houses" value="N"/> No
 								</td>
@@ -1271,11 +1270,11 @@ else {
 								});
 							</script>
 							<tr>
-								<td style='border-top: 1px solid #666'> 
+								<td> 
 									<b>Indviduals</b><br/>
 									<span style="font-size: 90%"><i>Individuals from the whole school<br/></i></span>
 								</td>
-								<td style='border-top: 1px solid #666' class="right">
+								<td class="right">
 									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="individuals" class="individuals" value="Y"/> Yes
 									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="individuals" class="individuals" value="N"/> No
 								</td>
@@ -1319,13 +1318,11 @@ else {
 
 						
 						<tr>
-							<td class="right" colspan=2>
-								<input type="reset" value="Reset"> <input type="submit" value="Submit">
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
+							<td>
 								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+							</td>
+							<td class="right">
+								<input type="reset" value="Reset"> <input type="submit" value="Submit">
 							</td>
 						</tr>
 					</table>

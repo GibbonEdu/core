@@ -170,7 +170,7 @@ else {
 					}
 					else {
 						if ($submission==true) {
-							print "<h2 class='top'>" ;
+							print "<h2>" ;
 							print "Update Submission" ;
 							print "</h2>" ;
 							
@@ -193,8 +193,7 @@ else {
 								$rowSubmission=$resultSubmission->fetch()
 								?>
 								<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submit_editProcess.php" ?>">
-									<table style="width: 100%">	
-										<tr><td style="width: 30%"></td><td></td></tr>
+									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 										<tr>
 											<td> 
 												<b>Student *</b><br/>
@@ -241,7 +240,7 @@ else {
 							
 							?>
 							<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submit_editProcess.php" ?>" enctype="multipart/form-data">
-								<table style="width: 100%">	
+								<table cellspacing='0' style="width: 100%">	
 									<tr><td style="width: 30%"></td><td></td></tr>
 									<tr>
 										<td> 

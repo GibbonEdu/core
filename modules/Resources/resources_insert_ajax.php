@@ -83,7 +83,7 @@ else {
 		$output.="};" ;
 	$output.="</script>" ;
 	
-	$output.="<table style='width: 100%'>" ;	
+	$output.="<table cellspacing='0' style='width: 100%'>" ;	
 		$output.="<tr><td style='width: 30%; height: 1px; padding-top: 0px; padding-bottom: 0px'></td><td style='padding-top: 0px; padding-bottom: 0px'></td></tr>" ;
 		$output.="<tr id='" . $id . "resourceInsert'>" ;
 			$output.="<td colspan=2 style='padding-top: 0px'>" ; 
@@ -91,7 +91,7 @@ else {
 				$output.="<h3 style='margin-top: 0px; font-size: 140%'>Insert A Resource</h3>" ;
 				$output.="<p>The table below shows shared resources drawn from the <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_view.php'>Resources</a> section of Gibbon. You will see the 50 most recent resources that match the filters you have used.</p>" ;
 				$output.="<form id='" . $id . "ajaxFormSearch' name='" . $id . "ajaxFormSearch'>" ;
-					$output.="<table style='width: 200px'>" ;
+					$output.="<table cellspacing='0' style='width: 200px'>" ;
 						$output.="<tr>" ;
 							$output.="<td>" ;
 								$output.="<b>Tag</b>" ;
@@ -291,7 +291,7 @@ else {
 					$output.="</div>" ;
 				}
 				else {
-					$output.="<table style='width: 100%'>" ;
+					$output.="<table cellspacing='0' style='width: 100%'>" ;
 						$output.="<tr class='head'>" ;
 							$output.="<th>" ;
 								$output.="Name &<br/>Contributor" ;

@@ -110,7 +110,7 @@ else {
 					} 
 					?>
 					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_edit_class_exception_deleteProcess.php?&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassExceptionID=$gibbonTTDayRowClassExceptionID" ?>">
-						<table style="width: 100%">	
+						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
 									<b>Are you sure you want to delete this exception?</b><br/>

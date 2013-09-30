@@ -90,7 +90,7 @@ else {
 			print "</div>" ;
 		} 
 		
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 		print "Choose User" ;
 		print "</h2>" ;
 		
@@ -98,7 +98,7 @@ else {
 		?>
 		
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-			<table style="width: 100%">	
+			<table cellspacing='0' style="width: 100%">	
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
 					<td> 
@@ -168,7 +168,7 @@ else {
 		<?
 		
 		if ($gibbonFinanceInvoiceeID!="") {
-			print "<h2 class='top'>" ;
+			print "<h2>" ;
 			print "Update Data" ;
 			print "</h2>" ;
 			
@@ -268,11 +268,11 @@ else {
 					$row=$result->fetch() ;
 					?>
 					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_financeProcess.php?gibbonFinanceInvoiceeID=" . $gibbonFinanceInvoiceeID ?>">
-						<table style="width: 100%">	
+						<table cellspacing='0' style="width: 100%">	
 							<tr><td style="width: 30%"></td><td></td></tr>
 							<tr>
 								<td colspan=2> 
-									<h4 class='top'>Invoice To</h4>
+									<h4>Invoice To</h4>
 								</td>
 							</tr>
 							

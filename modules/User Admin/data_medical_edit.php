@@ -118,10 +118,10 @@ else {
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_medical_editProcess.php?gibbonPersonMedicalUpdateID=$gibbonPersonMedicalUpdateID" ?>">
 					<?
 							
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr>" ;
 							print "<td colspan=4> " ;
-								print "<h3 class='top'>Basic Information</h3>" ;
+								print "<h3>Basic Information</h3>" ;
 							print "</td>" ;
 						print "</tr>" ;
 						print "<tr class='head'>" ;

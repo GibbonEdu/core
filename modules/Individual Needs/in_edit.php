@@ -112,7 +112,7 @@ else {
 			}
 
 		
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -172,8 +172,7 @@ else {
 				else {
 					$rowIEP=$resultIEP->fetch() ;
 					?>	
-					<table style="width: 100%">	
-						<tr><td style="width: 30%"></td><td></td></tr>
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td colspan=2> 
 								<span style='font-weight: bold; font-size: 135%'>Teaching Strategies</span><br/>

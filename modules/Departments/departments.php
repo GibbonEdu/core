@@ -47,10 +47,10 @@ else {
 	}	
 	if ($resultLA->rowCount()>0) {
 		$departments=TRUE ;
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 			print "Learning Areas" ;
 		print "</h2>" ;
-		print "<table style='width:100%; margin-top: 20px'>" ;
+		print "<table cellspacing='0' style='width:100%; margin-top: 20px'>" ;
 		$count=0 ;
 		$columns=3 ;
 		
@@ -96,10 +96,10 @@ else {
 	}	
 	if ($resultLA->rowCount()>0) {
 		$departments=TRUE ;
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 			print "Administration" ;
 		print "</h2>" ;
-		print "<table style='width:100%; margin-top: 20px'>" ;
+		print "<table cellspacing='0' style='width:100%; margin-top: 20px'>" ;
 		$count=0 ;
 		$columns=3 ;
 		

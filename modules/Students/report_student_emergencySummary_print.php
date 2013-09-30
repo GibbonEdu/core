@@ -32,7 +32,7 @@ else {
 	$choices=$_SESSION[$guid]["report_student_emergencySummary.php_choices"] ;
 	
 	if (count($choices)>0) {
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 		print "Student Emergency Data Summary" ;
 		print "</h2>" ;
 		print "<p>" ;
@@ -60,7 +60,7 @@ else {
 		print "<a href='javascript:window.print()'><img title='Print' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 		print "</div>" ;
 
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Student" ;

@@ -116,9 +116,8 @@ else {
 					
 					?>
 					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss_postProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&address=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&replyTo=" . $_GET["replyTo"] ?>">
-						<table style="width: 100%">	
-							<tr><td style="width: 30%"></td><td></td></tr>
-								<tr>
+						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+							<tr>
 								<td colspan=2> 
 									<b>Write your comment below:</b> 
 									<? print getEditor($guid,  TRUE, "comment" ) ?>

@@ -68,7 +68,7 @@ $output.="<script type='text/javascript'>" ;
 	$output.="};" ;
 $output.="</script>" ;
 
-$output.="<table style='width: 100%'>" ;	
+$output.="<table cellspacing='0' style='width: 100%'>" ;	
 	$output.="<tr><td style='width: 30%; height: 1px; padding-top: 0px; padding-bottom: 0px'></td><td style='padding-top: 0px; padding-bottom: 0px'></td></tr>" ;
 	$output.="<tr id='" . $id . "resourceQuick'>" ;
 		$output.="<td colspan=2 style='padding-top: 0px'>" ; 
@@ -76,11 +76,11 @@ $output.="<table style='width: 100%'>" ;
 			$output.="<h3 style='margin-top: 0px; font-size: 140%'>Quick Insert</h3>" ;
 			$output.="<p>Use the form below to quickly add a resource to this field, without having to set up a shared resource in Gibbon. If the addition is successful, then it will be automatically inserted into your work above. <b>You are encourage to create shared resources whenever you think a resource might be useful to others.</b></p>" ;
 			$output.="<form id='" . $id . "ajaxForm'>" ;
-				$output.="<table style='width: 100%'>" ;
+				$output.="<table cellspacing='0' style='width: 100%'>" ;
 					$output.="<tr><td style='width: 30%'></td><td></td></tr>" ;
 					$output.="<tr>" ;
 						$output.="<td colspan=2> " ;
-							$output.="<h4 class='top'>Resource Contents</h4>" ;
+							$output.="<h4>Resource Contents</h4>" ;
 						$output.="</td>" ;
 					$output.="</tr>" ;
 					

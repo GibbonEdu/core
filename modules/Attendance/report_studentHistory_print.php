@@ -45,7 +45,7 @@ else {
 	
 	if ($gibbonPersonID!="") {
 		$output="" ;
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 		print "Attendance History for " . formatName("", $row["preferredName"], $row["surname"], "Student") ;
 		print "</h2>" ;
 		

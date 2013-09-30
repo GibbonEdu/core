@@ -38,7 +38,7 @@ if ($resultLike->rowCount()>0) {
 	print "<h2>" ;
 	print "Planner Stars <span style='font-size: 65%; font-style: italic; font-weight: normal'> x" . $resultLike->rowCount() . "</span>" ;
 	print "</h2>" ;
-	print "<table style='width: 100%'>" ;
+	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th style='width: 90px'>" ;
 				print "Photo" ;
@@ -106,7 +106,7 @@ if ($resultLike->rowCount()>0) {
 	print "<h2>" ;
 	print "Behaviour Stars <span style='font-size: 65%; font-style: italic; font-weight: normal'> x" . $resultLike->rowCount() . "</span>" ;
 	print "</h2>" ;
-	print "<table style='width: 100%'>" ;
+	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th style='width: 90px'>" ;
 				print "Photo" ;
@@ -171,7 +171,7 @@ if ($resultLike->rowCount()>0) {
 	print "<h2>" ;
 	print "Crowd Assessment Stars <span style='font-size: 65%; font-style: italic; font-weight: normal'> x" . $resultLike->rowCount() . "</span>" ;
 	print "</h2>" ;
-	print "<table style='width: 100%'>" ;
+	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th style='width: 90px'>" ;
 				print "Photo" ;

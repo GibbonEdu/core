@@ -59,7 +59,7 @@ else {
 	}
 	
 	if ($gibbonSchoolYearID!="") {
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 			print $gibbonSchoolYearName ;
 		print "</h2>" ;
 		
@@ -84,15 +84,12 @@ else {
 		$allUsers=$_GET["allUsers"] ;
 		$search=$_GET["search"] ;
 		
-		print "<h3 class='top'>" ;
+		print "<h3>" ;
 		print "Filters" ;
 		print "</h3>" ;
-		print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson.php'>Clear Filters</a>" ;
-		print "</div>" ;
 		?>
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-			<table style="width: 100%">	
+			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
 						<b>Search For</b><br/>
@@ -122,6 +119,9 @@ else {
 						<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/courseEnrolment_manage_byPerson.php">
 						<input type="hidden" name="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>">
 						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+						<?
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson.php'>Clear Filters</a>" ;
+						?>
 						<input type="submit" value="Submit">
 					</td>
 				</tr>
@@ -129,7 +129,7 @@ else {
 		</form>
 		<?
 		
-		print "<h3 class='top'>" ;
+		print "<h3>" ;
 		print "View" ;
 		print "</h3>" ;
 		
@@ -175,7 +175,7 @@ else {
 				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
 			}
 		
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
 						print "Name" ;

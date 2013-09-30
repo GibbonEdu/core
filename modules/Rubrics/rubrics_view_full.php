@@ -57,7 +57,7 @@ else {
 			//Let's go!
 			$row3=$result3->fetch() ;
 			
-			print "<h2 class='top' style='margin-bottom: 10px;'>" ;
+			print "<h2 style='margin-bottom: 10px;'>" ;
 				print $row3["name"] . "<br/>" ;
 			print "</h2>" ;
 			

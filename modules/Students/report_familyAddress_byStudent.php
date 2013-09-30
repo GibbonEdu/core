@@ -39,7 +39,7 @@ else {
 	print "This report attempts prints the family address(es) based on parents who are labelled as Contract Priority 1." ;
 	print "</p>" ;
 	
-	print "<h2 class='top'>" ;
+	print "<h2>" ;
 	print "Choose Students" ;
 	print "</h2>" ;
 	
@@ -47,7 +47,7 @@ else {
 	?>
 	
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_familyAddress_byStudent.php"?>">
-		<table style="width: 100%">	
+		<table cellspacing='0' style="width: 100%">	
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td> 
@@ -100,7 +100,7 @@ else {
 	if (count($choices)>0) {
 		$_SESSION[$guid]["report_student_emergencySummary.php_choices"]=$choices ;
 		
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 		print "Report Data" ;
 		print "</h2>" ;
 		
@@ -134,7 +134,7 @@ else {
 			$count++ ;
 		}
 
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Family" ;

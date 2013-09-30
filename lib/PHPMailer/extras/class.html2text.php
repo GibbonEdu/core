@@ -76,7 +76,7 @@ class html2text
         '/<li[^>]*>/i',                          // <li>
         '/<hr[^>]*>/i',                          // <hr>
         '/<div[^>]*>/i',                         // <div>
-        '/(<table[^>]*>|<\/table>)/i',           // <table> and </table>
+        '/(<table cellspacing='0'[^>]*>|<\/table>)/i',           // <table cellspacing='0'> and </table>
         '/(<tr[^>]*>|<\/tr>)/i',                 // <tr> and </tr>
         '/<td[^>]*>(.*?)<\/td>/i',               // <td> and </td>
         '/<span class="_html2text_ignore">.+?<\/span>/i'  // <span class="_html2text_ignore">...</span>
@@ -105,7 +105,7 @@ class html2text
         "\n\t* ",                               // <li>
         "\n-------------------------\n",        // <hr>
         "<div>\n",                              // <div>
-        "\n\n",                                 // <table> and </table>
+        "\n\n",                                 // <table cellspacing='0'> and </table>
         "\n",                                   // <tr> and </tr>
         "\t\t\\1\n",                            // <td> and </td>
         ""                                      // <span class="_html2text_ignore">...</span>

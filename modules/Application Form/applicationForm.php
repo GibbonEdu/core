@@ -134,17 +134,16 @@ else {
 	?>
 	
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/applicationFormProcess.php" ?>" enctype="multipart/form-data">
-		<table style="width: 100%">	
-			<tr><td style="width: 30%"></td><td></td></tr>
-			<tr>
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<tr class='break'>
 				<td colspan=2> 
-					<h3 class='top'>Student</h3>
+					<h3>Student</h3>
 				</td>
 			</tr>
 			
 			<tr>
 				<td colspan=2> 
-					<h4 class='top'>Student Personal Data</h4>
+					<h4>Student Personal Data</h4>
 				</td>
 			</tr>
 			<tr>
@@ -711,7 +710,7 @@ else {
 			<tr>
 				<td colspan=2> 
 					<?
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
 								print "School Name" ;
@@ -806,7 +805,7 @@ else {
 				?>
 				<input type="hidden" name="gibbonFamily" value="FALSE">
 				
-				<tr>
+				<tr class='break'>
 					<td colspan=2> 
 						<h3>
 							Home Address
@@ -892,7 +891,7 @@ else {
 				if ($_SESSION[$guid]["username"]!="") {
 					$start=2 ;
 					?>
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>
 								Parent/Guardian 1
@@ -966,7 +965,7 @@ else {
 				}
 				for ($i=$start;$i<3;$i++) {
 					?>
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>
 								Parent/Guardian <? print $i ?>
@@ -1055,7 +1054,7 @@ else {
 					?>
 					<tr <? if ($i==2) { print "class='secondParent'" ; }?>>
 						<td colspan=2> 
-							<h4 class='top'>Parent/Guardian <? print $i ?> Personal Data</h4>
+							<h4>Parent/Guardian <? print $i ?> Personal Data</h4>
 						</td>
 					</tr>
 					<tr <? if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1458,12 +1457,12 @@ else {
 			else {
 				?>
 				<input type="hidden" name="gibbonFamily" value="TRUE">
-				<tr>
+				<tr class='break'>
 					<td colspan=2> 
 						<h3>Family</h3>
 						<p>Choose the family you wish to associate this application with.</p>
 						<?
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
 									print "Family Name" ;
@@ -1540,7 +1539,7 @@ else {
 				<?
 			}
 			?>
-			<tr>
+			<tr class='break'>
 				<td colspan=2> 
 					<h3>Siblings</h3>
 				</td>
@@ -1553,7 +1552,7 @@ else {
 			<tr>
 				<td colspan=2> 
 					<?
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
 								print "Sibling Name" ;
@@ -1652,7 +1651,7 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									?>
-									<input name="<? print "siblingSchoolJoiningDate$i" ?>" id="<? print "siblingSchoolJoiningDate$i" ?>" maxlength=10 value="" type="text" style="width:90px; float: left">
+									<input name="<? print "siblingSchoolJoiningDate$i" ?>" id="<? print "siblingSchoolJoiningDate$i" ?>" maxlength=10 value="" type="text" style="width:120px; float: left">
 									<script type="text/javascript">
 										$(function() {
 											$( "#<? print "siblingSchoolJoiningDate$i" ?>" ).datepicker();
@@ -1671,7 +1670,7 @@ else {
 			$languageOptionsActive=getSettingByScope($connection2, 'Application Form', 'languageOptionsActive') ;
 			if ($languageOptionsActive=="On") {
 				?>
-				<tr>
+				<tr class='break'>
 					<td colspan=2> 
 						<h3>Language Selection</h3>
 						<?
@@ -1723,7 +1722,7 @@ else {
 			
 
 
-			<tr>
+			<tr class='break'>
 				<td colspan=2> 
 					<h3>Scholarships</h3>
 					<?
@@ -1759,7 +1758,7 @@ else {
 			</tr>
 			
 			
-			<tr>
+			<tr class='break'>
 				<td colspan=2> 
 					<h3>Payment</h3>
 				</td>
@@ -1909,7 +1908,7 @@ else {
 			$requiredDocumentsCompulsory=getSettingByScope($connection2, "Application Form", "requiredDocumentsCompulsory") ;
 			if ($requiredDocuments!="" AND $requiredDocuments!=FALSE) {
 				?>
-				<tr>
+				<tr class='break'>
 					<td colspan=2> 
 						<h3>Supporting Documents</h3>
 						<? 
@@ -1978,7 +1977,7 @@ else {
 			}
 			?>
 			
-			<tr>
+			<tr class='break'>
 				<td colspan=2> 
 					<h3>Miscellaneous</h3>
 				</td>
@@ -2092,14 +2091,12 @@ else {
 	
 		
 			<tr>
-				<td class="right" colspan=2>
+				<td>
+					<span style="font-size: 90%"><i>* denotes a required field</i></span>
+				</td>
+				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 					<input type="reset" value="Reset"> <input type="submit" value="Submit">
-				</td>
-			</tr>
-			<tr>
-				<td class="right" colspan=2>
-					<span style="font-size: 90%"><i>* denotes a required field</i></span>
 				</td>
 			</tr>
 		</table>

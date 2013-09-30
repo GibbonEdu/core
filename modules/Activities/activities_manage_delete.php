@@ -83,7 +83,7 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_deleteProcess.php?gibbonActivityID=$gibbonActivityID" ?>">
-					<table style="width: 100%">	
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
 								<b>Are you sure you want to delete activity "<? print $row["name"] ?>"?</b><br/>

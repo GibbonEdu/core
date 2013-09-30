@@ -92,7 +92,7 @@ else {
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_family_editProcess.php?gibbonFamilyUpdateID=$gibbonFamilyUpdateID" ?>">
 				<?
-				print "<table style='width: 100%'>" ;
+				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
 							print "Field" ;
@@ -187,7 +187,6 @@ else {
 							if ($row["homeAddressCountry"]!=$row["newhomeAddressCountry"]) { print "<input checked type='checkbox' name='newhomeAddressCountryOn'><input name='newhomeAddressCountry' type='hidden' value='" . htmlprep($row["newhomeAddressCountry"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					
 					print "<tr>" ;
 							print "<td class='right' colspan=4>" ;
 								print "<input name='gibbonFamilyID' type='hidden' value='" . $row["gibbonFamilyID"] . "'>" ;

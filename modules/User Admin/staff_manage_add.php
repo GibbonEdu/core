@@ -68,11 +68,10 @@ else {
 	}
 	?>
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_addProcess.php?search=$search" ?>">
-		<table style="width: 100%">	
-			<tr><td style="width: 30%"></td><td></td></tr>
-			<tr>
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<tr class='break'>
 				<td colspan=2> 
-					<h3 class='top'>Basic Information</h3>
+					<h3>Basic Information</h3>
 				</td>
 			</tr>
 			<tr>
@@ -129,7 +128,7 @@ else {
 				</td>
 			</tr>
 			
-			<tr>
+			<tr class='break'>
 				<td colspan=2> 
 					<h3>Qualifications</h3>
 				</td>
@@ -175,14 +174,12 @@ else {
 			</tr>
 			
 			<tr>
-				<td class="right" colspan=2>
+				<td>
+					<span style="font-size: 90%"><i>* denotes a required field</i></span>
+				</td>
+				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 					<input type="reset" value="Reset"> <input type="submit" value="Submit">
-				</td>
-			</tr>
-			<tr>
-				<td class="right" colspan=2>
-					<span style="font-size: 90%"><i>* denotes a required field</i></span>
 				</td>
 			</tr>
 		</table>

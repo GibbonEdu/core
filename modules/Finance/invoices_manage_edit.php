@@ -107,11 +107,10 @@ else {
 			?>
 			
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID" ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
-					<tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr class='break'>
 						<td colspan=2> 
-							<h3 class='top'>Basic Information</h3>
+							<h3>Basic Information</h3>
 						</td>
 					</tr>
 					<tr>
@@ -337,7 +336,7 @@ else {
 						</td>
 					</tr>
 					
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>Fees</h3>
 						</td>
@@ -356,7 +355,7 @@ else {
 						</style>
 						<tr>
 							<td colspan=2> 
-								<div class="fee" id="fee" style='width: 100%; padding: 5px 0px 0px 0px; border-top: 1px solid #333; border-bottom: 1px solid #333; min-height: 66px'>
+								<div class="fee" id="fee" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
 									<?
 									$feeCount=0 ;
 									try {
@@ -380,9 +379,9 @@ else {
 									}
 									?>
 								</div>
-								<div style='width: 100%; padding: 0px 0px 0px 0px; border-bottom: 1px solid #333'>
-									<div class="ui-state-default_dud odd" style='padding: 0px; height: 60px'>
-										<table style='width: 100%'>
+								<div style='width: 100%; padding: 0px 0px 0px 0px'>
+									<div class="ui-state-default_dud" style='padding: 0px; height: 40px'>
+										<table class='blank' cellspacing='0' style='width: 100%'>
 											<tr>
 												<td style='width: 50%'>
 													<script type="text/javascript">
@@ -470,7 +469,7 @@ else {
 									print "</div>" ;
 								}
 								else {
-									print "<table style='width: 100%'>" ;
+									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
 												print "Name" ;
@@ -554,7 +553,7 @@ else {
 								 });
 							});
 						</script>
-						<tr class='emailReceipt'>
+						<tr class='break' class='emailReceipt'>
 							<td colspan=2> 
 								<h3>Email Receipt</h3>
 								<input type='hidden' id='emailReceipt' name='emailReceipt' value='N'/>
@@ -645,7 +644,7 @@ else {
 								 });
 							});
 						</script>
-						<tr class='emailReminder'>
+						<tr class='break class='emailReminder'>
 							<td colspan=2> 
 								<h3>Email Reminder</h3>
 								<input type='hidden' id='emailReminder' name='emailReminder' value='Y'/>
@@ -720,15 +719,13 @@ else {
 					}
 					?>			
 					<tr>
-						<td class="right" colspan=2>
+						<td>
+							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
 							<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<? print $gibbonFinanceInvoiceID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<input type="reset" value="Reset"> <input type="submit" value="Submit">
-						</td>
-					</tr>
-					<tr>
-						<td class="right" colspan=2>
-							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 					</tr>
 				</table>

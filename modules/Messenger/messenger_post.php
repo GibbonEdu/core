@@ -97,11 +97,10 @@ else {
 				
 		?>
 		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/messenger_postProcess.php?address=" . $_GET["q"] ?>" enctype="multipart/form-data">
-			<table style="width: 100%">	
-				<tr><td style="width: 30%"></td><td></td></tr>
-				<tr>
+			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<tr class='break'>
 					<td colspan=2> 
-						<h3 class='top'>Delivery Mode</h3>
+						<h3>Delivery Mode</h3>
 					</td>
 				</tr>
 				<?
@@ -273,7 +272,7 @@ else {
 				}
 				?>
 				
-				<tr>
+				<tr class='break'>
 					<td colspan=2> 
 						<h3>Message Details</h3>
 					</td>
@@ -298,7 +297,7 @@ else {
 					</td>
 				</tr>
 				
-				<tr>
+				<tr class='break'>
 					<td colspan=2> 
 						<h3>Targets</h3>
 					</td>
@@ -1051,13 +1050,11 @@ else {
 				?>
 				
 				<tr>
-					<td class="right" colspan=2>
-						<input type="reset" value="Reset"> <input type="submit" value="Submit">
-					</td>
-				</tr>
-				<tr>
-					<td class="right" colspan=2>
+					<td>
 						<span style="font-size: 90%"><i>* denotes a required field</i></span>
+					</td>
+					<td class="right">
+						<input type="reset" value="Reset"> <input type="submit" value="Submit">
 					</td>
 				</tr>
 			</table>

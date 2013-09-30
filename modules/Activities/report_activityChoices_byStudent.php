@@ -37,7 +37,7 @@ else {
 	print "This report shows the current and historical activities that a student has enrolled in." ;
 	print "</p>" ;
 	
-	print "<h2 class='top'>" ;
+	print "<h2>" ;
 	print "Choose Roll Group" ;
 	print "</h2>" ;
 	
@@ -45,7 +45,7 @@ else {
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table style="width: 100%">	
+		<table cellspacing='0' style="width: 100%">	
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td> 
@@ -101,7 +101,7 @@ else {
 	
 	if ($gibbonPersonID!="") {
 		$output="" ;
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 		print "Report Data" ;
 		print "</h2>" ;
 		
@@ -171,7 +171,7 @@ else {
 						print "</div>" ;
 					}
 					else {
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
 									print "Activity" ;

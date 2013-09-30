@@ -92,7 +92,7 @@ else {
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_personal_editProcess.php?gibbonPersonUpdateID=$gibbonPersonUpdateID" ?>">
 				<?
-				print "<table style='width: 100%'>" ;
+				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
 							print "Field" ;

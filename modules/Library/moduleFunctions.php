@@ -33,7 +33,7 @@ function getBorrowingRecord($guid, $connection2, $gibbonPersonID) {
 		$output.="</div>" ;
 	}
 	else {
-		$output.="<table style='width: 100%'>" ;
+		$output.="<table cellspacing='0' style='width: 100%'>" ;
 			$output.="<tr class='head'>" ;
 				$output.="<th style='text-align: center'>" ;
 						
@@ -128,7 +128,7 @@ function getBorrowingRecord($guid, $connection2, $gibbonPersonID) {
 						$output.="<td style='border-bottom: 1px solid #333'></td>" ;
 						
 						$output.="<td style='border-bottom: 1px solid #333' colspan=4>" ;
-							$output.="<table style='width: 100%'>" ;
+							$output.="<table cellspacing='0' style='width: 100%'>" ;
 								$typeFields=unserialize($row["typeFields"]) ;
 								$fields=unserialize($row["fields"]) ;
 								foreach ($typeFields as $typeField) {

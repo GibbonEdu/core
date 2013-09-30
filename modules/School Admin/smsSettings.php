@@ -61,8 +61,7 @@ else {
 		Gibbon is designed to use the <a href='http://onewaysms.com' target='_blank'>One Way SMS</a> gateway to send out SMS messages. This is a paid service, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module. It is possible that completing the fields below with details from other gateways <b>may</b> work.
 	</div>
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/smsSettingsProcess.php" ?>">
-		<table style="width: 100%">	
-			<tr><td style="width: 30%"></td><td></td></tr>
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<?
 				try {
@@ -144,14 +143,12 @@ else {
 			</tr>
 			
 			<tr>
-				<td class="right" colspan=2>
+				<td>
+					<span style="font-size: 90%"><i>* denotes a required field</i></span>
+				</td>
+				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 					<input type="reset" value="Reset"> <input type="submit" value="Submit">
-				</td>
-			</tr>
-			<tr>
-				<td class="right" colspan=2>
-					<span style="font-size: 90%"><i>* denotes a required field</i></span>
 				</td>
 			</tr>
 		</table>

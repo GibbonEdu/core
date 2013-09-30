@@ -264,11 +264,10 @@ else {
 				print "</div>" ;
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_editProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
-					<table style="width: 100%">	
-						<tr><td style="width: 30%"></td><td></td></tr>
-						<tr>
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<tr class='break'>
 							<td colspan=2> 
-								<h3 style='margin-top: 0px' class='top'>Basic Information</h3>
+								<h3 style='margin-top: 0px'>Basic Information</h3>
 							</td>
 						</tr>
 						<tr>
@@ -514,7 +513,7 @@ else {
 							</td>
 						</tr>
 						
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Lesson Content</h3>
 							</td>
@@ -546,9 +545,13 @@ else {
 							catch(PDOException $e) { 
 								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
+							print "<tr class='break'>" ;
+								print "<td colspan=3>" ;
+									print "<h3>Smart Blocks</h3>" ;
+								print "</td>" ;
+							print "</tr>" ;
 							print "<tr>" ;
 								print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
-									print "<br/><b>Smart Blocks</b> " ;
 									print "<div style='padding: 5px; margin-top: 0px; text-align: right;'>" ;
 										if ($hooked==FALSE) {
 											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonUnitID=" . $row["gibbonUnitID"] . "&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&gibbonUnitClassID=$gibbonUnitClassID'>Edit Unit</a> " ;
@@ -583,7 +586,7 @@ else {
 													});
 												</script>
 											
-												<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px; border-top: 1px dotted #666; border-bottom: 1px dotted #666'>
+												<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px'>
 													<? 
 													$i=1 ;
 													$minSeq=0 ;
@@ -616,10 +619,13 @@ else {
 						}
 						?>
 						
-						
+						<tr class='break'>
+							<td colspan=3>
+								<h3>Teacher's Notes</h3>
+							</td>
+						</tr>
 						<tr>
-							<td style='padding-top:25px' colspan=2> 
-								<b>Teacher's Notes</b> 
+							<td colspan=2> 
 								<? print getEditor($guid,  TRUE, "teachersNotes", $row["teachersNotes"], 25, true, false, false ) ?>
 							</td>
 						</tr>
@@ -796,7 +802,7 @@ else {
 						}
 						?>
 							
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Homework</h3>
 							</td>
@@ -964,7 +970,7 @@ else {
 								</td>
 								<td class="right">
 									<?
-									print "<table style='width: 308px' align=right>" ;
+									print "<table cellspacing='0' style='width: 308px' align=right>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
 												print "Role" ;
@@ -1059,9 +1065,13 @@ else {
 						//OUTCOMES
 						if ($viewBy=="date") {
 							?>
-							<tr>
+							<tr class='break'>
 								<td colspan=2> 
 									<h3>Outcomes</h3>
+								</td>
+							</tr>
+							<tr>
+								<td colspan=2> 
 									<div class='warning'>
 										Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.
 									</div>
@@ -1071,9 +1081,13 @@ else {
 						}
 						else {
 							?>
-							<tr>
+							<tr class='break'>
 								<td colspan=2> 
 									<h3>Outcomes</h3>
+								</td>
+							</tr>
+							<tr>
+								<td colspan=2> 
 									<p>Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.</p>
 								</td>
 							</tr>
@@ -1101,7 +1115,7 @@ else {
 							</script>
 							<tr>
 								<td colspan=2> 
-									<div class="outcome" id="outcome" style='width: 100%; padding: 5px 0px 0px 0px; border-top: 1px solid #333; border-bottom: 1px solid #333; min-height: 66px'>
+									<div class="outcome" id="outcome" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
 										<?
 										try {
 											$dataBlocks=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID);  
@@ -1128,9 +1142,9 @@ else {
 										}
 										?>
 									</div>
-									<div style='width: 100%; padding: 0px 0px 0px 0px; border-bottom: 1px solid #333'>
-										<div class="ui-state-default_dud odd" style='padding: 0px; height: 60px'>
-											<table style='width: 100%'>
+									<div style='width: 100%; padding: 0px 0px 0px 0px'>
+										<div class="ui-state-default_dud" style='padding: 0px; min-height: 66px'>
+											<table class='blank' cellspacing='0' style='width: 100%'>
 												<tr>
 													<td style='width: 50%'>
 														<script type="text/javascript">
@@ -1279,7 +1293,7 @@ else {
 						?>
 						
 						
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Access</h3>
 							</td>
@@ -1309,7 +1323,7 @@ else {
 							</td>
 						</tr>
 						
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Current Guests</h3>
 							</td>
@@ -1334,7 +1348,7 @@ else {
 								}
 								else {
 									print "<i><b>Warning</b>: If you delete a guest, any unsaved changes to this planner entry will be lost!</i>" ;
-									print "<table style='width: 100%'>" ;
+									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
 												print "Name" ;
@@ -1376,7 +1390,7 @@ else {
 								?>
 							</td>
 						</tr>
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>New Guests</h3>
 							</td>
@@ -1418,12 +1432,9 @@ else {
 							</td>
 						</tr>
 						
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Twitter</h3>
-							</td>
-							<td class="right">
-								
 							</td>
 						</tr>
 						<tr>
@@ -1437,13 +1448,11 @@ else {
 						</tr>
 						
 						<tr>
-							<td class="right" colspan=2>
-								<input type="reset" value="Reset"> <input type="submit" value="Submit">
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
+							<td>
 								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+							</td>
+							<td class="right">
+								<input type="reset" value="Reset"> <input type="submit" value="Submit">
 							</td>
 						</tr>
 					</table>

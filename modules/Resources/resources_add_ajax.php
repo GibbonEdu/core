@@ -75,7 +75,7 @@ else {
 		$output.="};" ;
 	$output.="</script>" ;
 	
-	$output.="<table style='width: 100%'>" ;	
+	$output.="<table cellspacing='0' style='width: 100%'>" ;	
 		$output.="<tr><td style='width: 30%; height: 1px; padding-top: 0px; padding-bottom: 0px'></td><td style='padding-top: 0px; padding-bottom: 0px'></td></tr>" ;
 		$output.="<tr id='" . $id . "resourceInsert'>" ;
 			$output.="<td colspan=2 style='padding-top: 0px'>" ; 
@@ -83,11 +83,11 @@ else {
 				$output.="<h3 style='margin-top: 0px; font-size: 140%'>Add & Insert A New Resource</h3>" ;
 				$output.="<p>Use the form below to add a new resource to Gibbon. If the addition is successful, then it will be automatically inserted into your work above. Note that you cannot create HTML resources here (you have to go to the Resources module for that).</p>" ;
 				$output.="<form id='" . $id . "ajaxForm' action='#'>" ;
-					$output.="<table style='width: 100%'>" ;
+					$output.="<table cellspacing='0' style='width: 100%'>" ;
 						$output.="<tr><td style='width: 30%'></td><td></td></tr>" ;
 						$output.="<tr>" ;
 							$output.="<td colspan=2> " ;
-								$output.="<h4 class='top'>Resource Contents</h4>" ;
+								$output.="<h4>Resource Contents</h4>" ;
 							$output.="</td>" ;
 						$output.="</tr>" ;
 						

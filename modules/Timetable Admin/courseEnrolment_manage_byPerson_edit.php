@@ -124,7 +124,7 @@ else {
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers'>View Timetable<img style='margin: 0 0 -4px 3px' title='Enter Data' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.gif'/></a> " ;
 			print "</div>" ;
 			
-			print "<h2 class='top'>" ;
+			print "<h2>" ;
 			print "Add Classes" ;
 			print "</h2>" ;
 			print "<p>" ;
@@ -132,8 +132,7 @@ else {
 			print "</p>" ;
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search" ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
 							<b>Classes</b><br/>
@@ -213,7 +212,10 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td class="right" colspan=2>
+						<td>
+							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<input type="reset" value="Reset"> <input type="submit" value="Submit">
 						</td>
@@ -222,7 +224,7 @@ else {
 			</form>
 
 			<?	
-			print "<h2 class='top'>" ;
+			print "<h2>" ;
 			print "Current Enrolment" ;
 			print "</h2>" ;
 			
@@ -259,7 +261,7 @@ else {
 						<?
 					print "</div>" ;
 					
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
 								print "Class Coude" ;
@@ -331,7 +333,7 @@ else {
 				print "</form>" ;
 			}
 			
-			print "<h2 class='top'>" ;
+			print "<h2>" ;
 			print "Old Enrolment" ;
 			print "</h2>" ;
 			
@@ -352,7 +354,7 @@ else {
 			}
 			else {
 				print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_editProcessBulk.php'>" ;
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
 								print "Class Coude" ;

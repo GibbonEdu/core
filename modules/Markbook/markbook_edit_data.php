@@ -137,7 +137,7 @@ else {
 				}
 				
 				print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_dataProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&address=" . $_SESSION[$guid]["address"] . "' enctype='multipart/form-data'>" ;
-					print "<table style='width: 100%'>" ;
+					print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th rowspan=2>" ;
 								print "Student" ;
@@ -470,7 +470,7 @@ else {
 							}
 						}
 						?>
-						<tr>
+						<tr class='break'>
 							<?
 							if ($submission==FALSE) {
 								$span=4 ;

@@ -132,9 +132,6 @@ else {
 		else {
 			//Let's go!
 			$row=$result->fetch() ;
-			print "<h2 class='top'>" ;
-			print "General Information" ;
-			print "</h2>" ;
 			
 			if ($search!="") {
 				print "<div class='linkTop'>" ;
@@ -144,8 +141,14 @@ else {
 			?>
 			
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_editProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search" ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr class='break'>
+						<td colspan=2> 
+							<h3>
+								General Information
+							</h3>
+						</td>
+					</tr>
 					<tr>
 						<td> 
 							<b>Family Name *</b><br/>
@@ -254,14 +257,14 @@ else {
 							</select>
 						</td>
 					</tr>
-					<tr><td colspan="4" class="right">
-						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="Reset" value="Reset">
-						<input type="Submit" value="Submit">
-					</td></tr>
 					<tr>
-						<td class="right" colspan=2>
+						<td>
 							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
+							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+							<input type="Reset" value="Reset">
+							<input type="Submit" value="Submit">
 						</td>
 					</tr>
 				</table>
@@ -336,9 +339,9 @@ else {
 			}
 
 			
-			print "<h2>" ;
+			print "<h3>" ;
 			print "Relationships" ;
-			print "</h2>" ;
+			print "</h3>" ;
 			print "<p>" ;
 			print "Use the table below to show how each child is related to each adult in the family." ;
 			print "</p>" ;
@@ -347,7 +350,7 @@ else {
 			}			
 			else {
 				print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_relationshipsProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search'>" ;
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
 								print "Adults" ;
@@ -407,9 +410,9 @@ else {
 				print "</form>" ;
 			}
 			
-			print "<h2>" ;
+			print "<h3>" ;
 			print "View Children" ;
-			print "</h2>" ;
+			print "</h3>" ;
 			
 			
 			if ($resultChildren->rowCount()<1) {
@@ -418,7 +421,7 @@ else {
 				print "</div>" ;
 			}
 			else {
-				print "<table style='width: 100%'>" ;
+				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
 							print "Photo" ;
@@ -490,13 +493,16 @@ else {
 				print "</table>" ;
 			}
 			
-			print "<h2>" ;
-			print "Add Child" ;
-			print "</h2>" ;
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_addChildProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search" ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr class='break'>
+						<td colspan=2>
+							<h3>
+							Add Child
+							</h3>
+						</td>
+					</tr>
 					<tr>
 						<td> 
 							<b>Child's Name *</b><br/>
@@ -559,23 +565,23 @@ else {
 						</td>
 					</tr>
 					</tr>
-					<tr><td colspan="4" class="right">
-						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="Reset" value="Reset">
-						<input type="Submit" value="Submit">
-					</td></tr>
 					<tr>
-						<td class="right" colspan=2>
+						<td>
 							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
+							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+							<input type="Reset" value="Reset">
+							<input type="Submit" value="Submit">
 						</td>
 					</tr>
 				</table>
 			</form>
 
 			<?	
-			print "<h2 class='top'>" ;
+			print "<h3>" ;
 			print "View Adults" ;
-			print "</h2>" ;
+			print "</h3>" ;
 			print "<div class='warning'>" ;
 				print "Logic exists to try and ensure that there is always one and only one parent with Contact Priority set to 1. This may result in values being set which are not exactly what you chose." ;
 			print "</div>" ;
@@ -586,7 +592,7 @@ else {
 				print "</div>" ;
 			}
 			else {
-				print "<table style='width: 100%'>" ;
+				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
 							print "Photo" ;
@@ -600,22 +606,22 @@ else {
 						print "<th>" ;
 							print "Comment" ;
 						print "</th>" ;
-						print "<th>" ;
+						print "<th style='padding-left: 1px; padding-right: 1px'>" ;
 							print "<span title='Data Access'>A</span>" ;
 						print "</th>" ;
-						print "<th>" ;
+						print "<th style='padding-left: 1px; padding-right: 1px'>" ;
 							print "<span title='Contact Priority'>CP</span>" ;
 						print "</th>" ;
-						print "<th>" ;
+						print "<th style='padding-left: 1px; padding-right: 1px'>" ;
 							print "<span title='Contact by Phone'>C</span>" ;
 						print "</th>" ;
-						print "<th>" ;
+						print "<th style='padding-left: 1px; padding-right: 1px'>" ;
 							print "<span title='Contact by SMS'>S</span>" ;
 						print "</th>" ;
-						print "<th>" ;
+						print "<th style='padding-left: 1px; padding-right: 1px'>" ;
 							print "<span title='Contact by Email'>E</span>" ;
 						print "</th>" ;
-						print "<th>" ;
+						print "<th style='padding-left: 1px; padding-right: 1px'>" ;
 							print "<span title='Contact by Mail'>M</span>" ;
 						print "</th>" ;
 						print "<th>" ;
@@ -648,22 +654,22 @@ else {
 							print "<td>" ;
 								print nl2brr($adult["comment"]) ;
 							print "</td>" ;
-							print "<td>" ;
+							print "<td style='padding-left: 1px; padding-right: 1px'>" ;
 								print $adult["childDataAccess"] ;
 							print "</td>" ;
-							print "<td>" ;
+							print "<td style='padding-left: 1px; padding-right: 1px'>" ;
 								print $adult["contactPriority"] ;
 							print "</td>" ;
-							print "<td>" ;
+							print "<td style='padding-left: 1px; padding-right: 1px'>" ;
 								print $adult["contactCall"] ;
 							print "</td>" ;
-							print "<td>" ;
+							print "<td style='padding-left: 1px; padding-right: 1px'>" ;
 								print $adult["contactSMS"] ;
 							print "</td>" ;
-							print "<td>" ;
+							print "<td style='padding-left: 1px; padding-right: 1px'>" ;
 								print $adult["contactEmail"] ;
 							print "</td>" ;
-							print "<td>" ;
+							print "<td style='padding-left: 1px; padding-right: 1px'>" ;
 								print $adult["contactMail"] ;
 							print "</td>" ;
 							print "<td>" ;
@@ -676,13 +682,16 @@ else {
 				print "</table>" ;
 			}
 			
-			print "<h2>" ;
-			print "Add Adult" ;
-			print "</h2>" ;
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_addAdultProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search" ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr class='break'>
+						<td colspan=2>
+							<h3>
+							Add Adult
+							</h3>
+						</td>
+					</tr>
 					<tr>
 						<td> 
 							<b>Adult's Name *</b><br/>
@@ -831,14 +840,14 @@ else {
 						</td>
 					</tr>
 					
-					<tr><td colspan="4" class="right">
-						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="Reset" value="Reset">
-						<input type="Submit" value="Submit">
-					</td></tr>
 					<tr>
-						<td class="right" colspan=2>
+						<td>
 							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
+							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+							<input type="Reset" value="Reset">
+							<input type="Submit" value="Submit">
 						</td>
 					</tr>
 				</table>

@@ -173,7 +173,7 @@ else {
 						//Let's go!
 						$row=$result->fetch() ;
 						
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>School Year</span><br/>" ;
@@ -338,7 +338,7 @@ else {
 							}
 						
 							print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working_addProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID&address=" . $_GET["q"] . "'>" ;
-								print "<table style='width: 100%'>" ;
+								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
 											print "Lesson<br/>Number" ;

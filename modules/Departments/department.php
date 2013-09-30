@@ -63,7 +63,7 @@ else {
 			
 			//Print overview
 			if ($row["blurb"]!="" OR $role=="Coordinator" OR $role=="Assistant Coordinator" OR $role=="Teacher (Curriculum)" OR $role=="Director" OR $role=="Manager") {
-				print "<h2 class='top'>" ;
+				print "<h2>" ;
 				print "Overview" ;
 				if ($role=="Coordinator" OR $role=="Assistant Coordinator" OR $role=="Teacher (Curriculum)" OR $role=="Director" OR $role=="Manager") {
 					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
@@ -89,7 +89,7 @@ else {
 				print "<h2>" ;
 				print "Staff" ;
 				print "</h2>" ;
-				print "<table style='width:100%; margin-top: 20px'>" ;
+				print "<table cellspacing='0' style='width:100%; margin-top: 20px'>" ;
 				$count=0 ;
 				$columns=5 ;
 				

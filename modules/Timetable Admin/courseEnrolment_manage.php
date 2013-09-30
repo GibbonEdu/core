@@ -59,7 +59,7 @@ else {
 	}
 	
 	if ($gibbonSchoolYearID!="") {
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 			print $gibbonSchoolYearName ;
 		print "</h2>" ;
 		
@@ -118,7 +118,7 @@ else {
 					print "</div>" ;
 				}
 				else {
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
 								print "Name" ;

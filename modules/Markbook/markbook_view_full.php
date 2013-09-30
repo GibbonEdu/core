@@ -160,7 +160,7 @@ else {
 					}
 					
 					
-					print "<table style='width: 1077px; margin: 0px 10px'>" ;
+					print "<table cellspacing='0' style='width: 1077px; margin: 0px 10px'>" ;
 						print "<tr class='head'>" ;
 							print "<th rowspan=2 style='font-size: 90%; padding: 0px 3px; width: 200px'>" ;
 								print "Student" ;

@@ -107,11 +107,14 @@ else {
 			else{
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_course_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
-					<table style="width: 100%">	
-						<tr><td style="width: 30%"></td><td></td></tr>
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<tr class='break'>
+							<td colspan=2>
+								<h3>Overview</h3> 
+							</td>
+						</tr>
 						<tr>
 							<td colspan=2> 
-								<h2 class='top' style='margin-bottom: 10px'>Overview</h2> 
 								<? print getEditor($guid,  TRUE, "description", $row["description"], 20 ) ?>
 							</td>
 						</tr>

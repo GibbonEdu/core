@@ -100,8 +100,7 @@ else {
 			else {
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollover.php&step=2" ?>">
-					<table style="width: 100%">	
-						<tr><td style="width: 30%"></td><td></td></tr>
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td colspan=2 style='text-align: justify'> 
 								<?
@@ -193,8 +192,7 @@ else {
 						print "Add Year Following $nameNext" ;
 						print "</h4>" ;
 						?>
-						<table style="width: 100%">	
-							<tr><td style="width: 30%"></td><td></td></tr>
+						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
 									<b>School Year Name *</b><br/>
@@ -293,7 +291,7 @@ else {
 						print "</div>" ;
 					}
 					else {
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
 									print "Name" ;
@@ -374,7 +372,7 @@ else {
 							print "</div>" ;
 						}
 						else {
-							print "<table style='width: 100%'>" ;
+							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr class='head'>" ;
 									print "<th>" ;
 										print "Name" ;
@@ -489,7 +487,7 @@ else {
 							print "</div>" ;
 						}
 						else {
-							print "<table style='width: 100%'>" ;
+							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr class='head'>" ;
 									print "<th>" ;
 										print "Name" ;
@@ -626,7 +624,7 @@ else {
 							print "</div>" ;
 						}
 						else {
-							print "<table style='width: 100%'>" ;
+							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr class='head'>" ;
 									print "<th>" ;
 										print "Name" ;
@@ -739,7 +737,7 @@ else {
 						print "</div>" ;
 					}
 					else {
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
 									print "Name" ;
@@ -816,7 +814,7 @@ else {
 						print "</div>" ;
 					}
 					else {
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
 									print "Name" ;
@@ -874,16 +872,14 @@ else {
 						print "<input type='hidden' name='register-count' value='$count'>" ;
 					}
 					
-					print "<table style='width: 100%'>" ;	
+					print "<table cellspacing='0' style='width: 100%'>" ;	
 						print "<tr>" ;
-							print "<td class='right' colspan=2>" ;
+							print "<td>" ;
+								print "<span style='font-size: 90%'><i>* denotes a required field</i></span>" ;
+							print "</td>" ;
+							print "<td class='right'>" ;
 								print "<input type='hidden' name='nextYear' value='$nextYear'>" ;
 								print "<input type='reset' value='Reset'> <input type='submit' value='Proceed'>" ;
-							print "</td>" ;
-						print "</tr>" ;
-						print "<tr>" ;
-							print "<td class='right' colspan=2>" ;
-								print "<span style='font-size: 90%'><i>* denotes a required field</i></span>" ;
 							print "</td>" ;
 						print "</tr>" ;
 					print "</table>" ;

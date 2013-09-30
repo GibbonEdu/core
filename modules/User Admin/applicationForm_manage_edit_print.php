@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm
 	print "</div>" ;
 }
 else {
-	print "<h2 class='top'>" ;
+	print "<h2>" ;
 	print "Application Form Printout" ;
 	print "</h2>" ;
 		
@@ -61,7 +61,7 @@ else {
 		else {
 			$row=$result->fetch() ;
 			print "<h4>For Office Use</h4>" ;
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Application ID</span><br/>" ;
@@ -169,7 +169,7 @@ else {
 			
 			
 			print "<h4>Student Details</h4>" ;
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Surname</span><br/>" ;
@@ -348,7 +348,7 @@ else {
 					}
 					
 					while ($rowMember=$resultMember->fetch()) {
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Parent 1 Name</span><br/>" ;
@@ -419,7 +419,7 @@ else {
 				}
 				for ($i=$start;$i<3;$i++) {
 					//Spit out parent1/parent2 data from application, depending on parent1 status above.
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr>" ;
 							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Parent $i Name</span><br/>" ;
@@ -506,7 +506,7 @@ else {
 					while ($rowFamily=$resultFamily->fetch()) {
 						$count=1 ;
 						//Print family information
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Family Name</span><br/>" ;
@@ -536,7 +536,7 @@ else {
 						}
 						
 						while ($rowMember=$resultMember->fetch()) {
-							print "<table style='width: 100%'>" ;
+							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr>" ;
 									print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 										print "<span style='font-size: 115%; font-weight: bold'>Parent $count Name</span><br/>" ;
@@ -613,7 +613,7 @@ else {
 			
 			$siblingCount=0 ; 
 			print "<h4>Siblings</h4>" ;
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				//Get siblings from the application
 				for ($i=1; $i<4; $i++) {
 					if ($row["siblingName$i"]!="" OR $row["siblingDOB$i"]!="" OR $row["siblingName$iSchool"]!="") {

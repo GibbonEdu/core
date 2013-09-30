@@ -90,7 +90,7 @@ else {
 	}
 	else {
 		print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/theme_manageProcess.php'>" ;
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
 						print "Name" ;
@@ -163,15 +163,16 @@ else {
 						print "</td>" ;
 					print "</tr>" ;
 				}
-				?>
-				<tr>
-					<td class="right" colspan=6>
-						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="reset" value="Reset"> <input type="submit" value="Submit">
-					</td>
-				</tr>
-				<?
+				print "<tr>" ;
+					print "<td colspan=6 class='right'>" ;
+						?>
+							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+						<?
+					print "</td>" ;
+				print "</tr>" ;
 			print "</table>" ;
+			
 		print "</form>" ;
 	}
 }

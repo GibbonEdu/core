@@ -52,7 +52,7 @@ if (!($eidtReturn=="")) {
 ?>
 
 <form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] ?>/passwordResetProcess.php">
-	<table style="width: 100%">	
+	<table cellspacing='0' style="width: 100%">	
 		<tr>
 			<td class="right">
 				<input name="email" id="email" type="text" style="width:100%">

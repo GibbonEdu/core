@@ -141,7 +141,7 @@ else {
 										}
 										print "<div style='padding-left: 3px; width: $width; float: left;'>" ;
 											if ($rowBlocks["title"]!="") {
-												print "<h5 class='top' style='padding-bottom: 2px'>" . $rowBlocks["title"] . "</h5>" ;
+												print "<h5 style='padding-bottom: 2px'>" . $rowBlocks["title"] . "</h5>" ;
 											}
 										print "</div>" ;
 										if ($rowBlocks["type"]!="" OR $rowBlocks["length"]!="") {
@@ -207,7 +207,7 @@ else {
 								}
 								else {
 									while ($rowLessons=$resultLessons->fetch()) {
-										print "<h4 class='top'>" . $rowLessons["name"] . "</h4>" ;
+										print "<h4>" . $rowLessons["name"] . "</h4>" ;
 										print $rowLessons["description"] ;
 										
 										try {
@@ -221,7 +221,7 @@ else {
 										}
 							
 										while ($rowBlock=$resultBlock->fetch()) {
-											print "<h5 style='font-size: 85%' class='top'>" . $rowBlock["title"] . "</h5>" ;
+											print "<h5 style='font-size: 85%'>" . $rowBlock["title"] . "</h5>" ;
 											print "<p>" ;
 											print "<b>Type</b>: " . $rowBlock["type"] . "<br/>" ;
 											print "<b>Length</b>: " . $rowBlock["length"] . "<br/>" ;
@@ -246,7 +246,7 @@ else {
 							}
 							if ($resultBlocks->rowCount()>0) {
 								print "<h2>Outcomes</h2>" ;
-								print "<table style='width: 100%'>" ;
+								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
 											print "Scope" ;

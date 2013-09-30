@@ -182,14 +182,13 @@ else {
 					print "</div>" ;
 				}
 				else {						
-					print "<h2 class='top'>" ;
+					print "<h2>" ;
 					print "Planner Discussion Post" ;
 					print "</h2>" ;
 
 					?>
 					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_postProcess.php" ?>">
-						<table style="width: 100%">	
-							<tr><td style="width: 30%"></td><td></td></tr>
+						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td colspan=2> 
 									<b>Write your comment below:</b> 

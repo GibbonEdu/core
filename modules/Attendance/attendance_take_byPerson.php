@@ -62,10 +62,6 @@ else {
 		print "</div>" ;
 	} 
 	
-	print "<h2 class='top'>" ;
-	print "Choose Student" ;
-	print "</h2>" ;
-	
 	$gibbonPersonID=$_GET["gibbonPersonID"] ;
 	
 	if ($_GET["currentDate"]=="") {
@@ -80,8 +76,14 @@ else {
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table style="width: 100%">	
-			<tr><td style="width: 30%"></td><td></td></tr>
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<tr class='break'>
+				<td colspan=2>
+					<h3>
+						Choose Student
+					</h3>
+				</td
+			</tr>
 			<tr>
 				<td> 
 					<b>Student</b><br/>
@@ -143,10 +145,6 @@ else {
 	<?
 	
 	if ($gibbonPersonID!="") {
-		print "<h2 class='top'>" ;
-		print "Take Attendance" ;
-		print "</h2>" ;
-		
 		if ($currentDate>$today) {
 			print "<div class='error'>" ;
 				print "The specified date is in the future: it must be today or earlier.";
@@ -209,8 +207,14 @@ else {
 				//Show student form
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
-					<table style="width: 100%">	
-						<tr><td style="width: 30%"></td><td></td></tr>
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<tr class='break'>
+							<td colspan=2>
+								<h3>
+									Take Attendance
+								</h3>
+							</td
+						</tr>
 						<tr>
 							<td> 
 								<b>Recent Attendance Summary</b><br/>
@@ -218,7 +222,7 @@ else {
 							</td>
 							<td class="right">
 								<?
-								print "<table style='float: right; width:134px; margin: 0px 0px 0px 8px; height: 35px' >" ;
+								print "<table cellspacing='0' style='float: right; width:134px; margin: 0px 0px 0px 8px; height: 35px' >" ;
 									print "<tr>" ;
 										for ($i=4; $i>=0; $i--) {
 											$link="" ;
@@ -327,15 +331,13 @@ else {
 							</td>
 						</tr>
 						<tr>
-							<td class="right" colspan=2>
+							<td>
+								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+							</td>
+							<td class="right">
 								<? print "<input type='hidden' name='currentDate' value='$currentDate'>" ; ?>
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 								<input type="reset" value="Reset"> <input type="submit" value="Submit">
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
 							</td>
 						</tr>
 					</table>

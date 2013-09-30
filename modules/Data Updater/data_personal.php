@@ -90,7 +90,7 @@ else {
 			print "</div>" ;
 		} 
 		
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 		print "Choose User" ;
 		print "</h2>" ;
 		
@@ -98,7 +98,7 @@ else {
 		?>
 		
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-			<table style="width: 100%">	
+			<table cellspacing='0' style="width: 100%">	
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
 					<td> 
@@ -182,7 +182,7 @@ else {
 		<?
 		
 		if ($gibbonPersonID!="") {
-			print "<h2 class='top'>" ;
+			print "<h2>" ;
 			print "Update Data" ;
 			print "</h2>" ;
 			
@@ -338,11 +338,11 @@ else {
 					$row=$result->fetch() ;
 					?>
 					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_personalProcess.php?gibbonPersonID=" . $gibbonPersonID ?>">
-						<table style="width: 100%">	
+						<table cellspacing='0' style="width: 100%">	
 							<tr><td style="width: 30%"></td><td></td></tr>
 							<tr>
 								<td colspan=2> 
-									<h3 class='top'>Basic Information</h3>
+									<h3>Basic Information</h3>
 								</td>
 							</tr>
 							<tr>
@@ -901,7 +901,7 @@ else {
 											print "<span style='font-size: 90%'><i>These users have similar Address 1. Do you want to change them too?</i></span>" ;
 										print "</td>" ;
 										print "<td style='text-align: right; border-top: 1px dashed #c00; border-bottom: 1px dashed #c00; background-color: #F6CECB'> " ;
-											print "<table style='width:306px; float: right; padding: 0px; margin: 0px'>" ;
+											print "<table cellspacing='0' style='width:306px; float: right; padding: 0px; margin: 0px'>" ;
 											while ($rowAddress=$resultAddress->fetch()) {
 												print "<tr>" ;
 													print "<td style='padding-left: 0px; padding-right: 0px; width:200px'>" ;

@@ -457,7 +457,7 @@ else {
 									print "<div class='trailEnd'>Home</div>" ;
 									print "</div>" ;
 									
-									print "<h2 class='top'>" ;
+									print "<h2>" ;
 									print "Welcome" ;
 									print "</h2>" ;
 									print "<p>" ;
@@ -594,7 +594,7 @@ else {
 														}
 														if ($result->rowCount()>0) {
 															$classes=TRUE ;
-															print "<table style='margin: 3px 0px; width: 100%'>" ;
+															print "<table cellspacing='0' style='margin: 3px 0px; width: 100%'>" ;
 																print "<tr class='head'>" ;
 																	print "<th>" ;
 																		print "Class" ;
@@ -699,7 +699,7 @@ else {
 														$showParentAttainmentWarning=getSettingByScope($connection2, "Markbook", "showParentAttainmentWarning" ) ; 
 														$showParentEffortWarning=getSettingByScope($connection2, "Markbook", "showParentEffortWarning" ) ; 
 														$grades=TRUE ;
-														print "<table style='margin: 3px 0px; width: 100%'>" ;
+														print "<table cellspacing='0' style='margin: 3px 0px; width: 100%'>" ;
 															print "<tr class='head'>" ;
 															print "<th style='width: 120px'>" ;
 																print "Assessment" ;
@@ -1010,19 +1010,16 @@ else {
 													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php'>View Planner</a>" ;
 												print "</div>" ;
 												
-												print "<table style='width: 100%'>" ;
+												print "<table cellspacing='0' style='width: 100%'>" ;
 													print "<tr class='head'>" ;
 														print "<th>" ;
-															print "Class" ;
+															print "Class<br/>" ;
 														print "</th>" ;
 														print "<th>" ;
 															print "Lesson/Unit" ;
 														print "</th>" ;
 														print "<th>" ;
-															print "Time" ;
-														print "</th>" ;
-														print "<th>" ;
-															print "Homework<br/><span style='font-size: 80%'>Is set?</span>" ;
+															print "Homework" ;
 														print "</th>" ;
 														print "<th>" ;
 															print "Summary" ;
@@ -1055,7 +1052,8 @@ else {
 															//COLOR ROW BY STATUS!
 															print "<tr class=$rowNum>" ;
 																print "<td>" ;
-																	print $row["course"] . "." . $row["class"] ;
+																	print $row["course"] . "." . $row["class"] . "<br/>" ;
+																	print "<span style='font-style: italic; font-size: 75%'>" . substr($row["timeStart"],0,5) . "-" . substr($row["timeEnd"],0,5) . "</span>" ;
 																print "</td>" ;
 																print "<td>" ;
 																	print "<b>" . $row["name"] . "</b><br/>" ;
@@ -1064,9 +1062,6 @@ else {
 																	if ($unit[1]!="") {
 																		print "<br/><i>" . $unit[1] . " Unit</i>" ;
 																	}
-																print "</td>" ;
-																print "<td>" ;
-																	print substr($row["timeStart"],0,5) . "-" . substr($row["timeEnd"],0,5) ;
 																print "</td>" ;
 																print "<td>" ;
 																	print $row["homework"] ;
@@ -1177,7 +1172,7 @@ else {
 											print "</h2>" ;
 											
 											?>
-											<div id="tabs" style='margin-bottom: 20px'>
+											<div id="tabs" style='margin: 10px 0 20px 0'>
 												<ul>
 													<li><a href="#tabs-1">Students</a></li>
 													<li><a href="#tabs-2">Behaviour</a></li>
@@ -1189,11 +1184,11 @@ else {
 													while ($row=$result->fetch()) {
 														$sqlWhere.="gibbonRollGroupID=" . $row["gibbonRollGroupID"] . " OR " ;
 														if ($result->fetch()>1) {
-															print "<h4 class='top'>" ;
+															print "<h4>" ;
 																print $row["name"] ;
 															print "</h4>" ;
 														}
-														print "<div class='linkTop'>" ;
+														print "<div class='linkTop' style='margin-top: 0px'>" ;
 														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'><img title='Take Attendance' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a> " ;
 														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/indexExport.php?gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'><img title='Export to Excel' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
 														print "</div>" ;
@@ -1239,7 +1234,7 @@ else {
 														print "</div>" ;
 													}
 													else {
-														print "<table style='width: 100%'>" ;
+														print "<table cellspacing='0' style='width: 100%'>" ;
 															print "<tr class='head'>" ;
 																print "<th>" ;
 																	print "Student & Date" ;

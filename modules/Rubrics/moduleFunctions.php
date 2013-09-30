@@ -89,7 +89,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="") {
 			//$output.="<a onclick='return false' href='#'><img title='Add' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/ style='float: right; margin: 0px 0px 2px 0px'></a><br/>" ;
 		$output.="</div>" ;
 		$output.="<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_editCellProcess.php?gibbonRubricID=$gibbonRubricID'>" ;
-			$output.="<table class='rubric'>" ;
+			$output.="<table cellspacing='0' class='rubric'>" ;
 				//Create header
 				$output.="<tr class='head'>" ;
 					$output.="<td style='width: 100px; background-color: #fff; border-left: 1px solid #fff; border-top: 1px solid #fff'></td>" ;
@@ -123,7 +123,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="") {
 				//Create body
 				for ($i=0; $i<$rowCount; $i++) {
 					$output.="<tr style='height: auto'>" ;
-						$output.="<td style='background-color: #666; color: #fff'>" ;
+						$output.="<td style='background-color: #666'>" ;
 							if ($rows[$i][3]!="") {
 								try {
 									$dataOutcome=array("gibbonOutcomeID"=>$rows[$i][3]); 
@@ -153,8 +153,8 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="") {
 							$output.="<a onclick='return confirm(\"Are you sure you want to delete this row? Any unsaved changes will be lost.\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_deleteRowProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricRowID=" . $rows[$i][0] . "&address=" . $_GET["q"] . "'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a><br/>" ;
 						$output.="</td>" ;
 						for ($n=0; $n<$columnCount; $n++) {
-							$output.="<td style='background-color: #E1E1E1'>" ;
-								$output.="<textarea name='cell[]' style='background-color: #E1E1E1; border: 1px none #fff; font-size: 85%; width: 100%; height: 100px; margin: 0; padding: 0; resize: none'>" . $cells[$rows[$i][0]][$columns[$n][0]][0] . "</textarea>" ;
+							$output.="<td style='background: none; background-color: #fff; padding: 0px; margin: 0px'>" ;
+								$output.="<textarea name='cell[]' style='background-color: #fff!important; border: 1px none #fff; font-size: 85%; width: 100%; height: 100px; margin: 0; padding: 0; resize: none'>" . $cells[$rows[$i][0]][$columns[$n][0]][0] . "</textarea>" ;
 								$output.="<input type='hidden' name='gibbonRubricCellID[]' value='" . $cells[$rows[$i][0]][$columns[$n][0]][1] . "'>" ;
 								$output.="<input type='hidden' name='gibbonRubricColumnID[]' value='" . $columns[$n][0] . "'>" ;
 								$output.="<input type='hidden' name='gibbonRubricRowID[]' value='" . $rows[$i][0] . "'>" ;
@@ -163,7 +163,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="") {
 					$output.="</tr>" ;
 				}
 			$output.="</table>" ;
-			$output.="<table style='width: 100%; margin-top: -12px; margin-left: 5px'>" ;
+			$output.="<table cellspacing='0' style='width: 100%;'>" ;
 				$output.="<tr style='border: 1px none #000'>" ;
 					$output.="<td class='right' colspan=3 style='border: 1px none #000'>" ;
 						$output.="<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
@@ -312,7 +312,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 				$output.="table.rubric td { border: 1px solid #000 }" ;
 			$output.="</style>" ;
 			$output.="<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_data_editProcess.php?gibbonRubricID=$gibbonRubricID&gibbonPersonID=$gibbonPersonID&address=$returnAddress" . $returnParams . "'>" ;
-				$output.="<table class='rubric'>" ;
+				$output.="<table cellspacing='0' class='rubric'>" ;
 					//Create header
 					$output.="<tr class='head'>" ;
 						$output.="<td style='width: 100px; background-color: #fff; border-left: 1px solid #fff; border-top: 1px solid #fff'></td>" ;

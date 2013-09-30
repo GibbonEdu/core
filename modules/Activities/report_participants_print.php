@@ -58,7 +58,7 @@ else {
 		else {
 			$date=" (" . date("F", mktime(0, 0, 0, substr($row["programStart"],5,2))) . " " . substr($row["programStart"],0,4) . " - " . date("F", mktime(0, 0, 0, substr($row["programEnd"],5,2))) . " " . substr($row["programEnd"],0,4) . ")" ;
 		}
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 		
 		print "Participants for " . $row["name"] . $date ;
 		print "</h2>" ;
@@ -75,7 +75,7 @@ else {
 		
 			$lastPerson="" ;
 			
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
 						print "Roll Group" ;

@@ -165,8 +165,7 @@ else {
 					This process will duplicate all aspects of the selected lesson, with the exception of Smart Blocks content, which belongs to the unit, not the lesson. 
 					</p>
 					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_duplicate.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&step=2" ?>">
-						<table style="width: 100%">	
-							<tr><td style="width: 30%"></td><td></td></tr>
+						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
 									<b>Class *</b><br/>
@@ -234,16 +233,14 @@ else {
 							?>
 							
 							<tr>
-								<td class="right" colspan=2>
+								<td>
+									<span style="font-size: 90%"><i>* denotes a required field</i></span>
+								</td>
+								<td class="right">
 									<input name="viewBy" id="viewBy" value="<? print $viewBy ?>" type="hidden">
 									<input name="subView" id="subView" value="<? print $subView ?>" type="hidden">
 									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 									<input type="reset" value="Reset"> <input type="submit" value="Next">
-								</td>
-							</tr>
-							<tr>
-								<td class="right" colspan=2>
-									<span style="font-size: 90%"><i>* denotes a required field</i></span>
 								</td>
 							</tr>
 						</table>
@@ -261,8 +258,7 @@ else {
 					else {
 						?>
 						<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_duplicateProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID" ?>">
-							<table style="width: 100%">	
-								<tr><td style="width: 30%"></td><td></td></tr>
+							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr>
 									<td> 
 										<b>Class *</b><br/>
@@ -456,18 +452,16 @@ else {
 									</td>
 								</tr>
 								<tr>
-									<td class="right" colspan=2>
+									<td>
+										<span style="font-size: 90%"><i>* denotes a required field</i></span>
+									</td>
+									<td class="right">
 										<input name="duplicate" id="duplicate" value="<? print $duplicate ?>" type="hidden">
 										<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<? print $gibbonCourseClassID ?>" type="hidden">
 										<input name="viewBy" id="viewBy" value="<? print $viewBy ?>" type="hidden">
 										<input name="subView" id="subView" value="<? print $subView ?>" type="hidden">
 										<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 										<input type="reset" value="Reset"> <input type="submit" value="Submit">
-									</td>
-								</tr>
-								<tr>
-									<td class="right" colspan=2>
-										<span style="font-size: 90%"><i>* denotes a required field</i></span>
 									</td>
 								</tr>
 							</table>

@@ -86,7 +86,7 @@ else {
 			}
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_deleteProcess.php?gibbonStaffID=$gibbonStaffID&search=$search" ?>">
-				<table style="width: 100%">	
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
 							<b>Are you sure you want to remove "<? print formatName("", $row["preferredName"], $row["surname"], "Staff", false, true) ?>" as a staff member?</b><br/>

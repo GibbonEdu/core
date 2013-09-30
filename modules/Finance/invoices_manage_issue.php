@@ -103,11 +103,11 @@ else {
 			?>
 			
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_issueProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID" ?>">
-				<table style="width: 100%">	
+				<table cellspacing='0' style="width: 100%">	
 					<tr><td style="width: 30%"></td><td></td></tr>
 					<tr>
 						<td colspan=2> 
-							<h3 class='top'>Basic Information</h3>
+							<h3>Basic Information</h3>
 						</td>
 					</tr>
 					<tr>
@@ -247,7 +247,7 @@ else {
 					
 					<tr>
 						<td colspan=2> 
-							<h3 class='top'>Email Invoice</h3>
+							<h3>Email Invoice</h3>
 						</td>
 					</tr>
 					<?

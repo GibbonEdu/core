@@ -97,7 +97,7 @@ else {
 				}
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_deleteProcess.php?gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ?>">
-					<table style="width: 100%">	
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
 								<b>Are you sure you want to delete this record?</b><br/>

@@ -119,11 +119,10 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_editProcess.php?gibbonActivityID=$gibbonActivityID" ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
-					<tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr class='break'>
 						<td colspan=2> 
-							<h3 class='top'>Basic Information</h3>
+							<h3>Basic Information</h3>
 						</td>
 					</tr>
 					<tr>
@@ -375,7 +374,7 @@ else {
 						</td>
 					</tr>
 					
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>Current Time Slots</h3>
 						</td>
@@ -400,7 +399,7 @@ else {
 							}
 							else {
 								print "<i><b>Warning</b>: If you delete a time slot, any unsaved changes to this planner entry will be lost!</i>" ;
-								print "<table style='width: 100%'>" ;
+								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
 											print "Name" ;
@@ -467,7 +466,7 @@ else {
 						</td>
 					</tr>
 					
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>New Time Slots</h3>
 						</td>
@@ -666,7 +665,7 @@ else {
 					}
 					?>
 							
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>Current Staff</h3>
 						</td>
@@ -690,7 +689,7 @@ else {
 							}
 							else {
 								print "<i><b>Warning</b>: If you delete a guest, any unsaved changes to this planner entry will be lost!</i>" ;
-								print "<table style='width: 100%'>" ;
+								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
 											print "Name" ;
@@ -732,7 +731,7 @@ else {
 							?>
 						</td>
 					</tr>
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>New Staff</h3>
 						</td>
@@ -773,14 +772,12 @@ else {
 					</tr>
 					
 					<tr>
-						<td class="right" colspan=2>
+						<td>
+							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<input type="reset" value="Reset"> <input type="submit" value="Submit">
-						</td>
-					</tr>
-					<tr>
-						<td class="right" colspan=2>
-							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 					</tr>
 				</table>

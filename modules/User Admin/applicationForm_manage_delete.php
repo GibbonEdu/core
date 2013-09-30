@@ -91,7 +91,7 @@ else {
 			print "</div>" ;
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_deleteProcess.php?gibbonApplicationFormID=$gibbonApplicationFormID&search=$search" ?>">
-				<table style="width: 100%">	
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
 							<b>Are you sure you want to delete the application form for <? print formatName("", $row["preferredName"], $row["surname"], "Student") ?>?</b><br/>

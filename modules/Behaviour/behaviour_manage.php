@@ -62,32 +62,16 @@ else {
 		print "<h3>" ;
 			print "Filter" ;
 		print "</h3>" ;
-		print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php'>Clear Filters</a>" ;
-		print "</div>" ;
 		print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php'>" ;
-			print "<table style='width: 200px'>" ;
-				print "<tr>" ;
-					print "<td>" ;
-						print "<b>Student</b>" ;
-					print "</td>" ;
-					print "<td>" ;
-						print "<b>Roll Group</b>" ;
-					print "</td>" ;
-					print "<td>" ;
-						print "<b>Year Group</b>" ;
-					print "</td>" ;
-					print "<td>" ;
-						print "<b>Type</b>" ;
-					print "</td>" ;
-					print "<td>" ;
-						
-					print "</td>" ;
-				print "</tr>" ;
-				print "<tr>" ;
-					print "<td style='padding: 0px 2px 0px 0px'>" ;
-						?>
-						<select name="gibbonPersonID" id="gibbonPersonID" style="width: 290px">
+			print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
+				?>
+				<tr>
+					<td> 
+						<b>Student</b><br/>
+						<span style="font-size: 90%"><i></i></span>
+					</td>
+					<td class="right">
+						<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
 							<option value=""></option>
 							<?
 							try {
@@ -107,9 +91,15 @@ else {
 							}
 							?>			
 						</select>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b>Roll Group</b><br/>
+						<span style="font-size: 90%"><i></i></span>
+					</td>
+					<td class="right">
 						<?
-					print "</td>" ;
-					print "<td style='padding: 0px 2px 0px 0px'>" ;
 						try {
 							$dataPurpose=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 							$sqlPurpose="SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
@@ -118,7 +108,7 @@ else {
 						}
 						catch(PDOException $e) { }
 						
-						print "<select name='gibbonRollGroupID' id='gibbonRollGroupID' style='width:145px; margin-left: 0px'>" ;
+						print "<select name='gibbonRollGroupID' id='gibbonRollGroupID' style='width: 302px'>" ;
 							print "<option value=''></option>" ;
 							while ($rowPurpose=$resultPurpose->fetch()) {
 								$selected="" ;
@@ -128,8 +118,16 @@ else {
 								print "<option $selected value='" . $rowPurpose["gibbonRollGroupID"] . "'>" . $rowPurpose["name"] . "</option>" ;
 							}
 						print "</select>" ;
-					print "</td>" ;
-					print "<td style='padding: 0px 2px 0px 0px'>" ;
+						?>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b>Year Group</b><br/>
+						<span style="font-size: 90%"><i></i></span>
+					</td>
+					<td class="right">
+						<?
 						try {
 							$dataPurpose=array(); 
 							$sqlPurpose="SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber" ;
@@ -138,7 +136,7 @@ else {
 						}
 						catch(PDOException $e) { }
 						
-						print "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width:145px; margin-left: 0px'>" ;
+						print "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width: 302px'>" ;
 							print "<option value=''></option>" ;
 							while ($rowPurpose=$resultPurpose->fetch()) {
 								$selected="" ;
@@ -148,9 +146,17 @@ else {
 								print "<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . $rowPurpose["name"] . "</option>" ;
 							}
 						print "</select>" ;
-					print "</td>" ;
-					print "<td style='padding: 0px 2px 0px 0px'>" ;
-							print "<select name='type' id='type' style='width:100px; margin-left: 0px'>" ;
+						?>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b>Type</b><br/>
+						<span style="font-size: 90%"><i></i></span>
+					</td>
+					<td class="right">
+						<?
+						print "<select name='type' id='type' style='width: 302px'>" ;
 							print "<option value=''></option>" ;
 							$selected="" ;
 							if ($type=="Positive") {
@@ -163,9 +169,15 @@ else {
 							}
 							print "<option $selected value='Negative'>Negative</option>" ;
 						print "</select>" ;
-					print "</td>" ;
-					print "<td style='padding: 0px 0px 0px 2px'>" ;
+						?>
+					</td>
+				</tr>
+				<?
+			
+				print "<tr>" ;
+					print "<td class='right' colspan=2>" ;
 						print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php'>Clear Filters</a> " ;
 						print "<input type='submit' value='Go'>" ;
 					print "</td>" ;
 				print "</tr>" ;
@@ -245,7 +257,7 @@ else {
 				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type") ;
 			}
 		
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
 						print "Student & Date" ;

@@ -99,8 +99,7 @@ else {
 				?>
 
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addMultiProcess.php?gibbonCourseClassID=$gibbonCourseClassID&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
-					<table style="width: 100%">	
-						<tr><td style="width: 30%"></td><td></td></tr>
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
 								<b>Class *</b><br/>
@@ -462,13 +461,11 @@ else {
 							</td>
 						</tr>
 						<tr>
-							<td class="right" colspan=2>
-								<input type="reset" value="Reset"> <input type="submit" value="Submit">
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
+							<td>
 								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+							</td>
+							<td class="right">
+								<input type="reset" value="Reset"> <input type="submit" value="Submit">
 							</td>
 						</tr>
 					</table>

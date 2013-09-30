@@ -265,8 +265,7 @@ else {
 											?>
 										</p>
 										<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_view_registerProcess.php?search=" . $_GET["search"] ?>">
-											<table style="width: 100%">	
-												<tr><td style="width: 30%"></td><td></td></tr>
+											<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 												<tr>
 													<td> 
 														<b>Activity</b><br/>
@@ -377,17 +376,15 @@ else {
 												}
 												?>
 												<tr>
-													<td class="right" colspan=2>
+													<td>
+														<span style="font-size: 90%"><i>* denotes a required field</i></span>
+													</td>
+													<td class="right">
 														<input type="hidden" name="mode" value="<? print $mode ?>">
 														<input type="hidden" name="gibbonPersonID" value="<? print $gibbonPersonID ?>">
 														<input type="hidden" name="gibbonActivityID" value="<? print $gibbonActivityID ?>">
 														<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 														<input style='width: 75px' type="submit" value="Register">
-													</td>
-												</tr>
-												<tr>
-													<td class="right" colspan=2>
-														<span style="font-size: 90%"><i>* denotes a required field</i></span>
 													</td>
 												</tr>
 											</table>
@@ -472,7 +469,7 @@ else {
 									
 									?>
 									<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_view_registerProcess.php?search=" . $_GET["search"] ?>">
-										<table style="width: 100%">	
+										<table cellspacing='0' style="width: 100%">	
 											<tr>
 												<td> 
 													<b>Are you sure you want to unregister from activity "<? print $row["name"] ?>"? If you try to reregister later you may lose a space already assigned to you.</b><br/>

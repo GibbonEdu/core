@@ -333,6 +333,9 @@ Staff: fixed bug preventing email address and website address from displaying in
 Timetable: added lesson name to mouseover on planner overlay
 	Edited file /modules/Planner/moduleFunctions.php
 
+General: overhauled look and feel
+	Edited almost every file in the system
+
 
 v6.0.00
 -------

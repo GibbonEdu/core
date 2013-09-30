@@ -58,11 +58,10 @@ else {
 	?>
 	
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/userSettingsProcess.php" ?>">
-		<table style="width: 100%">	
-			<tr><td style="width: 30%"></td><td></td></tr>
-			<tr>
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<tr class='break'>
 				<td colspan=2> 
-					<h3 class='top'>Field Values</h3>
+					<h3>Field Values</h3>
 				</td>
 			</tr>
 			<tr>
@@ -129,7 +128,7 @@ else {
 				</td>
 			</tr>
 			
-			<tr>
+			<tr class='break'>
 				<td colspan=2> 
 					<h3>Privacy Options</h3>
 				</td>
@@ -199,7 +198,7 @@ else {
 				</td>
 			</tr>
 			
-			<tr>
+			<tr class='break'>
 				<td colspan=2> 
 					<h3>User Interface Options</h3>
 				</td>
@@ -227,9 +226,13 @@ else {
 				</td>
 			</tr>
 			
-			<tr>
+			<tr class='break'>
 				<td colspan=2> 
 					<h3>Day-Type Options</h3>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=2> 
 					<p>Allows for choice of different day-types (e.g. full-day, half-day).</p>
 				</td>
 			</tr>
@@ -274,14 +277,12 @@ else {
 			
 			
 			<tr>
-				<td class="right" colspan=2>
+				<td>
+					<span style="font-size: 90%"><i>* denotes a required field</i></span>
+				</td>
+				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 					<input type="reset" value="Reset"> <input type="submit" value="Submit">
-				</td>
-			</tr>
-			<tr>
-				<td class="right" colspan=2>
-					<span style="font-size: 90%"><i>* denotes a required field</i></span>
 				</td>
 			</tr>
 		</table>

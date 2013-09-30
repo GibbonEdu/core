@@ -101,11 +101,10 @@ else {
 			print "</div>" ;
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_editProcess.php?search=$search" ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
-					<tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr class='break'>
 						<td colspan=2> 
-							<h3 class='top'>For Office Use</h3>
+							<h3>For Office Use</h3>
 						</td>
 					</tr>
 					<tr>
@@ -403,15 +402,15 @@ else {
 						</td>
 					</tr>
 					
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
-							<h3 class='top'>Student</h3>
+							<h3>Student</h3>
 						</td>
 					</tr>
 					
 					<tr>
 						<td colspan=2> 
-							<h4 class='top'>Student Personal Data</h4>
+							<h4>Student Personal Data</h4>
 						</td>
 					</tr>
 					<tr>
@@ -872,7 +871,7 @@ else {
 					<tr>
 						<td colspan=2> 
 							<?
-							print "<table style='width: 100%'>" ;
+							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr class='head'>" ;
 									print "<th>" ;
 										print "School Name" ;
@@ -960,11 +959,15 @@ else {
 						?>
 						<input type="hidden" name="gibbonFamily" value="FALSE">
 						
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>
 									Home Address
 								</h3>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2> 
 								<p>
 									This address will be used for all members of the family. If an individual within the family needs a different address, this can be set through Data Updater after admission. 
 								</p>
@@ -1050,7 +1053,7 @@ else {
 						if ($row["parent1gibbonPersonID"]!="") {
 							$start=2 ;
 							?>
-							<tr>
+							<tr class='break'>
 								<td colspan=2> 
 									<h3>
 										Parent/Guardian 1
@@ -1122,7 +1125,7 @@ else {
 						}
 						for ($i=$start;$i<3;$i++) {
 							?>
-							<tr>
+							<tr class='break'>
 								<td colspan=2> 
 									<h3>
 										Parent/Guardian <? print $i ?>
@@ -1139,7 +1142,7 @@ else {
 							</tr>
 							<tr>
 								<td colspan=2> 
-									<h4 class='top'>Parent/Guardian <? print $i ?> Personal Data</h4>
+									<h4>Parent/Guardian <? print $i ?> Personal Data</h4>
 								</td>
 							</tr>
 							<tr>
@@ -1607,9 +1610,13 @@ else {
 					else {
 						?>
 						<input type="hidden" name="gibbonFamily" value="TRUE">
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Family</h3>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2> 
 								<p>The applying family is already a member of <? print $_SESSION[$guid]["organisationName"] ?>.</p>
 							</td>
 						</tr>
@@ -1632,7 +1639,7 @@ else {
 								}
 								else {
 									$rowFamily=$resultFamily->fetch() ;
-									print "<table style='width: 100%'>" ;
+									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
 												print "Family Name" ;
@@ -1671,7 +1678,7 @@ else {
 						<?
 					}
 					?>
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>Siblings</h3>
 						</td>
@@ -1684,7 +1691,7 @@ else {
 					<tr>
 						<td colspan=2> 
 							<?
-							print "<table style='width: 100%'>" ;
+							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr class='head'>" ;
 									print "<th>" ;
 										print "Sibling Name" ;
@@ -1747,7 +1754,7 @@ else {
 					$languageOptionsActive=getSettingByScope($connection2, 'Application Form', 'languageOptionsActive') ;
 					if ($languageOptionsActive=="On") {
 						?>
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Language Selection</h3>
 								<?
@@ -1793,7 +1800,7 @@ else {
 					}		
 					?>
 		
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>Scholarships</h3>
 							<?
@@ -1840,7 +1847,7 @@ else {
 					</tr>
 					
 					
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>Payment</h3>
 						</td>
@@ -2005,7 +2012,7 @@ else {
 					$requiredDocuments=getSettingByScope($connection2, "Application Form", "requiredDocuments") ;
 					if ($requiredDocuments!="" AND $requiredDocuments!=FALSE) {
 						?>
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Supporting Documents</h3>
 							</td>
@@ -2054,7 +2061,7 @@ else {
 					?>
 					
 					
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>Miscellaneous</h3>
 						</td>
@@ -2128,16 +2135,14 @@ else {
 					if ($proceed==TRUE) {
 						?>
 						<tr>
-							<td class="right" colspan=2>
+							<td>
+								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+							</td>
+							<td class="right">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
 								<input type="hidden" name="gibbonApplicationFormID" value="<? print $row["gibbonApplicationFormID"] ?>">
 								<input type="reset" value="Reset"> <input type="submit" value="Submit">
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
 							</td>
 						</tr>
 						<?

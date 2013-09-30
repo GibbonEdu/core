@@ -34,7 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Overdue Items</div>" ;
 	print "</div>" ;
 	
-	print "<h2 class='top'>" ;
+	print "<h2>" ;
 	print "Report Data" ;
 	print "</h2>" ;
 	
@@ -50,7 +50,7 @@ else {
 		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 	}
 	
-	print "<table style='width: 100%'>" ;
+	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th>" ;
 				print "Borrowing User" ;

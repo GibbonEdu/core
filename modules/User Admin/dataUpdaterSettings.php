@@ -58,14 +58,14 @@ else {
 	?>
 	
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/dataUpdaterSettingsProcess.php" ?>">
-		<h2 class='top'>Required Fields for Personal Updates</h2>
+		<h2>Required Fields for Personal Updates</h2>
 		<p>These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).</p>
 		<?
 		
 		//Get setting and unserialize
 		$required=unserialize(getSettingByScope( $connection2, "User Admin", "personalDataUpdaterRequiredFields")) ;
 		
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Field" ;

@@ -88,10 +88,10 @@ if ($result->rowCount()==1) {
 ?>
 
 <form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] ?>/preferencesPasswordProcess.php">
-	<table style="width: 100%">	
+	<table cellspacing='0' style="width: 100%">	
 		<tr>
 			<td colspan=2>
-				<h3 class='top'>
+				<h3>
 					Reset Password
 				</h3>
 			</td>
@@ -170,7 +170,7 @@ if ($result->rowCount()==1) {
 	
 	
 <form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] ?>/preferencesProcess.php">
-	<table style="width: 100%">	
+	<table cellspacing='0' style="width: 100%">	
 		<tr>
 			<td colspan=2>
 				<h3>

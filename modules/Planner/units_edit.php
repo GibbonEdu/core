@@ -218,11 +218,10 @@ else {
 							$gibbonDepartmentID=$row["gibbonDepartmentID"] ;
 							?>
 							<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_editProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
-								<table style="width: 100%">	
-									<tr><td style="width: 30%"></td><td></td></tr>
-									<tr>
+								<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+									<tr class='break'>
 										<td colspan=2> 
-											<h3 class='top'>Unit Basics</h3>
+											<h3>Unit Basics</h3>
 										</td>
 									</tr>
 									<tr>
@@ -306,7 +305,7 @@ else {
 										</td>
 									</tr>
 								
-									<tr>
+									<tr class='break'>
 										<td colspan=2> 
 											<h3>Classes</h3>
 										</td>
@@ -335,7 +334,7 @@ else {
 													print "</div>" ;
 												}
 												else {
-													print "<table style='width: 100%'>" ;
+													print "<table cellspacing='0' style='width: 100%'>" ;
 														print "<tr class='head'>" ;
 															print "<th>" ;
 																print "Class" ;
@@ -444,7 +443,7 @@ else {
 									
 							
 								
-									<tr>
+									<tr class='break'>
 										<td colspan=2> 
 											<h3>Unit Outline</h3>
 										</td>
@@ -494,9 +493,13 @@ else {
 										</td>
 									</tr>
 							
-									<tr>
+									<tr class='break'>
 										<td colspan=2>
 											<h3>Smart Blocks</h3>
+										</td>
+									</tr>
+									<tr>
+										<td colspan=2>
 											<p>
 												Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.
 											</p>
@@ -518,7 +521,7 @@ else {
 											</script>
 										
 										
-											<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px; border-top: 1px solid #333; border-bottom: 1px solid #333'>
+											<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px'>
 												<? 
 												try {
 													$dataBlocks=array("gibbonUnitID"=>$gibbonUnitID); 
@@ -536,9 +539,9 @@ else {
 												}
 												?>
 											</div>
-											<div style='width: 100%; padding: 0px 0px 0px 0px; border-bottom: 1px solid #333'>
-												<div class="ui-state-default_dud odd" style='padding: 0px;'>
-													<table style='width: 100%'>
+											<div style='width: 100%; padding: 0px 0px 0px 0px'>
+												<div class="ui-state-default_dud" style='padding: 0px; height: 40px'>
+													<table class='blank' cellspacing='0' style='width: 100%'>
 														<tr>
 															<td style='width: 50%'>
 																<script type="text/javascript">
@@ -560,10 +563,9 @@ else {
 										</td>
 									</tr>
 								
-									<tr>
+									<tr class='break'>
 										<td colspan=2> 
 											<h3>Outcomes</h3>
-											<p>Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.</p>
 										</td>
 									</tr>
 									<? 
@@ -590,7 +592,8 @@ else {
 									</script>
 									<tr>
 										<td colspan=2> 
-											<div class="outcome" id="outcome" style='width: 100%; padding: 5px 0px 0px 0px; border-top: 1px solid #333; border-bottom: 1px solid #333; min-height: 66px'>
+											<p>Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.</p>
+											<div class="outcome" id="outcome" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
 												<?
 												try {
 													$dataBlocks=array("gibbonUnitID"=>$gibbonUnitID);  
@@ -617,9 +620,9 @@ else {
 												}
 												?>
 											</div>
-											<div style='width: 100%; padding: 0px 0px 0px 0px; border-bottom: 1px solid #333'>
-												<div class="ui-state-default_dud odd" style='padding: 0px; height: 60px'>
-													<table style='width: 100%'>
+											<div style='width: 100%; padding: 0px 0px 0px 0px'>
+												<div class="ui-state-default_dud" style='padding: 0px; min-height: 50px'>
+													<table class='blank' cellspacing='0' style='width: 100%'>
 														<tr>
 															<td style='width: 50%'>
 																<script type="text/javascript">
@@ -765,14 +768,12 @@ else {
 									</tr>
 								
 									<tr>
-										<td class="right" colspan=2>
+										<td>
+											<span style="font-size: 90%"><i>* denotes a required field</i></span>
+										</td>
+										<td class="right">
 											<input name="classCount" id="classCount" value="<? print $classCount ?>" type="hidden">
 											<input type="reset" value="Reset"> <input id="submit" type="submit" value="Submit">
-										</td>
-									</tr>
-									<tr>
-										<td class="right" colspan=2>
-											<span style="font-size: 90%"><i>* denotes a required field</i></span>
 										</td>
 									</tr>
 								</table>
@@ -846,11 +847,11 @@ else {
 							//Let's go!
 							$row=$result->fetch() ;
 							?>
-							<table style="width: 100%">	
+							<table cellspacing='0' style="width: 100%">	
 								<tr><td style="width: 30%"></td><td></td></tr>
 								<tr>
 									<td colspan=2> 
-										<h3 class='top'>Unit Basics</h3>
+										<h3>Unit Basics</h3>
 									</td>
 								</tr>
 								<tr>
@@ -907,7 +908,7 @@ else {
 											print "</div>" ;
 										}
 										else {
-											print "<table style='width: 100%'>" ;
+											print "<table cellspacing='0' style='width: 100%'>" ;
 												print "<tr class='head'>" ;
 													print "<th>" ;
 														print "Class" ;

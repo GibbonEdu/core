@@ -37,7 +37,7 @@ else {
 	print "This report allows a user to select a range of students and create ID cards for those students." ;
 	print "</p>" ;
 	
-	print "<h2 class='top'>" ;
+	print "<h2>" ;
 	print "Choose Students" ;
 	print "</h2>" ;
 	
@@ -45,7 +45,7 @@ else {
 	?>
 	
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_students_IDCards.php"?>" enctype="multipart/form-data">
-		<table style="width: 100%">	
+		<table cellspacing='0' style="width: 100%">	
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td> 
@@ -123,7 +123,7 @@ else {
 	
 	if (count($choices)>0) {
 		
-		print "<h2 class='top'>" ;
+		print "<h2>" ;
 		print "Report Data" ;
 		print "</h2>" ;
 		
@@ -176,7 +176,7 @@ else {
 				}
 			}
 
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 			
 			$count=0;
 			$columns=1 ;
@@ -187,7 +187,7 @@ else {
 				}
 				print "<td style='width:" . (100/$columns) . "%; text-align: center; vertical-align: top'>" ;
 					print "<div style='width: 488px; height: 308px; border: 1px solid black; $bg'>" ;
-						print "<table style='width 448px; max-width 448px; height: 268px; max-height: 268px; margin: 45px 10px 10px 10px'>" ; 
+						print "<table cellspacing='0' style='width 448px; max-width 448px; height: 268px; max-height: 268px; margin: 45px 10px 10px 10px'>" ; 
 							print "<tr>" ;
 								print "<td style='padding: 0px ; width: 150px; height: 200px; vertical-align: top' rowspan=5>" ;
 									if ($row["image_240"]=="" OR file_exists($_SESSION[$guid]["absolutePath"] . "/" . $row["image_240"])==FALSE) {  

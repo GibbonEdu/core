@@ -36,7 +36,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 		$output=$output . "My Classes" ;
 		$output=$output . "</h2>" ;
 		
-		$output.="<table style='width: 100%'>" ;
+		$output.="<table class='mini' cellspacing='0' style='width: 100%'>" ;
 			$output.="<tr class='head'>" ;
 					$output.="<th style='width: 40%'>" ;
 					$output.="Class" ;
@@ -113,7 +113,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 		$output=$output . "</h2>" ;
 	
 		$output=$output . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-			$output=$output . "<table style='width: 100%; margin: 0px 0px'>" ;	
+			$output=$output . "<table cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
 				$output=$output . "<tr>" ;
 					$output=$output . "<td class='right'>" ;
 						$output=$output . "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:230px'>" ;

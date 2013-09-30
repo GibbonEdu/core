@@ -44,7 +44,7 @@ else {
 		print "</div>" ;
 	} 
 	
-	print "<h3 class='top'>" ;
+	print "<h3>" ;
 		print "Student Note Categories" ;
 	print "</h3>" ;
 	print "<p>" ;
@@ -71,7 +71,7 @@ else {
 		print "</div>" ;
 	}
 	else {
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Name" ;

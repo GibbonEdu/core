@@ -89,14 +89,16 @@ else {
 				}
 			print "</div>" ;
 		
-			print "<h2 class='top'>" ;
-			print "Step 1" ;
-			print "</h2>" ;
+			
 			?>
 		
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_add.php&step=2&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr class='break'>
+						<td colspan=2> 
+							<h3>Step 1</h3>
+						</td>
+					</tr>
 					<tr>
 						<td> 
 							<b>Student *</b><br/>
@@ -257,14 +259,12 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td class="right" colspan=2>
+						<td>
+							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<input type="reset" value="Reset"> <input type="submit" value="Next">
-						</td>
-					</tr>
-					<tr>
-						<td class="right" colspan=2>
-							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 					</tr>
 				</table>
@@ -286,10 +286,6 @@ else {
 			print "</div>" ;
 		
 			
-			print "<h2 class='top'>" ;
-			print "Step 2" ;
-			print "</h2>" ;
-			
 			$gibbonPersonID=$_POST["gibbonPersonID"] ; 
 			$date=$_POST["date"] ; 
 			$type=$_POST["type"] ; 
@@ -305,8 +301,12 @@ else {
 			else {
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_addProcess.php?gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ?>">
-					<table style="width: 100%">	
-						<tr><td style="width: 30%"></td><td></td></tr>
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<tr class='break'>
+							<td colspan=2> 
+								<h3>Step 2</h3>
+							</td>
+						</tr>
 						<tr>
 							<td> 
 								<b>Student *</b><br/>
@@ -394,7 +394,10 @@ else {
 						</tr>
 						
 						<tr>
-							<td class="right" colspan=2>
+							<td>
+								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+							</td>
+							<td class="right">
 								<input type="hidden" name="type" value="<? print $type ?>">
 								<input type="hidden" name="descriptor" value="<? print $descriptor ?>">
 								<input type="hidden" name="level" value="<? print $level ?>">
@@ -403,11 +406,6 @@ else {
 							
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 								<input type="reset" value="Reset"> <input type="submit" value="Submit">
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
 							</td>
 						</tr>
 					</table>

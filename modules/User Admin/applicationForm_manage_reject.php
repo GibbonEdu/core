@@ -97,7 +97,7 @@ else {
 			
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_rejectProcess.php?gibbonApplicationFormID=$gibbonApplicationFormID&search=$search" ?>">
-				<table style="width: 100%">	
+				<table cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
 							<b>Are you sure you want to reject the application for <? print formatName("", $row["preferredName"], $row["surname"], "Student") ?>?</b><br/>

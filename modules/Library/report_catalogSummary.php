@@ -36,7 +36,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Catalog Summary</div>" ;
 	print "</div>" ;
 	
-	print "<h3 class='top'>" ;
+	print "<h3>" ;
 		print "Search & Filter" ;
 	print "</h3>" ;
 	
@@ -59,37 +59,31 @@ else {
 	}
 	
 	//Display filters
-	print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/report_catalogSummary.php'>Clear Filters</a>" ;
-	print "</div>" ;
 	print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/report_catalogSummary.php'>" ;
-		print "<table style='width: 100%'>" ;
-			print "<tr>" ;
-				print "<td style='padding-top: 10px'>" ;
-					print "<b>Ownership Type</b>" ;
-				print "</td>" ;
-				print "<td style='padding-top: 10px'>" ;
-					print "<b>Type</b>" ;
-				print "</td>" ;
-				print "<td style='padding-top: 10px'>" ;
-					print "<b>Location</b>" ;
-				print "</td>" ;
-				print "<td style='padding-top: 10px'>" ;
-					print "<b>Status</b>" ;
-				print "</td>" ;
-				print "<td style='padding-top: 10px'>" ;
-					
-				print "</td>" ;
-			print "</tr>" ;
-			print "<tr>" ;
-				print "<td style='padding: 0px 2px 0px 0px'>" ;
-					print "<select name='ownershipType' id='ownershipType' style='width:170px; height: 27px; margin-left: 0px; float: left'>" ;
+		print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
+			?>
+			<tr>
+				<td> 
+					<b>Ownership Type</b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<?
+					print "<select name='ownershipType' id='ownershipType' style='width:302px'>" ;
 						print "<option " ; if ($ownershipType=="") { print "selected " ; } print "value=''></option>" ;
 						print "<option " ; if ($ownershipType=="School") { print "selected " ; } print "value='School'>School</option>" ;
 						print "<option " ; if ($ownershipType=="Individual") { print "selected " ; } print "value='Individual'>Individual</option>" ;
 					print "</select>" ;
-				print "</td>" ;
-				print "<td style='padding: 0px 2px 0px 0px'>" ;
+					?>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Type</b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<?
 					try {
 						$dataType=array(); 
 						$sqlType="SELECT * FROM gibbonLibraryType WHERE active='Y' ORDER BY name" ;
@@ -99,7 +93,7 @@ else {
 					catch(PDOException $e) { 
 						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 					}
-					print "<select name='gibbonLibraryTypeID' id='gibbonLibraryTypeID' style='width:170px; height: 27px; margin-left: 0px; float: left'>" ;
+					print "<select name='gibbonLibraryTypeID' id='gibbonLibraryTypeID' style='width:302px'>" ;
 						print "<option value=''></option>" ;
 						while ($rowType=$resultType->fetch()) {
 							$selected="" ;
@@ -108,9 +102,17 @@ else {
 							}
 							print "<option $selected value='" . $rowType["gibbonLibraryTypeID"] . "'>" . $rowType["name"] . "</option>" ;
 						}
-					print "</select>" ;
-				print "</td>" ;
-				print "<td style='padding: 0px 2px 0px 0px'>" ;
+					print "</select>" ;	
+					?>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Location</b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<?
 					try {
 						$dataLocation=array(); 
 						$sqlLocation="SELECT * FROM gibbonSpace ORDER BY name" ;
@@ -120,7 +122,7 @@ else {
 					catch(PDOException $e) { 
 						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 					}
-					print "<select name='gibbonSpaceID' id='gibbonSpaceID' style='width:170px; height: 27px; margin-left: 0px; float: left'>" ;
+					print "<select name='gibbonSpaceID' id='gibbonSpaceID' style='width:302px'>" ;
 						print "<option value=''></option>" ;
 						while ($rowLocation=$resultLocation->fetch()) {
 							$selected="" ;
@@ -129,10 +131,18 @@ else {
 							}
 							print "<option $selected value='" . $rowLocation["gibbonSpaceID"] . "'>" . $rowLocation["name"] . "</option>" ;
 						}
-					print "</select>" ;
-				print "</td>" ;
-				print "<td style='padding: 0px 0px 0px 2px'>" ;
-					print "<select name='status' id='status' style='width:170px; height: 27px; margin-left: 0px; float: left'>" ;
+					print "</select>" ;	
+					?>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Status</b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<?
+					print "<select name='status' id='status' style='width:302px'>" ;
 						print "<option value=''></option>" ;
 						print "<option " ; if ($status=="Available") { print "selected " ; } print "value='Available'>Available</option>" ;
 						print "<option " ; if ($status=="Decommissioned") { print "selected " ; } print "value='Decommissioned'>Decommissioned</option>" ;
@@ -142,16 +152,21 @@ else {
 						print "<option " ; if ($status=="Repair") { print "selected " ; } print "value='Repair'>Repair</option>" ;
 						print "<option " ; if ($status=="Reserved") { print "selected " ; } print "value='Reserved'>Reserved</option>" ;
 					print "</select>" ;
-				print "</td>" ;
-				print "<td style='padding: 0px 0px 0px 2px'>" ;
-					print "<input type='hidden' name='q' value='/modules/Library/library_manage_catalog.php'>" ;
-					print "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='Go'>" ;
+					?>
+				</td>
+			</tr>
+			<?
+			print "<tr>" ;
+				print "<td class='right' colspan=2>" ;
+					print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/report_catalogSummary.php'>Clear Filters</a> " ;
+					print "<input type='submit' value='Go'>" ;
 				print "</td>" ;
 			print "</tr>" ;
 		print "</table>" ;
 	print "</form>" ;
 	
-	print "<h3 class='top'>" ;
+	print "<h3>" ;
 		print "Report Data" ;
 	print "</h3>" ;
 	
@@ -199,17 +214,15 @@ else {
 		print "</div>" ;
 	}
 	else {
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "School ID" ;
+					print "School ID<br/>" ;
+					print "<span style='font-style: italic; font-size: 85%'>Type</span>" ;
 				print "</th>" ;
 				print "<th>" ;
 					print "Name<br/>" ;
 					print "<span style='font-size: 85%; font-style: italic'>Producer</span>" ;
-				print "</th>" ;
-				print "<th>" ;
-					print "Type" ;
 				print "</th>" ;
 				print "<th>" ;
 					print "Location" ;
@@ -241,26 +254,26 @@ else {
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
-						print "<b>" . $row["id"] . "</b>" ;
+						print "<b>" . $row["id"] . "</b><br/>" ;
+						print "<span style='font-style: italic; font-size: 85%'>" ;
+							try {
+								$dataType=array("gibbonLibraryTypeID"=>$row["gibbonLibraryTypeID"]); 
+								$sqlType="SELECT name FROM gibbonLibraryType WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID" ;
+								$resultType=$connection2->prepare($sqlType);
+								$resultType->execute($dataType);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+							if ($resultType->rowCount()==1) {
+								$rowType=$resultType->fetch() ;
+								print $rowType["name"] . "<br/>" ;
+							}
+						print "</span>" ;
 					print "</td>" ;
 					print "<td>" ;
 						print "<b>" . $row["name"] . "</b><br/>" ;
 						print "<span style='font-size: 85%; font-style: italic'>" . $row["producer"] . "</span>" ;
-					print "</td>" ;
-					print "<td>" ;
-						try {
-							$dataType=array("gibbonLibraryTypeID"=>$row["gibbonLibraryTypeID"]); 
-							$sqlType="SELECT name FROM gibbonLibraryType WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID" ;
-							$resultType=$connection2->prepare($sqlType);
-							$resultType->execute($dataType);
-						}
-						catch(PDOException $e) { 
-							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-						}
-						if ($resultType->rowCount()==1) {
-							$rowType=$resultType->fetch() ;
-							print $rowType["name"] . "<br/>" ;
-						}
 					print "</td>" ;
 					print "<td>" ;
 						if ($row["gibbonSpaceID"]!="") {

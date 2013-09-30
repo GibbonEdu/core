@@ -92,7 +92,7 @@ else {
 				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top") ;
 			}
 		
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
 						print "Subject<br/>" ;
@@ -113,7 +113,7 @@ else {
 					print "<th>" ;
 						print "SMS" ;
 					print "</th>" ;
-					print "<th>" ;
+					print "<th style='width: 80px'>" ;
 						print "Actions" ;
 					print "</th>" ;
 				print "</tr>" ;

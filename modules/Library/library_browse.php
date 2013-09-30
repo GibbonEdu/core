@@ -47,7 +47,7 @@ else {
 	print "<div style='width: 1050px; border: 1px solid #444; margin-bottom: 30px; background-repeat: no-repeat; min-height: 450px; $browseBGColorStyle $browseBGImageStyle'>" ;
 		print "<div style='width: 762px; margin: 0 auto'>" ;
 			//Display filters
-			print "<table style='width: 100%; background-color: rgba(255,255,255,0.8); border: 1px solid #444; margin-top: 30px'>" ;
+			print "<table class='noIntBorder' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); border: 1px solid #444; margin-top: 30px'>" ;
 				print "<tr>" ;
 					print "<td style='width: 10px'></td>" ;
 					print "<td style='width: 33%; padding-top: 5px; text-align: center; vertical-align: top'>" ;
@@ -185,7 +185,7 @@ else {
 			
 			//Display filters
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_browse.php'>" ;
-				print "<table style='width: 100%; background-color: rgba(255,255,255,0.8); border: 1px solid #444; margin-top: 30px'>" ;
+				print "<table class='noIntBorder' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); border: 1px solid #444; margin-top: 30px'>" ;
 					print "<tr>" ;
 						print "<td style='width: 10px'></td>" ;
 						print "<td style='padding-top: 10px'>" ;
@@ -200,10 +200,6 @@ else {
 						print "<td style='padding-top: 10px'>" ;
 							print "<b>Collection</b>" ;
 						print "</td>" ;
-						print "<td style='padding-top: 10px'>" ;
-							
-						print "</td>" ;
-						print "<td style='width: 10px'></td>" ;
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td style='width: 10px'></td>" ;
@@ -248,7 +244,7 @@ else {
 							print "</select>" ;
 						print "</td>" ;
 						print "<td style='padding: 0px 0px 3px 2px'>" ;
-							print "<select name='collection' id='collection' style='width:170px; height: 29px; margin-left: 0px; float: left'>" ;
+							print "<select name='collection' id='collection' style='width:190px; height: 29px; margin-left: 0px; float: left'>" ;
 								for ($i=0; $i<count($collections); $i++) {
 									$selected="" ;
 									if ($collections[$i][0]==$category AND trim($collections[$i][1])==$collection) {
@@ -261,17 +257,13 @@ else {
 								print "$(\"#collection\").chainedTo(\"#category\");" ;
 							print "</script>" ;
 						print "</td>" ;
-						print "<td style='padding: 0px 0px 3px 2px'>" ;
-							print "<input type='hidden' name='q' value='/modules/Library/library_lending.php'>" ;
-							print "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='Go'>" ;
-						print "</td>" ;
-						print "<td style='width: 10px'></td>" ;
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td style='padding: 0px 2px 10px 0px; text-align: right' colspan=6>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_browse.php'>Clear Filters</a>" ;
+							print "<input type='hidden' name='q' value='/modules/Library/library_lending.php'>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_browse.php'>Clear Filters</a> " ;
+							print "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='Go'>" ;
 						print "</td>" ;
-						print "<td style='width: 10px'></td>" ;
 					print "</tr>" ;
 				print "</table>" ;
 			print "</form>" ;
@@ -328,7 +320,7 @@ else {
 					printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "name=$name&producer=$producer&category=$category&collection=$collection") ;
 				}
 			
-				print "<table style='width: 100%; border: 1px solid #444'>" ;
+				print "<table cellspacing='0' style='width: 100%; border: 1px solid #444'>" ;
 					print "<tr class='head' style='opacity: 0.7'>" ;
 						print "<th style='text-align: center'>" ;
 						
@@ -419,7 +411,7 @@ else {
 								print "<td style='border-bottom: 1px solid #333'></td>" ;
 								
 								print "<td style='border-bottom: 1px solid #333' colspan=4>" ;
-									print "<table style='width: 100%'>" ;
+									print "<table cellspacing='0' style='width: 100%'>" ;
 										$typeFields=unserialize($row["typeFields"]) ;
 										$fields=unserialize($row["fields"]) ;
 										foreach ($typeFields as $typeField) {

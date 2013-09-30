@@ -75,7 +75,7 @@ else {
 						print "</div>" ;
 					}
 					
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr>" ;
 							print "<td style='width: 33%; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -144,7 +144,7 @@ else {
 						print "</div>" ;
 					}
 					
-					print "<h2 class='top'>" ;
+					print "<h2>" ;
 						if ($subpage!="") {
 							print $subpage ;
 						}
@@ -157,7 +157,7 @@ else {
 							print "</div>" ;
 						}
 					
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -199,7 +199,7 @@ else {
 							print "</div>" ;
 						}
 						
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -232,7 +232,7 @@ else {
 						print "Contacts" ;
 						print "</h4>" ;
 						
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							$numberCount=0 ;
 							if ($row["phone1"]!="" OR $row["phone2"]!="" OR $row["phone3"]!="" OR $row["phone4"]!="") {
 								print "<tr>" ;
@@ -301,7 +301,7 @@ else {
 						print "Miscellaneous" ;
 						print "</h4>" ;
 						
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Transport</span><br/>" ;
@@ -363,7 +363,7 @@ else {
 							}
 							
 							while ($rowMember=$resultMember->fetch()) {
-								print "<table style='width: 100%'>" ;
+								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr>" ;
 										print "<td style='width: 33%; vertical-align: top'>" ;
 											print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -409,7 +409,7 @@ else {
 						print "<h4>" ;
 						print "2. Emergency Contacts" ;
 						print "</h4>" ;
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Contact 1</span><br/>" ;
@@ -555,7 +555,7 @@ else {
 										print "</div>" ;
 									}
 									else {
-										print "<table style='width: 100%'>" ;
+										print "<table cellspacing='0' style='width: 100%'>" ;
 											print "<tr class='head'>" ;
 												print "<th>" ;
 													print "Activity" ;
@@ -658,7 +658,7 @@ else {
 							print "</div>" ;
 						}
 						else {
-							print "<h4 class='top'>" ;
+							print "<h4>" ;
 							print "Upcoming Deadlines" ;
 							print "</h4>" ;
 							
@@ -730,7 +730,7 @@ else {
 							else {
 								print "<div class='linkTop'>" ;
 									print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-										print"<table style='float: right; width: 250px; margin: 0px 0px'>" ;	
+										print"<table cellspacing='0' style='float: right; width: 250px; margin: 0px 0px'>" ;	
 											print"<tr>" ;
 												print"<td style='width: 190px'>" ; 
 													print"<select name='gibbonCourseClassIDFilter' id='gibbonCourseClassIDFilter' style='width:190px'>" ;
@@ -761,7 +761,7 @@ else {
 										print"</table>" ;
 									print"</form>" ;
 								print "</div>" ; 
-								print "<table style='width: 100%'>" ;
+								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
 											print "Class/Date" ;
@@ -906,7 +906,7 @@ else {
 					$_SESSION[$guid]["sidebarExtra"].=getUserPhoto($guid, $row["image_240"], 240) ;
 					
 					//PERSONAL DATA MENU ITEMS
-					$_SESSION[$guid]["sidebarExtra"].= "<h4 class='top'>Personal</h4>" ;
+					$_SESSION[$guid]["sidebarExtra"].= "<h4>Personal</h4>" ;
 					$_SESSION[$guid]["sidebarExtra"].= "<ul>" ;
 					$style="" ;
 					if ($subpage=="Summary") {

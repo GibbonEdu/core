@@ -89,11 +89,10 @@ else {
 			}
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item_returnProcess.php?gibbonLibraryItemEventID=$gibbonLibraryItemEventID&gibbonLibraryItemID=$gibbonLibraryItemID&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
-					<tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr class='break'>
 						<td colspan=2>
-							<h2 class='top'>Item Details</h2>
+							<h3>Item Details</h3>
 						</td>
 					</tr>
 					<tr>
@@ -124,9 +123,13 @@ else {
 						</td>
 					</tr>
 					
+					<tr class='break'>
+						<td colspan=2>
+							<h3>On Return</h3>
+						</td>
+					</tr>
 					<tr>
 						<td colspan=2>
-							<h2>On Return</h2>
 							<p>The new status will be set to "Returned" unless the fields below are completed:</p>
 						</td>
 					</tr>
@@ -187,15 +190,13 @@ else {
 					</tr>
 					
 					<tr>
-						<td class="right" colspan=2>
+						<td>
+							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
 							<input name="gibbonLibraryItemID" id="gibbonLibraryItemID" value="<? print $gibbonLibraryItemID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<input type="reset" value="Reset"> <input type="submit" value="Return">
-						</td>
-					</tr>
-					<tr>
-						<td class="right" colspan=2>
-							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 					</tr>
 				</table>

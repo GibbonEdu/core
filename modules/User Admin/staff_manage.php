@@ -44,15 +44,12 @@ else {
 		print "</div>" ;
 	} 
 	
-	print "<h3 class='top'>" ;
+	print "<h2>" ;
 	print "Search" ;
-	print "</h3>" ;
-	print "<div class='linkTop'>" ;
-	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage.php'>Clear Search</a>" ;
-	print "</div>" ;
+	print "</h2>" ;
 	?>
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table style="width: 100%">	
+		<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td> 
@@ -67,6 +64,9 @@ else {
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/staff_manage.php">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+					<?
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage.php'>Clear Search</a>" ;
+					?>
 					<input type="submit" value="Submit">
 				</td>
 			</tr>
@@ -74,9 +74,9 @@ else {
 	</form>
 	<?
 	
-	print "<h3 class='top'>" ;
+	print "<h2>" ;
 	print "View" ;
-	print "</h3>" ;
+	print "</h2>" ;
 	
 	//Set pagination variable
 	$page=$_GET["page"] ;
@@ -114,7 +114,7 @@ else {
 			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
 		}
 	
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Name" ;

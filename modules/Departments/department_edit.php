@@ -127,15 +127,18 @@ else {
 				
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
-					<table style="width: 100%">	
-						<tr><td style="width: 30%"></td><td></td></tr>
-						<tr>
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<tr class='break'>
 							<td colspan=2> 
-								<h2 class='top' style='margin-bottom: 10px'>Overview</h2> 
-								<? print getEditor($guid,  TRUE, "blurb", $row["blurb"], 20 ) ?>
+								<h3>Overview</h3>
 							</td>
 						</tr>
 						<tr>
+							<td colspan=2> 
+								<? print getEditor($guid,  TRUE, "blurb", $row["blurb"], 20 ) ?>
+							</td>
+						</tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Current Resources</h3>
 							</td>
@@ -160,7 +163,7 @@ else {
 								}
 								else {
 									print "<i><b>Warning</b>: If you delete a resource, any unsaved changes to this planner entry will be lost!</i>" ;
-									print "<table style='width: 100%'>" ;
+									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
 												print "Name" ;
@@ -301,7 +304,7 @@ else {
 							});
 							
 							</script>
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>New Resource 1</h3>
 							</td>
@@ -369,7 +372,7 @@ else {
 								<a href=""></a>
 							</td>
 						</tr>
-						<tr id="resource2">
+						<tr class='break' id="resource2">
 							<td colspan=2> 
 								<h3>New Resource 2</h3>
 							</td>
@@ -424,7 +427,7 @@ else {
 							</td>
 						</tr>
 						
-						<tr id="resource3">
+						<tr class='break' id="resource3">
 							<td colspan=2> 
 								<h3>New Resource 3</h3>
 							</td>
@@ -468,14 +471,6 @@ else {
 									var file3 = new LiveValidation('file3');
 									file3.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 								</script>
-							</td>
-						</tr>
-						<tr id="resource3ButtonRow">
-							<td> 
-							</td>
-							<td class="right">
-								<input class="buttonAsLink" id="resource3Button" type="button" value="Add Another Resource">
-								<a href=""></a>
 							</td>
 						</tr>
 						<tr>

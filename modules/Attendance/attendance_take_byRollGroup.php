@@ -65,10 +65,6 @@ else {
 		print "</div>" ;
 	} 
 	
-	print "<h2 class='top'>" ;
-	print "Choose Roll Group" ;
-	print "</h2>" ;
-	
 	$gibbonRollGroupID="" ;
 	if (is_null($_GET["gibbonRollGroupID"])) {
 		try {
@@ -100,8 +96,14 @@ else {
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table style="width: 100%">	
-			<tr><td style="width: 30%"></td><td></td></tr>
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<tr class='break'>
+				<td colspan=2>
+					<h3>
+					Choose Roll Group
+					</h3>
+				</td>
+			</tr>
 			<tr>
 				<td> 
 					<b>Roll Group</b><br/>
@@ -163,10 +165,6 @@ else {
 	<?
 	
 	if ($gibbonRollGroupID!="") {
-		print "<h2 class='top'>" ;
-		print "Take Attendance" ;
-		print "</h2>" ;
-		
 		if ($currentDate>$today) {
 			print "<div class='error'>" ;
 				print "The specified date is in the future: it must be today or earlier.";
@@ -241,7 +239,16 @@ else {
 					$countPresent=0 ;
 					$columns=4 ;
 					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byRollGroupProcess.php'>" ;
-						print "<table style='width:100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width:100%'>" ;
+						?>
+						<tr class='break'>
+							<td colspan=<? print $columns ?>>
+								<h3>
+									Take Attendance
+								</h3>
+							</td>
+						</tr>
+						<?
 						while ($rowRollGroup=$resultRollGroup->fetch()) {
 							if ($count%$columns==0) {
 								print "<tr>" ;
@@ -294,7 +301,7 @@ else {
 									$countPresent++ ;
 								}	
 								
-								print "<table style='width:134px; margin: 0 auto 3px auto; height: 35px' >" ;
+								print "<table cellspacing='0' style='width:134px; margin: 0 auto 3px auto; height: 35px' >" ;
 									print "<tr>" ;
 										for ($i=4; $i>=0; $i--) {
 											$link="" ;

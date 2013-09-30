@@ -78,224 +78,221 @@ else {
 		//Let's go!
 		?>
 		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/daysOfWeek_manageProcess.php"?>">
-		<table style="width: 100%">	
-		<?
-		while($row=$result->fetch()) {
-			?>
-			<tr><td style="width: 30%"></td><td></td></tr>
-			<tr>
-				<td colspan=2> 
-					<h3><? print $row["name"] . " (" . $row[nameShort] . ")" ?></h3>
-				</td>
-			</tr>
-			<input name="<?print $row["name"]?>sequenceNumber" id="<?print $row["name"]?>sequenceNumber" maxlength=2 value="<? print $row["sequenceNumber"] ?>" type="hidden" style="width: 300px">
-			<tr>
-				<td> 
-					<b>School Day *</b>
-				</td>
-				<td class="right">
-					<select style="width: 302px" name="<?print $row["name"]?>schoolDay" id="<?print $row["name"]?>schoolDay">
-						<?
-						if ($row["schoolDay"]=="Y") {
-							print "<option selected value='Y'>Yes</option>" ;
-							print "<option value='N'>No</option>" ;
-						}
-						else {
-							print "<option value='Y'>Yes</option>" ;
-							print "<option selected value='N'>No</option>" ;
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b>School Opens</b>
-				</td>
-				<td class="right">
-					<select style="width:100px" name="<?print $row["name"]?>schoolOpenM" id="<?print $row["name"]?>schoolOpenM">
-						<?
-						print "<option value='Minutes'>Minutes</option>" ;
-						for ($i=0;$i<60;$i++) {
-							$iPrint=$i;
-							if (strlen($i)==1) {
-								$iPrint="0" . $i ;
-							}
-							
-							if (substr($row["schoolOpen"],3,2)==$i AND $row["schoolOpen"]!=NULL) {
-								print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-							else {
-								print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-						}
-						?>				
-					</select>
-					<select style="width:100px" name="<?print $row["name"]?>schoolOpenH" id="<?print $row["name"]?>schoolOpenH">
-						<?
-						print "<option value='Hours'>Hours</option>" ;
-						for ($i=0;$i<24;$i++) {
-							$iPrint=$i;
-							if (strlen($i)==1) {
-								$iPrint="0" . $i ;
-							}
-							
-							if (substr($row["schoolOpen"],0,2)==$i AND $row["schoolOpen"]!=NULL) {
-								print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-							else {
-								print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b>School Starts</b>
-				</td>
-				<td class="right">
-					<select style="width:100px" name="<?print $row["name"]?>schoolStartM" id="<?print $row["name"]?>schoolStartM">
-						<?
-						print "<option value='Minutes'>Minutes</option>" ;
-						for ($i=0;$i<60;$i++) {
-							$iPrint=$i;
-							if (strlen($i)==1) {
-								$iPrint="0" . $i ;
-							}
-							
-							if (substr($row["schoolStart"],3,2)==$i AND $row["schoolStart"]!=NULL) {
-								print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-							else {
-								print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-						}
-						?>				
-					</select>
-					<select style="width:100px" name="<?print $row["name"]?>schoolStartH" id="<?print $row["name"]?>schoolStartH">
-						<?
-						print "<option value='Hours'>Hours</option>" ;
-						for ($i=0;$i<24;$i++) {
-							$iPrint=$i;
-							if (strlen($i)==1) {
-								$iPrint="0" . $i ;
-							}
-							
-							if (substr($row["schoolStart"],0,2)==$i AND $row["schoolStart"]!=NULL) {
-								print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-							else {
-								print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b>School Ends</b>
-				</td>
-				<td class="right">
-					<select style="width:100px" name="<?print $row["name"]?>schoolEndM" id="<?print $row["name"]?>schoolEndM">
-						<?
-						print "<option value='Minutes'>Minutes</option>" ;
-						for ($i=0;$i<60;$i++) {
-							$iPrint=$i;
-							if (strlen($i)==1) {
-								$iPrint="0" . $i ;
-							}
-							
-							if (substr($row["schoolEnd"],3,2)==$i AND $row["schoolEnd"]!=NULL) {
-								print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-							else {
-								print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-						}
-						?>				
-					</select>
-					<select style="width:100px" name="<?print $row["name"]?>schoolEndH" id="<?print $row["name"]?>schoolEndH">
-						<?
-						print "<option value='Hours'>Hours</option>" ;
-						for ($i=0;$i<24;$i++) {
-							$iPrint=$i;
-							if (strlen($i)==1) {
-								$iPrint="0" . $i ;
-							}
-							
-							if (substr($row["schoolEnd"],0,2)==$i AND $row["schoolEnd"]!=NULL) {
-								print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-							else {
-								print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b>School Closes</b>
-				</td>
-				<td class="right">
-					<select style="width:100px" name="<?print $row["name"]?>schoolCloseM" id="<?print $row["name"]?>schoolCloseM">
-						<?
-						print "<option value='Minutes'>Minutes</option>" ;
-						for ($i=0;$i<60;$i++) {
-							$iPrint=$i;
-							if (strlen($i)==1) {
-								$iPrint="0" . $i ;
-							}
-							
-							if (substr($row["schoolClose"],3,2)==$i AND $row["schoolClose"]!=NULL) {
-								print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-							else {
-								print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-						}
-						?>				
-					</select>
-					<select style="width:100px" name="<?print $row["name"]?>schoolCloseH" id="<?print $row["name"]?>schoolCloseH">
-						<?
-						print "<option value='Hours'>Hours</option>" ;
-						for ($i=0;$i<24;$i++) {
-							$iPrint=$i;
-							if (strlen($i)==1) {
-								$iPrint="0" . $i ;
-							}
-							
-							if (substr($row["schoolClose"],0,2)==$i AND $row["schoolClose"]!=NULL) {
-								print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-							else {
-								print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-							}
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			
+			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<?
-		}
-		?>
-		<tr>
-				<td class="right" colspan=2>
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
-				</td>
-			</tr>
-			<tr>
-				<td class="right" colspan=2>
-					<span style="font-size: 90%"><i>* denotes a required field</i></span>
-				</td>
-			</tr>
-		</table>
+			while($row=$result->fetch()) {
+				?>
+				<tr class='break'>
+					<td colspan=2> 
+						<h3><? print $row["name"] . " (" . $row[nameShort] . ")" ?></h3>
+					</td>
+				</tr>
+				<input name="<?print $row["name"]?>sequenceNumber" id="<?print $row["name"]?>sequenceNumber" maxlength=2 value="<? print $row["sequenceNumber"] ?>" type="hidden" style="width: 300px">
+				<tr>
+					<td> 
+						<b>School Day *</b>
+					</td>
+					<td class="right">
+						<select style="width: 302px" name="<?print $row["name"]?>schoolDay" id="<?print $row["name"]?>schoolDay">
+							<?
+							if ($row["schoolDay"]=="Y") {
+								print "<option selected value='Y'>Yes</option>" ;
+								print "<option value='N'>No</option>" ;
+							}
+							else {
+								print "<option value='Y'>Yes</option>" ;
+								print "<option selected value='N'>No</option>" ;
+							}
+							?>				
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b>School Opens</b>
+					</td>
+					<td class="right">
+						<select style="width:100px" name="<?print $row["name"]?>schoolOpenM" id="<?print $row["name"]?>schoolOpenM">
+							<?
+							print "<option value='Minutes'>Minutes</option>" ;
+							for ($i=0;$i<60;$i++) {
+								$iPrint=$i;
+								if (strlen($i)==1) {
+									$iPrint="0" . $i ;
+								}
+							
+								if (substr($row["schoolOpen"],3,2)==$i AND $row["schoolOpen"]!=NULL) {
+									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+								else {
+									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+							}
+							?>				
+						</select>
+						<select style="width:100px" name="<?print $row["name"]?>schoolOpenH" id="<?print $row["name"]?>schoolOpenH">
+							<?
+							print "<option value='Hours'>Hours</option>" ;
+							for ($i=0;$i<24;$i++) {
+								$iPrint=$i;
+								if (strlen($i)==1) {
+									$iPrint="0" . $i ;
+								}
+							
+								if (substr($row["schoolOpen"],0,2)==$i AND $row["schoolOpen"]!=NULL) {
+									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+								else {
+									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+							}
+							?>				
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b>School Starts</b>
+					</td>
+					<td class="right">
+						<select style="width:100px" name="<?print $row["name"]?>schoolStartM" id="<?print $row["name"]?>schoolStartM">
+							<?
+							print "<option value='Minutes'>Minutes</option>" ;
+							for ($i=0;$i<60;$i++) {
+								$iPrint=$i;
+								if (strlen($i)==1) {
+									$iPrint="0" . $i ;
+								}
+							
+								if (substr($row["schoolStart"],3,2)==$i AND $row["schoolStart"]!=NULL) {
+									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+								else {
+									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+							}
+							?>				
+						</select>
+						<select style="width:100px" name="<?print $row["name"]?>schoolStartH" id="<?print $row["name"]?>schoolStartH">
+							<?
+							print "<option value='Hours'>Hours</option>" ;
+							for ($i=0;$i<24;$i++) {
+								$iPrint=$i;
+								if (strlen($i)==1) {
+									$iPrint="0" . $i ;
+								}
+							
+								if (substr($row["schoolStart"],0,2)==$i AND $row["schoolStart"]!=NULL) {
+									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+								else {
+									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+							}
+							?>				
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b>School Ends</b>
+					</td>
+					<td class="right">
+						<select style="width:100px" name="<?print $row["name"]?>schoolEndM" id="<?print $row["name"]?>schoolEndM">
+							<?
+							print "<option value='Minutes'>Minutes</option>" ;
+							for ($i=0;$i<60;$i++) {
+								$iPrint=$i;
+								if (strlen($i)==1) {
+									$iPrint="0" . $i ;
+								}
+							
+								if (substr($row["schoolEnd"],3,2)==$i AND $row["schoolEnd"]!=NULL) {
+									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+								else {
+									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+							}
+							?>				
+						</select>
+						<select style="width:100px" name="<?print $row["name"]?>schoolEndH" id="<?print $row["name"]?>schoolEndH">
+							<?
+							print "<option value='Hours'>Hours</option>" ;
+							for ($i=0;$i<24;$i++) {
+								$iPrint=$i;
+								if (strlen($i)==1) {
+									$iPrint="0" . $i ;
+								}
+							
+								if (substr($row["schoolEnd"],0,2)==$i AND $row["schoolEnd"]!=NULL) {
+									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+								else {
+									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+							}
+							?>				
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b>School Closes</b>
+					</td>
+					<td class="right">
+						<select style="width:100px" name="<?print $row["name"]?>schoolCloseM" id="<?print $row["name"]?>schoolCloseM">
+							<?
+							print "<option value='Minutes'>Minutes</option>" ;
+							for ($i=0;$i<60;$i++) {
+								$iPrint=$i;
+								if (strlen($i)==1) {
+									$iPrint="0" . $i ;
+								}
+							
+								if (substr($row["schoolClose"],3,2)==$i AND $row["schoolClose"]!=NULL) {
+									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+								else {
+									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+							}
+							?>				
+						</select>
+						<select style="width:100px" name="<?print $row["name"]?>schoolCloseH" id="<?print $row["name"]?>schoolCloseH">
+							<?
+							print "<option value='Hours'>Hours</option>" ;
+							for ($i=0;$i<24;$i++) {
+								$iPrint=$i;
+								if (strlen($i)==1) {
+									$iPrint="0" . $i ;
+								}
+							
+								if (substr($row["schoolClose"],0,2)==$i AND $row["schoolClose"]!=NULL) {
+									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+								else {
+									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+								}
+							}
+							?>				
+						</select>
+					</td>
+				</tr>
+			
+				<?
+			}
+			?>
+				<tr>
+					<td>
+						<span style="font-size: 90%"><i>* denotes a required field</i></span>
+					</td>
+					<td class="right">
+						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+						<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					</td>
+				</tr>
+			</table>
 		</form>
 		<?
 	}

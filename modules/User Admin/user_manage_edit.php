@@ -130,11 +130,10 @@ else {
 				Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and stunders/staff do not get Employment fields.
 			</div>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/user_manage_editProcess.php?gibbonPersonID=" . $gibbonPersonID . "&search=" . $_GET["search"] ?>" enctype="multipart/form-data">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
-					<tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr class='break'>
 						<td colspan=2> 
-							<h3 class='top'>Basic Information</h3>
+							<h3>Basic Information</h3>
 						</td>
 					</tr>
 					<tr>
@@ -257,7 +256,7 @@ else {
 						</td>
 					</tr>
 					
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>System Access</h3>
 						</td>
@@ -409,7 +408,7 @@ else {
 						</td>
 					</tr>
 					
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>Contact Information</h3>
 						</td>
@@ -577,7 +576,7 @@ else {
 									print "<span style='font-size: 90%'><i>These users have similar Address 1. Do you want to change them too?</i></span>" ;
 								print "</td>" ;
 								print "<td style='text-align: right; border-top: 1px dashed #c00; border-bottom: 1px dashed #c00; background-color: #F6CECB'> " ;
-									print "<table style='width:306px; float: right; padding: 0px; margin: 0px'>" ;
+									print "<table cellspacing='0' style='width:306px; float: right; padding: 0px; margin: 0px'>" ;
 									while ($rowAddress=$resultAddress->fetch()) {
 										print "<tr>" ;
 											print "<td style='padding-left: 0px; padding-right: 0px; width:200px'>" ;
@@ -720,7 +719,7 @@ else {
 					</tr>
 					
 					
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>School Information</h3>
 						</td>
@@ -920,7 +919,7 @@ else {
 					}
 					?>
 					
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>Background Information</h3>
 						</td>
@@ -1235,7 +1234,7 @@ else {
 					<?
 					if ($parent) {
 						?> 
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Employment</h3>
 							</td>
@@ -1272,7 +1271,7 @@ else {
 					<?
 					if ($student OR $staff) {
 						?> 
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Emergency Contacts</h3>
 							</td>
@@ -1368,7 +1367,7 @@ else {
 					}
 					?>
 					
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>Images</h3>
 						</td>
@@ -1424,7 +1423,7 @@ else {
 					</tr>
 					
 					
-					<tr>
+					<tr class='break'>
 						<td colspan=2> 
 							<h3>Misc</h3>
 						</td>
@@ -1572,14 +1571,12 @@ else {
 					?>
 						
 					<tr>
-						<td class="right" colspan=2>
+						<td>
+							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<input type="reset" value="Reset"> <input type="submit" value="Submit">
-						</td>
-					</tr>
-					<tr>
-						<td class="right" colspan=2>
-							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 					</tr>
 				</table>

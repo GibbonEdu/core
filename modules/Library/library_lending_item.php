@@ -101,11 +101,11 @@ else {
 				print "</div>" ;
 			}
 			
-			print "<h3 class='top'>" ;
+			print "<h3>" ;
 				print "Item Details" ;
 			print "</h3>" ;
 			
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Type</span><br/>" ;
@@ -175,7 +175,7 @@ else {
 					printPagination($guid, $resultEvent->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "search=$search") ;
 				}
 			
-				print "<table style='width: 100%'>" ;
+				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th style='min-width: 90px'>" ;
 							print "User<br/>" ;
@@ -193,7 +193,7 @@ else {
 						print "<th>" ;
 							print "Recorded By" ;
 						print "</th>" ;
-						print "<th>" ;
+						print "<th style='width: 80px'>" ;
 							print "Actions" ;
 						print "</th>" ;
 					print "</tr>" ;

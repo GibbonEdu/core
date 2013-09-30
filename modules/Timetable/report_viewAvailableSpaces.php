@@ -37,7 +37,7 @@ else {
 	print "This report shows all available spaces in a given time, in a given timetable. Please note that whilst school closures are shown, timing changes are not. For cells which contain too many free spaces, hover your mouse over the cell to see all entries." ;
 	print "</p>" ;		
 			
-	print "<h2 class='top'>" ;
+	print "<h2>" ;
 	print "Choose Options" ;
 	print "</h2>" ;
 	
@@ -51,7 +51,7 @@ else {
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table style="width: 100%">	
+		<table cellspacing='0' style="width: 100%">	
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td> 
@@ -275,7 +275,7 @@ else {
 	
 			$count=0;
 	
-			print "<table style='width: 760px; margin: 0px 0px 30px 0px;'>" ;
+			print "<table cellspacing='0' style='width: 760px; margin: 0px 0px 30px 0px;'>" ;
 				print "<tr class='head'>" ;
 					print "<th style='vertical-align: top; width: 70px; text-align: center'>" ;
 						//Calculate week number

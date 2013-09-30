@@ -102,7 +102,7 @@ else {
 				print "</div>" ;
 			} 
 					
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Timetable</span><br/>" ;
@@ -140,7 +140,7 @@ else {
 			}
 			else {
 				//Let's go!
-				print "<table style='width: 100%'>" ;
+				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
 							print "Class" ;

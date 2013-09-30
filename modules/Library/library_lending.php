@@ -44,7 +44,7 @@ else {
 		print "</div>" ;
 	} 
 	
-	print "<h3 class='top'>" ;
+	print "<h3>" ;
 		print "Search & Filter" ;
 	print "</h3>" ;
 	
@@ -67,33 +67,27 @@ else {
 	}
 	
 	//Display filters
-	print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_lending.php'>Clear Filters</a>" ;
-	print "</div>" ;
 	print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_lending.php'>" ;
-		print "<table style='width: 100%'>" ;
-			print "<tr>" ;
-				print "<td style='padding-top: 10px'>" ;
-					print "<b>ID/Name/Producer</b>" ;
-				print "</td>" ;
-				print "<td style='padding-top: 10px'>" ;
-					print "<b>Type</b>" ;
-				print "</td>" ;
-				print "<td style='padding-top: 10px'>" ;
-					print "<b>Location</b>" ;
-				print "</td>" ;
-				print "<td style='padding-top: 10px'>" ;
-					print "<b>Status</b>" ;
-				print "</td>" ;
-				print "<td style='padding-top: 10px'>" ;
-					
-				print "</td>" ;
-			print "</tr>" ;
-			print "<tr>" ;
-				print "<td style='padding: 0px 2px 0px 0px'>" ;
-					print "<input type='text' name='name' id='name' value='" . htmlPrep($name) . "' style='width:200px; height: 27px; margin-left: 0px; float: left'/>" ;
-				print "</td>" ;
-				print "<td style='padding: 0px 2px 0px 0px'>" ;
+		print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
+			?>
+			<tr>
+				<td> 
+					<b>ID/Name/Producer</b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<?
+					print "<input type='text' name='name' id='name' value='" . htmlPrep($name) . "' style='width:300px;'/>" ;
+					?>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Type</b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<?
 					try {
 						$dataType=array(); 
 						$sqlType="SELECT * FROM gibbonLibraryType WHERE active='Y' ORDER BY name" ;
@@ -103,7 +97,7 @@ else {
 					catch(PDOException $e) { 
 						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 					}
-					print "<select name='gibbonLibraryTypeID' id='gibbonLibraryTypeID' style='width:150px; height: 27px; margin-left: 0px; float: left'>" ;
+					print "<select name='gibbonLibraryTypeID' id='gibbonLibraryTypeID' style='width:302px'>" ;
 						print "<option value=''></option>" ;
 						while ($rowType=$resultType->fetch()) {
 							$selected="" ;
@@ -113,8 +107,16 @@ else {
 							print "<option $selected value='" . $rowType["gibbonLibraryTypeID"] . "'>" . $rowType["name"] . "</option>" ;
 						}
 					print "</select>" ;
-				print "</td>" ;
-				print "<td style='padding: 0px 2px 0px 0px'>" ;
+					?>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Location</b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<?
 					try {
 						$dataLocation=array(); 
 						$sqlLocation="SELECT * FROM gibbonSpace ORDER BY name" ;
@@ -124,7 +126,7 @@ else {
 					catch(PDOException $e) { 
 						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 					}
-					print "<select name='gibbonSpaceID' id='gibbonSpaceID' style='width:150px; height: 27px; margin-left: 0px; float: left'>" ;
+					print "<select name='gibbonSpaceID' id='gibbonSpaceID' style='width:302px'>" ;
 						print "<option value=''></option>" ;
 						while ($rowLocation=$resultLocation->fetch()) {
 							$selected="" ;
@@ -134,19 +136,32 @@ else {
 							print "<option $selected value='" . $rowLocation["gibbonSpaceID"] . "'>" . $rowLocation["name"] . "</option>" ;
 						}
 					print "</select>" ;
-				print "</td>" ;
-				print "<td style='padding: 0px 0px 0px 2px'>" ;
-					print "<select name='status' id='status' style='width:150px; height: 27px; margin-left: 0px; float: left'>" ;
+					?>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Status</b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<?
+					print "<select name='status' id='status' style='width:302px'>" ;
 						print "<option value=''></option>" ;
 						print "<option " ; if ($status=="Available") { print "selected " ; } print "value='Available'>Available</option>" ;
 						print "<option " ; if ($status=="On Loan") { print "selected " ; } print "value='On Loan'>On Loan</option>" ;
 						print "<option " ; if ($status=="Repair") { print "selected " ; } print "value='Repair'>Repair</option>" ;
 						print "<option " ; if ($status=="Reserved") { print "selected " ; } print "value='Reserved'>Reserved</option>" ;
 					print "</select>" ;
-				print "</td>" ;
-				print "<td style='padding: 0px 0px 0px 2px'>" ;
-					print "<input type='hidden' name='q' value='/modules/Library/library_lending.php'>" ;
-					print "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='Go'>" ;
+					?>
+				</td>
+			</tr>
+			<?
+			print "<tr>" ;
+				print "<td class='right' colspan=2>" ;
+					print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_lending.php'>Clear Filters</a> " ;
+					print "<input type='submit' value='Go'>" ;
 				print "</td>" ;
 			print "</tr>" ;
 		print "</table>" ;
@@ -158,7 +173,7 @@ else {
 		$page=1 ;
 	}
 	
-	print "<h3 class='top'>" ;
+	print "<h3>" ;
 		print "View" ;
 	print "</h3>" ;
 	
@@ -211,7 +226,7 @@ else {
 			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status") ;
 		}
 	
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "School ID" ;

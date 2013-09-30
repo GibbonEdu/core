@@ -54,30 +54,16 @@ else {
 	print "<h3>" ;
 		print "Filter" ;
 	print "</h3>" ;
-	print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_summary.php'>Clear Filters</a>" ;
-	print "</div>" ;
 	print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_summary.php'>" ;
-		print "<table style='width: 200px'>" ;
-			print "<tr>" ;
-				print "<td>" ;
-					print "<b>Descriptor</b>" ;
-				print "</td>" ;
-				print "<td>" ;
-					print "<b>Alert Level</b>" ;
-				print "</td>" ;
-				print "<td>" ;
-					print "<b>Roll Group</b>" ;
-				print "</td>" ;
-				print "<td>" ;
-					print "<b>Year Group</b>" ;
-				print "</td>" ;
-				print "<td>" ;
-					
-				print "</td>" ;
-			print "</tr>" ;
-			print "<tr>" ;
-				print "<td style='padding: 0px 2px 0px 0px'>" ;
+		print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
+			?>
+			<tr>
+				<td> 
+					<b>Descriptor</b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<?
 					try {
 						$dataPurpose=array(); 
 						$sqlPurpose="SELECT * FROM gibbonINDescriptor ORDER BY sequenceNumber" ;
@@ -86,7 +72,7 @@ else {
 					}
 					catch(PDOException $e) { }
 					
-					print "<select name='gibbonINDescriptorID' id='gibbonINDescriptorID' style='width:175px; margin-left: 0px'>" ;
+					print "<select name='gibbonINDescriptorID' id='gibbonINDescriptorID' style='width:302px'>" ;
 						print "<option value=''></option>" ;
 						while ($rowPurpose=$resultPurpose->fetch()) {
 							$selected="" ;
@@ -96,8 +82,16 @@ else {
 							print "<option $selected value='" . $rowPurpose["gibbonINDescriptorID"] . "'>" . $rowPurpose["name"] . "</option>" ;
 						}
 					print "</select>" ;
-				print "</td>" ;
-				print "<td style='padding: 0px 2px 0px 0px'>" ;
+					?>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Alert Level</b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<?
 					try {
 						$dataPurpose=array(); 
 						$sqlPurpose="SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber" ;
@@ -106,7 +100,7 @@ else {
 					}
 					catch(PDOException $e) { }
 					
-					print "<select name='gibbonAlertLevelID' id='gibbonAlertLevelID' style='width:175px; margin-left: 0px'>" ;
+					print "<select name='gibbonAlertLevelID' id='gibbonAlertLevelID' style='width:302px'>" ;
 						print "<option value=''></option>" ;
 						while ($rowPurpose=$resultPurpose->fetch()) {
 							$selected="" ;
@@ -116,8 +110,16 @@ else {
 							print "<option $selected value='" . $rowPurpose["gibbonAlertLevelID"] . "'>" . $rowPurpose["name"] . "</option>" ;
 						}
 					print "</select>" ;
-				print "</td>" ;
-				print "<td style='padding: 0px 2px 0px 0px'>" ;
+					?>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Roll Group</b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<?
 					try {
 						$dataPurpose=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 						$sqlPurpose="SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
@@ -126,7 +128,7 @@ else {
 					}
 					catch(PDOException $e) { }
 					
-					print "<select name='gibbonRollGroupID' id='gibbonRollGroupID' style='width:175px; margin-left: 0px'>" ;
+					print "<select name='gibbonRollGroupID' id='gibbonRollGroupID' style='width:302px'>" ;
 						print "<option value=''></option>" ;
 						while ($rowPurpose=$resultPurpose->fetch()) {
 							$selected="" ;
@@ -136,8 +138,16 @@ else {
 							print "<option $selected value='" . $rowPurpose["gibbonRollGroupID"] . "'>" . $rowPurpose["name"] . "</option>" ;
 						}
 					print "</select>" ;
-				print "</td>" ;
-				print "<td style='padding: 0px 2px 0px 0px'>" ;
+					?>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Year Group</b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<?
 					try {
 						$dataPurpose=array(); 
 						$sqlPurpose="SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber" ;
@@ -146,7 +156,7 @@ else {
 					}
 					catch(PDOException $e) { }
 					
-					print "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width:175px; margin-left: 0px'>" ;
+					print "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width:302px'>" ;
 						print "<option value=''></option>" ;
 						while ($rowPurpose=$resultPurpose->fetch()) {
 							$selected="" ;
@@ -156,9 +166,14 @@ else {
 							print "<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . $rowPurpose["name"] . "</option>" ;
 						}
 					print "</select>" ;
-				print "</td>" ;
-				print "<td style='padding: 0px 0px 0px 2px'>" ;
+					?>
+				</td>
+			</tr>
+			<?
+			print "<tr>" ;
+				print "<td class='right' colspan=2>" ;
 					print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_summary.php'>Clear Filters</a> " ;
 					print "<input type='submit' value='Go'>" ;
 				print "</td>" ;
 			print "</tr>" ;
@@ -224,7 +239,7 @@ else {
 			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
 		}
 	
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
 					print "Name" ;

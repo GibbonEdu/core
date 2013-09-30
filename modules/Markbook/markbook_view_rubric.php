@@ -131,7 +131,7 @@ else {
 						$row3=$result3->fetch() ;
 						$row4=$result4->fetch() ;
 						
-						print "<h2 class='top' style='margin-bottom: 10px;'>" ;
+						print "<h2 style='margin-bottom: 10px;'>" ;
 							print $row3["name"] . "<br/>" ;
 							print "<span style='font-size: 65%; font-style: italic'>" . formatName("", $row4["preferredName"], $row4["surname"], "Student", true) . "</span>" ;
 						print "</h2>" ;

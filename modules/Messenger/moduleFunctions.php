@@ -339,7 +339,7 @@ function getMessages($guid, $connection2, $mode="", $date="") {
 				}	
 			}
 	
-			$return=$return. "<table>" ;
+			$return=$return. "<table cellspacing='0'>" ;
 				$rowCount=0;
 				$rowNum="odd" ;
 				for ($i=0; $i<count($output); $i++) {

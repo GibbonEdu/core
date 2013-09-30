@@ -81,7 +81,7 @@ else {
 			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 		}
 	
-		print "<table style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th style='width: 120px'>" ;
 					print "Student <span style='font-style: italic; font-size: 85%'>(Invoice To)</span>" ;

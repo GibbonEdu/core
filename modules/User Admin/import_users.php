@@ -49,7 +49,7 @@ else {
 			This page allows you to import user data from a CSV file. The import includes all users, whether they be students, staff, parents or other. The system will take the import and set any existing users not present in the file to "Left", whilst importing new users into the system. New users will be assigned a random password, unless a default is set. Select the CSV file you wish to use for the synchronise operation.<br/>
 		</p>
 		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/import_users.php&step=2" ?>" enctype="multipart/form-data">
-			<table style="width: 100%">	
+			<table cellspacing='0' style="width: 100%">	
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
 					<td> 

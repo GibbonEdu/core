@@ -44,7 +44,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 		$countAbsent=0 ;
 		$countPresent=0 ;
 		while ($row=$result->fetch()) {
-			$output=$output . "<h4 class='top'>" ;
+			$output=$output . "<h4>" ;
 				$output=$output . $row["name"] ;
 			$output=$output . "</h4>" ;
 			list($firstDayYear, $firstDayMonth, $firstDayDay) = explode('-', $row["firstDay"]);
@@ -135,7 +135,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 			$weeks=2;
 			
 			$output=$output . "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manageProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID'>" ;
-			$output=$output . "<table style='width: 100%'>" ;
+			$output=$output . "<table cellspacing='0' style='width: 100%'>" ;
 			$output=$output . "<tr class='head'>" ;
 				for ($w=0; $w<$weeks; $w++) {
 					if ($days["Mon"]=="Y") {
@@ -289,10 +289,10 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 		}
 	}
 	
-	print "<table>" ;
+	print "<table cellspacing='0'>" ;
 		print "<tr>" ;
 			print "<td style='vertical-align: top'>" ;
-				print "<h3 class='top'>" ;
+				print "<h3>" ;
 					print "Summary" ;
 				print "</h2>" ;
 				print "<p>" ;
@@ -308,7 +308,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 			print "<td style='width: 10px'>" ;
 			print "</td>" ;
 			print "<td style='vertical-align: top'>" ;
-				print "<h3 class='top'>" ;
+				print "<h3>" ;
 					print "Key" ;
 				print "</h2>" ;
 				print "<p>" ;

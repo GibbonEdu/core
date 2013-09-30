@@ -118,16 +118,13 @@ else {
 				$_GET["search"]=$gibbonPersonID[0] ;
 			}
 			else {
-				print "<h2 class='top'>" ;
+				print "<h3>" ;
 				print "Choose" ;
-				print "</h2>" ;
+				print "</h3>" ;
 				
-				print "<div class='linkTop'>" ;
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php'>Clear Search</a>" ;
-				print "</div>" ;
 				?>
 				<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-					<table style="width: 100%">	
+					<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 						<tr><td style="width: 30%"></td><td></td></tr>
 						<tr>
 							<td> 
@@ -145,6 +142,9 @@ else {
 							<td colspan=2 class="right">
 								<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/planner_deadlines.php">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+								<?
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php'>Clear Search</a>" ;
+								?>
 								<input type="submit" value="Submit">
 							</td>
 						</tr>
@@ -177,9 +177,9 @@ else {
 				else {
 					$rowChild=$resultChild->fetch() ;
 					
-					print "<h2 class='top'>" ;
+					print "<h3>" ;
 					print "Upcoming Deadlines" ;
-					print "</h2>" ;
+					print "</h3>" ;
 					
 					$proceed=TRUE ;
 					if ($viewBy=="class") {
@@ -250,9 +250,9 @@ else {
 					
 					$style="" ;
 					
-					print "<h2>" ;
+					print "<h3>" ;
 					print "All Homework" ;
-					print "</h2>" ;
+					print "</h3>" ;
 					
 					$gibbonCourseClassIDFilter=$_GET["gibbonCourseClassIDFilter"] ;
 					if ($_GET["gibbonCourseClassIDFilter"]!="") {
@@ -278,11 +278,11 @@ else {
 					else {
 						print "<div class='linkTop'>" ;
 							print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-								print"<table style='float: right; width: 250px; margin: 0px 0px'>" ;	
-									print"<tr>" ;
-										print"<td style='width: 190px'>" ; 
-											print"<select name='gibbonCourseClassIDFilter' id='gibbonCourseClassIDFilter' style='width:190px'>" ;
-												print"<option value=''></option>" ;
+								print "<table class='blank' cellspacing='0' style='float: right; width: 250px'>" ;	
+									print "<tr>" ;
+										print "<td style='width: 190px'>" ; 
+											print "<select name='gibbonCourseClassIDFilter' id='gibbonCourseClassIDFilter' style='width:190px'>" ;
+												print "<option value=''></option>" ;
 												try {
 													$dataSelect=array("gibbonPersonID"=>$gibbonPersonID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "date"=>date("Y-m-d")); 
 													$sqlSelect="SELECT DISTINCT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.gibbonCourseClassID FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND date<=:date ORDER BY course, class" ; 
@@ -295,20 +295,20 @@ else {
 													if ($rowSelect["gibbonCourseClassID"]==$gibbonCourseClassIDFilter) {
 														$selected="selected" ;
 													}
-													print"<option $selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
+													print "<option $selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
 												}
-											 print"</select>" ;
-										print"</td>" ;
-										print"<td class='right'>" ;
-											print"<input type='submit' value='Go' style='margin-right: 0px'>" ;
-											print"<input type='hidden' name='q' value='/modules/Planner/planner_deadlines.php'>" ;
-											print"<input type='hidden' name='search' value='$gibbonPersonID'>" ;
-										print"</td>" ;
-									print"</tr>" ;
-								print"</table>" ;
-							print"</form>" ;
+											 print "</select>" ;
+										print "</td>" ;
+										print "<td class='right'>" ;
+											print "<input type='submit' value='Go' style='margin-right: 0px'>" ;
+											print "<input type='hidden' name='q' value='/modules/Planner/planner_deadlines.php'>" ;
+											print "<input type='hidden' name='search' value='$gibbonPersonID'>" ;
+										print "</td>" ;
+									print "</tr>" ;
+								print "</table>" ;
+							print "</form>" ;
 						print "</div>" ; 
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
 									print "Class/Date" ;
@@ -472,9 +472,9 @@ else {
 			print "</div>" ;
 		} 
 		
-		print "<h2>" ;
+		print "<h3>" ;
 		print "Upcoming Deadlines" ;
-		print "</h2>" ;
+		print "</h3>" ;
 		
 		$proceed=TRUE ;
 		if ($viewBy=="class") {
@@ -586,9 +586,9 @@ else {
 			}
 		}
 		
-		print "<h2>" ;
+		print "<h3>" ;
 		print "All Homework" ;
-		print "</h2>" ;
+		print "</h3>" ;
 		
 		$completionArray=array() ;
 		if ($category=="Student") {
@@ -637,11 +637,11 @@ else {
 		else {
 			print "<div class='linkTop'>" ;
 				print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-					print"<table style='float: right; width: 250px; margin: 0px 0px'>" ;	
-						print"<tr>" ;
-							print"<td style='width: 190px'>" ; 
-								print"<select name='gibbonCourseClassIDFilter' id='gibbonCourseClassIDFilter' style='width:190px'>" ;
-									print"<option value=''></option>" ;
+					print "<table class='blank' cellspacing='0' style='float: right; width: 250px'>" ;	
+						print "<tr>" ;
+							print "<td style='width: 190px'>" ; 
+								print "<select name='gibbonCourseClassIDFilter' id='gibbonCourseClassIDFilter' style='width:190px'>" ;
+									print "<option value=''></option>" ;
 									try {
 										if ($highestAction=="Lesson Planner_viewEditAllClasses" AND $_GET["show"]=="all") {
 											$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "date"=>date("Y-m-d")); 
@@ -660,20 +660,20 @@ else {
 										if ($rowSelect["gibbonCourseClassID"]==$gibbonCourseClassIDFilter) {
 											$selected="selected" ;
 										}
-										print"<option $selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
+										print "<option $selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
 									}
-								 print"</select>" ;
-							print"</td>" ;
-							print"<td class='right'>" ;
-								print"<input type='submit' value='Go' style='margin-right: 0px'>" ;
-								print"<input type='hidden' name='q' value='/modules/Planner/planner_deadlines.php'>" ;
-							print"</td>" ;
-						print"</tr>" ;
-					print"</table>" ;
-				print"</form>" ;
-			print "</div>" ; 
+								 print "</select>" ;
+							print "</td>" ;
+							print "<td class='right'>" ;
+								print "<input type='submit' value='Go' style='margin-right: 0px'>" ;
+								print "<input type='hidden' name='q' value='/modules/Planner/planner_deadlines.php'>" ;
+							print "</td>" ;
+						print "</tr>" ;
+					print "</table>" ;
+				print "</form>" ;
+			print "</div>" ;
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_deadlinesProcess.php?viewBy=$viewBy&subView=$subView&address=" . $_SESSION[$guid]["address"] . "'>" ;
-				print "<table style='width: 100%; margin-top: 50px'>" ;
+				print "<table cellspacing='0' style='width: 100%; margin-top: 60px'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
 							print "Class/Date" ;

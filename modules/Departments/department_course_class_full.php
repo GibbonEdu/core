@@ -118,7 +118,7 @@ else {
 					}
 				print "</h1>" ;
 				
-				print "<table style='width: 550px; float: left;'>" ;
+				print "<table cellspacing='0' style='width: 550px; float: left;'>" ;
 					print "<tr>" ;
 						print "<td style='width: 33%; vertical-align: top'>" ;
 							print "<span style='font-size: 115%; font-weight: bold'>Class</span><br/>" ;
@@ -185,7 +185,7 @@ else {
 													}
 													print "<div style='padding-left: 3px; width: $width; float: left'>" ;
 														if ($rowBlocksView["title"]!="") {
-															print "<h5 class='top' style='padding-bottom: 2px'>" . $rowBlocksView["title"] . "</h5>" ;
+															print "<h5 style='padding-bottom: 2px'>" . $rowBlocksView["title"] . "</h5>" ;
 														}
 													print "</div>" ;
 													print "<div style='float: right; width: 29%; padding-right: 3px'>" ;

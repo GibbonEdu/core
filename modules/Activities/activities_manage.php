@@ -89,7 +89,7 @@ else {
 				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top") ;
 			}
 		
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
 						print "Activity" ;
@@ -114,7 +114,7 @@ else {
 					print "<th>" ;
 						print "Active" ;
 					print "</th>" ;
-					print "<th style='width: 70px'>" ;
+					print "<th style='width: 80px'>" ;
 						print "Actions" ;
 					print "</th>" ;
 				print "</tr>" ;
