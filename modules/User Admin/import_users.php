@@ -134,6 +134,43 @@ else {
 					<li><b>House</b> - house short name, as set in School Admin (must already exist)</li>
 					<li><b>DOB</b> - date of birth (YYYY-MM-DD)</li>
 					<li><b>Role</b> - Teacher, Support Staff, Student or Parent</li>
+					<li><b>Email</b></li>
+					<li><b>Image (75)</b></li>
+					<li><b>Image (240)</b></li>
+					<li><b>Address 1</b></li>
+					<li><b>Address 1 (District)</b></li>
+					<li><b>Address 1 (Country)</b></li>
+					<li><b>Address 2</b></li>
+					<li><b>Address 2 (District)</b></li>
+					<li><b>Address 2 (Country)</b></li>
+					<li><b>Phone 1 (Type)</b></li>
+					<li><b>Phone 1 (Country Code)</b></li>
+					<li><b>Phone 1</b></li>
+					<li><b>Phone 2 (Type)</b></li>
+					<li><b>Phone 2 (Country Code)</b></li>
+					<li><b>Phone 2</b></li>
+					<li><b>Phone 3 (Type)</b></li>
+					<li><b>Phone 3 (Country Code)</b></li>
+					<li><b>Phone 3</b></li>
+					<li><b>Phone 4 (Type)</b></li>
+					<li><b>Phone 4 (Country Code)</b></li>
+					<li><b>Phone 4</b></li>
+					<li><b>Website</b></li>
+					<li><b>First Language</b></li>
+					<li><b>Second Language</b></li>
+					<li><b>Profession</b></li>
+					<li><b>Employer</b></li>
+					<li><b>Job Title</b></li>
+					<li><b>Emergency Contact 1 (Name)</b></li>
+					<li><b>Emergency Contact 1 (Phone 1)</b></li>
+					<li><b>Emergency Contact 1 (Phone 2)</b></li>
+					<li><b>Emergency Contact 1 (Relationship)</b></li>
+					<li><b>Emergency Contact 2 (Name)</b></li>
+					<li><b>Emergency Contact 2 (Phone 1)</b></li>
+					<li><b>Emergency Contact 2 (Phone 2)</b></li>
+					<li><b>Emergency Contact 2 (Relationship)</b></li>
+					<li><b>Start Date</b></li>
+					<li><b>End Date</b></li>
 				</ol>
 			</li>
 			<li>Do not include a header row in the CSV files.</li>

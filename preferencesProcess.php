@@ -44,6 +44,10 @@ if (($_SESSION[$guid]["gibbonAcademicYearID"]=="") OR ($_SESSION[$guid]["gibbonA
 //Check password address is not blank
 $calendarFeedPersonal=$_POST["calendarFeedPersonal"] ;
 $personalBackground=$_POST["personalBackground"] ;
+$gibbonThemeIDPersonal=$_POST["gibbonThemeIDPersonal"] ;
+if ($gibbonThemeIDPersonal=="") {
+	$gibbonThemeIDPersonal=NULL ;
+}
 
 $URL = $_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php" ;
 
@@ -55,8 +59,8 @@ if (FALSE) {
 //Otherwise proceed
 else {
 	try {
-		$data=array("calendarFeedPersonal"=>$calendarFeedPersonal, "personalBackground"=>$personalBackground, "username"=>$_SESSION[$guid]["username"]); 
-		$sql="UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal, personalBackground=:personalBackground WHERE (username=:username)" ;
+		$data=array("calendarFeedPersonal"=>$calendarFeedPersonal, "personalBackground"=>$personalBackground, "gibbonThemeIDPersonal"=>$gibbonThemeIDPersonal, "username"=>$_SESSION[$guid]["username"]); 
+		$sql="UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal, personalBackground=:personalBackground, gibbonThemeIDPersonal=:gibbonThemeIDPersonal WHERE (username=:username)" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -66,9 +70,10 @@ else {
 		break ;
 	}
 	
-	$_SESSION[$guid]["personalBackground"]=$personalBackground ;
-	
 	$_SESSION[$guid]["calendarFeedPersonal"]=$calendarFeedPersonal ;
+	$_SESSION[$guid]["personalBackground"]=$personalBackground ;
+	$_SESSION[$guid]["gibbonThemeIDPersonal"]=$gibbonThemeIDPersonal ;
+	$_SESSION[$guid]["pageLoads"]=NULL ;
 	$URL=$URL . "&editReturn=success0" ;
 	header("Location: {$URL}");
 }

@@ -112,8 +112,16 @@ else {
 				$_SESSION[$guid]["gibbonThemeID"]="001" ;
 				$_SESSION[$guid]["gibbonThemeName"]="Default" ;
 				try {
-					$sqlTheme="SELECT * FROM gibbonTheme WHERE active='Y'" ;
-					$resultTheme=$connection2->query($sqlTheme); 
+					if ($_SESSION[$guid]["gibbonThemeIDPersonal"]!=NULL) {
+						$dataTheme=array("gibbonThemeIDPersonal"=>$_SESSION[$guid]["gibbonThemeIDPersonal"]); 
+						$sqlTheme="SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeIDPersonal" ;
+					}
+					else {
+						$dataTheme=array(); 
+						$sqlTheme="SELECT * FROM gibbonTheme WHERE active='Y'" ;
+					}
+					$resultTheme=$connection2->prepare($sqlTheme);
+					$resultTheme->execute($dataTheme);
 					if ($resultTheme->rowCount()==1) {
 						$rowTheme=$resultTheme->fetch() ;
 						$_SESSION[$guid]["themeCSS"]="<link rel='stylesheet' type='text/css' href='./themes/" . $rowTheme["name"] . "/css/main.css' />" ;

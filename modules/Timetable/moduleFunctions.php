@@ -179,32 +179,31 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 		if ($title!=FALSE) {
 			$output=$output . "<h2>" . $row["name"] . "</h2>" ;
 		}
-		print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
-			print"<table cellspacing='0' class='noIntBorder' cellspacing='0' style='width: 100%; margin: 10px 0 10px 0'>" ;	
-				print"<tr>" ;
-					print"<td style='vertical-align: top'>" ; 
-						print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
-							print "<input name='ttDate' maxlength=10 value='" . date("d/m/Y", ($startDayStamp-(7*24*60*60))) . "' type='hidden'>" ;
-							print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
-							print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
-							print "<input name='fromTT' value='Y' type='hidden'>" ;
-							?>
-							<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Last Week'>
-							<?	
-						print "</form>" ;
-						print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
-							print "<input name='ttDate' value='" . date("d/m/Y", ($startDayStamp+(7*24*60*60))) . "' type='hidden'>" ;
-							print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
-							print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
-							print "<input name='fromTT' value='Y' type='hidden'>" ;
-							?>
-							<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Next Week'>
-			
-							<?	
-						print "</form>" ;
-					print"</td>" ; 
-					print"<td style='vertical-align: top'>" ; 
-						print "<input name='ttDate' id='ttDate' maxlength=10 value='" . date("d/m/Y", $startDayStamp) . "' type='text' style='height: 22px; width:100px; margin-right: 0px;'><br/>" ;
+		print"<table cellspacing='0' class='noIntBorder' cellspacing='0' style='width: 100%; margin: 10px 0 10px 0'>" ;	
+			print"<tr>" ;
+				print"<td style='vertical-align: top'>" ; 
+					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
+						print "<input name='ttDate' value='" . date("d/m/Y", ($startDayStamp-(7*24*60*60))) . "' type='hidden'>" ;
+						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
+						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
+						print "<input name='fromTT' value='Y' type='hidden'>" ;
+						?>
+						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Last Week'>
+						<?	
+					print "</form>" ;
+					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
+						print "<input name='ttDate' value='" . date("d/m/Y", ($startDayStamp+(7*24*60*60))) . "' type='hidden'>" ;
+						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
+						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
+						print "<input name='fromTT' value='Y' type='hidden'>" ;
+						?>
+						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Next Week'>
+						<?	
+					print "</form>" ;
+				print"</td>" ; 
+				print"<td style='vertical-align: top; text-align: right'>" ;
+					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ; 
+						print "<input name='ttDate' id='ttDate' maxlength=10 value='" . date("d/m/Y", $startDayStamp) . "' type='text' style='height: 22px; width:100px; margin-right: 0px; float: none'> " ;
 						?>
 						<script type="text/javascript">
 							var ttDate = new LiveValidation('ttDate');
@@ -216,19 +215,15 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 								$("#ttDate").datepicker();
 							});
 						</script>
-						<?
-					print"</td>" ;
-					print"<td class='right' style='vertical-align: top; width: 54px'>" ;
-						?>
 						<input style='margin-top: 0px; margin-right: -2px' type='submit' value='Go'>
 						<?
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;	
-					print"</td>" ;
-				print"</tr>" ;
-			print"</table>" ;
-		print "</form>" ;
+					print "</form>" ;
+				print"</td>" ;
+			print"</tr>" ;
+		print"</table>" ;
 
 		//Count back to first Monday before first day
 		while (date("D",$startDayStamp)!="Mon") {
@@ -1242,31 +1237,32 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 		if ($title!=FALSE) {
 			$output=$output . "<h2>" . $row["name"] . "</h2>" ;
 		}
-		print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
-			print"<table cellspacing='0' class='noIntBorder' cellspacing='0' style='width: 100%; margin: 10px 0 10px 0'>" ;	
-				print"<tr>" ;
-					print"<td style='vertical-align: top'>" ; 
-						print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
-							print "<input name='ttDate' maxlength=10 value='" . date("d/m/Y", ($startDayStamp-(7*24*60*60))) . "' type='hidden'>" ;
-							print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
-							print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
-							print "<input name='fromTT' value='Y' type='hidden'>" ;
-							?>
-							<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Last Week'>
-							<?	
-						print "</form>" ;
-						print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
-							print "<input name='ttDate' value='" . date("d/m/Y", ($startDayStamp+(7*24*60*60))) . "' type='hidden'>" ;
-							print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
-							print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
-							print "<input name='fromTT' value='Y' type='hidden'>" ;
-							?>
-							<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Next Week'>
-							<?	
-						print "</form>" ;
-					print"</td>" ; 
-					print"<td style='vertical-align: top'>" ; 
-						print "<input name='ttDate' id='ttDate' maxlength=10 value='" . date("d/m/Y", $startDayStamp) . "' type='text' style='height: 22px; width:100px; margin-right: 0px;'><br/>" ;
+		
+		print"<table cellspacing='0' class='noIntBorder' cellspacing='0' style='width: 100%; margin: 10px 0 10px 0'>" ;	
+			print"<tr>" ;
+				print"<td style='vertical-align: top'>" ; 
+					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
+						print "<input name='ttDate' maxlength=10 value='" . date("d/m/Y", ($startDayStamp-(7*24*60*60))) . "' type='hidden'>" ;
+						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
+						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
+						print "<input name='fromTT' value='Y' type='hidden'>" ;
+						?>
+						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Last Week'>
+						<?	
+					print "</form>" ;
+					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
+						print "<input name='ttDate' value='" . date("d/m/Y", ($startDayStamp+(7*24*60*60))) . "' type='hidden'>" ;
+						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
+						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
+						print "<input name='fromTT' value='Y' type='hidden'>" ;
+						?>
+						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Next Week'>
+						<?	
+					print "</form>" ;
+				print"</td>" ; 
+				print"<td style='vertical-align: top; text-align: right'>" ; 
+					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
+						print "<input name='ttDate' id='ttDate' maxlength=10 value='" . date("d/m/Y", $startDayStamp) . "' type='text' style='height: 22px; width:100px; margin-right: 0px; float: none'>" ;
 						?>
 						<script type="text/javascript">
 							var ttDate = new LiveValidation('ttDate');
@@ -1278,19 +1274,15 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 								$("#ttDate").datepicker();
 							});
 						</script>
-						<?
-					print"</td>" ;
-					print"<td class='right' style='vertical-align: top; width: 54px'>" ;
-						?>
 						<input style='margin-top: 0px; margin-right: -2px' type='submit' value='Go'>
 						<?
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;	
-					print"</td>" ;
-				print"</tr>" ;
-			print"</table>" ;
-		print "</form>" ;
+					print "</form>" ;
+				print"</td>" ;
+			print"</tr>" ;
+		print"</table>" ;
 
 		//Count back to first Monday before first day
 		while (date("D",$startDayStamp)!="Mon") {

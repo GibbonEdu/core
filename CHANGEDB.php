@@ -1452,6 +1452,9 @@ UPDATE `gibbonStudentNote` SET gibbonStudentNoteCategoryID=NULL ;end
 -- LAST ICHK UPDATE
 -- LAST JIS UPDATE
 
+INSERT INTO `gibbonTheme` (`gibbonThemeID` ,`name` ,`description` ,`active` ,`version` ,`author` ,`url`)VALUES (NULL , 'Olden', 'Gibbon''s 2012 look and feel.', 'N', '1.0.00', 'Ross Parker', 'http://rossparker.org');end
+ALTER TABLE `gibbonPerson` ADD `gibbonThemeIDPersonal` INT( 4 ) UNSIGNED ZEROFILL NULL DEFAULT NULL ;end
+
 ";
 
 ?>

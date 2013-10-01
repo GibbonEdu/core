@@ -111,10 +111,10 @@ else {
 					$passwordStrong=hash("sha256", $salt.$password) ;
 				
 					try {
-						$data = array("passwordStrong" => $passwordStrong, "passwordStrongSalt" => $salt, "username" => $username ); 
+						$dataSecure = array("passwordStrong" => $passwordStrong, "passwordStrongSalt" => $salt, "username" => $username ); 
 						$sqlSecure="UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt WHERE (username=:username)";
 						$resultSecure=$connection2->prepare($sqlSecure);
-						$resultSecure->execute($data); 
+						$resultSecure->execute($dataSecure); 
 					}
 					catch(PDOException $e) { 
 						$passwordTest=false ; 
@@ -126,10 +126,10 @@ else {
 			if ($passwordTest!=true) {
 				//FAIL PASSWORD
 				try {
-					$data = array("lastFailIPAddress" => $_SERVER["REMOTE_ADDR"], "lastFailTimestamp" => date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
+					$dataSecure = array("lastFailIPAddress" => $_SERVER["REMOTE_ADDR"], "lastFailTimestamp" => date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
 					$sqlSecure="UPDATE gibbonPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)";
 					$resultSecure=$connection2->prepare($sqlSecure);
-					$resultSecure->execute($data); 
+					$resultSecure->execute($dataSecure); 
 				}
 				catch(PDOException $e) { 
 					$passwordTest=false ; 
@@ -198,6 +198,7 @@ else {
 					$_SESSION[$guid]["dateStart"]=$row["dateStart"] ;
 					$_SESSION[$guid]["personalBackground"]=$row["personalBackground"] ;
 					$_SESSION[$guid]["messengerLastBubble"]=$row["messengerLastBubble"] ;
+					$_SESSION[$guid]["gibbonThemeIDPersonal"]=$row["gibbonThemeIDPersonal"] ;
 				
 					//Make best effort to set IP address and other details, but no need to error check etc.
 					try {

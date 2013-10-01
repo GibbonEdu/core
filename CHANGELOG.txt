@@ -336,6 +336,14 @@ Timetable: added lesson name to mouseover on planner overlay
 General: overhauled look and feel
 	Edited almost every file in the system
 
+General: added individual theme chooser, and included 2012 theme as "Olden"
+	Added value to table gibbonTheme
+	Added folder /themes/Olden
+	Edited files /login.php, index.php, preferences*.php
+
+Timetable: fixed issue preventing Last Week link from working
+	Edited file /modules/Timetable/moduleFunctions.php
+
 
 v6.0.00
 -------
