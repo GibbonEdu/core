@@ -400,7 +400,7 @@ else {
 									}
 									if ($resultMarkbook->rowCount()==1) {
 										$rowMarkbook=$resultMarkbook->fetch() ;
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $rowMarkbook["gibbonMarkbookColumnID"] . "'>Linked Markbook<img style='margin: 0 0 -4px 3px' title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/zoom.png'/></a> | " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $rowMarkbook["gibbonMarkbookColumnID"] . "'>Linked Markbook<img style='margin: 0 0 -4px 3px' title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> | " ;
 									}
 									print "<input title=\"Includes student data & teacher's notes\" type='checkbox' name='confidentialPlan' class='confidentialPlan' value='Yes' />" ;
 									print "<span title=\"Includes student data & teacher's notes\" style='font-size: 85%; font-weight: normal; font-style: italic'> Show Confidential Data</span>" ;

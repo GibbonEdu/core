@@ -398,7 +398,7 @@ else {
 					<tr>
 						<td colspan=2 style='padding-top: 15px'> 
 							<b>Notes</b><br/>
-							<textarea name="notes" id="notes" rows=5 style="width:756px; margin: 5px 0px 0px 0px"><? print htmlPrep($row["notes"]) ?></textarea>
+							<textarea name="notes" id="notes" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><? print htmlPrep($row["notes"]) ?></textarea>
 						</td>
 					</tr>
 					
@@ -849,14 +849,14 @@ else {
 						<td colspan=2 style='padding-top: 15px'> 
 							<b>Medical Information</b><br/>
 							<span style="font-size: 90%"><i>Please indicate any medical conditions.</i></span><br/>
-							<textarea name="medicalInformation" id="medicalInformation" rows=5 style="width:756px; margin: 5px 0px 0px 0px"><? print htmlPrep($row["medicalInformation"]) ?></textarea>
+							<textarea name="medicalInformation" id="medicalInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><? print htmlPrep($row["medicalInformation"]) ?></textarea>
 						</td>
 					</tr>
 					<tr>
 						<td colspan=2 style='padding-top: 15px'> 
 							<b>Development Information</b><br/>
 							<span style="font-size: 90%"><i>Provide any comments or information concerning your child’s development that may be relevant to your child’s performance in the classroom or elsewhere? (Incorrect or withheld information may affect continued enrolment).</i></span><br/> 					
-							<textarea name="developmentInformation" id="developmentInformation" rows=5 style="width:756px; margin: 5px 0px 0px 0px"><? print htmlPrep($row["developmentInformation"]) ?></textarea>
+							<textarea name="developmentInformation" id="developmentInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><? print htmlPrep($row["developmentInformation"]) ?></textarea>
 						</td>
 					</tr>
 					
@@ -1793,7 +1793,7 @@ else {
 							<td colspan=2 style='padding-top: 15px'> 
 								<b>Language Choice Experience</b><br/>
 								<span style="font-size: 90%"><i>Has the applicant studied the selected language before? If so, please describe the level and type of experience.</i></span><br/> 					
-								<textarea name="languageChoiceExperience" id="languageChoiceExperience" rows=5 style="width:756px; margin: 5px 0px 0px 0px"><? print htmlPrep($row["languageChoiceExperience"]) ;?></textarea>
+								<textarea name="languageChoiceExperience" id="languageChoiceExperience" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><? print htmlPrep($row["languageChoiceExperience"]) ;?></textarea>
 							</td>
 						</tr>
 						<?

@@ -77,10 +77,10 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 					$output.="</td>" ;
 					$output.="<td style='text-align: center'>" ;
 						if ($_GET["q"]=="/modules/Markbook/markbook_view.php" AND $row["gibbonCourseClassID"]==$gibbonCourseClassID) {
-							$output.="<a style='border-bottom: 2px solid #f00' href='index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='Participants' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/zoom.png'/></a>" ;
+							$output.="<a style='border-bottom: 2px solid #f00' href='index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='Participants' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
 						}
 						else {
-							$output.="<a href='index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='Participants' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/zoom.png'/></a>" ;
+							$output.="<a href='index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='Participants' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
 						}
 						
 					$output.="</td>" ;

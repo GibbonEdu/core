@@ -232,7 +232,7 @@ else {
 							print "});" ;
 						print "</script>" ;
 						
-						print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_view_full.php&gibbonRubricID=" . $row["gibbonRubricID"] . "&width=1100&height=550'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/zoom.png'/></a> " ;	
+						print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_view_full.php&gibbonRubricID=" . $row["gibbonRubricID"] . "&width=1100&height=550'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;	
 					print "</td>" ;
 				print "</tr>" ;
 				if ($row["description"]!="") {

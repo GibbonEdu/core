@@ -224,7 +224,7 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									if ($rowWork["gibbonPlannerEntryHomeworkID"]!="" AND $rowWork["status"]!="Exemption") {
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=" . $rowWork["gibbonPlannerEntryHomeworkID"] . "&gibbonPersonID=" . $rowList["gibbonPersonID"] . "'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/zoom.png'/></a> " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=" . $rowWork["gibbonPlannerEntryHomeworkID"] . "&gibbonPersonID=" . $rowList["gibbonPersonID"] . "'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 									}
 								print "</td>" ;
 							print "</tr>" ;

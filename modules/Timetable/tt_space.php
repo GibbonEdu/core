@@ -150,7 +150,7 @@ else {
 							print $row["type"] ;
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_space_view.php&gibbonSpaceID=" . $row["gibbonSpaceID"] . "&search=" . $_GET["search"] . "'><img title='View Timetable' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/zoom.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_space_view.php&gibbonSpaceID=" . $row["gibbonSpaceID"] . "&search=" . $_GET["search"] . "'><img title='View Timetable' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

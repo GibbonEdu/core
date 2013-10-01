@@ -187,7 +187,7 @@ else {
 							print $row["rollGroup"] ;
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_view.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&allUsers=$allUsers&search=$search'><img title='View Timetable' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/zoom.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_view.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&allUsers=$allUsers&search=$search'><img title='View Timetable' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

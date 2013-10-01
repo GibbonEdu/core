@@ -443,9 +443,9 @@ table th {
 	border-top:1px solid #fafafa;
 	border-bottom:1px solid #e0e0e0;
 	font-size: 110% ;
-	background: #ddddd;
-	background: -webkit-gradient(linear, left top, left bottom, from(#ddddd), to(#ddddd));
-	background: -moz-linear-gradient(top,  #ddddd,  #ddddd);
+	background: #ededed;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+	background: -moz-linear-gradient(top,  #ededed,  #ebebeb);
 	text-align: left;
 	padding-left: 20px;
 }
@@ -485,7 +485,7 @@ table td {
 	background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
 }
 table tr.even td {
-	background: #D0EAFD;
+	background: #f6f6f6;
 	background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f6f6f6));
 	background: -moz-linear-gradient(top,  #f8f8f8,  #f6f6f6);
 }
@@ -517,16 +517,19 @@ div.odd {
 	background:#E2DDCA url("../img/tdOdd.png") repeat-x;
 }
 tr.current, tr.current td, div.current {
-	background: none!important ;
 	background-color: #B3EFC2!important ;
+	background: -webkit-gradient(linear, left top, left bottom, from(#B5F1C4), to(#B3EFC2))!important;
+	background: -moz-linear-gradient(top,  #B5F1C4,  #B3EFC2)!important;
 }
 tr.past, tr.past td, div.past {
-	background: none!important ;
 	background-color: #F6CECB!important ;
+	background: -webkit-gradient(linear, left top, left bottom, from(#F8D1CD), to(#F6CECB))!important;
+	background: -moz-linear-gradient(top,  #F8D1CD,  #F6CECB)!important;	
 }
 tr.error, tr.error td, div.erorr {
-	background: none!important ;
 	background-color: #F6CECB!important ;
+	background: -webkit-gradient(linear, left top, left bottom, from(#F8D1CD), to(#F6CECB))!important;
+	background: -moz-linear-gradient(top,  #F8D1CD,  #F6CECB)!important;
 }
 tr.warning, tr.warning td, div.warning {
 	background: none!important ;

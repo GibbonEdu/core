@@ -180,7 +180,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 			$output=$output . "<h2>" . $row["name"] . "</h2>" ;
 		}
 		print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
-			print"<table class='noIntBorder' cellspacing='0' style='width: 100%; margin: 10px 0 10px 0'>" ;	
+			print"<table cellspacing='0' class='noIntBorder' cellspacing='0' style='width: 100%; margin: 10px 0 10px 0'>" ;	
 				print"<tr>" ;
 					print"<td style='vertical-align: top'>" ; 
 						print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
@@ -474,12 +474,12 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 		
 		$count=0;
 		
-		$output=$output . "<table class='mini' cellspacing='0' style='width: 750px; margin: 0px 0px 30px 0px;'>" ;
+		$output=$output . "<table cellspacing='0' class='mini' cellspacing='0' style='width: 750px; margin: 0px 0px 30px 0px;'>" ;
 			//Spit out controls for displaying calendars
 			if ($self==TRUE AND ($_SESSION[$guid]["calendarFeed"]!="" OR $_SESSION[$guid]["calendarFeedPersonal"]!="")) {
-				$output=$output . "<tr style='height: 25px'>" ;
-					$output=$output . "<td colspan=" . ($daysInWeek+1) . " style='vertical-align: top; width: 100%; text-align: right'>" ;
-						$output=$output . "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "' style='flaot: left'>" ;
+				$output=$output . "<tr class='head' style='height: 37px;'>" ;
+					$output=$output . "<th colspan=" . ($daysInWeek+1) . " style='vertical-align: top; width: 100%; text-align: right; background: none!important; background-color: #fbfbfb!important'>" ;
+						$output=$output . "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "' style='padding: 5px 5px 0 0'>" ;
 							if ($_SESSION[$guid]["calendarFeed"]!="") {
 								$checked="" ;
 								if ($_SESSION[$guid]["viewCalendarSchool"]=="Y") {
@@ -501,7 +501,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 							$output=$output . "<input type='hidden' name='ttDate' value='" . date("d/m/Y", $startDayStamp) . "'>" ;
 							$output=$output . "<input name='fromTT' value='Y' type='hidden'>" ;
 						$output=$output . "</form>" ;
-					$output=$output . "</td>" ;
+					$output=$output . "</th>" ;
 				$output=$output . "</tr>" ;
 			}
 		
@@ -1072,7 +1072,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 								
 								if ($resultPlan->rowCount()==1) {
 									$rowPlan=$resultPlan->fetch() ;
-									$output=$output . "<a style='pointer-events: auto' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $rowPlan["gibbonPlannerEntryID"] . "'><img style='float: right; margin: " . (substr($height,0,-2)-27) . "px 2px 0 0' title='View lesson: " . htmlPrep($rowPlan["name"]) . "' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/zoom.png'/></a>" ;
+									$output=$output . "<a style='pointer-events: auto' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $rowPlan["gibbonPlannerEntryID"] . "'><img style='float: right; margin: " . (substr($height,0,-2)-27) . "px 2px 0 0' title='View lesson: " . htmlPrep($rowPlan["name"]) . "' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
 								}
 							$output=$output . "</div>" ;
 							$zCount++ ;
@@ -1243,7 +1243,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 			$output=$output . "<h2>" . $row["name"] . "</h2>" ;
 		}
 		print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
-			print"<table class='noIntBorder' cellspacing='0' style='width: 100%; margin: 10px 0 10px 0'>" ;	
+			print"<table cellspacing='0' class='noIntBorder' cellspacing='0' style='width: 100%; margin: 10px 0 10px 0'>" ;	
 				print"<tr>" ;
 					print"<td style='vertical-align: top'>" ; 
 						print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
@@ -1425,7 +1425,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 		
 		$count=0;
 		
-		$output=$output . "<table class='mini' cellspacing='0' style='width: 750px; margin: 0px 0px 30px 0px;'>" ;
+		$output=$output . "<table cellspacing='0' class='mini' cellspacing='0' style='width: 750px; margin: 0px 0px 30px 0px;'>" ;
 			$output=$output . "<tr class='head'>" ;
 				$output=$output . "<th style='vertical-align: top; width: 70px; text-align: center'>" ;
 					//Calculate week number

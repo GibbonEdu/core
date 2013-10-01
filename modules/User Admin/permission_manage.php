@@ -112,7 +112,7 @@ else {
 		$totalCount=0 ;
 		print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/permission_manageProcess.php'>" ;
 			print "<input type='hidden' name='address' value='" .$_SESSION[$guid]["address"] . "'>" ;
-			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
+			print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 			while ($rowModules=$resultModules->fetch()) {
 				print "<tr class='break'>" ;
 					print "<td colspan=" . ($resultRoles->rowCount()+1) . ">" ;
@@ -132,9 +132,9 @@ else {
 				
 				if ($resultActions->rowCount()>0) {
 					print "<tr class='head'>" ;
-						print "<th>Action</td>";
+						print "<th class='width: 60px!important'>Action</td>";
 						for ($i=0;$i<count($roleArray);$i++) {
-								print "<th><span title='" . htmlPrep($roleArray[$i][3]) . "'>" . $roleArray[$i][1] . "</span></th>";
+								print "<th style='padding: 0!important'><span title='" . htmlPrep($roleArray[$i][3]) . "'>" . $roleArray[$i][1] . "</span></th>";
 						}
 					print "</tr>" ;
 					while ($rowActions=$resultActions->fetch()) {

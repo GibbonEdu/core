@@ -152,7 +152,7 @@ else {
 							print $row["jobTitle"] ;
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=$search'><img title='View User Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/zoom.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=$search'><img title='View User Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

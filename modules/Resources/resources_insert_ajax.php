@@ -421,7 +421,7 @@ else {
 									else if ($row["type"]=="HTML") {
 										$html=$row["content"] ;
 									}
-									$output.="<a href='javascript:void(0)' onclick='tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, \"" . htmlPrep(addslashes($html)) ."\"); formResetSearch(); \$(\"." .$id . "resourceSlider\").slideUp();'><img title='Insert' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/zoom.png'/></a>" ;
+									$output.="<a href='javascript:void(0)' onclick='tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, \"" . htmlPrep(addslashes($html)) ."\"); formResetSearch(); \$(\"." .$id . "resourceSlider\").slideUp();'><img title='Insert' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
 								$output.="</td>" ;
 							$output.="</tr>" ;
 						}
