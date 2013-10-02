@@ -794,7 +794,11 @@ a img.resource {
 }	
 .ui-tabs {
 	padding: 0px!important;	
-}	
+}
+.ui-tabs-panel, .ui-tabs-active {
+	background: none!important ;
+	background-color: #F7F0E3!important ;
+}
 
 /* Live Validation */
 
