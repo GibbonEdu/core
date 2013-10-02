@@ -344,6 +344,12 @@ General: added individual theme chooser, and included 2012 theme as "Olden"
 Timetable: fixed issue preventing Last Week link from working
 	Edited file /modules/Timetable/moduleFunctions.php
 
+Tinymce: edited toolbar layout to stop it busting out of content div width
+	Edited file /index.php
+
+User Admin: added useful fields to user input
+	Edited file /modules/User Admin/import_users.php
+
 
 v6.0.00
 -------

@@ -1397,9 +1397,6 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 ALTER TABLE `gibbonFamily` ADD `familySync` VARCHAR( 50 ) NULL DEFAULT NULL ;end
 INSERT INTO `gibbonAction` (`gibbonModuleID` ,`name` ,`precedence` ,`category` ,`description` ,`URLList` ,`entryURL` ,`defaultPermissionAdmin` ,`defaultPermissionTeacher` ,`defaultPermissionStudent` ,`defaultPermissionParent` ,`defaultPermissionSupport` ,`categoryPermissionStaff` ,`categoryPermissionStudent` ,`categoryPermissionParent` ,`categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin'), 'Sync Families', 0, 'Import', 'Import CSV files of families and their members, and use it to sync.', 'import_families.php', 'import_families.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='User Admin' AND gibbonAction.name='Sync Families'));end
-
--- LAST DC UPDATE (remind George to update from here)
-
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES (NULL , 'Planner', 'sharingDefaultParents', 'Sharing Default: Parents', 'When adding lessons and deploying units, should sharing default for parents be Y or N?', 'Y');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES (NULL , 'Planner', 'sharingDefaultStudents', 'Sharing Default: Students', 'When adding lessons and deploying units, should sharing default for students be Y or N?', 'Y');end
 INSERT INTO `gibbonModule` (`gibbonModuleID`, `name`, `description`, `entryURL`, `type`, `active`, `category`, `version`, `author`, `url`) VALUES (NULL, 'Staff', 'Allows users to view staff information', 'staff_view.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org');end
@@ -1447,13 +1444,13 @@ INSERT INTO `gibbonStudentNoteCategory` (`gibbonStudentNoteCategoryID` ,`name` ,
 UPDATE gibbonAction SET URLList='studentsSettings.php,studentsSettings_noteCategory_add.php,studentsSettings_noteCategory_edit.php,studentsSettings_noteCategory_delete.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonModule.name='School Admin') AND gibbonAction.name='Manage Students Settings';end
 ALTER TABLE `gibbonStudentNote` CHANGE `category` `gibbonStudentNoteCategoryID` INT( 5 ) UNSIGNED ZEROFILL NULL DEFAULT NULL ;end
 UPDATE `gibbonStudentNote` SET gibbonStudentNoteCategoryID=NULL ;end
+INSERT INTO `gibbonTheme` (`gibbonThemeID` ,`name` ,`description` ,`active` ,`version` ,`author` ,`url`)VALUES (NULL , 'Olden', 'Gibbon''s 2012 look and feel.', 'N', '1.0.00', 'Ross Parker', 'http://rossparker.org');end
+ALTER TABLE `gibbonPerson` ADD `gibbonThemeIDPersonal` INT( 4 ) UNSIGNED ZEROFILL NULL DEFAULT NULL ;end
 
 -- LAST HLY UPDATE
 -- LAST ICHK UPDATE
 -- LAST JIS UPDATE
-
-INSERT INTO `gibbonTheme` (`gibbonThemeID` ,`name` ,`description` ,`active` ,`version` ,`author` ,`url`)VALUES (NULL , 'Olden', 'Gibbon''s 2012 look and feel.', 'N', '1.0.00', 'Ross Parker', 'http://rossparker.org');end
-ALTER TABLE `gibbonPerson` ADD `gibbonThemeIDPersonal` INT( 4 ) UNSIGNED ZEROFILL NULL DEFAULT NULL ;end
+-- LAST DC UPDATE (remind George to update from here)
 
 ";
 

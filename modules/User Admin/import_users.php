@@ -135,42 +135,42 @@ else {
 					<li><b>DOB</b> - date of birth (YYYY-MM-DD)</li>
 					<li><b>Role</b> - Teacher, Support Staff, Student or Parent</li>
 					<li><b>Email</b></li>
-					<li><b>Image (75)</b></li>
-					<li><b>Image (240)</b></li>
-					<li><b>Address 1</b></li>
-					<li><b>Address 1 (District)</b></li>
+					<li><b>Image (75) - path from /uploads/ to small portrait image (75px by 100px)</b></li>
+					<li><b>Image (240)</b> - path from /uploads/ to medium portrait image (240px by 320px)</li>
+					<li><b>Address 1</b> - Unit, Building, Street</li>
+					<li><b>Address 1 (District)</b> - County, State, District</li>
 					<li><b>Address 1 (Country)</b></li>
-					<li><b>Address 2</b></li>
-					<li><b>Address 2 (District)</b></li>
+					<li><b>Address 2</b> - Unit, Building, Street</li>
+					<li><b>Address 2 (District)</b>< - County, State, District/li>
 					<li><b>Address 2 (Country)</b></li>
-					<li><b>Phone 1 (Type)</b></li>
-					<li><b>Phone 1 (Country Code)</b></li>
-					<li><b>Phone 1</b></li>
-					<li><b>Phone 2 (Type)</b></li>
-					<li><b>Phone 2 (Country Code)</b></li>
-					<li><b>Phone 2</b></li>
-					<li><b>Phone 3 (Type)</b></li>
-					<li><b>Phone 3 (Country Code)</b></li>
-					<li><b>Phone 3</b></li>
-					<li><b>Phone 4 (Type)</b></li>
-					<li><b>Phone 4 (Country Code)</b></li>
-					<li><b>Phone 4</b></li>
-					<li><b>Website</b></li>
+					<li><b>Phone 1 (Type)</b> - Mobile, Home, Work, Fax, Page, Other</li>
+					<li><b>Phone 1 (Country Code)</b> - IDD code, without 00 or +</li>
+					<li><b>Phone 1</b> - no spaces or punctuation, just numbers</li>
+					<li><b>Phone 2 (Type)</b> - Mobile, Home, Work, Fax, Page, Other</li>
+					<li><b>Phone 2 (Country Code)</b> - IDD code, without 00 or +</li>
+					<li><b>Phone 2</b> - no spaces or punctuation, just numbers</li>
+					<li><b>Phone 3 (Type)</b> - Mobile, Home, Work, Fax, Page, Other</li>
+					<li><b>Phone 3 (Country Code)</b> - IDD code, without 00 or +</li>
+					<li><b>Phone 3</b> - no spaces or punctuation, just numbers</li>
+					<li><b>Phone 4 (Type)</b> - Mobile, Home, Work, Fax, Page, Other</li>
+					<li><b>Phone 4 (Country Code)</b> - IDD code, without 00 or +</li>
+					<li><b>Phone 4</b> - no spaces or punctuation, just numbers</li>
+					<li><b>Website</b> - must start with http:// or https://</li>
 					<li><b>First Language</b></li>
 					<li><b>Second Language</b></li>
-					<li><b>Profession</b></li>
-					<li><b>Employer</b></li>
-					<li><b>Job Title</b></li>
-					<li><b>Emergency Contact 1 (Name)</b></li>
-					<li><b>Emergency Contact 1 (Phone 1)</b></li>
-					<li><b>Emergency Contact 1 (Phone 2)</b></li>
-					<li><b>Emergency Contact 1 (Relationship)</b></li>
-					<li><b>Emergency Contact 2 (Name)</b></li>
-					<li><b>Emergency Contact 2 (Phone 1)</b></li>
-					<li><b>Emergency Contact 2 (Phone 2)</b></li>
-					<li><b>Emergency Contact 2 (Relationship)</b></li>
-					<li><b>Start Date</b></li>
-					<li><b>End Date</b></li>
+					<li><b>Profession</b> - for parents only</li>
+					<li><b>Employer</b> - for parents only</li>
+					<li><b>Job Title</b> - for parents only</li>
+					<li><b>Emergency Contact 1 (Name)</b> - for students and staff only</li>
+					<li><b>Emergency Contact 1 (Phone 1)</b> - for students and staff only</li>
+					<li><b>Emergency Contact 1 (Phone 2)</b> - for students and staff only</li>
+					<li><b>Emergency Contact 1 (Relationship)</b> - for students and staff only</li>
+					<li><b>Emergency Contact 2 (Name)</b> - for students and staff only</li>
+					<li><b>Emergency Contact 2 (Phone 1)</b> - for students and staff only</li>
+					<li><b>Emergency Contact 2 (Phone 2)</b> - for students and staff only</li>
+					<li><b>Emergency Contact 2 (Relationship)</b> - for students and staff only</li>
+					<li><b>Start Date</b> - dd/mm/yyyy</li>
+					<li><b>End Date</b> - dd/mm/yyyy</li>
 				</ol>
 			</li>
 			<li>Do not include a header row in the CSV files.</li>
@@ -252,6 +252,43 @@ else {
 							$users[$userSuccessCount]["house"]=$data[8] ;
 							$users[$userSuccessCount]["dob"]=$data[9] ;
 							$users[$userSuccessCount]["role"]=$data[10] ;
+							$users[$userSuccessCount]["email"]=$data[11] ;
+							$users[$userSuccessCount]["image_75"]=$data[12] ;
+							$users[$userSuccessCount]["image_240"]=$data[13] ;
+							$users[$userSuccessCount]["address1"]=$data[14] ;
+							$users[$userSuccessCount]["address1District"]=$data[15] ;
+							$users[$userSuccessCount]["address1Country"]=$data[16] ;
+							$users[$userSuccessCount]["address2"]=$data[17] ;
+							$users[$userSuccessCount]["address2District"]=$data[18] ;
+							$users[$userSuccessCount]["address2Country"]=$data[19] ;
+							$users[$userSuccessCount]["phone1Type"]=$data[20] ;
+							$users[$userSuccessCount]["phone1CountryCode"]=$data[21] ;
+							$users[$userSuccessCount]["phone1"]=$data[22] ;
+							$users[$userSuccessCount]["phone2Type"]=$data[23] ;
+							$users[$userSuccessCount]["phone2CountryCode"]=$data[24] ;
+							$users[$userSuccessCount]["phone2"]=$data[25] ;
+							$users[$userSuccessCount]["phone3Type"]=$data[26] ;
+							$users[$userSuccessCount]["phone3CountryCode"]=$data[27] ;
+							$users[$userSuccessCount]["phone3"]=$data[28] ;
+							$users[$userSuccessCount]["phone4Type"]=$data[29] ;
+							$users[$userSuccessCount]["phone4CountryCode"]=$data[30] ;
+							$users[$userSuccessCount]["phone4"]=$data[31] ;
+							$users[$userSuccessCount]["website"]=$data[32] ;
+							$users[$userSuccessCount]["languageFirst"]=$data[33] ;
+							$users[$userSuccessCount]["languageSecond"]=$data[34] ;
+							$users[$userSuccessCount]["profession"]=$data[35] ;
+							$users[$userSuccessCount]["employer"]=$data[36] ;
+							$users[$userSuccessCount]["jobTitle"]=$data[37] ;
+							$users[$userSuccessCount]["emergency1Name"]=$data[38] ;
+							$users[$userSuccessCount]["emergency1Number1"]=$data[39] ;
+							$users[$userSuccessCount]["emergency1Number2"]=$data[40] ;
+							$users[$userSuccessCount]["emergency1Relationship"]=$data[41] ;
+							$users[$userSuccessCount]["emergency2Name"]=$data[42] ;
+							$users[$userSuccessCount]["emergency2Number1"]=$data[43] ;
+							$users[$userSuccessCount]["emergency2Number2"]=$data[44] ;
+							$users[$userSuccessCount]["emergency2Relationship"]=$data[45] ;
+							$users[$userSuccessCount]["dateStart"]=$data[46] ;
+							$users[$userSuccessCount]["dateEnd"]=$data[47] ;
 							$userSuccessCount++ ;
 						}
 						else {
@@ -367,8 +404,8 @@ else {
 								}
 								
 								try {
-									$data=array("title"=>$user["title"], "surname"=>$user["surname"], "firstName"=>$user["firstName"], "otherNames"=>$user["otherNames"], "preferredName"=>$user["preferredName"], "officialName"=>$user["officialName"], "gender"=>$user["gender"], "house"=>$user["house"], "dob"=>$user["dob"], "gibbonRoleIDPrimary"=>$role, "gibbonRoleIDAll"=>$roleAll, "username"=>$user["username"]); 
-									$sql="UPDATE gibbonPerson SET title=:title, surname=:surname, firstName=:firstName, otherNames=:otherNames, preferredName=:preferredName, officialName=:officialName, gender=:gender, gibbonHouseID=(SELECT gibbonHouseID FROM gibbonHouse WHERE nameShort=:house), dob=:dob, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, status='Full' WHERE username=:username" ;
+									$data=array("title"=>$user["title"], "surname"=>$user["surname"], "firstName"=>$user["firstName"], "otherNames"=>$user["otherNames"], "preferredName"=>$user["preferredName"], "officialName"=>$user["officialName"], "gender"=>$user["gender"], "house"=>$user["house"], "dob"=>$user["dob"], "gibbonRoleIDPrimary"=>$role, "gibbonRoleIDAll"=>$roleAll, "email"=>$user["email"], "image_75"=>$user["image_75"], "image_240"=>$user["image_240"], "address1"=>$user["address1"], "address1District"=>$user["address1District"], "address1Country"=>$user["address1Country"], "address2"=>$user["address2"], "address2District"=>$user["address2District"], "address2Country"=>$user["address2Country"], "phone1Type"=>$user["phone1Type"], "phone1CountryCode"=>$user["phone1CountryCode"], "phone1"=>$user["phone1"], "phone2Type"=>$user["phone2Type"], "phone2CountryCode"=>$user["phone2CountryCode"], "phone2"=>$user["phone2"], "phone3Type"=>$user["phone3Type"], "phone3CountryCode"=>$user["phone3CountryCode"], "phone3"=>$user["phone3"], "phone4Type"=>$user["phone4Type"], "phone4CountryCode"=>$user["phone4CountryCode"], "phone4"=>$user["phone4"], "website"=>$user["website"], "languageFirst"=>$user["languageFirst"], "languageSecond"=>$user["languageSecond"], "profession"=>$user["profession"], "employer"=>$user["employer"], "jobTitle"=>$user["jobTitle"], "emergency1Name"=>$user["emergency1Name"], "emergency1Number1"=>$user["emergency1Number1"], "emergency1Number2"=>$user["emergency1Number2"], "emergency1Relationship"=>$user["emergency1Relationship"], "emergency2Name"=>$user["emergency2Name"], "emergency2Number1"=>$user["emergency2Number1"], "emergency2Number2"=>$user["emergency2Number2"], "emergency2Relationship"=>$user["emergency2Relationship"], "dateStart"=>$user["dateStart"], "dateEnd"=>$user["dateEnd"], "username"=>$user["username"]); 
+									$sql="UPDATE gibbonPerson SET title=:title, surname=:surname, firstName=:firstName, otherNames=:otherNames, preferredName=:preferredName, officialName=:officialName, gender=:gender, gibbonHouseID=(SELECT gibbonHouseID FROM gibbonHouse WHERE nameShort=:house), dob=:dob, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, status='Full', email=:email, image_75=:image_75, image_240=:image_240, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, website=:website, languageFirst=:languageFirst, languageSecond=:languageSecond, profession=:profession, employer=:employer, jobTitle=:jobTitle, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, dateStart=:dateStart, dateEnd=:dateEnd WHERE username=:username" ;
 									$result=$connection2->prepare($sql);
 									$result->execute($data);
 								}
@@ -422,8 +459,8 @@ else {
 								}
 								else {
 									try {
-										$data=array("title"=>$user["title"], "surname"=>$user["surname"], "firstName"=>$user["firstName"], "otherNames"=>$user["otherNames"], "preferredName"=>$user["preferredName"], "officialName"=>$user["officialName"], "gender"=>$user["gender"], "house"=>$user["house"], "dob"=>$user["dob"], "username"=>$user["username"], "passwordStrongSalt"=>$salt, "passwordStrong"=>$passwordStrong, "gibbonRoleIDPrimary"=>$role, "gibbonRoleIDAll"=>$role); 
-										$sql="INSERT INTO gibbonPerson SET title=:title, surname=:surname, firstName=:firstName, otherNames=:otherNames, preferredName=:preferredName, officialName=:officialName, gender=:gender, gibbonHouseID=(SELECT gibbonHouseID FROM gibbonHouse WHERE nameShort=:house), dob=:dob, status='Full', username=:username, passwordStrongSalt=:passwordStrongSalt, passwordStrong=:passwordStrong, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, passwordForceReset='Y'" ;
+										$data=array("title"=>$user["title"], "surname"=>$user["surname"], "firstName"=>$user["firstName"], "otherNames"=>$user["otherNames"], "preferredName"=>$user["preferredName"], "officialName"=>$user["officialName"], "gender"=>$user["gender"], "house"=>$user["house"], "dob"=>$user["dob"], "username"=>$user["username"], "passwordStrongSalt"=>$salt, "passwordStrong"=>$passwordStrong, "gibbonRoleIDPrimary"=>$role, "gibbonRoleIDAll"=>$roleAll, "email"=>$user["email"], "image_75"=>$user["image_75"], "image_240"=>$user["image_240"], "address1"=>$user["address1"], "address1District"=>$user["address1District"], "address1Country"=>$user["address1Country"], "address2"=>$user["address2"], "address2District"=>$user["address2District"], "address2Country"=>$user["address2Country"], "phone1Type"=>$user["phone1Type"], "phone1CountryCode"=>$user["phone1CountryCode"], "phone1"=>$user["phone1"], "phone2Type"=>$user["phone2Type"], "phone2CountryCode"=>$user["phone2CountryCode"], "phone2"=>$user["phone2"], "phone3Type"=>$user["phone3Type"], "phone3CountryCode"=>$user["phone3CountryCode"], "phone3"=>$user["phone3"], "phone4Type"=>$user["phone4Type"], "phone4CountryCode"=>$user["phone4CountryCode"], "phone4"=>$user["phone4"], "website"=>$user["website"], "languageFirst"=>$user["languageFirst"], "languageSecond"=>$user["languageSecond"], "profession"=>$user["profession"], "employer"=>$user["employer"], "jobTitle"=>$user["jobTitle"], "emergency1Name"=>$user["emergency1Name"], "emergency1Number1"=>$user["emergency1Number1"], "emergency1Number2"=>$user["emergency1Number2"], "emergency1Relationship"=>$user["emergency1Relationship"], "emergency2Name"=>$user["emergency2Name"], "emergency2Number1"=>$user["emergency2Number1"], "emergency2Number2"=>$user["emergency2Number2"], "emergency2Relationship"=>$user["emergency2Relationship"], "dateStart"=>$user["dateStart"], "dateEnd"=>$user["dateEnd"]); 
+										$sql="INSERT INTO gibbonPerson SET title=:title, surname=:surname, firstName=:firstName, otherNames=:otherNames, preferredName=:preferredName, officialName=:officialName, gender=:gender, gibbonHouseID=(SELECT gibbonHouseID FROM gibbonHouse WHERE nameShort=:house), dob=:dob, status='Full', username=:username, passwordStrongSalt=:passwordStrongSalt, passwordStrong=:passwordStrong, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, passwordForceReset='Y', email=:email, image_75=:image_75, image_240=:image_240, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, website=:website, languageFirst=:languageFirst, languageSecond=:languageSecond, profession=:profession, employer=:employer, jobTitle=:jobTitle, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, dateStart=:dateStart, dateEnd=:dateEnd" ;
 										$result=$connection2->prepare($sql);
 										$result->execute($data);
 									}
