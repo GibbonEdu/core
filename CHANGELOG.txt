@@ -350,6 +350,9 @@ Tinymce: edited toolbar layout to stop it busting out of content div width
 User Admin: added useful fields to user input
 	Edited file /modules/User Admin/import_users.php
 
+Planner: fixed issue displaying non-student name in planner likes
+	Edited file /stars.php
+
 
 v6.0.00
 -------

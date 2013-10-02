@@ -77,6 +77,7 @@ if ($resultLike->rowCount()>0) {
 						print "<i>$roleCategory</i>" ;
 					}
 					else {
+						print formatName("", $row["preferredName"], $row["surname"], $roleCategory, false) . "<br/>" ;
 						print "<i>$roleCategory</i>" ;
 					}
 				print "</td>" ;
