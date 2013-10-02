@@ -353,6 +353,9 @@ User Admin: added useful fields to user input
 Planner: fixed issue displaying non-student name in planner likes
 	Edited file /stars.php
 
+Departments: fixed non-current course list display issue
+	Edited file /modules/Departments/department.php
+
 
 v6.0.00
 -------

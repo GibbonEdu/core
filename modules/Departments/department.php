@@ -165,14 +165,16 @@ else {
 			}
 			
 			if ($resultCourse->rowCount()>0) {
-				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
-				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "Course List" ;
-				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
 				if ($role=="Coordinator" OR $role=="Assistant Coordinator" OR $role=="Teacher (Curriculum)") {
-					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h5 style='margin-top: 10px'>" ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
 					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "Current Courses" ;
-					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h5>" ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
 				}
+				else {
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "Course List" ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
+				}	
 				
 				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ul>" ;
 				while ($rowCourse=$resultCourse->fetch()) {
@@ -194,25 +196,30 @@ else {
 				}
 				
 				if ($resultSelect->rowCount()>0) {
-					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h5 style='margin-top: 10px'>" ;
-					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "Previous & Future Courses" ;
-					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h5>" ;
-				
-					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<select style='width:210px; float: none' name='gibbonCourseID'>" ;
-							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<option value=''></option>" ;
-							$year="" ;
-							while ($rowSelect=$resultSelect->fetch()) {
-								if ($year!=$rowSelect["year"]) {
-									$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<optgroup label='" . $rowSelect["year"] . "'>" ;
-								}
-								$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<option value='" . $rowSelect["gibbonCourseID"] . "'>" . htmlPrep($rowSelect["course"]) . "</option>" ;
-								$year=$rowSelect["year"] ;
-							}
-						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</select>" ;
-						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<input type='hidden' name='gibbonDepartmentID' value='$gibbonDepartmentID'>" ;
-						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<input type='hidden' name='q' value='/modules/" . $_SESSION[$guid]["module"] . "/department_course.php'>" ;
-						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<input style='min-width: 30px; margin-top: 0px; float: right' type='submit' value='Go'>" ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "Non-Current Courses" ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<table class='smallIntBorder' cellspacing=0 style='width: 100%; margin-top: 0px'>" ;
+						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<tr>" ;
+							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<td>" ;
+								$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
+									$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<select style='width:170px; float: none' name='gibbonCourseID'>" ;
+										$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<option value=''></option>" ;
+										$year="" ;
+										while ($rowSelect=$resultSelect->fetch()) {
+											if ($year!=$rowSelect["year"]) {
+												$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<optgroup label='" . $rowSelect["year"] . "'>" ;
+											}
+											$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<option value='" . $rowSelect["gibbonCourseID"] . "'>" . htmlPrep($rowSelect["course"]) . "</option>" ;
+											$year=$rowSelect["year"] ;
+										}
+									$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</select>" ;
+									$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<input type='hidden' name='gibbonDepartmentID' value='$gibbonDepartmentID'>" ;
+									$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<input type='hidden' name='q' value='/modules/" . $_SESSION[$guid]["module"] . "/department_course.php'>" ;
+									$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<input style='margin-top: 0px; float: right' type='submit' value='Go'>" ;
+								$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</td>" ;
+							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</tr>" ;
+						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</table>" ;
 					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</form>" ;
 				}			
 			}
