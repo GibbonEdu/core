@@ -356,6 +356,9 @@ Planner: fixed issue displaying non-student name in planner likes
 Departments: fixed non-current course list display issue
 	Edited file /modules/Departments/department.php
 
+Activities: added search to the manage activities area
+	Edited files /modules/Activities/activities_manage*.php
+
 
 v6.0.00
 -------

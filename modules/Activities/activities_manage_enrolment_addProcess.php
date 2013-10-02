@@ -40,7 +40,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonActivityID=$_GET["gibbonActivityID"] ;
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/activities_manage_enrolment_add.php&gibbonActivityID=$gibbonActivityID" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/activities_manage_enrolment_add.php&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage_enrolment_add.php")==FALSE) {
 	//Fail 0

@@ -45,8 +45,8 @@ if ($gibbonActivityID=="" OR $gibbonPersonID=="") {
 	print "Fatal error loading this page!" ;
 }
 else {
-	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/activities_manage_enrolment_delete.php&gibbonPersonID=$gibbonPersonIDgibbonActivityID=$gibbonActivityID" ;
-	$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/activities_manage_enrolment.php&gibbonActivityID=$gibbonActivityID&gibbonSchoolYearID=$gibbonSchoolYearID" ;
+	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/activities_manage_enrolment_delete.php&gibbonPersonID=$gibbonPersonIDgibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] ;
+	$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/activities_manage_enrolment.php&gibbonActivityID=$gibbonActivityID&gibbonSchoolYearID=$gibbonSchoolYearID&search=" . $_GET["search"] ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage_enrolment_delete.php")==FALSE) {
 		//Fail 0

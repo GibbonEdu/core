@@ -117,8 +117,13 @@ else {
 		else {
 			//Let's go!
 			$row=$result->fetch() ;
+			if ($_GET["search"]!="") {
+				print "<div class='linkTop'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php&search=" .$_GET["search"] . "'>Back to Search Results</a>" ;
+				print "</div>" ;
+			}
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_editProcess.php?gibbonActivityID=$gibbonActivityID" ?>">
+			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_editProcess.php?gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
@@ -456,7 +461,7 @@ else {
 												}
 											print "</td>" ;
 											print "<td>" ;
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit_slot_deleteProcess.php?address=" . $_GET["q"] . "&gibbonActivitySlotID=" . $row["gibbonActivitySlotID"] . "&gibbonActivityID=$gibbonActivityID'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit_slot_deleteProcess.php?address=" . $_GET["q"] . "&gibbonActivitySlotID=" . $row["gibbonActivitySlotID"] . "&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] . "'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 											print "</td>" ;
 										print "</tr>" ;
 									}
@@ -722,7 +727,7 @@ else {
 												print $row["role"] ;
 											print "</td>" ;
 											print "<td>" ;
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit_staff_deleteProcess.php?address=" . $_GET["q"] . "&gibbonActivityStaffID=" . $row["gibbonActivityStaffID"] . "&gibbonActivityID=$gibbonActivityID'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit_staff_deleteProcess.php?address=" . $_GET["q"] . "&gibbonActivityStaffID=" . $row["gibbonActivityStaffID"] . "&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] . "'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 											print "</td>" ;
 										print "</tr>" ;
 									}
