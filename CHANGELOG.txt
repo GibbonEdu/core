@@ -359,6 +359,9 @@ Departments: fixed non-current course list display issue
 Activities: added search to the manage activities area
 	Edited files /modules/Activities/activities_manage*.php
 
+Timetable: adjusted style of timetable view
+	Edited file /modules/Timetable/tt_view.php
+
 
 v6.0.00
 -------
