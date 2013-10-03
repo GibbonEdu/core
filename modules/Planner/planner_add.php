@@ -878,6 +878,10 @@ else {
 						<tr class='break'>
 							<td colspan=2> 
 								<h3>Outcomes</h3>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2> 
 								<p>Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.</p>
 							</td>
 						</tr>

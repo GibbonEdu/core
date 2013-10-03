@@ -365,6 +365,13 @@ Timetable: adjusted style of timetable view
 Rubrics: fixed non-click-ability of rubric cells in marking mode
 	Edited file /modules/Rubric/moduleFunctions.php
 
+Planner: minor tweak to layout of outcomes section when adding planner
+	Edited file /modules/Planner/planner_add.php
+
+General: reduced table row and cell padding to compact tables a little
+	Edited file /themes/Default/css/main.css
+	
+
 v6.0.00
 -------
 Library: added new status 'In Use'
