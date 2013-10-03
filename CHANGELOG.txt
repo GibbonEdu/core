@@ -370,6 +370,12 @@ Planner: minor tweak to layout of outcomes section when adding planner
 
 General: reduced table row and cell padding to compact tables a little
 	Edited file /themes/Default/css/main.css
+
+Planner: fixed issue relating to unit outline not displaying for students
+	Edited file /modules/Planner/planner_view_full.php
+
+General: fixed non-switch to personal theme in reports and fullscreen views
+	Edited file /report.php, fullscreen.php
 	
 
 v6.0.00

@@ -587,10 +587,10 @@ else {
 														print "</div>" ;
 													}
 													if ($rowBlocksView["contents"]!="") {
-														print "<div style='padding: 15px 3px 10px 3px; width: 100%; text-align: justify; border-bottom: 1px solid #ddd'>" . $rowBlocksView["contents"] . "</div>" ;
+														print "<div style='padding: 15px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'>" . $rowBlocksView["contents"] . "</div>" ;
 													}
 													if ($rowBlocksView["teachersNotes"]!="" AND ($highestAction=="Lesson Planner_viewAllEditMyClasses" OR $highestAction=="Lesson Planner_viewEditAllClasses")) {
-														print "<div class='teachersNotes' style='background-color: #F6CECB; display: none; padding: 0px 3px 10px 3px; width: 100%; text-align: justify; border-bottom: 1px solid #ddd'><i>Teacher's Notes:</i> " . $rowBlocksView["teachersNotes"] . "</div>" ;
+														print "<div class='teachersNotes' style='background-color: #F6CECB; display: none; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><i>Teacher's Notes:</i> " . $rowBlocksView["teachersNotes"] . "</div>" ;
 													}
 													$checked="" ;
 													if ($rowBlocksView["complete"]=="Y") {
@@ -609,7 +609,7 @@ else {
 														print "<input type='hidden' name='gibbonUnitClassBlockID[]' value='" . $rowBlocksView["ibPYPUnitWorkingSmartBlockID"] . "'>" ;
 													}
 													
-													print "<div style='padding: 3px 3px 3px 0px ; width: 100%; text-align: justify; border-bottom: 2px solid #666' ></div>" ;
+													print "<div style='padding: 3px 3px 3px 0px ; width: 100%; text-align: justify; border-bottom: 1px solid #666' ></div>" ;
 													$blockCount++ ;
 												}
 												if ($row["role"]=="Teacher" AND $teacher==TRUE) {
@@ -1280,161 +1280,161 @@ else {
 							
 							print "</td>" ;
 						print "</tr>" ;
+					print "</table>" ;
 						
-						//Unit resources
-						if ($row["gibbonUnitID"]!="") {
+					//Unit resources
+					if ($row["gibbonUnitID"]!="") {
+						try {
+							$dataResources=array("gibbonUnitID"=>$row["gibbonUnitID"]); 
+							$sqlResources="SELECT * FROM gibbonUnit WHERE gibbonUnitID=:gibbonUnitID" ;
+							$resultResources=$connection2->prepare($sqlResources);
+							$resultResources->execute($dataResources);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+						if ($resultResources->rowCount()>0) {
+							$rowResources=$resultResources->fetch() ;
+						}
+						if ($row["role"]=="Teacher") {
+							//Check for outcomes
 							try {
-								$dataResources=array("gibbonUnitID"=>$row["gibbonUnitID"]); 
-								$sqlResources="SELECT * FROM gibbonUnit WHERE gibbonUnitID=:gibbonUnitID" ;
-								$resultResources=$connection2->prepare($sqlResources);
-								$resultResources->execute($dataResources);
+								$dataOutcomes=array("gibbonUnitID"=>$row["gibbonUnitID"]);  
+								$sqlOutcomes="SELECT gibbonUnitOutcome.*, scope, name, nameShort, category, gibbonYearGroupIDList FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber" ;
+								$resultOutcomes=$connection2->prepare($sqlOutcomes);
+								$resultOutcomes->execute($dataOutcomes);
 							}
 							catch(PDOException $e) { 
 								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
-							if ($resultResources->rowCount()>0) {
-								$rowResources=$resultResources->fetch() ;
-							}
-							if ($row["role"]=="Teacher") {
-								//Check for outcomes
-								try {
-									$dataOutcomes=array("gibbonUnitID"=>$row["gibbonUnitID"]);  
-									$sqlOutcomes="SELECT gibbonUnitOutcome.*, scope, name, nameShort, category, gibbonYearGroupIDList FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber" ;
-									$resultOutcomes=$connection2->prepare($sqlOutcomes);
-									$resultOutcomes->execute($dataOutcomes);
-								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
-								print "</table>" ;
-					
-								if ($rowResources["attachment"]!="" OR $rowResources["details"]!="" OR $resultOutcomes->rowCount()>0) {
-									print "<h2 style='padding-top: 30px'>Unit Content</h2>" ;
-									print "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>" ;
-										print "<tr>" ;
+							print "</table>" ;
+				
+							if ($rowResources["attachment"]!="" OR $rowResources["details"]!="" OR $resultOutcomes->rowCount()>0) {
+								print "<h2 style='padding-top: 30px'>Unit Content</h2>" ;
+								print "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>" ;
+									print "<tr>" ;
+										print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
+											if ($rowResources["details"]!="") {
+												print $rowResources["details"] ;
+											}
+											if ($rowResources["attachment"]!="") {
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowResources["attachment"] . "'>Downloadable Unit Outline</a>" ;
+											}
+										print "</td>" ;
+									print "</tr>" ;
+									if ($resultOutcomes->rowCount()>0) {
+										print "<tr class='break'>" ;
 											print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
-												if ($rowResources["details"]!="") {
-													print $rowResources["details"] ;
-												}
-												if ($rowResources["attachment"]!="") {
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowResources["attachment"] . "'>Downloadable Unit Outline</a>" ;
-												}
+												print "<h3>Unit Outcomes</h3>" ;
 											print "</td>" ;
 										print "</tr>" ;
-										if ($resultOutcomes->rowCount()>0) {
-											print "<tr class='break'>" ;
-												print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
-													print "<h3>Unit Outcomes</h3>" ;
-												print "</td>" ;
-											print "</tr>" ;
-											print "<tr>" ;
-												print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
-													print "<table cellspacing='0' style='width: 100%'>" ;
-														print "<tr class='head'>" ;
-															print "<th>" ;
-																print "Scope" ;
-															print "</th>" ;
-															print "<th>" ;
-																print "Category" ;
-															print "</th>" ;
-															print "<th>" ;
-																print "Name" ;
-															print "</th>" ;
-															print "<th>" ;
-																print "Year Groups" ;
-															print "</th>" ;
-															print "<th>" ;
-																print "Actions" ;
-															print "</th>" ;
+										print "<tr>" ;
+											print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
+												print "<table cellspacing='0' style='width: 100%'>" ;
+													print "<tr class='head'>" ;
+														print "<th>" ;
+															print "Scope" ;
+														print "</th>" ;
+														print "<th>" ;
+															print "Category" ;
+														print "</th>" ;
+														print "<th>" ;
+															print "Name" ;
+														print "</th>" ;
+														print "<th>" ;
+															print "Year Groups" ;
+														print "</th>" ;
+														print "<th>" ;
+															print "Actions" ;
+														print "</th>" ;
+													print "</tr>" ;
+
+													$count=0;
+													$rowNum="odd" ;
+													while ($rowOutcomes=$resultOutcomes->fetch()) {
+														if ($count%2==0) {
+															$rowNum="even" ;
+														}
+														else {
+															$rowNum="odd" ;
+														}
+
+														//COLOR ROW BY STATUS!
+														print "<tr class=$rowNum>" ;
+															print "<td>" ;
+																print "<b>" . $rowOutcomes["scope"] . "</b><br/>" ;
+																if ($rowOutcomes["scope"]=="Learning Area" AND $gibbonDepartmentID!="") {
+																	try {
+																		$dataLearningArea=array("gibbonDepartmentID"=>$gibbonDepartmentID); 
+																		$sqlLearningArea="SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID" ;
+																		$resultLearningArea=$connection2->prepare($sqlLearningArea);
+																		$resultLearningArea->execute($dataLearningArea);
+																	}
+																	catch(PDOException $e) { 
+																		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+																	}
+																	if ($resultLearningArea->rowCount()==1) {
+																		$rowLearningAreas=$resultLearningArea->fetch() ;
+																		print "<span style='font-size: 75%; font-style: italic'>" . $rowLearningAreas["name"] . "</span>" ;
+																	}
+																}
+															print "</td>" ;
+															print "<td>" ;
+																print "<b>" . $rowOutcomes["category"] . "</b><br/>" ;
+															print "</td>" ;
+															print "<td>" ;
+																print "<b>" . $rowOutcomes["nameShort"] . "</b><br/>" ;
+																print "<span style='font-size: 75%; font-style: italic'>" . $rowOutcomes["name"] . "</span>" ;
+															print "</td>" ;
+															print "<td>" ;
+																print getYearGroupsFromIDList($connection2, $rowOutcomes["gibbonYearGroupIDList"]) ;
+															print "</td>" ;
+															print "<td>" ;
+																print "<script type='text/javascript'>" ;	
+																	print "$(document).ready(function(){" ;
+																		print "\$(\".unitDescription-$count\").hide();" ;
+																		print "\$(\".unitShow_hide-$count\").fadeIn(1000);" ;
+																		print "\$(\".unitShow_hide-$count\").click(function(){" ;
+																		print "\$(\".unitDescription-$count\").fadeToggle(1000);" ;
+																		print "});" ;
+																	print "});" ;
+																print "</script>" ;
+																if ($rowOutcomes["content"]!="") {
+																	print "<a class='unitShow_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
+																}
+															print "</td>" ;
+														print "</tr>" ;
+														if ($rowOutcomes["content"]!="") {
+															print "<tr class='unitDescription-$count' id='unitDescription-$count'>" ;
+																print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
+																	print $rowOutcomes["content"] ;
+																print "</td>" ;
+															print "</tr>" ;
+														}
 														print "</tr>" ;
 
-														$count=0;
-														$rowNum="odd" ;
-														while ($rowOutcomes=$resultOutcomes->fetch()) {
-															if ($count%2==0) {
-																$rowNum="even" ;
-															}
-															else {
-																$rowNum="odd" ;
-															}
-
-															//COLOR ROW BY STATUS!
-															print "<tr class=$rowNum>" ;
-																print "<td>" ;
-																	print "<b>" . $rowOutcomes["scope"] . "</b><br/>" ;
-																	if ($rowOutcomes["scope"]=="Learning Area" AND $gibbonDepartmentID!="") {
-																		try {
-																			$dataLearningArea=array("gibbonDepartmentID"=>$gibbonDepartmentID); 
-																			$sqlLearningArea="SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID" ;
-																			$resultLearningArea=$connection2->prepare($sqlLearningArea);
-																			$resultLearningArea->execute($dataLearningArea);
-																		}
-																		catch(PDOException $e) { 
-																			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-																		}
-																		if ($resultLearningArea->rowCount()==1) {
-																			$rowLearningAreas=$resultLearningArea->fetch() ;
-																			print "<span style='font-size: 75%; font-style: italic'>" . $rowLearningAreas["name"] . "</span>" ;
-																		}
-																	}
-																print "</td>" ;
-																print "<td>" ;
-																	print "<b>" . $rowOutcomes["category"] . "</b><br/>" ;
-																print "</td>" ;
-																print "<td>" ;
-																	print "<b>" . $rowOutcomes["nameShort"] . "</b><br/>" ;
-																	print "<span style='font-size: 75%; font-style: italic'>" . $rowOutcomes["name"] . "</span>" ;
-																print "</td>" ;
-																print "<td>" ;
-																	print getYearGroupsFromIDList($connection2, $rowOutcomes["gibbonYearGroupIDList"]) ;
-																print "</td>" ;
-																print "<td>" ;
-																	print "<script type='text/javascript'>" ;	
-																		print "$(document).ready(function(){" ;
-																			print "\$(\".unitDescription-$count\").hide();" ;
-																			print "\$(\".unitShow_hide-$count\").fadeIn(1000);" ;
-																			print "\$(\".unitShow_hide-$count\").click(function(){" ;
-																			print "\$(\".unitDescription-$count\").fadeToggle(1000);" ;
-																			print "});" ;
-																		print "});" ;
-																	print "</script>" ;
-																	if ($rowOutcomes["content"]!="") {
-																		print "<a class='unitShow_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
-																	}
-																print "</td>" ;
-															print "</tr>" ;
-															if ($rowOutcomes["content"]!="") {
-																print "<tr class='unitDescription-$count' id='unitDescription-$count'>" ;
-																	print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
-																		print $rowOutcomes["content"] ;
-																	print "</td>" ;
-																print "</tr>" ;
-															}
-															print "</tr>" ;
-
-															$count++ ;
-														}
-													print "</table>" ;
-												print "</td>" ;
-											print "</tr>" ;
-										print "</table>" ;
-									}
-								}
-								else {
-									if ($rowResources["attachment"]!="") {
-										print "<h2 style='padding-top: 30px'>Unit Content</h2>" ;
-										print "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>" ;
-											print "<tr>" ;
-												print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowResources["attachment"] . "'>Downloadable Unit Outline</a>" ;
-												print "</td>" ;
-											print "</tr>" ;
-										print "</table>" ;
-									}
+														$count++ ;
+													}
+												print "</table>" ;
+											print "</td>" ;
+										print "</tr>" ;
+									print "</table>" ;
 								}
 							}
 						}
-					print "</table>" ;
+						else {
+							if ($rowResources["attachment"]!="") {
+								print "<h2 style='padding-top: 30px'>Unit Content</h2>" ;
+								print "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>" ;
+									print "<tr>" ;
+										print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowResources["attachment"] . "'>Downloadable Unit Outline</a>" ;
+										print "</td>" ;
+									print "</tr>" ;
+								print "</table>" ;
+							}
+						}
+					}
 			
 					//Participants & Attendance
 					$gibbonCourseClassID=$row["gibbonCourseClassID"] ;

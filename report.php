@@ -59,8 +59,17 @@ else {
 			$themeJS="<script type='text/javascript' src='./themes/Default/js/common.js'></script>" ;
 			$_SESSION[$guid]["gibbonThemeID"]="001" ;
 			$_SESSION[$guid]["gibbonThemeName"]="Default" ;
-			$sqlTheme="SELECT * FROM gibbonTheme WHERE active='Y'" ;
-			$resultTheme=$connection2->query($sqlTheme); 
+			
+			if ($_SESSION[$guid]["gibbonThemeIDPersonal"]!=NULL) {
+				$dataTheme=array("gibbonThemeIDPersonal"=>$_SESSION[$guid]["gibbonThemeIDPersonal"]); 
+				$sqlTheme="SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeIDPersonal" ;
+			}
+			else {
+				$dataTheme=array(); 
+				$sqlTheme="SELECT * FROM gibbonTheme WHERE active='Y'" ;
+			}
+			$resultTheme=$connection2->prepare($sqlTheme);
+			$resultTheme->execute($dataTheme);
 			if ($resultTheme->rowCount()==1) {
 				$rowTheme=$resultTheme->fetch() ;
 				$themeCSS="<link rel='stylesheet' type='text/css' href='./themes/" . $rowTheme["name"] . "/css/main.css' />" ;

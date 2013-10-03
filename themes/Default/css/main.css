@@ -447,7 +447,6 @@ table th {
 	background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
 	background: -moz-linear-gradient(top,  #ededed,  #ebebeb);
 	text-align: left;
-	padding-left: 20px;
 }
 table tr:first-child th:first-child {
 	-moz-border-radius-topleft:3px;

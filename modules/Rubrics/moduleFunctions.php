@@ -315,7 +315,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 				$output.="<table cellspacing='0' class='rubric'>" ;
 					//Create header
 					$output.="<tr class='head'>" ;
-						$output.="<td style='width: 100px; background: none; background-color: #fbfbfb; border-left: 1px solid #fff; border-top: 1px solid #fff'></td>" ;
+						$output.="<td style='width: 100px; background: none; background-color: #ffffff; border-left: 1px solid #fff; border-top: 1px solid #fff'></td>" ;
 						for ($n=0; $n<$columnCount; $n++) {
 							$output.="<td style='vertical-align: bottom'>" ;
 								if ($columns[$n][3]!="") {
