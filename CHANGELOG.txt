@@ -362,6 +362,8 @@ Activities: added search to the manage activities area
 Timetable: adjusted style of timetable view
 	Edited file /modules/Timetable/tt_view.php
 
+Rubrics: fixed non-click-ability of rubric cells in marking mode
+	Edited file /modules/Rubric/moduleFunctions.php
 
 v6.0.00
 -------

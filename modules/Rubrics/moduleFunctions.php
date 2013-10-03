@@ -289,10 +289,10 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 						$output.="$('#type').change(function(){" ;
 							$output.="if ($('select.type option:selected').val() == 'Current' ) {" ;
 								$output.="$('div.historical').css('display','none');" ;
-								$output.="$('div.current').css('display','block');" ;
+								$output.="$('div.currentView').css('display','block');" ;
 							$output.="} " ;
 							$output.="else if ($('select.type option:selected').val() == 'Historical' ) {" ;
-								$output.="$('div.current').css('display','none');" ;
+								$output.="$('div.currentView').css('display','none');" ;
 								$output.="$('div.historical').css('display','block');" ;
 							$output.="}" ; 
 						$output.="});" ;
@@ -315,7 +315,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 				$output.="<table cellspacing='0' class='rubric'>" ;
 					//Create header
 					$output.="<tr class='head'>" ;
-						$output.="<td style='width: 100px; background-color: #fff; border-left: 1px solid #fff; border-top: 1px solid #fff'></td>" ;
+						$output.="<td style='width: 100px; background: none; background-color: #fbfbfb; border-left: 1px solid #fff; border-top: 1px solid #fff'></td>" ;
 						for ($n=0; $n<$columnCount; $n++) {
 							$output.="<td style='vertical-align: bottom'>" ;
 								if ($columns[$n][3]!="") {
@@ -363,7 +363,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 					//Create body
 					for ($i=0; $i<$rowCount; $i++) {
 						$output.="<tr style='height: auto'>" ;
-							$output.="<td style='background-color: #666; color: #fff; vertical-align: top'>" ;
+							$output.="<td style='background: none!important; background-color: #666!important; color: #fff; vertical-align: top; padding: 0px!important'>" ;
 								if ($rows[$i][3]!="") {
 									try {
 										$dataOutcome=array("gibbonOutcomeID"=>$rows[$i][3]); 
@@ -410,15 +410,14 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 									$output.="<script type='text/javascript'>" ;
 										$output.="$(document).ready(function(){" ;
 											$output.="$(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").click(function(){" ;
-												$output.="if ($(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").css('background-color') == \"rgb(225, 225, 225)\" ) {" ;
-													$output.="$(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").css('background-color', '#79FA74');" ;
+												$output.="if ($(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").css('background-color') == \"rgb(251, 251, 251)\" ) {" ;
+													$output.="$(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").css('background', 'none').css('background-color', '#79FA74');" ;
 													$output.="var request = $.ajax({ url: \"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Rubrics/rubrics_data_saveAjax.php\", type: \"GET\", data: {mode: \"Add\", gibbonRubricID : \"" . $gibbonRubricID . "\", gibbonPersonID : \"" . $gibbonPersonID . "\",gibbonRubricCellID : \"" . $cells[$rows[$i][0]][$columns[$n][0]][1] . "\",contextDBTable : \"" . $contextDBTable . "\",contextDBTableID : \"" . $contextDBTableID . "\"}, dataType: \"html\"});" ;
 												$output.="}" ; 
 												$output.="else {" ;
-													$output.="$(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").css('background-color', '#E1E1E1');" ;
+													$output.="$(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").css('background', 'none').css('background-color', '#fbfbfb');" ;
 													$output.="var request = $.ajax({ url: \"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Rubrics/rubrics_data_saveAjax.php\", type: \"GET\", data: {mode: \"Remove\", gibbonRubricID : \"" . $gibbonRubricID . "\", gibbonPersonID : \"" . $gibbonPersonID . "\",gibbonRubricCellID : \"" . $cells[$rows[$i][0]][$columns[$n][0]][1] . "\",contextDBTable : \"" . $contextDBTable . "\",contextDBTableID : \"" . $contextDBTableID . "\"}, dataType: \"html\"});" ;
 												$output.="}" ;
-												
 											 $output.="});" ;
 										$output.="});" ;
 									$output.="</script>" ;
@@ -434,12 +433,12 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 								}
 								
-								$bgcolor="#E1E1E1" ;
+								$bgcolor="#fbfbfb" ;
 								if ($resultEntry->rowCount()==1) {
 									$bgcolor="#79FA74" ;
 								}
-								$output.="<td id='" . $rows[$i][0] . "-" . $columns[$n][0] . "' style='background-color: $bgcolor; height: 100%; vertical-align: top'>" ;
-									$output.="<div class='current' style='font-size: 90%'>" . $cells[$rows[$i][0]][$columns[$n][0]][0] . "</div>" ;
+								$output.="<td id='" . $rows[$i][0] . "-" . $columns[$n][0] . "' style='background: none; background-color: $bgcolor; height: 100%; vertical-align: top'>" ;
+									$output.="<div class='currentView' style='font-size: 90%'>" . $cells[$rows[$i][0]][$columns[$n][0]][0] . "</div>" ;
 									$output.="<div class='historical' style='font-size: 90%'>" ;
 										$arrayHistorical=explode("<br/>", $cells[$rows[$i][0]][$columns[$n][0]][2]) ;
 										$countHistorical=count($arrayHistorical)-1 ;
