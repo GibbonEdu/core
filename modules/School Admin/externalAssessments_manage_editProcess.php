@@ -37,31 +37,28 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $name=$_POST["name"] ;
 $nameShort=$_POST["nameShort"] ;
-$gibbonScaleID=$_POST["gibbonScaleID"] ;
-$usage=$_POST["usage"] ;
+$gibbonExternalAssessmentID=$_POST["gibbonExternalAssessmentID"] ;
+$description=$_POST["description"] ;
 $active=$_POST["active"] ;
-$numeric=$_POST["numeric"] ;
-$lowestAcceptable=$_POST["lowestAcceptable"] ;
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/gradeScales_manage_edit.php&gibbonScaleID=" . $gibbonScaleID ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/externalAssessments_manage_edit.php&gibbonExternalAssessmentID=" . $gibbonExternalAssessmentID ;
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/gradeScales_manage_edit.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/School Admin/externalAssessments_manage_edit.php")==FALSE) {
 	//Fail 0
 	$URL = $URL . "&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
-	//Check if special day specified
-	if ($gibbonScaleID=="") {
+	if ($gibbonExternalAssessmentID=="") {
 		//Fail1
 		$URL = $URL . "&updateReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
 		try {
-			$data=array("gibbonScaleID"=>$gibbonScaleID); 
-			$sql="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
+			$data=array("gibbonExternalAssessmentID"=>$gibbonExternalAssessmentID); 
+			$sql="SELECT * FROM gibbonExternalAssessment WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -79,7 +76,7 @@ else {
 		}
 		else {
 			//Validate Inputs
-			if ($name=="" OR $nameShort=="" OR $usage=="" OR $active=="" OR $numeric=="") {
+			if ($name=="" OR $nameShort=="" OR $description=="" OR $active=="") {
 				//Fail 3
 				$URL = $URL . "&updateReturn=fail3" ;
 				header("Location: {$URL}");
@@ -87,8 +84,8 @@ else {
 			else {
 				//Check unique inputs for uniquness
 				try {
-					$data=array("name"=>$name, "nameShort"=>$nameShort, "gibbonScaleID"=>$gibbonScaleID); 
-					$sql="SELECT * FROM gibbonScale WHERE (name=:name OR nameShort=:nameShort) AND NOT gibbonScaleID=:gibbonScaleID" ;
+					$data=array("name"=>$name, "nameShort"=>$nameShort, "gibbonExternalAssessmentID"=>$gibbonExternalAssessmentID); 
+					$sql="SELECT * FROM gibbonExternalAssessment WHERE (name=:name OR nameShort=:nameShort) AND NOT gibbonExternalAssessmentID=:gibbonExternalAssessmentID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -107,8 +104,8 @@ else {
 				else {
 					//Write to database
 					try {
-						$data=array("name"=>$name, "nameShort"=>$nameShort, "usage"=>$usage, "active"=>$active, "numeric"=>$numeric, "lowestAcceptable"=>$lowestAcceptable, "gibbonScaleID"=>$gibbonScaleID); 
-						$sql="UPDATE gibbonScale SET name=:name, nameShort=:nameShort, `usage`=:usage, active=:active, `numeric`=:numeric, lowestAcceptable=:lowestAcceptable WHERE gibbonScaleID=:gibbonScaleID" ;
+						$data=array("name"=>$name, "nameShort"=>$nameShort, "description"=>$description, "active"=>$active, "gibbonExternalAssessmentID"=>$gibbonExternalAssessmentID); 
+						$sql="UPDATE gibbonExternalAssessment SET name=:name, nameShort=:nameShort, `description`=:description, active=:active WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

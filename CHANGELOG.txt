@@ -376,6 +376,11 @@ Planner: fixed issue relating to unit outline not displaying for students
 
 General: fixed non-switch to personal theme in reports and fullscreen views
 	Edited file /report.php, fullscreen.php
+
+School Admin: added new function to manage external assessments
+	Added values to tables gibbonAction, gibbonPermission
+	Added files /modules/School Admin/externalAssessments_manage*.php
+	
 	
 
 v6.0.00
