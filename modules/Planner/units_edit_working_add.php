@@ -173,7 +173,7 @@ else {
 						//Let's go!
 						$row=$result->fetch() ;
 						
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>School Year</span><br/>" ;

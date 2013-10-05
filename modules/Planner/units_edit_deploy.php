@@ -177,7 +177,7 @@ else {
 							$step=1 ;
 						}
 						
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>School Year</span><br/>" ;
@@ -586,7 +586,7 @@ else {
 											$deployCount=0 ;
 											$blockCount2=$blockCount ;
 											for ($i=0; $i<$cells; $i++) {
-												print "<div id='lessonInner$i' style='min-height: 60px; border: 1px solid #333; width: 100%; margin-bottom: 45px; float: left; padding: 2px'>" ;
+												print "<div id='lessonInner$i' style='min-height: 60px; border: 1px solid #333; width: 100%; margin-bottom: 45px; float: left; padding: 2px; background-color: #F7F0E3'>" ;
 													$length=((strtotime($lessons[$i][0] . " " . $lessons[$i][2])-strtotime($lessons[$i][0] . " " . $lessons[$i][1]))/60) ;
 													print "<div id='sortable$i' style='min-height: 60px; font-size: 120%; font-style: italic'>" ;
 														print "<div id='head$i' class='head' style='height: 54px; border-bottom: 1px solid #333; font-size: 85%; padding: 3px'>" ;
@@ -679,11 +679,19 @@ else {
 											</td>
 										</tr>
 									</table>
-									<?
 									
-									print "<div style='width: 100%; margin-bottom: 20px; text-align: right'>" ;
-										print "<input type='reset' value='Reset'> <input type='submit' value='Submit'>" ;
-									print "</div>" ;
+									<table class='blank' style='width: 100%' cellspacing=0>
+										<tr>
+											<td>
+												<?
+												print "<div style='width: 100%; margin-bottom: 20px; text-align: right'>" ;
+													print "<input type='reset' value='Reset'> <input type='submit' value='Submit'>" ;
+												print "</div>" ;
+												?>
+											</td>
+										</tr>
+									</table>
+								<?
 								print "</div>" ;
 							print "</form>" ;
 							

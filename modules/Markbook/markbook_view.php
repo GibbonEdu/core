@@ -197,9 +197,11 @@ else {
 										$courseWhere=" AND (" ;
 										$whereCount=1 ;
 										foreach ($courseNameTokens AS $courseNameToken) {
-											$dataExternalAssessment["token" . $whereCount]="%" . $courseNameToken . "%" ;
-											$courseWhere.="gibbonExternalAssessmentField.name LIKE :token$whereCount OR " ;
-											$whereCount++ ;
+											if (strlen($courseNameToken)>3) {
+												$dataExternalAssessment["token" . $whereCount]="%" . $courseNameToken . "%" ;
+												$courseWhere.="gibbonExternalAssessmentField.name LIKE :token$whereCount OR " ;
+												$whereCount++ ;
+											}
 										}
 										if ($whereCount<1) {
 											$courseWhere="" ;
@@ -207,14 +209,14 @@ else {
 										else {
 											$courseWhere=substr($courseWhere,0,-4) . ")" ;
 										}
-										$sqlExternalAssessment="SELECT gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.name, gibbonExternalAssessmentFieldID, category FROM gibbonExternalAssessmentField JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND category=:category $courseWhere" ;
+										$sqlExternalAssessment="SELECT gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.name, gibbonExternalAssessmentFieldID, category FROM gibbonExternalAssessmentField JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND category=:category $courseWhere ORDER BY name" ;
 										$resultExternalAssessment=$connection2->prepare($sqlExternalAssessment);
 										$resultExternalAssessment->execute($dataExternalAssessment);
 									}
 									catch(PDOException $e) { 
 										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 									}
-									if ($resultExternalAssessment->rowCount()==1) {
+									if ($resultExternalAssessment->rowCount()>=1) {
 										$rowExternalAssessment=$resultExternalAssessment->fetch() ;
 										$externalAssessment=TRUE ;
 										$externalAssessmentFields=array() ;

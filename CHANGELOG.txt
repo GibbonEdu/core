@@ -380,8 +380,21 @@ General: fixed non-switch to personal theme in reports and fullscreen views
 School Admin: added new function to manage external assessments
 	Added values to tables gibbonAction, gibbonPermission
 	Added files /modules/School Admin/externalAssessments_manage*.php
+
+Planner: fixed new theme display issues in unit block views
+	Edited files /modules/Planner/units_edit_deploy.php, units_edit_working.php, units_edit_working_add.php\
+
+Default: minor adjustment to mceAction and mceOpen elements in tinyMCE
+	Edited file /themes/Default/css/main.css
+
+Markbook: improved consistency of display of baseline data
+	Edited file /modules/Markbook/markbook_view.php
+
+Planner: fixed planner full screen layout issue when there is unit information, but no unit outcome
+	Edited files /modules/Planner/planner_view_full.php
 	
-	
+Planner: fixed issue with ui-state-highlight in calendar, caused by sortable blocks area
+	Edited files /modules/Planner/units_add.php, units_edit.php, planner_view_full.php, planner_edit.php
 
 v6.0.00
 -------
