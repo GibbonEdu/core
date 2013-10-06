@@ -129,6 +129,24 @@ else {
 							<script type="text/javascript">
 								var passwordNew = new LiveValidation('passwordNew');
 								passwordNew.add(Validate.Presence);
+								<?
+								$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
+								if ($alpha=="Y") {
+									print "passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"Does not meet password policy.\" } );" ;
+								}
+								$numeric=getSettingByScope( $connection2, "System", "passwordPolicyNumeric" ) ;
+								if ($numeric=="Y") {
+									print "passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"Does not meet password policy.\" } );" ;
+								}
+								$punctuation=getSettingByScope( $connection2, "System", "passwordPolicyNonAlphaNumeric" ) ;
+								if ($punctuation=="Y") {
+									print "passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"Does not meet password policy.\" } );" ;
+								}
+								$minLength=getSettingByScope( $connection2, "System", "passwordPolicyMinLength" ) ;
+								if (is_numeric($minLength)) {
+									print "passwordNew.add( Validate.Length, { minimum: " . $minLength . "} );" ;
+								}
+								?>
 							 </script>
 						</td>
 					</tr>

@@ -405,6 +405,14 @@ Markbook: fixed Full Screen view icon
 Default: adjusted font size for form inputs
 	Edited file /themes/Default/css/main.css
 
+Planner: brought back staff gold star report, with newly enhanced performance
+	Added values to tables gibbonAction, gibbonPermission
+	Added file /modules/Planner/report_goldStars_staff.php
+
+General: added livevalidation of password policy to password reset pages
+	Edited file /preferences.php
+	Edited file /modules/User Admin/user_manage_password.php
+
 v6.0.00
 -------
 Library: added new status 'In Use'
