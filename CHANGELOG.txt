@@ -399,6 +399,8 @@ Planner: fixed issue with ui-state-highlight in calendar, caused by sortable blo
 System Admin: hacked module installer to explicitly allow use of gibbonSetting-related sql, with cleanup in the uninstaller.
 	Edited files /modules/System Admin/module_manage_installProcess.php, module_manage_uninstallProcess.php
 
+Markbook: fixed Full Screen view icon
+	Edited file /modules/Markbook/markbook_view.php
 
 v6.0.00
 -------
