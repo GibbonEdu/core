@@ -136,6 +136,16 @@ else {
 				$partialFail=TRUE ;
 			}
 			
+			//Remove settings
+			try {
+				$dataDelete=array("scope"=>$module); 
+				$sqlDelete="DELETE FROM gibbonSetting WHERE scope=:scope" ;
+				$resultDelete=$connection2->prepare($sqlDelete);
+				$resultDelete->execute($dataDelete);
+			}
+			catch(PDOException $e) { 
+				$partialFail=TRUE ;
+			}
 			
 			
 			if ($partialFail==TRUE) {

@@ -138,7 +138,8 @@ else {
 								break ;
 							}
 
-							//Create module tables
+							//Create module tables and gibbonSetting entries
+							//Whilst this area is intended for use setting up module tables and gibbonSetting entries, arbitrary sql can be run at the wish of the module developer. However, such actions are not cleaned up by the uninstaller.
 							$partialFail=FALSE ;
 							for ($i=0;$i<count($moduleTables);$i++) {
 								try {

@@ -396,6 +396,10 @@ Planner: fixed planner full screen layout issue when there is unit information, 
 Planner: fixed issue with ui-state-highlight in calendar, caused by sortable blocks area
 	Edited files /modules/Planner/units_add.php, units_edit.php, planner_view_full.php, planner_edit.php
 
+System Admin: hacked module installer to explicitly allow use of gibbonSetting-related sql, with cleanup in the uninstaller.
+	Edited files /modules/System Admin/module_manage_installProcess.php, module_manage_uninstallProcess.php
+
+
 v6.0.00
 -------
 Library: added new status 'In Use'
