@@ -402,6 +402,9 @@ System Admin: hacked module installer to explicitly allow use of gibbonSetting-r
 Markbook: fixed Full Screen view icon
 	Edited file /modules/Markbook/markbook_view.php
 
+Default: adjusted font size for form inputs
+	Edited file /themes/Default/css/main.css
+
 v6.0.00
 -------
 Library: added new status 'In Use'
