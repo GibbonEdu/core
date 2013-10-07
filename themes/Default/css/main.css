@@ -443,9 +443,9 @@ table th {
 	border-top:1px solid #fafafa;
 	border-bottom:1px solid #e0e0e0;
 	font-size: 110% ;
-	background: #ededed;
-	background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
-	background: -moz-linear-gradient(top,  #ededed,  #ebebeb);
+	background: #ebebeb;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ebebeb), to(#dfdfdf));
+	background: -moz-linear-gradient(top,  #ebebeb,  #dfdfdf);
 	text-align: left;
 }
 table tr:first-child th:first-child {
@@ -477,16 +477,16 @@ table td {
 	text-align: left;
 	padding:12px;
 	border-top: 1px solid #ffffff;
-	border-bottom:1px solid #e0e0e0;
-	border-left: 1px solid #e0e0e0;
+	border-bottom:1px solid #dfdfdf;
+	border-left: 1px solid #dfdfdf;
 	background: #fafafa;
 	background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
 	background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
 }
 table tr.even td {
-	background: #f6f6f6;
-	background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f6f6f6));
-	background: -moz-linear-gradient(top,  #f8f8f8,  #f6f6f6);
+	background: #f0f0f0;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
+	background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);
 }
 table tr:last-child td {
 	border-bottom:0;
@@ -791,9 +791,13 @@ a img.resource {
 .ui-tabs {
 	padding: 0px!important;	
 }
-.ui-tabs-panel, .ui-tabs-active {
-	background: none!important ;
-	background-color: #F7F0E3!important ;
+.ui-tabs-active {
+	background: #ebebeb!important;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ebebeb), to(#dfdfdf))!important;
+	background: -moz-linear-gradient(top,  #ebebeb,  #dfdfdf)!important;
+}
+.ui-tabs-panel {
+	background: #dfdfdf!important;
 }
 
 /* Live Validation */

@@ -105,7 +105,7 @@ else {
 				print "Item Details" ;
 			print "</h3>" ;
 			
-			print "<table cellspacing='0' style='width: 100%'>" ;
+			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Type</span><br/>" ;

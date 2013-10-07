@@ -413,6 +413,18 @@ General: added livevalidation of password policy to password reset pages
 	Edited file /preferences.php
 	Edited file /modules/User Admin/user_manage_password.php
 
+Library: minor tweak of lending item detail table
+	Edited /modules/Library/library_lending_item.php
+
+General: new favicon
+	Edited file /favicon.ico
+
+General: more appearance tweaks
+	Edited file /favicon.ico
+	Edited file /lib/jquery-ui/css/blitzer/jquery-ui.css
+	Edited file /themes/Default/css/main.css
+
+
 v6.0.00
 -------
 Library: added new status 'In Use'
