@@ -184,7 +184,7 @@ else {
 						print "</tr>" ;
 						print "<tr class='odd'>" ;
 							print "<td>" ;
-								print "Long Term Medical Details" ;
+								print "Long Term Medication Details" ;
 							print "</td>" ;
 							print "<td>" ;
 								print $row2["longTermMedicationDetails"] ;

@@ -473,14 +473,14 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 			//Spit out controls for displaying calendars
 			if ($self==TRUE AND ($_SESSION[$guid]["calendarFeed"]!="" OR $_SESSION[$guid]["calendarFeedPersonal"]!="")) {
 				$output=$output . "<tr class='head' style='height: 37px;'>" ;
-					$output=$output . "<th colspan=" . ($daysInWeek+1) . " style='vertical-align: top; width: 100%; text-align: right; background: none!important; background-color: #fbfbfb!important'>" ;
+					$output=$output . "<th colspan=" . ($daysInWeek+1) . " style='vertical-align: top; width: 100%; text-align: right; background: none!important; background-color: #f2f2f2!important'>" ;
 						$output=$output . "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "' style='padding: 5px 5px 0 0'>" ;
 							if ($_SESSION[$guid]["calendarFeed"]!="") {
 								$checked="" ;
 								if ($_SESSION[$guid]["viewCalendarSchool"]=="Y") {
 									$checked="checked" ;
 								}
-								$output=$output . "<span style='color: #fff; font-weight: bold; margin: 0px -2px 0px 5px; background-color: rgba(51,153,0,0.90); padding: 5px 7px; border: 1px solid #555'>School Calendar " ;
+								$output=$output . "<span style='color: #fff; font-weight: bold; margin: 0px -2px 0px 5px; background-color: rgba(119,161,61,0.90); padding: 5px 7px; border: 1px solid #555'>School Calendar " ;
 								$output=$output . "<input $checked style='margin-left: 3px' type='checkbox' name='schoolCalendar' onclick='submit();'/>" ;
 								$output=$output . "</span>" ;
 							}
@@ -489,7 +489,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 								if ($_SESSION[$guid]["viewCalendarPersonal"]=="Y") {
 									$checked="checked" ;
 								}
-								$output=$output . "<span style='color: #fff; font-weight: bold; margin: 0px -2px 0px 5px; background-color: rgba(247,119,14,0.90); padding: 5px 7px; border: 1px solid #555'>Personal Calendar " ;
+								$output=$output . "<span style='color: #fff; font-weight: bold; margin: 0px -2px 0px 5px; background-color: rgba(103,153,207,0.90); padding: 5px 7px; border: 1px solid #555'>Personal Calendar " ;
 								$output=$output . "<input $checked style='margin-left: 3px' type='checkbox' name='personalCalendar' onclick='submit();'/>" ;
 								$output=$output . "</span>" ;
 							}
@@ -1080,7 +1080,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 			if ($eventsSchool!=FALSE) {
 				$height=0 ;
 				$top=0 ;
-				$bg="rgba(51,153,0,$schoolCalendarAlpha)" ;
+				$bg="rgba(119,161,61,$schoolCalendarAlpha)" ;
 				$allDay=0 ;
 				foreach ($eventsSchool AS $event) {
 					if (date("Y-m-d",$event[2])==date("Y-m-d", ($startDayStamp+(86400*$count)))) {
@@ -1120,7 +1120,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 			if ($eventsPersonal!=FALSE) {
 				$height=0 ;
 				$top=0 ;
-				$bg="rgba(247,119,14,$schoolCalendarAlpha)" ;
+				$bg="rgba(103,153,207,$schoolCalendarAlpha)" ;
 				foreach ($eventsPersonal AS $event) {
 					if (date("Y-m-d",$event[2])==date("Y-m-d", ($startDayStamp+(86400*$count)))) {
 						if ($event[1]=="All Day") {

@@ -792,12 +792,12 @@ a img.resource {
 	padding: 0px!important;	
 }
 .ui-tabs-active {
-	background: #ebebeb!important;
-	background: -webkit-gradient(linear, left top, left bottom, from(#ebebeb), to(#dfdfdf))!important;
-	background: -moz-linear-gradient(top,  #ebebeb,  #dfdfdf)!important;
+	background: #f4f4f4!important;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f4f4f4), to(#eaeaea))!important;
+	background: -moz-linear-gradient(top,  #f4f4f4,  #eaeaea)!important;
 }
 .ui-tabs-panel {
-	background: #dfdfdf!important;
+	background: #eaeaea!important;
 }
 
 /* Live Validation */

@@ -268,7 +268,7 @@ else {
 							
 							
 							if ($rowLog["type"]=="Absent") {
-								print "<td style='border: 1px solid #CC0000; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>" ;
+								print "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>" ;
 							}
 							else {
 								print "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>" ;
