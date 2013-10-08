@@ -20,16 +20,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /**
  * Sets database connection information
  */
-$databaseServer="localhost" ; 
-$databaseUsername="root" ; 
-$databasePassword="root" ; 
-$databaseName="gibbon_dev_core" ; 
+$databaseServer="" ; 
+$databaseUsername="" ; 
+$databasePassword="" ; 
+$databaseName="" ; 
 
 
 /**
  * Sets globally unique id, to allow multiple installs on the server server. Generate your own at http://www.guidgenerator.com/online-guid-generator.aspx
  */
-$guid="3c88956f-e2be-49aa-82bb-a937864ad69a" ; 
+$guid="" ; 
 
 
 /**

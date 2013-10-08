@@ -436,6 +436,9 @@ User Admin: minor text update of medical data updater page
 Timetable: adjusted colours of school and personal calendars on timetable
 	Edited file /modules/Timetable/moduleFunctions.php
 
+Release: updated db and settings ready to v7.0.00 release
+	Edited file /gibbon.sql, config.php
+
 
 v6.0.00
 -------
