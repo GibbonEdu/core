@@ -1,5 +1,10 @@
 CHANGELOG
 =========
+v7.0.01
+-------
+Lib: updated TCPDF to work better with v7
+	Updated files /lib/tcdpf/*
+
 v7.0.00
 -------
 System Admin: added main menu refresh on module install and uninstall
