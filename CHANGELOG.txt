@@ -1,5 +1,17 @@
 CHANGELOG
 =========
+v7.0.02
+-------
+User Admin: fixed URL issue in email to newly accepted parents and students
+	Edited file /modules/User Admin/applicationForm_manage_accept.php
+
+User Admin: fixed bug in creating student notes on application form accept
+	Edited file /modules/User Admin/applicationForm_manage_accept.php
+
+General: replaced config.php with config-sample.php to make distribution easier
+	New file /config-sample.php
+	Set GitHub to ignore config.php
+	
 v7.0.01
 -------
 Lib: updated TCPDF to work better with v7
