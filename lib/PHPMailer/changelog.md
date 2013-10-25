@@ -224,7 +224,7 @@ All new documentation
 * removed trim() from return results in EncodeQP
 * /test and three files it contained are removed from version 2.3
 * fixed phpunit.php for compliance with PHP5
-* changed $this->AltBody = $textMsg; to $this->AltBody = html_entity_decode($textMsg);
+* changed $this->AltBody=$textMsg; to $this->AltBody=html_entity_decode($textMsg);
 * We have removed the /phpdoc from the downloads. All documentation is now on
   the http://phpmailer.codeworxtech.com website.
 
@@ -235,7 +235,7 @@ All new documentation
 * Fixed redirect issue (display of UTF-8 in thank you redirect)
 * fixed error in getResponse function declaration (class.pop3.php)
 * PHPMailer now PHP6 compliant
-* fixed line 1092 in class.smtp.php (endless loop from missing = sign)
+* fixed line 1092 in class.smtp.php (endless loop from missing=sign)
 
 ## Version 2.1 (Wed, June 04 2008)
 NOTE: WE HAVE A NEW LANGUAGE VARIABLE FOR DIGITALLY SIGNED S/MIME EMAILS. IF YOU CAN HELP WITH LANGUAGES OTHER THAN ENGLISH AND SPANISH, IT WOULD BE APPRECIATED.
@@ -251,13 +251,13 @@ NOTE: WE HAVE A NEW LANGUAGE VARIABLE FOR DIGITALLY SIGNED S/MIME EMAILS. IF YOU
     to, an error was thrown for the date() functions used (line 1565 and 1569).
     This is NOT a PHPMailer error, it is the result of an incorrectly configured
     PHP5 installation. The fix is to modify your 'php.ini' file and include the
-    date.timezone = America/New York
+    date.timezone=America/New York
     directive, to your own server timezone
   - If you do get this error, and are unable to access your php.ini file:
     In your PHP script, add
     `date_default_timezone_set('America/Toronto');`
   - do not try to use
-    `$myVar = date_default_timezone_get();`
+    `$myVar=date_default_timezone_get();`
     as a test, it will throw an error.
 * added ability to define path (mainly for embedded images)
   function `MsgHTML($message,$basedir='')` ... where:
@@ -289,7 +289,7 @@ Please note, this is BETA software
 ## Version 2.0.0 rc2 (Fri, Nov 16 2007), interim release
 * implements new property to control VERP in class.smtp.php
   example (requires instantiating class.smtp.php):
-  $mail->do_verp = true;
+  $mail->do_verp=true;
 * POP-before-SMTP functionality included, thanks to Richard Davey
   (see class.pop3.php & pop3_before_smtp_test.php for examples)
 * included example showing how to use PHPMailer with GMAIL
@@ -343,11 +343,11 @@ $mail->set('X-MSMail-Priority', 'Normal');
 * added TLS/SSL SMTP support. Example of use:
 
 ```
-$mail = new PHPMailer();
-$mail->Mailer = "smtp";
-$mail->Host = "smtp.example.com";
-$mail->SMTPSecure   = "tls"; // option
-//$mail->SMTPSecure   = "ssl";  // option
+$mail=new PHPMailer();
+$mail->Mailer="smtp";
+$mail->Host="smtp.example.com";
+$mail->SMTPSecure  ="tls"; // option
+//$mail->SMTPSecure  ="ssl";  // option
 ...
 $mail->Send();
 ```

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -46,7 +46,7 @@ else {
 	print "Issuing an invoice confirms it in the system, meaning the financial details within the invoice can no longer be edited. On issue, you also have the choice to email the invoice to the appropriate family and company recipients." ;
 	print "</p>" ;
 	
-	$issueReturn = $_GET["issueReturn"] ;
+	$issueReturn=$_GET["issueReturn"] ;
 	$issueReturnMessage ="" ;
 	$class="error" ;
 	if (!($issueReturn=="")) {
@@ -321,7 +321,7 @@ else {
 						<td class="right" colspan=2>
 							<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<? print $gibbonFinanceInvoiceID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 					<tr>

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -79,7 +79,7 @@ else {
 				<td class="right">
 					<input name="startDateFrom" id="startDateFrom" maxlength=10 value="<? print $_GET["startDateFrom"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var startDateFrom = new LiveValidation('startDateFrom');
+						var startDateFrom=new LiveValidation('startDateFrom');
 						startDateFrom.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					</script>
 					<script type="text/javascript">
@@ -97,7 +97,7 @@ else {
 				<td class="right">
 					<input name="startDateTo" id="startDateTo" maxlength=10 value="<? print $_GET["startDateTo"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var startDateTo = new LiveValidation('startDateTo');
+						var startDateTo=new LiveValidation('startDateTo');
 						startDateTo.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					</script>
 					<script type="text/javascript">

@@ -46,7 +46,7 @@
  * Color keys must be in lowercase and without spaces.
  * Add here your spot colors ...
  */
-$spotcolor = array (
+$spotcolor=array (
 	// these are just examples, add your own spot colors ...
 	'pantone116c' => array(0, 20, 100, 0, 'Pantone 116 C'),
 	'pantone288c' => array(100, 60, 10, 5, 'Pantone 288 C'),

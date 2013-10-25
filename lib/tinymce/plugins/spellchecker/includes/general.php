@@ -8,7 +8,7 @@
  */
 
 @error_reporting(E_ALL ^ E_NOTICE);
-$config = array();
+$config=array();
 
 require_once(dirname(__FILE__) . "/../classes/utils/Logger.php");
 require_once(dirname(__FILE__) . "/../classes/utils/JSON.php");
@@ -25,15 +25,15 @@ if (isset($config['general.engine']))
  * @param String $default_value Default value to return if value not found.
  * @return String request value by name without magic quoting or default value.
  */
-function getRequestParam($name, $default_value = false) {
+function getRequestParam($name, $default_value=false) {
 	if (!isset($_REQUEST[$name]))
 		return $default_value;
 
 	if (is_array($_REQUEST[$name])) {
-		$newarray = array();
+		$newarray=array();
 
 		foreach ($_REQUEST[$name] as $name => $value)
-			$newarray[$name] = $value;
+			$newarray[$name]=$value;
 
 		return $newarray;
 	}
@@ -45,10 +45,10 @@ function &getLogger() {
 	global $mcLogger, $man;
 
 	if (isset($man))
-		$mcLogger = $man->getLogger();
+		$mcLogger=$man->getLogger();
 
 	if (!$mcLogger) {
-		$mcLogger = new Moxiecode_Logger();
+		$mcLogger=new Moxiecode_Logger();
 
 		// Set logger options
 		$mcLogger->setPath(dirname(__FILE__) . "/../logs");
@@ -61,37 +61,37 @@ function &getLogger() {
 }
 
 function debug($msg) {
-	$args = func_get_args();
+	$args=func_get_args();
 
-	$log = getLogger();
+	$log=getLogger();
 	$log->debug(implode(', ', $args));
 }
 
 function info($msg) {
-	$args = func_get_args();
+	$args=func_get_args();
 
-	$log = getLogger();
+	$log=getLogger();
 	$log->info(implode(', ', $args));
 }
 
 function error($msg) {
-	$args = func_get_args();
+	$args=func_get_args();
 
-	$log = getLogger();
+	$log=getLogger();
 	$log->error(implode(', ', $args));
 }
 
 function warn($msg) {
-	$args = func_get_args();
+	$args=func_get_args();
 
-	$log = getLogger();
+	$log=getLogger();
 	$log->warn(implode(', ', $args));
 }
 
 function fatal($msg) {
-	$args = func_get_args();
+	$args=func_get_args();
 
-	$log = getLogger();
+	$log=getLogger();
 	$log->fatal(implode(', ', $args));
 }
 

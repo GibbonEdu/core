@@ -16,12 +16,12 @@ class PSpell extends SpellChecker {
 	 * @return {Array} Array of misspelled words.
 	 */
 	function &checkWords($lang, $words) {
-		$plink = $this->_getPLink($lang);
+		$plink=$this->_getPLink($lang);
 
-		$outWords = array();
+		$outWords=array();
 		foreach ($words as $word) {
 			if (!pspell_check($plink, trim($word)))
-				$outWords[] = utf8_encode($word);
+				$outWords[]=utf8_encode($word);
 		}
 
 		return $outWords;
@@ -35,10 +35,10 @@ class PSpell extends SpellChecker {
 	 * @return {Array} Array of suggestions for the specified word.
 	 */
 	function &getSuggestions($lang, $word) {
-		$words = pspell_suggest($this->_getPLink($lang), $word);
+		$words=pspell_suggest($this->_getPLink($lang), $word);
 
 		for ($i=0; $i<count($words); $i++)
-			$words[$i] = utf8_encode($words[$i]);
+			$words[$i]=utf8_encode($words[$i]);
 
 		return $words;
 	}
@@ -52,7 +52,7 @@ class PSpell extends SpellChecker {
 			$this->throwError("PSpell support not found in PHP installation.");
 
 		// Setup PSpell link
-		$plink = pspell_new(
+		$plink=pspell_new(
 			$lang,
 			$this->_config['PSpell.spelling'],
 			$this->_config['PSpell.jargon'],
@@ -62,14 +62,14 @@ class PSpell extends SpellChecker {
 
 		// Setup PSpell link
 /*		if (!$plink) {
-			$pspellConfig = pspell_config_create(
+			$pspellConfig=pspell_config_create(
 				$lang,
 				$this->_config['PSpell.spelling'],
 				$this->_config['PSpell.jargon'],
 				$this->_config['PSpell.encoding']
 			);
 
-			$plink = pspell_new_config($pspell_config);
+			$plink=pspell_new_config($pspell_config);
 		}*/
 
 		if (!$plink)

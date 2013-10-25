@@ -5,10 +5,10 @@
 	 
 	Defines all the global variables and the wrapper functions 
 	********************************************/
-	$PROXY_HOST = '127.0.0.1';
-	$PROXY_PORT = '808';
+	$PROXY_HOST='127.0.0.1';
+	$PROXY_PORT='808';
 
-	$SandboxFlag = false;
+	$SandboxFlag=false;
 
 	//'------------------------------------
 	//' PayPal API Credentials
@@ -21,7 +21,7 @@
 	$API_Signature=getSettingByScope($connection2, "System", "paypalAPISignature") ;
 
 	// BN Code 	is only applicable for partners
-	$sBNCode = "PP-ECWizard";
+	$sBNCode="PP-ECWizard";
 	
 	
 	/*	
@@ -35,20 +35,20 @@
 	
 	if ($SandboxFlag == true) 
 	{
-		$API_Endpoint = "https://api-3t.sandbox.paypal.com/nvp";
-		$PAYPAL_URL = "https://www.sandbox.paypal.com/webscr?cmd=_express-checkout&token=";
+		$API_Endpoint="https://api-3t.sandbox.paypal.com/nvp";
+		$PAYPAL_URL="https://www.sandbox.paypal.com/webscr?cmd=_express-checkout&token=";
 	}
 	else
 	{
-		$API_Endpoint = "https://api-3t.paypal.com/nvp";
-		$PAYPAL_URL = "https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=";
+		$API_Endpoint="https://api-3t.paypal.com/nvp";
+		$PAYPAL_URL="https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=";
 	}
 
-	$USE_PROXY = false;
+	$USE_PROXY=false;
 	$version="93";
 
 	if (session_id() == "") 
-		session_start();
+		@session_start();
 
 	/* An express checkout transaction starts with a token, that
 	   identifies to PayPal your transaction
@@ -75,17 +75,17 @@
 		// Construct the parameter string that describes the SetExpressCheckout API call in the shortcut implementation
 		
 		$nvpstr="&PAYMENTREQUEST_0_AMT=". $paymentAmount;
-		$nvpstr = $nvpstr . "&PAYMENTREQUEST_0_PAYMENTACTION=" . $paymentType;
-		$nvpstr = $nvpstr . "&PAYMENTREQUEST_0_CURRENCYCODE=" . $currencyCodeType;
-		$nvpstr = $nvpstr . "&SOLUTIONTYPE=Sole";
-       	$nvpstr = $nvpstr . "&LANDINGPAGE=Billing";
-       	$nvpstr = $nvpstr . "&L_PAYMENTREQUEST_0_NAME0=Payment to " . $_SESSION[$guid]["organisationNameShort"] . " via " . $_SESSION[$guid]["systemName"] ;
-		$nvpstr = $nvpstr . "&L_PAYMENTREQUEST_0_QTY0=1&L_PAYMENTREQUEST_0_AMT0=$paymentAmount" ;
-		$nvpstr = $nvpstr . "&RETURNURL=" . $returnURL;
-		$nvpstr = $nvpstr . "&CANCELURL=" . $cancelURL;
+		$nvpstr=$nvpstr . "&PAYMENTREQUEST_0_PAYMENTACTION=" . $paymentType;
+		$nvpstr=$nvpstr . "&PAYMENTREQUEST_0_CURRENCYCODE=" . $currencyCodeType;
+		$nvpstr=$nvpstr . "&SOLUTIONTYPE=Sole";
+       	$nvpstr=$nvpstr . "&LANDINGPAGE=Billing";
+       	$nvpstr=$nvpstr . "&L_PAYMENTREQUEST_0_NAME0=Payment to " . $_SESSION[$guid]["organisationNameShort"] . " via " . $_SESSION[$guid]["systemName"] ;
+		$nvpstr=$nvpstr . "&L_PAYMENTREQUEST_0_QTY0=1&L_PAYMENTREQUEST_0_AMT0=$paymentAmount" ;
+		$nvpstr=$nvpstr . "&RETURNURL=" . $returnURL;
+		$nvpstr=$nvpstr . "&CANCELURL=" . $cancelURL;
 		
-		$_SESSION[$guid]["currencyCodeType"] = $currencyCodeType;	  
-		$_SESSION[$guid]["PaymentType"] = $paymentType;
+		$_SESSION[$guid]["currencyCodeType"]=$currencyCodeType;	  
+		$_SESSION[$guid]["PaymentType"]=$paymentType;
 
 		//'--------------------------------------------------------------------------------------------------------------- 
 		//' Make the API call to PayPal
@@ -93,10 +93,10 @@
 		//' If an error occured, show the resulting errors
 		//'---------------------------------------------------------------------------------------------------------------
 	    $resArray=hash_call("SetExpressCheckout", $nvpstr);
-		$ack = strtoupper($resArray["ACK"]);
+		$ack=strtoupper($resArray["ACK"]);
 		if($ack=="SUCCESS" || $ack=="SUCCESSWITHWARNING")
 		{
-			$token = urldecode($resArray["TOKEN"]);
+			$token=urldecode($resArray["TOKEN"]);
 			$_SESSION[$guid]['TOKEN']=$token;
 		}
 		   
@@ -131,22 +131,22 @@
 		// Construct the parameter string that describes the SetExpressCheckout API call in the shortcut implementation
 		
 		$nvpstr="&PAYMENTREQUEST_0_AMT=". $paymentAmount;
-		$nvpstr = $nvpstr . "&PAYMENTREQUEST_0_PAYMENTACTION=" . $paymentType;
-		$nvpstr = $nvpstr . "&RETURNURL=" . $returnURL;
-		$nvpstr = $nvpstr . "&CANCELURL=" . $cancelURL;
-		$nvpstr = $nvpstr . "&PAYMENTREQUEST_0_CURRENCYCODE=" . $currencyCodeType;
-		$nvpstr = $nvpstr . "&ADDROVERRIDE=1";
-		$nvpstr = $nvpstr . "&PAYMENTREQUEST_0_SHIPTONAME=" . $shipToName;
-		$nvpstr = $nvpstr . "&PAYMENTREQUEST_0_SHIPTOSTREET=" . $shipToStreet;
-		$nvpstr = $nvpstr . "&PAYMENTREQUEST_0_SHIPTOSTREET2=" . $shipToStreet2;
-		$nvpstr = $nvpstr . "&PAYMENTREQUEST_0_SHIPTOCITY=" . $shipToCity;
-		$nvpstr = $nvpstr . "&PAYMENTREQUEST_0_SHIPTOSTATE=" . $shipToState;
-		$nvpstr = $nvpstr . "&PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE=" . $shipToCountryCode;
-		$nvpstr = $nvpstr . "&PAYMENTREQUEST_0_SHIPTOZIP=" . $shipToZip;
-		$nvpstr = $nvpstr . "&PAYMENTREQUEST_0_SHIPTOPHONENUM=" . $phoneNum;
+		$nvpstr=$nvpstr . "&PAYMENTREQUEST_0_PAYMENTACTION=" . $paymentType;
+		$nvpstr=$nvpstr . "&RETURNURL=" . $returnURL;
+		$nvpstr=$nvpstr . "&CANCELURL=" . $cancelURL;
+		$nvpstr=$nvpstr . "&PAYMENTREQUEST_0_CURRENCYCODE=" . $currencyCodeType;
+		$nvpstr=$nvpstr . "&ADDROVERRIDE=1";
+		$nvpstr=$nvpstr . "&PAYMENTREQUEST_0_SHIPTONAME=" . $shipToName;
+		$nvpstr=$nvpstr . "&PAYMENTREQUEST_0_SHIPTOSTREET=" . $shipToStreet;
+		$nvpstr=$nvpstr . "&PAYMENTREQUEST_0_SHIPTOSTREET2=" . $shipToStreet2;
+		$nvpstr=$nvpstr . "&PAYMENTREQUEST_0_SHIPTOCITY=" . $shipToCity;
+		$nvpstr=$nvpstr . "&PAYMENTREQUEST_0_SHIPTOSTATE=" . $shipToState;
+		$nvpstr=$nvpstr . "&PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE=" . $shipToCountryCode;
+		$nvpstr=$nvpstr . "&PAYMENTREQUEST_0_SHIPTOZIP=" . $shipToZip;
+		$nvpstr=$nvpstr . "&PAYMENTREQUEST_0_SHIPTOPHONENUM=" . $phoneNum;
 		
-		$_SESSION[$guid]["currencyCodeType"] = $currencyCodeType;	  
-		$_SESSION[$guid]["PaymentType"] = $paymentType;
+		$_SESSION[$guid]["currencyCodeType"]=$currencyCodeType;	  
+		$_SESSION[$guid]["PaymentType"]=$paymentType;
 
 		//'--------------------------------------------------------------------------------------------------------------- 
 		//' Make the API call to PayPal
@@ -154,10 +154,10 @@
 		//' If an error occured, show the resulting errors
 		//'---------------------------------------------------------------------------------------------------------------
 	    $resArray=hash_call("SetExpressCheckout", $nvpstr);
-		$ack = strtoupper($resArray["ACK"]);
+		$ack=strtoupper($resArray["ACK"]);
 		if($ack=="SUCCESS" || $ack=="SUCCESSWITHWARNING")
 		{
-			$token = urldecode($resArray["TOKEN"]);
+			$token=urldecode($resArray["TOKEN"]);
 			$_SESSION[$guid]['TOKEN']=$token;
 		}
 		   
@@ -198,7 +198,7 @@
 		//'	If failed, show the error
 		//'---------------------------------------------------------------------------
 	    $resArray=hash_call("GetExpressCheckoutDetails",$nvpstr);
-	    $ack = strtoupper($resArray["ACK"]);
+	    $ack=strtoupper($resArray["ACK"]);
 		if($ack == "SUCCESS" || $ack=="SUCCESSWITHWARNING")
 		{	
 			$_SESSION[$guid]['payer_id'] =	$resArray['PAYERID'];
@@ -232,7 +232,7 @@
 
 		$serverName 		= urlencode($_SERVER['SERVER_NAME']);
 
-		$nvpstr  = '&TOKEN=' . $token . '&PAYERID=' . $payerID . '&PAYMENTREQUEST_0_PAYMENTACTION=' . $paymentType . '&PAYMENTREQUEST_0_AMT=' . $FinalPaymentAmt;
+		$nvpstr ='&TOKEN=' . $token . '&PAYERID=' . $payerID . '&PAYMENTREQUEST_0_PAYMENTACTION=' . $paymentType . '&PAYMENTREQUEST_0_AMT=' . $FinalPaymentAmt;
 		$nvpstr .= '&PAYMENTREQUEST_0_CURRENCYCODE=' . $currencyCodeType . '&IPADDRESS=' . $serverName; 
 
 		 /* Make the call to PayPal to finalize payment
@@ -244,7 +244,7 @@
 		   If the response from PayPal was a success, display the response parameters'
 		   If the response was an error, display the errors received using APIError.php.
 		   */
-		$ack = strtoupper($resArray["ACK"]);
+		$ack=strtoupper($resArray["ACK"]);
 
 		return $resArray;
 	}
@@ -282,20 +282,20 @@
 							$countryCode, $currencyCode )
 	{
 		//Construct the parameter string that describes DoDirectPayment
-		$nvpstr = "&AMT=" . $paymentAmount;
-		$nvpstr = $nvpstr . "&CURRENCYCODE=" . $currencyCode;
-		$nvpstr = $nvpstr . "&PAYMENTACTION=" . $paymentType;
-		$nvpstr = $nvpstr . "&CREDITCARDTYPE=" . $creditCardType;
-		$nvpstr = $nvpstr . "&ACCT=" . $creditCardNumber;
-		$nvpstr = $nvpstr . "&EXPDATE=" . $expDate;
-		$nvpstr = $nvpstr . "&CVV2=" . $cvv2;
-		$nvpstr = $nvpstr . "&FIRSTNAME=" . $firstName;
-		$nvpstr = $nvpstr . "&LASTNAME=" . $lastName;
-		$nvpstr = $nvpstr . "&STREET=" . $street;
-		$nvpstr = $nvpstr . "&CITY=" . $city;
-		$nvpstr = $nvpstr . "&STATE=" . $state;
-		$nvpstr = $nvpstr . "&COUNTRYCODE=" . $countryCode;
-		$nvpstr = $nvpstr . "&IPADDRESS=" . $_SERVER['REMOTE_ADDR'];
+		$nvpstr="&AMT=" . $paymentAmount;
+		$nvpstr=$nvpstr . "&CURRENCYCODE=" . $currencyCode;
+		$nvpstr=$nvpstr . "&PAYMENTACTION=" . $paymentType;
+		$nvpstr=$nvpstr . "&CREDITCARDTYPE=" . $creditCardType;
+		$nvpstr=$nvpstr . "&ACCT=" . $creditCardNumber;
+		$nvpstr=$nvpstr . "&EXPDATE=" . $expDate;
+		$nvpstr=$nvpstr . "&CVV2=" . $cvv2;
+		$nvpstr=$nvpstr . "&FIRSTNAME=" . $firstName;
+		$nvpstr=$nvpstr . "&LASTNAME=" . $lastName;
+		$nvpstr=$nvpstr . "&STREET=" . $street;
+		$nvpstr=$nvpstr . "&CITY=" . $city;
+		$nvpstr=$nvpstr . "&STATE=" . $state;
+		$nvpstr=$nvpstr . "&COUNTRYCODE=" . $countryCode;
+		$nvpstr=$nvpstr . "&IPADDRESS=" . $_SERVER['REMOTE_ADDR'];
 
 		$resArray=hash_call("DoDirectPayment", $nvpstr);
 
@@ -320,7 +320,7 @@
 		global $sBNCode;
 
 		//setting the curl parameters.
-		$ch = curl_init();
+		$ch=curl_init();
 		curl_setopt($ch, CURLOPT_URL,$API_Endpoint);
 		curl_setopt($ch, CURLOPT_VERBOSE, 1);
 
@@ -343,7 +343,7 @@
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $nvpreq);
 
 		//getting response from server
-		$response = curl_exec($ch);
+		$response=curl_exec($ch);
 
 		//convrting NVPResponse to an Associative Array
 		$nvpResArray=deformatNVP($response);
@@ -378,7 +378,7 @@
 		global $PAYPAL_URL;
 		
 		// Redirect to paypal.com here
-		$payPalURL = $PAYPAL_URL . $token;
+		$payPalURL=$PAYPAL_URL . $token;
 		header("Location: ".$payPalURL);
 		exit;
 	}
@@ -394,14 +394,14 @@
 	function deformatNVP($nvpstr)
 	{
 		$intial=0;
-	 	$nvpArray = array();
+	 	$nvpArray=array();
 
 		while(strlen($nvpstr))
 		{
 			//postion of Key
 			$keypos= strpos($nvpstr,'=');
 			//position of value
-			$valuepos = strpos($nvpstr,'&') ? strpos($nvpstr,'&'): strlen($nvpstr);
+			$valuepos=strpos($nvpstr,'&') ? strpos($nvpstr,'&'): strlen($nvpstr);
 
 			/*getting the Key and Value values and storing in a Associative Array*/
 			$keyval=substr($nvpstr,$intial,$keypos);

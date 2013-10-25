@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/External Assessment/externalAssessment_manage_details_add.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment.php'>View All Assessments</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment_details.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "'>Student Details</a> > </div><div class='trailEnd'>Add Assessment</div>" ;
 	print "</div>" ;
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -145,7 +145,7 @@ else {
 									?>				
 								</select>
 								<script type="text/javascript">
-									var gibbonExternalAssessmentID = new LiveValidation('gibbonExternalAssessmentID');
+									var gibbonExternalAssessmentID=new LiveValidation('gibbonExternalAssessmentID');
 									gibbonExternalAssessmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 								</script>
 							</td>
@@ -215,7 +215,7 @@ else {
 								<input type="hidden" name="search" value="<? print $search ?>">
 								<input type="hidden" name="gibbonPersonID" value="<? print $gibbonPersonID ?>">
 								<input type="hidden" name="q" value="<? print $_GET["q"] ?>">
-								<input type="reset" value="Reset"> <input type="submit" value="Go">
+								<input type="submit" value="Go">
 							</td>
 						</tr>
 					</table>
@@ -463,7 +463,7 @@ else {
 								<td class="right" colspan=2>
 									<input name="date" id="date" maxlength=10 value="<? if ($date!="") { print dateConvertBack($date) ; } ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
-										var date = new LiveValidation('date');
+										var date=new LiveValidation('date');
 										date.add(Validate.Presence);
 										date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 									 </script>
@@ -618,7 +618,7 @@ else {
 								<input name="gibbonPersonID" id="gibbonPersonID" value="<? print $gibbonPersonID ?>" type="hidden">
 								<input name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID" value="<? print $gibbonExternalAssessmentID ?>" type="hidden">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="reset" value="Reset"> <input type="submit" value="Submit">
+								<input type="submit" value="Submit">
 							</td>
 						</tr>
 					</table>

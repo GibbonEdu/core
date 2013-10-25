@@ -31,7 +31,7 @@ catch(PDOException $e) {
 }
 
 //Start session
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -47,10 +47,10 @@ $password=randomPassword(8);
 //Check email address is not blank
 $input=$_POST["email"] ;
 
-$URL = $_SESSION[$guid]["absoluteURL"] . "/index.php?q=passwordReset.php" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=passwordReset.php" ;
 	
 if ($input=="") {
-	$URL = $URL. "&editReturn=fail0" ;
+	$URL=$URL. "&editReturn=fail0" ;
 	header("Location: {$URL}");
 }
 //Otherwise proceed
@@ -65,13 +65,13 @@ else {
 		$result->execute($data);
 	}
 	catch(PDOException $e) { 
-		$URL = $URL. "&editReturn=fail1" ;
+		$URL=$URL. "&editReturn=fail1" ;
 		header("Location: {$URL}");
 		break ;
 	}
 
 	if ($result->rowCount()!=1) {
-		$URL = $URL. "&editReturn=fail2" ;
+		$URL=$URL. "&editReturn=fail2" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -87,28 +87,28 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			$URL = $URL. "&editReturn=fail1" ;
+			$URL=$URL. "&editReturn=fail1" ;
 			header("Location: {$URL}");
 			break ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			$URL = $URL. "&editReturn=fail2" ;
+			$URL=$URL. "&editReturn=fail2" ;
 			header("Location: {$URL}");
 		}
 		else {
-			$to = $email;
-			$subject = $_SESSION[$guid]["organisationNameShort"] . " Gibbon Password Reset";
-			$body = "Your new password for account $username is as follows:\n\n$password\n\nPlease log in an change your password as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-			$headers = "From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
+			$to=$email;
+			$subject=$_SESSION[$guid]["organisationNameShort"] . " Gibbon Password Reset";
+			$body="Your new password for account $username is as follows:\n\n$password\n\nPlease log in an change your password as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
+			$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
 
 			if (mail($to, $subject, $body, $headers)) {
-				$_SESSION[$guid]["password"] = $passwordHash ;
-				$URL = $URL. "&editReturn=success0" ;
+				$_SESSION[$guid]["password"]=$passwordHash ;
+				$URL=$URL. "&editReturn=success0" ;
 				header("Location: {$URL}");
 			}
 			else {
-				$URL = $URL. "&editReturn=fail3" ;
+				$URL=$URL. "&editReturn=fail3" ;
 				header("Location: {$URL}");
 			}
 		}

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -43,7 +43,7 @@ else {
 	}
 	catch(PDOException $e) {}
 	
-	$today=mktime() ;
+	$today=time() ;
 	$ages=array() ;
 	$everything=array() ;
 	$count=0 ;

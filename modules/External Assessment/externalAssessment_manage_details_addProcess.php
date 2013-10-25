@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -45,7 +45,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/External Assessment/externalAssessment_manage_details_add.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&addReturn=fail0" ;
+	$URL=$URL . "&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -53,7 +53,7 @@ else {
 	//Validate Inputs
 	if ($count=="" OR $gibbonPersonID=="" OR $gibbonExternalAssessmentID=="" OR $date=="") {
 		//Fail 3
-		$URL = $URL . "&addReturn=fail3" ;
+		$URL=$URL . "&addReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -64,7 +64,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL = $URL . "&addReturn=fail2$params" ;
+			$URL=$URL . "&addReturn=fail2$params" ;
 			header("Location: {$URL}");
 			break ;
 		}			
@@ -76,7 +76,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL = $URL . "&addReturn=fail2$params" ;
+			$URL=$URL . "&addReturn=fail2$params" ;
 			header("Location: {$URL}");
 			break ;
 		}		
@@ -123,7 +123,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL = $URL . "&addReturn=fail2$params" ;
+			$URL=$URL . "&addReturn=fail2$params" ;
 			header("Location: {$URL}");
 			break ;
 		}
@@ -137,12 +137,12 @@ else {
 
 		if ($partialFail==TRUE) {
 			//Fail 5
-			$URL = $URL . "&addReturn=fail5$params" ;
+			$URL=$URL . "&addReturn=fail5$params" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Success 0
-			$URL = $URL . "&addReturn=success0$params" ;
+			$URL=$URL . "&addReturn=success0$params" ;
 			header("Location: {$URL}");
 		}
 	}

@@ -105,7 +105,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 						?>
 						<input <? if ($feeType=="Standard") { print "readonly" ; }?> maxlength=13 id='fee<? print $i ?>' name='fee<? print $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <? if ($mode=="add" AND $feeType=="Ad Hoc") { print "color: #999;" ;} ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<? if ($mode=="add" AND $feeType=="Ad Hoc") { print "value" ; if ($_SESSION[$guid]["currency"]!="") { print " (" . $_SESSION[$guid]["currency"] . ")" ;}} else { print htmlPrep($fee) ;} ?>'>
 						<script type="text/javascript">
-							var fee<? print $i ?> = new LiveValidation('fee<? print $i ?>');
+							var fee<? print $i ?>=new LiveValidation('fee<? print $i ?>');
 							fee<? print $i ?>.add(Validate.Presence);
 							fee<? print $i ?>.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
 						</script>

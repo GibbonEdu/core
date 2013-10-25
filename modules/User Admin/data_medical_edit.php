@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -59,7 +59,7 @@ else {
 			print "</div>" ;
 		}
 		else {
-			$updateReturn = $_GET["updateReturn"] ;
+			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 			$updateReturnMessage ="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
@@ -655,7 +655,7 @@ else {
 							print "<input name='formExists' type='hidden' value='$formExists'>" ;
 							print "<input name='gibbonPersonID' type='hidden' value='" . $row["gibbonPersonID"] . "'>" ;
 							print "<input name='address' type='hidden' value='" . $_GET["q"] . "'>" ;
-							print "<input type='reset' value='Reset'> <input type='submit' value='Submit'>" ;
+							print "<input type='submit' value='Submit'>" ;
 						print "</td>" ;
 					print "</tr>" ;
 					print "</table>" ;

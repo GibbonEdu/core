@@ -21,11 +21,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 function daysUntilNextBirthday($birthday) {
 	$today=date("Y-m-d") ;
 	$btsString=substr($today,0,4) . "-" . substr($birthday, 5) ;
-	$bts = strtotime($btsString);
-	$ts = time();
+	$bts=strtotime($btsString);
+	$ts=time();
 	
 	if ($bts < $ts) {
-		$bts = strtotime(date("y",strtotime("+1 year")) . "-" . substr($birthday, 5));
+		$bts=strtotime(date("y",strtotime("+1 year")) . "-" . substr($birthday, 5));
 	}
 
 	$days=ceil(($bts - $ts) / 86400);
@@ -273,7 +273,7 @@ function getStudentFastFinder($connection2, $guid) {
 								$output.="});" ;
 							$output.="</script>" ;
 							$output.="<script type='text/javascript'>" ;
-								$output.="var gibbonPersonID = new LiveValidation('gibbonPersonID');" ;
+								$output.="var gibbonPersonID=new LiveValidation('gibbonPersonID');" ;
 								$output.="gibbonPersonID.add(Validate.Presence);" ;
 							 $output.="</script>" ;
 						$output.="</td>" ;
@@ -315,9 +315,9 @@ function getAlert($connection2, $gibbonAlertLevelID) {
 }
 
 function getSalt() {
-  $c = explode(" ", ". / a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O p P q Q r R s S t T u U v V w W x X y Y z Z 0 1 2 3 4 5 6 7 8 9");
-  $ks = array_rand($c, 22);
-  $s = "";
+  $c=explode(" ", ". / a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O p P q Q r R s S t T u U v V w W x X y Y z Z 0 1 2 3 4 5 6 7 8 9");
+  $ks=array_rand($c, 22);
+  $s="";
   foreach($ks as $k) { $s .= $c[$k]; }
   return $s;
 }
@@ -337,7 +337,9 @@ function getUnit($connection2, $gibbonUnitID, $gibbonHookID, $gibbonCourseClassI
 				$resultUnit->execute($dataUnit); 
 				if ($resultUnit->rowCount()==1) {
 					$rowUnit=$resultUnit->fetch() ;
-					$unitType=$rowUnit["type"] ;
+					if (isset($rowUnit["type"])) {
+						$unitType=$rowUnit["type"] ;
+					}
 					$output[0]=$rowUnit["name"] ;
 					$output[1]="" ;
 				}
@@ -558,7 +560,7 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 			if ($required) {
 				$output.="<script type='text/javascript'>" ;
 					$output.="var " . $id ."='';" ;
-					$output.=$id . " = new LiveValidation('" . $id . "');" ;
+					$output.=$id . "=new LiveValidation('" . $id . "');" ;
 					$output.=$id . ".add(Validate.Presence, { tinymce: true, tinymceField: '" . $id . "'});" ;
 					if ($initiallyHidden==true) {
 						$output.= $id . ".disable();" ;
@@ -582,7 +584,7 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 					if ($required) {
 						$output.=$id . ".destroy();" ;
 						$output.="$('.LV_validation_message').css('display','none');" ;
-						$output.=$id . " = new LiveValidation('" . $id . "');" ;
+						$output.=$id . "=new LiveValidation('" . $id . "');" ;
 						$output.=$id . ".add(Validate.Presence);" ;
 					}
 				 $output.="}) ;" ;
@@ -594,7 +596,7 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 					if ($required) {
 						$output.=$id . ".destroy();" ;
 						$output.="$('.LV_validation_message').css('display','none');" ;
-						$output.=$id . " = new LiveValidation('" . $id . "');" ;
+						$output.=$id . "=new LiveValidation('" . $id . "');" ;
 						$output.=$id . ".add(Validate.Presence, { tinymce: true, tinymceField: '" . $id . "'});" ;
 					}
 				 $output.="}) ;" ;
@@ -743,22 +745,22 @@ function getTerms( $connection2, $gibbonSchoolYearID, $short=FALSE ) {
 
 //Array sort for multidimensional arrays
 function msort($array, $id="id", $sort_ascending=true) {
-	$temp_array = array();
+	$temp_array=array();
 	while(count($array)>0) {
-		$lowest_id = 0;
+		$lowest_id=0;
 		$index=0;
 		foreach ($array as $item) {
 			if (isset($item[$id])) {
 				if ($array[$lowest_id][$id]) {
 					if (strtolower($item[$id]) < strtolower($array[$lowest_id][$id])) {
-						$lowest_id = $index;
+						$lowest_id=$index;
 					}
 				}
 			}
 			$index++;
 		}
-		$temp_array[] = $array[$lowest_id];
-		$array = array_merge(array_slice($array, 0,$lowest_id), array_slice($array, $lowest_id+1));
+		$temp_array[]=$array[$lowest_id];
+		$array=array_merge(array_slice($array, 0,$lowest_id), array_slice($array, $lowest_id+1));
 	}
 	if ($sort_ascending) {
 		return $temp_array;
@@ -769,7 +771,12 @@ function msort($array, $id="id", $sort_ascending=true) {
 
 //Create the sidebar
 function sidebar($connection2, $guid) {
-	$loginReturn = $_GET["loginReturn"] ;
+	if (isset($_GET["loginReturn"])) {
+		$loginReturn=$_GET["loginReturn"] ;
+	}
+	else {
+		$loginReturn="" ; 
+	}
 	$loginReturnMessage ="" ;
 	if (!($loginReturn=="")) {
 		if ($loginReturn=="fail0b") {
@@ -798,12 +805,12 @@ function sidebar($connection2, $guid) {
 		print "</div>" ;
 	}
 	
-	if ($_SESSION[$guid]["username"]=="") {
+	if (isset($_SESSION[$guid]["username"])==FALSE) {
 		?>
 		<h2>
 			Login
 		</h2>
-		<form name="loginForm" method="post" action="./login.php?q=<? print $_GET["q"] ?>">
+		<form name="loginForm" method="post" action="./login.php?<? if (isset($_GET["q"])) { print "q=" . $_GET["q"] ; } ?>">
 			<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">	
 				<tr>
 					<td> 
@@ -812,7 +819,7 @@ function sidebar($connection2, $guid) {
 					<td class="right">
 						<input name="username" id="username" maxlength=20 type="text" style="width:120px">
 						<script type="text/javascript">
-							var username = new LiveValidation('username', {onlyOnSubmit: true });
+							var username=new LiveValidation('username', {onlyOnSubmit: true });
 							username.add(Validate.Presence);
 						 </script> 
 					</td>
@@ -824,7 +831,7 @@ function sidebar($connection2, $guid) {
 					<td class="right">
 						<input name="password" id="password" maxlength=20 type="password" style="width:120px">
 						<script type="text/javascript">
-							var password = new LiveValidation('password', {onlyOnSubmit: true });
+							var password=new LiveValidation('password', {onlyOnSubmit: true });
 							password.add(Validate.Presence);
 						 </script> 
 					</td>
@@ -961,7 +968,7 @@ function sidebar($connection2, $guid) {
 	}
 	
 	//Show student quick finder
-	if ($_SESSION[$guid]["address"]=="" AND $_SESSION[$guid]["username"]!="") {
+	if ($_SESSION[$guid]["address"]=="" AND isset($_SESSION[$guid]["username"])) {
 		$sidebar=getStudentFastFinder($connection2, $guid) ;
 		if ($sidebar!=FALSE) {
 			print $sidebar ;
@@ -969,7 +976,7 @@ function sidebar($connection2, $guid) {
 	}
 	
 	//Show recent discussion activity
-	if ($_SESSION[$guid]["address"]=="" AND $_SESSION[$guid]["username"]!="" AND (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess.php") OR isActionAccessible($guid, $connection2, "/modules/Planner/planner.php"))) {
+	if ($_SESSION[$guid]["address"]=="" AND isset($_SESSION[$guid]["username"]) AND (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess.php") OR isActionAccessible($guid, $connection2, "/modules/Planner/planner.php"))) {
 		$_SESSION[$guid]["lastTimestamp"] ;
 		
 		if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess.php")) {
@@ -1272,7 +1279,7 @@ function sidebar($connection2, $guid) {
 	
 	
 	//Show My Classes
-	if ($_SESSION[$guid]["address"]=="" AND $_SESSION[$guid]["username"]!="") {
+	if ($_SESSION[$guid]["address"]=="" AND isset($_SESSION[$guid]["username"])) {
 		try {
 			$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=> $_SESSION[$guid]["gibbonPersonID"]); 
 			$sql="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left%' ORDER BY course, class" ;
@@ -1364,45 +1371,52 @@ function sidebar($connection2, $guid) {
 	}
 	
 	//Show role switcher if user has more than one role
-	if (count($_SESSION[$guid]["gibbonRoleIDAll"])>1 AND $_SESSION[$guid]["address"]=="") {
-		print "<h2 class='sidebar'>" ;
-		print "Role Switcher" ;
-		print "</h2>" ;
+	if (isset($_SESSION[$guid]["username"])) {
+		if (count($_SESSION[$guid]["gibbonRoleIDAll"])>1 AND $_SESSION[$guid]["address"]=="") {
+			print "<h2 class='sidebar'>" ;
+			print "Role Switcher" ;
+			print "</h2>" ;
 		
-		$switchReturn = $_GET["switchReturn"] ;
-		$switchReturnMessage ="" ;
-		$class="error" ;
-		if (!($switchReturn=="")) {
-			if ($switchReturn=="fail0") {
-				$switchReturnMessage ="Role ID not specified." ;	
-			}
-			else if ($switchReturn=="fail1") {
-				$switchReturnMessage ="You do not have access to the specified role." ;	
-			}
-			else if ($switchReturn=="success0") {
-				$switchReturnMessage ="Role switched successfully." ;	
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $switchReturnMessage;
-			print "</div>" ;
-		} 
-		
-		print "<p>" ;
-			print "You have multiple roles within the system. Use the list below to switch role:" ;
-		print "</p>" ;
-		
-		print "<ul>" ;
-		for ($i=0; $i<count($_SESSION[$guid]["gibbonRoleIDAll"]); $i++) {
-			if ($_SESSION[$guid]["gibbonRoleIDAll"][$i][0]==$_SESSION[$guid]["gibbonRoleIDCurrent"]) {
-				print "<li><a href='roleSwitcherProcess.php?gibbonRoleID=" . $_SESSION[$guid]["gibbonRoleIDAll"][$i][0] . "'>" . $_SESSION[$guid]["gibbonRoleIDAll"][$i][1] . "</a> <i>(Active)</i></li>" ;
+			if (isset($_GET["switchReturn"])) {
+				$switchReturn=$_GET["switchReturn"] ;
 			}
 			else {
-				print "<li><a href='roleSwitcherProcess.php?gibbonRoleID=" . $_SESSION[$guid]["gibbonRoleIDAll"][$i][0] . "'>" . $_SESSION[$guid]["gibbonRoleIDAll"][$i][1] . "</a></li>" ;
+				$switchReturn="" ;
 			}
-		}
-		print "</ul>" ;
-	}	
+			$switchReturnMessage ="" ;
+			$class="error" ;
+			if (!($switchReturn=="")) {
+				if ($switchReturn=="fail0") {
+					$switchReturnMessage ="Role ID not specified." ;	
+				}
+				else if ($switchReturn=="fail1") {
+					$switchReturnMessage ="You do not have access to the specified role." ;	
+				}
+				else if ($switchReturn=="success0") {
+					$switchReturnMessage ="Role switched successfully." ;	
+					$class="success" ;
+				}
+				print "<div class='$class'>" ;
+					print $switchReturnMessage;
+				print "</div>" ;
+			} 
+		
+			print "<p>" ;
+				print "You have multiple roles within the system. Use the list below to switch role:" ;
+			print "</p>" ;
+		
+			print "<ul>" ;
+			for ($i=0; $i<count($_SESSION[$guid]["gibbonRoleIDAll"]); $i++) {
+				if ($_SESSION[$guid]["gibbonRoleIDAll"][$i][0]==$_SESSION[$guid]["gibbonRoleIDCurrent"]) {
+					print "<li><a href='roleSwitcherProcess.php?gibbonRoleID=" . $_SESSION[$guid]["gibbonRoleIDAll"][$i][0] . "'>" . $_SESSION[$guid]["gibbonRoleIDAll"][$i][1] . "</a> <i>(Active)</i></li>" ;
+				}
+				else {
+					print "<li><a href='roleSwitcherProcess.php?gibbonRoleID=" . $_SESSION[$guid]["gibbonRoleIDAll"][$i][0] . "'>" . $_SESSION[$guid]["gibbonRoleIDAll"][$i][1] . "</a></li>" ;
+				}
+			}
+			print "</ul>" ;
+		}	
+	}
 	
 	if ($_SESSION[$guid]["sidebarExtra"]!="" AND $_SESSION[$guid]["sidebarExtraPosition"]=="bottom") {
 		print "<div class='sidebarExtra'>" ;
@@ -1433,23 +1447,14 @@ function mainMenu($connection2, $guid) {
 		$output.="</ul>" ;
 	}
 	else {
-		$style="" ;
-		if ($_GET["q"]=="" or is_null($_GET["q"])) {
-			$style="class='active'" ;
-		}
 		$output.="<ul id='nav'>" ;
-		$output.="<li $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>Home</a></li>" ;
+		$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>Home</a></li>" ;
 		
 		$currentCategory="" ;
 		$lastCategory="" ;
 		$count=0;
 		while ($row=$result->fetch()) {
 			$currentCategory=$row["category"] ;
-			
-			$style="" ;
-			if (getModuleCategory($_GET["q"], $connection2)==$currentCategory) {
-				$style="class='active'" ;
-			}
 			
 			$entryURL=$row["entryURL"] ;
 			if (isActionAccessible($guid, $connection2, "/modules/" . $row["name"] . "/" . $entryURL)==FALSE AND $entryURL!="index.php") {
@@ -1470,7 +1475,7 @@ function mainMenu($connection2, $guid) {
 				if ($count>0) {
 					$output.="</ul></li>";
 				}
-				$output.="<li $style><a href='#'>$currentCategory</a>" ;
+				$output.="<li><a href='#'>$currentCategory</a>" ;
 				$output.="<ul>" ;
 				$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . $row["name"] . "</a></li>" ;
 			}
@@ -1553,7 +1558,7 @@ function conditional_escape($str) {
 
 //Returns the risk level of the highest-risk condition for an individual
 function getHighestMedicalRisk( $gibbonPersonID, $connection2 ) {
-	$output==FALSE ;
+	$output=FALSE ;
 	
 	try {
 		$dataAlert=array("gibbonPersonID"=>$gibbonPersonID); 
@@ -1579,7 +1584,7 @@ function getHighestMedicalRisk( $gibbonPersonID, $connection2 ) {
 //Gets age from date of birth, in days and months, from Unix timestamp
 function getAge($stamp, $short=FALSE) {
 	$output="" ;
-	$diff=mktime()-$stamp ;
+	$diff=time()-$stamp ;
 	$years=floor($diff/31556926); 
 	$months=floor(($diff-($years*31556926))/2629743.83) ;
 	if ($short==TRUE) {
@@ -1632,8 +1637,8 @@ function getRoleCategory($gibbonRoleID, $connection2) {
 
 //Converts a specified date (YYYY-MM-DD) into a UNIX timestamp
 function dateConvertToTimestamp( $date ) {
-	list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
-	$timestamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
+	list($dateYear, $dateMonth, $dateDay)=explode('-', $date);
+	$timestamp=mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
 	
 	return $timestamp ;
 }
@@ -2073,7 +2078,7 @@ function dateConvertBack ($date) {
 function isActionAccessible($guid, $connection2, $address, $sub="") {
 	$output=FALSE ;
 	//Check user is logged in
-	if ($_SESSION[$guid]["username"]!="") {
+	if (isset($_SESSION[$guid]["username"])) {
 		//Check user has a current role set
 		if ($_SESSION[$guid]["gibbonRoleIDCurrent"]!="") {
 			//Check module ready
@@ -2195,7 +2200,7 @@ function printPagination($guid, $total, $page, $pagination, $position, $get="") 
 
 //Get list of user roles from database, and convert to array
 function getRoleList( $gibbonRoleIDAll, $connection2 ) {
-	session_start() ;
+	@session_start() ;
 	
 	$output=array() ;
 	
@@ -2213,7 +2218,7 @@ function getRoleList( $gibbonRoleIDAll, $connection2 ) {
 		}
 		catch(PDOException $e) { }
 		if ($result->rowCount()==1) {
-			$row = $result->fetch() ;
+			$row=$result->fetch() ;
 			$output[$count][0]=$row["gibbonRoleID"] ;
 			$output[$count][1]=$row["name"] ;
 			$count++ ;
@@ -2279,7 +2284,7 @@ function getModuleCategory($address, $connection2 ) {
 
 //GET THE CURRENT YEAR AND SET IT AS A GLOBAL VARIABLE
 function setCurrentSchoolYear($guid,  $connection2 ) {
-	session_start() ;
+	@session_start() ;
 
 	//Run query
 	try {
@@ -2297,7 +2302,7 @@ function setCurrentSchoolYear($guid,  $connection2 ) {
 	}
 	//Else get schoolYearID
 	else {
-		$row = $result->fetch() ;
+		$row=$result->fetch() ;
 		$_SESSION[$guid]["gibbonSchoolYearID"]=$row["gibbonSchoolYearID"] ;
 		$_SESSION[$guid]["gibbonSchoolYearName"]=$row["name"] ;
 		$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"]=$row["sequenceNumber"] ;
@@ -2312,7 +2317,7 @@ function nl2brr($string) {
 
 //Take a school year, and return the previous one, or false if none
 function getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) {
-	$output==FALSE ;
+	$output=FALSE ;
 	
 	try {
 		$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
@@ -2341,7 +2346,7 @@ function getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) {
 
 //Take a school year, and return the previous one, or false if none
 function getNextSchoolYearID($gibbonSchoolYearID, $connection2) {		
-	$output==FALSE ;
+	$output=FALSE ;
 	
 	try {
 		$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
@@ -2422,12 +2427,12 @@ function randomPassword($length) {
   	$length=255;
   }
   
-  $charList = "abcdefghijkmnopqrstuvwxyz023456789-_";
-  $password = '' ;
+  $charList="abcdefghijkmnopqrstuvwxyz023456789-_";
+  $password='' ;
   
   	//Generate the password
   	for ($i=0;$i<$length;$i++) {
-  		$password = $password . substr($charList, rand(1,strlen($charList)),1);
+  		$password=$password . substr($charList, rand(1,strlen($charList)),1);
   	}
   
   	return $password;

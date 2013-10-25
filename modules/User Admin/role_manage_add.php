@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/role_manage_add.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/role_manage.php'>Manage Role</a> > </div><div class='trailEnd'>Add Role</div>" ;
 	print "</div>" ;
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -72,7 +72,7 @@ else {
 						<option value="Other">Other</option>
 					</select>
 					<script type="text/javascript">
-						var category = new LiveValidation('category');
+						var category=new LiveValidation('category');
 						category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 					 </script>
 				</td>
@@ -85,7 +85,7 @@ else {
 				<td class="right">
 					<input name="name" id="name" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var name = new LiveValidation('name');
+						var name=new LiveValidation('name');
 						name.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -98,7 +98,7 @@ else {
 				<td class="right">
 					<input name="nameShort" id="nameShort" maxlength=4 value="<? print $row["name"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var nameShort = new LiveValidation('nameShort');
+						var nameShort=new LiveValidation('nameShort');
 						nameShort.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -111,7 +111,7 @@ else {
 				<td class="right">
 					<input name="description" id="description" maxlength=60 value="<? print $row["description"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var description = new LiveValidation('description');
+						var description=new LiveValidation('description');
 						description.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -131,7 +131,7 @@ else {
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					<input type="submit" value="Submit">
 				</td>
 			</tr>
 		</table>

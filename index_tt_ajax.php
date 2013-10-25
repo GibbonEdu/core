@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Gibbon system-wide includes
 include "./functions.php" ;
@@ -35,7 +35,12 @@ catch(PDOException $e) {
 
 //Setup variables
 $output="" ;
-$id=$_GET["id"] ;
+if (isset($_GET["id"])) {
+	$id=$_GET["id"] ;
+}
+else {
+	$id="" ;
+}
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt.php")==FALSE) {
 	//Acess denied
@@ -66,7 +71,7 @@ else {
 		}
 	}
 	
-	$tt=renderTT($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"], $gibbonTTID, FALSE, $ttDate) ;
+	$tt=renderTT($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"], $id, FALSE, $ttDate) ;
 	if ($tt!=FALSE) {
 		$output.=$tt ;
 	}

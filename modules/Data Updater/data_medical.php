@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -53,7 +53,7 @@ else {
 			print "</p>" ;
 		}
 		
-		$updateReturn = $_GET["updateReturn"] ;
+		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 		$updateReturnMessage ="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
@@ -313,7 +313,7 @@ else {
 									<td class="right">
 										<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rowForms=8 style="width: 300px"><? print $rowForm["longTermMedicationDetails"] ?></textarea>
 										<script type="text/javascript">
-											var longTermMedicationDetails = new LiveValidation('longTermMedicationDetails');
+											var longTermMedicationDetails=new LiveValidation('longTermMedicationDetails');
 											longTermMedicationDetails.add( Validate.Length, { maximum: 1000 } );
 										 </script>
 									</td>
@@ -395,7 +395,7 @@ else {
 													?>				
 												</select>
 												<script type="text/javascript">
-													var name<? print $count ?> = new LiveValidation('name<? print $count ?>');
+													var name<? print $count ?>=new LiveValidation('name<? print $count ?>');
 													name<? print $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 												 </script>	
 											</td>
@@ -426,7 +426,7 @@ else {
 													?>
 												</select>
 												<script type="text/javascript">
-													var gibbonAlertLevelID<? print $count ?> = new LiveValidation('gibbonAlertLevelID<? print $count ?>');
+													var gibbonAlertLevelID<? print $count ?>=new LiveValidation('gibbonAlertLevelID<? print $count ?>');
 													gibbonAlertLevelID<? print $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 												 </script>	
 											</td>
@@ -471,7 +471,7 @@ else {
 											<td class="right">
 												<input name="lastEpisode<? print $count ?>" id="lastEpisode<? print $count ?>" maxlength=10 value="<? print dateConvertBack($rowCond["lastEpisode"]) ?>" type="text" style="width: 300px">
 												<script type="text/javascript">
-													var lastEpisode<? print $count ?> = new LiveValidation('lastEpisode<? print $count ?>');
+													var lastEpisode<? print $count ?>=new LiveValidation('lastEpisode<? print $count ?>');
 													lastEpisode<? print $count ?>.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 												 </script>
 												 <script type="text/javascript">
@@ -497,7 +497,7 @@ else {
 											<td class="right">
 												<textarea name="comment<? print $count ?>" id="comment<? print $count ?>" rows=8 style="width: 300px"><? print $rowCond["comment"] ?></textarea>
 												<script type="text/javascript">
-													var comment<? print $count ?> = new LiveValidation('comment<? print $count ?>');
+													var comment<? print $count ?>=new LiveValidation('comment<? print $count ?>');
 													comment<? print $count ?>.add( Validate.Length, { maximum: 1000 } );
 												 </script>
 											</td>
@@ -606,7 +606,7 @@ else {
 									<td class="right">
 										<input name="lastEpisode" id="lastEpisode" maxlength=10 value="<? print dateConvertBack($rowCond["lastEpisode"]) ?>" type="text" style="width: 300px">
 										<script type="text/javascript">
-											var lastEpisode = new LiveValidation('lastEpisode');
+											var lastEpisode=new LiveValidation('lastEpisode');
 											lastEpisode.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 										 </script>
 										 <script type="text/javascript">
@@ -632,7 +632,7 @@ else {
 									<td class="right">
 										<textarea name="comment" id="comment" rows=8 style="width: 300px"><? print $rowCond["comment"] ?></textarea>
 										<script type="text/javascript">
-											var commentNew = new LiveValidation('commentNew');
+											var commentNew=new LiveValidation('commentNew');
 											commentNew.add( Validate.Length, { maximum: 1000 } );
 										 </script>
 									</td>
@@ -651,7 +651,7 @@ else {
 										}
 										?>
 										<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-										<input type="reset" value="Reset"> <input type="submit" value="Submit">
+										<input type="submit" value="Submit">
 									</td>
 								</tr>
 							</table>

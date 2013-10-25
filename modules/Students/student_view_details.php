@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -381,8 +381,7 @@ else {
 									print $row["firstName"] ;
 								print "</td>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Other Names</span><br/>" ;
-									print $row["otherNames"] ;
+									
 								print "</td>" ;
 							print "</tr>" ;	
 							print "<tr>" ;
@@ -1340,7 +1339,7 @@ else {
 							print "</div>" ; 
 						}
 						else {
-							$deleteReturn = $_GET["deleteReturn"] ;
+							if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 							$deleteReturnMessage ="" ;
 							$class="error" ;
 							if (!($deleteReturn=="")) {

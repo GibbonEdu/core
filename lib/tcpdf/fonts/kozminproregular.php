@@ -1,8 +1,8 @@
 <?php
-$type = 'cidfont0';
-$name = 'KozMinPro-Regular-Acro';
-$displayname = 'Kozuka Mincho Pro (Japanese Serif)';
-$desc = array(
+$type='cidfont0';
+$name='KozMinPro-Regular-Acro';
+$displayname='Kozuka Mincho Pro (Japanese Serif)';
+$desc=array(
 	'Ascent' => 880,
 	'Descent' => -120,
 	'CapHeight' => 740,
@@ -12,18 +12,18 @@ $desc = array(
 	'StemV' => 86,
 	'XHeight' => 502,
 );
-$cidinfo = array(
+$cidinfo=array(
 	'Registry' => 'Adobe',
 	'Ordering' => 'Japan1',
 	'Supplement' => '4',
 );
-$enc = 'UniJIS-UCS2-H';
+$enc='UniJIS-UCS2-H';
 
-$up = -75;
-$ut = 50;
+$up=-75;
+$ut=50;
 
-$dw = 1000;
-$cw = array(
+$dw=1000;
+$cw=array(
 	32 => 278, 33 => 299, 34 => 353, 35 => 614, 36 => 614, 37 => 721, 38 => 735, 39 => 216, 40 => 323, 41 => 323,
 	42 => 449, 43 => 529, 44 => 219, 45 => 306, 46 => 219, 47 => 453, 48 => 614, 49 => 614, 50 => 614, 51 => 614,
 	52 => 614, 53 => 614, 54 => 614, 55 => 614, 56 => 614, 57 => 614, 58 => 219, 59 => 219, 60 => 529, 61 => 529,
@@ -48,7 +48,7 @@ $cw = array(
 	242 => 550, 243 => 550, 244 => 550, 245 => 550, 246 => 529, 247 => 575, 248 => 575, 249 => 575, 250 => 575, 251 => 529,
 	252 => 578, 253 => 529, 254 => 517, 255 => 634, 256 => 578, 257 => 445, 258 => 444, 259 => 842, 260 => 453, 261 => 614,
 );
-$_cr = array(
+$_cr=array(
 	array(231, 632, 500), // half-width
 	array(8718, 8718, 500),
 	array(9738, 9757, 250), // quarter-width
@@ -56,8 +56,8 @@ $_cr = array(
 	array(12063, 12087, 500),
 );
 foreach($_cr as $_r) {
-	for($i = $_r[0]; $i <= $_r[1]; $i++) {
-		$cw[$i+31] = $_r[2];
+	for($i=$_r[0]; $i <= $_r[1]; $i++) {
+		$cw[$i+31]=$_r[2];
 	}
 }
 // --- EOF ---

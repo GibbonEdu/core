@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -66,7 +66,7 @@ else {
 				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/markbook_view.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>View " . $row["course"] . "." . $row["class"] . " Markbook</a> > </div><div class='trailEnd'>Add Multiple Columns</div>" ;
 				print "</div>" ;
 	
-				$addReturn = $_GET["addReturn"] ;
+				if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 				$addReturnMessage ="" ;
 				$class="error" ;
 				if (!($addReturn=="")) {
@@ -139,7 +139,7 @@ else {
 							<td class="right">
 								<input name="name" id="name" maxlength=20 value="<? print $_GET["name"] ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var name = new LiveValidation('name');
+									var name=new LiveValidation('name');
 									name.add(Validate.Presence);
 								 </script>
 							</td>
@@ -151,7 +151,7 @@ else {
 							<td class="right">
 								<input name="description" id="description" maxlength=255 value="<? print $_GET["summary"] ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var description = new LiveValidation('description');
+									var description=new LiveValidation('description');
 									description.add(Validate.Presence);
 								 </script>
 							</td>
@@ -178,7 +178,7 @@ else {
 										?>
 									</select>
 									<script type="text/javascript">
-										var type = new LiveValidation('type');
+										var type=new LiveValidation('type');
 										type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 									 </script>
 								</td>
@@ -212,7 +212,7 @@ else {
 									?>				
 								</select>
 								<script type="text/javascript">
-									var gibbonScaleIDAttainment = new LiveValidation('gibbonScaleIDAttainment');
+									var gibbonScaleIDAttainment=new LiveValidation('gibbonScaleIDAttainment');
 									gibbonScaleIDAttainment.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 								 </script>
 							</td>
@@ -282,7 +282,7 @@ else {
 									?>				
 								</select>
 								<script type="text/javascript">
-									var gibbonScaleIDEffort = new LiveValidation('gibbonScaleIDEffort');
+									var gibbonScaleIDEffort=new LiveValidation('gibbonScaleIDEffort');
 									gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 								 </script>
 							</td>
@@ -313,7 +313,7 @@ else {
 									?>				
 								</select>
 								<script type="text/javascript">
-									var gibbonScaleIDEffort = new LiveValidation('gibbonScaleIDEffort');
+									var gibbonScaleIDEffort=new LiveValidation('gibbonScaleIDEffort');
 									gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 								 </script>
 							</td>
@@ -383,7 +383,7 @@ else {
 									?>				
 								</select>
 								<script type="text/javascript">
-									var gibbonScaleIDEffort = new LiveValidation('gibbonScaleIDEffort');
+									var gibbonScaleIDEffort=new LiveValidation('gibbonScaleIDEffort');
 									gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 								 </script>
 							</td>
@@ -421,7 +421,7 @@ else {
 							<td class="right">
 								<input name="completeDate" id="completeDate" maxlength=10 value="<? print $row["completeDate"] ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var completeDate = new LiveValidation('completeDate');
+									var completeDate=new LiveValidation('completeDate');
 									completeDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 								 </script>
 								 <script type="text/javascript">
@@ -455,7 +455,7 @@ else {
 								?>
 					
 								<script type="text/javascript">
-									var file = new LiveValidation('file');
+									var file=new LiveValidation('file');
 									file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 								</script>
 							</td>
@@ -465,7 +465,7 @@ else {
 								<span style="font-size: 90%"><i>* denotes a required field</i></span>
 							</td>
 							<td class="right">
-								<input type="reset" value="Reset"> <input type="submit" value="Submit">
+								<input type="submit" value="Submit">
 							</td>
 						</tr>
 					</table>

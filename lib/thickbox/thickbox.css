@@ -55,7 +55,7 @@
 
 * html #TB_window { /* ie6 hack */
 position: absolute;
-margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = document.documentElement && document.documentElement.scrollTop || document.body.scrollTop) + 'px');
+margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin=document.documentElement && document.documentElement.scrollTop || document.body.scrollTop) + 'px');
 }
 
 #TB_window img#TB_Image {
@@ -126,7 +126,7 @@ margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = d
 
 * html #TB_load { /* ie6 hack */
 position: absolute;
-margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = document.documentElement && document.documentElement.scrollTop || document.body.scrollTop) + 'px');
+margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin=document.documentElement && document.documentElement.scrollTop || document.body.scrollTop) + 'px');
 }
 
 #TB_HideSelect{

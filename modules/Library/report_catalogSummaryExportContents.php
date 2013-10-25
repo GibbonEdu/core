@@ -29,7 +29,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Library/report_catalogSummary.php")==FALSE) {
 	//Acess denied

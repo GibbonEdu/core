@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/systemSettings.php")==FALSE) {
 	//Acess denied
@@ -46,7 +46,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>System Settings</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -99,7 +99,7 @@ else {
 				<td stclass="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Presence);
 						<? print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 					 </script> 
@@ -125,7 +125,7 @@ else {
 				<td stclass="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -150,7 +150,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -175,7 +175,7 @@ else {
 				<td class="right">
 					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=8 style="width: 300px"><? print htmlPrep($row["value"]) ?></textarea>
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -269,7 +269,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -294,7 +294,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -319,7 +319,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Email);
 					 </script> 
 				</td>
@@ -344,7 +344,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -369,7 +369,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -394,7 +394,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Email);
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
@@ -420,7 +420,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -445,7 +445,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Email);
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
@@ -471,7 +471,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -496,7 +496,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Email);
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
@@ -684,7 +684,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print $row["value"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 					</script>	
 				</td>
@@ -709,7 +709,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print $row["value"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 					</script>	
 				</td>
@@ -734,7 +734,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print $row["value"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 					</script>	
 				</td>
@@ -910,7 +910,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print $row["value"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Numericality);
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
@@ -977,7 +977,7 @@ else {
 				<td class="right">
 					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -1044,7 +1044,7 @@ else {
 						?>			
 					</select>
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 					 </script>
 				</td>
@@ -1056,7 +1056,7 @@ else {
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					<input type="submit" value="Submit">
 				</td>
 			</tr>
 		</table>

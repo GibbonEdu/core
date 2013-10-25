@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -104,7 +104,7 @@ else {
 					$ext=".png','.jpg','.jpeg" ;
 					?>
 					<script type="text/javascript">
-						var file = new LiveValidation('file');
+						var file=new LiveValidation('file');
 						file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 					</script>
 				</td>
@@ -156,7 +156,7 @@ else {
 			//Get background image
 			$bg="" ;
 			if ($_FILES['file']["tmp_name"]!="") {
-				$time=mktime() ;
+				$time=time() ;
 				//Check for folder in uploads based on today's date
 				$path=$_SESSION[$guid]["absolutePath"] ; ;
 				if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {

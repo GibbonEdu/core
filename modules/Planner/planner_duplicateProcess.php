@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -55,14 +55,14 @@ else {
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_duplicate.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&updateReturn=fail0$params" ;
+	$URL=$URL . "&updateReturn=fail0$params" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL = $URL . "&updateReturn=fail0$params" ;
+		$URL=$URL . "&updateReturn=fail0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -70,7 +70,7 @@ else {
 		//Check if school year specified
 		if ($gibbonPlannerEntryID=="" OR ($viewBy=="class" AND $gibbonCourseClassID=="Y")) {
 			//Fail1
-			$URL = $URL . "&updateReturn=fail1$params" ;
+			$URL=$URL . "&updateReturn=fail1$params" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -88,14 +88,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL = $URL . "&updateReturn=fail2$params" ;
+				$URL=$URL . "&updateReturn=fail2$params" ;
 				header("Location: {$URL}");
 				break ;
 			}
 			
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL = $URL . "&updateReturn=fail2$params" ;
+				$URL=$URL . "&updateReturn=fail2$params" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -158,7 +158,7 @@ else {
 				
 				if ($viewBy=="" OR $gibbonCourseClassID=="" OR $date=="" OR $timeStart=="" OR $timeEnd=="" OR $name=="" OR $summary=="" OR $homework=="" OR $viewableParents=="" OR $viewableStudents=="" OR ($homework=="Y" AND ($homeworkDetails=="" OR $homeworkDueDate==""))) {
 					//Fail 3
-					$URL = $URL . "&updateReturn=fail3$params" ;
+					$URL=$URL . "&updateReturn=fail3$params" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -169,7 +169,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL = $URL . "&updateReturn=fail2$params" ;
+						$URL=$URL . "&updateReturn=fail2$params" ;
 						header("Location: {$URL}");
 						break ;
 					}	
@@ -181,7 +181,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL = $URL . "&updateReturn=fail2$params" ;
+						$URL=$URL . "&updateReturn=fail2$params" ;
 						header("Location: {$URL}");
 						break ;
 					}	
@@ -199,7 +199,7 @@ else {
 					catch(PDOException $e) { 
 						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 						//Fail 2
-						$URL = $URL . "&updateReturn=fail2$params" ;
+						$URL=$URL . "&updateReturn=fail2$params" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -211,7 +211,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL = $URL . "&updateReturn=fail2$params" ;
+						$URL=$URL . "&updateReturn=fail2$params" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -287,13 +287,13 @@ else {
 					
 					if ($partialFail==TRUE) {
 						//Fail 5
-						$URL = $URL . "&updateReturn=fail5$params" ;
+						$URL=$URL . "&updateReturn=fail5$params" ;
 						header("Location: {$URL}");
 					}
 					else {
 						//Success 0
 						$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/planner_edit.php&gibbonPlannerEntryID=$AI" ;
-						$URL = $URL . "&duplicateReturn=success0$params" ;
+						$URL=$URL . "&duplicateReturn=success0$params" ;
 						header("Location: {$URL}");
 					}
 				}

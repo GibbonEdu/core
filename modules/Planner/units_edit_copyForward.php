@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -42,7 +42,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>Edit Unit</a> > </div><div class='trailEnd'>Copy Unit Back</div>" ;
 		print "</div>" ;
 		
-		$copyForwardReturn = $_GET["copyForwardReturn"] ;
+		$copyForwardReturn=$_GET["copyForwardReturn"] ;
 		$copyForwardReturnMessage ="" ;
 		$class="error" ;
 		if (!($copyForwardReturn=="")) {
@@ -207,7 +207,7 @@ else {
 											?>				
 										</select>
 										<script type="text/javascript">
-											var gibbonSchoolYearIDCopyTo = new LiveValidation('gibbonSchoolYearIDCopyTo');
+											var gibbonSchoolYearIDCopyTo=new LiveValidation('gibbonSchoolYearIDCopyTo');
 											gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 										 </script>
 									</td>
@@ -250,7 +250,7 @@ else {
 									<td class="right">
 										<? print "<input name='nameTarget' id='nameTarget' value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
 										<script type="text/javascript">
-											var nameTarget = new LiveValidation('nameTarget');
+											var nameTarget=new LiveValidation('nameTarget');
 											nameTarget.add(Validate.Presence);
 										 </script>
 									</td>
@@ -263,7 +263,7 @@ else {
 										<input name="gibbonUnitID" id="gibbonUnitID" value="<? print $gibbonUnitID ?>" type="hidden">
 										<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
 										<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-										<input type="reset" value="Reset"> <input type="submit" value="Submit">
+										<input type="submit" value="Submit">
 									</td>
 								</tr>
 								<tr>

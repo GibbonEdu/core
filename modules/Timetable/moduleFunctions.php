@@ -64,7 +64,7 @@ function getCalendarEvents($guid, $xml, $startDayStamp, $endDayStamp) {
 			else {
 				$eventsSchool[$count][1]="Specified Time" ;
 				$eventsSchool[$count][2]=strtotime($startTime) ;
-				$eventsSchool[$count][3] = mktime (substr($endTime,11,2), substr($endTime,14,2), substr($endTime,17,2), substr($endTime,5,2), substr($endTime,8,2), substr($endTime,0,4) ) ;
+				$eventsSchool[$count][3]=mktime (substr($endTime,11,2), substr($endTime,14,2), substr($endTime,17,2), substr($endTime,5,2), substr($endTime,8,2), substr($endTime,0,4) ) ;
 			}
 			
 			//WHERE
@@ -89,7 +89,8 @@ function getCalendarEvents($guid, $xml, $startDayStamp, $endDayStamp) {
 
 //TIMETABLE FOR INDIVIUDAL
 function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", $startDayStamp="", $q="", $params="") {
-			
+	$zCount=0 ;
+		
 	$self=FALSE ;
 	if ($gibbonPersonID==$_SESSION[$guid]["gibbonPersonID"]) {
 		$self=TRUE ;
@@ -206,7 +207,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 						print "<input name='ttDate' id='ttDate' maxlength=10 value='" . date("d/m/Y", $startDayStamp) . "' type='text' style='height: 22px; width:100px; margin-right: 0px; float: none'> " ;
 						?>
 						<script type="text/javascript">
-							var ttDate = new LiveValidation('ttDate');
+							var ttDate=new LiveValidation('ttDate');
 							ttDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 							ttDate.add(Validate.Presence);
 						 </script>
@@ -341,7 +342,8 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 		
 		
 		//Count up max number of all day events in a day
-		$eventsCombined==FALSE ;
+		$eventsCombined=FALSE ;
+		$maxAllDays=0 ;
 		if ($allDay==TRUE) {
 			if ($eventsPersonal!=FALSE AND $eventsSchool!=FALSE) {
 				$eventsCombined=array_merge ($eventsSchool, $eventsPersonal) ;
@@ -355,7 +357,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 			
 			$eventsCombined=msort($eventsCombined, 2, true) ;
 			
-			$maxAllDays=0 ;
 			$currentAllDays=0 ;
 			$lastDate="" ;
 			$currentDate="" ;
@@ -661,17 +662,17 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 					$output=$output . "<div style='position: relative; width: 71px'>" ;
 						$countTime=0 ;
 						$time=$timeStart ;
-						$output=$output . "<div $title style='z-index: $zCount; position: absolute; top: -3px; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>" ;
+						$output=$output . "<div $title style='z-index: " . $zCount . "; position: absolute; top: -3px; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>" ;
 							$output=$output . substr($time,0,5) . "<br/>" ;
 						$output=$output . "</div>" ;
-						$time = date("H:i:s", strtotime($time)+3600) ;
+						$time=date("H:i:s", strtotime($time)+3600) ;
 						$spinControl=0 ;
-						while ($time<=$timeEnd AND $spinControl<(23-date("H",$timeStart))) {
+						while ($time<=$timeEnd AND $spinControl<@(23-date("H",$timeStart))) {
 							$countTime++ ;
 							$output=$output . "<div $title style='z-index: $zCount; position: absolute; top:" . (($countTime*60)-5) . "px ; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>" ;
 								$output=$output . substr($time,0,5) . "<br/>" ;
 							$output=$output . "</div>" ;
-							$time = date("H:i:s", strtotime($time)+3600) ;
+							$time=date("H:i:s", strtotime($time)+3600) ;
 							$spinControl++ ;
 						}
 						
@@ -965,8 +966,8 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 				if ($isSlotInTime==TRUE) {
 					//Check for an exception for the current user
 					try {
-						$dataException=array("username"=>$username); 
-						$sqlException="SELECT * FROM gibbonTTDayRowClassException WHERE gibbonTTDayRowClassID=" . $rowPeriods["gibbonTTDayRowClassID"] . " AND gibbonPersonID=$gibbonPersonID" ;
+						$dataException=array("gibbonPersonID"=>$gibbonPersonID); 
+						$sqlException="SELECT * FROM gibbonTTDayRowClassException WHERE gibbonTTDayRowClassID=" . $rowPeriods["gibbonTTDayRowClassID"] . " AND gibbonPersonID=:gibbonPersonID" ;
 						$resultException=$connection2->prepare($sqlException);
 						$resultException->execute($dataException);
 					}
@@ -1265,7 +1266,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 						print "<input name='ttDate' id='ttDate' maxlength=10 value='" . date("d/m/Y", $startDayStamp) . "' type='text' style='height: 22px; width:100px; margin-right: 0px; float: none'>" ;
 						?>
 						<script type="text/javascript">
-							var ttDate = new LiveValidation('ttDate');
+							var ttDate=new LiveValidation('ttDate');
 							ttDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 							ttDate.add(Validate.Presence);
 						 </script>
@@ -1570,14 +1571,14 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 						$output=$output . "<div $title style='z-index: $zCount; position: absolute; top: -3px; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>" ;
 							$output=$output . substr($time,0,5) . "<br/>" ;
 						$output=$output . "</div>" ;
-						$time = date("H:i:s", strtotime($time)+3600) ;
+						$time=date("H:i:s", strtotime($time)+3600) ;
 						$spinControl=0 ;
 						while ($time<=$timeEnd AND $spinControl<(23-date("H",$timeStart))) {
 							$countTime++ ;
 							$output=$output . "<div $title style='z-index: $zCount; position: absolute; top:" . (($countTime*60)-5) . "px ; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>" ;
 								$output=$output . substr($time,0,5) . "<br/>" ;
 							$output=$output . "</div>" ;
-							$time = date("H:i:s", strtotime($time)+3600) ;
+							$time=date("H:i:s", strtotime($time)+3600) ;
 							$spinControl++ ;
 						}
 						

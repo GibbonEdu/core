@@ -32,7 +32,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 $_SESSION[$guid]["sidebarExtra"]="" ;
 
 //Check to see if system settings are set from databases

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/inDescriptors_manage_edit.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/inDescriptors_manage.php'>Manage Individual Needs Descriptors</a> > </div><div class='trailEnd'>Edit Descriptor</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -59,7 +59,7 @@ else {
 		print "</div>" ;
 	} 
 	
-	$deleteReturn = $_GET["deleteReturn"] ;
+	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 	$deleteReturnMessage ="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
@@ -109,7 +109,7 @@ else {
 						<td class="right">
 							<input name="name" id="name" maxlength=50 value="<? print $row["name"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var name = new LiveValidation('name');
+								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
 							 </script>
 						</td>
@@ -122,7 +122,7 @@ else {
 						<td class="right">
 							<input name="nameShort" id="nameShort" maxlength=5 value="<? print $row["nameShort"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var nameShort = new LiveValidation('nameShort');
+								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
 							 </script>
 						</td>
@@ -135,7 +135,7 @@ else {
 						<td class="right">
 							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="<? print $row["sequenceNumber"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var sequenceNumber = new LiveValidation('sequenceNumber');
+								var sequenceNumber=new LiveValidation('sequenceNumber');
 								sequenceNumber.add(Validate.Presence);
 							 </script>
 						</td>
@@ -154,7 +154,7 @@ else {
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>

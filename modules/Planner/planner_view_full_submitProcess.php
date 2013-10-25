@@ -34,7 +34,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -149,7 +149,7 @@ else {
 								}
 								else {
 									//Attempt file upload
-									$time=mktime() ;
+									$time=time() ;
 									if ($_FILES['file']["tmp_name"]!="") {
 										//Check for folder in uploads based on today's date
 										$path=$_SESSION[$guid]["absolutePath"] ; ;
@@ -167,7 +167,7 @@ else {
 										
 										if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $location))) {
 											//Fail 5
-											$URL = $URL . "&addReturn=fail5" ;
+											$URL=$URL . "&addReturn=fail5" ;
 											header("Location: {$URL}");
 										}
 									}

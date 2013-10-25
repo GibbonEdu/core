@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/behaviourSettings.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Behaviour Settings</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -77,7 +77,7 @@ else {
 				<td class="right">
 					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" type="text" style="width: 300px" rows=4><? print $row["value"] ?></textarea>
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -100,7 +100,7 @@ else {
 				<td class="right">
 					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" type="text" style="width: 300px" rows=4><? print $row["value"] ?></textarea>
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -123,7 +123,7 @@ else {
 				<td class="right">
 					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" type="text" style="width: 300px" rows=4><? print $row["value"] ?></textarea>
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
@@ -146,7 +146,7 @@ else {
 				<td class="right">
 					<input type='text' name="<? print $row["name"] ?>" id="<? print $row["name"] ?>"style="width: 300px" value='<? print htmlPrep($row["value"]) ?>'>
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 					</script>	
 				</td>
@@ -158,7 +158,7 @@ else {
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					<input type="submit" value="Submit">
 				</td>
 			</tr>
 		</table>

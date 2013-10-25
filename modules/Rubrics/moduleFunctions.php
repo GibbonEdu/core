@@ -167,7 +167,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="") {
 				$output.="<tr style='border: 1px none #000'>" ;
 					$output.="<td class='right' colspan=3 style='border: 1px none #000'>" ;
 						$output.="<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
-						$output.="<input type='reset' value='Reset'> <input type='submit' value='Submit'>" ;
+						$output.="<input type='submit' value='Submit'>" ;
 					$output.="</td>" ;
 				$output.="</tr>" ;
 			$output.="</table>" ;
@@ -412,11 +412,11 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 											$output.="$(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").click(function(){" ;
 												$output.="if ($(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").css('background-color') == \"rgb(251, 251, 251)\" ) {" ;
 													$output.="$(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").css('background', 'none').css('background-color', '#79FA74');" ;
-													$output.="var request = $.ajax({ url: \"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Rubrics/rubrics_data_saveAjax.php\", type: \"GET\", data: {mode: \"Add\", gibbonRubricID : \"" . $gibbonRubricID . "\", gibbonPersonID : \"" . $gibbonPersonID . "\",gibbonRubricCellID : \"" . $cells[$rows[$i][0]][$columns[$n][0]][1] . "\",contextDBTable : \"" . $contextDBTable . "\",contextDBTableID : \"" . $contextDBTableID . "\"}, dataType: \"html\"});" ;
+													$output.="var request=$.ajax({ url: \"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Rubrics/rubrics_data_saveAjax.php\", type: \"GET\", data: {mode: \"Add\", gibbonRubricID : \"" . $gibbonRubricID . "\", gibbonPersonID : \"" . $gibbonPersonID . "\",gibbonRubricCellID : \"" . $cells[$rows[$i][0]][$columns[$n][0]][1] . "\",contextDBTable : \"" . $contextDBTable . "\",contextDBTableID : \"" . $contextDBTableID . "\"}, dataType: \"html\"});" ;
 												$output.="}" ; 
 												$output.="else {" ;
 													$output.="$(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").css('background', 'none').css('background-color', '#fbfbfb');" ;
-													$output.="var request = $.ajax({ url: \"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Rubrics/rubrics_data_saveAjax.php\", type: \"GET\", data: {mode: \"Remove\", gibbonRubricID : \"" . $gibbonRubricID . "\", gibbonPersonID : \"" . $gibbonPersonID . "\",gibbonRubricCellID : \"" . $cells[$rows[$i][0]][$columns[$n][0]][1] . "\",contextDBTable : \"" . $contextDBTable . "\",contextDBTableID : \"" . $contextDBTableID . "\"}, dataType: \"html\"});" ;
+													$output.="var request=$.ajax({ url: \"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Rubrics/rubrics_data_saveAjax.php\", type: \"GET\", data: {mode: \"Remove\", gibbonRubricID : \"" . $gibbonRubricID . "\", gibbonPersonID : \"" . $gibbonPersonID . "\",gibbonRubricCellID : \"" . $cells[$rows[$i][0]][$columns[$n][0]][1] . "\",contextDBTable : \"" . $contextDBTable . "\",contextDBTableID : \"" . $contextDBTableID . "\"}, dataType: \"html\"});" ;
 												$output.="}" ;
 											 $output.="});" ;
 										$output.="});" ;

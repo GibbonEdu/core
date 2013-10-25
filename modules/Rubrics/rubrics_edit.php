@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -49,7 +49,7 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php'>Manage Rubrics</a> > </div><div class='trailEnd'>Edit Rubric</div>" ;
 			print "</div>" ;
 			
-			$updateReturn = $_GET["updateReturn"] ;
+			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 			$updateReturnMessage ="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
@@ -74,7 +74,7 @@ else {
 				print "</div>" ;
 			} 
 			
-			$addReturn = $_GET["addReturn"] ;
+			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 			$addReturnMessage ="" ;
 			$class="error" ;
 			if (!($addReturn=="")) {
@@ -87,7 +87,7 @@ else {
 				print "</div>" ;
 			} 
 			
-			$columnDeleteReturn = $_GET["columnDeleteReturn"] ;
+			$columnDeleteReturn=$_GET["columnDeleteReturn"] ;
 			$columnDeleteReturnMessage ="" ;
 			$class="error" ;
 			if (!($columnDeleteReturn=="")) {
@@ -112,7 +112,7 @@ else {
 				print "</div>" ;
 			} 
 			
-			$rowDeleteReturn = $_GET["rowDeleteReturn"] ;
+			$rowDeleteReturn=$_GET["rowDeleteReturn"] ;
 			$rowDeleteReturnMessage ="" ;
 			$class="error" ;
 			if (!($rowDeleteReturn=="")) {
@@ -137,7 +137,7 @@ else {
 				print "</div>" ;
 			} 
 			
-			$cellEditReturn = $_GET["cellEditReturn"] ;
+			$cellEditReturn=$_GET["cellEditReturn"] ;
 			$cellEditReturnMessage ="" ;
 			$class="error" ;
 			if (!($cellEditReturn=="")) {
@@ -246,7 +246,7 @@ else {
 								<td class="right">
 									<input name="name" id="name" maxlength=50 value="<? print $row["name"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
-										var name = new LiveValidation('name');
+										var name=new LiveValidation('name');
 										name.add(Validate.Presence);
 									</script>
 								</td>
@@ -272,7 +272,7 @@ else {
 									<input name="category" id="category" maxlength=100 value="<? print $row["category"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										$(function() {
-											var availableTags = [
+											var availableTags=[
 												<?
 												try {
 													$dataAuto=array(); 
@@ -365,7 +365,7 @@ else {
 								</td>
 								<td class="right">
 									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-									<input type="reset" value="Reset"> <input type="submit" value="Submit">
+									<input type="submit" value="Submit">
 								</td>
 							</tr>
 						</table>

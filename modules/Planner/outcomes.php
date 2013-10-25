@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/outcomes.php")==FALSE) {
 	//Acess denied
@@ -48,7 +48,7 @@ else {
 			}
 		}
 		
-		$deleteReturn = $_GET["deleteReturn"] ;
+		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 		$deleteReturnMessage ="" ;
 		$class="error" ;
 		if (!($deleteReturn=="")) {
@@ -62,7 +62,7 @@ else {
 		} 
 		
 		//Set pagination variable
-		$page=$_GET["page"] ;
+		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
 		if ((!is_numeric($page)) OR $page<1) {
 			$page=1 ;
 		}

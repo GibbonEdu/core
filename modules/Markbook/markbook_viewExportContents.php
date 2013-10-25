@@ -29,7 +29,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 $gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 $gibbonMarkbookColumnID=$_SESSION[$guid]["exportToExcelParams"] ;

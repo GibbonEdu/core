@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -55,8 +55,8 @@ else {
 			if ($date=="") {
 				$date=date("Y-m-d");
 			}
-			list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
-			$dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);	
+			list($dateYear, $dateMonth, $dateDay)=explode('-', $date);
+			$dateStamp=mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);	
 			$params="&viewBy=date&date=$date" ;
 		}
 		else if ($viewBy=="class") {
@@ -66,8 +66,8 @@ else {
 			$params="&viewBy=class&class=$class&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView" ;
 		}
 		
-		list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
-		$todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
+		list($todayYear, $todayMonth, $todayDay)=explode('-', $today);
+		$todayStamp=mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
 			
 		$proceed=TRUE ;
 		$extra="" ;
@@ -117,7 +117,7 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>Planner $extra</a> > </div><div class='trailEnd'>Add Lesson Plan</div>" ;
 			print "</div>" ;
 			
-			$addReturn = $_GET["addReturn"] ;
+			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 			$addReturnMessage ="" ;
 			$class="error" ;
 			if (!($addReturn=="")) {
@@ -196,7 +196,7 @@ else {
 									?>				
 								</select>
 								<script type="text/javascript">
-									var gibbonCourseClassID = new LiveValidation('gibbonCourseClassID');
+									var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
 									gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 								 </script>
 								<?
@@ -345,7 +345,7 @@ else {
 						<td class="right">
 							<input name="name" id="name" maxlength=50 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var name = new LiveValidation('name');
+								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
 							 </script>
 						</td>
@@ -357,7 +357,7 @@ else {
 						<td class="right">
 							<input name="summary" id="summary" maxlength=255 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var summary = new LiveValidation('summary');
+								var summary=new LiveValidation('summary');
 								summary.add(Validate.Presence);
 							 </script>
 						</td>
@@ -422,7 +422,7 @@ else {
 								?>
 								<input name="date" id="date" maxlength=10 value="<? print dateConvertBack($nextDate) ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var date = new LiveValidation('date');
+									var date=new LiveValidation('date');
 									date.add(Validate.Presence);
 									date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 								 </script>
@@ -444,13 +444,13 @@ else {
 						<td class="right">
 							<input name="timeStart" id="timeStart" maxlength=5 value="<? print substr($nextTimeStart,0,5) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var timeStart = new LiveValidation('timeStart');
+								var timeStart=new LiveValidation('timeStart');
 								timeStart.add(Validate.Presence);
 								timeStart.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
 							 </script>
 							<script type="text/javascript">
 								$(function() {
-									var availableTags = [
+									var availableTags=[
 										<?
 										try {
 											$dataAuto=array(); 
@@ -477,13 +477,13 @@ else {
 						<td class="right">
 							<input name="timeEnd" id="timeEnd" maxlength=5 value="<? print substr($nextTimeEnd,0,5) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var timeEnd = new LiveValidation('timeEnd');
+								var timeEnd=new LiveValidation('timeEnd');
 								timeEnd.add(Validate.Presence);
 								timeEnd.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
 							 </script>
 							<script type="text/javascript">
 								$(function() {
-									var availableTags = [
+									var availableTags=[
 										<?
 										try {
 											$dataAuto=array(); 
@@ -640,7 +640,7 @@ else {
 						<td class="right">
 							<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="<? print $row["date"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var homeworkDueDate = new LiveValidation('homeworkDueDate');
+								var homeworkDueDate=new LiveValidation('homeworkDueDate');
 								homeworkDueDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 							 	homeworkDueDate.add(Validate.Presence);
 								homeworkDueDate.disable();
@@ -660,12 +660,12 @@ else {
 						<td class="right">
 							<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<? print substr($row["homeworkDueDateTime"],11,5) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var homeworkDueDateTime = new LiveValidation('homeworkDueDateTime');
+								var homeworkDueDateTime=new LiveValidation('homeworkDueDateTime');
 								homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
 							 </script>
 							<script type="text/javascript">
 								$(function() {
-									var availableTags = [
+									var availableTags=[
 										<?
 										try {
 											$dataAuto=array("username"=>$username); 
@@ -708,7 +708,7 @@ else {
 						<td class="right">
 							<input name="homeworkSubmissionDateOpen" id="homeworkSubmissionDateOpen" maxlength=10 value="<? print $row["date"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var homeworkSubmissionDateOpen = new LiveValidation('homeworkSubmissionDateOpen');
+								var homeworkSubmissionDateOpen=new LiveValidation('homeworkSubmissionDateOpen');
 								homeworkSubmissionDateOpen.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 							 </script>
 							 <script type="text/javascript">
@@ -1234,7 +1234,7 @@ else {
 							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 						<td class="right">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>

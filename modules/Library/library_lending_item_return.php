@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Library/library_lending_item_return.php")==FALSE) {
 	//Acess denied
@@ -58,7 +58,7 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending.php'>Lending & Activity Log</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID'>View Item</a> > </div><div class='trailEnd'>Return Item</div>" ;
 			print "</div>" ;
 			
-			$updateReturn = $_GET["updateReturn"] ;
+			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 			$updateReturnMessage ="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
@@ -196,7 +196,7 @@ else {
 						<td class="right">
 							<input name="gibbonLibraryItemID" id="gibbonLibraryItemID" value="<? print $gibbonLibraryItemID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Return">
+							<input type="submit" value="Return">
 						</td>
 					</tr>
 				</table>

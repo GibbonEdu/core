@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_manage_condition_edit.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage.php'>Manage Medical Forms</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_edit.php&&gibbonPersonMedicalID=" . $_GET["gibbonPersonMedicalID"] . "'>Edit Medical Form</a> > </div><div class='trailEnd'>Edit Condition</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -141,7 +141,7 @@ else {
 								?>				
 							</select>
 							<script type="text/javascript">
-								var name = new LiveValidation('name');
+								var name=new LiveValidation('name');
 								name.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							 </script>	
 						</td>
@@ -172,7 +172,7 @@ else {
 								?>
 							</select>
 							<script type="text/javascript">
-								var gibbonAlertLevelID = new LiveValidation('gibbonAlertLevelID');
+								var gibbonAlertLevelID=new LiveValidation('gibbonAlertLevelID');
 								gibbonAlertLevelID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							 </script>	
 						</td>
@@ -217,7 +217,7 @@ else {
 						<td class="right">
 							<input name="lastEpisode" id="lastEpisode" maxlength=10 value="<? print dateConvertBack($row["lastEpisode"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var lastEpisode = new LiveValidation('lastEpisode');
+								var lastEpisode=new LiveValidation('lastEpisode');
 								lastEpisode.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 							 </script>
 							 <script type="text/javascript">
@@ -243,7 +243,7 @@ else {
 						<td class="right">
 							<textarea name="comment" id="comment" rows=8 style="width: 300px"><? print $row["comment"] ?></textarea>
 							<script type="text/javascript">
-								var comment = new LiveValidation('comment');
+								var comment=new LiveValidation('comment');
 								comment.add( Validate.Length, { maximum: 1000 } );
 							 </script>
 						</td>
@@ -255,7 +255,7 @@ else {
 						<td class="right">
 							<input name="gibbonPersonMedicalID" id="gibbonPersonMedicalID" value="<? print $gibbonPersonMedicalID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>

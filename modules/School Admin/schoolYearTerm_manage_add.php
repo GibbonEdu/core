@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/schoolYearTerm_manage_add.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/schoolYearTerm_manage.php'>Manage Terms</a> > </div><div class='trailEnd'>Add Term</div>" ;
 	print "</div>" ;
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -83,7 +83,7 @@ else {
 						?>				
 					</select>
 					<script type="text/javascript">
-						var gibbonSchoolYearID = new LiveValidation('gibbonSchoolYearID');
+						var gibbonSchoolYearID=new LiveValidation('gibbonSchoolYearID');
 						gibbonSchoolYearID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 					 </script>
 				</td>
@@ -96,7 +96,7 @@ else {
 				<td class="right">
 					<input name="sequenceNumber" id="sequenceNumber" maxlength=3 value="<? print $row["sequenceNumber"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var sequenceNumber = new LiveValidation('sequenceNumber');
+						var sequenceNumber=new LiveValidation('sequenceNumber');
 						sequenceNumber.add(Validate.Numericality);
 						sequenceNumber.add(Validate.Presence);
 					 </script>
@@ -110,7 +110,7 @@ else {
 				<td class="right">
 					<input name="name" id="name" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var name = new LiveValidation('name');
+						var name=new LiveValidation('name');
 						name.add(Validate.Presence);
 					 </script>
 				</td>
@@ -121,9 +121,9 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<input name="nameShort" id="nameShort" maxlength=4 value="<? print $row["nameShort"] ?>" type="text" style="width: 300px">
+					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var nameShort = new LiveValidation('nameShort');
+						var nameShort=new LiveValidation('nameShort');
 						nameShort.add(Validate.Presence);
 					 </script>
 				</td>
@@ -136,7 +136,7 @@ else {
 				<td class="right">
 					<input name="firstDay" id="firstDay" maxlength=10 value="<? print $row["firstDay"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var firstDay = new LiveValidation('firstDay');
+						var firstDay=new LiveValidation('firstDay');
 						firstDay.add(Validate.Presence);
 						firstDay.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					 </script>
@@ -155,7 +155,7 @@ else {
 				<td class="right">
 					<input name="lastDay" id="lastDay" maxlength=10 value="<? print $row["lastDay"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var lastDay = new LiveValidation('lastDay');
+						var lastDay=new LiveValidation('lastDay');
 						lastDay.add(Validate.Presence);
 						lastDay.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					 </script>
@@ -172,7 +172,7 @@ else {
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					<input type="submit" value="Submit">
 				</td>
 			</tr>
 		</table>

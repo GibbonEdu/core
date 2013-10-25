@@ -47,10 +47,10 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 			$output=$output . "<h4>" ;
 				$output=$output . $row["name"] ;
 			$output=$output . "</h4>" ;
-			list($firstDayYear, $firstDayMonth, $firstDayDay) = explode('-', $row["firstDay"]);
-			$firstDayStamp = mktime(0, 0, 0, $firstDayMonth, $firstDayDay, $firstDayYear);
-			list($lastDayYear, $lastDayMonth, $lastDayDay) = explode('-', $row["lastDay"]);
-			$lastDayStamp = mktime(0, 0, 0, $lastDayMonth, $lastDayDay, $lastDayYear);
+			list($firstDayYear, $firstDayMonth, $firstDayDay)=explode('-', $row["firstDay"]);
+			$firstDayStamp=mktime(0, 0, 0, $firstDayMonth, $firstDayDay, $firstDayYear);
+			list($lastDayYear, $lastDayMonth, $lastDayDay)=explode('-', $row["lastDay"]);
+			$lastDayStamp=mktime(0, 0, 0, $lastDayMonth, $lastDayDay, $lastDayYear);
 			
 			//Count back to first Monday before first day
 			$startDayStamp=$firstDayStamp;
@@ -191,8 +191,8 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 				}
 				
 				if ($rowSpecial==TRUE) {
-					list($specialDayYear, $specialDayMonth, $specialDayDay) = explode('-', $rowSpecial["date"]);
-					$specialDayStamp = mktime(0, 0, 0, $specialDayMonth, $specialDayDay, $specialDayYear);
+					list($specialDayYear, $specialDayMonth, $specialDayDay)=explode('-', $rowSpecial["date"]);
+					$specialDayStamp=mktime(0, 0, 0, $specialDayMonth, $specialDayDay, $specialDayYear);
 				}
 				
 				if ($i<$firstDayStamp OR $i>$lastDayStamp) {

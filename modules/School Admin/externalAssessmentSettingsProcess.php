@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -39,18 +39,25 @@ $URL= $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/alertLevelSettings.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&updateReturn=fail0" ;
+	$URL=$URL . "&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	$gibbonYearGroupID=$_POST["gibbonYearGroupID"] ;
 	$gibbonExternalAssessmentID=$_POST["gibbonExternalAssessmentID"] ;
-	$category=$_POST["category"] ;
+	if (isset($_POST["category"])) {
+		$category=$_POST["category"] ;
+	}
 	$count=0 ; 
 	$primaryExternalAssessmentByYearGroup=array() ;
 	
 	foreach ($gibbonYearGroupID as $year) {
-		$primaryExternalAssessmentByYearGroup[$year]=$gibbonExternalAssessmentID[$count] . "-" . $category[$count] ;
+		if (isset($gibbonExternalAssessmentID[$count]) AND isset($category[$count]) AND $category[$count]!="") {
+			$primaryExternalAssessmentByYearGroup[$year]=$gibbonExternalAssessmentID[$count] . "-" . $category[$count] ;
+		}
+		else {
+			$primaryExternalAssessmentByYearGroup[$year]=NULL ;
+		}
 		$count++ ;
 	}
 	
@@ -69,13 +76,13 @@ else {
 	
 	if ($fail==TRUE) {
 		//Fail 2
-		$URL = $URL . "&updateReturn=fail2" ;
+		$URL=$URL . "&updateReturn=fail2" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Success 0
 		getSystemSettings($guid, $connection2) ;
-		$URL = $URL . "&updateReturn=success0" ;
+		$URL=$URL . "&updateReturn=success0" ;
 		header("Location: {$URL}");
 	}
 }

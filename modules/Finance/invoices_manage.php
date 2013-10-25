@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Invoices</div>" ;
 	print "</div>" ;
 	
-	$issueReturn = $_GET["issueReturn"] ;
+	$issueReturn=$_GET["issueReturn"] ;
 	$issueReturnMessage ="" ;
 	$class="error" ;
 	if (!($issueReturn=="")) {
@@ -48,7 +48,7 @@ else {
 		print "</div>" ;
 	} 
 	
-	$deleteReturn = $_GET["deleteReturn"] ;
+	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 	$deleteReturnMessage ="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
@@ -61,7 +61,7 @@ else {
 		print "</div>" ;
 	} 
 	
-	$bulkReturn = $_GET["bulkReturn"] ;
+	$bulkReturn=$_GET["bulkReturn"] ;
 	$bulkReturnMessage ="" ;
 	$class="error" ;
 	if (!($bulkReturn=="")) {
@@ -96,12 +96,16 @@ else {
 		print "When you create invoices using the billing schedule or pre-defined fee features, the invoice will remain linked to these areas whilst pending. Thus, changes made to the billing schedule and pre-defined fees will be reflected in any pending invoices. Once invoices are issued, this link is removed, and the values are fixed at the levels when the invoice was issued." ;
 	print "</p>" ;
 	
-	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
-	if ($gibbonSchoolYearID=="") {
+	$gibbonSchoolYearID="" ;
+	if (isset($_GET["gibbonSchoolYearID"])) {
+		$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
+	}
+	if ($gibbonSchoolYearID=="" OR $gibbonSchoolYearID==$_SESSION[$guid]["gibbonSchoolYearID"]) {
 		$gibbonSchoolYearID=$_SESSION[$guid]["gibbonSchoolYearID"] ;
 		$gibbonSchoolYearName=$_SESSION[$guid]["gibbonSchoolYearName"] ;
 	}
-	if ($_GET["gibbonSchoolYearID"]!="") {
+	
+	if ($gibbonSchoolYearID!=$_SESSION[$guid]["gibbonSchoolYearID"]) {
 		try {
 			$data=array("gibbonSchoolYearID"=>$_GET["gibbonSchoolYearID"]); 
 			$sql="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
@@ -472,7 +476,7 @@ else {
 							?>
 						</select>
 						<script type="text/javascript">
-							var action = new LiveValidation('action');
+							var action=new LiveValidation('action');
 							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "Select something!"});
 						</script>
 						<?

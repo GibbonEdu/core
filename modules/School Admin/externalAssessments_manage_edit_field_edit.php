@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/externalAssessments_manage_edit_field_edit.php")==FALSE) {
 	//Acess denied
@@ -58,7 +58,7 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessments_manage.php'>Manage External Assessments</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessments_manage_edit.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'>Edit Grade Scale</a> > </div><div class='trailEnd'>Edit Grade</div>" ;
 			print "</div>" ;
 			
-			$updateReturn = $_GET["updateReturn"] ;
+			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 			$updateReturnMessage ="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
@@ -103,9 +103,9 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=50 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=50 value="<? if (isset($row["name"])) { print $row["name"] ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var name = new LiveValidation('name');
+								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
 							 </script>
 						</td>
@@ -115,9 +115,9 @@ else {
 							<b>Category *</b><br/>
 						</td>
 						<td class="right">
-							<input name="category" id="category" maxlength=10 value="<? print $row["category"] ?>" type="text" style="width: 300px">
+							<input name="category" id="category" maxlength=10 value="<? if (isset($row["category"])) { print $row["category"] ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var category = new LiveValidation('category');
+								var category=new LiveValidation('category');
 								category.add(Validate.Presence);
 							 </script>
 						</td>
@@ -128,9 +128,9 @@ else {
 							<span style="font-size: 90%"><i>Order in which fields appear within category<br/>Should be unique for this category.<br/></i></span>
 						</td>
 						<td class="right">
-							<input name="order" id="order" maxlength=4 value="<? print $row["order"] ?>" type="text" style="width: 300px">
+							<input name="order" id="order" maxlength=4 value="<? if (isset($row["order"])) { print $row["order"] ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var order = new LiveValidation('order');
+								var order=new LiveValidation('order');
 								order.add(Validate.Presence);
 							 </script>
 						</td>
@@ -162,7 +162,7 @@ else {
 								?>				
 							</select>
 							<script type="text/javascript">
-								var gibbonScaleID = new LiveValidation('gibbonScaleID');
+								var gibbonScaleID=new LiveValidation('gibbonScaleID');
 								gibbonScaleID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							</script>
 						</td>
@@ -216,7 +216,7 @@ else {
 						<td class="right">
 							<input name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID" value="<? print $gibbonExternalAssessmentID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>

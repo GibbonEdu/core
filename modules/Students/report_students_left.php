@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -53,7 +53,7 @@ else {
 				<td class="right">
 					<input name="endDateFrom" id="endDateFrom" maxlength=10 value="<? print $_GET["endDateFrom"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var endDateFrom = new LiveValidation('endDateFrom');
+						var endDateFrom=new LiveValidation('endDateFrom');
 						endDateFrom.add(Validate.Presence);
 						endDateFrom.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					</script>
@@ -72,7 +72,7 @@ else {
 				<td class="right">
 					<input name="endDateTo" id="endDateTo" maxlength=10 value="<? print $_GET["endDateTo"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var endDateTo = new LiveValidation('endDateTo');
+						var endDateTo=new LiveValidation('endDateTo');
 						endDateTo.add(Validate.Presence);
 						endDateTo.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					</script>

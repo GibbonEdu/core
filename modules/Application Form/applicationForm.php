@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 $proceed=FALSE ;
 $public=FALSE ;
@@ -69,7 +69,7 @@ else {
 		print "</p>" ;
 	}
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -154,7 +154,7 @@ else {
 				<td class="right">
 					<input name="surname" id="surname" maxlength=30 value="<? print $row["surname"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var surname = new LiveValidation('surname');
+						var surname=new LiveValidation('surname');
 						surname.add(Validate.Presence);
 					 </script>
 				</td>
@@ -167,18 +167,9 @@ else {
 				<td class="right">
 					<input name="firstName" id="firstName" maxlength=30 value="<? print $row["firstName"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var firstName = new LiveValidation('firstName');
+						var firstName=new LiveValidation('firstName');
 						firstName.add(Validate.Presence);
 					 </script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b>Other Names</b><br/>
-					<span style="font-size: 90%"><i>Any other names shown in ID documents.</i></span>
-				</td>
-				<td class="right">
-					<input maxlength=30 value="<? print $row["otherNames"] ?>" type="text" style="width: 300px" name="otherNames">
 				</td>
 			</tr>
 			<tr>
@@ -189,7 +180,7 @@ else {
 				<td class="right">
 					<input name="preferredName" id="preferredName" maxlength=30 value="<? print $row["preferredName"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var preferredName = new LiveValidation('preferredName');
+						var preferredName=new LiveValidation('preferredName');
 						preferredName.add(Validate.Presence);
 					 </script>
 				</td>
@@ -202,7 +193,7 @@ else {
 				<td class="right">
 					<input title='Please enter full name as shown in ID documents' name="officialName" id="officialName" maxlength=150 value="<? print $row["officialName"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var officialName = new LiveValidation('officialName');
+						var officialName=new LiveValidation('officialName');
 						officialName.add(Validate.Presence);
 					 </script>
 				</td>
@@ -227,7 +218,7 @@ else {
 						<option value="M">M</option>
 					</select>
 					<script type="text/javascript">
-						var gender = new LiveValidation('gender');
+						var gender=new LiveValidation('gender');
 						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 					 </script>
 				</td>
@@ -240,7 +231,7 @@ else {
 				<td class="right">
 					<input name="dob" id="dob" maxlength=10 value="<? print $row["dob"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var dob = new LiveValidation('dob');
+						var dob=new LiveValidation('dob');
 						dob.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					 	dob.add(Validate.Presence);
 					 </script>
@@ -268,7 +259,7 @@ else {
 				</td>
 				<script type="text/javascript">
 					$(function() {
-						var availableTags = [
+						var availableTags=[
 							<?
 							try {
 								$dataAuto=array(); 
@@ -286,7 +277,7 @@ else {
 					});
 				</script>
 				<script type="text/javascript">
-					var languageHome = new LiveValidation('languageHome');
+					var languageHome=new LiveValidation('languageHome');
 					languageHome.add(Validate.Presence);
 				</script>
 			</tr>
@@ -300,7 +291,7 @@ else {
 				</td>
 				<script type="text/javascript">
 					$(function() {
-						var availableTags = [
+						var availableTags=[
 							<?
 							try {
 								$dataAuto=array(); 
@@ -318,7 +309,7 @@ else {
 					});
 				</script>
 				<script type="text/javascript">
-					var languageFirst = new LiveValidation('languageFirst');
+					var languageFirst=new LiveValidation('languageFirst');
 					languageFirst.add(Validate.Presence);
 				</script>
 			</tr>
@@ -331,7 +322,7 @@ else {
 				</td>
 				<script type="text/javascript">
 					$(function() {
-						var availableTags = [
+						var availableTags=[
 							<?
 							try {
 								$dataAuto=array(); 
@@ -358,7 +349,7 @@ else {
 				</td>
 				<script type="text/javascript">
 					$(function() {
-						var availableTags = [
+						var availableTags=[
 							<?
 							try {
 								$dataAuto=array(); 
@@ -500,7 +491,7 @@ else {
 				<td class="right">
 					<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<? print $row["visaExpiryDate"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var visaExpiryDate = new LiveValidation('visaExpiryDate');
+						var visaExpiryDate=new LiveValidation('visaExpiryDate');
 						visaExpiryDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					 </script>
 					 <script type="text/javascript">
@@ -524,7 +515,7 @@ else {
 				<td class="right">
 					<input name="email" id="email" maxlength=50 value="<? print $row["email"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var email = new LiveValidation('email');
+						var email=new LiveValidation('email');
 						email.add(Validate.Email);
 					 </script>
 				</td>
@@ -621,7 +612,7 @@ else {
 						?>				
 					</select>
 					<script type="text/javascript">
-						var gibbonSchoolYearIDEntry = new LiveValidation('gibbonSchoolYearIDEntry');
+						var gibbonSchoolYearIDEntry=new LiveValidation('gibbonSchoolYearIDEntry');
 						gibbonSchoolYearIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 					 </script>
 				</td>
@@ -634,7 +625,7 @@ else {
 				<td class="right">
 					<input name="dateStart" id="dateStart" maxlength=10 value="<? print dateConvertBack($row["dateStart"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var dateStart = new LiveValidation('dateStart');
+						var dateStart=new LiveValidation('dateStart');
 						dateStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					 	dateStart.add(Validate.Presence);
 					 </script>
@@ -669,7 +660,7 @@ else {
 						?>				
 					</select>
 					<script type="text/javascript">
-						var gibbonYearGroupIDEntry = new LiveValidation('gibbonYearGroupIDEntry');
+						var gibbonYearGroupIDEntry=new LiveValidation('gibbonYearGroupIDEntry');
 						gibbonYearGroupIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 					 </script>
 				</td>
@@ -753,7 +744,7 @@ else {
 									?>
 									<script type="text/javascript">
 										$(function() {
-											var availableTags = [
+											var availableTags=[
 												<?
 												try {
 													$dataAuto=array(); 
@@ -823,7 +814,7 @@ else {
 					<td class="right">
 						<input name="homeAddress" id="homeAddress" maxlength=255 value="<? print $row["homeAddress"] ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var homeAddress = new LiveValidation('homeAddress');
+							var homeAddress=new LiveValidation('homeAddress');
 							homeAddress.add(Validate.Presence);
 						 </script>
 					</td>
@@ -838,7 +829,7 @@ else {
 					</td>
 					<script type="text/javascript">
 						$(function() {
-							var availableTags = [
+							var availableTags=[
 								<?
 								try {
 									$dataAuto=array(); 
@@ -856,7 +847,7 @@ else {
 						});
 					</script>
 					<script type="text/javascript">
-						var homeAddressDistrict = new LiveValidation('homeAddressDistrict');
+						var homeAddressDistrict=new LiveValidation('homeAddressDistrict');
 						homeAddressDistrict.add(Validate.Presence);
 					 </script>
 				</tr>
@@ -881,7 +872,7 @@ else {
 							?>				
 						</select>
 						<script type="text/javascript">
-							var homeAddressCountry = new LiveValidation('homeAddressCountry');
+							var homeAddressCountry=new LiveValidation('homeAddressCountry');
 							homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 						 </script>
 					</td>
@@ -952,7 +943,7 @@ else {
 								<option value="Other">Other</option>
 							</select>
 							<script type="text/javascript">
-								var parent1relationship = new LiveValidation('parent1relationship');
+								var parent1relationship=new LiveValidation('parent1relationship');
 								parent1relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							 </script>
 						</td>
@@ -994,7 +985,6 @@ else {
 												$("#parent2title").attr("disabled", "disabled");
 												$("#parent2surname").attr("disabled", "disabled");
 												$("#parent2firstName").attr("disabled", "disabled");
-												$("#parent2otherNames").attr("disabled", "disabled");
 												$("#parent2preferredName").attr("disabled", "disabled");
 												$("#parent2officialName").attr("disabled", "disabled");
 												$("#parent2nameInCharacters").attr("disabled", "disabled");
@@ -1021,7 +1011,6 @@ else {
 												$("#parent2title").removeAttr("disabled");
 												$("#parent2surname").removeAttr("disabled");
 												$("#parent2firstName").removeAttr("disabled");
-												$("#parent2otherNames").removeAttr("disabled");
 												$("#parent2preferredName").removeAttr("disabled");
 												$("#parent2officialName").removeAttr("disabled");
 												$("#parent2nameInCharacters").removeAttr("disabled");
@@ -1072,7 +1061,7 @@ else {
 								<option value="Dr. ">Dr.</option>
 							</select>
 							<script type="text/javascript">
-								var <? print "parent$i" ?>title = new LiveValidation('<? print "parent$i" ?>title');
+								var <? print "parent$i" ?>title=new LiveValidation('<? print "parent$i" ?>title');
 								<? print "parent$i" ?>title.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							 </script>
 						</td>
@@ -1085,7 +1074,7 @@ else {
 						<td class="right">
 							<input name="<? print "parent$i" ?>surname" id="<? print "parent$i" ?>surname" maxlength=30 value="<? if ($i==1) { print $_SESSION[$guid]["surname"] ;}?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var <? print "parent$i" ?>surname = new LiveValidation('<? print "parent$i" ?>surname');
+								var <? print "parent$i" ?>surname=new LiveValidation('<? print "parent$i" ?>surname');
 								<? print "parent$i" ?>surname.add(Validate.Presence);
 							 </script>
 						</td>
@@ -1098,18 +1087,9 @@ else {
 						<td class="right">
 							<input name="<? print "parent$i" ?>firstName" id="<? print "parent$i" ?>firstName" maxlength=30 value="<? if ($i==1) { print $_SESSION[$guid]["firstName"] ;}?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var <? print "parent$i" ?>firstName = new LiveValidation('<? print "parent$i" ?>firstName');
+								var <? print "parent$i" ?>firstName=new LiveValidation('<? print "parent$i" ?>firstName');
 								<? print "parent$i" ?>firstName.add(Validate.Presence);
 							 </script>
-						</td>
-					</tr>
-					<tr <? if ($i==2) { print "class='secondParent'" ; }?>>
-						<td> 
-							<b>Other Names</b><br/>
-							<span style="font-size: 90%"><i>Any other names shown in ID documents.</i></span>
-						</td>
-						<td class="right">
-							<input maxlength=30 value="<? if ($i==1) { print $_SESSION[$guid]["otherNames"] ;}?>" type="text" style="width: 300px" name="<? print "parent$i" ?>otherNames">
 						</td>
 					</tr>
 					<tr <? if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1120,7 +1100,7 @@ else {
 						<td class="right">
 							<input name="<? print "parent$i" ?>preferredName" id="<? print "parent$i" ?>preferredName" maxlength=30 value="<? if ($i==1) { print $_SESSION[$guid]["preferredName"] ;}?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var <? print "parent$i" ?>preferredName = new LiveValidation('<? print "parent$i" ?>preferredName');
+								var <? print "parent$i" ?>preferredName=new LiveValidation('<? print "parent$i" ?>preferredName');
 								<? print "parent$i" ?>preferredName.add(Validate.Presence);
 							 </script>
 						</td>
@@ -1133,7 +1113,7 @@ else {
 						<td class="right">
 							<input title='Please enter full name as shown in ID documents' name="<? print "parent$i" ?>officialName" id="<? print "parent$i" ?>officialName" maxlength=150 value="<? if ($i==1) { print $_SESSION[$guid]["officialName"] ;}?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var <? print "parent$i" ?>officialName = new LiveValidation('<? print "parent$i" ?>officialName');
+								var <? print "parent$i" ?>officialName=new LiveValidation('<? print "parent$i" ?>officialName');
 								<? print "parent$i" ?>officialName.add(Validate.Presence);
 							 </script>
 						</td>
@@ -1158,7 +1138,7 @@ else {
 								<option value="M">M</option>
 							</select>
 							<script type="text/javascript">
-								var <? print "parent$i" ?>gender = new LiveValidation('<? print "parent$i" ?>gender');
+								var <? print "parent$i" ?>gender=new LiveValidation('<? print "parent$i" ?>gender');
 								<? print "parent$i" ?>gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							 </script>
 						</td>
@@ -1184,7 +1164,7 @@ else {
 								<option value="Other">Other</option>
 							</select>
 							<script type="text/javascript">
-								var <? print "parent$i" ?>relationship = new LiveValidation('<? print "parent$i" ?>relationship');
+								var <? print "parent$i" ?>relationship=new LiveValidation('<? print "parent$i" ?>relationship');
 								<? print "parent$i" ?>relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							 </script>
 						</td>
@@ -1204,7 +1184,7 @@ else {
 						</td>
 						<script type="text/javascript">
 							$(function() {
-								var availableTags = [
+								var availableTags=[
 									<?
 									try {
 										$dataAuto=array(); 
@@ -1231,7 +1211,7 @@ else {
 						</td>
 						<script type="text/javascript">
 							$(function() {
-								var availableTags = [
+								var availableTags=[
 									<?
 									try {
 										$dataAuto=array(); 
@@ -1343,7 +1323,7 @@ else {
 						<td class="right">
 							<input name="<? print "parent$i" ?>visaExpiryDate" id="<? print "parent$i" ?>visaExpiryDate" maxlength=10 value="<? print $row["visaExpiryDate"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var <? print "parent$i" ?>visaExpiryDate = new LiveValidation('<? print "parent$i" ?>visaExpiryDate');
+								var <? print "parent$i" ?>visaExpiryDate=new LiveValidation('<? print "parent$i" ?>visaExpiryDate');
 								<? print "parent$i" ?>visaExpiryDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 							 </script>
 							 <script type="text/javascript">
@@ -1367,7 +1347,7 @@ else {
 						<td class="right">
 							<input name="<? print "parent$i" ?>email" id="<? print "parent$i" ?>email" maxlength=50 value="<? if ($i==1) { print $_SESSION[$guid]["email"] ;}?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var <? print "parent$i" ?>email = new LiveValidation('<? print "parent$i" ?>email');
+								var <? print "parent$i" ?>email=new LiveValidation('<? print "parent$i" ?>email');
 								<? 
 								print "parent$i" . "email.add(Validate.Email);";
 								print "parent$i" . "email.add(Validate.Presence);" ;
@@ -1390,7 +1370,7 @@ else {
 								if ($y==1) {
 									?>
 									<script type="text/javascript">
-										var <? print "parent$i" ?>phone<? print $y ?> = new LiveValidation('<? print "parent$i" ?>phone<? print $y ?>');
+										var <? print "parent$i" ?>phone<? print $y ?>=new LiveValidation('<? print "parent$i" ?>phone<? print $y ?>');
 										<? print "parent$i" ?>phone<? print $y ?>.add(Validate.Presence);
 									 </script>
 									<?
@@ -1438,7 +1418,7 @@ else {
 						<td class="right">
 							<input name="<? print "parent$i" ?>profession" id="<? print "parent$i" ?>profession" maxlength=30 value="<? print $row["profession"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var <? print "parent$i" ?>profession = new LiveValidation('<? print "parent$i" ?>profession');
+								var <? print "parent$i" ?>profession=new LiveValidation('<? print "parent$i" ?>profession');
 								<? print "parent$i" ?>profession.add(Validate.Presence);
 							 </script>
 						</td>
@@ -1700,7 +1680,7 @@ else {
 							?>				
 						</select>
 						<script type="text/javascript">
-							var languageChoice = new LiveValidation('languageChoice');
+							var languageChoice=new LiveValidation('languageChoice');
 							languageChoice.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 						 </script>
 					</td>
@@ -1711,7 +1691,7 @@ else {
 						<span style="font-size: 90%"><i>Has the applicant studied the selected language before? If so, please describe the level and type of experience.</i></span><br/> 					
 						<textarea name="languageChoiceExperience" id="languageChoiceExperience" rows=5 style="width:738px; margin: 5px 0px 0px 0px"></textarea>
 						<script type="text/javascript">
-							var languageChoiceExperience = new LiveValidation('languageChoiceExperience');
+							var languageChoiceExperience=new LiveValidation('languageChoiceExperience');
 							languageChoiceExperience.add(Validate.Presence);
 						 </script>
 					</td>
@@ -1850,7 +1830,7 @@ else {
 				<td class="right">
 					<input name="companyEmail" id="companyEmail" maxlength=255 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var companyEmail = new LiveValidation('companyEmail');
+						var companyEmail=new LiveValidation('companyEmail');
 						companyEmail.add(Validate.Email);
 					 </script>
 				</td>
@@ -1955,7 +1935,7 @@ else {
 							print "<input type='hidden' name='fileName$count' id='filefileName$count' value='$document'>" ;
 							if ($requiredDocumentsCompulsory=="Y") {
 								print "<script type='text/javascript'>" ;
-									print "var file$count = new LiveValidation('file$count');" ;
+									print "var file$count=new LiveValidation('file$count');" ;
 									print "file$count.add( Validate.Inclusion, { within: [" . $ext . "], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );" ;
 									print "file$count.add(Validate.Presence);" ;
 								print "</script>" ;
@@ -2002,7 +1982,7 @@ else {
 						print "</select>" ;
 						?>
 						<script type="text/javascript">
-							var howDidYouHear = new LiveValidation('howDidYouHear');
+							var howDidYouHear=new LiveValidation('howDidYouHear');
 							howDidYouHear.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 						</script>
 						<?
@@ -2077,7 +2057,7 @@ else {
 						print "Yes <input type='checkbox' name='agreement' id='agreement'>" ;
 						?>
 						<script type="text/javascript">
-							var agreement = new LiveValidation('agreement');
+							var agreement=new LiveValidation('agreement');
 							agreement.add( Validate.Acceptance );
 						 </script>
 						 <?
@@ -2096,7 +2076,7 @@ else {
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					<input type="submit" value="Submit">
 				</td>
 			</tr>
 		</table>

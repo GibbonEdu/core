@@ -524,7 +524,7 @@ Changes from 2.12 to 2.13
 - modified U+024C to match glyph in Unicode chart, fixing bug #9039 
   (by Denis Jacquerye)
 - made some canonically equivalent characters share the same glyph: 
-  U+02B9 = U+0374, U+0343 = U+0313, and U+0387 = U+00B7 also adjusting U+02BA 
+  U+02B9=U+0374, U+0343=U+0313, and U+0387=U+00B7 also adjusting U+02BA 
   to look like double U+02B9, fixing parts of bug #9038 (by Roozbeh Pournader)
 - changed shapes for U+0478 and U+0479 in Sans to those in the Unicode charts, 
   based on a recent decision by Unicode Technical Committee to only use 

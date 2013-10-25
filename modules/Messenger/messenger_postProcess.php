@@ -30,7 +30,7 @@ catch(PDOException $e) {
  echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./moduleFunctions.php" ;
@@ -39,17 +39,17 @@ include "./moduleFunctions.php" ;
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/messenger_post.php" ;
-$time=mktime() ;
+$time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&addReturn=fail0" ;
+	$URL=$URL . "&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_POST)) {
 		//Fail 5
-		$URL = $URL . "&addReturn=fail5" ;
+		$URL=$URL . "&addReturn=fail5" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -98,7 +98,7 @@ else {
 		
 		if ($subject=="" OR $body=="" OR ($email=="Y" AND $from=="")) {
 			//Fail 3
-			$URL = $URL . "&addReturn=fail3" ;
+			$URL=$URL . "&addReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -109,7 +109,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL = $URL . "&addReturn=fail2" ;
+				$URL=$URL . "&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}		
@@ -121,7 +121,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL = $URL . "&addReturn=fail2" ;
+				$URL=$URL . "&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}		
@@ -138,7 +138,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL = $URL . "&addReturn=fail2" ;
+				$URL=$URL . "&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
@@ -149,7 +149,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL = $URL . "&addReturn=fail2" ;
+				$URL=$URL . "&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}		
@@ -1549,12 +1549,12 @@ else {
 		
 			if ($partialFail==TRUE) {
 				//Fail 4
-				$URL = $URL . "&addReturn=fail4" ;
+				$URL=$URL . "&addReturn=fail4" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Success 0
-				$URL = $URL . "&addReturn=success0&emailCount=" . $emailCount . "&smsCount=" . $smsCount . "&smsBatchCount=" . $smsBatchCount ;
+				$URL=$URL . "&addReturn=success0&emailCount=" . $emailCount . "&smsCount=" . $smsCount . "&smsBatchCount=" . $smsBatchCount ;
 				header("Location: {$URL}") ;
 			}
 		}

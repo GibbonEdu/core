@@ -17,7 +17,7 @@
 class EasyPeasyICS {
 
 	protected $calendarName;
-	protected $events = array();
+	protected $events=array();
 	
 
 	/**
@@ -25,7 +25,7 @@ class EasyPeasyICS {
 	 * @param string $calendarName
 	 */	
 	public function __construct($calendarName=""){
-		$this->calendarName = $calendarName;
+		$this->calendarName=$calendarName;
 	}//function
 
 
@@ -34,7 +34,7 @@ class EasyPeasyICS {
 	 * @param string $calendarName
 	 */	
 	public function addEvent($start, $end, $summary="", $description="", $url=""){
-		$this->events[] = array(
+		$this->events[]=array(
 			"start" => $start,
 			"end"   => $end,
 			"summary" => $summary,
@@ -44,10 +44,10 @@ class EasyPeasyICS {
 	}//function
 	
 	
-	public function render($output = true){
+	public function render($output=true){
 		
 		//start Variable
-		$ics = "";
+		$ics="";
 	
 		//Add header
 		$ics .= "BEGIN:VCALENDAR

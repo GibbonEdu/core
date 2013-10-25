@@ -32,7 +32,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -42,20 +42,20 @@ $URLSuccess=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModu
 
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_add.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&addReturn=fail0" ;
+	$URL=$URL . "&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail2
-		$URL = $URL . "&addReturn=fail2" ;
+		$URL=$URL . "&addReturn=fail2" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if ($highestAction!="Manage Rubrics_viewEditAll" AND $highestAction!="Manage Rubrics_viewAllEditLearningArea") {
 			//Fail 0
-			$URL = $URL . "&addReturn=fail0" ;
+			$URL=$URL . "&addReturn=fail0" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -85,7 +85,7 @@ else {
 						
 			if ($scope=="" OR ($scope=="Learning Area" AND $gibbonDepartmentID=="") OR $name=="" OR $active=="") {
 				//Fail 3
-				$URL = $URL . "&addReturn=fail3" ;
+				$URL=$URL . "&addReturn=fail3" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -96,7 +96,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL = $URL . "&addReturn=fail2" ;
+					$URL=$URL . "&addReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}		
@@ -108,7 +108,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL = $URL . "&addReturn=fail2" ;
+					$URL=$URL . "&addReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
@@ -118,7 +118,7 @@ else {
 				
 				if ($AI=="") {
 					//Fail 2
-					$URL = $URL . "&addReturn=fail2" ;
+					$URL=$URL . "&addReturn=fail2" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -131,7 +131,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL = $URL . "&addReturn=fail2" ;
+						$URL=$URL . "&addReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -143,7 +143,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL = $URL . "&addReturn=fail2" ;
+						$URL=$URL . "&addReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -169,7 +169,7 @@ else {
 					}
 					
 					//Success 0
-					$URL = $URLSuccess . "&addReturn=success0&gibbonRubricID=$AI" ;
+					$URL=$URLSuccess . "&addReturn=success0&gibbonRubricID=$AI" ;
 					header("Location: {$URL}");
 				}
 			}

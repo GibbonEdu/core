@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -50,7 +50,7 @@ else {
 			}
 		}
 		
-		$deleteReturn = $_GET["deleteReturn"] ;
+		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 		$deleteReturnMessage ="" ;
 		$class="error" ;
 		if (!($deleteReturn=="")) {
@@ -63,12 +63,16 @@ else {
 			print "</div>" ;
 		} 
 		
-		$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
-		if ($gibbonSchoolYearID=="") {
+		$gibbonSchoolYearID="" ;
+		if (isset($_GET["gibbonSchoolYearID"])) {
+			$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
+		}
+		if ($gibbonSchoolYearID=="" OR $gibbonSchoolYearID==$_SESSION[$guid]["gibbonSchoolYearID"]) {
 			$gibbonSchoolYearID=$_SESSION[$guid]["gibbonSchoolYearID"] ;
 			$gibbonSchoolYearName=$_SESSION[$guid]["gibbonSchoolYearName"] ;
 		}
-		if ($_GET["gibbonSchoolYearID"]!="") {
+	
+		if ($gibbonSchoolYearID!=$_SESSION[$guid]["gibbonSchoolYearID"]) {
 			try {
 				$data=array("gibbonSchoolYearID"=>$_GET["gibbonSchoolYearID"]); 
 				$sql="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;

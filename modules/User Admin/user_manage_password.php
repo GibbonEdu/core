@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_password.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php'>Manage Users</a> > </div><div class='trailEnd'>Reset User Password</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -114,7 +114,7 @@ else {
 						<td class="right">
 							<input readonly name="username" id="username" maxlength=20 value="<? print htmlPrep($row["username"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var username = new LiveValidation('username');
+								var username=new LiveValidation('username');
 								username.add(Validate.Presence);
 							 </script>
 						</td>
@@ -127,7 +127,7 @@ else {
 						<td class="right">
 							<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" style="width: 300px">
 							<script type="text/javascript">
-								var passwordNew = new LiveValidation('passwordNew');
+								var passwordNew=new LiveValidation('passwordNew');
 								passwordNew.add(Validate.Presence);
 								<?
 								$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
@@ -158,7 +158,7 @@ else {
 						<td class="right">
 							<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" style="width: 300px">
 							<script type="text/javascript">
-								var passwordConfirm = new LiveValidation('passwordConfirm');
+								var passwordConfirm=new LiveValidation('passwordConfirm');
 								passwordConfirm.add(Validate.Presence);
 								passwordConfirm.add(Validate.Confirmation, { match: 'passwordNew' } );
 							 </script>
@@ -182,7 +182,7 @@ else {
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationFormSettings.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Data Updater Settings</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -112,18 +112,6 @@ else {
 						$checked="checked" ;
 					}
 					print "<input $checked type='checkbox' name='firstName'>" ;
-				print "</td>" ;
-			print "</tr>" ;
-			print "<tr class='even'>" ;
-				print "<td>" ;
-					print "Other Names" ;
-				print "</td>" ;
-				print "<td>" ;
-					$checked="" ;
-					if (is_array($required) AND $required["otherNames"]=="Y") {
-						$checked="checked" ;
-					}
-					print "<input $checked type='checkbox' name='otherNames'>" ;
 				print "</td>" ;
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
@@ -571,7 +559,7 @@ else {
 			print "<tr>" ;
 					print "<td class='right' colspan=2>" ;
 						print "<input name='address' type='hidden' value='" . $_GET["q"] . "'>" ;
-						print "<input type='reset' value='Reset'> <input type='submit' value='Submit'>" ;
+						print "<input type='submit' value='Submit'>" ;
 					print "</td>" ;
 				print "</tr>" ;
 		print "</table>" ;

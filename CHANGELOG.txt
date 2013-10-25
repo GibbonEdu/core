@@ -1,6 +1,6 @@
 CHANGELOG
 =========
-v7.0.02
+v7.1.00
 -------
 User Admin: fixed URL issue in email to newly accepted parents and students
 	Edited file /modules/User Admin/applicationForm_manage_accept.php
@@ -11,6 +11,29 @@ User Admin: fixed bug in creating student notes on application form accept
 General: replaced config.php with config-sample.php to make distribution easier
 	New file /config-sample.php
 	Set GitHub to ignore config.php
+
+Planner: fixed visual elements of table in block copy back
+	Edited file /modules/Planner/units_edit_working_copyback.php
+
+User Admin: stopped timestamp updating on table update, so that it remains as original creation timestamp
+	Edited table gibbonApplicationForm
+
+User Admin: updated student enrolment so that it shows all students, not just current, and so that edit shows student enrolment history
+	Edited files /modules/User Admin/studentEnrolment_manage.php, studentEnrolment_manage_edit.php
+
+User Admin: removed otherNames field from the system (it was not needed, and creating confusion with officialName)
+	Edited tables gibbonApplicationForm, gibbonPerson, gibbonPersonUpdate
+	Edited file /login.php
+	Edited files /modules/Application Form/applicationForm.php
+	Edited files /modules/Data Updater/dataPersonal.php
+	Edited file /modules/Students/student_view_details.php
+	Edited files /modules/User Admin/applicationForm_manage_accept.php. applicationForm_manage_edit*.php, data_personal_edit*.php, dataUpdaterSettings*.php, family_manage_edit.php, import_users.php, staff_manage_add.php, user_manage_add*.php, user_manage_edit*.php
+
+General: removed Reset buttons from across the system
+	Edited many files across the system
+	
+General: fixed issues relating to PHP Notice errors
+	Edited many files across the system
 	
 v7.0.01
 -------

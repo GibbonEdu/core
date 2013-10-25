@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./moduleFunctions.php" ;
@@ -54,7 +54,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage_edit.php")==FALSE) {
 		//Fail 0
-		$URL = $URL . "&issueReturn=fail0" ;
+		$URL=$URL . "&issueReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -62,7 +62,7 @@ else {
 		//Check if person specified
 		if ($gibbonFinanceInvoiceID=="") {
 			//Fail1
-			$URL = $URL . "&issueReturn=fail1" ;
+			$URL=$URL . "&issueReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -75,7 +75,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL = $URL . "&issueReturn=fail2" ;
+				$URL=$URL . "&issueReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
@@ -88,14 +88,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL = $URL . "&issueReturn=fail2" ;
+				$URL=$URL . "&issueReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
 			
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL = $URL . "&issueReturn=fail2" ;
+				$URL=$URL . "&issueReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -113,7 +113,7 @@ else {
 				
 				if ($invoiceDueDate=="") {
 					//Fail 3
-					$URL = $URL . "&issueReturn=fail3" ;
+					$URL=$URL . "&issueReturn=fail3" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -126,7 +126,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL = $URL . "&issueReturn=fail2" ;
+						$URL=$URL . "&issueReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -245,17 +245,17 @@ else {
 				
 					if ($partialFail==TRUE) { 
 						//Fail 4
-						$URL = $URL . "&issueReturn=fail4" ;
+						$URL=$URL . "&issueReturn=fail4" ;
 						header("Location: {$URL}");
 					}
 					else if ($emailFail==TRUE) { 
 						//Success 1
-						$URLSuccess = $URLSuccess . "&issueReturn=success1" ;
+						$URLSuccess=$URLSuccess . "&issueReturn=success1" ;
 						header("Location: {$URLSuccess}");
 					}
 					else {
 						//Success 0
-						$URLSuccess = $URLSuccess . "&issueReturn=success0" ;
+						$URLSuccess=$URLSuccess . "&issueReturn=success0" ;
 						header("Location: {$URLSuccess}");
 					}
 				}

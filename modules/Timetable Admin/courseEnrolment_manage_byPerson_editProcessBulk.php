@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -40,6 +40,10 @@ $gibbonPersonID=$_POST["gibbonPersonID"] ;
 $gibbonSchoolYearID=$_POST["gibbonSchoolYearID"] ;
 $action=$_POST["action"] ;
 $allUsers=$_GET["allUsers"] ;
+$search="" ;
+if (isset($_GET["search"])) {
+	$search=$_GET["search"] ;
+}
 		
 if ($gibbonPersonID=="" OR $gibbonSchoolYearID=="" OR $action=="") {
 	print "Fatal error loading this page!" ;
@@ -49,24 +53,26 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php")==FALSE) {
 		//Fail 0
-		$URL = $URL . "&updateReturn=fail0" ;
+		$URL=$URL . "&updateReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		$classes=array() ;
 		$count=0 ;
 		for ($i=1; $i<=$_POST["count"]; $i++) {
-			if ($_POST["check-$i"]=="on") {
-				$classes[$count][0]=$_POST["gibbonCourseClassID-$i"] ;
-				$classes[$count][1]=$_POST["role-$i"] ;
-				$count++ ;
+			if (isset($_POST["check-$i"])) {
+				if ($_POST["check-$i"]=="on") {
+					$classes[$count][0]=$_POST["gibbonCourseClassID-$i"] ;
+					$classes[$count][1]=$_POST["role-$i"] ;
+					$count++ ;
+				}
 			}
 		}
 		//Proceed!
 		//Check if person specified
 		if (count($classes)<1) {
 			//Fail4
-			$URL = $URL . "&updateReturn=fail4" ;
+			$URL=$URL . "&updateReturn=fail4" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -104,12 +110,12 @@ else {
 			}
 			
 			if ($partialFail==TRUE) {
-				$URL = $URL . "&updateReturn=fail5" ;
+				$URL=$URL . "&updateReturn=fail5" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Success 0
-				$URL = $URL . "&updateReturn=success0" ;
+				$URL=$URL . "&updateReturn=success0" ;
 				header("Location: {$URL}");
 			}
 		}

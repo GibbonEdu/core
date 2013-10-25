@@ -446,7 +446,7 @@
 	- An error message was added to ImagePngAlpha() method.
 
 5.9.130 (2011-10-12)
-	- Now you can set image data strings on HTML img tag by encoding the image binary data in this way: $imgsrc = '@'.base64_encode($imgdata);
+	- Now you can set image data strings on HTML img tag by encoding the image binary data in this way: $imgsrc='@'.base64_encode($imgdata);
 
 5.9.129 (2011-10-07)
 	- Core fonts metrics was fixed (replace all helvetica and times php files on fonts folder).
@@ -2223,7 +2223,7 @@
 
 4.0.007 (2008-07-18)
 	- str_split was replaced by preg_split for compatibility with PHP4 version.
-	- Clipping mode was added to all graphic functions by using parameter $style = "CNZ" or "CEO" (see example_034.php).
+	- Clipping mode was added to all graphic functions by using parameter $style="CNZ" or "CEO" (see example_034.php).
 
 4.0.006 (2008-07-16)
 	- HTML rowspan bug was fixed.
@@ -2481,11 +2481,11 @@
 	  getNumPages() : Get the total number of inserted pages.
 	  GetNumChars() : count the number of (UTF-8) characters in a string.
 	- $stretch parameter was added to Cell() function to fit text on cell:
-			0 = disabled
-			1 = horizontal scaling only if necessary
-			2 = forced horizontal scaling
-			3 = character spacing only if necessary
-			4 = forced character spacing
+			0=disabled
+			1=horizontal scaling only if necessary
+			2=forced horizontal scaling
+			3=character spacing only if necessary
+			4=forced character spacing
 	- Line function was fixed for RTL.
 	- Graphic transformation functions were added [1811158]:
 			StartTransform()

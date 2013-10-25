@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -50,8 +50,8 @@ else {
 			if ($date=="") {
 				$date=date("Y-m-d");
 			}
-			list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
-			$dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);	
+			list($dateYear, $dateMonth, $dateDay)=explode('-', $date);
+			$dateStamp=mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);	
 		}
 		else if ($viewBy=="class") {
 			$class=$_GET["class"] ;
@@ -213,7 +213,7 @@ else {
 				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>Planner $extra</a> > </div><div class='trailEnd'>View Lesson Plan</div>" ;
 				print "</div>" ;
 				
-				$updateReturn = $_GET["updateReturn"] ;
+				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 				$updateReturnMessage ="" ;
 				$class="error" ;
 				if (!($updateReturn=="")) {
@@ -247,7 +247,7 @@ else {
 					print "</div>" ;
 				} 
 				
-				$postReturn = $_GET["postReturn"] ;
+				$postReturn=$_GET["postReturn"] ;
 				$postReturnMessage ="" ;
 				$class="error" ;
 				if (!($postReturn=="")) {
@@ -269,7 +269,7 @@ else {
 					print "</div>" ;
 				} 
 				
-				$deleteReturn = $_GET["deleteReturn"] ;
+				if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 				$deleteReturnMessage ="" ;
 				$class="error" ;
 				if (!($deleteReturn=="")) {
@@ -547,7 +547,7 @@ else {
 														print "<input type='hidden' name='params' value='$params'>" ;
 														print "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>" ;
 														print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
-														print "<input type='reset' value='Reset'> <input type='submit' value='Submit'>" ;
+														print "<input type='submit' value='Submit'>" ;
 													print "</div>" ;
 												print "</form>" ;
 											print "</div>" ;
@@ -618,7 +618,7 @@ else {
 														print "<input type='hidden' name='params' value='$params'>" ;
 														print "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>" ;
 														print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
-														print "<input type='reset' value='Reset'> <input type='submit' value='Submit'>" ;
+														print "<input type='submit' value='Submit'>" ;
 													print "</div>" ;
 												}
 											print "</form>" ;
@@ -849,7 +849,7 @@ else {
 																	?>
 																	
 																	<script type="text/javascript">
-																		var file = new LiveValidation('file');
+																		var file=new LiveValidation('file');
 																		file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 																	</script>
 																</td>
@@ -861,7 +861,7 @@ else {
 																<td class="right">
 																	<input name="link" id="link" maxlength=255 value="" type="text" style="width: 300px">
 																	<script type="text/javascript">
-																		var link = new LiveValidation('link');
+																		var link=new LiveValidation('link');
 																		link.add( Validate.Inclusion, { within: ['http://', 'https://'], failureMessage: "Address must start with http:// or https://", partialMatch: true } );
 																	</script>
 																</td>
@@ -1633,7 +1633,7 @@ else {
 											$_SESSION[$guid]["sidebarExtra"].="<input type='hidden' name='currentDate' value='" . $row["date"] . "'>" ;
 											$_SESSION[$guid]["sidebarExtra"].="<input type='hidden' name='countStudents' value='$countStudents'>" ;
 											$_SESSION[$guid]["sidebarExtra"].="<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
-											$_SESSION[$guid]["sidebarExtra"].="<input type='reset' value='Reset'> <input type='submit' value='Submit'>" ;
+											$_SESSION[$guid]["sidebarExtra"].="<input type='submit' value='Submit'>" ;
 										$_SESSION[$guid]["sidebarExtra"].="</td>" ;
 									$_SESSION[$guid]["sidebarExtra"].="</tr>" ;
 								}

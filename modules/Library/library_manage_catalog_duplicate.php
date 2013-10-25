@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -35,7 +35,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_manage_catalog.php'>Manage Catalog</a> > </div><div class='trailEnd'>Duplicate Item</div>" ;
 	print "</div>" ;
 	
-	$duplicateReturn = $_GET["duplicateReturn"] ;
+	$duplicateReturn=$_GET["duplicateReturn"] ;
 	$duplicateReturnMessage ="" ;
 	$class="error" ;
 	if (!($duplicateReturn=="")) {
@@ -168,7 +168,7 @@ else {
 						<tr>
 							<td class="right" colspan=2>
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="reset" value="Reset"> <input type="submit" value="Next">
+								<input type="submit" value="Next">
 							</td>
 						</tr>
 						<tr>
@@ -216,7 +216,7 @@ else {
 								<td class="right">
 									<input name="name<? print $i ?>" id="name<? print $i ?>" maxlength=255 value="<? print $row["name"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
-										var name<? print $i ?> = new LiveValidation('name<? print $i ?>');
+										var name<? print $i ?>=new LiveValidation('name<? print $i ?>');
 										name<? print $i ?>.add(Validate.Presence);
 									 </script>
 								</td>
@@ -243,7 +243,7 @@ else {
 									}
 									?>
 									<script type="text/javascript">
-										var id<? print $i ?> = new LiveValidation('id<? print $i ?>');
+										var id<? print $i ?>=new LiveValidation('id<? print $i ?>');
 										id<? print $i ?>.add( Validate.Exclusion, { within: [<? print $idList ;?>], failureMessage: "ID already in use!", partialMatch: false, caseSensitive: false } );
 										id<? print $i ?>.add(Validate.Presence);
 									 </script>
@@ -257,7 +257,7 @@ else {
 								<td class="right">
 									<input name="producer<? print $i ?>" id="producer<? print $i ?>" maxlength=255 value="<? print $row["producer"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
-										var producer<? print $i ?> = new LiveValidation('producer<? print $i ?>');
+										var producer<? print $i ?>=new LiveValidation('producer<? print $i ?>');
 										producer<? print $i ?>.add(Validate.Presence);
 									 </script>
 								</td>
@@ -279,7 +279,7 @@ else {
 								<td class="right">
 									<input name="purchaseDate<? print $i ?>" id="purchaseDate<? print $i ?>" maxlength=10 value="<? print dateConvertBack($row["purchaseDate"]) ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
-										var purchaseDate = new LiveValidation('purchaseDate');
+										var purchaseDate=new LiveValidation('purchaseDate');
 										purchaseDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 									 </script>
 									 <script type="text/javascript">
@@ -541,7 +541,7 @@ else {
 											if ($field["type"]=="Date") {
 												print "<input name='field" . $fieldName . $i . "' id='field" . $fieldName . $i . "' maxlength=10 value='" . dateConvertBack($fieldValues[$field["name"]]) . "' type='text' style='width: 300px'>" ;
 												print "<script type='text/javascript'>" ;
-													print "var field" . $fieldName . $i . " = new LiveValidation('field" . $fieldName . $i . "');" ;
+													print "var field" . $fieldName . $i . "=new LiveValidation('field" . $fieldName . $i . "');" ;
 													print "field" . $fieldName . $i . ".add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: 'Use dd/mm/yyyy.' } );" ; 
 												print "</script>" ;
 												print "<script type='text/javascript'>" ;
@@ -556,13 +556,13 @@ else {
 									if ($field["required"]=="Y") {
 										if ($field["type"]=="Text" OR $field["type"]=="Textarea" OR $field["type"]=="Date") {
 											print "<script type='text/javascript'>" ;
-												print "var field" . $fieldName . $i . " = new LiveValidation('field" . $fieldName . $i . "');" ;
+												print "var field" . $fieldName . $i . "=new LiveValidation('field" . $fieldName . $i . "');" ;
 												print "field" . $fieldName . $i . ".add(Validate.Presence);" ;
 											print "</script>" ;
 										}
 										else if ($field["type"]=="Select") {
 											print "<script type='text/javascript'>" ;
-												print "var field" . $fieldName . $i . " = new LiveValidation('field" . $fieldName . $i . "');" ;
+												print "var field" . $fieldName . $i . "=new LiveValidation('field" . $fieldName . $i . "');" ;
 												print "field" . $fieldName . $i . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: 'Select something!'});" ;
 											print "</script>" ;
 										}
@@ -577,7 +577,7 @@ else {
 								<input type='hidden' name='gibbonLibraryTypeID' value='<? print $_POST["gibbonLibraryTypeID"] ?>'>
 								<input type="hidden" name="gibbonLibraryItemID" value="<? print $row["gibbonLibraryItemID"] ?>">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="reset" value="Reset"> <input type="submit" value="Submit">
+								<input type="submit" value="Submit">
 							</td>
 						</tr>
 						<tr>

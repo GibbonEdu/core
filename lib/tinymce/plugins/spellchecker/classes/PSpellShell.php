@@ -16,9 +16,9 @@ class PSpellShell extends SpellChecker {
 	 * @return {Array} Array of misspelled words.
 	 */
 	function &checkWords($lang, $words) {
-		$cmd = $this->_getCMD($lang);
+		$cmd=$this->_getCMD($lang);
 
-		if ($fh = fopen($this->_tmpfile, "w")) {
+		if ($fh=fopen($this->_tmpfile, "w")) {
 			fwrite($fh, "!\n");
 
 			foreach($words as $key => $value)
@@ -28,14 +28,14 @@ class PSpellShell extends SpellChecker {
 		} else
 			$this->throwError("PSpell support was not found.");
 
-		$data = shell_exec($cmd);
+		$data=shell_exec($cmd);
 		@unlink($this->_tmpfile);
 
-		$returnData = array();
-		$dataArr = preg_split("/[\r\n]/", $data, -1, PREG_SPLIT_NO_EMPTY);
+		$returnData=array();
+		$dataArr=preg_split("/[\r\n]/", $data, -1, PREG_SPLIT_NO_EMPTY);
 
 		foreach ($dataArr as $dstr) {
-			$matches = array();
+			$matches=array();
 
 			// Skip this line.
 			if (strpos($dstr, "@") === 0)
@@ -44,7 +44,7 @@ class PSpellShell extends SpellChecker {
 			preg_match("/\& ([^ ]+) .*/i", $dstr, $matches);
 
 			if (!empty($matches[1]))
-				$returnData[] = utf8_encode(trim($matches[1]));
+				$returnData[]=utf8_encode(trim($matches[1]));
 		}
 
 		return $returnData;
@@ -58,28 +58,28 @@ class PSpellShell extends SpellChecker {
 	 * @return {Array} Array of suggestions for the specified word.
 	 */
 	function &getSuggestions($lang, $word) {
-		$cmd = $this->_getCMD($lang);
+		$cmd=$this->_getCMD($lang);
 
         if (function_exists("mb_convert_encoding"))
-            $word = mb_convert_encoding($word, "ISO-8859-1", mb_detect_encoding($word, "UTF-8"));
+            $word=mb_convert_encoding($word, "ISO-8859-1", mb_detect_encoding($word, "UTF-8"));
         else
-            $word = utf8_encode($word);
+            $word=utf8_encode($word);
 
-		if ($fh = fopen($this->_tmpfile, "w")) {
+		if ($fh=fopen($this->_tmpfile, "w")) {
 			fwrite($fh, "!\n");
 			fwrite($fh, "^$word\n");
 			fclose($fh);
 		} else
 			$this->throwError("Error opening tmp file.");
 
-		$data = shell_exec($cmd);
+		$data=shell_exec($cmd);
 		@unlink($this->_tmpfile);
 
-		$returnData = array();
-		$dataArr = preg_split("/\n/", $data, -1, PREG_SPLIT_NO_EMPTY);
+		$returnData=array();
+		$dataArr=preg_split("/\n/", $data, -1, PREG_SPLIT_NO_EMPTY);
 
 		foreach($dataArr as $dstr) {
-			$matches = array();
+			$matches=array();
 
 			// Skip this line.
 			if (strpos($dstr, "@") === 0)
@@ -88,10 +88,10 @@ class PSpellShell extends SpellChecker {
 			preg_match("/\&[^:]+:(.*)/i", $dstr, $matches);
 
 			if (!empty($matches[1])) {
-				$words = array_slice(explode(',', $matches[1]), 0, 10);
+				$words=array_slice(explode(',', $matches[1]), 0, 10);
 
 				for ($i=0; $i<count($words); $i++)
-					$words[$i] = trim($words[$i]);
+					$words[$i]=trim($words[$i]);
 
 				return $words;
 			}
@@ -101,7 +101,7 @@ class PSpellShell extends SpellChecker {
 	}
 
 	function _getCMD($lang) {
-		$this->_tmpfile = tempnam($this->_config['PSpellShell.tmp'], "tinyspell");
+		$this->_tmpfile=tempnam($this->_config['PSpellShell.tmp'], "tinyspell");
 
 		if(preg_match("#win#i", php_uname()))
 			return $this->_config['PSpellShell.aspell'] . " -a --lang=". escapeshellarg($lang) . " --encoding=utf-8 -H < " . $this->_tmpfile . " 2>&1";

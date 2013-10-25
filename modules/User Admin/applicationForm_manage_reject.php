@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -61,7 +61,7 @@ else {
 			print "</div>" ;
 		}
 		else {
-			$rejectReturn = $_GET["rejectReturn"] ;
+			$rejectReturn=$_GET["rejectReturn"] ;
 			$rejectReturnMessage ="" ;
 			$class="error" ;
 			if (!($rejectReturn=="")) {

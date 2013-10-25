@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/fileExtensions_manage_edit.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/fileExtensions_manage.php'>Manage File Extensions</a> > </div><div class='trailEnd'>Edit File Extensions</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -96,7 +96,7 @@ else {
 						<td class="right">
 							<input name="extension" id="extension" maxlength=7 value="<? print $row["extension"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var extension = new LiveValidation('extension');
+								var extension=new LiveValidation('extension');
 								extension.add(Validate.Presence);
 							 </script> 
 						</td>
@@ -109,7 +109,7 @@ else {
 						<td class="right">
 							<input name="name" id="name" maxlength=50 value="<? print $row["name"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var name = new LiveValidation('name');
+								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
 							 </script> 
 						</td>
@@ -138,7 +138,7 @@ else {
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>

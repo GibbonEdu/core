@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -49,8 +49,8 @@ else {
 		if ($date=="") {
 			$date=date("Y-m-d");
 		}
-		list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
-		$dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);	
+		list($dateYear, $dateMonth, $dateDay)=explode('-', $date);
+		$dateStamp=mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);	
 		$params="&viewBy=date&date=$date" ;
 	}
 	else if ($viewBy=="class") {
@@ -59,8 +59,8 @@ else {
 		$params="&viewBy=class&class=$class&gibbonCourseClassID=$gibbonCourseClassID" ;
 	}
 	
-	list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
-	$todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
+	list($todayYear, $todayMonth, $todayDay)=explode('-', $today);
+	$todayStamp=mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
 	
 	//My children's classes
 	if ($highestAction=="Lesson Planner_viewMyChildrensClasses") {
@@ -450,7 +450,7 @@ else {
 		}				
 		
 		//Proceed!
-		$updateReturn = $_GET["updateReturn"] ;
+		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 		$updateReturnMessage ="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
@@ -888,7 +888,7 @@ else {
 						?>
 						<tr>
 							<td class="right" colspan=7>
-								<input type="reset" value="Reset"> <input type="submit" value="Submit">
+								<input type="submit" value="Submit">
 							</td>
 						</tr>
 						<?

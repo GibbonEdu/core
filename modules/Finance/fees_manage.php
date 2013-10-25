@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Finance/fees_manage.php")==FALSE) {
 	//Acess denied
@@ -35,12 +35,16 @@ else {
 	print "In this area you can create the various fee options which apply to students. Fees are specific to a school year, cannot be deleted and must be linked to a category. When you come to create invoices later on, you will be able to use these fees, as well as ad hoc charges." ;
 	print "</p>" ;
 	
-	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
-	if ($gibbonSchoolYearID=="") {
+	$gibbonSchoolYearID="" ;
+	if (isset($_GET["gibbonSchoolYearID"])) {
+		$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
+	}
+	if ($gibbonSchoolYearID=="" OR $gibbonSchoolYearID==$_SESSION[$guid]["gibbonSchoolYearID"]) {
 		$gibbonSchoolYearID=$_SESSION[$guid]["gibbonSchoolYearID"] ;
 		$gibbonSchoolYearName=$_SESSION[$guid]["gibbonSchoolYearName"] ;
 	}
-	if ($_GET["gibbonSchoolYearID"]!="") {
+	
+	if ($gibbonSchoolYearID!=$_SESSION[$guid]["gibbonSchoolYearID"]) {
 		try {
 			$data=array("gibbonSchoolYearID"=>$_GET["gibbonSchoolYearID"]); 
 			$sql="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
@@ -118,7 +122,7 @@ else {
 		print "View" ;
 		print "</h3>" ;
 		//Set pagination variable
-		$page=$_GET["page"] ;
+		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
 		if ((!is_numeric($page)) OR $page<1) {
 			$page=1 ;
 		}

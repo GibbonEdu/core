@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Gibbon system-wide includes
 include "../../functions.php" ;
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_manage
 else {
 	$output.="<script type='text/javascript'>" ;
 		$output.="$(document).ready(function() {" ; 
-			$output.="var options = {" ;
+			$output.="var options={" ;
 				$output.="success: function(response) {" ;
 					$output.="tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, response); formReset(); \$(\"." .$id . "resourceAddSlider\").slideUp();" ;
 				$output.="}, " ;
@@ -129,7 +129,7 @@ else {
 									$output.="<option id='type' name='type' value='Link'>Link</option>" ;
 								$output.="</select>" ;
 								$output.="<script type='text/javascript'>" ;
-									$output.="var " . $id . "type = new LiveValidation('" . $id . "type');" ;
+									$output.="var " . $id . "type=new LiveValidation('" . $id . "type');" ;
 									$output.="" . $id . "type.add(Validate.Inclusion, { within: ['File','Link'], failureMessage: 'Select something!'});" ;
 								$output.="</script>" ;
 							$output.="</td>" ;
@@ -153,7 +153,7 @@ else {
 									while ($rowExt=$resultExt->fetch()) {
 										$ext=$ext . "'." . $rowExt["extension"] . "'," ;
 									}
-									$output.="var " . $id . "file = new LiveValidation('" . $id . "file');" ;
+									$output.="var " . $id . "file=new LiveValidation('" . $id . "file');" ;
 									$output.=$id . "file.add( Validate.Inclusion, { within: [" . $ext . "], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );" ;
 									$output.=$id . "file.add(Validate.Presence);" ;
 									$output.=$id . "file.disable();" ;
@@ -168,7 +168,7 @@ else {
 							$output.="<td class='right'>" ;
 								$output.="<input name='" . $id . "link' id='" . $id . "link' maxlength=255 value='' type='text' style='width: 300px'>" ;
 								$output.="<script type='text/javascript'>" ;
-									$output.="var " . $id . "link = new LiveValidation('" . $id . "link');" ;
+									$output.="var " . $id . "link=new LiveValidation('" . $id . "link');" ;
 									$output.=$id . "link.add(Validate.Presence);" ;
 									$output.=$id . "link.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: 'Must start with http://' } );" ;
 									$output.=$id . "link.disable();" ;
@@ -190,7 +190,7 @@ else {
 							$output.="<td class='right'>" ;
 								$output.="<input name='" . $id . "name' id='" . $id . "name' maxlength=60 value='' type='text' style='width: 300px'>" ;
 								$output.="<script type='text/javascript'>" ;
-									$output.="var " . $id . "name = new LiveValidation('" . $id . "name');" ;
+									$output.="var " . $id . "name=new LiveValidation('" . $id . "name');" ;
 									$output.=$id . "name.add(Validate.Presence);" ;
 								 $output.="</script>" ;
 							$output.="</td>" ;
@@ -225,7 +225,7 @@ else {
 											}
 										$output.="</select>" ;
 										$output.="<script type='text/javascript'>" ;
-											$output.="var " . $id . "category = new LiveValidation('" . $id . "category');" ;
+											$output.="var " . $id . "category=new LiveValidation('" . $id . "category');" ;
 											$output.="" . $id . "category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: 'Select something!'});" ;
 										 $output.="</script>" ;
 									$output.="</td>" ;
@@ -308,7 +308,7 @@ else {
 									$output.="});" ;
 								$output.="</script>" ;
 								$output.="<script type='text/javascript'>" ;
-									$output.="var " . $id . "tags = new LiveValidation('" . $id . "tags');" ;
+									$output.="var " . $id . "tags=new LiveValidation('" . $id . "tags');" ;
 									$output.=$id . "tags.add(Validate.Presence);" ;
 								 $output.="</script>" ;
 							$output.="</td>" ;
@@ -359,7 +359,7 @@ else {
 							$output.="<td class='right' colspan=2>" ;
 								$output.="<input type='hidden' name='id' value='" . $id . "'>" ;
 								$output.="<input type='hidden' name='" . $id . "address' value='" . $_SESSION[$guid]["address"] . "'>" ;
-								$output.="<input type='reset' value='Reset'> <input type='submit' value='Submit'>" ;
+								$output.="<input type='submit' value='Submit'>" ;
 							$output.="</td>" ;
 						$output.="</tr>" ;
 						$output.="<tr>" ;

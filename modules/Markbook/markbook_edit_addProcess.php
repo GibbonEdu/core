@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -40,12 +40,12 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_add.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&addReturn=fail0" ;
+	$URL=$URL . "&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_POST)) {
-		$URL = $URL . "&addReturn=fail5" ;
+		$URL=$URL . "&addReturn=fail5" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -117,7 +117,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL = $URL . "&addReturn=fail2" ;
+			$URL=$URL . "&addReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}			
@@ -129,7 +129,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL = $URL . "&addReturn=fail2" ;
+			$URL=$URL . "&addReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}			
@@ -137,7 +137,7 @@ else {
 		$rowAI=$resultAI->fetch();
 		$AI=str_pad($rowAI['Auto_increment'], 10, "0", STR_PAD_LEFT) ;
 		
-		$time=mktime() ;
+		$time=time() ;
 		//Move attached file, if there is one
 		if ($_FILES['file']["tmp_name"]!="") {
 			//Check for folder in uploads based on today's date
@@ -156,7 +156,7 @@ else {
 			
 			if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
 				//Fail 5
-				$URL = $URL . "&updateReturn=fail5" ;
+				$URL=$URL . "&updateReturn=fail5" ;
 				header("Location: {$URL}");
 			}
 		}
@@ -166,7 +166,7 @@ else {
 		
 		if ($name=="" OR $description=="" OR $type=="" OR gibbonScaleIDAttainment=="" OR gibbonScaleIDEffort=="" OR viewableStudents=="" OR viewableParents=="") {
 			//Fail 3
-			$URL = $URL . "&addReturn=fail3" ;
+			$URL=$URL . "&addReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -179,7 +179,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL = $URL . "&addReturn=fail2" ;
+				$URL=$URL . "&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
@@ -192,7 +192,7 @@ else {
 			catch(PDOException $e) { }			
 			
 			//Success 0
-			$URL = $URL . "&addReturn=success0" ;
+			$URL=$URL . "&addReturn=success0" ;
 			header("Location: {$URL}");
 		}
 	}

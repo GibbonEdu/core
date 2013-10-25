@@ -59,49 +59,49 @@ class TCPDF_UNICODE_DATA {
  * @var Unicode code for Left-to-Right Mark
  * @access public
  */
-public $uni_LRM = 8206;
+public $uni_LRM=8206;
 
 /**
  * @var Unicode code for Right-to-Left Mark
  * @access public
  */
-public $uni_RLM = 8207;
+public $uni_RLM=8207;
 
 /**
  * @var Unicode code for Left-to-Right Embedding
  * @access public
  */
-public $uni_LRE = 8234;
+public $uni_LRE=8234;
 
 /**
  * @var Unicode code for Right-to-Left Embedding
  * @access public
  */
-public $uni_RLE = 8235;
+public $uni_RLE=8235;
 
 /**
  * @var Unicode code for Pop Directional Format
  * @access public
  */
-public $uni_PDF = 8236;
+public $uni_PDF=8236;
 
 /**
  * @var Unicode code for Left-to-Right Override
  * @access public
  */
-public $uni_LRO = 8237;
+public $uni_LRO=8237;
 
 /**
  * @var Unicode code for Right-to-Left Override
  * @access public
  */
-public $uni_RLO = 8238;
+public $uni_RLO=8238;
 
 /*
  * @var Pattern to test RTL (Righ-To-Left) strings using regular expressions.
  * @access public
  */
-public $uni_RE_PATTERN_RTL = "/(
+public $uni_RE_PATTERN_RTL="/(
 	  \xD6\xBE                                             # R
 	| \xD7[\x80\x83\x86\x90-\xAA\xB0-\xB4]                 # R
 	| \xDF[\x80-\xAA\xB4\xB5\xBA]                          # R
@@ -120,7 +120,7 @@ public $uni_RE_PATTERN_RTL = "/(
  * Source: http://www.w3.org/International/questions/qa-forms-utf-8
  * @access public
  */
-public $uni_RE_PATTERN_ARABIC = "/(
+public $uni_RE_PATTERN_ARABIC="/(
 		  \xD8[\x80-\x83\x8B\x8D\x9B\x9E\x9F\xA1-\xBA]  # AL
 		| \xD9[\x80-\x8A\xAD-\xAF\xB1-\xBF]             # AL
 		| \xDA[\x80-\xBF]                               # AL
@@ -146,7 +146,7 @@ public $uni_RE_PATTERN_ARABIC = "/(
  * @var Array of Unicode types
  * @access public
  */
-public $uni_type = array(
+public $uni_type=array(
 0=>'BN',
 1=>'BN',
 2=>'BN',
@@ -17875,7 +17875,7 @@ public $uni_type = array(
  * at http://www.unicode.org/unicode/reports/tr9/
  * @access public
  */
-public $uni_mirror = array (
+public $uni_mirror=array (
 0x0028=>0x0029,
 0x0029=>0x0028,
 0x003C=>0x003E,
@@ -18233,7 +18233,7 @@ public $uni_mirror = array (
  * @var Arabic shape substitutions: char code => (isolated, final, initial, medial)
  * @access public
  */
-public $uni_arabicsubst = array(
+public $uni_arabicsubst=array(
 1569=>array(65152),
 1570=>array(65153, 65154, 65153, 65154),
 1571=>array(65155, 65156, 65155, 65156),
@@ -18316,7 +18316,7 @@ public $uni_arabicsubst = array(
  * @var Arabic laa letter: char code => isolated, final, initial, medial
  * @access public
  */
-public $uni_laa_array = array (
+public $uni_laa_array=array (
 1570 =>array(65269, 65270, 65269, 65270),
 1571 =>array(65271, 65272, 65271, 65272),
 1573 =>array(65273, 65274, 65273, 65274),
@@ -18329,7 +18329,7 @@ public $uni_laa_array = array (
  * second NSM char code => substitution char
  * @access public
  */
-public $uni_diacritics = array (
+public $uni_diacritics=array (
 1612=>64606, # Shadda + Dammatan
 1613=>64607, # Shadda + Kasratan
 1614=>64608, # Shadda + Fatha
@@ -18341,7 +18341,7 @@ public $uni_diacritics = array (
  * @var Array of character substitutions from UTF-8 Unicode to Latin1
  * @access public
  */
-public $uni_utf8tolatin = array (
+public $uni_utf8tolatin=array (
 8364=>128, # Euro1
 338=>140,  # OE
 352=>138,  # Scaron

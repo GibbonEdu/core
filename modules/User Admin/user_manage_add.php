@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_add.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php'>Manage Users</a> > </div><div class='trailEnd'>Add User</div>" ;
 	print "</div>" ;
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -101,7 +101,7 @@ else {
 				<td class="right">
 					<input name="surname" id="surname" maxlength=30 value="<? print $row["surname"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var surname = new LiveValidation('surname');
+						var surname=new LiveValidation('surname');
 						surname.add(Validate.Presence);
 					 </script>
 				</td>
@@ -114,18 +114,9 @@ else {
 				<td class="right">
 					<input name="firstName" id="firstName" maxlength=30 value="<? print $row["firstName"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var firstName = new LiveValidation('firstName');
+						var firstName=new LiveValidation('firstName');
 						firstName.add(Validate.Presence);
 					 </script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b>Other Names</b><br/>
-					<span style="font-size: 90%"><i>Any other names shown in ID documents.</i></span>
-				</td>
-				<td class="right">
-					<input maxlength=30 value="<? print $row["otherNames"] ?>" type="text" style="width: 300px" name="otherNames">
 				</td>
 			</tr>
 			<tr>
@@ -136,7 +127,7 @@ else {
 				<td class="right">
 					<input name="preferredName" id="preferredName" maxlength=30 value="<? print $row["preferredName"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var preferredName = new LiveValidation('preferredName');
+						var preferredName=new LiveValidation('preferredName');
 						preferredName.add(Validate.Presence);
 					 </script>
 				</td>
@@ -149,7 +140,7 @@ else {
 				<td class="right">
 					<input name="officialName" id="officialName" maxlength=150 value="<? print $row["officialName"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var officialName = new LiveValidation('officialName');
+						var officialName=new LiveValidation('officialName');
 						officialName.add(Validate.Presence);
 					 </script>
 				</td>
@@ -174,7 +165,7 @@ else {
 						<option value="M">M</option>
 					</select>
 					<script type="text/javascript">
-						var gender = new LiveValidation('gender');
+						var gender=new LiveValidation('gender');
 						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 					 </script>
 				</td>
@@ -187,7 +178,7 @@ else {
 				<td class="right">
 					<input name="dob" id="dob" maxlength=10 value="<? print $row["dob"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var dob = new LiveValidation('dob');
+						var dob=new LiveValidation('dob');
 						dob.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					 </script>
 					 <script type="text/javascript">
@@ -224,7 +215,7 @@ else {
 						?>				
 					</select>
 					<script type="text/javascript">
-						var gibbonRoleIDPrimary = new LiveValidation('gibbonRoleIDPrimary');
+						var gibbonRoleIDPrimary=new LiveValidation('gibbonRoleIDPrimary');
 						gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 					 </script>
 				</td>
@@ -250,7 +241,7 @@ else {
 					}
 					?>
 					<script type="text/javascript">
-						var username = new LiveValidation('username');
+						var username=new LiveValidation('username');
 						username.add( Validate.Exclusion, { within: [<? print $idList ;?>], failureMessage: "Username already in use!", partialMatch: false, caseSensitive: false } );
 						username.add(Validate.Presence);
 					 </script>
@@ -276,8 +267,26 @@ else {
 				<td class="right">
 					<input name="password" id="password" maxlength=20 value="<? print $row["password"] ?>" type="password" style="width: 300px">
 					<script type="text/javascript">
-						var password = new LiveValidation('password');
+						var password=new LiveValidation('password');
 						password.add(Validate.Presence);
+						<?
+						$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
+						if ($alpha=="Y") {
+							print "password.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"Does not meet password policy.\" } );" ;
+						}
+						$numeric=getSettingByScope( $connection2, "System", "passwordPolicyNumeric" ) ;
+						if ($numeric=="Y") {
+							print "password.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"Does not meet password policy.\" } );" ;
+						}
+						$punctuation=getSettingByScope( $connection2, "System", "passwordPolicyNonAlphaNumeric" ) ;
+						if ($punctuation=="Y") {
+							print "password.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"Does not meet password policy.\" } );" ;
+						}
+						$minLength=getSettingByScope( $connection2, "System", "passwordPolicyMinLength" ) ;
+						if (is_numeric($minLength)) {
+							print "password.add( Validate.Length, { minimum: " . $minLength . "} );" ;
+						}
+						?>
 					 </script>
 				</td>
 			</tr>
@@ -289,7 +298,7 @@ else {
 				<td class="right">
 					<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="<? print $row["passwordConfirm"] ?>" type="password" style="width: 300px">
 					<script type="text/javascript">
-						var passwordConfirm = new LiveValidation('passwordConfirm');
+						var passwordConfirm=new LiveValidation('passwordConfirm');
 						passwordConfirm.add(Validate.Presence);
 						passwordConfirm.add(Validate.Confirmation, { match: 'password' } );
 					 </script>
@@ -345,7 +354,7 @@ else {
 				<td class="right">
 					<input name="email" id="email" maxlength=50 value="<? print $row["email"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var email = new LiveValidation('email');
+						var email=new LiveValidation('email');
 						email.add(Validate.Email);
 					 </script>
 				</td>
@@ -358,7 +367,7 @@ else {
 				<td class="right">
 					<input name="emailAlternate" id="emailAlternate" maxlength=50 value="<? print $row["emailAlternate"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var emailAlternate = new LiveValidation('emailAlternate');
+						var emailAlternate=new LiveValidation('emailAlternate');
 						emailAlternate.add(Validate.Email);
 					 </script>
 				</td>
@@ -426,7 +435,7 @@ else {
 				</td>
 				<script type="text/javascript">
 					$(function() {
-						var availableTags = [
+						var availableTags=[
 							<?
 							try {
 								$dataAuto=array(); 
@@ -485,7 +494,7 @@ else {
 				</td>
 				<script type="text/javascript">
 					$(function() {
-						var availableTags = [
+						var availableTags=[
 							<?
 							try {
 								$dataAuto=array(); 
@@ -573,7 +582,7 @@ else {
 				<td class="right">
 					<input name="website" id="website" maxlength=255 value="<? print $row["website"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var text = new LiveValidation('text');
+						var text=new LiveValidation('text');
 						text.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 					</script>	
 				</td>
@@ -618,7 +627,7 @@ else {
 				</td>
 				<script type="text/javascript">
 					$(function() {
-						var availableTags = [
+						var availableTags=[
 							<?
 							try {
 								$dataAuto=array(); 
@@ -644,7 +653,7 @@ else {
 				<td class="right">
 					<input name="dateStart" id="dateStart" maxlength=10 value="<? print dateConvertBack($row["dateStart"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var dateStart = new LiveValidation('dateStart');
+						var dateStart=new LiveValidation('dateStart');
 						dateStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					 </script>
 					 <script type="text/javascript">
@@ -662,7 +671,7 @@ else {
 				<td class="right">
 					<input name="dateEnd" id="dateEnd" maxlength=10 value="<? print dateConvertBack($row["dateEnd"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var dateEnd = new LiveValidation('dateEnd');
+						var dateEnd=new LiveValidation('dateEnd');
 						dateEnd.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					 </script>
 					 <script type="text/javascript">
@@ -706,7 +715,7 @@ else {
 				</td>
 				<script type="text/javascript">
 					$(function() {
-						var availableTags = [
+						var availableTags=[
 							<?
 							try {
 								$dataAuto=array(); 
@@ -733,7 +742,7 @@ else {
 				</td>
 				<script type="text/javascript">
 					$(function() {
-						var availableTags = [
+						var availableTags=[
 							<?
 							try {
 								$dataAuto=array(); 
@@ -766,7 +775,7 @@ else {
 				</td>
 				<script type="text/javascript">
 					$(function() {
-						var availableTags = [
+						var availableTags=[
 							<?
 							try {
 								$dataAuto=array(); 
@@ -793,7 +802,7 @@ else {
 				</td>
 				<script type="text/javascript">
 					$(function() {
-						var availableTags = [
+						var availableTags=[
 							<?
 							try {
 								$dataAuto=array(); 
@@ -820,7 +829,7 @@ else {
 				</td>
 				<script type="text/javascript">
 					$(function() {
-						var availableTags = [
+						var availableTags=[
 							<?
 							try {
 								$dataAuto=array(); 
@@ -1030,7 +1039,7 @@ else {
 				<td class="right">
 					<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<? print dateConvertBack($row["visaExpiryDate"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var visaExpiryDate = new LiveValidation('visaExpiryDate');
+						var visaExpiryDate=new LiveValidation('visaExpiryDate');
 						visaExpiryDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					 </script>
 					 <script type="text/javascript">
@@ -1177,7 +1186,7 @@ else {
 				<td class="right">
 					<input type="file" name="file1" id="file1"><br/><br/>
 					<script type="text/javascript">
-						var file1 = new LiveValidation('file1');
+						var file1=new LiveValidation('file1');
 						file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 					</script>
 				</td>
@@ -1193,7 +1202,7 @@ else {
 					print getMaxUpload(TRUE) ;				
 					?>
 					<script type="text/javascript">
-						var file2 = new LiveValidation('file2');
+						var file2=new LiveValidation('file2');
 						file2.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 					</script>
 				</td>
@@ -1247,7 +1256,7 @@ else {
 			</tr>
 			<script type="text/javascript">
 				$(function() {
-					var availableTags = [
+					var availableTags=[
 						<?
 						try {
 							$dataAuto=array(); 
@@ -1317,7 +1326,7 @@ else {
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					<input type="submit" value="Submit">
 				</td>
 			</tr>
 		</table>

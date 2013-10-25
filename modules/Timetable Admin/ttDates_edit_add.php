@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/ttDates_edit_add.php")==FALSE) {
 	//Acess denied
@@ -64,7 +64,7 @@ else {
 				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttDates.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Tie Days to Dates</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp''>Edit Days in Date</a> > </div><div class='trailEnd'>Add Day to Date</div>" ;
 				print "</div>" ;
 				
-				$addReturn = $_GET["addReturn"] ;
+				if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 				$addReturnMessage ="" ;
 				$class="error" ;
 				if (!($addReturn=="")) {
@@ -96,7 +96,7 @@ else {
 							<td class="right">
 								<input readonly name="name" id="name" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var courseName = new LiveValidation('courseName');
+									var courseName=new LiveValidation('courseName');
 									courseName.add(Validate.Presence);
 								</script>
 							</td>
@@ -110,7 +110,7 @@ else {
 								<input hidden name="dateStamp" id="dateStamp" maxlength=20 value="<? print $dateStamp ?>" type="text" style="width: 300px">
 								<input readonly name="date" id="date" maxlength=20 value="<? print date("d/m/Y l", $dateStamp) ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var courseName = new LiveValidation('courseName');
+									var courseName=new LiveValidation('courseName');
 									courseName.add(Validate.Presence);
 								</script>
 							</td>
@@ -169,7 +169,7 @@ else {
 							<td class="right">
 								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="reset" value="Reset"> <input type="submit" value="Submit">
+								<input type="submit" value="Submit">
 							</td>
 						</tr>
 					</table>

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Gibbon system-wide includes
 include "../../functions.php" ;
@@ -67,9 +67,9 @@ else {
 		if ($row["name"]=="Print Publication") {
 			print "<script type='text/javascript'>" ;
 				print "function stopRKey(evt) {" ;
-					print "var evt = (evt) ? evt : ((event) ? event : null); var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null); if ((evt.keyCode == 13) && (node.type==\"text\"))  {return false;}" ;
+					print "var evt=(evt) ? evt : ((event) ? event : null); var node=(evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null); if ((evt.keyCode == 13) && (node.type==\"text\"))  {return false;}" ;
 				print "}" ;
-				print "document.onkeypress = stopRKey;" ; 	
+				print "document.onkeypress=stopRKey;" ; 	
 				
 				print "$(document).ready(function(){" ;
 					print "\$(\".gbooks\").click(function(){" ;
@@ -80,9 +80,9 @@ else {
 						print "if (isbn) {" ;
 							print "$.get((\"https://www.googleapis.com/books/v1/volumes?q=isbn:\" + isbn), function(data){" ;
 								print "if(data.constructor === String){" ;
-									print "var obj = jQuery.parseJSON(data);" ;
+									print "var obj=jQuery.parseJSON(data);" ;
 								print "} else {" ;
-									print "var obj = data;" ;
+									print "var obj=data;" ;
 								print "}" ;
 								print "if (obj['totalItems']==0) {" ;
 									print "alert('This title cannot be found.');" ;
@@ -90,7 +90,7 @@ else {
 									//SET FIELDS
 									print "$(\"#name\").val(obj['items'][0]['volumeInfo']['title']);" ;
 									print "var authors='';" ;
-									print "for (var i = 0; i < obj['items'][0]['volumeInfo']['authors'].length; i++) {" ;
+									print "for (var i=0; i < obj['items'][0]['volumeInfo']['authors'].length; i++) {" ;
     									print "authors=authors + obj['items'][0]['volumeInfo']['authors'][i] + ', ';" ;
 									print "}" ;
 									print "$(\"#producer\").val(authors.substring(0,(authors.length-2)));" ;
@@ -123,7 +123,7 @@ else {
 									print "}" ;
 									print "$(\"#fieldLanguage\").val(obj['items'][0]['volumeInfo']['language']);" ;
 									print "var subjects='';" ;
-									print "for (var i = 0; i < obj['items'][0]['volumeInfo']['categories'].length; i++) {" ;
+									print "for (var i=0; i < obj['items'][0]['volumeInfo']['categories'].length; i++) {" ;
     									print "subjects=subjects + obj['items'][0]['volumeInfo']['categories'][i] + ', ';" ;
 									print "}" ;
 									print "$(\"#fieldSubjects\").val(subjects.substring(0,(subjects.length-2)));" ;
@@ -180,7 +180,7 @@ else {
 						else if ($field["type"]=="Date") {
 							$output.="<input name='field" . $fieldName . "' id='field" . $fieldName . "' maxlength=10 value='' type='text' style='width: 300px'>" ;
 							$output.="<script type='text/javascript'>" ;
-								$output.="var field" . $fieldName . " = new LiveValidation('field" . $fieldName . "');" ;
+								$output.="var field" . $fieldName . "=new LiveValidation('field" . $fieldName . "');" ;
 								$output.="field" . $fieldName . ".add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: 'Use dd/mm/yyyy.' } );" ; 
 							$output.="</script>" ;
 							$output.="<script type='text/javascript'>" ;
@@ -192,7 +192,7 @@ else {
 						else if ($field["type"]=="URL") {
 							$output.="<input maxlength='" . $field["options"] . "' name='field" . $fieldName . "' id='field" . $fieldName . "' value='" . htmlPrep($fieldValues[$field["name"]]) . "' type='text' style='width: 300px'>" ;
 							$output.="<script type='text/javascript'>" ;
-								$output.="var field" . $fieldName . " = new LiveValidation('field" . $fieldName . "');" ;
+								$output.="var field" . $fieldName . "=new LiveValidation('field" . $fieldName . "');" ;
 								$output.="field" . $fieldName . ".add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: \"Must start with http://\" } );" ;
 							$output.="</script>" ;
 						}
@@ -202,13 +202,13 @@ else {
 				if ($field["required"]=="Y") {
 					if ($field["type"]=="Text" OR $field["type"]=="Textarea" OR $field["type"]=="Date" OR $field["type"]=="URL") {
 						$output.="<script type='text/javascript'>" ;
-							$output.="var field" . $fieldName . " = new LiveValidation('field" . $fieldName . "');" ;
+							$output.="var field" . $fieldName . "=new LiveValidation('field" . $fieldName . "');" ;
 							$output.="field" . $fieldName . ".add(Validate.Presence);" ;
 						$output.="</script>" ;
 					}
 					else if ($field["type"]=="Select") {
 						$output.="<script type='text/javascript'>" ;
-							$output.="var field" . $fieldName . " = new LiveValidation('field" . $fieldName . "');" ;
+							$output.="var field" . $fieldName . "=new LiveValidation('field" . $fieldName . "');" ;
 							$output.="field" . $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: 'Select something!'});" ;
 						$output.="</script>" ;
 					}

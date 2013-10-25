@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -34,7 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessments_manage.php'>Manage External Assessments</a> > </div><div class='trailEnd'>Add External Assessment</div>" ;
 	print "</div>" ;
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -73,7 +73,7 @@ else {
 				<td class="right">
 					<input name="name" id="name" maxlength=50 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var name = new LiveValidation('name');
+						var name=new LiveValidation('name');
 						name.add(Validate.Presence);
 					 </script>
 				</td>
@@ -84,9 +84,9 @@ else {
 					<span style="font-size: 90%"><i>Must be unique.</i></span>
 				</td>
 				<td class="right">
-					<input name="nameShort" id="nameShort" maxlength=10 value="<? print $row["nameShort"] ?>" type="text" style="width: 300px">
+					<input name="nameShort" id="nameShort" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var nameShort = new LiveValidation('nameShort');
+						var nameShort=new LiveValidation('nameShort');
 						nameShort.add(Validate.Presence);
 					 </script>
 				</td>
@@ -97,9 +97,9 @@ else {
 					<span style="font-size: 90%"><i>Brief description of assessment and how it is used.</i></span>
 				</td>
 				<td class="right">
-					<input name="description" id="description" maxlength=255 value="<? print $row["description"] ?>" type="text" style="width: 300px">
+					<input name="description" id="description" maxlength=255 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var description = new LiveValidation('description');
+						var description=new LiveValidation('description');
 						description.add(Validate.Presence);
 					 </script>
 				</td>
@@ -122,7 +122,7 @@ else {
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					<input type="submit" value="Submit">
 				</td>
 			</tr>
 		</table>

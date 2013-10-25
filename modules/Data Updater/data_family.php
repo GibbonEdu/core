@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -53,7 +53,7 @@ else {
 			print "</p>" ;
 		}
 		
-		$updateReturn = $_GET["updateReturn"] ;
+		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 		$updateReturnMessage ="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
@@ -258,7 +258,7 @@ else {
 								<td class="right">
 									<input name="nameAddress" id="nameAddress" maxlength=100 value="<? print htmlPrep($row["nameAddress"]) ?>" type="text" style="width: 300px">								
 									<script type="text/javascript">
-										var nameAddress = new LiveValidation('nameAddress');
+										var nameAddress=new LiveValidation('nameAddress');
 										nameAddress.add(Validate.Presence);
 									</script>
 								</td>
@@ -271,7 +271,7 @@ else {
 								<td class="right">
 									<input name="homeAddress" id="homeAddress" maxlength=255 value="<? print $row["homeAddress"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
-										var homeAddress = new LiveValidation('homeAddress');
+										var homeAddress=new LiveValidation('homeAddress');
 										homeAddress.add(Validate.Presence);
 									</script>
 								</td>
@@ -286,7 +286,7 @@ else {
 								</td>
 								<script type="text/javascript">
 									$(function() {
-										var availableTags = [
+										var availableTags=[
 											<?
 											try {
 												$dataAuto=array(); 
@@ -304,7 +304,7 @@ else {
 									});
 								</script>
 								<script type="text/javascript">
-										var homeAddressDistrict = new LiveValidation('homeAddressDistrict');
+										var homeAddressDistrict=new LiveValidation('homeAddressDistrict');
 										homeAddressDistrict.add(Validate.Presence);
 									</script>
 							</tr>
@@ -333,7 +333,7 @@ else {
 										?>				
 									</select>
 									<script type="text/javascript">
-										var homeAddressCountry = new LiveValidation('homeAddressCountry');
+										var homeAddressCountry=new LiveValidation('homeAddressCountry');
 										homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 									 </script>
 								</td>
@@ -353,7 +353,7 @@ else {
 									}
 									?>
 									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-									<input type="reset" value="Reset"> <input type="submit" value="Submit">
+									<input type="submit" value="Submit">
 								</td>
 							</tr>
 						</table>

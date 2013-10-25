@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/studentEnrolment_manage_edit.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/studentEnrolment_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Student Enrolment</a> > </div><div class='trailEnd'>Edit Student Enrolment</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -71,7 +71,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonStudentEnrolmentID"=>$gibbonStudentEnrolmentID); 
-			$sql="SELECT gibbonRollGroup.gibbonRollGroupID, gibbonYearGroup.gibbonYearGroupID,gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID ORDER BY surname, preferredName" ; 
+			$sql="SELECT gibbonRollGroup.gibbonRollGroupID, gibbonYearGroup.gibbonYearGroupID,gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, dateStart, dateEnd, gibbonPerson.gibbonPersonID FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID ORDER BY surname, preferredName" ; 
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -121,7 +121,7 @@ else {
 							?>
 							<input readonly name="yearName" id="yearName" maxlength=20 value="<? print htmlPrep($yearName) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var yearName = new LiveValidation('yearName');
+								var yearName=new LiveValidation('yearName');
 								yearName.add(Validate.Presence);
 							</script>
 						</td>
@@ -134,7 +134,7 @@ else {
 						<td class="right">
 							<input readonly name="participant" id="participant" maxlength=200 value="<? print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student") ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var participant = new LiveValidation('participant');
+								var participant=new LiveValidation('participant');
 								participant.add(Validate.Presence);
 							 </script>
 						</td>
@@ -167,7 +167,7 @@ else {
 								?>				
 							</select>
 							<script type="text/javascript">
-								var gibbonYearGroupID = new LiveValidation('gibbonYearGroupID');
+								var gibbonYearGroupID=new LiveValidation('gibbonYearGroupID');
 								gibbonYearGroupID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							 </script>
 						</td>
@@ -200,9 +200,37 @@ else {
 								?>				
 							</select>
 							<script type="text/javascript">
-								var gibbonRollGroupID = new LiveValidation('gibbonRollGroupID');
+								var gibbonRollGroupID=new LiveValidation('gibbonRollGroupID');
 								gibbonRollGroupID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							 </script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b>School History</b><br/>
+							<span style="font-size: 90%"></span>
+						</td>
+						<td class="right">
+							<?
+							if ($row["dateStart"]!="") {
+								print "<u>Start Date</u>: " . dateConvertBack($row["dateStart"]) . "</br>" ;
+							}
+							try {
+								$dataSelect=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+								$sqlSelect="SELECT gibbonRollGroup.name AS rollGroup, gibbonSchoolYear.name AS schoolYear FROM gibbonStudentEnrolment JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonStudentEnrolment.gibbonSchoolYearID" ;
+								$resultSelect=$connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+							while ($rowSelect=$resultSelect->fetch()) {
+								print "<u>" . $rowSelect["schoolYear"] . "</u>: " . $rowSelect["rollGroup"] . "<br/>" ;
+							}
+							if ($row["dateEnd"]!="") {
+								print "<u>Edn Date</u>: " . dateConvertBack($row["dateEnd"]) . "</br>" ;
+							}
+							?>
 						</td>
 					</tr>
 					<tr>
@@ -212,7 +240,7 @@ else {
 						<td class="right">
 							<input name="gibbonStudentEnrolmentID" id="gibbonStudentEnrolmentID" value="<? print $gibbonStudentEnrolmentID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>

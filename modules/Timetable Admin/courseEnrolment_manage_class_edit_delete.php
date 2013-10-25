@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_class_edit_delete.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	$gibbonCourseID=$_GET["gibbonCourseID"] ;
 	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
 	$gibbonPersonID=$_GET["gibbonPersonID"] ;
-	if (gibbonPersonID=="" OR $gibbonCourseClassID=="" OR $gibbonCourseID=="" OR $gibbonSchoolYearID=="") {
+	if ($gibbonPersonID=="" OR $gibbonCourseClassID=="" OR $gibbonCourseID=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
 			print "You have not specified a person, class, course or school year." ;
 		print "</div>" ;

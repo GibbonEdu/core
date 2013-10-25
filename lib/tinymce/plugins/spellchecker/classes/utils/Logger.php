@@ -32,12 +32,12 @@ class Moxiecode_Logger {
 	 * Constructs a new logger instance.
 	 */
 	function Moxiecode_Logger() {
-		$this->_path = "";
-		$this->_filename = "{level}.log";
+		$this->_path="";
+		$this->_filename="{level}.log";
 		$this->setMaxSize("100k");
-		$this->_maxFiles = 10;
-		$this->_level = MC_LOGGER_DEBUG;
-		$this->_format = "[{time}] [{level}] {message}";
+		$this->_maxFiles=10;
+		$this->_level=MC_LOGGER_DEBUG;
+		$this->_format="[{time}] [{level}] {message}";
 	}
 
 	/**
@@ -49,32 +49,32 @@ class Moxiecode_Logger {
 		if (is_string($level)) {
 			switch (strtolower($level)) {
 				case "debug":
-					$level = MC_LOGGER_DEBUG;
+					$level=MC_LOGGER_DEBUG;
 					break;
 
 				case "info":
-					$level = MC_LOGGER_INFO;
+					$level=MC_LOGGER_INFO;
 					break;
 
 				case "warn":
 				case "warning":
-					$level = MC_LOGGER_WARN;
+					$level=MC_LOGGER_WARN;
 					break;
 
 				case "error":
-					$level = MC_LOGGER_ERROR;
+					$level=MC_LOGGER_ERROR;
 					break;
 
 				case "fatal":
-					$level = MC_LOGGER_FATAL;
+					$level=MC_LOGGER_FATAL;
 					break;
 
 				default:
-					$level = MC_LOGGER_FATAL;
+					$level=MC_LOGGER_FATAL;
 			}
 		}
 
-		$this->_level = $level;
+		$this->_level=$level;
 	}
 
 	/**
@@ -87,7 +87,7 @@ class Moxiecode_Logger {
 	}
 
 	function setPath($path) {
-		$this->_path = $path;
+		$this->_path=$path;
 	}
 
 	function getPath() {
@@ -95,7 +95,7 @@ class Moxiecode_Logger {
 	}
 
 	function setFileName($file_name) {
-		$this->_filename = $file_name;
+		$this->_filename=$file_name;
 	}
 
 	function getFileName() {
@@ -103,7 +103,7 @@ class Moxiecode_Logger {
 	}
 
 	function setFormat($format) {
-		$this->_format = $format;
+		$this->_format=$format;
 	}
 
 	function getFormat() {
@@ -112,7 +112,7 @@ class Moxiecode_Logger {
 
 	function setMaxSize($size) {
 		// Fix log max size
-		$logMaxSizeBytes = intval(preg_replace("/[^0-9]/", "", $size));
+		$logMaxSizeBytes=intval(preg_replace("/[^0-9]/", "", $size));
 
 		// Is KB
 		if (strpos((strtolower($size)), "k") > 0)
@@ -122,8 +122,8 @@ class Moxiecode_Logger {
 		if (strpos((strtolower($size)), "m") > 0)
 			$logMaxSizeBytes *= (1024 * 1024);
 
-		$this->_maxSizeBytes = $logMaxSizeBytes;
-		$this->_maxSize = $size;
+		$this->_maxSizeBytes=$logMaxSizeBytes;
+		$this->_maxSize=$size;
 	}
 
 	function getMaxSize() {
@@ -131,7 +131,7 @@ class Moxiecode_Logger {
 	}
 
 	function setMaxFiles($max_files) {
-		$this->_maxFiles = $max_files;
+		$this->_maxFiles=$max_files;
 	}
 
 	function getMaxFiles() {
@@ -139,27 +139,27 @@ class Moxiecode_Logger {
 	}
 
 	function debug($msg) {
-		$args = func_get_args();
+		$args=func_get_args();
 		$this->_logMsg(MC_LOGGER_DEBUG, implode(', ', $args));
 	}
 
 	function info($msg) {
-		$args = func_get_args();
+		$args=func_get_args();
 		$this->_logMsg(MC_LOGGER_INFO, implode(', ', $args));
 	}
 
 	function warn($msg) {
-		$args = func_get_args();
+		$args=func_get_args();
 		$this->_logMsg(MC_LOGGER_WARN, implode(', ', $args));
 	}
 
 	function error($msg) {
-		$args = func_get_args();
+		$args=func_get_args();
 		$this->_logMsg(MC_LOGGER_ERROR, implode(', ', $args));
 	}
 
 	function fatal($msg) {
-		$args = func_get_args();
+		$args=func_get_args();
 		$this->_logMsg(MC_LOGGER_FATAL, implode(', ', $args));
 	}
 
@@ -184,56 +184,56 @@ class Moxiecode_Logger {
 	}
 
 	function _logMsg($level, $message) {
-		$roll = false;
+		$roll=false;
 
 		if ($level < $this->_level)
 			return;
 
-		$logFile = $this->toOSPath($this->_path . "/" . $this->_filename);
+		$logFile=$this->toOSPath($this->_path . "/" . $this->_filename);
 
 		switch ($level) {
 			case MC_LOGGER_DEBUG:
-				$levelName = "DEBUG";
+				$levelName="DEBUG";
 				break;
 
 			case MC_LOGGER_INFO:
-				$levelName = "INFO";
+				$levelName="INFO";
 				break;
 
 			case MC_LOGGER_WARN:
-				$levelName = "WARN";
+				$levelName="WARN";
 				break;
 
 			case MC_LOGGER_ERROR:
-				$levelName = "ERROR";
+				$levelName="ERROR";
 				break;
 
 			case MC_LOGGER_FATAL:
-				$levelName = "FATAL";
+				$levelName="FATAL";
 				break;
 		}
 
-		$logFile = str_replace('{level}', strtolower($levelName), $logFile);
+		$logFile=str_replace('{level}', strtolower($levelName), $logFile);
 
-		$text = $this->_format;
-		$text = str_replace('{time}', date("Y-m-d H:i:s"), $text);
-		$text = str_replace('{level}', strtolower($levelName), $text);
-		$text = str_replace('{message}', $message, $text);
-		$message = $text . "\r\n";
+		$text=$this->_format;
+		$text=str_replace('{time}', date("Y-m-d H:i:s"), $text);
+		$text=str_replace('{level}', strtolower($levelName), $text);
+		$text=str_replace('{message}', $message, $text);
+		$message=$text . "\r\n";
 
 		// Check filesize
 		if (file_exists($logFile)) {
-			$size = @filesize($logFile);
+			$size=@filesize($logFile);
 
 			if ($size + strlen($message) > $this->_maxSizeBytes)
-				$roll = true;
+				$roll=true;
 		}
 
 		// Roll if the size is right
 		if ($roll) {
 			for ($i=$this->_maxFiles-1; $i>=1; $i--) {
-				$rfile = $this->toOSPath($logFile . "." . $i);
-				$nfile = $this->toOSPath($logFile . "." . ($i+1));
+				$rfile=$this->toOSPath($logFile . "." . $i);
+				$nfile=$this->toOSPath($logFile . "." . ($i+1));
 
 				if (@file_exists($rfile))
 					@rename($rfile, $nfile);
@@ -242,13 +242,13 @@ class Moxiecode_Logger {
 			@rename($logFile, $this->toOSPath($logFile . ".1"));
 
 			// Delete last logfile
-			$delfile = $this->toOSPath($logFile . "." . ($this->_maxFiles + 1));
+			$delfile=$this->toOSPath($logFile . "." . ($this->_maxFiles + 1));
 			if (@file_exists($delfile))
 				@unlink($delfile);
 		}
 
 		// Append log line
-		if (($fp = @fopen($logFile, "a")) != null) {
+		if (($fp=@fopen($logFile, "a")) != null) {
 			@fputs($fp, $message);
 			@fflush($fp);
 			@fclose($fp);

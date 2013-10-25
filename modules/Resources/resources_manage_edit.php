@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -43,7 +43,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/resources_manage.php'>Manage Resources</a> > </div><div class='trailEnd'>Edit Resource</div>" ;
 		print "</div>" ;
 		
-		$updateReturn = $_GET["updateReturn"] ;
+		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 		$updateReturnMessage ="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
@@ -154,7 +154,7 @@ else {
 											$ext=$ext . "'." . $rowExt["extension"] . "'," ;
 										}
 										?>
-										var file = new LiveValidation('file');
+										var file=new LiveValidation('file');
 										file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 									</script>	
 									<?
@@ -183,7 +183,7 @@ else {
 								<td class="right">
 									<input name="link" id="link" maxlength=255 value="<? print $row["content"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
-										var link = new LiveValidation('link');
+										var link=new LiveValidation('link');
 										link.add(Validate.Presence);
 										link.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 									</script>	
@@ -206,7 +206,7 @@ else {
 							<td class="right">
 								<input name="name" id="name" maxlength=30 value="<? print $row["name"] ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var name = new LiveValidation('name');
+									var name=new LiveValidation('name');
 									name.add(Validate.Presence);
 								 </script>
 							</td>
@@ -250,7 +250,7 @@ else {
 											?>
 										</select>
 										<script type="text/javascript">
-											var category = new LiveValidation('category');
+											var category=new LiveValidation('category');
 											category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 										 </script>
 									</td>
@@ -357,7 +357,7 @@ else {
 									});
 								</script>
 								<script type="text/javascript">
-									var tags = new LiveValidation('tags');
+									var tags=new LiveValidation('tags');
 									tags.add(Validate.Presence);
 								 </script>
 							</td>
@@ -419,7 +419,7 @@ else {
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="reset" value="Reset"> <input type="submit" value="Submit">
+								<input type="submit" value="Submit">
 							</td>
 						</tr>
 					</table>

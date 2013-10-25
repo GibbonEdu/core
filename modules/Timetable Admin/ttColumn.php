@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/ttColumn.php")==FALSE) {
 	//Acess denied
@@ -34,7 +34,7 @@ else {
 	print "In Gibbon a column is a holder for the structure of a day. A number of columns can be defined, and these can be tied to particular timetable days in the timetable interface." ;
 	print "</p>" ;
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -62,7 +62,7 @@ else {
 		print "</div>" ;
 	} 
 	
-	$deleteReturn = $_GET["deleteReturn"] ;
+	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 	$deleteReturnMessage ="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {

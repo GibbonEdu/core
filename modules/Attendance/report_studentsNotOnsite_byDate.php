@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -56,7 +56,7 @@ else {
 				<td class="right">
 					<input name="currentDate" id="currentDate" maxlength=10 value="<? print dateConvertBack($currentDate) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var date = new LiveValidation('date');
+						var date=new LiveValidation('date');
 						date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 						date.add(Validate.Presence);
 					 </script>

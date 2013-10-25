@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -60,8 +60,8 @@ else {
 			print "</div>" ;
 		}
 		else {
-			list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
-			$todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
+			list($todayYear, $todayMonth, $todayDay)=explode('-', $today);
+			$todayStamp=mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
 			
 			//Check if school year specified
 			$gibbonCourseClassID=$_GET["gibbonCourseClassID"];
@@ -104,7 +104,7 @@ else {
 					print "</div>" ;
 					
 					//Proceed!
-					$bumpReturn = $_GET["bumpReturn"] ;
+					$bumpReturn=$_GET["bumpReturn"] ;
 					$bumpReturnMessage ="" ;
 					$class="error" ;
 					if (!($bumpReturn=="")) {

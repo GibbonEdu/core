@@ -14,7 +14,7 @@ class SpellChecker {
 	 * @param $config Configuration name/value array.
 	 */
 	function SpellChecker(&$config) {
-		$this->_config = $config;
+		$this->_config=$config;
 	}
 
 	/**

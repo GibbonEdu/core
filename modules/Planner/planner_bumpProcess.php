@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -51,21 +51,21 @@ $params="&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subVi
 	
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_bump.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&bumpReturn=fail0$params" ;
+	$URL=$URL . "&bumpReturn=fail0$params" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL = $URL . "&updateReturn=fail0$params" ;
+		$URL=$URL . "&updateReturn=fail0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		if ($gibbonPlannerEntryID=="" OR $viewBy=="date" OR ($viewBy=="class" AND $gibbonCourseClassID=="Y")) {
 			//Fail1
-			$URL = $URL . "&bumpReturn=fail1$params" ;
+			$URL=$URL . "&bumpReturn=fail1$params" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -83,14 +83,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL = $URL . "&bumpReturn=fail2$params" ;
+				$URL=$URL . "&bumpReturn=fail2$params" ;
 				header("Location: {$URL}");
 				break ;
 			}
 			
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL = $URL . "&bumpReturn=fail2$params" ;
+				$URL=$URL . "&bumpReturn=fail2$params" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -105,7 +105,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail2
-					$URL = $URL . "&bumpReturn=fail2$params" ;
+					$URL=$URL . "&bumpReturn=fail2$params" ;
 					header("Location: {$URL}");
 					break ;
 				}
@@ -149,12 +149,12 @@ else {
 				//Write to database
 				if ($partialFail==TRUE) {
 					//Fail 5
-					$URL = $URL . "&bumpReturn=fail5$params" ;
+					$URL=$URL . "&bumpReturn=fail5$params" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL = $URLBump . "&bumpReturn=success0$params" ;
+					$URL=$URLBump . "&bumpReturn=success0$params" ;
 					header("Location: {$URL}");
 				}
 			}

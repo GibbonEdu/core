@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/import_studentEnrolment.php")==FALSE) {
 	//Acess denied
@@ -58,7 +58,7 @@ else {
 					<td class="right">
 						<input type="file" name="file" id="file" size="chars">
 						<script type="text/javascript">
-							var file = new LiveValidation('file');
+							var file=new LiveValidation('file');
 							file.add(Validate.Presence);
 						</script>
 					</td>
@@ -71,7 +71,7 @@ else {
 					<td class="right">
 						<input type="text" style="width: 300px" name="fieldDelimiter" value="," maxlength=1>
 						<script type="text/javascript">
-							var fieldDelimiter = new LiveValidation('fieldDelimiter');
+							var fieldDelimiter=new LiveValidation('fieldDelimiter');
 							fieldDelimiter.add(Validate.Presence);
 						 </script>
 					</td>
@@ -84,7 +84,7 @@ else {
 					<td class="right">
 						<input type="text" style="width: 300px" name="stringEnclosure" value='"' maxlength=1>
 						<script type="text/javascript">
-							var stringEnclosure = new LiveValidation('stringEnclosure');
+							var stringEnclosure=new LiveValidation('stringEnclosure');
 							stringEnclosure.add(Validate.Presence);
 						 </script>
 					</td>
@@ -96,7 +96,7 @@ else {
 					<td class="right">
 						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
 						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="reset" value="Reset"> <input type="submit" value="Submit">
+						<input type="submit" value="Submit">
 					</td>
 				</tr>
 			</table>
@@ -181,11 +181,11 @@ else {
 					print "</h4>" ;
 					$importFail=false ;
 					$csvFile=$_FILES['file']['tmp_name'] ;
-					$handle = fopen($csvFile, "r");
+					$handle=fopen($csvFile, "r");
 					$users=array() ;
 					$userCount=0 ;
 					$userSuccessCount=0 ;
-					while (($data = fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !== FALSE) {
+					while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !== FALSE) {
 						if ($data[0]!="" AND $data[1]!="" AND $data[2]!="") {
 							$users[$userSuccessCount]["username"]=$data[0] ;
 							$users[$userSuccessCount]["rollGroup"]=$data[1] ;

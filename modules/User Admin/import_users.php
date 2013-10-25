@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/import_users.php")==FALSE) {
 	//Acess denied
@@ -58,7 +58,7 @@ else {
 					<td class="right">
 						<input type="file" name="file" id="file" size="chars">
 						<script type="text/javascript">
-							var file = new LiveValidation('file');
+							var file=new LiveValidation('file');
 							file.add(Validate.Presence);
 						</script>
 					</td>
@@ -71,7 +71,7 @@ else {
 					<td class="right">
 						<input type="text" style="width: 300px" name="fieldDelimiter" value="," maxlength=1>
 						<script type="text/javascript">
-							var fieldDelimiter = new LiveValidation('fieldDelimiter');
+							var fieldDelimiter=new LiveValidation('fieldDelimiter');
 							fieldDelimiter.add(Validate.Presence);
 						 </script>
 					</td>
@@ -84,7 +84,7 @@ else {
 					<td class="right">
 						<input type="text" style="width: 300px" name="stringEnclosure" value='"' maxlength=1>
 						<script type="text/javascript">
-							var stringEnclosure = new LiveValidation('stringEnclosure');
+							var stringEnclosure=new LiveValidation('stringEnclosure');
 							stringEnclosure.add(Validate.Presence);
 						 </script>
 					</td>
@@ -105,7 +105,7 @@ else {
 					<td class="right">
 						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
 						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="reset" value="Reset"> <input type="submit" value="Submit">
+						<input type="submit" value="Submit">
 					</td>
 				</tr>
 			</table>
@@ -235,16 +235,15 @@ else {
 					print "</h4>" ;
 					$importFail=false ;
 					$csvFile=$_FILES['file']['tmp_name'] ;
-					$handle = fopen($csvFile, "r");
+					$handle=fopen($csvFile, "r");
 					$users=array() ;
 					$userCount=0 ;
 					$userSuccessCount=0 ;
-					while (($data = fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !== FALSE) {
+					while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !== FALSE) {
 						if ($data[1]!="" AND $data[2]!="" AND $data[4]!="" AND $data[5]!="" AND $data[6]!="" AND $data[7]!="") {
 							$users[$userSuccessCount]["title"]=$data[0] ;
 							$users[$userSuccessCount]["surname"]=$data[1] ;
 							$users[$userSuccessCount]["firstName"]=$data[2] ;
-							$users[$userSuccessCount]["otherNames"]=$data[3] ;
 							$users[$userSuccessCount]["preferredName"]=$data[4] ;
 							$users[$userSuccessCount]["officialName"]=$data[5] ;
 							$users[$userSuccessCount]["gender"]=$data[6] ;
@@ -404,8 +403,8 @@ else {
 								}
 								
 								try {
-									$data=array("title"=>$user["title"], "surname"=>$user["surname"], "firstName"=>$user["firstName"], "otherNames"=>$user["otherNames"], "preferredName"=>$user["preferredName"], "officialName"=>$user["officialName"], "gender"=>$user["gender"], "house"=>$user["house"], "dob"=>$user["dob"], "gibbonRoleIDPrimary"=>$role, "gibbonRoleIDAll"=>$roleAll, "email"=>$user["email"], "image_75"=>$user["image_75"], "image_240"=>$user["image_240"], "address1"=>$user["address1"], "address1District"=>$user["address1District"], "address1Country"=>$user["address1Country"], "address2"=>$user["address2"], "address2District"=>$user["address2District"], "address2Country"=>$user["address2Country"], "phone1Type"=>$user["phone1Type"], "phone1CountryCode"=>$user["phone1CountryCode"], "phone1"=>$user["phone1"], "phone2Type"=>$user["phone2Type"], "phone2CountryCode"=>$user["phone2CountryCode"], "phone2"=>$user["phone2"], "phone3Type"=>$user["phone3Type"], "phone3CountryCode"=>$user["phone3CountryCode"], "phone3"=>$user["phone3"], "phone4Type"=>$user["phone4Type"], "phone4CountryCode"=>$user["phone4CountryCode"], "phone4"=>$user["phone4"], "website"=>$user["website"], "languageFirst"=>$user["languageFirst"], "languageSecond"=>$user["languageSecond"], "profession"=>$user["profession"], "employer"=>$user["employer"], "jobTitle"=>$user["jobTitle"], "emergency1Name"=>$user["emergency1Name"], "emergency1Number1"=>$user["emergency1Number1"], "emergency1Number2"=>$user["emergency1Number2"], "emergency1Relationship"=>$user["emergency1Relationship"], "emergency2Name"=>$user["emergency2Name"], "emergency2Number1"=>$user["emergency2Number1"], "emergency2Number2"=>$user["emergency2Number2"], "emergency2Relationship"=>$user["emergency2Relationship"], "dateStart"=>$user["dateStart"], "dateEnd"=>$user["dateEnd"], "username"=>$user["username"]); 
-									$sql="UPDATE gibbonPerson SET title=:title, surname=:surname, firstName=:firstName, otherNames=:otherNames, preferredName=:preferredName, officialName=:officialName, gender=:gender, gibbonHouseID=(SELECT gibbonHouseID FROM gibbonHouse WHERE nameShort=:house), dob=:dob, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, status='Full', email=:email, image_75=:image_75, image_240=:image_240, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, website=:website, languageFirst=:languageFirst, languageSecond=:languageSecond, profession=:profession, employer=:employer, jobTitle=:jobTitle, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, dateStart=:dateStart, dateEnd=:dateEnd WHERE username=:username" ;
+									$data=array("title"=>$user["title"], "surname"=>$user["surname"], "firstName"=>$user["firstName"], "preferredName"=>$user["preferredName"], "officialName"=>$user["officialName"], "gender"=>$user["gender"], "house"=>$user["house"], "dob"=>$user["dob"], "gibbonRoleIDPrimary"=>$role, "gibbonRoleIDAll"=>$roleAll, "email"=>$user["email"], "image_75"=>$user["image_75"], "image_240"=>$user["image_240"], "address1"=>$user["address1"], "address1District"=>$user["address1District"], "address1Country"=>$user["address1Country"], "address2"=>$user["address2"], "address2District"=>$user["address2District"], "address2Country"=>$user["address2Country"], "phone1Type"=>$user["phone1Type"], "phone1CountryCode"=>$user["phone1CountryCode"], "phone1"=>$user["phone1"], "phone2Type"=>$user["phone2Type"], "phone2CountryCode"=>$user["phone2CountryCode"], "phone2"=>$user["phone2"], "phone3Type"=>$user["phone3Type"], "phone3CountryCode"=>$user["phone3CountryCode"], "phone3"=>$user["phone3"], "phone4Type"=>$user["phone4Type"], "phone4CountryCode"=>$user["phone4CountryCode"], "phone4"=>$user["phone4"], "website"=>$user["website"], "languageFirst"=>$user["languageFirst"], "languageSecond"=>$user["languageSecond"], "profession"=>$user["profession"], "employer"=>$user["employer"], "jobTitle"=>$user["jobTitle"], "emergency1Name"=>$user["emergency1Name"], "emergency1Number1"=>$user["emergency1Number1"], "emergency1Number2"=>$user["emergency1Number2"], "emergency1Relationship"=>$user["emergency1Relationship"], "emergency2Name"=>$user["emergency2Name"], "emergency2Number1"=>$user["emergency2Number1"], "emergency2Number2"=>$user["emergency2Number2"], "emergency2Relationship"=>$user["emergency2Relationship"], "dateStart"=>$user["dateStart"], "dateEnd"=>$user["dateEnd"], "username"=>$user["username"]); 
+									$sql="UPDATE gibbonPerson SET title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, gender=:gender, gibbonHouseID=(SELECT gibbonHouseID FROM gibbonHouse WHERE nameShort=:house), dob=:dob, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, status='Full', email=:email, image_75=:image_75, image_240=:image_240, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, website=:website, languageFirst=:languageFirst, languageSecond=:languageSecond, profession=:profession, employer=:employer, jobTitle=:jobTitle, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, dateStart=:dateStart, dateEnd=:dateEnd WHERE username=:username" ;
 									$result=$connection2->prepare($sql);
 									$result->execute($data);
 								}
@@ -459,8 +458,8 @@ else {
 								}
 								else {
 									try {
-										$data=array("title"=>$user["title"], "surname"=>$user["surname"], "firstName"=>$user["firstName"], "otherNames"=>$user["otherNames"], "preferredName"=>$user["preferredName"], "officialName"=>$user["officialName"], "gender"=>$user["gender"], "house"=>$user["house"], "dob"=>$user["dob"], "username"=>$user["username"], "passwordStrongSalt"=>$salt, "passwordStrong"=>$passwordStrong, "gibbonRoleIDPrimary"=>$role, "gibbonRoleIDAll"=>$roleAll, "email"=>$user["email"], "image_75"=>$user["image_75"], "image_240"=>$user["image_240"], "address1"=>$user["address1"], "address1District"=>$user["address1District"], "address1Country"=>$user["address1Country"], "address2"=>$user["address2"], "address2District"=>$user["address2District"], "address2Country"=>$user["address2Country"], "phone1Type"=>$user["phone1Type"], "phone1CountryCode"=>$user["phone1CountryCode"], "phone1"=>$user["phone1"], "phone2Type"=>$user["phone2Type"], "phone2CountryCode"=>$user["phone2CountryCode"], "phone2"=>$user["phone2"], "phone3Type"=>$user["phone3Type"], "phone3CountryCode"=>$user["phone3CountryCode"], "phone3"=>$user["phone3"], "phone4Type"=>$user["phone4Type"], "phone4CountryCode"=>$user["phone4CountryCode"], "phone4"=>$user["phone4"], "website"=>$user["website"], "languageFirst"=>$user["languageFirst"], "languageSecond"=>$user["languageSecond"], "profession"=>$user["profession"], "employer"=>$user["employer"], "jobTitle"=>$user["jobTitle"], "emergency1Name"=>$user["emergency1Name"], "emergency1Number1"=>$user["emergency1Number1"], "emergency1Number2"=>$user["emergency1Number2"], "emergency1Relationship"=>$user["emergency1Relationship"], "emergency2Name"=>$user["emergency2Name"], "emergency2Number1"=>$user["emergency2Number1"], "emergency2Number2"=>$user["emergency2Number2"], "emergency2Relationship"=>$user["emergency2Relationship"], "dateStart"=>$user["dateStart"], "dateEnd"=>$user["dateEnd"]); 
-										$sql="INSERT INTO gibbonPerson SET title=:title, surname=:surname, firstName=:firstName, otherNames=:otherNames, preferredName=:preferredName, officialName=:officialName, gender=:gender, gibbonHouseID=(SELECT gibbonHouseID FROM gibbonHouse WHERE nameShort=:house), dob=:dob, status='Full', username=:username, passwordStrongSalt=:passwordStrongSalt, passwordStrong=:passwordStrong, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, passwordForceReset='Y', email=:email, image_75=:image_75, image_240=:image_240, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, website=:website, languageFirst=:languageFirst, languageSecond=:languageSecond, profession=:profession, employer=:employer, jobTitle=:jobTitle, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, dateStart=:dateStart, dateEnd=:dateEnd" ;
+										$data=array("title"=>$user["title"], "surname"=>$user["surname"], "firstName"=>$user["firstName"], "preferredName"=>$user["preferredName"], "officialName"=>$user["officialName"], "gender"=>$user["gender"], "house"=>$user["house"], "dob"=>$user["dob"], "username"=>$user["username"], "passwordStrongSalt"=>$salt, "passwordStrong"=>$passwordStrong, "gibbonRoleIDPrimary"=>$role, "gibbonRoleIDAll"=>$roleAll, "email"=>$user["email"], "image_75"=>$user["image_75"], "image_240"=>$user["image_240"], "address1"=>$user["address1"], "address1District"=>$user["address1District"], "address1Country"=>$user["address1Country"], "address2"=>$user["address2"], "address2District"=>$user["address2District"], "address2Country"=>$user["address2Country"], "phone1Type"=>$user["phone1Type"], "phone1CountryCode"=>$user["phone1CountryCode"], "phone1"=>$user["phone1"], "phone2Type"=>$user["phone2Type"], "phone2CountryCode"=>$user["phone2CountryCode"], "phone2"=>$user["phone2"], "phone3Type"=>$user["phone3Type"], "phone3CountryCode"=>$user["phone3CountryCode"], "phone3"=>$user["phone3"], "phone4Type"=>$user["phone4Type"], "phone4CountryCode"=>$user["phone4CountryCode"], "phone4"=>$user["phone4"], "website"=>$user["website"], "languageFirst"=>$user["languageFirst"], "languageSecond"=>$user["languageSecond"], "profession"=>$user["profession"], "employer"=>$user["employer"], "jobTitle"=>$user["jobTitle"], "emergency1Name"=>$user["emergency1Name"], "emergency1Number1"=>$user["emergency1Number1"], "emergency1Number2"=>$user["emergency1Number2"], "emergency1Relationship"=>$user["emergency1Relationship"], "emergency2Name"=>$user["emergency2Name"], "emergency2Number1"=>$user["emergency2Number1"], "emergency2Number2"=>$user["emergency2Number2"], "emergency2Relationship"=>$user["emergency2Relationship"], "dateStart"=>$user["dateStart"], "dateEnd"=>$user["dateEnd"]); 
+										$sql="INSERT INTO gibbonPerson SET title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, gender=:gender, gibbonHouseID=(SELECT gibbonHouseID FROM gibbonHouse WHERE nameShort=:house), dob=:dob, status='Full', username=:username, passwordStrongSalt=:passwordStrongSalt, passwordStrong=:passwordStrong, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, passwordForceReset='Y', email=:email, image_75=:image_75, image_240=:image_240, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, website=:website, languageFirst=:languageFirst, languageSecond=:languageSecond, profession=:profession, employer=:employer, jobTitle=:jobTitle, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, dateStart=:dateStart, dateEnd=:dateEnd" ;
 										$result=$connection2->prepare($sql);
 										$result->execute($data);
 									}

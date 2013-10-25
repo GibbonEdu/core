@@ -22,7 +22,12 @@ print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>
 print "</div>" ;
 	
 $forceReset=$_GET["forceReset"] ;
-$forceResetReturn=$_GET["forceResetReturn"] ;
+if (isset($_GET["forceResetReturn"])) {
+	$forceResetReturn=$_GET["forceResetReturn"] ;
+}
+else {
+	$forceResetReturn="" ;
+}
 $forceResetReturnMessage="" ;
 $class="error" ;
 if ($forceResetReturn!="" OR $forceReset=="Y") {
@@ -42,29 +47,34 @@ if ($forceResetReturn!="" OR $forceReset=="Y") {
 }
 
 
-$eidtReturn = $_GET["editReturn"] ;
+if (isset($_GET["editReturn"])) {
+	$editReturn=$_GET["editReturn"] ;
+}
+else {
+	$editReturn="" ;
+}
 $editReturnMessage ="" ;
 $class="error" ;
-if (!($eidtReturn=="")) {
-	if ($eidtReturn=="fail0") {
+if (!($editReturn=="")) {
+	if ($editReturn=="fail0") {
 		$editReturnMessage ="Required fields not set." ;	
 	}
-	else if ($eidtReturn=="fail1") {
+	else if ($editReturn=="fail1") {
 		$editReturnMessage ="Update failed due to database error." ;	
 	}
-	else if ($eidtReturn=="fail2") {
+	else if ($editReturn=="fail2") {
 		$editReturnMessage ="Update failed due to non-matching passwords." ;	
 	}
-	else if ($eidtReturn=="fail3") {
+	else if ($editReturn=="fail3") {
 		$editReturnMessage ="Update failed due to incorrect current password." ;	
 	}
-	else if ($eidtReturn=="fail6") {
+	else if ($editReturn=="fail6") {
 		$editReturnMessage ="Update failed because your password to not meet the minimum requirements for strength." ;	
 	}
-	else if ($eidtReturn=="fail7") {
+	else if ($editReturn=="fail7") {
 		$editReturnMessage ="Update failed because your new password is the same as your old password." ;	
 	}	
-	else if ($eidtReturn=="success0") {
+	else if ($editReturn=="success0") {
 		$editReturnMessage ="Update was successful." ;	
 		$class="success" ;
 	}
@@ -116,7 +126,7 @@ if ($result->rowCount()==1) {
 			<td class="right">
 				<input name="password" id="password" maxlength=20 value="" type="password" style="width: 300px">
 				<script type="text/javascript">
-					var password = new LiveValidation('password');
+					var password=new LiveValidation('password');
 					password.add(Validate.Presence);
 				 </script>
 			</td>
@@ -129,7 +139,7 @@ if ($result->rowCount()==1) {
 			<td class="right">
 				<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" style="width: 300px">
 				<script type="text/javascript">
-					var passwordNew = new LiveValidation('passwordNew');
+					var passwordNew=new LiveValidation('passwordNew');
 					passwordNew.add(Validate.Presence);
 					<?
 					$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
@@ -160,7 +170,7 @@ if ($result->rowCount()==1) {
 			<td class="right">
 				<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" style="width: 300px">
 				<script type="text/javascript">
-					var passwordConfirm = new LiveValidation('passwordConfirm');
+					var passwordConfirm=new LiveValidation('passwordConfirm');
 					passwordConfirm.add(Validate.Presence);
 					passwordConfirm.add(Validate.Confirmation, { match: 'passwordNew' } );
 				 </script>
@@ -177,7 +187,6 @@ if ($result->rowCount()==1) {
 				}
 				?>
 				<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-				<input type="reset" value="Reset">
 				<input type="submit" value="Submit">
 			</td>
 		</tr>
@@ -202,7 +211,7 @@ if ($result->rowCount()==1) {
 			<td class="right">
 				<input name="calendarFeedPersonal" id="calendarFeedPersonal" value="<? print $row["calendarFeedPersonal"] ?>" type="text" style="width: 300px">
 				<script type="text/javascript">
-					var calendarFeedPersonal = new LiveValidation('calendarFeedPersonal');
+					var calendarFeedPersonal=new LiveValidation('calendarFeedPersonal');
 					calendarFeedPersonal.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 				</script>	
 			</td>
@@ -220,7 +229,7 @@ if ($result->rowCount()==1) {
 				<td class="right">
 					<input name="personalBackground" id="personalBackground" value="<? print $row["personalBackground"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var personalBackground = new LiveValidation('personalBackground');
+						var personalBackground=new LiveValidation('personalBackground');
 						personalBackground.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 					</script>	
 				</td>
@@ -268,7 +277,6 @@ if ($result->rowCount()==1) {
 			</td>
 			<td class='right'>
 				<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-				<input type="reset" value="Reset">
 				<input type="submit" value="Submit">
 			</td>
 		</tr>

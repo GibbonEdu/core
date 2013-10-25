@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Gibbon system-wide includes
 include "../../functions.php" ;
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_view.p
 else {
 	$output.="<script type='text/javascript'>" ;
 		$output.="$(document).ready(function() {" ; 
-			$output.="var optionsSearch = {" ;
+			$output.="var optionsSearch={" ;
 				$output.="target: $(\"." .$id . "resourceSlider\")," ;
 				$output.="url: '" . $_SESSION[$guid]["absoluteURL"] . "/modules/Resources/resources_insert_ajax.php?id=$id'," ;
 				$output.="type: 'POST'" ;

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Timetables</div>" ;
 	print "</div>" ;
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -59,7 +59,7 @@ else {
 		print "</div>" ;
 	} 
 	
-	$deleteReturn = $_GET["deleteReturn"] ;
+	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 	$deleteReturnMessage ="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
@@ -72,12 +72,16 @@ else {
 		print "</div>" ;
 	} 
 	
-	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
-	if ($gibbonSchoolYearID=="") {
+	$gibbonSchoolYearID="" ;
+	if (isset($_GET["gibbonSchoolYearID"])) {
+		$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
+	}
+	if ($gibbonSchoolYearID=="" OR $gibbonSchoolYearID==$_SESSION[$guid]["gibbonSchoolYearID"]) {
 		$gibbonSchoolYearID=$_SESSION[$guid]["gibbonSchoolYearID"] ;
 		$gibbonSchoolYearName=$_SESSION[$guid]["gibbonSchoolYearName"] ;
 	}
-	if ($_GET["gibbonSchoolYearID"]!="") {
+	
+	if ($gibbonSchoolYearID!=$_SESSION[$guid]["gibbonSchoolYearID"]) {
 		try {
 			$data=array("gibbonSchoolYearID"=>$_GET["gibbonSchoolYearID"]); 
 			$sql="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;

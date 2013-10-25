@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/rollGroup_manage.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Roll Groups</div>" ;
 	print "</div>" ;
 	
-	$deleteReturn = $_GET["deleteReturn"] ;
+	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 	$deleteReturnMessage ="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
@@ -44,13 +44,16 @@ else {
 		print "</div>" ;
 	}
 	
-	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
-	if ($gibbonSchoolYearID=="") {
+	$gibbonSchoolYearID="" ;
+	if (isset($_GET["gibbonSchoolYearID"])) {
+		$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
+	}
+	if ($gibbonSchoolYearID=="" OR $gibbonSchoolYearID==$_SESSION[$guid]["gibbonSchoolYearID"]) {
 		$gibbonSchoolYearID=$_SESSION[$guid]["gibbonSchoolYearID"] ;
 		$gibbonSchoolYearName=$_SESSION[$guid]["gibbonSchoolYearName"] ;
 	}
 	
-	if ($_GET["gibbonSchoolYearID"]!="") {
+	if ($gibbonSchoolYearID!=$_SESSION[$guid]["gibbonSchoolYearID"]) {
 		try {
 			$data=array("gibbonSchoolYearID"=>$_GET["gibbonSchoolYearID"]); 
 			$sql="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
@@ -159,7 +162,7 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							try {
-								$dataTutor=array("gibbonPersonID1"=>$row["gibbonPersonIDTutor"], "gibbonPersonID2"=>$row["gibbonPersonIDTutor2"], "gibbonPersonID3"=>$row["gibbonPersonIDTuto3"] ); 
+								$dataTutor=array("gibbonPersonID1"=>$row["gibbonPersonIDTutor"], "gibbonPersonID2"=>$row["gibbonPersonIDTutor2"], "gibbonPersonID3"=>$row["gibbonPersonIDTutor3"] );
 								$sqlTutor="SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3" ;
 								$resultTutor=$connection2->prepare($sqlTutor);
 								$resultTutor->execute($dataTutor);

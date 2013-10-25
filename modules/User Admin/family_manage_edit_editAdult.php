@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/family_manage_edit_editAdult.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage.php'>Manage Families</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=" . $_GET["gibbonFamilyID"] . "'>Edit Family</a> > </div><div class='trailEnd'>Edit Adult</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -104,7 +104,7 @@ else {
 						<td class="right">
 							<input readonly name="child" id="child" maxlength=200 value="<? print formatName(htmlPrep($row["title"]), htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Parent") ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var child = new LiveValidation('child');
+								var child=new LiveValidation('child');
 								child.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							 </script>
 						</td>
@@ -117,7 +117,7 @@ else {
 						<td class="right">
 							<textarea name="comment" id="comment" rows=8 style="width: 300px"><? print $row["comment"] ?></textarea>
 							<script type="text/javascript">
-								var comment = new LiveValidation('comment');
+								var comment=new LiveValidation('comment');
 								comment.add( Validate.Length, { maximum: 1000 } );
 							 </script>
 						</td>
@@ -232,7 +232,6 @@ else {
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="Reset" value="Reset">
 							<input type="Submit" value="Submit">
 						</td>
 					</tr>

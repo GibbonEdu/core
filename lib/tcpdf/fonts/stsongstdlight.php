@@ -1,8 +1,8 @@
 <?php
-$type = 'cidfont0';
-$name = 'STSongStd-Light-Acro';
-$displayname = 'STSong Light (Simp. Chinese)';
-$desc = array(
+$type='cidfont0';
+$name='STSongStd-Light-Acro';
+$displayname='STSong Light (Simp. Chinese)';
+$desc=array(
 	'Ascent' => 752,
 	'Descent' => -271,
 	'CapHeight' => 737,
@@ -12,19 +12,19 @@ $desc = array(
 	'StemV' => 58,
 	'Style' => '<< /Panose <000000000400000000000000> >>',
 );
-$cidinfo = array(
+$cidinfo=array(
 	'Registry' => 'Adobe',
 	'Ordering' => 'GB1',
 	'Supplement' => '2',
 );
-$enc = 'UniGB-UCS2-H';
+$enc='UniGB-UCS2-H';
 
 // underline position, needs checking:
-$up = -130;
-$ut = 40;
+$up=-130;
+$ut=40;
 
-$dw = 1000;
-$cw = array(
+$dw=1000;
+$cw=array(
 	32 => 207, 33 => 270, 34 => 342, 35 => 467, 36 => 462, 37 => 797, 38 => 710, 39 => 239, 40 => 374, 41 => 374,
 	42 => 423, 43 => 605, 44 => 238, 45 => 375, 46 => 238, 47 => 334, 48 => 462, 49 => 462, 50 => 462, 51 => 462,
 	52 => 462, 53 => 462, 54 => 462, 55 => 462, 56 => 462, 57 => 462, 58 => 238, 59 => 238, 60 => 605, 61 => 605,

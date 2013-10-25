@@ -29,7 +29,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_transport_student.php")==FALSE) {
 	//Acess denied

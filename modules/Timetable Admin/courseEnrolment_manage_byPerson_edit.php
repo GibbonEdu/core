@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php")==FALSE) {
 	//Acess denied
@@ -32,7 +32,10 @@ else {
 	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
 	$type=$_GET["type"] ;
 	$allUsers=$_GET["allUsers"] ;
-	$search=$_GET["search"] ;
+	$search="" ;
+	if (isset($_GET["search"])) {
+		$search=$_GET["search"] ;
+	}
 	
 	if ($gibbonPersonID=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
@@ -73,7 +76,7 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&allUsers=$allUsers'>Enrolment by Person</a> > </div><div class='trailEnd'>" . $row["preferredName"] . " " . $row["surname"] . "</div>" ;
 			print "</div>" ;
 			
-			$updateReturn = $_GET["updateReturn"] ;
+			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 			$updateReturnMessage ="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
@@ -104,7 +107,7 @@ else {
 				print "</div>" ;
 			} 
 			
-			$deleteReturn = $_GET["deleteReturn"] ;
+			if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 			$deleteReturnMessage ="" ;
 			$class="error" ;
 			if (!($deleteReturn=="")) {
@@ -131,7 +134,7 @@ else {
 				print "The user will be added to the specified classes. You can use the table below to change users to other roles." ;
 			print "</p>" ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search" ?>">
+			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_addProcess.php?type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
@@ -217,7 +220,7 @@ else {
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>
@@ -255,7 +258,7 @@ else {
 							<option value="Delete">Delete</option>
 						</select>
 						<script type="text/javascript">
-							var action = new LiveValidation('action');
+							var action=new LiveValidation('action');
 							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "Select something!"});
 						</script>
 						<?
@@ -338,8 +341,8 @@ else {
 			print "</h2>" ;
 			
 			try {
-				$data=array("username"=>$username); 
-				$sql="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, role FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=$gibbonSchoolYearID AND gibbonPersonID=$gibbonPersonID AND role LIKE '%left' ORDER BY course, class" ;
+				$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonPersonID"=>$gibbonPersonID); 
+				$sql="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, role FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND role LIKE '%left' ORDER BY course, class" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}

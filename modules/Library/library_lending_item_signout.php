@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Library/library_lending_item_signOut.php")==FALSE) {
 	//Acess denied
@@ -57,7 +57,7 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending.php'>Lending & Activity Log</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID'>View Item</a> > </div><div class='trailEnd'>Sign Out</div>" ;
 			print "</div>" ;
 			
-			$addReturn = $_GET["addReturn"] ;
+			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 			$addReturnMessage ="" ;
 			$class="error" ;
 			if (!($addReturn=="")) {
@@ -219,7 +219,7 @@ else {
 							print "</select>" ;
 							?>
 							<script type="text/javascript">
-								var gibbonPersonIDStatusResponsible = new LiveValidation('gibbonPersonIDStatusResponsible');
+								var gibbonPersonIDStatusResponsible=new LiveValidation('gibbonPersonIDStatusResponsible');
 								gibbonPersonIDStatusResponsible.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							 </script>
 						</td>
@@ -238,7 +238,7 @@ else {
 						<td class="right">
 							<input name="returnExpected" id="returnExpected" maxlength=10 value="<? print dateConvertBack(date("Y-m-d", (time()+(24*60*60*$loanLength)))) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var returnExpected = new LiveValidation('returnExpected');
+								var returnExpected=new LiveValidation('returnExpected');
 								returnExpected.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 							 </script>
 							 <script type="text/javascript">
@@ -311,7 +311,7 @@ else {
 						<td class="right">
 							<input name="gibbonLibraryItemID" id="gibbonLibraryItemID" value="<? print $gibbonLibraryItemID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Sign Out">
+							<input type="submit" value="Sign Out">
 						</td>
 					</tr>
 				</table>

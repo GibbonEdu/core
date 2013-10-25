@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/studentEnrolment_manage_add.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/studentEnrolment_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Student Enrolment</a> > </div><div class='trailEnd'>Add Student Enrolment</div>" ;
 	print "</div>" ;
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -103,7 +103,7 @@ else {
 						?>
 						<input readonly name="yearName" id="yearName" maxlength=20 value="<? print $yearName ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var yearName = new LiveValidation('yearName');
+							var yearName=new LiveValidation('yearName');
 							yearName.add(Validate.Presence);
 						</script>
 					</td>
@@ -130,7 +130,7 @@ else {
 							?>				
 						</select>
 						<script type="text/javascript">
-							var gibbonPersonID = new LiveValidation('gibbonPersonID');
+							var gibbonPersonID=new LiveValidation('gibbonPersonID');
 							gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 						 </script>
 					</td>
@@ -161,7 +161,7 @@ else {
 							?>				
 						</select>
 						<script type="text/javascript">
-							var gibbonYearGroupID = new LiveValidation('gibbonYearGroupID');
+							var gibbonYearGroupID=new LiveValidation('gibbonYearGroupID');
 							gibbonYearGroupID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 						 </script>
 					</td>
@@ -192,7 +192,7 @@ else {
 							?>				
 						</select>
 						<script type="text/javascript">
-							var gibbonRollGroupID = new LiveValidation('gibbonRollGroupID');
+							var gibbonRollGroupID=new LiveValidation('gibbonRollGroupID');
 							gibbonRollGroupID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 						 </script>
 					</td>
@@ -204,7 +204,7 @@ else {
 					<td class="right">
 						<input name="gibbonStudentEnrolmentID" id="gibbonStudentEnrolmentID" value="<? print $gibbonStudentEnrolmentID ?>" type="hidden">
 						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="reset" value="Reset"> <input type="submit" value="Submit">
+						<input type="submit" value="Submit">
 					</td>
 				</tr>
 			</table>

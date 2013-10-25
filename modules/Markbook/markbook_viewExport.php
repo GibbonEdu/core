@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -42,7 +42,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/$return" 
 
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&exportReturn=fail0" ;
+	$URL=$URL . "&exportReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -54,14 +54,14 @@ else {
 	}
 	catch(PDOException $e) { 
 		//Fail 0
-		$URL = $URL . "&exportReturn=fail0" ;
+		$URL=$URL . "&exportReturn=fail0" ;
 		header("Location: {$URL}");
 		break ;
 	}
 	
 	if ($result->rowCount()!=1) {
 		//Fail 3
-		$URL = $URL . "&exportReturn=fail3" ;
+		$URL=$URL . "&exportReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else {

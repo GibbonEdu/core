@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -50,8 +50,8 @@ else {
 			if ($date=="") {
 				$date=date("Y-m-d");
 			}
-			list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
-			$dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);	
+			list($dateYear, $dateMonth, $dateDay)=explode('-', $date);
+			$dateStamp=mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);	
 		}
 		else if ($viewBy=="class") {
 			$class=$_GET["class"] ;
@@ -145,7 +145,7 @@ else {
 				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>Planner $extra</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID'>View Lesson Plan</a> > </div><div class='trailEnd'>Add Comment</div>" ;
 				print "</div>" ;
 				
-				$updateReturn = $_GET["updateReturn"] ;
+				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 				$updateReturnMessage ="" ;
 				$class="error" ;
 				if (!($updateReturn=="")) {
@@ -205,7 +205,7 @@ else {
 									print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
 									?>
 									
-									<input type="reset" value="Reset"> <input type="submit" value="Submit">
+									<input type="submit" value="Submit">
 								</td>
 							</tr>
 						</table>

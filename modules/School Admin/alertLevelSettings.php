@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/daysOfWeek_manage.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Alert Levels</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -90,7 +90,7 @@ else {
 						<input type='hidden' name="<? print "gibbonAlertLevelID" .$count ?>" id="<? print "gibbonAlertLevelID" .$count ?>" value="<? print $row["gibbonAlertLevelID"] ?>">
 						<input type='text' name="<? print "name" .$count ?>" id="<? print "name" .$count ?>" maxlength=50 value="<? print $row["name"] ?>" style="width: 300px">
 						<script type="text/javascript">
-							var <? print "name" .$count ?> = new LiveValidation('<? print "name" .$count ?>');
+							var <? print "name" .$count ?>=new LiveValidation('<? print "name" .$count ?>');
 							<? print "name" .$count ?>.add(Validate.Presence);
 						</script>
 					</td>
@@ -102,7 +102,7 @@ else {
 					<td class="right">
 						<input type='text' name="<? print "nameShort" .$count ?>" id="<? print "nameShort" .$count ?>" maxlength=4 value="<? print $row["nameShort"] ?>" style="width: 300px">
 						<script type="text/javascript">
-							var <? print "nameShort" .$count ?> = new LiveValidation('<? print "nameShort" .$count ?>');
+							var <? print "nameShort" .$count ?>=new LiveValidation('<? print "nameShort" .$count ?>');
 							<? print "nameShort" .$count ?>.add(Validate.Presence);
 						</script>
 					</td>
@@ -115,7 +115,7 @@ else {
 					<td class="right">
 						<input type='text' name="<? print "color" .$count ?>" id="<? print "color" .$count ?>" maxlength=6 value="<? print $row["color"] ?>" style="width: 300px">
 						<script type="text/javascript">
-							var <? print "color" .$count ?> = new LiveValidation('<? print "color" .$count ?>');
+							var <? print "color" .$count ?>=new LiveValidation('<? print "color" .$count ?>');
 							<? print "color" .$count ?>.add(Validate.Presence);
 						</script>
 					</td>
@@ -128,7 +128,7 @@ else {
 					<td class="right">
 						<input type='text' name="<? print "colorBG" .$count ?>" id="<? print "colorBG" .$count ?>" maxlength=6 value="<? print $row["colorBG"] ?>" style="width: 300px">
 						<script type="text/javascript">
-							var <? print "colorBG" .$count ?> = new LiveValidation('<? print "colorBG" .$count ?>');
+							var <? print "colorBG" .$count ?>=new LiveValidation('<? print "colorBG" .$count ?>');
 							<? print "colorBG" .$count ?>.add(Validate.Presence);
 						</script>
 					</td>
@@ -159,7 +159,7 @@ else {
 				<td class="right">
 					<input type="hidden" name="count" value="<? print $count ?>">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					<input type="submit" value="Submit">
 				</td>
 			</tr>
 		</table>

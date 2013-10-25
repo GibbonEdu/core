@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -40,14 +40,14 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Data Updater/data_medical.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&updateReturn=fail0" ;
+	$URL=$URL . "&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL = $URL . "&updateReturn=fail0$params" ;
+		$URL=$URL . "&updateReturn=fail0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -55,7 +55,7 @@ else {
 		//Check if school year specified
 		if ($gibbonPersonID=="") {
 			//Fail1
-			$URL = $URL . "&updateReturn=fail1" ;
+			$URL=$URL . "&updateReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -70,7 +70,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL = $URL . "&updateReturn=fail2$params" ;
+					$URL=$URL . "&updateReturn=fail2$params" ;
 					header("Location: {$URL}");
 					break ;
 				}
@@ -85,7 +85,7 @@ else {
 				}
 				catch(PDOException $e) {
 					//Fail 2
-					$URL = $URL . "&updateReturn=fail2$params" ;
+					$URL=$URL . "&updateReturn=fail2$params" ;
 					header("Location: {$URL}");
 					break ;
 				}
@@ -98,7 +98,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL = $URL . "&updateReturn=fail2$params" ;
+						$URL=$URL . "&updateReturn=fail2$params" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -111,7 +111,7 @@ else {
 			}
 			if ($checkCount<1) {
 				//Fail 2
-				$URL = $URL . "&updateReturn=fail2" ;
+				$URL=$URL . "&updateReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -127,7 +127,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL = $URL . "&addReturn=fail2" ;
+						$URL=$URL . "&addReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}	
@@ -139,7 +139,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL = $URL . "&addReturn=fail2" ;
+						$URL=$URL . "&addReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -274,10 +274,10 @@ else {
 				
 				//Attempt to send email to DBA
 				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$to = $_SESSION[$guid]["organisationDBAEmail"];
-					$subject = $_SESSION[$guid]["organisationNameShort"] . " Gibbon Medical Data Update Request";
-					$body = "You have a new medical data update request from Gibbon. Please log in and process it as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-					$headers = "From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
+					$to=$_SESSION[$guid]["organisationDBAEmail"];
+					$subject=$_SESSION[$guid]["organisationNameShort"] . " Gibbon Medical Data Update Request";
+					$body="You have a new medical data update request from Gibbon. Please log in and process it as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
+					$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
 					mail($to, $subject, $body, $headers) ;
 				}
 				
@@ -296,7 +296,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL = $URL . "&updateReturn=fail2" ;
+					$URL=$URL . "&updateReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
@@ -310,12 +310,12 @@ else {
 				}
 						
 				if ($partialFail==TRUE) {
-					$URL = $URL . "&updateReturn=fail5" ;
+					$URL=$URL . "&updateReturn=fail5" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL = $URL . "&updateReturn=success0" ;
+					$URL=$URL . "&updateReturn=success0" ;
 					header("Location: {$URL}");
 				}
 			}

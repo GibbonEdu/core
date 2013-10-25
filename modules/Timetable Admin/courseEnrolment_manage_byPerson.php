@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson.php")==FALSE) {
 	//Acess denied
@@ -31,12 +31,16 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Course Enrolment by Person</div>" ;
 	print "</div>" ;
 	
-	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
-	if ($gibbonSchoolYearID=="") {
+	$gibbonSchoolYearID="" ;
+	if (isset($_GET["gibbonSchoolYearID"])) {
+		$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
+	}
+	if ($gibbonSchoolYearID=="" OR $gibbonSchoolYearID==$_SESSION[$guid]["gibbonSchoolYearID"]) {
 		$gibbonSchoolYearID=$_SESSION[$guid]["gibbonSchoolYearID"] ;
 		$gibbonSchoolYearName=$_SESSION[$guid]["gibbonSchoolYearName"] ;
 	}
-	if ($_GET["gibbonSchoolYearID"]!="") {
+	
+	if ($gibbonSchoolYearID!=$_SESSION[$guid]["gibbonSchoolYearID"]) {
 		try {
 			$data=array("gibbonSchoolYearID"=>$_GET["gibbonSchoolYearID"]); 
 			$sql="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
@@ -81,8 +85,14 @@ else {
 		print "</div>" ;
 		
 		
-		$allUsers=$_GET["allUsers"] ;
-		$search=$_GET["search"] ;
+		$allUsers="" ;
+		if (isset($_GET["allUsers"])) {
+			$allUsers=$_GET["allUsers"] ;
+		}
+		$search="" ;
+		if (isset($_GET["search"])) {
+			$search=$_GET["search"] ;
+		}
 		
 		print "<h3>" ;
 		print "Filters" ;
@@ -134,7 +144,7 @@ else {
 		print "</h3>" ;
 		
 		//Set pagination variable
-		$page=$_GET["page"] ;
+		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
 		if ((!is_numeric($page)) OR $page<1) {
 			$page=1 ;
 		}

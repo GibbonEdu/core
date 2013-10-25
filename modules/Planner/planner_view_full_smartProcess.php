@@ -34,7 +34,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -52,7 +52,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL = $URL . "&updateReturn=fail0$params" ;
+		$URL=$URL . "&updateReturn=fail0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -189,7 +189,7 @@ else {
 				//Return final verdict
 				if ($partialFail==true) {
 					//Fail 3
-					$URL = $URL . "&updateReturn=fail3" ;
+					$URL=$URL . "&updateReturn=fail3" ;
 					header("Location: {$URL}");
 				}
 				else {

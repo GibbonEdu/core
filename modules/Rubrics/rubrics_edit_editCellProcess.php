@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -40,20 +40,20 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_edit.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&cellEditReturn=fail0" ;
+	$URL=$URL . "&cellEditReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail2
-		$URL = $URL . "&cellEditReturn=fail2" ;
+		$URL=$URL . "&cellEditReturn=fail2" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if ($highestAction!="Manage Rubrics_viewEditAll" AND $highestAction!="Manage Rubrics_viewAllEditLearningArea") {
 			//Fail 0
-			$URL = $URL . "&cellEditReturn=fail0" ;
+			$URL=$URL . "&cellEditReturn=fail0" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -61,7 +61,7 @@ else {
 			//Check if school year specified
 			if ($gibbonRubricID=="") {
 				//Fail1
-				$URL = $URL . "&cellEditReturn=fail1" ;
+				$URL=$URL . "&cellEditReturn=fail1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -79,14 +79,14 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail2
-					$URL = $URL . "&columnDeleteReturn=fail2" ;
+					$URL=$URL . "&columnDeleteReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
 				
 				if ($result->rowCount()!=1) {
 					//Fail 2
-					$URL = $URL . "&cellEditReturn=fail2" ;
+					$URL=$URL . "&cellEditReturn=fail2" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -128,12 +128,12 @@ else {
 					
 					//Deal with partial fail and success
 					if ($partialFail==TRUE) {
-						$URL = $URL . "&cellEditReturn=fail5" ;
+						$URL=$URL . "&cellEditReturn=fail5" ;
 						header("Location: {$URL}");
 					}
 					else {
 						//Success 0
-						$URL = $URL . "&cellEditReturn=success0" ;
+						$URL=$URL . "&cellEditReturn=success0" ;
 						header("Location: {$URL}");
 					}
 				}

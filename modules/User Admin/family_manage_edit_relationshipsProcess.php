@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -46,7 +46,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/User Admin/family_manage_edit.php")==FALSE) {
 		//Fail 0
-		$URL = $URL . "&updateReturn=fail0" ;
+		$URL=$URL . "&updateReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -104,12 +104,12 @@ else {
 		
 		if ($partialFail==TRUE) {
 			//Fail 3
-			$URL = $URL . "&updateReturn=fail3" ;
+			$URL=$URL . "&updateReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Success 0
-			$URL = $URL . "&updateReturn=success0" ;
+			$URL=$URL . "&updateReturn=success0" ;
 			header("Location: {$URL}");
 		}
 	}

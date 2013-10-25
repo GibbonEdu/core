@@ -31,7 +31,7 @@ catch(PDOException $e) {
 }
 
 //Start session
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -49,7 +49,7 @@ $forceReset=$_POST["forceReset"] ;
 if ($forceReset!="Y") {
 	$forceReset="N" ;
 }
-$URL = $_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php&forceReset=$forceReset" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php&forceReset=$forceReset" ;
 
 //Check passwords are not blank
 if ($password=="" OR $passwordNew=="" or $passwordConfirm=="") {
@@ -68,7 +68,7 @@ else {
 		
 		if ($passwordMatch==FALSE) {
 			//Fail 6
-			$URL = $URL . "&editReturn=fail6" ;
+			$URL=$URL . "&editReturn=fail6" ;
 			header("Location: {$URL}");
 		}
 		else {

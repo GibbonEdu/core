@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -35,7 +35,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_manage_catalog.php'>Manage Catalog</a> > </div><div class='trailEnd'>Edit Item</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -127,7 +127,7 @@ else {
 						<td class="right">
 							<input name="name" id="name" maxlength=255 value="<? print $row["name"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var name = new LiveValidation('name');
+								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
 							 </script>
 						</td>
@@ -154,7 +154,7 @@ else {
 							}
 							?>
 							<script type="text/javascript">
-								var id = new LiveValidation('id');
+								var id=new LiveValidation('id');
 								id.add( Validate.Exclusion, { within: [<? print $idList ;?>], failureMessage: "ID already in use!", partialMatch: false, caseSensitive: false } );
 								id.add(Validate.Presence);
 							 </script>
@@ -168,7 +168,7 @@ else {
 						<td class="right">
 							<input name="producer" id="producer" maxlength=255 value="<? print $row["producer"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var producer = new LiveValidation('producer');
+								var producer=new LiveValidation('producer');
 								producer.add(Validate.Presence);
 							 </script>
 						</td>
@@ -190,7 +190,7 @@ else {
 						<td class="right">
 							<input name="purchaseDate" id="purchaseDate" maxlength=10 value="<? print dateConvertBack($row["purchaseDate"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var purchaseDate = new LiveValidation('purchaseDate');
+								var purchaseDate=new LiveValidation('purchaseDate');
 								purchaseDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 							 </script>
 							 <script type="text/javascript">
@@ -259,7 +259,7 @@ else {
 							?>
 							<input type="file" name="imageFile" id="imageFile"><br/><br/>
 							<script type="text/javascript">
-								var imageFile = new LiveValidation('imageFile');
+								var imageFile=new LiveValidation('imageFile');
 								imageFile.add( Validate.Inclusion, { within: ['.jpg','.jpeg','.png','.gif'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 								<? if ($row["imageType"]!="File") { print "imageFile.disable();" ; } ?>
 							</script>	
@@ -275,7 +275,7 @@ else {
 						<td class="right">
 							<input name="imageLink" id="imageLink" maxlength=255 value="<? if ($row["imageType"]=="Link") { print $row["imageLocation"] ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var imageLink = new LiveValidation('imageLink');
+								var imageLink=new LiveValidation('imageLink');
 								imageLink.add(Validate.Presence);
 								imageLink.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 								<? if ($row["imageType"]!="Link") { print "imageLink.disable();" ; } ?>
@@ -556,7 +556,7 @@ else {
 									else if ($field["type"]=="Date") {
 										print "<input name='field" . $fieldName . "' id='field" . $fieldName . "' maxlength=10 value='" . dateConvertBack($fieldValues[$field["name"]]) . "' type='text' style='width: 300px'>" ;
 										print "<script type='text/javascript'>" ;
-											print "var field" . $fieldName . " = new LiveValidation('field" . $fieldName . "');" ;
+											print "var field" . $fieldName . "=new LiveValidation('field" . $fieldName . "');" ;
 											print "field" . $fieldName . ".add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: 'Use dd/mm/yyyy.' } );" ; 
 										print "</script>" ;
 										print "<script type='text/javascript'>" ;
@@ -568,7 +568,7 @@ else {
 									else if ($field["type"]=="URL") {
 										print "<input maxlength='" . $field["options"] . "' name='field" . $fieldName . "' id='field" . $fieldName . "' value='" . htmlPrep($fieldValues[$field["name"]]) . "' type='text' style='width: 300px'>" ;
 										print "<script type='text/javascript'>" ;
-											print "var field" . $fieldName . " = new LiveValidation('field" . $fieldName . "');" ;
+											print "var field" . $fieldName . "=new LiveValidation('field" . $fieldName . "');" ;
 											print "field" . $fieldName . ".add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: \"Must start with http://\" } );" ;
 										print "</script>" ;
 									}
@@ -578,13 +578,13 @@ else {
 							if ($field["required"]=="Y") {
 								if ($field["type"]=="Text" OR $field["type"]=="Textarea" OR $field["type"]=="Date" OR $field["type"]=="URL") {
 									print "<script type='text/javascript'>" ;
-										print "var field" . $fieldName . " = new LiveValidation('field" . $fieldName . "');" ;
+										print "var field" . $fieldName . "=new LiveValidation('field" . $fieldName . "');" ;
 										print "field" . $fieldName . ".add(Validate.Presence);" ;
 									print "</script>" ;
 								}
 								else if ($field["type"]=="Select") {
 									print "<script type='text/javascript'>" ;
-										print "var field" . $fieldName . " = new LiveValidation('field" . $fieldName . "');" ;
+										print "var field" . $fieldName . "=new LiveValidation('field" . $fieldName . "');" ;
 										print "field" . $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: 'Select something!'});" ;
 									print "</script>" ;
 								}
@@ -611,7 +611,7 @@ else {
 						<td class="right">
 							<input type="hidden" name="gibbonLibraryItemID" value="<? print $row["gibbonLibraryItemID"] ?>">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>

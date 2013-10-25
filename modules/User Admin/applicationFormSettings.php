@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationFormSettings.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Application Form Settings</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -67,7 +67,7 @@ else {
 			<tr>
 				<?
 				try {
-					$data=array("username"=>$username); 
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='introduction'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -88,7 +88,7 @@ else {
 			<tr>
 				<?
 				try {
-					$data=array("username"=>$username); 
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='postscript'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -109,7 +109,7 @@ else {
 			<tr>
 				<?
 				try {
-					$data=array("username"=>$username); 
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='scholarships'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -130,7 +130,7 @@ else {
 			<tr>
 				<?
 				try {
-					$data=array("username"=>$username); 
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='agreement'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -151,7 +151,7 @@ else {
 			<tr>
 				<?
 				try {
-					$data=array("username"=>$username); 
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='applicationFee'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -176,7 +176,7 @@ else {
 				<td class="right">
 					<input type='text' name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 300px" value='<? print htmlPrep($row["value"]) ?>'>
 					<script type="text/javascript">
-						var <? print $row["name"] ?> = new LiveValidation('<? print $row["name"] ?>');
+						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
 						<? print $row["name"] ?>.add(Validate.Numericality, { minimum: 0 });
 						<? print $row["name"] ?>.add(Validate.Presence);
 					 </script>
@@ -186,7 +186,7 @@ else {
 			<tr>
 				<?
 				try {
-					$data=array("username"=>$username); 
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='publicApplications'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -248,7 +248,7 @@ else {
 			<tr>
 				<?
 				try {
-					$data=array("username"=>$username); 
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationStudentDefault'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -272,7 +272,7 @@ else {
 			<tr>
 				<?
 				try {
-					$data=array("username"=>$username); 
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationParentsDefault'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -341,7 +341,7 @@ else {
 			<tr>
 				<?
 				try {
-					$data=array("username"=>$username); 
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='requiredDocumentsCompulsory'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -377,7 +377,7 @@ else {
 			<tr>
 				<?
 				try {
-					$data=array("username"=>$username); 
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='languageOptionsActive'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -443,7 +443,7 @@ else {
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					<input type="submit" value="Submit">
 				</td>
 			</tr>
 		</table>

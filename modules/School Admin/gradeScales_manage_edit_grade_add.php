@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/gradeScales_manage_edit_grade_add.php")==FALSE) {
 	//Acess denied
@@ -57,7 +57,7 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage.php'>Manage Grade Scales</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage_edit.php&gibbonScaleID=$gibbonScaleID'>Edit Grade Scale</a> > </div><div class='trailEnd'>Add Grade</div>" ;
 			print "</div>" ;
 			
-			$addReturn = $_GET["addReturn"] ;
+			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 			$addReturnMessage ="" ;
 			$class="error" ;
 			if (!($addReturn=="")) {
@@ -102,9 +102,9 @@ else {
 							<span style="font-size: 90%"><i>Must be unique for this grade scale.</i></span>
 						</td>
 						<td class="right">
-							<input name="value" id="value" maxlength=10 value="<? print $row["value"] ?>" type="text" style="width: 300px">
+							<input name="value" id="value" maxlength=10 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var value = new LiveValidation('value');
+								var value=new LiveValidation('value');
 								value.add(Validate.Presence);
 							 </script>
 						</td>
@@ -115,9 +115,9 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input name="descriptor" id="descriptor" maxlength=50 value="<? print $row["descriptor"] ?>" type="text" style="width: 300px">
+							<input name="descriptor" id="descriptor" maxlength=50 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var descriptor = new LiveValidation('descriptor');
+								var descriptor=new LiveValidation('descriptor');
 								descriptor.add(Validate.Presence);
 							 </script>
 						</td>
@@ -128,9 +128,9 @@ else {
 							<span style="font-size: 90%"><i>Must be unique for this grade scale.<br/></i></span>
 						</td>
 						<td class="right">
-							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="<? print $row["sequenceNumber"] ?>" type="text" style="width: 300px">
+							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var sequenceNumber = new LiveValidation('sequenceNumber');
+								var sequenceNumber=new LiveValidation('sequenceNumber');
 								sequenceNumber.add(Validate.Presence);
 							 </script>
 						</td>
@@ -142,7 +142,7 @@ else {
 						<td class="right">
 							<input name="gibbonScaleID" id="gibbonScaleID" value="<? print $gibbonScaleID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>

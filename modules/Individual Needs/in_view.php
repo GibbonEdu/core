@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Individual Needs/in_view.php")==FALSE) {
 	//Acess denied
@@ -79,7 +79,7 @@ else {
 		print "</p>" ;
 		
 		//Set pagination variable
-		$page=$_GET["page"] ;
+		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
 		if ((!is_numeric($page)) OR $page<1) {
 			$page=1 ;
 		}

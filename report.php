@@ -32,7 +32,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Check to see if system settings are set from databases
 if ($_SESSION[$guid]["systemSettingsSet"]==FALSE) {

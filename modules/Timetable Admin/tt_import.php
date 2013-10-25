@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_delete.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Timetables</a> > </div><div class='trailEnd'>Import Timetable Data</div>" ;
 	print "</div>" ;
 	
-	$importReturn = $_GET["importReturn"] ;
+	if (isset($_GET["importReturn"])) { $importReturn=$_GET["importReturn"] ; } else { $importReturn="" ; }
 	$importReturnMessage ="" ;
 	$class="error" ;
 	if (!($importReturn=="")) {
@@ -80,11 +80,13 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			
-			$step=$_GET["step"] ;
-			if ($step=="") {
+			if (isset($_GET["step"])) {
+				$step=$_GET["step"] ;
+			}
+			else {
 				$step=1 ;
 			}
-			else if (($step!=1) AND ($step!=2) AND ($step!=3)) {
+			if (($step!=1) AND ($step!=2) AND ($step!=3)) {
 				$step=1 ;
 			}
 			
@@ -107,7 +109,7 @@ else {
 							<td class="right">
 								<input type="file" name="file" id="file" size="chars">
 								<script type="text/javascript">
-									var file = new LiveValidation('file');
+									var file=new LiveValidation('file');
 									file.add(Validate.Presence);
 								</script>
 							</td>
@@ -120,7 +122,7 @@ else {
 							<td class="right">
 								<input type="text" style="width: 300px" name="fieldDelimiter" value="," maxlength=1>
 								<script type="text/javascript">
-									var fieldDelimiter = new LiveValidation('fieldDelimiter');
+									var fieldDelimiter=new LiveValidation('fieldDelimiter');
 									fieldDelimiter.add(Validate.Presence);
 								 </script>
 							</td>
@@ -133,7 +135,7 @@ else {
 							<td class="right">
 								<input type="text" style="width: 300px" name="stringEnclosure" value='"' maxlength=1>
 								<script type="text/javascript">
-									var stringEnclosure = new LiveValidation('stringEnclosure');
+									var stringEnclosure=new LiveValidation('stringEnclosure');
 									stringEnclosure.add(Validate.Presence);
 								 </script>
 							</td>
@@ -145,7 +147,7 @@ else {
 							<td class='right'>
 								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="reset" value="Reset"> <input type="submit" value="Submit">
+								<input type="submit" value="Submit">
 							</td>
 						</tr>
 					</table>
@@ -265,8 +267,8 @@ else {
 						print "</h4>" ;
 						$importFail=false ;
 						$csvFile=$_FILES['file']['tmp_name'] ;
-						$handle = fopen($csvFile, "r");
-						while (($data = fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !== FALSE) {
+						$handle=fopen($csvFile, "r");
+						while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !== FALSE) {
 							try {
 								$data=array("courseNameShort"=>$data[0], "classNameShort"=>$data[1], "dayName"=>$data[2], "rowName"=>$data[3], "teacherUsernameList"=>$data[4], "spaceName"=>$data[5]); 
 								$sql="INSERT INTO gibbonTTImport SET courseNameShort=:courseNameShort, classNameShort=:classNameShort, dayName=:dayName, rowName=:rowName, teacherUsernameList=:teacherUsernameList, spaceName=:spaceName" ;
@@ -808,6 +810,7 @@ else {
 				$proceed=true ;
 					
 				//REMOVE OLD PERIODS
+				$ttSyncRemoveFail=false ;
 				if ($proceed==true) {
 					print "<h4>" ;
 						print "Remove Old Periods" ;
@@ -819,12 +822,12 @@ else {
 						$resultDays->execute($dataDays);
 					}
 					catch(PDOException $e) { 
-						$ttSyncRemoveFail=false ;
+						$ttSyncRemoveFail=true ;
 						$proceed=false ;
 					}
 					
 					if ($resultDays->rowCount()<1) {
-						$ttSyncRemoveFail=false ;
+						$ttSyncRemoveFail=true ;
 						$proceed=false ;
 					}
 					else {
@@ -836,7 +839,7 @@ else {
 								$resultRemove->execute($dataRemove);
 							}
 							catch(PDOException $e) { 
-								$ttSyncRemoveFail=false ;
+								$ttSyncRemoveFail=true ;
 								$proceed=false ;
 							}
 							
@@ -848,7 +851,7 @@ else {
 									$resultRemove2->execute($dataRemove2);
 								}
 								catch(PDOException $e) { 
-									$ttSyncRemoveFail=false ;
+									$ttSyncRemoveFail=true ;
 									$proceed=false ;
 								}
 							}
@@ -860,7 +863,7 @@ else {
 								$resultRemove3->execute($dataRemove3);
 							}
 							catch(PDOException $e) { 
-								$ttSyncRemoveFail=false ;
+								$ttSyncRemoveFail=true ;
 								$proceed=false ;
 							}
 						}

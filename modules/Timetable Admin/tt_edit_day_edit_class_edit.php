@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_edit_day_edit_class_edit.php")==FALSE) {
 	//Acess denied
@@ -60,6 +60,7 @@ else {
 			$course=$row["course"] ;
 			$class=$row["class"] ;
 			$gibbonSpaceID=$row["gibbonSpaceID"] ;
+			$gibbonTTDayRowClassID=$row["gibbonTTDayRowClassID"] ;
 			
 			try {
 				$data=array("gibbonTTDayID"=>$gibbonTTDayID, "gibbonTTID"=>$gibbonTTID, "gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonTTColumnRowID"=>$gibbonTTColumnRowID); 
@@ -80,10 +81,10 @@ else {
 				$row=$result->fetch() ;
 				
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > ... > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Timetables</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Edit Timetable</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>Edit Timetable Day</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID'>Classes in Period</a> > </div><div class='trailEnd'>Edit Class in Period</div>" ; 
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > ... > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Timetables</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Edit Timetable</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>Edit Timetable Day</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID'>Classes in Period</a> > </div><div class='trailEnd'>Edit Class in Period</div>" ; 
 				print "</div>" ;
 				
-				$updateReturn = $_GET["updateReturn"] ;
+				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 				$updateReturnMessage ="" ;
 				$classOut="error" ;
 				if (!($updateReturn=="")) {
@@ -108,7 +109,7 @@ else {
 					print "</div>" ;
 				} 
 				?>
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_edit_class_editProcess.php?&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=" . $row["gibbonTTDayRowClassID"] . "&gibbonCourseClassID=$gibbonCourseClassID" ?>">
+				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_edit_class_editProcess.php?&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID" ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
@@ -118,7 +119,7 @@ else {
 							<td class="right">
 								<input readonly name="ttName" id="ttName" maxlength=20 value="<? print $row["ttName"] ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var courseName = new LiveValidation('courseName');
+									var courseName=new LiveValidation('courseName');
 									courseName.add(Validate.Presence);
 								</script>
 							</td>
@@ -131,7 +132,7 @@ else {
 							<td class="right">
 								<input readonly name="dayName" id="dayName" maxlength=20 value="<? print $row["dayName"] ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var courseName = new LiveValidation('courseName');
+									var courseName=new LiveValidation('courseName');
 									courseName.add(Validate.Presence);
 								</script>
 							</td>
@@ -144,7 +145,7 @@ else {
 							<td class="right">
 								<input readonly name="rowName" id="rowName" maxlength=20 value="<? print $row["rowName"] ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var courseName = new LiveValidation('courseName');
+									var courseName=new LiveValidation('courseName');
 									courseName.add(Validate.Presence);
 								</script>
 							</td>
@@ -199,7 +200,7 @@ else {
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="reset" value="Reset"> <input type="submit" value="Submit">
+								<input type="submit" value="Submit">
 							</td>
 						</tr>
 					</table>

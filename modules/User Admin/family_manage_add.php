@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/family_manage_add.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage.php'>Manage Families</a> > </div><div class='trailEnd'>Add Family</div>" ;
 	print "</div>" ;
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -83,7 +83,7 @@ else {
 				<td class="right">
 					<input name="name" id="name" maxlength=100 value="<? print $row["name"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var name = new LiveValidation('name');
+						var name=new LiveValidation('name');
 						name.add(Validate.Presence);
 					 </script>
 				</td>
@@ -119,7 +119,7 @@ else {
 				<td class="right">
 					<input name="nameAddress" id="nameAddress" maxlength=100 value="<? print $row["nameAddress"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var nameAddress = new LiveValidation('nameAddress');
+						var nameAddress=new LiveValidation('nameAddress');
 						nameAddress.add(Validate.Presence);
 					 </script>
 				</td>
@@ -143,7 +143,7 @@ else {
 				</td>
 				<script type="text/javascript">
 					$(function() {
-						var availableTags = [
+						var availableTags=[
 							<?
 							try {
 								$dataAuto=array(); 
@@ -189,7 +189,7 @@ else {
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					<input type="submit" value="Submit">
 				</td>
 			</tr>
 		</table>

@@ -31,7 +31,7 @@ catch(PDOException $e) {
 }
 
 //Start session
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -49,7 +49,7 @@ if ($gibbonThemeIDPersonal=="") {
 	$gibbonThemeIDPersonal=NULL ;
 }
 
-$URL = $_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php" ;
 
 //Check passwords are not blank
 if (FALSE) {

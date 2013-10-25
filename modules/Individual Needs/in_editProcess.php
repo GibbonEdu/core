@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -40,7 +40,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Individual Needs/in_edit.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&updateReturn=fail0" ;
+	$URL=$URL . "&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -48,7 +48,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE OR ($highestAction!="Individual Needs Records_viewContribute" AND $highestAction!="Individual Needs Records_viewEdit")) {
 		//Fail 0
-		$URL = $URL . "&updateReturn=fail0" ;
+		$URL=$URL . "&updateReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -61,14 +61,14 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL = $URL . "&updateReturn=fail2" ;
+			$URL=$URL . "&updateReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}
 		
 		if ($result->rowCount()!=1) {
 			//Fail 4
-			$URL = $URL . "&updateReturn=fail4" ;
+			$URL=$URL . "&updateReturn=fail4" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -167,12 +167,12 @@ else {
 			//DEAL WITH OUTCOME
 			if ($partialFail) {
 				//Fail 5
-				$URL = $URL . "&updateReturn=fail5" ;
+				$URL=$URL . "&updateReturn=fail5" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Success 0
-				$URL = $URL . "&updateReturn=success0" ;
+				$URL=$URL . "&updateReturn=success0" ;
 				header("Location: {$URL}");
 			}
 		}

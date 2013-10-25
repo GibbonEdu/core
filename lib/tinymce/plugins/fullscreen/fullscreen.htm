@@ -6,18 +6,18 @@
 	<script type="text/javascript">
 		function patchCallback(settings, key) {
 			if (settings[key])
-				settings[key] = "window.opener." + settings[key];
+				settings[key]="window.opener." + settings[key];
 		}
 
-		var settings = {}, paSe = window.opener.tinyMCE.activeEditor.settings, oeID = window.opener.tinyMCE.activeEditor.id;
+		var settings={}, paSe=window.opener.tinyMCE.activeEditor.settings, oeID=window.opener.tinyMCE.activeEditor.id;
 
 		// Clone array
 		for (var n in paSe)
-			settings[n] = paSe[n];
+			settings[n]=paSe[n];
 
 		// Override options for fullscreen
 		for (var n in paSe.fullscreen_settings)
-			settings[n] = paSe.fullscreen_settings[n];
+			settings[n]=paSe.fullscreen_settings[n];
 
 		// Patch callbacks, make them point to window.opener
 		patchCallback(settings, 'urlconverter_callback');
@@ -34,17 +34,17 @@
 
 		// Set options
 		delete settings.id;
-		settings['mode'] = 'exact';
-		settings['elements'] = 'fullscreenarea';
-		settings['add_unload_trigger'] = false;
-		settings['ask'] = false;
-		settings['document_base_url'] = window.opener.tinyMCE.activeEditor.documentBaseURI.getURI();
-		settings['fullscreen_is_enabled'] = true;
-		settings['fullscreen_editor_id'] = oeID;
-		settings['theme_advanced_resizing'] = false;
-		settings['strict_loading_mode'] = true;
+		settings['mode']='exact';
+		settings['elements']='fullscreenarea';
+		settings['add_unload_trigger']=false;
+		settings['ask']=false;
+		settings['document_base_url']=window.opener.tinyMCE.activeEditor.documentBaseURI.getURI();
+		settings['fullscreen_is_enabled']=true;
+		settings['fullscreen_editor_id']=oeID;
+		settings['theme_advanced_resizing']=false;
+		settings['strict_loading_mode']=true;
 
-		settings.save_onsavecallback = function() {
+		settings.save_onsavecallback=function() {
 			window.opener.tinyMCE.get(oeID).setContent(tinyMCE.get('fullscreenarea').getContent({format : 'raw'}), {format : 'raw'});
 			window.opener.tinyMCE.get(oeID).execCommand('mceSave');
 			window.close();
@@ -75,16 +75,16 @@
 		}
 
 		function render() {
-			var e = document.getElementById('fullscreenarea'), vp, ed, ow, oh, dom = tinymce.DOM;
+			var e=document.getElementById('fullscreenarea'), vp, ed, ow, oh, dom=tinymce.DOM;
 
-			e.value = window.opener.tinyMCE.get(oeID).getContent();
+			e.value=window.opener.tinyMCE.get(oeID).getContent();
 
-			vp = dom.getViewPort();
-			settings.width = vp.w;
-			settings.height = vp.h - 15;
+			vp=dom.getViewPort();
+			settings.width=vp.w;
+			settings.height=vp.h - 15;
 
 			tinymce.dom.Event.add(window, 'resize', function() {
-				var vp = dom.getViewPort();
+				var vp=dom.getViewPort();
 
 				tinyMCE.activeEditor.theme.resizeTo(vp.w, vp.h);
 			});

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -53,7 +53,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>Edit Unit</a> > </div><div class='trailEnd'>Edit Working Copy</div>" ;
 		print "</div>" ;
 		
-		$updateReturn = $_GET["updateReturn"] ;
+		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 		$updateReturnMessage ="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
@@ -84,7 +84,7 @@ else {
 			print "</div>" ;
 		} 
 		
-		$addReturn = $_GET["addReturn"] ;
+		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 		$addReturnMessage ="" ;
 		$class="error" ;
 		if (!($addReturn=="")) {
@@ -388,7 +388,7 @@ else {
 											print "<script type='text/javascript'>" ;
 												print "var count=$blockCount2 ;" ;
 											print "</script>" ;
-											print "<input type='reset' value='Reset'> <input type='submit' value='Submit'>" ;
+											print "<input type='submit' value='Submit'>" ;
 											?>
 										</td>
 									</tr>
@@ -423,8 +423,8 @@ else {
 										connectWith: "<? print substr($sortableList,0, -2) ?>",
 										items: "div.blockOuter",
 										receive: function(event,ui) {
-											var sortid = $(newItem).attr("id", 'receive'+receiveCount) ;
-											var receiveid = 'receive'+receiveCount ;
+											var sortid=$(newItem).attr("id", 'receive'+receiveCount) ;
+											var receiveid='receive'+receiveCount ;
 											$('#' + receiveid + ' .delete').show() ;
 											$('#' + receiveid + ' .delete').click(function() {
 												$('#' + receiveid).fadeOut(600, function(){ 
@@ -443,7 +443,7 @@ else {
 											receiveCount++ ;
 										},
 										beforeStop: function (event, ui) {
-										 newItem = ui.item;
+										 newItem=ui.item;
 										}
 									});
 									<? for ($j=$blockCount; $j<$blockCount2; $j++) { ?>

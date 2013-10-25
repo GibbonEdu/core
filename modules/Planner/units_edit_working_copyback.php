@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -42,7 +42,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>Edit Unit</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit_working.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&gibbonUnitClassID=" . $_GET["gibbonUnitClassID"] . "'>Edit Working Copy</a> > </div><div class='trailEnd'>Copy Back Block</div>" ;
 		print "</div>" ;
 		
-		$copyReturn = $_GET["copyReturn"] ;
+		$copyReturn=$_GET["copyReturn"] ;
 		$copyReturnMessage ="" ;
 		$class="error" ;
 		if (!($copyReturn=="")) {
@@ -140,7 +140,7 @@ else {
 						//Let's go!
 						$row=$result->fetch() ;
 						
-						print "<table cellspacing='0' style='width: 100%'>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>School Year</span><br/>" ;
@@ -156,13 +156,9 @@ else {
 								print "</td>" ;
 							print "</tr>" ;
 							print "<tr>" ;
-								print "<td style='padding-top: 15px; width: 34%; vertical-align: top'>" ;
+								print "<td style='padding-top: 15px; width: 34%; vertical-align: top' colspan=3>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Block Title</span><br/>" ;
 									print "<i>" . $row["block"] . "</i>" ;
-									print "</td>" ;
-								print "<td style='width: 33%; vertical-align: top'>" ;
-								print "</td>" ;
-								print "<td style='width: 34%; vertical-align: top'>" ;
 								print "</td>" ;
 							print "</tr>" ;
 						print "</table>" ;
@@ -177,8 +173,7 @@ else {
 						
 						?>
 						<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/units_edit_working_copybackProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=$gibbonUnitID&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=$gibbonUnitClassID" ; ?>">
-							<table cellspacing='0' style="width: 100%">	
-								<tr><td style="width: 30%"></td><td></td></tr>
+							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr>
 									<td> 
 										<b>Include Working Units? *</b><br/>
@@ -194,16 +189,14 @@ else {
 									</td>
 								</tr>
 								<tr>
-									<td class="right" colspan=2>
+									<td>
+										<span style="font-size: 90%"><i>* denotes a required field</i></span>
+									</td>
+									<td class="right">
 										<input name="gibbonTTID" id="gibbonTTID" value="<? print $_GET["gibbonTTID"] ?>" type="hidden">
 										<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $_GET["gibbonSchoolYearID"] ?>" type="hidden">
 										<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-										<input type="reset" value="Reset"> <input type="submit" value="Submit">
-									</td>
-								</tr>
-								<tr>
-									<td class="right" colspan=2>
-										<span style="font-size: 90%"><i>* denotes a required field</i></span>
+										<input type="submit" value="Submit">
 									</td>
 								</tr>
 							</table>

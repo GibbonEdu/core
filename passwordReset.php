@@ -25,23 +25,23 @@ print "</div>" ;
 	Enter your <? print $_SESSION[$guid]["systemName"] ?> username, or the email address you have listed in <? print $_SESSION[$guid]["systemName"] ?>, and press submit: your password will be reset and emailed to you. 
 </p>
 <?
-$eidtReturn = $_GET["editReturn"] ;
+if (isset($_GET["editReturn"])) { $editReturn=$_GET["editReturn"] ; } else { $editReturn="" ; }
 $editReturnMessage ="" ;
 $class="error" ;
-if (!($eidtReturn=="")) {
-	if ($eidtReturn=="fail0") {
+if (!($editReturn=="")) {
+	if ($editReturn=="fail0") {
 		$editReturnMessage ="Email address not set." ;	
 	}
-	else if ($eidtReturn=="fail1") {
+	else if ($editReturn=="fail1") {
 		$editReturnMessage ="Update failed due to database error." ;	
 	}
-	else if ($eidtReturn=="fail2") {
+	else if ($editReturn=="fail2") {
 		$editReturnMessage ="Update failed due to incorrect or non-unique email address." ;	
 	}
-	else if ($eidtReturn=="fail3") {
+	else if ($editReturn=="fail3") {
 		$editReturnMessage ="Failed to send update email." ;	
 	}
-	else if ($eidtReturn=="success0") {
+	else if ($editReturn=="success0") {
 		$editReturnMessage ="Password changed successfully, please check your email." ;	
 		$class="success" ;
 	}

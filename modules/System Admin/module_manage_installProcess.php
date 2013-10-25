@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -40,12 +40,12 @@ $URL=$_GET["return"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/module_manage_install.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&addReturn=fail0" ;
+	$URL=$URL . "&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_FILES)) {
-		$URL = $URL . "&addReturn=fail3" ;
+		$URL=$URL . "&addReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -54,27 +54,27 @@ else {
 		//Check file type
 		if ($_FILES['file']['type']!="text/php" AND $_FILES['file']['name']!="manifest.php") {
 			//Fail 3
-			$URL = $URL . "&addReturn=fail3" ;
+			$URL=$URL . "&addReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Move uploaded file
 			if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$_SESSION[$guid]["absolutePath"] . "/uploads/manifest.php"))) {
 				//Fail 3
-				$URL = $URL . "&addReturn=fail3" ;
+				$URL=$URL . "&addReturn=fail3" ;
 				header("Location: {$URL}");
 			}
 			else {
 				if (!(include "../../uploads/manifest.php")) {
 					//Fail 3
-					$URL = $URL . "&addReturn=fail3" ;
+					$URL=$URL . "&addReturn=fail3" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Validate Inputs
 					if ($name=="" OR $description=="" OR $type=="" OR $type!="Additional" OR $version=="" ) {
 						//Fail 3
-						$URL = $URL . "&addReturn=fail3" ;
+						$URL=$URL . "&addReturn=fail3" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -85,7 +85,7 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail 2
-							$URL = $URL . "&addReturn=fail2" ;
+							$URL=$URL . "&addReturn=fail2" ;
 							header("Location: {$URL}");
 							break ;
 						}
@@ -99,14 +99,14 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail 2
-							$URL = $URL . "&addReturn=fail2" ;
+							$URL=$URL . "&addReturn=fail2" ;
 							header("Location: {$URL}");
 							break ; 
 						}
 
 						if ($resultModule->rowCount()>0) {
 							//Fail 4
-							$URL = $URL . "&addReturn=fail4" ;
+							$URL=$URL . "&addReturn=fail4" ;
 							header("Location: {$URL}");
 						}
 						else {
@@ -119,7 +119,7 @@ else {
 							}
 							catch(PDOException $e) { 
 								//Fail 2
-								$URL = $URL . "&addReturn=fail2" ;
+								$URL=$URL . "&addReturn=fail2" ;
 								header("Location: {$URL}");
 								break ;
 							}
@@ -133,7 +133,7 @@ else {
 							}
 							catch(PDOException $e) { 
 								//Fail 5
-								$URL = $URL . "&addReturn=fail5" ;
+								$URL=$URL . "&addReturn=fail5" ;
 								header("Location: {$URL}");
 								break ;
 							}
@@ -189,7 +189,7 @@ else {
 							}
 							catch(PDOException $e) { 
 								//Fail 5
-								$URL = $URL . "&addReturn=fail5" ;
+								$URL=$URL . "&addReturn=fail5" ;
 								header("Location: {$URL}");
 								break ; 
 							}
@@ -253,20 +253,22 @@ else {
 							}
 							
 							//Create hook entries
-							for ($i=0;$i<count($hooks);$i++) {
-								try {
-									$sql=$hooks[$i] ;
-									$result=$connection2->query($sql);   
-								}
-								catch(PDOException $e) { 
-									$partialFail=TRUE ;
+							if (isset($hooks)) {
+								for ($i=0;$i<count($hooks);$i++) {
+									try {
+										$sql=$hooks[$i] ;
+										$result=$connection2->query($sql);   
+									}
+									catch(PDOException $e) { 
+										$partialFail=TRUE ;
+									}
 								}
 							}
 			
 							//The reckoning!
 							if ($partialFail==TRUE) {
 								//Fail 5
-								$URL = $URL . "&addReturn=fail5" ;
+								$URL=$URL . "&addReturn=fail5" ;
 								header("Location: {$URL}");
 							}
 							else {
@@ -279,7 +281,7 @@ else {
 								}
 								catch(PDOException $e) { 
 									//Fail 6 
-									$URL = $URL . "&addReturn=fail6" ;
+									$URL=$URL . "&addReturn=fail6" ;
 									header("Location: {$URL}");
 									break ;
 								}
@@ -289,7 +291,7 @@ else {
 						
 								//We made it!
 								//Success 0
-								$URL = $URL . "&addReturn=success0" ;
+								$URL=$URL . "&addReturn=success0" ;
 								header("Location: {$URL}");
 							}
 						}

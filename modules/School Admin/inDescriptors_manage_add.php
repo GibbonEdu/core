@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/inDescriptors_manage_add.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/inDescriptors_manage.php'>Manage Individual Needs Descriptors</a> > </div><div class='trailEnd'>Add Descriptor</div>" ;
 	print "</div>" ;
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -68,9 +68,9 @@ else {
 					<span style="font-size: 90%"><i>Must be unique.</i></span>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=50 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+					<input name="name" id="name" maxlength=50 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var name = new LiveValidation('name');
+						var name=new LiveValidation('name');
 						name.add(Validate.Presence);
 					 </script>
 				</td>
@@ -81,9 +81,9 @@ else {
 					<span style="font-size: 90%"><i>Must be unique.</i></span>
 				</td>
 				<td class="right">
-					<input name="nameShort" id="nameShort" maxlength=5 value="<? print $row["nameShort"] ?>" type="text" style="width: 300px">
+					<input name="nameShort" id="nameShort" maxlength=5 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var nameShort = new LiveValidation('nameShort');
+						var nameShort=new LiveValidation('nameShort');
 						nameShort.add(Validate.Presence);
 					 </script>
 				</td>
@@ -94,9 +94,10 @@ else {
 					<span style="font-size: 90%"><i>Must be unique.</i></span>
 				</td>
 				<td class="right">
-					<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="<? print $row["sequenceNumber"] ?>" type="text" style="width: 300px">
+					<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var sequenceNumber = new LiveValidation('sequenceNumber');
+						var sequenceNumber=new LiveValidation('sequenceNumber');
+						sequenceNumber.add(Validate.Numericality);
 						sequenceNumber.add(Validate.Presence);
 					 </script>
 				</td>
@@ -106,7 +107,7 @@ else {
 					<b>Description</b><br/>
 				</td>
 				<td class="right">
-					<textarea name="description" id="description" rows=8 style="width: 300px"><? print $row["description"] ?></textarea>
+					<textarea name="description" id="description" rows=8 style="width: 300px"></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -115,7 +116,7 @@ else {
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					<input type="submit" value="Submit">
 				</td>
 			</tr>
 		</table>

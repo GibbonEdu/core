@@ -22,7 +22,7 @@ include "../../config.php" ;
 
 include "./moduleFunctions.php" ;
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);

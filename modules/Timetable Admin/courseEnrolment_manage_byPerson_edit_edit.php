@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php")==FALSE) {
 	//Acess denied
@@ -63,7 +63,7 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&allUsers=$allUsers'>Enrolment by Person</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage_byPerson_edit.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&type=" . $_GET["type"] . "&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&allUsers=$allUsers'>" . $row["preferredName"] . " " . $row["surname"] . "</a> > </div><div class='trailEnd'>Edit Participant</div>" ; 
 			print "</div>" ;
 			
-			$updateReturn = $_GET["updateReturn"] ;
+			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 			$updateReturnMessage ="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
@@ -107,7 +107,7 @@ else {
 						<td class="right">
 							<input readonly name="yearName" id="yearName" maxlength=20 value="<? print htmlPrep($row["yearName"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var yearName = new LiveValidation('yearName');
+								var yearName=new LiveValidation('yearName');
 								yearName.add(Validate.Presence);
 							</script>
 						</td>
@@ -120,7 +120,7 @@ else {
 						<td class="right">
 							<input readonly name="courseName" id="courseName" maxlength=20 value="<? print htmlPrep($row["courseName"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var courseName = new LiveValidation('courseName');
+								var courseName=new LiveValidation('courseName');
 								courseName.add(Validate.Presence);
 							</script>
 						</td>
@@ -133,7 +133,7 @@ else {
 						<td class="right">
 							<input readonly name="name" id="name" maxlength=10 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var name = new LiveValidation('name');
+								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
 							 </script>
 						</td>
@@ -146,7 +146,7 @@ else {
 						<td class="right">
 							<input readonly name="participant" id="participant" maxlength=200 value="<? print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student") ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var participant = new LiveValidation('participant');
+								var participant=new LiveValidation('participant');
 								participant.add(Validate.Presence);
 							 </script>
 						</td>
@@ -176,7 +176,7 @@ else {
 						<td class="right">
 							<input name="gibbonPersonID" id="gibbonPersonID" value="<? print $gibbonPersonID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>

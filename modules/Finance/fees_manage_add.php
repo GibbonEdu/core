@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Finance/fees_manage_add.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/fees_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Fees</a> > </div><div class='trailEnd'>Add Fee</div>" ;
 	print "</div>" ;
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -103,7 +103,7 @@ else {
 						?>
 						<input readonly name="yearName" id="yearName" maxlength=20 value="<? print $yearName ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var yearName = new LiveValidation('yearName');
+							var yearName=new LiveValidation('yearName');
 							yearName.add(Validate.Presence);
 						</script>
 					</td>
@@ -115,7 +115,7 @@ else {
 					<td class="right">
 						<input name="name" id="name" maxlength=100 value="" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var name = new LiveValidation('name');
+							var name=new LiveValidation('name');
 							name.add(Validate.Presence);
 						</script>
 					</td>
@@ -127,7 +127,7 @@ else {
 					<td class="right">
 						<input name="nameShort" id="nameShort" maxlength=6 value="" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var nameShort = new LiveValidation('nameShort');
+							var nameShort=new LiveValidation('nameShort');
 							nameShort.add(Validate.Presence);
 						</script>
 					</td>
@@ -175,7 +175,7 @@ else {
 							?>				
 						</select>
 						<script type="text/javascript">
-							var gibbonFinanceFeeCategoryID = new LiveValidation('gibbonFinanceFeeCategoryID');
+							var gibbonFinanceFeeCategoryID=new LiveValidation('gibbonFinanceFeeCategoryID');
 							gibbonFinanceFeeCategoryID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 						 </script>
 					</td>
@@ -199,7 +199,7 @@ else {
 					<td class="right">
 						<input name="fee" id="fee" maxlength=13 value="" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var fee = new LiveValidation('fee');
+							var fee=new LiveValidation('fee');
 							fee.add(Validate.Presence);
 							fee.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
 						</script>
@@ -213,7 +213,7 @@ else {
 					<td class="right">
 						<input name="gibbonFinanceFeeID" id="gibbonFinanceFeeID" value="<? print $gibbonFinanceFeeID ?>" type="hidden">
 						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="reset" value="Reset"> <input type="submit" value="Submit">
+						<input type="submit" value="Submit">
 					</td>
 				</tr>
 			</table>

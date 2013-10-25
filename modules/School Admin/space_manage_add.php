@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/space_manage_add.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/space_manage.php'>Manage Spaces</a> > </div><div class='trailEnd'>Add Space</div>" ;
 	print "</div>" ;
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -68,9 +68,9 @@ else {
 					<span style="font-size: 90%"><i>Must be unique.</i></span>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=30 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+					<input name="name" id="name" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var name = new LiveValidation('name');
+						var name=new LiveValidation('name');
 						name.add(Validate.Presence);
 					 </script>
 				</td>
@@ -151,7 +151,7 @@ else {
 				<td class="right">
 					<input name="capacity" id="capacity" maxlength=5 value="0" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var capacity = new LiveValidation('capacity');
+						var capacity=new LiveValidation('capacity');
 						capacity.add(Validate.Numericality);
 					</script>
 				</td>
@@ -175,7 +175,7 @@ else {
 				<td class="right">
 					<input name="computerStudent" id="computerStudent" maxlength=5 value="0" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var computerStudent = new LiveValidation('computerStudent');
+						var computerStudent=new LiveValidation('computerStudent');
 						computerStudent.add(Validate.Numericality);
 					</script>
 				</td>
@@ -277,7 +277,7 @@ else {
 				<td class="right">
 					<textarea name="comment" id="comment" rows=8 style="width: 300px"><? print $row["comment"] ?></textarea>
 					<script type="text/javascript">
-						var comment = new LiveValidation('comment');
+						var comment=new LiveValidation('comment');
 						comment.add( Validate.Length, { maximum: 1000 } );
 					 </script>
 				</td>
@@ -288,7 +288,7 @@ else {
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					<input type="submit" value="Submit">
 				</td>
 			</tr>
 		</table>

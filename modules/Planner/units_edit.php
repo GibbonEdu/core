@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -53,7 +53,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > </div><div class='trailEnd'>Edit Unit</div>" ;
 		print "</div>" ;
 		
-		$updateReturn = $_GET["updateReturn"] ;
+		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 		$updateReturnMessage ="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
@@ -87,7 +87,7 @@ else {
 			print "</div>" ;
 		} 
 		
-		$addReturn = $_GET["addReturn"] ;
+		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 		$addReturnMessage ="" ;
 		$class="error" ;
 		if (!($addReturn=="")) {
@@ -100,7 +100,7 @@ else {
 			print "</div>" ;
 		} 
 		
-		$deployReturn = $_GET["deployReturn"] ;
+		$deployReturn=$_GET["deployReturn"] ;
 		$deployReturnMessage ="" ;
 		$class="error" ;
 		if (!($deployReturn=="")) {
@@ -128,7 +128,7 @@ else {
 			print "</div>" ;
 		} 
 		
-		$copyReturn = $_GET["copyReturn"] ;
+		$copyReturn=$_GET["copyReturn"] ;
 		$copyReturnMessage ="" ;
 		$class="error" ;
 		if (!($copyReturn=="")) {
@@ -141,7 +141,7 @@ else {
 			print "</div>" ;
 		} 
 		
-		$copyForwardReturn = $_GET["copyForwardReturn"] ;
+		$copyForwardReturn=$_GET["copyForwardReturn"] ;
 		$copyForwardReturnMessage ="" ;
 		$class="error" ;
 		if (!($copyForwardReturn=="")) {
@@ -250,7 +250,7 @@ else {
 										<td class="right">
 											<input name="name" id="name" maxlength=40 value="<? print $row["name"] ?>" type="text" style="width: 300px">
 											<script type="text/javascript">
-												var name = new LiveValidation('name');
+												var name=new LiveValidation('name');
 												name.add(Validate.Presence);
 											 </script>
 										</td>
@@ -260,7 +260,7 @@ else {
 											<b>Blurb *</b> 
 											<textarea name='description' id='description' rows=5 style='width: 300px'><? print $row["description"] ?></textarea>
 											<script type="text/javascript">
-												var description = new LiveValidation('description');
+												var description=new LiveValidation('description');
 												description.add(Validate.Presence);
 											</script>
 										</td>
@@ -487,7 +487,7 @@ else {
 											?>
 										
 											<script type="text/javascript">
-												var file = new LiveValidation('file');
+												var file=new LiveValidation('file');
 												file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 											</script>
 										</td>
@@ -773,7 +773,7 @@ else {
 										</td>
 										<td class="right">
 											<input name="classCount" id="classCount" value="<? print $classCount ?>" type="hidden">
-											<input type="reset" value="Reset"> <input id="submit" type="submit" value="Submit">
+											<input id="submit" type="submit" value="Submit">
 										</td>
 									</tr>
 								</table>

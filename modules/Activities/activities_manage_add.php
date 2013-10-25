@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -33,7 +33,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php'>Manage Activities</a> > </div><div class='trailEnd'>Add Activity</div>" ;
 	print "</div>" ;
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -81,7 +81,7 @@ else {
 				<td class="right">
 					<input name="name" id="name" maxlength=40 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var name = new LiveValidation('name');
+						var name=new LiveValidation('name');
 						name.add(Validate.Presence);
 					 </script>
 				</td>
@@ -214,7 +214,7 @@ else {
 					<td class="right">
 						<input name="listingStart" id="listingStart" maxlength=10 value="<? if ($listingStart!="") { print dateConvertBack($listingStart) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var listingStart = new LiveValidation('listingStart');
+							var listingStart=new LiveValidation('listingStart');
 							listingStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 						 </script>
 						 <script type="text/javascript">
@@ -232,7 +232,7 @@ else {
 					<td class="right">
 						<input name="listingEnd" id="listingEnd" maxlength=10 value="<? if ($listingEnd!="") { print dateConvertBack($listingEnd) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var listingEnd = new LiveValidation('listingEnd');
+							var listingEnd=new LiveValidation('listingEnd');
 							listingEnd.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 						 </script>
 						 <script type="text/javascript">
@@ -250,7 +250,7 @@ else {
 					<td class="right">
 						<input name="programStart" id="programStart" maxlength=10 value="<? if ($programStart!="") { print dateConvertBack($programStart) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var programStart = new LiveValidation('programStart');
+							var programStart=new LiveValidation('programStart');
 							programStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 						 </script>
 						 <script type="text/javascript">
@@ -268,7 +268,7 @@ else {
 					<td class="right">
 						<input name="programEnd" id="programEnd" maxlength=10 value="<? if ($programEnd!="") { print dateConvertBack($programEnd) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var programEnd = new LiveValidation('programEnd');
+							var programEnd=new LiveValidation('programEnd');
 							programEnd.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 						 </script>
 						 <script type="text/javascript">
@@ -312,7 +312,7 @@ else {
 				<td class="right">
 					<input name="maxParticipants" id="maxParticipants" maxlength=4 value="0" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var maxParticipants = new LiveValidation('maxParticipants');
+						var maxParticipants=new LiveValidation('maxParticipants');
 						maxParticipants.add(Validate.Presence);
 						maxParticipants.add(Validate.Numericality);
 					 </script>
@@ -334,7 +334,7 @@ else {
 							?>
 							<input name="payment" id="payment" maxlength=7 value="0.00" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var payment = new LiveValidation('payment');
+								var payment=new LiveValidation('payment');
 								payment.add(Validate.Presence);
 								payment.add(Validate.Numericality);
 							 </script>
@@ -450,10 +450,10 @@ else {
 						<span style="font-size: 90%"><i>Format: hh:mm</i></span>
 					</td>
 					<td class="right">
-						<input name="timeStart<? print $i ?>" id="timeStart<? print $i ?>" maxlength=5 value="<? print substr($row["timeStart"],0,5) ?>" type="text" style="width: 300px">
+						<input name="timeStart<? print $i ?>" id="timeStart<? print $i ?>" maxlength=5 value="" type="text" style="width: 300px">
 						<script type="text/javascript">
 							$(function() {
-								var availableTags = [
+								var availableTags=[
 									<?
 									try {
 										$dataAuto=array(); 
@@ -478,10 +478,10 @@ else {
 						<span style="font-size: 90%"><i>Format: hh:mm</i></span>
 					</td>
 					<td class="right">
-						<input name="timeEnd<? print $i ?>" id="timeEnd<? print $i ?>" maxlength=5 value="<? print substr($row["timeEnd"],0,5) ?>" type="text" style="width: 300px">
+						<input name="timeEnd<? print $i ?>" id="timeEnd<? print $i ?>" maxlength=5 value="" type="text" style="width: 300px">
 						<script type="text/javascript">
 							$(function() {
-								var availableTags = [
+								var availableTags=[
 									<?
 									try {
 										$dataAuto=array(); 
@@ -598,7 +598,7 @@ else {
 				<td class="right">
 					<input name="viewBy" id="viewBy" value="<? print $viewBy ?>" type="hidden">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="reset" value="Reset"> <input type="submit" value="Submit">
+					<input type="submit" value="Submit">
 				</td>
 			</tr>
 		</table>

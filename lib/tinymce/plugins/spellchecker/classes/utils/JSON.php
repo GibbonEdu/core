@@ -30,12 +30,12 @@ class Moxiecode_JSONReader {
 	var $_needProp;
 
 	function Moxiecode_JSONReader($data) {
-		$this->_data = $data;
-		$this->_len = strlen($data);
-		$this->_pos = -1;
-		$this->_location = JSON_IN_BETWEEN;
-		$this->_lastLocations = array();
-		$this->_needProp = false;
+		$this->_data=$data;
+		$this->_len=strlen($data);
+		$this->_pos=-1;
+		$this->_location=JSON_IN_BETWEEN;
+		$this->_lastLocations=array();
+		$this->_needProp=false;
 	}
 
 	function getToken() {
@@ -87,46 +87,46 @@ class Moxiecode_JSONReader {
 	}
 
 	function readToken() {
-		$chr = $this->read();
+		$chr=$this->read();
 
 		if ($chr != null) {
 			switch ($chr) {
 				case '[':
-					$this->_lastLocation[] = $this->_location;
-					$this->_location = JSON_IN_ARRAY;
-					$this->_token = JSON_START_ARRAY;
-					$this->_value = null;
+					$this->_lastLocation[]=$this->_location;
+					$this->_location=JSON_IN_ARRAY;
+					$this->_token=JSON_START_ARRAY;
+					$this->_value=null;
 					$this->readAway();
 					return true;
 
 				case ']':
-					$this->_location = array_pop($this->_lastLocation);
-					$this->_token = JSON_END_ARRAY;
-					$this->_value = null;
+					$this->_location=array_pop($this->_lastLocation);
+					$this->_token=JSON_END_ARRAY;
+					$this->_value=null;
 					$this->readAway();
 
 					if ($this->_location == JSON_IN_OBJECT)
-						$this->_needProp = true;
+						$this->_needProp=true;
 
 					return true;
 
 				case '{':
-					$this->_lastLocation[] = $this->_location;
-					$this->_location = JSON_IN_OBJECT;
-					$this->_needProp = true;
-					$this->_token = JSON_START_OBJ;
-					$this->_value = null;
+					$this->_lastLocation[]=$this->_location;
+					$this->_location=JSON_IN_OBJECT;
+					$this->_needProp=true;
+					$this->_token=JSON_START_OBJ;
+					$this->_value=null;
 					$this->readAway();
 					return true;
 
 				case '}':
-					$this->_location = array_pop($this->_lastLocation);
-					$this->_token = JSON_END_OBJ;
-					$this->_value = null;
+					$this->_location=array_pop($this->_lastLocation);
+					$this->_token=JSON_END_OBJ;
+					$this->_value=null;
 					$this->readAway();
 
 					if ($this->_location == JSON_IN_OBJECT)
-						$this->_needProp = true;
+						$this->_needProp=true;
 
 					return true;
 
@@ -157,8 +157,8 @@ class Moxiecode_JSONReader {
 	}
 
 	function _readBool($chr) {
-		$this->_token = JSON_BOOL;
-		$this->_value = $chr == 't';
+		$this->_token=JSON_BOOL;
+		$this->_value=$chr == 't';
 
 		if ($chr == 't')
 			$this->skip(3); // rue
@@ -168,37 +168,37 @@ class Moxiecode_JSONReader {
 		$this->readAway();
 
 		if ($this->_location == JSON_IN_OBJECT && !$this->_needProp)
-			$this->_needProp = true;
+			$this->_needProp=true;
 
 		return true;
 	}
 
 	function _readNull() {
-		$this->_token = JSON_NULL;
-		$this->_value = null;
+		$this->_token=JSON_NULL;
+		$this->_value=null;
 
 		$this->skip(3); // ull
 		$this->readAway();
 
 		if ($this->_location == JSON_IN_OBJECT && !$this->_needProp)
-			$this->_needProp = true;
+			$this->_needProp=true;
 
 		return true;
 	}
 
 	function _readString($quote) {
-		$output = "";
-		$this->_token = JSON_STR;
-		$endString = false;
+		$output="";
+		$this->_token=JSON_STR;
+		$endString=false;
 
-		while (($chr = $this->peek()) != -1) {
+		while (($chr=$this->peek()) != -1) {
 			switch ($chr) {
 				case '\\':
 					// Read away slash
 					$this->read();
 
 					// Read escape code
-					$chr = $this->read();
+					$chr=$this->read();
 					switch ($chr) {
 							case 't':
 								$output .= "\t";
@@ -234,9 +234,9 @@ class Moxiecode_JSONReader {
 					case '\'':
 					case '"':
 						if ($chr == $quote)
-							$endString = true;
+							$endString=true;
 
-						$chr = $this->read();
+						$chr=$this->read();
 						if ($chr != -1 && $chr != $quote)
 							$output .= $chr;
 
@@ -252,23 +252,23 @@ class Moxiecode_JSONReader {
 		}
 
 		$this->readAway();
-		$this->_value = $output;
+		$this->_value=$output;
 
 		// Needed a property
 		if ($this->_needProp) {
-			$this->_token = JSON_KEY;
-			$this->_needProp = false;
+			$this->_token=JSON_KEY;
+			$this->_needProp=false;
 			return true;
 		}
 
 		if ($this->_location == JSON_IN_OBJECT && !$this->_needProp)
-			$this->_needProp = true;
+			$this->_needProp=true;
 
 		return true;
 	}
 
 	function _int2utf8($int) {
-		$int = intval($int);
+		$int=intval($int);
 
 		switch ($int) {
 			case 0:
@@ -289,16 +289,16 @@ class Moxiecode_JSONReader {
 	}
 
 	function _readNumber($start) {
-		$value = "";
-		$isFloat = false;
+		$value="";
+		$isFloat=false;
 
-		$this->_token = JSON_INT;
+		$this->_token=JSON_INT;
 		$value .= $start;
 
-		while (($chr = $this->peek()) != -1) {
+		while (($chr=$this->peek()) != -1) {
 			if (is_numeric($chr) || $chr == '-' || $chr == '.') {
 				if ($chr == '.')
-					$isFloat = true;
+					$isFloat=true;
 
 				$value .= $this->read();
 			} else
@@ -308,19 +308,19 @@ class Moxiecode_JSONReader {
 		$this->readAway();
 
 		if ($isFloat) {
-			$this->_token = JSON_FLOAT;
-			$this->_value = floatval($value);
+			$this->_token=JSON_FLOAT;
+			$this->_value=floatval($value);
 		} else
-			$this->_value = intval($value);
+			$this->_value=intval($value);
 
 		if ($this->_location == JSON_IN_OBJECT && !$this->_needProp)
-			$this->_needProp = true;
+			$this->_needProp=true;
 
 		return true;
 	}
 
 	function readAway() {
-		while (($chr = $this->peek()) != null) {
+		while (($chr=$this->peek()) != null) {
 			if ($chr != ':' && $chr != ',' && $chr != ' ')
 				return;
 
@@ -328,10 +328,10 @@ class Moxiecode_JSONReader {
 		}
 	}
 
-	function read($len = 1) {
+	function read($len=1) {
 		if ($this->_pos < $this->_len) {
 			if ($len > 1) {
-				$str = substr($this->_data, $this->_pos + 1, $len);
+				$str=substr($this->_data, $this->_pos + 1, $len);
 				$this->_pos += $len;
 
 				return $str;
@@ -364,17 +364,17 @@ class Moxiecode_JSON {
 	}
 
 	function decode($input) {
-		$reader = new Moxiecode_JSONReader($input);
+		$reader=new Moxiecode_JSONReader($input);
 
 		return $this->readValue($reader);
 	}
 
 	function readValue(&$reader) {
-		$this->data = array();
-		$this->parents = array();
+		$this->data=array();
+		$this->parents=array();
 		$this->cur =& $this->data;
-		$key = null;
-		$loc = JSON_IN_ARRAY;
+		$key=null;
+		$loc=JSON_IN_ARRAY;
 
 		while ($reader->readToken()) {
 			switch ($reader->getToken()) {
@@ -385,11 +385,11 @@ class Moxiecode_JSON {
 				case JSON_NULL:
 					switch ($reader->getLocation()) {
 						case JSON_IN_OBJECT:
-							$this->cur[$key] = $reader->getValue();
+							$this->cur[$key]=$reader->getValue();
 							break;
 
 						case JSON_IN_ARRAY:
-							$this->cur[] = $reader->getValue();
+							$this->cur[]=$reader->getValue();
 							break;
 
 						default:
@@ -398,7 +398,7 @@ class Moxiecode_JSON {
 					break;
 
 				case JSON_KEY:
-					$key = $reader->getValue();
+					$key=$reader->getValue();
 					break;
 
 				case JSON_START_OBJ:
@@ -410,12 +410,12 @@ class Moxiecode_JSON {
 
 					$cur =& $obj;
 
-					$loc = $reader->getLocation();
+					$loc=$reader->getLocation();
 					break;
 
 				case JSON_END_OBJ:
 				case JSON_END_ARRAY:
-					$loc = $reader->getLocation();
+					$loc=$reader->getLocation();
 
 					if (count($this->parents) > 0) {
 						$this->cur =& $this->parents[count($this->parents) - 1];
@@ -431,7 +431,7 @@ class Moxiecode_JSON {
 	// This method was needed since PHP is crapy and doesn't have pointers/references
 	function addArray($key) {
 		$this->parents[] =& $this->cur;
-		$ar = array();
+		$ar=array();
 
 		if ($key)
 			$this->cur[$key] =& $ar;
@@ -484,7 +484,7 @@ class Moxiecode_JSON {
 	function encodeString($input) {
 		// Needs to be escaped
 		if (preg_match('/[^a-zA-Z0-9]/', $input)) {
-			$output = '';
+			$output='';
 
 			for ($i=0; $i<strlen($input); $i++) {
 				switch ($input[$i]) {
@@ -521,26 +521,26 @@ class Moxiecode_JSON {
 						break;
 
 					default:
-						$byte = ord($input[$i]);
+						$byte=ord($input[$i]);
 
 						if (($byte & 0xE0) == 0xC0) {
-							$char = pack('C*', $byte, ord($input[$i + 1]));
+							$char=pack('C*', $byte, ord($input[$i + 1]));
 							$i += 1;
 							$output .= sprintf('\u%04s', bin2hex($this->_utf82utf16($char)));
 						} if (($byte & 0xF0) == 0xE0) {
-							$char = pack('C*', $byte, ord($input[$i + 1]), ord($input[$i + 2]));
+							$char=pack('C*', $byte, ord($input[$i + 1]), ord($input[$i + 2]));
 							$i += 2;
 							$output .= sprintf('\u%04s', bin2hex($this->_utf82utf16($char)));
 						} if (($byte & 0xF8) == 0xF0) {
-							$char = pack('C*', $byte, ord($input[$i + 1]), ord($input[$i + 2]), ord($input[$i + 3]));
+							$char=pack('C*', $byte, ord($input[$i + 1]), ord($input[$i + 2]), ord($input[$i + 3]));
 							$i += 3;
 							$output .= sprintf('\u%04s', bin2hex($this->_utf82utf16($char)));
 						} if (($byte & 0xFC) == 0xF8) {
-							$char = pack('C*', $byte, ord($input[$i + 1]), ord($input[$i + 2]), ord($input[$i + 3]), ord($input[$i + 4]));
+							$char=pack('C*', $byte, ord($input[$i + 1]), ord($input[$i + 2]), ord($input[$i + 3]), ord($input[$i + 4]));
 							$i += 4;
 							$output .= sprintf('\u%04s', bin2hex($this->_utf82utf16($char)));
 						} if (($byte & 0xFE) == 0xFC) {
-							$char = pack('C*', $byte, ord($input[$i + 1]), ord($input[$i + 2]), ord($input[$i + 3]), ord($input[$i + 4]), ord($input[$i + 5]));
+							$char=pack('C*', $byte, ord($input[$i + 1]), ord($input[$i + 2]), ord($input[$i + 3]), ord($input[$i + 4]), ord($input[$i + 5]));
 							$i += 5;
 							$output .= sprintf('\u%04s', bin2hex($this->_utf82utf16($char)));
 						} else if ($byte < 128)
@@ -573,14 +573,14 @@ class Moxiecode_JSON {
 	}
 
 	function _encodeArray($input) {
-		$output = '';
-		$isIndexed = true;
+		$output='';
+		$isIndexed=true;
 
-		$keys = array_keys($input);
+		$keys=array_keys($input);
 		for ($i=0; $i<count($keys); $i++) {
 			if (!is_int($keys[$i])) {
 				$output .= $this->encodeString($keys[$i]) . ':' . $this->encode($input[$keys[$i]]);
-				$isIndexed = false;
+				$isIndexed=false;
 			} else
 				$output .= $this->encode($input[$keys[$i]]);
 

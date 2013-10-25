@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include $_SESSION[$guid]["absolutePath"] . "/modules/Activities/moduleFunctions.php" ;
@@ -46,14 +46,14 @@ $URLSuccess=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModu
 
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_view_register.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&updateReturn=fail0" ;
+	$URL=$URL . "&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, "/modules/Activities/activities_view_register.php", $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL = $URL . "&updateReturn=fail0" ;
+		$URL=$URL . "&updateReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -65,7 +65,7 @@ else {
 		
 		if ($access!="Register") {
 			//Fail0
-			$URL = $URL . "&updateReturn=fail0" ;
+			$URL=$URL . "&updateReturn=fail0" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -73,7 +73,7 @@ else {
 			//Check if school year specified
 			if ($gibbonActivityID=="" OR $gibbonPersonID=="") {
 				//Fail1
-				$URL = $URL . "&updateReturn=fail1" ;
+				$URL=$URL . "&updateReturn=fail1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -95,14 +95,14 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail2
-					$URL = $URL . "&updateReturn=fail2" ;
+					$URL=$URL . "&updateReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
 						
 				if ($result->rowCount()!=1) {
 					//Fail 2
-					$URL = $URL . "&updateReturn=fail2" ;
+					$URL=$URL . "&updateReturn=fail2" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -118,14 +118,14 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail 2
-							$URL = $URL . "&updateReturn=fail2" ;
+							$URL=$URL . "&updateReturn=fail2" ;
 							header("Location: {$URL}");
 							break ;
 						}
 								
 						if ($resultReg->rowCount()>0) {
 							//Fail 5
-							$URL = $URL . "&updateReturn=fail5" ;
+							$URL=$URL . "&updateReturn=fail5" ;
 							header("Location: {$URL}");
 						}
 						else {
@@ -141,7 +141,7 @@ else {
 							
 							if ($backup=="Y" AND $gibbonActivityIDBackup=="") {
 								//Fail 3
-								$URL = $URL . "&updateReturn=fail3" ;
+								$URL=$URL . "&updateReturn=fail3" ;
 								header("Location: {$URL}");
 							}
 							else {
@@ -155,7 +155,7 @@ else {
 								}
 								catch(PDOException $e) { 
 									//Fail 2
-									$URL = $URL . "&updateReturn=fail2" ;
+									$URL=$URL . "&updateReturn=fail2" ;
 									header("Location: {$URL}");
 									break ;
 								}		
@@ -193,7 +193,7 @@ else {
 								}
 								catch(PDOException $e) { 
 									//Fail 2
-									$URL = $URL . "&updateReturn=fail2" ;
+									$URL=$URL . "&updateReturn=fail2" ;
 									header("Location: {$URL}");
 									break ;
 								}
@@ -206,7 +206,7 @@ else {
 								catch(PDOException $e) { }
 							
 								//Success 0
-								$URLSuccess = $URLSuccess . "&updateReturn=success0" ;
+								$URLSuccess=$URLSuccess . "&updateReturn=success0" ;
 								header("Location: {$URLSuccess}");
 							}
 						}
@@ -221,14 +221,14 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail 2
-							$URL = $URL . "&updateReturn=fail2" ;
+							$URL=$URL . "&updateReturn=fail2" ;
 							header("Location: {$URL}");
 							break ;
 						}
 						
 						if ($resultReg->rowCount()<1) {
 							//Fail 5
-							$URL = $URL . "&updateReturn=fail5" ;
+							$URL=$URL . "&updateReturn=fail5" ;
 							header("Location: {$URL}");
 						}
 						else {
@@ -241,7 +241,7 @@ else {
 							}
 							catch(PDOException $e) { 
 								//Fail 2
-								$URL = $URL . "&updateReturn=fail2" ;
+								$URL=$URL . "&updateReturn=fail2" ;
 								header("Location: {$URL}");
 								break ;
 							}
@@ -256,7 +256,7 @@ else {
 								}
 								catch(PDOException $e) { 
 									//Fail 2
-									$URL = $URL . "&updateReturn=fail2" ;
+									$URL=$URL . "&updateReturn=fail2" ;
 									header("Location: {$URL}");
 									break ;
 								}		
@@ -302,7 +302,7 @@ else {
 							}
 							
 							//Success 1
-							$URLSuccess = $URLSuccess . "&updateReturn=success1" ;
+							$URLSuccess=$URLSuccess . "&updateReturn=success1" ;
 							header("Location: {$URLSuccess}");
 						}
 					}

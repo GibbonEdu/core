@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -39,7 +39,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationFormSettings.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&updateReturn=fail0" ;
+	$URL=$URL . "&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -48,7 +48,6 @@ else {
 	if ($_POST["title"]=="on") { $array["title"]="Y" ; } else { $array["title"]="N" ; } 
 	if ($_POST["surname"]=="on") { $array["surname"]="Y" ; } else { $array["surname"]="N" ; } 
 	if ($_POST["firstName"]=="on") { $array["firstName"]="Y" ; } else { $array["firstName"]="N" ; } 
-	if ($_POST["otherNames"]=="on") { $array["otherNames"]="Y" ; } else { $array["otherNames"]="N" ; } 
 	if ($_POST["preferredName"]=="on") { $array["preferredName"]="Y" ; } else { $array["preferredName"]="N" ; } 
 	if ($_POST["officialName"]=="on") { $array["officialName"]="Y" ; } else { $array["officialName"]="N" ; } 
 	if ($_POST["nameInCharacters"]=="on") { $array["nameInCharacters"]="Y" ; } else { $array["nameInCharacters"]="N" ; } 
@@ -108,13 +107,13 @@ else {
 	
 	if ($fail==TRUE) {
 		//Fail 2
-		$URL = $URL . "&updateReturn=fail2" ;
+		$URL=$URL . "&updateReturn=fail2" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Success 0
 		getSystemSettings($guid, $connection2) ;
-		$URL = $URL . "&updateReturn=success0" ;
+		$URL=$URL . "&updateReturn=success0" ;
 		header("Location: {$URL}");
 	}
 }

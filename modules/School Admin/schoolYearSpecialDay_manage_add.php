@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/schoolYearSpecialDay_manage_add.php")==FALSE) {
 	//Acess denied
@@ -75,7 +75,7 @@ else {
 						<td class="right">
 							<input readonly name="date" id="date" maxlength=10 value="<? print date("d/m/Y",$dateStamp) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var date = new LiveValidation('date');
+								var date=new LiveValidation('date');
 								date.add(Validate.Presence);
 								date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 							 </script>
@@ -92,7 +92,7 @@ else {
 								<option value="Timing Change">Timing Change</option>
 							</select>
 							<script type="text/javascript">
-								var type = new LiveValidation('type');
+								var type=new LiveValidation('type');
 								type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							</script>
 						</td>
@@ -103,9 +103,9 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=20 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var name = new LiveValidation('name');
+								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
 							 </script>
 						</td>
@@ -116,7 +116,7 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input name="description" id="description" maxlength=255 value="<? print $row["description"] ?>" type="text" style="width: 300px">
+							<input name="description" id="description" maxlength=255 value="" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
@@ -302,7 +302,7 @@ else {
 							<input name="lastDay" id="lastDay" value="<? print $lastDay ?>" type="hidden">
 							<input name="gibbonSchoolYearTermID" id="gibbonSchoolYearTermID" value="<? print $gibbonSchoolYearTermID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -33,7 +33,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Rollover</div>" ;
 	print "</div>" ;
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -201,7 +201,7 @@ else {
 								<td class="right">
 									<input name="nextname" id="nextname" maxlength=9 value="<? print $row["name"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
-										var nextname = new LiveValidation('nextname');
+										var nextname=new LiveValidation('nextname');
 										nextname.add(Validate.Presence);
 									 </script>
 								</td>
@@ -231,7 +231,7 @@ else {
 								<td class="right">
 									<input name="nextfirstDay" id="nextfirstDay" maxlength=10 value="<? print $row["firstDay"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
-										var nextfirstDay = new LiveValidation('nextfirstDay');
+										var nextfirstDay=new LiveValidation('nextfirstDay');
 										nextfirstDay.add(Validate.Presence);
 										nextfirstDay.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 									 </script>
@@ -250,7 +250,7 @@ else {
 								<td class="right">
 									<input name="nextlastDay" id="nextlastDay" maxlength=10 value="<? print $row["lastDay"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
-										var nextlastDay = new LiveValidation('nextlastDay');
+										var nextlastDay=new LiveValidation('nextlastDay');
 										nextlastDay.add(Validate.Presence);
 										nextlastDay.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 									 </script>
@@ -879,7 +879,7 @@ else {
 							print "</td>" ;
 							print "<td class='right'>" ;
 								print "<input type='hidden' name='nextYear' value='$nextYear'>" ;
-								print "<input type='reset' value='Reset'> <input type='submit' value='Proceed'>" ;
+								<input type='submit' value='Proceed'>" ;
 							print "</td>" ;
 						print "</tr>" ;
 					print "</table>" ;

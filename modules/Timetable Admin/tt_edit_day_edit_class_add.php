@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_edit_day_edit_class_add.php")==FALSE) {
 	//Acess denied
@@ -58,10 +58,10 @@ else {
 			$row=$result->fetch() ;
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > ... > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Timetables</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Edit Timetable</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>Edit Timetable Day</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID'>Classes in Period</a> > </div><div class='trailEnd'>Add Class to Period</div>" ; 
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > ... > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Timetables</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Edit Timetable</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>Edit Timetable Day</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID'>Classes in Period</a> > </div><div class='trailEnd'>Add Class to Period</div>" ; 
 			print "</div>" ;
 			
-			$addReturn = $_GET["addReturn"] ;
+			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 			$addReturnMessage ="" ;
 			$class="error" ;
 			if (!($addReturn=="")) {
@@ -99,7 +99,7 @@ else {
 						<td class="right">
 							<input readonly name="ttName" id="ttName" maxlength=20 value="<? print $row["ttName"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var courseName = new LiveValidation('courseName');
+								var courseName=new LiveValidation('courseName');
 								courseName.add(Validate.Presence);
 							</script>
 						</td>
@@ -112,7 +112,7 @@ else {
 						<td class="right">
 							<input readonly name="dayName" id="dayName" maxlength=20 value="<? print $row["dayName"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var courseName = new LiveValidation('courseName');
+								var courseName=new LiveValidation('courseName');
 								courseName.add(Validate.Presence);
 							</script>
 						</td>
@@ -125,7 +125,7 @@ else {
 						<td class="right">
 							<input readonly name="rowName" id="rowName" maxlength=20 value="<? print $row["rowName"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var courseName = new LiveValidation('courseName');
+								var courseName=new LiveValidation('courseName');
 								courseName.add(Validate.Presence);
 							</script>
 						</td>
@@ -173,7 +173,7 @@ else {
 								?>				
 							</select>
 							<script type="text/javascript">
-								var gibbonTTColumnID = new LiveValidation('gibbonTTColumnID');
+								var gibbonTTColumnID=new LiveValidation('gibbonTTColumnID');
 								gibbonTTColumnID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							 </script>
 						</td>
@@ -186,7 +186,7 @@ else {
 						<td class="right">
 							<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
 								<?
-								print "<option value='Please select...'>Please select...</option>" ;
+								print "<option value=''></option>" ;
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonSpace ORDER BY name" ;
@@ -218,7 +218,7 @@ else {
 							<input name="gibbonTTID" id="gibbonTTID" value="<? print $gibbonTTID ?>" type="hidden">
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>

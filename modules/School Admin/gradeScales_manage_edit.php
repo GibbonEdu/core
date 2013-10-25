@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -34,7 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage.php'>Manage Grade Scales</a> > </div><div class='trailEnd'>Edit Grade Scale</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -62,7 +62,7 @@ else {
 		print "</div>" ;
 	} 
 	
-	$deleteReturn = $_GET["deleteReturn"] ;
+	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 	$deleteReturnMessage ="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
@@ -110,9 +110,9 @@ else {
 						<span style="font-size: 90%"><i>Must be unique for this school year.</i></span>
 					</td>
 					<td class="right">
-						<input name="name" id="name" maxlength=40 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
+						<input name="name" id="name" maxlength=40 value="<? if (isset($row["name"])) { print htmlPrep($row["name"]) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var name = new LiveValidation('name');
+							var name=new LiveValidation('name');
 							name.add(Validate.Presence);
 						 </script>
 					</td>
@@ -123,9 +123,9 @@ else {
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
-						<input name="nameShort" id="nameShort" maxlength=4 value="<? print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
+						<input name="nameShort" id="nameShort" maxlength=4 value="<? if (isset($row["nameShort"])) { print htmlPrep($row["nameShort"]) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var nameShort = new LiveValidation('nameShort');
+							var nameShort=new LiveValidation('nameShort');
 							nameShort.add(Validate.Presence);
 						 </script>
 					</td>
@@ -136,9 +136,9 @@ else {
 						<span style="font-size: 90%"><i>Brief description of how scale is used.</i></span>
 					</td>
 					<td class="right">
-						<input name="usage" id="usage" maxlength=50 value="<? print $row["usage"] ?>" type="text" style="width: 300px">
+						<input name="usage" id="usage" maxlength=50 value="<? if (isset($row["usage"])) { print $row["usage"] ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var usage = new LiveValidation('usage');
+							var usage=new LiveValidation('usage');
 							usage.add(Validate.Presence);
 						 </script>
 					</td>
@@ -202,7 +202,7 @@ else {
 					<td class="right">
 						<input name="gibbonScaleID" id="gibbonScaleID" value="<? print $_GET["gibbonScaleID"] ?>" type="hidden">
 						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="reset" value="Reset"> <input type="submit" value="Submit">
+						<input type="submit" value="Submit">
 					</td>
 				</tr>
 			</table>

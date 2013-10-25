@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_edit_day_edit_class.php")==FALSE) {
 	//Acess denied
@@ -32,7 +32,7 @@ else {
 	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
 	$gibbonTTColumnRowID=$_GET["gibbonTTColumnRowID"] ;
 	
-	if ($gibbonTTDayID=="" OR $gibbonTTID=="" OR $gibbonSchoolYearID=="" OR gibbonTTColumnRowID=="") {
+	if ($gibbonTTDayID=="" OR $gibbonTTID=="" OR $gibbonSchoolYearID=="" OR $gibbonTTColumnRowID=="") {
 		print "<div class='error'>" ;
 			print "You have not specified a timetable, timetable day or school year." ;
 		print "</div>" ;
@@ -61,7 +61,7 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Timetables</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Edit Timetable</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>Edit Timetable Day</a> > </div><div class='trailEnd'>Classes in Period</div>" ;
 			print "</div>" ;
 			
-			$updateReturn = $_GET["updateReturn"] ;
+			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 			$updateReturnMessage ="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
@@ -89,7 +89,7 @@ else {
 				print "</div>" ;
 			} 
 			
-			$deleteReturn = $_GET["deleteReturn"] ;
+			if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 			$deleteReturnMessage ="" ;
 			$class="error" ;
 			if (!($deleteReturn=="")) {
@@ -102,7 +102,7 @@ else {
 				print "</div>" ;
 			} 
 					
-			print "<table cellspacing='0' style='width: 100%'>" ;
+			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Timetable</span><br/>" ;

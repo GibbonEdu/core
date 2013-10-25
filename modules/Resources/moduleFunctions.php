@@ -37,6 +37,7 @@ function getTagCloud($guid, $connection2, $tagCount=50) {
 	
 	try {
 		$sql="SELECT * FROM gibbonResourceTag ORDER BY count DESC LIMIT $tagCount" ;
+		$data=array() ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data); 
 	}
@@ -61,22 +62,22 @@ function getTagCloud($guid, $connection2, $tagCount=50) {
 		
 		$tags=msort($tags, 0, true) ;
 	
-		$min_font_size = 16;
-		$max_font_size = 30;
+		$min_font_size=16;
+		$max_font_size=30;
 		
-		$spread = $max_count - $min_count;
+		$spread=$max_count - $min_count;
 		if($spread == 0) {
-			$spread = 1;
+			$spread=1;
 		}
 		
 		
-		$cloud_html = '';
-		$cloud_tags = array();
+		$cloud_html='';
+		$cloud_tags=array();
 		for ($i=0; $i<count($tags); $i++) {
 			$tag=$tags[$i][0] ;
 			$count=$tags[$i][1] ;
-			$size = $min_font_size + ($count - $min_count) * ($max_font_size - $min_font_size) / $spread;
-			$cloud_tags[] = "<a style='font-size: " . floor($size) . "px' class='tag_cloud' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_view.php&tag=" . str_replace("&", "%26", $tag) . "' title='$count resources'>" . htmlspecialchars(stripslashes($tag)) . "</a>" ;
+			$size=$min_font_size + ($count - $min_count) * ($max_font_size - $min_font_size) / $spread;
+			$cloud_tags[]="<a style='font-size: " . floor($size) . "px' class='tag_cloud' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_view.php&tag=" . str_replace("&", "%26", $tag) . "' title='$count resources'>" . htmlspecialchars(stripslashes($tag)) . "</a>" ;
 		}
 		$output.="<p style='margin-top: 10px; line-height: 220%'>" ;
 		$output.= join("\n", $cloud_tags) . "\n";

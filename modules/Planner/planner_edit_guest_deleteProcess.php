@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -56,14 +56,14 @@ else {
 	
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_edit.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&deleteReturn=fail0$params" ;
+	$URL=$URL . "&deleteReturn=fail0$params" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL = $URL . "&updateReturn=fail0$params" ;
+		$URL=$URL . "&updateReturn=fail0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -72,7 +72,7 @@ else {
 		//Check if school year specified
 		if ($gibbonPlannerEntryID=="" OR $gibbonPlannerEntryGuestID=="" OR ($viewBy=="class" AND $gibbonCourseClassID=="Y")) {
 			//Fail1
-			$URL = $URL . "&deleteReturn=fail1$params" ;
+			$URL=$URL . "&deleteReturn=fail1$params" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -102,14 +102,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL = $URL . "&deleteReturn=fail2$params" ;
+				$URL=$URL . "&deleteReturn=fail2$params" ;
 				header("Location: {$URL}");
 				break ;
 			}
 		
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL = $URL . "&deleteReturn=fail2$params" ;
+				$URL=$URL . "&deleteReturn=fail2$params" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -122,13 +122,13 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL = $URL . "&deleteReturn=fail2$params" ;
+					$URL=$URL . "&deleteReturn=fail2$params" ;
 					header("Location: {$URL}");
 					break ; 
 				}
 				
 				//Success 0
-				$URL = $URL . "&deleteReturn=success0$params" ;
+				$URL=$URL . "&deleteReturn=success0$params" ;
 				header("Location: {$URL}");
 			}
 		}

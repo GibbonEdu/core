@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/family_manage_edit.php")==FALSE) {
 	//Acess denied
@@ -30,7 +30,7 @@ else {
 	print "<div class='trail'>" ;
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage.php'>Manage Families</a> > </div><div class='trailEnd'>Edit Family</div>" ;
 	print "</div>" ;
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -58,7 +58,7 @@ else {
 		print "</div>" ;
 	} 
 	
-	$addReturn = $_GET["addReturn"] ;
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage ="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
@@ -86,7 +86,7 @@ else {
 		print "</div>" ;
 	} 
 	
-	$deleteReturn = $_GET["deleteReturn"] ;
+	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 	$deleteReturnMessage ="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
@@ -189,7 +189,7 @@ else {
 						<td class="right">
 							<input name="nameAddress" id="nameAddress" maxlength=100 value="<? print $row["nameAddress"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var nameAddress = new LiveValidation('nameAddress');
+								var nameAddress=new LiveValidation('nameAddress');
 								nameAddress.add(Validate.Presence);
 							 </script>
 						</td>
@@ -213,7 +213,7 @@ else {
 						</td>
 						<script type="text/javascript">
 							$(function() {
-								var availableTags = [
+								var availableTags=[
 									<?
 									try {
 										$dataAuto=array(); 
@@ -263,7 +263,6 @@ else {
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="Reset" value="Reset">
 							<input type="Submit" value="Submit">
 						</td>
 					</tr>
@@ -402,7 +401,6 @@ else {
 						?>
 						<tr><td colspan="<? print (count($children)+1) ?>" class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="Reset" value="Reset">
 							<input type="Submit" value="Submit">
 						</td></tr>
 						<?
@@ -546,7 +544,7 @@ else {
 								?>
 							</select>
 							<script type="text/javascript">
-								var gibbonPersonID = new LiveValidation('gibbonPersonID');
+								var gibbonPersonID=new LiveValidation('gibbonPersonID');
 								gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							 </script>
 						</td>
@@ -559,7 +557,7 @@ else {
 						<td class="right">
 							<textarea name="comment" id="comment" rows=8 style="width: 300px"></textarea>
 							<script type="text/javascript">
-								var comment = new LiveValidation('comment');
+								var comment=new LiveValidation('comment');
 								comment.add( Validate.Length, { maximum: 1000 } );
 							 </script>
 						</td>
@@ -571,7 +569,6 @@ else {
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="Reset" value="Reset">
 							<input type="Submit" value="Submit">
 						</td>
 					</tr>
@@ -703,7 +700,7 @@ else {
 								print "<option value='Please select...'>Please select...</option>" ;
 								try {
 									$dataSelect=array(); 
-									$sqlSelect="SELECT status, gibbonPersonID, preferredName, surname, otherNames FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName" ;
+									$sqlSelect="SELECT status, gibbonPersonID, preferredName, surname FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
 								}
@@ -713,12 +710,12 @@ else {
 									if ($rowSelect["status"]=="Expected") {
 										$expected=" (Expected)" ;
 									}
-									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Parent", true, true) . " " . htmlPrep($rowSelect["otherNames"]) . "$expected</option>" ;
+									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Parent", true, true) . "$expected</option>" ;
 								}
 								?>				
 							</select>
 							<script type="text/javascript">
-								var gibbonPersonID2 = new LiveValidation('gibbonPersonID2');
+								var gibbonPersonID2=new LiveValidation('gibbonPersonID2');
 								gibbonPersonID2.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 							 </script>
 						</td>
@@ -731,7 +728,7 @@ else {
 						<td class="right">
 							<textarea name="comment2" id="comment2" rows=8 style="width: 300px"></textarea>
 							<script type="text/javascript">
-								var comment2 = new LiveValidation('comment2');
+								var comment2=new LiveValidation('comment2');
 								comment2.add( Validate.Length, { maximum: 1000 } );
 							 </script>
 						</td>
@@ -846,7 +843,6 @@ else {
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="Reset" value="Reset">
 							<input type="Submit" value="Submit">
 						</td>
 					</tr>

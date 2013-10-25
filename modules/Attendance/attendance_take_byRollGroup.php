@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -34,7 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Take Attendance by Roll Group</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -143,7 +143,7 @@ else {
 				<td class="right">
 					<input name="currentDate" id="currentDate" maxlength=10 value="<? print dateConvertBack($currentDate) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var date = new LiveValidation('date');
+						var date=new LiveValidation('date');
 						date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 						date.add(Validate.Presence);
 					 </script>
@@ -388,7 +388,7 @@ else {
 								print "<input type='hidden' name='currentDate' value='$currentDate'>" ;
 								print "<input type='hidden' name='count' value='" . $resultRollGroup->rowCount() . "'>" ;
 								print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
-								print "<input type='reset' value='Reset'> <input type='submit' value='Submit'>" ;
+								print "<input type='submit' value='Submit'>" ;
 							print "</td>" ;
 						print "</tr>" ;
 						print "</table>" ;	

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -53,7 +53,7 @@ else {
 			print "</p>" ;
 		}
 		
-		$updateReturn = $_GET["updateReturn"] ;
+		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 		$updateReturnMessage ="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
@@ -360,7 +360,7 @@ else {
 									$fieldName="title" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 										 print "</script>" ;
 									}
@@ -378,7 +378,7 @@ else {
 									$fieldName="surname" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -396,25 +396,7 @@ else {
 									$fieldName="firstName" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
-										 print "</script>" ;
-									}
-									?>									
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b>Other Names<? if ($required["otherNames"]=="Y") { print " *" ; } ?></b><br/>
-									<span style="font-size: 90%"><i>Any other names shown in ID documents.</i></span>
-								</td>
-								<td class="right">
-									<input name="otherNames" id="otherNames" maxlength=30 value="<? print htmlPrep($row["otherNames"]) ?>" type="text" style="width: 300px">
-									<?
-									$fieldName="otherNames" ; 
-									if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -432,7 +414,7 @@ else {
 									$fieldName="preferredName" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -450,7 +432,7 @@ else {
 									$fieldName="officialName" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -468,7 +450,7 @@ else {
 									$fieldName="nameInCharacters" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -486,14 +468,14 @@ else {
 									$fieldName="dob" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 											print $fieldName . "add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: \"Use dd/mm/yyyy.\" } );" ; 
 										 print "</script>" ;
 									}
 									else {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . "add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: \"Use dd/mm/yyyy.\" } );" ; 
 										 print "</script>" ;
 									}
@@ -529,7 +511,7 @@ else {
 										$fieldName="emergency1Name" ; 
 										if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
-												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 												print $fieldName . ".add(Validate.Presence);" ;
 											 print "</script>" ;
 										}
@@ -555,7 +537,7 @@ else {
 										$fieldName="emergency1Relationship" ; 
 										if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
-												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 												print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 											 print "</script>" ;
 										}
@@ -572,7 +554,7 @@ else {
 										$fieldName="emergency1Number1" ; 
 										if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
-												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 												print $fieldName . ".add(Validate.Presence);" ;
 											 print "</script>" ;
 										}
@@ -589,7 +571,7 @@ else {
 										$fieldName="emergency1Number2" ; 
 										if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
-												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 												print $fieldName . ".add(Validate.Presence);" ;
 											 print "</script>" ;
 										}
@@ -606,7 +588,7 @@ else {
 										$fieldName="emergency2Name" ; 
 										if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
-												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 												print $fieldName . ".add(Validate.Presence);" ;
 											 print "</script>" ;
 										}
@@ -632,7 +614,7 @@ else {
 										$fieldName="emergency2Relationship" ; 
 										if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
-												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 												print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 											 print "</script>" ;
 										}
@@ -649,7 +631,7 @@ else {
 										$fieldName="emergency2Number1" ; 
 										if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
-												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 												print $fieldName . ".add(Validate.Presence);" ;
 											 print "</script>" ;
 										}
@@ -666,7 +648,7 @@ else {
 										$fieldName="emergency2Number2" ; 
 										if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
-												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 												print $fieldName . ".add(Validate.Presence);" ;
 											 print "</script>" ;
 										}
@@ -692,14 +674,14 @@ else {
 									$fieldName="email" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 											print $fieldName . ".add(Validate.Email);" ;
 										 print "</script>" ;
 									}
 									else {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Email);" ;
 										 print "</script>" ;
 									}
@@ -717,14 +699,14 @@ else {
 									$fieldName="email" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 											print $fieldName . ".add(Validate.Email);" ;
 										 print "</script>" ;
 									}
 									else {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Email);" ;
 										 print "</script>" ;
 									}
@@ -796,7 +778,7 @@ else {
 									$fieldName="address1" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -814,7 +796,7 @@ else {
 									$fieldName="address1District" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -822,7 +804,7 @@ else {
 								</td>
 								<script type="text/javascript">
 									$(function() {
-										var availableTags = [
+										var availableTags=[
 											<?
 											try {
 												$dataAuto=array(); 
@@ -868,7 +850,7 @@ else {
 									$fieldName="address1Country" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 										 print "</script>" ;
 									}
@@ -930,7 +912,7 @@ else {
 									$fieldName="address2" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -948,7 +930,7 @@ else {
 									$fieldName="address2District" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -956,7 +938,7 @@ else {
 								</td>
 								<script type="text/javascript">
 									$(function() {
-										var availableTags = [
+										var availableTags=[
 											<?
 											try {
 												$dataAuto=array(); 
@@ -1002,7 +984,7 @@ else {
 									$fieldName="address2Country" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 										 print "</script>" ;
 									}
@@ -1023,7 +1005,7 @@ else {
 											$fieldName="phone" . $i ; 
 											if ($required[$fieldName]=="Y") {
 												print "<script type=\"text/javascript\">" ;
-													print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+													print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 													print $fieldName . ".add(Validate.Presence);" ;
 												 print "</script>" ;
 											}
@@ -1051,7 +1033,7 @@ else {
 											$fieldName="phone" . $i . "CountryCode" ; 
 											if ($required["phone" . $i]=="Y") {
 												print "<script type=\"text/javascript\">" ;
-													print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+													print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 													print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 												 print "</script>" ;
 											}
@@ -1069,7 +1051,7 @@ else {
 											$fieldName="phone" . $i . "Type" ; 
 											if ($required["phone" . $i]=="Y") {
 												print "<script type=\"text/javascript\">" ;
-													print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+													print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 													print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 												 print "</script>" ;
 											}
@@ -1095,7 +1077,7 @@ else {
 									$fieldName="languageFirst" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -1103,7 +1085,7 @@ else {
 								</td>
 								<script type="text/javascript">
 									$(function() {
-										var availableTags = [
+										var availableTags=[
 											<?
 											try {
 												$dataAuto=array(); 
@@ -1131,7 +1113,7 @@ else {
 									$fieldName="languageSecond" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -1139,7 +1121,7 @@ else {
 								</td>
 								<script type="text/javascript">
 									$(function() {
-										var availableTags = [
+										var availableTags=[
 											<?
 											try {
 												$dataAuto=array(); 
@@ -1167,7 +1149,7 @@ else {
 									$fieldName="languageThird" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -1175,7 +1157,7 @@ else {
 								</td>
 								<script type="text/javascript">
 									$(function() {
-										var availableTags = [
+										var availableTags=[
 											<?
 											try {
 												$dataAuto=array(); 
@@ -1221,7 +1203,7 @@ else {
 									$fieldName="countryOfBirth" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 										 print "</script>" ;
 									}
@@ -1250,7 +1232,7 @@ else {
 									$fieldName="ethnicity" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 										 print "</script>" ;
 									}
@@ -1276,7 +1258,7 @@ else {
 									$fieldName="religion" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 										 print "</script>" ;
 									}
@@ -1320,7 +1302,7 @@ else {
 									$fieldName="citizenship1" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 										 print "</script>" ;
 									}
@@ -1337,7 +1319,7 @@ else {
 									$fieldName="citizenship1Passport" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -1381,7 +1363,7 @@ else {
 									$fieldName="citizenship2" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 										 print "</script>" ;
 									}
@@ -1398,7 +1380,7 @@ else {
 									$fieldName="citizenship2Passport" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -1426,7 +1408,7 @@ else {
 									$fieldName="nationalIDCardNumber" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -1456,7 +1438,7 @@ else {
 										$fieldName="residencyStatus" ; 
 										if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
-												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 												print $fieldName . ".add(Validate.Presence);" ;
 											 print "</script>" ;
 										}	
@@ -1476,7 +1458,7 @@ else {
 										$fieldName="residencyStatus" ; 
 										if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
-												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 												print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 											 print "</script>" ;
 										}
@@ -1503,7 +1485,7 @@ else {
 								<td class="right">
 									<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<? print dateConvertBack($row["visaExpiryDate"]) ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
-										var visaExpiryDate = new LiveValidation('visaExpiryDate');
+										var visaExpiryDate=new LiveValidation('visaExpiryDate');
 										visaExpiryDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 									 	<?
 									 	if ($required["visaExpiryDate"]=="Y") {
@@ -1537,7 +1519,7 @@ else {
 										$fieldName="profession" ; 
 										if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
-												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 												print $fieldName . ".add(Validate.Presence);" ;
 											 print "</script>" ;
 										}
@@ -1554,7 +1536,7 @@ else {
 										$fieldName="employer" ; 
 										if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
-												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 												print $fieldName . ".add(Validate.Presence);" ;
 											 print "</script>" ;
 										}
@@ -1571,7 +1553,7 @@ else {
 										$fieldName="jobTitle" ; 
 										if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
-												print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+												print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 												print $fieldName . ".add(Validate.Presence);" ;
 											 print "</script>" ;
 										}
@@ -1597,7 +1579,7 @@ else {
 									$fieldName="vehicleRegistration" ; 
 									if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . " = new LiveValidation('" . $fieldName . "');" ;
+											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
 										 print "</script>" ;
 									}
@@ -1656,7 +1638,7 @@ else {
 									}
 									?>
 									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-									<input type="reset" value="Reset"> <input type="submit" value="Submit">
+									<input type="submit" value="Submit">
 								</td>
 							</tr>
 						</table>

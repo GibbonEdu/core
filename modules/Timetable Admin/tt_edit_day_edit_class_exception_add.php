@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php")==FALSE) {
 	//Acess denied
@@ -85,7 +85,7 @@ else {
 				print "</div>" ;
 				
 				//Proceed!
-				$updateReturn = $_GET["updateReturn"] ;
+				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 				$updateReturnMessage ="" ;
 				$class="error" ;
 				if (!($updateReturn=="")) {
@@ -137,7 +137,7 @@ else {
 						<tr>
 							<td class="right" colspan=2>
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="reset" value="Reset"> <input type="submit" value="Submit">
+								<input type="submit" value="Submit">
 							</td>
 						</tr>
 					</table>

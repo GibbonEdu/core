@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -38,7 +38,10 @@ else {
 	print "Choose Roll Group" ;
 	print "</h2>" ;
 	
-	$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
+	$gibbonRollGroupID="" ;
+	if (isset($_GET["gibbonRollGroupID"])) {
+		$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
+	}
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -111,42 +114,40 @@ else {
 			$count=0;
 			$rowNum="odd" ;
 			while ($row=$result->fetch()) {
-				if (is_null($log[$row["gibbonRollGroupID"]])) {
-					if ($count%2==0) {
-						$rowNum="even" ;
-					}
-					else {
-						$rowNum="odd" ;
-					}
-					$count++ ;
-					
-					//COLOR ROW BY STATUS!
-					print "<tr class=$rowNum>" ;
-						print "<td>" ;
-							print $row["name"] ;
-						print "</td>" ;
-						print "<td>" ;
-							print "<a href='index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID=" . $row["gibbonPersonID"] . "'>" . formatName("", $row["preferredName"], $row["surname"], "Student", true) . "</a>" ;
-						print "</td>" ;
-						print "<td>" ;
-							try {
-								$dataCount=array("gibbonPersonID"=>$row["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-								$sqlCount="SELECT * FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) WHERE gibbonPersonID=:gibbonPersonID AND role='Student' AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
-								$resultCount=$connection2->prepare($sqlCount);
-								$resultCount->execute($dataCount);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							if ($resultCount->rowCount()>=0) {
-								print $resultCount->rowCount();
-							}
-							else {
-								print "<i>NA</i>" ;
-							}
-						print "</td>" ;
-					print "</tr>" ;
+				if ($count%2==0) {
+					$rowNum="even" ;
 				}
+				else {
+					$rowNum="odd" ;
+				}
+				$count++ ;
+				
+				//COLOR ROW BY STATUS!
+				print "<tr class=$rowNum>" ;
+					print "<td>" ;
+						print $row["name"] ;
+					print "</td>" ;
+					print "<td>" ;
+						print "<a href='index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID=" . $row["gibbonPersonID"] . "'>" . formatName("", $row["preferredName"], $row["surname"], "Student", true) . "</a>" ;
+					print "</td>" ;
+					print "<td>" ;
+						try {
+							$dataCount=array("gibbonPersonID"=>$row["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+							$sqlCount="SELECT * FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) WHERE gibbonPersonID=:gibbonPersonID AND role='Student' AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
+							$resultCount=$connection2->prepare($sqlCount);
+							$resultCount->execute($dataCount);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+						if ($resultCount->rowCount()>=0) {
+							print $resultCount->rowCount();
+						}
+						else {
+							print "<i>NA</i>" ;
+						}
+					print "</td>" ;
+				print "</tr>" ;
 			}
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;

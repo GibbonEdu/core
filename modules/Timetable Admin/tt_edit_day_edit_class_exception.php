@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_edit_day_edit_class_exception.php")==FALSE) {
 	//Acess denied
@@ -59,7 +59,6 @@ else {
 			$row=$result->fetch() ;
 			$course=$row["course"] ;
 			$class=$row["class"] ;
-			$gibbonSpaceID=$row["gibbonSpaceID"] ;
 			$gibbonTTDayRowClassID=$row["gibbonTTDayRowClassID"] ;
 			try {
 				$data=array("gibbonTTDayID"=>$gibbonTTDayID, "gibbonTTID"=>$gibbonTTID, "gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonTTColumnRowID"=>$gibbonTTColumnRowID); 
@@ -83,7 +82,7 @@ else {
 				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > ... > ... > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Edit Timetable</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>Edit Timetable Day</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID'>Classes in Period</a> > </div><div class='trailEnd'>Class List Exception</div>" ; 
 				print "</div>" ;
 				
-				$updateReturn = $_GET["updateReturn"] ;
+				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 				$updateReturnMessage ="" ;
 				$class="error" ;
 				if (!($updateReturn=="")) {
@@ -108,7 +107,7 @@ else {
 					print "</div>" ;
 				} 
 				
-				$deleteReturn = $_GET["deleteReturn"] ;
+				if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 				$deleteReturnMessage ="" ;
 				$class="error" ;
 				if (!($deleteReturn=="")) {

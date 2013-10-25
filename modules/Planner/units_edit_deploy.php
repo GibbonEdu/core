@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -53,7 +53,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>Edit Unit</a> > </div><div class='trailEnd'>Deploy Working Copy</div>" ;
 		print "</div>" ;
 		
-		$updateReturn = $_GET["updateReturn"] ;
+		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 		$updateReturnMessage ="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
@@ -496,7 +496,7 @@ else {
 										print "<tr>" ;
 											print "<td class='right' colspan=7>" ;
 												print "<input name='count' id='count' value='$count' type='hidden'>" ;
-												print "<input type='reset' value='Reset'> <input id='submit' type='submit' value='Submit'>" ;
+												print "<input id='submit' type='submit' value='Submit'>" ;
 											print "</td>" ;
 										print "</tr>" ;
 									print "</table>" ;
@@ -685,7 +685,7 @@ else {
 											<td>
 												<?
 												print "<div style='width: 100%; margin-bottom: 20px; text-align: right'>" ;
-													print "<input type='reset' value='Reset'> <input type='submit' value='Submit'>" ;
+													print "<input type='submit' value='Submit'>" ;
 												print "</div>" ;
 												?>
 											</td>
@@ -721,8 +721,8 @@ else {
 											connectWith: "<? print substr($sortableList,0, -2) ?>",
 											items: "div.blockOuter",
 											receive: function(event,ui) {
-												var sortid = $(newItem).attr("id", 'receive'+receiveCount) ;
-												var receiveid = 'receive'+receiveCount ;
+												var sortid=$(newItem).attr("id", 'receive'+receiveCount) ;
+												var receiveid='receive'+receiveCount ;
 												$('#' + receiveid + ' .delete').show() ;
 												$('#' + receiveid + ' .delete').click(function() {
 													$('#' + receiveid).fadeOut(600, function(){ 
@@ -732,7 +732,7 @@ else {
 												receiveCount++ ;
 											},
 											beforeStop: function (event, ui) {
-											 newItem = ui.item;
+											 newItem=ui.item;
 											}
 										});
 									<? } ?>

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/daysOfWeek_manage.php")==FALSE) {
 	//Acess denied
@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Days of the Week</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -84,7 +84,7 @@ else {
 				?>
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><? print $row["name"] . " (" . $row[nameShort] . ")" ?></h3>
+						<h3><? print $row["name"] . " (" . $row["nameShort"] . ")" ?></h3>
 					</td>
 				</tr>
 				<input name="<?print $row["name"]?>sequenceNumber" id="<?print $row["name"]?>sequenceNumber" maxlength=2 value="<? print $row["sequenceNumber"] ?>" type="hidden" style="width: 300px">
@@ -289,7 +289,7 @@ else {
 					</td>
 					<td class="right">
 						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="reset" value="Reset"> <input type="submit" value="Submit">
+						<input type="submit" value="Submit">
 					</td>
 				</tr>
 			</table>

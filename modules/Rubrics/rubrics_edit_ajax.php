@@ -23,7 +23,7 @@ include "../../config.php" ;
 include "./moduleFunctions.php" ;
 
 //Open Database connection
-if (!($connection = mysql_connect($databaseServer, $databaseUsername, $databasePassword))) {
+if (!($connection=mysql_connect($databaseServer, $databaseUsername, $databasePassword))) {
 	showError() ;
 }
 
@@ -34,7 +34,7 @@ if (!(mysql_select_db($databaseName, $connection))) {
 
 mysql_set_charset ("utf8") ;
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);

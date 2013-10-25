@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -39,19 +39,19 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_add.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&addReturn=fail0" ;
+	$URL=$URL . "&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL = $URL . "&updateReturn=fail0$params" ;
+		$URL=$URL . "&updateReturn=fail0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if (empty($_POST)) {
-			$URL = $URL . "&addReturn=fail6" ;
+			$URL=$URL . "&addReturn=fail6" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -212,7 +212,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL = $URL . "&addReturn=fail2$params" ;
+				$URL=$URL . "&addReturn=fail2$params" ;
 				header("Location: {$URL}");
 				break ;
 			}	
@@ -224,7 +224,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL = $URL . "&addReturn=fail2$params" ;
+				$URL=$URL . "&addReturn=fail2$params" ;
 				header("Location: {$URL}");
 				break ;
 			}	
@@ -234,7 +234,7 @@ else {
 			
 			if ($viewBy=="" OR $gibbonCourseClassID=="" OR $date=="" OR $timeStart=="" OR $timeEnd=="" OR $name=="" OR $summary=="" OR $homework=="" OR $viewableParents=="" OR $viewableStudents=="" OR ($homework=="Y" AND ($homeworkDetails=="" OR $homeworkDueDate==""))) {
 				//Fail 3
-				$URL = $URL . "&addReturn=fail3$params" ;
+				$URL=$URL . "&addReturn=fail3$params" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -299,7 +299,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL = $URL . "&addReturn=fail2$params" ;
+					$URL=$URL . "&addReturn=fail2$params" ;
 					header("Location: {$URL}");
 					break ;
 				}
@@ -313,7 +313,7 @@ else {
 				
 				if ($partialFail==TRUE) {
 					//Fail 5
-					$URL = $URL . "&addReturn=fail5$params" ;
+					$URL=$URL . "&addReturn=fail5$params" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -325,7 +325,7 @@ else {
 					}
 					else {
 						//Success 0
-						$URL = $URL . "&addReturn=success0$params" ;
+						$URL=$URL . "&addReturn=success0$params" ;
 						header("Location: {$URL}");
 					}
 				}

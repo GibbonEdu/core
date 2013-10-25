@@ -54,7 +54,7 @@ class TCPDF_FILTERS {
 	 * Define a list of available filter decoders.
 	 * @private static
 	 */
-	private static $available_filters = array('ASCIIHexDecode', 'ASCII85Decode', 'LZWDecode', 'FlateDecode', 'RunLengthDecode');
+	private static $available_filters=array('ASCIIHexDecode', 'ASCII85Decode', 'LZWDecode', 'FlateDecode', 'RunLengthDecode');
 
 // -----------------------------------------------------------------------------
 
@@ -149,23 +149,23 @@ class TCPDF_FILTERS {
 	 */
 	public static function decodeFilterASCIIHexDecode($data) {
 		// intialize string to return
-		$decoded = '';
+		$decoded='';
 		// all white-space characters shall be ignored
-		$data = preg_replace('/[\s]/', '', $data);
+		$data=preg_replace('/[\s]/', '', $data);
 		// check for EOD character: GREATER-THAN SIGN (3Eh)
-		$eod = strpos($data, '>');
+		$eod=strpos($data, '>');
 		if ($eod !== false) {
 			// remove EOD and extra data (if any)
-			$data = substr($data, 0, $eod);
-			$eod = true;
+			$data=substr($data, 0, $eod);
+			$eod=true;
 		}
 		// get data length
-		$data_length = strlen($data);
+		$data_length=strlen($data);
 		if (($data_length % 2) != 0) {
 			// odd number of hexadecimal digits
 			if ($eod) {
 				// EOD shall behave as if a 0 (zero) followed the last digit
-				$data = substr($data, 0, -1).'0'.substr($data, -1);
+				$data=substr($data, 0, -1).'0'.substr($data, -1);
 			} else {
 				self::Error('decodeFilterASCIIHexDecode: invalid code');
 			}
@@ -175,7 +175,7 @@ class TCPDF_FILTERS {
 			self::Error('decodeFilterASCIIHexDecode: invalid code');
 		}
 		// get one byte of binary data for each pair of ASCII hexadecimal digits
-		$decoded = pack('H*', $data);
+		$decoded=pack('H*', $data);
 		return $decoded;
 	}
 
@@ -189,37 +189,37 @@ class TCPDF_FILTERS {
 	 */
 	public static function decodeFilterASCII85Decode($data) {
 		// intialize string to return
-		$decoded = '';
+		$decoded='';
 		// all white-space characters shall be ignored
-		$data = preg_replace('/[\s]/', '', $data);
+		$data=preg_replace('/[\s]/', '', $data);
 		// remove start sequence 2-character sequence <~ (3Ch)(7Eh)
 		if (strpos($data, '<~') !== false) {
 			// remove EOD and extra data (if any)
-			$data = substr($data, 2);
+			$data=substr($data, 2);
 		}
 		// check for EOD: 2-character sequence ~> (7Eh)(3Eh)
-		$eod = strpos($data, '~>');
+		$eod=strpos($data, '~>');
 		if ($eod !== false) {
 			// remove EOD and extra data (if any)
-			$data = substr($data, 0, $eod);
+			$data=substr($data, 0, $eod);
 		}
 		// data length
-		$data_length = strlen($data);
+		$data_length=strlen($data);
 		// check for invalid characters
 		if (preg_match('/[^\x21-\x75,\x74]/', $data) > 0) {
 			self::Error('decodeFilterASCII85Decode: invalid code');
 		}
 		// z sequence
-		$zseq = chr(0).chr(0).chr(0).chr(0);
+		$zseq=chr(0).chr(0).chr(0).chr(0);
 		// position inside a group of 4 bytes (0-3)
-		$group_pos = 0;
-		$tuple = 0;
-		$pow85 = array((85*85*85*85), (85*85*85), (85*85), 85, 1);
-		$last_pos = ($data_length - 1);
+		$group_pos=0;
+		$tuple=0;
+		$pow85=array((85*85*85*85), (85*85*85), (85*85), 85, 1);
+		$last_pos=($data_length - 1);
 		// for each byte
-		for ($i = 0; $i < $data_length; ++$i) {
+		for ($i=0; $i < $data_length; ++$i) {
 			// get char value
-			$char = ord($data[$i]);
+			$char=ord($data[$i]);
 			if ($char == 122) { // 'z'
 				if ($group_pos == 0) {
 					$decoded .= $zseq;
@@ -231,8 +231,8 @@ class TCPDF_FILTERS {
 				$tuple += (($char - 33) * $pow85[$group_pos]);
 				if ($group_pos == 4) {
 					$decoded .= chr($tuple >> 24).chr($tuple >> 16).chr($tuple >> 8).chr($tuple);
-					$tuple = 0;
-					$group_pos = 0;
+					$tuple=0;
+					$group_pos=0;
 				} else {
 					++$group_pos;
 				}
@@ -273,71 +273,71 @@ class TCPDF_FILTERS {
 	 */
 	public static function decodeFilterLZWDecode($data) {
 		// intialize string to return
-		$decoded = '';
+		$decoded='';
 		// data length
-		$data_length = strlen($data);
+		$data_length=strlen($data);
 		// convert string to binary string
-		$bitstring = '';
-		for ($i = 0; $i < $data_length; ++$i) {
+		$bitstring='';
+		for ($i=0; $i < $data_length; ++$i) {
 			$bitstring .= sprintf('%08b', ord($data{$i}));
 		}
 		// get the number of bits
-		$data_length = strlen($bitstring);
+		$data_length=strlen($bitstring);
 		// initialize code length in bits
-		$bitlen = 9;
+		$bitlen=9;
 		// initialize dictionary index
-		$dix = 258;
+		$dix=258;
 		// initialize the dictionary (with the first 256 entries).
-		$dictionary = array();
-		for ($i = 0; $i < 256; ++$i) {
-			$dictionary[$i] = chr($i);
+		$dictionary=array();
+		for ($i=0; $i < 256; ++$i) {
+			$dictionary[$i]=chr($i);
 		}
 		// previous val
-		$prev_index = 0;
+		$prev_index=0;
 		// while we encounter EOD marker (257), read code_length bits
-		while (($data_length > 0) AND (($index = bindec(substr($bitstring, 0, $bitlen))) != 257)) {
+		while (($data_length > 0) AND (($index=bindec(substr($bitstring, 0, $bitlen))) != 257)) {
 			// remove read bits from string
-			$bitstring = substr($bitstring, $bitlen);
+			$bitstring=substr($bitstring, $bitlen);
 			// update number of bits
 			$data_length -= $bitlen;
 			if ($index == 256) { // clear-table marker
 				// reset code length in bits
-				$bitlen = 9;
+				$bitlen=9;
 				// reset dictionary index
-				$dix = 258;
-				$prev_index = 256;
+				$dix=258;
+				$prev_index=256;
 				// reset the dictionary (with the first 256 entries).
-				$dictionary = array();
-				for ($i = 0; $i < 256; ++$i) {
-					$dictionary[$i] = chr($i);
+				$dictionary=array();
+				for ($i=0; $i < 256; ++$i) {
+					$dictionary[$i]=chr($i);
 				}
 			} elseif ($prev_index == 256) {
 				// first entry
 				$decoded .= $dictionary[$index];
-				$prev_index = $index;
+				$prev_index=$index;
 			} else {
 				// check if index exist in the dictionary
 				if ($index < $dix) {
 					// index exist on dictionary
 					$decoded .= $dictionary[$index];
-					$dic_val = $dictionary[$prev_index].$dictionary[$index]{0};
+					$dic_val=$dictionary[$prev_index].$dictionary[$index]{0};
 					// store current index
-					$prev_index = $index;
+					$prev_index=$index;
 				} else {
 					// index do not exist on dictionary
-					$dic_val = $dictionary[$prev_index].$dictionary[$prev_index]{0};
+					$dic_val=$dictionary[$prev_index].$dictionary[$prev_index]{0};
 					$decoded .= $dic_val;
 				}
 				// update dictionary
-				$dictionary[$dix] = $dic_val;
+				$dictionary[$dix]=$dic_val;
 				++$dix;
 				// change bit length by case
 				if ($dix == 2047) {
-					$bitlen = 12;
+					$bitlen=12;
 				} elseif ($dix == 1023) {
-					$bitlen = 11;
+					$bitlen=11;
 				} elseif ($dix == 511) {
-					$bitlen = 10;
+					$bitlen=10;
 				}
 			}
 		}
@@ -354,7 +354,7 @@ class TCPDF_FILTERS {
 	 */
 	public static function decodeFilterFlateDecode($data) {
 		// intialize string to return
-		$decoded = @gzuncompress($data);
+		$decoded=@gzuncompress($data);
 		if ($decoded === false) {
 			self::Error('decodeFilterFlateDecode: invalid code');
 		}
@@ -370,13 +370,13 @@ class TCPDF_FILTERS {
 	 */
 	public static function decodeFilterRunLengthDecode($data) {
 		// intialize string to return
-		$decoded = '';
+		$decoded='';
 		// data length
-		$data_length = strlen($data);
-		$i = 0;
+		$data_length=strlen($data);
+		$i=0;
 		while($i < $data_length) {
 			// get current byte value
-			$byte = ord($data{$i});
+			$byte=ord($data{$i});
 			if ($byte == 128) {
 				// a length value of 128 denote EOD
 				break;

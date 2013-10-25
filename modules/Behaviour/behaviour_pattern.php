@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -33,7 +33,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Find Behaviour Patterns</div>" ;
 	print "</div>" ;
 	
-	$deleteReturn = $_GET["deleteReturn"] ;
+	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 	$deleteReturnMessage ="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
@@ -123,7 +123,7 @@ else {
 				<td class="right">
 					<input name="fromDate" id="fromDate" maxlength=10 value="<? if ($fromDate!="") { print $fromDate ; } ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var fromDate = new LiveValidation('fromDate');
+						var fromDate=new LiveValidation('fromDate');
 						fromDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					 </script>
 					 <script type="text/javascript">
@@ -229,7 +229,7 @@ else {
 	print "</p>" ;
 	
 	//Set pagination variable
-	$page=$_GET["page"] ;
+	$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
 	if ((!is_numeric($page)) OR $page<1) {
 		$page=1 ;
 	}

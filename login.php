@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include "functions.php" ;
 include "config.php" ;
 
-session_start() ;
+@session_start() ;
 
 //New PDO DB connection
 try {
@@ -44,17 +44,17 @@ $_SESSION[$guid]["pageLoads"]=NULL ;
 $URL="./index.php" ;
 
 //Get and store POST variables from calling page
-$username = $_POST["username"] ;
-$password = $_POST["password"] ; 
+$username=$_POST["username"] ;
+$password=$_POST["password"] ; 
 
 if (($username=="") OR ($password=="")) {
-	$URL = $URL . "?loginReturn=fail0b" ;
+	$URL=$URL . "?loginReturn=fail0b" ;
 	header("Location: {$URL}");
 }
 //VALIDATE LOGIN INFORMATION
 else {			
 	try {
-		$data = array("username"=>$username); 
+		$data=array("username"=>$username); 
 		$sql="SELECT * FROM gibbonPerson WHERE ((username=:username) AND (status='Full') AND (canLogin='Y'))" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
@@ -66,14 +66,14 @@ else {
 		
 	//Test to see if username exists
 	if (!($row["username"]==$username)) {
-		$URL = $URL . "?loginReturn=fail1" ;
+		$URL=$URL . "?loginReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Check fail count, reject & alert if 3rd time
 		if ($row["failCount"]>=3) {
 			try {
-				$data = array("lastFailIPAddress" => $_SERVER["REMOTE_ADDR"], "lastFailTimestamp" => date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
+				$data=array("lastFailIPAddress" => $_SERVER["REMOTE_ADDR"], "lastFailTimestamp" => date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
 				$sqlSecure="UPDATE gibbonPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)";
 				$resultSecure=$connection2->prepare($sqlSecure);
 				$resultSecure->execute($data); 
@@ -82,13 +82,13 @@ else {
 			
 			if ($row["failCount"]==3) {
 				$to=getSettingByScope($connection2, "System", "organisationAdministratorEmail") ;
-				$subject = $_SESSION[$guid]["organisationNameShort"] . " Failed Login Notification";
-				$body = "Please note that someone has failed to login to account \"$username\" 3 times in a row.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-				$headers = "From: " . $to ;
+				$subject=$_SESSION[$guid]["organisationNameShort"] . " Failed Login Notification";
+				$body="Please note that someone has failed to login to account \"$username\" 3 times in a row.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
+				$headers="From: " . $to ;
 				mail($to, $subject, $body, $headers) ;
 			}
 			
-			$URL = $URL . "?loginReturn=fail6" ;
+			$URL=$URL . "?loginReturn=fail6" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -111,7 +111,7 @@ else {
 					$passwordStrong=hash("sha256", $salt.$password) ;
 				
 					try {
-						$dataSecure = array("passwordStrong" => $passwordStrong, "passwordStrongSalt" => $salt, "username" => $username ); 
+						$dataSecure=array("passwordStrong" => $passwordStrong, "passwordStrongSalt" => $salt, "username" => $username ); 
 						$sqlSecure="UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt WHERE (username=:username)";
 						$resultSecure=$connection2->prepare($sqlSecure);
 						$resultSecure->execute($dataSecure); 
@@ -126,7 +126,7 @@ else {
 			if ($passwordTest!=true) {
 				//FAIL PASSWORD
 				try {
-					$dataSecure = array("lastFailIPAddress" => $_SERVER["REMOTE_ADDR"], "lastFailTimestamp" => date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
+					$dataSecure=array("lastFailIPAddress" => $_SERVER["REMOTE_ADDR"], "lastFailTimestamp" => date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
 					$sqlSecure="UPDATE gibbonPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)";
 					$resultSecure=$connection2->prepare($sqlSecure);
 					$resultSecure->execute($dataSecure); 
@@ -135,13 +135,13 @@ else {
 					$passwordTest=false ; 
 				}
 				
-				$URL = $URL . "?loginReturn=fail1" ;
+				$URL=$URL . "?loginReturn=fail1" ;
 				header("Location: {$URL}");
 			}
 			else {			
 				if ($row["gibbonRoleIDPrimary"]=="" OR count(getRoleList($row["gibbonRoleIDAll"], $connection2))==0) {
 					//FAILED TO SET ROLES
-					$URL = $URL . "?loginReturn=fail2" ;
+					$URL=$URL . "?loginReturn=fail2" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -162,7 +162,7 @@ else {
 						}
 						//Else get schoolYearID
 						else {
-							$rowYear = $resultYear->fetch() ;
+							$rowYear=$resultYear->fetch() ;
 							$_SESSION[$guid]["gibbonSchoolYearID"]=$rowYear["gibbonSchoolYearID"] ;
 							$_SESSION[$guid]["gibbonSchoolYearName"]=$rowYear["name"] ;
 							$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"]=$rowYear["sequenceNumber"] ;
@@ -176,10 +176,8 @@ else {
 					$_SESSION[$guid]["passwordStrongSalt"]=$salt ;
 					$_SESSION[$guid]["passwordForceReset"]=$row["passwordForceReset"] ;
 					$_SESSION[$guid]["gibbonPersonID"]=$row["gibbonPersonID"] ;
-					$_SESSION[$guid]["gibbonPersonAcademicYearID"]=$row["gibbonPersonAcademicYearID"] ;
 					$_SESSION[$guid]["surname"]=$row["surname"] ;
 					$_SESSION[$guid]["firstName"]=$row["firstName"] ;
-					$_SESSION[$guid]["secondName"]=$row["secondName"] ;
 					$_SESSION[$guid]["preferredName"]=$row["preferredName"] ;
 					$_SESSION[$guid]["officialName"]=$row["officialName"] ;
 					$_SESSION[$guid]["email"]=$row["email"] ;
@@ -202,7 +200,7 @@ else {
 				
 					//Make best effort to set IP address and other details, but no need to error check etc.
 					try {
-						$data = array( "lastIPAddress" => $_SERVER["REMOTE_ADDR"], "lastTimestamp" => date("Y-m-d H:i:s"), "failCount"=>0, "username" => $username ); 
+						$data=array( "lastIPAddress" => $_SERVER["REMOTE_ADDR"], "lastTimestamp" => date("Y-m-d H:i:s"), "failCount"=>0, "username" => $username ); 
 						$sql="UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data); 
@@ -210,11 +208,11 @@ else {
 					catch(PDOException $e) { }
 				
 				
-					if ($_GET["q"]!="") {
-						$URL = "./index.php?q=" . $_GET["q"] ;
+					if (isset($_GET["q"])) {
+						$URL="./index.php?q=" . $_GET["q"] ;
 					}
 					else {
-						$URL = "./index.php" ;
+						$URL="./index.php" ;
 					}		
 					header("Location: {$URL}");		
 				}

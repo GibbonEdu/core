@@ -32,7 +32,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 if (isset($_SESSION[$guid]["pageLoads"])) {
 	$_SESSION[$guid]["pageLoads"]++ ;
 }
@@ -41,27 +41,40 @@ else {
 }
 $_SESSION[$guid]["sidebarExtra"]="" ;
 $_SESSION[$guid]["sidebarExtraPosition"]="" ;
-$_SESSION[$guid]["address"]=$_GET["q"] ;
+if (isset($_GET["q"])) {
+	$_SESSION[$guid]["address"]=$_GET["q"] ;
+}
+else {
+	$_SESSION[$guid]["address"]="" ;
+}
 $_SESSION[$guid]["module"]=getModuleName($_SESSION[$guid]["address"]) ;
 $_SESSION[$guid]["action"]=getActionName($_SESSION[$guid]["address"]) ;
 
 //Check to see if system settings are set from databases
-if ($_SESSION[$guid]["systemSettingsSet"]==FALSE) {
+if (@$_SESSION[$guid]["systemSettingsSet"]==FALSE) {
 	getSystemSettings($guid, $connection2) ;
 }
 
 //Check for force password reset flag
-if ($_SESSION[$guid]["passwordForceReset"]=="Y" AND $_GET["q"]!="preferences.php") {
-	$URL = $_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php" ;
-	$URL = $URL. "&forceReset=Y" ;
-	header("Location: {$URL}") ;
+if (isset($_SESSION[$guid]["passwordForceReset"])) {
+	if ($_SESSION[$guid]["passwordForceReset"]=="Y" AND $_GET["q"]!="preferences.php") {
+		$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php" ;
+		$URL=$URL. "&forceReset=Y" ;
+		header("Location: {$URL}") ;
+	}
 }
 
+
 //Set sidebar value (from the entrySidebar field in gibbonAction and from $_GET variable)
-$sidebar=$_GET["sidebar"] ;
+if (isset($_GET["sidebar"])) {
+	$sidebar=$_GET["sidebar"] ;
+}
+else {
+	$sidebar="" ;
+}
 if ($_SESSION[$guid]["address"]!="") {
 	try {
-		$dataSidebar = array("action"=>"%" . $_SESSION[$guid]["action"] . "%", "name"=>$_SESSION[$guid]["module"]); 
+		$dataSidebar=array("action"=>"%" . $_SESSION[$guid]["action"] . "%", "name"=>$_SESSION[$guid]["module"]); 
 		$sqlSidebar="SELECT gibbonAction.name FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonAction.URLList LIKE :action AND entrySidebar='N' AND gibbonModule.name=:name" ;
 		$resultSidebar=$connection2->prepare($sqlSidebar);
 		$resultSidebar->execute($dataSidebar); 
@@ -101,18 +114,18 @@ else {
 			<link rel="stylesheet" href="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/css/blitzer/jquery-ui.css" type="text/css" media="screen" />
 			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/chained/jquery.chained.mini.js"></script>
 			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/thickbox-compressed.js"></script>
-			<script type="text/javascript"> var tb_pathToImage = "<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/loadingAnimation.gif"</script>
+			<script type="text/javascript"> var tb_pathToImage="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/loadingAnimation.gif"</script>
 			<link rel="stylesheet" href="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/thickbox.css" type="text/css" media="screen" />
 		
 			<?
 			//Set theme
-			if ($_SESSION[$guid]["pageLoads"]%$caching==0 OR $_SESSION[$guid]["themeCSS"]=="" OR $_SESSION[$guid]["themeJS"]=="" OR $_SESSION[$guid]["gibbonThemeID"]=="" OR $_SESSION[$guid]["gibbonThemeName"]=="") {
+			if ($_SESSION[$guid]["pageLoads"]%$caching==0 OR $_SESSION[$guid]["themeCSS"]=="" OR isset($_SESSION[$guid]["themeJS"])==FALSE OR $_SESSION[$guid]["gibbonThemeID"]=="" OR $_SESSION[$guid]["gibbonThemeName"]=="") {
 				$_SESSION[$guid]["themeCSS"]="<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />" ;
-				$_SESSION[$guid]["$themeJS"]="<script type='text/javascript' src='./themes/Default/js/common.js'></script>" ;
+				$_SESSION[$guid]["themeJS"]="<script type='text/javascript' src='./themes/Default/js/common.js'></script>" ;
 				$_SESSION[$guid]["gibbonThemeID"]="001" ;
 				$_SESSION[$guid]["gibbonThemeName"]="Default" ;
 				try {
-					if ($_SESSION[$guid]["gibbonThemeIDPersonal"]!=NULL) {
+					if (isset($_SESSION[$guid]["gibbonThemeIDPersonal"])) {
 						$dataTheme=array("gibbonThemeIDPersonal"=>$_SESSION[$guid]["gibbonThemeIDPersonal"]); 
 						$sqlTheme="SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeIDPersonal" ;
 					}
@@ -125,7 +138,7 @@ else {
 					if ($resultTheme->rowCount()==1) {
 						$rowTheme=$resultTheme->fetch() ;
 						$_SESSION[$guid]["themeCSS"]="<link rel='stylesheet' type='text/css' href='./themes/" . $rowTheme["name"] . "/css/main.css' />" ;
-						$_SESSION[$guid]["$themeJS"]="<script type='text/javascript' src='./themes/" . $rowTheme["name"] . "/js/common.js'></script>" ;
+						$_SESSION[$guid]["themeJS"]="<script type='text/javascript' src='./themes/" . $rowTheme["name"] . "/js/common.js'></script>" ;
 						$_SESSION[$guid]["gibbonThemeID"]=$rowTheme["gibbonThemeID"] ;
 						$_SESSION[$guid]["gibbonThemeName"]=$rowTheme["name"] ;
 					}
@@ -138,10 +151,10 @@ else {
 			}
 			
 			print $_SESSION[$guid]["themeCSS"] ;
-			print $_SESSION[$guid]["$themeJS"] ;
+			print $_SESSION[$guid]["themeJS"] ;
 			
 			//Set module CSS & JS
-			if ($_GET["q"]!="") {
+			if (isset($_GET["q"])) {
 				$moduleCSS="<link rel='stylesheet' type='text/css' href='./modules/" . $_SESSION[$guid]["module"] . "/css/module.css' />" ;
 				$moduleJS="<script type='text/javascript' src='./modules/" . $_SESSION[$guid]["module"] . "/js/module.js'></script>" ;
 				print $moduleCSS ;
@@ -149,19 +162,21 @@ else {
 			}
 			
 			//Set personalised background, if permitted
-			if ($personalBackground=getSettingByScope($connection2, "User Admin", "personalBackground")=="Y" AND $_SESSION[$guid]["personalBackground"]!="") {
-				print "<style type=\"text/css\">" ;
-					print "body {" ;
-						print "background: url(\"" . $_SESSION[$guid]["personalBackground"] . "\") repeat scroll center top #fff!important;" ;
-					print "}" ;
-				print "</style>" ;
+			if ($personalBackground=getSettingByScope($connection2, "User Admin", "personalBackground")=="Y" AND isset($_SESSION[$guid]["personalBackground"])) {
+				if ($_SESSION[$guid]["personalBackground"]!="") {
+					print "<style type=\"text/css\">" ;
+						print "body {" ;
+							print "background: url(\"" . $_SESSION[$guid]["personalBackground"] . "\") repeat scroll center top #fff!important;" ;
+						print "}" ;
+					print "</style>" ;
+				}
 			}
 	
 			//Set timezone from session variable
 			date_default_timezone_set($_SESSION[$guid]["timezone"]);
 			
 			//Initialise tinymce
-			$initArray = array (
+			$initArray=array (
 				'script_url' => $_SESSION[$guid]["absoluteURL"] . "/lib/tiny_mce/tiny_mce.js",
 				'mode' => 'textareas',
 				'editor_selector' => 'tinymce',
@@ -209,14 +224,14 @@ else {
 				'paste_strip_class_attributes' => 'all',
 				'paste_text_use_dialog' => true,
 				'extended_valid_elements' => getSettingByScope($connection2, "System", "allowableHTML"),
-				'wp_fullscreen_content_css' => "$baseurl/plugins/wpfullscreen/css/wp-fullscreen.css",
+				'wp_fullscreen_content_css' => "/plugins/wpfullscreen/css/wp-fullscreen.css",
 				'plugins' => "table,advlink,contextmenu,paste,visualchars,template,advimage"
 			);
 			
-			$mce_options = '';
+			$mce_options='';
 			foreach ( $initArray as $k => $v ) {
 				if ( is_bool($v) ) {
-					$val = $v ? 'true' : 'false';
+					$val=$v ? 'true' : 'false';
 					$mce_options .= $k . ':' . $val . ', ';
 					continue;
 				} elseif ( !empty($v) && is_string($v) && ( ('{' == $v{0} && '}' == $v{strlen($v) - 1}) || ('[' == $v{0} && ']' == $v{strlen($v) - 1}) || preg_match('/^\(?function ?\(/', $v) ) ) {
@@ -225,7 +240,7 @@ else {
 				}
 				$mce_options .= $k . ':"' . $v . '", ';
 			}
-			$mce_options = rtrim( trim($mce_options), '\n\r,' );
+			$mce_options=rtrim( trim($mce_options), '\n\r,' );
 			?>
 			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/tinymce/tiny_mce.js"></script>
 			<script type="text/javascript">
@@ -248,10 +263,12 @@ else {
 		<body>
 			<?
 			//Show warning if not in the current school year
-			if ($_SESSION[$guid]["gibbonSchoolYearID"]!=$_SESSION[$guid]["gibbonSchoolYearIDCurrent"] AND $_SESSION[$guid]["username"]!="") {
-				print "<div style='margin: 10px auto; width:1101px;' class='warning'>" ;
-					print "<b><u>Warning</u></b>: you are logged into the system in school year <b><u>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</b></u>, which is not the current year. Your data may not look quite right (for example, students who have left the school will not appear in previous years), but you should be able to edit information from other years which is not available in the current year." ;
-				print "</div>" ;
+			if (isset($_SESSION[$guid]["username"])) {
+				if ($_SESSION[$guid]["gibbonSchoolYearID"]!=$_SESSION[$guid]["gibbonSchoolYearIDCurrent"]) {
+					print "<div style='margin: 10px auto; width:1101px;' class='warning'>" ;
+						print "<b><u>Warning</u></b>: you are logged into the system in school year <b><u>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</b></u>, which is not the current year. Your data may not look quite right (for example, students who have left the school will not appear in previous years), but you should be able to edit information from other years which is not available in the current year." ;
+					print "</div>" ;
+				}
 			}
 			?>
 						
@@ -283,7 +300,7 @@ else {
 											$_SESSION[$guid]["likeCountTitle"]="" ;
 											//Count crowd assessment likes
 											try {
-												$dataLike = array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+												$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 												$sqlLike="SELECT * FROM gibbonCrowdAssessLike JOIN gibbonPlannerEntryHomework ON (gibbonCrowdAssessLike.gibbonPlannerEntryHomeworkID=gibbonPlannerEntryHomework.gibbonPlannerEntryHomeworkID) JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
 												$resultLike=$connection2->prepare($sqlLike);
 												$resultLike->execute($dataLike); 
@@ -296,7 +313,7 @@ else {
 										
 											//Count planner likes
 											try {
-												$dataLike = array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+												$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 												$sqlLike="SELECT * FROM gibbonPlannerEntryLike JOIN gibbonPlannerEntry ON (gibbonPlannerEntryLike.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
 												$resultLike=$connection2->prepare($sqlLike);
 												$resultLike->execute($dataLike); 
@@ -309,7 +326,7 @@ else {
 										
 											//Count positive haviour
 											try {
-												$dataLike = array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+												$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 												$sqlLike="SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type='Positive' AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
 												$resultLike=$connection2->prepare($sqlLike);
 												$resultLike->execute($dataLike); 
@@ -332,108 +349,110 @@ else {
 										//MESSAGE WALL!
 										if (isActionAccessible($guid, $connection2, "/modules/Messenger/messageWall_view.php")) {
 											include "./modules/Messenger/moduleFunctions.php" ; 
-												
-											if ($_SESSION[$guid]["pageLoads"]%$caching==0 OR ($_GET["q"]=="/modules/Messenger/messenger_post.php" AND $_GET["addReturn"]=="success0")) {
-												$messages=getMessages($guid, $connection2, "result") ;					
-												$messages=unserialize($messages) ;
-												try {
-													$resultPosts=$connection2->prepare($messages[1]);
-													$resultPosts->execute($messages[0]);  
-												}
-												catch(PDOException $e) { }	
 											
-												$_SESSION[$guid]["messageWallCount"]=0 ;
-												if ($resultPosts->rowCount()>0) {
-													$output=array() ;
-													$last="" ;
-													while ($rowPosts=$resultPosts->fetch()) {
-														if ($last==$rowPosts["gibbonMessengerID"]) {
-															$output[($count-1)]["source"]=$output[($count-1)]["source"] . "<br/>" .$rowPosts["source"] ;
-														}
-														else {
-															$output[$_SESSION[$guid]["messageWallCount"]]["photo"]=$rowPosts["image_75"] ;
-															$output[$_SESSION[$guid]["messageWallCount"]]["subject"]=$rowPosts["subject"] ;
-															$output[$_SESSION[$guid]["messageWallCount"]]["details"]=$rowPosts["body"] ;
-															$output[$_SESSION[$guid]["messageWallCount"]]["author"]=formatName($rowPosts["title"], $rowPosts["preferredName"], $rowPosts["surname"], $rowPosts["category"]) ;
-															$output[$_SESSION[$guid]["messageWallCount"]]["source"]=$rowPosts["source"] ;
-			
-															$_SESSION[$guid]["messageWallCount"]++ ;
-															$last=$rowPosts["gibbonMessengerID"] ;
-														}	
-													}
-												}
-											}
-											
-											$image="messageWall.png" ;
-											if ($_SESSION[$guid]["messageWallCount"]<1) {
-												$image="messageWall_none.png" ;
-											}
-											$URL=$_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Messenger/messageWall_view_full.php&width=1000&height=550" ;
-											if ($_SESSION[$guid]["messageWallCount"]>0) {
-												print " . <a class='thickbox' href='$URL'>" . $_SESSION[$guid]["messageWallCount"] . " x </a><a class='thickbox' href='$URL'><img style='vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/$image'></a>" ;
-												if ($_SESSION[$guid]["pageLoads"]==0 AND ($_SESSION[$guid]["messengerLastBubble"]==NULL OR $_SESSION[$guid]["messengerLastBubble"]<date("Y-m-d"))) {
-													?>
-													<div id='messageBubbleArrow' style="left: 650px; top: 21px" class='arrow top'></div>
-													<div id='messageBubble' style="left: 420px; top: 37px; width: 300px; min-width: 300px; max-width: 300px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip"">
-														<div class="ui-tooltip-content">
-															<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>New Messages</div>
-															<?
-															$test=count($output) ;
-															if ($test>3) {
-																$test=3 ;
-															}
-															for ($i=0; $i<$test; $i++) {
-																print "<span style='font-size: 120%; font-weight: bold'>" ;
-																if (strlen($output[$i]["subject"])<=30) {
-																	print $output[$i]["subject"] ;
-																}
-																else {
-																	print substr($output[$i]["subject"],0,30) . "..." ;
-																}
-															 
-																 print "</span><br/>" ;
-																print "<i>" . $output[$i]["author"] . "</i><br/><br/>" ;
-															}
-															?>
-															<?
-															if (count($output)>3) {
-																print "<i>Plus more...</i>" ;
-															}
-															?>
-														
-														</div>
-														<div style='text-align: right; margin-top: 20px; color: #666'>
-															<a onclick='$("#messageBubble").hide("fade", {}, 1); $("#messageBubbleArrow").hide("fade", {}, 1)' style='text-decoration: none; color: #666' class='thickbox' href='<? print $URL ?>'>Read All</a> . 
-															<a style='text-decoration: none; color: #666' onclick='$("#messageBubble").hide("fade", {}, 1000); $("#messageBubbleArrow").hide("fade", {}, 1000)' href='#'>Dismiss</a>
-														</div>
-													</div>
-												
-													<script type="text/javascript">
-														$(function() {
-															setTimeout(function() {
-																$("#messageBubble").hide('fade', {}, 3000)
-															}, 10000);
-														});
-														$(function() {
-															setTimeout(function() {
-																$("#messageBubbleArrow").hide('fade', {}, 3000)
-															}, 10000);
-														});
-													</script>
-													<?
-													
+											if (isset($_GET["q"]) AND isset($_GET["addReturn"])) {
+												if ($_SESSION[$guid]["pageLoads"]%$caching==0 OR ($_GET["q"]=="/modules/Messenger/messenger_post.php" AND $_GET["addReturn"]=="success0")) {
+													$messages=getMessages($guid, $connection2, "result") ;					
+													$messages=unserialize($messages) ;
 													try {
-														$data = array("messengerLastBubble"=>date("Y-m-d"), "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"] ); 
-														$sql="UPDATE gibbonPerson SET messengerLastBubble=:messengerLastBubble WHERE gibbonPersonID=:gibbonPersonID" ;
-														$result=$connection2->prepare($sql);
-														$result->execute($data); 
+														$resultPosts=$connection2->prepare($messages[1]);
+														$resultPosts->execute($messages[0]);  
 													}
-													catch(PDOException $e) { }
+													catch(PDOException $e) { }	
+											
+													$_SESSION[$guid]["messageWallCount"]=0 ;
+													if ($resultPosts->rowCount()>0) {
+														$output=array() ;
+														$last="" ;
+														while ($rowPosts=$resultPosts->fetch()) {
+															if ($last==$rowPosts["gibbonMessengerID"]) {
+																$output[($count-1)]["source"]=$output[($count-1)]["source"] . "<br/>" .$rowPosts["source"] ;
+															}
+															else {
+																$output[$_SESSION[$guid]["messageWallCount"]]["photo"]=$rowPosts["image_75"] ;
+																$output[$_SESSION[$guid]["messageWallCount"]]["subject"]=$rowPosts["subject"] ;
+																$output[$_SESSION[$guid]["messageWallCount"]]["details"]=$rowPosts["body"] ;
+																$output[$_SESSION[$guid]["messageWallCount"]]["author"]=formatName($rowPosts["title"], $rowPosts["preferredName"], $rowPosts["surname"], $rowPosts["category"]) ;
+																$output[$_SESSION[$guid]["messageWallCount"]]["source"]=$rowPosts["source"] ;
+			
+																$_SESSION[$guid]["messageWallCount"]++ ;
+																$last=$rowPosts["gibbonMessengerID"] ;
+															}	
+														}
+													}
 												}
-												
+											}
+											
+											$URL=$_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Messenger/messageWall_view_full.php&width=1000&height=550" ;
+											if (isset($_SESSION[$guid]["messageWallCount"])==FALSE) {
+												print " . 0 x <img style='vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
 											}
 											else {
-												print " . " . $_SESSION[$guid]["messageWallCount"] . " x <img style='vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/$image'>" ;
+												if ($_SESSION[$guid]["messageWallCount"]<1) {
+													print " . 0 x <img style='vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
+												}
+												else {
+													print " . <a class='thickbox' href='$URL'>" . $_SESSION[$guid]["messageWallCount"] . " x </a><a class='thickbox' href='$URL'><img style='vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall.png'></a>" ;
+													if ($_SESSION[$guid]["pageLoads"]==0 AND ($_SESSION[$guid]["messengerLastBubble"]==NULL OR $_SESSION[$guid]["messengerLastBubble"]<date("Y-m-d"))) {
+														?>
+														<div id='messageBubbleArrow' style="left: 650px; top: 21px" class='arrow top'></div>
+														<div id='messageBubble' style="left: 420px; top: 37px; width: 300px; min-width: 300px; max-width: 300px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip"">
+															<div class="ui-tooltip-content">
+																<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>New Messages</div>
+																<?
+																$test=count($output) ;
+																if ($test>3) {
+																	$test=3 ;
+																}
+																for ($i=0; $i<$test; $i++) {
+																	print "<span style='font-size: 120%; font-weight: bold'>" ;
+																	if (strlen($output[$i]["subject"])<=30) {
+																		print $output[$i]["subject"] ;
+																	}
+																	else {
+																		print substr($output[$i]["subject"],0,30) . "..." ;
+																	}
+															 
+																	 print "</span><br/>" ;
+																	print "<i>" . $output[$i]["author"] . "</i><br/><br/>" ;
+																}
+																?>
+																<?
+																if (count($output)>3) {
+																	print "<i>Plus more...</i>" ;
+																}
+																?>
+														
+															</div>
+															<div style='text-align: right; margin-top: 20px; color: #666'>
+																<a onclick='$("#messageBubble").hide("fade", {}, 1); $("#messageBubbleArrow").hide("fade", {}, 1)' style='text-decoration: none; color: #666' class='thickbox' href='<? print $URL ?>'>Read All</a> . 
+																<a style='text-decoration: none; color: #666' onclick='$("#messageBubble").hide("fade", {}, 1000); $("#messageBubbleArrow").hide("fade", {}, 1000)' href='#'>Dismiss</a>
+															</div>
+														</div>
+												
+														<script type="text/javascript">
+															$(function() {
+																setTimeout(function() {
+																	$("#messageBubble").hide('fade', {}, 3000)
+																}, 10000);
+															});
+															$(function() {
+																setTimeout(function() {
+																	$("#messageBubbleArrow").hide('fade', {}, 3000)
+																}, 10000);
+															});
+														</script>
+														<?
+													
+														try {
+															$data=array("messengerLastBubble"=>date("Y-m-d"), "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"] ); 
+															$sql="UPDATE gibbonPerson SET messengerLastBubble=:messengerLastBubble WHERE gibbonPersonID=:gibbonPersonID" ;
+															$result=$connection2->prepare($sql);
+															$result->execute($data); 
+														}
+														catch(PDOException $e) { }
+													}
+												}
 											}
 										}
 										
@@ -460,7 +479,7 @@ else {
 						//Show index page Content
 							if ($_SESSION[$guid]["address"]=="") {
 								//Welcome message
-								if ($_SESSION[$guid]["username"]=="") {
+								if (isset($_SESSION[$guid]["username"])==FALSE) {
 									print "<div class='trail'>" ;
 									print "<div class='trailEnd'>Home</div>" ;
 									print "</div>" ;
@@ -566,7 +585,7 @@ else {
 													//Display planner
 													print "<span style='font-size: 85%; font-weight: bold'>Today's Classes</span> . <span style='font-size: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=" . $students[$i][4] . "'>View Planner</a></span>" ;
 													
-													$updateReturn = $_GET["updateReturn"] ;
+													if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 													$updateReturnMessage ="" ;
 													$class="error" ;
 													if (!($updateReturn=="")) {
@@ -992,7 +1011,7 @@ else {
 													print "Today's Lessons" ;
 												print "</h2>" ;
 												
-												$updateReturn = $_GET["updateReturn"] ;
+												if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 												$updateReturnMessage ="" ;
 												$class="error" ;
 												if (!($updateReturn=="")) {
@@ -1125,7 +1144,7 @@ else {
 											?>
 											<script type="text/javascript">
 												$(document).ready(function(){
-													$("#tt").load("<? print $_SESSION[$guid]["absoluteURL"] ?>/index_tt_ajax.php",{"ttDate": "<? print $_POST["ttDate"] ?>", "fromTT": "<? print $_POST["fromTT"] ?>", "personalCalendar": "<? print $_POST["personalCalendar"] ?>", "schoolCalendar": "<? print $_POST["schoolCalendar"] ?>"});
+													$("#tt").load("<? print $_SESSION[$guid]["absoluteURL"] ?>/index_tt_ajax.php",{"ttDate": "<? print @$_POST["ttDate"] ?>", "fromTT": "<? print @$_POST["fromTT"] ?>", "personalCalendar": "<? print @$_POST["personalCalendar"] ?>", "schoolCalendar": "<? print @$_POST["schoolCalendar"] ?>"});
 												});
 											</script>
 											<?
@@ -1275,10 +1294,6 @@ else {
 																}
 																$count++ ;
 																
-																if ($row["active"]=="N") {
-																	$rowNum="error" ;
-																}
-												
 																//COLOR ROW BY STATUS!
 																print "<tr class=$rowNum>" ;
 																	print "<td>" ;

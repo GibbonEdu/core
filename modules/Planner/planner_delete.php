@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -55,8 +55,8 @@ else {
 			if ($date=="") {
 				$date=date("Y-m-d");
 			}
-			list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
-			$dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);	
+			list($dateYear, $dateMonth, $dateDay)=explode('-', $date);
+			$dateStamp=mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);	
 			$params="&viewBy=date&date=$date" ;
 		}
 		else if ($viewBy=="class") {
@@ -66,8 +66,8 @@ else {
 			$params="&viewBy=class&class=$class&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView" ;
 		}
 		
-		list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
-		$todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
+		list($todayYear, $todayMonth, $todayDay)=explode('-', $today);
+		$todayStamp=mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
 		
 		//Check if school year specified
 		$gibbonCourseClassID=$_GET["gibbonCourseClassID"];
@@ -127,7 +127,7 @@ else {
 				print "</div>" ;
 				
 				//Proceed!
-				$deleteReturn = $_GET["deleteReturn"] ;
+				if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 				$deleteReturnMessage ="" ;
 				$class="error" ;
 				if (!($deleteReturn=="")) {

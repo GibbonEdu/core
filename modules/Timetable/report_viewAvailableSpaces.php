@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -114,7 +114,7 @@ else {
 				<td class="right">
 					<input name="ttDate" id="ttDate" maxlength=10 value="<? print $ttDate ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var ttDate = new LiveValidation('ttDate');
+						var ttDate=new LiveValidation('ttDate');
 						ttDate.add(Validate.Presence);
 						ttDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 					 </script>
@@ -336,14 +336,14 @@ else {
 							print "<div $title style='z-index: $zCount; position: absolute; top: -3px; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>" ;
 								print substr($time,0,5) . "<br/>" ;
 							print "</div>" ;
-							$time = date("H:i:s", strtotime($time)+3600) ;
+							$time=date("H:i:s", strtotime($time)+3600) ;
 							$spinControl=0 ;
 							while ($time<=$timeEnd AND $spinControl<(23-date("H",$timeStart))) {
 								$countTime++ ;
 								print "<div $title style='z-index: $zCount; position: absolute; top:" . (($countTime*60)-5) . "px ; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>" ;
 									print substr($time,0,5) . "<br/>" ;
 								print "</div>" ;
-								$time = date("H:i:s", strtotime($time)+3600) ;
+								$time=date("H:i:s", strtotime($time)+3600) ;
 								$spinControl++ ;
 							}
 					

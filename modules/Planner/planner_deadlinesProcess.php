@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -56,14 +56,14 @@ else {
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_deadlines.php")==FALSE) {
 	//Fail 0
 	print "gere" ;
-	$URL = $URL . "&updateReturn=fail0$params" ;
+	$URL=$URL . "&updateReturn=fail0$params" ;
 	header("Location: {$URL}");
 }
 else {
 	$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 	if ($category!="Student") {
 		//Fail 0
-		$URL = $URL . "&updateReturn=fail0$params" ;
+		$URL=$URL . "&updateReturn=fail0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -77,7 +77,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail2
-			$URL = $URL . "&updateReturn=fail2$params" ;
+			$URL=$URL . "&updateReturn=fail2$params" ;
 			header("Location: {$URL}");
 			break ;
 		}
@@ -124,12 +124,12 @@ else {
 		
 		if ($partialFail==TRUE) {
 			//Fail 5
-			$URL = $URL . "&updateReturn=fail5$params" ;
+			$URL=$URL . "&updateReturn=fail5$params" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Success 0
-			$URL = $URL . "&updateReturn=success0$params" ;
+			$URL=$URL . "&updateReturn=success0$params" ;
 			header("Location: {$URL}");
 		}
 	}

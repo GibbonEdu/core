@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-session_start() ;
+@session_start() ;
 
 //Gibbon system-wide includes
 include "./functions.php" ;

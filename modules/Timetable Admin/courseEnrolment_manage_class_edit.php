@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_class_edit.php")==FALSE) {
 	//Acess denied
@@ -58,7 +58,7 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Enrolment by Class</a> > </div><div class='trailEnd'>Edit " . $row["courseNameShort"] . "." . $row["name"] . " Enrolment</div>" ;
 			print "</div>" ;
 
-			$updateReturn = $_GET["updateReturn"] ;
+			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 			$updateReturnMessage ="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
@@ -89,7 +89,7 @@ else {
 				print "</div>" ;
 			} 
 			
-			$deleteReturn = $_GET["deleteReturn"] ;
+			if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 			$deleteReturnMessage ="" ;
 			$class="error" ;
 			if (!($deleteReturn=="")) {
@@ -181,11 +181,11 @@ else {
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="role">
-								<option <? if ($row["role"]=="Student") { print "selected ";} ?>value="Student">Student</option>
-								<option <? if ($row["role"]=="Teacher") { print "selected ";} ?>value="Teacher">Teacher</option>
-								<option <? if ($row["role"]=="Assistant") { print "selected ";} ?>value="Assistant">Assistant</option>
-								<option <? if ($row["role"]=="Technician") { print "selected ";} ?>value="Technician">Technician</option>
-								<option <? if ($row["role"]=="Parent") { print "selected ";} ?>value="Parent">Parent</option>
+								<option value="Student">Student</option>
+								<option value="Teacher">Teacher</option>
+								<option value="Assistant">Assistant</option>
+								<option value="Technician">Technician</option>
+								<option value="Parent">Parent</option>
 							</select>
 						</td>
 					</tr>
@@ -195,7 +195,7 @@ else {
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="reset" value="Reset"> <input type="submit" value="Submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>
@@ -233,7 +233,7 @@ else {
 							<option value="Delete">Delete</option>
 						</select>
 						<script type="text/javascript">
-							var action = new LiveValidation('action');
+							var action=new LiveValidation('action');
 							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "Select something!"});
 						</script>
 						<?

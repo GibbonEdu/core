@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -47,7 +47,7 @@ else {
 
 	if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_class_edit.php")==FALSE) {
 		//Fail 0
-		$URL = $URL . "&updateReturn=fail0" ;
+		$URL=$URL . "&updateReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -59,7 +59,7 @@ else {
 		
 		if (count($choices)<1 OR $role=="") {
 			//Fail 2
-			$URL = $URL . "&updateReturn=fail1" ;
+			$URL=$URL . "&updateReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -102,12 +102,12 @@ else {
 			//Write to database
 			if ($update==FALSE) {
 				//Fail 2
-				$URL = $URL . "&updateReturn=fail2" ;
+				$URL=$URL . "&updateReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Success 0
-				$URL = $URL . "&updateReturn=success0" ;
+				$URL=$URL . "&updateReturn=success0" ;
 				header("Location: {$URL}");
 			}
 		}

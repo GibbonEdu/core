@@ -30,7 +30,7 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./moduleFunctions.php" ;
@@ -43,12 +43,12 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Departments/department_edit.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&updateReturn=fail0" ;
+	$URL=$URL . "&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_POST)) {
-		$URL = $URL . "&updateReturn=fail5" ;
+		$URL=$URL . "&updateReturn=fail5" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -58,7 +58,7 @@ else {
 		
 		if ($gibbonDepartmentID=="") {
 			//Fail 3
-			$URL = $URL . "&updateReturn=fail3" ;
+			$URL=$URL . "&updateReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -71,14 +71,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL = $URL . "&updateReturn=fail2" ;
+				$URL=$URL . "&updateReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
 			
 			if ($result->rowCount()!=1) {
 				//Fail 4
-				$URL = $URL . "&updateReturn=fail4" ;
+				$URL=$URL . "&updateReturn=fail4" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -87,7 +87,7 @@ else {
 				
 				if ($role!="Coordinator" AND $role!="Assistant Coordinator" AND $role!="Teacher (Curriculum)" AND $role!="Director" AND $role!="Manager") {
 					//Fail 0
-					$URL = $URL . "&addReturn=fail0" ;
+					$URL=$URL . "&addReturn=fail0" ;
 					header("Location: {$URL}");
 				}
 				else{
@@ -112,7 +112,7 @@ else {
 									}
 								}
 								else if ($resourceType=="File") {
-									$time=mktime() ;
+									$time=time() ;
 									//Move attached file, if there is one
 									if ($_FILES["file" . $i]["tmp_name"]!="") {
 										//Check for folder in uploads based on today's date
@@ -131,7 +131,7 @@ else {
 										
 										if (!(move_uploaded_file($_FILES["file" . $i]["tmp_name"],$path . "/" . $attachment))) {
 											//Fail 5
-											$URL = $URL . "&updateReturn=fail5" ;
+											$URL=$URL . "&updateReturn=fail5" ;
 											header("Location: {$URL}");
 										}
 										else {
@@ -160,19 +160,19 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL = $URL . "&updateReturn=fail2" ;
+						$URL=$URL . "&updateReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
 					
 					if ($partialFail==true) {
 						//Fail 5
-						$URL = $URL . "&updateReturn=fail5" ;
+						$URL=$URL . "&updateReturn=fail5" ;
 						header("Location: {$URL}");
 					}
 					else {
 						//Success 0
-						$URL = $URL . "&updateReturn=success0" ;
+						$URL=$URL . "&updateReturn=success0" ;
 						header("Location: {$URL}");
 					}
 				}

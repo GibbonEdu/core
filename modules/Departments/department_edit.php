@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -59,7 +59,7 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/departments.php'>View All</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department.php&gibbonDepartmentID=" . $_GET["gibbonDepartmentID"] . "'>" . $row["name"] . "</a> > </div><div class='trailEnd'>Edit Department</div>" ;
 			print "</div>" ;
 			
-			$updateReturn = $_GET["updateReturn"] ;
+			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 			$updateReturnMessage ="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
@@ -90,7 +90,7 @@ else {
 				print "</div>" ;
 			} 
 			
-			$deleteReturn = $_GET["deleteReturn"] ;
+			if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 			$deleteReturnMessage ="" ;
 			$class="error" ;
 			if (!($deleteReturn=="")) {
@@ -333,7 +333,7 @@ else {
 							<td class="right">
 								<input name="url1" id="url1" maxlength=255 value="" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var url1 = new LiveValidation('url1');
+									var url1=new LiveValidation('url1');
 									url1.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 								</script>	
 							</td>
@@ -359,7 +359,7 @@ else {
 								}
 								?>
 								<script type="text/javascript">
-									var file1 = new LiveValidation('file1');
+									var file1=new LiveValidation('file1');
 									file1.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 								</script>
 							</td>
@@ -401,7 +401,7 @@ else {
 							<td class="right">
 								<input name="url2" id="url2" maxlength=255 value="" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var url2 = new LiveValidation('url2');
+									var url2=new LiveValidation('url2');
 									url2.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 								</script>	
 							</td>
@@ -413,7 +413,7 @@ else {
 							<td class="right">
 								<input type="file" name="file2" id="file2">
 								<script type="text/javascript">
-									var file2 = new LiveValidation('file2');
+									var file2=new LiveValidation('file2');
 									file2.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 								</script>
 							</td>
@@ -456,7 +456,7 @@ else {
 							<td class="right">
 								<input name="url3" id="url3" maxlength=255 value="" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var url3 = new LiveValidation('url3');
+									var url3=new LiveValidation('url3');
 									url3.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 								</script>	
 							</td>
@@ -468,14 +468,14 @@ else {
 							<td class="right">
 								<input type="file" name="file3" id="file3">
 								<script type="text/javascript">
-									var file3 = new LiveValidation('file3');
+									var file3=new LiveValidation('file3');
 									file3.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 								</script>
 							</td>
 						</tr>
 						<tr>
 							<td class="right" colspan=2>
-								<input type="reset" value="Reset"> <input type="submit" value="Submit">
+								<input type="submit" value="Submit">
 							</td>
 						</tr>
 					</table>
