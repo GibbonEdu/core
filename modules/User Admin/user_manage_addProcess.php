@@ -163,11 +163,16 @@ else {
 	$transport=$_POST["transport"] ;
 	$lockerNumber=$_POST["lockerNumber"] ;
 	$vehicleRegistration=$_POST["vehicleRegistration"] ;
-	$privacyOptions=$_POST["privacyOptions"] ;
+	$privacyOptions=NULL ;
+	if (isset($_POST["privacyOptions"])) {
+		$privacyOptions=$_POST["privacyOptions"] ;
+	}
 	$privacy="" ;
-	foreach ($privacyOptions AS $privacyOption) {
-		if ($privacyOption!="") {
-			$privacy.=$privacyOption . ", " ;
+	if (is_array($privacyOptions)) {
+		foreach ($privacyOptions AS $privacyOption) {
+			if ($privacyOption!="") {
+				$privacy.=$privacyOption . ", " ;
+			}
 		}
 	}
 	if ($privacy!="") {
@@ -176,7 +181,11 @@ else {
 	else {
 		$privacy=NULL ;
 	}
-	$dayType=$_POST["dayType"] ;
+	$dayType=NULL ;
+	if (isset($_POST["dayType"])) {
+		$dayType=$_POST["dayType"] ;
+	}
+	
 
 	//Validate Inputs
 	if ($surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $username=="" OR $password=="" OR $passwordConfirm=="" OR $status=="" OR $gibbonRoleIDPrimary=="") {

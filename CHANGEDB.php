@@ -1470,9 +1470,19 @@ ALTER TABLE `gibbonApplicationForm` DROP `parent1otherNames`, DROP `parent2other
 ALTER TABLE `gibbonPerson` DROP `otherNames` ;end
 ALTER TABLE `gibbonPersonUpdate` DROP `otherNames` ;end
 
---LAST ICHK
 --LAST ICHK DEMO
+
+ALTER TABLE `gibbonStaff` ADD `countryOfOrigin` VARCHAR( 80 ) NOT NULL , ADD `qualifications` VARCHAR( 255 ) NOT NULL , ADD `biography` TEXT NOT NULL ;end
+ALTER TABLE `gibbonStaff` ADD `biographicalGrouping` VARCHAR( 100 ) NOT NULL COMMENT 'Used for group staff when creating a staff directory.';end
+ALTER TABLE `gibbonStaff` ADD `biographicalGroupingPriority` INT( 3 ) NOT NULL AFTER `biographicalGrouping` ;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'Students', 'extendedBriefProfile', 'Extended Brief Profile', 'The extended version of the brief student profile includes contact information of parents.', 'N');end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '4', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Roll Groups' AND gibbonAction.name='View Roll Groups'));end
+
+--LAST ICHK
 --LAST HLY
+
+
+
 
 ";
 

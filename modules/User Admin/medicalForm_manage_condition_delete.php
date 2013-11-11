@@ -56,7 +56,7 @@ else {
 	$gibbonPersonMedicalID=$_GET["gibbonPersonMedicalID"] ;
 	$gibbonPersonMedicalConditionID=$_GET["gibbonPersonMedicalConditionID"] ;
 	$search=$_GET["search"] ;
-	if (gibbonPersonMedicalID=="" OR $gibbonPersonMedicalConditionID=="") {
+	if ($gibbonPersonMedicalID=="" OR $gibbonPersonMedicalConditionID=="") {
 		print "<div class='error'>" ;
 			print "You have not specified a medical form or condition." ;
 		print "</div>" ;

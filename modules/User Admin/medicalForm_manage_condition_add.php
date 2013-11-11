@@ -166,7 +166,7 @@ else {
 							<b>Triggers</b><br/>
 						</td>
 						<td class="right">
-							<input name="triggers" id="triggers" maxlength=255 value="<? print $row["triggers"] ?>" type="text" style="width: 300px">
+							<input name="triggers" id="triggers" maxlength=255 value="" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
@@ -174,7 +174,7 @@ else {
 							<b>Reaction</b><br/>
 						</td>
 						<td class="right">
-							<input name="reaction" id="reaction" maxlength=255 value="<? print $row["reaction"] ?>" type="text" style="width: 300px">
+							<input name="reaction" id="reaction" maxlength=255 value="" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
@@ -182,7 +182,7 @@ else {
 							<b>Response</b><br/>
 						</td>
 						<td class="right">
-							<input name="response" id="response" maxlength=255 value="<? print $row["response"] ?>" type="text" style="width: 300px">
+							<input name="response" id="response" maxlength=255 value="" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
@@ -190,7 +190,7 @@ else {
 							<b>Medication</b><br/>
 						</td>
 						<td class="right">
-							<input name="medication" id="medication" maxlength=255 value="<? print $row["medication"] ?>" type="text" style="width: 300px">
+							<input name="medication" id="medication" maxlength=255 value="" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
@@ -199,7 +199,7 @@ else {
 							<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
 						</td>
 						<td class="right">
-							<input name="lastEpisode" id="lastEpisode" maxlength=10 value="<? print $row["lastEpisode"] ?>" type="text" style="width: 300px">
+							<input name="lastEpisode" id="lastEpisode" maxlength=10 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var lastEpisode=new LiveValidation('lastEpisode');
 								lastEpisode.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -216,7 +216,7 @@ else {
 							<b>Last Episode Treatment</b><br/>
 						</td>
 						<td class="right">
-							<input name="lastEpisodeTreatment" id="lastEpisodeTreatment" maxlength=255 value="<? print $row["lastEpisodeTreatment"] ?>" type="text" style="width: 300px">
+							<input name="lastEpisodeTreatment" id="lastEpisodeTreatment" maxlength=255 value="" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
@@ -225,7 +225,7 @@ else {
 							<span style="font-size: 90%"><i>1000 character limit</i></span>
 						</td>
 						<td class="right">
-							<textarea name="comment" id="comment" rows=8 style="width: 300px"><? print $row["comment"] ?></textarea>
+							<textarea name="comment" id="comment" rows=8 style="width: 300px"></textarea>
 							<script type="text/javascript">
 								var comment=new LiveValidation('comment');
 								comment.add( Validate.Length, { maximum: 1000 } );

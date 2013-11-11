@@ -68,7 +68,7 @@ else {
 	$gibbonPersonID=$_GET["gibbonPersonID"] ;
 	$gibbonPlannerEntryID=$_GET["gibbonPlannerEntryID"] ;
 	$gibbonPlannerEntryHomeworkID=$_GET["gibbonPlannerEntryHomeworkID"] ;
-	if ($gibbonPersonID=="" OR $gibbonPlannerEntryID=="" OR gibbonPlannerEntryHomeworkID=="") {
+	if ($gibbonPersonID=="" OR $gibbonPlannerEntryID=="" OR $gibbonPlannerEntryHomeworkID=="") {
 		print "<div class='warning'>" ;
 			print "Student, lesson or homework has not been specified ." ;
 		print "</div>" ;
@@ -94,7 +94,10 @@ else {
 			$row=$result->fetch() ;
 			
 			$role=getCARole($guid, $connection2, $row["gibbonCourseClassID"]) ;
-			
+			$replyTo=NULL ;
+			if (isset($_GET["replyTo"])) {
+				$replyTo=$_GET["replyTo"] ;
+			}
 			$sqlList=getStudents($guid, $connection2, $role, $row["gibbonCourseClassID"], $row["homeworkCrowdAssessOtherTeachersRead"], $row["homeworkCrowdAssessOtherParentsRead"], $row["homeworkCrowdAssessSubmitterParentsRead"], $row["homeworkCrowdAssessClassmatesParentsRead"], $row["homeworkCrowdAssessOtherStudentsRead"], $row["homeworkCrowdAssessClassmatesRead"], " AND gibbonPerson.gibbonPersonID=$gibbonPersonID") ;
 			
 			if ($sqlList[1]!="") {
@@ -115,7 +118,7 @@ else {
 					$rowList=$resultList->fetch() ;
 					
 					?>
-					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss_postProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&address=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&replyTo=" . $_GET["replyTo"] ?>">
+					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss_postProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&address=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&replyTo=$replyTo" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td colspan=2> 

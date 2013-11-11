@@ -108,7 +108,10 @@ else {
 				print "</tr>" ;
 			print "</table>" ;
 			
-			$step=$_GET["step"] ;
+			$step=NULL ;
+			if (isset($_GET["step"])) {
+				$step=$_GET["step"] ;
+			}
 			if ($step!=1 AND $step!=2) {
 				$step=1 ;
 			}
@@ -223,8 +226,14 @@ else {
 			}
 			else {
 				$gibbonExternalAssessmentID=$_GET["gibbonExternalAssessmentID"] ;
-				$copyToGCSECheck=$_GET["copyToGCSECheck"] ;
-				$copyToIBCheck=$_GET["copyToIBCheck"] ;
+				$copyToGCSECheck=NULL ;
+				if (isset($_GET["copyToGCSECheck"])) {
+					$copyToGCSECheck=$_GET["copyToGCSECheck"] ;
+				}
+				$copyToIBCheck=NULL ;
+				if (isset($_GET["copyToIBCheck"])) {
+					$copyToIBCheck=$_GET["copyToIBCheck"] ;
+				}
 				
 				try {
 					$dataSelect=array("gibbonExternalAssessmentID"=>$gibbonExternalAssessmentID); 
@@ -461,7 +470,7 @@ else {
 									<span style="font-size: 90%"><i>Format: dd/mm/yyyy<br/></i></span>
 								</td>
 								<td class="right" colspan=2>
-									<input name="date" id="date" maxlength=10 value="<? if ($date!="") { print dateConvertBack($date) ; } ?>" type="text" style="width: 300px">
+									<input name="date" id="date" maxlength=10 value="" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var date=new LiveValidation('date');
 										date.add(Validate.Presence);

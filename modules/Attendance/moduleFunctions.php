@@ -17,6 +17,56 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//Get's a count of absent days for specified student between specified dates (YYYY-MM-DD, inclusive). Return of FALSE means there was an error, or no data
+function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $dateEnd) {
+	$queryFail=FALSE ;
+
+	//Get all records for the student, in the date range specified, ordered by date and timestamp taken.
+	try {
+		$data=array("gibbonPersonID"=>$gibbonPersonID, "dateStart"=>$dateStart, "dateEnd"=>$dateEnd); 
+		$sql="SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date>=:dateStart AND date<=:dateEnd ORDER BY date, timestampTaken" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$queryFail=TRUE ;
+	}
+	
+	if ($queryFail) {
+		return FALSE ;
+	}	
+	else {
+		$absentCount=0 ;
+		if ($result->rowCount()>=0) {
+			$endOfDays=array() ;
+			$dateCurrent="" ;
+			$dateLast="" ;
+			$count=-1 ;
+
+			//Scan through all records, saving the last record for each day
+			while ($row=$result->fetch()) {
+				$dateCurrent=$row["date"] ;
+				if ($dateCurrent!=$dateLast) {
+					$count++ ;
+				}
+				$endOfDays[$count]=$row["type"] ;
+				$dateLast=$dateCurrent ;
+			}
+			
+			//Scan though all of the end of days records, counting up days ending in absent
+			if (count($endOfDays)>=0) {
+				foreach ($endOfDays AS $endOfDay) {
+					if ($endOfDay=="Absent") {
+						$absentCount++ ;
+					}
+				}
+			}
+		}
+	
+		return $absentCount ;
+	}
+}
+
 function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $connection2) {
 	if ($print) {
 		print "<div class='linkTop'>" ;

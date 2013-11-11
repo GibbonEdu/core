@@ -149,18 +149,27 @@ else {
 								print "Blood Type" ;
 							print "</td>" ;
 							print "<td>" ;
-								print $row2["bloodType"] ;
+								if (isset($row2)) {
+									print $row2["bloodType"] ;
+								}
 							print "</td>" ;
 							print "<td>" ;
 								$style="" ;
-								if ($row2["bloodType"]!=$row["bloodType"]) {
-									$style="style='color: #ff0000'" ;
+								if (isset($row2)) {
+									if ($row2["bloodType"]!=$row["bloodType"]) {
+										$style="style='color: #ff0000'" ;
+									}
 								}
 								print "<span $style>" ;
 								print $row["bloodType"] ;
 							print "</td>" ;
 							print "<td>" ;
-								if ($row2["bloodType"]!=$row["bloodType"]) { print "<input checked type='checkbox' name='bloodTypeOn'><input name='bloodType' type='hidden' value='" . htmlprep($row["bloodType"]) . "'>" ; }
+								if (isset($row2)) {
+									if ($row2["bloodType"]!=$row["bloodType"]) { print "<input checked type='checkbox' name='bloodTypeOn'><input name='bloodType' type='hidden' value='" . htmlprep($row["bloodType"]) . "'>" ; }
+								}
+								else if ($row["bloodType"]!="") {
+									print "<input checked type='checkbox' name='bloodTypeOn'><input name='bloodType' type='hidden' value='" . htmlprep($row["bloodType"]) . "'>" ;
+								}
 							print "</td>" ;
 						print "</tr>" ;
 						print "<tr class='even'>" ;
@@ -168,18 +177,27 @@ else {
 								print "Long Term Medication" ;
 							print "</td>" ;
 							print "<td>" ;
-								print $row2["longTermMedication"] ;
+								if (isset($row2)) {
+									print $row2["longTermMedication"] ;
+								}
 							print "</td>" ;
 							print "<td>" ;
 								$style="" ;
-								if ($row2["longTermMedication"]!=$row["longTermMedication"]) {
-									$style="style='color: #ff0000'" ;
+								if (isset($row2)) {
+									if ($row2["longTermMedication"]!=$row["longTermMedication"]) {
+										$style="style='color: #ff0000'" ;
+									}
 								}
 								print "<span $style>" ;
 								print $row["longTermMedication"] ;
 							print "</td>" ;
 							print "<td>" ;
-								if ($row2["longTermMedication"]!=$row["longTermMedication"]) { print "<input checked type='checkbox' name='longTermMedicationOn'><input name='longTermMedication' type='hidden' value='" . htmlprep($row["longTermMedication"]) . "'>" ; }
+								if (isset($row2)) {
+									if ($row2["longTermMedication"]!=$row["longTermMedication"]) { print "<input checked type='checkbox' name='longTermMedicationOn'><input name='longTermMedication' type='hidden' value='" . htmlprep($row["longTermMedication"]) . "'>" ; }
+								}
+								else if ($row["longTermMedication"]!="") {
+									print "<input checked type='checkbox' name='longTermMedicationOn'><input name='longTermMedication' type='hidden' value='" . htmlprep($row["longTermMedication"]) . "'>" ;
+								}
 							print "</td>" ;
 						print "</tr>" ;
 						print "<tr class='odd'>" ;
@@ -187,18 +205,27 @@ else {
 								print "Long Term Medication Details" ;
 							print "</td>" ;
 							print "<td>" ;
-								print $row2["longTermMedicationDetails"] ;
+								if (isset($row2)) {
+									print $row2["longTermMedicationDetails"] ;
+								}
 							print "</td>" ;
 							print "<td>" ;
 								$style="" ;
-								if ($row2["longTermMedicationDetails"]!=$row["longTermMedicationDetails"]) {
-									$style="style='color: #ff0000'" ;
+								if (isset($row2)) {
+									if ($row2["longTermMedicationDetails"]!=$row["longTermMedicationDetails"]) {
+										$style="style='color: #ff0000'" ;
+									}
 								}
 								print "<span $style>" ;
 								print $row["longTermMedicationDetails"] ;
 							print "</td>" ;
 							print "<td>" ;
-								if ($row2["longTermMedicationDetails"]!=$row["longTermMedicationDetails"]) { print "<input checked type='checkbox' name='longTermMedicationDetailsOn'><input name='longTermMedicationDetails' type='hidden' value='" . htmlprep($row["longTermMedicationDetails"]) . "'>" ; }
+								if (isset($row2)) {
+									if ($row2["longTermMedicationDetails"]!=$row["longTermMedicationDetails"]) { print "<input checked type='checkbox' name='longTermMedicationDetailsOn'><input name='longTermMedicationDetails' type='hidden' value='" . htmlprep($row["longTermMedicationDetails"]) . "'>" ; }
+								}
+								else if ($row["longTermMedicationDetails"]!="") {
+									print "<input checked type='checkbox' name='longTermMedicationDetailsOn'><input name='longTermMedicationDetails' type='hidden' value='" . htmlprep($row["longTermMedicationDetails"]) . "'>" ;
+								}
 							print "</td>" ;
 						print "</tr>" ;
 						print "<tr class='even'>" ;
@@ -206,18 +233,27 @@ else {
 								print "Tetanus Within 10 Years" ;
 							print "</td>" ;
 							print "<td>" ;
-								print $row2["tetanusWithin10Years"] ;
+								if (isset($row2)) {
+									print $row2["tetanusWithin10Years"] ;
+								}
 							print "</td>" ;
 							print "<td>" ;
 								$style="" ;
-								if ($row2["tetanusWithin10Years"]!=$row["tetanusWithin10Years"]) {
-									$style="style='color: #ff0000'" ;
+								if (isset($row2)) {
+									if ($row2["tetanusWithin10Years"]!=$row["tetanusWithin10Years"]) {
+										$style="style='color: #ff0000'" ;
+									}
 								}
 								print "<span $style>" ;
 								print $row["tetanusWithin10Years"] ;
 							print "</td>" ;
 							print "<td>" ;
-								if ($row2["tetanusWithin10Years"]!=$row["tetanusWithin10Years"]) { print "<input checked type='checkbox' name='tetanusWithin10YearsOn'><input name='tetanusWithin10Years' type='hidden' value='" . htmlprep($row["tetanusWithin10Years"]) . "'>" ; }
+								if (isset($row2)) {
+									if ($row2["tetanusWithin10Years"]!=$row["tetanusWithin10Years"]) { print "<input checked type='checkbox' name='tetanusWithin10YearsOn'><input name='tetanusWithin10Years' type='hidden' value='" . htmlprep($row["tetanusWithin10Years"]) . "'>" ; }
+								}
+								else if ($row["tetanusWithin10Years"]!="") {
+									print "<input checked type='checkbox' name='tetanusWithin10YearsOn'><input name='tetanusWithin10Years' type='hidden' value='" . htmlprep($row["tetanusWithin10Years"]) . "'>" ;
+								}
 							print "</td>" ;
 						print "</tr>" ;
 					
@@ -385,7 +421,7 @@ else {
 									print "Last Episode" ;
 								print "</td>" ;
 								print "<td>" ;
-									print dateConvertBack($rowCond2[lastEpisode]) ;
+									print dateConvertBack($rowCond2["lastEpisode"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									$style="" ;
@@ -591,7 +627,7 @@ else {
 									print "Last Episode" ;
 								print "</td>" ;
 								print "<td>" ;
-									print dateConvertBack($rowCond2[lastEpisode]) ;
+									print dateConvertBack($rowCond2["lastEpisode"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									$style="" ;

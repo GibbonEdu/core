@@ -71,7 +71,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonExternalAssessmentStudentID"=>$gibbonExternalAssessmentStudentID); 
-			$sql="SELECT * FROM gibbonExternalAssessmentStudent WHERE gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID" ;
+			$sql="SELECT gibbonExternalAssessmentStudent.*, gibbonExternalAssessment.name AS assessment FROM gibbonExternalAssessmentStudent JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -101,7 +101,7 @@ else {
 							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
 						</td>
 						<td class="right" colspan=2>
-							<input readonly name="name" id="name" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px; text-align: right">
+							<input readonly name="name" id="name" maxlength=20 value="<? print $row["assessment"] ?>" type="text" style="width: 300px; text-align: right">
 						</td>
 					</tr>
 					<tr>

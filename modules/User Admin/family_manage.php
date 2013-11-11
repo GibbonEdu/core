@@ -64,7 +64,7 @@ else {
 					<span style="font-size: 90%"><i>Family name.</i></span>
 				</td>
 				<td class="right">
-					<input name="search" id="search" maxlength=20 value="<? print $_GET["search"] ?>" type="text" style="width: 300px">
+					<input name="search" id="search" maxlength=20 value="<? if (isset($_GET["search"])) { print $_GET["search"] ; }?>" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -85,7 +85,10 @@ else {
 	print "View" ;
 	print "</h2>" ;
 	
-	$search=$_GET["search"] ;
+	$search=NULL ;
+	if (isset($_GET["search"])) {
+		$search=$_GET["search"] ;
+	}
 	try {
 		$data=array(); 
 		$sql="SELECT * FROM gibbonFamily ORDER BY name" ; 

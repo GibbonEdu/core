@@ -68,7 +68,7 @@ else {
 	$gibbonPersonID=$_GET["gibbonPersonID"] ;
 	$gibbonPlannerEntryID=$_GET["gibbonPlannerEntryID"] ;
 	$gibbonPlannerEntryHomeworkID=$_GET["gibbonPlannerEntryHomeworkID"] ;
-	if ($gibbonPersonID=="" OR $gibbonPlannerEntryID=="" OR gibbonPlannerEntryHomeworkID=="") {
+	if ($gibbonPersonID=="" OR $gibbonPlannerEntryID=="" OR $gibbonPlannerEntryHomeworkID=="") {
 		print "<div class='warning'>" ;
 			print "Student, lesson or homework has not been specified ." ;
 		print "</div>" ;
@@ -148,10 +148,10 @@ else {
 									}
 									
 									if ($rowWork["type"]=="File") {
-										print "<span title='" . $rowWork["version"] . ". Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
+										print "<span title='" . $rowWork["version"] . ". Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
 									}
 									else {
-										print "<span title='" . $rowWork["version"] . ". Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
+										print "<span title='" . $rowWork["version"] . ". Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "'><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
 									}
 								print "</td>" ;
 								print "</td>" ;

@@ -137,7 +137,7 @@ else {
 					<span style="font-size: 90%"><i>1000 character limit</i></span>
 				</td>
 				<td class="right">
-					<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rows=8 style="width: 300px"><? print $row["longTermMedicationDetails"] ?></textarea>
+					<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rows=8 style="width: 300px"></textarea>
 					<script type="text/javascript">
 						var longTermMedicationDetails=new LiveValidation('longTermMedicationDetails');
 						longTermMedicationDetails.add( Validate.Length, { maximum: 1000 } );

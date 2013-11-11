@@ -44,7 +44,22 @@ else {
 			print "</div>" ;
 		}
 		else {
-			if ($highestAction=="View Student Profile_brief") {
+			$skipBrief=FALSE ;
+			//Test if View Student Profile_brief and View Student Profile_myChildren are both available and parent has access to this student...if so, skip brief, and go to full. 
+			if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details.php", "View Student Profile_brief") AND isActionAccessible($guid, $connection2, "/modules/Students/student_view_details.php", "View Student Profile_myChildren")) {
+				try {
+					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID1"=>$_GET["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
+					$sql="SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				if ($result->rowCount()==1) {
+					$skipBrief=TRUE ;
+				}
+			}
+		
+			if ($highestAction=="View Student Profile_brief" AND $skipBrief==FALSE) {
 				//Proceed!
 				try {
 					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$gibbonPersonID); 
@@ -58,7 +73,7 @@ else {
 
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-					print "The specified student does not seem to exist." ;
+					print "The specified student does not seem to exist or you do not have access to them." ;
 					print "</div>" ;
 					print "</div>" ;
 				}
@@ -127,7 +142,7 @@ else {
 									print "<i><a href='mailto:" . $row["email"] . "'>" . $row["email"] . "</a></i>" ;
 								}
 							print "</td>" ;
-							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+							print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=2>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Website</span><br/>" ;
 								if ($row["website"]!="") {
 									print "<i><a href='" . $row["website"] . "'>" . $row["website"] . "</a></i>" ;
@@ -135,7 +150,101 @@ else {
 							print "</td>" ;
 						print "</tr>" ;
 					print "</table>" ;
-					
+						
+					$extendedBriefProfile=getSettingByScope( $connection2, "Students", "extendedBriefProfile" ) ;
+					if ($extendedBriefProfile=="Y") {
+						print "<h3>" ;
+							print "Family Details" ;
+						print "</h3>" ;
+						
+						try {
+							$dataFamily=array("gibbonPersonID"=>$gibbonPersonID); 
+							$sqlFamily="SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID" ;
+							$resultFamily=$connection2->prepare($sqlFamily);
+							$resultFamily->execute($dataFamily);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+						
+						if ($resultFamily->rowCount()<1) {
+							print "<div class='error'>" ;
+								print "There is no family information available for the current student.";
+							print "</div>" ;
+						}
+						else {
+							while ($rowFamily=$resultFamily->fetch()) {
+								$count=1 ;
+							
+								//Get adults
+								try {
+									$dataMember=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
+									$sqlMember="SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName" ;
+									$resultMember=$connection2->prepare($sqlMember);
+									$resultMember->execute($dataMember);
+								}
+								catch(PDOException $e) { 
+									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+								}
+						
+								while ($rowMember=$resultMember->fetch()) {
+									print "<h4>" ;
+									print "Adult $count" ;
+									print "</h4>" ;
+									print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
+										print "<tr>" ;
+											print "<td style='width: 33%; vertical-align: top'>" ;
+												print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
+												print formatName($rowMember["title"], $rowMember["preferredName"], $rowMember["surname"], "Parent") ;
+											print "</td>" ;
+											print "<td style='width: 33%; vertical-align: top'>" ;
+												print "<span style='font-size: 115%; font-weight: bold'>First Language</span><br/>" ;
+												print $rowMember["languageFirst"] ;
+											print "</td>" ;
+											print "<td style='width: 34%; vertical-align: top' colspan=2>" ;
+												print "<span style='font-size: 115%; font-weight: bold'>Second Language</span><br/>" ;
+												print $rowMember["languageSecond"] ;
+											print "</td>" ;
+										print "</tr>" ;
+										print "<tr>" ;
+											print "<td style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>" ;
+												print "<span style='font-size: 115%; font-weight: bold'>Contact By Phone</span><br/>" ;
+												if ($rowMember["contactCall"]=="N") {
+													print "Do not contact by phone." ;
+												}
+												else if ($rowMember["contactCall"]=="Y" AND ($rowMember["phone1"]!="" OR $rowMember["phone2"]!="" OR $rowMember["phone3"]!="" OR $rowMember["phone4"]!="")) {
+													for ($i=1; $i<5; $i++) {
+														if ($rowMember["phone" . $i]!="") {
+															if ($rowMember["phone" . $i . "Type"]!="") {
+																print $rowMember["phone" . $i . "Type"] . ":</i> " ;
+															}
+															if ($rowMember["phone" . $i . "CountryCode"]!="") {
+																print "+" . $rowMember["phone" . $i . "CountryCode"] . " " ;
+															}
+															print $rowMember["phone" . $i] . "<br/>" ;
+														}
+													}
+												}
+											print "</td>" ;
+											print "<td style='width: 33%; padding-top: 15px; width: 34%; vertical-align: top' colspan=2>" ;
+												print "<span style='font-size: 115%; font-weight: bold'>Contact By Email</span><br/>" ;
+												if ($rowMember["contactEmail"]=="N") {
+													print "Do not contact by email." ;
+												}
+												else if ($rowMember["contactEmail"]=="Y" AND ($rowMember["email"]!="" OR $rowMember["emailAlternate"]!="")) {
+													if ($rowMember["email"]!="") {
+														print "<a href='mailto:" . $rowMember["email"] . "'>" . $rowMember["email"] . "</a><br/>" ;
+													}
+													print "<br/>" ;
+												}
+											print "</td>" ;
+										print "</tr>" ;
+									print "</table>" ;
+									$count++ ;
+								}	
+							}
+						}
+					}
 					//Set sidebar
 					$_SESSION[$guid]["sidebarExtra"]=getUserPhoto($guid, $row["image_240"], 240) ;
 				}
@@ -159,7 +268,7 @@ else {
 				
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-					print "The specified student does not seem to exist." ;
+					print "The specified student does not seem to exist or you do not have access to them." ;
 					print "</div>" ;
 				}
 				else {
@@ -1899,7 +2008,7 @@ else {
 							
 							if ($result->rowCount()!=1) {
 								print "<div class='error'>" ;
-								print "The specified student does not seem to exist." ;
+								print "The specified student does not seem to exist or you do not have access to them." ;
 								print "</div>" ;
 							}
 							else {

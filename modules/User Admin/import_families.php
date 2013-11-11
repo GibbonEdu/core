@@ -31,7 +31,10 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Sync Families</div>" ;
 	print "</div>" ;
 	
-	$step=$_GET["step"] ;
+	$step=NULL ;
+	if (isset($_GET["step"])) {
+		$step=$_GET["step"] ;
+	}
 	if ($step=="") {
 		$step=1 ;
 	}

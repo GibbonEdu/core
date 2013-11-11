@@ -34,7 +34,10 @@ else {
 	print "</h2>" ;
 		
 	$gibbonApplicationFormID=$_GET["gibbonApplicationFormID"] ;
-	$search=$_GET["search"] ;
+	$search="" ;
+	if (isset($_GET["search"])) {
+		$search=$_GET["search"] ;
+	}
 	
 	if ($gibbonApplicationFormID=="") {
 		print "<div class='error'>" ;
@@ -287,14 +290,6 @@ else {
 						print "<i>" . htmlPrep($row["email"]). "</i>" ;
 					print "</td>" ;
 					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Address</span><br/>" ;
-						print "<i>" ;
-						print htmlPrep($row["address1"]) . "<br/>" ;
-						print htmlPrep($row["address1District"]) . "<br/>" ;
-						print htmlPrep($row["address1Country"]) . "<br/>" ;
-						print "</i>" ;
-					print "</td>" ;
-					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Phone</span><br/>" ;
 						print "<i>" ;
 						if ($row["phone1Type"]!="") {
@@ -305,6 +300,9 @@ else {
 						}
 						print htmlPrep($row["phone1"]) . " " ;
 						print "</i>" ;
+					print "</td>" ;
+					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+						
 					print "</td>" ;
 				print "</tr>" ;
 				if ($row["medicalInformation"]!="") {
@@ -332,6 +330,23 @@ else {
 			//No family in Gibbon
 			if ($row["gibbonFamilyID"]=="") {
 
+				print "<table cellspacing='0' style='width: 100%'>" ;
+					print "<tr>" ;
+						print "<td style='padding-top: 15px; vertical-align: top' colspan=3>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>Home Address</span><br/>" ;
+							if ($row["homeAddress"]!="") {
+								print $row["homeAddress"] . "<br/>" ;
+							}
+							if ($row["homeAddressDistrict"]!="") {
+								print $row["homeAddressDistrict"] . "<br/>" ;
+							}
+							if ($row["homeAddressCountry"]!="") {
+								print $row["homeAddressCountry"] . "<br/>" ;
+							}
+						print "</td>" ;
+					print "</tr>" ;
+				print "</table>" ;
+						
 				//Parent 1 in Gibbon
 				if ($row["parent1gibbonPersonID"]!="") {
 					$start=2 ;
@@ -356,20 +371,7 @@ else {
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Parent 1 Relationship</span><br/>" ;
-										if ($rowMember["role"]=="Parent") {
-											if ($rowMember["gender"]=="M") {
-												print "Father" ;
-											}
-											else if ($rowMember["gender"]=="F") {
-												print "Mother" ;
-											}
-											else {
-												print $rowMember["role"] ;
-											}
-										}
-										else {
-											print $rowMember["role"] ;
-										}
+										print $row["parent1relationship"] ;
 								print "</td>" ;
 								print "<td style='padding-top: 15px; width: 34%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Parent 1 Contact Priority</span><br/>" ;
@@ -410,6 +412,20 @@ else {
 									}
 								print "</td>" ;
 							print "</tr>" ;
+							print "<tr>" ;
+								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>Parent 1 Second Langage</span><br/>" ;
+									print $rowMember["languageSecond"] ;
+								print "</td>" ;
+								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>Parent 1 Profession</span><br/>" ;
+									print $rowMember["profession"] ;
+								print "</td>" ;
+								print "<td style='padding-top: 15px; width: 34%; vertical-align: top'>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>Parent 1 Employer</span><br/>" ;
+									print $rowMember["employer"] ;
+								print "</td>" ;
+							print "</tr>" ;
 						print "</table>" ;
 					}
 				}
@@ -427,20 +443,7 @@ else {
 							print "</td>" ;
 							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Parent $i Relationship</span><br/>" ;
-									if ($row["parent" . $i . "role"]=="Parent") {
-										if ($row["parent" . $i . "gender"]=="M") {
-											print "Father" ;
-										}
-										else if ($row["parent" . $i . "gender"]=="F") {
-											print "Mother" ;
-										}
-										else {
-											print $row["parent" . $i . "role"] ;
-										}
-									}
-									else {
-										print $row["parent" . $i . "role"] ;
-									}
+									print $row["parent" . $i . "relationship"] ;
 							print "</td>" ;
 							print "<td style='padding-top: 15px; width: 34%; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Parent $i Contact Priority</span><br/>" ;
@@ -455,7 +458,7 @@ else {
 							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Parent $i Phone</span><br/>" ;
 								if ($row["parent" . $i . "phone1"]!="" OR $row["parent" . $i . "phone2"]!="" OR $row["parent" . $i . "phone3"]!="" OR $row["parent" . $i . "phone4"]!="") {
-									for ($n=1; $n<5; $n++) {
+									for ($n=1; $n<3; $n++) {
 										if ($row["parent" . $i . "phone" . $n]!="") {
 											if ($row["parent" . $i . "phone" . $n . "Type"]!="") {
 												print "<i>" . $row["parent" . $i . "phone" . $n . "Type"] . ":</i> " ;
@@ -474,11 +477,22 @@ else {
 									if ($row["parent" . $i . "email"]!="") {
 										print "Email: <a href='mailto:" . $row["parent" . $i . "email"] . "'>" . $row["parent" . $i . "email"] . "</a><br/>" ;
 									}
-									if ($row["parent" . $i . "emailAlternate"]!="") {
-										print "Email 2: <a href='mailto:" . $row["parent" . $i . "emailAlternate"] . "'>" . $row["parent" . $i . "emailAlternate"] . "</a><br/>" ;
-									}
 									print "<br/>" ;
 								}
+							print "</td>" ;
+						print "</tr>" ;
+						print "<tr>" ;
+							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>Parent $i Second Langage</span><br/>" ;
+								print $row["parent" . $i . "languageSecond"] ;
+							print "</td>" ;
+							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>Parent $i Profession</span><br/>" ;
+								print $row["parent" . $i . "profession"] ;
+							print "</td>" ;
+							print "<td style='padding-top: 15px; width: 34%; vertical-align: top'>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>Parent $i Employer</span><br/>" ;
+								print $row["parent" . $i . "employer"] ;
 							print "</td>" ;
 						print "</tr>" ;
 					print "</table>" ;
@@ -521,6 +535,20 @@ else {
 									print $rowFamily["languageHome"] ;
 								print "</td>" ;
 							print "</tr>" ;
+							print "<tr>" ;
+								print "<td style='padding-top: 15px; vertical-align: top' colspan=3>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>Home Address</span><br/>" ;
+									if ($rowFamily["homeAddress"]!="") {
+										print $rowFamily["homeAddress"] . "<br/>" ;
+									}
+									if ($rowFamily["homeAddressDistrict"]!="") {
+										print $rowFamily["homeAddressDistrict"] . "<br/>" ;
+									}
+									if ($rowFamily["homeAddressCountry"]!="") {
+										print $rowFamily["homeAddressCountry"] . "<br/>" ;
+									}
+								print "</td>" ;
+							print "</tr>" ;
 						print "</table>" ;
 						
 						
@@ -544,20 +572,8 @@ else {
 									print "</td>" ;
 									print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 										print "<span style='font-size: 115%; font-weight: bold'>Parent $count Relationship</span><br/>" ;
-											if ($rowMember["role"]=="Parent") {
-												if ($rowMember["gender"]=="M") {
-													print "Father" ;
-												}
-												else if ($rowMember["gender"]=="F") {
-													print "Mother" ;
-												}
-												else {
-													print $rowMember["role"] ;
-												}
-											}
-											else {
-												print $rowMember["role"] ;
-											}
+											//This will not work and needs to be fixed. The relationship shown on edit page is a guestimate...whole form needs improving to allow specification of relationships in existing family...
+											print $row["parent1relationship"] ;
 									print "</td>" ;
 									print "<td style='padding-top: 15px; width: 34%; vertical-align: top' colspan=2>" ;
 										print "<span style='font-size: 115%; font-weight: bold'>Parent $count Contact Priority</span><br/>" ;
@@ -589,7 +605,7 @@ else {
 										}
 									print "</td>" ;
 									print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-										print "<span style='font-size: 115%; font-weight: bold'>Parent $countContact By Email</span><br/>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>Parent $count By Email</span><br/>" ;
 										if ($rowMember["contactEmail"]=="N") {
 											print "Do not contact by email." ;
 										}
@@ -604,6 +620,20 @@ else {
 										}
 									print "</td>" ;
 								print "</tr>" ;
+								print "<tr>" ;
+									print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>Parent $count Second Langage</span><br/>" ;
+										print $rowMember["languageSecond"] ;
+									print "</td>" ;
+									print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>Parent $count Profession</span><br/>" ;
+										print $rowMember["profession"] ;
+									print "</td>" ;
+									print "<td style='padding-top: 15px; width: 34%; vertical-align: top'>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>Parent $count Employer</span><br/>" ;
+										print $rowMember["employer"] ;
+									print "</td>" ;
+								print "</tr>" ;
 							print "</table>" ;
 							$count++ ;
 						}	
@@ -616,7 +646,7 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				//Get siblings from the application
 				for ($i=1; $i<4; $i++) {
-					if ($row["siblingName$i"]!="" OR $row["siblingDOB$i"]!="" OR $row["siblingName$iSchool"]!="") {
+					if ($row["siblingName$i"]!="" OR $row["siblingDOB$i"]!="" OR $row["siblingSchool$i"]!="") {
 						$siblingCount++ ;
 						print "<tr>" ;
 							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
@@ -629,7 +659,7 @@ else {
 							print "</td>" ;
 							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Sibling $siblingCount School</span><br/>" ;
-								print "<i>" . htmlPrep($row["siblingName$iSchool"]) . "</i>" ;
+								print "<i>" . htmlPrep($row["siblingSchool$i"]) . "</i>" ;
 							print "</td>" ;
 						print "</tr>" ;
 					}

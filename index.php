@@ -55,12 +55,18 @@ if (@$_SESSION[$guid]["systemSettingsSet"]==FALSE) {
 	getSystemSettings($guid, $connection2) ;
 }
 
+//Get address variable q
+$q=NULL ;
+if (isset($_GET["q"])) {
+	$q=$_GET["q"] ;
+}
 //Check for force password reset flag
 if (isset($_SESSION[$guid]["passwordForceReset"])) {
-	if ($_SESSION[$guid]["passwordForceReset"]=="Y" AND $_GET["q"]!="preferences.php") {
+	if ($_SESSION[$guid]["passwordForceReset"]=="Y" AND $q!="preferences.php") {
 		$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php" ;
 		$URL=$URL. "&forceReset=Y" ;
 		header("Location: {$URL}") ;
+		break ;
 	}
 }
 
@@ -545,7 +551,7 @@ else {
 											while ($row=$result->fetch()) {
 												try {
 													$dataChild=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"],"gibbonFamilyID"=>$row["gibbonFamilyID"]); 
-													$sqlChild="SELECT gibbonPerson.gibbonPersonID, image_75, surname, preferredName, dateStart, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName " ;
+													$sqlChild="SELECT gibbonPerson.gibbonPersonID, image_75, surname, preferredName, dateStart, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.gibbonRollGroupID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName " ;
 													$resultChild=$connection2->prepare($sqlChild);
 													$resultChild->execute($dataChild); 
 												}
@@ -560,6 +566,7 @@ else {
 													$students[$count][4]=$rowChild["gibbonPersonID"] ;
 													$students[$count][5]=$rowChild["image_75"] ;
 													$students[$count][6]=$rowChild["dateStart"] ;
+													$students[$count][7]=$rowChild["gibbonRollGroupID"] ;
 													$count++ ;
 												}
 											}
@@ -570,6 +577,7 @@ else {
 												print "Parental Dashboard" ;
 											print "</h2>" ;
 											$alert=getAlert($connection2, 002) ;
+											$entryCount=0 ;
 											
 											for ($i=0; $i<$count; $i++) {
 												print "<h4>" ;
@@ -579,7 +587,12 @@ else {
 												print "<div style='margin-right: 1%; float:left; width: 15%; text-align: center'>" ;
 													print getUserPhoto($guid, $students[$i][5], 75) ;
 													print "<div style='height: 5px'></div>" ;
-													print "<span style='font-size: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $students[$i][4] . "'>View Profile</a></span>" ;
+													print "<span style='font-size: 70%'>" ;
+														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $students[$i][4] . "'>Student Profile</a><br/>" ;
+														if (isActionAccessible($guid, $connection2, "/modules/Roll Groups/rollGroups_details.php")) {
+															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $students[$i][7] . "'>Roll Group (" . $students[$i][3] . ")</a>" ;
+														}
+													print "</span>" ;
 												print "</div>" ;
 												print "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 83%'>" ;
 													//Display planner
@@ -822,7 +835,6 @@ else {
 																	}
 																print "</td>" ;
 																print "<td>" ;
-																	print $rowEntry[""] ;
 																	if ($rowEntry["comment"]!="") {
 																		if (strlen($rowEntry["comment"])>50) {
 																			print "<script type='text/javascript'>" ;	

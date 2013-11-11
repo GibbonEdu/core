@@ -48,7 +48,7 @@ else {
 				//Proceed!
 				try {
 					$data=array("gibbonPersonID"=>$gibbonPersonID); 
-					$sql="SELECT title, surname, preferredName, type, gibbonStaff.jobTitle, email, website FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
+					$sql="SELECT title, surname, preferredName, type, gibbonStaff.jobTitle, email, website, countryOfOrigin, qualifications, biography FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -97,11 +97,33 @@ else {
 									print "<i><a href='mailto:" . $row["email"] . "'>" . $row["email"] . "</a></i>" ;
 								}
 							print "</td>" ;
-							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+							print "<td style='width: 67%; padding-top: 15px; vertical-align: top' colspan=2>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Website</span><br/>" ;
 								if ($row["website"]!="") {
 									print "<i><a href='" . $row["website"] . "'>" . $row["website"] . "</a></i>" ;
 								}
+							print "</td>" ;
+						print "</tr>" ;
+					print "</table>" ;
+					
+					print "<h4>" ;
+						print "Biography" ;
+					print "</h4>" ;
+					print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
+						print "<tr>" ;
+							print "<td style='width: 33%; vertical-align: top'>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>Country Of Origin</span><br/>" ;
+								print "<i>" . $row["countryOfOrigin"] . "</i>" ;
+							print "</td>" ;
+							print "<td style='width: 67%; vertical-align: top' colspan=2>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>Qualifications</span><br/>" ;
+								print "<i>" . $row["qualifications"] . "</i>" ;
+							print "</td>" ;
+						print "</tr>" ;
+						print "<tr>" ;
+							print "<td style='width: 100%; vertical-align: top' colspan=3>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>Biography</span><br/>" ;
+								print "<i>" . $row["biography"] . "</i>" ;
 							print "</td>" ;
 						print "</tr>" ;
 					print "</table>" ;
@@ -113,7 +135,7 @@ else {
 			else {
 				try {
 					$data=array("gibbonPersonID"=>$gibbonPersonID); 
-					$sql="SELECT gibbonPerson.*, gibbonStaff.type, gibbonStaff.jobTitle FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
+					$sql="SELECT gibbonPerson.*, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -188,6 +210,28 @@ else {
 									if ($row["email"]!="") {
 										print "<i><a href='mailto:" . $row["email"] . "'>" . $row["email"] . "</a></i>" ;
 									}
+								print "</td>" ;
+							print "</tr>" ;
+						print "</table>" ;
+						
+						print "<h4>" ;
+							print "Biography" ;
+						print "</h4>" ;
+						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
+							print "<tr>" ;
+								print "<td style='width: 33%; vertical-align: top'>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>Country Of Origin</span><br/>" ;
+									print "<i>" . $row["countryOfOrigin"] . "</i>" ;
+								print "</td>" ;
+								print "<td style='width: 67%; vertical-align: top' colspan=2>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>Qualifications</span><br/>" ;
+									print "<i>" . $row["qualifications"] . "</i>" ;
+								print "</td>" ;
+							print "</tr>" ;
+							print "<tr>" ;
+								print "<td style='width: 100%; vertical-align: top' colspan=3>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>Biography</span><br/>" ;
+									print "<i>" . $row["biography"] . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;
 						print "</table>" ;

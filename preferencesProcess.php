@@ -37,7 +37,7 @@ catch(PDOException $e) {
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 //Check to see if academic year id variables are set, if not set them 
-if (($_SESSION[$guid]["gibbonAcademicYearID"]=="") OR ($_SESSION[$guid]["gibbonAcademicYearID"]=="")) {
+if (isset($_SESSION[$guid]["gibbonAcademicYearID"])==FALSE OR isset($_SESSION[$guid]["gibbonSchoolYearName"])==FALSE) {
 	setCurrentSchoolYear($guid, $connection2) ;
 }
 

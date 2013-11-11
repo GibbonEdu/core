@@ -84,8 +84,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["title"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["title"])) {
+						if (is_array($required) AND $required["title"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='title'>" ;
 				print "</td>" ;
@@ -96,8 +98,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["surname"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["surname"])) {
+						if (is_array($required) AND $required["surname"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='surname'>" ;
 				print "</td>" ;
@@ -108,8 +112,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["firstName"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["firstName"])) {
+						if (is_array($required) AND $required["firstName"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='firstName'>" ;
 				print "</td>" ;
@@ -120,8 +126,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["preferredName"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["preferredName"])) {
+						if (is_array($required) AND $required["preferredName"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='preferredName'>" ;
 				print "</td>" ;
@@ -132,8 +140,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["officialName"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["officialName"])) {
+						if (is_array($required) AND $required["officialName"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='officialName'>" ;
 				print "</td>" ;
@@ -144,8 +154,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["nameInCharacters"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["nameInCharacters"])) {
+						if (is_array($required) AND $required["nameInCharacters"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='nameInCharacters'>" ;
 				print "</td>" ;
@@ -156,8 +168,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["dob"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["dob"])) {
+						if (is_array($required) AND $required["dob"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='dob'>" ;
 				print "</td>" ;
@@ -168,8 +182,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["email"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["email"])) {
+						if (is_array($required) AND $required["email"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='email'>" ;
 				print "</td>" ;
@@ -180,8 +196,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["emailAlternate"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["emailAlternate"])) {
+						if (is_array($required) AND $required["emailAlternate"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='emailAlternate'>" ;
 				print "</td>" ;
@@ -247,8 +265,10 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						$checked="" ;
-						if (is_array($required) AND $required["phone" . $i]=="Y") {
-							$checked="checked" ;
+						if (isset($required["phone" . $i])) {
+							if (is_array($required) AND $required["phone" . $i]=="Y") {
+								$checked="checked" ;
+							}
 						}
 						print "<input $checked type='checkbox' name='phone" . $i . "'>" ;
 					print "</td>" ;
@@ -260,8 +280,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["languageFirst"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["languageFirst"])) {
+						if (is_array($required) AND $required["languageFirst"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='languageFirst'>" ;
 				print "</td>" ;
@@ -272,8 +294,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["languageSecond"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["languageSecond"])) {
+						if (is_array($required) AND $required["languageSecond"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='languageSecond'>" ;
 				print "</td>" ;
@@ -284,8 +308,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["languageThird"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["languageThird"])) {
+						if (is_array($required) AND $required["languageThird"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='languageThird'>" ;
 				print "</td>" ;
@@ -297,8 +323,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["countryOfBirth"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["countryOfBirth"])) {
+						if (is_array($required) AND $required["countryOfBirth"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='countryOfBirth'>" ;
 				print "</td>" ;
@@ -309,8 +337,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["ethnicity"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["ethnicity"])) {
+						if (is_array($required) AND $required["ethnicity"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='ethnicity'>" ;
 				print "</td>" ;
@@ -321,8 +351,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["citizenship1"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["citizenship1"])) {
+						if (is_array($required) AND $required["citizenship1"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='citizenship1'>" ;
 				print "</td>" ;
@@ -333,8 +365,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["citizenship1Passport"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["citizenship1Passport"])) {
+						if (is_array($required) AND $required["citizenship1Passport"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='citizenship1Passport'>" ;
 				print "</td>" ;
@@ -345,8 +379,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["citizenship2"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["citizenship2"])) {
+						if (is_array($required) AND $required["citizenship2"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='citizenship2'>" ;
 				print "</td>" ;
@@ -357,8 +393,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["citizenship2Passport"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["citizenship2Passport"])) {
+						if (is_array($required) AND $required["citizenship2Passport"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='citizenship2Passport'>" ;
 				print "</td>" ;
@@ -369,8 +407,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["religion"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["religion"])) {
+						if (is_array($required) AND $required["religion"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='religion'>" ;
 				print "</td>" ;
@@ -381,8 +421,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["nationalIDCardNumber"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["nationalIDCardNumber"])) {
+						if (is_array($required) AND $required["nationalIDCardNumber"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='nationalIDCardNumber'>" ;
 				print "</td>" ;
@@ -393,8 +435,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["residencyStatus"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["residencyStatus"])) {
+						if (is_array($required) AND $required["residencyStatus"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='residencyStatus'>" ;
 				print "</td>" ;
@@ -405,8 +449,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["visaExpiryDate"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["visaExpiryDate"])) {
+						if (is_array($required) AND $required["visaExpiryDate"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='visaExpiryDate'>" ;
 				print "</td>" ;
@@ -418,8 +464,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["profession"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["profession"])) {
+						if (is_array($required) AND $required["profession"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='profession'>" ;
 				print "</td>" ;
@@ -430,8 +478,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["employer"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["employer"])) {
+						if (is_array($required) AND $required["employer"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='employer'>" ;
 				print "</td>" ;
@@ -442,8 +492,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["jobTitle"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["jobTitle"])) {
+						if (is_array($required) AND $required["jobTitle"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='jobTitle'>" ;
 				print "</td>" ;
@@ -454,8 +506,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["emergency1Name"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["emergency1Name"])) {
+						if (is_array($required) AND $required["emergency1Name"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='emergency1Name'>" ;
 				print "</td>" ;
@@ -466,8 +520,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["emergency1Number1"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["emergency1Number1"])) {
+						if (is_array($required) AND $required["emergency1Number1"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='emergency1Number1'>" ;
 				print "</td>" ;
@@ -478,8 +534,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["emergency1Number2"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["emergency1Number2"])) {
+						if (is_array($required) AND $required["emergency1Number2"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='emergency1Number2'>" ;
 				print "</td>" ;
@@ -490,8 +548,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["emergency1Relationship"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["emergency1Relationship"])) {
+						if (is_array($required) AND $required["emergency1Relationship"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='emergency1Relationship'>" ;
 				print "</td>" ;
@@ -502,8 +562,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["emergency2Name"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["emergency2Name"])) {
+						if (is_array($required) AND $required["emergency2Name"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='emergency2Name'>" ;
 				print "</td>" ;
@@ -514,8 +576,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["emergency2Number1"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["emergency2Number1"])) {
+						if (is_array($required) AND $required["emergency2Number1"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='emergency2Number1'>" ;
 				print "</td>" ;
@@ -526,8 +590,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["emergency2Number2"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["emergency2Number2"])) {
+						if (is_array($required) AND $required["emergency2Number2"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='emergency2Number2'>" ;
 				print "</td>" ;
@@ -538,8 +604,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["emergency2Relationship"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["emergency2Relationship"])) {
+						if (is_array($required) AND $required["emergency2Relationship"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='emergency2Relationship'>" ;
 				print "</td>" ;
@@ -550,8 +618,10 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
-					if (is_array($required) AND $required["vehicleRegistration"]=="Y") {
-						$checked="checked" ;
+					if (isset($required["vehicleRegistration"])) {
+						if (is_array($required) AND $required["vehicleRegistration"]=="Y") {
+							$checked="checked" ;
+						}
 					}
 					print "<input $checked type='checkbox' name='vehicleRegistration'>" ;
 				print "</td>" ;

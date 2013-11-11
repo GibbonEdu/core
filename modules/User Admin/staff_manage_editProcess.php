@@ -80,6 +80,11 @@ else {
 			if ($firstAidQualified=="Y" AND $_POST["firstAidExpiry"]!="") {
 				$firstAidExpiry=dateConvert($_POST["firstAidExpiry"]) ;
 			}
+			$countryOfOrigin=$_POST["countryOfOrigin"] ;
+			$qualifications=$_POST["qualifications"] ;
+			$biographicalGrouping=$_POST["biographicalGrouping"] ;
+			$biographicalGroupingPriority=$_POST["biographicalGroupingPriority"] ;
+			$biography=$_POST["biography"] ;
 			
 			if ($type=="") {
 				//Fail 3
@@ -89,8 +94,8 @@ else {
 			else {
 				//Write to database
 				try {
-					$data=array("type"=>$type, "jobTitle"=>$jobTitle, "firstAidQualified"=>$firstAidQualified, "firstAidExpiry"=>$firstAidExpiry, "gibbonStaffID"=>$gibbonStaffID); 
-					$sql="UPDATE gibbonStaff SET type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidExpiry=:firstAidExpiry WHERE gibbonStaffID=:gibbonStaffID" ;
+					$data=array("type"=>$type, "jobTitle"=>$jobTitle, "firstAidQualified"=>$firstAidQualified, "firstAidExpiry"=>$firstAidExpiry, "countryOfOrigin"=>$countryOfOrigin, "qualifications"=>$qualifications, "biographicalGrouping"=>$biographicalGrouping, "biographicalGroupingPriority"=>$biographicalGroupingPriority, "biography"=>$biography, "gibbonStaffID"=>$gibbonStaffID); 
+					$sql="UPDATE gibbonStaff SET type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography WHERE gibbonStaffID=:gibbonStaffID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}

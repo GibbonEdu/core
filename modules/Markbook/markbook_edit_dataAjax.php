@@ -46,7 +46,7 @@ if ($location!="") {
 				break ;
 			}
 		}
-		
+	
 		//Get post ID
 		$id="" ;
 		$doc->preserveWhiteSpace=FALSE;
@@ -58,7 +58,7 @@ if ($location!="") {
 				break ;
 			}
 		}
-		
+	
 		if ($action!="" AND $id!="") {
 			print " <input name='$count-wordpressCommentPush' id='$count-wordpressCommentPush' type='checkbox' value='$id-$action'>" ;
 		}	

@@ -99,7 +99,7 @@ else {
 					<span style="font-size: 90%"><i>Family name as shown in ID documents.</i></span>
 				</td>
 				<td class="right">
-					<input name="surname" id="surname" maxlength=30 value="<? print $row["surname"] ?>" type="text" style="width: 300px">
+					<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var surname=new LiveValidation('surname');
 						surname.add(Validate.Presence);
@@ -112,7 +112,7 @@ else {
 					<span style="font-size: 90%"><i>First name as shown in ID documents.</i></span>
 				</td>
 				<td class="right">
-					<input name="firstName" id="firstName" maxlength=30 value="<? print $row["firstName"] ?>" type="text" style="width: 300px">
+					<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var firstName=new LiveValidation('firstName');
 						firstName.add(Validate.Presence);
@@ -125,7 +125,7 @@ else {
 					<span style="font-size: 90%"><i>Most common name, alias, nickname, etc.</i></span>
 				</td>
 				<td class="right">
-					<input name="preferredName" id="preferredName" maxlength=30 value="<? print $row["preferredName"] ?>" type="text" style="width: 300px">
+					<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var preferredName=new LiveValidation('preferredName');
 						preferredName.add(Validate.Presence);
@@ -138,7 +138,7 @@ else {
 					<span style="font-size: 90%"><i>Full name as shown in ID documents.</i></span>
 				</td>
 				<td class="right">
-					<input name="officialName" id="officialName" maxlength=150 value="<? print $row["officialName"] ?>" type="text" style="width: 300px">
+					<input name="officialName" id="officialName" maxlength=150 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var officialName=new LiveValidation('officialName');
 						officialName.add(Validate.Presence);
@@ -151,7 +151,7 @@ else {
 					<span style="font-size: 90%"><i>Chinese or other character-based name.</i></span>
 				</td>
 				<td class="right">
-					<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="<? print $row["nameInCharacters"] ?>" type="text" style="width: 300px">
+					<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -176,7 +176,7 @@ else {
 					<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="dob" id="dob" maxlength=10 value="<? print $row["dob"] ?>" type="text" style="width: 300px">
+					<input name="dob" id="dob" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var dob=new LiveValidation('dob');
 						dob.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -226,7 +226,7 @@ else {
 					<span style="font-size: 90%"><i>Needs to be unique. System login name.</i></span>
 				</td>
 				<td class="right">
-					<input name="username" id="username" maxlength=20 value="<? print $row["username"] ?>" type="text" style="width: 300px">
+					<input name="username" id="username" maxlength=20 value="" type="text" style="width: 300px">
 					<?
 					$idList="" ;
 					try {
@@ -265,7 +265,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<input name="password" id="password" maxlength=20 value="<? print $row["password"] ?>" type="password" style="width: 300px">
+					<input name="password" id="password" maxlength=20 value="" type="password" style="width: 300px">
 					<script type="text/javascript">
 						var password=new LiveValidation('password');
 						password.add(Validate.Presence);
@@ -296,7 +296,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="<? print $row["passwordConfirm"] ?>" type="password" style="width: 300px">
+					<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" style="width: 300px">
 					<script type="text/javascript">
 						var passwordConfirm=new LiveValidation('passwordConfirm');
 						passwordConfirm.add(Validate.Presence);
@@ -352,7 +352,7 @@ else {
 					<b>Email</b><br/>
 				</td>
 				<td class="right">
-					<input name="email" id="email" maxlength=50 value="<? print $row["email"] ?>" type="text" style="width: 300px">
+					<input name="email" id="email" maxlength=50 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var email=new LiveValidation('email');
 						email.add(Validate.Email);
@@ -365,7 +365,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<input name="emailAlternate" id="emailAlternate" maxlength=50 value="<? print $row["emailAlternate"] ?>" type="text" style="width: 300px">
+					<input name="emailAlternate" id="emailAlternate" maxlength=50 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var emailAlternate=new LiveValidation('emailAlternate');
 						emailAlternate.add(Validate.Email);
@@ -413,7 +413,7 @@ else {
 							 });
 						});
 					</script>
-					<input <? if ($addressSet) { print "checked" ; } ?> id='showAddresses' name='showAddresses' type='checkbox' value='Yes'/>
+					<input id='showAddresses' name='showAddresses' type='checkbox' value='Yes'/>
 				</td>
 			</tr>
 			<tr class='address'>
@@ -543,7 +543,7 @@ else {
 						<span style="font-size: 90%"><i>Type, country code, number</i></span>
 					</td>
 					<td class="right">
-						<input name="phone<? print $i ?>" id="phone<? print $i ?>" maxlength=20 value="<? print $row["phone" . $i] ?>" type="text" style="width: 160px">
+						<input name="phone<? print $i ?>" id="phone<? print $i ?>" maxlength=20 value="" type="text" style="width: 160px">
 						<select name="phone<? print $i ?>CountryCode" id="phone<? print $i ?>CountryCode" style="width: 60px">
 							<?
 							print "<option value=''></option>" ;
@@ -580,7 +580,7 @@ else {
 					<span style="font-size: 90%"><i>Include http://</i></span>
 				</td>
 				<td class="right">
-					<input name="website" id="website" maxlength=255 value="<? print $row["website"] ?>" type="text" style="width: 300px">
+					<input name="website" id="website" maxlength=255 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var text=new LiveValidation('text');
 						text.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
@@ -623,7 +623,7 @@ else {
 					<b>Last School</b><br/>
 				</td>
 				<td class="right">
-					<input name="lastSchool" id="lastSchool" maxlength=30 value="<? print $row["lastSchool"] ?>" type="text" style="width: 300px">
+					<input name="lastSchool" id="lastSchool" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 				<script type="text/javascript">
 					$(function() {
@@ -651,7 +651,7 @@ else {
 					<span style="font-size: 90%"><i>Student's first day at school.<br/>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="dateStart" id="dateStart" maxlength=10 value="<? print dateConvertBack($row["dateStart"]) ?>" type="text" style="width: 300px">
+					<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var dateStart=new LiveValidation('dateStart');
 						dateStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -669,7 +669,7 @@ else {
 					<span style="font-size: 90%"><i>Student's last day at school.<br/>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="dateEnd" id="dateEnd" maxlength=10 value="<? print dateConvertBack($row["dateEnd"]) ?>" type="text" style="width: 300px">
+					<input name="dateEnd" id="dateEnd" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var dateEnd=new LiveValidation('dateEnd');
 						dateEnd.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -711,7 +711,7 @@ else {
 					<b>Next School</b><br/>
 				</td>
 				<td class="right">
-					<input name="nextSchool" id="nextSchool" maxlength=30 value="<? print $row["nextSchool"] ?>" type="text" style="width: 300px">
+					<input name="nextSchool" id="nextSchool" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 				<script type="text/javascript">
 					$(function() {
@@ -738,7 +738,7 @@ else {
 					<b>Departure Reason</b><br/>
 				</td>
 				<td class="right">
-					<input name="departureReason" id="departureReason" maxlength=30 value="<? print $row["departureReason"] ?>" type="text" style="width: 300px">
+					<input name="departureReason" id="departureReason" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 				<script type="text/javascript">
 					$(function() {
@@ -771,7 +771,7 @@ else {
 					<b>First Language</b><br/>
 				</td>
 				<td class="right">
-					<input name="languageFirst" id="languageFirst" maxlength=30 value="<? print $row["languageFirst"] ?>" type="text" style="width: 300px">
+					<input name="languageFirst" id="languageFirst" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 				<script type="text/javascript">
 					$(function() {
@@ -798,7 +798,7 @@ else {
 					<b>Second Language</b><br/>
 				</td>
 				<td class="right">
-					<input name="languageSecond" id="languageSecond" maxlength=30 value="<? print $row["languageSecond"] ?>" type="text" style="width: 300px">
+					<input name="languageSecond" id="languageSecond" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 				<script type="text/javascript">
 					$(function() {
@@ -825,7 +825,7 @@ else {
 					<b>Third Language</b><br/>
 				</td>
 				<td class="right">
-					<input name="languageThird" id="languageThird" maxlength=30 value="<? print $row["languageThird"] ?>" type="text" style="width: 300px">
+					<input name="languageThird" id="languageThird" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 				<script type="text/javascript">
 					$(function() {
@@ -938,7 +938,7 @@ else {
 					<b>Citizenship 1 Passport Number</b><br/>
 				</td>
 				<td class="right">
-					<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="<? print $row["citizenship1Passport"] ?>" type="text" style="width: 300px">
+					<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -977,7 +977,7 @@ else {
 					<b>Citizenship 2 Passport Number</b><br/>
 				</td>
 				<td class="right">
-					<input name="citizenship2Passport" id="citizenship2Passport" maxlength=30 value="<? print $row["citizenship2Passport"] ?>" type="text" style="width: 300px">
+					<input name="citizenship2Passport" id="citizenship2Passport" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -992,7 +992,7 @@ else {
 					?>
 				</td>
 				<td class="right">
-					<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="<? print $row["nationalIDCardNumber"] ?>" type="text" style="width: 300px">
+					<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -1037,7 +1037,7 @@ else {
 					?>
 				</td>
 				<td class="right">
-					<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<? print dateConvertBack($row["visaExpiryDate"]) ?>" type="text" style="width: 300px">
+					<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var visaExpiryDate=new LiveValidation('visaExpiryDate');
 						visaExpiryDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -1061,7 +1061,7 @@ else {
 					<b>Profession</b><br/>
 				</td>
 				<td class="right">
-					<input name="profession" id="profession" maxlength=30 value="<? print $row["profession"] ?>" type="text" style="width: 300px">
+					<input name="profession" id="profession" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -1069,7 +1069,7 @@ else {
 					<b>Employer</b><br/>
 				</td>
 				<td class="right">
-					<input name="employer" id="employer" maxlength=30 value="<? print $row["employer"] ?>" type="text" style="width: 300px">
+					<input name="employer" id="employer" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -1077,7 +1077,7 @@ else {
 					<b>Job Title</b><br/>
 				</td>
 				<td class="right">
-					<input name="jobTitle" id="jobTitle" maxlength=30 value="<? print $row["jobTitle"] ?>" type="text" style="width: 300px">
+					<input name="jobTitle" id="jobTitle" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			
@@ -1097,7 +1097,7 @@ else {
 					<b>Contact 1 Name</b><br/>
 				</td>
 				<td class="right">
-					<input name="emergency1Name" id="emergency1Name" maxlength=30 value="<? print $row["emergency1Name"] ?>" type="text" style="width: 300px">
+					<input name="emergency1Name" id="emergency1Name" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -1121,7 +1121,7 @@ else {
 					<b>Contact 1 Number 1</b><br/>
 				</td>
 				<td class="right">
-					<input name="emergency1Number1" id="emergency1Number1" maxlength=30 value="<? print $row["emergency1Number1"] ?>" type="text" style="width: 300px">
+					<input name="emergency1Number1" id="emergency1Number1" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -1129,7 +1129,7 @@ else {
 					<b>Contact 1 Number 2</b><br/>
 				</td>
 				<td class="right">
-					<input name="emergency1Number2" id="emergency1Number2" maxlength=30 value="<? print $row["emergency1Number2"] ?>" type="text" style="width: 300px">
+					<input name="emergency1Number2" id="emergency1Number2" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -1137,7 +1137,7 @@ else {
 					<b>Contact 2 Name</b><br/>
 				</td>
 				<td class="right">
-					<input name="emergency2Name" id="emergency2Name" maxlength=30 value="<? print $row["emergency2Name"] ?>" type="text" style="width: 300px">
+					<input name="emergency2Name" id="emergency2Name" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -1161,7 +1161,7 @@ else {
 					<b>Contact 2 Number 1</b><br/>
 				</td>
 				<td class="right">
-					<input name="emergency2Number1" id="emergency2Number1" maxlength=30 value="<? print $row["emergency2Number1"] ?>" type="text" style="width: 300px">
+					<input name="emergency2Number1" id="emergency2Number1" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -1169,7 +1169,7 @@ else {
 					<b>Contact 2 Number 2</b><br/>
 				</td>
 				<td class="right">
-					<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="<? print $row["emergency2Number2"] ?>" type="text" style="width: 300px">
+					<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			
@@ -1242,7 +1242,7 @@ else {
 					<span style="font-size: 90%"><i>If set, must be unqiue.</i></span>
 				</td>
 				<td class="right">
-					<input name="studentID" id="studentID" maxlength=10 value="<? print $row["studentID"] ?>" type="text" style="width: 300px">
+					<input name="studentID" id="studentID" maxlength=10 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -1251,7 +1251,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<input name="transport" id="transport" maxlength=255 value="<? print htmlPrep($row["transport"]) ?>" type="text" style="width: 300px">
+					<input name="transport" id="transport" maxlength=255 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<script type="text/javascript">
@@ -1279,7 +1279,7 @@ else {
 					<span style="font-size: 90%"></span>
 				</td>
 				<td class="right">
-					<input name="lockerNumber" id="lockerNumber" maxlength=20 value="<? print $row["lockerNumber"] ?>" type="text" style="width: 300px">
+					<input name="lockerNumber" id="lockerNumber" maxlength=20 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -1288,7 +1288,7 @@ else {
 					<span style="font-size: 90%"></span>
 				</td>
 				<td class="right">
-					<input name="vehicleRegistration" id="vehicleRegistration" maxlength=20 value="<? print $row["vehicleRegistration"] ?>" type="text" style="width: 300px">
+					<input name="vehicleRegistration" id="vehicleRegistration" maxlength=20 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<?

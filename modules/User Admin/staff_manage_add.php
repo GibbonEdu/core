@@ -124,13 +124,13 @@ else {
 					<b>Job Title</b><br/>
 				</td>
 				<td class="right">
-					<input name="jobTitle" id="jobTitle" maxlength=100 value="<? print $row["jobTitle"] ?>" type="text" style="width: 300px">
+					<input name="jobTitle" id="jobTitle" maxlength=100 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Qualifications</h3>
+					<h3>First Aid</h3>
 				</td>
 			</tr>
 			<!-- FIELDS & CONTROLS FOR TYPE -->
@@ -170,6 +170,73 @@ else {
 							$( "#firstAidExpiry" ).datepicker();
 						});
 					</script>
+				</td>
+			</tr>
+			
+			<tr class='break'>
+				<td colspan=2> 
+					<h3>Biography</h3>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Country Of Origin</b><br/>
+					<span style="font-size: 90%"><i>Where does this staff member come from?</i></span>
+				</td>
+				<td class="right">
+					<select name="countryOfOrigin" id="countryOfOrigin" style="width: 302px">
+						<?
+						print "<option value=''></option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }
+						while ($rowSelect=$resultSelect->fetch()) {
+							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+						}
+						?>				
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Qualifications</b><br/>
+				</td>
+				<td class="right">
+					<input name="qualifications" id="qualifications" maxlength=80 value="" type="text" style="width: 300px">
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Grouping</b><br/>
+					<span style="font-size: 90%"><i>Used for group staff when creating a staff directory.</i></span>
+				</td>
+				<td class="right">
+					<input name="biographicalGrouping" id="biographicalGrouping" maxlength=100 value="" type="text" style="width: 300px">
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Grouping Priority</b><br/>
+					<span style="font-size: 90%"><i>Higher numbers move teachers up the order within their grouping.</i></span>
+				</td>
+				<td class="right">
+					<input name="biographicalGroupingPriority" id="biographicalGroupingPriority" maxlength=4 value="0" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var biographicalGroupingPriority=new LiveValidation('biographicalGroupingPriority');
+						biographicalGroupingPriority.add(Validate.Numericality);
+					 </script>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b>Biography</b><br/>
+				</td>
+				<td class="right">
+					<textarea name='biography' id='biography' rows=10 style='width: 300px'></textarea>
 				</td>
 			</tr>
 			

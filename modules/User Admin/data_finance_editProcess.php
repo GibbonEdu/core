@@ -75,39 +75,54 @@ else {
 			//Set values
 			$data=array(); 
 			$set="" ;
-			if ($_POST["newinvoiceToOn"]=="on") {
-				$data["invoiceTo"]=$_POST["newinvoiceTo"] ;
-				$set.="gibbonFinanceInvoicee.invoiceTo=:invoiceTo, " ;
+			if (isset($_POST["newinvoiceToOn"])) {
+				if ($_POST["newinvoiceToOn"]=="on") {
+					$data["invoiceTo"]=$_POST["newinvoiceTo"] ;
+					$set.="gibbonFinanceInvoicee.invoiceTo=:invoiceTo, " ;
+				}
 			}
-			if ($_POST["newcompanyNameOn"]=="on") {
-				$data["companyName"]=$_POST["newcompanyName"] ;
-				$set.="gibbonFinanceInvoicee.companyName=:companyName, " ;
+			if (isset($_POST["newcompanyNameOn"])) {
+				if ($_POST["newcompanyNameOn"]=="on") {
+					$data["companyName"]=$_POST["newcompanyName"] ;
+					$set.="gibbonFinanceInvoicee.companyName=:companyName, " ;
+				}
 			}
-			if ($_POST["newcompanyContactOn"]=="on") {
-				$data["companyContact"]=$_POST["newcompanyContact"] ;
-				$set.="gibbonFinanceInvoicee.companyContact=:companyContact, " ;
+			if (isset($_POST["newcompanyContactOn"])) {
+				if ($_POST["newcompanyContactOn"]=="on") {
+					$data["companyContact"]=$_POST["newcompanyContact"] ;
+					$set.="gibbonFinanceInvoicee.companyContact=:companyContact, " ;
+				}
 			}
-			if ($_POST["newcompanyAddressOn"]=="on") {
-				$data["companyAddress"]=$_POST["newcompanyAddress"] ;
-				$set.="gibbonFinanceInvoicee.companyAddress=:companyAddress, " ;
+			if (isset($_POST["newcompanyAddressOn"])) {
+				if ($_POST["newcompanyAddressOn"]=="on") {
+					$data["companyAddress"]=$_POST["newcompanyAddress"] ;
+					$set.="gibbonFinanceInvoicee.companyAddress=:companyAddress, " ;
+				}
 			}
-			if ($_POST["newcompanyEmailOn"]=="on") {
-				$data["companyEmail"]=$_POST["newcompanyEmail"] ;
-				$set.="gibbonFinanceInvoicee.companyEmail=:companyEmail, " ;
+			if (isset($_POST["newcompanyEmailOn"])) {
+				if ($_POST["newcompanyEmailOn"]=="on") {
+					$data["companyEmail"]=$_POST["newcompanyEmail"] ;
+					$set.="gibbonFinanceInvoicee.companyEmail=:companyEmail, " ;
+				}
 			}
-			if ($_POST["newcompanyPhoneOn"]=="on") {
-				$data["companyPhone"]=$_POST["newcompanyPhone"] ;
-				$set.="gibbonFinanceInvoicee.companyPhone=:companyPhone, " ;
+			if (isset($_POST["newcompanyPhoneOn"])) {
+				if ($_POST["newcompanyPhoneOn"]=="on") {
+					$data["companyPhone"]=$_POST["newcompanyPhone"] ;
+					$set.="gibbonFinanceInvoicee.companyPhone=:companyPhone, " ;
+				}
 			}
-			if ($_POST["newcompanyAllOn"]=="on") {
-				$data["companyAll"]=$_POST["newcompanyAll"] ;
-				$set.="gibbonFinanceInvoicee.companyAll=:companyAll, " ;
+			if (isset($_POST["newcompanyAllOn"])) {
+				if ($_POST["newcompanyAllOn"]=="on") {
+					$data["companyAll"]=$_POST["newcompanyAll"] ;
+					$set.="gibbonFinanceInvoicee.companyAll=:companyAll, " ;
+				}
 			}
-			if ($_POST["newgibbonFinanceFeeCategoryIDListOn"]=="on") {
-				$data["gibbonFinanceFeeCategoryIDList"]=$_POST["newgibbonFinanceFeeCategoryIDList"] ;
-				$set.="gibbonFinanceInvoicee.gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, " ;
+			if (isset($_POST["newgibbonFinanceFeeCategoryIDListOn"])) {
+				if ($_POST["newgibbonFinanceFeeCategoryIDListOn"]=="on") {
+					$data["gibbonFinanceFeeCategoryIDList"]=$_POST["newgibbonFinanceFeeCategoryIDList"] ;
+					$set.="gibbonFinanceInvoicee.gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, " ;
+				}
 			}
-			
 			
 			if (strlen($set)>1) {
 				//Write to database

@@ -62,9 +62,12 @@ else {
 		print "</div>" ;
 	} 
 	
-	$gibbonPersonID=$_GET["gibbonPersonID"] ;
+	$gibbonPersonID=NULL ;
+	if (isset($_GET["gibbonPersonID"])) {
+		$gibbonPersonID=$_GET["gibbonPersonID"] ;
+	}
 	
-	if ($_GET["currentDate"]=="") {
+	if (!(isset($_GET["currentDate"]))) {
 	 	$currentDate=date("Y-m-d");
 	}
 	else {

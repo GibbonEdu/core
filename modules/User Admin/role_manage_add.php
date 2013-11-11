@@ -83,7 +83,7 @@ else {
 					<span style="font-size: 90%"><i>Needs to be unique.</i></span>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+					<input name="name" id="name" maxlength=20 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var name=new LiveValidation('name');
 						name.add(Validate.Presence);
@@ -96,7 +96,7 @@ else {
 					<span style="font-size: 90%"><i>Needs to be unique.</i></span>
 				</td>
 				<td class="right">
-					<input name="nameShort" id="nameShort" maxlength=4 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var nameShort=new LiveValidation('nameShort');
 						nameShort.add(Validate.Presence);
@@ -109,7 +109,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<input name="description" id="description" maxlength=60 value="<? print $row["description"] ?>" type="text" style="width: 300px">
+					<input name="description" id="description" maxlength=60 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var description=new LiveValidation('description');
 						description.add(Validate.Presence);

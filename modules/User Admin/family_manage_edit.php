@@ -101,7 +101,10 @@ else {
 	
 	//Check if school year specified
 	$gibbonFamilyID=$_GET["gibbonFamilyID"] ;
-	$search=$_GET["search"] ;
+	$search=NULL ;
+	if (isset($_GET["search"])) {
+		$search=$_GET["search"] ;
+	}
 	if ($gibbonFamilyID=="") {
 		print "<h1>" ;
 		print "Edit Family" ;
@@ -377,19 +380,19 @@ else {
 									print "<td>" ;
 										?>
 										<select name="relationships[]" id="relationships[]" style="width: 100%">
-											<option <? if ($relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="") { print "selected" ; } ?> value=""></option>
-											<option <? if ($relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Mother") { print "selected" ; } ?> value="Mother">Mother</option>
-											<option <? if ($relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Father") { print "selected" ; } ?> value="Father">Father</option>
-											<option <? if ($relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Step-Mother") { print "selected" ; } ?> value="Step-Mother">Step-Mother</option>
-											<option <? if ($relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Step-Father") { print "selected" ; } ?> value="Step-Father">Step-Father</option>
-											<option <? if ($relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Adoptive Parent") { print "selected" ; } ?> value="Adoptive Parent">Adoptive Parent</option>
-											<option <? if ($relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Guardian") { print "selected" ; } ?> value="Guardian">Guardian</option>
-											<option <? if ($relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Grandmother") { print "selected" ; } ?> value="Grandmother">Grandmother</option>
-											<option <? if ($relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Grandfather") { print "selected" ; } ?> value="Grandfather">Grandfather</option>
-											<option <? if ($relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Aunt") { print "selected" ; } ?> value="Aunt">Aunt</option>
-											<option <? if ($relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Uncle") { print "selected" ; } ?> value="Uncle">Uncle</option>
-											<option <? if ($relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Nanny/Helper") { print "selected" ; } ?> value="Nanny/Helper">Nanny/Helper</option>
-											<option <? if ($relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Other") { print "selected" ; } ?> value="Other">Other</option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="") { print "selected" ; } ?> value=""></option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Mother") { print "selected" ; } ?> value="Mother">Mother</option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Father") { print "selected" ; } ?> value="Father">Father</option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Step-Mother") { print "selected" ; } ?> value="Step-Mother">Step-Mother</option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Step-Father") { print "selected" ; } ?> value="Step-Father">Step-Father</option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Adoptive Parent") { print "selected" ; } ?> value="Adoptive Parent">Adoptive Parent</option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Guardian") { print "selected" ; } ?> value="Guardian">Guardian</option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Grandmother") { print "selected" ; } ?> value="Grandmother">Grandmother</option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Grandfather") { print "selected" ; } ?> value="Grandfather">Grandfather</option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Aunt") { print "selected" ; } ?> value="Aunt">Aunt</option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Uncle") { print "selected" ; } ?> value="Uncle">Uncle</option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Nanny/Helper") { print "selected" ; } ?> value="Nanny/Helper">Nanny/Helper</option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Other") { print "selected" ; } ?> value="Other">Other</option>
 										</select>
 										<input type="hidden" name="gibbonPersonID1[]" value="<? print $adult["gibbonPersonID"] ?>">
 										<input type="hidden" name="gibbonPersonID2[]" value="<? print $child["gibbonPersonID"] ?>">

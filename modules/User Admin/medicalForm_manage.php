@@ -63,7 +63,7 @@ else {
 					<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
 				</td>
 				<td class="right">
-					<input name="search" id="search" maxlength=20 value="<? print $_GET["search"] ?>" type="text" style="width: 300px">
+					<input name="search" id="search" maxlength=20 value="<? if (isset($_GET["search"])) { print $_GET["search"] ; }?>" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -84,7 +84,10 @@ else {
 	print "View" ;
 	print "</h2>" ;
 	
-	$search=$_GET["search"] ;
+	$search=NULL ;
+	if (isset($_GET["search"])) {
+		$search=$_GET["search"] ;
+	}
 	try {
 		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 		$sql="SELECT * FROM gibbonPerson JOIN gibbonPersonMedical ON (gibbonPerson.gibbonPersonID=gibbonPersonMedical.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPersonMedical.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID) WHERE (gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID) AND (status='FULL') ORDER BY surname, preferredName" ; 

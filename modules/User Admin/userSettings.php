@@ -67,7 +67,7 @@ else {
 			<tr>
 				<?
 				try {
-					$data=array("username"=>$username); 
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='nationality'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -88,7 +88,7 @@ else {
 			<tr>
 				<?
 				try {
-					$data=array("username"=>$username); 
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='ethnicity'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -109,7 +109,7 @@ else {
 			<tr>
 				<?
 				try {
-					$data=array("username"=>$username); 
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='residencyStatus'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);

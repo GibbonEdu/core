@@ -17,8 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//Gibbon system-wide includes
 include "../../functions.php" ;
 include "../../config.php" ;
+
+//Module includes
+include "./moduleFunctions.php" ;
 
 //New PDO DB connection
 try {
@@ -35,63 +39,70 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/permission_manage.php" ;
+$gibbonPersonID=$_GET["gibbonPersonID"] ;
+$search="";
+if (isset($_GET["search"])) {
+	$search=$_GET["search"] ;
+}
+$size=$_GET["size"] ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=$search" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/permission_manage.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_edit.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
+	$URL=$URL . "&deleteReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
-	if (is_null(ini_get("max_input_vars"))!=FALSE AND ini_get("max_input_vars")<=count($_POST)) {
-		//Fail 3
-		$URL=$URL . "&updateReturn=fail3" ;
+	//Proceed!
+	//Check if planner specified
+	if ($gibbonPersonID=="" OR $size=="") {
+		//Fail1
+		$URL=$URL . "&deleteReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
 		try {
-			$data=array(); 
-			$sql="DELETE FROM gibbonPermission" ;
+			$data=array("gibbonPersonID"=>$gibbonPersonID); 
+			$sql="SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail 2
-			$URL=$URL . "&updateReturn=fail2" ;
+			//Fail2
+			$URL=$URL . "&deleteReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			BREAK ;
 		}
-		
-		$insertFail=FALSE ;
-		for ($i=0;$i<count($_POST);$i++) {
-			if (isset($_POST[$i])) {
-				$gibbonActionID=substr($_POST[$i],0,7) ;
-				$gibbonRoleID=substr($_POST[$i],8) ;
-				$value=$gibbonActionID . "-" . $gibbonRoleID ;
-				if (isset($_POST[$value])) {
-					if ($_POST[$value]=="on") {
-						try {
-							$data=array("gibbonActionID"=>$gibbonActionID, "gibbonRoleID"=>$gibbonRoleID); 
-							$sql="INSERT INTO gibbonPermission SET gibbonActionID=:gibbonActionID, gibbonRoleID=:gibbonRoleID" ;
-							$result=$connection2->prepare($sql);
-							$result->execute($data);
-						}
-						catch(PDOException $e) { 
-							$insertFail=TRUE ;
-						}
-					}
+
+		if ($result->rowCount()!=1) {
+			//Fail 2
+			$URL=$URL . "&deleteReturn=fail2" ;
+			header("Location: {$URL}");
+		}
+		else {	
+			//UPDATE
+			try {
+				$sizeField=NULL ;
+				if ($size=="240") {
+					$sizeField="image_240" ;
 				}
+				else if ($size=="75") {
+					$sizeField="image_75" ;
+				}
+				$data=array("gibbonPersonID"=>$gibbonPersonID); 
+				$sql="UPDATE gibbonPerson SET $sizeField='' WHERE gibbonPersonID=:gibbonPersonID" ;
+				$result=$connection2->prepare($sql);
+				$result->execute($data);
 			}
-		}
-		
-		if ($insertFail==TRUE) {
-			//Fail 2
-			$URL=$URL . "&updateReturn=fail2" ;
-			header("Location: {$URL}");
-		}
-		else {
-			//Success0
-			$URL=$URL . "&updateReturn=success0" ;
+			catch(PDOException $e) { 
+				//Fail 2
+				$URL=$URL . "&deleteReturn=fail2" ;
+				header("Location: {$URL}");
+				break ;
+			}
+			
+			$URL=$URL . "&deleteReturn=success0" ;
+			//Success 0
 			header("Location: {$URL}");
 		}
 	}

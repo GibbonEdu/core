@@ -120,16 +120,21 @@ else {
 				} 
 			}
 			
-			if ($_GET["search"]!="") {
+			$search="" ;
+			if (isset($_GET["search"])) {
+				$search=$_GET["search"] ;
+			}
+			
+			if ($search!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php&search=" . $_GET["search"] . "'>Back to Search Results</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php&search=" . $search . "'>Back to Search Results</a>" ;
 				print "</div>" ;
 			}
 			?>
 			<div class='warning'>
 				Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and stunders/staff do not get Employment fields.
 			</div>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/user_manage_editProcess.php?gibbonPersonID=" . $gibbonPersonID . "&search=" . $_GET["search"] ?>" enctype="multipart/form-data">
+			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/user_manage_editProcess.php?gibbonPersonID=" . $gibbonPersonID . "&search=" . $search ?>" enctype="multipart/form-data">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
@@ -1375,7 +1380,7 @@ else {
 						<td class="right">
 							<?
 							if ($row["image_240"]!="") {
-								print "Current attachment: <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_240"] . "'>" . $row["image_240"] . "</a><br/><br/>" ;
+								print "Current attachment: <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_75"] . "'>" . $row["image_240"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=240' onclick='confirm(\"Are you sure you want to delete this image? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
 							}
 							?>
 							<input type="file" name="file1" id="file1"><br/><br/>
@@ -1398,7 +1403,7 @@ else {
 						<td class="right">
 							<?
 							if ($row["image_75"]!="") {
-								print "Current attachment: <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_75"] . "'>" . $row["image_75"] . "</a><br/><br/>" ;
+								print "Current attachment: <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_75"] . "'>" . $row["image_75"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=75' onclick='confirm(\"Are you sure you want to delete this image? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
 							}
 							?>
 							<input type="file" name="file2" id="file2"><br/><br/>

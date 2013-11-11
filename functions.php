@@ -2375,7 +2375,7 @@ function getNextSchoolYearID($gibbonSchoolYearID, $connection2) {
 
 //Take a year group, and return the next one, or false if none
 function getNextYearGroupID($gibbonYearGroupID, $connection2) {
-	$output==FALSE ;
+	$output=FALSE ;
 	try {
 		$data=array("gibbonYearGroupID"=>$gibbonYearGroupID); 
 		$sql="SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID" ;
@@ -2403,7 +2403,7 @@ function getNextYearGroupID($gibbonYearGroupID, $connection2) {
 
 //Return the last school year in the school, or false if none
 function getLastYearGroupID($connection2) {
-	$output==FALSE ;
+	$output=FALSE ;
 	try {
 		$data=array(); 
 		$sql="SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber DESC" ;

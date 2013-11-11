@@ -39,7 +39,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $gibbonPersonMedicalID=$_GET["gibbonPersonMedicalID"] ;
 $gibbonPersonMedicalConditionID=$_GET["gibbonPersonMedicalConditionID"] ;
 $search=$_GET["search"] ;
-if (gibbonPersonMedicalID=="" OR $gibbonPersonMedicalConditionID=="") {
+if ($gibbonPersonMedicalID=="" OR $gibbonPersonMedicalConditionID=="") {
 	print "Fatal error loading this page!" ;
 }
 else {

@@ -64,7 +64,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL=$URL . "&addReturn=fail2$params" ;
+			$URL=$URL . "&addReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}			
@@ -76,7 +76,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL=$URL . "&addReturn=fail2$params" ;
+			$URL=$URL . "&addReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}		
@@ -123,7 +123,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL=$URL . "&addReturn=fail2$params" ;
+			$URL=$URL . "&addReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}
@@ -137,12 +137,12 @@ else {
 
 		if ($partialFail==TRUE) {
 			//Fail 5
-			$URL=$URL . "&addReturn=fail5$params" ;
+			$URL=$URL . "&addReturn=fail5" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Success 0
-			$URL=$URL . "&addReturn=success0$params" ;
+			$URL=$URL . "&addReturn=success0" ;
 			header("Location: {$URL}");
 		}
 	}

@@ -61,7 +61,7 @@ else {
 			print "</div>" ;
 		}
 		else {
-			$acceptReturn=$_GET["acceptReturn"] ;
+			if (isset($_GET["acceptReturn"])) { $acceptReturn=$_GET["acceptReturn"] ; } else { $acceptReturn="" ; }
 			$acceptReturnMessage ="" ;
 			$class="error" ;
 			if (!($acceptReturn=="")) {
@@ -87,8 +87,10 @@ else {
 
 			//Let's go!
 			$row=$result->fetch() ;
-			
-			$step=$_GET["step"] ;
+			$step="" ;
+			if (isset($_GET["step"])) {
+				$step=$_GET["step"] ;
+			}
 			if ($step!=1 AND $step!=2) {
 				$step=1 ;
 			}
@@ -188,15 +190,18 @@ else {
 				
 				//Set up variables for automatic email to participants, if selected in Step 1.
 				$informParents="N" ;
-				if ($_POST["informParents"]=="on") {
-					$informParents="Y" ;
-					$informParentsArray=array() ;
+				if (isset($_POST["informParents"])) {
+					if ($_POST["informParents"]=="on") {
+						$informParents="Y" ;
+						$informParentsArray=array() ;
+					}
 				}
-				
 				$informStudent="N" ;
-				if ($_POST["informStudent"]=="on") {
-					$informStudent="Y" ;
-					$informStudentArray=array() ;
+				if (isset($_POST["informStudent"])) {
+					if ($_POST["informStudent"]=="on") {
+						$informStudent="Y" ;
+						$informStudentArray=array() ;
+					}
 				}
 				
 				//CREATE STUDENT
@@ -391,7 +396,7 @@ else {
 						$companyPhone=$row["companyPhone"] ;
 						$companyAll=$row["companyAll"] ;
 						if ($companyAll=="N") {
-							$gibbonFinanceFeeCategoryIDList=="" ;
+							$gibbonFinanceFeeCategoryIDList="" ;
 							$gibbonFinanceFeeCategoryIDArray=explode(",",$row["gibbonFinanceFeeCategoryIDList"]) ;
 							if (count($gibbonFinanceFeeCategoryIDArray)>0) {
 								foreach ($gibbonFinanceFeeCategoryIDArray AS $gibbonFinanceFeeCategoryID) {
@@ -400,6 +405,15 @@ else {
 								$gibbonFinanceFeeCategoryIDList=substr($gibbonFinanceFeeCategoryIDList,0,-1) ;
 							}
 						}
+					}
+					else {
+						$companyName=NULL ;
+						$companyContact=NULL ;
+						$companyAddress=NULL ;
+						$companyEmail=NULL ;
+						$companyPhone=NULL ;
+						$companyAll=NULL ;
+						$gibbonFinanceFeeCategoryIDList=NULL ;
 					}
 					$paymentOK=true ;
 					try {

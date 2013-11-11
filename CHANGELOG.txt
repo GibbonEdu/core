@@ -31,9 +31,42 @@ User Admin: removed otherNames field from the system (it was not needed, and cre
 
 General: removed Reset buttons from across the system
 	Edited many files across the system
+
+System Admin: added SQL error feedback to module installer, to aid in module installation troubleshooting.
+	Edited files /modules/System Admin/module_manage_install*.php
+
+User Admin: added extra information to application print out
+	Edited file /modules/User Admin/applicationForm_manage_edit_print.php
 	
+User Admin: added ability to delete user images
+	Edited file /modules/User Admin/user_admin_edit.php
+	New file /modules/User Admin/user_admin_edit_photoDeleteProcess.php
+
+User Admin: added new fields for staff biography
+	Edited table gibbonStaff
+	Edited files /modules/User Admin/staff_manage_add*.php, staff_manage_edit*.php
+	Edited file /modules/Staff/staff_view_details.php
+
+Students: added extended version of brief student profile
+	Added values to table gibbonSetting
+	Edited file /modules/School Admin/studentsSettings.php
+	Added file /modules/School Admin/studentsSettingsProcess.php
+	Edited file /modules/Students/student_view_details.php
+
+General: added link from parental dashboard to roll group listing, whilst making roll group listing parentally-accessible by default
+	Added value to table gibbonPermission
+	Edited file /index.php
+	Edited file /modules/Students/student_view_details.php
+
+Library: added link from manage view to lending view for an item
+	Edited file /modules/Library/library_manage_catalog.php
+
+Attendance: added new way to obtain absence count between two dates (inclusive)
+	Edited file /modules/Attendance/moduleFunctions.php
+
 General: fixed issues relating to PHP Notice errors
 	Edited many files across the system
+	
 	
 v7.0.01
 -------

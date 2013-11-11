@@ -31,6 +31,31 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Students Settings</div>" ;
 	print "</div>" ;
 	
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
+	$updateReturnMessage ="" ;
+	$class="error" ;
+	if (!($updateReturn=="")) {
+		if ($updateReturn=="fail0") {
+			$updateReturnMessage ="Update failed because you do not have access to this action." ;	
+		}
+		else if ($updateReturn=="fail1") {
+			$updateReturnMessage ="Update failed because a required parameter was not set." ;	
+		}
+		else if ($updateReturn=="fail2") {
+			$updateReturnMessage ="Update of one or more fields failed due to a database error." ;	
+		}
+		else if ($updateReturn=="fail3") {
+			$updateReturnMessage ="Update failed because your inputs were invalid." ;	
+		}
+		else if ($updateReturn=="success0") {
+			$updateReturnMessage ="Update was successful." ;	
+			$class="success" ;
+		}
+		print "<div class='$class'>" ;
+			print $updateReturnMessage;
+		print "</div>" ;
+	} 
+	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 	$deleteReturnMessage ="" ;
 	$class="error" ;
@@ -115,5 +140,48 @@ else {
 			}
 		print "</table>" ;
 	}
+	
+	print "<h3>" ;
+		print "Student Profile" ;
+	print "</h3>" ;
+	
+	?>
+	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/studentsSettingsProcess.php" ?>">
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<tr>
+				<?
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Students' AND name='extendedBriefProfile'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><? print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
+						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N">N</option>
+						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y">Y</option>
+					</select>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					<span style="font-size: 90%"><i>* denotes a required field</i></span>
+				</td>
+				<td class="right">
+					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="Submit">
+				</td>
+			</tr>
+		</table>
+	</form>
+	<?
 }
 ?>

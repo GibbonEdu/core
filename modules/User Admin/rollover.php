@@ -61,7 +61,10 @@ else {
 		print "</div>" ;
 	} 
 
-	$step=$_GET["step"] ;
+	$step=NULL ;
+	if (isset($_GET["step"])) {
+		$step=$_GET["step"] ;
+	}
 	if ($step!=1 AND $step!=2 AND $step!=3) {
 		$step=1 ;
 	}
@@ -96,7 +99,7 @@ else {
 				print "<div class='error'>" ;
 				print "The next school year cannot be determined, so this action cannot be performed." ;
 				print "</div>" ;
-				}
+			}
 			else {
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollover.php&step=2" ?>">
@@ -199,7 +202,7 @@ else {
 									<span style="font-size: 90%"><i>Needs to be unique.</i></span>
 								</td>
 								<td class="right">
-									<input name="nextname" id="nextname" maxlength=9 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+									<input name="nextname" id="nextname" maxlength=9 value="" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var nextname=new LiveValidation('nextname');
 										nextname.add(Validate.Presence);
@@ -229,7 +232,7 @@ else {
 									<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
 								</td>
 								<td class="right">
-									<input name="nextfirstDay" id="nextfirstDay" maxlength=10 value="<? print $row["firstDay"] ?>" type="text" style="width: 300px">
+									<input name="nextfirstDay" id="nextfirstDay" maxlength=10 value="" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var nextfirstDay=new LiveValidation('nextfirstDay');
 										nextfirstDay.add(Validate.Presence);
@@ -248,7 +251,7 @@ else {
 									<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
 								</td>
 								<td class="right">
-									<input name="nextlastDay" id="nextlastDay" maxlength=10 value="<? print $row["lastDay"] ?>" type="text" style="width: 300px">
+									<input name="nextlastDay" id="nextlastDay" maxlength=10 value="" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var nextlastDay=new LiveValidation('nextlastDay');
 										nextlastDay.add(Validate.Presence);
@@ -879,7 +882,7 @@ else {
 							print "</td>" ;
 							print "<td class='right'>" ;
 								print "<input type='hidden' name='nextYear' value='$nextYear'>" ;
-								<input type='submit' value='Proceed'>" ;
+								print "<input type='submit' value='Proceed'>" ;
 							print "</td>" ;
 						print "</tr>" ;
 					print "</table>" ;
@@ -1028,7 +1031,10 @@ else {
 						print "Set Expected Users To Full" ;
 						print "</h4>" ;
 						
-						$count=$_POST["expect-count"] ;
+						$count=NULL ;
+						if (isset($_POST["expect-count"])) {
+							$count=$_POST["expect-count"] ;
+						}
 						if ($count=="") {
 							print "<div class='error'>" ;
 							print "Update failed due to invalid inputs." ;
@@ -1086,7 +1092,10 @@ else {
 						print "Enrol New Students (Status Expected)" ;
 						print "</h4>" ;
 						
-						$count=$_POST["enrol-count"] ;
+						$count=NULL ;
+						if (isset($_POST["enrol-count"])) {
+							$count=$_POST["enrol-count"] ;
+						}
 						if ($count=="") {
 							print "<div class='error'>" ;
 							print "Add failed due to invalid inputs." ;
@@ -1189,7 +1198,10 @@ else {
 						print "Enrol New Students (Status Full)" ;
 						print "</h4>" ;
 						
-						$count=$_POST["enrolFull-count"] ;
+						$count=NULL ;
+						if (isset($_POST["enrolFull-count"])) {
+							$count=$_POST["enrolFull-count"] ;
+						}
 						if ($count=="") {
 							print "<div class='error'>" ;
 							print "Add failed due to invalid inputs." ;
@@ -1322,7 +1334,10 @@ else {
 						print "Re-Enrol Other Students" ;
 						print "</h4>" ;
 						
-						$count=$_POST["reenrol-count"] ;
+						$count=NULL ;
+						if (isset($_POST["reenrol-count"])) {
+							$count=$_POST["reenrol-count"] ;
+						}
 						if ($count=="") {
 							print "<div class='error'>" ;
 							print "Add failed due to invalid inputs." ;
@@ -1395,7 +1410,10 @@ else {
 						print "Set Final Year Students To Left" ;
 						print "</h4>" ;
 						
-						$count=$_POST["final-count"] ;
+						$count=NULL ;
+						if (isset($_POST["final-count"])) {
+							$count=$_POST["final-count"] ;
+						}
 						if ($count=="") {
 							print "<div class='error'>" ;
 							print "Update failed due to invalid inputs." ;
@@ -1448,7 +1466,10 @@ else {
 						print "Register New Staff" ;
 						print "</h4>" ;
 						
-						$count=$_POST["register-count"] ;
+						$count=NULL ;
+						if (isset($_POST["register-count"])) {
+							$count=$_POST["register-count"] ;
+						}
 						if ($count=="") {
 							print "<div class='error'>" ;
 							print "Add failed due to invalid inputs." ;

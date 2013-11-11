@@ -81,7 +81,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=100 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+					<input name="name" id="name" maxlength=100 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var name=new LiveValidation('name');
 						name.add(Validate.Presence);
@@ -108,7 +108,7 @@ else {
 					<span style="font-size: 90%"><i>Formal name to address parents with.</i></span>
 				</td>
 				<td class="right">
-					<input name="languageHome" id="languageHome" maxlength=100 value="<? print $row["languageHome"] ?>" type="text" style="width: 300px">
+					<input name="languageHome" id="languageHome" maxlength=100 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -117,7 +117,7 @@ else {
 					<span style="font-size: 90%"><i>Formal name to address parents with.</i></span>
 				</td>
 				<td class="right">
-					<input name="nameAddress" id="nameAddress" maxlength=100 value="<? print $row["nameAddress"] ?>" type="text" style="width: 300px">
+					<input name="nameAddress" id="nameAddress" maxlength=100 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var nameAddress=new LiveValidation('nameAddress');
 						nameAddress.add(Validate.Presence);
@@ -130,7 +130,7 @@ else {
 					<span style="font-size: 90%"><i>Unit, Building, Street</i></span>
 				</td>
 				<td class="right">
-					<input name="homeAddress" id="homeAddress" maxlength=255 value="<? print $row["homeAddress"] ?>" type="text" style="width: 300px">
+					<input name="homeAddress" id="homeAddress" maxlength=255 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -139,7 +139,7 @@ else {
 					<span style="font-size: 90%"><i>County, State, District</i></span>
 				</td>
 				<td class="right">
-					<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<? print $row["homeAddressDistrict"] ?>" type="text" style="width: 300px">
+					<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 				<script type="text/javascript">
 					$(function() {

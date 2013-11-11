@@ -21,7 +21,13 @@ print "<div class='trail'>" ;
 print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > </div><div class='trailEnd'>Preferences</div>" ;
 print "</div>" ;
 	
-$forceReset=$_GET["forceReset"] ;
+if (isset($_GET["forceReset"])) {
+	$forceReset=$_GET["forceReset"] ;
+}
+else {
+	$forceReset=NULL ;
+}
+
 if (isset($_GET["forceResetReturn"])) {
 	$forceResetReturn=$_GET["forceResetReturn"] ;
 }

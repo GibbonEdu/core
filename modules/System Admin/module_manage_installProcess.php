@@ -37,6 +37,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 //Get URL from calling page, and set returning URL
 $URL=$_GET["return"] ;
+$_SESSION[$guid]["moduleInstallError"]="" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/module_manage_install.php")==FALSE) {
 	//Fail 0
@@ -146,7 +147,8 @@ else {
 									$sql=$moduleTables[$i] ;
 									$result=$connection2->query($sql);   
 								}
-								catch(PDOException $e) { 
+								catch(PDOException $e) {
+								  	$_SESSION[$guid]["moduleInstallError"].=$sql . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
 									$partialFail=TRUE ;
 								}
 							}
@@ -177,6 +179,7 @@ else {
 									$resultModule->execute($dataModule);
 								}
 								catch(PDOException $e) {
+									$_SESSION[$guid]["moduleInstallError"].=$sqlModule . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
 									$partialFail=TRUE ;
 								}
 							}
@@ -203,6 +206,7 @@ else {
 										$resultPermissions->execute($dataPermissions);
 									}
 									catch(PDOException $e) { 
+										$_SESSION[$guid]["moduleInstallError"].=$sqlPermissions . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
 										$partialFail=TRUE ;
 									}
 								}
@@ -214,6 +218,7 @@ else {
 										$resultPermissions->execute($dataPermissions);
 									}
 									catch(PDOException $e) { 
+										$_SESSION[$guid]["moduleInstallError"].=$sqlPermissions . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
 										$partialFail=TRUE ;
 									}
 								}
@@ -225,6 +230,7 @@ else {
 										$resultPermissions->execute($dataPermissions);
 									}
 									catch(PDOException $e) { 
+										$_SESSION[$guid]["moduleInstallError"].=$sqlPermissions . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
 										$partialFail=TRUE ;
 									}
 								}
@@ -236,6 +242,7 @@ else {
 										$resultPermissions->execute($dataPermissions);
 									}
 									catch(PDOException $e) { 
+										$_SESSION[$guid]["moduleInstallError"].=$sqlPermissions . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
 										$partialFail=TRUE ;
 									}
 								}
@@ -247,6 +254,7 @@ else {
 										$resultPermissions->execute($dataPermissions);
 									}
 									catch(PDOException $e) { 
+										$_SESSION[$guid]["moduleInstallError"].=$sqlPermissions . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
 										$partialFail=TRUE ;
 									}
 								}
@@ -260,6 +268,7 @@ else {
 										$result=$connection2->query($sql);   
 									}
 									catch(PDOException $e) { 
+										$_SESSION[$guid]["moduleInstallError"].=$sql . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
 										$partialFail=TRUE ;
 									}
 								}

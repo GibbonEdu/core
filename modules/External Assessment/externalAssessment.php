@@ -37,8 +37,10 @@ else {
 	print "Search" ;
 	print "</h2>" ;
 	
-	$gibbonPersonID=$_GET["gibbonPersonID"] ;
-	$search=$_GET["search"] ;
+	$search=NULL ;
+	if (isset($_GET["search"])) {
+		$search=$_GET["search"] ;
+	}
 
 	?>
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -50,7 +52,7 @@ else {
 					<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
 				</td>
 				<td class="right">
-					<input name="search" id="search" maxlength=20 value="<? print $_GET["search"] ?>" type="text" style="width: 300px">
+					<input name="search" id="search" maxlength=20 value="<? print $search ?>" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -77,7 +79,6 @@ else {
 		$page=1 ;
 	}
 	
-	$search=$_GET["search"] ;
 		
 	try {
 		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -102,7 +103,7 @@ else {
 	}
 	else {
 		if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
+			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "search=$search") ;
 		}
 	
 		print "<table cellspacing='0' style='width: 100%'>" ;
@@ -158,7 +159,7 @@ else {
 		print "</table>" ;
 		
 		if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
+			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "search=$search") ;
 		}
 	}
 }

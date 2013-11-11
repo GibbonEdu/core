@@ -109,21 +109,29 @@ else {
 			//Set values
 			$data=array() ;
 			$sqlSet="" ;
-			if ($_POST["bloodTypeOn"]=="on") {
-				$data["bloodType"]=$_POST["bloodType"] ;
-				$sqlSet.="bloodType=:bloodType, " ;
+			if (isset($_POST["bloodTypeOn"])) {
+				if ($_POST["bloodTypeOn"]=="on") {
+					$data["bloodType"]=$_POST["bloodType"] ;
+					$sqlSet.="bloodType=:bloodType, " ;
+				}
 			}
-			if ($_POST["longTermMedicationOn"]=="on") {
-				$data["longTermMedication"]=$_POST["longTermMedication"] ;
-				$sqlSet.="longTermMedication=:longTermMedication, " ;
+			if (isset($_POST["longTermMedicationOn"])) {
+				if ($_POST["longTermMedicationOn"]=="on") {
+					$data["longTermMedication"]=$_POST["longTermMedication"] ;
+					$sqlSet.="longTermMedication=:longTermMedication, " ;
+				}
 			}
-			if ($_POST["longTermMedicationDetailsOn"]=="on") {
-				$data["longTermMedicationDetails"]=$_POST["longTermMedicationDetails"] ;
-				$sqlSet.="longTermMedicationDetails=:longTermMedicationDetails, " ;
+			if (isset($_POST["longTermMedicationDetailsOn"])) {
+				if ($_POST["longTermMedicationDetailsOn"]=="on") {
+					$data["longTermMedicationDetails"]=$_POST["longTermMedicationDetails"] ;
+					$sqlSet.="longTermMedicationDetails=:longTermMedicationDetails, " ;
+				}
 			}
-			if ($_POST["tetanusWithin10YearsOn"]=="on") {
-				$data["tetanusWithin10Years"]=$_POST["tetanusWithin10Years"] ;
-				$sqlSet.="tetanusWithin10Years=:tetanusWithin10Years, " ;
+			if (isset($_POST["tetanusWithin10YearsOn"])) {
+				if ($_POST["tetanusWithin10YearsOn"]=="on") {
+					$data["tetanusWithin10Years"]=$_POST["tetanusWithin10Years"] ;
+					$sqlSet.="tetanusWithin10Years=:tetanusWithin10Years, " ;
+				}
 			}
 			
 			
@@ -131,52 +139,74 @@ else {
 			
 			//Write to database
 			//If form already exisits
+			$count=0 ;
+			$count2=0 ;
 			if ($_POST["formExists"]==TRUE) {
 				//Scan through existing conditions
-				$count=$_POST["count"] ;
+				if (isset($_POST["count"])) {
+					$count=$_POST["count"] ;
+				}
 				for ($i=0; $i<$count; $i++) {
 					$dataCond=array() ;
 					$sqlSetCond="" ;
-					if ($_POST["nameOn$i"]=="on") {
-						$dataCond["name"]=$_POST["name$i"] ;
-						$sqlSetCond.="name=:name, " ; 
-					}
-					if ($_POST["gibbonAlertLevelIDOn$i"]=="on") {
-						$dataCond["gibbonAlertLevelID"]=$_POST["gibbonAlertLevelID$i"] ;
-						$sqlSetCond.="gibbonAlertLevelID=:gibbonAlertLevelID, " ; 
-					}
-					if ($_POST["triggersOn$i"]=="on") {
-						$dataCond["triggers"]=$_POST["triggers$i"] ;
-						$sqlSetCond.="triggers=:triggers, " ; 
-					}
-					if ($_POST["reactionOn$i"]=="on") {
-						$dataCond["reaction"]=$_POST["reaction$i"] ;
-						$sqlSetCond.="reaction=:reaction, " ; 
-					}
-					if ($_POST["responseOn$i"]=="on") {
-						$dataCond["response"]=$_POST["response$i"] ;
-						$sqlSetCond.="response=:response, " ; 
-					}
-					if ($_POST["medicationOn$i"]=="on") {
-						$dataCond["medication"]=$_POST["medication$i"] ;
-						$sqlSetCond.="medication=:medication, " ; 
-					}
-					if ($_POST["lastEpisodeOn$i"]=="on") {
-						if ($_POST["lastEpisode$i"]!="") {
-							$dataCond["lastEpisode"]=$_POST["lastEpisode$i"] ;
-							$sqlSetCond.="lastEpisode=:lastEpisode, " ;
-						}
-						else {
-							$sqlSetCond.="lastEpisode=NULL, " ;
+					if (isset($_POST["nameOn$i"])) {
+						if ($_POST["nameOn$i"]=="on") {
+							$dataCond["name"]=$_POST["name$i"] ;
+							$sqlSetCond.="name=:name, " ; 
 						}
 					}
-					if ($_POST["lastEpisodeTreatmentOn$i"]=="on") {
-						$dataCond["lastEpisodeTreatment"]=$_POST["lastEpisodeTreatment$i"] ;
-						$sqlSetCond.="lastEpisodeTreatment=:lastEpisodeTreatment, " ; 
+					if (isset($_POST["gibbonAlertLevelIDOn$i"])) {
+						if ($_POST["gibbonAlertLevelIDOn$i"]=="on") {
+							$dataCond["gibbonAlertLevelID"]=$_POST["gibbonAlertLevelID$i"] ;
+							$sqlSetCond.="gibbonAlertLevelID=:gibbonAlertLevelID, " ; 
+						}
 					}
-					if ($_POST["commentOn$i"]=="on") {
-						$dataCond["comment"]=$_POST["comment$i"] ;
-						$sqlSetCond.="comment=:comment, " ; 
+					if (isset($_POST["triggersOn$i"])) {
+						if ($_POST["triggersOn$i"]=="on") {
+							$dataCond["triggers"]=$_POST["triggers$i"] ;
+							$sqlSetCond.="triggers=:triggers, " ; 
+						}
+					}
+					if (isset($_POST["reactionOn$i"])) {
+						if ($_POST["reactionOn$i"]=="on") {
+							$dataCond["reaction"]=$_POST["reaction$i"] ;
+							$sqlSetCond.="reaction=:reaction, " ; 
+						}
+					}
+					if (isset($_POST["responseOn$i"])) {
+						if ($_POST["responseOn$i"]=="on") {
+							$dataCond["response"]=$_POST["response$i"] ;
+							$sqlSetCond.="response=:response, " ; 
+						}
+					}
+					if (isset($_POST["medicationOn$i"])) {
+						if ($_POST["medicationOn$i"]=="on") {
+							$dataCond["medication"]=$_POST["medication$i"] ;
+							$sqlSetCond.="medication=:medication, " ; 
+						}
+					}
+					if (isset($_POST["lastEpisodeOn$i"])) {
+						if ($_POST["lastEpisodeOn$i"]=="on") {
+							if ($_POST["lastEpisode$i"]!="") {
+								$dataCond["lastEpisode"]=$_POST["lastEpisode$i"] ;
+								$sqlSetCond.="lastEpisode=:lastEpisode, " ;
+							}
+							else {
+								$sqlSetCond.="lastEpisode=NULL, " ;
+							}
+						}
+					}
+					if (isset($_POST["lastEpisodeTreatmentOn$i"])) {
+						if ($_POST["lastEpisodeTreatmentOn$i"]=="on") {
+							$dataCond["lastEpisodeTreatment"]=$_POST["lastEpisodeTreatment$i"] ;
+							$sqlSetCond.="lastEpisodeTreatment=:lastEpisodeTreatment, " ; 
+						}
+					}
+					if (isset($_POST["commentOn$i"])) {
+						if ($_POST["commentOn$i"]=="on") {
+							$dataCond["comment"]=$_POST["comment$i"] ;
+							$sqlSetCond.="comment=:comment, " ; 
+						}
 					}
 					
 					try {
@@ -193,51 +223,71 @@ else {
 				
 				
 				//Scan through new conditions
-				$count2=$_POST["count2"] ;
+				if (isset($_POST["count2"])) {
+					$count2=$_POST["count2"] ;
+				}
 				for ($i=($count+1); $i<=($count+$count2); $i++) {
 					if ($_POST["nameOn$i"]=="on" AND $_POST["gibbonAlertLevelIDOn$i"]=="on" AND $_POST["gibbonPersonMedicalConditionUpdateID$i"]!="") {
 						$dataCond=array() ;
 						$sqlSetCond="" ;
-						if ($_POST["nameOn$i"]=="on") {
-							$dataCond["name"]=$_POST["name$i"] ;
-							$sqlSetCond.="name=:name, " ; 
-						}
-						if ($_POST["gibbonAlertLevelIDOn$i"]=="on") {
-							$dataCond["gibbonAlertLevelID"]=$_POST["gibbonAlertLevelID$i"] ;
-							$sqlSetCond.="gibbonAlertLevelID=:gibbonAlertLevelID, " ; 
-						}
-						if ($_POST["triggersOn$i"]=="on") {
-							$dataCond["triggers"]=$_POST["triggers$i"] ;
-							$sqlSetCond.="triggers=:triggers, " ; 
-						}
-						if ($_POST["reactionOn$i"]=="on") {
-							$dataCond["reaction"]=$_POST["reaction$i"] ;
-							$sqlSetCond.="reaction=:reaction, " ; 
-						}
-						if ($_POST["responseOn$i"]=="on") {
-							$dataCond["response"]=$_POST["response$i"] ;
-							$sqlSetCond.="response=:response, " ; 
-						}
-						if ($_POST["medicationOn$i"]=="on") {
-							$dataCond["medication"]=$_POST["medication$i"] ;
-							$sqlSetCond.="medication=:medication, " ; 
-						}
-						if ($_POST["lastEpisodeOn$i"]=="on") {
-							if ($_POST["lastEpisode$i"]!="") {
-								$dataCond["lastEpisode"]=$_POST["lastEpisode$i"] ;
-								$sqlSetCond.="lastEpisode=:lastEpisode, " ;
-							}
-							else {
-								$sqlSetCond.="lastEpisode=NULL, " ;
+						if (isset($_POST["nameOn$i"])) {
+							if ($_POST["nameOn$i"]=="on") {
+								$dataCond["name"]=$_POST["name$i"] ;
+								$sqlSetCond.="name=:name, " ; 
 							}
 						}
-						if ($_POST["lastEpisodeTreatmentOn$i"]=="on") {
-							$dataCond["lastEpisodeTreatment"]=$_POST["lastEpisodeTreatment$i"] ;
-							$sqlSetCond.="lastEpisodeTreatment=:lastEpisodeTreatment, " ; 
+						if (isset($_POST["gibbonAlertLevelIDOn$i"])) {
+							if ($_POST["gibbonAlertLevelIDOn$i"]=="on") {
+								$dataCond["gibbonAlertLevelID"]=$_POST["gibbonAlertLevelID$i"] ;
+								$sqlSetCond.="gibbonAlertLevelID=:gibbonAlertLevelID, " ; 
+							}
 						}
-						if ($_POST["commentOn$i"]=="on") {
-							$dataCond["comment"]=$_POST["comment$i"] ;
-							$sqlSetCond.="comment=:comment, " ; 
+						if (isset($_POST["triggersOn$i"])) {
+							if ($_POST["triggersOn$i"]=="on") {
+								$dataCond["triggers"]=$_POST["triggers$i"] ;
+								$sqlSetCond.="triggers=:triggers, " ; 
+							}
+						}
+						if (isset($_POST["reactionOn$i"])) {
+							if ($_POST["reactionOn$i"]=="on") {
+								$dataCond["reaction"]=$_POST["reaction$i"] ;
+								$sqlSetCond.="reaction=:reaction, " ; 
+							}
+						}
+						if (isset($_POST["responseOn$i"])) {
+							if ($_POST["responseOn$i"]=="on") {
+								$dataCond["response"]=$_POST["response$i"] ;
+								$sqlSetCond.="response=:response, " ; 
+							}
+						}
+						if (isset($_POST["medicationOn$i"])) {
+							if ($_POST["medicationOn$i"]=="on") {
+								$dataCond["medication"]=$_POST["medication$i"] ;
+								$sqlSetCond.="medication=:medication, " ; 
+							}
+						}
+						if (isset($_POST["lastEpisodeOn$i"])) {
+							if ($_POST["lastEpisodeOn$i"]=="on") {
+								if ($_POST["lastEpisode$i"]!="") {
+									$dataCond["lastEpisode"]=$_POST["lastEpisode$i"] ;
+									$sqlSetCond.="lastEpisode=:lastEpisode, " ;
+								}
+								else {
+									$sqlSetCond.="lastEpisode=NULL, " ;
+								}
+							}
+						}
+						if (isset($_POST["lastEpisodeTreatmentOn$i"])) {
+							if ($_POST["lastEpisodeTreatmentOn$i"]=="on") {
+								$dataCond["lastEpisodeTreatment"]=$_POST["lastEpisodeTreatment$i"] ;
+								$sqlSetCond.="lastEpisodeTreatment=:lastEpisodeTreatment, " ; 
+							}
+						}
+						if (isset($_POST["commentOn$i"])) {
+							if ($_POST["commentOn$i"]=="on") {
+								$dataCond["comment"]=$_POST["comment$i"] ;
+								$sqlSetCond.="comment=:comment, " ; 
+							}
 						}
 						
 						try {
@@ -318,52 +368,72 @@ else {
 			//If form does not already exist
 			else {
 				//Scan through new conditions
-				$count2=$_POST["count2"] ;
+				if (isset($_POST["count2"])) {
+					$count2=$_POST["count2"] ;
+				}
 				for ($i=($count+1); $i<=($count+$count2); $i++) {
 					if ($_POST["nameOn$i"]=="on" AND $_POST["gibbonAlertLevelIDOn$i"]=="on") {
 						//Scan through existing conditions
 						$dataCond=array() ;
 						$sqlSetCond="" ;
-						if ($_POST["nameOn$i"]=="on") {
-							$dataCond["name"]=$_POST["name$i"] ;
-							$sqlSetCond.="name=:name, " ; 
-						}
-						if ($_POST["gibbonAlertLevelIDOn$i"]=="on") {
-							$dataCond["gibbonAlertLevelID"]=$_POST["gibbonAlertLevelID$i"] ;
-							$sqlSetCond.="gibbonAlertLevelID=:gibbonAlertLevelID, " ; 
-						}
-						if ($_POST["triggersOn$i"]=="on") {
-							$dataCond["triggers"]=$_POST["triggers$i"] ;
-							$sqlSetCond.="triggers=:triggers, " ; 
-						}
-						if ($_POST["reactionOn$i"]=="on") {
-							$dataCond["reaction"]=$_POST["reaction$i"] ;
-							$sqlSetCond.="reaction=:reaction, " ; 
-						}
-						if ($_POST["responseOn$i"]=="on") {
-							$dataCond["response"]=$_POST["response$i"] ;
-							$sqlSetCond.="response=:response, " ; 
-						}
-						if ($_POST["medicationOn$i"]=="on") {
-							$dataCond["medication"]=$_POST["medication$i"] ;
-							$sqlSetCond.="medication=:medication, " ; 
-						}
-						if ($_POST["lastEpisodeOn$i"]=="on") {
-							if ($_POST["lastEpisode$i"]!="") {
-								$dataCond["lastEpisode"]=$_POST["lastEpisode$i"] ;
-								$sqlSetCond.="lastEpisode=:lastEpisode, " ;
-							}
-							else {
-								$sqlSetCond.="lastEpisode=NULL, " ;
+						if (isset($_POST["nameOn$i"])) {
+							if ($_POST["nameOn$i"]=="on") {
+								$dataCond["name"]=$_POST["name$i"] ;
+								$sqlSetCond.="name=:name, " ; 
 							}
 						}
-						if ($_POST["lastEpisodeTreatmentOn$i"]=="on") {
-							$dataCond["lastEpisodeTreatment"]=$_POST["lastEpisodeTreatment$i"] ;
-							$sqlSetCond.="lastEpisodeTreatment=:lastEpisodeTreatment, " ; 
+						if (isset($_POST["gibbonAlertLevelIDOn$i"])) {
+							if ($_POST["gibbonAlertLevelIDOn$i"]=="on") {
+								$dataCond["gibbonAlertLevelID"]=$_POST["gibbonAlertLevelID$i"] ;
+								$sqlSetCond.="gibbonAlertLevelID=:gibbonAlertLevelID, " ; 
+							}
 						}
-						if ($_POST["commentOn$i"]=="on") {
-							$dataCond["comment"]=$_POST["comment$i"] ;
-							$sqlSetCond.="comment=:comment, " ; 
+						if (isset($_POST["triggersOn$i"])) {
+							if ($_POST["triggersOn$i"]=="on") {
+								$dataCond["triggers"]=$_POST["triggers$i"] ;
+								$sqlSetCond.="triggers=:triggers, " ; 
+							}
+						}
+						if (isset($_POST["reactionOn$i"])) {
+							if ($_POST["reactionOn$i"]=="on") {
+								$dataCond["reaction"]=$_POST["reaction$i"] ;
+								$sqlSetCond.="reaction=:reaction, " ; 
+							}
+						}
+						if (isset($_POST["responseOn$i"])) {
+							if ($_POST["responseOn$i"]=="on") {
+								$dataCond["response"]=$_POST["response$i"] ;
+								$sqlSetCond.="response=:response, " ; 
+							}
+						}
+						if (isset($_POST["medicationOn$i"])) {
+							if ($_POST["medicationOn$i"]=="on") {
+								$dataCond["medication"]=$_POST["medication$i"] ;
+								$sqlSetCond.="medication=:medication, " ; 
+							}
+						}
+						if (isset($_POST["lastEpisodeOn$i"])) {
+							if ($_POST["lastEpisodeOn$i"]=="on") {
+								if ($_POST["lastEpisode$i"]!="") {
+									$dataCond["lastEpisode"]=$_POST["lastEpisode$i"] ;
+									$sqlSetCond.="lastEpisode=:lastEpisode, " ;
+								}
+								else {
+									$sqlSetCond.="lastEpisode=NULL, " ;
+								}
+							}
+						}
+						if (isset($_POST["lastEpisodeTreatmentOn$i"])) {
+							if ($_POST["lastEpisodeTreatmentOn$i"]=="on") {
+								$dataCond["lastEpisodeTreatment"]=$_POST["lastEpisodeTreatment$i"] ;
+								$sqlSetCond.="lastEpisodeTreatment=:lastEpisodeTreatment, " ; 
+							}
+						}
+						if (isset($_POST["commentOn$i"])) {
+							if ($_POST["commentOn$i"]=="on") {
+								$dataCond["comment"]=$_POST["comment$i"] ;
+								$sqlSetCond.="comment=:comment, " ; 
+							}
 						}
 						
 						try {

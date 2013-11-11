@@ -75,21 +75,29 @@ else {
 			//Set values
 			$data=array(); 
 			$set="" ;
-			if ($_POST["newnameAddressOn"]=="on") {
-				$data["nameAddress"]=$_POST["newnameAddress"] ;
-				$set.="gibbonFamily.nameAddress=:nameAddress, " ;
+			if (isset($_POST["newnameAddressOn"])) {
+				if ($_POST["newnameAddressOn"]=="on") {
+					$data["nameAddress"]=$_POST["newnameAddress"] ;
+					$set.="gibbonFamily.nameAddress=:nameAddress, " ;
+				}
 			}
-			if ($_POST["newhomeAddressOn"]=="on") {
-				$data["homeAddress"]=$_POST["newhomeAddress"] ;
-				$set.="gibbonFamily.homeAddress=:homeAddress, " ;
+			if (isset($_POST["newhomeAddressOn"])) {
+				if ($_POST["newhomeAddressOn"]=="on") {
+					$data["homeAddress"]=$_POST["newhomeAddress"] ;
+					$set.="gibbonFamily.homeAddress=:homeAddress, " ;
+				}
 			}
-			if ($_POST["newhomeAddressDistrictOn"]=="on") {
-				$data["homeAddressDistrict"]=$_POST["newhomeAddressDistrict"] ;
-				$set.="gibbonFamily.homeAddressDistrict=:homeAddressDistrict, " ;
+			if (isset($_POST["newhomeAddressDistrictOn"])) {
+				if ($_POST["newhomeAddressDistrictOn"]=="on") {
+					$data["homeAddressDistrict"]=$_POST["newhomeAddressDistrict"] ;
+					$set.="gibbonFamily.homeAddressDistrict=:homeAddressDistrict, " ;
+				}
 			}
-			if ($_POST["newhomeAddressCountryOn"]=="on") {
-				$data["homeAddressCountry"]=$_POST["newhomeAddressCountry"] ;
-				$set.="gibbonFamily.homeAddressCountry=:homeAddressCountry, " ;
+			if (isset($_POST["newhomeAddressCountryOn"])) {
+				if ($_POST["newhomeAddressCountryOn"]=="on") {
+					$data["homeAddressCountry"]=$_POST["newhomeAddressCountry"] ;
+					$set.="gibbonFamily.homeAddressCountry=:homeAddressCountry, " ;
+				}
 			}
 			
 			if (strlen($set)>1) {

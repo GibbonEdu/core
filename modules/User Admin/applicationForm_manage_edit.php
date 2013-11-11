@@ -1653,7 +1653,6 @@ else {
 									print "</table>" ;	
 									print "<input type='hidden' name='gibbonFamilyID' value='" . $row["gibbonFamilyID"] . "'/>" ;
 								}
-								
 								?>
 							</td>
 						</tr>

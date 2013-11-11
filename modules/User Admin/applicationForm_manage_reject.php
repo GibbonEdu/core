@@ -61,7 +61,7 @@ else {
 			print "</div>" ;
 		}
 		else {
-			$rejectReturn=$_GET["rejectReturn"] ;
+			if (isset($_GET["rejectReturn"])) { $rejectReturn=$_GET["rejectReturn"] ; } else { $rejectReturn="" ; }
 			$rejectReturnMessage ="" ;
 			$class="error" ;
 			if (!($rejectReturn=="")) {

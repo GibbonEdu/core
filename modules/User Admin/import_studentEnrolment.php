@@ -31,7 +31,10 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Sync Student Enrolment</div>" ;
 	print "</div>" ;
 	
-	$step=$_GET["step"] ;
+	$step=NULL ;
+	if (isset($_GET["step"])) {
+		$step=$_GET["step"] ;
+	}
 	if ($step=="") {
 		$step=1 ;
 	}
@@ -260,18 +263,20 @@ else {
 						foreach ($users AS $user) {
 							$addUserFail=FALSE ;
 							try {
-								$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "username"=>$user["username"], "rollGroup"=>$user["rollGroup"], "yearGroup"=>$user["yearGroup"]); 
-								$sql="INSERT INTO gibbonStudentEnrolment SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=(SELECT gibbonPersonID FROM gibbonPerson WHERE username=:username), gibbonRollGroupID=(SELECT gibbonRollGroupID FROM gibbonRollGroup WHERE nameShort=:rollGroup), gibbonYearGroupID=(SELECT gibbonYearGroupID FROM gibbonYearGroup WHERE nameShort=:yearGroup)" ;
+								$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"], "username"=>$user["username"], "rollGroup"=>$user["rollGroup"], "yearGroup"=>$user["yearGroup"]); 
+								$sql="INSERT INTO gibbonStudentEnrolment SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=(SELECT gibbonPersonID FROM gibbonPerson WHERE username=:username), gibbonRollGroupID=(SELECT gibbonRollGroupID FROM gibbonRollGroup WHERE nameShort=:rollGroup AND gibbonSchoolYearID=:gibbonSchoolYearID2), gibbonYearGroupID=(SELECT gibbonYearGroupID FROM gibbonYearGroup WHERE nameShort=:yearGroup)" ;
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}
 							catch(PDOException $e) { 
 								$addUserFail=TRUE ;
+								print $e->getMessage() . "<br/>" ;
 							}
 							
 							//Spit out results
 							if ($addUserFail==TRUE) {
 								print "<div class='error'>" ;
+									
 									print "There was an error enroling student: " . $user["username"] . "." ;
 								print "</div>" ;
 							}

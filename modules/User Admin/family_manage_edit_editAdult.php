@@ -63,7 +63,7 @@ else {
 	$gibbonFamilyID=$_GET["gibbonFamilyID"] ;
 	$gibbonPersonID=$_GET["gibbonPersonID"] ;
 	$search=$_GET["search"] ;
-	if (gibbonPersonID=="" OR $gibbonFamilyID=="") {
+	if ($gibbonPersonID=="" OR $gibbonFamilyID=="") {
 		print "<div class='error'>" ;
 			print "You have not specified a person or family." ;
 		print "</div>" ;

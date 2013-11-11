@@ -127,13 +127,13 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL=$URL . "&updateReturn=fail2$params" ;
+						$URL=$URL . "&updateReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
 					
 					//Success 0
-					$URL=$URL . "&updateReturn=success0$params" ;
+					$URL=$URL . "&updateReturn=success0" ;
 					header("Location: {$URL}");
 				}
 			}

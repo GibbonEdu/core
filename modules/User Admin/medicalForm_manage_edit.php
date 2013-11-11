@@ -71,7 +71,10 @@ else {
 	
 	//Check if person medical specified
 	$gibbonPersonMedicalID=$_GET["gibbonPersonMedicalID"] ;
-	$search=$_GET["search"] ;
+	$search=NULL ;
+	if (isset($_GET["search"])) {
+		$search=$_GET["search"] ;
+	}
 	if ($gibbonPersonMedicalID=="") {
 		print "<div class='error'>" ;
 			print "You have not specified a medical form" ;
@@ -202,7 +205,7 @@ else {
 			
 			try {
 				$data=array("gibbonPersonMedicalID"=>$gibbonPersonMedicalID); 
-				$sql="SELECT *, gibbonAlertLevel.name AS risk FROM gibbonPersonMedicalCondition JOIN gibbonAlertLevel ON (gibbonPersonMedicalCondition.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID ORDER BY gibbonPersonMedicalCondition.name" ; 
+				$sql="SELECT gibbonPersonMedicalCondition.*, gibbonAlertLevel.name AS risk FROM gibbonPersonMedicalCondition JOIN gibbonAlertLevel ON (gibbonPersonMedicalCondition.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID ORDER BY gibbonPersonMedicalCondition.name" ; 
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}

@@ -31,7 +31,10 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Sync Users</div>" ;
 	print "</div>" ;
 	
-	$step=$_GET["step"] ;
+	$step=NULL ;
+	if (isset($_GET["step"])) {
+		$step=$_GET["step"] ;
+	}
 	if ($step=="") {
 		$step=1 ;
 	}
@@ -241,53 +244,53 @@ else {
 					$userSuccessCount=0 ;
 					while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !== FALSE) {
 						if ($data[1]!="" AND $data[2]!="" AND $data[4]!="" AND $data[5]!="" AND $data[6]!="" AND $data[7]!="") {
-							$users[$userSuccessCount]["title"]=$data[0] ;
-							$users[$userSuccessCount]["surname"]=$data[1] ;
-							$users[$userSuccessCount]["firstName"]=$data[2] ;
-							$users[$userSuccessCount]["preferredName"]=$data[4] ;
-							$users[$userSuccessCount]["officialName"]=$data[5] ;
-							$users[$userSuccessCount]["gender"]=$data[6] ;
-							$users[$userSuccessCount]["username"]=$data[7] ;
-							$users[$userSuccessCount]["house"]=$data[8] ;
-							$users[$userSuccessCount]["dob"]=$data[9] ;
-							$users[$userSuccessCount]["role"]=$data[10] ;
-							$users[$userSuccessCount]["email"]=$data[11] ;
-							$users[$userSuccessCount]["image_75"]=$data[12] ;
-							$users[$userSuccessCount]["image_240"]=$data[13] ;
-							$users[$userSuccessCount]["address1"]=$data[14] ;
-							$users[$userSuccessCount]["address1District"]=$data[15] ;
-							$users[$userSuccessCount]["address1Country"]=$data[16] ;
-							$users[$userSuccessCount]["address2"]=$data[17] ;
-							$users[$userSuccessCount]["address2District"]=$data[18] ;
-							$users[$userSuccessCount]["address2Country"]=$data[19] ;
-							$users[$userSuccessCount]["phone1Type"]=$data[20] ;
-							$users[$userSuccessCount]["phone1CountryCode"]=$data[21] ;
-							$users[$userSuccessCount]["phone1"]=$data[22] ;
-							$users[$userSuccessCount]["phone2Type"]=$data[23] ;
-							$users[$userSuccessCount]["phone2CountryCode"]=$data[24] ;
-							$users[$userSuccessCount]["phone2"]=$data[25] ;
-							$users[$userSuccessCount]["phone3Type"]=$data[26] ;
-							$users[$userSuccessCount]["phone3CountryCode"]=$data[27] ;
-							$users[$userSuccessCount]["phone3"]=$data[28] ;
-							$users[$userSuccessCount]["phone4Type"]=$data[29] ;
-							$users[$userSuccessCount]["phone4CountryCode"]=$data[30] ;
-							$users[$userSuccessCount]["phone4"]=$data[31] ;
-							$users[$userSuccessCount]["website"]=$data[32] ;
-							$users[$userSuccessCount]["languageFirst"]=$data[33] ;
-							$users[$userSuccessCount]["languageSecond"]=$data[34] ;
-							$users[$userSuccessCount]["profession"]=$data[35] ;
-							$users[$userSuccessCount]["employer"]=$data[36] ;
-							$users[$userSuccessCount]["jobTitle"]=$data[37] ;
-							$users[$userSuccessCount]["emergency1Name"]=$data[38] ;
-							$users[$userSuccessCount]["emergency1Number1"]=$data[39] ;
-							$users[$userSuccessCount]["emergency1Number2"]=$data[40] ;
-							$users[$userSuccessCount]["emergency1Relationship"]=$data[41] ;
-							$users[$userSuccessCount]["emergency2Name"]=$data[42] ;
-							$users[$userSuccessCount]["emergency2Number1"]=$data[43] ;
-							$users[$userSuccessCount]["emergency2Number2"]=$data[44] ;
-							$users[$userSuccessCount]["emergency2Relationship"]=$data[45] ;
-							$users[$userSuccessCount]["dateStart"]=$data[46] ;
-							$users[$userSuccessCount]["dateEnd"]=$data[47] ;
+							$users[$userSuccessCount]["title"]="" ; if (isset($data[0])) { $users[$userSuccessCount]["title"]=$data[0] ; }
+							$users[$userSuccessCount]["surname"]="" ; if (isset($data[1])) { $users[$userSuccessCount]["surname"]=$data[1] ;  }
+							$users[$userSuccessCount]["firstName"]="" ; if (isset($data[3])) { $users[$userSuccessCount]["firstName"]=$data[2] ; }
+							$users[$userSuccessCount]["preferredName"]="" ; if (isset($data[4])) { $users[$userSuccessCount]["preferredName"]=$data[4] ; }
+							$users[$userSuccessCount]["officialName"]="" ; if (isset($data[5])) { $users[$userSuccessCount]["officialName"]=$data[5] ; }
+							$users[$userSuccessCount]["gender"]="" ; if (isset($data[6])) { $users[$userSuccessCount]["gender"]=$data[6] ; }
+							$users[$userSuccessCount]["username"]="" ; if (isset($data[7])) { $users[$userSuccessCount]["username"]=$data[7] ; }
+							$users[$userSuccessCount]["house"]="" ; if (isset($data[8])) { $users[$userSuccessCount]["house"]=$data[8] ; }
+							$users[$userSuccessCount]["dob"]="" ; if (isset($data[9])) { $users[$userSuccessCount]["dob"]=$data[9] ; }
+							$users[$userSuccessCount]["role"]="" ; if (isset($data[10])) { $users[$userSuccessCount]["role"]=$data[10] ; }
+							$users[$userSuccessCount]["email"]="" ; if (isset($data[11])) { $users[$userSuccessCount]["email"]=$data[11] ; }
+							$users[$userSuccessCount]["image_75"]="" ; if (isset($data[12])) { $users[$userSuccessCount]["image_75"]=$data[12] ; }
+							$users[$userSuccessCount]["image_240"]="" ; if (isset($data[13])) { $users[$userSuccessCount]["image_240"]=$data[13] ; }
+							$users[$userSuccessCount]["address1"]="" ; if (isset($data[14])) { $users[$userSuccessCount]["address1"]=$data[14] ; }
+							$users[$userSuccessCount]["address1District"]="" ; if (isset($data[15])) { $users[$userSuccessCount]["address1District"]=$data[15] ; }
+							$users[$userSuccessCount]["address1Country"]="" ; if (isset($data[16])) { $users[$userSuccessCount]["address1Country"]=$data[16] ; }
+							$users[$userSuccessCount]["address2"]="" ; if (isset($data[17])) { $users[$userSuccessCount]["address2"]=$data[17] ; }
+							$users[$userSuccessCount]["address2District"]="" ; if (isset($data[18])) { $users[$userSuccessCount]["address2District"]=$data[18] ; }
+							$users[$userSuccessCount]["address2Country"]="" ; if (isset($data[19])) { $users[$userSuccessCount]["address2Country"]=$data[19] ; }
+							$users[$userSuccessCount]["phone1Type"]="" ; if (isset($data[20])) { $users[$userSuccessCount]["phone1Type"]=$data[20] ; }
+							$users[$userSuccessCount]["phone1CountryCode"]="" ; if (isset($data[21])) { $users[$userSuccessCount]["phone1CountryCode"]=$data[21] ; }
+							$users[$userSuccessCount]["phone1"]="" ; if (isset($data[22])) { $users[$userSuccessCount]["phone1"]=$data[22] ; }
+							$users[$userSuccessCount]["phone2Type"]="" ; if (isset($data[23])) { $users[$userSuccessCount]["phone2Type"]=$data[23] ; }
+							$users[$userSuccessCount]["phone2CountryCode"]="" ; if (isset($data[23])) { $users[$userSuccessCount]["phone2CountryCode"]=$data[24] ; }
+							$users[$userSuccessCount]["phone2"]="" ; if (isset($data[25])) { $users[$userSuccessCount]["phone2"]=$data[25] ; }
+							$users[$userSuccessCount]["phone3Type"]="" ; if (isset($data[26])) { $users[$userSuccessCount]["phone3Type"]=$data[26] ; }
+							$users[$userSuccessCount]["phone3CountryCode"]="" ; if (isset($data[27])) { $users[$userSuccessCount]["phone3CountryCode"]=$data[27] ; }
+							$users[$userSuccessCount]["phone3"]="" ; if (isset($data[28])) { $users[$userSuccessCount]["phone3"]=$data[28] ; }
+							$users[$userSuccessCount]["phone4Type"]="" ; if (isset($data[29])) { $users[$userSuccessCount]["phone4Type"]=$data[29] ; }
+							$users[$userSuccessCount]["phone4CountryCode"]="" ; if (isset($data[30])) { $users[$userSuccessCount]["phone4CountryCode"]=$data[30] ; }
+							$users[$userSuccessCount]["phone4"]="" ; if (isset($data[31])) { $users[$userSuccessCount]["phone4"]=$data[31] ; }
+							$users[$userSuccessCount]["website"]="" ; if (isset($data[23])) { $users[$userSuccessCount]["website"]=$data[32] ; }
+							$users[$userSuccessCount]["languageFirst"]="" ; if (isset($data[33])) { $users[$userSuccessCount]["languageFirst"]=$data[33] ; }
+							$users[$userSuccessCount]["languageSecond"]="" ; if (isset($data[34])) { $users[$userSuccessCount]["languageSecond"]=$data[34] ; }
+							$users[$userSuccessCount]["profession"]="" ; if (isset($data[35])) { $users[$userSuccessCount]["profession"]=$data[35] ; }
+							$users[$userSuccessCount]["employer"]="" ; if (isset($data[36])) { $users[$userSuccessCount]["employer"]=$data[36] ; }
+							$users[$userSuccessCount]["jobTitle"]="" ; if (isset($data[37])) { $users[$userSuccessCount]["jobTitle"]=$data[37] ; }
+							$users[$userSuccessCount]["emergency1Name"]="" ; if (isset($data[38])) { $users[$userSuccessCount]["emergency1Name"]=$data[38] ; }
+							$users[$userSuccessCount]["emergency1Number1"]="" ; if (isset($data[39])) { $users[$userSuccessCount]["emergency1Number1"]=$data[39] ; }
+							$users[$userSuccessCount]["emergency1Number2"]="" ; if (isset($data[40])) { $users[$userSuccessCount]["emergency1Number2"]=$data[40] ; }
+							$users[$userSuccessCount]["emergency1Relationship"]="" ; if (isset($data[41])) { $users[$userSuccessCount]["emergency1Relationship"]=$data[41] ; }
+							$users[$userSuccessCount]["emergency2Name"]="" ; if (isset($data[42])) { $users[$userSuccessCount]["emergency2Name"]=$data[42] ; }
+							$users[$userSuccessCount]["emergency2Number1"]="" ; if (isset($data[43])) { $users[$userSuccessCount]["emergency2Number1"]=$data[43] ; }
+							$users[$userSuccessCount]["emergency2Number2"]="" ; if (isset($data[44])) { $users[$userSuccessCount]["emergency2Number2"]=$data[44] ; }
+							$users[$userSuccessCount]["emergency2Relationship"]="" ; if (isset($data[45])) { $users[$userSuccessCount]["emergency2Relationship"]=$data[45] ; }
+							$users[$userSuccessCount]["dateStart"]="" ; if (isset($data[46])) { $users[$userSuccessCount]["dateStart"]=$data[46] ; }
+							$users[$userSuccessCount]["dateEnd"]="" ; if (isset($data[47])) { $users[$userSuccessCount]["dateEnd"]=$data[47] ; }
 							$userSuccessCount++ ;
 						}
 						else {
@@ -450,6 +453,7 @@ else {
 								if ($user["role"]=="Parent") {
 									$role="004" ;
 								}
+								$roleAll=$role ;
 								
 								if ($role=="") {
 									print "<div class='error'>" ;

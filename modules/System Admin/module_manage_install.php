@@ -59,6 +59,12 @@ else {
 		}
 		print "<div class='$class'>" ;
 			print $addReturnMessage;
+			if (isset($_SESSION[$guid]["moduleInstallError"])) {
+				if ($_SESSION[$guid]["moduleInstallError"]!="") {
+					print "The following SQL statements caused errors: " . $_SESSION[$guid]["moduleInstallError"] ;
+				}
+				$_SESSION[$guid]["moduleInstallError"]=NULL ;
+			}
 		print "</div>" ;
 	} 
 	

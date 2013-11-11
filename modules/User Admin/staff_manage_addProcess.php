@@ -53,6 +53,11 @@ else {
 	if ($firstAidQualified=="Y" AND $_POST["firstAidExpiry"]!="") {
 		$firstAidExpiry=dateConvert($_POST["firstAidExpiry"]) ;
 	}
+	$countryOfOrigin=$_POST["countryOfOrigin"] ;
+	$qualifications=$_POST["qualifications"] ;
+	$biographicalGrouping=$_POST["biographicalGrouping"] ;
+	$biographicalGroupingPriority=$_POST["biographicalGroupingPriority"] ;
+	$biography=$_POST["biography"] ;
 	
 	//Validate Inputs
 	if ($gibbonPersonID=="" OR $type=="") {
@@ -83,8 +88,8 @@ else {
 		else {	
 			//Write to database
 			try {
-				$data=array("gibbonPersonID"=>$gibbonPersonID, "type"=>$type, "jobTitle"=>$jobTitle, "firstAidQualified"=>$firstAidQualified, "firstAidExpiry"=>$firstAidExpiry); 
-				$sql="INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidExpiry=:firstAidExpiry" ;
+				$data=array("gibbonPersonID"=>$gibbonPersonID, "type"=>$type, "jobTitle"=>$jobTitle, "firstAidQualified"=>$firstAidQualified, "firstAidExpiry"=>$firstAidExpiry, "countryOfOrigin"=>$countryOfOrigin, "qualifications"=>$qualifications, "biographicalGrouping"=>$biographicalGrouping, "biographicalGroupingPriority"=>$biographicalGroupingPriority, "biography"=>$biography); 
+				$sql="INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
