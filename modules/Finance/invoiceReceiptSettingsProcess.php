@@ -47,6 +47,7 @@ else {
 	$email=$_POST["email"] ;
 	$invoiceText=$_POST["invoiceText"] ;
 	$invoiceNotes=$_POST["invoiceNotes"] ;
+	$invoiceNumber=$_POST["invoiceNumber"] ;
 	$receiptText=$_POST["receiptText"] ;
 	$receiptNotes=$_POST["receiptNotes"] ;
 	$reminder1Text=$_POST["reminder1Text"] ;
@@ -71,10 +72,30 @@ else {
 		catch(PDOException $e) { 
 			$fail=TRUE ;
 		}
+		
+		try {
+			$data=array("value"=>$invoiceText); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='invoiceText'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
 	
 		try {
 			$data=array("value"=>$invoiceNotes); 
 			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='invoiceNotes'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$invoiceNumber); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='invoiceNumber'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

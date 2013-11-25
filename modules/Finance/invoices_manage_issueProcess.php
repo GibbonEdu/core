@@ -215,7 +215,10 @@ else {
 					if ($partialFail==FALSE AND $from!="") { 
 						//Send emails
 						$emailFail=FALSE ;
-						$emails=$_POST["emails"] ;
+						$emails=NULL ;
+						if (isset($_POST["emails"])) {
+							$emails=$_POST["emails"] ;
+						}
 						if (count($emails)>0) {
 							require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/class.phpmailer.php';
 				

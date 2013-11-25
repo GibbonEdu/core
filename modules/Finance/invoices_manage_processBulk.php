@@ -277,7 +277,6 @@ else {
 							}
 							catch(PDOException $e) { 
 								$emailFail=TRUE ;
-								print "a" ; exit() ;
 							}
 							if ($resultCompany->rowCount()!=1) {
 								$emailFail=TRUE ; 
@@ -285,7 +284,31 @@ else {
 							else {
 								$rowCompany=$resultCompany->fetch() ;
 								if ($rowCompany["companyEmail"]!="" AND $rowCompany["companyContact"]!="" AND $rowCompany["companyName"]!="") {
-									$emails[$count]=$rowCompany["companyEmail"] ;
+									$emails[$emailsCount]=$rowCompany["companyEmail"] ;
+									$emailsCount++ ;
+									$rowCompany["companyCCFamily"] ;
+									if ($rowCompany["companyCCFamily"]=="Y") {
+										try {
+											$dataParents=array("gibbonFinanceInvoiceeID"=>$row["gibbonFinanceInvoiceeID"]); 
+											$sqlParents="SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFinanceInvoicee JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName" ; 
+											$resultParents=$connection2->prepare($sqlParents);
+											$resultParents->execute($dataParents);
+										}
+										catch(PDOException $e) { 
+											$emailFail=TRUE ;
+										}
+										if ($resultParents->rowCount()<1) {
+											$emailFail=TRUE ; 
+										}
+										else {
+											while ($rowParents=$resultParents->fetch()) {
+												if ($rowParents["preferredName"]!="" AND $rowParents["surname"]!="" AND $rowParents["email"]!="") {
+													$emails[$emailsCount]=$rowParents["email"] ;
+													$emailsCount++ ;
+												}
+											}
+										}
+									}
 								}
 								else {
 									$emailFail=TRUE ;
@@ -301,7 +324,6 @@ else {
 							}
 							catch(PDOException $e) { 
 								$emailFail=TRUE ;
-								print $e->getmessage() ; exit ;
 							}
 							if ($resultParents->rowCount()<1) {
 								$emailFail=TRUE ; 
@@ -309,7 +331,8 @@ else {
 							else {
 								while ($rowParents=$resultParents->fetch()) {
 									if ($rowParents["preferredName"]!="" AND $rowParents["surname"]!="" AND $rowParents["email"]!="") {
-										$emails[$count]=$rowParents["email"] ;
+										$emails[$emailsCount]=$rowParents["email"] ;
+										$emailsCount++ ;
 									}
 								}
 							}
@@ -393,7 +416,30 @@ else {
 							else {
 								$rowCompany=$resultCompany->fetch() ;
 								if ($rowCompany["companyEmail"]!="" AND $rowCompany["companyContact"]!="" AND $rowCompany["companyName"]!="") {
-									$emails[$count]=$rowCompany["companyEmail"] ;
+									$emails[$emailsCount]=$rowCompany["companyEmail"] ;
+									$emailsCount++ ;
+									if ($rowCompany["companyCCFamily"]=="Y") {
+										try {
+											$dataParents=array("gibbonFinanceInvoiceeID"=>$row["gibbonFinanceInvoiceeID"]); 
+											$sqlParents="SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFinanceInvoicee JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName" ; 
+											$resultParents=$connection2->prepare($sqlParents);
+											$resultParents->execute($dataParents);
+										}
+										catch(PDOException $e) { 
+											$emailFail=TRUE ;
+										}
+										if ($resultParents->rowCount()<1) {
+											$emailFail=TRUE ; 
+										}
+										else {
+											while ($rowParents=$resultParents->fetch()) {
+												if ($rowParents["preferredName"]!="" AND $rowParents["surname"]!="" AND $rowParents["email"]!="") {
+													$emails[$emailsCount]=$rowParents["email"] ;
+													$emailsCount++ ;
+												}
+											}
+										}
+									}
 								}
 								else {
 									$emailFail=TRUE ;
@@ -416,7 +462,8 @@ else {
 							else {
 								while ($rowParents=$resultParents->fetch()) {
 									if ($rowParents["preferredName"]!="" AND $rowParents["surname"]!="" AND $rowParents["email"]!="") {
-										$emails[$count]=$rowParents["email"] ;
+										$emails[$emailsCount]=$rowParents["email"] ;
+										$emailsCount++ ;
 									}
 								}
 							}

@@ -137,7 +137,7 @@ else {
 					print "</h3>" ;	
 					print "<ul>" ;
 						while ($row=$result->fetch()) {
-							print "<li>" . formatName($row["title"], $row["preferredName"], $row["surname"], Staff) . "</li>" ;
+							print "<li>" . formatName($row["title"], $row["preferredName"], $row["surname"], "Staff") . "</li>" ;
 							if ($row["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
 								$teaching=TRUE ;
 							}
@@ -215,8 +215,10 @@ else {
 								print "<td>" ;
 									print "<b>" . $row["name"] . "</b><br/>" ;
 									$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
-									print $unit[0] ;
-									if ($unit[1]!="") {
+									if (isset($unit[0])) {
+										print $unit[0] ;
+									}
+									if (isset($unit[1])) {
 										print "<br/><i>" . $unit[1] . " Unit</i>" ;
 									}
 								print "</td>" ;

@@ -97,9 +97,9 @@ else {
 						$gibbonHookID=substr($_POST["gibbonUnitID"],(strpos($_POST["gibbonUnitID"], "-")+1)) ;
 					}
 				}
-				$gibbonPlannerEntryID=$_POST["gibbonPlannerEntryID"] ;
-				if ($gibbonPlannerEntryID=="") {
-					$gibbonPlannerEntryID=NULL ;
+				$gibbonPlannerEntryID=NULL ;
+				if (isset($_POST["gibbonPlannerEntryID"])) {
+					$gibbonPlannerEntryID=$_POST["gibbonPlannerEntryID"] ;
 				}
 				$name=$_POST["name"] ;
 				$description=$_POST["description"] ;
@@ -161,7 +161,7 @@ else {
 					$attachment=$row["attachment"] ;
 				}
 			
-				if ($name=="" OR $description=="" OR $type=="" OR gibbonScaleIDAttainment=="" OR gibbonScaleIDEffort=="" OR viewableStudents=="" OR viewableParents=="") {
+				if ($name=="" OR $description=="" OR $type=="" OR $gibbonScaleIDAttainment=="" OR $gibbonScaleIDEffort=="" OR $viewableStudents=="" OR $viewableParents=="") {
 					//Fail 3
 					$URL=$URL . "&updateReturn=fail3" ;
 					header("Location: {$URL}");

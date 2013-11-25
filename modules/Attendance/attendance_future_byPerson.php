@@ -62,7 +62,10 @@ else {
 		print "</div>" ;
 	} 
 	
-	$gibbonPersonID=$_GET["gibbonPersonID"] ;	 
+	$gibbonPersonID=NULL ;
+	if (isset($_GET["gibbonPersonID"])) {
+		$gibbonPersonID=$_GET["gibbonPersonID"] ;
+	}		 
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -187,12 +190,12 @@ else {
 					<td class="right">
 						<?
 						print "<select style='float: none; width: 302px; margin-bottom: 10px' name='reason'>" ;
-							print "<option " ; if ($lastReason=="") { print "selected " ; } ; print "value=''></option>" ;
-							print "<option " ; if ($lastReason=="Pending") { print "selected " ; } ; print "value='Pending'>Pending</option>" ;
-							print "<option " ; if ($lastReason=="Education") { print "selected " ; } ; print "value='Education'>Education</option>" ;
-							print "<option " ; if ($lastReason=="Family") { print "selected " ; } ; print "value='Family'>Family</option>" ;
-							print "<option " ; if ($lastReason=="Medical") { print "selected " ; } ; print "value='Medical'>Medical</option>" ;
-							print "<option " ; if ($lastReason=="Other") { print "selected " ; } ; print "value='Other'>Other</option>" ;
+							print "<option value=''></option>" ;
+							print "<option value='Pending'>Pending</option>" ;
+							print "<option value='Education'>Education</option>" ;
+							print "<option value='Family'>Family</option>" ;
+							print "<option value='Medical'>Medical</option>" ;
+							print "<option value='Other'>Other</option>" ;
 						print "</select>" ;
 						?>
 					</td>
@@ -204,7 +207,7 @@ else {
 					</td>
 					<td class="right">
 						<?
-						print "<textarea name='comment' id='comment' rows=3 style='width: 300px'>$lastComment</textarea>" ;
+						print "<textarea name='comment' id='comment' rows=3 style='width: 300px'></textarea>" ;
 						?>
 						<script type="text/javascript">
 							var comment=new LiveValidation('comment');

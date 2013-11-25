@@ -898,8 +898,12 @@ function sidebar($connection2, $guid) {
 		//Get and check the module name
 		$moduleID=checkModuleReady($_SESSION[$guid]["address"], $connection2 );
 		if ($moduleID!=FALSE) {
+			$gibbonRoleIDCurrent=NULL ;
+			if (isset($_SESSION[$guid]["gibbonRoleIDCurrent"])) {
+				$gibbonRoleIDCurrent=$_SESSION[$guid]["gibbonRoleIDCurrent"] ;
+			}
 			try {
-				$data=array("gibbonModuleID"=>$moduleID, "gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]); 
+				$data=array("gibbonModuleID"=>$moduleID, "gibbonRoleID"=>$gibbonRoleIDCurrent); 
 				$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule, gibbonAction, gibbonPermission WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
 				$result=$connection2->prepare($sql);
 				$result->execute($data);

@@ -80,8 +80,10 @@ else {
 				$companyContact=$_POST["companyContact"] ;
 				$companyAddress=$_POST["companyAddress"] ;
 				$companyEmail=$_POST["companyEmail"] ;
+				$companyCCFamily=$_POST["companyCCFamily"] ;
 				$companyPhone=$_POST["companyPhone"] ;
 				$companyAll=$_POST["companyAll"] ;
+				$gibbonFinanceFeeCategoryIDList=NULL ;
 				if ($companyAll=="N") {
 					$gibbonFinanceFeeCategoryIDList=="" ;
 					$gibbonFinanceFeeCategoryIDArray=$_POST["gibbonFinanceFeeCategoryIDList"] ;
@@ -93,6 +95,16 @@ else {
 					}
 				}
 			}
+			else {
+				$companyName=NULL ;
+				$companyContact=NULL ;
+				$companyAddress=NULL ;
+				$companyEmail=NULL ;
+				$companyCCFamily=NULL ;
+				$companyPhone=NULL ;
+				$companyAll=NULL ;
+				$gibbonFinanceFeeCategoryIDList=NULL ;
+			}
 			if ($invoiceTo=="") {
 				//Fail 3
 				$URL=$URL . "&updateReturn=fail3" ;
@@ -101,8 +113,8 @@ else {
 			else {
 				//Write to database
 				try {
-					$data=array("invoiceTo"=>$invoiceTo, "companyName"=>$companyName, "companyContact"=>$companyContact, "companyAddress"=>$companyAddress, "companyEmail"=>$companyEmail, "companyPhone"=>$companyPhone, "companyAll"=>$companyAll, "gibbonFinanceFeeCategoryIDList"=>$gibbonFinanceFeeCategoryIDList, "gibbonFinanceInvoiceeID"=>$gibbonFinanceInvoiceeID); 
-					$sql="UPDATE gibbonFinanceInvoicee SET invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID" ;
+					$data=array("invoiceTo"=>$invoiceTo, "companyName"=>$companyName, "companyContact"=>$companyContact, "companyAddress"=>$companyAddress, "companyEmail"=>$companyEmail, "companyCCFamily"=>$companyCCFamily, "companyPhone"=>$companyPhone, "companyAll"=>$companyAll, "gibbonFinanceFeeCategoryIDList"=>$gibbonFinanceFeeCategoryIDList, "gibbonFinanceInvoiceeID"=>$gibbonFinanceInvoiceeID); 
+					$sql="UPDATE gibbonFinanceInvoicee SET invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}

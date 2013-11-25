@@ -114,7 +114,7 @@ else {
 				$count=0;
 				$rowNum="odd" ;
 				while ($row=$result->fetch()) {
-					if (is_null($log[$row["gibbonPersonID"]])) {
+					if (isset($log[$row["gibbonPersonID"]])==FALSE) {
 						if ($count%2==0) {
 							$rowNum="even" ;
 						}

@@ -61,8 +61,33 @@ General: added link from parental dashboard to roll group listing, whilst making
 Library: added link from manage view to lending view for an item
 	Edited file /modules/Library/library_manage_catalog.php
 
-Attendance: added new way to obtain absence count between two dates (inclusive)
+Attendance: added new function to obtain absence count for a student between two dates (inclusive)
 	Edited file /modules/Attendance/moduleFunctions.php
+
+Finance: added option for family to receive CC email of invoices/reminders/receipts to company
+	Edited tables gibbonFinanceInvoicee, gibbonFinanceInvoiceeUpdate, gibbonApplicationForm
+	Edited files /modules/Finance/invoicees_manage_edit*.php, invoices_manage_issue.php, invoices_manage_edit.php, invoices_manage_processBulk.php
+	Edited files /modules/Data Updater/data_finance*.php
+	Edited files /modules/User Admin/data_finance_edit*.php, applicationForm_manage_edit*.php
+	Edited files /modules/Application Form/applicationForm*.php
+	
+User Admin: added ability to set custom email text for acceptance email for parents and student
+	New values in table gibbonSetting
+	Edited files /modules/User Admin/applicationFormSettings*.php
+	Edited file /modules/User Admin/applicationForm_manage_accept.php
+
+Finance: fixed issue with mis-displaying reminder and receipt titles in invoice edit
+	Edited file /modules/Finance/invoices_manage_edit.php
+
+Finance: new setting to allow customisation of invoice number, and integration of invoice number into invoices and receipts
+	Added value to table gibbonSetting
+	Edited files /modules/Finance/invoiceReceiptSettings*.php, moduleFunctions.php
+
+Finance: added invoice number, gender and DOB to invoice export
+	Edited file /modules/Finance/invoices_manage_processBulkExportContents.php
+
+Finance: added student roll group to invoice listning
+	Edited file /modules/Finance/invoices_manage.php
 
 General: fixed issues relating to PHP Notice errors
 	Edited many files across the system

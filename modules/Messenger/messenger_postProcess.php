@@ -54,6 +54,11 @@ else {
 	}
 	else {
 		//Proceed!
+		//Setup return variables
+		$emailCount=NULL ;
+		$smsCount=NULL ;
+		$smsBatchCount=NULL ;
+		
 		//Validate Inputs
 		$email=$_POST["email"] ;
 		if ($email!="Y") {
@@ -66,30 +71,28 @@ else {
 		if ($messageWall!="Y") {
 			$messageWall="N" ;
 		}
-		if ($messageWall=="Y") {
-			$date1=$_POST["date1"] ;
-			if ($date1=="") {
-				$date1=NULL ;
-			}
-			else {
+		$date1=NULL ;
+		if (isset($_POST["date1"])) {
+			if ($_POST["date1"]!="") {
 				$date1=dateConvert($_POST["date1"]) ;
 			}
-			$date2=$_POST["date2"] ;
-			if ($date2=="") {
-				$date2=NULL ;
-			}
-			else {
+		}
+		$date2=NULL ;
+		if (isset($_POST["date2"])) {
+			if ($_POST["date2"]!="") {
 				$date2=dateConvert($_POST["date2"]) ;
 			}
-			$date3=$_POST["date3"] ;
-			if ($date3=="") {
-				$date3=NULL ;
-			}
-			else {
+		}
+		$date3=NULL ;
+		if (isset($_POST["date3"])) {
+			if ($_POST["date3"]!="") {
 				$date3=dateConvert($_POST["date3"]) ;
 			}
 		}
-		$sms=$_POST["sms"] ;
+		$sms=NULL ;
+		if (isset($_POST["sms"])) {
+			$sms=$_POST["sms"] ;
+		}
 		if ($sms!="Y") {
 			$sms="N" ;
 		}

@@ -154,8 +154,8 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="") {
 						$output.="</td>" ;
 						for ($n=0; $n<$columnCount; $n++) {
 							$output.="<td style='background: none; background-color: #fff; padding: 0px; margin: 0px'>" ;
-								$output.="<textarea name='cell[]' style='background-color: #fff!important; border: 1px none #fff; font-size: 85%; width: 100%; height: 100px; margin: 0; padding: 0; resize: none'>" . $cells[$rows[$i][0]][$columns[$n][0]][0] . "</textarea>" ;
-								$output.="<input type='hidden' name='gibbonRubricCellID[]' value='" . $cells[$rows[$i][0]][$columns[$n][0]][1] . "'>" ;
+								$output.="<textarea name='cell[]' style='background-color: #fff!important; border: 1px none #fff; font-size: 85%; width: 100%; height: 100px; margin: 0; padding: 0; resize: none'>" ; if (isset($cells[$rows[$i][0]][$columns[$n][0]][0])) { $output.=$cells[$rows[$i][0]][$columns[$n][0]][0] ; } $output.="</textarea>" ;
+								$output.="<input type='hidden' name='gibbonRubricCellID[]' value='" ; if (isset($cells[$rows[$i][0]][$columns[$n][0]][1])) { $output.=$cells[$rows[$i][0]][$columns[$n][0]][1] ; } $output.="'>" ;
 								$output.="<input type='hidden' name='gibbonRubricColumnID[]' value='" . $columns[$n][0] . "'>" ;
 								$output.="<input type='hidden' name='gibbonRubricRowID[]' value='" . $rows[$i][0] . "'>" ;
 							$output.="</td>" ;
@@ -269,7 +269,12 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 				}
 				catch(PDOException $e) { print $e->getMessage() ; }
 				while ($rowContext=$resultContext->fetch()) {
-					$cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2].=$rowContext[$contextDBTableNameField] . " (" . dateConvertBack($rowContext[$contextDBTableDateField]) . ")<br/>" ;
+					if (isset($cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2])) {
+						$cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2].=$rowContext[$contextDBTableNameField] . " (" . dateConvertBack($rowContext[$contextDBTableDateField]) . ")<br/>" ;
+					}
+					else {
+						$cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2]=$rowContext[$contextDBTableNameField] . " (" . dateConvertBack($rowContext[$contextDBTableDateField]) . ")<br/>" ;
+					}
 				}
 			}
 			
@@ -311,7 +316,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 				$output.="table.rubric tr { border: 1px solid #000 }" ;
 				$output.="table.rubric td { border: 1px solid #000 }" ;
 			$output.="</style>" ;
-			$output.="<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_data_editProcess.php?gibbonRubricID=$gibbonRubricID&gibbonPersonID=$gibbonPersonID&address=$returnAddress" . $returnParams . "'>" ;
+			$output.="<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_data_editProcess.php?gibbonRubricID=$gibbonRubricID&gibbonPersonID=$gibbonPersonID'>" ;
 				$output.="<table cellspacing='0' class='rubric'>" ;
 					//Create header
 					$output.="<tr class='head'>" ;
@@ -440,7 +445,15 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 								$output.="<td id='" . $rows[$i][0] . "-" . $columns[$n][0] . "' style='background: none; background-color: $bgcolor; height: 100%; vertical-align: top'>" ;
 									$output.="<div class='currentView' style='font-size: 90%'>" . $cells[$rows[$i][0]][$columns[$n][0]][0] . "</div>" ;
 									$output.="<div class='historical' style='font-size: 90%'>" ;
-										$arrayHistorical=explode("<br/>", $cells[$rows[$i][0]][$columns[$n][0]][2]) ;
+										
+										if (isset($cells[$rows[$i][0]][$columns[$n][0]][2])) {
+											$arrayHistorical=explode("<br/>", $cells[$rows[$i][0]][$columns[$n][0]][2]) ;
+											$countHistorical=count($arrayHistorical)-1 ;
+										}
+										else {
+											$arrayHistorical=array() ;
+											$countHistorical=0 ;
+										}
 										$countHistorical=count($arrayHistorical)-1 ;
 										if ($countHistorical>0) {
 											$output.="<b><u>Total Occurences: " . $countHistorical . "</u></b><br/>" ;

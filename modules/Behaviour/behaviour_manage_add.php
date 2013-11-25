@@ -69,7 +69,10 @@ else {
 			print "</div>" ;
 		} 
 		
-		$step=$_GET["step"] ;
+		$step=NULL ;
+		if (isset($_GET["step"])) {
+			$step=$_GET["step"] ;
+		}
 		if ($step!=1 AND $step!=2) {
 			$step=1 ;
 		}
@@ -195,14 +198,14 @@ else {
 										<?
 										for ($i=0; $i<count($optionsPositive); $i++) {
 										?>
-											<option class='Positive' <? if ($row["descriptor"]==$optionsPositive[$i]) {print "selected ";}?>value="<? print trim($optionsPositive[$i]) ?>"><? print trim($optionsPositive[$i]) ?></option>
+											<option class='Positive' value="<? print trim($optionsPositive[$i]) ?>"><? print trim($optionsPositive[$i]) ?></option>
 										<?
 										}
 										?>
 										<?
 										for ($i=0; $i<count($optionsNegative); $i++) {
 										?>
-											<option class='Negative' <? if ($row["descriptor"]==$optionsNegative[$i]) {print "selected ";}?>value="<? print trim($optionsNegative[$i]) ?>"><? print trim($optionsNegative[$i]) ?></option>
+											<option class='Negative' value="<? print trim($optionsNegative[$i]) ?>"><? print trim($optionsNegative[$i]) ?></option>
 										<?
 										}
 										?>
@@ -255,7 +258,7 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<textarea name="comment" id="comment" rows=8 style="width: 300px"><? print $row["comment"] ?></textarea>
+							<textarea name="comment" id="comment" rows=8 style="width: 300px"></textarea>
 						</td>
 					</tr>
 					<tr>

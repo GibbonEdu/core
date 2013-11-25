@@ -101,7 +101,7 @@ else {
 						<span style="font-size: 90%"><i>Fee name, category name.</i></span>
 					</td>
 					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<? print $_GET["search"] ?>" type="text" style="width: 300px">
+						<input name="search" id="search" maxlength=20 value="<? if (isset($_GET["search"])) { print $_GET["search"] ; } ?>" type="text" style="width: 300px">
 					</td>
 				</tr>
 				<tr>
@@ -127,7 +127,10 @@ else {
 			$page=1 ;
 		}
 		
-		$search=$_GET["search"] ;
+		$search=NULL ;
+		if (isset($_GET["search"])) {
+			$search=$_GET["search"] ;
+		}
 		try {
 			$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
 			$sql="SELECT gibbonFinanceFee.*, gibbonFinanceFeeCategory.name AS category FROM gibbonFinanceFee LEFT JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ; 
@@ -214,20 +217,20 @@ else {
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/fees_manage_edit.php&gibbonFinanceFeeID=" . $row["gibbonFinanceFeeID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "<script type='text/javascript'>" ;	
 								print "$(document).ready(function(){" ;
-									print "\$(\".comment-$count-$yearCount\").hide();" ;
-									print "\$(\".show_hide-$count-$yearCount\").fadeIn(1000);" ;
-									print "\$(\".show_hide-$count-$yearCount\").click(function(){" ;
-									print "\$(\".comment-$count-$yearCount\").fadeToggle(1000);" ;
+									print "\$(\".comment-$count-$count\").hide();" ;
+									print "\$(\".show_hide-$count-$count\").fadeIn(1000);" ;
+									print "\$(\".show_hide-$count-$count\").click(function(){" ;
+									print "\$(\".comment-$count-$count\").fadeToggle(1000);" ;
 									print "});" ;
 								print "});" ;
 							print "</script>" ;
 							if ($row["description"]!="") {
-								print "<a title='View Description' class='show_hide-$count-$yearCount' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
+								print "<a title='View Description' class='show_hide-$count-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;
 					if ($row["description"]!="") {
-						print "<tr class='comment-$count-$yearCount' id='comment-$count-$yearCount'>" ;
+						print "<tr class='comment-$count-$count' id='comment-$count-$count'>" ;
 							print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
 								print $row["description"] ;
 							print "</td>" ;

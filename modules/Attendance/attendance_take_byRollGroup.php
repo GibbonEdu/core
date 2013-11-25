@@ -66,7 +66,7 @@ else {
 	} 
 	
 	$gibbonRollGroupID="" ;
-	if (is_null($_GET["gibbonRollGroupID"])) {
+	if (isset($_GET["gibbonRollGroupID"])==FALSE) {
 		try {
 			$data=array("gibbonPersonIDTutor1"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDTutor2"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDTutor3"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 			$sql="SELECT * FROM gibbonRollGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor=:gibbonPersonIDTutor3) AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
@@ -85,7 +85,7 @@ else {
 		$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;	 
 	}
 	
-	if ($_GET["currentDate"]=="") {
+	if (isset($_GET["currentDate"])==FALSE) {
 	 	$currentDate=date("Y-m-d");
 	}
 	else {

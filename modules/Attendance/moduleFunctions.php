@@ -68,6 +68,8 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 }
 
 function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $connection2) {
+	$output="" ;
+	
 	if ($print) {
 		print "<div class='linkTop'>" ;
 		print "<a target=_blank href='$printURL'><img title='Print' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
@@ -140,7 +142,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 			$days["Sun"]="Y" ;
 			$days["count"]=7 ;
 			try {
-				$dataDays=array("username"=>$username); 
+				$dataDays=array(); 
 				$sqlDays="SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='N'" ;
 				$resultDays=$connection2->prepare($sqlDays);
 				$resultDays->execute($dataDays);
@@ -184,7 +186,6 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 			$count=0;
 			$weeks=2;
 			
-			$output=$output . "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manageProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID'>" ;
 			$output=$output . "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 			$output=$output . "<tr class='head'>" ;
 				for ($w=0; $w<$weeks; $w++) {
@@ -300,23 +301,25 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 							if (count($log)>0) {
 								$output=$output . "<b>" . $log[0] . "</b><br>" ;
 								for ($x=count($log); $x>=0; $x--) {
-									if ($log[$x]=="Present") {
-										$output=$output . "P" ;
-									}
-									else if ($log[$x]=="Present - Late") {
-										$output=$output . "PL" ;
-									}
-									else if ($log[$x]=="Present - Offsite") {
-										$output=$output . "PS" ;
-									}
-									else if ($log[$x]=="Left") {
-										$output=$output . "L" ;
-									}
-									else if ($log[$x]=="Left - Early") {
-										$output=$output . "LE" ;
-									}
-									else if ($log[$x]=="Absent") {
-										$output=$output . "A" ;
+									if (isset($log[$x])) {
+										if ($log[$x]=="Present") {
+											$output=$output . "P" ;
+										}
+										else if ($log[$x]=="Present - Late") {
+											$output=$output . "PL" ;
+										}
+										else if ($log[$x]=="Present - Offsite") {
+											$output=$output . "PS" ;
+										}
+										else if ($log[$x]=="Left") {
+											$output=$output . "L" ;
+										}
+										else if ($log[$x]=="Left - Early") {
+											$output=$output . "LE" ;
+										}
+										else if ($log[$x]=="Absent") {
+											$output=$output . "A" ;
+										}
 									}
 									if ($x!=0 AND $x!=count($log)) {
 										$output=$output . " : " ;	
@@ -334,8 +337,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 				}
 			}
 		
-			$output=$output . "</table>" ;	
-			$output=$output . "</form>" ;		
+			$output=$output . "</table>" ;		
 		}
 	}
 	

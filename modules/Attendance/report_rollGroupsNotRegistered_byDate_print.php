@@ -91,7 +91,7 @@ else {
 			$rowNum="odd" ;
 			while ($row=$result->fetch()) {
 				$row["gibbonRollGroupID"] ;
-				if (is_null($log[$row["gibbonRollGroupID"]])) {
+				if (isset($log[$row["gibbonRollGroupID"]])==FALSE) {
 					if ($count%2==0) {
 						$rowNum="even" ;
 					}
@@ -111,7 +111,7 @@ else {
 							}
 							else {
 								try {
-									$dataTutor=array("gibbonPersonID1"=>$row["gibbonPersonIDTutor"], "gibbonPersonID2"=>$row["gibbonPersonIDTuto2"], "gibbonPersonID3"=>$row["gibbonPersonIDTutor3"]); 
+									$dataTutor=array("gibbonPersonID1"=>$row["gibbonPersonIDTutor"], "gibbonPersonID2"=>$row["gibbonPersonIDTutor2"], "gibbonPersonID3"=>$row["gibbonPersonIDTutor3"]); 
 									$sqlTutor="SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3" ;
 									$resultTutor=$connection2->prepare($sqlTutor);
 									$resultTutor->execute($dataTutor);

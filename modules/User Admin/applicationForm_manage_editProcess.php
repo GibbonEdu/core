@@ -168,144 +168,245 @@ else {
 				$schoolDate2=dateConvert($schoolDate2) ;
 			}
 			
-			//Get family information
+			//GET FAMILY FEILDS
 			$gibbonFamily=$_POST["gibbonFamily"] ;
 			if ($gibbonFamily=="TRUE") {
 				$gibbonFamilyID=$_POST["gibbonFamilyID"] ;
-				$homeAddress="" ; 	
-				$homeAddressDistrict="" ; 	
-				$homeAddressCountry="" ; 
-				$parent1gibbonPersonID=NULL ;	
-				$parent1title=NULL ;
-				$parent1surname=NULL ;
-				$parent1firstName=NULL ;
-				$parent1preferredName=NULL ;
-				$parent1officialName=NULL ;
-				$parent1nameInCharacters=NULL ;
-				$parent1gender=NULL ;
-				$parent1relationship=NULL ;
-				$parent1languageFirst=NULL ;
-				$parent1languageSecond=NULL ;
-				$parent1citizenship1=NULL ;
-				$parent1nationalIDCardNumber=NULL ;
-				$parent1residencyStatus=NULL ;
-				$parent1visaExpiryDate=NULL ;
-				$parent1email=NULL ;
-				$parent1phone1Type=NULL ;
-				$parent1phone1CountryCode=NULL ;
-				$parent1phone1=NULL ;
-				$parent1phone2Type=NULL ;
-				$parent1phone2CountryCode=NULL ;
-				$parent1phone2=NULL ;
-				$parent1profession=NULL ;
-				$parent1employer=NULL ;
-				$parent2title=NULL ;
-				$parent2surname=NULL ;
-				$parent2firstName=NULL ;
-				$parent2preferredName=NULL ;
-				$parent2officialName=NULL ;
-				$parent2nameInCharacters=NULL ;
-				$parent2gender=NULL ;
-				$parent2relationship=NULL ;
-				$parent2languageFirst=NULL ;
-				$parent2languageSecond=NULL ;
-				$parent2citizenship1=NULL ;
-				$parent2nationalIDCardNumber=NULL ;
-				$parent2residencyStatus=NULL ;
-				$parent2visaExpiryDate=NULL ;
-				$parent2email=NULL ;
-				$parent2phone1Type=NULL ;
-				$parent2phone1CountryCode=NULL ;
-				$parent2phone1=NULL ;
-				$parent2phone2Type=NULL ;
-				$parent2phone2CountryCode=NULL ;
-				$parent2phone2=NULL ;
-				$parent2profession=NULL ;
-				$parent2employer=NULL ;
 			}
 			else {
 				$gibbonFamilyID=NULL ;
-				$homeAddress=$_POST["homeAddress"] ; 	
-				$homeAddressDistrict=$_POST["homeAddressDistrict"] ; 	
-				$homeAddressCountry=$_POST["homeAddressCountry"] ; 	
-				$parent1gibbonPersonID=NULL ;
-				if (isset($_POST["parent1gibbonPersonID"])) {
-					$parent1gibbonPersonID=$_POST["parent1gibbonPersonID"] ;
-				}
-				if ($parent1gibbonPersonID=="") {
-					$parent1gibbonPersonID=NULL ;
-				}
-				else {
-					$parent1gibbonPersonID=$parent1gibbonPersonID;
-				}
+			}
+			$homeAddress=NULL ;
+			if (isset($_POST["homeAddress"])) {
+				$homeAddress=$_POST["homeAddress"] ;
+			}
+			$homeAddressDistrict=NULL ;
+			if (isset($_POST["homeAddressDistrict"])) {
+				$homeAddressDistrict=$_POST["homeAddressDistrict"] ;
+			}
+			$homeAddressCountry=NULL ;
+			if (isset($_POST["homeAddressCountry"])) {
+				$homeAddressCountry=$_POST["homeAddressCountry"] ;
+			}
+			
+			
+			//GET PARENT1 FEILDS
+			$parent1gibbonPersonID=NULL ;
+			if (isset($_POST["parent1gibbonPersonID"])) {
+				$parent1gibbonPersonID=$_POST["parent1gibbonPersonID"] ;
+			}
+			$parent1title=NULL ;
+			if (isset($_POST["parent1title"])) {
 				$parent1title=$_POST["parent1title"] ;
+			}
+			$parent1surname=NULL ;
+			if (isset($_POST["parent1surname"])) {
 				$parent1surname=$_POST["parent1surname"] ;
+			}
+			$parent1firstName=NULL ;
+			if (isset($_POST["parent1firstName"])) {
 				$parent1firstName=$_POST["parent1firstName"] ;
+			}
+			$parent1preferredName=NULL ;
+			if (isset($_POST["parent1preferredName"])) {
 				$parent1preferredName=$_POST["parent1preferredName"] ;
+			}
+			$parent1officialName=NULL ;
+			if (isset($_POST["parent1officialName"])) {
 				$parent1officialName=$_POST["parent1officialName"] ;
+			}
+			$parent1nameInCharacters=NULL ;
+			if (isset($_POST["parent1nameInCharacters"])) {
 				$parent1nameInCharacters=$_POST["parent1nameInCharacters"] ;
+			}
+			$parent1gender=NULL ;
+			if (isset($_POST["parent1gender"])) {
 				$parent1gender=$_POST["parent1gender"] ;
+			}
+			$parent1relationship=NULL ;
+			if (isset($_POST["parent1relationship"])) {
 				$parent1relationship=$_POST["parent1relationship"] ;
+			}
+			$parent1languageFirst=NULL ;
+			if (isset($_POST["parent1languageFirst"])) {
 				$parent1languageFirst=$_POST["parent1languageFirst"] ;
+			}
+			$parent1languageSecond=NULL ;
+			if (isset($_POST["parent1languageSecond"])) {
 				$parent1languageSecond=$_POST["parent1languageSecond"] ;
+			}
+			$parent1citizenship1=NULL ;
+			if (isset($_POST["parent1citizenship1"])) {
 				$parent1citizenship1=$_POST["parent1citizenship1"] ;
+			}
+			$parent1nationalIDCardNumber=NULL ;
+			if (isset($_POST["parent1nationalIDCardNumber"])) {
 				$parent1nationalIDCardNumber=$_POST["parent1nationalIDCardNumber"] ;
+			}
+			$parent1residencyStatus=NULL ;
+			if (isset($_POST["parent1residencyStatus"])) {
 				$parent1residencyStatus=$_POST["parent1residencyStatus"] ;
-				$parent1visaExpiryDate=$_POST["parent1visaExpiryDate"] ;
-				if ($parent1visaExpiryDate=="") {
-					$parent1visaExpiryDate=NULL ;
+			}
+			$parent1visaExpiryDate=NULL ;
+			if (isset($_POST["parent1visaExpiryDate"])) {
+				if ($_POST["parent1visaExpiryDate"]!="") {
+					$parent1visaExpiryDate=dateConvert($_POST["parent1visaExpiryDate"]) ;
 				}
-				else {
-					$parent1visaExpiryDate=dateConvert($parent1visaExpiryDate) ;
-				}
+			}
+			$parent1email=NULL ;
+			if (isset($_POST["parent1email"])) {
 				$parent1email=$_POST["parent1email"] ;
-				$parent1phone1Type=$_POST["parent1phone1Type"] ; 
-				$parent1phone1CountryCode=$_POST["parent1phone1CountryCode"] ; 
-				$parent1phone1=$_POST["parent1phone1"] ; 
-				$parent1phone2Type=$_POST["parent1phone2Type"] ; 
-				$parent1phone2CountryCode=$_POST["parent1phone2CountryCode"] ; 
-				$parent1phone2=$_POST["parent1phone2"] ; 
+			}
+			$parent1phone1Type=NULL ;
+			if (isset($_POST["parent1phone1Type"])) {
+				$parent1phone1Type=$_POST["parent1phone1Type"] ;
+			}
+			if (isset($_POST["parent1phone1"]) AND $parent1phone1Type=="") {
+				$parent1phone1Type="Other" ;
+			} 
+			$parent1phone1CountryCode=NULL ;
+			if (isset($_POST["parent1phone1CountryCode"])) {
+				$parent1phone1CountryCode=$_POST["parent1phone1CountryCode"] ;
+			}
+			$parent1phone1=NULL ;
+			if (isset($_POST["parent1phone1"])) {
+				$parent1phone1=$_POST["parent1phone1"] ;
+			}
+			$parent1phone2Type=NULL ;
+			if (isset($_POST["parent1phone2Type"])) {
+				$parent1phone2Type=$_POST["parent1phone2Type"] ;
+			}
+			if (isset($_POST["parent1phone2"]) AND $parent1phone2Type=="") {
+				$parent1phone2Type="Other" ;
+			} 
+			$parent1phone2CountryCode=NULL ;
+			if (isset($_POST["parent1phone2CountryCode"])) {
+				$parent1phone2CountryCode=$_POST["parent1phone2CountryCode"] ;
+			}
+			$parent1phone2=NULL ;
+			if (isset($_POST["parent1phone2"])) {
+				$parent1phone2=$_POST["parent1phone2"] ;
+			}
+			$parent1profession=NULL ;
+			if (isset($_POST["parent1profession"])) {
 				$parent1profession=$_POST["parent1profession"] ;
+			}
+			$parent1employer=NULL ;
+			if (isset($_POST["parent1employer"])) {
 				$parent1employer=$_POST["parent1employer"] ;
+			}
+		
+		
+			//GET PARENT2 FEILDS
+			$parent2title=NULL ;
+			if (isset($_POST["parent2title"])) {
 				$parent2title=$_POST["parent2title"] ;
+			}
+			$parent2surname=NULL ;
+			if (isset($_POST["parent2surname"])) {
 				$parent2surname=$_POST["parent2surname"] ;
+			}
+			$parent2firstName=NULL ;
+			if (isset($_POST["parent2firstName"])) {
 				$parent2firstName=$_POST["parent2firstName"] ;
+			}
+			$parent2preferredName=NULL ;
+			if (isset($_POST["parent2preferredName"])) {
 				$parent2preferredName=$_POST["parent2preferredName"] ;
+			}
+			$parent2officialName=NULL ;
+			if (isset($_POST["parent2officialName"])) {
 				$parent2officialName=$_POST["parent2officialName"] ;
+			}
+			$parent2nameInCharacters=NULL ;
+			if (isset($_POST["parent2nameInCharacters"])) {
 				$parent2nameInCharacters=$_POST["parent2nameInCharacters"] ;
+			}
+			$parent2gender=NULL ;
+			if (isset($_POST["parent2gender"])) {
 				$parent2gender=$_POST["parent2gender"] ;
+			}
+			$parent2relationship=NULL ;
+			if (isset($_POST["parent2relationship"])) {
 				$parent2relationship=$_POST["parent2relationship"] ;
+			}
+			$parent2languageFirst=NULL ;
+			if (isset($_POST["parent2languageFirst"])) {
 				$parent2languageFirst=$_POST["parent2languageFirst"] ;
+			}
+			$parent2languageSecond=NULL ;
+			if (isset($_POST["parent2languageSecond"])) {
 				$parent2languageSecond=$_POST["parent2languageSecond"] ;
+			}
+			$parent2citizenship1=NULL ;
+			if (isset($_POST["parent2citizenship1"])) {
 				$parent2citizenship1=$_POST["parent2citizenship1"] ;
+			}
+			$parent2nationalIDCardNumber=NULL ;
+			if (isset($_POST["parent2nationalIDCardNumber"])) {
 				$parent2nationalIDCardNumber=$_POST["parent2nationalIDCardNumber"] ;
+			}
+			$parent2residencyStatus=NULL ;
+			if (isset($_POST["parent2residencyStatus"])) {
 				$parent2residencyStatus=$_POST["parent2residencyStatus"] ;
-				$parent2visaExpiryDate=$_POST["parent2visaExpiryDate"] ;
-				if ($parent2visaExpiryDate=="") {
-					$parent2visaExpiryDate=NULL ;
+			}
+			$parent2visaExpiryDate=NULL ;
+			if (isset($_POST["parent2visaExpiryDate"])) {
+				if ($_POST["parent2visaExpiryDate"]!="") {
+					$parent2visaExpiryDate=dateConvert($_POST["parent2visaExpiryDate"]) ;
 				}
-				else {
-					$parent2visaExpiryDate=dateConvert($parent2visaExpiryDate) ;
-				}
+			}
+			$parent2email=NULL ;
+			if (isset($_POST["parent2email"])) {
 				$parent2email=$_POST["parent2email"] ;
-				$parent2phone1Type=$_POST["parent2phone1Type"] ; 
-				$parent2phone1CountryCode=$_POST["parent2phone1CountryCode"] ; 
-				$parent2phone1=$_POST["parent2phone1"] ; 
-				$parent2phone2Type=$_POST["parent2phone2Type"] ; 
-				$parent2phone2CountryCode=$_POST["parent2phone2CountryCode"] ; 
-				$parent2phone2=$_POST["parent2phone2"] ; 
+			}
+			$parent2phone1Type=NULL ;
+			if (isset($_POST["parent2phone1Type"])) {
+				$parent2phone1Type=$_POST["parent2phone1Type"] ;
+			}
+			if (isset($_POST["parent2phone1"]) AND $parent2phone1Type=="") {
+				$parent2phone1Type="Other" ;
+			} 
+			$parent2phone1CountryCode=NULL ;
+			if (isset($_POST["parent2phone1CountryCode"])) {
+				$parent2phone1CountryCode=$_POST["parent2phone1CountryCode"] ;
+			}
+			$parent2phone1=NULL ;
+			if (isset($_POST["parent2phone1"])) {
+				$parent2phone1=$_POST["parent2phone1"] ;
+			}
+			$parent2phone2Type=NULL ;
+			if (isset($_POST["parent2phone2Type"])) {
+				$parent2phone2Type=$_POST["parent2phone2Type"] ;
+			}
+			if (isset($_POST["parent2phone2"]) AND $parent2phone2Type=="") {
+				$parent2phone2Type="Other" ;
+			} 
+			$parent2phone2CountryCode=NULL ;
+			if (isset($_POST["parent2phone2CountryCode"])) {
+				$parent2phone2CountryCode=$_POST["parent2phone2CountryCode"] ;
+			}
+			$parent2phone2=NULL ;
+			if (isset($_POST["parent2phone2"])) {
+				$parent2phone2=$_POST["parent2phone2"] ;
+			}
+			$parent2profession=NULL ;
+			if (isset($_POST["parent2profession"])) {
 				$parent2profession=$_POST["parent2profession"] ;
+			}
+			$parent2employer=NULL ;
+			if (isset($_POST["parent2employer"])) {
 				$parent2employer=$_POST["parent2employer"] ;
 			}
 			
-			//Get sibling information
+			//GET SIBLING FIELDS
 			$siblingName1=$_POST["siblingName1"] ;
 			$siblingDOB1=$_POST["siblingDOB1"] ;
 			if ($siblingDOB1=="") {
 				$siblingDOB1=NULL ;
 			}
 			else {
-				$siblingDOB1=dateConvert($siblingDOB1) ;
+				$siblingDOB1=dateConvert($siblingDOB1);
 			}
 			$siblingSchool1=$_POST["siblingSchool1"] ;
 			$siblingSchoolJoiningDate1=$_POST["siblingSchoolJoiningDate1"] ;
@@ -337,7 +438,7 @@ else {
 				$siblingDOB3=NULL ;
 			}
 			else {
-				$siblingDOB3=dateConvert($siblingDOB3);
+				$siblingDOB3=dateConvert($siblingDOB3) ;
 			}
 			$siblingSchool3=$_POST["siblingSchool3"] ;
 			$siblingSchoolJoiningDate3=$_POST["siblingSchoolJoiningDate3"] ;
@@ -345,60 +446,78 @@ else {
 				$siblingSchoolJoiningDate3=NULL ;
 			}
 			else {
-				$siblingSchoolJoiningDate3=dateConvert($siblingSchoolJoiningDate3);
+				$siblingSchoolJoiningDate3=dateConvert($siblingSchoolJoiningDate3) ;
 			}
 			
-			//Get other fields
-			$languageChoice="" ;
+			//GET PAYMENT FIELDS
+			$payment=$_POST["payment"] ;
+			$companyName=NULL ;
+			if (isset($_POST["companyName"])) {
+				$companyName=$_POST["companyName"] ;
+			}
+			$companyContact=NULL ;
+			if (isset($_POST["companyContact"])) {
+				$companyContact=$_POST["companyContact"] ;
+			}
+			$companyAddress=NULL ;
+			if (isset($_POST["companyAddress"])) {
+				$companyAddress=$_POST["companyAddress"] ;
+			}
+			$companyEmail=NULL ;
+			if (isset($_POST["companyEmail"])) {
+				$companyEmail=$_POST["companyEmail"] ;
+			}
+			$companyCCFamily=NULL ;
+			if (isset($_POST["companyCCFamily"])) {
+				$companyCCFamily=$_POST["companyCCFamily"] ;
+			}
+			$companyPhone=NULL ;
+			if (isset($_POST["companyPhone"])) {
+				$companyPhone=$_POST["companyPhone"] ;
+			}
+			$companyAll=NULL ;
+			if (isset($_POST["companyAll"])) {
+				$companyAll=$_POST["companyAll"] ;
+			}
+			$gibbonFinanceFeeCategoryIDList=NULL ;
+			if (isset($_POST["gibbonFinanceFeeCategoryIDList"])) {
+				$gibbonFinanceFeeCategoryIDArray=$_POST["gibbonFinanceFeeCategoryIDList"] ;
+				if (count($gibbonFinanceFeeCategoryIDArray)>0) {
+					foreach ($gibbonFinanceFeeCategoryIDArray AS $gibbonFinanceFeeCategoryID) {
+						$gibbonFinanceFeeCategoryIDList.=$gibbonFinanceFeeCategoryID . "," ;
+					}
+					$gibbonFinanceFeeCategoryIDList=substr($gibbonFinanceFeeCategoryIDList,0,-1) ;
+				}
+			}
+
+		
+			//GET OTHER FIELDS
+			$languageChoice=NULL ;
 			if (isset($_POST["languageChoice"])) {
 				$languageChoice=$_POST["languageChoice"] ;
 			}
-			$languageChoiceExperience="" ;
+			$languageChoiceExperience=NULL ;
 			if (isset($_POST["languageChoiceExperience"])) {
 				$languageChoiceExperience=$_POST["languageChoiceExperience"] ;
 			}
-			$scholarshipInterest=$_POST["scholarshipInterest"] ;
-			$scholarshipRequired=$_POST["scholarshipRequired"] ;
-			$payment=$_POST["payment"] ;
-			if ($payment=="Company") {
-				$companyName=$_POST["companyName"] ;
-				$companyContact=$_POST["companyContact"] ;
-				$companyAddress=$_POST["companyAddress"] ;
-				$companyEmail=$_POST["companyEmail"] ;
-				$companyPhone=$_POST["companyPhone"] ;
-				$companyAll=$_POST["companyAll"] ;
-				if ($companyAll=="N") {
-					$gibbonFinanceFeeCategoryIDList=="" ;
-					$gibbonFinanceFeeCategoryIDArray=$_POST["gibbonFinanceFeeCategoryIDList"] ;
-					if (count($gibbonFinanceFeeCategoryIDArray)>0) {
-						foreach ($gibbonFinanceFeeCategoryIDArray AS $gibbonFinanceFeeCategoryID) {
-							$gibbonFinanceFeeCategoryIDList.=$gibbonFinanceFeeCategoryID . "," ;
-						}
-						$gibbonFinanceFeeCategoryIDList=substr($gibbonFinanceFeeCategoryIDList,0,-1) ;
-					}
-				}
+			$scholarshipInterest=NULL ;
+			if (isset($_POST["scholarshipInterest"])) {
+				$scholarshipInterest=$_POST["scholarshipInterest"] ;
 			}
-			else {
-				$companyName="" ;
-				$companyContact="" ;
-				$companyAddress="" ;
-				$companyEmail="" ;
-				$companyPhone="" ;
-				$companyAll=NULL ;
-				$gibbonFinanceFeeCategoryIDList=NULL ;
+			$scholarshipRequired=NULL ;
+			if (isset($_POST["scholarshipRequired"])) {
+				$scholarshipRequired=$_POST["scholarshipRequired"] ;
 			}
-			$howDidYouHear=$_POST["howDidYouHear"] ;
-			$howDidYouHearMore=$_POST["howDidYouHearMore"] ;
-			$agreement="N" ;
-			if (isset($_POST["agreement"] )) {
-				$agreement=$_POST["agreement"] ;
-				if ($agreement=="on") {
-					$agreement="Y" ;
-				}
+			$howDidYouHear=NULL ;
+			if (isset($_POST["howDidYouHear"])) {
+				$howDidYouHear=$_POST["howDidYouHear"] ;
+			}
+			$howDidYouHearMore=NULL ;
+			if (isset($_POST["howDidYouHearMore"])) {
+				$howDidYouHearMore=$_POST["howDidYouHearMore"] ;
 			}
 			$privacy=NULL ;
 			if (isset($_POST["privacyOptions"])) {
-				$privacy="" ;			
 				$privacyOptions=$_POST["privacyOptions"] ;
 				foreach ($privacyOptions AS $privacyOption) {
 					if ($privacyOption!="") {
@@ -413,9 +532,8 @@ else {
 				}
 			}
 			
-			//Validate Inputs
+			//VALIDATE INPUTS
 			$familyFail=FALSE ;
-			$gibbonFamily ;
 			if ($gibbonFamily=="TRUE") {
 				if ($gibbonFamilyID=="") {
 					$familyFail=TRUE ;
@@ -426,21 +544,22 @@ else {
 					$familyFail=TRUE ;
 				}
 				if ($parent1gibbonPersonID==NULL) {
-					if ($parent1title=="" OR $parent1surname=="" OR $parent1firstName=="" OR $parent1preferredName=="" OR $parent1officialName=="" OR $parent1gender=="" OR $parent1relationship=="") {
+					if ($parent1title=="" OR $parent1surname=="" OR $parent1firstName=="" OR $parent1preferredName=="" OR $parent1officialName=="" OR $parent1gender=="" OR $parent1relationship=="" OR $parent1phone1==""OR $parent1profession=="") {
 						$familyFail=TRUE ;
 					}
 				}
 			}
-			if ($priority=="" OR $surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob==NULL OR $gibbonSchoolYearIDEntry=="" OR $gibbonYearGroupIDEntry=="" OR $familyFail) {
+			if ($priority=="" OR $surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageHome=="" OR $languageFirst=="" OR $gibbonSchoolYearIDEntry=="" OR $dateStart=="" OR $gibbonYearGroupIDEntry=="" OR $howDidYouHear=="" OR $familyFail) {
 				//Fail 3
-				$URL=$URL . "&updateReturn=fail3" ;
+				$URL=$URL . "&addReturn=fail3" ;
 				header("Location: {$URL}");
 			}
+			
 			else {
 				//Write to database
 				try {
-					$data=array("priority"=>$priority, "status"=>$status, "milestones"=>$milestones, "dateStart"=>$dateStart, "gibbonRollGroupID"=>$gibbonRollGroupID, "paymentMade"=>$paymentMade, "notes"=>$notes, "surname"=>$surname, "firstName"=>$firstName, "preferredName"=>$preferredName, "officialName"=>$officialName, "nameInCharacters"=>$nameInCharacters, "gender"=>$gender, "dob"=>$dob, "languageHome"=>$languageHome, "languageFirst"=>$languageFirst, "languageSecond"=>$languageSecond, "languageThird"=>$languageThird, "countryOfBirth"=>$countryOfBirth, "citizenship1"=>$citizenship1, "citizenship1Passport"=>$citizenship1Passport, "nationalIDCardNumber"=>$nationalIDCardNumber, "residencyStatus"=>$residencyStatus, "visaExpiryDate"=>$visaExpiryDate, "email"=>$email, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "phone1Type"=>$phone1Type, "phone1CountryCode"=>$phone1CountryCode, "phone1"=>$phone1, "phone2Type"=>$phone2Type, "phone2CountryCode"=>$phone2CountryCode, "phone2"=>$phone2, "medicalInformation"=>$medicalInformation, "developmentInformation"=>$developmentInformation, "gibbonSchoolYearIDEntry"=>$gibbonSchoolYearIDEntry, "gibbonYearGroupIDEntry"=>$gibbonYearGroupIDEntry, "dayType"=>$dayType, "schoolName1"=>$schoolName1, "schoolAddress1"=>$schoolAddress1, "schoolGrades1"=>$schoolGrades1, "schoolDate1"=>$schoolDate1, "schoolName2"=>$schoolName2, "schoolAddress2"=>$schoolAddress2, "schoolGrades2"=>$schoolGrades2, "schoolDate2"=>$schoolDate2, "gibbonFamilyID"=>$gibbonFamilyID, "parent1gibbonPersonID"=>$parent1gibbonPersonID, "parent1title"=>$parent1title, "parent1surname"=>$parent1surname, "parent1firstName"=>$parent1firstName, "parent1preferredName"=>$parent1preferredName, "parent1officialName"=>$parent1officialName, "parent1nameInCharacters"=>$parent1nameInCharacters, "parent1gender"=>$parent1gender, "parent1relationship"=>$parent1relationship, "parent1languageFirst"=>$parent1languageFirst, "parent1languageSecond"=>$parent1languageSecond, "parent1citizenship1"=>$parent1citizenship1, "parent1nationalIDCardNumber"=>$parent1nationalIDCardNumber, "parent1residencyStatus"=>$parent1residencyStatus, "parent1visaExpiryDate"=>$parent1visaExpiryDate, "parent1email"=>$parent1email, "parent1phone1Type"=>$parent1phone1Type, "parent1phone1CountryCode"=>$parent1phone1CountryCode, "parent1phone1"=>$parent1phone1, "parent1phone2Type"=>$parent1phone2Type, "parent1phone2CountryCode"=>$parent1phone2CountryCode, "parent1phone2"=>$parent1phone2, "parent1profession"=>$parent1profession, "parent1employer"=>$parent1employer, "parent2title"=>$parent2title, "parent2surname"=>$parent2surname, "parent2firstName"=>$parent2firstName, "parent2preferredName"=>$parent2preferredName, "parent2officialName"=>$parent2officialName, "parent2nameInCharacters"=>$parent2nameInCharacters, "parent2gender"=>$parent2gender, "parent2relationship"=>$parent2relationship, "parent2languageFirst"=>$parent2languageFirst, "parent2languageSecond"=>$parent2languageSecond, "parent2citizenship1"=>$parent2citizenship1, "parent2nationalIDCardNumber"=>$parent2nationalIDCardNumber, "parent2residencyStatus"=>$parent2residencyStatus, "parent2visaExpiryDate"=>$parent2visaExpiryDate, "parent2email"=>$parent2email, "parent2phone1Type"=>$parent2phone1Type, "parent2phone1CountryCode"=>$parent2phone1CountryCode, "parent2phone1"=>$parent2phone1, "parent2phone2Type"=>$parent2phone2Type, "parent2phone2CountryCode"=>$parent2phone2CountryCode, "parent2phone2"=>$parent2phone2, "parent2profession"=>$parent2profession, "parent2employer"=>$parent2employer, "siblingName1"=>$siblingName1, "siblingDOB1"=>$siblingDOB1, "siblingSchool1"=>$siblingSchool1, "siblingSchoolJoiningDate1"=>$siblingSchoolJoiningDate1, "siblingName2"=>$siblingName2, "siblingDOB2"=>$siblingDOB2, "siblingSchool2"=>$siblingSchool2, "siblingSchoolJoiningDate2"=>$siblingSchoolJoiningDate2, "siblingName3"=>$siblingName3, "siblingDOB3"=>$siblingDOB3, "siblingSchool3"=>$siblingSchool3, "siblingSchoolJoiningDate3"=>$siblingSchoolJoiningDate3, "languageChoice"=>$languageChoice, "languageChoiceExperience"=>$languageChoiceExperience, "scholarshipInterest"=>$scholarshipInterest, "scholarshipRequired"=>$scholarshipRequired, "payment"=>$payment, "companyName"=>$companyName, "companyContact"=>$companyContact, "companyAddress"=>$companyAddress, "companyEmail"=>$companyEmail, "companyPhone"=>$companyPhone, "companyAll"=>$companyAll, "gibbonFinanceFeeCategoryIDList"=>$gibbonFinanceFeeCategoryIDList, "howDidYouHear"=>$howDidYouHear, "howDidYouHearMore"=>$howDidYouHearMore, "agreement"=>$agreement, "privacy"=>$privacy, "gibbonApplicationFormID"=>$gibbonApplicationFormID); 
-					$sql="UPDATE gibbonApplicationForm SET priority=:priority, status=:status, milestones=:milestones, dateStart=:dateStart, gibbonRollGroupID=:gibbonRollGroupID, paymentMade=:paymentMade, notes=:notes, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageHome=:languageHome, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, medicalInformation=:medicalInformation, developmentInformation=:developmentInformation, gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry, gibbonYearGroupIDEntry=:gibbonYearGroupIDEntry, dayType=:dayType, schoolName1=:schoolName1, schoolAddress1=:schoolAddress1, schoolGrades1=:schoolGrades1, schoolDate1=:schoolDate1, schoolName2=:schoolName2, schoolAddress2=:schoolAddress2, schoolGrades2=:schoolGrades2, schoolDate2=:schoolDate2, gibbonFamilyID=:gibbonFamilyID, parent1gibbonPersonID=:parent1gibbonPersonID, parent1title=:parent1title, parent1surname=:parent1surname, parent1firstName=:parent1firstName, parent1preferredName=:parent1preferredName, parent1officialName=:parent1officialName, parent1nameInCharacters=:parent1nameInCharacters, parent1gender=:parent1gender, parent1relationship=:parent1relationship, parent1languageFirst=:parent1languageFirst, parent1languageSecond=:parent1languageSecond, parent1citizenship1=:parent1citizenship1, parent1nationalIDCardNumber=:parent1nationalIDCardNumber, parent1residencyStatus=:parent1residencyStatus, parent1visaExpiryDate=:parent1visaExpiryDate, parent1email=:parent1email, parent1phone1Type=:parent1phone1Type, parent1phone1CountryCode=:parent1phone1CountryCode, parent1phone1=:parent1phone1, parent1phone2Type=:parent1phone2Type, parent1phone2CountryCode=:parent1phone2CountryCode, parent1phone2=:parent1phone2, parent1profession=:parent1profession, parent1employer=:parent1employer, parent2title=:parent2title, parent2surname=:parent2surname, parent2firstName=:parent2firstName, parent2preferredName=:parent2preferredName, parent2officialName=:parent2officialName, parent2nameInCharacters=:parent2nameInCharacters, parent2gender=:parent2gender, parent2relationship=:parent2relationship, parent2languageFirst=:parent2languageFirst, parent2languageSecond=:parent2languageSecond, parent2citizenship1=:parent2citizenship1, parent2nationalIDCardNumber=:parent2nationalIDCardNumber, parent2residencyStatus=:parent2residencyStatus, parent2visaExpiryDate=:parent2visaExpiryDate, parent2email=:parent2email, parent2phone1Type=:parent2phone1Type, parent2phone1CountryCode=:parent2phone1CountryCode, parent2phone1=:parent2phone1, parent2phone2Type=:parent2phone2Type, parent2phone2CountryCode=:parent2phone2CountryCode, parent2phone2=:parent2phone2, parent2profession=:parent2profession, parent2employer=:parent2employer, siblingName1=:siblingName1, siblingDOB1=:siblingDOB1, siblingSchool1=:siblingSchool1, siblingSchoolJoiningDate1=:siblingSchoolJoiningDate1, siblingName2=:siblingName2, siblingDOB2=:siblingDOB2, siblingSchool2=:siblingSchool2, siblingSchoolJoiningDate2=:siblingSchoolJoiningDate2, siblingName3=:siblingName3, siblingDOB3=:siblingDOB3, siblingSchool3=:siblingSchool3, siblingSchoolJoiningDate3=:siblingSchoolJoiningDate3, languageChoice=:languageChoice, languageChoiceExperience=:languageChoiceExperience, scholarshipInterest=:scholarshipInterest, scholarshipRequired=:scholarshipRequired, payment=:payment, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, howDidYouHear=:howDidYouHear, howDidYouHearMore=:howDidYouHearMore, agreement=:agreement, privacy=:privacy WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
+					$data=array("priority"=>$priority, "status"=>$status, "milestones"=>$milestones, "dateStart"=>$dateStart, "gibbonRollGroupID"=>$gibbonRollGroupID, "paymentMade"=>$paymentMade, "notes"=>$notes, "surname"=>$surname, "firstName"=>$firstName, "preferredName"=>$preferredName, "officialName"=>$officialName, "nameInCharacters"=>$nameInCharacters, "gender"=>$gender, "dob"=>$dob, "languageHome"=>$languageHome, "languageFirst"=>$languageFirst, "languageSecond"=>$languageSecond, "languageThird"=>$languageThird, "countryOfBirth"=>$countryOfBirth, "citizenship1"=>$citizenship1, "citizenship1Passport"=>$citizenship1Passport, "nationalIDCardNumber"=>$nationalIDCardNumber, "residencyStatus"=>$residencyStatus, "visaExpiryDate"=>$visaExpiryDate, "email"=>$email, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "phone1Type"=>$phone1Type, "phone1CountryCode"=>$phone1CountryCode, "phone1"=>$phone1, "phone2Type"=>$phone2Type, "phone2CountryCode"=>$phone2CountryCode, "phone2"=>$phone2, "medicalInformation"=>$medicalInformation, "developmentInformation"=>$developmentInformation, "gibbonSchoolYearIDEntry"=>$gibbonSchoolYearIDEntry, "gibbonYearGroupIDEntry"=>$gibbonYearGroupIDEntry, "dayType"=>$dayType, "schoolName1"=>$schoolName1, "schoolAddress1"=>$schoolAddress1, "schoolGrades1"=>$schoolGrades1, "schoolDate1"=>$schoolDate1, "schoolName2"=>$schoolName2, "schoolAddress2"=>$schoolAddress2, "schoolGrades2"=>$schoolGrades2, "schoolDate2"=>$schoolDate2, "gibbonFamilyID"=>$gibbonFamilyID, "parent1gibbonPersonID"=>$parent1gibbonPersonID, "parent1title"=>$parent1title, "parent1surname"=>$parent1surname, "parent1firstName"=>$parent1firstName, "parent1preferredName"=>$parent1preferredName, "parent1officialName"=>$parent1officialName, "parent1nameInCharacters"=>$parent1nameInCharacters, "parent1gender"=>$parent1gender, "parent1relationship"=>$parent1relationship, "parent1languageFirst"=>$parent1languageFirst, "parent1languageSecond"=>$parent1languageSecond, "parent1citizenship1"=>$parent1citizenship1, "parent1nationalIDCardNumber"=>$parent1nationalIDCardNumber, "parent1residencyStatus"=>$parent1residencyStatus, "parent1visaExpiryDate"=>$parent1visaExpiryDate, "parent1email"=>$parent1email, "parent1phone1Type"=>$parent1phone1Type, "parent1phone1CountryCode"=>$parent1phone1CountryCode, "parent1phone1"=>$parent1phone1, "parent1phone2Type"=>$parent1phone2Type, "parent1phone2CountryCode"=>$parent1phone2CountryCode, "parent1phone2"=>$parent1phone2, "parent1profession"=>$parent1profession, "parent1employer"=>$parent1employer, "parent2title"=>$parent2title, "parent2surname"=>$parent2surname, "parent2firstName"=>$parent2firstName, "parent2preferredName"=>$parent2preferredName, "parent2officialName"=>$parent2officialName, "parent2nameInCharacters"=>$parent2nameInCharacters, "parent2gender"=>$parent2gender, "parent2relationship"=>$parent2relationship, "parent2languageFirst"=>$parent2languageFirst, "parent2languageSecond"=>$parent2languageSecond, "parent2citizenship1"=>$parent2citizenship1, "parent2nationalIDCardNumber"=>$parent2nationalIDCardNumber, "parent2residencyStatus"=>$parent2residencyStatus, "parent2visaExpiryDate"=>$parent2visaExpiryDate, "parent2email"=>$parent2email, "parent2phone1Type"=>$parent2phone1Type, "parent2phone1CountryCode"=>$parent2phone1CountryCode, "parent2phone1"=>$parent2phone1, "parent2phone2Type"=>$parent2phone2Type, "parent2phone2CountryCode"=>$parent2phone2CountryCode, "parent2phone2"=>$parent2phone2, "parent2profession"=>$parent2profession, "parent2employer"=>$parent2employer, "siblingName1"=>$siblingName1, "siblingDOB1"=>$siblingDOB1, "siblingSchool1"=>$siblingSchool1, "siblingSchoolJoiningDate1"=>$siblingSchoolJoiningDate1, "siblingName2"=>$siblingName2, "siblingDOB2"=>$siblingDOB2, "siblingSchool2"=>$siblingSchool2, "siblingSchoolJoiningDate2"=>$siblingSchoolJoiningDate2, "siblingName3"=>$siblingName3, "siblingDOB3"=>$siblingDOB3, "siblingSchool3"=>$siblingSchool3, "siblingSchoolJoiningDate3"=>$siblingSchoolJoiningDate3, "languageChoice"=>$languageChoice, "languageChoiceExperience"=>$languageChoiceExperience, "scholarshipInterest"=>$scholarshipInterest, "scholarshipRequired"=>$scholarshipRequired, "payment"=>$payment, "companyName"=>$companyName, "companyContact"=>$companyContact, "companyAddress"=>$companyAddress, "companyEmail"=>$companyEmail, "companyCCFamily"=>$companyCCFamily, "companyPhone"=>$companyPhone, "companyAll"=>$companyAll, "gibbonFinanceFeeCategoryIDList"=>$gibbonFinanceFeeCategoryIDList, "howDidYouHear"=>$howDidYouHear, "howDidYouHearMore"=>$howDidYouHearMore, "privacy"=>$privacy, "gibbonApplicationFormID"=>$gibbonApplicationFormID); 
+					$sql="UPDATE gibbonApplicationForm SET priority=:priority, status=:status, milestones=:milestones, dateStart=:dateStart, gibbonRollGroupID=:gibbonRollGroupID, paymentMade=:paymentMade, notes=:notes, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageHome=:languageHome, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, medicalInformation=:medicalInformation, developmentInformation=:developmentInformation, gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry, gibbonYearGroupIDEntry=:gibbonYearGroupIDEntry, dayType=:dayType, schoolName1=:schoolName1, schoolAddress1=:schoolAddress1, schoolGrades1=:schoolGrades1, schoolDate1=:schoolDate1, schoolName2=:schoolName2, schoolAddress2=:schoolAddress2, schoolGrades2=:schoolGrades2, schoolDate2=:schoolDate2, gibbonFamilyID=:gibbonFamilyID, parent1gibbonPersonID=:parent1gibbonPersonID, parent1title=:parent1title, parent1surname=:parent1surname, parent1firstName=:parent1firstName, parent1preferredName=:parent1preferredName, parent1officialName=:parent1officialName, parent1nameInCharacters=:parent1nameInCharacters, parent1gender=:parent1gender, parent1relationship=:parent1relationship, parent1languageFirst=:parent1languageFirst, parent1languageSecond=:parent1languageSecond, parent1citizenship1=:parent1citizenship1, parent1nationalIDCardNumber=:parent1nationalIDCardNumber, parent1residencyStatus=:parent1residencyStatus, parent1visaExpiryDate=:parent1visaExpiryDate, parent1email=:parent1email, parent1phone1Type=:parent1phone1Type, parent1phone1CountryCode=:parent1phone1CountryCode, parent1phone1=:parent1phone1, parent1phone2Type=:parent1phone2Type, parent1phone2CountryCode=:parent1phone2CountryCode, parent1phone2=:parent1phone2, parent1profession=:parent1profession, parent1employer=:parent1employer, parent2title=:parent2title, parent2surname=:parent2surname, parent2firstName=:parent2firstName, parent2preferredName=:parent2preferredName, parent2officialName=:parent2officialName, parent2nameInCharacters=:parent2nameInCharacters, parent2gender=:parent2gender, parent2relationship=:parent2relationship, parent2languageFirst=:parent2languageFirst, parent2languageSecond=:parent2languageSecond, parent2citizenship1=:parent2citizenship1, parent2nationalIDCardNumber=:parent2nationalIDCardNumber, parent2residencyStatus=:parent2residencyStatus, parent2visaExpiryDate=:parent2visaExpiryDate, parent2email=:parent2email, parent2phone1Type=:parent2phone1Type, parent2phone1CountryCode=:parent2phone1CountryCode, parent2phone1=:parent2phone1, parent2phone2Type=:parent2phone2Type, parent2phone2CountryCode=:parent2phone2CountryCode, parent2phone2=:parent2phone2, parent2profession=:parent2profession, parent2employer=:parent2employer, siblingName1=:siblingName1, siblingDOB1=:siblingDOB1, siblingSchool1=:siblingSchool1, siblingSchoolJoiningDate1=:siblingSchoolJoiningDate1, siblingName2=:siblingName2, siblingDOB2=:siblingDOB2, siblingSchool2=:siblingSchool2, siblingSchoolJoiningDate2=:siblingSchoolJoiningDate2, siblingName3=:siblingName3, siblingDOB3=:siblingDOB3, siblingSchool3=:siblingSchool3, siblingSchoolJoiningDate3=:siblingSchoolJoiningDate3, languageChoice=:languageChoice, languageChoiceExperience=:languageChoiceExperience, scholarshipInterest=:scholarshipInterest, scholarshipRequired=:scholarshipRequired, payment=:payment, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, howDidYouHear=:howDidYouHear, howDidYouHearMore=:howDidYouHearMore, privacy=:privacy WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}

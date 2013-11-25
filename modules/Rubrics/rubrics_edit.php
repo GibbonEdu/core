@@ -87,7 +87,7 @@ else {
 				print "</div>" ;
 			} 
 			
-			$columnDeleteReturn=$_GET["columnDeleteReturn"] ;
+			if (isset($_GET["columnDeleteReturn"])) { $columnDeleteReturn=$_GET["columnDeleteReturn"] ; } else { $columnDeleteReturn="" ; }
 			$columnDeleteReturnMessage ="" ;
 			$class="error" ;
 			if (!($columnDeleteReturn=="")) {
@@ -112,7 +112,7 @@ else {
 				print "</div>" ;
 			} 
 			
-			$rowDeleteReturn=$_GET["rowDeleteReturn"] ;
+			if (isset($_GET["rowDeleteReturn"])) { $rowDeleteReturn=$_GET["rowDeleteReturn"] ; } else { $rowDeleteReturn="" ; }
 			$rowDeleteReturnMessage ="" ;
 			$class="error" ;
 			if (!($rowDeleteReturn=="")) {
@@ -137,7 +137,7 @@ else {
 				print "</div>" ;
 			} 
 			
-			$cellEditReturn=$_GET["cellEditReturn"] ;
+			if (isset($_GET["cellEditReturn"])) { $cellEditReturn=$_GET["cellEditReturn"] ; } else { $cellEditReturn="" ; }
 			$cellEditReturnMessage ="" ;
 			$class="error" ;
 			if (!($cellEditReturn=="")) {
@@ -345,7 +345,7 @@ else {
 											$rowSelect=$resultSelect->fetch() ;
 										}
 									}
-									if ($rowSelect["name"]=="") {
+									if (isset($rowSelect["name"])==FALSE) {
 										?>
 										<input readonly name="scale" id="scale" value="None" type="text" style="width: 300px">
 										<?
@@ -370,7 +370,7 @@ else {
 							</tr>
 						</table>
 					</form>
-					<a name='rubricDesign'>
+					<a name='rubricDesign'></a>
 					<table class='smallIntBorder' cellspacing='0' style="width:100%">
 						<tr class='break'>
 							<td colspan=2>
@@ -379,7 +379,11 @@ else {
 						</tr>
 					</table>
 					<?
-					print rubricEdit($guid, $connection2, $gibbonRubricID, $rowSelect["name"]) ;
+					$scaleName="" ;
+					if (isset($rowSelect["name"])) {
+						$scaleName=$rowSelect["name"] ;
+					}
+					print rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName) ;
 				}
 			}
 		}

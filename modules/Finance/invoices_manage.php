@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Invoices</div>" ;
 	print "</div>" ;
 	
-	$issueReturn=$_GET["issueReturn"] ;
+	if (isset($_GET["issueReturn"])) { $issueReturn=$_GET["issueReturn"] ; } else { $issueReturn="" ; }
 	$issueReturnMessage ="" ;
 	$class="error" ;
 	if (!($issueReturn=="")) {
@@ -61,7 +61,7 @@ else {
 		print "</div>" ;
 	} 
 	
-	$bulkReturn=$_GET["bulkReturn"] ;
+	if (isset($_GET["bulkReturn"])) { $bulkReturn=$_GET["bulkReturn"] ; } else { $bulkReturn="" ; }
 	$bulkReturnMessage ="" ;
 	$class="error" ;
 	if (!($bulkReturn=="")) {
@@ -149,14 +149,26 @@ else {
 			}
 		print "</div>" ;
 	
-		$status=$_GET["status"] ;
+		$status=NULL ;
+		if (isset($_GET["status"])) {
+			$status=$_GET["status"] ;
+		}
 		if ($status=="") {
 			$status="Pending" ;
 		}
-		$gibbonFinanceInvoiceeID=$_GET["gibbonFinanceInvoiceeID"] ;
-		$monthOfIssue=$_GET["monthOfIssue"] ;
-		$gibbonFinanceBillingScheduleID=$_GET["gibbonFinanceBillingScheduleID"] ;
-	
+		$gibbonFinanceInvoiceeID=NULL ;
+		if (isset($_GET["gibbonFinanceInvoiceeID"])) {
+			$gibbonFinanceInvoiceeID=$_GET["gibbonFinanceInvoiceeID"] ;
+		}
+		$monthOfIssue=NULL ;
+		if (isset($_GET["monthOfIssue"])) {
+			$monthOfIssue=$_GET["monthOfIssue"] ;
+		}
+		$gibbonFinanceBillingScheduleID=NULL ;
+		if (isset($_GET["gibbonFinanceBillingScheduleID"])) {
+			$gibbonFinanceBillingScheduleID=$_GET["gibbonFinanceBillingScheduleID"] ;
+		}
+		
 		print "<h3>" ;
 			print "Filters" ;
 		print "</h3>" ;
@@ -310,7 +322,7 @@ else {
 		
 		try {
 			//Add in filter wheres
-			$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
+			$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonSchoolYearID2"=>$gibbonSchoolYearID); 
 			$whereSched="" ;
 			$whereAdHoc="" ;
 			$whereNotPending="" ;
@@ -415,13 +427,13 @@ else {
 				}
 			}
 			//SQL for billing schedule AND pending
-			$sql="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceBillingSchedule.invoiceDueDate, paidDate, gibbonFinanceBillingSchedule.name AS billingSchedule, NULL AS billingScheduleExtra, notes FROM gibbonFinanceInvoice JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Scheduled' AND gibbonFinanceInvoice.status='Pending' $whereSched)" ; 
+			$sql="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceBillingSchedule.invoiceDueDate, paidDate, gibbonFinanceBillingSchedule.name AS billingSchedule, NULL AS billingScheduleExtra, notes, gibbonRollGroup.name AS rollGroup FROM gibbonFinanceInvoice JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Scheduled' AND gibbonFinanceInvoice.status='Pending' $whereSched)" ; 
 			$sql.=" UNION " ; 
 			//SQL for Ad Hoc AND pending
-			$sql.="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, invoiceIssueDate, invoiceDueDate, paidDate, 'Ad Hoc' AS billingSchedule, NULL AS billingScheduleExtra, notes FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Ad Hoc' AND gibbonFinanceInvoice.status='Pending' $whereAdHoc)" ; 
+			$sql.="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, invoiceIssueDate, invoiceDueDate, paidDate, 'Ad Hoc' AS billingSchedule, NULL AS billingScheduleExtra, notes, gibbonRollGroup.name AS rollGroup FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)  WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Ad Hoc' AND gibbonFinanceInvoice.status='Pending' $whereAdHoc)" ; 
 			$sql.=" UNION " ; 
 			//SQL for NOT Pending
-			$sql.="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' $whereNotPending)" ; 
+			$sql.="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes, gibbonRollGroup.name AS rollGroup FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)  WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' $whereNotPending)" ; 
 			$sql.=" ORDER BY FIND_IN_SET(status, 'Pending,Issued,Paid,Refunded,Cancelled'), invoiceIssueDate, surname, preferredName" ; 
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
@@ -484,8 +496,11 @@ else {
 					
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
-							print "<th style='width: 120px'>" ;
+							print "<th style='width: 110px'>" ;
 								print "Student<br/><span style='font-style: italic; font-size: 85%'>Invoice To</span>" ;
+							print "</th>" ;
+							print "<th style='width: 110px'>" ;
+								print "Roll Group</span>" ;
 							print "</th>" ;
 							print "<th style='width: 100px'>" ;
 								print "Status" ;
@@ -500,7 +515,7 @@ else {
 								print "Issue Date<br/>" ;
 								print "<span style='font-style: italic; font-size: 75%'>Due Date</span>" ;
 							print "</th>" ;
-							print "<th style='width: 130px'>" ;
+							print "<th style='width: 140px'>" ;
 								print "Actions" ;
 							print "</th>" ;
 							print "<th>" ;
@@ -549,6 +564,9 @@ else {
 								print "<td>" ;
 									print "<b>" . formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) . "</b><br/>" ;
 									print "<span style='font-style: italic; font-size: 85%'>" . $row["invoiceTo"] . "</span>" ;
+								print "</td>" ;
+								print "<td>" ;
+									print $row["rollGroup"] ;
 								print "</td>" ;
 								print "<td>" ;
 									print $row["status"] ;
@@ -617,15 +635,15 @@ else {
 									}
 									print "<script type='text/javascript'>" ;	
 										print "$(document).ready(function(){" ;
-											print "\$(\".comment-$count-$yearCount\").hide();" ;
-											print "\$(\".show_hide-$count-$yearCount\").fadeIn(1000);" ;
-											print "\$(\".show_hide-$count-$yearCount\").click(function(){" ;
-											print "\$(\".comment-$count-$yearCount\").fadeToggle(1000);" ;
+											print "\$(\".comment-$count\").hide();" ;
+											print "\$(\".show_hide-$count\").fadeIn(1000);" ;
+											print "\$(\".show_hide-$count\").click(function(){" ;
+											print "\$(\".comment-$count\").fadeToggle(1000);" ;
 											print "});" ;
 										print "});" ;
 									print "</script>" ;
 									if ($row["notes"]!="") {
-										print "<a title='View Notes' class='show_hide-$count-$yearCount' onclick='false' href='#'><img style='margin-left: 3px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
+										print "<a title='View Notes' class='show_hide-$count' onclick='false' href='#'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
 									}
 								print "</td>" ;
 								print "<td>" ;
@@ -633,8 +651,8 @@ else {
 								print "</td>" ;
 							print "</tr>" ;
 							if ($row["notes"]!="") {
-								print "<tr class='comment-$count-$yearCount' id='comment-$count-$yearCount'>" ;
-									print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
+								print "<tr class='comment-$count' id='comment-$count'>" ;
+									print "<td style='border-bottom: 1px solid #333' colspan=7>" ;
 										print $row["notes"] ;
 									print "</td>" ;
 								print "</tr>" ;

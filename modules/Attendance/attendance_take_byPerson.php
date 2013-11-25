@@ -174,7 +174,11 @@ else {
 					$spin++ ;
 				}
 				$last5SchoolDaysCount=$count ;
-		
+				
+				$lastType="" ;
+				$lastReason="" ;
+				$lastComment="" ;
+					
 				//Show attendance log for the current day
 				try {
 					$dataLog=array("gibbonPersonID"=>$gibbonPersonID, "date"=>"$currentDate%"); 
@@ -194,9 +198,6 @@ else {
 					print "<div class='success'>" ;
 						print "The following attendance log has been recorded for the selected student today:";
 						print "<ul>" ;
-						$lastType="" ;
-						$lastReason="" ;
-						$lastComment="" ;
 						while ($rowLog=$resultLog->fetch()) {
 							print "<li><b>" . $rowLog["direction"] . "</b> (" . $rowLog["type"] . ") | Recorded at " . substr($rowLog["timestampTaken"],11) . " on " . dateConvertBack(substr($rowLog["timestampTaken"],0,10)) . " by " . formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true) ."</li>" ;
 							$lastType=$rowLog["type"] ;

@@ -82,7 +82,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID); 
-			$sql="SELECT gibbonFinanceInvoice.*, companyName, companyContact, companyEmail FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ; 
+			$sql="SELECT gibbonFinanceInvoice.*, companyName, companyContact, companyEmail, companyCCFamily FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ; 
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -553,7 +553,7 @@ else {
 								 });
 							});
 						</script>
-						<tr class='break' class='emailReceipt'>
+						<tr class='break emailReceipt'>
 							<td colspan=2> 
 								<h3>Email Receipt</h3>
 								<input type='hidden' id='emailReceipt' name='emailReceipt' value='N'/>
@@ -587,6 +587,38 @@ else {
 										</td>
 									</tr>
 									<?
+									if ($row["companyCCFamily"]=="Y") {
+										try {
+											$dataParents=array("gibbonFinanceInvoiceeID"=>$row["gibbonFinanceInvoiceeID"]); 
+											$sqlParents="SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFinanceInvoicee JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName" ; 
+											$resultParents=$connection2->prepare($sqlParents);
+											$resultParents->execute($dataParents);
+										}
+										catch(PDOException $e) { 
+											$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										if ($resultParents->rowCount()<1) {
+											$return.="<div class='warning'>There are no family members available to send this receipt to.</div>" ; 
+										}
+										else {
+											while ($rowParents=$resultParents->fetch()) {
+												if ($rowParents["preferredName"]!="" AND $rowParents["surname"]!="" AND $rowParents["email"]!="") {
+													?>
+													<tr class='emailReceipt'>
+														<td> 
+															<b><? print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b> <i>(Family CC)</i>
+															<span style="font-size: 90%"><i></i></span>
+														</td>
+														<td class="right">
+															<? print $rowParents["email"] ; ?> <input checked type='checkbox' name='emails[]' value='<? print htmlPrep($rowParents["email"]) ; ?>'/>
+															<input type='hidden' name='names[]' value='<? print htmlPrep(formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false)) ; ?>'/>
+														</td>
+													</tr>
+													<?
+												}
+											}
+										}
+									}
 								}
 								else {
 									$return.="<div class='warning'>There is no company contact available to send this invoice to.</div>" ; 
@@ -644,7 +676,7 @@ else {
 								 });
 							});
 						</script>
-						<tr class='break class='emailReminder'>
+						<tr class='break emailReminder'>
 							<td colspan=2> 
 								<h3>Email Reminder</h3>
 								<input type='hidden' id='emailReminder' name='emailReminder' value='Y'/>
@@ -678,6 +710,38 @@ else {
 										</td>
 									</tr>
 									<?
+									if ($row["companyCCFamily"]=="Y") {
+										try {
+											$dataParents=array("gibbonFinanceInvoiceeID"=>$row["gibbonFinanceInvoiceeID"]); 
+											$sqlParents="SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFinanceInvoicee JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName" ; 
+											$resultParents=$connection2->prepare($sqlParents);
+											$resultParents->execute($dataParents);
+										}
+										catch(PDOException $e) { 
+											$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										if ($resultParents->rowCount()<1) {
+											$return.="<div class='warning'>There are no family members available to send this receipt to.</div>" ; 
+										}
+										else {
+											while ($rowParents=$resultParents->fetch()) {
+												if ($rowParents["preferredName"]!="" AND $rowParents["surname"]!="" AND $rowParents["email"]!="") {
+													?>
+													<tr class='emailReminder'>
+														<td> 
+															<b><? print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b> <i>(Family CC)</i>
+															<span style="font-size: 90%"><i></i></span>
+														</td>
+														<td class="right">
+															<? print $rowParents["email"] ; ?> <input checked type='checkbox' name='emails2[]' value='<? print htmlPrep($rowParents["email"]) ; ?>'/>
+															<input type='hidden' name='names[]' value='<? print htmlPrep(formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false)) ; ?>'/>
+														</td>
+													</tr>
+													<?
+												}
+											}
+										}
+									}
 								}
 								else {
 									$return.="<div class='warning'>There is no company contact available to send this invoice to.</div>" ; 

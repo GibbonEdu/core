@@ -87,7 +87,7 @@ else {
 				print "</div>" ;
 			} 
 			
-			$addReturnPlanner=$_GET["addReturnPlanner"] ;
+			if (isset($_GET["addReturnPlanner"])) { $addReturnPlanner=$_GET["addReturnPlanner"] ; } else { $addReturnPlanner="" ; }
 			$addReturnPlannerMessage ="" ;
 			$class="error" ;
 			if (!($addReturnPlanner=="")) {
@@ -215,7 +215,7 @@ else {
 							<b>Name *</b><br/>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=20 value="<? print $_GET["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=20 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
@@ -227,7 +227,7 @@ else {
 							<b>Description *</b><br/>
 						</td>
 						<td class="right">
-							<input name="description" id="description" maxlength=255 value="<? print $_GET["summary"] ?>" type="text" style="width: 300px">
+							<input name="description" id="description" maxlength=255 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var description=new LiveValidation('description');
 								description.add(Validate.Presence);
@@ -474,8 +474,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="viewableStudents" id="viewableStudents" style="width: 302px">
-								<option <? if ($_GET["viewableStudents"]=="Y") { print "selected " ; }?>value="Y">Y</option>
-								<option <? if ($_GET["viewableStudents"]=="N") { print "selected " ; }?>value="N">N</option>
+								<option value="Y">Y</option>
+								<option value="N">N</option>
 							</select>
 						</td>
 					</tr>
@@ -486,8 +486,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="viewableParents" id="viewableParents" style="width: 302px">
-								<option <? if ($_GET["viewableParents"]=="Y") { print "selected " ; }?>value="Y">Y</option>
-								<option <? if ($_GET["viewableParents"]=="N") { print "selected " ; }?>value="N">N</option>
+								<option value="Y">Y</option>
+								<option value="N">N</option>
 							</select>
 						</td>
 					</tr>
@@ -497,7 +497,7 @@ else {
 							<span style="font-size: 90%"><i>1. Format: dd/mm/yyyy<br/>2. Enter date after grading<br>3. Column is hidden without date</i></span>
 						</td>
 						<td class="right">
-							<input name="completeDate" id="completeDate" maxlength=10 value="<? print $row["completeDate"] ?>" type="text" style="width: 300px">
+							<input name="completeDate" id="completeDate" maxlength=10 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var completeDate=new LiveValidation('completeDate');
 								completeDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 

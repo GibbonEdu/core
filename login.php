@@ -58,18 +58,17 @@ else {
 		$sql="SELECT * FROM gibbonPerson WHERE ((username=:username) AND (status='Full') AND (canLogin='Y'))" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
-		if ($result->rowCount()==1) {
-			$row=$result->fetch() ;
-		}
 	}
 	catch(PDOException $e) { }
-		
-	//Test to see if username exists
-	if (!($row["username"]==$username)) {
+	
+	//Test to see if username exists and is unique
+	if ($result->rowCount()!=1) {
 		$URL=$URL . "?loginReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
+		$row=$result->fetch() ;
+	
 		//Check fail count, reject & alert if 3rd time
 		if ($row["failCount"]>=3) {
 			try {
@@ -79,7 +78,7 @@ else {
 				$resultSecure->execute($data); 
 			}
 			catch(PDOException $e) { }
-			
+		
 			if ($row["failCount"]==3) {
 				$to=getSettingByScope($connection2, "System", "organisationAdministratorEmail") ;
 				$subject=$_SESSION[$guid]["organisationNameShort"] . " Failed Login Notification";
@@ -87,7 +86,7 @@ else {
 				$headers="From: " . $to ;
 				mail($to, $subject, $body, $headers) ;
 			}
-			
+		
 			$URL=$URL . "?loginReturn=fail6" ;
 			header("Location: {$URL}");
 		}
@@ -105,11 +104,11 @@ else {
 			else if ($row["password"]!="") {
 				if ($row["password"]==md5($password)) {
 					$passwordTest=true ;
-				
+			
 					//Migrate to strong password
 					$salt=getSalt() ;
 					$passwordStrong=hash("sha256", $salt.$password) ;
-				
+			
 					try {
 						$dataSecure=array("passwordStrong" => $passwordStrong, "passwordStrongSalt" => $salt, "username" => $username ); 
 						$sqlSecure="UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt WHERE (username=:username)";
@@ -121,7 +120,7 @@ else {
 					}
 				}
 			}
-	
+
 			//Test to see if password matches username
 			if ($passwordTest!=true) {
 				//FAIL PASSWORD
@@ -134,7 +133,7 @@ else {
 				catch(PDOException $e) { 
 					$passwordTest=false ; 
 				}
-				
+			
 				$URL=$URL . "?loginReturn=fail1" ;
 				header("Location: {$URL}");
 			}
@@ -154,7 +153,7 @@ else {
 							$resultYear->execute($dataYear);
 						}
 						catch(PDOException $e) { }
-				
+			
 						//Check number of rows returned.
 						//If it is not 1, show error
 						if (!($resultYear->rowCount()==1)) {
@@ -168,8 +167,8 @@ else {
 							$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"]=$rowYear["sequenceNumber"] ;
 						}
 					}
-			
-			
+		
+		
 					//USER EXISTS, SET SESSION VARIABLES
 					$_SESSION[$guid]["username"]=$username ;
 					$_SESSION[$guid]["passwordStrong"]=$passwordStrong ;
@@ -197,7 +196,7 @@ else {
 					$_SESSION[$guid]["personalBackground"]=$row["personalBackground"] ;
 					$_SESSION[$guid]["messengerLastBubble"]=$row["messengerLastBubble"] ;
 					$_SESSION[$guid]["gibbonThemeIDPersonal"]=$row["gibbonThemeIDPersonal"] ;
-				
+			
 					//Make best effort to set IP address and other details, but no need to error check etc.
 					try {
 						$data=array( "lastIPAddress" => $_SERVER["REMOTE_ADDR"], "lastTimestamp" => date("Y-m-d H:i:s"), "failCount"=>0, "username" => $username ); 
@@ -206,8 +205,8 @@ else {
 						$result->execute($data); 
 					}
 					catch(PDOException $e) { }
-				
-				
+			
+			
 					if (isset($_GET["q"])) {
 						$URL="./index.php?q=" . $_GET["q"] ;
 					}

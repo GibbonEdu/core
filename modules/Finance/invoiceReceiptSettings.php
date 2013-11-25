@@ -132,6 +132,39 @@ else {
 					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" type="text" style="width: 300px" rows=4><? print $row["value"] ?></textarea>
 				</td>
 			</tr>
+			<tr>
+				<?
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='invoiceNumber'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><? print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
+						<?
+						$selected="" ;
+						if ($row["value"]=="Invoice ID" ) { $selected="selected" ; }
+						print "<option $selected value='Invoice ID'>Invoice ID</option>" ;
+						$selected="" ;
+						if ($row["value"]=="Person ID + Invoice ID" ) { $selected="selected" ; }
+						print "<option $selected value='Person ID + Invoice ID'>Person ID + Invoice ID</option>" ;
+						$selected="" ;
+						if ($row["value"]=="Student ID + Invoice ID" ) { $selected="selected" ; }
+						print "<option $selected value='Student ID + Invoice ID'>Student ID + Invoice ID</option>" ;
+						?>			
+					</select>
+				</td>
+			</tr>
 			
 			<tr class='break'>
 				<td colspan=2> 

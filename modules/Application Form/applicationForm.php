@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 $proceed=FALSE ;
 $public=FALSE ;
 
-if ($_SESSION[$guid]["username"]=="") {
+if (isset($_SESSION[$guid]["username"])==FALSE) {
 	$public=TRUE ;
 	
 	//Get public access
@@ -37,6 +37,12 @@ else {
 	}
 }
 
+//Set gibbonPersonID of the person completing the application
+$gibbonPersonID=NULL ;
+if (isset($_SESSION[$guid]["gibbonPersonID"])) {
+	$gibbonPersonID=$_SESSION[$guid]["gibbonPersonID"] ;
+}
+
 
 if ($proceed==FALSE) {
 	//Acess denied
@@ -47,7 +53,7 @@ if ($proceed==FALSE) {
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	if ($_SESSION[$guid]["username"]!="") {
+	if (isset($_SESSION[$guid]["username"])) {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . $_SESSION[$guid]["organisationNameShort"] . " Application Form</div>" ;
 	}
 	else {
@@ -152,7 +158,7 @@ else {
 					<span style="font-size: 90%"><i>Family name as shown in ID documents.</i></span>
 				</td>
 				<td class="right">
-					<input name="surname" id="surname" maxlength=30 value="<? print $row["surname"] ?>" type="text" style="width: 300px">
+					<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var surname=new LiveValidation('surname');
 						surname.add(Validate.Presence);
@@ -165,7 +171,7 @@ else {
 					<span style="font-size: 90%"><i>First name as shown in ID documents.</i></span>
 				</td>
 				<td class="right">
-					<input name="firstName" id="firstName" maxlength=30 value="<? print $row["firstName"] ?>" type="text" style="width: 300px">
+					<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var firstName=new LiveValidation('firstName');
 						firstName.add(Validate.Presence);
@@ -178,7 +184,7 @@ else {
 					<span style="font-size: 90%"><i>Most common name, alias, nickname, etc.</i></span>
 				</td>
 				<td class="right">
-					<input name="preferredName" id="preferredName" maxlength=30 value="<? print $row["preferredName"] ?>" type="text" style="width: 300px">
+					<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var preferredName=new LiveValidation('preferredName');
 						preferredName.add(Validate.Presence);
@@ -191,7 +197,7 @@ else {
 					<span style="font-size: 90%"><i>Full name as shown in ID documents.</i></span>
 				</td>
 				<td class="right">
-					<input title='Please enter full name as shown in ID documents' name="officialName" id="officialName" maxlength=150 value="<? print $row["officialName"] ?>" type="text" style="width: 300px">
+					<input title='Please enter full name as shown in ID documents' name="officialName" id="officialName" maxlength=150 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var officialName=new LiveValidation('officialName');
 						officialName.add(Validate.Presence);
@@ -204,7 +210,7 @@ else {
 					<span style="font-size: 90%"><i>Chinese or other character-based name.</i></span>
 				</td>
 				<td class="right">
-					<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="<? print $row["nameInCharacters"] ?>" type="text" style="width: 300px">
+					<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -229,7 +235,7 @@ else {
 					<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="dob" id="dob" maxlength=10 value="<? print $row["dob"] ?>" type="text" style="width: 300px">
+					<input name="dob" id="dob" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var dob=new LiveValidation('dob');
 						dob.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -255,7 +261,7 @@ else {
 					<span style="font-size: 90%"><i>The primary language used in the student's home.</i></span>
 				</td>
 				<td class="right">
-					<input name="languageHome" id="languageHome" maxlength=30 value="<? print $row["languageHome"] ?>" type="text" style="width: 300px">
+					<input name="languageHome" id="languageHome" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 				<script type="text/javascript">
 					$(function() {
@@ -287,7 +293,7 @@ else {
 					<span style="font-size: 90%"><i>Student's native/first/mother language. </i></span>
 				</td>
 				<td class="right">
-					<input name="languageFirst" id="languageFirst" maxlength=30 value="<? print $row["languageFirst"] ?>" type="text" style="width: 300px">
+					<input name="languageFirst" id="languageFirst" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 				<script type="text/javascript">
 					$(function() {
@@ -318,7 +324,7 @@ else {
 					<b>Second Language</b><br/>
 				</td>
 				<td class="right">
-					<input name="languageSecond" id="languageSecond" maxlength=30 value="<? print $row["languageSecond"] ?>" type="text" style="width: 300px">
+					<input name="languageSecond" id="languageSecond" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 				<script type="text/javascript">
 					$(function() {
@@ -345,7 +351,7 @@ else {
 					<b>Third Language</b><br/>
 				</td>
 				<td class="right">
-					<input name="languageThird" id="languageThird" maxlength=30 value="<? print $row["languageThird"] ?>" type="text" style="width: 300px">
+					<input name="languageThird" id="languageThird" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 				<script type="text/javascript">
 					$(function() {
@@ -425,7 +431,7 @@ else {
 					<b>Citizenship Passport Number</b><br/>
 				</td>
 				<td class="right">
-					<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="<? print $row["citizenship1Passport"] ?>" type="text" style="width: 300px">
+					<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -440,7 +446,7 @@ else {
 					?>
 				</td>
 				<td class="right">
-					<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="<? print $row["nationalIDCardNumber"] ?>" type="text" style="width: 300px">
+					<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -458,7 +464,7 @@ else {
 					<?
 					$residencyStatusList=getSettingByScope($connection2, "User Admin", "residencyStatus") ;
 					if ($residencyStatusList=="") {
-						print "<input name='residencyStatus' id='residencyStatus' maxlength=30 value='" . $row["residencyStatus"] . "' type='text' style='width: 300px'>" ;
+						print "<input name='residencyStatus' id='residencyStatus' maxlength=30 value='' type='text' style='width: 300px'>" ;
 					}
 					else {
 						print "<select name='residencyStatus' id='residencyStatus' style='width: 302px'>" ;
@@ -489,7 +495,7 @@ else {
 					?>
 				</td>
 				<td class="right">
-					<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<? print $row["visaExpiryDate"] ?>" type="text" style="width: 300px">
+					<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var visaExpiryDate=new LiveValidation('visaExpiryDate');
 						visaExpiryDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -513,7 +519,7 @@ else {
 					<b>Email</b><br/>
 				</td>
 				<td class="right">
-					<input name="email" id="email" maxlength=50 value="<? print $row["email"] ?>" type="text" style="width: 300px">
+					<input name="email" id="email" maxlength=50 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var email=new LiveValidation('email');
 						email.add(Validate.Email);
@@ -529,7 +535,7 @@ else {
 						<span style="font-size: 90%"><i>Type, country code, number</i></span>
 					</td>
 					<td class="right">
-						<input name="phone<? print $i ?>" id="phone<? print $i ?>" maxlength=20 value="<? print $row["phone" . $i] ?>" type="text" style="width: 160px">
+						<input name="phone<? print $i ?>" id="phone<? print $i ?>" maxlength=20 value="" type="text" style="width: 160px">
 						<select name="phone<? print $i ?>CountryCode" id="phone<? print $i ?>CountryCode" style="width: 60px">
 							<?
 							print "<option value=''></option>" ;
@@ -623,7 +629,7 @@ else {
 					<span style="font-size: 90%"><i>Student's intended first day at school.<br/>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="dateStart" id="dateStart" maxlength=10 value="<? print dateConvertBack($row["dateStart"]) ?>" type="text" style="width: 300px">
+					<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var dateStart=new LiveValidation('dateStart');
 						dateStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -785,7 +791,7 @@ else {
 			<?
 			//FAMILY
 			try {
-				$dataSelect=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+				$dataSelect=array("gibbonPersonID"=>$gibbonPersonID); 
 				$sqlSelect="SELECT * FROM gibbonFamily JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID ORDER BY name" ;
 				$resultSelect=$connection2->prepare($sqlSelect);
 				$resultSelect->execute($dataSelect);
@@ -812,7 +818,7 @@ else {
 						<span style="font-size: 90%"><i>Unit, Building, Street</i></span>
 					</td>
 					<td class="right">
-						<input name="homeAddress" id="homeAddress" maxlength=255 value="<? print $row["homeAddress"] ?>" type="text" style="width: 300px">
+						<input name="homeAddress" id="homeAddress" maxlength=255 value="" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var homeAddress=new LiveValidation('homeAddress');
 							homeAddress.add(Validate.Presence);
@@ -825,7 +831,7 @@ else {
 						<span style="font-size: 90%"><i>County, State, District</i></span>
 					</td>
 					<td class="right">
-						<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<? print $row["homeAddressDistrict"] ?>" type="text" style="width: 300px">
+						<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="" type="text" style="width: 300px">
 					</td>
 					<script type="text/javascript">
 						$(function() {
@@ -879,7 +885,7 @@ else {
 				</tr>
 				<?
 				
-				if ($_SESSION[$guid]["username"]!="") {
+				if (isset($_SESSION[$guid]["username"])) {
 					$start=2 ;
 					?>
 					<tr class='break'>
@@ -948,7 +954,7 @@ else {
 							 </script>
 						</td>
 					</tr>
-					<input name='parent1gibbonPersonID' value="<? print $_SESSION[$guid]["gibbonPersonID"] ?>" type="hidden">
+					<input name='parent1gibbonPersonID' value="<? print $gibbonPersonID ?>" type="hidden">
 					<?
 				}
 				else {
@@ -964,7 +970,7 @@ else {
 								if ($i==1) {
 									print "<span style='font-size: 75%'> (e.g. mother)</span>" ;
 								}
-								else if ($i==2 AND $_SESSION[$guid]["gibbonPersonID"]=="") {
+								else if ($i==2 AND $gibbonPersonID=="") {
 									print "<span style='font-size: 75%'> (e.g. father)</span>" ;
 								}
 								?>
@@ -1072,7 +1078,7 @@ else {
 							<span style="font-size: 90%"><i>Family name as shown in ID documents.</i></span>
 						</td>
 						<td class="right">
-							<input name="<? print "parent$i" ?>surname" id="<? print "parent$i" ?>surname" maxlength=30 value="<? if ($i==1) { print $_SESSION[$guid]["surname"] ;}?>" type="text" style="width: 300px">
+							<input name="<? print "parent$i" ?>surname" id="<? print "parent$i" ?>surname" maxlength=30 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var <? print "parent$i" ?>surname=new LiveValidation('<? print "parent$i" ?>surname');
 								<? print "parent$i" ?>surname.add(Validate.Presence);
@@ -1085,7 +1091,7 @@ else {
 							<span style="font-size: 90%"><i>First name as shown in ID documents.</i></span>
 						</td>
 						<td class="right">
-							<input name="<? print "parent$i" ?>firstName" id="<? print "parent$i" ?>firstName" maxlength=30 value="<? if ($i==1) { print $_SESSION[$guid]["firstName"] ;}?>" type="text" style="width: 300px">
+							<input name="<? print "parent$i" ?>firstName" id="<? print "parent$i" ?>firstName" maxlength=30 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var <? print "parent$i" ?>firstName=new LiveValidation('<? print "parent$i" ?>firstName');
 								<? print "parent$i" ?>firstName.add(Validate.Presence);
@@ -1098,7 +1104,7 @@ else {
 							<span style="font-size: 90%"><i>Most common name, alias, nickname, etc.</i></span>
 						</td>
 						<td class="right">
-							<input name="<? print "parent$i" ?>preferredName" id="<? print "parent$i" ?>preferredName" maxlength=30 value="<? if ($i==1) { print $_SESSION[$guid]["preferredName"] ;}?>" type="text" style="width: 300px">
+							<input name="<? print "parent$i" ?>preferredName" id="<? print "parent$i" ?>preferredName" maxlength=30 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var <? print "parent$i" ?>preferredName=new LiveValidation('<? print "parent$i" ?>preferredName');
 								<? print "parent$i" ?>preferredName.add(Validate.Presence);
@@ -1111,7 +1117,7 @@ else {
 							<span style="font-size: 90%"><i>Full name as shown in ID documents.</i></span>
 						</td>
 						<td class="right">
-							<input title='Please enter full name as shown in ID documents' name="<? print "parent$i" ?>officialName" id="<? print "parent$i" ?>officialName" maxlength=150 value="<? if ($i==1) { print $_SESSION[$guid]["officialName"] ;}?>" type="text" style="width: 300px">
+							<input title='Please enter full name as shown in ID documents' name="<? print "parent$i" ?>officialName" id="<? print "parent$i" ?>officialName" maxlength=150 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var <? print "parent$i" ?>officialName=new LiveValidation('<? print "parent$i" ?>officialName');
 								<? print "parent$i" ?>officialName.add(Validate.Presence);
@@ -1124,7 +1130,7 @@ else {
 							<span style="font-size: 90%"><i>Chinese or other character-based name.</i></span>
 						</td>
 						<td class="right">
-							<input name="<? print "parent$i" ?>nameInCharacters" id="<? print "parent$i" ?>nameInCharacters" maxlength=20 value="<? print $row["nameInCharacters"] ?>" type="text" style="width: 300px">
+							<input name="<? print "parent$i" ?>nameInCharacters" id="<? print "parent$i" ?>nameInCharacters" maxlength=20 value="" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr <? if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1180,7 +1186,7 @@ else {
 							<b>First Language </b><br/>
 						</td>
 						<td class="right">
-							<input name="<? print "parent$i" ?>languageFirst" id="<? print "parent$i" ?>languageFirst" maxlength=30 value="<? print $row["languageFirst"] ?>" type="text" style="width: 300px">
+							<input name="<? print "parent$i" ?>languageFirst" id="<? print "parent$i" ?>languageFirst" maxlength=30 value="" type="text" style="width: 300px">
 						</td>
 						<script type="text/javascript">
 							$(function() {
@@ -1207,7 +1213,7 @@ else {
 							<b>Second Language</b><br/>
 						</td>
 						<td class="right">
-							<input name="<? print "parent$i" ?>languageSecond" id="<? print "parent$i" ?>languageSecond" maxlength=30 value="<? print $row["languageSecond"] ?>" type="text" style="width: 300px">
+							<input name="<? print "parent$i" ?>languageSecond" id="<? print "parent$i" ?>languageSecond" maxlength=30 value="" type="text" style="width: 300px">
 						</td>
 						<script type="text/javascript">
 							$(function() {
@@ -1272,7 +1278,7 @@ else {
 							?>
 						</td>
 						<td class="right">
-							<input name="<? print "parent$i" ?>nationalIDCardNumber" id="<? print "parent$i" ?>nationalIDCardNumber" maxlength=30 value="<? print $row["nationalIDCardNumber"] ?>" type="text" style="width: 300px">
+							<input name="<? print "parent$i" ?>nationalIDCardNumber" id="<? print "parent$i" ?>nationalIDCardNumber" maxlength=30 value="" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr <? if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1321,7 +1327,7 @@ else {
 							?>
 						</td>
 						<td class="right">
-							<input name="<? print "parent$i" ?>visaExpiryDate" id="<? print "parent$i" ?>visaExpiryDate" maxlength=10 value="<? print $row["visaExpiryDate"] ?>" type="text" style="width: 300px">
+							<input name="<? print "parent$i" ?>visaExpiryDate" id="<? print "parent$i" ?>visaExpiryDate" maxlength=10 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var <? print "parent$i" ?>visaExpiryDate=new LiveValidation('<? print "parent$i" ?>visaExpiryDate');
 								<? print "parent$i" ?>visaExpiryDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -1345,7 +1351,7 @@ else {
 							<b>Email *</b><br/>
 						</td>
 						<td class="right">
-							<input name="<? print "parent$i" ?>email" id="<? print "parent$i" ?>email" maxlength=50 value="<? if ($i==1) { print $_SESSION[$guid]["email"] ;}?>" type="text" style="width: 300px">
+							<input name="<? print "parent$i" ?>email" id="<? print "parent$i" ?>email" maxlength=50 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var <? print "parent$i" ?>email=new LiveValidation('<? print "parent$i" ?>email');
 								<? 
@@ -1365,7 +1371,7 @@ else {
 								<span style="font-size: 90%"><i>Type, country code, number</i></span>
 							</td>
 							<td class="right">
-								<input name="<? print "parent$i" ?>phone<? print $y ?>" id="<? print "parent$i" ?>phone<? print $y ?>" maxlength=20 value="<? print $row["phone" . $y] ?>" type="text" style="width: 160px">
+								<input name="<? print "parent$i" ?>phone<? print $y ?>" id="<? print "parent$i" ?>phone<? print $y ?>" maxlength=20 value="" type="text" style="width: 160px">
 								<?
 								if ($y==1) {
 									?>
@@ -1416,7 +1422,7 @@ else {
 							<b>Profession *</b><br/>
 						</td>
 						<td class="right">
-							<input name="<? print "parent$i" ?>profession" id="<? print "parent$i" ?>profession" maxlength=30 value="<? print $row["profession"] ?>" type="text" style="width: 300px">
+							<input name="<? print "parent$i" ?>profession" id="<? print "parent$i" ?>profession" maxlength=30 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var <? print "parent$i" ?>profession=new LiveValidation('<? print "parent$i" ?>profession');
 								<? print "parent$i" ?>profession.add(Validate.Presence);
@@ -1428,7 +1434,7 @@ else {
 							<b>Employer</b><br/>
 						</td>
 						<td class="right">
-							<input name="<? print "parent$i" ?>employer" id="<? print "parent$i" ?>employer" maxlength=30 value="<? print $row["employer"] ?>" type="text" style="width: 300px">
+							<input name="<? print "parent$i" ?>employer" id="<? print "parent$i" ?>employer" maxlength=30 value="" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<?
@@ -1551,7 +1557,7 @@ else {
 						$rowCount=1 ;
 						
 						//List siblings who have been to or are at the school
-						if ($gibbonFamilyID!="") {
+						if (isset($gibbonFamilyID)) {
 							try {
 								$dataSibling=array("gibbonFamilyID"=>$gibbonFamilyID); 
 								$sqlSibling="SELECT surname, preferredName, dob, dateStart FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY dob ASC, surname, preferredName" ;
@@ -1750,9 +1756,11 @@ else {
 					$("#companyContactRow").css("display","none");
 					$("#companyAddressRow").css("display","none");
 					$("#companyEmailRow").css("display","none");
+					$("#companyCCFamilyRow").css("display","none");
 					$("#companyPhoneRow").css("display","none");
 					$("#companyAllRow").css("display","none");
 					$("#companyCategoriesRow").css("display","none");
+					
 					
 					$(".payment").click(function(){
 						if ($('input[name=payment]:checked').val() == "Family" ) {
@@ -1760,6 +1768,7 @@ else {
 							$("#companyContactRow").css("display","none");
 							$("#companyAddressRow").css("display","none");
 							$("#companyEmailRow").css("display","none");
+							$("#companyCCFamilyRow").css("display","none");
 							$("#companyPhoneRow").css("display","none");
 							$("#companyAllRow").css("display","none");
 							$("#companyCategoriesRow").css("display","none");
@@ -1768,6 +1777,7 @@ else {
 							$("#companyContactRow").slideDown("fast", $("#companyContactRow").css("display","table-row")); 
 							$("#companyAddressRow").slideDown("fast", $("#companyAddressRow").css("display","table-row")); 
 							$("#companyEmailRow").slideDown("fast", $("#companyEmailRow").css("display","table-row")); 
+							$("#companyCCFamilyRow").slideDown("fast", $("#companyCCFamilyRow").css("display","table-row")); 
 							$("#companyPhoneRow").slideDown("fast", $("#companyPhoneRow").css("display","table-row")); 
 							$("#companyAllRow").slideDown("fast", $("#companyAllRow").css("display","table-row")); 
 							if ($('input[name=companyAll]:checked').val() == "N" ) {
@@ -1833,6 +1843,18 @@ else {
 						var companyEmail=new LiveValidation('companyEmail');
 						companyEmail.add(Validate.Email);
 					 </script>
+				</td>
+			</tr>
+			<tr id="companyCCFamilyRow">
+				<td> 
+					<b>CC Family?</b><br/>
+					<span style="font-size: 90%"><i>Should the family be sent a copy of billing emails?</i></span>
+				</td>
+				<td class="right">
+					<select name="companyCCFamily" id="companyCCFamily" style="width: 302px">
+						<option value="N" /> No
+						<option value="Y" /> Yes
+					</select>
 				</td>
 			</tr>
 			<tr id="companyPhoneRow">
@@ -2008,7 +2030,7 @@ else {
 					<span style="font-size: 90%"><i>The name of a person or link to a website.</i></span>
 				</td>
 				<td class="right">
-					<input name="howDidYouHearMore" id="howDidYouHearMore" maxlength=255 value="<? print $row["howDidYouHearMore"] ?>" type="text" style="width: 300px">
+					<input name="howDidYouHearMore" id="howDidYouHearMore" maxlength=255 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<?
@@ -2039,7 +2061,7 @@ else {
 			//Get agreement
 			$agreement=getSettingByScope($connection2, 'Application Form', 'agreement') ;
 			if ($agreement!="") {
-				print "<tr>" ;
+				print "<tr class='break'>" ;
 					print "<td colspan=2>" ; 
 						print "<h3>" ; 
 							print "Agreement" ;
@@ -2064,9 +2086,6 @@ else {
 					print "</td>" ;
 				print "</tr>" ;
 			}
-			else {
-				print "<input type='hidden' name='agreement' id='agreement' value='on'>" ;
-			}	
 			?>
 	
 		

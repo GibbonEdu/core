@@ -254,7 +254,7 @@ else {
 					<? print $mce_options; ?>
 				});
 			</script>	
-
+			
 			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-tokeninput/src/jquery.tokeninput.js"></script>
 			<link rel="stylesheet" href="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-tokeninput/styles/token-input-facebook.css" type="text/css" />
 			
@@ -356,35 +356,45 @@ else {
 										if (isActionAccessible($guid, $connection2, "/modules/Messenger/messageWall_view.php")) {
 											include "./modules/Messenger/moduleFunctions.php" ; 
 											
-											if (isset($_GET["q"]) AND isset($_GET["addReturn"])) {
-												if ($_SESSION[$guid]["pageLoads"]%$caching==0 OR ($_GET["q"]=="/modules/Messenger/messenger_post.php" AND $_GET["addReturn"]=="success0")) {
-													$messages=getMessages($guid, $connection2, "result") ;					
-													$messages=unserialize($messages) ;
-													try {
-														$resultPosts=$connection2->prepare($messages[1]);
-														$resultPosts->execute($messages[0]);  
-													}
-													catch(PDOException $e) { }	
-											
-													$_SESSION[$guid]["messageWallCount"]=0 ;
-													if ($resultPosts->rowCount()>0) {
-														$output=array() ;
-														$last="" ;
-														while ($rowPosts=$resultPosts->fetch()) {
-															if ($last==$rowPosts["gibbonMessengerID"]) {
-																$output[($count-1)]["source"]=$output[($count-1)]["source"] . "<br/>" .$rowPosts["source"] ;
-															}
-															else {
-																$output[$_SESSION[$guid]["messageWallCount"]]["photo"]=$rowPosts["image_75"] ;
-																$output[$_SESSION[$guid]["messageWallCount"]]["subject"]=$rowPosts["subject"] ;
-																$output[$_SESSION[$guid]["messageWallCount"]]["details"]=$rowPosts["body"] ;
-																$output[$_SESSION[$guid]["messageWallCount"]]["author"]=formatName($rowPosts["title"], $rowPosts["preferredName"], $rowPosts["surname"], $rowPosts["category"]) ;
-																$output[$_SESSION[$guid]["messageWallCount"]]["source"]=$rowPosts["source"] ;
-			
-																$_SESSION[$guid]["messageWallCount"]++ ;
-																$last=$rowPosts["gibbonMessengerID"] ;
-															}	
+											$addReturn=NULL ;
+											if (isset($_GET["addReturn"])) {
+												$addReturn=$_GET["addReturn"] ;
+											}
+											$updateReturn=NULL ;
+											if (isset($_GET["updateReturn"])) {
+												$updateReturn=$_GET["updateReturn"] ;
+											}
+											$deleteReturn=NULL ;
+											if (isset($_GET["deleteReturn"])) {
+												$deleteReturn=$_GET["deleteReturn"] ;
+											}
+											if ($_SESSION[$guid]["pageLoads"]%$caching==0 OR ($q=="/modules/Messenger/messenger_post.php" AND $addReturn=="success0") OR ($q=="/modules/Messenger/messenger_manage_edit.php" AND $updateReturn=="success0") OR ($q=="/modules/Messenger/messenger_manage.php" AND $deleteReturn=="success0")) {
+												$messages=getMessages($guid, $connection2, "result") ;					
+												$messages=unserialize($messages) ;
+												try {
+													$resultPosts=$connection2->prepare($messages[1]);
+													$resultPosts->execute($messages[0]);  
+												}
+												catch(PDOException $e) { }	
+										
+												$_SESSION[$guid]["messageWallCount"]=0 ;
+												if ($resultPosts->rowCount()>0) {
+													$output=array() ;
+													$last="" ;
+													while ($rowPosts=$resultPosts->fetch()) {
+														if ($last==$rowPosts["gibbonMessengerID"]) {
+															$output[($count-1)]["source"]=$output[($count-1)]["source"] . "<br/>" .$rowPosts["source"] ;
 														}
+														else {
+															$output[$_SESSION[$guid]["messageWallCount"]]["photo"]=$rowPosts["image_75"] ;
+															$output[$_SESSION[$guid]["messageWallCount"]]["subject"]=$rowPosts["subject"] ;
+															$output[$_SESSION[$guid]["messageWallCount"]]["details"]=$rowPosts["body"] ;
+															$output[$_SESSION[$guid]["messageWallCount"]]["author"]=formatName($rowPosts["title"], $rowPosts["preferredName"], $rowPosts["surname"], $rowPosts["category"]) ;
+															$output[$_SESSION[$guid]["messageWallCount"]]["source"]=$rowPosts["source"] ;
+		
+															$_SESSION[$guid]["messageWallCount"]++ ;
+															$last=$rowPosts["gibbonMessengerID"] ;
+														}	
 													}
 												}
 											}

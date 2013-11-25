@@ -88,9 +88,12 @@ else {
 					$effortValue=$_POST["$i-effortValue"] ;
 					$comment=$_POST["comment$i"] ;
 					$gibbonPersonIDLastEdit=$_SESSION[$guid]["gibbonPersonID"] ;
-					$wordpressCommentPushID=substr($_POST["$i-wordpressCommentPush"], 0, strpos($_POST["$i-wordpressCommentPush"],"-")) ;
-					$wordpressCommentPushAction=substr($_POST["$i-wordpressCommentPush"], (strpos($_POST["$i-wordpressCommentPush"],"-")+1)) ;
-					
+					$wordpressCommentPushID=NULL ;
+					$wordpressCommentPushAction=NULL ;
+					if (isset($_POST["$i-wordpressCommentPush"])) {
+						$wordpressCommentPushID=substr($_POST["$i-wordpressCommentPush"], 0, strpos($_POST["$i-wordpressCommentPush"],"-")) ;
+						$wordpressCommentPushAction=substr($_POST["$i-wordpressCommentPush"], (strpos($_POST["$i-wordpressCommentPush"],"-")+1)) ;
+					}
 					//Set and calculate for attainment
 					$attainmentConcern="N" ;
 					$attainmentDescriptor="" ;
@@ -175,9 +178,9 @@ else {
 						}
 					}
 					else {
-						$attachment=$_POST["response$i"] ;
-						if (is_null($_POST["response$i"])) {
-							$attachment=NULL ;
+						$attachment=NULL ;
+						if (isset($_POST["response$i"])) {
+							$attachment=$_POST["response$i"] ;
 						}
 					}
 					

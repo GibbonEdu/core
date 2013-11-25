@@ -55,8 +55,8 @@ else {
 		}
 		else {
 			try {
-				$data2=array("username"=>$username); 
-				$sql2="SELECT * FROM gibbonMarkbookColumn WHERE gibbonMarkbookColumnID=$gibbonMarkbookColumnID" ;
+				$data2=array("gibbonMarkbookColumnID"=>$gibbonMarkbookColumnID); 
+				$sql2="SELECT * FROM gibbonMarkbookColumn WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID" ;
 				$result2=$connection2->prepare($sql2);
 				$result2->execute($data2);
 			}

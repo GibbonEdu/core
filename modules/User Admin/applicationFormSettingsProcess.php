@@ -55,7 +55,9 @@ else {
 	$requiredDocuments=$_POST["requiredDocuments"] ; 
 	$requiredDocumentsText=$_POST["requiredDocumentsText"] ; 
 	$requiredDocumentsCompulsory=$_POST["requiredDocumentsCompulsory"] ; 
+	$notificationStudentMessage=$_POST["notificationStudentMessage"] ; 
 	$notificationStudentDefault=$_POST["notificationStudentDefault"] ; 
+	$notificationParentsMessage=$_POST["notificationParentsMessage"] ; 
 	$notificationParentsDefault=$_POST["notificationParentsDefault"] ; 
 	$languageOptionsActive=$_POST["languageOptionsActive"] ; 
 	$languageOptionsBlurb=$_POST["languageOptionsBlurb"] ; 
@@ -175,8 +177,28 @@ else {
 	}
 	
 	try {
+		$data=array("value"=>$notificationStudentMessage); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='notificationStudentMessage'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
+	try {
 		$data=array("value"=>$notificationStudentDefault); 
 		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='notificationStudentDefault'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
+	try {
+		$data=array("value"=>$notificationParentsMessage); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='notificationParentsMessage'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}

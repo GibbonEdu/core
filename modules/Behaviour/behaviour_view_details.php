@@ -56,14 +56,9 @@ else {
 	else {
 		$row=$result->fetch() ;
 		
-		if ($_GET["search"]!="" AND $_GET["source"]=="") {
+		if ($_GET["search"]!="") {
 			print "<div class='linkTop'>" ;
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_view.php&search=" . $_GET["search"] . "'>Back to Search Results</a>" ;
-			print "</div>" ;
-		}
-		else if (($_GET["descriptor"]!="" OR $_GET["level"]!="" OR $_GET["fromDate"]!="" OR $_GET["gibbonRollGroupID"]!="" OR $_GET["gibbonYearGroupID"]!="" OR $_GET["minimumCount"]!="") AND $_GET["source"]=="pattern") {
-			print "<div class='linkTop'>" ;
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_pattern.php&descriptor=" . $_GET["descriptor"] . "&level=" . $_GET["level"] . "&fromDate=" . $_GET["fromDate"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&minimumCount=" . $_GET["minimumCount"] . "'>Back to Search Results</a>" ;
 			print "</div>" ;
 		}
 	
@@ -106,14 +101,6 @@ else {
 					}
 				print "</td>" ;
 			print "</tr>" ;
-			if ($row["ind"]!="None" AND $row["ind"]!="Yes") {
-				print "<tr>" ;
-					print "<td style='padding-top: 15px; width: 34%; vertical-align: top' colspan=3>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Individual Needs Level</span><br/>" ;
-						print $row["ind"] ;
-					print "</td>" ;
-				print "</tr>" ;
-			}
 		print "</table>" ;
 		
 		getBehaviourRecord($guid, $gibbonPersonID, $connection2) ;

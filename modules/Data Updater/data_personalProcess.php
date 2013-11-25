@@ -177,30 +177,65 @@ else {
 				else {
 					$visaExpiryDate=dateConvert($visaExpiryDate) ;
 				}
-				$profession=$_POST["profession"] ;
-				$employer=$_POST["employer"] ;
-				$jobTitle=$_POST["jobTitle"] ;
-				$emergency1Name=$_POST["emergency1Name"] ;
-				$emergency1Number1=$_POST["emergency1Number1"] ;
-				$emergency1Number2=$_POST["emergency1Number2"] ;
-				$emergency1Relationship=$_POST["emergency1Relationship"] ;
-				$emergency2Name=$_POST["emergency2Name"] ;
-				$emergency2Number1=$_POST["emergency2Number1"] ;
-				$emergency2Number2=$_POST["emergency2Number2"] ;
-				$emergency2Relationship=$_POST["emergency2Relationship"] ;
+				$profession=NULL ;
+				if (isset($_POST["profession"])) {
+					$profession=$_POST["profession"] ;
+				}
+				$employer=NULL ;
+				if (isset($_POST["employer"])) {
+					$employer=$_POST["employer"] ;
+				}
+				$jobTitle=NULL ;
+				if (isset($_POST["jobTitle"])) {
+					$jobTitle=$_POST["jobTitle"] ;
+				}
+				$emergency1Name=NULL ;
+				if (isset($_POST["emergency1Name"])) {
+					$emergency1Name=$_POST["emergency1Name"] ;
+				}
+				$emergency1Number1=NULL ;
+				if (isset($_POST["emergency1Number1"])) {
+					$emergency1Number1=$_POST["emergency1Number1"] ;
+				}
+				$emergency1Number2=NULL ;
+				if (isset($_POST["emergency1Number2"])) {
+					$emergency1Number2=$_POST["emergency1Number2"] ;
+				}
+				$emergency1Relationship=NULL ;
+				if (isset($_POST["emergency1Relationship"])) {
+					$emergency1Relationship=$_POST["emergency1Relationship"] ;
+				}
+				$emergency2Name=NULL ;
+				if (isset($_POST["emergency2Name"])) {
+					$emergency2Name=$_POST["emergency2Name"] ;
+				}
+				$emergency2Number1=NULL ;
+				if (isset($_POST["emergency2Number1"])) {
+					$emergency2Number1=$_POST["emergency2Number1"] ;
+				}
+				$emergency2Number2=NULL ;
+				if (isset($_POST["emergency2Number2"])) {
+					$emergency2Number2=$_POST["emergency2Number2"] ;
+				}
+				$emergency2Relationship=NULL ;
+				if (isset($_POST["emergency2Relationship"])) {
+					$emergency2Relationship=$_POST["emergency2Relationship"] ;
+				}
 				$vehicleRegistration=$_POST["vehicleRegistration"] ;
-				$privacyOptions=$_POST["privacyOptions"] ;
-				$privacy="" ;
-				foreach ($privacyOptions AS $privacyOption) {
-					if ($privacyOption!="") {
-						$privacy.=$privacyOption . ", " ;
+				$privacy=NULL ;
+				if (isset($_POST["privacyOptions"])) {
+					$privacyOptions=$_POST["privacyOptions"] ;
+					foreach ($privacyOptions AS $privacyOption) {
+						if ($privacyOption!="") {
+							$privacy.=$privacyOption . ", " ;
+						}
 					}
-				}
-				if ($privacy!="") {
-					$privacy=substr($privacy,0,-2) ;
-				}
-				else {
-					$privacy=NULL ;
+					if ($privacy!="") {
+						$privacy=substr($privacy,0,-2) ;
+					}
+					else {
+						$privacy=NULL ;
+					}
 				}
 				
 				//Attempt to send email to DBA
@@ -237,7 +272,10 @@ else {
 				
 				//Update matching addresses
 				$partialFail=false ;
-				$matchAddressCount=$_POST["matchAddressCount"] ;
+				$matchAddressCount=0 ;
+				if (isset($_POST["matchAddressCount"])) {
+					$matchAddressCount=$_POST["matchAddressCount"] ;
+				}
 				if ($matchAddressCount>0) {
 					for ($i=0; $i<$matchAddressCount; $i++) {
 						if ($_POST[$i . "-matchAddress"]!="") {

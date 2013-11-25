@@ -91,7 +91,10 @@ else {
 		print "Choose User" ;
 		print "</h2>" ;
 		
-		$gibbonPersonID=$_GET["gibbonPersonID"] ;
+		$gibbonPersonID=NULL ;
+		if (isset($_GET["gibbonPersonID"])) {
+			$gibbonPersonID=$_GET["gibbonPersonID"] ;
+		}
 		?>
 		
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">

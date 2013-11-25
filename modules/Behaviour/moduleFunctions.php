@@ -103,10 +103,6 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 						}
 						$count++ ;
 						
-						if ($row["active"]=="N") {
-							$rowNum="error" ;
-						}
-		
 						//COLOR ROW BY STATUS!
 						print "<tr class=$rowNum>" ;
 							print "<td>" ;

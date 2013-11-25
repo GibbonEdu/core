@@ -259,6 +259,9 @@ else {
 							print "<th>" ;
 								print "Last School" ;
 							print "</th>" ;
+							print "<th>" ;
+								print "Parents" ;
+							print "</th>" ;
 						print "</tr>" ;
 
 						$count=0;
@@ -287,6 +290,56 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									print $row["lastSchool"] ;
+								print "</td>" ;
+								print "<td>" ;
+									try {
+										$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+										$sqlFamily="SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID" ;
+										$resultFamily=$connection2->prepare($sqlFamily);
+										$resultFamily->execute($dataFamily);
+									}
+									catch(PDOException $e) { 
+										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									}
+									while ($rowFamily=$resultFamily->fetch()) {
+										try {
+											$dataFamily2=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
+											$sqlFamily2="SELECT gibbonPerson.* FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName" ;
+											$resultFamily2=$connection2->prepare($sqlFamily2);
+											$resultFamily2->execute($dataFamily2);
+										}
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										while ($rowFamily2=$resultFamily2->fetch()) {
+											print "<u>" . formatName($rowFamily2["title"], $rowFamily2["preferredName"], $rowFamily2["surname"], "Parent") . "</u><br/>" ;
+											$numbers=0 ;
+											for ($i=1; $i<5; $i++) {
+												if ($rowFamily2["phone" . $i]!="") {
+													if ($rowFamily2["phone" . $i . "Type"]!="") {
+														print "<i>" . $rowFamily2["phone" . $i . "Type"] . ":</i> " ;
+													}
+													if ($rowFamily2["phone" . $i . "CountryCode"]!="") {
+														print "+" . $rowFamily2["phone" . $i . "CountryCode"] . " " ;
+													}
+													print $rowFamily2["phone" . $i] . "<br/>" ;
+													$numbers++ ;
+												}
+											}
+											if ($rowFamily2["citizenship1"]!="" OR $rowFamily2["citizenship1Passport"]!="") {
+												print "<i>Passport</i>: " . $rowFamily2["citizenship1"] . " " . $rowFamily2["citizenship1Passport"] . "<br/>" ;
+											}
+											if ($rowFamily2["nationalIDCardNumber"]!="") {
+												if ($_SESSION[$guid]["country"]=="") {
+													print "<i>National ID Card</i>: " ;
+												}
+												else {
+													print "<i>" . $_SESSION[$guid]["country"] . " ID Card</i>: " ;
+												}
+												print $rowFamily2["nationalIDCardNumber"] . "<br/>" ;
+											}
+										}
+									}
 								print "</td>" ;
 							print "</tr>" ;
 						}

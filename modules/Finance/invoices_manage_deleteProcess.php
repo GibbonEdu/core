@@ -39,10 +39,24 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
 $gibbonFinanceInvoiceID=$_POST["gibbonFinanceInvoiceID"] ;
-$status=$_GET["status"] ;
-$gibbonFinanceInvoiceeID=$_GET["gibbonFinanceInvoiceeID"] ;
-$monthOfIssue=$_GET["monthOfIssue"] ;
-$gibbonFinanceBillingScheduleID=$_GET["gibbonFinanceBillingScheduleID"] ;
+$status=NULL ;
+if (isset($_GET["status"])) {
+	$status=$_GET["status"] ;
+}
+
+$gibbonFinanceInvoiceeID=NULL ;
+if (isset($_GET["gibbonFinanceInvoiceeID"])) {
+	$gibbonFinanceInvoiceeID=$_GET["gibbonFinanceInvoiceeID"] ;
+}
+$monthOfIssue=NULL ;
+if (isset($_GET["monthOfIssue"])) {
+	$monthOfIssue=$_GET["monthOfIssue"] ;
+}
+
+$gibbonFinanceBillingScheduleID=NULL ;
+if (isset($_GET["gibbonFinanceBillingScheduleID"])) {
+	$gibbonFinanceBillingScheduleID=$_GET["gibbonFinanceBillingScheduleID"] ;
+}
 
 if ($gibbonFinanceInvoiceID=="" OR $gibbonSchoolYearID=="") {
 	print "Fatal error loading this page!" ;

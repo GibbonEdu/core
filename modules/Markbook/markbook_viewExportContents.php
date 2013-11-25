@@ -84,16 +84,8 @@ else {
 		
 		
 			while ($rowStudents=$resultStudents->fetch()) {
-				if ($count%2==0) {
-					$rowNum="even" ;
-				}
-				else {
-					$rowNum="odd" ;
-				}
-				$count++ ;
-				
 				//COLOR ROW BY STATUS!
-				print "<tr class=$rowNum>" ;
+				print "<tr>" ;
 					print "<td>" ;
 						print formatName("", $rowStudents["preferredName"], $rowStudents["surname"], "Student", true) ;
 					print "</td>" ;
@@ -134,10 +126,10 @@ else {
 						else if ($rowEntry["effortValue"]=="Incomplete") {
 							$effort="IC" ;
 						}
-						print "<td style='text-align: center;$color'>" ;
+						print "<td style='text-align: center;'>" ;
 						print "<span $styleEffort title='" . htmlPrep($rowEntry["effortDescriptor"]) . "'>$effort</span>" ;
 						print "</td>" ;
-						print "<td style='text-align: center;$color'>" ;
+						print "<td style='text-align: center;'>" ;
 						$style="" ;
 						if ($rowEntry["comment"]!="") {
 							print "<span $style title='" . htmlPrep($rowEntry["comment"]) . "'>" . substr($rowEntry["comment"], 0, 10) . "...</span>" ;

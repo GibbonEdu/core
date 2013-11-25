@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messageWall_view
 	print "</div>" ;
 }
 else {
-	if ($_POST["date"]=="") {
+	if (isset($_POST["date"])==FALSE) {
 		$date=date("d/m/Y") ;
 	}
 	else {

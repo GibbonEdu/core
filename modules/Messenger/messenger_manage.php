@@ -324,20 +324,20 @@ else {
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							print "<script type='text/javascript'>" ;	
 								print "$(document).ready(function(){" ;
-									print "\$(\".comment-$count-$yearCount\").hide();" ;
-									print "\$(\".show_hide-$count-$yearCount\").fadeIn(1000);" ;
-									print "\$(\".show_hide-$count-$yearCount\").click(function(){" ;
-									print "\$(\".comment-$count-$yearCount\").fadeToggle(1000);" ;
+									print "\$(\".comment-$count\").hide();" ;
+									print "\$(\".show_hide-$count\").fadeIn(1000);" ;
+									print "\$(\".show_hide-$count\").click(function(){" ;
+									print "\$(\".comment-$count\").fadeToggle(1000);" ;
 									print "});" ;
 								print "});" ;
 							print "</script>" ;
 							if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
-								print "<a title='View Send Report' class='show_hide-$count-$yearCount' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
+								print "<a title='View Send Report' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;
 					if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
-						print "<tr class='comment-$count-$yearCount' id='comment-$count-$yearCount'>" ;
+						print "<tr class='comment-$count' id='comment-$count'>" ;
 							print "<td style='background-color: #fff; border-bottom: 1px solid #333' colspan=7>" ;
 								if ($row["emailReport"]!="") {
 									print "<b><u>Email Report</u></b><br/>" ;

@@ -115,7 +115,7 @@ else {
 				}
 				
 				print "<div class='linkTop'>" ;
-				if ( $row2["gibbonPlannerEntryID"]!="") {
+				if ($row2["gibbonPlannerEntryID"]!="") {
 					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=" . $row2["gibbonPlannerEntryID"] . "&subView=$subView'>View Linked Lesson<img style='margin: 0 0 -4px 3px' title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> | " ;
 				}
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID'>Edit Column<img style='margin: 0 0 -4px 3px' title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
@@ -146,12 +146,20 @@ else {
 							$columnID=array() ;
 							$attainmentID=array() ;
 							$effortID=array() ;
+							$submission=FALSE ;
+									
 							for ($i=0;$i<$columns;$i++) {
 								$columnID[$i]=$row2["gibbonMarkbookColumnID"];
 								$attainmentID[$i]=$row2["gibbonScaleIDAttainment"];
 								$effortID[$i]=$row2["gibbonScaleIDEffort"];
-								$gibbonRubricIDAttainment[$i]=$row["gibbonRubricIDAttainment"] ;
-								$gibbonRubricIDEffort[$i]=$row["gibbonRubricIDEffort"] ;
+								$gibbonRubricIDAttainment[$i]=NULL ;
+								if (isset($row["gibbonRubricIDAttainment"])) {
+									$gibbonRubricIDAttainment[$i]=$row["gibbonRubricIDAttainment"] ;
+								}
+								$gibbonRubricIDEffort[$i]=NULL ;
+								if (isset($row["gibbonRubricIDEffort"])) {
+									$gibbonRubricIDEffort[$i]=$row["gibbonRubricIDEffort"] ;
+								}
 								
 								//WORK OUT IF THERE IS SUBMISSION
 								if (is_null($row2["gibbonPlannerEntryID"])==FALSE) {
@@ -165,7 +173,6 @@ else {
 										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 									}
 									
-									$submission=FALSE ;
 									if ($resultSub->rowCount()==1) {
 										$submission=TRUE ;
 										$rowSub=$resultSub->fetch() ;
@@ -418,7 +425,7 @@ else {
 												}
 											print "</div>" ;
 										print "</td>" ;
-										print "<td style='text-align: center;$color'>" ;
+										print "<td style='text-align: center'>" ;
 											print "<select name='$count-effortValue' id='$count-effortValue' style='width:50px'>" ;
 												try {
 													$dataSelect=array("gibbonScaleID"=>$gibbonScaleIDEffort); 
@@ -446,7 +453,7 @@ else {
 											print "</div>" ;
 										print "</td>" ;
 										
-										print "<td style='text-align: right;$color'>" ;
+										print "<td style='text-align: right'>" ;
 											print "<textarea name='comment" . $count . "' id='comment" . $count . "' rows=6 style='width: 330px'>" . $rowEntry["comment"] . "</textarea>" ;
 											print "<br/>" ;
 											if ($rowEntry["response"]!="") {
@@ -474,13 +481,13 @@ else {
 							<?
 							if ($submission==FALSE) {
 								$span=4 ;
-								if ($row2["gibbonRubricID"]!="") {
+								if (isset($row2["gibbonRubricID"])) {
 									$span=5 ;
 								}
 							}
 							else {
 								$span=5 ;
-								if ($row2["gibbonRubricID"]!="") {
+								if (isset($row2["gibbonRubricID"])) {
 									$span=6 ;
 								}
 							}

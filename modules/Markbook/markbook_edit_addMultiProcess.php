@@ -144,7 +144,7 @@ else {
 			$attachment="" ;
 		}
 		
-		if (count($gibbonCourseClassIDMulti)<1 OR is_numeric($groupingID)==FALSE or $groupingID<1 OR $name=="" OR $description=="" OR $type=="" OR gibbonScaleIDAttainment=="" OR gibbonScaleIDEffort=="" OR viewableStudents=="" OR viewableParents=="") {
+		if (count($gibbonCourseClassIDMulti)<1 OR is_numeric($groupingID)==FALSE or $groupingID<1 OR $name=="" OR $description=="" OR $type=="" OR $gibbonScaleIDAttainment=="" OR $gibbonScaleIDEffort=="" OR $viewableStudents=="" OR $viewableParents=="") {
 			//Fail 3
 			$URL=$URL . "&addReturn=fail3" ;
 			header("Location: {$URL}");

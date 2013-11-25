@@ -45,7 +45,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonFinanceInvoiceeUpdateID"=>$gibbonFinanceInvoiceeUpdateID); 
-			$sql="SELECT gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID, gibbonFinanceInvoicee.invoiceTo AS invoiceTo, gibbonFinanceInvoicee.companyName AS companyName, gibbonFinanceInvoicee.companyContact AS companyContact, gibbonFinanceInvoicee.companyAddress AS companyAddress, gibbonFinanceInvoicee.companyEmail AS companyEmail, gibbonFinanceInvoicee.companyPhone AS companyPhone, gibbonFinanceInvoicee.companyAll AS companyAll, gibbonFinanceInvoicee.gibbonFinanceFeeCategoryIDList AS gibbonFinanceFeeCategoryIDList, gibbonFinanceInvoiceeUpdate.invoiceTo AS newinvoiceTo, gibbonFinanceInvoiceeUpdate.companyName AS newcompanyName, gibbonFinanceInvoiceeUpdate.companyContact AS newcompanyContact, gibbonFinanceInvoiceeUpdate.companyAddress AS newcompanyAddress, gibbonFinanceInvoiceeUpdate.companyEmail AS newcompanyEmail, gibbonFinanceInvoiceeUpdate.companyPhone AS newcompanyPhone, gibbonFinanceInvoiceeUpdate.companyAll AS newcompanyAll, gibbonFinanceInvoiceeUpdate.gibbonFinanceFeeCategoryIDList AS newgibbonFinanceFeeCategoryIDList FROM gibbonFinanceInvoiceeUpdate JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID" ;
+			$sql="SELECT gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID, gibbonFinanceInvoicee.invoiceTo AS invoiceTo, gibbonFinanceInvoicee.companyName AS companyName, gibbonFinanceInvoicee.companyContact AS companyContact, gibbonFinanceInvoicee.companyAddress AS companyAddress, gibbonFinanceInvoicee.companyEmail AS companyEmail, gibbonFinanceInvoicee.companyCCFamily AS companyCCFamily, gibbonFinanceInvoicee.companyPhone AS companyPhone, gibbonFinanceInvoicee.companyAll AS companyAll, gibbonFinanceInvoicee.gibbonFinanceFeeCategoryIDList AS gibbonFinanceFeeCategoryIDList, gibbonFinanceInvoiceeUpdate.invoiceTo AS newinvoiceTo, gibbonFinanceInvoiceeUpdate.companyName AS newcompanyName, gibbonFinanceInvoiceeUpdate.companyContact AS newcompanyContact, gibbonFinanceInvoiceeUpdate.companyAddress AS newcompanyAddress, gibbonFinanceInvoiceeUpdate.companyEmail AS newcompanyEmail, gibbonFinanceInvoiceeUpdate.companyCCFamily AS newcompanyCCFamily, gibbonFinanceInvoiceeUpdate.companyPhone AS newcompanyPhone, gibbonFinanceInvoiceeUpdate.companyAll AS newcompanyAll, gibbonFinanceInvoiceeUpdate.gibbonFinanceFeeCategoryIDList AS newgibbonFinanceFeeCategoryIDList FROM gibbonFinanceInvoiceeUpdate JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -211,6 +211,26 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
+							print "CC Family?" ;
+						print "</td>" ;
+						print "<td>" ;
+							print $row["companyCCFamily"] ;
+						print "</td>" ;
+						print "<td>" ;
+							$style="" ;
+							if ($row["companyCCFamily"]!=$row["newcompanyCCFamily"]) {
+								$style="style='color: #ff0000'" ;
+							}
+							print "<span $style>" ;
+							print $row["newcompanyCCFamily"] ;
+							print "</span>" ;
+						print "</td>" ;
+						print "<td>" ;
+							if ($row["companyCCFamily"]!=$row["newcompanyCCFamily"]) { print "<input checked type='checkbox' name='newcompanyCCFamilyOn'><input name='newcompanyCCFamily' type='hidden' value='" . htmlprep($row["newcompanyCCFamily"]) . "'>" ; }
+						print "</td>" ;
+					print "</tr>" ;
+					print "<tr class='odd'>" ;
+						print "<td>" ;
 							print "Company Phone" ;
 						print "</td>" ;
 						print "<td>" ;
@@ -229,7 +249,7 @@ else {
 							if ($row["companyPhone"]!=$row["newcompanyPhone"]) { print "<input checked type='checkbox' name='newcompanyPhoneOn'><input name='newcompanyPhone' type='hidden' value='" . htmlprep($row["newcompanyPhone"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='odd'>" ;
+					print "<tr class='even'>" ;
 						print "<td>" ;
 							print "Company All?" ;
 						print "</td>" ;
@@ -249,7 +269,7 @@ else {
 							if ($row["companyAll"]!=$row["newcompanyAll"]) { print "<input checked type='checkbox' name='newcompanyAllOn'><input name='newcompanyAll' type='hidden' value='" . htmlprep($row["newcompanyAll"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr class='odd'>" ;
 						print "<td>" ;
 							print "Company Fee Categories" ;
 						print "</td>" ;

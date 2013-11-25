@@ -175,7 +175,7 @@ else {
 							<span style="font-size: 90%"><i>Select up to three individual dates.</br>Format: dd/mm/yyyy.<br/></i></span>
 						</td>
 						<td class="right">
-							<input name="date1" id="date1" maxlength=10 value="<? print dateConvertBack($row["date1"]) ?>" type="text" style="width: 300px">
+							<input name="date1" id="date1" maxlength=10 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var date1=new LiveValidation('date1');
 								date1.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -186,7 +186,7 @@ else {
 								});
 							</script>
 							<br>
-							<input name="date2" id="date2" maxlength=10 value="<? print dateConvertBack($row["date2"]) ?>" type="text" style="width: 300px; margin-top: 3px">
+							<input name="date2" id="date2" maxlength=10 value="" type="text" style="width: 300px; margin-top: 3px">
 							<script type="text/javascript">
 								var date2=new LiveValidation('date2');
 								date2.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -197,7 +197,7 @@ else {
 								});
 							</script>
 							<br>
-							<input name="date3" id="date3" maxlength=10 value="<? print dateConvertBack($row["date3"]) ?>" type="text" style="width: 300px; margin-top: 3px">
+							<input name="date3" id="date3" maxlength=10 value="" type="text" style="width: 300px; margin-top: 3px">
 							<script type="text/javascript">
 								var date3=new LiveValidation('date3');
 								date3.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -293,7 +293,7 @@ else {
 				<tr>
 					<td colspan=2> 
 						<b>Body *</b>
-						<? print getEditor($guid,  TRUE, "body", $row["body"], 20, true, true, false, true ) ?>
+						<? print getEditor($guid,  TRUE, "body", "", 20, true, true, false, true ) ?>
 					</td>
 				</tr>
 				

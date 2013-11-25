@@ -45,7 +45,10 @@ $name=$_GET["name"] ;
 $description=$_GET["description"] ;
 $gibbonFinanceFeeCategoryID=$_GET["gibbonFinanceFeeCategoryID"] ;
 $fee=$_GET["fee"] ;
-$category=$_GET["category"] ;
+$category=NULL ;
+if (isset($_GET["category"])) {
+	$category=$_GET["category"] ;
+}
 
 makeFeeBlock($guid, $connection2, $id, $mode, $feeType, $gibbonFinanceFeeID, $name, $description, $gibbonFinanceFeeCategoryID, $fee, $category) ;
 ?>

@@ -43,7 +43,10 @@ else {
 		if ($highestAction=="View Markbook_allClassesAllData") {
 			//Proceed!
 			//Get class variable
-			$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
+			$gibbonCourseClassID=NULL ;
+			if (isset($_GET["gibbonCourseClassID"])) {
+				$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
+			}
 			if ($gibbonCourseClassID=="") {
 				try {
 					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
@@ -141,7 +144,7 @@ else {
 						print "</h3>" ;	
 						print "<ul>" ;
 							while ($row=$result->fetch()) {
-								print "<li>" . formatName($row["title"], $row["preferredName"], $row["surname"], Staff) . "</li>" ;
+								print "<li>" . formatName($row["title"], $row["preferredName"], $row["surname"], "Staff") . "</li>" ;
 								if ($row["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
 									$teaching=TRUE ;
 								}
@@ -310,7 +313,7 @@ else {
 										}
 									}
 									
-									if ($submission[$i]==FALSE) {
+									if (isset($submission[$i])==FALSE) {
 										$span=4 ;
 									}
 									else {
@@ -319,8 +322,8 @@ else {
 									print "<th style='text-align: center' colspan=$span>" ;
 										print "<span title='" . htmlPrep($row["description"]) . "'>" . $row["name"] . "</span><br>" ;
 										print "<span style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
-										$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
-										if ($unit[0]!="") {
+										$unit=getUnit($connection2, $row["gibbonUnitID"], "", $row["gibbonCourseClassID"]) ;
+										if (isset($unit[0])) {
 											print $unit[0] . "<br/>" ;
 										}
 										else {
@@ -395,10 +398,12 @@ else {
 									print "<th style='text-align: center; width: 30px'>" ;
 										print "<span title='Uploaded Response'>Up</span>" ;
 									print "</th>" ;
-									if ($submission[$i]==TRUE) {
-										print "<th style='text-align: center; width: 30px'>" ;
-											print "<span title='Submitted Work'>Sub</span>" ;
-										print "</th>" ;
+									if (isset($submission[$i])) {
+										if ($submission[$i]==TRUE) {
+											print "<th style='text-align: center; width: 30px'>" ;
+												print "<span title='Submitted Work'>Sub</span>" ;
+											print "</th>" ;
+										}
 									}
 								}
 							print "</tr>" ;
@@ -498,20 +503,20 @@ else {
 												else if ($rowEntry["effortValue"]=="Incomplete") {
 													$effort="IC" ;
 												}
-												print "<td style='text-align: center;$color'>" ;
+												print "<td style='text-align: center;'>" ;
 													print "<div $styleEffort title='" . htmlPrep($rowEntry["effortDescriptor"]) . "'>$effort" ;
 														if ($gibbonRubricIDEffort[$i]!="") {
 															print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view_rubric.php&gibbonRubricID=" . $gibbonRubricIDEffort[$i] . "&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $columnID[$i] . "&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
 														}
 													print "</div>" ;
 												print "</td>" ;
-													print "<td style='text-align: center;$color'>" ;
+													print "<td style='text-align: center;'>" ;
 													$style="" ;
 													if ($rowEntry["comment"]!="") {
 														print "<span $style title='" . htmlPrep($rowEntry["comment"]) . "'>" . substr($rowEntry["comment"], 0, 10) . "...</span>" ;
 													}
 												print "</td>" ;
-												print "<td style='text-align: center;$color'>" ;
+												print "<td style='text-align: center;'>" ;
 												if ($rowEntry["response"]!="") {
 													print "<a title='Uploaded Response' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>Up</a><br/>" ;
 												}
@@ -519,77 +524,78 @@ else {
 											}
 											else {
 												$span=4 ;
-												if ($gibbonRubricID[$i]!="") {
+												if (isset($gibbonRubricID[$i])) {
 													$span=5 ;
 												}
 												print "<td style='text-align: center' colspan=$span>" ;
 												print "</td>" ;
 											}
-											if ($submission[$i]==TRUE) {
-												print "<td style='text-align: center; width: 30px'>" ;
-													try {
-														$dataWork=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID[$i], "gibbonPersonID"=>$rowStudents["gibbonPersonID"]); 
-														$sqlWork="SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC" ;
-														$resultWork=$connection2->prepare($sqlWork);
-														$resultWork->execute($dataWork);
-													}
-													catch(PDOException $e) { 
-														print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-													}
-													if ($resultWork->rowCount()>0) {
-														$rowWork=$resultWork->fetch() ;
+											if (isset($submission[$i])) {
+												if ($submission[$i]==TRUE) {
+													print "<td style='text-align: center; width: 30px'>" ;
+														try {
+															$dataWork=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID[$i], "gibbonPersonID"=>$rowStudents["gibbonPersonID"]); 
+															$sqlWork="SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC" ;
+															$resultWork=$connection2->prepare($sqlWork);
+															$resultWork->execute($dataWork);
+														}
+														catch(PDOException $e) { 
+															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+														}
+														if ($resultWork->rowCount()>0) {
+															$rowWork=$resultWork->fetch() ;
 														
-														if ($rowWork["status"]=="Exemption") {
-															$linkText="EX" ;
-														}
-														else if ($rowWork["version"]=="Final") {
-															$linkText="FN" ;
-														}
-														else {
-															$linkText="D" . $rowWork["count"] ;
-														}
-														
-														$style="" ;
-														$status="On Time" ;
 															if ($rowWork["status"]=="Exemption") {
-															$status="Exemption" ;
-														}
-														else if ($rowWork["status"]=="Late") {
-															$style="style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'" ;
-															$status="Late" ;
-														}
-														
-														if ($rowWork["type"]=="File") {
-															print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
-														}
-														else if ($rowWork["type"]=="Link") {
-															print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
-														}
-														else {
-															print "<span title='$status. Recorded at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
-														}
-													}
-													else {
-														if (date("Y-m-d H:i:s")<$homeworkDueDateTime[$i]) {
-															print "<span title='Pending'>PE</span>" ;
-														}
-														else {
-															if ($rowStudents["dateStart"]>$lessonDate[$i]) {
-																print "<span title='Student joined school after lesson was taught.' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>" ;
+																$linkText="EX" ;
+															}
+															else if ($rowWork["version"]=="Final") {
+																$linkText="FN" ;
 															}
 															else {
-																if ($rowSub["homeworkSubmissionRequired"]=="Compulsory") {
-																	print "<span title='Incomplete' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>IC</span>" ;
+																$linkText="D" . $rowWork["count"] ;
+															}
+														
+															$style="" ;
+															$status="On Time" ;
+																if ($rowWork["status"]=="Exemption") {
+																$status="Exemption" ;
+															}
+															else if ($rowWork["status"]=="Late") {
+																$style="style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'" ;
+																$status="Late" ;
+															}
+														
+															if ($rowWork["type"]=="File") {
+																print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
+															}
+															else if ($rowWork["type"]=="Link") {
+																print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
+															}
+															else {
+																print "<span title='$status. Recorded at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
+															}
+														}
+														else {
+															if (date("Y-m-d H:i:s")<$homeworkDueDateTime[$i]) {
+																print "<span title='Pending'>PE</span>" ;
+															}
+															else {
+																if ($rowStudents["dateStart"]>$lessonDate[$i]) {
+																	print "<span title='Student joined school after lesson was taught.' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>" ;
 																}
 																else {
-																	print "<span title='Not submitted online'>NA</span>" ;
+																	if ($rowSub["homeworkSubmissionRequired"]=="Compulsory") {
+																		print "<span title='Incomplete' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>IC</span>" ;
+																	}
+																	else {
+																		print "<span title='Not submitted online'>NA</span>" ;
+																	}
 																}
 															}
 														}
-													}
-												print "</td>" ;
+													print "</td>" ;
+												}
 											}
-										
 									}
 								print "</tr>" ;
 							}

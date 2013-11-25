@@ -109,8 +109,10 @@ else {
 					$companyContact=$_POST["companyContact"] ;
 					$companyAddress=$_POST["companyAddress"] ;
 					$companyEmail=$_POST["companyEmail"] ;
+					$companyCCFamily=$_POST["companyCCFamily"] ;
 					$companyPhone=$_POST["companyPhone"] ;
 					$companyAll=$_POST["companyAll"] ;
+					$gibbonFinanceFeeCategoryIDList=NULL ;
 					if ($companyAll=="N") {
 						$gibbonFinanceFeeCategoryIDList=="" ;
 						$gibbonFinanceFeeCategoryIDArray=$_POST["gibbonFinanceFeeCategoryIDList"] ;
@@ -121,6 +123,16 @@ else {
 							$gibbonFinanceFeeCategoryIDList=substr($gibbonFinanceFeeCategoryIDList,0,-1) ;
 						}
 					}
+				}
+				else {
+					$companyName=NULL ;
+					$companyContact=NULL ;
+					$companyAddress=NULL ;
+					$companyEmail=NULL ;
+					$companyCCFamily=NULL ;
+					$companyPhone=NULL ;
+					$companyAll=NULL ;
+					$gibbonFinanceFeeCategoryIDList=NULL ;
 				}
 				
 				//Attempt to send email to DBA
@@ -137,12 +149,12 @@ else {
 				
 				try {
 					if ($existing!="N") {
-						$data=array("invoiceTo"=>$invoiceTo, "companyName"=>$companyName, "companyContact"=>$companyContact, "companyAddress"=>$companyAddress, "companyEmail"=>$companyEmail, "companyPhone"=>$companyPhone, "companyAll"=>$companyAll, "gibbonFinanceFeeCategoryIDList"=>$gibbonFinanceFeeCategoryIDList, "gibbonFinanceInvoiceeUpdateID"=>$existing); 
-						$sql="UPDATE gibbonFinanceInvoiceeUpdate SET invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID" ;
+						$data=array("invoiceTo"=>$invoiceTo, "companyName"=>$companyName, "companyContact"=>$companyContact, "companyAddress"=>$companyAddress, "companyEmail"=>$companyEmail, "companyCCFamily"=>$companyCCFamily, "companyPhone"=>$companyPhone, "companyAll"=>$companyAll, "gibbonFinanceFeeCategoryIDList"=>$gibbonFinanceFeeCategoryIDList, "gibbonFinanceInvoiceeUpdateID"=>$existing); 
+						$sql="UPDATE gibbonFinanceInvoiceeUpdate SET invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID" ;
 					}
 					else {
-						$data=array("gibbonFinanceInvoiceeID"=>$gibbonFinanceInvoiceeID, "invoiceTo"=>$invoiceTo, "companyName"=>$companyName, "companyContact"=>$companyContact, "companyAddress"=>$companyAddress, "companyEmail"=>$companyEmail, "companyPhone"=>$companyPhone, "companyAll"=>$companyAll, "gibbonFinanceFeeCategoryIDList"=>$gibbonFinanceFeeCategoryIDList, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"]); 
-						$sql="INSERT INTO gibbonFinanceInvoiceeUpdate SET gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, gibbonPersonIDUpdater=:gibbonPersonIDUpdater" ;
+						$data=array("gibbonFinanceInvoiceeID"=>$gibbonFinanceInvoiceeID, "invoiceTo"=>$invoiceTo, "companyName"=>$companyName, "companyContact"=>$companyContact, "companyAddress"=>$companyAddress, "companyEmail"=>$companyEmail, "companyCCFamily"=>$companyCCFamily, "companyPhone"=>$companyPhone, "companyAll"=>$companyAll, "gibbonFinanceFeeCategoryIDList"=>$gibbonFinanceFeeCategoryIDList, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"]); 
+						$sql="INSERT INTO gibbonFinanceInvoiceeUpdate SET gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, gibbonPersonIDUpdater=:gibbonPersonIDUpdater" ;
 					}
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -154,16 +166,9 @@ else {
 					break ;
 				}
 				
-				if ($partialFail==TRUE) {
-					//Fail 5
-					$URL=$URL . "&updateReturn=fail5" ;
-					header("Location: {$URL}");
-				}
-				else {
-					//Success 0
-					$URL=$URL . "&updateReturn=success0" ;
-					header("Location: {$URL}");
-				}
+				//Success 0
+				$URL=$URL . "&updateReturn=success0" ;
+				header("Location: {$URL}");
 			}
 		}
 	}

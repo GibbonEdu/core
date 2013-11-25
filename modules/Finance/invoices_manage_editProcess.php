@@ -104,7 +104,10 @@ else {
 				if ($status!="Pending") {
 					$status=$_POST["status"] ;
 				}
-				$order=$_POST["order"] ;
+				$order=NULL ;
+				if (isset($_POST["order"])) {
+					$order=$_POST["order"] ;
+				}
 				if ($row["status"]=="Issued" AND $_POST["status"]=="Paid") {
 					$paidDate=dateConvert($_POST["paidDate"]) ;
 				}
@@ -194,96 +197,104 @@ else {
 				
 				$emailFail=FALSE ;
 				//Email Receipt
-				if ($_POST["emailReceipt"]=="Y") {
-					$from=$_POST["email"] ;
-					if ($partialFail==FALSE AND $from!="") { 
-						//Send emails
-						$emails=$_POST["emails"] ;
-						if (count($emails)>0) {
-							require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/class.phpmailer.php';
-				
-							//Prep message
-							$body=receiptContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) . "<p style='font-style: italic;'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
-							$bodyPlain="This email is not viewable in plain text: enable rich text/HTML in your email client to view the receipt. Please reply to this email if you have any questions." ;
-		
-							$mail=new PHPMailer;
-							$mail->SetFrom($from, $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
-							foreach ($emails AS $address) {
-								$mail->AddBCC($address);
+				if (isset($_POST["emailReceipt"])) {	
+					if ($_POST["emailReceipt"]=="Y") {
+						$from=$_POST["email"] ;
+						if ($partialFail==FALSE AND $from!="") { 
+							//Send emails
+							$emails=NULL ;
+							if (isset($_POST["emails"])) {
+								$emails=$_POST["emails"] ;
 							}
-							$mail->CharSet="UTF-8"; 
-							$mail->IsHTML(true);                            
-							$mail->Subject="Receipt From " . $_SESSION[$guid]["organisationNameShort"] . " via " . $_SESSION[$guid]["systemName"] ;
-							$mail->Body=$body ;
-							$mail->AltBody=$bodyPlain ;
+							if (count($emails)>0) {
+								require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/class.phpmailer.php';
+				
+								//Prep message
+								$body=receiptContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) . "<p style='font-style: italic;'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
+								$bodyPlain="This email is not viewable in plain text: enable rich text/HTML in your email client to view the receipt. Please reply to this email if you have any questions." ;
+		
+								$mail=new PHPMailer;
+								$mail->SetFrom($from, $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
+								foreach ($emails AS $address) {
+									$mail->AddBCC($address);
+								}
+								$mail->CharSet="UTF-8"; 
+								$mail->IsHTML(true);                            
+								$mail->Subject="Receipt From " . $_SESSION[$guid]["organisationNameShort"] . " via " . $_SESSION[$guid]["systemName"] ;
+								$mail->Body=$body ;
+								$mail->AltBody=$bodyPlain ;
 
-							if(!$mail->Send()) {
+								if(!$mail->Send()) {
+									$emailFail=TRUE ;
+								}
+							}
+							else {
 								$emailFail=TRUE ;
 							}
-						}
-						else {
-							$emailFail=TRUE ;
 						}
 					}
 				}
 				//Email reminder
-				if ($_POST["emailReminder"]=="Y") {
-					$from=$_POST["email"] ;
-					if ($partialFail==FALSE AND $from!="") { 
-						//Send emails
-						$emails=$_POST["emails2"] ;
-						if (count($emails)>0) {
+				if (isset($_POST["emailReminder"])) {	
+					if ($_POST["emailReminder"]=="Y") {
+						$from=$_POST["email"] ;
+						if ($partialFail==FALSE AND $from!="") { 
+							//Send emails
+							$emails=$_POST["emails2"] ;
+							if (count($emails)>0) {
 							
-							require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/class.phpmailer.php';
+								require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/class.phpmailer.php';
 				
-							//Prep message
-							if ($row["reminderCount"]=="0") {
-								$reminderText=getSettingByScope( $connection2, "Finance", "reminder1Text" ) ;
-							}
-							else if ($row["reminderCount"]=="1") {
-								$reminderText=getSettingByScope( $connection2, "Finance", "reminder2Text" ) ;
-							}
-							else if ($row["reminderCount"]>="2") {
-								$reminderText=getSettingByScope( $connection2, "Finance", "reminder3Text" ) ;
-							}
-							if ($reminderText!="") {
-								$reminderOutput=$row["reminderCount"]+1 ;
-								if ($reminderOutput>3) {
-									$reminderOutput="3+" ;
+								$body="" ;
+								//Prep message
+								if ($row["reminderCount"]=="0") {
+									$reminderText=getSettingByScope( $connection2, "Finance", "reminder1Text" ) ;
 								}
-								$body.="<p>Reminder " . $reminderOutput . ": " . $reminderText . "</p><br/>" ;
-							}
-							$body.=invoiceContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) . "<p style='font-style: italic;'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
-							$bodyPlain="This email is not viewable in plain text: enable rich text/HTML in your email client to view the reminder. Please reply to this email if you have any questions." ;
+								else if ($row["reminderCount"]=="1") {
+									$reminderText=getSettingByScope( $connection2, "Finance", "reminder2Text" ) ;
+								}
+								else if ($row["reminderCount"]>="2") {
+									$reminderText=getSettingByScope( $connection2, "Finance", "reminder3Text" ) ;
+								}
+								if ($reminderText!="") {
+									$reminderOutput=$row["reminderCount"]+1 ;
+									if ($reminderOutput>3) {
+										$reminderOutput="3+" ;
+									}
+									$body.="<p>Reminder " . $reminderOutput . ": " . $reminderText . "</p><br/>" ;
+								}
+								$body.=invoiceContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) . "<p style='font-style: italic;'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
+								$bodyPlain="This email is not viewable in plain text: enable rich text/HTML in your email client to view the reminder. Please reply to this email if you have any questions." ;
 	
-							//Update reminder count
-							if ($row["reminderCount"]<3) {
-								try {
-									$data=array("gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID); 
-									$sql="UPDATE gibbonFinanceInvoice SET reminderCount=" . ($row["reminderCount"]+1) . " WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ; 
-									$result=$connection2->prepare($sql);
-									$result->execute($data);
-								}
-								catch(PDOException $e) { }
-							} 
+								//Update reminder count
+								if ($row["reminderCount"]<3) {
+									try {
+										$data=array("gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID); 
+										$sql="UPDATE gibbonFinanceInvoice SET reminderCount=" . ($row["reminderCount"]+1) . " WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ; 
+										$result=$connection2->prepare($sql);
+										$result->execute($data);
+									}
+									catch(PDOException $e) { }
+								} 
 									
-							$mail=new PHPMailer;
-							$mail->SetFrom($from, $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
-							foreach ($emails AS $address) {
-								$mail->AddBCC($address);
-							}
-							$mail->CharSet="UTF-8"; 
-							$mail->IsHTML(true);                            
-							$mail->Subject="Reminder From " . $_SESSION[$guid]["organisationNameShort"] . " via " . $_SESSION[$guid]["systemName"] ;
-							$mail->Body=$body ;
-							$mail->AltBody=$bodyPlain ;
+								$mail=new PHPMailer;
+								$mail->SetFrom($from, $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
+								foreach ($emails AS $address) {
+									$mail->AddBCC($address);
+								}
+								$mail->CharSet="UTF-8"; 
+								$mail->IsHTML(true);                            
+								$mail->Subject="Reminder From " . $_SESSION[$guid]["organisationNameShort"] . " via " . $_SESSION[$guid]["systemName"] ;
+								$mail->Body=$body ;
+								$mail->AltBody=$bodyPlain ;
 
-							if(!$mail->Send()) {
+								if(!$mail->Send()) {
+									$emailFail=TRUE ;
+								}
+							}
+							else {
 								$emailFail=TRUE ;
 							}
-						}
-						else {
-							$emailFail=TRUE ;
 						}
 					}
 				}

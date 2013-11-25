@@ -87,9 +87,14 @@ else {
 	print "Filters" ;
 	print "</h2>" ;
 	
-	$search=$_GET["search"] ;
-	$allUsers=$_GET["allUsers"] ;
-
+	$search=NULL ;
+	if (isset($_GET["search"])) {
+		$search=$_GET["search"] ;
+	}
+	$allUsers=NULL ;
+	if (isset($_GET["allUsers"])) {
+		$allUsers=$_GET["allUsers"] ;
+	}
 	?>
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 		<table class='noIntBorder' cellspacing='0' style="width: 100%">	

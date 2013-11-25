@@ -66,13 +66,13 @@ else {
 			$whereSched=substr($whereSched,0,-4) . ")";
 					
 			//SQL for billing schedule AND pending
-			$sql="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceBillingSchedule.invoiceDueDate, paidDate, gibbonFinanceBillingSchedule.name AS billingSchedule, NULL AS billingScheduleExtra, notes FROM gibbonFinanceInvoice JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Scheduled' AND gibbonFinanceInvoice.status='Pending' AND $whereSched)" ; 
+			$sql="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonPerson.gibbonPersonID, dob, gender, studentID, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceBillingSchedule.invoiceDueDate, paidDate, gibbonFinanceBillingSchedule.name AS billingSchedule, NULL AS billingScheduleExtra, notes FROM gibbonFinanceInvoice JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Scheduled' AND gibbonFinanceInvoice.status='Pending' AND $whereSched)" ; 
 			$sql.=" UNION " ; 
 			//SQL for Ad Hoc AND pending
-			$sql.="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, invoiceIssueDate, invoiceDueDate, paidDate, 'Ad Hoc' AS billingSchedule, NULL AS billingScheduleExtra, notes FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Ad Hoc' AND gibbonFinanceInvoice.status='Pending' AND $whereSched)" ; 
+			$sql.="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonPerson.gibbonPersonID, dob, gender, studentID, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, invoiceIssueDate, invoiceDueDate, paidDate, 'Ad Hoc' AS billingSchedule, NULL AS billingScheduleExtra, notes FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Ad Hoc' AND gibbonFinanceInvoice.status='Pending' AND $whereSched)" ; 
 			$sql.=" UNION " ; 
 			//SQL for NOT Pending
-			$sql.="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' AND $whereSched)" ; 
+			$sql.="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonPerson.gibbonPersonID, dob, gender, studentID, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' AND $whereSched)" ; 
 			$sql.=" ORDER BY FIND_IN_SET(status, 'Pending,Issued,Paid,Refunded,Cancelled'), invoiceIssueDate, surname, preferredName" ; 
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
@@ -84,7 +84,16 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th style='width: 120px'>" ;
+					print "Invoice Number" ;
+				print "</th>" ;
+				print "<th style='width: 120px'>" ;
 					print "Student <span style='font-style: italic; font-size: 85%'>(Invoice To)</span>" ;
+				print "</th>" ;
+				print "<th style='width: 120px'>" ;
+					print "DOB" ;
+				print "</th>" ;
+				print "<th style='width: 120px'>" ;
+					print "Gender" ;
 				print "</th>" ;
 				print "<th style='width: 100px'>" ;
 					print "Status" ;
@@ -103,80 +112,87 @@ else {
 				print "</th>" ;
 			print "</tr>" ;
 		
-			$count=0;
-			$rowNum="odd" ;
+			$count=0 ;
 			while ($row=$result->fetch()) {
-				if (is_null($log[$row["gibbonRollGroupID"]])) {
-					if ($count%2==0) {
-						$rowNum="even" ;
-					}
-					else {
-						$rowNum="odd" ;
-					}
-					$count++ ;
-				
-					//COLOR ROW BY STATUS!
-					print "<tr class=$rowNum>" ;
-						print "<td>" ;
-							print "<b>" . formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) . "</b> " ;
-							print "<span style='font-style: italic; font-size: 85%'>(" . $row["invoiceTo"] . ")</span>" ;
-						print "</td>" ;
-						print "<td>" ;
-							print $row["status"] ;
-							if ($statusExtra!="") {
-								print " - $statusExtra" ;
+				$count++ ;
+				//COLOR ROW BY STATUS!
+				print "<tr>" ;
+					print "<td>" ;
+						$invoiceNumber=getSettingByScope( $connection2, "Finance", "invoiceNumber" ) ;
+						if ($invoiceNumber=="Person ID + Invoice ID") {
+							print ltrim($row["gibbonPersonID"],"0") . "-" . ltrim($gibbonFinanceInvoiceID, "0") ;
+						}
+						else if ($invoiceNumber=="Student ID + Invoice ID") {
+							print ltrim($row["studentID"],"0") . "-" . ltrim($gibbonFinanceInvoiceID, "0") ;
+						}
+						else {
+							print ltrim($gibbonFinanceInvoiceID, "0") ;
+						}
+					print "</td>" ;
+					print "<td>" ;
+						print "<b>" . formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) . "</b> " ;
+						print "<span style='font-style: italic; font-size: 85%'>(" . $row["invoiceTo"] . ")</span>" ;
+					print "</td>" ;
+					print "<td>" ;
+						if ($row["dob"]!="") {
+							print dateConvertBack($row["dob"]) ;
+						}
+					print "</td>" ;
+					print "<td>" ;
+						print $row["gender"] ;
+					print "</td>" ;
+					print "<td>" ;
+						print $row["status"] ;
+					print "</td>" ;
+					print "<td>" ;
+						if ($row["billingScheduleExtra"]!="")  {
+							print $row["billingScheduleExtra"] ;
+						}
+						else { 
+							print $row["billingSchedule"] ;
+						}
+					print "</td>" ;
+					print "<td>" ;
+						//Calculate total value
+						$totalFee=0 ;
+						$feeError=FALSE ;
+						try {
+							$dataTotal=array("gibbonFinanceInvoiceID"=>$row["gibbonFinanceInvoiceID"]); 
+							if ($row["status"]=="Pending") {
+								$sqlTotal="SELECT gibbonFinanceInvoiceFee.fee AS fee, gibbonFinanceFee.fee AS fee2 FROM gibbonFinanceInvoiceFee LEFT JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
 							}
-						print "</td>" ;
-						print "<td>" ;
-							if ($row["billingScheduleExtra"]!="")  {
-								print $row["billingScheduleExtra"] ;
+							else {
+								$sqlTotal="SELECT gibbonFinanceInvoiceFee.fee AS fee, NULL AS fee2 FROM gibbonFinanceInvoiceFee WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
 							}
-							else { 
-								print $row["billingSchedule"] ;
+							$resultTotal=$connection2->prepare($sqlTotal);
+							$resultTotal->execute($dataTotal);
+						}
+						catch(PDOException $e) { print $e->getMessage() ; print "<i>Error calculating total</i>" ; $feeError=TRUE ;}
+						while ($rowTotal=$resultTotal->fetch()) {
+							if (is_numeric($rowTotal["fee2"])) {
+								$totalFee+=$rowTotal["fee2"] ;
 							}
-						print "</td>" ;
-						print "<td>" ;
-							//Calculate total value
-							$totalFee=0 ;
-							$feeError=FALSE ;
-							try {
-								$dataTotal=array("gibbonFinanceInvoiceID"=>$row["gibbonFinanceInvoiceID"]); 
-								if ($row["status"]=="Pending") {
-									$sqlTotal="SELECT gibbonFinanceInvoiceFee.fee AS fee, gibbonFinanceFee.fee AS fee2 FROM gibbonFinanceInvoiceFee LEFT JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
-								}
-								else {
-									$sqlTotal="SELECT gibbonFinanceInvoiceFee.fee AS fee, NULL AS fee2 FROM gibbonFinanceInvoiceFee WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
-								}
-								$resultTotal=$connection2->prepare($sqlTotal);
-								$resultTotal->execute($dataTotal);
+							else {
+								$totalFee+=$rowTotal["fee"] ;
 							}
-							catch(PDOException $e) { print $e->getMessage() ; print "<i>Error calculating total</i>" ; $feeError=TRUE ;}
-							while ($rowTotal=$resultTotal->fetch()) {
-								if (is_numeric($rowTotal["fee2"])) {
-									$totalFee+=$rowTotal["fee2"] ;
-								}
-								else {
-									$totalFee+=$rowTotal["fee"] ;
-								}
+						}
+						if ($feeError==FALSE) {
+							if (substr($_SESSION[$guid]["currency"],4)!="") {
+								print substr($_SESSION[$guid]["currency"],4) . " " ;
 							}
-							if ($feeError==FALSE) {
-								if (substr($_SESSION[$guid]["currency"],4)!="") {
-									print substr($_SESSION[$guid]["currency"],4) . " " ;
-								}
-								print number_format($totalFee, 2, ".", ",") ;
-							}
-						print "</td>" ;
-						print "<td>" ;
-							print dateConvertBack($row["invoiceIssueDate"]) ;
-						print "</td>" ;
-						print "<td>" ;
-							print dateConvertBack($row["invoiceDueDate"]) ;
-						print "</td>" ;
-					print "</tr>" ;
-				}
+							print number_format($totalFee, 2, ".", ",") ;
+						}
+					print "</td>" ;
+					print "<td>" ;
+						print dateConvertBack($row["invoiceIssueDate"]) ;
+					print "</td>" ;
+					print "<td>" ;
+						print dateConvertBack($row["invoiceDueDate"]) ;
+					print "</td>" ;
+				print "</tr>" ;
 			}
 			if ($count==0) {
-				print "<tr class=$rowNum>" ;
+				print "<tr>" ;
 					print "<td colspan=2>" ;
 						print "There are no results in this report." ;
 					print "</td>" ;

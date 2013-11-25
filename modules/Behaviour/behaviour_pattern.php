@@ -46,12 +46,35 @@ else {
 		print "</div>" ;
 	} 
 	
-	$descriptor=$_GET["descriptor"] ;
-	$level=$_GET["level"] ;
-	$fromDate=$_GET["fromDate"] ;
-	$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
-	$gibbonYearGroupID=$_GET["gibbonYearGroupID"] ;
-	$minimumCount=$_GET["minimumCount"] ;
+	$descriptor=NULL ;
+	if (isset($_GET["descriptor"])) {
+		$descriptor=$_GET["descriptor"] ;
+	}
+	
+	$level=NULL ;
+	if (isset($_GET["level"])) {
+		$level=$_GET["level"] ;
+	}
+	
+	$fromDate=NULL ;
+	if (isset($_GET["fromDate"])) {
+		$fromDate=$_GET["fromDate"] ;
+	}
+	
+	$gibbonRollGroupID=NULL ;
+	if (isset($_GET["gibbonRollGroupID"])) {
+		$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
+	}
+	
+	$gibbonYearGroupID=NULL ;
+	if (isset($_GET["gibbonYearGroupID"])) {
+		$gibbonYearGroupID=$_GET["gibbonYearGroupID"] ;
+	}
+	
+	$minimumCount=NULL ;
+	if (isset($_GET["minimumCount"])) {
+		$minimumCount=$_GET["minimumCount"] ;
+	}
 	
 	print "<h3>" ;
 		print "Filter" ;
@@ -234,7 +257,6 @@ else {
 		$page=1 ;
 	}
 	
-	$search=$_GET["search"] ;
 	try {
 		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 		$sqlWhere1="AND " ;
@@ -298,7 +320,7 @@ else {
 	}
 	else {
 		if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
+			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "descriptor=$descriptor&level=$level&fromDate=$fromDate&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&minimumCount=$minimumCount&source=pattern") ;
 		}
 	
 		print "<table cellspacing='0' style='width: 100%'>" ;
@@ -366,7 +388,7 @@ else {
 		print "</table>" ;
 		
 		if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
+			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "descriptor=$descriptor&level=$level&fromDate=$fromDate&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&minimumCount=$minimumCount&source=pattern") ;
 		}
 		
 	}

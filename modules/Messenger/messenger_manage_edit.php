@@ -206,7 +206,7 @@ else {
 								</td>
 								<td class="right">
 									<?
-									if ($row["SMS"]=="Y") {
+									if ($row["sms"]=="Y") {
 										print "<img title='Sent by sms.' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 									}
 									else {

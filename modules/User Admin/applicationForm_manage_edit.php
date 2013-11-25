@@ -1841,6 +1841,7 @@ else {
 								$("#companyContactRow").css("display","none");
 								$("#companyAddressRow").css("display","none");
 								$("#companyEmailRow").css("display","none");
+								$("#companyCCFamilyRow").css("display","none");
 								$("#companyPhoneRow").css("display","none");
 								$("#companyAllRow").css("display","none");
 								$("#companyCategoriesRow").css("display","none");
@@ -1857,6 +1858,7 @@ else {
 									$("#companyContactRow").css("display","none");
 									$("#companyAddressRow").css("display","none");
 									$("#companyEmailRow").css("display","none");
+									$("#companyCCFamilyRow").css("display","none");
 									$("#companyPhoneRow").css("display","none");
 									$("#companyAllRow").css("display","none");
 									$("#companyCategoriesRow").css("display","none");
@@ -1865,6 +1867,7 @@ else {
 									$("#companyContactRow").slideDown("fast", $("#companyContactRow").css("display","table-row")); 
 									$("#companyAddressRow").slideDown("fast", $("#companyAddressRow").css("display","table-row")); 
 									$("#companyEmailRow").slideDown("fast", $("#companyEmailRow").css("display","table-row")); 
+									$("#companyCCFamilyRow").slideDown("fast", $("#companyCCFamilyRow").css("display","table-row")); 
 									$("#companyPhoneRow").slideDown("fast", $("#companyPhoneRow").css("display","table-row")); 
 									$("#companyAllRow").slideDown("fast", $("#companyAllRow").css("display","table-row")); 
 									if ($('input[name=companyAll]:checked').val() == "Y" ) {
@@ -1932,6 +1935,18 @@ else {
 								var companyEmail=new LiveValidation('companyEmail');
 								companyEmail.add(Validate.Email);
 							</script>
+						</td>
+					</tr>
+					<tr id="companyCCFamilyRow">
+						<td> 
+							<b>CC Family?</b><br/>
+							<span style="font-size: 90%"><i>Should the family be sent a copy of billing emails?</i></span>
+						</td>
+						<td class="right">
+							<select name="companyCCFamily" id="companyCCFamily" style="width: 302px">
+								<option <? if ($row["companyCCFamily"]=="N") { print "selected" ; } ?> value="N" /> No
+								<option <? if ($row["companyCCFamily"]=="Y") { print "selected" ; } ?> value="Y" /> Yes
+							</select>
 						</td>
 					</tr>
 					<tr id="companyPhoneRow">

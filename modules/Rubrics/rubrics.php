@@ -60,7 +60,10 @@ else {
 		
 		//Filter variables
 		$where="" ;
-		$filter2=$_POST["filter2"] ;
+		$filter2=NULL ;
+		if (isset($_POST["filter2"])) {
+			$filter2=$_POST["filter2"] ;
+		}
 		if ($filter2!="") {
 			$where.=" WHERE gibbonDepartmentID='$filter2'" ;
 		}

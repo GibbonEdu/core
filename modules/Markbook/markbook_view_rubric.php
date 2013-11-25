@@ -137,8 +137,10 @@ else {
 						print "</h2>" ;
 						
 						$mark=TRUE ;
-						if ($_GET["mark"]=="FALSE") {
-							$mark=FALSE ;
+						if (isset($_GET["mark"])) {
+							if ($_GET["mark"]=="FALSE") {
+								$mark=FALSE ;
+							}
 						}
 						print rubricView($guid, $connection2, $gibbonRubricID, $mark, $row4["gibbonPersonID"], "gibbonMarkbookColumn", "gibbonMarkbookColumnID", $gibbonMarkbookColumnID,  $contextDBTableGibbonRubricIDField, "name", "completeDate") ;
 					}

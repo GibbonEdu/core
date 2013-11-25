@@ -105,6 +105,12 @@ else {
 					$set.="gibbonFinanceInvoicee.companyEmail=:companyEmail, " ;
 				}
 			}
+			if (isset($_POST["newcompanyCCFamilyOn"])) {
+				if ($_POST["newcompanyCCFamilyOn"]=="on") {
+					$data["companyCCFamily"]=$_POST["newcompanyCCFamily"] ;
+					$set.="gibbonFinanceInvoicee.companyCCFamily=:companyCCFamily, " ;
+				}
+			}
 			if (isset($_POST["newcompanyPhoneOn"])) {
 				if ($_POST["newcompanyPhoneOn"]=="on") {
 					$data["companyPhone"]=$_POST["newcompanyPhone"] ;

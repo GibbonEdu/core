@@ -153,7 +153,7 @@ function invoiceContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYea
 	
 	try {
 		$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID); 
-		$sql="SELECT surname, preferredName, gibbonFinanceInvoice.*, companyContact, companyName, companyAddress FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ; 
+		$sql="SELECT gibbonPerson.gibbonPersonID, studentID, surname, preferredName, gibbonFinanceInvoice.*, companyContact, companyName, companyAddress FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ; 
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -244,9 +244,6 @@ function invoiceContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYea
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>Status</span><br/>" ;
 					$return.=$row["status"] ;
-					if ($statusExtra!="") {
-						$return.=" - $statusExtra" ;
-					}
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>Schedule</span><br/>" ;
@@ -280,7 +277,17 @@ function invoiceContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYea
 					$return.=dateConvertBack($row["invoiceDueDate"]) ;
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-		
+					$return.="<span style='font-size: 115%; font-weight: bold'>Invoice Number</span><br/>" ;
+					$invoiceNumber=getSettingByScope( $connection2, "Finance", "invoiceNumber" ) ;
+					if ($invoiceNumber=="Person ID + Invoice ID") {
+						$return.=ltrim($row["gibbonPersonID"],"0") . "-" . ltrim($gibbonFinanceInvoiceID, "0") ;
+					}
+					else if ($invoiceNumber=="Student ID + Invoice ID") {
+						$return.=ltrim($row["studentID"],"0") . "-" . ltrim($gibbonFinanceInvoiceID, "0") ;
+					}
+					else {
+						$return.=ltrim($gibbonFinanceInvoiceID, "0") ;
+					}
 				$return.="</td>" ;
 			$return.="</tr>" ;
 		$return.="</table>" ;
@@ -388,7 +395,7 @@ function receiptContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYea
 	
 	try {
 		$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID); 
-		$sql="SELECT surname, preferredName, gibbonFinanceInvoice.*, companyContact, companyName, companyAddress FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ; 
+		$sql="SELECT gibbonPerson.gibbonPersonID, studentID, surname, preferredName, gibbonFinanceInvoice.*, companyContact, companyName, companyAddress FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ; 
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -479,9 +486,6 @@ function receiptContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYea
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>Status</span><br/>" ;
 					$return.=$row["status"] ;
-					if ($statusExtra!="") {
-						$return.=" - $statusExtra" ;
-					}
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>Schedule</span><br/>" ;
@@ -515,8 +519,29 @@ function receiptContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYea
 					$return.=dateConvertBack($row["invoiceDueDate"]) ;
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>Invoice Number</span><br/>" ;
+					$invoiceNumber=getSettingByScope( $connection2, "Finance", "invoiceNumber" ) ;
+					if ($invoiceNumber=="Person ID + Invoice ID") {
+						$return.=ltrim($row["gibbonPersonID"],"0") . "-" . ltrim($gibbonFinanceInvoiceID, "0") ;
+					}
+					else if ($invoiceNumber=="Student ID + Invoice ID") {
+						$return.=ltrim($row["studentID"],"0") . "-" . ltrim($gibbonFinanceInvoiceID, "0") ;
+					}
+					else {
+						$return.=ltrim($gibbonFinanceInvoiceID, "0") ;
+					}
+				$return.="</td>" ;
+			$return.="</tr>" ;
+			$return.="<tr>" ;
+				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>Date Paid</span><br/>" ;
 					$return.=dateConvertBack($row["paidDate"]) ;
+				$return.="</td>" ;
+				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+					
+				$return.="</td>" ;
+				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+					
 				$return.="</td>" ;
 			$return.="</tr>" ;
 		$return.="</table>" ;
