@@ -45,7 +45,7 @@ $date=$_GET["date"] ;
 $gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 $viewBy=$_GET["viewBy"] ;
 $subView=$_GET["subView"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=" . $_POST["search"] . "&date=$date&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=" . $_GET["search"] . "&date=$date&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full.php")==FALSE) {
 	//Fail 0
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full.
 else {
 	//Proceed!
 	//Check if planner specified
-	if ($gibbonPlannerEntryID=="" OR gibbonPlannerEntryDiscussID=="") {
+	if ($gibbonPlannerEntryID=="" OR $gibbonPlannerEntryDiscussID=="") {
 		//Fail1
 		$URL=$URL . "&deleteReturn=fail1" ;
 		header("Location: {$URL}");

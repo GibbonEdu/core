@@ -135,7 +135,7 @@ else {
 							if ($type=="File") {
 								//Check extension to see if allow
 								try {
-									$dataExt=array("username"=>$username); 
+									$dataExt=array(); 
 									$sqlExt="SELECT * FROM gibbonFileExtension WHERE extension='". end(explode(".", $_FILES['file']["name"])) ."'";
 									$resultExt=$connection2->prepare($sqlExt);
 									$resultExt->execute($dataExt);

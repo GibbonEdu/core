@@ -51,6 +51,11 @@ else {
 	print "Search" ;
 	print "</h2>" ;
 	
+	$search=NULL ;
+	if (isset($_GET["search"])) {
+		$search=$_GET["search"] ;
+	}
+	
 	?>
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 		<table class='noIntBorder' cellspacing='0' style="width: 100%">
@@ -61,7 +66,7 @@ else {
 					<span style="font-size: 90%"><i>Activity name.</i></span>
 				</td>
 				<td class="right">
-					<input name="search" id="search" maxlength=20 value="<? print $_GET["search"] ?>" type="text" style="width: 300px">
+					<input name="search" id="search" maxlength=20 value="<? print $search ?>" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
@@ -89,7 +94,6 @@ else {
 	}
 	
 	//Should we show date as term or date?
-	$search=$_GET["search"] ;
 	$dateType=getSettingByScope( $connection2, "Activities", "dateType" ) ; 
 	if ($dateType!="Date") {
 		if ($search=="") { 
@@ -124,7 +128,7 @@ else {
 	
 	if ($result) {
 		print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_add.php&search=" . $_GET["search"] . "'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_add.php&search=" . $search . "'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 		print "</div>" ;
 		
 		if ($result->rowCount()<1) {
@@ -261,9 +265,9 @@ else {
 								print $row["active"] ;
 							print "</td>" ;
 							print "<td>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&search=" . $_GET["search"] . "'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_delete.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&search=" . $_GET["search"] . "'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&search=" . $_GET["search"] . "'><img title='Enrolment' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&search=" . $search . "'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_delete.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&search=" . $search . "'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&search=" . $search . "'><img title='Enrolment' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a> " ;
 							print "</td>" ;
 						print "</tr>" ;
 					}

@@ -37,14 +37,23 @@ else {
 		print "</div>" ;
 	}
 	else {
-		$viewBy=$_GET["viewBy"] ;
-		$subView=$_GET["subView"] ;
+		$viewBy=NULL ;
+		if (isset($_GET["viewBy"])) {
+			$viewBy=$_GET["viewBy"] ;
+		}
+		$subView=NULL ;
+		if (isset($_GET["subView"])) {
+			$subView=$_GET["subView"] ;
+		}
 		if ($viewBy!="date" AND $viewBy!="class") {
 			$viewBy="date" ;
 		}
+		$gibbonCourseClassID=NULL ;
+		$date=NULL ;
+		$dateStamp=NULL ;
 		if ($viewBy=="date") {
 			$date=$_GET["date"] ;
-			if ($_GET["dateHuman"]!="") {
+			if (isset($_GET["dateHuman"])) {
 				$date=dateConvert($_GET["dateHuman"]) ;
 			}
 			if ($date=="") {
@@ -54,8 +63,15 @@ else {
 			$dateStamp=mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);	
 		}
 		else if ($viewBy=="class") {
-			$class=$_GET["class"] ;
+			$class=NULL ;
+			if (isset($_GET["class"])) {
+				$class=$_GET["class"] ;
+			}
 			$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
+		}
+		$replyTo=NULL ;
+		if (isset($_GET["replyTo"])) {
+			$replyTo=$_GET["replyTo"] ;
 		}
 			
 		//Get class variable
@@ -199,7 +215,7 @@ else {
 								<td class="right" colspan=2>
 									<?
 									print "<input type='hidden' name='search' value='" . $_GET["search"] . "'>" ;
-									print "<input type='hidden' name='replyTo' value='" . $_GET["replyTo"] . "'>" ;
+									print "<input type='hidden' name='replyTo' value='" . $replyTo . "'>" ;
 									print "<input type='hidden' name='params' value='$params'>" ;
 									print "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>" ;
 									print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;

@@ -51,6 +51,24 @@ else {
 	$gibbonSpaceID=trim($_GET["gibbonSpaceID"]) ;
 	$status=trim($_GET["status"]) ;
 
+	$ownershipType=NULL ;
+	if (isset($_GET["ownershipType"])) {
+		$ownershipType=trim($_GET["ownershipType"]) ;
+	}
+	$gibbonLibraryTypeID=NULL ;
+	if (isset($_GET["gibbonLibraryTypeID"])) {
+		$gibbonLibraryTypeID=trim($_GET["gibbonLibraryTypeID"]) ;
+	}
+	$gibbonSpaceID=NULL ;
+	if (isset($_GET["gibbonSpaceID"])) {
+		$gibbonSpaceID=trim($_GET["gibbonSpaceID"]) ;
+	}
+	$status=NULL ;
+	if (isset($_GET["status"])) {
+		$status=trim($_GET["status"]) ;
+	}
+	
+
 	try {
 		$data=array(); 
 		$sqlWhere="WHERE " ;

@@ -178,7 +178,7 @@ else {
 				
 				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ul>" ;
 				while ($rowCourse=$resultCourse->fetch()) {
-					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $rowCourse["gibbonCourseID"] . "'>" . $rowCourse["nameShort"] . "</a> <span <span style='font-size: 85%; font-style: italic'>" . $rowCourse["name"] . "</span></li>" ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $rowCourse["gibbonCourseID"] . "'>" . $rowCourse["nameShort"] . "</a> <span style='font-size: 85%; font-style: italic'>" . $rowCourse["name"] . "</span></li>" ;
 				}
 				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</ul>" ;	
 			}
@@ -226,8 +226,8 @@ else {
 			
 			//Print useful reading
 			try {
-				$dataReading=array("username"=>$username); 
-				$sqlReading="SELECT * FROM gibbonDepartmentResource WHERE gibbonDepartmentID=$gibbonDepartmentID ORDER BY name" ;
+				$dataReading=array("gibbonDepartmentID"=>$gibbonDepartmentID); 
+				$sqlReading="SELECT * FROM gibbonDepartmentResource WHERE gibbonDepartmentID=:gibbonDepartmentID ORDER BY name" ;
 				$resultReading=$connection2->prepare($sqlReading);
 				$resultReading->execute($dataReading);
 			}

@@ -49,26 +49,52 @@ else {
 	print "</h3>" ;
 	
 	//Get current filter values
-	$name=trim($_POST["name"]) ;
+	$name=NULL ;
+	if (isset($_POST["name"])) {
+		$name=trim($_POST["name"]) ;
+	}
 	if ($name=="") {
-		$name=trim($_GET["name"]) ;
+		if (isset($_GET["name"])) {
+			$name=trim($_GET["name"]) ;
+		}
 	}
-	$gibbonLibraryTypeID=trim($_POST["gibbonLibraryTypeID"]) ;
+	$gibbonLibraryTypeID=NULL ;
+	if (isset($_POST["gibbonLibraryTypeID"])) {
+		$gibbonLibraryTypeID=trim($_POST["gibbonLibraryTypeID"]) ;
+	}
 	if ($gibbonLibraryTypeID=="") {
-		$gibbonLibraryTypeID=trim($_GET["gibbonLibraryTypeID"]) ;
+		if (isset($_GET["gibbonLibraryTypeID"])) {
+			$gibbonLibraryTypeID=trim($_GET["gibbonLibraryTypeID"]) ;
+		}
 	}
-	$gibbonSpaceID=$_POST["gibbonSpaceID"] ;
+	$gibbonSpaceID=NULL ;
+	if (isset($_POST["gibbonSpaceID"])) {
+		$gibbonSpaceID=trim($_POST["gibbonSpaceID"]) ;
+	}
 	if ($gibbonSpaceID=="") {
-		$gibbonSpaceID=trim($_GET["gibbonSpaceID"]) ;
+		if (isset($_GET["gibbonSpaceID"])) {
+			$gibbonSpaceID=trim($_GET["gibbonSpaceID"]) ;
+		}
 	}
-	$status=$_POST["status"] ;
+	$status=NULL ;
+	if (isset($_POST["status"])) {
+		$status=trim($_POST["status"]) ;
+	}
 	if ($status=="") {
-		$status=trim($_GET["status"]) ;
+		if (isset($_GET["status"])) {
+			$status=trim($_GET["status"]) ;
+		}
 	}
-	$gibbonPersonIDOwnership=$_POST["gibbonPersonIDOwnership"] ;
+	$gibbonPersonIDOwnership=NULL ;
+	if (isset($_POST["gibbonPersonIDOwnership"])) {
+		$gibbonPersonIDOwnership=trim($_POST["gibbonPersonIDOwnership"]) ;
+	}
 	if ($gibbonPersonIDOwnership=="") {
-		$gibbonPersonIDOwnership=trim($_GET["gibbonPersonIDOwnership"]) ;
+		if (isset($_GET["gibbonPersonIDOwnership"])) {
+			$gibbonPersonIDOwnership=trim($_GET["gibbonPersonIDOwnership"]) ;
+		}
 	}
+	
 	
 	//Display filters
 	print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_manage_catalog.php'>" ;
@@ -385,14 +411,6 @@ else {
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_delete.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicate.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership'><img title='Duplicate' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a>" ;
 					print "</td>" ;
-				print "</tr>" ;
-				if ($row["description"]!="") {
-					print "<tr class='description-$count' id='description-$count'>" ;
-						print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
-							print $row["description"] ;
-						print "</td>" ;
-					print "</tr>" ;
-				}
 				print "</tr>" ;
 				
 				$count++ ;

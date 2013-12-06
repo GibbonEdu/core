@@ -38,15 +38,25 @@ else {
 	print "</h3>" ;
 	
 	//Get current filter values
-	if ($_POST["tag"]!="") {
+	$tags=NULL ; 
+	if (isset($_POST["tag"])) {
 		$tags=trim($_POST["tag"]) ;
 	}
-	else if ($_GET["tag"]!="") {
+	else if (isset($_GET["tag"])) {
 		$tags=trim($_GET["tag"]) ;
 	}
-	$category=trim($_POST["category"]) ;
-	$purpose=trim($_POST["purpose"]) ;
-	$gibbonYearGroupID=trim($_POST["gibbonYearGroupID"]) ;
+	$category=NULL ;
+	if (isset($_POST["category"])) {
+		$category=trim($_POST["category"]) ;
+	}
+	$purpose=NULL ;
+	if (isset($_POST["purpose"])) {
+		$purpose=trim($_POST["purpose"]) ;
+	}
+	$gibbonYearGroupID=NULL ;
+	if (isset($_POST["gibbonYearGroupID"])) {
+		$gibbonYearGroupID=$_POST["gibbonYearGroupID"] ;
+	}
 	
 	//Display filters
 	print "<form method='post'>" ;
@@ -210,7 +220,10 @@ else {
 	print "</form>" ;
 	
 	//Set pagination variable
-	$page=$_POST["page"] ;
+	$page=NULL ;
+	if (isset($_GET["page"])) {
+		$page=$_GET["page"] ;
+	}
 	if ((!is_numeric($page)) OR $page<1) {
 		$page=1 ;
 	}
@@ -310,10 +323,6 @@ else {
 				}
 				$count++ ;
 				
-				if ($row["active"]=="N") {
-					$rowNum="error" ;
-				}
-
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;

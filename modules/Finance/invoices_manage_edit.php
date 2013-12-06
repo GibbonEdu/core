@@ -282,14 +282,20 @@ else {
 						<script type="text/javascript">
 							$(document).ready(function(){
 								$("#paidDateRow").css("display","none");
+								$("#paidAmountRow").css("display","none");
 								paidDate.disable() ;
+								paidAmount.disable() ;
 								$("#status").change(function(){
 									if ($('#status option:selected').val() == "Paid" ) {
 										$("#paidDateRow").slideDown("fast", $("#paidDateRow").css("display","table-row")); 
+										$("#paidAmountRow").slideDown("fast", $("#paidAmountRow").css("display","table-row")); 
 										paidDate.enable() ;
+										paidAmount.enable() ;
 									} else {
 										$("#paidDateRow").css("display","none");
+										$("#paidAmountRow").css("display","none");
 										paidDate.disable() ;
+										paidAmount.disable() ;
 									}
 								 });
 							});
@@ -313,9 +319,45 @@ else {
 								</script>
 							</td>
 						</tr>
+						<tr id="paidAmountRow">
+							<td> 
+								<b>Amount Paid *</b><br/>
+								<span style="font-size: 90%"><i>Final amount paid.
+								<?
+								if ($_SESSION[$guid]["currency"]!="") {
+									print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
+								}
+								?>
+								</i></span>
+							</td>
+							<td class="right">
+								<?
+								//Get default paidAmount
+								try {
+									$dataFees["gibbonFinanceInvoiceID"]=$row["gibbonFinanceInvoiceID"]; 
+									$sqlFees="SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceInvoiceFee.name AS name, gibbonFinanceInvoiceFee.fee, gibbonFinanceInvoiceFee.description AS description, NULL AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFeeCategory ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID ORDER BY sequenceNumber" ;
+									$resultFees=$connection2->prepare($sqlFees);
+									$resultFees->execute($dataFees);
+								}
+								catch(PDOException $e) { 
+									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+								}
+								$paidAmountDefault=0 ;
+								while ($rowFees=$resultFees->fetch()) {
+									$paidAmountDefault=$paidAmountDefault+$rowFees["fee"] ;
+								}
+								?>
+								<input name="paidAmount" id="paidAmount" maxlength=14 value="<? print number_format($paidAmountDefault,2,'.','') ?>" type="text" style="width: 300px">
+								<script type="text/javascript">
+									var paidAmount=new LiveValidation('paidAmount');
+									paidAmount.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
+									paidAmount.add(Validate.Presence);
+								 </script>
+							</td>
+						</tr>
 						<?
 					}
-					else if ($row["status"]=="Paid") {
+					else if ($row["status"]=="Paid" OR $row["status"]=="Refunded") {
 						?>
 						<tr>
 							<td> 
@@ -323,7 +365,22 @@ else {
 								<span style="font-size: 90%"><i>Date of payment, not entry to system.</i></span>
 							</td>
 							<td class="right">
-								<input readonly name="paidDate" id="paidDate" maxlength=10 value="<? print dateConvertBack($row["paidDate"]) ; ?> " type="text" style="width: 300px">
+								<input readonly name="paidDate" id="paidDate" maxlength=10 value="<? print dateConvertBack($row["paidDate"]) ; ?>" type="text" style="width: 300px">
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b>Amount Paid *</b><br/>
+								<span style="font-size: 90%"><i>Final amount paid.
+								<?
+								if ($_SESSION[$guid]["currency"]!="") {
+									print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
+								}
+								?>
+								</i></span>
+							</td>
+							<td class="right">
+								<input readonly name="paidAmount" id="paidAmount" maxlength=14 value="<? print number_format($row["paidAmount"],2,'.','') ; ?> " type="text" style="width: 300px">
 							</td>
 						</tr>
 						<?

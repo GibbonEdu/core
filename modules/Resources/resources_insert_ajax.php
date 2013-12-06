@@ -38,24 +38,42 @@ include $_SESSION[$guid]["absolutePath"] . "/modules/" . $_SESSION[$guid]["modul
 
 //Setup variables
 $output="" ;
-$id=$_GET["id"] ;
-$category=$_GET["category"] ;
-if ($_POST["category" . $id]!="") {
+$id=NULL ;
+if (isset($_GET["id"])) {
+	$id=$_GET["id"] ;
+}
+$category=NULL ;
+if (isset($_GET["category"])) {
+	$category=$_GET["category"] ;
+}
+if (isset($_POST["category" . $id])) {
 	$category=$_POST["category" . $id] ;
 }
-$purpose=$_GET["purpose"] ;
-if ($_POST["purpose" . $id]!="") {
+$purpose=NULL ;
+if (isset($_GET["purpose"])) {
+	$purpose=$_GET["purpose"] ;
+}
+if (isset($_POST["purpose" . $id])) {
 	$purpose=$_POST["purpose" . $id] ;
 }
-$tags=$_GET["tag"] ;
-if ($_POST["tag" . $id]!="") {
+$tags=NULL ;
+if (isset($_GET["tags"])) {
+	$tags=$_GET["tags"] ;
+}
+if (isset($_POST["tag" . $id])) {
 	$tags=$_POST["tag" . $id] ;
 }
-$gibbonYearGroupID=$_GET["gibbonYearGroupID"] ;
-if ($_POST["gibbonYearGroupID" . $id]!="") {
+$gibbonYearGroupID=NULL ;
+if (isset($_GET["gibbonYearGroupID"])) {
+	$gibbonYearGroupID=$_GET["gibbonYearGroupID"] ;
+}
+if (isset($_POST["gibbonYearGroupID" . $id])) {
 	$gibbonYearGroupID=$_POST["gibbonYearGroupID" . $id] ;
 }
-$alpha=$_GET["alpha"] ;
+$alpha=NULL ;
+if (isset($_GET["alpha"])) {
+	$alpha=$_GET["alpha"] ;
+}
 
 if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_view.php")==FALSE) {
 	//Acess denied
@@ -93,8 +111,8 @@ else {
 				$output.="<form id='" . $id . "ajaxFormSearch' name='" . $id . "ajaxFormSearch'>" ;
 					$output.="<table cellspacing='0' style='width: 200px'>" ;
 						$output.="<tr>" ;
-							$output.="<td>" ;
-								$output.="<b>Tag</b>" ;
+							$output.="<td colspan=4>" ;
+								$output.="<b>Tags</b>" ;
 							$output.="</td>" ;
 						$output.="</tr>" ;
 						$output.="<tr>" ;
@@ -232,7 +250,6 @@ else {
 								$output.="</select>" ;
 							$output.="</td>" ;
 							$output.="<td style='padding: 0px 0px 0px 2px'>" ;
-								$output.="<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
 								$output.="<input type='submit' value='Go'>" ;
 							$output.="</td>" ;
 						$output.="</tr>" ;
@@ -324,10 +341,6 @@ else {
 							}
 							$count++ ;
 							
-							if ($row["active"]=="N") {
-								$rowNum="error" ;
-							}
-			
 							//COLOR ROW BY STATUS!
 							$output.="<tr class=$rowNum>" ;
 								$output.="<td>" ;

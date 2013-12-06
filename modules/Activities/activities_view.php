@@ -81,6 +81,7 @@ else {
 				$gibbonPersonID=$_SESSION[$guid]["gibbonPersonID"] ;
 			}
 			//IF PARENT, SET UP LIST OF CHILDREN
+			$countChild=0 ;
 			if ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent") {
 				$gibbonPersonID=$_GET["gibbonPersonID"] ;
 				try {
@@ -99,7 +100,6 @@ else {
 					print "</div>" ;
 				}
 				else {
-					$countChild=0 ;
 					$options="" ;
 					while ($row=$result->fetch()) {
 						try {
@@ -145,6 +145,10 @@ else {
 			print "Filter & Search" ;
 			print "</h2>" ;
 			
+			$search=NULL ;
+			if (isset($_GET["search"])) {
+				$search=$_GET["search"] ;
+			}
 			?>
 			<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 				<table class='noIntBorder' cellspacing='0' style="width: 100%">
@@ -178,7 +182,7 @@ else {
 							<span style="font-size: 90%"><i>Activity name.</i></span>
 						</td>
 						<td class="right">
-							<input name="search" id="search" maxlength=20 value="<? print $_GET["search"] ?>" type="text" style="width: 300px">
+							<input name="search" id="search" maxlength=20 value="<? print $search ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
@@ -236,7 +240,7 @@ else {
 				
 				//Confirm access to this student
 				try {
-					$dataChild=array("username"=>$username); 
+					$dataChild=array(); 
 					$sqlChild="SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonFamilyChild.gibbonPersonID=$gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] . " AND childDataAccess='Y'" ;
 					$resultChild=$connection2->prepare($sqlChild);
 					$resultChild->execute($dataChild);
@@ -287,7 +291,6 @@ else {
 						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "listingStart"=>$today, "listingEnd"=>$today); 
 						$sql="SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND listingStart<=:listingStart AND listingEnd>=:listingEnd $and ORDER BY name" ; 
 					}
-					$search=$_GET["search"] ;
 					if ($search!="") {
 						if ($dateType!="Date") {
 							$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "search"=>"%$search%"); 
@@ -314,7 +317,7 @@ else {
 				}
 				else {
 					if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-						printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
+						printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "search=$search") ;
 					}
 					
 					if ($dateType=="Term" AND $maxPerTerm>0 AND (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0))) {
@@ -485,10 +488,10 @@ else {
 									print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_full.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 									if (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0)) {
 										if ($resultEnrol->rowCount()<1) {
-											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&mode=register&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='Register' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a> " ;
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $search . "&mode=register&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='Register' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a> " ;
 										}
 										else {
-											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&mode=unregister&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='Unregister' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $search . "&mode=unregister&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='Unregister' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 										}
 									}
 								print "</td>" ;
@@ -497,7 +500,7 @@ else {
 					print "</table>" ;
 					
 					if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-						printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
+						printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "search=$search") ;
 					}
 				}
 			}

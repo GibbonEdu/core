@@ -46,6 +46,10 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/staff_manage_ad
 else {
 	//Proceed!
 	$gibbonPersonID=$_POST["gibbonPersonID"] ; 
+	$initials=$_POST["initials"] ;
+	if ($initials=="") {
+		$initials=NULL ;
+	}
 	$type=$_POST["type"] ;
 	$jobTitle=$_POST["jobTitle"] ;
 	$firstAidQualified=$_POST["firstAidQualified"] ;
@@ -68,8 +72,14 @@ else {
 	else {
 		//Check unique inputs for uniquness
 		try {
-			$data=array("gibbonPersonID"=>$gibbonPersonID); 
-			$sql="SELECT * FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID" ;
+			if ($initials=="") {
+				$data=array("gibbonPersonID"=>$gibbonPersonID); 
+				$sql="SELECT * FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID" ;
+			}
+			else {
+				$data=array("gibbonPersonID"=>$gibbonPersonID, "initials"=>$initials); 
+				$sql="SELECT * FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID OR initials=:initials" ;
+			}
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -88,8 +98,8 @@ else {
 		else {	
 			//Write to database
 			try {
-				$data=array("gibbonPersonID"=>$gibbonPersonID, "type"=>$type, "jobTitle"=>$jobTitle, "firstAidQualified"=>$firstAidQualified, "firstAidExpiry"=>$firstAidExpiry, "countryOfOrigin"=>$countryOfOrigin, "qualifications"=>$qualifications, "biographicalGrouping"=>$biographicalGrouping, "biographicalGroupingPriority"=>$biographicalGroupingPriority, "biography"=>$biography); 
-				$sql="INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography" ;
+				$data=array("gibbonPersonID"=>$gibbonPersonID, "initials"=>$initials, "type"=>$type, "jobTitle"=>$jobTitle, "firstAidQualified"=>$firstAidQualified, "firstAidExpiry"=>$firstAidExpiry, "countryOfOrigin"=>$countryOfOrigin, "qualifications"=>$qualifications, "biographicalGrouping"=>$biographicalGrouping, "biographicalGroupingPriority"=>$biographicalGroupingPriority, "biography"=>$biography); 
+				$sql="INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, initials=:initials, type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}

@@ -115,8 +115,8 @@ else {
 					
 					//Create new unit
 					try {
-						$data=array("gibbonCourseID"=>$gibbonCourseIDTarget, "name"=>$nameTarget, "type"=>$row["type"], "description"=>$row["description"], "attachment"=>$row["attachment"], "details"=>$row["details"], "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"], ); 
-						$sql="INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, type=:type, description=:description, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+						$data=array("gibbonCourseID"=>$gibbonCourseIDTarget, "name"=>$nameTarget, "description"=>$row["description"], "attachment"=>$row["attachment"], "details"=>$row["details"], "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"], ); 
+						$sql="INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

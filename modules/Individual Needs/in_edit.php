@@ -99,15 +99,40 @@ else {
 		}
 		else {
 			$row=$result->fetch() ;
+			$search=NULL ;
+			if (isset($_GET["search"])) {
+				$search=$_GET["search"] ;
+			}
+			$source=NULL ;
+			if (isset($_GET["source"])) {
+				$source=$_GET["source"] ;
+			}
+			$gibbonINDescriptorID=NULL ;
+			if (isset($_GET["gibbonINDescriptorID"])) {
+				$gibbonINDescriptorID=$_GET["gibbonINDescriptorID"] ;
+			}
+			$gibbonAlertLevelID=NULL ;
+			if (isset($_GET["gibbonAlertLevelID"])) {
+				$gibbonAlertLevelID=$_GET["gibbonAlertLevelID"] ;
+			}
+			$gibbonRollGroupID=NULL ;
+			if (isset($_GET["gibbonRollGroupID"])) {
+				$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
+			}
+			$gibbonYearGroupID=NULL ;
+			if (isset($_GET["gibbonYearGroupID"])) {
+				$gibbonYearGroupID=$_GET["gibbonYearGroupID"] ;
+			}
 			
-			if ($_GET["search"]!="" AND $_GET["source"]=="") {
+			
+			if ($search!="" AND $source=="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_view.php&search=" . $_GET["search"] . "'>Back to Search Results</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_view.php&search=" . $search . "'>Back to Search Results</a>" ;
 				print "</div>" ;
 			}
-			else if (($_GET["gibbonINDescriptorID"]!="" OR $_GET["gibbonAlertLevelID"]!="" OR $_GET["gibbonRollGroupID"]!="" OR $_GET["gibbonYearGroupID"]!="") AND $_GET["source"]=="summary") {
+			else if (($gibbonINDescriptorID!="" OR $gibbonAlertLevelID!="" OR $gibbonRollGroupID!="" OR $gibbonYearGroupID!="") AND $source=="summary") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_summary.php&gibbonINDescriptorID=" . $_GET["gibbonINDescriptorID"] . "&gibbonAlertLevelID=" . $_GET["gibbonAlertLevelID"] . "&=gibbonRollGroupID" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "'>Back to Search Results</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_summary.php&gibbonINDescriptorID=" . $gibbonINDescriptorID . "&gibbonAlertLevelID=" . $gibbonAlertLevelID . "&=gibbonRollGroupID" . $gibbonRollGroupID . "&gibbonYearGroupID=" . $gibbonYearGroupID . "'>Back to Search Results</a>" ;
 				print "</div>" ;
 			}
 
@@ -129,7 +154,7 @@ else {
 				print "</tr>" ;
 			print "</table>" ;
 			
-			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "'>" ;
+			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>" ;
 				print "<h3>" ;
 					print "Individual Needs Status" ;
 				print "</h3>" ;

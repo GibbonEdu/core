@@ -59,12 +59,6 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rollGroups.php'>View Roll Groups</a> > </div><div class='trailEnd'>" . $row["name"] . "</div>" ;
 			print "</div>" ;
 		
-			if ($_GET["search"]!="") {
-				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view.php&search=" . $_GET["search"] . "'>Back to Search Results</a>" ;
-				print "</div>" ;
-			}
-		
 			print "<h3>" ;
 				print "Basic Information" ;
 			print "</h3>" ;
@@ -78,7 +72,7 @@ else {
 					print "<td style='width: 33%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Tutors</span><br/>" ;
 						try {
-							$dataTutor=array("gibbonPersonID1"=>$row["gibbonPersonIDTutor"], "gibbonPersonID2"=>$row["gibbonPersonIDTutor2"], "gibbonPersonID3"=>$row["gibbonPersonIDTuto3"] ); 
+							$dataTutor=array("gibbonPersonID1"=>$row["gibbonPersonIDTutor"], "gibbonPersonID2"=>$row["gibbonPersonIDTutor2"], "gibbonPersonID3"=>$row["gibbonPersonIDTutor3"] ); 
 							$sqlTutor="SELECT gibbonPersonID, surname, preferredName, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3" ;
 							$resultTutor=$connection2->prepare($sqlTutor);
 							$resultTutor->execute($dataTutor);

@@ -240,10 +240,7 @@ else {
 							if(!$mail->Send()) {
 								$emailFail=TRUE ;
 							}
-						}
-						else {
-							$emailFail=TRUE ;
-						}
+						}						
 					}
 				
 					if ($partialFail==TRUE) { 

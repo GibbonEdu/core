@@ -176,7 +176,6 @@ else {
 					}
 					else {
 						$row=$result->fetch() ;
-						$gibbonUnitClassID= $row["gibbonUnitClassID"] ;
 						$partialFail=false ;
 						
 						//Remove all blocks

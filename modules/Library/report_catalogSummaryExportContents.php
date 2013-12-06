@@ -116,111 +116,109 @@ else {
 		$count=0;
 		$rowNum="odd" ;
 		while ($row=$result->fetch()) {
-			if (is_null($log[$row["gibbonRollGroupID"]])) {
-				if ($count%2==0) {
-					$rowNum="even" ;
-				}
-				else {
-					$rowNum="odd" ;
-				}
-				$count++ ;
-				
-				//COLOR ROW BY STATUS!
-				print "<tr class=$rowNum>" ;
-					print "<td>" ;
-						print "<b>" . $row["id"] . "</b>" ;
-					print "</td>" ;
-					print "<td>" ;
-						print "<b>" . $row["name"] . "</b>" ;
-						if ($row["producer"]!="") {
-							print " ; <span style='font-size: 85%; font-style: italic'>" . $row["producer"] . "</span>" ;
-						}
-					print "</td>" ;
-					print "<td>" ;
+			if ($count%2==0) {
+				$rowNum="even" ;
+			}
+			else {
+				$rowNum="odd" ;
+			}
+			$count++ ;
+			
+			//COLOR ROW BY STATUS!
+			print "<tr class=$rowNum>" ;
+				print "<td>" ;
+					print "<b>" . $row["id"] . "</b>" ;
+				print "</td>" ;
+				print "<td>" ;
+					print "<b>" . $row["name"] . "</b>" ;
+					if ($row["producer"]!="") {
+						print " ; <span style='font-size: 85%; font-style: italic'>" . $row["producer"] . "</span>" ;
+					}
+				print "</td>" ;
+				print "<td>" ;
+					try {
+						$dataType=array("gibbonLibraryTypeID"=>$row["gibbonLibraryTypeID"]); 
+						$sqlType="SELECT name FROM gibbonLibraryType WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID" ;
+						$resultType=$connection2->prepare($sqlType);
+						$resultType->execute($dataType);
+					}
+					catch(PDOException $e) { 
+						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					}
+					if ($resultType->rowCount()==1) {
+						$rowType=$resultType->fetch() ;
+						print $rowType["name"] ;
+					}
+				print "</td>" ;
+				print "<td>" ;
+					if ($row["gibbonSpaceID"]!="") {
 						try {
-							$dataType=array("gibbonLibraryTypeID"=>$row["gibbonLibraryTypeID"]); 
-							$sqlType="SELECT name FROM gibbonLibraryType WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID" ;
-							$resultType=$connection2->prepare($sqlType);
-							$resultType->execute($dataType);
+							$dataSpace=array("gibbonSpaceID"=>$row["gibbonSpaceID"]); 
+							$sqlSpace="SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID" ;
+							$resultSpace=$connection2->prepare($sqlSpace);
+							$resultSpace->execute($dataSpace);
 						}
 						catch(PDOException $e) { 
 							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
-						if ($resultType->rowCount()==1) {
-							$rowType=$resultType->fetch() ;
-							print $rowType["name"] ;
+						if ($resultSpace->rowCount()==1) {
+							$rowSpace=$resultSpace->fetch() ;
+							print $rowSpace["name"] ;
 						}
-					print "</td>" ;
-					print "<td>" ;
-						if ($row["gibbonSpaceID"]!="") {
-							try {
-								$dataSpace=array("gibbonSpaceID"=>$row["gibbonSpaceID"]); 
-								$sqlSpace="SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID" ;
-								$resultSpace=$connection2->prepare($sqlSpace);
-								$resultSpace->execute($dataSpace);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							if ($resultSpace->rowCount()==1) {
-								$rowSpace=$resultSpace->fetch() ;
-								print $rowSpace["name"] ;
-							}
+					}
+					if ($row["locationDetail"]!="") {
+						print " ; <span style='font-size: 85%; font-style: italic'>" . $row["locationDetail"] . "</span>" ;
+					}
+				print "</td>" ;
+				print "<td>" ;
+					if ($row["ownershipType"]=="School") {
+						print $_SESSION[$guid]["organisationNameShort"] ;
+					}
+					else if ($row["ownershipType"]=="Individual") {
+						print "Individual" ;
+					}
+					if ($row["gibbonPersonIDOwnership"]!="") {
+						try {
+							$dataPerson=array("gibbonPersonID"=>$row["gibbonPersonIDOwnership"]); 
+							$sqlPerson="SELECT title, preferredName, surname FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+							$resultPerson=$connection2->prepare($sqlPerson);
+							$resultPerson->execute($dataPerson);
 						}
-						if ($row["locationDetail"]!="") {
-							print " ; <span style='font-size: 85%; font-style: italic'>" . $row["locationDetail"] . "</span>" ;
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
-					print "</td>" ;
-					print "<td>" ;
-						if ($row["ownershipType"]=="School") {
-							print $_SESSION[$guid]["organisationNameShort"] ;
+						if ($resultPerson->rowCount()==1) {
+							$rowPerson=$resultPerson->fetch() ;
+							print "; <span style='font-size: 85%; font-style: italic'>" . formatName($rowPerson["title"], $rowPerson["preferredName"], $rowPerson["surname"], "Staff", FALSE, TRUE) . "</span>" ;
 						}
-						else if ($row["ownershipType"]=="Individual") {
-							print "Individual" ;
+					}
+				print "</td>" ;
+				print "<td>" ;
+					print $row["status"] ;
+					print " ; <span style='font-size: 85%; font-style: italic'>" . $row["borrowable"] . "</span>" ;
+				print "</td>" ;
+				print "<td>" ;
+					if ($row["purchaseDate"]=="") {
+						print "<i>Unknown</i>" ;
+					}
+					else {
+						print dateConvertBack($row["purchaseDate"]) . " ; " ;
+					}
+					if ($row["vendor"]!="") {
+						print "; <span style='font-size: 85%; font-style: italic'>" . $row["vendor"] . "</span>" ;
+					}
+				print "</td>" ;
+				print "<td>" ;
+					$typeFields=unserialize($row["typeFields"]) ;
+					$fields=unserialize($row["fields"]) ;
+					foreach ($typeFields as $typeField) {
+						if ($fields[$typeField["name"]]!="") {
+							print "<b>" . $typeField["name"] . ": </b>" ;
+							print $fields[$typeField["name"]] . " ; " ;
 						}
-						if ($row["gibbonPersonIDOwnership"]!="") {
-							try {
-								$dataPerson=array("gibbonPersonID"=>$row["gibbonPersonIDOwnership"]); 
-								$sqlPerson="SELECT title, preferredName, surname FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
-								$resultPerson=$connection2->prepare($sqlPerson);
-								$resultPerson->execute($dataPerson);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							if ($resultPerson->rowCount()==1) {
-								$rowPerson=$resultPerson->fetch() ;
-								print "; <span style='font-size: 85%; font-style: italic'>" . formatName($rowPerson["title"], $rowPerson["preferredName"], $rowPerson["surname"], "Staff", FALSE, TRUE) . "</span>" ;
-							}
-						}
-					print "</td>" ;
-					print "<td>" ;
-						print $row["status"] ;
-						print " ; <span style='font-size: 85%; font-style: italic'>" . $row["borrowable"] . "</span>" ;
-					print "</td>" ;
-					print "<td>" ;
-						if ($row["purchaseDate"]=="") {
-							print "<i>Unknown</i>" ;
-						}
-						else {
-							print dateConvertBack($row["purchaseDate"]) . " ; " ;
-						}
-						if ($row["vendor"]!="") {
-							print "; <span style='font-size: 85%; font-style: italic'>" . $row["vendor"] . "</span>" ;
-						}
-					print "</td>" ;
-					print "<td>" ;
-						$typeFields=unserialize($row["typeFields"]) ;
-						$fields=unserialize($row["fields"]) ;
-						foreach ($typeFields as $typeField) {
-							if ($fields[$typeField["name"]]!="") {
-								print "<b>" . $typeField["name"] . ": </b>" ;
-								print $fields[$typeField["name"]] . " ; " ;
-							}
-						}
-					print "</td>" ;
-				print "</tr>" ;
-			}
+					}
+				print "</td>" ;
+			print "</tr>" ;
 		}
 		if ($count==0) {
 			print "<tr class=$rowNum>" ;

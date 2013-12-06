@@ -41,7 +41,10 @@ else {
 	print "Choose Student" ;
 	print "</h2>" ;
 	
-	$gibbonPersonID=$_GET["gibbonPersonID"] ;
+	$gibbonPersonID=NULL ;
+	if (isset($_GET["gibbonPersonID"])) {
+		$gibbonPersonID=$_GET["gibbonPersonID"] ;
+	}
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -207,9 +210,6 @@ else {
 									$rowNum="odd" ;
 								}
 						
-								if ($row["gibbonActivityStudentID"]!="") {
-									$rowNum="current" ;
-								}
 								$count++ ;
 						
 								//COLOR ROW BY STATUS!

@@ -49,7 +49,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 			});
 		</script>
 		<script type="text/javascript">
-			$(<? print $target ?>).ready(function(){
+			$(document).ready(function(){
 				$("#blockInner<? print $i ?>").css("display","none");
 				$("#block<? print $i ?>").css("height","72px")
 			
@@ -212,9 +212,9 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 	}
 
 	if ($level==0 AND $resultDiscuss->rowCount()==0) {
-		$output=$output . "<div class='error'>" ;
-			$output=$output . "This conversation has not yet begun!" ;
-		$output=$output . "</div>" ;
+		$output.= "<div class='error'>" ;
+			$output.= "This conversation has not yet begun!" ;
+		$output.= "</div>" ;
 	}
 	else {
 		 while ($rowDiscuss=$resultDiscuss->fetch()) {
@@ -226,29 +226,29 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 				$border="2px solid #333" ;
 				$margintop="0px" ;
 			}
-			$output=$output . "<a name='" . $rowDiscuss["gibbonPlannerEntryDiscussID"] . "'></a>" ; 
-			$output=$output . "<table cellspacing='0' style='width: " . (755-($level*15)) . "px ; padding: 1px 3px; margin-bottom: -2px; margin-top: $margintop; margin-left: " . ($level*15) . "px; border: $border ; background-color: #f9f9f9'>" ;
-				$output=$output . "<tr>" ;
-					$output=$output . "<td style='color: #777'><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) . " said</i>:</td>" ;
-					$output=$output . "<td style='color: #777; text-align: right'><i>Posted at <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack(substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;
-				$output=$output . "</tr>" ;
-				$output=$output . "<tr>" ;
+			$output.= "<a name='" . $rowDiscuss["gibbonPlannerEntryDiscussID"] . "'></a>" ; 
+			$output.= "<table cellspacing='0' style='width: " . (755-($level*15)) . "px ; padding: 1px 3px; margin-bottom: -2px; margin-top: $margintop; margin-left: " . ($level*15) . "px; border: $border ; background-color: #f9f9f9'>" ;
+				$output.= "<tr>" ;
+					$output.= "<td style='color: #777'><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) . " said</i>:</td>" ;
+					$output.= "<td style='color: #777; text-align: right'><i>Posted at <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack(substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;
+				$output.= "</tr>" ;
+				$output.= "<tr>" ;
 					$borderleft="4px solid #1B9F13" ;
 					if ($rowDiscuss["timestamp"]>=$_SESSION[$guid]["lastTimestamp"]) {
 						$borderleft="4px solid #c00" ;
 					}
-					$output=$output . "<td style='padding: 1px 4px; border-left: $borderleft' colspan=2><b>" . $rowDiscuss["comment"] . "</b></td>" ;
-				$output=$output . "</tr>" ;
-				$output=$output . "<tr>" ;
-					$output=$output . "<td style='text-align: right' colspan=2><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&replyTo=" . $rowDiscuss["gibbonPlannerEntryDiscussID"] . "&search=$search'>Reply</a> " ;						
+					$output.= "<td style='padding: 1px 4px; border-left: $borderleft' colspan=2><b>" . $rowDiscuss["comment"] . "</b></td>" ;
+				$output.= "</tr>" ;
+				$output.= "<tr>" ;
+					$output.= "<td style='text-align: right' colspan=2><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&replyTo=" . $rowDiscuss["gibbonPlannerEntryDiscussID"] . "&search=$search'>Reply</a> " ;						
 					if ($role=="Teacher") {
-						$output=$output . " | <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_post_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$search&gibbonPlannerEntryDiscussID=" . $rowDiscuss["gibbonPlannerEntryDiscussID"] . "'>Delete</a>" ;
+						$output.= " | <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_post_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$search&gibbonPlannerEntryDiscussID=" . $rowDiscuss["gibbonPlannerEntryDiscussID"] . "'>Delete</a>" ;
 					}
-					$output=$output . "</td>" ;
-				$output=$output . "</tr>" ;
+					$output.= "</td>" ;
+				$output.= "</tr>" ;
 				
 				
-			$output=$output . "</table>" ; 
+			$output.= "</table>" ; 
 			
 			//Get any replies
 			$replies=true ;
@@ -265,7 +265,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 			
 			if ($replies) {
 				while ($rowReplies=$resultReplies->fetch()) {
-					$output=$output . getThread($guid, $connection2, $gibbonPlannerEntryID, $rowDiscuss["gibbonPlannerEntryDiscussID"], ($level+1), $rowReplies["gibbonPlannerEntryDiscussID"], $viewBy, $subView, $date, $class, $gibbonCourseClassID, $search, $role) ;
+					$output.= getThread($guid, $connection2, $gibbonPlannerEntryID, $rowDiscuss["gibbonPlannerEntryDiscussID"], ($level+1), $rowReplies["gibbonPlannerEntryDiscussID"], $viewBy, $subView, $date, $class, $gibbonCourseClassID, $search, $role) ;
 				}
 			}
 		}
@@ -278,14 +278,14 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		$output="<div class='error'>" ;
-		$output=$output . "The highest grouped action cannot be determined." ;
-		$output=$output . "</div>" ;
+		$output.= "The highest grouped action cannot be determined." ;
+		$output.= "</div>" ;
 	}
 	else {
 		//Show date picker in sidebar
 		$output="<h2 class='sidebar'>" ;
-		$output=$output . "Choose A Date" ;
-		$output=$output . "</h2>" ;
+		$output.= "Choose A Date" ;
+		$output.= "</h2>" ;
 			
 		//Count back to first Monday before first day
 		$startDayStamp=$todayStamp;
@@ -341,132 +341,132 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 		
 		$count=1;
 		
-		$output=$output . "<table class='mini' cellspacing='0' style='width: 250px; margin-bottom: 0px'>" ;
-			$output=$output . "<tr class='head'>" ;
-				$output=$output . "<th style='width: 35px; text-align: center'>" ;
-					$output=$output . "Mo" ;
-				$output=$output . "</th>" ;
-				$output=$output . "<th style='width: 35px; text-align: center'>" ;
-					$output=$output . "Tu" ;
-				$output=$output . "</th>" ;
-				$output=$output . "<th style='width: 35px; text-align: center'>" ;
-					$output=$output . "We" ;
-				$output=$output . "</th>" ;
-				$output=$output . "<th style='width: 35px; text-align: center'>" ;
-					$output=$output . "Th" ;
-				$output=$output . "</th>" ;
-				$output=$output . "<th style='width: 35px; text-align: center'>" ;
-					$output=$output . "Fr" ;
-				$output=$output . "</th>" ;
-				$output=$output . "<th style='width: 35px; text-align: center'>" ;
-					$output=$output . "Sa" ;
-				$output=$output . "</th>" ;
-				$output=$output . "<th style='width: 35px; text-align: center'>" ;
-					$output=$output . "Su" ;
-				$output=$output . "</th>" ;
-			$output=$output . "</tr>" ;
+		$output.= "<table class='mini' cellspacing='0' style='width: 250px; margin-bottom: 0px'>" ;
+			$output.= "<tr class='head'>" ;
+				$output.= "<th style='width: 35px; text-align: center'>" ;
+					$output.= "Mo" ;
+				$output.= "</th>" ;
+				$output.= "<th style='width: 35px; text-align: center'>" ;
+					$output.= "Tu" ;
+				$output.= "</th>" ;
+				$output.= "<th style='width: 35px; text-align: center'>" ;
+					$output.= "We" ;
+				$output.= "</th>" ;
+				$output.= "<th style='width: 35px; text-align: center'>" ;
+					$output.= "Th" ;
+				$output.= "</th>" ;
+				$output.= "<th style='width: 35px; text-align: center'>" ;
+					$output.= "Fr" ;
+				$output.= "</th>" ;
+				$output.= "<th style='width: 35px; text-align: center'>" ;
+					$output.= "Sa" ;
+				$output.= "</th>" ;
+				$output.= "<th style='width: 35px; text-align: center'>" ;
+					$output.= "Su" ;
+				$output.= "</th>" ;
+			$output.= "</tr>" ;
 			
 			for ($i=$startDayStamp;$i<=$endDayStamp;$i=$i+86400) {
 				if (date("D",$i)=="Mon") {
-					$output=$output . "<tr style='height: 25px'>" ;
+					$output.= "<tr style='height: 25px'>" ;
 				}
 				
 				if ($days[date("D",$i)]=="N" OR isSchoolOpen($guid, date("Y-m-d", $i), $connection2)==FALSE) {
-					$output=$output . "<td style='text-align: center; background-color: #bbbbbb; font-size: 10px; color: #858586'>" ;
+					$output.= "<td style='text-align: center; background-color: #bbbbbb; font-size: 10px; color: #858586'>" ;
 						if ($i==$dateStamp) {
-							$output=$output . "<span style='border: 1px solid #ffffff; padding: 0px 2px 0px 1px'>" . date("d", $i) . "</span><br/>" ;
-							$output=$output . "<span style='font-size: 65%'>" . date("M", $i) . "</span>" ;
+							$output.= "<span style='border: 1px solid #ffffff; padding: 0px 2px 0px 1px'>" . date("d", $i) . "</span><br/>" ;
+							$output.= "<span style='font-size: 65%'>" . date("M", $i) . "</span>" ;
 						}
 						else {
-							$output=$output . date("d", $i) . "<br/>" ;
-							$output=$output . "<span style='font-size: 65%'>" . date("M", $i) . "</span>" ;
+							$output.= date("d", $i) . "<br/>" ;
+							$output.= "<span style='font-size: 65%'>" . date("M", $i) . "</span>" ;
 						}
-					$output=$output . "</td>" ;
+					$output.= "</td>" ;
 				}
 				else {
-					$output=$output . "<td style='text-align: center; background-color: #eeeeee; font-size: 10px'>" ;
+					$output.= "<td style='text-align: center; background-color: #eeeeee; font-size: 10px'>" ;
 						if ($i==$dateStamp) {
 							if ($i==$todayStamp) {
-								$output=$output . "<a style='color: #6B99CE; font-weight: bold; text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=" . date("Y-m-d", $i) . "'>" ;
-								$output=$output . "<span style='border: 1px solid #cc0000; padding: 0px 2px 0px 1px'>" . date("d", $i) . "</span><br/>" ;
-								$output=$output . "<span style='font-size: 65%'>" . date("M", $i) . "</span>" ;
-								$output=$output . "</a>" ;
+								$output.= "<a style='color: #6B99CE; font-weight: bold; text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=" . date("Y-m-d", $i) . "'>" ;
+								$output.= "<span style='border: 1px solid #cc0000; padding: 0px 2px 0px 1px'>" . date("d", $i) . "</span><br/>" ;
+								$output.= "<span style='font-size: 65%'>" . date("M", $i) . "</span>" ;
+								$output.= "</a>" ;
 							}
 							else {
-								$output=$output . "<a style='text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=" . date("Y-m-d", $i) . "'>" ;
-								$output=$output . "<span style='border: 1px solid #cc0000; padding: 0px 2px 0px 1px'>" . date("d", $i) . "</span><br/>" ;
-								$output=$output . "<span style='font-size: 65%'>" . date("M", $i) . "</span>" ;
-								$output=$output . "</a>" ;
+								$output.= "<a style='text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=" . date("Y-m-d", $i) . "'>" ;
+								$output.= "<span style='border: 1px solid #cc0000; padding: 0px 2px 0px 1px'>" . date("d", $i) . "</span><br/>" ;
+								$output.= "<span style='font-size: 65%'>" . date("M", $i) . "</span>" ;
+								$output.= "</a>" ;
 							}
 						}
 						else {
 							if ($i==$todayStamp) {
-								$output=$output . "<a style='color: #6B99CE; font-weight: bold; text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=" . date("Y-m-d", $i) . "'>" ;
-								$output=$output . date("d", $i) . "<br/>" ;
-								$output=$output . "<span style='font-size: 65%'>" . date("M", $i) . "</span>" ;
-								$output=$output . "</a>" ;
+								$output.= "<a style='color: #6B99CE; font-weight: bold; text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=" . date("Y-m-d", $i) . "'>" ;
+								$output.= date("d", $i) . "<br/>" ;
+								$output.= "<span style='font-size: 65%'>" . date("M", $i) . "</span>" ;
+								$output.= "</a>" ;
 							}
 							else {
-								$output=$output . "<a style='text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=" . date("Y-m-d", $i) . "'>" ;
-								$output=$output . date("d", $i) . "<br/>" ;
-								$output=$output . "<span style='font-size: 65%'>" . date("M", $i) . "</span>" ;
-								$output=$output . "</a>" ;
+								$output.= "<a style='text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=" . date("Y-m-d", $i) . "'>" ;
+								$output.= date("d", $i) . "<br/>" ;
+								$output.= "<span style='font-size: 65%'>" . date("M", $i) . "</span>" ;
+								$output.= "</a>" ;
 							}
 							
 						}
-					$output=$output . "</td>" ;
+					$output.= "</td>" ;
 				}
 				
 				if (date("D",$i)=="Sun") {
-					$output=$output . "</tr>" ;
+					$output.= "</tr>" ;
 				}
 				$count++ ;
 			}
-		$output=$output . "</table>" ;
+		$output.= "</table>" ;
 		
-		$output=$output . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-			$output=$output . "<table class='smallIntBorder' cellspacing='0' style='width: 200px; margin: 0px 0px'>" ;	
-				$output=$output . "<tr>" ;
-					$output=$output . "<td style='width: 200px'>" ; 
-						$output=$output . "<input name='q' id='q' type='hidden' value='/modules/Planner/planner.php'>" ;
-						$output=$output . "<input name='search' id='search' type='hidden' value='$gibbonPersonID'>" ;
+		$output.= "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
+			$output.= "<table class='smallIntBorder' cellspacing='0' style='width: 200px; margin: 0px 0px'>" ;	
+				$output.= "<tr>" ;
+					$output.= "<td style='width: 200px'>" ; 
+						$output.= "<input name='q' id='q' type='hidden' value='/modules/Planner/planner.php'>" ;
+						$output.= "<input name='search' id='search' type='hidden' value='$gibbonPersonID'>" ;
 						if ($dateStamp=="") {
 							$dateHuman="" ;
 						}
 						else {
 							$dateHuman=date("d/m/Y", $dateStamp) ;
 						}
-						$output=$output . "<input name='dateHuman' id='dateHuman' maxlength=20 type='text' value='$dateHuman' style='width:161px'>" ;
-						$output=$output . "<script type='text/javascript'>" ;
-							$output=$output . "$(function() {" ;
-								$output=$output . "$( '#dateHuman' ).datepicker();" ;
-							$output=$output . "});" ;
-						$output=$output . "</script>" ;
-					$output=$output . "</td>" ;
-					$output=$output . "<td class='right'>" ;
-						$output=$output . "<input type='submit' value='Go'>" ;
-					$output=$output . "</td>" ;
-				$output=$output . "</tr>" ;
-			$output=$output . "</table>" ;
-		$output=$output . "</form>" ;
+						$output.= "<input name='dateHuman' id='dateHuman' maxlength=20 type='text' value='$dateHuman' style='width:161px'>" ;
+						$output.= "<script type='text/javascript'>" ;
+							$output.= "$(function() {" ;
+								$output.= "$( '#dateHuman' ).datepicker();" ;
+							$output.= "});" ;
+						$output.= "</script>" ;
+					$output.= "</td>" ;
+					$output.= "<td class='right'>" ;
+						$output.= "<input type='submit' value='Go'>" ;
+					$output.= "</td>" ;
+				$output.= "</tr>" ;
+			$output.= "</table>" ;
+		$output.= "</form>" ;
 		
 		
 		//Show class picker in sidebar
-		$output=$output . "<h2>" ;
-		$output=$output . "Choose A Class" ;
-		$output=$output . "</h2>" ;
+		$output.= "<h2>" ;
+		$output.= "Choose A Class" ;
+		$output.= "</h2>" ;
 		
 		$selectCount=0 ;
-		$output=$output . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-			$output=$output . "<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
-				$output=$output . "<tr>" ;
-					$output=$output . "<td style='width: 190px'>" ; 
-						$output=$output . "<input name='q' id='q' type='hidden' value='/modules/Planner/planner.php'>" ;
-						$output=$output . "<input name='search' id='search' type='hidden' value='$gibbonPersonID'>" ;
-						$output=$output . "<input name='viewBy' id='viewBy' type='hidden' value='class'>" ;
-						$output=$output . "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:161px'>" ;
+		$output.= "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
+			$output.= "<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
+				$output.= "<tr>" ;
+					$output.= "<td style='width: 190px'>" ; 
+						$output.= "<input name='q' id='q' type='hidden' value='/modules/Planner/planner.php'>" ;
+						$output.= "<input name='search' id='search' type='hidden' value='$gibbonPersonID'>" ;
+						$output.= "<input name='viewBy' id='viewBy' type='hidden' value='class'>" ;
+						$output.= "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:161px'>" ;
 							
-							$output=$output . "<option value=''></option>" ;
+							$output.= "<option value=''></option>" ;
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$gibbonPersonID); 
 								$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class" ;
@@ -475,7 +475,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 							}
 							catch(PDOException $e) { }
 							if ($highestAction=="Lesson Planner_viewEditAllClasses" OR $highestAction=="Lesson Planner_viewAllEditMyClasses") {
-								$output=$output . "<optgroup label='--My Classes--'>" ;
+								$output.= "<optgroup label='--My Classes--'>" ;
 							}
 							while ($rowSelect=$resultSelect->fetch()) {
 								$selected="" ;
@@ -483,10 +483,10 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 									$selected="selected" ;
 									$selectCount++ ;
 								}
-								$output=$output . "<option $selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
+								$output.= "<option $selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
 							}
 							if ($highestAction=="Lesson Planner_viewEditAllClasses" OR $highestAction=="Lesson Planner_viewAllEditMyClasses") {
-								$output=$output . "</optgroup>" ;
+								$output.= "</optgroup>" ;
 							}
 							if ($highestAction=="Lesson Planner_viewEditAllClasses" OR $highestAction=="Lesson Planner_viewAllEditMyClasses") {
 								try {
@@ -496,32 +496,32 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 									$resultSelect->execute($dataSelect);
 								}
 								catch(PDOException $e) { }
-								$output=$output . "<optgroup label='--All Classes--'>" ;
+								$output.= "<optgroup label='--All Classes--'>" ;
 								while ($rowSelect=$resultSelect->fetch()) {
 									$selected="" ;
 									if ($rowSelect["gibbonCourseClassID"]==$gibbonCourseClassID AND $selectCount==0) {
 										$selected="selected" ;
 										$selectCount++ ;
 									}
-									$output=$output . "<option $selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
+									$output.= "<option $selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
 								}
-								$output=$output . "</optgroup>" ;
+								$output.= "</optgroup>" ;
 							}
-						 $output=$output . "</select>" ;
-					$output=$output . "</td>" ;
-					$output=$output . "<td class='right'>" ;
-						$output=$output . "<input type='submit' value='Go'>" ;
-					$output=$output . "</td>" ;
-				$output=$output . "</tr>" ;
-			$output=$output . "</table>" ;
-		$output=$output . "</form>" ;
+						 $output.= "</select>" ;
+					$output.= "</td>" ;
+					$output.= "<td class='right'>" ;
+						$output.= "<input type='submit' value='Go'>" ;
+					$output.= "</td>" ;
+				$output.= "</tr>" ;
+			$output.= "</table>" ;
+		$output.= "</form>" ;
 	
 	
 		if ($_GET["q"]!="/modules/Planner/planner_deadlines.php") {
 			//Show upcoming deadlines
-			$output=$output . "<h2>" ;
-			$output=$output . "Homework + Deadlines" ;
-			$output=$output . "</h2>" ;
+			$output.= "<h2>" ;
+			$output.= "Homework + Deadlines" ;
+			$output.= "</h2>" ;
 			
 			
 			try {
@@ -540,12 +540,12 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 				$output.="<div class='error'>" . $e->getMessage() . "</div>" ; 
 			}
 			if ($result->rowCount()<1) {
-				$output=$output . "<div class='success'>" ;
-					$output=$output . "No upcoming deadlines!" ;
-				$output=$output . "</div>" ;
+				$output.= "<div class='success'>" ;
+					$output.= "No upcoming deadlines!" ;
+				$output.= "</div>" ;
 			}
 			else {
-				$output=$output . "<ol>" ;
+				$output.= "<ol>" ;
 				$count=0 ;
 				while ($row=$result->fetch()) {
 					if ($count<5) {
@@ -557,24 +557,24 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 						else if ($diff<4) {
 							$style="style='padding-right: 3px; border-right: 10px solid #D87718'" ;	
 						}
-						$output=$output . "<li $style>" ;
+						$output.= "<li $style>" ;
 						if ($viewBy=="class") {
-							$output=$output . "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'>" . $row["course"] . "." . $row["class"] . "</a><br/>" ;
+							$output.= "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'>" . $row["course"] . "." . $row["class"] . "</a><br/>" ;
 						}
 						else {
-							$output=$output . "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=date&date=" . $row["date"] . "&width=1000&height=550'>" . $row["course"] . "." . $row["class"] . "</a><br/>" ;
+							$output.= "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=date&date=" . $row["date"] . "&width=1000&height=550'>" . $row["course"] . "." . $row["class"] . "</a><br/>" ;
 						}
-						$output=$output . "<span style='font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) ;
-						$output=$output . "</li>" ;
+						$output.= "<span style='font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) ;
+						$output.= "</li>" ;
 					}
 					$count++ ;
 				}
-				$output=$output . "</ol>" ;
+				$output.= "</ol>" ;
 			}
 			
-			$output=$output . "<p style='padding-top: 15px; text-align: right'>" ;
-			$output=$output . "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_deadlines.php&search=$gibbonPersonID'>View Homework</a>" ;
-			$output=$output . "</p>" ;
+			$output.= "<p style='padding-top: 15px; text-align: right'>" ;
+			$output.= "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_deadlines.php&search=$gibbonPersonID'>View Homework</a>" ;
+			$output.= "</p>" ;
 		}
 	}
 		
@@ -583,27 +583,28 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 }
 
 function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID) {
+	$output="" ;
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		$output="<div class='error'>" ;
-		$output=$output . "The highest grouped action cannot be determined." ;
-		$output=$output . "</div>" ;
+		$output.= "The highest grouped action cannot be determined." ;
+		$output.= "</div>" ;
 	}
 	else {
 		//Show class picker in sidebar
-		$output=$output . "<h2>" ;
-		$output=$output . "Choose A Course" ;
-		$output=$output . "</h2>" ;
+		$output.= "<h2>" ;
+		$output.= "Choose A Course" ;
+		$output.= "</h2>" ;
 		
 		$selectCount=0 ;
-		$output=$output . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-			$output=$output . "<table class='mini' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
-				$output=$output . "<tr>" ;
-					$output=$output . "<td style='width: 190px'>" ; 
-						$output=$output . "<input name='q' id='q' type='hidden' value='/modules/Planner/units.php'>" ;
-						$output=$output . "<input name='gibbonSchoolYearID' id='gibbonSchoolYearID' type='hidden' value='$gibbonSchoolYearID'>" ;
-						$output=$output . "<select name='gibbonCourseID' id='gibbonCourseID' style='width:161px'>" ;
-							$output=$output . "<option value=''></option>" ;
+		$output.= "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
+			$output.= "<table class='mini' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
+				$output.= "<tr>" ;
+					$output.= "<td style='width: 190px'>" ; 
+						$output.= "<input name='q' id='q' type='hidden' value='/modules/Planner/units.php'>" ;
+						$output.= "<input name='gibbonSchoolYearID' id='gibbonSchoolYearID' type='hidden' value='$gibbonSchoolYearID'>" ;
+						$output.= "<select name='gibbonCourseID' id='gibbonCourseID' style='width:161px'>" ;
+							$output.= "<option value=''></option>" ;
 							try {
 								if ($highestAction=="Manage Units_all") {
 									$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
@@ -623,16 +624,16 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
 									$selected="selected" ;
 									$selectCount++ ;
 								}
-								$output=$output . "<option $selected value='" . $rowSelect["gibbonCourseID"] . "'>" . htmlPrep($rowSelect["course"]) . " (" . htmlPrep($rowSelect["year"]) . ")</option>" ;
+								$output.= "<option $selected value='" . $rowSelect["gibbonCourseID"] . "'>" . htmlPrep($rowSelect["course"]) . " (" . htmlPrep($rowSelect["year"]) . ")</option>" ;
 							}
-						 $output=$output . "</select>" ;
-					$output=$output . "</td>" ;
-					$output=$output . "<td class='right'>" ;
-						$output=$output . "<input type='submit' value='Go'>" ;
-					$output=$output . "</td>" ;
-				$output=$output . "</tr>" ;
-			$output=$output . "</table>" ;
-		$output=$output . "</form>" ;
+						 $output.= "</select>" ;
+					$output.= "</td>" ;
+					$output.= "<td class='right'>" ;
+						$output.= "<input type='submit' value='Go'>" ;
+					$output.= "</td>" ;
+				$output.= "</tr>" ;
+			$output.= "</table>" ;
+		$output.= "</form>" ;
 	}
 	
 	$_SESSION[$guid]["sidebarExtraPosition"]="bottom" ;

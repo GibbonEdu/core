@@ -84,9 +84,6 @@ else {
 					$rowNum="odd" ;
 				}
 				
-				if ($row["gibbonActivityStudentID"]!="") {
-					$rowNum="current" ;
-				}
 				$count++ ;
 				
 				//COLOR ROW BY STATUS!

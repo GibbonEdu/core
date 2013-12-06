@@ -44,6 +44,11 @@ else {
 			print "</div>" ;
 		}
 		else {
+			$search=NULL ;
+			if (isset($_GET["search"])) {
+				$search=$_GET["search"] ;
+			}
+					
 			if ($highestAction=="View Staff Profile_brief") {
 				//Proceed!
 				try {
@@ -69,9 +74,9 @@ else {
 					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/staff_view.php'>View Staff Profiles</a> > </div><div class='trailEnd'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</div>" ;
 					print "</div>" ;
 					
-					if ($_GET["search"]!="") {
+					if ($search!="") {
 						print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view.php&search=" . $_GET["search"] . "'>Back to Search Results</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view.php&search=" . $search . "'>Back to Search Results</a>" ;
 						print "</div>" ;
 					}
 					
@@ -135,7 +140,7 @@ else {
 			else {
 				try {
 					$data=array("gibbonPersonID"=>$gibbonPersonID); 
-					$sql="SELECT gibbonPerson.*, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
+					$sql="SELECT gibbonPerson.*, gibbonStaff.initials, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -155,14 +160,17 @@ else {
 					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/staff_view.php'>View Staff Profiles</a> > </div><div class='trailEnd'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</div>" ;
 					print "</div>" ;
 					
-					$subpage=$_GET["subpage"] ;
+					$subpage=NULL ;
+					if (isset($_GET["subpage"])) {
+						$subpage=$_GET["subpage"] ;
+					}
 					if ($subpage=="") {
 						$subpage="Summary" ;
 					}
 					
-					if ($_GET["search"]!="") {
+					if ($search!="") {
 						print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view.php&search=" . $_GET["search"] . "'>Back to Search Results</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view.php&search=" . $search . "'>Back to Search Results</a>" ;
 						print "</div>" ;
 					}
 					
@@ -260,11 +268,12 @@ else {
 							print "</tr>" ;	
 							print "<tr>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Gender</span><br/>" ;
-									print $row["gender"] ;
+									print "<span style='font-size: 115%; font-weight: bold'>Initials</span><br/>" ;
+									print $row["initials"] ;
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-									
+									print "<span style='font-size: 115%; font-weight: bold'>Gender</span><br/>" ;
+									print $row["gender"] ;
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									
@@ -359,11 +368,11 @@ else {
 									print "<span style='font-size: 115%; font-weight: bold'>Transport</span><br/>" ;
 									print $row["transport"] ;
 								print "</td>" ;
-								print "<td style='width: 33%'>" ;
+								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Vehicle Registration</span><br/>" ;
 									print $row["vehicleRegistration"] ;
 								print "</td>" ;
-								print "<td style='width: 33%'>" ;
+								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Locker Number</span><br/>" ;
 									print $row["lockerNumber"] ;
 								print "</td>" ;
@@ -520,10 +529,10 @@ else {
 						
 							include "./modules/Timetable/moduleFunctions.php" ;
 							$ttDate="" ;
-							if ($_POST["ttDate"]!="") {
+							if (isset($_POST["ttDate"])) {
 								$ttDate=dateConvertToTimestamp(dateConvert($_POST["ttDate"]));
 							}
-							$tt=renderTT($guid, $connection2,$gibbonPersonID, $gibbonTTID, FALSE, $ttDate, "/modules/Staff/staff_view_details.php", "&gibbonPersonID=$gibbonPersonID&subpage=Timetable") ;
+							$tt=renderTT($guid, $connection2,$gibbonPersonID, "", FALSE, $ttDate, "/modules/Staff/staff_view_details.php", "&gibbonPersonID=$gibbonPersonID&subpage=Timetable&search=$search") ;
 							if ($tt!=FALSE) {
 								print $tt ;
 							}
@@ -964,23 +973,23 @@ else {
 					if ($subpage=="Summary") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=Summary'>Summary</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Summary'>Summary</a></li>" ;
 					$style="" ;
 					if ($subpage=="Personal") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=Personal'>Personal</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Personal'>Personal</a></li>" ;
 					$style="" ;
 					if ($subpage=="Emergency Contacts") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=Emergency Contacts'>Emergency Contacts</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Emergency Contacts'>Emergency Contacts</a></li>" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php")) {
 						$style="" ;
 						if ($subpage=="Timetable") {
 							$style="style='font-weight: bold'" ;
 						}
-						$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=Timetable'>Timetable</a></li>" ;
+						$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Timetable'>Timetable</a></li>" ;
 					}
 					$_SESSION[$guid]["sidebarExtra"].= "</ul>" ;
 					

@@ -163,6 +163,17 @@ else {
 					$summary=$_POST["summary"] ;
 					$description=$_POST["description"] ;
 					$teachersNotes=$_POST["teachersNotes"] ;
+					$homeworkSubmissionDateOpen=NULL ;
+					$homeworkSubmissionDrafts=NULL ;
+					$homeworkSubmissionType=NULL ;
+					$homeworkSubmissionRequired=NULL ;
+					$homeworkCrowdAssess=NULL ;
+					$homeworkCrowdAssessOtherTeachersRead=NULL ;
+					$homeworkCrowdAssessClassmatesRead=NULL ;
+					$homeworkCrowdAssessOtherStudentsRead=NULL ;
+					$homeworkCrowdAssessSubmitterParentsRead=NULL ;
+					$homeworkCrowdAssessClassmatesParentsRead=NULL ;
+					$homeworkCrowdAssessOtherParentsRead=NULL ;
 					$homework=$_POST["homework"] ;
 					if ($_POST["homework"]=="Yes") {
 						$homework="Y" ;
@@ -185,42 +196,44 @@ else {
 							else {
 								$homeworkSubmissionDateOpen=date("Y-m-d") ;
 							}
-							$homeworkSubmissionDrafts=$_POST["homeworkSubmissionDrafts"] ;
+							if (isset($_POST["homeworkSubmissionDrafts"])) {
+								$homeworkSubmissionDrafts=$_POST["homeworkSubmissionDrafts"] ;
+							}
 							$homeworkSubmissionType=$_POST["homeworkSubmissionType"] ;
 							$homeworkSubmissionRequired=$_POST["homeworkSubmissionRequired"] ;
 							if ($_POST["homeworkCrowdAssess"]=="Yes") {
 								$homeworkCrowdAssess="Y" ;
-								if ($_POST["homeworkCrowdAssessOtherTeachersRead"]=="on") {
+								if (isset($_POST["homeworkCrowdAssessOtherTeachersRead"])) {
 									$homeworkCrowdAssessOtherTeachersRead="Y" ;
 								}
 								else {
 									$homeworkCrowdAssessOtherTeachersRead="N" ;
 								}
-								if ($_POST["homeworkCrowdAssessClassmatesRead"]=="on") {
+								if (isset($_POST["homeworkCrowdAssessClassmatesRead"])) {
 									$homeworkCrowdAssessClassmatesRead="Y" ;
 								}
 								else {
 									$homeworkCrowdAssessClassmatesRead="N" ;
 								}
-								if ($_POST["homeworkCrowdAssessOtherStudentsRead"]=="on") {
+								if (isset($_POST["homeworkCrowdAssessOtherStudentsRead"])) {
 									$homeworkCrowdAssessOtherStudentsRead="Y" ;
 								}
 								else {
 									$homeworkCrowdAssessOtherStudentsRead="N" ;
 								}
-								if ($_POST["homeworkCrowdAssessSubmitterParentsRead"]=="on") {
+								if (isset($_POST["homeworkCrowdAssessSubmitterParentsRead"])) {
 									$homeworkCrowdAssessSubmitterParentsRead="Y" ;
 								}
 								else {
 									$homeworkCrowdAssessSubmitterParentsRead="N" ;
 								}
-								if ($_POST["homeworkCrowdAssessClassmatesParentsRead"]=="on") {
+								if (isset($_POST["homeworkCrowdAssessClassmatesParentsRead"])) {
 									$homeworkCrowdAssessClassmatesParentsRead="Y" ;
 								}
 								else {
 									$homeworkCrowdAssessClassmatesParentsRead="N" ;
 								}
-								if ($_POST["homeworkCrowdAssessOtherParentsRead"]=="on") {
+								if (isset($_POST["homeworkCrowdAssessOtherParentsRead"])) {
 									$homeworkCrowdAssessOtherParentsRead="Y" ;
 								}
 								else {
@@ -230,7 +243,6 @@ else {
 						}
 						else {
 							$homeworkSubmission="N" ;
-							$homeworkSubmissionDateOpen=NULL ;
 						}
 					}
 					else {
@@ -238,7 +250,6 @@ else {
 						$homeworkDueDate=NULL ;
 						$homeworkDetails="" ;
 						$homeworkSubmission="N" ;
-						$homeworkSubmissionDateOpen=NULL ;
 					}
 					
 					$viewableParents=$_POST["viewableParents"] ;
@@ -254,7 +265,10 @@ else {
 					}
 					else {
 						//Scan through guests
-						$guests=$_POST["guests"] ;
+						$guests=NULL ;
+						if (isset($_POST["guests"])) {
+							$guests=$_POST["guests"] ;
+						}
 						$role=$_POST["role"] ;
 						if ($role=="") {
 							$role="Student" ;
@@ -299,8 +313,14 @@ else {
 						
 						//Deal with smart unit
 						$partialFail=false ;
-						$order=$_POST["order"] ;
-						$seq=$_POST["minSeq"] ;
+						$order=NULL ;
+						if (isset($_POST["order"])) {
+							$order=$_POST["order"] ;
+						}
+						$seq=NULL ;
+						if (isset($_POST["minSeq"])) {
+							$seq=$_POST["minSeq"] ;
+						}
 						
 						if (is_array($order)) {
 							foreach ($order as $i) {
@@ -311,10 +331,12 @@ else {
 								$contents=$_POST["contents$i"] ;
 								$teachersNotesBlock=$_POST["teachersNotes$i"] ;
 								$complete="N" ;
-								if ($_POST["complete$i"]=="on") {
-									$complete="Y" ;
+								if (isset($_POST["complete$i"])) {
+									if ($_POST["complete$i"]=="on") {
+										$complete="Y" ;
+									}
 								}
-								
+																
 								//Write to database
 								try {
 									if ($hooked==FALSE) {
@@ -351,22 +373,24 @@ else {
 						}
 						//Insert outcomes
 						$count=0 ;
-						if (count($_POST["outcomeorder"])>0) {
-							foreach ($_POST["outcomeorder"] AS $outcome) {
-								if ($_POST["outcomegibbonOutcomeID$outcome"]!="") {
-									try {
-										$dataInsert=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonOutcomeID"=>$_POST["outcomegibbonOutcomeID$outcome"], "content"=>$_POST["outcomecontents$outcome"], "count"=>$count);  
-										$sqlInsert="INSERT INTO gibbonPlannerEntryOutcome SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonOutcomeID=:gibbonOutcomeID, content=:content, sequenceNumber=:count" ;
-										$resultInsert=$connection2->prepare($sqlInsert);
-										$resultInsert->execute($dataInsert);
+						if (isset($_POST["outcomeorder"])) {
+							if (count($_POST["outcomeorder"])>0) {
+								foreach ($_POST["outcomeorder"] AS $outcome) {
+									if ($_POST["outcomegibbonOutcomeID$outcome"]!="") {
+										try {
+											$dataInsert=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonOutcomeID"=>$_POST["outcomegibbonOutcomeID$outcome"], "content"=>$_POST["outcomecontents$outcome"], "count"=>$count);  
+											$sqlInsert="INSERT INTO gibbonPlannerEntryOutcome SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonOutcomeID=:gibbonOutcomeID, content=:content, sequenceNumber=:count" ;
+											$resultInsert=$connection2->prepare($sqlInsert);
+											$resultInsert->execute($dataInsert);
+										}
+										catch(PDOException $e) {
+											print $e ;
+											$partialFail=true ;
+										}
 									}
-									catch(PDOException $e) {
-										print $e ;
-										$partialFail=true ;
-									}
-								}
-								$count++ ;
-							}	
+									$count++ ;
+								}	
+							}
 						}
 						
 						

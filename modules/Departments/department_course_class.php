@@ -32,7 +32,7 @@ else {
 	$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 	$gibbonCourseID=$_GET["gibbonCourseID"] ;
 	$gibbonDepartmentID=$_GET["gibbonDepartmentID"] ;
-	if (gibbonCourseClassID=="") {
+	if ($gibbonCourseClassID=="") {
 		print "<div class='error'>" ;
 			print "You have not specified a learning area, course or class." ;
 		print "</div>" ;
@@ -42,7 +42,7 @@ else {
 		if ($gibbonDepartmentID!="") {
 			try {
 				$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
-				$sql="SELECT gibbonDepartment.name AS department, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) WHERE gibbonCourseClassID=:gibbonCourseClassID" ;
+				$sql="SELECT gibbonCourse.gibbonSchoolYearID,gibbonDepartment.name AS department, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) WHERE gibbonCourseClassID=:gibbonCourseClassID" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -63,7 +63,7 @@ else {
 		else {
 			try {
 				$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
-				$sql="SELECT gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseClassID=:gibbonCourseClassID" ;
+				$sql="SELECT gibbonCourse.gibbonSchoolYearID, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseClassID=:gibbonCourseClassID" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -101,7 +101,10 @@ else {
 			}
 			print "</div>" ;
 			
-			$subpage=$_GET["subpage"] ;
+			$subpage=NULL ;
+			if (isset($_GET["subpage"])) {
+				$subpage=$_GET["subpage"] ;
+			}
 			if ($subpage=="") {
 				$subpage="Study Plan" ;
 			}
@@ -145,9 +148,6 @@ else {
 						}
 						print "<h4 $style>" ;
 						print $rowUnit["name"] ;
-						if ($rowUnit["dateFirstLesson"]!="") {
-							print "<span style='font-size: 75%; font-style: italic; font-weight: normal'> Studied from " . dateConvertBack($rowUnit["dateFirstLesson"]) . "</span>" ;
-						}
 						print "</h4>" ;
 						print "<p>" ;
 						print $rowUnit["description"] . "<br/>" ;
@@ -225,7 +225,7 @@ else {
 											}
 										print "</td>" ;
 										print "<td>" ;
-											print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Departments/department_course_class_full.php&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+											print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Departments/department_course_class_full.php&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 										print "</td>" ;
 									print "</tr>" ;
 								}
@@ -237,7 +237,7 @@ else {
 				
 				//PRINT LESSONS IN HOOKED UNITS
 				try {
-					$dataHooks=array("username"=>$username); 
+					$dataHooks=array(); 
 					$sqlHooks="SELECT * FROM gibbonHook WHERE type='Unit'" ;
 					$resultHooks=$connection2->prepare($sqlHooks);
 					$resultHooks->execute($dataHooks);
@@ -495,7 +495,7 @@ else {
 			
 				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ul>" ;
 				while ($rowCourse=$resultCourse->fetch()) {
-					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=" . $rowCourse["gibbonCourseClassID"] . "'>" . $rowCourse["course"] . "." . $rowCourse["class"] . "</a> <span <span style='font-size: 85%; font-style: italic'>" . $rowCourse["name"] . "</span></li>" ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=" . $rowCourse["gibbonCourseClassID"] . "'>" . $rowCourse["course"] . "." . $rowCourse["class"] . "</a></li>" ;
 				}
 				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</ul>" ;	
 			}

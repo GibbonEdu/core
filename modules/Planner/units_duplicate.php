@@ -125,7 +125,7 @@ else {
 					}
 					else {
 						try {
-							$data=array("username"=>$username); 
+							$data=array(); 
 							$sql="SELECT gibbonCourse.nameShort AS courseName, gibbonSchoolYearID, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=$gibbonUnitID AND gibbonUnit.gibbonCourseID=$gibbonCourseID" ;
 							$result=$connection2->prepare($sql);
 							$result->execute($data);
@@ -142,8 +142,11 @@ else {
 						else {
 							//Let's go!
 							$row=$result->fetch() ;
-								
-							$step=$_GET["step"] ;
+							
+							$step=NULL ;
+							if (isset($_GET["step"])) {
+								$step=$_GET["step"] ;
+							}
 							if ($step!=1 AND $step!=2 AND $step!=3) {
 								$step=1 ;
 							}

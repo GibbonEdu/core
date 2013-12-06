@@ -380,7 +380,7 @@ else {
 												<select style="width: 302px" name="name<? print $count ?>" id="name<? print $count ?>">
 													<?
 													try {
-														$dataSelect=array("username"=>$username); 
+														$dataSelect=array(); 
 														$sqlSelect="SELECT * FROM gibbonMedicalCondition ORDER BY name" ;
 														$resultSelect=$connection2->prepare($sqlSelect);
 														$resultSelect->execute($dataSelect);
@@ -527,7 +527,7 @@ else {
 										<select style="width: 302px" name="name" id="name">
 											<?
 											try {
-												$dataSelect=array("username"=>$username); 
+												$dataSelect=array(); 
 												$sqlSelect="SELECT * FROM gibbonMedicalCondition ORDER BY name" ;
 												$resultSelect=$connection2->prepare($sqlSelect);
 												$resultSelect->execute($dataSelect);

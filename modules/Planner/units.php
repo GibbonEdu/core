@@ -96,7 +96,10 @@ else {
 		}
 		
 		if ($gibbonSchoolYearID!="") {
-			$gibbonCourseID=$_GET["gibbonCourseID"] ;
+			$gibbonCourseID=NULL ;
+			if (isset($_GET["gibbonCourseID"])) {
+				$gibbonCourseID=$_GET["gibbonCourseID"] ;
+			}
 			if ($gibbonCourseID=="") {
 				try {
 					if ($highestAction=="Manage Units_all") {

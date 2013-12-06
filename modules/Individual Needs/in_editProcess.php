@@ -36,7 +36,7 @@ catch(PDOException $e) {
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonPersonID=$_POST["gibbonPersonID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/in_edit.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/in_edit.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&source=" . $_GET["source"] . "&gibbonINDescriptorID=" . $_GET["gibbonINDescriptorID"] . "&gibbonAlertLevelID=" . $_GET["gibbonAlertLevelID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Individual Needs/in_edit.php")==FALSE) {
 	//Fail 0
@@ -76,7 +76,10 @@ else {
 			
 			if ($highestAction=="Individual Needs Records_viewEdit") {
 				//UPDATE STATUS
-				$statuses=$_POST["status"] ;
+				$statuses=array() ;
+				if (isset($_POST["status"])) {
+					$statuses=$_POST["status"] ;
+				}
 				try {
 					$data=array("gibbonPersonID"=>$gibbonPersonID); 
 					$sql="DELETE FROM gibbonINPersonDescriptor WHERE gibbonPersonID=:gibbonPersonID" ;

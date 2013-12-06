@@ -100,7 +100,7 @@ else {
 			print "</div>" ;
 		} 
 		
-		$deployReturn=$_GET["deployReturn"] ;
+		if (isset($_GET["deployReturn"])) { $deployReturn=$_GET["deployReturn"] ; } else { $deployReturn="" ; }
 		$deployReturnMessage ="" ;
 		$class="error" ;
 		if (!($deployReturn=="")) {
@@ -128,8 +128,8 @@ else {
 			print "</div>" ;
 		} 
 		
-		$copyReturn=$_GET["copyReturn"] ;
-		$copyReturnMessage ="" ;
+		if (isset($_GET["copyReturn"])) { $copyReturn=$_GET["copyReturn"] ; } else { $copyReturn="" ; }
+		$copyReturnMessage="" ;
 		$class="error" ;
 		if (!($copyReturn=="")) {
 			if ($copyReturn=="success0") {
@@ -141,7 +141,7 @@ else {
 			print "</div>" ;
 		} 
 		
-		$copyForwardReturn=$_GET["copyForwardReturn"] ;
+		if (isset($_GET["copyForwardReturn"])) { $copyForwardReturn=$_GET["copyForwardReturn"] ; } else { $copyForwardReturn="" ; }
 		$copyForwardReturnMessage ="" ;
 		$class="error" ;
 		if (!($copyForwardReturn=="")) {

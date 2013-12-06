@@ -43,7 +43,6 @@ else {
 	print "Choose Students" ;
 	print "</h2>" ;
 	
-	$gibbonYearGroupID=$_GET["gibbonYearGroupID"] ;
 	?>
 	
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_familyAddress_byStudent.php"?>">
@@ -94,7 +93,10 @@ else {
 	</form>
 	<?
 	
-	$choices=$_POST["Members"] ;
+	$choices=NULL ;
+	if (isset($_POST["Members"])) {
+		$choices=$_POST["Members"] ;
+	}
 	
 	if (count($choices)>0) {
 		$_SESSION[$guid]["report_student_emergencySummary.php_choices"]=$choices ;
@@ -157,7 +159,12 @@ else {
 					$rowNum="odd" ;
 				}
 				
-				if ($array[$i]["gibbonFamilyID"]==$array[($i+1)]["gibbonFamilyID"]) {
+				$current=$array[$i]["gibbonFamilyID"] ;
+				$next="" ;
+				if (isset($array[($i+1)]["gibbonFamilyID"])) {
+					$next=$array[($i+1)]["gibbonFamilyID"] ;
+				}
+				if ($current==$next) {
 					$students.=formatName("", $array[$i]["preferredName"], $array[$i]["surname"], "Student") . "<br/>" ;
 				}
 				else {

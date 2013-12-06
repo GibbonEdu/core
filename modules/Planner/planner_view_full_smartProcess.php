@@ -126,8 +126,10 @@ else {
 						}
 						else {
 							$complete="N" ;
-							if ($_POST["complete$i"]=="on") {
-								$complete="Y" ;
+							if (isset($_POST["complete$i"])) {
+								if ($_POST["complete$i"]=="on") {
+									$complete="Y" ;
+								}
 							}
 							//Write to database
 							try {

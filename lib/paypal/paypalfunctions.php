@@ -69,7 +69,7 @@
 	'		cancelURL:			the page where buyers return to when they cancel the payment review on PayPal
 	'--------------------------------------------------------------------------------------------------------------------------------------------	
 	*/
-	function CallShortcutExpressCheckout( $paymentAmount, $currencyCodeType, $paymentType, $returnURL, $cancelURL) 
+	function CallShortcutExpressCheckout( $paymentAmount, $currencyCodeType, $paymentType, $returnURL, $cancelURL, $guid) 
 	{
 		//------------------------------------------------------------------------------------------------------------------------------------
 		// Construct the parameter string that describes the SetExpressCheckout API call in the shortcut implementation
@@ -92,7 +92,7 @@
 		//' If the API call succeded, then redirect the buyer to PayPal to begin to authorize payment.  
 		//' If an error occured, show the resulting errors
 		//'---------------------------------------------------------------------------------------------------------------
-	    $resArray=hash_call("SetExpressCheckout", $nvpstr);
+	    $resArray=hash_call("SetExpressCheckout", $nvpstr, $guid);
 		$ack=strtoupper($resArray["ACK"]);
 		if($ack=="SUCCESS" || $ack=="SUCCESSWITHWARNING")
 		{
@@ -153,7 +153,7 @@
 		//' If the API call succeded, then redirect the buyer to PayPal to begin to authorize payment.  
 		//' If an error occured, show the resulting errors
 		//'---------------------------------------------------------------------------------------------------------------
-	    $resArray=hash_call("SetExpressCheckout", $nvpstr);
+	    $resArray=hash_call("SetExpressCheckout", $nvpstr, $guid);
 		$ack=strtoupper($resArray["ACK"]);
 		if($ack=="SUCCESS" || $ack=="SUCCESSWITHWARNING")
 		{
@@ -197,7 +197,7 @@
 		//' 	an action to complete the payment.  
 		//'	If failed, show the error
 		//'---------------------------------------------------------------------------
-	    $resArray=hash_call("GetExpressCheckoutDetails",$nvpstr);
+	    $resArray=hash_call("GetExpressCheckoutDetails",$nvpstr, $guid);
 	    $ack=strtoupper($resArray["ACK"]);
 		if($ack == "SUCCESS" || $ack=="SUCCESSWITHWARNING")
 		{	
@@ -238,7 +238,7 @@
 		 /* Make the call to PayPal to finalize payment
 		    If an error occured, show the resulting errors
 		    */
-		$resArray=hash_call("DoExpressCheckoutPayment",$nvpstr);
+		$resArray=hash_call("DoExpressCheckoutPayment",$nvpstr, $guid);
 
 		/* Display the API response back to the browser.
 		   If the response from PayPal was a success, display the response parameters'
@@ -297,7 +297,7 @@
 		$nvpstr=$nvpstr . "&COUNTRYCODE=" . $countryCode;
 		$nvpstr=$nvpstr . "&IPADDRESS=" . $_SERVER['REMOTE_ADDR'];
 
-		$resArray=hash_call("DoDirectPayment", $nvpstr);
+		$resArray=hash_call("DoDirectPayment", $nvpstr, $guid);
 
 		return $resArray;
 	}
@@ -311,7 +311,7 @@
 	  * returns an associtive array containing the response from the server.
 	  '-------------------------------------------------------------------------------------------------------------------------------------------
 	*/
-	function hash_call($methodName,$nvpStr)
+	function hash_call($methodName,$nvpStr, $guid)
 	{
 		//declaring of global variables
 		global $API_Endpoint, $version, $API_UserName, $API_Password, $API_Signature;

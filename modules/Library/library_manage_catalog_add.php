@@ -145,7 +145,7 @@ else {
 					<span style="font-size: 90%"><i>Volume or product name.</i></span>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=255 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+					<input name="name" id="name" maxlength=255 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var name=new LiveValidation('name');
 						name.add(Validate.Presence);
@@ -158,7 +158,7 @@ else {
 					<span style="font-size: 90%"><i>School-unique ID or barcode.</i></span>
 				</td>
 				<td class="right">
-					<input name="id" id="id" maxlength=255 value="<? print $row["id"] ?>" type="text" style="width: 300px">
+					<input name="id" id="id" maxlength=255 value="" type="text" style="width: 300px">
 					<?
 					//Get list of all ids already in use
 					$idList="" ;
@@ -186,7 +186,7 @@ else {
 					<span style="font-size: 90%"><i>Who created the item?</i></span>
 				</td>
 				<td class="right">
-					<input name="producer" id="producer" maxlength=255 value="<? print $row["producer"] ?>" type="text" style="width: 300px">
+					<input name="producer" id="producer" maxlength=255 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var producer=new LiveValidation('producer');
 						producer.add(Validate.Presence);
@@ -199,7 +199,7 @@ else {
 					<span style="font-size: 90%"><i>Who supplied the item?</i></span>
 				</td>
 				<td class="right">
-					<input name="vendor" id="vendor" maxlength=100 value="<? print $row["vendor"] ?>" type="text" style="width: 300px">
+					<input name="vendor" id="vendor" maxlength=100 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr id='purchaseDateRow' style='display: none'>
@@ -208,7 +208,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<input name="purchaseDate" id="purchaseDate" maxlength=10 value="<? print dateConvertBack($row["purchaseDate"]) ?>" type="text" style="width: 300px">
+					<input name="purchaseDate" id="purchaseDate" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var purchaseDate=new LiveValidation('purchaseDate');
 						purchaseDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -226,7 +226,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<input name="invoiceNumber" id="invoiceNumber" maxlength=50 value="<? print $row["invoiceNumber"] ?>" type="text" style="width: 300px">
+					<input name="invoiceNumber" id="invoiceNumber" maxlength=50 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			
@@ -327,7 +327,7 @@ else {
 					<span style="font-size: 90%"><i>Shelf, cabinet, sector, etc</i></span>
 				</td>
 				<td class="right">
-					<input name="locationDetail" id="locationDetail" maxlength=255 value="<? print $row["locationDetail"] ?>" type="text" style="width: 300px">
+					<input name="locationDetail" id="locationDetail" maxlength=255 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			

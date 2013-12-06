@@ -36,14 +36,25 @@ else {
 	//Proceed!
 	//Get viewBy, date and class variables
 	$params="" ;
-	$viewBy=$_GET["viewBy"] ;
-			$subView=$_GET["subView"] ;
+	$viewBy=NULL ;
+	if (isset($_GET["viewBy"])) {
+		$viewBy=$_GET["viewBy"] ;
+	}
+	$subView=NULL ;
+	if (isset($_GET["subView"])) {
+		$subView=$_GET["subView"] ;
+	}
 	if ($viewBy!="date" AND $viewBy!="class") {
 		$viewBy="date" ;
 	}
+	$gibbonCourseClassID=NULL ;
+	$date=NULL ;
+	$dateStamp=NULL ;
 	if ($viewBy=="date") {
-		$date=$_GET["date"] ;
-		if ($_GET["dateHuman"]!="") {
+		if (isset($_GET["date"])) {
+			$date=$_GET["date"] ;
+		}
+		if (isset($_GET["dateHuman"])) {
 			$date=dateConvert($_GET["dateHuman"]) ;
 		}
 		if ($date=="") {
@@ -54,14 +65,29 @@ else {
 		$params="&viewBy=date&date=$date" ;
 	}
 	else if ($viewBy=="class") {
-		$class=$_GET["class"] ;
+		$class=NULL ;
+		if (isset($_GET["class"])) {
+			$class=$_GET["class"] ;
+		}
 		$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 		$params="&viewBy=class&class=$class&gibbonCourseClassID=$gibbonCourseClassID" ;
 	}
-	
 	list($todayYear, $todayMonth, $todayDay)=explode('-', $today);
 	$todayStamp=mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
-	
+	$show=NULL ;
+	if (isset($_GET["show"])) {
+		$show=$_GET["show"] ;
+	}
+	$gibbonCourseClassIDFilter=NULL ;
+	if (isset($_GET["gibbonCourseClassIDFilter"])) {
+		$gibbonCourseClassIDFilter=$_GET["gibbonCourseClassIDFilter"] ;
+	}
+	$gibbonPersonID=NULL ;
+	if (isset($_GET["search"])) {
+		$gibbonPersonID=$_GET["search"] ;
+	}
+					
+					
 	//My children's classes
 	if ($highestAction=="Lesson Planner_viewMyChildrensClasses") {
 		print "<div class='trail'>" ;
@@ -100,7 +126,7 @@ else {
 				
 				while ($rowChild=$resultChild->fetch()) {
 					$select="" ;
-					if ($rowChild["gibbonPersonID"]==$_GET["search"]) {
+					if ($rowChild["gibbonPersonID"]==$gibbonPersonID) {
 						$select="selected" ;
 					}
 					$options=$options . "<option $select value='" . $rowChild["gibbonPersonID"] . "'>" . $rowChild["surname"] . ", " . $rowChild["preferredName"] . "</option>" ;
@@ -115,7 +141,7 @@ else {
 				print "</div>" ;
 			}
 			else if ($count==1) {
-				$_GET["search"]=$gibbonPersonID[0] ;
+				$gibbonPersonID=$gibbonPersonID[0] ;
 			}
 			else {
 				print "<h3>" ;
@@ -153,11 +179,8 @@ else {
 				<?
 			}
 			
-			$gibbonPersonID="" ;
 			
-			if ($_GET["search"]!="" AND $count>0) {
-				$gibbonPersonID=$_GET["search"] ;
-				
+			if ($gibbonPersonID!="" AND $count>0) {
 				//Confirm access to this student
 				try {
 					$dataChild=array("gibbonPersonID"=>$gibbonPersonID, "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
@@ -236,10 +259,10 @@ else {
 								}
 								print "<li $style>" ;
 								if ($viewBy=="class") {
-									print "<b><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&search=" . $_GET["search"] . "'>" . $row["course"] . "." . $row["class"] . "</a> - " . $row["name"] . "</b><br/>" ;
+									print "<b><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&search=" . $gibbonPersonID . "'>" . $row["course"] . "." . $row["class"] . "</a> - " . $row["name"] . "</b><br/>" ;
 								}
 								else {
-									print "<b><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=date&date=$date&search=" . $_GET["search"] . "'>" . $row["course"] . "." . $row["class"] . "</a> - " . $row["name"] . "</b><br/>" ;
+									print "<b><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=date&date=$date&search=" . $gibbonPersonID . "'>" . $row["course"] . "." . $row["class"] . "</a> - " . $row["name"] . "</b><br/>" ;
 								}
 								print "<span style='margin-left: 15px; font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) ;
 								print "</li>" ;
@@ -254,8 +277,7 @@ else {
 					print "All Homework" ;
 					print "</h3>" ;
 					
-					$gibbonCourseClassIDFilter=$_GET["gibbonCourseClassIDFilter"] ;
-					if ($_GET["gibbonCourseClassIDFilter"]!="") {
+					if ($gibbonCourseClassIDFilter!="") {
 						$filter=" AND gibbonPlannerEntry.gibbonCourseClassID=$gibbonCourseClassIDFilter" ;
 					}
 					
@@ -437,7 +459,7 @@ else {
 		$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 	
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>Planner $extra</a> > </div><div class='trailEnd'>Homework + Deadlines</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>Planner</a> > </div><div class='trailEnd'>Homework + Deadlines</div>" ;
 		print "</div>" ;
 		
 		//Get Smart Workflow help message
@@ -510,7 +532,7 @@ else {
 		}
 		else {
 			try {
-				if ($highestAction=="Lesson Planner_viewEditAllClasses" AND $_GET["show"]=="all") {
+				if ($highestAction=="Lesson Planner_viewEditAllClasses" AND $show=="all") {
 					$data=array("homeworkDueDateTime"=>date("Y-m-d H:i:s"), "date1"=>date("Y-m-d"), "date2"=>date("Y-m-d"), "timeEnd"=>date("H:i:s")); 
 					$sql="SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE homework='Y' AND homeworkDueDateTime>:homeworkDueDateTime AND ((date<:date1) OR (date=:date2 AND timeEnd<=:timeEnd)) ORDER BY homeworkDueDateTime" ;
 				}
@@ -590,6 +612,7 @@ else {
 		print "All Homework" ;
 		print "</h3>" ;
 		
+		$filter=NULL ;
 		$completionArray=array() ;
 		if ($category=="Student") {
 			try {
@@ -607,13 +630,12 @@ else {
 			}
 		}
 		
-		$gibbonCourseClassIDFilter=$_GET["gibbonCourseClassIDFilter"] ;
-		if ($_GET["gibbonCourseClassIDFilter"]!="") {
+		if ($gibbonCourseClassIDFilter!="") {
 			$filter=" AND gibbonPlannerEntry.gibbonCourseClassID=$gibbonCourseClassIDFilter" ;
 		}
 		
 		try {
-			if ($highestAction=="Lesson Planner_viewEditAllClasses" AND $_GET["show"]=="all") {
+			if ($highestAction=="Lesson Planner_viewEditAllClasses" AND $show=="all") {
 				$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "date1"=>date("Y-m-d"), "date2"=>date("Y-m-d"), "timeEnd"=>date("H:i:s")); 
 				$sql="SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkDueDateTime, homeworkDetails, homeworkSubmission, homeworkSubmissionRequired, homeworkCrowdAssess FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE homework='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND (date<:date1 OR (date=:date2 AND timeEnd<=:timeEnd)) $filter ORDER BY date DESC, timeStart DESC" ; 
 			}
@@ -643,7 +665,7 @@ else {
 								print "<select name='gibbonCourseClassIDFilter' id='gibbonCourseClassIDFilter' style='width:190px'>" ;
 									print "<option value=''></option>" ;
 									try {
-										if ($highestAction=="Lesson Planner_viewEditAllClasses" AND $_GET["show"]=="all") {
+										if ($highestAction=="Lesson Planner_viewEditAllClasses" AND $show=="all") {
 											$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "date"=>date("Y-m-d")); 
 											$sqlSelect="SELECT DISTINCT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.gibbonCourseClassID FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE homework='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND date<=:date ORDER BY course, class" ; 
 										}
@@ -796,9 +818,11 @@ else {
 								print "<td>" ;
 									print "<b>" . $row["name"] . "</b><br/>" ;
 									$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
-									print $unit[0] ;
-									if ($unit[1]!="") {
-										print "<br/><i>" . $unit[1] . " Unit</i>" ;
+									if (isset($unit[0])) {
+										print $unit[0] ;
+										if ($unit[1]!="") {
+											print "<br/><i>" . $unit[1] . " Unit</i>" ;
+										}
 									}
 								print "</td>" ;
 								print "<td>" ;

@@ -78,109 +78,107 @@ else {
 		$count=0;
 		$rowNum="odd" ;
 		while ($row=$result->fetch()) {
-			if (is_null($log[$row["gibbonRollGroupID"]])) {
-				if ($count%2==0) {
-					$rowNum="even" ;
-				}
-				else {
-					$rowNum="odd" ;
-				}
-				$count++ ;
-				
-				//COLOR ROW BY STATUS!
-				print "<tr class=$rowNum>" ;
-					print "<td>" ;
-						print $row["transport"] ;
-					print "</td>" ;
-					print "<td>" ;
-						print $row["surname"] ;
-					print "</td>" ;
-					print "<td>" ;
-						print $row["preferredName"] ;
-					print "</td>" ;
-					print "<td>" ;
-						try {
-							$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
-							$sqlFamily="SELECT gibbonFamily.gibbonFamilyID, nameAddress, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID" ;
-							$resultFamily=$connection2->prepare($sqlFamily);
-							$resultFamily->execute($dataFamily);
+			if ($count%2==0) {
+				$rowNum="even" ;
+			}
+			else {
+				$rowNum="odd" ;
+			}
+			$count++ ;
+			
+			//COLOR ROW BY STATUS!
+			print "<tr class=$rowNum>" ;
+				print "<td>" ;
+					print $row["transport"] ;
+				print "</td>" ;
+				print "<td>" ;
+					print $row["surname"] ;
+				print "</td>" ;
+				print "<td>" ;
+					print $row["preferredName"] ;
+				print "</td>" ;
+				print "<td>" ;
+					try {
+						$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+						$sqlFamily="SELECT gibbonFamily.gibbonFamilyID, nameAddress, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID" ;
+						$resultFamily=$connection2->prepare($sqlFamily);
+						$resultFamily->execute($dataFamily);
+					}
+					catch(PDOException $e) { 
+						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					}
+					while ($rowFamily=$resultFamily->fetch()) {
+						if ($rowFamily["nameAddress"]!="") {
+							print $rowFamily["nameAddress"] . ", " ;
 						}
-						catch(PDOException $e) { 
-							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						if (substr(rtrim($rowFamily["homeAddress"]),-1)==",") {
+							$address=substr(rtrim($rowFamily["homeAddress"]),0,-1) ;
 						}
-						while ($rowFamily=$resultFamily->fetch()) {
-							if ($rowFamily["nameAddress"]!="") {
-								print $rowFamily["nameAddress"] . ", " ;
-							}
-							if (substr(rtrim($rowFamily["homeAddress"]),-1)==",") {
-								$address=substr(rtrim($rowFamily["homeAddress"]),0,-1) ;
-							}
-							else {
-								$address=rtrim($rowFamily["homeAddress"]) ;
-							}
-							$address=addressFormat($address,rtrim($rowFamily["homeAddressDistrict"]),rtrim($rowFamily["homeAddressCountry"])) ;
-							if ($address!=FALSE) {
-								$address=explode(",", $address) ;
-								for ($i=0; $i<count($address); $i++) {
-									print $address[$i] ;
-									if ($i<(count($address)-1)) {
-										print ", " ;
-									}
+						else {
+							$address=rtrim($rowFamily["homeAddress"]) ;
+						}
+						$address=addressFormat($address,rtrim($rowFamily["homeAddressDistrict"]),rtrim($rowFamily["homeAddressCountry"])) ;
+						if ($address!=FALSE) {
+							$address=explode(",", $address) ;
+							for ($i=0; $i<count($address); $i++) {
+								print $address[$i] ;
+								if ($i<(count($address)-1)) {
+									print ", " ;
 								}
 							}
 						}
-					print "</td>" ;
-					print "<td>" ;
-						$contact="" ;
+					}
+				print "</td>" ;
+				print "<td>" ;
+					$contact="" ;
+					try {
+						$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+						$sqlFamily="SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID" ;
+						$resultFamily=$connection2->prepare($sqlFamily);
+						$resultFamily->execute($dataFamily);
+					}
+					catch(PDOException $e) { 
+						$contact.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+					}
+					while ($rowFamily=$resultFamily->fetch()) {
 						try {
-							$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
-							$sqlFamily="SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID" ;
-							$resultFamily=$connection2->prepare($sqlFamily);
-							$resultFamily->execute($dataFamily);
+							$dataFamily2=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
+							$sqlFamily2="SELECT gibbonPerson.* FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName" ;
+							$resultFamily2=$connection2->prepare($sqlFamily2);
+							$resultFamily2->execute($dataFamily2);
 						}
 						catch(PDOException $e) { 
 							$contact.="<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
-						while ($rowFamily=$resultFamily->fetch()) {
-							try {
-								$dataFamily2=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
-								$sqlFamily2="SELECT gibbonPerson.* FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName" ;
-								$resultFamily2=$connection2->prepare($sqlFamily2);
-								$resultFamily2->execute($dataFamily2);
-							}
-							catch(PDOException $e) { 
-								$contact.="<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							while ($rowFamily2=$resultFamily2->fetch()) {
-								$contact.="<u>" . formatName($rowFamily2["title"], $rowFamily2["preferredName"], $rowFamily2["surname"], "Parent") . "</u>, " ;
-								$numbers=0 ;
-								for ($i=1; $i<5; $i++) {
-									if ($rowFamily2["phone" . $i]!="") {
-										if ($rowFamily2["phone" . $i . "Type"]!="") {
-											$contact.="<i>" . $rowFamily2["phone" . $i . "Type"] . ":</i> " ;
-										}
-										if ($rowFamily2["phone" . $i . "CountryCode"]!="") {
-											$contact.="+" . $rowFamily2["phone" . $i . "CountryCode"] . " " ;
-										}
-										$contact.=$rowFamily2["phone" . $i] . ", " ;
-										$numbers++ ;
+						while ($rowFamily2=$resultFamily2->fetch()) {
+							$contact.="<u>" . formatName($rowFamily2["title"], $rowFamily2["preferredName"], $rowFamily2["surname"], "Parent") . "</u>, " ;
+							$numbers=0 ;
+							for ($i=1; $i<5; $i++) {
+								if ($rowFamily2["phone" . $i]!="") {
+									if ($rowFamily2["phone" . $i . "Type"]!="") {
+										$contact.="<i>" . $rowFamily2["phone" . $i . "Type"] . ":</i> " ;
 									}
-								}
-								if ($numbers==0) {
-									$contact.="<span style='font-size: 85%; font-style: italic'>No number available.</span>, " ;
+									if ($rowFamily2["phone" . $i . "CountryCode"]!="") {
+										$contact.="+" . $rowFamily2["phone" . $i . "CountryCode"] . " " ;
+									}
+									$contact.=$rowFamily2["phone" . $i] . ", " ;
+									$numbers++ ;
 								}
 							}
+							if ($numbers==0) {
+								$contact.="<span style='font-size: 85%; font-style: italic'>No number available.</span>, " ;
+							}
 						}
-						if (substr($contact, -2)==", ") {
-							$contact=substr($contact, 0, -2) ;
-						}
-						print $contact ;
-					print "</td>" ;
-					print "<td>" ;
-						print $row["nameShort"] ;
-					print "</td>" ;
-				print "</tr>" ;
-			}
+					}
+					if (substr($contact, -2)==", ") {
+						$contact=substr($contact, 0, -2) ;
+					}
+					print $contact ;
+				print "</td>" ;
+				print "<td>" ;
+					print $row["nameShort"] ;
+				print "</td>" ;
+			print "</tr>" ;
 		}
 		if ($count==0) {
 			print "<tr class=$rowNum>" ;

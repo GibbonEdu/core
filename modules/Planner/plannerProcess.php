@@ -39,19 +39,27 @@ include $_SESSION[$guid]["absolutePath"] . "/modules/" . getModuleName($_GET["ad
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonPlannerEntryID=$_GET["gibbonPlannerEntryID"] ;
-$gibbonPersonID=$_GET["gibbonPersonID"] ;
-if ($gibbonPersonID=="") {
-	$gibbonPersonID=$_SESSION[$guid]["gibbonPersonID"] ;
+$gibbonPersonID=$_SESSION[$guid]["gibbonPersonID"] ;
+$viewBy=NULL ;
+if (isset($_GET["viewBy"])) {
+	$viewBy=$_GET["viewBy"] ;
 }
-$viewBy=$_GET["viewBy"] ;
-$subView=$_GET["subView"] ;
+$subView=NULL ;
+if (isset($_GET["subView"])) {
+	$subView=$_GET["subView"] ;
+}
 if ($viewBy!="date" AND $viewBy!="class") {
 	$viewBy="date" ;
 }
 $gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 $date=$_GET["date"] ;
-if ($_GET["returnToIndex"]=="Y") {
+$returnToIndex=NULL ;
+if (isset($_GET["returnToIndex"])) {
+	$returnToIndex=$_GET["returnToIndex"] ;
+}
+if ($returnToIndex=="Y") {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?blank=blank" ;
+	$params="&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView&search=$gibbonPersonID" ;
 }
 else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/planner.php&gibbonPlannerEntryID=$gibbonPlannerEntryID" ;
@@ -61,7 +69,7 @@ else {
 		$params="&viewBy=$viewBy&date=$date&search=" . $_GET["gibbonPersonID"] ;
 	}
 	else {
-		$params="&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView&search=" . $_GET["gibbonPersonID"] ;
+		$params="&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView&search=$gibbonPersonID" ;
 	}
 }
 	
@@ -177,7 +185,7 @@ else {
 						}
 
 						//Success 0
-						$URL=$URL . "&updateReturn=success0$params" ;
+						$URL=$URL . "$params" ;
 						header("Location: {$URL}");
 					}
 					//DELETE
@@ -196,7 +204,7 @@ else {
 						}
 
 						//Success 0
-						$URL=$URL . "&updateReturn=success0$params" ;
+						$URL=$URL . "$params" ;
 						header("Location: {$URL}");
 					}
 				}

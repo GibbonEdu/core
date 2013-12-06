@@ -363,7 +363,7 @@ function invoiceContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYea
 				}
 				$return.="<tr style='height: 35px' class='current'>" ;
 					$return.="<td colspan=3 style='text-align: right'>" ;
-						$return.="<b>Invoice Total  : </b>";
+						$return.="<b>Invoice Total : </b>";
 					$return.="</td>" ;
 					$return.="<td>" ;
 						if (substr($currency,4)!="") {
@@ -615,15 +615,26 @@ function receiptContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYea
 						$return.="</td>" ;
 					$return.="</tr>" ;
 				}
-				$return.="<tr style='height: 35px' class='current'>" ;
+				$return.="<tr style='height: 35px'>" ;
 					$return.="<td colspan=3 style='text-align: right'>" ;
-						$return.="<b>Invoice Total  : </b>";
+						$return.="<b>Invoice Total : </b>";
 					$return.="</td>" ;
 					$return.="<td>" ;
 						if (substr($currency,4)!="") {
 							$return.=substr($currency,4) . " " ;
 						}
 						$return.="<b>" . number_format($feeTotal, 2, ".", ",") . "</b>" ;
+					$return.="</td>" ;
+				$return.="</tr>" ;
+				$return.="<tr style='height: 35px' class='current'>" ;
+					$return.="<td colspan=3 style='text-align: right'>" ;
+						$return.="<b>Amount Paid : </b>";
+					$return.="</td>" ;
+					$return.="<td>" ;
+						if (substr($currency,4)!="") {
+							$return.=substr($currency,4) . " " ;
+						}
+						$return.="<b>" . number_format($row["paidAmount"], 2, ".", ",") . "</b>" ;
 					$return.="</td>" ;
 				$return.="</tr>" ;
 			}

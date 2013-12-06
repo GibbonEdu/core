@@ -115,39 +115,37 @@ else {
 					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 				}
 				while ($row=$result->fetch()) {
-					if (is_null($log[$row["gibbonPersonID"]])) {
-						if ($count%2==0) {
-							$rowNum="even" ;
-						}
-						else {
-							$rowNum="odd" ;
-						}
-						$count++ ;
-						
-						//COLOR ROW BY STATUS!
-						print "<tr class=$rowNum>" ;
-							print "<td>" ;
-								print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
-							print "</td>" ;
-							print "<td></td>" ;
-							print "<td></td>" ;
-							print "<td></td>" ;
-							print "<td></td>" ;
-							print "<td></td>" ;
-							print "<td></td>" ;
-							print "<td></td>" ;
-							print "<td></td>" ;
-							print "<td></td>" ;
-							print "<td></td>" ;
-							print "<td></td>" ;
-							print "<td></td>" ;
-							print "<td></td>" ;
-							print "<td></td>" ;
-							print "<td></td>" ;
-						print "</tr>" ;
-						
-						$lastPerson=$row["gibbonPersonID"] ;
+					if ($count%2==0) {
+						$rowNum="even" ;
 					}
+					else {
+						$rowNum="odd" ;
+					}
+					$count++ ;
+					
+					//COLOR ROW BY STATUS!
+					print "<tr class=$rowNum>" ;
+						print "<td>" ;
+							print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
+						print "</td>" ;
+						print "<td></td>" ;
+						print "<td></td>" ;
+						print "<td></td>" ;
+						print "<td></td>" ;
+						print "<td></td>" ;
+						print "<td></td>" ;
+						print "<td></td>" ;
+						print "<td></td>" ;
+						print "<td></td>" ;
+						print "<td></td>" ;
+						print "<td></td>" ;
+						print "<td></td>" ;
+						print "<td></td>" ;
+						print "<td></td>" ;
+						print "<td></td>" ;
+					print "</tr>" ;
+					
+					$lastPerson=$row["gibbonPersonID"] ;
 				}
 				if ($count==0) {
 					print "<tr class=$rowNum>" ;

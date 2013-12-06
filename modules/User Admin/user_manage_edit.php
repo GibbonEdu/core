@@ -267,7 +267,7 @@ else {
 								<?
 								print "<option value='Please select...'>Please select...</option>" ;
 								try {
-									$dataSelect=array("username"=>$username); 
+									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonRole ORDER BY name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
@@ -300,7 +300,7 @@ else {
 							<select multiple name="gibbonRoleIDAll[]" id="gibbonRoleIDAll[]" style="width: 302px; height: 130px">
 								<?
 								try {
-									$dataSelect=array("username"=>$username); 
+									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonRole ORDER BY name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
@@ -532,7 +532,7 @@ else {
 								<?
 								print "<option value=''></option>" ;
 								try {
-									$dataSelect=array("username"=>$username); 
+									$dataSelect=array(); 
 									$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
@@ -638,7 +638,7 @@ else {
 								<?
 								print "<option value=''></option>" ;
 								try {
-									$dataSelect=array("username"=>$username); 
+									$dataSelect=array(); 
 									$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
@@ -1010,7 +1010,7 @@ else {
 								<?
 								print "<option value=''></option>" ;
 								try {
-									$dataSelect=array("username"=>$username); 
+									$dataSelect=array(); 
 									$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);

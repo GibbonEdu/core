@@ -60,6 +60,10 @@ else {
 			$page=1 ;
 		}
 		
+		$search=NULL ;
+		if (isset($_GET["search"])) {
+			$search=$_GET["search"] ;
+		}
 		
 		print "<h2>" ;
 		print "Search" ;
@@ -74,7 +78,7 @@ else {
 						<span style="font-size: 90%"><i>Resource name.</i></span>
 					</td>
 					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<? print $_GET["search"] ?>" type="text" style="width: 300px">
+						<input name="search" id="search" maxlength=20 value="<? print $search ?>" type="text" style="width: 300px">
 					</td>
 				</tr>
 				<tr>
@@ -95,7 +99,7 @@ else {
 		print "View" ;
 		print "</h2>" ;
 		
-		$search=$_GET["search"] ;
+		
 		try {
 			if ($highestAction=="Manage Resources_all") {
 				$data=array(); 
@@ -122,7 +126,7 @@ else {
 		}
 		
 		print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_add.php&search=" . $_GET["search"] . "'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_add.php&search=" . $search . "'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 		print "</div>" ;
 		
 		if ($result->rowCount()<1) {
@@ -175,10 +179,6 @@ else {
 					}
 					$count++ ;
 					
-					if ($row["active"]=="N") {
-						$rowNum="error" ;
-					}
-	
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
@@ -239,7 +239,7 @@ else {
 							}
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_edit.php&gibbonResourceID=" . $row["gibbonResourceID"] . "&search=" . $_GET["search"] . "'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_edit.php&gibbonResourceID=" . $row["gibbonResourceID"] . "&search=$search'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

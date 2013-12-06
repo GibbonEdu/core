@@ -87,18 +87,18 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 	}
 	
 	if ($result->rowCount()<1) {
-		$output=$output . "<div class='error'>" ;
-			$output=$output . "There are no terms in the specied year." ;
-		$output=$output . "</div>" ;
+		$output.= "<div class='error'>" ;
+			$output.= "There are no terms in the specied year." ;
+		$output.= "</div>" ;
 	}
 	else {
 		$countSchoolDays=0 ;
 		$countAbsent=0 ;
 		$countPresent=0 ;
 		while ($row=$result->fetch()) {
-			$output=$output . "<h4>" ;
-				$output=$output . $row["name"] ;
-			$output=$output . "</h4>" ;
+			$output.= "<h4>" ;
+				$output.= $row["name"] ;
+			$output.= "</h4>" ;
 			list($firstDayYear, $firstDayMonth, $firstDayDay)=explode('-', $row["firstDay"]);
 			$firstDayStamp=mktime(0, 0, 0, $firstDayMonth, $firstDayDay, $firstDayYear);
 			list($lastDayYear, $lastDayMonth, $lastDayDay)=explode('-', $row["lastDay"]);
@@ -186,48 +186,48 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 			$count=0;
 			$weeks=2;
 			
-			$output=$output . "<table class='mini' cellspacing='0' style='width: 100%'>" ;
-			$output=$output . "<tr class='head'>" ;
+			$output.= "<table class='mini' cellspacing='0' style='width: 100%'>" ;
+			$output.= "<tr class='head'>" ;
 				for ($w=0; $w<$weeks; $w++) {
 					if ($days["Mon"]=="Y") {
-						$output=$output . "<th style='width: 14px'>" ;
-							$output=$output . "Mon" ;
-						$output=$output . "</th>" ;
+						$output.= "<th style='width: 14px'>" ;
+							$output.= "Mon" ;
+						$output.= "</th>" ;
 					}
 					if ($days["Tue"]=="Y") {
-						$output=$output . "<th style='width: 14px'>" ;
-							$output=$output . "Tue" ;
-						$output=$output . "</th>" ;
+						$output.= "<th style='width: 14px'>" ;
+							$output.= "Tue" ;
+						$output.= "</th>" ;
 				
 					}
 					if ($days["Wed"]=="Y") {
-						$output=$output . "<th style='width: 14px'>" ;
-							$output=$output . "Wed" ;
-						$output=$output . "</th>" ;
+						$output.= "<th style='width: 14px'>" ;
+							$output.= "Wed" ;
+						$output.= "</th>" ;
 				
 					}
 					if ($days["Thu"]=="Y") {
-						$output=$output . "<th style='width: 14px'>" ;
-							$output=$output . "Thu" ;
-						$output=$output . "</th>" ;
+						$output.= "<th style='width: 14px'>" ;
+							$output.= "Thu" ;
+						$output.= "</th>" ;
 					}
 					if ($days["Fri"]=="Y") {
-						$output=$output . "<th style='width: 14px'>" ;
-							$output=$output . "Fri" ;
-						$output=$output . "</th>" ;
+						$output.= "<th style='width: 14px'>" ;
+							$output.= "Fri" ;
+						$output.= "</th>" ;
 					}
 					if ($days["Sat"]=="Y") {
-						$output=$output . "<th style='width: 14px'>" ;
-							$output=$output . "Sat" ;
-						$output=$output . "</th>" ;
+						$output.= "<th style='width: 14px'>" ;
+							$output.= "Sat" ;
+						$output.= "</th>" ;
 					}
 					if ($days["Sun"]=="Y") {
-						$output=$output . "<th style='width: 15px'>" ;
-							$output=$output . "Sun" ;
-						$output=$output . "</th>" ;
+						$output.= "<th style='width: 15px'>" ;
+							$output.= "Sun" ;
+						$output.= "</th>" ;
 					}
 				}
-			$output=$output . "</tr>" ;
+			$output.= "</tr>" ;
 			
 			//Make sure we are not showing future dates
 			$now=mktime(0, 0, 0, date("m"), date("d"), date("Y"));
@@ -238,7 +238,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 			//Display grid
 			for ($i=$startDayStamp;$i<=$end;$i=$i+86400) {
 				if (($count%($days["count"]*$weeks))==0 AND $days[date("D",$i)]=="Y") {
-					$output=$output . "<tr style='height: 45px'>" ;
+					$output.= "<tr style='height: 45px'>" ;
 				}
 				
 				if ($rowSpecial==TRUE) {
@@ -247,8 +247,8 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 				}
 				
 				if ($i<$firstDayStamp OR $i>$lastDayStamp) {
-					$output=$output . "<td style='background-color: #bbbbbb'>" ;
-					$output=$output . "</td>" ;
+					$output.= "<td style='background-color: #bbbbbb'>" ;
+					$output.= "</td>" ;
 					$count++ ;
 						
 					if ($i==$specialDayStamp) {
@@ -257,8 +257,8 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 				}
 				else {
 					if ($i==$specialDayStamp) {
-						$output=$output . "<td style='background-color: #bbbbbb'>" ;
-						$output=$output . "</td>" ;
+						$output.= "<td style='background-color: #bbbbbb'>" ;
+						$output.= "</td>" ;
 						$count++ ;
 						$rowSpecial=$resultSpecial->fetch() ;
 					}
@@ -296,48 +296,48 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 									$extraStyle="border: 1px solid #390; color: #390; background-color: #D4F6DC; " ;
 								}
 							}
-							$output=$output . "<td style='text-align: center; font-size: 10px; $extraStyle'>" ;
-							$output=$output . date("d/m/Y",$i) . "<br/>" ;
+							$output.= "<td style='text-align: center; font-size: 10px; $extraStyle'>" ;
+							$output.= date("d/m/Y",$i) . "<br/>" ;
 							if (count($log)>0) {
-								$output=$output . "<b>" . $log[0] . "</b><br>" ;
+								$output.= "<b>" . $log[0] . "</b><br>" ;
 								for ($x=count($log); $x>=0; $x--) {
 									if (isset($log[$x])) {
 										if ($log[$x]=="Present") {
-											$output=$output . "P" ;
+											$output.= "P" ;
 										}
 										else if ($log[$x]=="Present - Late") {
-											$output=$output . "PL" ;
+											$output.= "PL" ;
 										}
 										else if ($log[$x]=="Present - Offsite") {
-											$output=$output . "PS" ;
+											$output.= "PS" ;
 										}
 										else if ($log[$x]=="Left") {
-											$output=$output . "L" ;
+											$output.= "L" ;
 										}
 										else if ($log[$x]=="Left - Early") {
-											$output=$output . "LE" ;
+											$output.= "LE" ;
 										}
 										else if ($log[$x]=="Absent") {
-											$output=$output . "A" ;
+											$output.= "A" ;
 										}
 									}
 									if ($x!=0 AND $x!=count($log)) {
-										$output=$output . " : " ;	
+										$output.= " : " ;	
 									}
 								}
 							}
-							$output=$output . "</td>" ;
+							$output.= "</td>" ;
 							$count++ ;
 						}
 					}
 				}
 				
 				if (($count%($days["count"]*$weeks))==0 AND $days[date("D",$i)]=="Y") {
-					$output=$output . "</tr>" ;
+					$output.= "</tr>" ;
 				}
 			}
 		
-			$output=$output . "</table>" ;		
+			$output.= "</table>" ;		
 		}
 	}
 	

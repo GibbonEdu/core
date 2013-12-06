@@ -95,7 +95,10 @@ else {
 					$partialFail=FALSE ;
 					for ($i=1; $i<4; $i++) {
 						$resourceName=$_POST["name$i"] ;
-						$resourceType=$_POST["type$i"] ;
+						$resourceType=NULL ;
+						if (isset($_POST["type$i"])) {
+							$resourceType=$_POST["type$i"] ;
+						}
 						$resourceURL=$_POST["url$i"] ;
 						
 						if ($resourceName!="" AND $resourceType!="" AND ($resourceType=="File" OR $resourceType=="Link")) {

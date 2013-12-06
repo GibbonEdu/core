@@ -38,9 +38,18 @@ else {
 	print "Choose Options" ;
 	print "</h2>" ;
 	
-	$endDateFrom=$_GET["endDateFrom"] ;
-	$endDateTo=$_GET["endDateTo"] ;
-	$ignoreStatus=$_GET["ignoreStatus"] ;
+	$endDateFrom=NULL ;
+	if (isset($_GET["endDateFrom"])) {
+		$endDateFrom=$_GET["endDateFrom"] ;
+	}
+	$endDateTo=NULL ;
+	if (isset($_GET["endDateTo"])) {
+		$endDateTo=$_GET["endDateTo"] ;
+	}
+	$ignoreStatus=NULL ;
+	if (isset($_GET["ignoreStatus"])) {
+		$ignoreStatus=$_GET["ignoreStatus"] ;
+	}
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -51,7 +60,7 @@ else {
 					<span style="font-size: 90%"><i>Earlest student end date to include.<br/>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="endDateFrom" id="endDateFrom" maxlength=10 value="<? print $_GET["endDateFrom"] ?>" type="text" style="width: 300px">
+					<input name="endDateFrom" id="endDateFrom" maxlength=10 value="<? print $endDateFrom ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var endDateFrom=new LiveValidation('endDateFrom');
 						endDateFrom.add(Validate.Presence);
@@ -70,7 +79,7 @@ else {
 					<span style="font-size: 90%"><i>Latest student end date to include.<br/>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="endDateTo" id="endDateTo" maxlength=10 value="<? print $_GET["endDateTo"] ?>" type="text" style="width: 300px">
+					<input name="endDateTo" id="endDateTo" maxlength=10 value="<? print $endDateTo ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var endDateTo=new LiveValidation('endDateTo');
 						endDateTo.add(Validate.Presence);

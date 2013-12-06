@@ -207,7 +207,7 @@ else {
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
-						<input name="name" id="name" maxlength=60 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+						<input name="name" id="name" maxlength=60 value="" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var name=new LiveValidation('name');
 							name.add(Validate.Presence);
@@ -386,7 +386,7 @@ else {
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
-						<textarea name="description" id="description" rows=8 style="width: 300px"><? print $row["description"] ?></textarea>
+						<textarea name="description" id="description" rows=8 style="width: 300px"></textarea>
 					</td>
 				</tr>
 				

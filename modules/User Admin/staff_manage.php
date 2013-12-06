@@ -90,10 +90,10 @@ else {
 	}
 	try {
 		$data=array(); 
-		$sql="SELECT gibbonStaffID, surname, preferredName, type, gibbonStaff.jobTitle FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName" ; 
+		$sql="SELECT gibbonStaffID, surname, preferredName, initials, type, gibbonStaff.jobTitle FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName" ; 
 		if ($search!="") {
 			$data=array("search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%"); 
-			$sql="SELECT gibbonStaffID, surname, preferredName, type, gibbonStaff.jobTitle FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (preferredName LIKE :search1 OR surname LIKE :search2 OR (username LIKE :search3)) ORDER BY surname, preferredName" ; 
+			$sql="SELECT gibbonStaffID, surname, preferredName, initials, type, gibbonStaff.jobTitle FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (preferredName LIKE :search1 OR surname LIKE :search2 OR (username LIKE :search3)) ORDER BY surname, preferredName" ; 
 		}
 		$sqlPage= $sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
 		$result=$connection2->prepare($sql);
@@ -120,7 +120,8 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Name" ;
+					print "Name<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>Initials</span>" ;
 				print "</th>" ;
 				print "<th>" ;
 					print "Type" ;
@@ -154,7 +155,8 @@ else {
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
-						print formatName("", $row["preferredName"], $row["surname"], "Staff", true, true) ;
+						print formatName("", $row["preferredName"], $row["surname"], "Staff", true, true) . "<br/>" ;
+						print "<span style='font-size: 85%; font-style: italic'>" . $row["initials"] . "</span>" ;
 					print "</td>" ;
 					print "<td>" ;
 						print $row["type"] ;

@@ -108,7 +108,11 @@ else {
 				$summary=$row["summary"] ;
 				$description=$row["description"] ;
 				
-				$keepUnit=$_POST["keepUnit"] ;
+				$keepUnit=NULL ;
+				$gibbonUnitClassID=NULL ;
+				if (isset($_POST["keepUnit"])) {
+					$keepUnit=$_POST["keepUnit"] ;
+				}
 				if ($keepUnit=="Y") {
 					$gibbonUnitClassID=$_POST["gibbonUnitClassID"] ;
 					$gibbonUnitID=$row["gibbonUnitID"] ;
@@ -143,6 +147,7 @@ else {
 				}
 				$homeworkSubmissionDrafts=$row["homeworkSubmissionDrafts"] ;
 				$homeworkSubmissionType=$row["homeworkSubmissionType"] ;
+				$homeworkSubmissionRequired=$row["homeworkSubmissionRequired"] ;
 				$homeworkCrowdAssess=$row["homeworkCrowdAssess"] ;
 				$homeworkCrowdAssessOtherTeachersRead=$row["homeworkCrowdAssessOtherTeachersRead"] ;
 				$homeworkCrowdAssessClassmatesRead=$row["homeworkCrowdAssessClassmatesRead"] ;
@@ -197,7 +202,6 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 						//Fail 2
 						$URL=$URL . "&updateReturn=fail2$params" ;
 						header("Location: {$URL}");
@@ -215,6 +219,8 @@ else {
 						header("Location: {$URL}");
 						break ;
 					}
+					
+					$partialFail=FALSE ;
 
 					//Try to duplicate MB columns
 					$duplicate=$_POST["duplicate"] ;
@@ -242,24 +248,26 @@ else {
 					}
 					
 					//DUPLICATE SMART BLOCKS
-					try {
-						$dataBlocks=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
-						$sqlBlocks="SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
-						$resultBlocks=$connection2->prepare($sqlBlocks);
-						$resultBlocks->execute($dataBlocks);
-					}
-					catch(PDOException $e) { 
-						$partialFail=true ;
-					}
-					while ($rowBlocks=$resultBlocks->fetch()) {
+					if ($gibbonUnitClassID!=NULL) {
 						try {
-							$dataBlocksInsert=array("gibbonUnitClassID"=>$gibbonUnitClassID, "gibbonPlannerEntryID"=>$AI, "gibbonUnitBlockID"=>$rowBlocks["gibbonUnitBlockID"], "title"=>$rowBlocks["title"], "type"=>$rowBlocks["type"], "length"=>$rowBlocks["length"], "contents"=>$rowBlocks["contents"], "teachersNotes"=>$rowBlocks["teachersNotes"], "sequenceNumber"=>$rowBlocks["sequenceNumber"]); 
-							$sqlBlocksInsert="INSERT INTO gibbonUnitClassBlock SET gibbonUnitClassID=:gibbonUnitClassID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonUnitBlockID=:gibbonUnitBlockID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber, complete='N'" ;
-							$resultBlocksInsert=$connection2->prepare($sqlBlocksInsert);
-							$resultBlocksInsert->execute($dataBlocksInsert);
+							$dataBlocks=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
+							$sqlBlocks="SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+							$resultBlocks=$connection2->prepare($sqlBlocks);
+							$resultBlocks->execute($dataBlocks);
 						}
 						catch(PDOException $e) { 
 							$partialFail=true ;
+						}
+						while ($rowBlocks=$resultBlocks->fetch()) {
+							try {
+								$dataBlocksInsert=array("gibbonUnitClassID"=>$gibbonUnitClassID, "gibbonPlannerEntryID"=>$AI, "gibbonUnitBlockID"=>$rowBlocks["gibbonUnitBlockID"], "title"=>$rowBlocks["title"], "type"=>$rowBlocks["type"], "length"=>$rowBlocks["length"], "contents"=>$rowBlocks["contents"], "teachersNotes"=>$rowBlocks["teachersNotes"], "sequenceNumber"=>$rowBlocks["sequenceNumber"]); 
+								$sqlBlocksInsert="INSERT INTO gibbonUnitClassBlock SET gibbonUnitClassID=:gibbonUnitClassID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonUnitBlockID=:gibbonUnitBlockID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber, complete='N'" ;
+								$resultBlocksInsert=$connection2->prepare($sqlBlocksInsert);
+								$resultBlocksInsert->execute($dataBlocksInsert);
+							}
+							catch(PDOException $e) { 
+								$partialFail=true ;
+							}
 						}
 					}
 						

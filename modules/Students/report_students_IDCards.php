@@ -41,7 +41,6 @@ else {
 	print "Choose Students" ;
 	print "</h2>" ;
 	
-	$gibbonYearGroupID=$_GET["gibbonYearGroupID"] ;
 	?>
 	
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_students_IDCards.php"?>" enctype="multipart/form-data">
@@ -118,7 +117,10 @@ else {
 	</form>
 	<?
 	
-	$choices=$_POST["Members"] ;
+	$choices=NULL;
+	if (isset($_POST["Members"])) {
+		$choices=$_POST["Members"] ;
+	}
 	
 	if (count($choices)>0) {
 		

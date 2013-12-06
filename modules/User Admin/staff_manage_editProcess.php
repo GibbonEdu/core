@@ -73,6 +73,10 @@ else {
 		}
 		else {
 			//Validate Inputs
+			$initials=$_POST["initials"] ;
+			if ($initials=="") {
+				$initials=NULL ;
+			}
 			$type=$_POST["type"] ;
 			$jobTitle=$_POST["jobTitle"] ;
 			$firstAidQualified=$_POST["firstAidQualified"] ;
@@ -92,23 +96,45 @@ else {
 				header("Location: {$URL}");
 			}
 			else {
-				//Write to database
+				//Check unique inputs for uniquness
 				try {
-					$data=array("type"=>$type, "jobTitle"=>$jobTitle, "firstAidQualified"=>$firstAidQualified, "firstAidExpiry"=>$firstAidExpiry, "countryOfOrigin"=>$countryOfOrigin, "qualifications"=>$qualifications, "biographicalGrouping"=>$biographicalGrouping, "biographicalGroupingPriority"=>$biographicalGroupingPriority, "biography"=>$biography, "gibbonStaffID"=>$gibbonStaffID); 
-					$sql="UPDATE gibbonStaff SET type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography WHERE gibbonStaffID=:gibbonStaffID" ;
+					$data=array("gibbonStaffID"=>$gibbonStaffID, "initials"=>$initials); 
+					$sql="SELECT * FROM gibbonStaff WHERE initials=:initials AND NOT gibbonStaffID=:gibbonStaffID AND NOT initials=''" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
 					//Fail 2
+					print $e->getMessage() ; exit() ;
 					$URL=$URL . "&updateReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
+		
+				if ($result->rowCount()>0) {
+					//Fail 4
+					$URL=$URL . "&updateReturn=fail4" ;
+					header("Location: {$URL}");
+				}
+				else {	
+					//Write to database
+					try {
+						$data=array("initials"=>$initials, "type"=>$type, "jobTitle"=>$jobTitle, "firstAidQualified"=>$firstAidQualified, "firstAidExpiry"=>$firstAidExpiry, "countryOfOrigin"=>$countryOfOrigin, "qualifications"=>$qualifications, "biographicalGrouping"=>$biographicalGrouping, "biographicalGroupingPriority"=>$biographicalGroupingPriority, "biography"=>$biography, "gibbonStaffID"=>$gibbonStaffID); 
+						$sql="UPDATE gibbonStaff SET initials=:initials, type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography WHERE gibbonStaffID=:gibbonStaffID" ;
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
+					}
+					catch(PDOException $e) { 
+						//Fail 2
+						$URL=$URL . "&updateReturn=fail2" ;
+						header("Location: {$URL}");
+						break ;
+					}
 
-				//Success 0
-				$URL=$URL . "&updateReturn=success0" ;
-				header("Location: {$URL}");
+					//Success 0
+					$URL=$URL . "&updateReturn=success0" ;
+					header("Location: {$URL}");
+				}
 			}
 		}
 	}

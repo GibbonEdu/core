@@ -108,11 +108,17 @@ else {
 				if (isset($_POST["order"])) {
 					$order=$_POST["order"] ;
 				}
-				if ($row["status"]=="Issued" AND $_POST["status"]=="Paid") {
+				if (($row["status"]=="Issued" AND $_POST["status"]=="Paid") OR ($row["status"]=="Paid" AND $_POST["status"]=="Refunded")) {
 					$paidDate=dateConvert($_POST["paidDate"]) ;
 				}
 				else {
 					$paidDate=NULL ;
+				}
+				if (($row["status"]=="Issued" AND $_POST["status"]=="Paid") OR ($row["status"]=="Paid" AND $_POST["status"]=="Refunded")) {
+					$paidAmount=$_POST["paidAmount"] ;
+				}
+				else {
+					$paidAmount=NULL ;
 				}
 				if ($row["billingScheduleType"]=="Ad Hoc" AND ($row["status"]=="Pending" OR $row["status"]=="Issued")) {
 					$invoiceDueDate=dateConvert($_POST["invoiceDueDate"]) ;
@@ -124,8 +130,8 @@ else {
 				
 				//Write to database
 				try {
-					$data=array("status"=>$status, "notes"=>$notes, "paidDate"=>$paidDate, "invoiceDueDate"=>$invoiceDueDate, "gibbonPersonIDUpdate"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID); 
-					$sql="UPDATE gibbonFinanceInvoice SET status=:status, notes=:notes, paidDate=:paidDate, invoiceDueDate=:invoiceDueDate, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate='" . date("Y-m-d H:i:s") . "' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
+					$data=array("status"=>$status, "notes"=>$notes, "paidDate"=>$paidDate, "paidAmount"=>$paidAmount, "invoiceDueDate"=>$invoiceDueDate, "gibbonPersonIDUpdate"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID); 
+					$sql="UPDATE gibbonFinanceInvoice SET status=:status, notes=:notes, paidDate=:paidDate, paidAmount=:paidAmount, invoiceDueDate=:invoiceDueDate, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate='" . date("Y-m-d H:i:s") . "' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}

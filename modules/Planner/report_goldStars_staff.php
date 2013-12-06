@@ -61,28 +61,26 @@ else {
 		$count=0;
 		$rowNum="odd" ;
 		while ($row=$result->fetch()) {
-			if (is_null($log[$row["gibbonRollGroupID"]])) {
-				if ($count%2==0) {
-					$rowNum="even" ;
-				}
-				else {
-					$rowNum="odd" ;
-				}
-				$count++ ;
-				
-				//COLOR ROW BY STATUS!
-				print "<tr class=$rowNum>" ;
-					print "<td>" ;
-						print $count ;
-					print "</td>" ;
-					print "<td>" ;
-						print formatName("", $row["preferredName"], $row["surname"], "Staff", false, true) ;
-					print "</td>" ;
-					print "<td>" ;
-						print $row["stars"] ;
-					print "</td>" ;
-				print "</tr>" ;
+			if ($count%2==0) {
+				$rowNum="even" ;
 			}
+			else {
+				$rowNum="odd" ;
+			}
+			$count++ ;
+			
+			//COLOR ROW BY STATUS!
+			print "<tr class=$rowNum>" ;
+				print "<td>" ;
+					print $count ;
+				print "</td>" ;
+				print "<td>" ;
+					print formatName("", $row["preferredName"], $row["surname"], "Staff", false, true) ;
+				print "</td>" ;
+				print "<td>" ;
+					print $row["stars"] ;
+				print "</td>" ;
+			print "</tr>" ;
 		}
 		if ($count==0) {
 			print "<tr class=$rowNum>" ;

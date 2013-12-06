@@ -644,8 +644,8 @@ function getYearGroups( $connection2 ) {
 		$sql="SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber" ;
 		$result=$connection2->query($sql);  
 		while ($row=$result->fetch()) {
-			$output=$output . $row["gibbonYearGroupID"] . "," ;
-			$output=$output . $row["name"] . "," ;
+			$output.= $row["gibbonYearGroupID"] . "," ;
+			$output.= $row["name"] . "," ;
 		}
 	}
 	catch(PDOException $e) { }		
@@ -728,12 +728,12 @@ function getTerms( $connection2, $gibbonSchoolYearID, $short=FALSE ) {
 	catch(PDOException $e) { }
 	
 	while ($row=$result->fetch()) {
-		$output=$output . $row["gibbonSchoolYearTermID"] . "," ;
+		$output.= $row["gibbonSchoolYearTermID"] . "," ;
 		if ($short==TRUE) {
-			$output=$output . $row["nameShort"] . "," ;
+			$output.= $row["nameShort"] . "," ;
 		}
 		else {
-			$output=$output . $row["name"] . "," ;
+			$output.= $row["name"] . "," ;
 		}
 	}
 	if ($output!=FALSE) {
@@ -912,10 +912,10 @@ function sidebar($connection2, $guid) {
 			
 			if ($result->rowCount()>0) {			
 				$output="<h2>" ;
-				$output=$output . "Module Menu" ;
-				$output=$output . "</h2>" ;
+				$output.= "Module Menu" ;
+				$output.= "</h2>" ;
 				
-				$output=$output . "<ul class='moduleMenu'>" ;
+				$output.= "<ul class='moduleMenu'>" ;
 				
 				$currentCategory="" ;
 				$lastCategory="" ;
@@ -944,14 +944,14 @@ function sidebar($connection2, $guid) {
 					if ($currentName!=$lastName) {
 						if ($currentCategory!=$lastCategory) {
 							if ($count>0) {
-								$output=$output . "</ul></li>";
+								$output.= "</ul></li>";
 							}
-							$output=$output . "<li><b>$currentCategory</b>" ;
-							$output=$output . "<ul>" ;
-							$output=$output . "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>$currentName</a></li>" ;
+							$output.= "<li><b>$currentCategory</b>" ;
+							$output.= "<ul>" ;
+							$output.= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>$currentName</a></li>" ;
 						}
 						else {
-							$output=$output . "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>$currentName</a></li>" ;
+							$output.= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>$currentName</a></li>" ;
 						}
 						$links++ ;
 					}
@@ -960,9 +960,9 @@ function sidebar($connection2, $guid) {
 					$count++ ;
 				}
 				if ($count>0) {
-					$output=$output . "</ul></li>";
+					$output.= "</ul></li>";
 				}
-				$output=$output . "</ul>" ;
+				$output.= "</ul>" ;
 				
 				if ($links>1 OR (isActionAccessible($guid, $connection2, "/modules/$moduleName/$moduleEntry")==FALSE)) {
 					print $output ;
@@ -1353,7 +1353,7 @@ function sidebar($connection2, $guid) {
 						print "</td>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
 							print "<td style='text-align: center'>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter=" . $row["gibbonCourseClassID"] . "'><img style='margin-top: 3px' title='View Planner' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/homework.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter=" . $row["gibbonCourseClassID"] . "'><img style='margin-top: 3px' title='View Homework' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/homework.png'/></a> " ;
 							print "</td>" ;
 						}
 					print "</tr>" ;
@@ -1520,24 +1520,24 @@ function getMaxUpload( $multiple="" ) {
 	$post=substr(ini_get("post_max_size"),0,(strlen(ini_get("post_max_size"))-1)) ;
 	$file=substr(ini_get("upload_max_filesize"),0,(strlen(ini_get("upload_max_filesize"))-1)) ;
 	
-	$output=$output . "<div style='margin-top: 5px; font-style: italic; text-align: right; color: #c00'>" ;
+	$output.= "<div style='margin-top: 5px; font-style: italic; text-align: right; color: #c00'>" ;
 	if ($multiple==TRUE) {
 		if ($post<$file) {
-			$output=$output . "Maximum size for all files: " . $post . "MB<br/>" ;
+			$output.= "Maximum size for all files: " . $post . "MB<br/>" ;
 		}
 		else {
-			$output=$output . "Maximum size for all files: " . $file . "MB<br/>" ;
+			$output.= "Maximum size for all files: " . $file . "MB<br/>" ;
 		}
 	}
 	else {
 		if ($post<$file) {
-			$output=$output . "Maximum file size: " . $post . "MB<br/>" ;
+			$output.= "Maximum file size: " . $post . "MB<br/>" ;
 		}
 		else {
-			$output=$output . "Maximum file size: " . $file . "MB<br/>" ;
+			$output.= "Maximum file size: " . $file . "MB<br/>" ;
 		}
 	}
-	$output=$output . "</div>" ; 
+	$output.= "</div>" ; 
 	
 	return $output ;
 }
@@ -2461,6 +2461,8 @@ class ExportToExcel
 	}
 	function exportWithQuery($qry,$excel_file_name,$conn)//to export with query
 	{
+		$body=NULL ;
+		
 		try {
 			$tmprst=$conn->query($qry);  
 			$tmprst->setFetchMode(PDO::FETCH_NUM); 

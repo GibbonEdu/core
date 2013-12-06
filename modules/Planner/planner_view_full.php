@@ -37,14 +37,23 @@ else {
 		print "</div>" ;
 	}
 	else {
-		$viewBy=$_GET["viewBy"] ;
-		$subView=$_GET["subView"] ;
+		$viewBy=NULL ;
+		if (isset($_GET["viewBy"])) {
+			$viewBy=$_GET["viewBy"] ;
+		}
+		$subView=NULL ;
+		if (isset($_GET["subView"])) {
+			$subView=$_GET["subView"] ;
+		}
 		if ($viewBy!="date" AND $viewBy!="class") {
 			$viewBy="date" ;
 		}
+		$gibbonCourseClassID=NULL ;
+		$date=NULL ;
+		$dateStamp=NULL ;
 		if ($viewBy=="date") {
 			$date=$_GET["date"] ;
-			if ($_GET["dateHuman"]!="") {
+			if (isset($_GET["dateHuman"])) {
 				$date=dateConvert($_GET["dateHuman"]) ;
 			}
 			if ($date=="") {
@@ -54,9 +63,13 @@ else {
 			$dateStamp=mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);	
 		}
 		else if ($viewBy=="class") {
-			$class=$_GET["class"] ;
+			$class=NULL ;
+			if (isset($_GET["class"])) {
+				$class=$_GET["class"] ;
+			}
 			$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 		}
+		$gibbonPersonID=NULL;
 		
 		//Proceed!
 		//Get class variable
@@ -68,14 +81,18 @@ else {
 		}
 		//Check existence of and access to this class.
 		else {
+			$data=array() ;
+			$gibbonPersonID=NULL ;
+			if (isset($_GET["search"])) {
+				$gibbonPersonID=$_GET["search"] ;
+			}
 			if ($highestAction=="Lesson Planner_viewMyChildrensClasses") {
-				if ($_GET["search"]=="") {
+				if ($gibbonPersonID=="") {
 					print "<div class='warning'>" ;
 						print "Lesson cannot be displayed due to a system error." ;
 					print "</div>" ;
 				}
 				else {
-					$gibbonPersonID=$_GET["search"] ;
 					try {
 						$dataChild=array("gibbonPersonID"=>$gibbonPersonID, "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
 						$sqlChild="SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'" ;
@@ -198,13 +215,13 @@ else {
 				}
 				
 				$params="&gibbonPlannerEntryID=$gibbonPlannerEntryID" ;
-				if ($_GET["date"]!="") {
+				if ($date!="") {
 					$params=$params."&date=" . $_GET["date"] ;
 				}
-				if ($_GET["viewBy"]!="") {
+				if ($viewBy!="") {
 					$params=$params."&viewBy=" . $_GET["viewBy"] ;
 				}
-				if ($_GET["gibbonCourseClassID"]!="") {
+				if ($gibbonCourseClassID!="") {
 					$params=$params."&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] ;
 				}
 				$params=$params."&subView=$subView" ;
@@ -247,7 +264,7 @@ else {
 					print "</div>" ;
 				} 
 				
-				$postReturn=$_GET["postReturn"] ;
+				if (isset($_GET["postReturn"])) { $postReturn=$_GET["postReturn"] ; } else { $postReturn="" ; }
 				$postReturnMessage ="" ;
 				$class="error" ;
 				if (!($postReturn=="")) {
@@ -305,13 +322,15 @@ else {
 						print "<h2>" ;
 							print $row["name"] . "<br>" ;
 							$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
-							if ($unit[0]!="") {
-								if ($unit[1]!="") {
-									print "<div style='font-weight: normal; font-style: italic; font-size: 60%; margin-top: -5px'>$unit[1] Unit: " . $unit[0] . "</div>" ;
-									$unitType=$unit[1] ;
-								}
-								else {
-									print "<div style='font-weight: normal; font-style: italic; font-size: 60%; margin-top: -5px'>Unit: " . $unit[0] . "</div>" ;
+							if (isset($unit[0])) {
+								if ($unit[0]!="") {
+									if ($unit[1]!="") {
+										print "<div style='font-weight: normal; font-style: italic; font-size: 60%; margin-top: -5px'>$unit[1] Unit: " . $unit[0] . "</div>" ;
+										$unitType=$unit[1] ;
+									}
+									else {
+										print "<div style='font-weight: normal; font-style: italic; font-size: 60%; margin-top: -5px'>Unit: " . $unit[0] . "</div>" ;
+									}
 								}
 							}
 						print "</h2>" ;
@@ -372,7 +391,8 @@ else {
 									}
 									catch(PDOException $e) { 
 										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-									}if ($resultNext->rowCount()>0) {
+									}
+									if ($resultNext->rowCount()>0) {
 										$rowNext=$resultNext->fetch() ;
 										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $rowNext["gibbonPlannerEntryID"] . "&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=" . $rowNext["gibbonCourseClassID"] . "&date=$date'>Next Lesson</a>" ;
 									}
@@ -1070,7 +1090,7 @@ else {
 																	</td>
 																	<td>
 																		<? 
-																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $_GET["search"] . "&gibbonPersonID=" . $rowClass["gibbonPersonID"] . "&submission=false'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;						
+																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $gibbonPersonID . "&gibbonPersonID=" . $rowClass["gibbonPersonID"] . "&submission=false'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;						
 																		?>
 																	</td>
 																	<?
@@ -1116,8 +1136,8 @@ else {
 																	</td>
 																	<td>
 																		<? 
-																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=" . $_GET["search"] . "&gibbonPlannerEntryHomeworkID=" . $rowVersion["gibbonPlannerEntryHomeworkID"] . "&submission=true'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;						
-																		print "<a onclick='return confirm(\"Are you sure you wish to delete this submission?\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_submit_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$search&gibbonPlannerEntryHomeworkID=" . $rowVersion["gibbonPlannerEntryHomeworkID"] . "'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=" . $gibbonPersonID . "&gibbonPlannerEntryHomeworkID=" . $rowVersion["gibbonPlannerEntryHomeworkID"] . "&submission=true'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;						
+																		print "<a onclick='return confirm(\"Are you sure you wish to delete this submission?\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_submit_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$gibbonPersonID&gibbonPlannerEntryHomeworkID=" . $rowVersion["gibbonPlannerEntryHomeworkID"] . "'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 																		?>
 																	</td>
 																	<?
@@ -1235,7 +1255,7 @@ else {
 											print "</tr>" ;
 											if ($rowOutcomes["content"]!="") {
 												print "<tr class='description-$count' id='description-$count'>" ;
-													print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
+													print "<td colspan=6>" ;
 														print $rowOutcomes["content"] ;
 													print "</td>" ;
 												print "</tr>" ;
@@ -1268,7 +1288,7 @@ else {
 							print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top; max-width: 752px!important' colspan=3>" ;
 								
 								print "<div style='margin: 0px' class='linkTop'>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params'><img title='Refresh' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/refresh.png'/></a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $_GET["search"] . "'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a> " ;						
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params'><img title='Refresh' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/refresh.png'/></a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $gibbonPersonID . "'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a> " ;						
 								print "</div>" ;
 							
 								print "<div style='margin-bottom: 0px' class='success'>" ;
@@ -1276,7 +1296,7 @@ else {
 								print "</div>" ;
 								
 								//Get discussion
-								print getThread($guid, $connection2, $gibbonPlannerEntryID, NULL, 0, NULL, $viewBy, $subView, $date, $class, $gibbonCourseClassID, $_GET["search"], $row["role"]) ;
+								print getThread($guid, $connection2, $gibbonPlannerEntryID, NULL, 0, NULL, $viewBy, $subView, $date, $class, $gibbonCourseClassID, $gibbonPersonID, $row["role"]) ;
 							
 							print "</td>" ;
 						print "</tr>" ;
@@ -1406,7 +1426,7 @@ else {
 														print "</tr>" ;
 														if ($rowOutcomes["content"]!="") {
 															print "<tr class='unitDescription-$count' id='unitDescription-$count'>" ;
-																print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
+																print "<td colspan=6>" ;
 																	print $rowOutcomes["content"] ;
 																print "</td>" ;
 															print "</tr>" ;
@@ -1488,9 +1508,9 @@ else {
 									}
 									
 									//Get attendance status for students
+									$status="" ;
 									if ($rowClassGroup["role"]=="Student") {
 										//Check for record
-										$status="" ;
 										try {
 											$dataAtt=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$rowClassGroup["gibbonPersonID"]); 
 											$sqlAtt="SELECT * FROM gibbonPlannerEntryAttendance WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;

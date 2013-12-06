@@ -201,7 +201,7 @@ else {
 									print "<td>" ;
 										print getYearGroupsFromIDList($connection2, $rowBlocks["gibbonYearGroupIDList"]) ;
 									print "</td>" ;
-									print "<td style='border-bottom: 1px solid #333' colspan=5>" ;
+									print "<td colspan=5>" ;
 										print $rowBlocks["content"] ;
 									print "</td>" ;
 								print "</tr>" ;

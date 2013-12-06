@@ -174,58 +174,34 @@ else {
 				}
 				else {
 					//Move attached image  file, if there is one
-					if ($_FILES["imageFile"]["tmp_name"]!="" AND $imageType=="File") {
-						//Move attached file, if there is one
-						if ($_FILES["imageFile"]["tmp_name"]!="") {
-							$time=time() ;
-							//Check for folder in uploads based on today's date
-							$path=$_SESSION[$guid]["absolutePath"] ; ;
-							if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
-								mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
-							}
-							$unique=FALSE;
-							while ($unique==FALSE) {
-								$suffix=randomPassword(16) ;
-								$imageLocation="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $id) . "_$suffix" . strrchr($_FILES["imageFile"]["name"], ".") ;
-								if (!(file_exists($path . "/" . $imageLocation))) {
-									$unique=TRUE ;
+					if (isset($_FILES["imageFile"])) {
+						if ($_FILES["imageFile"]["tmp_name"]!="" AND $imageType=="File") {
+							//Move attached file, if there is one
+							if ($_FILES["imageFile"]["tmp_name"]!="") {
+								$time=time() ;
+								//Check for folder in uploads based on today's date
+								$path=$_SESSION[$guid]["absolutePath"] ; ;
+								if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
+									mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
 								}
-							}
+								$unique=FALSE;
+								while ($unique==FALSE) {
+									$suffix=randomPassword(16) ;
+									$imageLocation="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $id) . "_$suffix" . strrchr($_FILES["imageFile"]["name"], ".") ;
+									if (!(file_exists($path . "/" . $imageLocation))) {
+										$unique=TRUE ;
+									}
+								}
 							
-							if (!(move_uploaded_file($_FILES["imageFile"]["tmp_name"],$path . "/" . $imageLocation))) {
-								//Fail 5
-								$URL=$URL . "&addReturn=fail5" ;
-								header("Location: {$URL}");
+								if (!(move_uploaded_file($_FILES["imageFile"]["tmp_name"],$path . "/" . $imageLocation))) {
+									//Fail 5
+									$URL=$URL . "&addReturn=fail5" ;
+									header("Location: {$URL}");
+								}
 							}
 						}
 					}
 					
-					//Move attached thumbnail  file, if there is one
-					if ($_FILES["thumbnailFile"]["tmp_name"]!="" AND $imageType_100=="File") {
-						//Move attached file, if there is one
-						if ($_FILES["thumbnailFile"]["tmp_name"]!="") {
-							$time=time() ;
-							//Check for folder in uploads based on today's date
-							$path=$_SESSION[$guid]["absolutePath"] ; ;
-							if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
-								mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
-							}
-							$unique=FALSE;
-							while ($unique==FALSE) {
-								$suffix=randomPassword(16) ;
-								$imageLocation_100="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $id) . "_100_$suffix" . strrchr($_FILES["thumbnailFile"]["name"], ".") ;
-								if (!(file_exists($path . "/" . $imageLocation_100))) {
-									$unique=TRUE ;
-								}
-							}
-							
-							if (!(move_uploaded_file($_FILES["thumbnailFile"]["tmp_name"],$path . "/" . $imageLocation_100))) {
-								//Fail 5
-								$URL=$URL . "&addReturn=fail5" ;
-								header("Location: {$URL}");
-							}
-						}
-					}
 			
 					//Write to database
 					try {

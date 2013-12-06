@@ -105,6 +105,32 @@ else {
 			</tr>
 			<tr>
 				<td> 
+					<b>Initials</b><br/>
+					<span style="font-size: 90%"><i>Needs to be unique if set.</i></span>
+				</td>
+				<td class="right">
+					<input name="initials" id="initials" maxlength=4 value="" type="text" style="width: 300px">
+					<?
+					$idList="" ;
+					try {
+						$dataSelect=array(); 
+						$sqlSelect="SELECT initials FROM gibbonStaff ORDER BY initials" ;
+						$resultSelect=$connection2->prepare($sqlSelect);
+						$resultSelect->execute($dataSelect);
+					}
+					catch(PDOException $e) { }
+					while ($rowSelect=$resultSelect->fetch()) {
+						$idList.="'" . $rowSelect["initials"]  . "'," ;
+					}
+					?>
+					<script type="text/javascript">
+						var initials=new LiveValidation('initials');
+						initials.add( Validate.Exclusion, { within: [<? print $idList ;?>], failureMessage: "Initials already in use!", partialMatch: false, caseSensitive: false } );
+					</script>
+				</td>
+			</tr>
+			<tr>
+				<td> 
 					<b>Type *</b><br/>
 				</td>
 				<td class="right">

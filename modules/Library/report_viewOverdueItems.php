@@ -72,35 +72,33 @@ else {
 		$count=0;
 		$rowNum="odd" ;
 		while ($row=$result->fetch()) {
-			if (is_null($log[$row["orderBy"]])) {
-				if ($count%2==0) {
-					$rowNum="even" ;
-				}
-				else {
-					$rowNum="odd" ;
-				}
-				$count++ ;
-				
-				//COLOR ROW BY STATUS!
-				print "<tr class=$rowNum>" ;
-					print "<td>" ;
-						print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
-					print "</td>" ;
-					print "<td>" ;
-						print $row["email"] ;
-					print "</td>" ;
-					print "<td>" ;
-						print "<b>" . $row["name"] . "</b><br/>" ;
-						print "<span style='font-size: 85%; font-style: italic'>" . $row["producer"] . "</span>" ;
-					print "</td>" ;
-					print "<td>" ;
-						print dateConvertBack($row["returnExpected"]) ;
-					print "</td>" ;
-					print "<td>" ;
-						print (strtotime($today)-strtotime($row["returnExpected"]))/(60*60*24) ;
-					print "</td>" ;
-				print "</tr>" ;
+			if ($count%2==0) {
+				$rowNum="even" ;
 			}
+			else {
+				$rowNum="odd" ;
+			}
+			$count++ ;
+			
+			//COLOR ROW BY STATUS!
+			print "<tr class=$rowNum>" ;
+				print "<td>" ;
+					print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
+				print "</td>" ;
+				print "<td>" ;
+					print $row["email"] ;
+				print "</td>" ;
+				print "<td>" ;
+					print "<b>" . $row["name"] . "</b><br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . $row["producer"] . "</span>" ;
+				print "</td>" ;
+				print "<td>" ;
+					print dateConvertBack($row["returnExpected"]) ;
+				print "</td>" ;
+				print "<td>" ;
+					print (strtotime($today)-strtotime($row["returnExpected"]))/(60*60*24) ;
+				print "</td>" ;
+			print "</tr>" ;
 		}
 		if ($count==0) {
 			print "<tr class=$rowNum>" ;

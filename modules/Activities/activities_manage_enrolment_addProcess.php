@@ -60,7 +60,10 @@ else {
 	else {
 		//Run through each of the selected participants.
 		$update=TRUE ;
-		$choices=$_POST["Members"] ;
+		$choices=NULL ;
+		if (isset($_POST["Members"])) {
+			$choices=$_POST["Members"] ;
+		}
 		
 		if (count($choices)<1) {
 			//Fail 1

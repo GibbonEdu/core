@@ -45,7 +45,14 @@ else {
 		print "Search" ;
 		print "</h2>" ;
 		
-		$gibbonPersonID=$_GET["gibbonPersonID"] ;
+		$gibbonPersonID=NULL ;
+		if (isset($_GET["gibbonPersonID"])) {
+			$gibbonPersonID=$_GET["gibbonPersonID"] ;
+		}
+		$search=NULL ;
+		if (isset($_GET["search"])) {
+			$search=$_GET["search"] ;
+		}
 	
 		?>
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -57,7 +64,7 @@ else {
 						<span style="font-size: 90%"><i>Space name.</i></span>
 					</td>
 					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<? print $_GET["search"] ?>" type="text" style="width: 300px">
+						<input name="search" id="search" maxlength=20 value="<? print $search ?>" type="text" style="width: 300px">
 					</td>
 				</tr>
 				<tr>
@@ -84,7 +91,6 @@ else {
 			$page=1 ;
 		}
 		
-		$search=$_GET["search"] ;
 		try {
 			$data=array(); 
 			$sql="SELECT * FROM gibbonSpace ORDER BY name" ; 
@@ -150,7 +156,7 @@ else {
 							print $row["type"] ;
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_space_view.php&gibbonSpaceID=" . $row["gibbonSpaceID"] . "&search=" . $_GET["search"] . "'><img title='View Timetable' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_space_view.php&gibbonSpaceID=" . $row["gibbonSpaceID"] . "&search=" . $search . "'><img title='View Timetable' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

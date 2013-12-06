@@ -66,13 +66,13 @@ else {
 			$whereSched=substr($whereSched,0,-4) . ")";
 					
 			//SQL for billing schedule AND pending
-			$sql="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonPerson.gibbonPersonID, dob, gender, studentID, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceBillingSchedule.invoiceDueDate, paidDate, gibbonFinanceBillingSchedule.name AS billingSchedule, NULL AS billingScheduleExtra, notes FROM gibbonFinanceInvoice JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Scheduled' AND gibbonFinanceInvoice.status='Pending' AND $whereSched)" ; 
+			$sql="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonPerson.gibbonPersonID, dob, gender, studentID, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceBillingSchedule.invoiceDueDate, paidDate, paidAmount, gibbonFinanceBillingSchedule.name AS billingSchedule, NULL AS billingScheduleExtra, notes, gibbonRollGroup.name AS rollGroup FROM gibbonFinanceInvoice JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Scheduled' AND gibbonFinanceInvoice.status='Pending' AND $whereSched)" ; 
 			$sql.=" UNION " ; 
 			//SQL for Ad Hoc AND pending
-			$sql.="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonPerson.gibbonPersonID, dob, gender, studentID, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, invoiceIssueDate, invoiceDueDate, paidDate, 'Ad Hoc' AS billingSchedule, NULL AS billingScheduleExtra, notes FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Ad Hoc' AND gibbonFinanceInvoice.status='Pending' AND $whereSched)" ; 
+			$sql.="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonPerson.gibbonPersonID, dob, gender, studentID, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, invoiceIssueDate, invoiceDueDate, paidDate, paidAmount, 'Ad Hoc' AS billingSchedule, NULL AS billingScheduleExtra, notes, gibbonRollGroup.name AS rollGroup FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Ad Hoc' AND gibbonFinanceInvoice.status='Pending' AND $whereSched)" ; 
 			$sql.=" UNION " ; 
 			//SQL for NOT Pending
-			$sql.="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonPerson.gibbonPersonID, dob, gender, studentID, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' AND $whereSched)" ; 
+			$sql.="(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonPerson.gibbonPersonID, dob, gender, studentID, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, paidAmount, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes, gibbonRollGroup.name AS rollGroup FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' AND $whereSched)" ; 
 			$sql.=" ORDER BY FIND_IN_SET(status, 'Pending,Issued,Paid,Refunded,Cancelled'), invoiceIssueDate, surname, preferredName" ; 
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
@@ -87,7 +87,13 @@ else {
 					print "Invoice Number" ;
 				print "</th>" ;
 				print "<th style='width: 120px'>" ;
-					print "Student <span style='font-style: italic; font-size: 85%'>(Invoice To)</span>" ;
+					print "Student" ;
+				print "</th>" ;
+				print "<th style='width: 120px'>" ;
+					print "Roll Group" ;
+				print "</th>" ;
+				print "<th style='width: 120px'>" ;
+					print "Invoice To</span>" ;
 				print "</th>" ;
 				print "<th style='width: 120px'>" ;
 					print "DOB" ;
@@ -102,7 +108,7 @@ else {
 					print "Schedule" ;
 				print "</th>" ;
 				print "<th style='width: 100px'>" ;
-					print "Total Value<br/><span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
+					print "Total Value <span style='font-style: italic; font-size: 85%'>(" . $_SESSION[$guid]["currency"] . ")</span>" ;
 				print "</th>" ;
 				print "<th style='width: 80px'>" ;
 					print "Issue Date" ;
@@ -110,6 +116,13 @@ else {
 				print "<th style='width: 80px'>" ;
 					print "Due Date" ;
 				print "</th>" ;
+				print "<th style='width: 80px'>" ;
+					print "Date Paid" ;
+				print "</th>" ;
+				print "<th style='width: 100px'>" ;
+					print "Amount Paid <span style='font-style: italic; font-size: 85%'>(" . $_SESSION[$guid]["currency"] . ")</span>" ;
+				print "</th>" ;
+				
 			print "</tr>" ;
 		
 			$count=0 ;
@@ -120,18 +133,23 @@ else {
 					print "<td>" ;
 						$invoiceNumber=getSettingByScope( $connection2, "Finance", "invoiceNumber" ) ;
 						if ($invoiceNumber=="Person ID + Invoice ID") {
-							print ltrim($row["gibbonPersonID"],"0") . "-" . ltrim($gibbonFinanceInvoiceID, "0") ;
+							print ltrim($row["gibbonPersonID"],"0") . "-" . ltrim($row["gibbonFinanceInvoiceID"], "0") ;
 						}
 						else if ($invoiceNumber=="Student ID + Invoice ID") {
-							print ltrim($row["studentID"],"0") . "-" . ltrim($gibbonFinanceInvoiceID, "0") ;
+							print ltrim($row["studentID"],"0") . "-" . ltrim($row["gibbonFinanceInvoiceID"], "0") ;
 						}
 						else {
-							print ltrim($gibbonFinanceInvoiceID, "0") ;
+							print ltrim($row["gibbonFinanceInvoiceID"], "0") ;
 						}
 					print "</td>" ;
 					print "<td>" ;
-						print "<b>" . formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) . "</b> " ;
-						print "<span style='font-style: italic; font-size: 85%'>(" . $row["invoiceTo"] . ")</span>" ;
+						print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
+					print "</td>" ;
+					print "<td>" ;
+						print $row["rollGroup"] ;
+					print "</td>" ;
+					print "<td>" ;
+						print $row["invoiceTo"] ;
 					print "</td>" ;
 					print "<td>" ;
 						if ($row["dob"]!="") {
@@ -188,6 +206,14 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						print dateConvertBack($row["invoiceDueDate"]) ;
+					print "</td>" ;
+					print "<td>" ;
+						if ($row["paidDate"]!="") {
+							print dateConvertBack($row["paidDate"]) ;
+						}
+					print "</td>" ;
+					print "<td>" ;
+						print number_format($row["paidAmount"], 2, ".", ",") ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

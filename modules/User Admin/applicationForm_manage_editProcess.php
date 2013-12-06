@@ -570,6 +570,47 @@ else {
 					break ;
 				}
 				
+				//Deal with required documents
+				$requiredDocuments=getSettingByScope($connection2, "Application Form", "requiredDocuments") ;
+				if ($requiredDocuments!="" AND $requiredDocuments!=FALSE) {
+					$fileCount=0 ;
+					if (isset($_POST["fileCount"])) {
+						$fileCount=$_POST["fileCount"] ;
+					}
+					for ($i=0; $i<$fileCount; $i++) {
+						$fileName=$_POST["fileName$i"] ;
+						$time=time() ;
+						//Move attached file, if there is one
+						if ($_FILES["file$i"]["tmp_name"]!="") {
+							//Check for folder in uploads based on today's date
+							$path=$_SESSION[$guid]["absolutePath"] ;
+							if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
+								mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
+							}
+							$unique=FALSE;
+							while ($unique==FALSE) {
+								$suffix=randomPassword(16) ;
+								$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/Application Document_$suffix" . strrchr($_FILES["file$i"]["name"], ".") ;
+								if (!(file_exists($path . "/" . $attachment))) {
+									$unique=TRUE ;
+								}
+							}
+							if (!(move_uploaded_file($_FILES["file$i"]["tmp_name"],$path . "/" . $attachment))) {
+							}
+						
+							//Write files to database
+							try {
+								$dataFile=array("gibbonApplicationFormID"=>$gibbonApplicationFormID, "name"=>$fileName, "path"=>$attachment); 
+								$sqlFile="INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path" ;
+								$resultFile=$connection2->prepare($sqlFile);
+								$resultFile->execute($dataFile);
+							}
+							catch(PDOException $e) { }
+						}
+					}
+				}
+			
+				
 				//Success 0
 				$URL=$URL . "&updateReturn=success0" ;
 				header("Location: {$URL}");

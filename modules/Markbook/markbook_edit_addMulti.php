@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_add
 else {	
 	//Get action with highest precendence
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
-	if ($highestAction==FALSE OR ($highestAction!="Edit Markbook_multipleClassesAcrossSchool" AND $highestAction!="Edit Markbook_multipleClassesInDepartment")) {
+	if ($highestAction==FALSE OR ($highestAction!="Edit Markbook_multipleClassesAcrossSchool" AND $highestAction!="Edit Markbook_multipleClassesInDepartment" AND $highestAction!="Edit Markbook_everything")) {
 		print "<div class='error'>" ;
 		print "The highest grouped action cannot be determined, or you do not have high enough permission to accces this page." ;
 		print "</div>" ;
@@ -109,7 +109,7 @@ else {
 								<?
 								print "<select multiple name='gibbonCourseClassIDMulti[]' id='gibbonCourseClassIDMulti[]' style='width:300px; height:150px'>" ;
 									try {
-										if ($highestAction=="Edit Markbook_multipleClassesAcrossSchool") {
+										if ($highestAction=="Edit Markbook_multipleClassesAcrossSchool" OR $highestAction=="Edit Markbook_everything") {
 											$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 											$sqlSelect="SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class" ;
 										}

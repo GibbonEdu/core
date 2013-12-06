@@ -54,7 +54,10 @@ else {
 			$dateStamp=mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);	
 		}
 		else if ($viewBy=="class") {
-			$class=$_GET["class"] ;
+			$class=NULL ;
+			if (isset($_GET["class"])) {
+				$class=$_GET["class"] ;
+			}
 			$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 		}
 			
@@ -238,202 +241,220 @@ else {
 							print "Add Submission" ;
 							print "</h2>" ;
 							
-							?>
-							<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submit_editProcess.php" ?>" enctype="multipart/form-data">
-								<table cellspacing='0' style="width: 100%">	
-									<tr><td style="width: 30%"></td><td></td></tr>
-									<tr>
-										<td> 
-											<b>Student *</b><br/>
-											<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
-										</td>
-										<td class="right">
-											<input readonly name="courseName" id="courseName" maxlength=20 value="<? print formatName("", htmlPrep($rowSubmission["preferredName"]), htmlPrep($rowSubmission["surname"]), "Student") ?>" type="text" style="width: 300px">
-										</td>
-									</tr>
-									<tr>
-										<td> 
-											<b>Type *</b><br/>
-										</td>
-										<td class="right">
-											<?
-											if ($row["homeworkSubmissionType"]=="Link") {
-												?>
-												<input checked type="radio" id="type" name="type" class="type" value="Link" /> Link
-												<input type="radio" id="type" name="type" class="type" value="None" /> None
+							try {
+								$dataSubmission=array("gibbonPersonID"=>$gibbonPersonID); 
+								$sqlSubmission="SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+								$resultSubmission=$connection2->prepare($sqlSubmission);
+								$resultSubmission->execute($dataSubmission);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+							
+							if ($resultSubmission->rowCount()!=1) {
+								print "<div class='warning'>" ;
+									print "The specified student could not be found." ;
+								print "</div>" ;
+							}
+							else {
+								$rowSubmission=$resultSubmission->fetch()
+							
+								?>
+								<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submit_editProcess.php" ?>" enctype="multipart/form-data">
+									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+										<tr>
+											<td> 
+												<b>Student *</b><br/>
+												<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+											</td>
+											<td class="right">
+												<input readonly name="courseName" id="courseName" maxlength=20 value="<? print formatName("", htmlPrep($rowSubmission["preferredName"]), htmlPrep($rowSubmission["surname"]), "Student") ?>" type="text" style="width: 300px">
+											</td>
+										</tr>
+										<tr>
+											<td> 
+												<b>Type *</b><br/>
+											</td>
+											<td class="right">
 												<?
-											}
-											else if ($row["homeworkSubmissionType"]=="File") {
-												?>
-												<input checked type="radio" id="type" name="type" class="type" value="File" /> File
-												<input type="radio" id="type" name="type" class="type" value="None" /> None
-												<?
-											}
-											else {
-												?>
-												<input type="radio" id="type" name="type" class="type" value="Link" /> Link
-												<input type="radio" id="type" name="type" class="type" value="File" /> File
-												<input checked type="radio" id="type" name="type" class="type" value="None" /> None
-												<?
-											}
-											?>
-										</td>
-									</tr>
-									<tr>
-										<td> 
-											<b>Version *</b><br/>
-										</td>
-										<td class="right">
-											<?
-											print "<select style='float: none; width: 302px' name='version'>" ;
-												if ($row["homeworkSubmissionDrafts"]>0 AND $status!="Late" AND $resultVersion->rowCount()<$row["homeworkSubmissionDrafts"]) {
-													print "<option value='Draft'>Draft</option>" ;
+												if ($row["homeworkSubmissionType"]=="Link") {
+													?>
+													<input checked type="radio" id="type" name="type" class="type" value="Link" /> Link
+													<input type="radio" id="type" name="type" class="type" value="None" /> None
+													<?
 												}
-												print "<option value='Final'>Final</option>" ;
-											print "</select>" ;
-											?>
-										</td>
-									</tr>
-									
-									<script type="text/javascript">
-										/* Subbmission type control */
-										$(document).ready(function(){
-											<?
-											if ($row["homeworkSubmissionType"]=="Link") {
-												?>
-												$("#fileRow").css("display","none");
-												<?
-											}
-											else if ($row["homeworkSubmissionType"]=="File") {
-												?>
-												$("#linkRow").css("display","none");
-												<?
-											}
-											else {
-												?>
-												$("#fileRow").css("display","none");
-												$("#linkRow").css("display","none");
-												<?
-											}
-											?>
-											
-											$(".type").click(function(){
-												if ($('input[name=type]:checked').val() == "Link" ) {
-													$("#fileRow").css("display","none");
-													$("#linkRow").slideDown("fast", $("#linkRow").css("display","table-row")); 
-												} else if ($('input[name=type]:checked').val() == "File" ) {
-													$("#linkRow").css("display","none");
-													$("#fileRow").slideDown("fast", $("#fileRow").css("display","table-row")); 
-												} else {
-													$("#fileRow").css("display","none");
-													$("#linkRow").css("display","none");
+												else if ($row["homeworkSubmissionType"]=="File") {
+													?>
+													<input checked type="radio" id="type" name="type" class="type" value="File" /> File
+													<input type="radio" id="type" name="type" class="type" value="None" /> None
+													<?
 												}
-											 });
-										});
-									</script>
+												else {
+													?>
+													<input type="radio" id="type" name="type" class="type" value="Link" /> Link
+													<input type="radio" id="type" name="type" class="type" value="File" /> File
+													<input checked type="radio" id="type" name="type" class="type" value="None" /> None
+													<?
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td> 
+												<b>Version *</b><br/>
+											</td>
+											<td class="right">
+												<?
+												print "<select style='float: none; width: 302px' name='version'>" ;
+													if ($row["homeworkSubmissionDrafts"]>0 AND $status!="Late" AND $resultVersion->rowCount()<$row["homeworkSubmissionDrafts"]) {
+														print "<option value='Draft'>Draft</option>" ;
+													}
+													print "<option value='Final'>Final</option>" ;
+												print "</select>" ;
+												?>
+											</td>
+										</tr>
 									
-									<tr id="fileRow">
-										<td> 
-											<b>Submit File *</b><br/>
-										</td>
-										<td class="right">
-											<input type="file" name="file" id="file"><br/><br/>
-											<?
-											print getMaxUpload() ;
+										<script type="text/javascript">
+											/* Subbmission type control */
+											$(document).ready(function(){
+												<?
+												if ($row["homeworkSubmissionType"]=="Link") {
+													?>
+													$("#fileRow").css("display","none");
+													<?
+												}
+												else if ($row["homeworkSubmissionType"]=="File") {
+													?>
+													$("#linkRow").css("display","none");
+													<?
+												}
+												else {
+													?>
+													$("#fileRow").css("display","none");
+													$("#linkRow").css("display","none");
+													<?
+												}
+												?>
 											
-											//Get list of acceptable file extensions
-											try {
-												$dataExt=array(); 
-												$sqlExt="SELECT * FROM gibbonFileExtension" ;
-												$resultExt=$connection2->prepare($sqlExt);
-												$resultExt->execute($dataExt);
-											}
-											catch(PDOException $e) { }
-											$ext="" ;
-											while ($rowExt=$resultExt->fetch()) {
-												$ext=$ext . "'." . $rowExt["extension"] . "'," ;
-											}
-											?>
-											
-											<script type="text/javascript">
-												var file=new LiveValidation('file');
-												file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-											</script>
-										</td>
-									</tr>
-									<tr id="linkRow">
-										<td> 
-											<b>Submit Link *</b><br/>
-										</td>
-										<td class="right">
-											<input name="link" id="link" maxlength=255 value="" type="text" style="width: 300px">
-											<script type="text/javascript">
-												var link=new LiveValidation('link');
-												link.add( Validate.Inclusion, { within: ['http://', 'https://'], failureMessage: "Address must start with http:// or https://", partialMatch: true } );
-											</script>
-											
-											
-										</td>
-									</tr>
-									<tr>
-										<td> 
-											<b>Status *</b><br/>
-										</td>
-										<td class="right">
-											<select style="width: 302px" name="status">
-												<option <? if ($rowSubmission["status"]=="On Time") { print "selected ";} ?>value="On Time">On Time</option>
-												<option <? if ($rowSubmission["status"]=="Late") { print "selected ";} ?>value="Late">Late</option>
-												<option <? if ($rowSubmission["status"]=="Exemption") { print "selected ";} ?>value="Exemption">Exemption</option>
-											</select>
-										</td>
-									</tr>
+												$(".type").click(function(){
+													if ($('input[name=type]:checked').val() == "Link" ) {
+														$("#fileRow").css("display","none");
+														$("#linkRow").slideDown("fast", $("#linkRow").css("display","table-row")); 
+													} else if ($('input[name=type]:checked').val() == "File" ) {
+														$("#linkRow").css("display","none");
+														$("#fileRow").slideDown("fast", $("#fileRow").css("display","table-row")); 
+													} else {
+														$("#fileRow").css("display","none");
+														$("#linkRow").css("display","none");
+													}
+												 });
+											});
+										</script>
 									
-									<tr>
-										<td class="right" colspan=2>
-											<?
-											$params="" ;
-											if ($_GET["date"]!="") {
-												$params=$params."&date=" . $_GET["date"] ;
-											}
-											if ($_GET["viewBy"]!="") {
-												$params=$params."&viewBy=" . $_GET["viewBy"] ;
-											}
-											if ($_GET["gibbonCourseClassID"]!="") {
-												$params=$params."&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] ;
-											}
-											$params=$params."&subView=$subView" ;
+										<tr id="fileRow">
+											<td> 
+												<b>Submit File *</b><br/>
+											</td>
+											<td class="right">
+												<input type="file" name="file" id="file"><br/><br/>
+												<?
+												print getMaxUpload() ;
 											
-											$count=0;
-											try {
-												$dataVersion=array("gibbonPersonID"=>$gibbonPersonID, "gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
-												$sqlVersion="SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
-												$resultVersion=$connection2->prepare($sqlVersion);
-												$resultVersion->execute($dataVersion);
-											}
-											catch(PDOException $e) { 
-												print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-											}
+												//Get list of acceptable file extensions
+												try {
+													$dataExt=array(); 
+													$sqlExt="SELECT * FROM gibbonFileExtension" ;
+													$resultExt=$connection2->prepare($sqlExt);
+													$resultExt->execute($dataExt);
+												}
+												catch(PDOException $e) { }
+												$ext="" ;
+												while ($rowExt=$resultExt->fetch()) {
+													$ext=$ext . "'." . $rowExt["extension"] . "'," ;
+												}
+												?>
 											
-											if ($resultVersion->rowCount()<1) {
-												$count=$resultVersion->rowCount() ;
-											}
+												<script type="text/javascript">
+													var file=new LiveValidation('file');
+													file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+												</script>
+											</td>
+										</tr>
+										<tr id="linkRow">
+											<td> 
+												<b>Submit Link *</b><br/>
+											</td>
+											<td class="right">
+												<input name="link" id="link" maxlength=255 value="" type="text" style="width: 300px">
+												<script type="text/javascript">
+													var link=new LiveValidation('link');
+													link.add( Validate.Inclusion, { within: ['http://', 'https://'], failureMessage: "Address must start with http:// or https://", partialMatch: true } );
+												</script>
 											
-											print "<input type='hidden' name='count' value='$count'>" ;
-											print "<input type='hidden' name='lesson' value='" . $row["name"] . "'>" ;
-											print "<input type='hidden' name='search' value='" . $_GET["search"] . "'>" ;
-											print "<input type='hidden' name='params' value='$params'>" ;
-											print "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>" ;
-											print "<input type='hidden' name='submission' value='false'>" ;
-											print "<input type='hidden' name='gibbonPersonID' value='$gibbonPersonID'>" ;
-											print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
-											?>
 											
-											<input type="submit" value="Submit">
-										</td>
-									</tr>
-								</table>
-							</form>
-						<?
+											</td>
+										</tr>
+										<tr>
+											<td> 
+												<b>Status *</b><br/>
+											</td>
+											<td class="right">
+												<select style="width: 302px" name="status">
+													<option value="On Time">On Time</option>
+													<option value="Late">Late</option>
+													<option value="Exemption">Exemption</option>
+												</select>
+											</td>
+										</tr>
+									
+										<tr>
+											<td class="right" colspan=2>
+												<?
+												$params="" ;
+												if ($_GET["date"]!="") {
+													$params=$params."&date=" . $_GET["date"] ;
+												}
+												if ($_GET["viewBy"]!="") {
+													$params=$params."&viewBy=" . $_GET["viewBy"] ;
+												}
+												if ($_GET["gibbonCourseClassID"]!="") {
+													$params=$params."&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] ;
+												}
+												$params=$params."&subView=$subView" ;
+											
+												$count=0;
+												try {
+													$dataVersion=array("gibbonPersonID"=>$gibbonPersonID, "gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
+													$sqlVersion="SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+													$resultVersion=$connection2->prepare($sqlVersion);
+													$resultVersion->execute($dataVersion);
+												}
+												catch(PDOException $e) { 
+													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+												}
+											
+												if ($resultVersion->rowCount()<1) {
+													$count=$resultVersion->rowCount() ;
+												}
+											
+												print "<input type='hidden' name='count' value='$count'>" ;
+												print "<input type='hidden' name='lesson' value='" . $row["name"] . "'>" ;
+												print "<input type='hidden' name='search' value='" . $_GET["search"] . "'>" ;
+												print "<input type='hidden' name='params' value='$params'>" ;
+												print "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>" ;
+												print "<input type='hidden' name='submission' value='false'>" ;
+												print "<input type='hidden' name='gibbonPersonID' value='$gibbonPersonID'>" ;
+												print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
+												?>
+											
+												<input type="submit" value="Submit">
+											</td>
+										</tr>
+									</table>
+								</form>
+								<?
+							}
 						}
 					}
 				}

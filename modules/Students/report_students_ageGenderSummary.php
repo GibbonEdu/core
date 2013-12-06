@@ -50,7 +50,7 @@ else {
 	while ($rowList=$resultList->fetch()) {
 		if ($rowList["dob"]!="") {
 			$age=floor(($today-strtotime($rowList["dob"]))/31556926);
-			if ($ages[$age]=="") {
+			if (isset($ages[$age])==FALSE) {
 				$ages[$age]=$age ;
 			}
 		} 
@@ -105,69 +105,67 @@ else {
 			
 			$count=0;
 			$rowNum="odd" ;
-			foreach ($ages as $age) {
-				if (is_null($log[$row["gibbonRollGroupID"]])) {
-					if ($count%2==0) {
-						$rowNum="even" ;
-					}
-					else {
-						$rowNum="odd" ;
-					}
-					$count++ ;
-					
-					//COLOR ROW BY STATUS!
-					print "<tr class=$rowNum>" ;
-						print "<td>" ;
-							print "<b>$age</b>" ;
-						print "</td>" ;
-						for ($i=1; $i<count($years); $i=$i+2) {
-							print "<td style='text-align: center'>" ;
-								$cellCount=0 ;
-								foreach ($everything as $thing) {
-									if ($thing[2]==$years[$i-1] AND $thing[1]=="M" AND floor(($today-strtotime($thing[0]))/31556926)==$age) {
-										$cellCount++ ;
-									}
-								}
-								if ($cellCount!=0) {
-									print $cellCount ;
-								}
-							print "</td>" ;
-							print "<td style='text-align: center'>" ;
-								$cellCount=0 ;
-								foreach ($everything as $thing) {
-									if ($thing[2]==$years[$i-1] AND $thing[1]=="F" AND floor(($today-strtotime($thing[0]))/31556926)==$age) {
-										$cellCount++ ;
-									}
-								}
-								if ($cellCount!=0) {
-									print $cellCount ;
-								}
-							print "</td>" ;
-						}
-						print "<td style='text-align: center'>" ;
-							$cellCount=0 ;
-							foreach ($everything as $thing) {
-								if ($thing[1]=="M" AND floor(($today-strtotime($thing[0]))/31556926)==$age) {
-									$cellCount++ ;
-								}
-							}
-							if ($cellCount!=0) {
-								print $cellCount ;
-							}
-						print "</td>" ;
-						print "<td style='text-align: center'>" ;
-							$cellCount=0 ;
-							foreach ($everything as $thing) {
-								if ($thing[1]=="F" AND floor(($today-strtotime($thing[0]))/31556926)==$age) {
-									$cellCount++ ;
-								}
-							}
-							if ($cellCount!=0) {
-								print $cellCount ;
-							}
-						print "</td>" ;
-					print "</tr>" ;
+			foreach ($ages as $age) {				
+				if ($count%2==0) {
+					$rowNum="even" ;
 				}
+				else {
+					$rowNum="odd" ;
+				}
+				$count++ ;
+				
+				//COLOR ROW BY STATUS!
+				print "<tr class=$rowNum>" ;
+					print "<td>" ;
+						print "<b>$age</b>" ;
+					print "</td>" ;
+					for ($i=1; $i<count($years); $i=$i+2) {
+						print "<td style='text-align: center'>" ;
+							$cellCount=0 ;
+							foreach ($everything as $thing) {
+								if ($thing[2]==$years[$i-1] AND $thing[1]=="M" AND floor(($today-strtotime($thing[0]))/31556926)==$age) {
+									$cellCount++ ;
+								}
+							}
+							if ($cellCount!=0) {
+								print $cellCount ;
+							}
+						print "</td>" ;
+						print "<td style='text-align: center'>" ;
+							$cellCount=0 ;
+							foreach ($everything as $thing) {
+								if ($thing[2]==$years[$i-1] AND $thing[1]=="F" AND floor(($today-strtotime($thing[0]))/31556926)==$age) {
+									$cellCount++ ;
+								}
+							}
+							if ($cellCount!=0) {
+								print $cellCount ;
+							}
+						print "</td>" ;
+					}
+					print "<td style='text-align: center'>" ;
+						$cellCount=0 ;
+						foreach ($everything as $thing) {
+							if ($thing[1]=="M" AND floor(($today-strtotime($thing[0]))/31556926)==$age) {
+								$cellCount++ ;
+							}
+						}
+						if ($cellCount!=0) {
+							print $cellCount ;
+						}
+					print "</td>" ;
+					print "<td style='text-align: center'>" ;
+						$cellCount=0 ;
+						foreach ($everything as $thing) {
+							if ($thing[1]=="F" AND floor(($today-strtotime($thing[0]))/31556926)==$age) {
+								$cellCount++ ;
+							}
+						}
+						if ($cellCount!=0) {
+							print $cellCount ;
+						}
+					print "</td>" ;
+				print "</tr>" ;
 			}
 			print "<tr style='background-color: #FFD2A9'>" ;
 				print "<td rowspan=2>" ;

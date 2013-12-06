@@ -146,7 +146,7 @@ else {
 					<tr>
 						<td colspan=2 style='padding-top: 15px;'> 
 							<b>Note *</b><br/>
-							<? print getEditor($guid,  TRUE, "note", $row["note"], 25, true, true, false) ?>
+							<? print getEditor($guid,  TRUE, "note", "", 25, true, true, false) ?>
 						</td>
 					</tr>
 					<tr>

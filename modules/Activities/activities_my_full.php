@@ -66,183 +66,176 @@ else {
 			}
 			else {
 				$row=$result->fetch() ;
-				if (($row["role"]=="Student" AND $row["viewableStudents"]=="N") AND ($highestAction=="Lesson Planner_viewMyChildrensClasses" AND $row["viewableParents"]=="N")) {
-					print "<div class='warning'>" ;
-						print "Lesson does not exist or you do not have access to it." ;
-					print "</div>" ;
-				}
-				else {
-					//Should we show date as term or date?
-					$dateType=getSettingByScope( $connection2, "Activities", "dateType" ) ; 
-					
-					print "<h1>" ;
-						print $row["name"] . "<br>" ;
-						$options=getSettingByScope($connection2, "Activities", "activityTypes") ;
-						if ($options!="") {
-							print "<div style='padding-top: 5px; font-size: 65%; font-style: italic'>" ;
-								print trim($row["type"]) ;
-							print "</div>" ;
-						}
-					print "</h1>" ;
-					
-					print "<table class='blank' cellspacing='0' style='width: 550px; float: left;'>" ;
-						print "<tr>" ;
-							if ($dateType!="Date") {
-								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Terms</span><br/>" ;
-									$terms=getTerms($connection2, $_SESSION[$guid]["gibbonSchoolYearID"]) ;
-									$termList="" ;
-									for ($i=0; $i<count($terms); $i=$i+2) {
-										if (is_numeric(strpos($row["gibbonSchoolYearTermIDList"], $terms[$i]))) {
-											$termList.=$terms[($i+1)] . ", " ;
-										}
-									}
-									if ($termList=="") {
-										print "<i>NA</i>" ;
-									}
-									else {
-										print substr($termList,0,-2) ;
-									}
-								print "</td>" ;
-							}
-							else {
-								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Start Date</span><br/>" ;
-									print dateConvertBack($row["programStart"]) ;
-								print "</td>" ;
-								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>End Date</span><br/>" ;
-									print dateConvertBack($row["programEnd"]) ;
-								print "</td>" ;
-							}
+				//Should we show date as term or date?
+				$dateType=getSettingByScope( $connection2, "Activities", "dateType" ) ; 
+				
+				print "<h1>" ;
+					print $row["name"] . "<br>" ;
+					$options=getSettingByScope($connection2, "Activities", "activityTypes") ;
+					if ($options!="") {
+						print "<div style='padding-top: 5px; font-size: 65%; font-style: italic'>" ;
+							print trim($row["type"]) ;
+						print "</div>" ;
+					}
+				print "</h1>" ;
+				
+				print "<table class='blank' cellspacing='0' style='width: 550px; float: left;'>" ;
+					print "<tr>" ;
+						if ($dateType!="Date") {
 							print "<td style='width: 33%; vertical-align: top'>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>Year Groups</span><br/>" ;
-								print getYearGroupsFromIDList($connection2, $row["gibbonYearGroupIDList"]) ;
-							print "</td>" ;
-						print "</tr>" ;
-						print "<tr>" ;
-							print "<td style='padding-top: 15px; width: 33%; vertical-align: top'>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>Payment</span><br/>" ;
-								if ($row["payment"]==0) {
-									print "<i>None</i>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>Terms</span><br/>" ;
+								$terms=getTerms($connection2, $_SESSION[$guid]["gibbonSchoolYearID"]) ;
+								$termList="" ;
+								for ($i=0; $i<count($terms); $i=$i+2) {
+									if (is_numeric(strpos($row["gibbonSchoolYearTermIDList"], $terms[$i]))) {
+										$termList.=$terms[($i+1)] . ", " ;
+									}
+								}
+								if ($termList=="") {
+									print "<i>NA</i>" ;
 								}
 								else {
-									print "$" . $row["payment"] ;
+									print substr($termList,0,-2) ;
 								}
 							print "</td>" ;
-							print "<td style='padding-top: 15px; width: 33%; vertical-align: top'>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>Maximum Participants</span><br/>" ;
-								print $row["maxParticipants"] ;
+						}
+						else {
+							print "<td style='width: 33%; vertical-align: top'>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>Start Date</span><br/>" ;
+								print dateConvertBack($row["programStart"]) ;
 							print "</td>" ;
-							print "<td style='padding-top: 15px; width: 33%; vertical-align: top'>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>Staff</span><br/>" ;
+							print "<td style='width: 33%; vertical-align: top'>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>End Date</span><br/>" ;
+								print dateConvertBack($row["programEnd"]) ;
+							print "</td>" ;
+						}
+						print "<td style='width: 33%; vertical-align: top'>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>Year Groups</span><br/>" ;
+							print getYearGroupsFromIDList($connection2, $row["gibbonYearGroupIDList"]) ;
+						print "</td>" ;
+					print "</tr>" ;
+					print "<tr>" ;
+						print "<td style='padding-top: 15px; width: 33%; vertical-align: top'>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>Payment</span><br/>" ;
+							if ($row["payment"]==0) {
+								print "<i>None</i>" ;
+							}
+							else {
+								print "$" . $row["payment"] ;
+							}
+						print "</td>" ;
+						print "<td style='padding-top: 15px; width: 33%; vertical-align: top'>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>Maximum Participants</span><br/>" ;
+							print $row["maxParticipants"] ;
+						print "</td>" ;
+						print "<td style='padding-top: 15px; width: 33%; vertical-align: top'>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>Staff</span><br/>" ;
+							try {
+								$dataStaff=array("gibbonActivityID"=>$row["gibbonActivityID"]); 
+								$sqlStaff="SELECT title, preferredName, surname, role FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ;
+								$resultStaff=$connection2->prepare($sqlStaff);
+								$resultStaff->execute($dataStaff);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+							
+							if ($resultStaff->rowCount()<1) {
+								print "<i>None</i>" ;
+							}
+							else {
+								print "<ul style='margin-left: 15px'>" ;
+								while ($rowStaff=$resultStaff->fetch()) {
+									print "<li>" . formatName($rowStaff["title"], $rowStaff["preferredName"], $rowStaff["surname"], "Staff") . "</li>" ; 
+								}
+								print "</ul>" ;
+							}
+						print "</td>" ;
+					print "</tr>" ;
+					if ($row["description"]!="") {
+						print "<tr>" ;
+							print "<td style='text-align: justify; padding-top: 15px; width: 33%; vertical-align: top' colspan=3>" ;
+								print "<h2>Description</h2>" ;
+								print $row["description"] ;
+							print "</td>" ;
+						print "</tr>" ;
+					}
+				print "</table>" ;
+				
+				
+					
+				//Participants & Attendance
+				print "<div style='width:400px; float: right; font-size: 115%; padding-top: 6px'>
+					<h3 style='padding-top: 0px; margin-top: 5px'>Time Slots</h3>" ;
+					
+					try {
+						$dataSlots=array("gibbonActivityID"=>$row["gibbonActivityID"]); 
+						$sqlSlots="SELECT * FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber" ;
+						$resultSlots=$connection2->prepare($sqlSlots);
+						$resultSlots->execute($dataSlots);
+					}
+					catch(PDOException $e) { 
+						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					}
+
+					$count=0 ;
+					while ($rowSlots=$resultSlots->fetch()) {
+						print "<h4>" . $rowSlots["name"] . "</h4>" ;
+						print "<p>" ;
+							print "<i>Time</i>: " . substr($rowSlots["timeStart"], 0, 5) . " - " . substr($rowSlots["timeEnd"], 0, 5) . "<br/>" ;
+							if ($rowSlots["gibbonSpaceID"]!="") {
 								try {
-									$dataStaff=array("gibbonActivityID"=>$row["gibbonActivityID"]); 
-									$sqlStaff="SELECT title, preferredName, surname, role FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ;
-									$resultStaff=$connection2->prepare($sqlStaff);
-									$resultStaff->execute($dataStaff);
+									$dataSpace=array("gibbonSpaceID"=>$rowSlots["gibbonSpaceID"]); 
+									$sqlSpace="SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID" ;
+									$resultSpace=$connection2->prepare($sqlSpace);
+									$resultSpace->execute($dataSpace);
 								}
 								catch(PDOException $e) { 
 									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 								}
 								
-								if ($resultStaff->rowCount()<1) {
-									print "<i>None</i>" ;
+								if ($resultSpace->rowCount()>0) {
+									$rowSpace=$resultSpace->fetch() ;
+									print "<i>Location</i>: " . $rowSpace["name"] ;
 								}
-								else {
-									print "<ul style='margin-left: 15px'>" ;
-									while ($rowStaff=$resultStaff->fetch()) {
-										print "<li>" . formatName($rowStaff["title"], $rowStaff["preferredName"], $rowStaff["surname"], "Staff") . "</li>" ; 
-									}
-									print "</ul>" ;
-								}
-							print "</td>" ;
-						print "</tr>" ;
-						if ($row["description"]!="") {
-							print "<tr>" ;
-								print "<td style='text-align: justify; padding-top: 15px; width: 33%; vertical-align: top' colspan=3>" ;
-									print "<h2>Description</h2>" ;
-									print $row["description"] ;
-								print "</td>" ;
-							print "</tr>" ;
-						}
-					print "</table>" ;
-					
-					
+							}
+							else {
+								print "<i>Location</i>: " . $rowSlots["locationExternal"] ;
+							}
+						print "</p>" ;
 						
-					//Participants & Attendance
-					print "<div style='width:400px; float: right; font-size: 115%; padding-top: 6px'>
-						<h3 style='padding-top: 0px; margin-top: 5px'>Time Slots</h3>" ;
+						$count++ ;
+					}
+					if ($count==0) {
+						print "<i>None</i>" ;
+					}
+					
+					$role=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
+					if ($role=="Staff") {
+						print "<h3>Participants</h3>" ;
 						
 						try {
-							$dataSlots=array("gibbonActivityID"=>$row["gibbonActivityID"]); 
-							$sqlSlots="SELECT * FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber" ;
-							$resultSlots=$connection2->prepare($sqlSlots);
-							$resultSlots->execute($dataSlots);
+							$dataStudents=array("gibbonActivityID"=>$row["gibbonActivityID"]); 
+							$sqlStudents="SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonActivityStudent.status='Accepted' ORDER BY surname, preferredName" ;
+							$resultStudents=$connection2->prepare($sqlStudents);
+							$resultStudents->execute($dataStudents);
 						}
 						catch(PDOException $e) { 
 							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
 
-						$count=0 ;
-						while ($rowSlots=$resultSlots->fetch()) {
-							print "<h4>" . $rowSlots["name"] . "</h4>" ;
-							print "<p>" ;
-								print "<i>Time</i>: " . substr($rowSlots["timeStart"], 0, 5) . " - " . substr($rowSlots["timeEnd"], 0, 5) . "<br/>" ;
-								if ($rowSlots["gibbonSpaceID"]!="") {
-									try {
-										$dataSpace=array("gibbonSpaceID"=>$rowSlots["gibbonSpaceID"]); 
-										$sqlSpace="SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID" ;
-										$resultSpace=$connection2->prepare($sqlSpace);
-										$resultSpace->execute($dataSpace);
-									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-									}
-									
-									if ($resultSpace->rowCount()>0) {
-										$rowSpace=$resultSpace->fetch() ;
-										print "<i>Location</i>: " . $rowSpace["name"] ;
-									}
-								}
-								else {
-									print "<i>Location</i>: " . $rowSlots["locationExternal"] ;
-								}
-							print "</p>" ;
-							
-							$count++ ;
-						}
-						if ($count==0) {
+						if ($resultStudents->rowCount()<1) {
 							print "<i>None</i>" ;
 						}
-						
-						$role=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
-						if ($role=="Staff") {
-							print "<h3>Participants</h3>" ;
-							
-							try {
-								$dataStudents=array("gibbonActivityID"=>$row["gibbonActivityID"]); 
-								$sqlStudents="SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonActivityStudent.status='Accepted' ORDER BY surname, preferredName" ;
-								$resultStudents=$connection2->prepare($sqlStudents);
-								$resultStudents->execute($dataStudents);
+						else {
+							print "<ul style='margin-left: 15px'>" ;
+							while ($rowStudent=$resultStudents->fetch()) {
+								print "<li>" . formatName("", $rowStudent["preferredName"], $rowStudent["surname"], "Student") . "</li>" ; 
 							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-
-							if ($resultStudents->rowCount()<1) {
-								print "<i>None</i>" ;
-							}
-							else {
-								print "<ul style='margin-left: 15px'>" ;
-								while ($rowStudent=$resultStudents->fetch()) {
-									print "<li>" . formatName("", $rowStudent["preferredName"], $rowStudent["surname"], "Student") . "</li>" ; 
-								}
-								print "</ul>" ;
-							}
+							print "</ul>" ;
 						}
-					print "</div>" ;
-				}
+					}
+				print "</div>" ;
 			}
 		}
 	}

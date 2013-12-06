@@ -166,6 +166,8 @@ else {
 					$homeworkSubmission="N" ;
 					$homeworkSubmissionDateOpen=NULL ;
 					$homeworkSubmissionType="" ;
+					$homeworkSubmissionDrafts=NULL ;
+					$homeworkSubmissionRequired=NULL ;
 					$homeworkCrowdAssess="N" ;
 					$homeworkCrowdAssessOtherTeachersRead="N" ;
 					$homeworkCrowdAssessClassmatesRead="N" ;
@@ -182,6 +184,8 @@ else {
 				$homeworkSubmission="N" ;
 				$homeworkSubmissionDateOpen=NULL ;
 				$homeworkSubmissionType="" ;
+				$homeworkSubmissionDrafts=NULL ;
+				$homeworkSubmissionRequired=NULL ;
 				$homeworkCrowdAssess="N" ;
 				$homeworkCrowdAssessOtherTeachersRead="N" ;
 				$homeworkCrowdAssessClassmatesRead="N" ;
@@ -238,8 +242,13 @@ else {
 				header("Location: {$URL}");
 			}
 			else {
+				$partialFail=FALSE ;
+				
 				//Scan through guests
-				$guests=$_POST["guests"] ;
+				$guests=NULL ;
+				if (isset($_POST["guests"])) {
+					$guests=$_POST["guests"] ;
+				}
 				$role=$_POST["role"] ;
 				if ($role=="") {
 					$role="Student" ;
@@ -273,21 +282,23 @@ else {
 				
 				//Insert outcomes
 				$count=0 ;
-				if (count($_POST["outcomeorder"])>0) {
-					foreach ($_POST["outcomeorder"] AS $outcome) {
-						if ($_POST["outcomegibbonOutcomeID$outcome"]!="") {
-							try {
-								$dataInsert=array("AI"=>$AI, "gibbonOutcomeID"=>$_POST["outcomegibbonOutcomeID$outcome"], "content"=>$_POST["outcomecontents$outcome"], "count"=>$count);  
-								$sqlInsert="INSERT INTO gibbonPlannerEntryOutcome SET gibbonPlannerEntryID=:AI, gibbonOutcomeID=:gibbonOutcomeID, content=:content, sequenceNumber=:count" ;
-								$resultInsert=$connection2->prepare($sqlInsert);
-								$resultInsert->execute($dataInsert);
+				if (isset($_POST["outcomeorder"])) {
+					if (count($_POST["outcomeorder"])>0) {
+						foreach ($_POST["outcomeorder"] AS $outcome) {
+							if ($_POST["outcomegibbonOutcomeID$outcome"]!="") {
+								try {
+									$dataInsert=array("AI"=>$AI, "gibbonOutcomeID"=>$_POST["outcomegibbonOutcomeID$outcome"], "content"=>$_POST["outcomecontents$outcome"], "count"=>$count);  
+									$sqlInsert="INSERT INTO gibbonPlannerEntryOutcome SET gibbonPlannerEntryID=:AI, gibbonOutcomeID=:gibbonOutcomeID, content=:content, sequenceNumber=:count" ;
+									$resultInsert=$connection2->prepare($sqlInsert);
+									$resultInsert->execute($dataInsert);
+								}
+								catch(PDOException $e) {
+									$partialFail=true ;
+								}
 							}
-							catch(PDOException $e) {
-								$partialFail=true ;
-							}
-						}
-						$count++ ;
-					}	
+							$count++ ;
+						}	
+					}
 				}
 			
 				//Write to database

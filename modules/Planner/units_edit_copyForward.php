@@ -42,7 +42,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>Edit Unit</a> > </div><div class='trailEnd'>Copy Unit Back</div>" ;
 		print "</div>" ;
 		
-		$copyForwardReturn=$_GET["copyForwardReturn"] ;
+		if (isset($_GET["copyForwardReturn"])) { $copyForwardReturn=$_GET["copyForwardReturn"] ; } else { $copyForwardReturn="" ; }
 		$copyForwardReturnMessage ="" ;
 		$class="error" ;
 		if (!($copyForwardReturn=="")) {
@@ -133,44 +133,43 @@ else {
 						
 						?>
 						<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_edit_copyForwardProcess.php?gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
-							<table cellspacing='0' style="width: 100%">	
-								<tr><td style="width: 30%"></td><td></td></tr>
+							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr>
-											<td colspan=2> 
-												<h3>Source</h3>
-											</td>
-										</tr>
-										<tr>
-											<td> 
-												<b>School Year *</b><br/>
-												<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
-											</td>
-											<td class="right">
-												<?
-												print "<input readonly value='" . $year . "' type='text' style='width: 300px'>" ;
-												?>
-											</td>
-										</tr>
-										<tr>
-											<td> 
-												<b>Class *</b><br/>
-												<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
-											</td>
-											<td class="right">
-												<? print "<input readonly value='" . $course . "." . $class . "' type='text' style='width: 300px'>" ; ?>
-											</td>
-										</tr>
-										<tr>
-											<td> 
-												<b>Unit *</b><br/>
-												<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
-											</td>
-											<td class="right">
-												<? print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
-											</td>
-										</tr>
-										
-										<tr>
+									<td colspan=2> 
+										<h3>Source</h3>
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>School Year *</b><br/>
+										<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+									</td>
+									<td class="right">
+										<?
+										print "<input readonly value='" . $year . "' type='text' style='width: 300px'>" ;
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>Class *</b><br/>
+										<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+									</td>
+									<td class="right">
+										<? print "<input readonly value='" . $course . "." . $class . "' type='text' style='width: 300px'>" ; ?>
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b>Unit *</b><br/>
+										<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+									</td>
+									<td class="right">
+										<? print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
+									</td>
+								</tr>
+								
+								<tr>
 									<td colspan=2> 
 										<h3>Target</h3>
 									</td>
@@ -257,18 +256,16 @@ else {
 								</tr>
 								
 								<tr>
-									<td class="right" colspan=2>
+									<td>
+										<span style="font-size: 90%"><i>* denotes a required field</i></span>
+									</td>
+									<td class="right">
 										<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<? print $gibbonCourseClassID ?>" type="hidden">
 										<input name="gibbonCourseID" id="gibbonCourseID" value="<? print $gibbonCourseID ?>" type="hidden">
 										<input name="gibbonUnitID" id="gibbonUnitID" value="<? print $gibbonUnitID ?>" type="hidden">
 										<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
 										<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 										<input type="submit" value="Submit">
-									</td>
-								</tr>
-								<tr>
-									<td class="right" colspan=2>
-										<span style="font-size: 90%"><i>* denotes a required field</i></span>
 									</td>
 								</tr>
 							</table>

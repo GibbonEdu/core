@@ -42,7 +42,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>Edit Unit</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit_working.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&gibbonUnitClassID=" . $_GET["gibbonUnitClassID"] . "'>Edit Working Copy</a> > </div><div class='trailEnd'>Copy Back Block</div>" ;
 		print "</div>" ;
 		
-		$copyReturn=$_GET["copyReturn"] ;
+		if (isset($_GET["copyReturn"])) { $copyReturn=$_GET["copyReturn"] ; } else { $copyReturn="" ; }
 		$copyReturnMessage ="" ;
 		$class="error" ;
 		if (!($copyReturn=="")) {
@@ -182,8 +182,8 @@ else {
 									<td class="right">
 										<select style="width: 302px" name="working">
 											<?
-											print "<option " ; if ($row["active"]=="N") { print "selected "; } ; print " value='N'>N</option>" ;
-											print "<option " ; if ($row["active"]=="Y") { print "selected "; } ; print "value='Y'>Y</option>" ;
+											print "<option value='N'>N</option>" ;
+											print "<option value='Y'>Y</option>" ;
 											?>				
 										</select>
 									</td>

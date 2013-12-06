@@ -39,6 +39,11 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Staff Profiles</div>" ;
 		print "</div>" ;
 		
+		$search=NULL ;
+		if (isset($_GET["search"])) {
+			$search=$_GET["search"] ;
+		}
+		
 		print "<h2>" ;
 		print "Search" ;
 		print "</h2>" ;
@@ -52,7 +57,7 @@ else {
 						<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
 					</td>
 					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<? print $_GET["search"] ?>" type="text" style="width: 300px">
+						<input name="search" id="search" maxlength=20 value="<? print $search ?>" type="text" style="width: 300px">
 					</td>
 				</tr>
 				<tr>
@@ -80,13 +85,12 @@ else {
 		}
 		
 		
-		$search=$_GET["search"] ;
 		try {
 			$data=array(); 
-			$sql="SELECT gibbonPerson.gibbonPersonID, surname, preferredName, type, gibbonStaff.jobTitle FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ; 
+			$sql="SELECT gibbonPerson.gibbonPersonID, surname, preferredName, initials, type, gibbonStaff.jobTitle FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ; 
 			if ($search!="") {
 				$data=array("search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%"); 
-				$sql="SELECT gibbonPerson.gibbonPersonID, surname, preferredName, type, gibbonStaff.jobTitle FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND (preferredName LIKE :search1 OR surname LIKE :search2 OR username LIKE :search3) ORDER BY surname, preferredName" ; 
+				$sql="SELECT gibbonPerson.gibbonPersonID, surname, preferredName, initials, type, gibbonStaff.jobTitle FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND (preferredName LIKE :search1 OR surname LIKE :search2 OR username LIKE :search3) ORDER BY surname, preferredName" ; 
 			}
 			$sqlPage= $sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
 			$result=$connection2->prepare($sql);
@@ -109,7 +113,8 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print "Name" ;
+						print "Name<br/>" ;
+						print "<span style='font-size: 85%; font-style: italic'>Initials</span>" ;
 					print "</th>" ;
 					print "<th>" ;
 						print "Staff Type" ;
@@ -143,7 +148,8 @@ else {
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
-							print formatName("", $row["preferredName"],$row["surname"], "Student", true) ;
+							print formatName("", $row["preferredName"],$row["surname"], "Student", true) . "<br/>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . $row["initials"] . "</span>" ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["type"] ;

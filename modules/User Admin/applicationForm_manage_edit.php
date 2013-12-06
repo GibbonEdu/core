@@ -100,7 +100,7 @@ else {
 				print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_edit_print.php&gibbonApplicationFormID=$gibbonApplicationFormID'><img title='Print' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 			print "</div>" ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_editProcess.php?search=$search" ?>">
+			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_editProcess.php?search=$search" ?>" enctype="multipart/form-data">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
@@ -2006,6 +2006,7 @@ else {
 					}
 					
 					$requiredDocuments=getSettingByScope($connection2, "Application Form", "requiredDocuments") ;
+					$requiredDocumentsCompulsory=getSettingByScope($connection2, "Application Form", "requiredDocumentsCompulsory") ;
 					if ($requiredDocuments!="" AND $requiredDocuments!=FALSE) {
 						?>
 						<tr class='break'>
@@ -2015,29 +2016,54 @@ else {
 						</tr>
 						<?
 			
+						//Get list of acceptable file extensions
 						try {
-							$dataFile=array("gibbonApplicationFormID"=>$gibbonApplicationFormID); 
-							$sqlFile="SELECT * FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID ORDER BY name" ;
-							$resultFile=$connection2->prepare($sqlFile);
-							$resultFile->execute($dataFile);
+							$dataExt=array(); 
+							$sqlExt="SELECT * FROM gibbonFileExtension" ;
+							$resultExt=$connection2->prepare($sqlExt);
+							$resultExt->execute($dataExt);
 						}
 						catch(PDOException $e) { }
-						if ($resultFile->rowCount()<1) {
-							?>
-							<tr>
-								<td colspan=2> 
-									<?
-									print "<div class='warning'>" ;
-										print "There are no supporting documents attached to this application." ;
-									print "</div>" ;
-									?>
-								</td>
-							</tr>
-							<?
-							
+						$ext="" ;
+						while ($rowExt=$resultExt->fetch()) {
+							$ext=$ext . "'." . $rowExt["extension"] . "'," ;
 						}
-						else {
-							while ($rowFile=$resultFile->fetch()) {
+							
+						$requiredDocumentsList=explode(",", $requiredDocuments) ;
+						$count=0 ;
+						foreach ($requiredDocumentsList AS $document) {
+							try {
+								$dataFile=array("gibbonApplicationFormID"=>$gibbonApplicationFormID, "name"=>$document); 
+								$sqlFile="SELECT * FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND name=:name ORDER BY name" ;
+								$resultFile=$connection2->prepare($sqlFile);
+								$resultFile->execute($dataFile);
+							}
+							catch(PDOException $e) { }
+							if ($resultFile->rowCount()==0) {
+								?>
+								<tr>
+									<td> 
+										<b><? print $document ; if ($requiredDocumentsCompulsory=="Y") { print " *" ; } ?></b><br/>
+									</td>
+									<td class="right">
+										<?
+										print "<input type='file' name='file$count' id='file$count'><br/>" ;
+										print "<input type='hidden' name='fileName$count' id='filefileName$count' value='$document'>" ;
+										if ($requiredDocumentsCompulsory=="Y") {
+											print "<script type='text/javascript'>" ;
+												print "var file$count=new LiveValidation('file$count');" ;
+												print "file$count.add( Validate.Inclusion, { within: [" . $ext . "], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );" ;
+												print "file$count.add(Validate.Presence);" ;
+											print "</script>" ;
+										}
+										$count++ ;
+										?>
+									</td>
+								</tr>
+								<?
+							}
+							else if ($resultFile->rowCount()==1) {
+								$rowFile=$resultFile->fetch() ;
 								?>
 								<tr>
 									<td> 
@@ -2052,10 +2078,22 @@ else {
 								</tr>
 								<?
 							}
+							else {
+								//Error
+							}
 						}
 					}
+					if ($count>0) {
+						?>
+						<tr>
+							<td colspan=2> 
+								<? print getMaxUpload() ; ?>
+								<input type="hidden" name="fileCount" value="<? print $count ?>">
+							</td>
+						</tr>
+						<?
+					}
 					?>
-					
 					
 					<tr class='break'>
 						<td colspan=2> 

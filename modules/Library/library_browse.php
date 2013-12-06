@@ -35,10 +35,12 @@ else {
 	print "</div>" ;
 	
 	//Get display settings
+	$browseBGColorStyle=NULL ;
 	$browseBGColor=getSettingByScope($connection2, "Library", "browseBGColor") ;
 	if ($browseBGColor!="") {
 		$browseBGColorStyle="; background-color: #$browseBGColor" ;
 	}
+	$browseBGImageStyle=NULL ;
 	$browseBGImage=getSettingByScope($connection2, "Library", "browseBGImage") ;
 	if ($browseBGImage!="") {
 		$browseBGImageStyle="; background-image: url(\"$browseBGImage\")" ;
@@ -166,21 +168,41 @@ else {
 			print "</table>" ;
 			
 			//Get current filter values
-			$name=trim($_POST["name"]) ;
+			$name=NULL ;
+			if (isset($_POST["name"])) {
+				$name=trim($_POST["name"]) ;
+			}
 			if ($name=="") {
-				$name=trim($_GET["name"]) ;
+				if (isset($_GET["name"])) {
+					$name=trim($_GET["name"]) ;
+				}
 			}
-			$producer=trim($_POST["producer"]) ;
+			$producer=NULL ;
+			if (isset($_POST["producer"])) {
+				$producer=trim($_POST["producer"]) ;
+			}
 			if ($producer=="") {
-				$producer=trim($_GET["producer"]) ;
+				if (isset($_GET["producer"])) {
+					$producer=trim($_GET["producer"]) ;
+				}
 			}
-			$category=trim($_POST["category"]) ;
+			$category=NULL ;
+			if (isset($_POST["category"])) {
+				$category=trim($_POST["category"]) ;
+			}
 			if ($category=="") {
-				$category=trim($_GET["category"]) ;
+				if (isset($_GET["category"])) {
+					$category=trim($_GET["category"]) ;
+				}
 			}
-			$collection=trim($_POST["collection"]) ;
+			$collection=NULL ;
+			if (isset($_POST["collection"])) {
+				$collection=trim($_POST["collection"]) ;
+			}
 			if ($collection=="") {
-				$collection=trim($_GET["collection"]) ;
+				if (isset($_GET["collection"])) {
+					$collection=trim($_GET["collection"]) ;
+				}
 			}
 			
 			//Display filters
@@ -435,7 +457,6 @@ else {
 								print "</td>" ;
 							print "</tr>" ;
 						}
-						print "</tr>" ;
 						
 						$count++ ;
 					}

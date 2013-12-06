@@ -74,62 +74,60 @@ else {
 			$count=0;
 			$rowNum="odd" ;
 			while ($row=$result->fetch()) {
-				if (is_null($log[$row["gibbonPersonID"]])) {
-					if ($count%2==0) {
-						$rowNum="even" ;
-					}
-					else {
-						$rowNum="odd" ;
-					}
-					$count++ ;
-					
-					//COLOR ROW BY STATUS!
-					print "<tr class=$rowNum>" ;
-						print "<td>" ;
-							try {
-								$dataRollGroup=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
-								$sqlRollGroup="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
-								$resultRollGroup=$connection2->prepare($sqlRollGroup);
-								$resultRollGroup->execute($dataRollGroup);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-
-							if ($resultRollGroup->rowCount()<1) {
-								print "<i>Unknown</i>" ;
-							}
-							else {
-								$rowRollGroup=$resultRollGroup->fetch() ;
-								print $rowRollGroup["name"] ;
-							}
-						print "</td>" ;
-						print "<td>" ;
-							print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
-						print "</td>" ;
-						print "<td>" ;
-							$date="" ;
-							if (substr($row["programStart"],0,4)==substr($row["programEnd"],0,4)) {
-								if (substr($row["programStart"],5,2)==substr($row["programEnd"],5,2)) {
-									$date=" (" . date("F", mktime(0, 0, 0, substr($row["programStart"],5,2))) . " " . substr($row["programStart"],0,4) . ")" ;
-								}
-								else {
-									$date=" (" . date("F", mktime(0, 0, 0, substr($row["programStart"],5,2))) . " - " . date("F", mktime(0, 0, 0, substr($row["programEnd"],5,2))) . " " . substr($row["programStart"],0,4) . ")" ;
-								}
-							}
-							else {
-								$date=" (" . date("F", mktime(0, 0, 0, substr($row["programStart"],5,2))) . " " . substr($row["programStart"],0,4) . " - " . date("F", mktime(0, 0, 0, substr($row["programEnd"],5,2))) . " " . substr($row["programEnd"],0,4) . ")" ;
-							}
-							
-							print $row["name"] . $date ;
-						print "</td>" ;
-						print "<td style='text-align: right'>" ;
-							print "$" . number_format($row["payment"]) ;
-						print "</td>" ;
-					print "</tr>" ;
-					
-					$lastPerson=$row["gibbonPersonID"] ;
+				if ($count%2==0) {
+					$rowNum="even" ;
 				}
+				else {
+					$rowNum="odd" ;
+				}
+				$count++ ;
+				
+				//COLOR ROW BY STATUS!
+				print "<tr class=$rowNum>" ;
+					print "<td>" ;
+						try {
+							$dataRollGroup=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
+							$sqlRollGroup="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
+							$resultRollGroup=$connection2->prepare($sqlRollGroup);
+							$resultRollGroup->execute($dataRollGroup);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+
+						if ($resultRollGroup->rowCount()<1) {
+							print "<i>Unknown</i>" ;
+						}
+						else {
+							$rowRollGroup=$resultRollGroup->fetch() ;
+							print $rowRollGroup["name"] ;
+						}
+					print "</td>" ;
+					print "<td>" ;
+						print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
+					print "</td>" ;
+					print "<td>" ;
+						$date="" ;
+						if (substr($row["programStart"],0,4)==substr($row["programEnd"],0,4)) {
+							if (substr($row["programStart"],5,2)==substr($row["programEnd"],5,2)) {
+								$date=" (" . date("F", mktime(0, 0, 0, substr($row["programStart"],5,2))) . " " . substr($row["programStart"],0,4) . ")" ;
+							}
+							else {
+								$date=" (" . date("F", mktime(0, 0, 0, substr($row["programStart"],5,2))) . " - " . date("F", mktime(0, 0, 0, substr($row["programEnd"],5,2))) . " " . substr($row["programStart"],0,4) . ")" ;
+							}
+						}
+						else {
+							$date=" (" . date("F", mktime(0, 0, 0, substr($row["programStart"],5,2))) . " " . substr($row["programStart"],0,4) . " - " . date("F", mktime(0, 0, 0, substr($row["programEnd"],5,2))) . " " . substr($row["programEnd"],0,4) . ")" ;
+						}
+						
+						print $row["name"] . $date ;
+					print "</td>" ;
+					print "<td style='text-align: right'>" ;
+						print "$" . number_format($row["payment"]) ;
+					print "</td>" ;
+				print "</tr>" ;
+				
+				$lastPerson=$row["gibbonPersonID"] ;
 			}
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;

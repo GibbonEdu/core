@@ -91,8 +91,10 @@ else {
 			}
 			$gibbonYearGroupIDList="" ;
 			for ($i=0; $i<$_POST["count"]; $i++) {
-				if ($_POST["gibbonYearGroupIDCheck$i"]=="on") {
-					$gibbonYearGroupIDList=$gibbonYearGroupIDList . $_POST["gibbonYearGroupID$i"] . "," ;
+				if (isset($_POST["gibbonYearGroupIDCheck$i"])) {
+					if ($_POST["gibbonYearGroupIDCheck$i"]=="on") {
+						$gibbonYearGroupIDList=$gibbonYearGroupIDList . $_POST["gibbonYearGroupID$i"] . "," ;
+					}
 				}
 			}
 			$gibbonYearGroupIDList=substr($gibbonYearGroupIDList,0,(strlen($gibbonYearGroupIDList)-1)) ;
@@ -112,7 +114,7 @@ else {
 					$gibbonDaysOfWeekID=$_POST["gibbonDaysOfWeekID$i"] ;
 					$timeStart=$_POST["timeStart$i"] ;
 					$timeEnd=$_POST["timeEnd$i"] ;
-					$type=$_POST["slot" . $i . "Location"] ;
+					$type=$_POST["type"] ;
 					$gibbonSpaceID=NULL ;
 					if ($type=="Internal") {
 						if ($_POST["gibbonSpaceID$i"]!="") {
@@ -141,7 +143,10 @@ else {
 				}
 				
 				//Scan through staff
-				$staff=$_POST["staff"] ;
+				$staff=NULL ;
+				if (isset($_POST["staff"])) {
+					$staff=$_POST["staff"] ;
+				}
 				$role=$_POST["role"] ;
 				if ($role=="") {
 					$role="Other" ;

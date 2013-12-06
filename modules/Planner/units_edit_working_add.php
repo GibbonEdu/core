@@ -366,6 +366,7 @@ else {
 									$count=0;
 									$termCount=0 ;
 									$specialCount=0 ;
+									$classCount=0 ;
 									$rowNum="odd" ;
 									$divide=false ; //Have we passed gotten to today yet?
 						
@@ -407,7 +408,7 @@ else {
 										}
 
 										//Spit out row for special day
-										while ($lesson["1"]>=$specials[$specialCount][0] AND $specialCount<count($specials)) {
+										while ($lesson["1"]>=@$specials[$specialCount][0] AND $specialCount<count($specials)) {
 											print "<tr class='dull'>" ;
 												print "<td>" ;
 													print "<b>" . $specials[$specialCount][1] . "</b>" ;
@@ -462,7 +463,7 @@ else {
 										}
 										
 										//Spit out row for end of term
-										while ($lesson["1"]>=$terms[$termCount][0] AND $termCount<count($terms) AND substr($terms[$termCount][1],0,3)=="End") {
+										while ($lesson["1"]>=@$terms[$termCount][0] AND $termCount<count($terms) AND substr($terms[$termCount][1],0,3)=="End") {
 											print "<tr class='dull'>" ;
 												print "<td>" ;
 													print "<b>" . $terms[$termCount][1] . "</b>" ;
@@ -475,7 +476,7 @@ else {
 										}
 									}
 									
-									if ($terms[$termCount][0]!="") {
+									if (@$terms[$termCount][0]!="") {
 										print "<tr class='dull'>" ;
 											print "<td>" ;
 												print "<b><u>" . $terms[$termCount][1] . "</u></b>" ;

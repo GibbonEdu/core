@@ -167,7 +167,7 @@ else {
 								}
 	
 								//Read & Organise Fees
-								$fess=array() ;
+								$fees=array() ;
 								$count=0 ;
 								//Standard Fees
 								try {

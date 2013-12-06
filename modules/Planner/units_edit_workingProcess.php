@@ -193,7 +193,10 @@ else {
 							$titles=$_POST["title" . $order] ;
 							$types=$_POST["type" . $order] ;
 							$lengths=$_POST["length" . $order] ;
-							$completes=$_POST["complete" . $order] ;
+							$completes=NULL ;
+							if (isset($_POST["complete" . $order])) {
+								$completes=$_POST["complete" . $order] ;
+							}
 							if ($completes=="on") {
 								$completes="Y" ;
 							}

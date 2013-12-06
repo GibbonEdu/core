@@ -42,14 +42,26 @@ else {
 		//Proceed!
 		//Get viewBy, date and class variables
 		$params="" ;
-		$viewBy=$_GET["viewBy"] ;
-		$subView=$_GET["subView"] ;
+		$viewBy=NULL ;
+		if (isset($_GET["viewBy"])) {
+			$viewBy=$_GET["viewBy"] ;
+		}
+		$subView=NULL ;
+		if (isset($_GET["subView"])) {
+			$subView=$_GET["subView"] ;
+		}
+		if ($viewBy!="date" AND $viewBy!="class") {
+			$viewBy="date" ;
+		}
+		$gibbonCourseClassID=NULL ;
+		$date=NULL ;
+		$dateStamp=NULL ;
 		if ($viewBy!="date" AND $viewBy!="class") {
 			$viewBy="date" ;
 		}
 		if ($viewBy=="date") {
 			$date=$_GET["date"] ;
-			if ($_GET["dateHuman"]!="") {
+			if (isset($_GET["dateHuman"])) {
 				$date=dateConvert($_GET["dateHuman"]) ;
 			}
 			if ($date=="") {
@@ -60,9 +72,11 @@ else {
 			$params="&viewBy=date&date=$date" ;
 		}
 		else if ($viewBy=="class") {
-			$class=$_GET["class"] ;
+			$class=NULL ;
+			if (isset($_GET["class"])) {
+				$class=$_GET["class"] ;
+			}
 			$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
-			$subView=$_GET["subView"] ;
 			$params="&viewBy=class&class=$class&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView" ;
 		}
 		

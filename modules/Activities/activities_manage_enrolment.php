@@ -237,10 +237,6 @@ else {
 						}
 						$count++ ;
 						
-						if ($row["active"]=="N") {
-							$rowNum="error" ;
-						}
-		
 						//COLOR ROW BY STATUS!
 						print "<tr class=$rowNum>" ;
 							print "<td>" ;

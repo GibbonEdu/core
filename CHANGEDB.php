@@ -1469,9 +1469,6 @@ ALTER TABLE `gibbonApplicationForm` DROP `otherNames`;end
 ALTER TABLE `gibbonApplicationForm` DROP `parent1otherNames`, DROP `parent2otherNames`;end
 ALTER TABLE `gibbonPerson` DROP `otherNames` ;end
 ALTER TABLE `gibbonPersonUpdate` DROP `otherNames` ;end
-
---LAST ICHK DEMO
-
 ALTER TABLE `gibbonStaff` ADD `countryOfOrigin` VARCHAR( 80 ) NOT NULL , ADD `qualifications` VARCHAR( 255 ) NOT NULL , ADD `biography` TEXT NOT NULL ;end
 ALTER TABLE `gibbonStaff` ADD `biographicalGrouping` VARCHAR( 100 ) NOT NULL COMMENT 'Used for group staff when creating a staff directory.';end
 ALTER TABLE `gibbonStaff` ADD `biographicalGroupingPriority` INT( 3 ) NOT NULL AFTER `biographicalGrouping` ;end
@@ -1491,9 +1488,14 @@ ALTER TABLE `gibbonApplicationForm` ADD `companyCCFamily` ENUM( 'N', 'Y' ) NULL 
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Application Form', 'notificationParentsMessage', 'Parents Notification Message', 'A custom message to add to the standard email to parents on acceptance.', '');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Application Form', 'notificationStudentMessage', 'Student Notification Message', 'A custom message to add to the standard email to students on acceptance.', '');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'Finance', 'invoiceNumber', 'Invoice Number Style', 'How should invoice numbers be constructed?', 'Invoice ID');end
+ALTER TABLE `gibbonStaff` ADD `initials` VARCHAR( 4 ) NULL DEFAULT NULL AFTER `type` ,ADD UNIQUE (`initials`);end
+INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES (NULL, (SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook'), 'Edit Markbook_everything', 4, '', 'Allows editing of any column in any class.', 'markbook_edit.php, markbook_edit_add.php,markbook_edit_addMulti.php,markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php', 'markbook_edit.php', 'Y', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Markbook' AND gibbonAction.name='Edit Markbook_everything'));end
+ALTER TABLE `gibbonFinanceInvoice` ADD `paidAmount` DECIMAL( 13, 2 ) NULL DEFAULT NULL COMMENT 'The final amount paid' AFTER `paidDate` ;end
 
 --LAST ICHK
 --LAST HLY
+--LAST ICHK DEMO
 
 ";
 

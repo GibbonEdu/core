@@ -143,7 +143,6 @@ else {
 		//Create fields
 		$fields=unserialize($row["fields"]) ;
 		$output.="<table cellspacing='0' style='text-align: left; width: 100%'>" ;
-			$output.="<tr><td style='width: 30%'></td><td></td></tr>" ;
 			foreach ($fields as $field) {
 				$fieldName=preg_replace("/ /", "", $field["name"]) ;
 				$output.="<tr>" ;
@@ -190,7 +189,7 @@ else {
 							$output.="</script>" ;
 						}
 						else if ($field["type"]=="URL") {
-							$output.="<input maxlength='" . $field["options"] . "' name='field" . $fieldName . "' id='field" . $fieldName . "' value='" . htmlPrep($fieldValues[$field["name"]]) . "' type='text' style='width: 300px'>" ;
+							$output.="<input maxlength='" . $field["options"] . "' name='field" . $fieldName . "' id='field" . $fieldName . "' value='" . htmlPrep($field["default"]) . "' type='text' style='width: 300px'>" ;
 							$output.="<script type='text/javascript'>" ;
 								$output.="var field" . $fieldName . "=new LiveValidation('field" . $fieldName . "');" ;
 								$output.="field" . $fieldName . ".add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: \"Must start with http://\" } );" ;

@@ -68,28 +68,30 @@ else {
 			}
 		
 			
-			$ttDate="" ;
-			if ($_POST["ttDate"]!="") {
+			$ttDate=NULL ;
+			if (isset($_POST["ttDate"])) {
 				$ttDate=dateConvertToTimestamp(dateConvert($_POST["ttDate"]));
 			}
 			
-			if ($_POST["fromTT"]=="Y") {
-				if ($_POST["schoolCalendar"]=="on" OR $_POST["schoolCalendar"]=="Y") {
-					$_SESSION[$guid]["viewCalendarSchool"]="Y" ;
-				}
-				else {
-					$_SESSION[$guid]["viewCalendarSchool"]="N" ;
-				}
+			if (isset($_POST["fromTT"])) {
+				if ($_POST["fromTT"]=="Y") {
+					if ($_POST["schoolCalendar"]=="on" OR $_POST["schoolCalendar"]=="Y") {
+						$_SESSION[$guid]["viewCalendarSchool"]="Y" ;
+					}
+					else {
+						$_SESSION[$guid]["viewCalendarSchool"]="N" ;
+					}
 				
-				if ($_POST["personalCalendar"]=="on" OR $_POST["personalCalendar"]=="Y") {
-					$_SESSION[$guid]["viewCalendarPersonal"]="Y" ;
-				}
-				else {
-					$_SESSION[$guid]["viewCalendarPersonal"]="N" ;
+					if ($_POST["personalCalendar"]=="on" OR $_POST["personalCalendar"]=="Y") {
+						$_SESSION[$guid]["viewCalendarPersonal"]="Y" ;
+					}
+					else {
+						$_SESSION[$guid]["viewCalendarPersonal"]="N" ;
+					}
 				}
 			}
 			
-			$tt=renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, FALSE, $ttDate, "/modules/Timetable/tt_space_view.php", "&gibbonSpaceID=$gibbonSpaceID") ;
+			$tt=renderTTSpace($guid, $connection2, $gibbonSpaceID, NULL, FALSE, $ttDate, "/modules/Timetable/tt_space_view.php", "&gibbonSpaceID=$gibbonSpaceID") ;
 			
 			if ($tt!=FALSE) {
 				print $tt ;

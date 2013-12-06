@@ -154,7 +154,7 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 								$bg="background-color: #F6CECB;" ;
 							}
 							print "<tr class='comment-$count-$yearCount' id='comment-$count-$yearCount'>" ;
-								print "<td style='$bg border-bottom: 1px solid #333' colspan=6>" ;
+								print "<td style='$bg' colspan=6>" ;
 									print $row["comment"] ;
 								print "</td>" ;
 							print "</tr>" ;

@@ -116,7 +116,7 @@ else {
 								<?
 								for ($i=0; $i<count($options); $i++) {
 								?>
-									<option <? if ($row["type"]==$options[$i]) {print "selected ";}?>value="<? print trim($options[$i]) ?>"><? print trim($options[$i]) ?></option>
+									<option value="<? print trim($options[$i]) ?>"><? print trim($options[$i]) ?></option>
 								<?
 								}
 								?>

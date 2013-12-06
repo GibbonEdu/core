@@ -41,21 +41,41 @@ else {
 	print "</h3>" ;
 	
 	//Get current filter values
-	$ownershipType=trim($_POST["ownershipType"]) ;
+	$ownershipType=NULL ;
+	if (isset($_POST["ownershipType"])) {
+		$ownershipType=trim($_POST["ownershipType"]) ;
+	}
 	if ($ownershipType=="") {
-		$naownershipTypeme=trim($_GET["ownershipType"]) ;
+		if (isset($_GET["ownershipType"])) {
+			$ownershipType=trim($_GET["ownershipType"]) ;
+		}
 	}
-	$gibbonLibraryTypeID=trim($_POST["gibbonLibraryTypeID"]) ;
+	$gibbonLibraryTypeID=NULL ;
+	if (isset($_POST["gibbonLibraryTypeID"])) {
+		$gibbonLibraryTypeID=trim($_POST["gibbonLibraryTypeID"]) ;
+	}
 	if ($gibbonLibraryTypeID=="") {
-		$gibbonLibraryTypeID=trim($_GET["gibbonLibraryTypeID"]) ;
+		if (isset($_GET["gibbonLibraryTypeID"])) {
+			$gibbonLibraryTypeID=trim($_GET["gibbonLibraryTypeID"]) ;
+		}
 	}
-	$gibbonSpaceID=$_POST["gibbonSpaceID"] ;
+	$gibbonSpaceID=NULL ;
+	if (isset($_POST["gibbonSpaceID"])) {
+		$gibbonSpaceID=trim($_POST["gibbonSpaceID"]) ;
+	}
 	if ($gibbonSpaceID=="") {
-		$gibbonSpaceID=trim($_GET["gibbonSpaceID"]) ;
+		if (isset($_GET["gibbonSpaceID"])) {
+			$gibbonSpaceID=trim($_GET["gibbonSpaceID"]) ;
+		}
 	}
-	$status=$_POST["status"] ;
+	$status=NULL ;
+	if (isset($_POST["status"])) {
+		$status=trim($_POST["status"]) ;
+	}
 	if ($status=="") {
-		$status=trim($_GET["status"]) ;
+		if (isset($_GET["status"])) {
+			$status=trim($_GET["status"]) ;
+		}
 	}
 	
 	//Display filters

@@ -73,114 +73,112 @@ else {
 			$count=0;
 			$rowNum="odd" ;
 			while ($row=$result->fetch()) {
-				if (is_null($log[$row["gibbonYearGroupID"]])) {
-					if ($count%2==0) {
-						$rowNum="even" ;
-					}
-					else {
-						$rowNum="odd" ;
-					}
-					$count++ ;
-					
-					print "<tr class=$rowNum>" ;
-						print "<td>" ;
-							print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
-						print "</td>" ;
-						print "<td colspan=3>" ;
-							//Get details of last personal data form update
-							try {
-								$dataMedical=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
-								$sqlMedical="SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonID=:gibbonPersonID AND status='Complete' ORDER BY timestamp DESC" ;
-								$resultMedical=$connection2->prepare($sqlMedical);
-								$resultMedical->execute($dataMedical);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							if ($resultMedical->rowCount()>0) {
-								$rowMedical=$resultMedical->fetch() ;
-								//Is last update more recent than 90 days?
-								if (substr($rowMedical["timestamp"],0,10)>date("Y-m-d", (time()-(90*24*60*60)))) {
-									print dateConvertBack(substr($rowMedical["timestamp"],0,10)) ;
-								}
-								else {
-									print "<span style='color: #ff0000; font-weight: bold'>" . dateConvertBack(substr($rowMedical["timestamp"],0,10)) . "</span>" ;
-								}
+				if ($count%2==0) {
+					$rowNum="even" ;
+				}
+				else {
+					$rowNum="odd" ;
+				}
+				$count++ ;
+				
+				print "<tr class=$rowNum>" ;
+					print "<td>" ;
+						print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
+					print "</td>" ;
+					print "<td colspan=3>" ;
+						//Get details of last personal data form update
+						try {
+							$dataMedical=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+							$sqlMedical="SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonID=:gibbonPersonID AND status='Complete' ORDER BY timestamp DESC" ;
+							$resultMedical=$connection2->prepare($sqlMedical);
+							$resultMedical->execute($dataMedical);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+						if ($resultMedical->rowCount()>0) {
+							$rowMedical=$resultMedical->fetch() ;
+							//Is last update more recent than 90 days?
+							if (substr($rowMedical["timestamp"],0,10)>date("Y-m-d", (time()-(90*24*60*60)))) {
+								print dateConvertBack(substr($rowMedical["timestamp"],0,10)) ;
 							}
 							else {
-								print "<span style='color: #ff0000; font-weight: bold'>NA</span>" ;
+								print "<span style='color: #ff0000; font-weight: bold'>" . dateConvertBack(substr($rowMedical["timestamp"],0,10)) . "</span>" ;
 							}
-						print "</td>" ;
-					print "</tr>" ;
-					
-					print "<tr class=$rowNum>" ;
-						print "<td></td>" ;
-						print "<td style='border-top: 1px solid #aaa; vertical-align: top'>" ;
-							print "<b><i>Parents</i></b><br/>" ;
+						}
+						else {
+							print "<span style='color: #ff0000; font-weight: bold'>NA</span>" ;
+						}
+					print "</td>" ;
+				print "</tr>" ;
+				
+				print "<tr class=$rowNum>" ;
+					print "<td></td>" ;
+					print "<td style='border-top: 1px solid #aaa; vertical-align: top'>" ;
+						print "<b><i>Parents</i></b><br/>" ;
+						try {
+							$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+							$sqlFamily="SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID" ;
+							$resultFamily=$connection2->prepare($sqlFamily);
+							$resultFamily->execute($dataFamily);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+						while ($rowFamily=$resultFamily->fetch()) {
 							try {
-								$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
-								$sqlFamily="SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID" ;
-								$resultFamily=$connection2->prepare($sqlFamily);
-								$resultFamily->execute($dataFamily);
+								$dataFamily2=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
+								$sqlFamily2="SELECT gibbonPerson.* FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName" ;
+								$resultFamily2=$connection2->prepare($sqlFamily2);
+								$resultFamily2->execute($dataFamily2);
 							}
 							catch(PDOException $e) { 
 								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
-							while ($rowFamily=$resultFamily->fetch()) {
-								try {
-									$dataFamily2=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
-									$sqlFamily2="SELECT gibbonPerson.* FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName" ;
-									$resultFamily2=$connection2->prepare($sqlFamily2);
-									$resultFamily2->execute($dataFamily2);
-								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
-								while ($rowFamily2=$resultFamily2->fetch()) {
-									print "<u>" . formatName($rowFamily2["title"], $rowFamily2["preferredName"], $rowFamily2["surname"], "Parent") . "</u><br/>" ;
-									$numbers=0 ;
-									for ($i=1; $i<5; $i++) {
-										if ($rowFamily2["phone" . $i]!="") {
-											if ($rowFamily2["phone" . $i . "Type"]!="") {
-												print "<i>" . $rowFamily2["phone" . $i . "Type"] . ":</i> " ;
-											}
-											if ($rowFamily2["phone" . $i . "CountryCode"]!="") {
-												print "+" . $rowFamily2["phone" . $i . "CountryCode"] . " " ;
-											}
-											print $rowFamily2["phone" . $i] . "<br/>" ;
-											$numbers++ ;
+							while ($rowFamily2=$resultFamily2->fetch()) {
+								print "<u>" . formatName($rowFamily2["title"], $rowFamily2["preferredName"], $rowFamily2["surname"], "Parent") . "</u><br/>" ;
+								$numbers=0 ;
+								for ($i=1; $i<5; $i++) {
+									if ($rowFamily2["phone" . $i]!="") {
+										if ($rowFamily2["phone" . $i . "Type"]!="") {
+											print "<i>" . $rowFamily2["phone" . $i . "Type"] . ":</i> " ;
 										}
-									}
-									if ($numbers==0) {
-										print "<span style='font-size: 85%; font-style: italic'>No number available.</span><br/>" ;
+										if ($rowFamily2["phone" . $i . "CountryCode"]!="") {
+											print "+" . $rowFamily2["phone" . $i . "CountryCode"] . " " ;
+										}
+										print $rowFamily2["phone" . $i] . "<br/>" ;
+										$numbers++ ;
 									}
 								}
+								if ($numbers==0) {
+									print "<span style='font-size: 85%; font-style: italic'>No number available.</span><br/>" ;
+								}
 							}
-						print "</td>" ;
-						print "<td style='border-top: 1px solid #aaa; vertical-align: top'>" ;
-							print "<b><i>Emergency Contact 1</i></b><br/>" ;
-							print "<u><i>Name</i></u>: " . $row["emergency1Name"] . "<br/>" ;
-							print "<u><i>Number</i></u>: " . $row["emergency1Number1"] . "<br/>" ;
-							if ($row["emergency1Number2"]!=="") {
-								print "<u><i>Number 2</i></u>: " . $row["emergency1Number2"] . "<br/>" ;
-							}
-							if ($row["emergency1Relationship"]!=="") {
-								print "<u><i>Relationship</i></u>: " . $row["emergency1Relationship"] . "<br/>" ;
-							}
-						print "</td>" ;
-						print "<td style='border-top: 1px solid #aaa; vertical-align: top'>" ;
-							print "<b><i>Emergency Contact 2</i></b><br/>" ;
-							print "<u><i>Name</i></u>: " . $row["emergency2Name"] . "<br/>" ;
-							print "<u><i>Number</i></u>: " . $row["emergency2Number1"] . "<br/>" ;
-							if ($row["emergency2Number2"]!=="") {
-								print "<u><i>Number 2</i></u>: " . $row["emergency2Number2"] . "<br/>" ;
-							}
-							if ($row["emergency2Relationship"]!=="") {
-								print "<u><i>Relationship</i></u>: " . $row["emergency2Relationship"] . "<br/>" ;
-							}
-						print "</td>" ;
-					print "</tr>" ;
-				}
+						}
+					print "</td>" ;
+					print "<td style='border-top: 1px solid #aaa; vertical-align: top'>" ;
+						print "<b><i>Emergency Contact 1</i></b><br/>" ;
+						print "<u><i>Name</i></u>: " . $row["emergency1Name"] . "<br/>" ;
+						print "<u><i>Number</i></u>: " . $row["emergency1Number1"] . "<br/>" ;
+						if ($row["emergency1Number2"]!=="") {
+							print "<u><i>Number 2</i></u>: " . $row["emergency1Number2"] . "<br/>" ;
+						}
+						if ($row["emergency1Relationship"]!=="") {
+							print "<u><i>Relationship</i></u>: " . $row["emergency1Relationship"] . "<br/>" ;
+						}
+					print "</td>" ;
+					print "<td style='border-top: 1px solid #aaa; vertical-align: top'>" ;
+						print "<b><i>Emergency Contact 2</i></b><br/>" ;
+						print "<u><i>Name</i></u>: " . $row["emergency2Name"] . "<br/>" ;
+						print "<u><i>Number</i></u>: " . $row["emergency2Number1"] . "<br/>" ;
+						if ($row["emergency2Number2"]!=="") {
+							print "<u><i>Number 2</i></u>: " . $row["emergency2Number2"] . "<br/>" ;
+						}
+						if ($row["emergency2Relationship"]!=="") {
+							print "<u><i>Relationship</i></u>: " . $row["emergency2Relationship"] . "<br/>" ;
+						}
+					print "</td>" ;
+				print "</tr>" ;
 			}
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;

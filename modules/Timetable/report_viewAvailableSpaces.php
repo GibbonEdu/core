@@ -41,9 +41,19 @@ else {
 	print "Choose Options" ;
 	print "</h2>" ;
 	
-	$gibbonTTID=$_GET["gibbonTTID"] ;
-	$spaceType=$_GET["spaceType"] ;
-	$ttDate=$_GET["ttDate"] ;
+	$gibbonTTID=NULL ;
+	if (isset($_GET["gibbonTTID"])) {
+		$gibbonTTID=$_GET["gibbonTTID"] ;
+	}
+	$spaceType=NULL ;
+	if (isset($_GET["spaceType"])) {
+		$spaceType=$_GET["spaceType"] ;
+	}
+	
+	$ttDate=NULL ;
+	if (isset($_GET["ttDate"])) {
+		$ttDate=$_GET["ttDate"] ;
+	}
 	if ($ttDate=="") {
 		$ttDate=date("d/m/Y") ;
 	}
@@ -333,14 +343,14 @@ else {
 						print "<div style='position: relative; width: 71px'>" ;
 							$countTime=0 ;
 							$time=$timeStart ;
-							print "<div $title style='z-index: $zCount; position: absolute; top: -3px; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>" ;
+							print "<div style='position: absolute; top: -3px; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>" ;
 								print substr($time,0,5) . "<br/>" ;
 							print "</div>" ;
 							$time=date("H:i:s", strtotime($time)+3600) ;
 							$spinControl=0 ;
-							while ($time<=$timeEnd AND $spinControl<(23-date("H",$timeStart))) {
+							while ($time<=$timeEnd AND $spinControl<@(23-date("H",$timeStart))) {
 								$countTime++ ;
-								print "<div $title style='z-index: $zCount; position: absolute; top:" . (($countTime*60)-5) . "px ; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>" ;
+								print "<div style='position: absolute; top:" . (($countTime*60)-5) . "px ; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>" ;
 									print substr($time,0,5) . "<br/>" ;
 								print "</div>" ;
 								$time=date("H:i:s", strtotime($time)+3600) ;
@@ -467,12 +477,6 @@ else {
 											$dayTimeEnd=$rowDiff["timeEnd"] ;
 										}
 									}
-									if ($specialDayStart!="") {
-										$dayTimeStart=$specialDayStart ;
-									}
-									if ($specialDayEnd!="") {
-										$dayTimeEnd=$specialDayEnd ;
-									}
 
 									$dayDiffTime=strtotime($dayTimeEnd)-strtotime($dayTimeStart) ;
 
@@ -529,13 +533,6 @@ else {
 													$width=(ceil(690/$daysInWeek)-20) . "px" ;
 													$height=ceil((strtotime($effectiveEnd)-strtotime($effectiveStart))/60) . "px" ;
 													$top=ceil(((strtotime($effectiveStart)-strtotime($dayTimeStart))+$startPad)/60) . "px" ;
-													$title="" ;
-													if ($rowPeriods["type"]!="Lesson" AND $height>15 AND $height<30) {
-														$title="title='" . substr($effectiveStart,0,5) . " - " . substr($effectiveEnd,0,5) . "'" ;
-													}
-													else if ($rowPeriods["type"]!="Lesson" AND $height<=15) {
-														$title="title='" . $rowPeriods["name"] . " (" . substr($effectiveStart,0,5) . "-" . substr($effectiveEnd,0,5) . ")'" ;
-													}
 													$bg="rgba(238,238,238,$ttAlpha)" ;
 													if ((date("H:i:s")>$effectiveStart) AND (date("H:i:s")<$effectiveEnd) AND $rowPeriods["date"]==date("Y-m-d")) {
 														$bg="rgba(179,239,194,$ttAlpha)" ;
@@ -544,7 +541,7 @@ else {
 													if ($rowPeriods["type"]=="Lesson") {
 														$style="" ;
 													}
-													$day=$day . "<div $title style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: $bg; color: rgba(136,136,136, $ttAlpha) $style'>" ;
+													$day=$day . "<div style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: $bg; color: rgba(136,136,136, $ttAlpha) $style'>" ;
 													if ($height>15) {
 														$day=$day . $rowPeriods["name"] . "<br>" ;
 													}

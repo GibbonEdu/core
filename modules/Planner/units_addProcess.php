@@ -180,7 +180,10 @@ else {
 					$blockCount=($_POST["blockCount"]-1) ;
 					$sequenceNumber=0 ;
 					if ($blockCount>0) {
-						$order=$_POST["order"] ;
+						$order=array() ;
+						if (isset($_POST["order"])) {
+							$order=$_POST["order"] ;
+						}
 						foreach ($order as $i) {
 							$title="";
 							if ($_POST["title$i"]!="Block $i") {
@@ -214,8 +217,12 @@ else {
 					
 					//Insert outcomes
 					$count=0 ;
-					if (count($_POST["outcomeorder"])>0) {
-						foreach ($_POST["outcomeorder"] AS $outcome) {
+					$outcomeorder=NULL ;
+					if (isset($_POST["outcomeorder"])) {
+						$outcomeorder=$_POST["outcomeorder"] ;
+					}
+					if (count($outcomeorder)>0) {
+						foreach ($outcomeorder AS $outcome) {
 							if ($_POST["outcomegibbonOutcomeID$outcome"]!="") {
 								try {
 									$dataInsert=array("AI"=>$AI, "gibbonOutcomeID"=>$_POST["outcomegibbonOutcomeID$outcome"], "content"=>$_POST["outcomecontents$outcome"], "count"=>$count);  

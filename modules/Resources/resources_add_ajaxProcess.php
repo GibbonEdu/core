@@ -66,8 +66,10 @@ else {
 		$tags=strtolower($_POST[$id . "tags"]) ;
 		$gibbonYearGroupIDList="" ;
 		for ($i=0; $i<$_POST[$id . "count"]; $i++) {
-			if ($_POST[$id . "gibbonYearGroupIDCheck$i"]=="on") {
-				$gibbonYearGroupIDList=$gibbonYearGroupIDList . $_POST[$id . "gibbonYearGroupID$i"] . "," ;
+			if (isset($_POST[$id . "gibbonYearGroupIDCheck$i"])) {
+				if ($_POST[$id . "gibbonYearGroupIDCheck$i"]=="on") {
+					$gibbonYearGroupIDList=$gibbonYearGroupIDList . $_POST[$id . "gibbonYearGroupID$i"] . "," ;
+				}
 			}
 		}
 		$gibbonYearGroupIDList=substr($gibbonYearGroupIDList,0,(strlen($gibbonYearGroupIDList)-1)) ;

@@ -129,6 +129,7 @@ else {
 						}
 						else {
 							$partialFail=FALSE ;
+							$location=NULL ;
 							if ($type=="Link") {
 								if (substr($link, 0, 7)!="http://" AND substr($link, 0, 8)!="https://" ) {
 									$partialFail=TRUE ;	
@@ -140,7 +141,7 @@ else {
 							if ($type=="File") {
 								//Check extension to see if allow
 								try {
-									$dataExt=array("username"=>$username); 
+									$dataExt=array(); 
 									$sqlExt="SELECT * FROM gibbonFileExtension WHERE extension='". end(explode(".", $_FILES['file']["name"])) ."'";
 									$resultExt=$connection2->prepare($sqlExt);
 									$resultExt->execute($dataExt);

@@ -41,7 +41,22 @@ else {
 	print "Choose Transport Group" ;
 	print "</h2>" ;
 	
-	$transport=$_GET["transport"] ;
+	$transport=NULL ;
+	if (isset($_GET["transport"])) {
+		$transport=$_GET["transport"] ;
+	}
+	$prefix=NULL ;
+	if (isset($_GET["prefix"])) {
+		$prefix=$_GET["prefix"] ;
+	}
+	$append=NULL ;
+	if (isset($_GET["append"])) {
+		$append=$_GET["append"] ;
+	}
+	$hideName=NULL ;
+	if (isset($_GET["hideName"])) {
+		$hideName=$_GET["hideName"] ;
+	}
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -86,7 +101,7 @@ else {
 					<b>Prefix</b><br/>
 				</td>
 				<td class="right">
-					<input name='prefix' style='width: 302px' type='text' maxlength='30' value=<? print $_GET["prefix"] ?>>
+					<input name='prefix' style='width: 302px' type='text' maxlength='30' value=<? print $prefix ?>>
 				</td>
 			</tr>
 			<tr>
@@ -94,7 +109,7 @@ else {
 					<b>Append</b><br/>
 				</td>
 				<td class="right">
-					<input name='append' style='width: 302px' type='text' maxlength='30' value=<? print $_GET["append"] ?>>
+					<input name='append' style='width: 302px' type='text' maxlength='30' value=<? print $append ?>>
 				</td>
 			</tr>
 			<tr>
@@ -104,7 +119,7 @@ else {
 				<td class="right">
 					<?
 					$checked="" ;
-					if ($_GET["hideName"]=="on") {
+					if ($hideName=="on") {
 						$checked="checked " ;
 					}
 					?>
@@ -145,7 +160,7 @@ else {
 		
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
-				if ($_GET["hideName"]!="on") {
+				if ($hideName!="on") {
 					print "<th>" ;
 						print "Student" ;
 					print "</th>" ;
@@ -159,50 +174,48 @@ else {
 			$count=0;
 			$rowNum="odd" ;
 			while ($row=$result->fetch()) {
-				if (is_null($log[$row["transport"]])) {
-					if ($count%2==0) {
-						$rowNum="even" ;
-					}
-					else {
-						$rowNum="odd" ;
-					}
-					$count++ ;
-					
-					//COLOR ROW BY STATUS!
-					print "<tr class=$rowNum>" ;
-						if ($_GET["hideName"]!="on") {
-							print "<td>" ;
-								print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
-							print "</td>" ;
-						}
+				if ($count%2==0) {
+					$rowNum="even" ;
+				}
+				else {
+					$rowNum="odd" ;
+				}
+				$count++ ;
+				
+				//COLOR ROW BY STATUS!
+				print "<tr class=$rowNum>" ;
+					if ($hideName!="on") {
 						print "<td>" ;
-							try {
-								$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
-								$sqlFamily="SELECT gibbonPerson.* FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=(SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID) AND (phone1Type='Mobile' OR phone2Type='Mobile' OR phone3Type='Mobile' OR phone4Type='Mobile') AND status='Full'";
-								$resultFamily=$connection2->prepare($sqlFamily);
-								$resultFamily->execute($dataFamily);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							
-							if ($resultFamily->rowCount()>0) {
-								while ($rowFamily=$resultFamily->fetch()) {
-									for ($i=1; $i<5; $i++) {
-										if ($rowFamily["phone" . $i]!="" AND $rowFamily["phone" . $i . "Type"]=="Mobile") {
-											print $_GET["prefix"] . preg_replace( '/\s+/', '', $rowFamily["phone" . $i]) . $_GET["append"] . "<br/>" ;
-										}
+							print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
+						print "</td>" ;
+					}
+					print "<td>" ;
+						try {
+							$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+							$sqlFamily="SELECT gibbonPerson.* FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=(SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID) AND (phone1Type='Mobile' OR phone2Type='Mobile' OR phone3Type='Mobile' OR phone4Type='Mobile') AND status='Full'";
+							$resultFamily=$connection2->prepare($sqlFamily);
+							$resultFamily->execute($dataFamily);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+						
+						if ($resultFamily->rowCount()>0) {
+							while ($rowFamily=$resultFamily->fetch()) {
+								for ($i=1; $i<5; $i++) {
+									if ($rowFamily["phone" . $i]!="" AND $rowFamily["phone" . $i . "Type"]=="Mobile") {
+										print $prefix . preg_replace( '/\s+/', '', $rowFamily["phone" . $i]) . $append . "<br/>" ;
 									}
 								}
 							}
-							else {
-								print "<span style='color: #c00'>" . $_GET["prefix"] . preg_replace( '/\s+/', '', $row["emergency1Number1"]) . $_GET["append"] . "</span><br/>" ;
-								print "<span style='color: #c00'>" . $_GET["prefix"] . preg_replace( '/\s+/', '', $row["emergency2Number1"]) . $_GET["append"] . "</span><br/>" ;
-							}
-						print "</td>" ;
-						
-					print "</tr>" ;
-				}
+						}
+						else {
+							print "<span style='color: #c00'>" . $prefix . preg_replace( '/\s+/', '', $row["emergency1Number1"]) . $append . "</span><br/>" ;
+							print "<span style='color: #c00'>" . $prefix . preg_replace( '/\s+/', '', $row["emergency2Number1"]) . $append . "</span><br/>" ;
+						}
+					print "</td>" ;
+					
+				print "</tr>" ;
 			}
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;

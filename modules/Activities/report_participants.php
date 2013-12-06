@@ -38,7 +38,10 @@ else {
 	print "Choose Activity" ;
 	print "</h2>" ;
 	
-	$gibbonActivityID=$_GET["gibbonActivityID"] ;
+	$gibbonActivityID=NULL ;
+	if (isset($_GET["gibbonActivityID"])) {
+		$gibbonActivityID=$_GET["gibbonActivityID"] ;
+	}
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -141,87 +144,85 @@ else {
 				$count=0;
 				$rowNum="odd" ;
 				while ($row=$result->fetch()) {
-					if (is_null($log[$row["gibbonPersonID"]])) {
-						if ($count%2==0) {
-							$rowNum="even" ;
-						}
-						else {
-							$rowNum="odd" ;
-						}
-						$count++ ;
-						
-						//COLOR ROW BY STATUS!
-						print "<tr class=$rowNum>" ;
-							print "<td>" ;
-								try {
-									$dataRollGroup=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
-									$sqlRollGroup="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
-									$resultRollGroup=$connection2->prepare($sqlRollGroup);
-									$resultRollGroup->execute($dataRollGroup);
-								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
+					if ($count%2==0) {
+						$rowNum="even" ;
+					}
+					else {
+						$rowNum="odd" ;
+					}
+					$count++ ;
+					
+					//COLOR ROW BY STATUS!
+					print "<tr class=$rowNum>" ;
+						print "<td>" ;
+							try {
+								$dataRollGroup=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
+								$sqlRollGroup="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
+								$resultRollGroup=$connection2->prepare($sqlRollGroup);
+								$resultRollGroup->execute($dataRollGroup);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
 
-								if ($resultRollGroup->rowCount()<1) {
-									print "<i>Unknown</i>" ;
-								}
-								else {
-									$rowRollGroup=$resultRollGroup->fetch() ;
-									print $rowRollGroup["name"] ;
-								}
-							print "</td>" ;
-							print "<td>" ;
-								print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
-							print "</td>" ;
-							print "<td>" ;
-								print $row["status"] ;
-							print "</td>" ;
-							print "<td>" ;	
-								try {
-									$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
-									$sqlFamily="SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID" ;
-									$resultFamily=$connection2->prepare($sqlFamily);
-									$resultFamily->execute($dataFamily);
-								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
-								if ($resultFamily->rowCount()>0) {
-									while ($rowFamily=$resultFamily->fetch()) {
-										//Get adults conditions
-										try {
-											$dataMember=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
-											$sqlMember="SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND contactCall='Y' ORDER BY contactPriority, surname, preferredName" ;
-											$resultMember=$connection2->prepare($sqlMember);
-											$resultMember->execute($dataMember);
-										}
-										catch(PDOException $e) { 
-											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-										}
-										while ($rowMember=$resultMember->fetch()) {
-											if ($rowMember["phone1"]!="" OR $rowMember["phone2"]!="" OR $rowMember["phone3"]!="" OR $rowMember["phone4"]!="") {
-												print "<b>" . formatName($rowMember["title"], $rowMember["preferredName"], $rowMember["surname"], "Parent", false) . "</b><br/>" ;
-												for ($i=1; $i<5; $i++) {
-													if ($rowMember["phone" . $i]!="") {
-														if ($rowMember["phone" . $i . "Type"]!="") {
-															print "<i>" . $rowMember["phone" . $i . "Type"] . ":</i> " ;
-														}
-														if ($rowMember["phone" . $i . "CountryCode"]!="") {
-															print "+" . $rowMember["phone" . $i . "CountryCode"] . " " ;
-														}
-														print $rowMember["phone" . $i] . "<br/>" ;
+							if ($resultRollGroup->rowCount()<1) {
+								print "<i>Unknown</i>" ;
+							}
+							else {
+								$rowRollGroup=$resultRollGroup->fetch() ;
+								print $rowRollGroup["name"] ;
+							}
+						print "</td>" ;
+						print "<td>" ;
+							print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
+						print "</td>" ;
+						print "<td>" ;
+							print $row["status"] ;
+						print "</td>" ;
+						print "<td>" ;	
+							try {
+								$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+								$sqlFamily="SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID" ;
+								$resultFamily=$connection2->prepare($sqlFamily);
+								$resultFamily->execute($dataFamily);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+							if ($resultFamily->rowCount()>0) {
+								while ($rowFamily=$resultFamily->fetch()) {
+									//Get adults conditions
+									try {
+										$dataMember=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
+										$sqlMember="SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND contactCall='Y' ORDER BY contactPriority, surname, preferredName" ;
+										$resultMember=$connection2->prepare($sqlMember);
+										$resultMember->execute($dataMember);
+									}
+									catch(PDOException $e) { 
+										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									}
+									while ($rowMember=$resultMember->fetch()) {
+										if ($rowMember["phone1"]!="" OR $rowMember["phone2"]!="" OR $rowMember["phone3"]!="" OR $rowMember["phone4"]!="") {
+											print "<b>" . formatName($rowMember["title"], $rowMember["preferredName"], $rowMember["surname"], "Parent", false) . "</b><br/>" ;
+											for ($i=1; $i<5; $i++) {
+												if ($rowMember["phone" . $i]!="") {
+													if ($rowMember["phone" . $i . "Type"]!="") {
+														print "<i>" . $rowMember["phone" . $i . "Type"] . ":</i> " ;
 													}
+													if ($rowMember["phone" . $i . "CountryCode"]!="") {
+														print "+" . $rowMember["phone" . $i . "CountryCode"] . " " ;
+													}
+													print $rowMember["phone" . $i] . "<br/>" ;
 												}
 											}
 										}
-									}	
-								}
-							print "</td>" ;
-						print "</tr>" ;
-						
-						$lastPerson=$row["gibbonPersonID"] ;
-					}
+									}
+								}	
+							}
+						print "</td>" ;
+					print "</tr>" ;
+					
+					$lastPerson=$row["gibbonPersonID"] ;
 				}
 				if ($count==0) {
 					print "<tr class=$rowNum>" ;

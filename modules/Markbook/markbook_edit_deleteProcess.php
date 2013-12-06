@@ -38,7 +38,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
 $gibbonMarkbookColumnID=$_GET["gibbonMarkbookColumnID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/markbook_edit_delete.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID" ;
-$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/markbook_edit.php&gibbonCourseClassID=$gibbonCourseClassID" ;
+$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_delete.php")==FALSE) {
 	//Fail 0

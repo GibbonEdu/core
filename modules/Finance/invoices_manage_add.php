@@ -134,34 +134,59 @@ else {
 					</td>
 					<td class="right">
 						<select name="gibbonFinanceInvoiceeIDs[]" id="gibbonFinanceInvoiceeIDs[]" multiple style="width: 302px; height: 150px">
-							<optgroup label='--Enrolable Students--'>
+							<optgroup label='--All Enrolled Students by Roll Group--'>
 							<?
+							$students=array() ;
+							$count=0 ;
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
-								$sqlSelect="SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup, gibbonFinanceInvoicee WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID AND status='FULL' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName" ;
+								$sqlSelect="SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.name AS name, dayType FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup, gibbonFinanceInvoicee WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID AND status='FULL' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName" ;
 								$resultSelect=$connection2->prepare($sqlSelect);
 								$resultSelect->execute($dataSelect);
 							}
 							catch(PDOException $e) { }
 							while ($rowSelect=$resultSelect->fetch()) {
 								print "<option value='" . $rowSelect["gibbonFinanceInvoiceeID"] . "'>" . htmlPrep($rowSelect["name"]) . " - " . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
+								$students[$count]["gibbonFinanceInvoiceeID"]=$rowSelect["gibbonFinanceInvoiceeID"] ;
+								$students[$count]["student"]=formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) ;
+								$students[$count]["rollGroup"]=htmlPrep($rowSelect["name"]) ;
+								$students[$count]["dayType"]=htmlPrep($rowSelect["dayType"]) ;
+								$count++ ;
 							}
 							?>
 							</optgroup>
-							<optgroup label='--All Users--'>
 							<?
+							$dayTypeOptions=getSettingByScope($connection2, 'User Admin', 'dayTypeOptions') ;
+							if ($dayTypeOptions!="") {
+								$dayTypes=explode(",", $dayTypeOptions) ;
+								foreach ($dayTypes as $dayType) {
+									print "<optgroup label='--$dayType Students by Roll Groups--'>" ; 
+									foreach ($students AS $student) {
+										if ($student["dayType"]==$dayType) {
+											print "<option value='" . $student["gibbonFinanceInvoiceeID"] . "'>" . $student["rollGroup"] . " - " . $student["student"] . "</option>" ;
+										}
+									}
+									print "</optgroup>" ;
+								}
+							}
+							?>
+							<optgroup label='--All Enrolled Students by Alphabet--'>
+							<?
+							$students=array() ;
+							$count=0 ;
 							try {
-								$dataSelect=array(); 
-								$sqlSelect="SELECT gibbonFinanceInvoiceeID, surname, preferredName, status FROM gibbonPerson JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) ORDER BY surname, preferredName" ;
+								$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
+								$sqlSelect="SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.name AS name, dayType FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup, gibbonFinanceInvoicee WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID AND status='FULL' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName" ;
 								$resultSelect=$connection2->prepare($sqlSelect);
 								$resultSelect->execute($dataSelect);
 							}
 							catch(PDOException $e) { }
 							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["gibbonFinanceInvoiceeID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
+								print "<option value='" . $rowSelect["gibbonFinanceInvoiceeID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " - " . htmlPrep($rowSelect["name"]) . "</option>" ;
 							}
 							?>
 							</optgroup>
+							
 						</select>
 					</td>
 				</tr>

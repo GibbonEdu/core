@@ -42,8 +42,14 @@ else {
 		print "Search" ;
 		print "</h2>" ;
 		
-		$gibbonPersonID=$_GET["gibbonPersonID"] ;
-	
+		$gibbonPersonID=NULL ;
+		if (isset($_GET["gibbonPersonID"])) {
+			$gibbonPersonID=$_GET["gibbonPersonID"] ;
+		}
+		$search=NULL ;
+		if (isset($_GET["search"])) {
+			$search=$_GET["search"] ;
+		}
 		?>
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
@@ -54,7 +60,7 @@ else {
 						<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
 					</td>
 					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<? print $_GET["search"] ?>" type="text" style="width: 300px">
+						<input name="search" id="search" maxlength=20 value="<? print $search ?>" type="text" style="width: 300px">
 					</td>
 				</tr>
 				<tr>
@@ -84,7 +90,6 @@ else {
 			$page=1 ;
 		}
 		
-		$search=$_GET["search"] ;
 		try {
 			$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 			$sql="SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, dateStart, dateEnd FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' ORDER BY surname, preferredName" ; 
@@ -107,7 +112,7 @@ else {
 		}
 		else {
 			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
+				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "search=$search") ;
 			}
 		
 			print "<table cellspacing='0' style='width: 100%'>" ;
@@ -162,10 +167,10 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							if ($highestAction=="Individual Needs Records_view") {
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/in_edit.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=" . $_GET["search"] . "'><img title='View Individual Needs Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/in_edit.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=$search'><img title='View Individual Needs Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 							}
 							else if ($highestAction=="Individual Needs Records_viewEdit" OR $highestAction=="Individual Needs Records_viewContribute") {
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/in_edit.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=" . $_GET["search"] . "'><img title='Edit Individual Needs Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/in_edit.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=$search'><img title='Edit Individual Needs Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							}
 						print "</td>" ;
 					print "</tr>" ;
@@ -173,7 +178,7 @@ else {
 			print "</table>" ;
 			
 			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
+				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "&search=$search") ;
 			}
 		}
 	}

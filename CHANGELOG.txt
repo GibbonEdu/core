@@ -89,6 +89,34 @@ Finance: added invoice number, gender and DOB to invoice export
 Finance: added student roll group to invoice listning
 	Edited file /modules/Finance/invoices_manage.php
 
+User Admin: added ability to save files to existing applications
+	Edited files /modules/User Admin/applicationForm_manage_edit.php
+
+User Admin: added field to store unique staff initials
+	Edited table gibbonStaff
+	Edited files /modules/User Admin/staff_manage*.php
+	Edited files /Staff/staff_view*.php
+
+Finance: amended invoicee listing to all selection of students by day type when creating invoices
+	Edited files /modules/Finance/invoices_manage_add.php
+
+Markbook: added new super user MB role with edit rights to all subjects
+	New value in tables gibbonAction, gibbonPermission
+	Edited files /modules/Markbook/*
+
+Finance: fixed invoice issue bug, causing fee-accumulation bug in bulk invoice 
+	Edited file /modules/Finance/invoices_manage_processBulk.php
+
+General: improved ordering in Today's Lessons on index page to make it more consistent when two lessons exist at the same time
+	Edited file /index.php
+
+Finance: added field to store final amount paid, when an invoice is paid (in case it is more or less than the invoice amount for some reason).
+	Edited table gibbonFinance
+	Edited files /modules/Finance/*
+
+PayPal: fixed issues with PayPal payment introduced by $guid session protection
+	Edited files /lib/paypal/expresscheckout.php, paypalfunctions.php
+	
 General: fixed issues relating to PHP Notice errors
 	Edited many files across the system
 	

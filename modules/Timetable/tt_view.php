@@ -37,9 +37,22 @@ else {
 		print "</div>" ;
 	}
 	else {
-		$gibbonPersonID=$_GET["gibbonPersonID"] ;
-		$gibbonTTID=$_GET["gibbonTTID"] ;
-		$allUsers=$_GET["allUsers"] ;
+		$gibbonPersonID=NULL ;
+		if (isset($_GET["gibbonPersonID"])) {
+			$gibbonPersonID=$_GET["gibbonPersonID"] ;
+		}
+		$search=NULL ;
+		if (isset($_GET["search"])) {
+			$search=$_GET["search"] ;
+		}
+		$allUsers=NULL ;
+		if (isset($_GET["allUsers"])) {
+			$allUsers=$_GET["allUsers"] ;
+		}
+		$gibbonTTID=NULL ;
+		if (isset($_GET["gibbonTTID"])) {
+			$gibbonTTID=$_GET["gibbonTTID"] ;
+		}
 		
 		try {
 			if ($allUsers=="on") {
@@ -74,11 +87,11 @@ else {
 				if ($role=="Student" OR $role=="Staff" OR $allUsers=="on" OR $search!="") {
 					print "<div class='linkTop'>" ;
 					
-						if ($_GET["search"]!="") {
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt.php&search=" . $_GET["search"] . "&allUsers=$allUsers'>Back to Search Results</a>" ;
+						if ($search!="") {
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt.php&search=" . $search . "&allUsers=$allUsers'>Back to Search Results</a>" ;
 						}
 						if ($role=="Student" OR $role=="Staff" OR $allUsers=="on") {
-							if ($_GET["search"]!="") {
+							if ($search!="") {
 								print " | " ;
 							}
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=$role&allUsers=$allUsers'>Edit Timetable<img style='margin: 0 0 -4px 3px' title='Enter Data' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.gif'/></a> " ;
@@ -104,24 +117,26 @@ else {
 				print "</tr>" ;
 			print "</table>" ;
 			
-			$ttDate="" ;
-			if ($_POST["ttDate"]!="") {
+			$ttDate=NULL ;
+			if (isset($_POST["ttDate"])) {
 				$ttDate=dateConvertToTimestamp(dateConvert($_POST["ttDate"]));
 			}
 			
-			if ($_POST["fromTT"]=="Y") {
-				if ($_POST["schoolCalendar"]=="on" OR $_POST["schoolCalendar"]=="Y") {
-					$_SESSION[$guid]["viewCalendarSchool"]="Y" ;
-				}
-				else {
-					$_SESSION[$guid]["viewCalendarSchool"]="N" ;
-				}
+			if (isset($_POST["fromTT"])) {
+				if ($_POST["fromTT"]=="Y") {
+					if ($_POST["schoolCalendar"]=="on" OR $_POST["schoolCalendar"]=="Y") {
+						$_SESSION[$guid]["viewCalendarSchool"]="Y" ;
+					}
+					else {
+						$_SESSION[$guid]["viewCalendarSchool"]="N" ;
+					}
 				
-				if ($_POST["personalCalendar"]=="on" OR $_POST["personalCalendar"]=="Y") {
-					$_SESSION[$guid]["viewCalendarPersonal"]="Y" ;
-				}
-				else {
-					$_SESSION[$guid]["viewCalendarPersonal"]="N" ;
+					if ($_POST["personalCalendar"]=="on" OR $_POST["personalCalendar"]=="Y") {
+						$_SESSION[$guid]["viewCalendarPersonal"]="Y" ;
+					}
+					else {
+						$_SESSION[$guid]["viewCalendarPersonal"]="N" ;
+					}
 				}
 			}
 			

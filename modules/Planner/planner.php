@@ -42,14 +42,25 @@ else {
 		
 		//Proceed!
 		//Get viewBy, date and class variables
-		$viewBy=$_GET["viewBy"] ;
+		$viewBy=NULL ;
+		if (isset($_GET["viewBy"])) {
+			$viewBy=$_GET["viewBy"] ;
+		}
+		$subView=NULL ;
+		if (isset($_GET["subView"])) {
 			$subView=$_GET["subView"] ;
+		}
 		if ($viewBy!="date" AND $viewBy!="class") {
 			$viewBy="date" ;
 		}
+		$gibbonCourseClassID=NULL ;
+		$date=NULL ;
+		$dateStamp=NULL ;
 		if ($viewBy=="date") {
-			$date=$_GET["date"] ;
-			if ($_GET["dateHuman"]!="") {
+			if (isset($_GET["date"])) {
+				$date=$_GET["date"] ;
+			}
+			if (isset($_GET["dateHuman"])) {
 				$date=dateConvert($_GET["dateHuman"]) ;
 			}
 			if ($date=="") {
@@ -59,14 +70,14 @@ else {
 			$dateStamp=mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);	
 		}
 		else if ($viewBy=="class") {
-			$class=$_GET["class"] ;
+			$class=NULL ;
+			if (isset($_GET["class"])) {
+				$class=$_GET["class"] ;
+			}
 			$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
-			$subView=$_GET["subView"] ;
 		}
-		
 		list($todayYear, $todayMonth, $todayDay)=explode('-', $today);
 		$todayStamp=mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
-		
 		$gibbonPersonID="" ;
 		
 		//My children's classes
@@ -331,7 +342,7 @@ else {
 													print "</td>" ;
 													print "<td>" ;
 														try {
-															$dataLike=array("username"=>$username); 
+															$dataLike=array(); 
 															$sqlLike="SELECT * FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . " AND gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] ;
 															$resultLike=$connection2->prepare($sqlLike);
 															$resultLike->execute($dataLike);
@@ -364,7 +375,7 @@ else {
 							}
 							else {
 								try {
-									$data=array("username"=>$username); 
+									$data=array(); 
 									$sql="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . " AND gibbonCourseClass.gibbonCourseClassID=$gibbonCourseClassID AND gibbonPersonID=$gibbonPersonID" ;
 									$result=$connection2->prepare($sql);
 									$result->execute($data);
@@ -505,7 +516,7 @@ else {
 														print "</td>" ;
 														print "<td>" ;
 															try {
-																$dataLike=array("username"=>$username); 
+																$dataLike=array(); 
 																$sqlLike="SELECT * FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . " AND gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] ;
 																$resultLike=$connection2->prepare($sqlLike);
 																$resultLike->execute($dataLike);
@@ -603,7 +614,7 @@ else {
 					try {
 						if ($highestAction=="Lesson Planner_viewEditAllClasses" ) {
 							$data=array("date"=>$date); 
-							$sql="SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, date, gibbonPlannerEntry.gibbonCourseClassID FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date ORDER BY date, timeStart" ; 
+							$sql="SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, NULL AS role, homeworkSubmission, homeworkCrowdAssess, date, gibbonPlannerEntry.gibbonCourseClassID FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date ORDER BY date, timeStart" ; 
 						}
 						else if ($highestAction=="Lesson Planner_viewMyClasses" OR $highestAction=="Lesson Planner_viewAllEditMyClasses") {
 							$data=array("date1"=>$date, "gibbonPersonID1"=>$gibbonPersonID, "date2"=>$date, "gibbonPersonID2"=>$gibbonPersonID); 
@@ -854,7 +865,7 @@ else {
 							print "</div>" ;
 						}
 						
-						$bumpReturn=$_GET["bumpReturn"] ;
+						if (isset($_GET["bumpReturn"])) { $bumpReturn=$_GET["bumpReturn"] ; } else { $bumpReturn="" ; }
 						$bumpReturnMessage ="" ;
 						$class="error" ;
 						if (!($bumpReturn=="")) {
@@ -871,7 +882,7 @@ else {
 							if ($highestAction=="Lesson Planner_viewEditAllClasses" OR $highestAction=="Lesson Planner_viewAllEditMyClasses") {
 								if ($subView=="lesson" OR $subView=="") {
 									$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
-									$sql="SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, gibbonPlannerEntry.gibbonCourseClassID FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID ORDER BY date DESC, timeStart DESC" ; 
+									$sql="SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, NULL as role, homeworkSubmission, homeworkCrowdAssess, gibbonPlannerEntry.gibbonCourseClassID FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID ORDER BY date DESC, timeStart DESC" ; 
 								}
 								else {
 									$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
@@ -940,8 +951,8 @@ else {
 									$pastCount=0;
 									$rowNum="odd" ;
 									while ($row=$result->fetch()) {
-										if (!($row["role"]=="Student" AND $row["viewableStudents"]=="N")) {
-										if ($count%2==0) {
+										if ((!($row["role"]=="Student" AND $row["viewableStudents"]=="N")) AND (!($row["role"]=="Guest Student" AND $row["viewableStudents"]=="N"))) {
+											if ($count%2==0) {
 												$rowNum="even" ;
 											}
 											else {
@@ -976,9 +987,13 @@ else {
 												print "<td>" ;
 													print "<b>" . $row["name"] . "</b><br/>" ;
 													$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
-													print $unit[0] ;
-													if ($unit[1]!="") {
-														print "<br/><i>" . $unit[1] . " Unit</i>" ;
+													if (isset($unit[0])) {
+														print $unit[0] ;
+														if (isset($unit[1])) {
+															if ($unit[1]!="") {
+																print "<br/><i>" . $unit[1] . " Unit</i>" ;
+															}
+														}
 													}
 												print "</td>" ;
 													print "<td>" ;
@@ -1213,6 +1228,7 @@ else {
 										$count=0;
 										$termCount=0 ;
 										$specialCount=0 ;
+										$classCount=0 ;
 										$rowNum="odd" ;
 										$divide=false ; //Have we passed gotten to today yet?
 							
@@ -1254,7 +1270,7 @@ else {
 											}
 											
 											//Spit out row for special day
-											while ($lesson["1"]>=$specials[$specialCount][0] AND $specialCount<count($specials)) {
+											while ($lesson["1"]>=@$specials[$specialCount][0] AND $specialCount<count($specials)) {
 												print "<tr class='dull'>" ;
 													print "<td>" ;
 														print "<b>" . $specials[$specialCount][1] . "</b>" ;
@@ -1288,9 +1304,13 @@ else {
 														if ($lesson["0"]=="Planned") {
 															print "<b>" . $lesson["5"] . "</b><br/>" ;
 															$unit=getUnit($connection2, $lesson[11], $lesson[13], $lesson[14]) ;
-															print $unit[0] ;
-															if ($unit[1]!="") {
-																print "<br/><i>" . $unit[1] . " Unit</i>" ;
+															if (isset($unit[0])) {
+																print $unit[0] ;
+																if (isset($unit[1])) {
+																	if ($unit[1]!="") {
+																		print "<br/><i>" . $unit[1] . " Unit</i>" ;
+																	}
+																}
 															}
 														}
 													print "</td>" ;
@@ -1313,7 +1333,7 @@ else {
 											}
 											
 											//Spit out row for end of term/year
-											while ($lesson["1"]>=$terms[$termCount][0] AND $termCount<count($terms) AND substr($terms[$termCount][1],0,3)=="End") {
+											while ($lesson["1"]>=@$terms[$termCount][0] AND $termCount<count($terms) AND substr($terms[$termCount][1],0,3)=="End") {
 												print "<tr class='dull'>" ;
 													print "<td>" ;
 														print "<b>" . $terms[$termCount][1] . "</b>" ;
@@ -1326,7 +1346,7 @@ else {
 											}
 										}
 										
-										if ($terms[$termCount][0]!="") {
+										if (@$terms[$termCount][0]!="") {
 											print "<tr class='dull'>" ;
 												print "<td>" ;
 													print "<b><u>" . $terms[$termCount][1] . "</u></b>" ;

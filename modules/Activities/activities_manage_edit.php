@@ -315,7 +315,7 @@ else {
 						</td>
 						<td class="right">
 							<? 
-							$yearGroups=getYearGroups($connection2, $_GET["gibbonSchoolYearID"]) ;
+							$yearGroups=getYearGroups($connection2, $_SESSION[$guid]["gibbonSchoolYearID"]) ;
 							if ($yearGroups=="") {
 								print "<i>No year groups available.</i>" ;
 							}
@@ -569,7 +569,7 @@ else {
 								<span style="font-size: 90%"><i>Format: hh:mm</i></span>
 							</td>
 							<td class="right">
-								<input name="timeStart<? print $i ?>" id="timeStart<? print $i ?>" maxlength=5 value="<? print substr($row["timeStart"],0,5) ?>" type="text" style="width: 300px">
+								<input name="timeStart<? print $i ?>" id="timeStart<? print $i ?>" maxlength=5 value="" type="text" style="width: 300px">
 								<script type="text/javascript">
 									$(function() {
 										var availableTags=[
@@ -597,7 +597,7 @@ else {
 								<span style="font-size: 90%"><i>Format: hh:mm</i></span>
 							</td>
 							<td class="right">
-								<input name="timeEnd<? print $i ?>" id="timeEnd<? print $i ?>" maxlength=5 value="<? print substr($row["timeEnd"],0,5) ?>" type="text" style="width: 300px">
+								<input name="timeEnd<? print $i ?>" id="timeEnd<? print $i ?>" maxlength=5 value="" type="text" style="width: 300px">
 								<script type="text/javascript">
 									$(function() {
 										var availableTags=[

@@ -46,10 +46,22 @@ else {
 		print "</div>" ;
 	} 
 	
-	$gibbonINDescriptorID=$_GET["gibbonINDescriptorID"] ;
-	$gibbonAlertLevelID=$_GET["gibbonAlertLevelID"] ;
-	$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
-	$gibbonYearGroupID=$_GET["gibbonYearGroupID"] ;
+	$gibbonINDescriptorID=NULL ;
+	if (isset($_GET["gibbonINDescriptorID"])) {
+		$gibbonINDescriptorID=$_GET["gibbonINDescriptorID"] ;
+	}
+	$gibbonAlertLevelID=NULL ;
+	if (isset($_GET["gibbonAlertLevelID"])) {
+		$gibbonAlertLevelID=$_GET["gibbonAlertLevelID"] ;
+	}
+	$gibbonRollGroupID=NULL ;
+	if (isset($_GET["gibbonRollGroupID"])) {
+		$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
+	}
+	$gibbonYearGroupID=NULL ;
+	if (isset($_GET["gibbonYearGroupID"])) {
+		$gibbonYearGroupID=$_GET["gibbonYearGroupID"] ;
+	}
 	
 	print "<h3>" ;
 		print "Filter" ;
@@ -194,7 +206,6 @@ else {
 		$page=1 ;
 	}
 	
-	$search=$_GET["search"] ;
 	try {
 		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 		$sqlWhere="AND " ;
@@ -236,7 +247,7 @@ else {
 	}
 	else {
 		if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
+			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID") ;
 		}
 	
 		print "<table cellspacing='0' style='width: 100%'>" ;
@@ -290,14 +301,14 @@ else {
 						print $row["rollGroup"] ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/in_edit.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&source=summary&gibbonINDescriptorID=" . $_GET["gibbonINDescriptorID"] . "&gibbonAlertLevelID=" . $_GET["gibbonAlertLevelID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "'><img title='Edit Individual Needs Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/in_edit.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&source=summary&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'><img title='Edit Individual Needs Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 					print "</td>" ;
 				print "</tr>" ;
 			}
 		print "</table>" ;
 		
 		if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
+			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID") ;
 		}
 		
 	}

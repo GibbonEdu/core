@@ -38,8 +38,22 @@ else {
 	print "Choose Options" ;
 	print "</h2>" ;
 	
-	$type=$_GET["type"] ;
-	$ignoreEnrolment=$_GET["ignoreEnrolment"] ;
+	$type=NULL ;
+	if (isset($_GET["type"])) {
+		$type=$_GET["type"] ;
+	}
+	$ignoreEnrolment=NULL ;
+	if (isset($_GET["ignoreEnrolment"])) {
+		$ignoreEnrolment=$_GET["ignoreEnrolment"] ;
+	}
+	$startDateFrom=NULL ;
+	if (isset($_GET["startDateFrom"])) {
+		$startDateFrom=$_GET["startDateFrom"] ;
+	}
+	$startDateTo=NULL ;
+	if (isset($_GET["startDateTo"])) {
+		$startDateTo=$_GET["startDateTo"] ;
+	}
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -77,7 +91,7 @@ else {
 					<span style="font-size: 90%"><i>Earlest student start date to include.<br/>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="startDateFrom" id="startDateFrom" maxlength=10 value="<? print $_GET["startDateFrom"] ?>" type="text" style="width: 300px">
+					<input name="startDateFrom" id="startDateFrom" maxlength=10 value="<? print $startDateFrom ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var startDateFrom=new LiveValidation('startDateFrom');
 						startDateFrom.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -95,7 +109,7 @@ else {
 					<span style="font-size: 90%"><i>Latest student start date to include.<br/>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="startDateTo" id="startDateTo" maxlength=10 value="<? print $_GET["startDateTo"] ?>" type="text" style="width: 300px">
+					<input name="startDateTo" id="startDateTo" maxlength=10 value="<? print $startDateTo ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var startDateTo=new LiveValidation('startDateTo');
 						startDateTo.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -137,8 +151,6 @@ else {
 				print "This report shows all students whose Start Date is on or between the indicated dates." ;
 			print "</p>" ;
 			
-			$startDateFrom=$_GET["startDateFrom"] ;
-			$startDateTo=$_GET["startDateTo"] ;
 			if ($startDateFrom=="" OR $startDateTo=="") {
 				$proceed=FALSE ;
 			}

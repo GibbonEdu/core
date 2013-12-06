@@ -157,25 +157,28 @@ else {
 				}
 				else {
 					$row=$result->fetch() ;
+					$partialFail=FALSE ;
 					
 					for ($i=1; $i<=$lessonCount; $i++) {
-						if ($_POST["deploy$i"]=="on") {
-							$summary="Part of the " . $row["name"] . " unit." ;
-							$teachersNotes=getSettingByScope($connection2, "Planner", "teachersNotesTemplate") ;
-							try {
-								if ($hooked==FALSE) {
-									$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$_POST["date$i"], "timeStart"=>$_POST["timeStart$i"], "timeEnd"=>$_POST["timeEnd$i"], "gibbonUnitID"=>$gibbonUnitID, "name"=>$row["name"] . " Additional", "summary"=>$summary, "teachersNotes"=>$teachersNotes, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"]); 
-									$sql="INSERT INTO gibbonPlannerEntry SET gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, name=:name, summary=:summary, description='', teachersNotes=:teachersNotes, homework='N', viewableParents='Y', viewableStudents='Y', gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+						if (isset($_POST["deploy$i"])) {
+							if ($_POST["deploy$i"]=="on") {
+								$summary="Part of the " . $row["name"] . " unit." ;
+								$teachersNotes=getSettingByScope($connection2, "Planner", "teachersNotesTemplate") ;
+								try {
+									if ($hooked==FALSE) {
+										$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$_POST["date$i"], "timeStart"=>$_POST["timeStart$i"], "timeEnd"=>$_POST["timeEnd$i"], "gibbonUnitID"=>$gibbonUnitID, "name"=>$row["name"] . " Additional", "summary"=>$summary, "teachersNotes"=>$teachersNotes, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"]); 
+										$sql="INSERT INTO gibbonPlannerEntry SET gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, name=:name, summary=:summary, description='', teachersNotes=:teachersNotes, homework='N', viewableParents='Y', viewableStudents='Y', gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+									}
+									else {
+										$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$_POST["date$i"], "timeStart"=>$_POST["timeStart$i"], "timeEnd"=>$_POST["timeEnd$i"], "gibbonUnitID"=>$gibbonUnitIDToken, "gibbonHookID"=>$gibbonHookIDToken, "name"=>$row["name"] . " Additional", "summary"=>$summary, "teachersNotes"=>$teachersNotes, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"]); 
+										$sql="INSERT INTO gibbonPlannerEntry SET gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, gibbonHookID=:gibbonHookID, name=:name, summary=:summary, description='', teachersNotes=:teachersNotes, homework='N', viewableParents='Y', viewableStudents='Y', gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+									}
+									$result=$connection2->prepare($sql);
+									$result->execute($data);
 								}
-								else {
-									$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$_POST["date$i"], "timeStart"=>$_POST["timeStart$i"], "timeEnd"=>$_POST["timeEnd$i"], "gibbonUnitID"=>$gibbonUnitIDToken, "gibbonHookID"=>$gibbonHookIDToken, "name"=>$row["name"] . " Additional", "summary"=>$summary, "teachersNotes"=>$teachersNotes, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"]); 
-									$sql="INSERT INTO gibbonPlannerEntry SET gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, gibbonHookID=:gibbonHookID, name=:name, summary=:summary, description='', teachersNotes=:teachersNotes, homework='N', viewableParents='Y', viewableStudents='Y', gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+								catch(PDOException $e) { 
+									$partialFail=true;
 								}
-								$result=$connection2->prepare($sql);
-								$result->execute($data);
-							}
-							catch(PDOException $e) { 
-								$partialFail=true;
 							}
 						}
 					}

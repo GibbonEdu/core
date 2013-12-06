@@ -112,7 +112,6 @@ else {
 						
 						if ($resultUnit->rowCount()==1) {
 							$rowUnit=$resultUnit->fetch() ;
-							$unitType=$rowUnit["type"] ;
 							print "<div style='font-size: 55%; margin-top: 10px'>Unit: " . $rowUnit["name"] . "</div>" ;
 						}
 					}
@@ -216,15 +215,6 @@ else {
 					print "</tr>" ;
 					
 					
-					
-					if ($row["teachersNotes"]!="" AND $row["role"]=="Teacher") {
-						print "<tr id='teachersNotes'>" ;
-							print "<td style='text-align: justify; padding-top: 15px; width: 33%; vertical-align: top' colspan=3>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>Teacher's Notes</span><br/>" ;
-								print $row["teachersNotes"] ;
-							print "</td>" ;
-						print "</tr>" ;
-					}
 					print "<tr>" ;
 						print "<td style='padding-top: 15px; width: 33%; vertical-align: top' colspan=3>" ;
 							print "<h2>Homework</h2>" ;

@@ -38,7 +38,10 @@ else {
 	print "Choose Roll Group" ;
 	print "</h2>" ;
 	
-	$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
+	$gibbonRollGroupID=NULL ;
+	if (isset($_GET["gibbonRollGroupID"])) {
+		$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
+	}
 	?>
 	
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -187,109 +190,107 @@ else {
 			$count=0;
 			$rowNum="odd" ;
 			while ($row=$result->fetch()) {
-				if (is_null($log[$row["gibbonRollGroupID"]])) {
-					if ($count%2==0) {
-						$rowNum="even" ;
-					}
-					else {
-						$rowNum="odd" ;
-					}
-					$count++ ;
-					
-					//COLOR ROW BY STATUS!
-					print "<tr class=$rowNum>" ;
-						print "<td>" ;
-							print $row["name"] ;
-						print "</td>" ;
-						print "<td>" ;
-							print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
-						print "</td>" ;
-						print "<td>" ;
-							print $row["gender"] ;
-						print "</td>" ;
-						print "<td>" ;
-							if (is_null($row["dob"])==FALSE AND $row["dob"]!="0000-00-00") {
-								print getAge(dateConvertToTimestamp($row["dob"]), TRUE) . "<br/>" ;
-								print "<span style='font-style: italic; font-size: 85%'>" . dateConvertBack($row["dob"]) . "</span>" ;
-							}
-						print "</td>" ;
-						print "<td>" ;
-							if ($row["citizenship1"]!="") {
-								print $row["citizenship1"] . "<br/>" ;
-							}
-							if ($row["citizenship2"]!="") {
-								print $row["citizenship2"] . "<br/>" ;
-							}
-						print "</td>" ;
-						print "<td>" ;
-							print $row["transport"] ;
-						print "</td>" ;
-						print "<td>" ;
-							if ($row["gibbonHouseID"]!="") {
-								try {
-									$dataHouse=array("gibbonHouseID"=>$row["gibbonHouseID"]); 
-									$sqlHouse="SELECT * FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID" ;
-									$resultHouse=$connection2->prepare($sqlHouse);
-									$resultHouse->execute($dataHouse);
-								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
-								if ($resultHouse->rowCount()==1) {
-									$rowHouse=$resultHouse->fetch() ;
-									print $rowHouse["name"] ;
-								}
-							}
-						print "</td>" ;
-						print "<td>" ;
-							print $row["lockerNumber"] ;
-						print "</td>" ;
-						print "<td>" ;
+				if ($count%2==0) {
+					$rowNum="even" ;
+				}
+				else {
+					$rowNum="odd" ;
+				}
+				$count++ ;
+				
+				//COLOR ROW BY STATUS!
+				print "<tr class=$rowNum>" ;
+					print "<td>" ;
+						print $row["name"] ;
+					print "</td>" ;
+					print "<td>" ;
+						print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
+					print "</td>" ;
+					print "<td>" ;
+						print $row["gender"] ;
+					print "</td>" ;
+					print "<td>" ;
+						if (is_null($row["dob"])==FALSE AND $row["dob"]!="0000-00-00") {
+							print getAge(dateConvertToTimestamp($row["dob"]), TRUE) . "<br/>" ;
+							print "<span style='font-style: italic; font-size: 85%'>" . dateConvertBack($row["dob"]) . "</span>" ;
+						}
+					print "</td>" ;
+					print "<td>" ;
+						if ($row["citizenship1"]!="") {
+							print $row["citizenship1"] . "<br/>" ;
+						}
+						if ($row["citizenship2"]!="") {
+							print $row["citizenship2"] . "<br/>" ;
+						}
+					print "</td>" ;
+					print "<td>" ;
+						print $row["transport"] ;
+					print "</td>" ;
+					print "<td>" ;
+						if ($row["gibbonHouseID"]!="") {
 							try {
-								$dataForm=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
-								$sqlForm="SELECT * FROM gibbonPersonMedical WHERE gibbonPersonID=:gibbonPersonID" ;
-								$resultForm=$connection2->prepare($sqlForm);
-								$resultForm->execute($dataForm);
+								$dataHouse=array("gibbonHouseID"=>$row["gibbonHouseID"]); 
+								$sqlHouse="SELECT * FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID" ;
+								$resultHouse=$connection2->prepare($sqlHouse);
+								$resultHouse->execute($dataHouse);
 							}
 							catch(PDOException $e) { 
 								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
-							
-							if ($resultForm->rowCount()==1) {
-								$rowForm=$resultForm->fetch() ;
-								if ($rowForm["longTermMedication"]=='Y') {
-									print "<b><i>Long Term Medication</i></b>: " . $rowForm["longTermMedicationDetails"] . "<br/>" ;
-								}
-								$condCount=1 ;
-								try {
-									$dataConditions=array("gibbonPersonMedicalID"=>$rowForm["gibbonPersonMedicalID"]); 
-									$sqlConditions="SELECT * FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID" ;
-									$resultConditions=$connection2->prepare($sqlConditions);
-									$resultConditions->execute($dataConditions);
-								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
-		
-								while ($rowConditions=$resultConditions->fetch()) {
-									print "<b><i>Condition $condCount</i></b> " ;
-									print ": " . $rowConditions["name"] ;
-									
-									$alert=getAlert($connection2, $rowConditions["gibbonAlertLevelID"]) ;
-									if ($alert!=FALSE) {
-										print " <span style='color: #" . $alert["color"] . "; font-weight: bold'>(" . $alert["name"] . " Risk)</span>" ;
-										print "<br/>" ;									
-										$condCount++ ;
-									}
+							if ($resultHouse->rowCount()==1) {
+								$rowHouse=$resultHouse->fetch() ;
+								print $rowHouse["name"] ;
+							}
+						}
+					print "</td>" ;
+					print "<td>" ;
+						print $row["lockerNumber"] ;
+					print "</td>" ;
+					print "<td>" ;
+						try {
+							$dataForm=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+							$sqlForm="SELECT * FROM gibbonPersonMedical WHERE gibbonPersonID=:gibbonPersonID" ;
+							$resultForm=$connection2->prepare($sqlForm);
+							$resultForm->execute($dataForm);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+						
+						if ($resultForm->rowCount()==1) {
+							$rowForm=$resultForm->fetch() ;
+							if ($rowForm["longTermMedication"]=='Y') {
+								print "<b><i>Long Term Medication</i></b>: " . $rowForm["longTermMedicationDetails"] . "<br/>" ;
+							}
+							$condCount=1 ;
+							try {
+								$dataConditions=array("gibbonPersonMedicalID"=>$rowForm["gibbonPersonMedicalID"]); 
+								$sqlConditions="SELECT * FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID" ;
+								$resultConditions=$connection2->prepare($sqlConditions);
+								$resultConditions->execute($dataConditions);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+	
+							while ($rowConditions=$resultConditions->fetch()) {
+								print "<b><i>Condition $condCount</i></b> " ;
+								print ": " . $rowConditions["name"] ;
+								
+								$alert=getAlert($connection2, $rowConditions["gibbonAlertLevelID"]) ;
+								if ($alert!=FALSE) {
+									print " <span style='color: #" . $alert["color"] . "; font-weight: bold'>(" . $alert["name"] . " Risk)</span>" ;
+									print "<br/>" ;									
+									$condCount++ ;
 								}
 							}
-							else {
-								print "<i>No medical data</i>" ;
-							}
-							
-						print "</td>" ;
-					print "</tr>" ;
-				}
+						}
+						else {
+							print "<i>No medical data</i>" ;
+						}
+						
+					print "</td>" ;
+				print "</tr>" ;
 			}
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;

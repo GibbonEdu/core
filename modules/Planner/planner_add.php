@@ -42,11 +42,20 @@ else {
 		//Proceed!
 		//Get viewBy, date and class variables
 		$params="" ;
-		$viewBy=$_GET["viewBy"] ;
+		$viewBy=NULL ;
+		if (isset($_GET["viewBy"])) {
+			$viewBy=$_GET["viewBy"] ;
+		}
+		$subView=NULL ;
+		if (isset($_GET["subView"])) {
 			$subView=$_GET["subView"] ;
+		}
 		if ($viewBy!="date" AND $viewBy!="class") {
 			$viewBy="date" ;
 		}
+		$gibbonCourseClassID=NULL ;
+		$date=NULL ;
+		$dateStamp=NULL ;
 		if ($viewBy=="date") {
 			$date=$_GET["date"] ;
 			if ($_GET["dateHuman"]!="") {
@@ -60,9 +69,11 @@ else {
 			$params="&viewBy=date&date=$date" ;
 		}
 		else if ($viewBy=="class") {
-			$class=$_GET["class"] ;
+			$class=NULL ;
+			if (isset($_GET["class"])) {
+				$class=$_GET["class"] ;
+			}
 			$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
-			$subView=$_GET["subView"] ;
 			$params="&viewBy=class&class=$class&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView" ;
 		}
 		
@@ -368,9 +379,18 @@ else {
 					//Try and find the next unplanned slot for this class.
 					if ($viewBy=="class") {
 						//Get $_GET values
-						$nextDate=$_GET["date"] ;
-						$nextTimeStart=$_GET["timeStart"] ;
-						$nextTimeEnd=$_GET["timeEnd"] ;
+						$nextDate=NULL ;
+						if (isset($_GET["date"])) {
+							$nextDate=$_GET["date"] ;
+						}
+						$nextTimeStart=NULL ;
+						if (isset($_GET["timeStart"])) {
+							$nextTimeStart=$_GET["timeStart"] ;
+						}
+						$nextTimeEnd=NULL ;
+						if (isset($_GET["timeEnd"])) {
+							$nextDate=$_GET["timeEnd"] ;
+						}
 						
 						if ($nextDate=="") {
 							try {
@@ -638,7 +658,7 @@ else {
 							<span style="font-size: 90%"><i>Format: dd/mm/yyyy<br/></i></span>
 						</td>
 						<td class="right">
-							<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="<? print $row["date"] ?>" type="text" style="width: 300px">
+							<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var homeworkDueDate=new LiveValidation('homeworkDueDate');
 								homeworkDueDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -658,7 +678,7 @@ else {
 							<span style="font-size: 90%"><i>Format: hh:mm (24hr)<br/></i></span>
 						</td>
 						<td class="right">
-							<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<? print substr($row["homeworkDueDateTime"],11,5) ?>" type="text" style="width: 300px">
+							<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var homeworkDueDateTime=new LiveValidation('homeworkDueDateTime');
 								homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
@@ -668,7 +688,7 @@ else {
 									var availableTags=[
 										<?
 										try {
-											$dataAuto=array("username"=>$username); 
+											$dataAuto=array(); 
 											$sqlAuto="SELECT DISTINCT SUBSTRING(homeworkDueDateTime,12,5) AS homeworkDueTime FROM gibbonPlannerEntry ORDER BY homeworkDueDateTime" ;
 											$resultAuto=$connection2->prepare($sqlAuto);
 											$resultAuto->execute($dataAuto);
@@ -687,7 +707,7 @@ else {
 					<tr id="homeworkDetailsRow">
 						<td colspan=2> 
 							<b>Homework Details *</b> 
-							<? print getEditor($guid,  TRUE, "homeworkDetails", $row["homeworkDetails"], 25, true, true, true ) ?>
+							<? print getEditor($guid,  TRUE, "homeworkDetails", "", 25, true, true, true ) ?>
 						</td>
 					</tr>
 					<tr id="homeworkSubmissionRow">
@@ -702,11 +722,11 @@ else {
 					</tr>
 					<tr id="homeworkSubmissionDateOpenRow">
 						<td> 
-							<b>Sumbission Open Date</b><br/>
+							<b>Submission Open Date</b><br/>
 							<span style="font-size: 90%"><i>Format: dd/mm/yyyy<br/></i></span>
 						</td>
 						<td class="right">
-							<input name="homeworkSubmissionDateOpen" id="homeworkSubmissionDateOpen" maxlength=10 value="<? print $row["date"] ?>" type="text" style="width: 300px">
+							<input name="homeworkSubmissionDateOpen" id="homeworkSubmissionDateOpen" maxlength=10 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var homeworkSubmissionDateOpen=new LiveValidation('homeworkSubmissionDateOpen');
 								homeworkSubmissionDateOpen.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 

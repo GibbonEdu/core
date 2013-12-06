@@ -43,14 +43,23 @@ else {
 		//Proceed!
 		//Get viewBy, date and class variables
 		$params="" ;
-		$viewBy=$_GET["viewBy"] ;
-		$subView=$_GET["subView"] ;
+		$viewBy=NULL ;
+		if (isset($_GET["viewBy"])) {
+			$viewBy=$_GET["viewBy"] ;
+		}
+		$subView=NULL ;
+		if (isset($_GET["subView"])) {
+			$subView=$_GET["subView"] ;
+		}
 		if ($viewBy!="date" AND $viewBy!="class") {
 			$viewBy="date" ;
 		}
+		$gibbonCourseClassID=NULL ;
+		$date=NULL ;
+		$dateStamp=NULL ;
 		if ($viewBy=="date") {
 			$date=$_GET["date"] ;
-			if ($_GET["dateHuman"]!="") {
+			if (isset($_GET["dateHuman"])) {
 				$date=dateConvert($_GET["dateHuman"]) ;
 			}
 			if ($date=="") {
@@ -61,9 +70,11 @@ else {
 			$params="&viewBy=date&date=$date" ;
 		}
 		else if ($viewBy=="class") {
-			$class=$_GET["class"] ;
+			$class=NULL ;
+			if (isset($_GET["class"])) {
+				$class=$_GET["class"] ;
+			}
 			$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
-			$subView=$_GET["subView"] ;
 			$params="&viewBy=class&class=$class&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView" ;
 		}
 		
@@ -154,7 +165,10 @@ else {
 					print "</div>" ;
 				}
 				
-				$step=$_GET["step"] ;
+				$step=NULL ;
+				if (isset($_GET["step"])) {
+					$step=$_GET["step"] ;
+				}
 				if ($step!=1 AND $step!=2) {
 					$step=1 ;
 				}
@@ -249,7 +263,10 @@ else {
 				}
 				else if ($step==2) {
 					$gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
-					$duplicate=$_POST["duplicate"] ;
+					$duplicate=NULL ;
+					if (isset($_POST["duplicate"])) {
+						$duplicate=$_POST["duplicate"] ;
+					}
 					if ($gibbonCourseClassID=="") {
 						print "<div class='error'>" ;
 							print "You have not specified a class." ;
@@ -402,7 +419,7 @@ else {
 												var availableTags=[
 													<?
 													try {
-														$dataAuto=array("username"=>$username); 
+														$dataAuto=array(); 
 														$sqlAuto="SELECT DISTINCT timeStart FROM gibbonPlannerEntry ORDER BY timeStart" ;
 														$resultAuto=$connection2->prepare($sqlAuto);
 														$resultAuto->execute($dataAuto);
@@ -435,7 +452,7 @@ else {
 												var availableTags=[
 													<?
 													try {
-														$dataAuto=array("username"=>$username); 
+														$dataAuto=array(); 
 														$sqlAuto="SELECT DISTINCT timeEnd FROM gibbonPlannerEntry ORDER BY timeEnd" ;
 														$resultAuto=$connection2->prepare($sqlAuto);
 														$resultAuto->execute($dataAuto);

@@ -43,14 +43,22 @@ else {
 		//Proceed!
 		//Get viewBy, date and class variables
 		$params="" ;
-		$viewBy=$_GET["viewBy"] ;
-		$subView=$_GET["subView"] ;
+		$viewBy=NULL ;
+		if (isset($_GET["viewBy"])) {
+			$viewBy=$_GET["viewBy"] ;
+		}
+		$subView=NULL ;
+		if (isset($_GET["subView"])) {
+			$subView=$_GET["subView"] ;
+		}
 		if ($viewBy!="date" AND $viewBy!="class") {
 			$viewBy="date" ;
 		}
+		$date=NULL ;
+		$dateStamp=NULL ;
 		if ($viewBy=="date") {
 			$date=$_GET["date"] ;
-			if ($_GET["dateHuman"]!="") {
+			if (isset($_GET["dateHuman"])) {
 				$date=dateConvert($_GET["dateHuman"]) ;
 			}
 			if ($date=="") {
@@ -61,9 +69,11 @@ else {
 			$params="&viewBy=date&date=$date" ;
 		}
 		else if ($viewBy=="class") {
-			$class=$_GET["class"] ;
+			$class=NULL ;
+			if (isset($_GET["class"])) {
+				$class=$_GET["class"] ;
+			}
 			$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
-			$subView=$_GET["subView"] ;
 			$params="&viewBy=class&class=$class&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView" ;
 		}
 		
@@ -71,7 +81,10 @@ else {
 		$todayStamp=mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
 		
 		//Check if school year specified
-		$gibbonCourseClassID=$_GET["gibbonCourseClassID"];
+		$gibbonCourseClassID=NULL ;
+		if (isset($_GET["gibbonCourseClassID"])) {
+			$gibbonCourseClassID=$_GET["gibbonCourseClassID"];
+		}
 		$gibbonPlannerEntryID=$_GET["gibbonPlannerEntryID"] ;
 		if ($gibbonPlannerEntryID=="" OR ($viewBy=="class" AND $gibbonCourseClassID=="Y")) {
 			print "<div class='error'>" ;
@@ -221,7 +234,7 @@ else {
 					print "</div>" ;
 				} 
 				
-				$duplicateReturn=$_GET["duplicateReturn"] ;
+				if (isset($_GET["duplicateReturn"])) { $duplicateReturn=$_GET["duplicateReturn"] ; } else { $duplicateReturn="" ; }
 				$duplicateReturnMessage ="" ;
 				$class="error" ;
 				if (!($duplicateReturn=="")) {
@@ -307,27 +320,6 @@ else {
 							</td>
 						</tr>
 					
-						<?
-						//Check if unit it is smart
-						$unitType="Basic" ;
-						if ($row["gibbonUnitID"]!="") {
-							try {
-								$dataUnit=array("gibbonUnitID"=>$row["gibbonUnitID"]); 
-								$sqlUnit="SELECT * FROM gibbonUnit WHERE gibbonUnitID=:gibbonUnitID" ;
-								$resultUnit=$connection2->prepare($sqlUnit);
-								$resultUnit->execute($dataUnit);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							if ($resultUnit->rowCount()==1) {
-								$rowUnit=$resultUnit->fetch() ;
-								$unitType=$rowUnit["type"] ;
-							}
-						}
-						print "<input type='hidden' name='unitType' value='$unitType'>" ;
-						?>
-						
 						<tr>
 							<td> 
 								<b>Unit</b><br/>
@@ -344,19 +336,12 @@ else {
 										$resultSelect->execute($dataSelect);
 									}
 									catch(PDOException $e) { }
-									$lastType="" ;
-									$currentType="" ;
 									while ($rowSelect=$resultSelect->fetch()) {
 										$selected="" ;
 										if ($rowSelect["gibbonUnitID"]==$row["gibbonUnitID"] AND $rowSelect["gibbonCourseClassID"]==$row["gibbonCourseClassID"]) {
 											$selected="selected" ;
 										}
-										$currentType=$rowSelect["type"] ;
-										if ($currentType!=$lastType) {
-											print "<optgroup label='--" . $currentType . "--'>" ;
-										}
 										print "<option $selected class='" . $rowSelect["gibbonCourseClassID"] . "' value='" . $rowSelect["gibbonUnitID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
-										$lastType=$currentType ;
 									}
 									print "</optgroup>" ;	
 									
@@ -364,7 +349,7 @@ else {
 									$lastType="" ;
 									$currentType="" ;
 									try {
-										$dataHooks=array("username"=>$username); 
+										$dataHooks=array(); 
 										$sqlHooks="SELECT * FROM gibbonHook WHERE type='Unit' ORDER BY name" ;
 										$resultHooks=$connection2->prepare($sqlHooks);
 										$resultHooks->execute($dataHooks);
@@ -463,7 +448,7 @@ else {
 										var availableTags=[
 											<?
 											try {
-												$dataAuto=array("username"=>$username); 
+												$dataAuto=array(); 
 												$sqlAuto="SELECT DISTINCT timeStart FROM gibbonPlannerEntry ORDER BY timeStart" ;
 												$resultAuto=$connection2->prepare($sqlAuto);
 												$resultAuto->execute($dataAuto);
@@ -496,7 +481,7 @@ else {
 										var availableTags=[
 											<?
 											try {
-												$dataAuto=array("username"=>$username); 
+												$dataAuto=array(); 
 												$sqlAuto="SELECT DISTINCT timeEnd FROM gibbonPlannerEntry ORDER BY timeEnd" ;
 												$resultAuto=$connection2->prepare($sqlAuto);
 												$resultAuto->execute($dataAuto);
@@ -857,7 +842,7 @@ else {
 										var availableTags=[
 											<?
 											try {
-												$dataAuto=array("username"=>$username); 
+												$dataAuto=array(); 
 												$sqlAuto="SELECT DISTINCT SUBSTRING(homeworkDueDateTime,12,5) AS homeworkDueTime FROM gibbonPlannerEntry ORDER BY homeworkDueDateTime" ;
 												$resultAuto=$connection2->prepare($sqlAuto);
 												$resultAuto->execute($dataAuto);
@@ -1333,7 +1318,7 @@ else {
 								<?
 								try {
 									$data=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
-									$sql="SELECT preferredName, surname, category, gibbonPlannerEntryGuest.* FROM gibbonPlannerEntryGuest JOIN gibbonPerson ON (gibbonPlannerEntryGuest.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY surname, preferredName" ; 
+									$sql="SELECT title, preferredName, surname, category, gibbonPlannerEntryGuest.* FROM gibbonPlannerEntryGuest JOIN gibbonPerson ON (gibbonPlannerEntryGuest.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY surname, preferredName" ; 
 									$result=$connection2->prepare($sql);
 									$result->execute($data);
 								}

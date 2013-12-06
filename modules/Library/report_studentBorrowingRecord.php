@@ -40,7 +40,10 @@ else {
 	print "Choose Student" ;
 	print "</h2>" ;
 	
-	$gibbonPersonID=$_POST["gibbonPersonID"] ;
+	$gibbonPersonID=NULL ;
+	if (isset($_POST["gibbonPersonID"])) {
+		$gibbonPersonID=$_POST["gibbonPersonID"] ;
+	}
 	?>
 	
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentBorrowingRecord.php"?>">
@@ -81,8 +84,6 @@ else {
 	<?
 	
 	if ($gibbonPersonID!="") {
-		$_SESSION[$guid]["report_student_emergencySummary.php_choices"]=$choices ;
-		
 		print "<h2>" ;
 		print "Report Data" ;
 		print "</h2>" ;

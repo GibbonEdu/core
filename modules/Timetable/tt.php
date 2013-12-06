@@ -45,9 +45,18 @@ else {
 		print "Filters" ;
 		print "</h2>" ;
 		
-		$gibbonPersonID=$_GET["gibbonPersonID"] ;
-		$search=$_GET["search"] ;
-		$allUsers=$_GET["allUsers"] ;
+		$gibbonPersonID=NULL ;
+		if (isset($_GET["gibbonPersonID"])) {
+			$gibbonPersonID=$_GET["gibbonPersonID"] ;
+		}
+		$search=NULL ;
+		if (isset($_GET["search"])) {
+			$search=$_GET["search"] ;
+		}
+		$allUsers=NULL ;
+		if (isset($_GET["allUsers"])) {
+			$allUsers=$_GET["allUsers"] ;
+		}
 	
 		?>
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -133,7 +142,7 @@ else {
 		}
 		else {
 			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
+				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "allUsers=$allUsers&search=$search") ;
 			}
 		
 			print "<table cellspacing='0' style='width: 100%'>" ;
@@ -194,7 +203,7 @@ else {
 			print "</table>" ;
 			
 			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
+				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "allUsers=$allUsers&search=$search") ;
 			}
 		}
 	}

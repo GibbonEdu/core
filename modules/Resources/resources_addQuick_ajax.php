@@ -39,11 +39,26 @@ include $_SESSION[$guid]["absolutePath"] . "/modules/" . $_SESSION[$guid]["modul
 //Setup variables
 $output="" ;
 $id=$_GET["id"] ;
-$action=$_GET["action"] ;
-$category=$_GET["category"] ;
-$purpose=$_GET["purpose"] ;
-$tag=$_GET["tag" . $id] ;
-$gibbonYearGroupID=$_GET["gibbonYearGroupID"] ;
+$action=NULL ;
+if (isset($_GET["action"])) {
+	$action=$_GET["action"] ;
+}
+$category=NULL ;
+if (isset($_GET["category"])) {
+	$category=$_GET["category"] ;
+}
+$purpose=NULL ;
+if (isset($_GET["purpose"])) {
+	$purpose=$_GET["purpose"] ;
+}
+$tag=NULL ;
+if (isset($_GET["tag" . $id])) {
+	$tag=$_GET["tag" . $id] ;
+}
+$gibbonYearGroupID=NULL ;
+if (isset($_GET["gibbonYearGroupID"])) {
+	$gibbonYearGroupID=$_GET["gibbonYearGroupID"] ;
+}
 $allowUpload=$_GET["allowUpload"] ;
 $alpha=$_GET["alpha"] ;
 

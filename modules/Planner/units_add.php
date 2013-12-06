@@ -191,7 +191,7 @@ else {
 										<?
 										$classCount=0 ;
 										try {
-											$dataClass=array("username"=>$username); 
+											$dataClass=array(); 
 											$sqlClass="SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=$gibbonCourseID ORDER BY name" ;
 											$resultClass=$connection2->prepare($sqlClass);
 											$resultClass->execute($dataClass);

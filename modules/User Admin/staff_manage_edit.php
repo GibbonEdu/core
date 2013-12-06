@@ -70,7 +70,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonStaffID"=>$gibbonStaffID); 
-			$sql="SELECT gibbonStaff.*, surname, preferredName FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffID=:gibbonStaffID" ;
+			$sql="SELECT gibbonStaff.*, surname, preferredName, initials FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffID=:gibbonStaffID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -107,12 +107,35 @@ else {
 						</td>
 						<td class="right">
 							<input readonly name="person" id="person" maxlength=255 value="<? print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Staff", false, true) ?>" type="text" style="width: 300px">
-							<script type="text/javascript">
-								var name=new LiveValidation('name');
-								name.add(Validate.Presence);
-							 </script>
 						</td>
 					</tr>
+					<tr>
+						<td> 
+							<b>Initials</b><br/>
+							<span style="font-size: 90%"><i>Needs to be unique if set.</i></span>
+						</td>
+						<td class="right">
+							<input name="initials" id="initials" maxlength=4 value="<? print $row["initials"] ?>" type="text" style="width: 300px">
+							<?
+							$idList="" ;
+							try {
+								$dataSelect=array("initials"=>$row["initials"]); 
+								$sqlSelect="SELECT initials FROM gibbonStaff WHERE NOT initials=:initials ORDER BY initials" ;
+								$resultSelect=$connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							}
+							catch(PDOException $e) { }
+							while ($rowSelect=$resultSelect->fetch()) {
+								$idList.="'" . $rowSelect["initials"]  . "'," ;
+							}
+							?>
+							<script type="text/javascript">
+								var initials=new LiveValidation('initials');
+								initials.add( Validate.Exclusion, { within: [<? print $idList ;?>], failureMessage: "Initials already in use!", partialMatch: false, caseSensitive: false } );
+							</script>
+						</td>
+					</tr>
+					
 					<tr>
 						<td> 
 							<b>Type *</b><br/>

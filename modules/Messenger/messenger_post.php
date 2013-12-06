@@ -337,7 +337,7 @@ else {
 							<select name="roles[]" id="roles[]" multiple style="width: 302px; height: 100px">
 								<?
 								try {
-									$dataSelect=array("username"=>$username); 
+									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonRole ORDER BY name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
@@ -395,7 +395,7 @@ else {
 							<select name="yearGroups[]" id="yearGroups[]" multiple style="width: 302px; height: 100px">
 								<?
 								try {
-									$dataSelect=array("username"=>$username); 
+									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);

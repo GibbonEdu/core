@@ -582,10 +582,14 @@ else {
 				}
 				
 			}
+			
 			//Deal with required documents
 			$requiredDocuments=getSettingByScope($connection2, "Application Form", "requiredDocuments") ;
 			if ($requiredDocuments!="" AND $requiredDocuments!=FALSE) {
-				$fileCount=$_POST["fileCount"] ;
+				$fileCount=0 ;
+				if (isset($_POST["fileCount"])) {
+					$fileCount=$_POST["fileCount"] ;
+				}
 				for ($i=0; $i<$fileCount; $i++) {
 					$fileName=$_POST["fileName$i"] ;
 					$time=time() ;

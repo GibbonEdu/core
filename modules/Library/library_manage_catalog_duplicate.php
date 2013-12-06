@@ -35,7 +35,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_manage_catalog.php'>Manage Catalog</a> > </div><div class='trailEnd'>Duplicate Item</div>" ;
 	print "</div>" ;
 	
-	$duplicateReturn=$_GET["duplicateReturn"] ;
+	if (isset($_GET["duplicateReturn"])) { $duplicateReturn=$_GET["duplicateReturn"] ; } else { $duplicateReturn="" ; }
 	$duplicateReturnMessage ="" ;
 	$class="error" ;
 	if (!($duplicateReturn=="")) {
@@ -90,7 +90,10 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			
-			$step=$_GET["step"] ;
+			$step=NULL ;
+			if (isset($_GET["step"])) {
+				$step=$_GET["step"] ;
+			}
 			if ($step!=1 AND $step!=2) {
 				$step=1 ;
 			}
@@ -193,13 +196,12 @@ else {
 					print "</div>" ;
 				}
 				?>
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicateProcess.php" ?>">
-					<table cellspacing='0' style="width: 100%">	
-						<tr><td style="width: 30%"></td><td></td></tr>
+				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicateProcess.php?gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] ?>">
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<?
 						$number=$_POST["number"] ;
 						for ($i=1; $i<=$number; $i++) {
-							print "<tr>" ;
+							print "<tr class='break'>" ;
 								print "<td colspan=2>" ; 
 									print "<h3>" ;
 										print "Copy $i" ;
@@ -538,7 +540,7 @@ else {
 											else if ($field["type"]=="Textarea") {
 												print "<textarea rows='" . $field["options"] . "' name='field" . $fieldName . $i . "' id='field" . $fieldName . $i . "' style='width: 300px'>" . htmlPrep($fieldValues[$field["name"]]) . "</textarea>" ;
 											}
-											if ($field["type"]=="Date") {
+											else if ($field["type"]=="Date") {
 												print "<input name='field" . $fieldName . $i . "' id='field" . $fieldName . $i . "' maxlength=10 value='" . dateConvertBack($fieldValues[$field["name"]]) . "' type='text' style='width: 300px'>" ;
 												print "<script type='text/javascript'>" ;
 													print "var field" . $fieldName . $i . "=new LiveValidation('field" . $fieldName . $i . "');" ;
@@ -548,6 +550,13 @@ else {
 													print "$(function() {" ;
 														print "$( '#field" . $fieldName . $i . "' ).datepicker();" ;
 													print "});" ;
+												print "</script>" ;
+											}
+											else if ($field["type"]=="URL") {
+												print "<input maxlength='" . $field["options"] . "' name='field" . $fieldName . $i . "' id='field" . $fieldName . $i . "' value='" . htmlPrep($fieldValues[$field["name"]]) . "' type='text' style='width: 300px'>" ;
+												print "<script type='text/javascript'>" ;
+													print "var field" . $fieldName . $i . "=new LiveValidation('field" . $fieldName . $i . "');" ;
+													print "field" . $fieldName . $i . ".add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: \"Must start with http://\" } );" ;
 												print "</script>" ;
 											}
 										print "</td>" ;
@@ -572,17 +581,15 @@ else {
 						}
 						?>
 						<tr>
-							<td class="right" colspan=2>
+							<td>
+								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+							</td>
+							<td class="right">
 								<input type="hidden" name="count" value="<? print $number ?>">
 								<input type='hidden' name='gibbonLibraryTypeID' value='<? print $_POST["gibbonLibraryTypeID"] ?>'>
 								<input type="hidden" name="gibbonLibraryItemID" value="<? print $row["gibbonLibraryItemID"] ?>">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 								<input type="submit" value="Submit">
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
 							</td>
 						</tr>
 					</table>
