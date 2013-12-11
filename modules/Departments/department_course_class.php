@@ -30,8 +30,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Departments/department_cou
 }
 else {
 	$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
-	$gibbonCourseID=$_GET["gibbonCourseID"] ;
-	$gibbonDepartmentID=$_GET["gibbonDepartmentID"] ;
+	$gibbonCourseID=NULL ;
+	if (isset($_GET["gibbonCourseID"])) {
+		$gibbonCourseID=$_GET["gibbonCourseID"] ;
+	}
+	$gibbonDepartmentID=NULL ;
+	if (isset($_GET["gibbonDepartmentID"])) {
+		$gibbonDepartmentID=$_GET["gibbonDepartmentID"] ;
+	}
 	if ($gibbonCourseClassID=="") {
 		print "<div class='error'>" ;
 			print "You have not specified a learning area, course or class." ;
@@ -84,6 +90,7 @@ else {
 		
 		if ($proceed==true) {
 			//Get role within learning area
+			$role=NULL ;
 			if ($gibbonDepartmentID!="") {
 				$role=getRole($_SESSION[$guid]["gibbonPersonID"], $gibbonDepartmentID, $connection2 ) ;
 			}
@@ -425,7 +432,7 @@ else {
 									}
 								print "</td>" ;
 								print "<td>" ;
-									print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Departments/department_course_class_full.php&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+									print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Departments/department_course_class_full.php&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "&viewBy=Class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 								print "</td>" ;
 							print "</tr>" ;
 						}

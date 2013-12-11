@@ -51,11 +51,18 @@ if (isset($_GET["subView"])) {
 if ($viewBy!="date" AND $viewBy!="class") {
 	$viewBy="date" ;
 }
-$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
+$gibbonCourseClassID=NULL ;
+if (isset($_GET["gibbonCourseClassID"])) {
+	$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
+}
 $date=$_GET["date"] ;
 $returnToIndex=NULL ;
 if (isset($_GET["returnToIndex"])) {
 	$returnToIndex=$_GET["returnToIndex"] ;
+}
+$gibbonPersonID2=NULL ;
+if (isset($_GET["gibbonPersonID"])) {
+	$gibbonPersonID2=$_GET["gibbonPersonID"] ;
 }
 if ($returnToIndex=="Y") {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?blank=blank" ;
@@ -66,7 +73,7 @@ else {
 	
 	//Params to pass back (viewBy + date or classID)
 	if ($viewBy=="date") {
-		$params="&viewBy=$viewBy&date=$date&search=" . $_GET["gibbonPersonID"] ;
+		$params="&viewBy=$viewBy&date=$date&search=" . $gibbonPersonID2 ;
 	}
 	else {
 		$params="&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView&search=$gibbonPersonID" ;
@@ -97,7 +104,7 @@ else {
 		else {
 			$proceed=true ;
 			if ($highestAction=="Lesson Planner_viewMyChildrensClasses") {
-				$gibbonPersonID=$_GET["gibbonPersonID"] ;
+				
 				try {
 					$dataChild=array("gibbonPersonID1"=>$gibbonPersonID, "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"] ); 
 					$sqlChild="SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'" ;

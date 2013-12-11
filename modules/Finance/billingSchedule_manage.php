@@ -235,7 +235,7 @@ else {
 					print "</tr>" ;
 					if ($row["description"]!="") {
 						print "<tr class='comment-$count-$count' id='comment-$count-$count'>" ;
-							print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
+							print "<td colspan=6>" ;
 								print $row["description"] ;
 							print "</td>" ;
 						print "</tr>" ;

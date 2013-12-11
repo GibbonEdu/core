@@ -338,7 +338,7 @@ else {
 					print "</tr>" ;
 					if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
 						print "<tr class='comment-$count' id='comment-$count'>" ;
-							print "<td style='background-color: #fff; border-bottom: 1px solid #333' colspan=7>" ;
+							print "<td style='background-color: #fff' colspan=7>" ;
 								if ($row["emailReport"]!="") {
 									print "<b><u>Email Report</u></b><br/>" ;
 									$emails=explode(",",$row["emailReport"]) ;

@@ -712,14 +712,14 @@ else {
 																				print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 																			}
 																			if ($resultLike->rowCount()!=1) {
-																				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/plannerProcess.php?gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&address=/modules/Planner/planner.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&gibbonPersonID=" . $students[$i][4] . "&returnToIndex=Y'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ;
+																				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/plannerProcess.php?gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&address=/modules/Planner/planner.php&viewBy=date&date=$date&gibbonPersonID=" . $students[$i][4] . "&returnToIndex=Y'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ;
 																			}
 																			else {
-																				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/plannerProcess.php?gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&address=/modules/Planner/planner.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&gibbonPersonID=" . $students[$i][4] . "&returnToIndex=Y'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
+																				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/plannerProcess.php?gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&address=/modules/Planner/planner.php&viewBy=date&date=$date&gibbonPersonID=" . $students[$i][4] . "&returnToIndex=Y'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
 																			}
 																		print "</td>" ;
 																		print "<td>" ;
-																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=" . $students[$i][4] . "&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&date=$date&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=" . $students[$i][4] . "&viewBy=date&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&date=$date&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 																		print "</td>" ;
 																	print "</tr>" ;
 																}
@@ -943,7 +943,7 @@ else {
 															print "</tr>" ;
 															if (strlen($rowEntry["comment"])>50) {
 																print "<tr class='comment-$entryCount' id='comment-$entryCount'>" ;
-																	print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
+																	print "<td colspan=6>" ;
 																		print $rowEntry["comment"] ;
 																	print "</td>" ;
 																print "</tr>" ;
@@ -1368,7 +1368,7 @@ else {
 																		$bg="background-color: #F6CECB;" ;
 																	}
 																	print "<tr class='comment-$count' id='comment-$count'>" ;
-																		print "<td style='$bg border-bottom: 1px solid #333' colspan=6>" ;
+																		print "<td style='$bg' colspan=6>" ;
 																			print $row["comment"] ;
 																		print "</td>" ;
 																	print "</tr>" ;

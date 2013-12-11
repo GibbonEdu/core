@@ -322,7 +322,7 @@ else {
 										print "</tr>" ;
 										if ($rowBlocks["content"]!="") {
 											print "<tr class='description-$count' id='description-$count'>" ;
-												print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
+												print "<td colspan=6>" ;
 													print $rowBlocks["content"] ;
 												print "</td>" ;
 											print "</tr>" ;

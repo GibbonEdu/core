@@ -389,8 +389,9 @@ else {
 						}
 						$nextTimeEnd=NULL ;
 						if (isset($_GET["timeEnd"])) {
-							$nextDate=$_GET["timeEnd"] ;
+							$nextTimeEnd=$_GET["timeEnd"] ;
 						}
+						
 						
 						if ($nextDate=="") {
 							try {
@@ -425,7 +426,7 @@ else {
 						}
 					}
 					?>
-									
+					
 					<tr>
 						<td> 
 							<b>Date *</b><br/>

@@ -52,7 +52,10 @@ else {
 	
 	//Filter variables
 	$and="" ;
-	$filter2=$_POST["filter2"] ;
+	$filter2=NULL ;
+	if (isset($_POST["filter2"])) {
+		$filter2=$_POST["filter2"] ;
+	}
 	if ($filter2!="") {
 		$and.=" AND gibbonDepartmentID='$filter2'" ;
 	}
@@ -140,12 +143,6 @@ else {
 	print "<h3>" ;
 	print "Rubrics" ;
 	print "</h3>" ;
-	if ($highestAction=="Manage Rubrics_viewEditAll" OR $highestAction=="Manage Rubrics_viewAllEditLearningArea") {
-		print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_add.php'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
-		print "</div>" ;
-	}
-	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
 		print "There are no rubrics to display." ;
@@ -237,7 +234,7 @@ else {
 				print "</tr>" ;
 				if ($row["description"]!="") {
 					print "<tr class='description-$count' id='description-$count'>" ;
-						print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
+						print "<td colspan=6>" ;
 							print $row["description"] ;
 						print "</td>" ;
 					print "</tr>" ;

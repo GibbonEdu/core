@@ -95,7 +95,7 @@ else {
 							$checkCount++ ;
 						}
 						//Check for self
-						if ($rowSelect2["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
+						if ($rowCheck2["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
 							$self=TRUE ;
 						}
 					}

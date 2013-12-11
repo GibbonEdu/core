@@ -342,7 +342,7 @@ else {
 					printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "name=$name&producer=$producer&category=$category&collection=$collection") ;
 				}
 			
-				print "<table cellspacing='0' style='width: 100%; border: 1px solid #444'>" ;
+				print "<table class='smallIntBorder' cellspacing='0' style='width: 100%; border: 1px solid #444'>" ;
 					print "<tr class='head' style='opacity: 0.7'>" ;
 						print "<th style='text-align: center'>" ;
 						
@@ -430,9 +430,7 @@ else {
 						print "</tr>" ;
 						if ($row["fields"]!="") {
 							print "<tr class='description-$count' id='fields-$count' style='background-color: #fff; display: none'>" ;
-								print "<td style='border-bottom: 1px solid #333'></td>" ;
-								
-								print "<td style='border-bottom: 1px solid #333' colspan=4>" ;
+								print "<td colspan=5>" ;
 									print "<table cellspacing='0' style='width: 100%'>" ;
 										$typeFields=unserialize($row["typeFields"]) ;
 										$fields=unserialize($row["fields"]) ;

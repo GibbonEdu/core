@@ -1570,7 +1570,7 @@ else {
 											print "</td>" ;
 										print "</tr>" ;
 										print "<tr class='note-$count' id='note-$count'>" ;
-											print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
+											print "<td colspan=6>" ;
 												print $row["note"] ;
 											print "</td>" ;
 										print "</tr>" ;
@@ -1994,7 +1994,7 @@ else {
 												print "</tr>" ;
 												if (strlen($rowEntry["comment"])>50) {
 													print "<tr class='comment-$entryCount' id='comment-$entryCount'>" ;
-														print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
+														print "<td colspan=6>" ;
 															print $rowEntry["comment"] ;
 														print "</td>" ;
 													print "</tr>" ;
@@ -2092,11 +2092,11 @@ else {
 							print "</div>" ;
 						}
 						else {
-							if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_class_edit.php")==TRUE) {
+							if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php")==TRUE) {
 								$role=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2) ;
 								if ($role=="Student" OR $role=="Staff") {
 									print "<div class='linkTop'>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_class_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=$role'>Edit Timetable<img style='margin: 0 0 -4px 3px' title='Enter Data' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.gif'/></a> " ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=$role'>Edit Timetable<img style='margin: 0 0 -4px 3px' title='Enter Data' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 									print "</div>" ;
 								}
 							}

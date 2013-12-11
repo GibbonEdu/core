@@ -35,15 +35,25 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$gibbonPlannerEntryID=$_GET["gibbonPlannerEntryID"] ;
 $viewBy=$_GET["viewBy"] ;
 $subView=$_GET["subView"] ;
 if ($viewBy!="date" AND $viewBy!="class") {
 	$viewBy="date" ;
 }
-$gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
-$date=dateConvert($_POST["date"]) ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/planner_deadlines.php&gibbonPlannerEntryID=$gibbonPlannerEntryID" ;
+$gibbonCourseClassID=NULL ;
+if (isset($_POST["gibbonCourseClassID"])) {
+	$gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
+}
+$date=NULL ;
+if (isset($_POST["date"])) {
+	$date=dateConvert($_POST["date"]) ;
+}
+$gibbonCourseClassIDFilter=NULL ;
+if (isset($_GET["gibbonCourseClassIDFilter"])) {
+	$gibbonCourseClassIDFilter=$_GET["gibbonCourseClassIDFilter"] ;
+}
+
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/planner_deadlines.php&gibbonCourseClassIDFilter=$gibbonCourseClassIDFilter" ;
 
 //Params to pass back (viewBy + date or classID)
 if ($viewBy=="date") {
@@ -83,23 +93,27 @@ else {
 		}
 		
 		while ($rowCompletion=$resultCompletion->fetch()) {
-			$completionArray[$rowCompletion["gibbonPlannerEntryID"]]="Y" ;
+			if (isset($rowCompletion["gibbonPlannerEntryID"])) {
+				$completionArray[$rowCompletion["gibbonPlannerEntryID"]]="Y" ;
+			}
 		}
 		
 		$partialFail=false ;
 		
 		//Insert new records
 		foreach ($_POST["count"] as $count) {
-			if ($_POST["complete-$count"]=="on") {
-				if ($completionArray[$_POST["gibbonPlannerEntryID-$count"]]!="Y") {
-					try {
-						$data=array("gibbonPlannerEntryID"=>$_POST["gibbonPlannerEntryID-$count"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-						$sql="INSERT INTO gibbonPlannerEntryStudentTracker SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, homeworkComplete='Y'" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						$partialFail=TRUE ;
+			if (isset($_POST["complete-$count"])) {
+				if ($_POST["complete-$count"]=="on") {
+					if (isset($completionArray[$_POST["gibbonPlannerEntryID-$count"]])==FALSE) {
+						try {
+							$data=array("gibbonPlannerEntryID"=>$_POST["gibbonPlannerEntryID-$count"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+							$sql="INSERT INTO gibbonPlannerEntryStudentTracker SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, homeworkComplete='Y'" ;
+							$result=$connection2->prepare($sql);
+							$result->execute($data);
+						}
+						catch(PDOException $e) { 
+							$partialFail=TRUE ;
+						}
 					}
 				}
 			}
@@ -107,16 +121,18 @@ else {
 		
 		//Turn unchecked records off
 		foreach ($_POST["count"] as $count) {
-			if ($completionArray[$_POST["gibbonPlannerEntryID-$count"]]=="Y") {
-				if ($_POST["complete-$count"]!="on") {
-					try {
-						$data=array("gibbonPlannerEntryID"=>$_POST["gibbonPlannerEntryID-$count"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-						$sql="UPDATE gibbonPlannerEntryStudentTracker SET homeworkComplete='N' WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						$partialFail=TRUE ;
+			if (isset($completionArray[$_POST["gibbonPlannerEntryID-$count"]])) {
+				if ($completionArray[$_POST["gibbonPlannerEntryID-$count"]]=="Y") {
+					if (isset($_POST["complete-$count"])==FALSE) {
+						try {
+							$data=array("gibbonPlannerEntryID"=>$_POST["gibbonPlannerEntryID-$count"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+							$sql="UPDATE gibbonPlannerEntryStudentTracker SET homeworkComplete='N' WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
+							$result=$connection2->prepare($sql);
+							$result->execute($data);
+						}
+						catch(PDOException $e) { 
+							$partialFail=TRUE ;
+						}
 					}
 				}
 			}

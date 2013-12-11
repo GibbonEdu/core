@@ -61,7 +61,7 @@ else {
 				print $row3["name"] . "<br/>" ;
 			print "</h2>" ;
 			
-			print rubricView($guid, $connection2, $gibbonRubricID, FALSE, $row4["gibbonPersonID"]) ;
+			print rubricView($guid, $connection2, $gibbonRubricID, FALSE ) ;
 		}
 	}	
 }	

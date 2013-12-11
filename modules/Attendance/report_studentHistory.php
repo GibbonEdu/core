@@ -105,6 +105,10 @@ else {
 			}
 		}
 		else if ($highestAction=="Student History_myChildren") {
+			$gibbonPersonID=NULL ;
+			if (isset($_GET["search"])) {
+				$gibbonPersonID=$_GET["search"] ;
+			}
 			//Test data access field for permission
 			try {
 				$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
@@ -138,7 +142,7 @@ else {
 
 					while ($rowChild=$resultChild->fetch()) {
 						$select="" ;
-						if ($rowChild["gibbonPersonID"]==$_GET["search"]) {
+						if ($rowChild["gibbonPersonID"]==$gibbonPersonID) {
 							$select="selected" ;
 						}
 						
@@ -154,7 +158,7 @@ else {
 					print "</div>" ;
 				}
 				else if ($count==1) {
-					$_GET["search"]=$gibbonPersonID[0] ;
+					$gibbonPersonID=$gibbonPersonID[0] ;
 				}
 				else {
 					print "<h2>" ;
@@ -192,11 +196,8 @@ else {
 					<?
 				}
 				
-				$gibbonPersonID="" ;
 				
-				if ($_GET["search"]!="" AND $count>0) {
-					$gibbonPersonID=$_GET["search"] ;
-					
+				if ($gibbonPersonID!="" AND $count>0) {
 					//Confirm access to this student
 					try {
 						$dataChild=array("gibbonPersonID"=>$gibbonPersonID , "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 

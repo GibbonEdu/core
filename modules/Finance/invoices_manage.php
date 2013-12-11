@@ -664,7 +664,7 @@ else {
 							print "</tr>" ;
 							if ($row["notes"]!="") {
 								print "<tr class='comment-$count' id='comment-$count'>" ;
-									print "<td style='border-bottom: 1px solid #333' colspan=7>" ;
+									print "<td colspan=7>" ;
 										print $row["notes"] ;
 									print "</td>" ;
 								print "</tr>" ;

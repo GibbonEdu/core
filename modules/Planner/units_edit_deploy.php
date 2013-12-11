@@ -595,7 +595,7 @@ else {
 												print "<div id='lessonInner$i' style='min-height: 60px; border: 1px solid #333; width: 100%; margin-bottom: 45px; float: left; padding: 2px; background-color: #F7F0E3'>" ;
 													$length=((strtotime($lessons[$i][0] . " " . $lessons[$i][2])-strtotime($lessons[$i][0] . " " . $lessons[$i][1]))/60) ;
 													print "<div id='sortable$i' style='min-height: 60px; font-size: 120%; font-style: italic'>" ;
-														print "<div id='head$i' class='head' style='height: 54px; border-bottom: 1px solid #333; font-size: 85%; padding: 3px'>" ;
+														print "<div id='head$i' class='head' style='height: 54px; font-size: 85%; padding: 3px'>" ;
 															print "<b>" . ($i+1) . ". " . date("D jS M, Y", dateConvertToTimestamp($lessons[$i][0])) . "</b><br/>" ;
 															print "<span style='font-size: 80%'><i>" . $lessons[$i][3] . " (" . substr($lessons[$i][1],0,5) . " - " . substr($lessons[$i][2],0,5) . ")</i></span>" ;
 															print "<input type='hidden' name='order[]' value='lessonHeader-$i' >" ;

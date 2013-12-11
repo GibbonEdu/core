@@ -125,9 +125,9 @@ function getBorrowingRecord($guid, $connection2, $gibbonPersonID) {
 				$output.="</tr>" ;
 				if ($row["fields"]!="") {
 					$output.="<tr class='description-$count' id='fields-$count' style='background-color: #fff; display: none'>" ;
-						$output.="<td style='border-bottom: 1px solid #333'></td>" ;
+						$output.="<td></td>" ;
 						
-						$output.="<td style='border-bottom: 1px solid #333' colspan=4>" ;
+						$output.="<td colspan=4>" ;
 							$output.="<table cellspacing='0' style='width: 100%'>" ;
 								$typeFields=unserialize($row["typeFields"]) ;
 								$fields=unserialize($row["fields"]) ;

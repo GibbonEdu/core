@@ -82,6 +82,10 @@ else {
 		
 		//My children's classes
 		if ($highestAction=="Lesson Planner_viewMyChildrensClasses") {
+			$search=NULL ;
+			if (isset($_GET["search"])) {
+				$search=$_GET["search"] ;
+			}
 			print "<div class='trail'>" ;
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>My Children's Classes</div>" ;
 			print "</div>" ;
@@ -138,7 +142,7 @@ else {
 					catch(PDOException $e) { }
 					while ($rowChild=$resultChild->fetch()) {
 						$select="" ;
-						if ($rowChild["gibbonPersonID"]==$_GET["search"]) {
+						if ($rowChild["gibbonPersonID"]==$search) {
 							$select="selected" ;
 						}
 						
@@ -154,7 +158,7 @@ else {
 					print "</div>" ;
 				}
 				else if ($count==1) {
-					$_GET["search"]=$gibbonPersonID[0] ;
+					$search=$gibbonPersonID[0] ;
 				}
 				else {
 					print "<h2>" ;
@@ -188,10 +192,9 @@ else {
 					<?
 				}
 				
-				$gibbonPersonID="" ;
+				$gibbonPersonID=$search ;
 				
-				if ($_GET["search"]!="" AND $count>0) {
-					$gibbonPersonID=$_GET["search"] ;
+				if ($search!="" AND $count>0) {
 					
 					//Confirm access to this student
 					try {
@@ -694,9 +697,11 @@ else {
 										print "<td>" ;
 											print "<b>" . $row["name"] . "</b><br/>" ;
 											$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
-											print $unit[0] ;
-											if ($unit[1]!="") {
-												print "<br/><i>" . $unit[1] . " Unit</i>" ;
+											if (isset($unit[0])) {
+												print $unit[0] ;
+												if ($unit[1]!="") {
+													print "<br/><i>" . $unit[1] . " Unit</i>" ;
+												}
 											}
 										print "</td>" ;
 										print "<td>" ;

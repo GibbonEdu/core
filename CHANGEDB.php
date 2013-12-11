@@ -1492,10 +1492,13 @@ ALTER TABLE `gibbonStaff` ADD `initials` VARCHAR( 4 ) NULL DEFAULT NULL AFTER `t
 INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES (NULL, (SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook'), 'Edit Markbook_everything', 4, '', 'Allows editing of any column in any class.', 'markbook_edit.php, markbook_edit_add.php,markbook_edit_addMulti.php,markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php', 'markbook_edit.php', 'Y', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Markbook' AND gibbonAction.name='Edit Markbook_everything'));end
 ALTER TABLE `gibbonFinanceInvoice` ADD `paidAmount` DECIMAL( 13, 2 ) NULL DEFAULT NULL COMMENT 'The final amount paid' AFTER `paidDate` ;end
+ALTER TABLE `gibbonAttendanceLogPerson` ADD INDEX ( `date` ) ;end
 
 --LAST ICHK
 --LAST HLY
 --LAST ICHK DEMO
+
+
 
 ";
 

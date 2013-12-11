@@ -635,10 +635,11 @@ else {
 			print "</p>" ;
 			
 			$and="" ;
-			if ($_GET["filter"]!="") {
+			$filter=NULL ;
+			if (isset($_GET["filter"])) {
 				$filter=$_GET["filter"] ;
 			}
-			else if ($_POST["filter"]!="") {
+			else if (isset($_POST["filter"])) {
 				$filter=$_POST["filter"] ;
 			}
 			if ($filter=="") {
@@ -648,17 +649,18 @@ else {
 				$and=" AND gibbonSchoolYearID='$filter'" ;
 			}
 			
-			if ($_GET["filter2"]!="") {
+			$filter2=NULL ;
+			if (isset($_GET["filter2"])) {
 				$filter2=$_GET["filter2"] ;
 			}
-			else if ($_POST["filter2"]!="") {
+			else if (isset($_POST["filter2"])) {
 				$filter2=$_POST["filter2"] ;
 			}
 			if ($filter2!="") {
 				$and.=" AND gibbonDepartmentID='$filter2'" ;
 			}
 			
-			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&search=$gibbonPersonID'>" ;
+			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "'>" ;
 				print"<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;	
 					?>
 					<tr>
@@ -823,9 +825,11 @@ else {
 									print "<span title='" . htmlPrep($rowEntry["description"]) . "'><b><u>" . $rowEntry["name"] . "</u></b></span><br>" ;
 									print "<span style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
 									$unit=getUnit($connection2, $rowEntry["gibbonUnitID"], $rowEntry["gibbonHookID"], $rowEntry["gibbonCourseClassID"]) ;
-									print $unit[0] . "<br/>" ;
-									if ($unit[1]!="") {
-										print "<i>" . $unit[1] . " Unit</i><br/>" ;
+									if (isset($unit[0])) {
+										print $unit[0] . "<br/>" ;
+										if ($unit[1]!="") {
+											print "<i>" . $unit[1] . " Unit</i><br/>" ;
+										}
 									}
 									if ($rowEntry["completeDate"]!="") {
 										print "Marked on " . dateConvertBack($rowEntry["completeDate"]) . "<br/>" ;
@@ -896,7 +900,6 @@ else {
 									}
 								print "</td>" ;
 								print "<td>" ;
-									print $rowEntry[""] ;
 									if ($rowEntry["comment"]!="") {
 										if (strlen($rowEntry["comment"])>50) {
 											print "<script type='text/javascript'>" ;	
@@ -975,11 +978,11 @@ else {
 												}
 											}
 											else {
-												if (date("Y-m-d H:i:s")<$homeworkDueDateTime[$i]) {
+												if (date("Y-m-d H:i:s")<$rowSub["homeworkDueDateTime"]) {
 													print "<span title='Pending'>Pending</span>" ;
 												}
 												else {
-													if ($row["dateStart"]>$rowSub["date"]) {
+													if ($_SESSION[$guid]["dateStart"]>$rowSub["date"]) {
 														print "<span title='Student joined school after lesson was taught.' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>" ;
 													}
 													else {
@@ -998,7 +1001,7 @@ else {
 							print "</tr>" ;
 							if (strlen($rowEntry["comment"])>50) {
 								print "<tr class='comment-$entryCount' id='comment-$entryCount'>" ;
-									print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
+									print "<td colspan=6>" ;
 										print $rowEntry["comment"] ;
 									print "</td>" ;
 								print "</tr>" ;
@@ -1019,6 +1022,9 @@ else {
 		//VIEW ACCESS TO MY CHILDREN'S MARKBOOK DATA
 		else if ($highestAction=="Markbook_viewMyChildrensClasses") {
 			$entryCount=0; 
+			print "<div class='trail'>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Markbook</div>" ;
+			print "</div>" ;
 			print "<p>" ;
 				print "This page shows your children's academic results throughout your school career. Only subjects with published results are shown." ;
 			print "</p>" ;
@@ -1055,8 +1061,10 @@ else {
 					}
 					while ($rowChild=$resultChild->fetch()) {
 						$select="" ;
-						if ($rowChild["gibbonPersonID"]==$_GET["search"]) {
-							$select="selected" ;
+						if (isset($_GET["search"])) {
+							if ($rowChild["gibbonPersonID"]==$_GET["search"]) {
+								$select="selected" ;
+							}
 						}
 						
 						$options=$options . "<option $select value='" . $rowChild["gibbonPersonID"] . "'>" . formatName("", $rowChild["preferredName"], $rowChild["surname"], "Student", true). "</option>" ;
@@ -1099,7 +1107,7 @@ else {
 									<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/markbook_view.php">
 									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 									<?
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php'>Clear Search</a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view.php'>Clear Search</a>" ;
 									?>
 									<input type="submit" value="Submit">
 								</td>
@@ -1109,13 +1117,14 @@ else {
 					<?
 				}
 				
-				$gibbonPersonID="" ;
+				$gibbonPersonID=NULL ;
+				if (isset($_GET["search"])) {
+					$gibbonPersonID=$_GET["search"] ;
+				}
 				$showParentAttainmentWarning=getSettingByScope($connection2, "Markbook", "showParentAttainmentWarning" ) ; 
 				$showParentEffortWarning=getSettingByScope($connection2, "Markbook", "showParentEffortWarning" ) ; 
 														
-				if ($_GET["search"]!="" AND $count>0) {
-					$gibbonPersonID=$_GET["search"] ;
-					
+				if ($gibbonPersonID!="" AND $count>0) {
 					//Confirm access to this student
 					try {
 						$dataChild=array(); 
@@ -1141,14 +1150,20 @@ else {
 						}
 						
 						$and="" ;
-						$filter=$_POST["filter"] ;
+						$filter=NULL ;
+						if (isset($_POST["filter"])) {
+							$filter=$_POST["filter"] ;
+						}
 						if ($filter=="") {
 							$filter=$_SESSION[$guid]["gibbonSchoolYearID"] ;
 						}
 						if ($filter!="*") {
 							$and=" AND gibbonSchoolYearID='$filter'" ;
 						}
-						$filter2=$_POST["filter2"] ;
+						$filter2=NULL ;
+						if (isset($_POST["filter2"])) {
+							$filter2=$_POST["filter2"] ;
+						}
 						if ($filter2!="") {
 							$and.=" AND gibbonDepartmentID='$filter2'" ;
 						}
@@ -1316,9 +1331,11 @@ else {
 												print "<span title='" . htmlPrep($rowEntry["description"]) . "'><b><u>" . $rowEntry["name"] . "</u></b></span><br>" ;
 												print "<span style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
 												$unit=getUnit($connection2, $rowEntry["gibbonUnitID"], $rowEntry["gibbonHookID"], $rowEntry["gibbonCourseClassID"]) ;
-												print $unit[0] . "<br/>" ;
-												if ($unit[1]!="") {
-													print "<i>" . $unit[1] . " Unit</i><br/>" ;
+												if (isset($unit[0])) {
+													print $unit[0] . "<br/>" ;
+													if ($unit[1]!="") {
+														print "<i>" . $unit[1] . " Unit</i><br/>" ;
+													}
 												}
 												if ($rowEntry["completeDate"]!="") {
 													print "Marked on " . dateConvertBack($rowEntry["completeDate"]) . "<br/>" ;
@@ -1389,7 +1406,6 @@ else {
 												}
 											print "</td>" ;
 											print "<td>" ;
-												print $rowEntry[""] ;
 												if ($rowEntry["comment"]!="") {
 													if (strlen($rowEntry["comment"])>50) {
 														print "<script type='text/javascript'>" ;	
@@ -1455,6 +1471,9 @@ else {
 																$style="style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'" ;
 																$status="Late" ;
 															}
+															else {
+																$status="On Time" ;
+															}
 															
 															if ($rowWork["type"]=="File") {
 																print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
@@ -1467,7 +1486,7 @@ else {
 															}
 														}
 														else {
-															if (date("Y-m-d H:i:s")<$homeworkDueDateTime[$i]) {
+															if (date("Y-m-d H:i:s")<$rowSub["homeworkDueDateTime"]) {
 																print "<span title='Pending'>Pending</span>" ;
 															}
 															else {
@@ -1490,7 +1509,7 @@ else {
 										print "</tr>" ;
 										if (strlen($rowEntry["comment"])>50) {
 											print "<tr class='comment-$entryCount' id='comment-$entryCount'>" ;
-												print "<td style='border-bottom: 1px solid #333' colspan=6>" ;
+												print "<td colspan=6>" ;
 													print $rowEntry["comment"] ;
 												print "</td>" ;
 											print "</tr>" ;

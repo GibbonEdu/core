@@ -369,7 +369,7 @@ else {
 							$bg="background-color: #F6CECB;" ;
 						}
 						print "<tr class='comment-$count' id='comment-$count'>" ;
-							print "<td style='$bg border-bottom: 1px solid #333' colspan=6>" ;
+							print "<td style='$bg' colspan=6>" ;
 								print $row["comment"] ;
 							print "</td>" ;
 						print "</tr>" ;

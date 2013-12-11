@@ -116,7 +116,16 @@ Finance: added field to store final amount paid, when an invoice is paid (in cas
 
 PayPal: fixed issues with PayPal payment introduced by $guid session protection
 	Edited files /lib/paypal/expresscheckout.php, paypalfunctions.php
-	
+
+Students: fixed link to edit TT from TT view
+	Edited file /modules/Students/student_view_details.php
+
+Attendance: added index to improve performance
+	Edited table gibbonAttendanceLogPerson
+
+User Admin: fixed minor display bug in permissions page
+	Edited file /modules/User Admin/permission_manage.php
+
 General: fixed issues relating to PHP Notice errors
 	Edited many files across the system
 	
@@ -125,6 +134,7 @@ v7.0.01
 -------
 Lib: updated TCPDF to work better with v7
 	Updated files /lib/tcdpf/*
+	
 
 v7.0.00
 -------

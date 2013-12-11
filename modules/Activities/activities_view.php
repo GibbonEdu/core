@@ -83,7 +83,10 @@ else {
 			//IF PARENT, SET UP LIST OF CHILDREN
 			$countChild=0 ;
 			if ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent") {
-				$gibbonPersonID=$_GET["gibbonPersonID"] ;
+				$gibbonPersonID=NULL ;
+				if (isset($_GET["gibbonPersonID"])) {
+					$gibbonPersonID=$_GET["gibbonPersonID"] ;
+				}
 				try {
 					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
 					$sql="SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'" ;

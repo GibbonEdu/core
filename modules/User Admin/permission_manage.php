@@ -185,7 +185,7 @@ else {
 				}
 			}
 			print "<tr>" ;
-				print "<td style='padding-top: 20px' class='right' colspan=0>" ;
+				print "<td style='padding-top: 20px' class='right' colspan=" . (count($roleArray)+1) . ">" ;
 					print "<input type='submit' value='Submit'>" ;
 				print "</td>" ;
 			print "</tr>" ;

@@ -277,6 +277,7 @@ else {
 					print "All Homework" ;
 					print "</h3>" ;
 					
+					$filter=NULL ;
 					if ($gibbonCourseClassIDFilter!="") {
 						$filter=" AND gibbonPlannerEntry.gibbonCourseClassID=$gibbonCourseClassIDFilter" ;
 					}
@@ -378,9 +379,11 @@ else {
 										print "<td>" ;
 											print "<b>" . $row["name"] . "</b><br/>" ;
 											$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
-											print $unit[0] ;
-											if ($unit[1]!="") {
-												print "<br/><i>" . $unit[1] . " Unit</i>" ;
+											if (isset($unit[0])) {
+												print $unit[0] ;
+												if ($unit[1]!="") {
+													print "<br/><i>" . $unit[1] . " Unit</i>" ;
+												}
 											}
 										print "</td>" ;
 										print "<td>" ;
@@ -694,7 +697,7 @@ else {
 					print "</table>" ;
 				print "</form>" ;
 			print "</div>" ;
-			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_deadlinesProcess.php?viewBy=$viewBy&subView=$subView&address=" . $_SESSION[$guid]["address"] . "'>" ;
+			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_deadlinesProcess.php?viewBy=$viewBy&subView=$subView&address=" . $_SESSION[$guid]["address"] . "&gibbonCourseClassIDFilter=$gibbonCourseClassIDFilter'>" ;
 				print "<table cellspacing='0' style='width: 100%; margin-top: 60px'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
@@ -740,7 +743,7 @@ else {
 							//Deal with homework completion
 							if ($category=="Student") {
 								$now=date("Y-m-d H:i:s") ;
-								if ($completionArray[$row["gibbonPlannerEntryID"]]=="checked") {
+								if (isset($completionArray[$row["gibbonPlannerEntryID"]])) {
 									$rowNum="current" ;
 								}
 								else {
@@ -805,7 +808,11 @@ else {
 									}
 								}
 								else {
-									$completion="<input " . $completionArray[$row["gibbonPlannerEntryID"]] . " name='complete-$count' type='checkbox'>" ;
+									$completion="<input " ;
+									if (isset($completionArray[$row["gibbonPlannerEntryID"]])) {
+										$completion.=$completionArray[$row["gibbonPlannerEntryID"]] ;
+									}
+									$completion.=" name='complete-$count' type='checkbox'>" ;
 								}
 							}
 							

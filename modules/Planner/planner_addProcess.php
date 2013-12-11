@@ -115,37 +115,37 @@ else {
 					$homeworkSubmissionRequired=$_POST["homeworkSubmissionRequired"] ;
 					if ($_POST["homeworkCrowdAssess"]=="Yes") {
 						$homeworkCrowdAssess="Y" ;
-						if ($_POST["homeworkCrowdAssessOtherTeachersRead"]=="on") {
+						if (isset($_POST["homeworkCrowdAssessOtherTeachersRead"])) {
 							$homeworkCrowdAssessOtherTeachersRead="Y" ;
 						}
 						else {
 							$homeworkCrowdAssessOtherTeachersRead="N" ;
 						}
-						if ($_POST["homeworkCrowdAssessClassmatesRead"]=="on") {
+						if (isset($_POST["homeworkCrowdAssessClassmatesRead"])) {
 							$homeworkCrowdAssessClassmatesRead="Y" ;
 						}
 						else {
 							$homeworkCrowdAssessClassmatesRead="N" ;
 						}
-						if ($_POST["homeworkCrowdAssessOtherStudentsRead"]=="on") {
+						if (isset($_POST["homeworkCrowdAssessOtherStudentsRead"])) {
 							$homeworkCrowdAssessOtherStudentsRead="Y" ;
 						}
 						else {
 							$homeworkCrowdAssessOtherStudentsRead="N" ;
 						}
-						if ($_POST["homeworkCrowdAssessSubmitterParentsRead"]=="on") {
+						if (isset($_POST["homeworkCrowdAssessSubmitterParentsRead"])) {
 							$homeworkCrowdAssessSubmitterParentsRead="Y" ;
 						}
 						else {
 							$homeworkCrowdAssessSubmitterParentsRead="N" ;
 						}
-						if ($_POST["homeworkCrowdAssessClassmatesParentsRead"]=="on") {
+						if (isset($_POST["homeworkCrowdAssessClassmatesParentsRead"])) {
 							$homeworkCrowdAssessClassmatesParentsRead="Y" ;
 						}
 						else {
 							$homeworkCrowdAssessClassmatesParentsRead="N" ;
 						}
-						if ($_POST["homeworkCrowdAssessOtherParentsRead"]=="on") {
+						if (isset($_POST["homeworkCrowdAssessOtherParentsRead"])) {
 							$homeworkCrowdAssessOtherParentsRead="Y" ;
 						}
 						else {

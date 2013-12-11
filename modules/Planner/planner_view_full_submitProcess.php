@@ -43,13 +43,13 @@ $gibbonPlannerEntryID=$_GET["gibbonPlannerEntryID"] ;
 $currentDate=$_POST["currentDate"] ;
 $today=date("Y-m-d");
 $params="" ;
-if ($_GET["date"]!="") {
+if (isset($_GET["date"])) {
 	$params=$params."&date=" . $_GET["date"] ;
 }
-if ($_GET["viewBy"]!="") {
+if (isset($_GET["viewBy"])) {
 	$params=$params."&viewBy=" . $_GET["viewBy"] ;
 }
-if ($_GET["gibbonCourseClassID"]!="") {
+if (isset($_GET["gibbonCourseClassID"])) {
 	$params=$params."&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] ;
 }
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID$params" ;
