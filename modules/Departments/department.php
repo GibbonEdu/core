@@ -99,10 +99,10 @@ else {
 					}
 					print "<td style='width:20%; text-align: center; vertical-align: top'>" ;
 						if ($rowStaff["image_75"]=="" OR file_exists($_SESSION[$guid]["absolutePath"] . "/" . $rowStaff["image_75"])==FALSE) {    
-							print "<img style='height: 100px; width: 75px' class='user' title='Anonymous Photo' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_75.jpg'/><br/>" ;
+							print "<img style='height: 100px; width: 75px' class='user' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_75.jpg'/><br/>" ;
 						}
 						else {
-							print "<img style='height: 100px; width: 75px' class='user' title='User Photo' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowStaff["image_75"] ."'/><br/>" ;
+							print "<img style='height: 100px; width: 75px' class='user' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowStaff["image_75"] ."'/><br/>" ;
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_view_details.php")) {
 							print "<div style='padding-top: 5px'><b><a href='" .  $_SESSION[$guid]["absoluteURL"]. "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $rowStaff["gibbonPersonID"] . "'>" . formatName($rowStaff["title"], $rowStaff["preferredName"], $rowStaff["surname"], "Staff") . "</a></b><br/><i>" ;

@@ -265,12 +265,12 @@ else {
 				$privacyOptions=$_POST["privacyOptions"] ;
 				foreach ($privacyOptions AS $privacyOption) {
 					if ($privacyOption!="") {
-						$privacy.=$privacyOption . ", " ;
+						$privacy.=$privacyOption . "," ;
 					}
 				}
 			}
 			if ($privacy!="") {
-				$privacy=substr($privacy,0,-2) ;
+				$privacy=substr($privacy,0,-1) ;
 			}
 			else {
 				$privacy=NULL ;

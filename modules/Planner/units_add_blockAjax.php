@@ -38,14 +38,23 @@ catch(PDOException $e) {
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $id=$_GET["id"] ;
-$mode=$_GET["mode"] ;
+$mode=NULL ;
+if (isset($_GET["mode"])) {
+	$mode=$_GET["mode"] ;
+}
 if ($mode=="") {
 	$mode="masterAdd" ;
 }
-$gibbonUnitBlockID=$_GET["gibbonUnitBlockID"] ;
+$gibbonUnitBlockID=NULL ;
+if (isset($_GET["gibbonUnitBlockID"])) {
+	$gibbonUnitBlockID=$_GET["gibbonUnitBlockID"] ;
+}
 
 //IF UNIT DOES NOT CONTAIN HYPHEN, IT IS A GIBBON UNIT
-$gibbonUnitID=$_GET["gibbonUnitID"]; 
+$gibbonUnitID=NULL ;
+if (isset($_GET["gibbonUnitID"])) {
+	$gibbonUnitID=$_GET["gibbonUnitID"] ;
+} 
 if (strpos($gibbonUnitID,"-")==FALSE) {
 	$hooked=FALSE ;
 }

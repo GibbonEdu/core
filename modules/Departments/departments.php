@@ -60,10 +60,10 @@ else {
 			}
 			print "<td style='width:33%; text-align: center; vertical-align: top'>" ;
 				if ($rowLA["logo"]=="" OR file_exists($_SESSION[$guid]["absolutePath"] . "/" . $rowLA["logo"])==FALSE) {    
-					print "<img style='height: 125px; width: 125px' class='user' title='Anonymous Photo' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_125.jpg'/><br/>" ;
+					print "<img style='height: 125px; width: 125px' class='user' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_125.jpg'/><br/>" ;
 				}
 				else {
-					print "<img style='height: 125px; width: 125px' class='user' title='User Photo' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowLA["logo"] ."'/><br/>" ;
+					print "<img style='height: 125px; width: 125px' class='user' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowLA["logo"] ."'/><br/>" ;
 				}
 				print "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Departments/department.php&gibbonDepartmentID=" . $rowLA["gibbonDepartmentID"] . "'>" . $rowLA["name"] . "</a><br/><br/></div>" ;
 			print "</td>" ;
@@ -109,10 +109,10 @@ else {
 			}
 			print "<td style='width:33%; text-align: center; vertical-align: top'>" ;
 				if ($rowLA["logo"]=="" OR file_exists($_SESSION[$guid]["absolutePath"] . "/" . $rowLA["logo"])==FALSE) {    
-					print "<img style='height: 125px; width: 125px' class='user' title='Anonymous Photo' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_125.jpg'/><br/>" ;
+					print "<img style='height: 125px; width: 125px' class='user' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_125.jpg'/><br/>" ;
 				}
 				else {
-					print "<img style='height: 125px; width: 125px' class='user' title='User Photo' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowLA["logo"] ."'/><br/>" ;
+					print "<img style='height: 125px; width: 125px' class='user' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowLA["logo"] ."'/><br/>" ;
 				}
 				print "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Departments/department.php&gibbonDepartmentID=" . $rowLA["gibbonDepartmentID"] . "'>" . $rowLA["name"] . "</a><br/><br/></div>" ;
 			print "</td>" ;

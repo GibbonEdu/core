@@ -32,6 +32,10 @@ else {
 	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
 	$gibbonFinanceInvoiceID=$_GET["gibbonFinanceInvoiceID"] ;
 	$type=$_GET["type"] ;
+	$preview=NULL ;
+	if (isset($_GET["preview"])) {
+		$preview=$_GET["preview"] ;
+	}
 	
 	if ($gibbonFinanceInvoiceID=="" OR $gibbonSchoolYearID=="" OR $type=="") {
 		print "<div class='error'>" ;
@@ -70,8 +74,13 @@ else {
 				print "<h2>" ;
 					print "Invoice" ;
 				print "</h2>" ;
+				if ($preview) {
+					print "<p style='font-weight: bold; color: #c00; font-size: 100%; letter-spacing: -0.5px'>" ;
+						print "THIS INVOICE IS A PREVIEW: IT HAS NOT YET BEEN ISSUED AND IS FOR TESTING PURPOSES ONLY!" ;
+					print "</p>" ;
+				}
 				
-				$invoiceContents=invoiceContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) ;
+				$invoiceContents=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], FALSE, TRUE) ;
 				if ($invoiceContents==FALSE) {
 					print "<div class='error'>" ;
 						print "An error occurred in retrieving the invoice." ;
@@ -123,7 +132,7 @@ else {
 				print "<h2>" ;
 					print "Invoice" ;
 				print "</h2>" ;
-				$invoiceContents=invoiceContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) ;
+				$invoiceContents=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) ;
 				if ($invoiceContents==FALSE) {
 					print "<div class='error'>" ;
 						print "An error occurred in retrieving the invoice." ;
@@ -140,7 +149,7 @@ else {
 					print "Receipt" ;
 				print "</h2>" ;
 				
-				$receiptContents=receiptContents($connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) ;
+				$receiptContents=receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) ;
 				if ($receiptContents==FALSE) {
 					print "<div class='error'>" ;
 						print "An error occurred in retrieving the invoice." ;

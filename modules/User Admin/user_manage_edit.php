@@ -509,13 +509,13 @@ else {
 									<?
 									try {
 										$dataAuto=array(); 
-										$sqlAuto="SELECT DISTINCT address1District FROM gibbonPerson ORDER BY address1District" ;
+										$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
 										$resultAuto=$connection2->prepare($sqlAuto);
 										$resultAuto->execute($dataAuto);
 									}
 									catch(PDOException $e) { }
 									while ($rowAuto=$resultAuto->fetch()) {
-										print "\"" . $rowAuto["address1District"] . "\", " ;
+										print "\"" . $rowAuto["name"] . "\", " ;
 									}
 									?>
 								];
@@ -615,13 +615,13 @@ else {
 									<?
 									try {
 										$dataAuto=array(); 
-										$sqlAuto="SELECT DISTINCT address2District FROM gibbonPerson ORDER BY address2District" ;
+										$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
 										$resultAuto=$connection2->prepare($sqlAuto);
 										$resultAuto->execute($dataAuto);
 									}
 									catch(PDOException $e) { }
 									while ($rowAuto=$resultAuto->fetch()) {
-										print "\"" . $rowAuto["address2District"] . "\", " ;
+										print "\"" . $rowAuto["name"] . "\", " ;
 									}
 									?>
 								];
@@ -1380,7 +1380,7 @@ else {
 						<td class="right">
 							<?
 							if ($row["image_240"]!="") {
-								print "Current attachment: <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_75"] . "'>" . $row["image_240"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=240' onclick='confirm(\"Are you sure you want to delete this image? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
+								print "Current attachment: <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_240"] . "'>" . $row["image_240"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=240' onclick='confirm(\"Are you sure you want to delete this image? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
 							}
 							?>
 							<input type="file" name="file1" id="file1"><br/><br/>
@@ -1545,11 +1545,11 @@ else {
 									foreach ($options AS $option) {
 										$checked="" ;
 										foreach ($privacyChecks AS $privacyCheck) {
-											if ($option==$privacyCheck) {
+											if (trim($option)==trim($privacyCheck)) {
 												$checked="checked" ;
 											}
 										}
-										print $option . " <input $checked type='checkbox' name='privacyOptions[]' value='" . htmlPrep($option) . "'/><br/>" ;
+										print $option . " <input $checked type='checkbox' name='privacyOptions[]' value='" . htmlPrep(trim($option)) . "'/><br/>" ;
 									}
 									?>
 					

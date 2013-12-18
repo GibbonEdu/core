@@ -90,13 +90,13 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			
-			if ($_GET["name"]!="" OR $_GET["gibbonLibraryTypeID"]!="" OR $_GET["gibbonSpaceID"]!="" OR $_GET["status"]!="" OR $_GET["gibbonPersonIDOwnership"]!="") {
+			if ($_GET["name"]!="" OR $_GET["gibbonLibraryTypeID"]!="" OR $_GET["gibbonSpaceID"]!="" OR $_GET["status"]!="" OR $_GET["gibbonPersonIDOwnership"]!="" OR $_GET["typeSpecificFields"]!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_manage_catalog.php&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "'>Back to Search Results</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_manage_catalog.php&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] . "'>Back to Search Results</a>" ;
 				print "</div>" ;
 			}
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_editProcess.php?name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] ?>" enctype="multipart/form-data">
+			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_editProcess.php?name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ?>" enctype="multipart/form-data">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2>
@@ -532,7 +532,11 @@ else {
 								print "</td>" ;
 								print "<td class='right'>" ;
 									if ($field["type"]=="Text") {
-										print "<input maxlength='" . $field["options"] . "' name='field" . $fieldName . "' id='field" . $fieldName . "' value='" . htmlPrep($fieldValues[$field["name"]]) . "' type='text' style='width: 300px'>" ;
+										print "<input maxlength='" . $field["options"] . "' name='field" . $fieldName . "' id='field" . $fieldName . "' value='" ;
+										if (isset($fieldValues[$field["name"]])) {
+										 	print htmlPrep($fieldValues[$field["name"]]) ; 
+										 }
+										 print "' type='text' style='width: 300px'>" ;
 									}
 									else if ($field["type"]=="Select") {
 										print "<select name='field" . $fieldName . "' id='field" . $fieldName . "' type='text' style='width: 300px'>" ;
@@ -543,18 +547,28 @@ else {
 											foreach ($options as $option) {
 												$option=trim($option) ;
 												$selected="" ;
-												if ($option==$fieldValues[$field["name"]]) {
-													$selected="selected" ;
+												if (isset($fieldValues[$field["name"]])) {
+													if ($option==$fieldValues[$field["name"]]) {
+														$selected="selected" ;
+													}
 												}
 												print "<option $selected value='$option'>$option</option>" ;
 											}
 										print "</select>" ;
 									}
 									else if ($field["type"]=="Textarea") {
-										print "<textarea rows='" . $field["options"] . "' name='field" . $fieldName . "' id='field" . $fieldName . "' style='width: 300px'>" . htmlPrep($fieldValues[$field["name"]]) . "</textarea>" ;
+										print "<textarea rows='" . $field["options"] . "' name='field" . $fieldName . "' id='field" . $fieldName . "' style='width: 300px'>" ;
+										if (isset($fieldValues[$field["name"]])) {
+											print htmlPrep($fieldValues[$field["name"]]) ;
+										}
+										print "</textarea>" ;
 									}
 									else if ($field["type"]=="Date") {
-										print "<input name='field" . $fieldName . "' id='field" . $fieldName . "' maxlength=10 value='" . dateConvertBack($fieldValues[$field["name"]]) . "' type='text' style='width: 300px'>" ;
+										print "<input name='field" . $fieldName . "' id='field" . $fieldName . "' maxlength=10 value='" ;
+										if (isset($fieldValues[$field["name"]])) {
+											print dateConvertBack($fieldValues[$field["name"]]) ;
+										}
+										print "' type='text' style='width: 300px'>" ;
 										print "<script type='text/javascript'>" ;
 											print "var field" . $fieldName . "=new LiveValidation('field" . $fieldName . "');" ;
 											print "field" . $fieldName . ".add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: 'Use dd/mm/yyyy.' } );" ; 
@@ -566,7 +580,11 @@ else {
 										print "</script>" ;
 									}
 									else if ($field["type"]=="URL") {
-										print "<input maxlength='" . $field["options"] . "' name='field" . $fieldName . "' id='field" . $fieldName . "' value='" . htmlPrep($fieldValues[$field["name"]]) . "' type='text' style='width: 300px'>" ;
+										print "<input maxlength='" . $field["options"] . "' name='field" . $fieldName . "' id='field" . $fieldName . "' value='" ;
+										if (isset($fieldValues[$field["name"]])) {
+											htmlPrep($fieldValues[$field["name"]]) ;
+										}
+										print "' type='text' style='width: 300px'>" ;
 										print "<script type='text/javascript'>" ;
 											print "var field" . $fieldName . "=new LiveValidation('field" . $fieldName . "');" ;
 											print "field" . $fieldName . ".add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: \"Must start with http://\" } );" ;

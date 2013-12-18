@@ -348,6 +348,21 @@ else {
 							}
 						}
 					}
+					//CC self?
+					if ($_SESSION[$guid]["email"]!="") {
+						?>
+						<tr>
+							<td> 
+								<b><? print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", false) ?></b>
+								<span style="font-size: 90%"><i>(CC Self?)</i></span>
+							</td>
+							<td class="right">
+								<? print $_SESSION[$guid]["email"] ; ?> <input type='checkbox' name='emails[]' value='<? print $_SESSION[$guid]["email"] ; ?>'/>
+								<input type='hidden' name='names[]' value='<? print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", FALSE) ; ?>'/>
+							</td>
+						</tr>
+						<?
+					}
 					?>
 					<tr>
 						<td>

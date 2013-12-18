@@ -811,13 +811,13 @@ else {
 											<?
 											try {
 												$dataAuto=array(); 
-												$sqlAuto="SELECT DISTINCT address1District FROM gibbonPerson ORDER BY address1District" ;
+												$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
 												$resultAuto=$connection2->prepare($sqlAuto);
 												$resultAuto->execute($dataAuto);
 											}
 											catch(PDOException $e) { }
 											while ($rowAuto=$resultAuto->fetch()) {
-												print "\"" . $rowAuto["address1District"] . "\", " ;
+												print "\"" . $rowAuto["name"] . "\", " ;
 											}
 											?>
 										];
@@ -945,13 +945,13 @@ else {
 											<?
 											try {
 												$dataAuto=array(); 
-												$sqlAuto="SELECT DISTINCT address2District FROM gibbonPerson ORDER BY address2District" ;
+												$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
 												$resultAuto=$connection2->prepare($sqlAuto);
 												$resultAuto->execute($dataAuto);
 											}
 											catch(PDOException $e) { }
 											while ($rowAuto=$resultAuto->fetch()) {
-												print "\"" . $rowAuto["address2District"] . "\", " ;
+												print "\"" . $rowAuto["name"] . "\", " ;
 											}
 											?>
 										];

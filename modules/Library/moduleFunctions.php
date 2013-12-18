@@ -171,7 +171,7 @@ function getImage($guid, $type, $location, $border=true ) {
 	}
 	
 	if ($location=="") {
-		$output.="<img style='height: 240px; width: 240px; opacity: 1.0' class='user' title='Anonymous Photo' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_240_square.jpg'/><br/>" ;
+		$output.="<img style='height: 240px; width: 240px; opacity: 1.0' class='user' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_240_square.jpg'/><br/>" ;
 	}
 	else {
 		if ($type=="Link") {
@@ -181,7 +181,7 @@ function getImage($guid, $type, $location, $border=true ) {
 				$output.="</div>" ;
 			}
 			else {
-				$output.="<img style='height: 240px; width: 240px; opacity: 1.0' class='user' title='Anonymous Photo' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_240_square.jpg'/><br/>" ;
+				$output.="<img style='height: 240px; width: 240px; opacity: 1.0' class='user' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_240_square.jpg'/><br/>" ;
 			}
 		}
 		if ($type=="File") {
@@ -191,7 +191,7 @@ function getImage($guid, $type, $location, $border=true ) {
 				$output.="</div>" ;
 			}
 			else {
-				$output.="<img style='height: 240px; width: 240px; opacity: 1.0' class='user' title='Anonymous Photo' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_240_square.jpg'/><br/>" ;
+				$output.="<img style='height: 240px; width: 240px; opacity: 1.0' class='user' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_240_square.jpg'/><br/>" ;
 			}
 		}
 	}

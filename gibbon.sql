@@ -1,14 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.1
+-- version 4.0.6
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2013 at 12:59 AM
--- Server version: 5.5.25
--- PHP Version: 5.4.4
+-- Generation Time: Dec 18, 2013 at 03:05 AM
+-- Server version: 5.5.33
+-- PHP Version: 5.5.3
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone="+00:00";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -47,7 +47,7 @@ CREATE TABLE `gibbonAction` (
   `categoryPermissionOther` enum('Y','N') NOT NULL DEFAULT 'Y',
   PRIMARY KEY (`gibbonActionID`),
   KEY `gibbonModuleID` (`gibbonModuleID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=803 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=805 ;
 
 --
 -- Dumping data for table `gibbonAction`
@@ -230,7 +230,9 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000778, 0002, 'Sync Families', 0, 'Import', 'Import CSV files of families and their members, and use it to sync.', 'import_families.php', 'import_families.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000779, 0136, 'View Staff Profile_brief', 1, 'Profiles', 'View brief profile of any staff member in the school.', 'staff_view.php,staff_view_details.php', 'staff_view.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000780, 0136, 'View Staff Profile_full', 2, 'Profiles', 'View full profile of any staff member in the school.', 'staff_view.php,staff_view_details.php', 'staff_view', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
-(0000781, 0137, 'View Roll Groups', 1, '', 'View a brief profile of roll groups in school.', 'rollGroups.php,rollGroups_details.php', 'rollGroups.php', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y', 'Y', 'Y');
+(0000781, 0137, 'View Roll Groups', 1, '', 'View a brief profile of roll groups in school.', 'rollGroups.php,rollGroups_details.php', 'rollGroups.php', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y', 'Y', 'Y'),
+(0000803, 0007, 'Edit Markbook_everything', 4, '', 'Allows editing of any column in any class.', 'markbook_edit.php, markbook_edit_add.php,markbook_edit_addMulti.php,markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php', 'markbook_edit.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000804, 0002, 'Manage Districts', 0, 'User Management', 'Manage a list of districts for address autocomplete.', 'district_manage.php, district_manage_add.php, district_manage_edit.php, district_manage_delete.php', 'district_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
 
 -- --------------------------------------------------------
 
@@ -354,7 +356,6 @@ CREATE TABLE `gibbonApplicationForm` (
   `gibbonApplicationFormID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `surname` varchar(30) NOT NULL DEFAULT '',
   `firstName` varchar(30) NOT NULL DEFAULT '',
-  `otherNames` varchar(30) NOT NULL DEFAULT '',
   `preferredName` varchar(30) NOT NULL DEFAULT '',
   `officialName` varchar(150) NOT NULL,
   `nameInCharacters` varchar(20) NOT NULL,
@@ -362,9 +363,9 @@ CREATE TABLE `gibbonApplicationForm` (
   `status` enum('Pending','Accepted','Rejected','Withdrawn') NOT NULL DEFAULT 'Pending',
   `dob` date DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
-  `homeAddress` mediumtext NOT NULL,
-  `homeAddressDistrict` varchar(255) NOT NULL,
-  `homeAddressCountry` varchar(255) NOT NULL,
+  `homeAddress` mediumtext,
+  `homeAddressDistrict` varchar(255) DEFAULT NULL,
+  `homeAddressCountry` varchar(255) DEFAULT NULL,
   `phone1Type` enum('','Mobile','Home','Work','Fax','Pager','Other') NOT NULL DEFAULT '',
   `phone1CountryCode` varchar(7) NOT NULL,
   `phone1` varchar(20) NOT NULL,
@@ -418,60 +419,59 @@ CREATE TABLE `gibbonApplicationForm` (
   `companyContact` varchar(100) NOT NULL,
   `companyAddress` varchar(255) NOT NULL,
   `companyEmail` varchar(255) NOT NULL,
+  `companyCCFamily` enum('N','Y') DEFAULT NULL COMMENT 'When company is billed, should family receive a copy?',
   `companyPhone` varchar(20) NOT NULL,
   `companyAll` enum('Y','N') DEFAULT NULL,
   `gibbonFinanceFeeCategoryIDList` text,
-  `agreement` enum('N','Y') NOT NULL DEFAULT 'N',
+  `agreement` enum('N','Y') DEFAULT NULL,
   `parent1gibbonPersonID` int(10) unsigned zerofill DEFAULT NULL,
-  `parent1title` varchar(5) NOT NULL,
-  `parent1surname` varchar(30) NOT NULL DEFAULT '',
-  `parent1firstName` varchar(30) NOT NULL DEFAULT '',
-  `parent1otherNames` varchar(30) NOT NULL DEFAULT '',
-  `parent1preferredName` varchar(30) NOT NULL DEFAULT '',
-  `parent1officialName` varchar(150) NOT NULL,
-  `parent1nameInCharacters` varchar(20) NOT NULL,
-  `parent1gender` enum('M','F') NOT NULL DEFAULT 'M',
-  `parent1relationship` varchar(50) NOT NULL,
-  `parent1languageFirst` varchar(30) NOT NULL,
-  `parent1languageSecond` varchar(30) NOT NULL,
-  `parent1citizenship1` varchar(255) NOT NULL,
-  `parent1nationalIDCardNumber` varchar(30) NOT NULL,
-  `parent1residencyStatus` varchar(255) NOT NULL,
+  `parent1title` varchar(5) DEFAULT NULL,
+  `parent1surname` varchar(30) DEFAULT '',
+  `parent1firstName` varchar(30) DEFAULT '',
+  `parent1preferredName` varchar(30) DEFAULT '',
+  `parent1officialName` varchar(150) DEFAULT NULL,
+  `parent1nameInCharacters` varchar(20) DEFAULT NULL,
+  `parent1gender` enum('M','F') DEFAULT 'M',
+  `parent1relationship` varchar(50) DEFAULT NULL,
+  `parent1languageFirst` varchar(30) DEFAULT NULL,
+  `parent1languageSecond` varchar(30) DEFAULT NULL,
+  `parent1citizenship1` varchar(255) DEFAULT NULL,
+  `parent1nationalIDCardNumber` varchar(30) DEFAULT NULL,
+  `parent1residencyStatus` varchar(255) DEFAULT NULL,
   `parent1visaExpiryDate` date DEFAULT NULL,
   `parent1email` varchar(50) DEFAULT NULL,
-  `parent1phone1Type` enum('','Mobile','Home','Work','Fax','Pager','Other') NOT NULL DEFAULT '',
-  `parent1phone1CountryCode` varchar(7) NOT NULL,
-  `parent1phone1` varchar(20) NOT NULL,
-  `parent1phone2Type` enum('','Mobile','Home','Work','Fax','Pager','Other') NOT NULL DEFAULT '',
-  `parent1phone2CountryCode` varchar(7) NOT NULL,
-  `parent1phone2` varchar(20) NOT NULL,
+  `parent1phone1Type` enum('','Mobile','Home','Work','Fax','Pager','Other') DEFAULT '',
+  `parent1phone1CountryCode` varchar(7) DEFAULT NULL,
+  `parent1phone1` varchar(20) DEFAULT NULL,
+  `parent1phone2Type` enum('','Mobile','Home','Work','Fax','Pager','Other') DEFAULT '',
+  `parent1phone2CountryCode` varchar(7) DEFAULT NULL,
+  `parent1phone2` varchar(20) DEFAULT NULL,
   `parent1profession` varchar(30) DEFAULT NULL,
   `parent1employer` varchar(30) DEFAULT NULL,
-  `parent2title` varchar(5) NOT NULL,
-  `parent2surname` varchar(30) NOT NULL DEFAULT '',
-  `parent2firstName` varchar(30) NOT NULL DEFAULT '',
-  `parent2otherNames` varchar(30) NOT NULL DEFAULT '',
-  `parent2preferredName` varchar(30) NOT NULL DEFAULT '',
-  `parent2officialName` varchar(150) NOT NULL,
-  `parent2nameInCharacters` varchar(20) NOT NULL,
-  `parent2gender` enum('M','F') NOT NULL DEFAULT 'M',
-  `parent2relationship` varchar(50) NOT NULL,
-  `parent2languageFirst` varchar(30) NOT NULL,
-  `parent2languageSecond` varchar(30) NOT NULL,
-  `parent2citizenship1` varchar(255) NOT NULL,
-  `parent2nationalIDCardNumber` varchar(30) NOT NULL,
-  `parent2residencyStatus` varchar(255) NOT NULL,
+  `parent2title` varchar(5) DEFAULT NULL,
+  `parent2surname` varchar(30) DEFAULT '',
+  `parent2firstName` varchar(30) DEFAULT '',
+  `parent2preferredName` varchar(30) DEFAULT '',
+  `parent2officialName` varchar(150) DEFAULT NULL,
+  `parent2nameInCharacters` varchar(20) DEFAULT NULL,
+  `parent2gender` enum('M','F') DEFAULT 'M',
+  `parent2relationship` varchar(50) DEFAULT NULL,
+  `parent2languageFirst` varchar(30) DEFAULT NULL,
+  `parent2languageSecond` varchar(30) DEFAULT NULL,
+  `parent2citizenship1` varchar(255) DEFAULT NULL,
+  `parent2nationalIDCardNumber` varchar(30) DEFAULT NULL,
+  `parent2residencyStatus` varchar(255) DEFAULT NULL,
   `parent2visaExpiryDate` date DEFAULT NULL,
   `parent2email` varchar(50) DEFAULT NULL,
-  `parent2phone1Type` enum('','Mobile','Home','Work','Fax','Pager','Other') NOT NULL DEFAULT '',
-  `parent2phone1CountryCode` varchar(7) NOT NULL,
-  `parent2phone1` varchar(20) NOT NULL,
-  `parent2phone2Type` enum('','Mobile','Home','Work','Fax','Pager','Other') NOT NULL DEFAULT '',
-  `parent2phone2CountryCode` varchar(7) NOT NULL,
-  `parent2phone2` varchar(20) NOT NULL,
+  `parent2phone1Type` enum('','Mobile','Home','Work','Fax','Pager','Other') DEFAULT '',
+  `parent2phone1CountryCode` varchar(7) DEFAULT NULL,
+  `parent2phone1` varchar(20) DEFAULT NULL,
+  `parent2phone2Type` enum('','Mobile','Home','Work','Fax','Pager','Other') DEFAULT '',
+  `parent2phone2CountryCode` varchar(7) DEFAULT NULL,
+  `parent2phone2` varchar(20) DEFAULT NULL,
   `parent2profession` varchar(30) DEFAULT NULL,
   `parent2employer` varchar(30) DEFAULT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `timestamp` timestamp NULL DEFAULT NULL,
   `priority` int(1) NOT NULL DEFAULT '0',
   `milestones` text NOT NULL,
   `notes` text NOT NULL,
@@ -530,7 +530,8 @@ CREATE TABLE `gibbonAttendanceLogPerson` (
   `date` date DEFAULT NULL,
   `gibbonPersonIDTaker` int(10) unsigned zerofill NOT NULL,
   `timestampTaken` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`gibbonAttendanceLogPersonID`)
+  PRIMARY KEY (`gibbonAttendanceLogPersonID`),
+  KEY `date` (`date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -991,6 +992,18 @@ CREATE TABLE `gibbonDepartmentStaff` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `gibbonDistrict`
+--
+
+CREATE TABLE `gibbonDistrict` (
+  `gibbonDistrictID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  PRIMARY KEY (`gibbonDistrictID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `gibbonExternalAssessment`
 --
 
@@ -1427,6 +1440,7 @@ CREATE TABLE `gibbonFinanceInvoice` (
   `invoiceIssueDate` date DEFAULT NULL,
   `invoiceDueDate` date DEFAULT NULL,
   `paidDate` date DEFAULT NULL,
+  `paidAmount` decimal(13,2) DEFAULT NULL COMMENT 'The final amount paid',
   `reminderCount` int(3) NOT NULL DEFAULT '0',
   `notes` text NOT NULL,
   `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
@@ -1450,6 +1464,7 @@ CREATE TABLE `gibbonFinanceInvoicee` (
   `companyContact` varchar(100) DEFAULT NULL,
   `companyAddress` varchar(255) DEFAULT NULL,
   `companyEmail` varchar(255) DEFAULT NULL,
+  `companyCCFamily` enum('N','Y') DEFAULT NULL COMMENT 'When company is billed, should family receive a copy?',
   `companyPhone` varchar(20) DEFAULT NULL,
   `companyAll` enum('Y','N') DEFAULT NULL COMMENT 'Should company pay all invoices?.',
   `gibbonFinanceFeeCategoryIDList` text COMMENT 'If companyAll is N, list category IDs for campany to pay here.',
@@ -1471,6 +1486,7 @@ CREATE TABLE `gibbonFinanceInvoiceeUpdate` (
   `companyContact` varchar(100) DEFAULT NULL,
   `companyAddress` varchar(255) DEFAULT NULL,
   `companyEmail` varchar(255) DEFAULT NULL,
+  `companyCCFamily` enum('N','Y') DEFAULT NULL COMMENT 'When company is billed, should family receive a copy?',
   `companyPhone` varchar(20) DEFAULT NULL,
   `companyAll` enum('Y','N') DEFAULT NULL COMMENT 'Should company pay all invoices?.',
   `gibbonFinanceFeeCategoryIDList` text COMMENT 'If companyAll is N, list category IDs for campany to pay here.',
@@ -1666,7 +1682,7 @@ CREATE TABLE `gibbonLibraryType` (
 INSERT INTO `gibbonLibraryType` (`gibbonLibraryTypeID`, `name`, `active`, `fields`) VALUES
 (00004, 'Print Publication', 'Y', 'a:20:{i:0;a:6:{s:4:"name";s:6:"Format";s:11:"description";s:0:"";s:4:"type";s:6:"Select";s:7:"options";s:341:",Art - Original,Art - Reproduction,Book,Braille,Cartographic material,Chart,Diorama,Electronic Resource,Filmstrip,Flash Card,Game,Globe,Journal,Kit,Large print,Magazine,Manuscript,Microform,Microscope slide,Model,Motion Picture,Music,Picture,Realia,Resource,Serial,Slide,Sound Recording,Technical Drawing,Text,Toy,Transparency,Videorecording";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:1;a:6:{s:4:"name";s:9:"Publisher";s:11:"description";s:45:"Name of the company who published the volume.";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:2;a:6:{s:4:"name";s:16:"Publication Date";s:11:"description";s:36:"Format: dd/mm/yyyy, mm/yyyy or yyyy.";s:4:"type";s:4:"Text";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:3;a:6:{s:4:"name";s:22:"Country of Publication";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:4;a:6:{s:4:"name";s:7:"Edition";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:5;a:6:{s:4:"name";s:6:"ISBN10";s:11:"description";s:28:"10-digit unique ISBN number.";s:4:"type";s:4:"Text";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"Y";}i:6;a:6:{s:4:"name";s:6:"ISBN13";s:11:"description";s:28:"13-digit unique ISBN number.";s:4:"type";s:4:"Text";s:7:"options";s:2:"13";s:7:"default";s:0:"";s:8:"required";s:1:"Y";}i:7;a:6:{s:4:"name";s:11:"Description";s:11:"description";s:36:"A brief blurb describing the volume.";s:4:"type";s:8:"Textarea";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:8;a:6:{s:4:"name";s:8:"Subjects";s:11:"description";s:33:"Comma separated list of subjects.";s:4:"type";s:8:"Textarea";s:7:"options";s:1:"2";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:9;a:6:{s:4:"name";s:10:"Collection";s:11:"description";s:0:"";s:4:"type";s:6:"Select";s:7:"options";s:230:",Fiction, Fiction - Best Sellers, Fiction - Classics, Fiction - Mystery, Fiction - Series, Fiction - Young Adult, Nonfiction, Nonfiction - College Prep, Nonfiction - Graphic Novels, Nonfiction - Life Skills, Nonfiction - Reference";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:10;a:6:{s:4:"name";s:14:"Control Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:11;a:6:{s:4:"name";s:20:"Cataloging Authority";s:11:"description";s:37:"Issuing authority for Control Number.";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:12;a:6:{s:4:"name";s:21:"Reader Age (Youngest)";s:11:"description";s:50:"Age in years, youngest reading age recommendation.";s:4:"type";s:4:"Text";s:7:"options";s:1:"3";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:13;a:6:{s:4:"name";s:19:"Reader Age (Oldest)";s:11:"description";s:48:"Age in years, oldest reading age recommendation.";s:4:"type";s:4:"Text";s:7:"options";s:1:"3";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:14;a:6:{s:4:"name";s:10:"Page Count";s:11:"description";s:34:"The number of pages in the volume.";s:4:"type";s:4:"Text";s:7:"options";s:1:"4";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:15;a:6:{s:4:"name";s:6:"Height";s:11:"description";s:41:"The physical height of the volume, in cm.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:16;a:6:{s:4:"name";s:5:"Width";s:11:"description";s:40:"The physical width of the volume, in cm.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:17;a:6:{s:4:"name";s:9:"Thickness";s:11:"description";s:44:"The physical thickness of the volume, in cm.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:18;a:6:{s:4:"name";s:8:"Language";s:11:"description";s:35:"The primary language of the volume.";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:19;a:6:{s:4:"name";s:4:"Link";s:11:"description";s:44:"Link to web-based information on the volume.";s:4:"type";s:3:"URL";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}}'),
 (00008, 'Electronics', 'Y', 'a:8:{i:0;a:6:{s:4:"name";s:4:"Type";s:11:"description";s:29:"What kind of product is this?";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"Y";}i:1;a:6:{s:4:"name";s:13:"Serial Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:2;a:6:{s:4:"name";s:10:"Model Name";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:3;a:6:{s:4:"name";s:8:"Model ID";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:4;a:6:{s:4:"name";s:11:"Accessories";s:11:"description";s:36:"Any chargers, remotes controls, etc?";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:5;a:6:{s:4:"name";s:15:"Warranty Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:6;a:6:{s:4:"name";s:15:"Warranty Expiry";s:11:"description";s:19:"Format: dd/mm/yyyy.";s:4:"type";s:4:"Date";s:7:"options";s:0:"";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:7;a:6:{s:4:"name";s:16:"Repair Log/Notes";s:11:"description";s:0:"";s:4:"type";s:8:"Textarea";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}}'),
-(00007, 'Computer', 'Y', 'a:14:{i:0;a:6:{s:4:"name";s:11:"Form Factor";s:11:"description";s:0:"";s:4:"type";s:6:"Select";s:7:"options";s:50:"Desktop, Laptop, Tablet, Phone, Set-Top Box, Other";s:7:"default";s:6:"Laptop";s:8:"required";s:1:"Y";}i:1;a:6:{s:4:"name";s:16:"Operating System";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:2;a:6:{s:4:"name";s:13:"Serial Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:3;a:6:{s:4:"name";s:10:"Model Name";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:4;a:6:{s:4:"name";s:8:"Model ID";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:5;a:6:{s:4:"name";s:8:"CPU Type";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:6;a:6:{s:4:"name";s:9:"CPU Speed";s:11:"description";s:7:"In GHz.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:7;a:6:{s:4:"name";s:6:"Memory";s:11:"description";s:17:"Total RAM, in GB.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:8;a:6:{s:4:"name";s:7:"Storage";s:11:"description";s:30:"Total HDD/SDD capacity, in GB.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:9;a:6:{s:4:"name";s:11:"Accessories";s:11:"description";s:43:"Any chargers, display dongles, remotes etc?";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:10;a:6:{s:4:"name";s:15:"Warranty Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:11;a:6:{s:4:"name";s:15:"Warranty Expiry";s:11:"description";s:19:"Format: dd/mm/yyyy.";s:4:"type";s:4:"Date";s:7:"options";s:0:"";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:12;a:6:{s:4:"name";s:19:"Last Reinstall Date";s:11:"description";s:19:"Format: dd/mm/yyyy.";s:4:"type";s:4:"Date";s:7:"options";s:0:"";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:13;a:6:{s:4:"name";s:16:"Repair Log/Notes";s:11:"description";s:0:"";s:4:"type";s:8:"Textarea";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}}'),
+(00007, 'Computer', 'Y', 'a:16:{i:0;a:6:{s:4:"name";s:11:"Form Factor";s:11:"description";s:0:"";s:4:"type";s:6:"Select";s:7:"options";s:50:"Desktop, Laptop, Tablet, Phone, Set-Top Box, Other";s:7:"default";s:6:"Laptop";s:8:"required";s:1:"Y";}i:1;a:6:{s:4:"name";s:16:"Operating System";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:2;a:6:{s:4:"name";s:13:"Serial Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:3;a:6:{s:4:"name";s:10:"Model Name";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:4;a:6:{s:4:"name";s:8:"Model ID";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:5;a:6:{s:4:"name";s:8:"CPU Type";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:6;a:6:{s:4:"name";s:9:"CPU Speed";s:11:"description";s:7:"In GHz.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:7;a:6:{s:4:"name";s:6:"Memory";s:11:"description";s:17:"Total RAM, in GB.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:8;a:6:{s:4:"name";s:7:"Storage";s:11:"description";s:30:"Total HDD/SDD capacity, in GB.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:9;a:6:{s:4:"name";s:20:"Wireless MAC Address";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"17";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:10;a:6:{s:4:"name";s:17:"Wired MAC Address";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"17";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:11;a:6:{s:4:"name";s:11:"Accessories";s:11:"description";s:43:"Any chargers, display dongles, remotes etc?";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:12;a:6:{s:4:"name";s:15:"Warranty Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:13;a:6:{s:4:"name";s:15:"Warranty Expiry";s:11:"description";s:19:"Format: dd/mm/yyyy.";s:4:"type";s:4:"Date";s:7:"options";s:0:"";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:14;a:6:{s:4:"name";s:19:"Last Reinstall Date";s:11:"description";s:19:"Format: dd/mm/yyyy.";s:4:"type";s:4:"Date";s:7:"options";s:0:"";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:15;a:6:{s:4:"name";s:16:"Repair Log/Notes";s:11:"description";s:0:"";s:4:"type";s:8:"Textarea";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}}'),
 (00009, 'Other', 'Y', 'a:1:{i:0;a:6:{s:4:"name";s:4:"Type";s:11:"description";s:29:"What kind of product is this?";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"Y";}}');
 
 -- --------------------------------------------------------
@@ -1897,7 +1913,7 @@ CREATE TABLE `gibbonPermission` (
   PRIMARY KEY (`permissionID`),
   KEY `gibbonRoleID` (`gibbonRoleID`),
   KEY `gibbonActionID` (`gibbonActionID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=53853 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=53856 ;
 
 --
 -- Dumping data for table `gibbonPermission`
@@ -2182,7 +2198,10 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000053829, 001, 0000776),
 (0000053852, 002, 0000802),
 (0000053851, 001, 0000802),
-(0000053842, 001, 0000796);
+(0000053842, 001, 0000796),
+(0000053853, 004, 0000781),
+(0000053854, 001, 0000803),
+(0000053855, 001, 0000804);
 
 -- --------------------------------------------------------
 
@@ -2195,7 +2214,6 @@ CREATE TABLE `gibbonPerson` (
   `title` varchar(5) NOT NULL,
   `surname` varchar(30) NOT NULL DEFAULT '',
   `firstName` varchar(30) NOT NULL DEFAULT '',
-  `otherNames` varchar(30) NOT NULL DEFAULT '',
   `preferredName` varchar(30) NOT NULL DEFAULT '',
   `officialName` varchar(150) NOT NULL,
   `nameInCharacters` varchar(20) NOT NULL,
@@ -2290,8 +2308,8 @@ CREATE TABLE `gibbonPerson` (
 -- Dumping data for table `gibbonPerson`
 --
 
-INSERT INTO `gibbonPerson` (`gibbonPersonID`, `title`, `surname`, `firstName`, `otherNames`, `preferredName`, `officialName`, `nameInCharacters`, `gender`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`, `dob`, `email`, `emailAlternate`, `image_240`, `image_75`, `lastIPAddress`, `lastTimestamp`, `lastFailIPAddress`, `lastFailTimestamp`, `failCount`, `address1`, `address1District`, `address1Country`, `address2`, `address2District`, `address2Country`, `phone1Type`, `phone1CountryCode`, `phone1`, `phone3Type`, `phone3CountryCode`, `phone3`, `phone2Type`, `phone2CountryCode`, `phone2`, `phone4Type`, `phone4CountryCode`, `phone4`, `website`, `languageFirst`, `languageSecond`, `languageThird`, `countryOfBirth`, `ethnicity`, `citizenship1`, `citizenship1Passport`, `citizenship2`, `citizenship2Passport`, `religion`, `nationalIDCardNumber`, `residencyStatus`, `visaExpiryDate`, `profession`, `employer`, `jobTitle`, `emergency1Name`, `emergency1Number1`, `emergency1Number2`, `emergency1Relationship`, `emergency2Name`, `emergency2Number1`, `emergency2Number2`, `emergency2Relationship`, `gibbonHouseID`, `studentID`, `dateStart`, `dateEnd`, `gibbonSchoolYearIDClassOf`, `lastSchool`, `nextSchool`, `departureReason`, `transport`, `calendarFeedPersonal`, `viewCalendarSchool`, `viewCalendarPersonal`, `gibbonApplicationFormID`, `lockerNumber`, `vehicleRegistration`, `personalBackground`, `messengerLastBubble`, `privacy`, `dayType`, `gibbonThemeIDPersonal`) VALUES
-(0000000001, 'Mr. ', 'Administrator', 'System', '', 'System', 'System Administrator', '', 'M', 'admin', '76b9734ea08ecb8454c99f1c618d2553', '', '', 'Y', 'Full', 'Y', 001, '001,002', NULL, '', '', '', '', '', '0000-00-00 00:00:00', '::1', '2013-09-30 06:22:59', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', NULL, '', '', '', '', '', '', '', '', '', '', '', NULL, '', NULL, NULL, NULL, '', '', '', '', '', 'N', 'N', NULL, '', '123abc', '', '2013-09-30', '', NULL, 0001);
+INSERT INTO `gibbonPerson` (`gibbonPersonID`, `title`, `surname`, `firstName`, `preferredName`, `officialName`, `nameInCharacters`, `gender`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`, `dob`, `email`, `emailAlternate`, `image_240`, `image_75`, `lastIPAddress`, `lastTimestamp`, `lastFailIPAddress`, `lastFailTimestamp`, `failCount`, `address1`, `address1District`, `address1Country`, `address2`, `address2District`, `address2Country`, `phone1Type`, `phone1CountryCode`, `phone1`, `phone3Type`, `phone3CountryCode`, `phone3`, `phone2Type`, `phone2CountryCode`, `phone2`, `phone4Type`, `phone4CountryCode`, `phone4`, `website`, `languageFirst`, `languageSecond`, `languageThird`, `countryOfBirth`, `ethnicity`, `citizenship1`, `citizenship1Passport`, `citizenship2`, `citizenship2Passport`, `religion`, `nationalIDCardNumber`, `residencyStatus`, `visaExpiryDate`, `profession`, `employer`, `jobTitle`, `emergency1Name`, `emergency1Number1`, `emergency1Number2`, `emergency1Relationship`, `emergency2Name`, `emergency2Number1`, `emergency2Number2`, `emergency2Relationship`, `gibbonHouseID`, `studentID`, `dateStart`, `dateEnd`, `gibbonSchoolYearIDClassOf`, `lastSchool`, `nextSchool`, `departureReason`, `transport`, `calendarFeedPersonal`, `viewCalendarSchool`, `viewCalendarPersonal`, `gibbonApplicationFormID`, `lockerNumber`, `vehicleRegistration`, `personalBackground`, `messengerLastBubble`, `privacy`, `dayType`, `gibbonThemeIDPersonal`) VALUES
+(0000000001, 'Mr. ', 'Administrator', 'System', 'System', 'System Administrator', '', 'M', 'admin', '76b9734ea08ecb8454c99f1c618d2553', '', '', 'Y', 'Full', 'Y', 001, '001,002', NULL, '', '', '', '', '', '0000-00-00 00:00:00', '::1', '2013-09-30 06:22:59', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', NULL, '', '', '', '', '', '', '', '', '', '', '', NULL, '', NULL, NULL, NULL, '', '', '', '', '', 'N', 'N', NULL, '', '123abc', '', '2013-09-30', '', NULL, 0001);
 
 -- --------------------------------------------------------
 
@@ -2390,7 +2408,6 @@ CREATE TABLE `gibbonPersonUpdate` (
   `title` varchar(5) NOT NULL,
   `surname` varchar(30) NOT NULL DEFAULT '',
   `firstName` varchar(30) NOT NULL DEFAULT '',
-  `otherNames` varchar(30) NOT NULL DEFAULT '',
   `preferredName` varchar(30) NOT NULL DEFAULT '',
   `officialName` varchar(150) NOT NULL,
   `nameInCharacters` varchar(20) NOT NULL,
@@ -3248,7 +3265,7 @@ CREATE TABLE `gibbonSetting` (
   PRIMARY KEY (`gibbonSystemSettingsID`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `nameDisplay` (`nameDisplay`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=115 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=119 ;
 
 --
 -- Dumping data for table `gibbonSetting`
@@ -3291,7 +3308,7 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 (00036, 'Behaviour', 'levels', 'Levels', 'Allowalbe choices for severity level (from lowest to highest)', ',Stage 1,Stage 1 (Actioned),Stage 2,Stage 2 (Actioned),Stage 3,Stage 3 (Actioned),Actioned'),
 (00037, 'Resources', 'categories', 'Categories', 'Allowable choices for category', 'Article,Book,Document,Graphic,Idea,Music,Object,Painting,Person,Photo,Place,Poetry,Prose,Rubric,Text,Video,Website,Work Sample,Other'),
 (00038, 'Resources', 'purposesGeneral', 'Purposes (General)', 'Allowable choices for purpose when creating a resource', 'Assessment Aid,Concept,Inspiration,Learner Profile,Mass Mailer Attachment,Provocation,Skill,Teaching and Learning Strategy,Other'),
-(00039, 'System', 'version', 'Version', 'The version of the Gibbon database', '7.0.01'),
+(00039, 'System', 'version', 'Version', 'The version of the Gibbon database', '7.1.00'),
 (00040, 'Resources', 'purposesRestricted', 'Purposes (Restricted)', 'Additional allowable choices for purpose when creating a resource, for those with "Manage All Resources" rights', ''),
 (00041, 'System', 'organisationEmail', 'Organisation Email', 'General email address for the school', ''),
 (00042, 'Activities', 'dateType', 'Date Type', 'Should activities be organised around dates (flexible) or terms (easy)?', 'Term'),
@@ -3358,7 +3375,11 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 (00110, 'Application Form', 'notificationParentsDefault', 'Parents Notification Default', 'Should parent acceptance email be turned on or off by default.', 'On'),
 (00111, 'User Admin', 'privacyOptions', 'Privacy Options', 'Comma-separated list of choices to make available if privacy options are turned on. If blank, privacy fields will not be displayed.', ''),
 (00112, 'Planner', 'sharingDefaultParents', 'Sharing Default: Parents', 'When adding lessons and deploying units, should sharing default for parents be Y or N?', 'Y'),
-(00113, 'Planner', 'sharingDefaultStudents', 'Sharing Default: Students', 'When adding lessons and deploying units, should sharing default for students be Y or N?', 'Y');
+(00113, 'Planner', 'sharingDefaultStudents', 'Sharing Default: Students', 'When adding lessons and deploying units, should sharing default for students be Y or N?', 'Y'),
+(00115, 'Students', 'extendedBriefProfile', 'Extended Brief Profile', 'The extended version of the brief student profile includes contact information of parents.', 'N'),
+(00116, 'Application Form', 'notificationParentsMessage', 'Parents Notification Message', 'A custom message to add to the standard email to parents on acceptance.', ''),
+(00117, 'Application Form', 'notificationStudentMessage', 'Student Notification Message', 'A custom message to add to the standard email to students on acceptance.', ''),
+(00118, 'Finance', 'invoiceNumber', 'Invoice Number Style', 'How should invoice numbers be constructed?', 'Invoice ID');
 
 -- --------------------------------------------------------
 
@@ -3398,12 +3419,19 @@ CREATE TABLE `gibbonStaff` (
   `gibbonStaffID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `type` enum('Teaching','Support') NOT NULL,
+  `initials` varchar(4) DEFAULT NULL,
   `jobTitle` varchar(100) NOT NULL,
   `smartWorkflowHelp` enum('N','Y') NOT NULL DEFAULT 'N',
   `firstAidQualified` enum('','N','Y') NOT NULL DEFAULT '',
   `firstAidExpiry` date DEFAULT NULL,
+  `countryOfOrigin` varchar(80) NOT NULL,
+  `qualifications` varchar(255) NOT NULL,
+  `biography` text NOT NULL,
+  `biographicalGrouping` varchar(100) NOT NULL COMMENT 'Used for group staff when creating a staff directory.',
+  `biographicalGroupingPriority` int(3) NOT NULL,
   PRIMARY KEY (`gibbonStaffID`),
-  UNIQUE KEY `gibbonPersonID` (`gibbonPersonID`)
+  UNIQUE KEY `gibbonPersonID` (`gibbonPersonID`),
+  UNIQUE KEY `initials` (`initials`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------

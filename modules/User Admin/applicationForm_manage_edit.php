@@ -991,13 +991,13 @@ else {
 										<?
 										try {
 											$dataAuto=array(); 
-											$sqlAuto="SELECT DISTINCT homeAddressDistrict FROM gibbonApplicationForm ORDER BY homeAddressDistrict" ;
+											$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
 											$resultAuto=$connection2->prepare($sqlAuto);
 											$resultAuto->execute($dataAuto);
 										}
 										catch(PDOException $e) { }
 										while ($rowAuto=$resultAuto->fetch()) {
-											print "\"" . $rowAuto["homeAddressDistrict"] . "\", " ;
+											print "\"" . $rowAuto["name"] . "\", " ;
 										}
 										?>
 									];
@@ -2007,6 +2007,7 @@ else {
 					
 					$requiredDocuments=getSettingByScope($connection2, "Application Form", "requiredDocuments") ;
 					$requiredDocumentsCompulsory=getSettingByScope($connection2, "Application Form", "requiredDocumentsCompulsory") ;
+					$count=0 ;
 					if ($requiredDocuments!="" AND $requiredDocuments!=FALSE) {
 						?>
 						<tr class='break'>
@@ -2030,7 +2031,6 @@ else {
 						}
 							
 						$requiredDocumentsList=explode(",", $requiredDocuments) ;
-						$count=0 ;
 						foreach ($requiredDocumentsList AS $document) {
 							try {
 								$dataFile=array("gibbonApplicationFormID"=>$gibbonApplicationFormID, "name"=>$document); 

@@ -293,13 +293,13 @@ else {
 											<?
 											try {
 												$dataAuto=array(); 
-												$sqlAuto="SELECT DISTINCT homeAddressDistrict FROM gibbonPerson ORDER BY homeAddressDistrict" ;
+												$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
 												$resultAuto=$connection2->prepare($sqlAuto);
 												$resultAuto->execute($dataAuto);
 											}
 											catch(PDOException $e) { }
 											while ($rowAuto=$resultAuto->fetch()) {
-												print "\"" . $rowAuto["homeAddressDistrict"] . "\", " ;
+												print "\"" . $rowAuto["name"] . "\", " ;
 											}
 											?>
 										];

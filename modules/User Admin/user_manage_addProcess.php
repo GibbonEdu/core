@@ -171,12 +171,12 @@ else {
 	if (is_array($privacyOptions)) {
 		foreach ($privacyOptions AS $privacyOption) {
 			if ($privacyOption!="") {
-				$privacy.=$privacyOption . ", " ;
+				$privacy.=$privacyOption . "," ;
 			}
 		}
 	}
 	if ($privacy!="") {
-		$privacy=substr($privacy,0,-2) ;
+		$privacy=substr($privacy,0,-1) ;
 	}
 	else {
 		$privacy=NULL ;
@@ -260,6 +260,8 @@ else {
 					
 					$rowAI=$resultAI->fetch();
 					$AI=str_pad($rowAI['Auto_increment'], 10, "0", STR_PAD_LEFT) ;
+					$attachment1=NULL ;
+					$attachment2=NULL ;
 					if ($_FILES['file1']["tmp_name"]!="" OR $_FILES['file2']["tmp_name"]!="") {
 						$time=time() ;
 						//Check for folder in uploads based on today's date
@@ -268,6 +270,7 @@ else {
 							mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
 						}
 						//Move 240 attached file, if there is one
+						
 						if ($_FILES['file1']["tmp_name"]!="") {
 							$unique=FALSE;
 							$count=0 ;

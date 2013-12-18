@@ -128,8 +128,45 @@ User Admin: fixed minor display bug in permissions page
 
 General: fixed issues relating to PHP Notice errors
 	Edited many files across the system
-	
-	
+
+User Admin: added new action to store address districts, to be used in auto-complete where ever addresses are stored
+	New table gibbonDistrict
+	New value in tables gibbonAction, gibbonPermission
+	New files /modules/User Admin/district_manage*.php
+	Edited various files dealing with addresses
+
+Finance: improved look and feel of email invoices, receipts and reminders
+	Edited files /modules/Finance/moduleFunctions.php, invoices_manage*.php
+
+User Admin: fixed bug preventing medium image being viewed in edit view
+	Edited file /modules/User Admin/user_manage_edit.php
+
+Department: fixed bug with hooked units giving SQL error on course page
+	Edited file /modules/Departments/department_course.php
+
+Finance: added ability to preview an invoice whilst it is pending
+	Edited file /modules/Finance/invoices_manage_print_print.php, invoices_manage.php, moduleFunctions.php
+
+Finance: added ability to CC self into outgoing single invoices/reminders/receipts (not for bulk)
+	Edited file /modules/Finance/invoices_manage_edit.php, invoices_manage_issue.php
+
+Library: added MAC address fields to Computer type
+	Edited value in gibbonLibraryType
+	Edited file /modules/Library/library_manage_catalog_edit.php
+
+Library: added type-specific field search to inventory management page
+	Edited files /modules/Library/library_manage_catalog*.php
+
+User Admin: remove leading and trailing whitespace from privacy options
+	Edited files /modules/User Admin/user_manage_add*.php, user_manage_edit*.php
+
+Theme: tweaked bg colour in background
+	Edited file /themes/Default/css/main.css
+
+Department: removed "User Photo" label from department images
+	Edited file /modules/Departments/department.php
+
+
 v7.0.01
 -------
 Lib: updated TCPDF to work better with v7

@@ -422,7 +422,7 @@ else {
 					<span style="font-size: 90%"><i>Unit, Building, Street</i></span>
 				</td>
 				<td class="right">
-					<input name="address1" id="address1" maxlength=255 value="<? print $row["address1"] ?>" type="text" style="width: 300px">
+					<input name="address1" id="address1" maxlength=255 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr class='address'>
@@ -431,7 +431,7 @@ else {
 					<span style="font-size: 90%"><i>County, State, District</i></span>
 				</td>
 				<td class="right">
-					<input name="address1District" id="address1District" maxlength=30 value="<? print $row["address1District"] ?>" type="text" style="width: 300px">
+					<input name="address1District" id="address1District" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 				<script type="text/javascript">
 					$(function() {
@@ -439,13 +439,13 @@ else {
 							<?
 							try {
 								$dataAuto=array(); 
-								$sqlAuto="SELECT DISTINCT address1District FROM gibbonPerson ORDER BY address1District" ;
+								$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
 								$resultAuto=$connection2->prepare($sqlAuto);
 								$resultAuto->execute($dataAuto);
 							}
 							catch(PDOException $e) { }
 							while ($rowAuto=$resultAuto->fetch()) {
-								print "\"" . $rowAuto["address1District"] . "\", " ;
+								print "\"" . $rowAuto["name"] . "\", " ;
 							}
 							?>
 						];
@@ -481,7 +481,7 @@ else {
 					<span style="font-size: 90%"><i>Unit, Building, Street</i></span>
 				</td>
 				<td class="right">
-					<input name="address2" id="address2" maxlength=255 value="<? print $row["address2"] ?>" type="text" style="width: 300px">
+					<input name="address2" id="address2" maxlength=255 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr class='address'>
@@ -490,7 +490,7 @@ else {
 					<span style="font-size: 90%"><i>County, State, District</i></span>
 				</td>
 				<td class="right">
-					<input name="address2District" id="address2District" maxlength=30 value="<? print $row["address2District"] ?>" type="text" style="width: 300px">
+					<input name="address2District" id="address2District" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 				<script type="text/javascript">
 					$(function() {
@@ -498,13 +498,13 @@ else {
 							<?
 							try {
 								$dataAuto=array(); 
-								$sqlAuto="SELECT DISTINCT address2District FROM gibbonPerson ORDER BY address2District" ;
+								$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
 								$resultAuto=$connection2->prepare($sqlAuto);
 								$resultAuto->execute($dataAuto);
 							}
 							catch(PDOException $e) { }
 							while ($rowAuto=$resultAuto->fetch()) {
-								print "\"" . $rowAuto["address2District"] . "\", " ;
+								print "\"" . $rowAuto["name"] . "\", " ;
 							}
 							?>
 						];
@@ -1307,7 +1307,7 @@ else {
 						<?
 						$options=explode(",",$privacyOptions) ;
 						foreach ($options AS $option) {
-							print $option . " <input type='checkbox' name='privacyOptions[]' value='" . htmlPrep($option) . "'/><br/>" ;
+							print $option . " <input type='checkbox' name='privacyOptions[]' value='" . htmlPrep(trim($option)) . "'/><br/>" ;
 						}
 						?>
 						

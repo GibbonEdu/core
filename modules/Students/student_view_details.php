@@ -2772,7 +2772,7 @@ else {
 							}
 							if ($resultHook->rowCount()==1) {
 								$style="" ;
-								if ($_GET["hook"]==$rowHooks["name"] AND $_GET["module"]==$options["sourceModuleName"] AND $_GET["action"]==$options["sourceActionName"]) {
+								if ($hook==$rowHooks["name"] AND $_GET["module"]==$options["sourceModuleName"]) {
 									$style="style='font-weight: bold'" ;
 								}
 								$hooks[$count]="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&hook=" . $rowHooks["name"] . "&module=" . $options["sourceModuleName"] . "&action=" . $options["sourceModuleAction"] . "&gibbonHookID=" . $rowHooks["gibbonHookID"] . "'>" . $rowHooks["name"] . "</a></li>" ;

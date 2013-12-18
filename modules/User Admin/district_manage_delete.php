@@ -19,10 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
-//Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
-
-if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_catalog_delete.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/User Admin/district_manage_delete.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
 		print "You do not have access to this action." ;
@@ -31,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_cat
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Delete Item</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/district_manage.php'>Manage Districts</a> > </div><div class='trailEnd'>Delete District</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -56,43 +53,37 @@ else {
 	} 
 	
 	//Check if school year specified
-	$gibbonLibraryItemID=$_GET["gibbonLibraryItemID"];
-	if ($gibbonLibraryItemID=="") {
+	$gibbonDistrictID=$_GET["gibbonDistrictID"] ;
+	if ($gibbonDistrictID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified an item." ;
+			print "You have not specified a district." ;
 		print "</div>" ;
 	}
 	else {
 		try {
-			$data=array("gibbonLibraryItemID"=>$gibbonLibraryItemID); 
-			$sql="SELECT * FROM gibbonLibraryItem WHERE gibbonLibraryItemID=:gibbonLibraryItemID" ;
+			$data=array("gibbonDistrictID"=>$gibbonDistrictID); 
+			$sql="SELECT * FROM gibbonDistrict WHERE gibbonDistrictID=:gibbonDistrictID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
 			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 		}
-	
+		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The selected item does not exist or you do not have access to it." ;
+				print "The specified district cannot be found." ;
 			print "</div>" ;
 		}
 		else {
 			//Let's go!
 			$row=$result->fetch() ;
-			
-			if ($_GET["name"]!="" OR $_GET["gibbonLibraryTypeID"]!="" OR $_GET["gibbonSpaceID"]!="" OR $_GET["status"]!="" OR $_GET["gibbonPersonIDOwnership"]!="" OR $_GET["typeSpecificFields"]!="") {
-				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_manage_catalog.php&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] . "'>Back to Search Results</a>" ;
-				print "</div>" ;
-			}
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_deleteProcess.php?gibbonLibraryItemID=$gibbonLibraryItemID&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ?>">
+			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/district_manage_deleteProcess.php?gibbonDistrictID=$gibbonDistrictID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Are you sure you want to delete "<? print $row["id"] ?>"?</b><br/>
+							<b>Are you sure you want to delete district "<? print $row["name"] ?>"?</b><br/>
 							<span style="font-size: 90%; color: #cc0000"><i>This operation cannot be undone, and may lead to loss of vital data in your system.<br/>PROCEED WITH CAUTION!</i></span>
 						</td>
 						<td class="right">
@@ -101,7 +92,6 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<input name="gibbonLibraryItemID" id="gibbonLibraryItemID" value="<? print $gibbonLibraryItemID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<input type="submit" value="Yes">
 						</td>
