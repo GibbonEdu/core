@@ -166,6 +166,9 @@ Theme: tweaked bg colour in background
 Department: removed "User Photo" label from department images
 	Edited file /modules/Departments/department.php
 
+General: tweaked password reset to reload menu after reset (fixes first login issue)
+	Edited file /preferencesPasswordProcess.php
+
 
 v7.0.01
 -------

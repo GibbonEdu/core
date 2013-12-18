@@ -123,6 +123,7 @@ else {
 					
 					$_SESSION[$guid]["passwordStrongSalt"]=$salt ;
 					$_SESSION[$guid]["passwordStrong"]=$passwordStrong ;
+					$_SESSION[$guid]["pageLoads"]=NULL ;
 					$URL=$URL . "&editReturn=success0" ;
 					header("Location: {$URL}");	
 				}
