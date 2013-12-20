@@ -1,5 +1,16 @@
 CHANGELOG
 =========
+v7.1.01
+-------
+Index: fixed issue with planner entries with no unit on homepage
+	Edited file /index.php
+
+Finance: fixed issue in which a paid invoice, re-saved, loses its payment data
+	Edited file /modules/Finance/invoices_manage_editProcess.php
+
+User Admin: fixed hidden PHP Notice issue
+	Edited file /modules/User Admin/user_manage_add.php
+
 v7.1.00
 -------
 User Admin: fixed URL issue in email to newly accepted parents and students

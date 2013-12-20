@@ -692,9 +692,11 @@ else {
 																		print "<td>" ;
 																			print "<b>" . $row["name"] . "</b><br/>" ;
 																			$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
-																			print $unit[0] ;
-																			if ($unit[1]!="") {
-																				print "<br/><i>" . $unit[1] . " Unit</i>" ;
+																			if (isset($unit[0])) {
+																				print $unit[0] ;
+																				if ($unit[1]!="") {
+																					print "<br/><i>" . $unit[1] . " Unit</i>" ;
+																				}
 																			}
 																		print "</td>" ;
 																		print "<td>" ;
@@ -1109,9 +1111,11 @@ else {
 																print "<td>" ;
 																	print "<b>" . $row["name"] . "</b><br/>" ;
 																	$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
-																	print $unit[0] ;
-																	if ($unit[1]!="") {
-																		print "<br/><i>" . $unit[1] . " Unit</i>" ;
+																	if (isset($unit[0])) {
+																		print $unit[0] ;
+																		if ($unit[1]!="") {
+																			print "<br/><i>" . $unit[1] . " Unit</i>" ;
+																		}
 																	}
 																print "</td>" ;
 																print "<td>" ;

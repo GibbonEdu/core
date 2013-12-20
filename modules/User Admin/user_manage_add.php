@@ -926,7 +926,7 @@ else {
 						else {
 							$nationalities=explode(",", $nationalityList) ;
 							foreach ($nationalities as $nationality) {
-								print "<option $selected value='" . trim($nationality) . "'>" . trim($nationality) . "</option>" ;
+								print "<option value='" . trim($nationality) . "'>" . trim($nationality) . "</option>" ;
 							}
 						}
 						?>				

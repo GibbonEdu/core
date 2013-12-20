@@ -108,13 +108,13 @@ else {
 				if (isset($_POST["order"])) {
 					$order=$_POST["order"] ;
 				}
-				if (($row["status"]=="Issued" AND $_POST["status"]=="Paid") OR ($row["status"]=="Paid" AND $_POST["status"]=="Refunded")) {
+				if ($_POST["status"]=="Paid" OR $_POST["status"]=="Refunded") {
 					$paidDate=dateConvert($_POST["paidDate"]) ;
 				}
 				else {
 					$paidDate=NULL ;
 				}
-				if (($row["status"]=="Issued" AND $_POST["status"]=="Paid") OR ($row["status"]=="Paid" AND $_POST["status"]=="Refunded")) {
+				if ($_POST["status"]=="Paid" OR $_POST["status"]=="Refunded") {
 					$paidAmount=$_POST["paidAmount"] ;
 				}
 				else {
