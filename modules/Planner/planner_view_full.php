@@ -1599,7 +1599,7 @@ else {
 														}
 														else {
 															$rowLike=$resultLike->fetch() ;
-															$_SESSION[$guid]["sidebarExtra"].="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID=" . $rowLike["gibbonBehaviourID"] . "'><img style='margin-top: -30px; margin-left: 60px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
+															$_SESSION[$guid]["sidebarExtra"].="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID=" . $rowLike["gibbonBehaviourID"] . "&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='><img style='margin-top: -30px; margin-left: 60px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
 														}
 													
 													$_SESSION[$guid]["sidebarExtra"].="</div>" ;

@@ -11,6 +11,12 @@ Finance: fixed issue in which a paid invoice, re-saved, loses its payment data
 User Admin: fixed hidden PHP Notice issue
 	Edited file /modules/User Admin/user_manage_add.php
 
+User Admin: fixed incorrect date format in user import instructions
+	Edited file /modules/User Admin/import_users.php
+
+Planner: fixed PHP Notices when linking through to Behaviour
+	Edited files /modules/Planner/planner_view_full.php, planner_view_full_starAjax.php
+
 v7.1.00
 -------
 User Admin: fixed URL issue in email to newly accepted parents and students

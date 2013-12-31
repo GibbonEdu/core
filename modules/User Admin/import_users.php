@@ -135,7 +135,7 @@ else {
 					<li><b>Gender *</b> - F or M</li>
 					<li><b>Username *</b> - must be unique</li>
 					<li><b>House</b> - house short name, as set in School Admin (must already exist)</li>
-					<li><b>DOB</b> - date of birth (YYYY-MM-DD)</li>
+					<li><b>DOB</b> - date of birth (yyyy-mm-dd)</li>
 					<li><b>Role</b> - Teacher, Support Staff, Student or Parent</li>
 					<li><b>Email</b></li>
 					<li><b>Image (75) - path from /uploads/ to small portrait image (75px by 100px)</b></li>
@@ -172,8 +172,8 @@ else {
 					<li><b>Emergency Contact 2 (Phone 1)</b> - for students and staff only</li>
 					<li><b>Emergency Contact 2 (Phone 2)</b> - for students and staff only</li>
 					<li><b>Emergency Contact 2 (Relationship)</b> - for students and staff only</li>
-					<li><b>Start Date</b> - dd/mm/yyyy</li>
-					<li><b>End Date</b> - dd/mm/yyyy</li>
+					<li><b>Start Date</b> - yyyy-mm-dd</li>
+					<li><b>End Date</b> - yyyy-mm-dd</li>
 				</ol>
 			</li>
 			<li>Do not include a header row in the CSV files.</li>
