@@ -199,7 +199,7 @@ else {
 					print "</td>" ;
 				print "</tr>" ;
 			}
-			if($totalCount <  $max_input_vars){			
+			else{			
 			print "<tr>" ;
 				print "<td style='padding-top: 20px' class='right' colspan=" . (count($roleArray)+1) . ">" ;
 					print "<input type='submit' value='Submit'>" ;
