@@ -178,34 +178,33 @@ else {
 									print "<input $readonly $checked name='" . $rowActions["gibbonActionID"] . "-" . $roleArray[$i][0] . "' type='checkbox'/>" ;
 									print "<input type='hidden' name='$totalCount' value='" . $rowActions["gibbonActionID"] . "-" . $roleArray[$i][0] . "'/>" ;
 									$totalCount++ ;
-								$totalCount++ ;
 								print "</td>";
 							}
 						print "</tr>" ;
 					}
 				}
 			}
-			$max_input_vars = ini_get('max_input_vars');
-			if($totalCount >  $max_input_vars){
+			$max_input_vars=ini_get('max_input_vars') ;
+			if ($totalCount>$max_input_vars) {
 				print "<tr>" ;
 					print "<td colspan='6'>" ;	
 						print "<div class='error'>" ;
 						print "php.ini max_input_vars = " . $max_input_vars . "<br />";
 						print "Number of inputs on this page = " . $totalCount . "<br/>";
 						print "This form is very large and data will be truncated unless you edit php.ini. Add the line <strong>max_input_vars = 5000</strong> to your php.ini file on your server." ;
-						print "</div>" ;
-
-										
+						print "</div>" ;	
 					print "</td>" ;
 				print "</tr>" ;
 			}
 			else{			
-			print "<tr>" ;
-				print "<td style='padding-top: 20px' class='right' colspan=" . (count($roleArray)+1) . ">" ;
-					print "<input type='submit' value='Submit'>" ;
-				print "</td>" ;
-			print "</tr>" ;
+				print "<tr>" ;
+					print "<td style='padding-top: 20px' class='right' colspan=" . (count($roleArray)+1) . ">" ;
+						print "<input type='submit' value='Submit'>" ;
+					print "</td>" ;
+				print "</tr>" ;
 			}			
 			print "</table>" ;
 		print "</form>" ;
+	}
+}
 ?>
