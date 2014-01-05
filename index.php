@@ -1400,6 +1400,14 @@ else {
 								}
 								else {
 									if(is_file("./" . $_SESSION[$guid]["address"])) {
+										//Update page's title property to include module name
+										print "<script type=\"text/javascript\">" ;
+											print "$(document).ready(function() {" ;
+												print "document.title='" . $_SESSION[$guid]["organisationNameShort"] . " - " . $_SESSION[$guid]["systemName"] . " - " . getModuleName($_SESSION[$guid]["address"]) . "';" ;
+											print "});" ;
+										print "</script>" ;
+										
+										//Include the page
 										include ("./" . $_SESSION[$guid]["address"]) ;
 									}
 									else {
