@@ -100,7 +100,16 @@ else {
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml">
 		<head>
-			<title><? print $_SESSION[$guid]["organisationNameShort"] . " - " . $_SESSION[$guid]["systemName"] ?></title>
+			<title>
+				<? 
+				print $_SESSION[$guid]["organisationNameShort"] . " - " . $_SESSION[$guid]["systemName"] ;
+				if ($_SESSION[$guid]["address"]!="") {
+					if (strstr($_SESSION[$guid]["address"],"..")==FALSE) {
+						print " - " . getModuleName($_SESSION[$guid]["address"]) ;
+					}
+				}
+				?>
+			</title>
 			<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 			<meta http-equiv="content-language" content="en"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
@@ -1400,13 +1409,6 @@ else {
 								}
 								else {
 									if(is_file("./" . $_SESSION[$guid]["address"])) {
-										//Update page's title property to include module name
-										print "<script type=\"text/javascript\">" ;
-											print "$(document).ready(function() {" ;
-												print "document.title='" . $_SESSION[$guid]["organisationNameShort"] . " - " . $_SESSION[$guid]["systemName"] . " - " . getModuleName($_SESSION[$guid]["address"]) . "';" ;
-											print "});" ;
-										print "</script>" ;
-										
 										//Include the page
 										include ("./" . $_SESSION[$guid]["address"]) ;
 									}
