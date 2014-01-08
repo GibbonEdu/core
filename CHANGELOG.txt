@@ -20,6 +20,12 @@ Planner: fixed PHP Notices when linking through to Behaviour
 General: added module name to document title once module include takes place (makes for easier navigation using back button history)
 	Edited file /index.php
 
+Application Form: fixed PayPal integration so that payments actually go through (oops)
+	Edited table gibbonApplicationForm
+	Edited files /lib/paypal/*
+	Edited files /modules/Application Form/applicationForm*.php
+	Edited file /modules/User Admin/applicationForm_manage_edit.php, applicationForm_manage.php
+
 v7.1.00
 -------
 User Admin: fixed URL issue in email to newly accepted parents and students

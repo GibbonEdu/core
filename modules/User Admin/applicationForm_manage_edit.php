@@ -374,7 +374,7 @@ else {
 							</td>
 						</tr>
 						<?
-						if ($row["paypalPaymentToken"]!="" OR $row["paypalPaymentPayerID"]!="") {
+						if ($row["paypalPaymentToken"]!="" OR $row["paypalPaymentPayerID"]!="" OR $row["paypalPaymentTransactionID"]!="" OR $row["paypalPaymentReceiptID"]!="") {
 							?>
 							<tr>
 								<td style='text-align: right' colspan=2> 
@@ -384,7 +384,13 @@ else {
 												print "PayPal Payment Token: " . $row["paypalPaymentToken"] . "<br/>" ;
 											}
 											if ($row["paypalPaymentPayerID"]!="") {
-												print "PayPal Payment PayerID: " . $row["paypalPaymentPayerID"] ;
+												print "PayPal Payment Payer ID: " . $row["paypalPaymentPayerID"] . "<br/>" ;
+											}
+											if ($row["paypalPaymentTransactionID"]!="") {
+												print "PayPal Payment Transaction ID: " . $row["paypalPaymentTransactionID"] . "<br/>" ;
+											}
+											if ($row["paypalPaymentReceiptID"]!="") {
+												print "PayPal Payment Receipt ID: " . $row["paypalPaymentReceiptID"] . "<br/>" ;
 											}
 										?>
 									</i></span>

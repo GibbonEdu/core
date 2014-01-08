@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 18, 2013 at 03:05 AM
+-- Generation Time: Jan 08, 2014 at 03:26 AM
 -- Server version: 5.5.33
 -- PHP Version: 5.5.3
 
@@ -482,6 +482,8 @@ CREATE TABLE `gibbonApplicationForm` (
   `paymentMade` enum('N','Y','Exemption') NOT NULL DEFAULT 'N',
   `paypalPaymentToken` varchar(50) NOT NULL,
   `paypalPaymentPayerID` varchar(50) NOT NULL,
+  `paypalPaymentTransactionID` varchar(50) NOT NULL,
+  `paypalPaymentReceiptID` varchar(50) NOT NULL,
   `privacy` text,
   PRIMARY KEY (`gibbonApplicationFormID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -3308,7 +3310,7 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 (00036, 'Behaviour', 'levels', 'Levels', 'Allowalbe choices for severity level (from lowest to highest)', ',Stage 1,Stage 1 (Actioned),Stage 2,Stage 2 (Actioned),Stage 3,Stage 3 (Actioned),Actioned'),
 (00037, 'Resources', 'categories', 'Categories', 'Allowable choices for category', 'Article,Book,Document,Graphic,Idea,Music,Object,Painting,Person,Photo,Place,Poetry,Prose,Rubric,Text,Video,Website,Work Sample,Other'),
 (00038, 'Resources', 'purposesGeneral', 'Purposes (General)', 'Allowable choices for purpose when creating a resource', 'Assessment Aid,Concept,Inspiration,Learner Profile,Mass Mailer Attachment,Provocation,Skill,Teaching and Learning Strategy,Other'),
-(00039, 'System', 'version', 'Version', 'The version of the Gibbon database', '7.1.00'),
+(00039, 'System', 'version', 'Version', 'The version of the Gibbon database', '7.1.01'),
 (00040, 'Resources', 'purposesRestricted', 'Purposes (Restricted)', 'Additional allowable choices for purpose when creating a resource, for those with "Manage All Resources" rights', ''),
 (00041, 'System', 'organisationEmail', 'Organisation Email', 'General email address for the school', ''),
 (00042, 'Activities', 'dateType', 'Date Type', 'Should activities be organised around dates (flexible) or terms (easy)?', 'Term'),

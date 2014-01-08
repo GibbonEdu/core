@@ -216,7 +216,7 @@
 	'		The NVP Collection object of the GetExpressCheckoutDetails Call Response.
 	'--------------------------------------------------------------------------------------------------------------------------------------------	
 	*/
-	function ConfirmPayment( $FinalPaymentAmt )
+	function ConfirmPayment( $guid, $FinalPaymentAmt, $token, $payer_id )
 	{
 		/* Gather the information to make the final call to
 		   finalize the PayPal payment.  The variable nvpstr
@@ -225,10 +225,10 @@
 		
 
 		//Format the other parameters that were stored in the session from the previous calls	
-		$token 				= urlencode($_SESSION[$guid]['TOKEN']);
+		$token 				= urlencode($token);
 		$paymentType 		= urlencode($_SESSION[$guid]['PaymentType']);
 		$currencyCodeType 	= urlencode($_SESSION[$guid]['currencyCodeType']);
-		$payerID 			= urlencode($_SESSION[$guid]['payer_id']);
+		$payerID 			= urlencode($payer_id);
 
 		$serverName 		= urlencode($_SERVER['SERVER_NAME']);
 

@@ -127,11 +127,11 @@ else {
 		?>
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
-				<tr><td style="width: 30%"></td><td></td></tr>
+				<tr><td style="width: 40%"></td><td></td></tr>
 				<tr>
 					<td> 
 						<b>Search For</b><br/>
-						<span style="font-size: 90%"><i>Application ID, Preferred, surname.</i></span>
+						<span style="font-size: 90%"><i>Application ID, preferred, surname, PayPal transaction ID</i></span>
 					</td>
 					<td class="right">
 						<input name="search" id="search" maxlength=20 value="<? print $search ?>" type="text" style="width: 300px">
@@ -161,8 +161,8 @@ else {
 			$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
 			$sql="SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonYearGroup ON (gibbonApplicationForm.gibbonYearGroupIDEntry=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonSchoolYearIDEntry=:gibbonSchoolYearID ORDER BY status, priority DESC, timestamp DESC" ; 
 			if ($search!="") {
-				$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%"); 
-				$sql="SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonYearGroup ON (gibbonApplicationForm.gibbonYearGroupIDEntry=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonSchoolYearIDEntry=:gibbonSchoolYearID AND (preferredName LIKE :search1 OR surname LIKE :search2 OR gibbonApplicationFormID LIKE :search3) ORDER BY status, priority DESC, timestamp DESC" ; 
+				$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%", "search4"=>"%$search%"); 
+				$sql="SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonYearGroup ON (gibbonApplicationForm.gibbonYearGroupIDEntry=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonSchoolYearIDEntry=:gibbonSchoolYearID AND (preferredName LIKE :search1 OR surname LIKE :search2 OR gibbonApplicationFormID LIKE :search3 OR paypalPaymentTransactionID LIKE :search4) ORDER BY status, priority DESC, timestamp DESC" ; 
 			}
 			$sqlPage= $sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
 			$result=$connection2->prepare($sql);
@@ -184,6 +184,9 @@ else {
 		
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
+					print "<th>" ;
+						print "ID</span>" ;
+					print "</th>" ;
 					print "<th>" ;
 						print "Student<br/><span style='font-style: italic; font-size: 85%'>Application Date</span>" ;
 					print "</th>" ;
@@ -235,6 +238,9 @@ else {
 					
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
+						print "<td>" ;
+							print ltrim($row["gibbonApplicationFormID"], "0") ;
+						print "</td>" ;
 						print "<td>" ;
 							print "<b>" . formatName("", $row["preferredName"], $row["surname"], "Student", true) . "</b><br/>" ;
 							print "<span style='font-style: italic; font-size: 85%'>" . dateConvertBack(substr($row["timestamp"],0,10))  . "</span>" ;

@@ -1503,6 +1503,8 @@ UPDATE gibbonLibraryType SET fields='a:16:{i:0;a:6:{s:4:\"name\";s:11:\"Form Fac
 //v7.1.01
 $count++ ;
 $sql[$count][0]="7.1.01" ;
-$sql[$count][1]="";
+$sql[$count][1]="
+ALTER TABLE `gibbonApplicationForm` ADD `paypalPaymentTransactionID` VARCHAR( 50 ) NOT NULL AFTER `paypalPaymentPayerID` , ADD `paypalPaymentReceiptID` VARCHAR( 50 ) NOT NULL AFTER `paypalPaymentTransactionID` ;end
+";
 
 ?>

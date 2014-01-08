@@ -655,7 +655,7 @@ else {
 			$paypalAPISignature=getSettingByScope($connection2, "System", "paypalAPISignature") ;
 	
 			if ($applicationFee>0 AND is_numeric($applicationFee) AND $enablePayments=="Y" AND $paypalAPIUsername!="" AND $paypalAPIPassword!="" AND $paypalAPISignature!="") {
-				$URL=$_SESSION[$guid]["absoluteURL"] . "/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=" . urlencode("modules/Application Form/applicationFormProcess.php?addReturn=success1&id=$AI") . "&fail=" . urlencode("modules/Application Form/applicationFormProcess.php?addReturn=success2&id=$AI") ;
+				$URL=$_SESSION[$guid]["absoluteURL"] . "/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=" . urlencode("modules/Application Form/applicationFormProcess.php?addReturn=success1&id=$AI&applicationFee=$applicationFee") . "&fail=" . urlencode("modules/Application Form/applicationFormProcess.php?addReturn=success2&id=$AI&applicationFee=$applicationFee") ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -665,35 +665,84 @@ else {
 			}
 		}
 	}
-	//IF ID IS SET WE ARE JUST RETURNING TO FINALISE RECORD OF PAYMENT RECORD PAYMENT, SO LET'S DO IT.
+	//IF ID IS SET WE ARE JUST RETURNING TO FINALISE PAYMENT AND RECORD OF PAYMENT, SO LET'S DO IT.
 	else {
-		//Try to write back payment details
+		//Get returned paypal tokens, ids, etc
 		$paymentMade='N' ;
 		if ($_GET["addReturn"]=="success1") {
 			$paymentMade='Y' ;
 		}
-		try {
-			$data=array("paymentMade"=>$paymentMade, "paypalPaymentToken"=>$_GET["token"], "paypalPaymentPayerID"=>$_GET["PayerID"], "gibbonApplicationFormID"=>$_GET["id"]); 
-			$sql="UPDATE gibbonApplicationForm SET paymentMade=:paymentMade, paypalPaymentToken=:paypalPaymentToken, paypalPaymentPayerID=:paypalPaymentPayerID WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
+		$paypalPaymentToken=NULL ;
+		if (isset($_GET["token"])) {
+			$paypalPaymentToken=$_GET["token"] ;
 		}
-		catch(PDOException $e) { 
-			//Success 3
-			$URL=$URL . "&addReturn=success3&id=" . $_GET["id"] ;
-			header("Location: {$URL}");
-			break ;
+		$paypalPaymentPayerID=NULL ;
+		if (isset($_GET["PayerID"])) {
+			$paypalPaymentPayerID=$_GET["PayerID"] ;
+		}
+		$gibbonApplicationFormID=NULL ;
+		if (isset($_GET["id"])) {
+			$gibbonApplicationFormID=$_GET["id"] ;
+		}
+		$applicationFee=NULL ;
+		if (isset($_GET["applicationFee"])) {
+			$applicationFee=$_GET["applicationFee"] ;
 		}
 		
-		if ($paymentMade=='Y') {
-			//Success 1
-			$URL=$URL . "&addReturn=success1&id=" . $_GET["id"] ;
-			header("Location: {$URL}");
-		}
-		else if ($paymentMade=='N') {
+		//Check return values to see if we can proceed
+		if ($paypalPaymentToken=="" OR $paypalPaymentPayerID=="" OR $gibbonApplicationFormID=="" OR $applicationFee=="") {
 			//Success 2
 			$URL=$URL . "&addReturn=success2&id=" . $_GET["id"] ;
 			header("Location: {$URL}");
+		}
+		else {
+			//PROCEED AND FINALISE PAYMENT
+			require "../../lib/paypal/paypalfunctions.php" ;
+		
+			//Ask paypal to finalise the payment
+			$confirmPayment=confirmPayment($guid, $applicationFee, $paypalPaymentToken, $paypalPaymentPayerID) ;
+	
+			$ACK=$confirmPayment["ACK"] ;
+			$paypalPaymentTransactionID=$confirmPayment["PAYMENTINFO_0_TRANSACTIONID"] ;
+			$paypalPaymentReceiptID=$confirmPayment["PAYMENTINFO_0_RECEIPTID"] ;
+			
+			//Payment was successful. Yeah!
+			if ($ACK="Success") {
+				try {
+					$data=array("paymentMade"=>$paymentMade, "paypalPaymentToken"=>$paypalPaymentToken, "paypalPaymentPayerID"=>$paypalPaymentPayerID, "paypalPaymentTransactionID"=>$paypalPaymentTransactionID, "paypalPaymentReceiptID"=>$paypalPaymentReceiptID, "gibbonApplicationFormID"=>$gibbonApplicationFormID); 
+					$sql="UPDATE gibbonApplicationForm SET paymentMade=:paymentMade, paypalPaymentToken=:paypalPaymentToken, paypalPaymentPayerID=:paypalPaymentPayerID, paypalPaymentTransactionID=:paypalPaymentTransactionID, paypalPaymentReceiptID=:paypalPaymentReceiptID WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					//Success 3
+					$URL=$URL . "&addReturn=success3&id=" . $_GET["id"] ;
+					header("Location: {$URL}");
+					break ;
+				}
+				
+				//Success 1
+				$URL=$URL . "&addReturn=success1&id=" . $_GET["id"] ;
+				header("Location: {$URL}");
+			}
+			else {
+				try {
+					$data=array("paymentMade"=>$paymentMade, "paypalPaymentToken"=>$paypalPaymentToken, "paypalPaymentPayerID"=>$paypalPaymentPayerID, "gibbonApplicationFormID"=>$gibbonApplicationFormID); 
+					$sql="UPDATE gibbonApplicationForm SET paymentMade=:paymentMade, paypalPaymentToken=:paypalPaymentToken, paypalPaymentPayerID=:paypalPaymentPayerID WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					//Success 3
+					$URL=$URL . "&addReturn=success2&id=" . $_GET["id"] ;
+					header("Location: {$URL}");
+					break ;
+				}
+			
+				//Success 2
+				$URL=$URL . "&addReturn=success2&id=" . $_GET["id"] ;
+				header("Location: {$URL}");
+			}
 		}
 	}
 }
