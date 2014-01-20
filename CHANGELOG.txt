@@ -1,5 +1,18 @@
 CHANGELOG
 =========
+v7.1.02
+-------
+User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)
+	New value in table gibbonSetting
+	Edited files /modules/User Admin/userSettings*.php, user_manage_add*.php, user_manage_edit.php
+
+Students: added departure reason to left students report
+	Edited file /modules/Students/report_students_left.php
+
+User Admin: added feature to allow Google Account OAuth login
+	Added values to table gibbonSetting
+	Edited files /modules/User Admin/userSettings*.php
+
 v7.1.01
 -------
 Index: fixed issue with planner entries with no unit on homepage

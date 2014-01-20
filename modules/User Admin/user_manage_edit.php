@@ -889,27 +889,47 @@ else {
 								<b>Departure Reason</b><br/>
 							</td>
 							<td class="right">
-								<input name="departureReason" id="departureReason" maxlength=30 value="<? print $row["departureReason"] ?>" type="text" style="width: 300px">
+								<?
+								$departureReasonsList=getSettingByScope($connection2, "User Admin", "departureReasons") ;
+								if ($departureReasonsList!="") {
+									print "<select name=\"departureReason\" id=\"departureReason\" style=\"width: 302px\">" ;
+										print "<option value=''></option>" ;
+										$departureReasons=explode(",", $departureReasonsList) ;
+										foreach ($departureReasons as $departureReason) {
+											$selected="" ;
+											if (trim($departureReason)==$row["departureReason"]) {
+												$selected="selected" ;
+											}
+											print "<option $selected value='" . trim($departureReason) . "'>" . trim($departureReason) . "</option>" ;
+										}	
+									print "</select>" ;
+								}
+								else {
+									?>
+									<input name="departureReason" id="departureReason" maxlength=30 value="<? print $row["departureReason"] ?>" type="text" style="width: 300px">
+									<script type="text/javascript">
+										$(function() {
+											var availableTags=[
+												<?
+												try {
+													$dataAuto=array(); 
+													$sqlAuto="SELECT DISTINCT departureReason FROM gibbonPerson ORDER BY departureReason" ;
+													$resultAuto=$connection2->prepare($sqlAuto);
+													$resultAuto->execute($dataAuto);
+												}
+												catch(PDOException $e) { }
+												while ($rowAuto=$resultAuto->fetch()) {
+													print "\"" . $rowAuto["departureReason"] . "\", " ;
+												}
+												?>
+											];
+											$( "#departureReason" ).autocomplete({source: availableTags});
+										});
+									</script>
+									<?
+								}		
+								?>
 							</td>
-							<script type="text/javascript">
-								$(function() {
-									var availableTags=[
-										<?
-										try {
-											$dataAuto=array(); 
-											$sqlAuto="SELECT DISTINCT departureReason FROM gibbonPerson ORDER BY departureReason" ;
-											$resultAuto=$connection2->prepare($sqlAuto);
-											$resultAuto->execute($dataAuto);
-										}
-										catch(PDOException $e) { }
-										while ($rowAuto=$resultAuto->fetch()) {
-											print "\"" . $rowAuto["departureReason"] . "\", " ;
-										}
-										?>
-									];
-									$( "#departureReason" ).autocomplete({source: availableTags});
-								});
-							</script>
 						</tr>
 						<?
 					}
@@ -1071,7 +1091,7 @@ else {
 							<b>Citizenship 1</b><br/>
 						</td>
 						<td class="right">
-							<select name="citizenship1" id="countryOfBirth" style="width: 302px">
+							<select name="citizenship1" id="citizenship1" style="width: 302px">
 								<?
 								print "<option value=''></option>" ;
 								$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;
@@ -1114,7 +1134,7 @@ else {
 							<b>Citizenship 2</b><br/>
 						</td>
 						<td class="right">
-							<select name="citizenship2" id="countryOfBirth" style="width: 302px">
+							<select name="citizenship2" id="citizenship2" style="width: 302px">
 								<?
 								print "<option value=''></option>" ;
 								$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;

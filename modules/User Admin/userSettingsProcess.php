@@ -47,6 +47,9 @@ else {
 	$ethnicity=$_POST["ethnicity"] ; 	
 	$nationality=$_POST["nationality"] ; 	
 	$residencyStatus=$_POST["residencyStatus"] ; 	
+	$departureReasons=$_POST["departureReasons"] ; 	
+	$googleOAuth=$_POST["googleOAuth"] ; 	
+	$googleOAuthDomains=$_POST["googleOAuthDomains"] ; 	
 	$privacy=$_POST["privacy"] ; 	
 	$privacyBlurb=$_POST["privacyBlurb"] ; 	
 	$privacyOptions=$_POST["privacyOptions"] ; 	
@@ -78,8 +81,38 @@ else {
 	}
 	
 	try {
+		$data=array("value"=>$departureReasons); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='departureReasons'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
+	try {
 		$data=array("value"=>$residencyStatus); 
 		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='residencyStatus'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
+	try {
+		$data=array("value"=>$googleOAuth); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='googleOAuth'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
+	try {
+		$data=array("value"=>$googleOAuthDomains); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='googleOAuthDomains'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}

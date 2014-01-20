@@ -119,10 +119,10 @@ else {
 		try {
 			$data=array("endDateFrom"=>dateConvert($endDateFrom), "endDateTo"=>dateConvert($endDateTo)); 
 			if ($ignoreStatus=="on") {
-				$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateEnd, nextSchool FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE dateEnd>=:endDateFrom AND dateEnd<=:endDateTo ORDER BY surname, preferredName" ;
+				$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateEnd, nextSchool, departureReason FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE dateEnd>=:endDateFrom AND dateEnd<=:endDateTo ORDER BY surname, preferredName" ;
 			}
 			else {
-				$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateEnd, nextSchool FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE dateEnd>=:endDateFrom AND dateEnd<=:endDateTo AND status='Left' ORDER BY surname, preferredName" ;
+				$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateEnd, nextSchool, departureReason FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE dateEnd>=:endDateFrom AND dateEnd<=:endDateTo AND status='Left' ORDER BY surname, preferredName" ;
 			}
 			$result=$connection2->prepare($sql);
 			$result->execute($data); 
@@ -141,7 +141,8 @@ else {
 						print "Username" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "End Date" ;
+						print "End Date<br/>" ;
+						print "<span style='font-style: italic; font-size: 75%'>Departure Reason</span>" ;
 					print "</th>" ;
 					print "<th>" ;
 						print "Next School" ;
@@ -173,7 +174,8 @@ else {
 							print $row["username"] ;
 						print "</td>" ;
 						print "<td>" ;
-							print dateConvertBack($row["dateEnd"]) ;
+							print dateConvertBack($row["dateEnd"]) . "<br/>" ;
+							print "<span style='font-style: italic; font-size: 75%'>" . $row["departureReason"] . "</span>" ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["nextSchool"] ;

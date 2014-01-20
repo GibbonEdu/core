@@ -127,6 +127,74 @@ else {
 					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=8 style="width: 300px"><? print $row["value"] ?></textarea>
 				</td>
 			</tr>
+			<tr>
+				<?
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='departureReasons'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><? print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=8 style="width: 300px"><? print $row["value"] ?></textarea>
+				</td>
+			</tr>
+			
+			<tr class='break'>
+				<td colspan=2> 
+					<h3>Authentication Settings</h3>
+				</td>
+			</tr>
+			<tr>
+				<?
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='googleOAuth'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><? print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
+						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N">N</option>
+						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y">Y</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<?
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='googleOAuthDomains'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><? print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=4 type="text" style="width: 300px"><? print $row["value"] ?></textarea>
+				</td>
+			</tr>
 			
 			<tr class='break'>
 				<td colspan=2> 

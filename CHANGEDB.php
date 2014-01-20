@@ -1507,4 +1507,20 @@ $sql[$count][1]="
 ALTER TABLE `gibbonApplicationForm` ADD `paypalPaymentTransactionID` VARCHAR( 50 ) NOT NULL AFTER `paypalPaymentPayerID` , ADD `paypalPaymentReceiptID` VARCHAR( 50 ) NOT NULL AFTER `paypalPaymentTransactionID` ;end
 ";
 
+//v7.1.02
+$count++ ;
+$sql[$count][0]="7.1.02" ;
+$sql[$count][1]="
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'departureReasons', 'Departure Reasons', 'Comma-separated list of reasons for departure from school. If blank, user can enter any text.', '');end
+
+-- LAST ICHK
+-- LAST HLY
+
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleOAuth', 'Google OAuth', 'Enable OAuth login via a Google Account.', 'N');end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleOAuthDomains', 'Google OAuth Domains', 'If Google OAuth is enabled, what domains should we match on. Comma-separated list.', '');end
+
+
+";
+
+
 ?>

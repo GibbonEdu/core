@@ -665,24 +665,6 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>End Date</b><br/>
-					<span style="font-size: 90%"><i>Student's last day at school.<br/>dd/mm/yyyy</i></span>
-				</td>
-				<td class="right">
-					<input name="dateEnd" id="dateEnd" maxlength=10 value="" type="text" style="width: 300px">
-					<script type="text/javascript">
-						var dateEnd=new LiveValidation('dateEnd');
-						dateEnd.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
-					 </script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#dateEnd" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
 					<b>Class Of</b><br/>
 					<span style="font-size: 90%"><i>When is the student expected to graduate?</i></span>
 				</td>
@@ -705,60 +687,6 @@ else {
 						?>				
 					</select>
 				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b>Next School</b><br/>
-				</td>
-				<td class="right">
-					<input name="nextSchool" id="nextSchool" maxlength=30 value="" type="text" style="width: 300px">
-				</td>
-				<script type="text/javascript">
-					$(function() {
-						var availableTags=[
-							<?
-							try {
-								$dataAuto=array(); 
-								$sqlAuto="SELECT DISTINCT nextSchool FROM gibbonPerson ORDER BY nextSchool" ;
-								$resultAuto=$connection2->prepare($sqlAuto);
-								$resultAuto->execute($dataAuto);
-							}
-							catch(PDOException $e) { }
-							while ($rowAuto=$resultAuto->fetch()) {
-								print "\"" . $rowAuto["nextSchool"] . "\", " ;
-							}
-							?>
-						];
-						$( "#nextSchool" ).autocomplete({source: availableTags});
-					});
-				</script>
-			</tr>
-			<tr>
-				<td> 
-					<b>Departure Reason</b><br/>
-				</td>
-				<td class="right">
-					<input name="departureReason" id="departureReason" maxlength=30 value="" type="text" style="width: 300px">
-				</td>
-				<script type="text/javascript">
-					$(function() {
-						var availableTags=[
-							<?
-							try {
-								$dataAuto=array(); 
-								$sqlAuto="SELECT DISTINCT departureReason FROM gibbonPerson ORDER BY departureReason" ;
-								$resultAuto=$connection2->prepare($sqlAuto);
-								$resultAuto->execute($dataAuto);
-							}
-							catch(PDOException $e) { }
-							while ($rowAuto=$resultAuto->fetch()) {
-								print "\"" . $rowAuto["departureReason"] . "\", " ;
-							}
-							?>
-						];
-						$( "#departureReason" ).autocomplete({source: availableTags});
-					});
-				</script>
 			</tr>
 			
 			<tr class='break'>
