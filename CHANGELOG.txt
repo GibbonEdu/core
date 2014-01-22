@@ -13,6 +13,13 @@ User Admin: added feature to allow Google Account OAuth login
 	Added values to table gibbonSetting
 	Edited files /modules/User Admin/userSettings*.php
 
+Students: added new report to show student who should take letter home, accounting for older siblings
+	New value in tables gibbonAction, gibbonPermission
+	Added new file /modules/Students/report_lettersHome_byRollGroup.php
+
+General: removed PHP notice from error page
+	Edited file /error.php
+
 v7.1.01
 -------
 Index: fixed issue with planner entries with no unit on homepage

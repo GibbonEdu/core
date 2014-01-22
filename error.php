@@ -33,5 +33,5 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <p>
 	This could mean a number of different things, but generally indicates that you have a misspelt an address, or are trying to access a page that you are not permitted to access.<br>
 	<br>
-	If you cannot solve this problem by retyping the address, or through other means, please email <a class="Main" href="mailto:<? print $organisationAdministratorEMail ?>"><? print $organisationAdministratorEMail ?></a> for help.<br>
+	If you cannot solve this problem by retyping the address, or through other means, please contact your system administrator.<br>
 </p>
