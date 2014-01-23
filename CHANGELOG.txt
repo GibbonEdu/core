@@ -20,6 +20,14 @@ Students: added new report to show student who should take letter home, accounti
 General: removed PHP notice from error page
 	Edited file /error.php
 
+Markbook: added ability to delete uploaded response file
+	Edited file /modules/Markbook/markbook_edit_data.php
+	New file /modules/Markbook/markbook_edit_data_responseDeleteProcess
+
+User Admin: fixed "image delete link, confirm cancel not working" issue
+	Edited file /modules/User Admin/user_manage_edit.php
+	
+
 v7.1.01
 -------
 Index: fixed issue with planner entries with no unit on homepage

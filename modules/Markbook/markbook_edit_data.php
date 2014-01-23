@@ -471,7 +471,7 @@ else {
 												print "<br/>" ;
 												if ($rowEntry["response"]!="") {
 													print "<input type='hidden' name='response$count' id='response$count' value='" . $rowEntry["response"] . "'>" ;														
-													print "<div style='width: 330px; float: right'><a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>Uploaded Response</a><br/></div>" ;
+													print "<div style='width: 330px; float: right'><a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>Uploaded Response</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Markbook/markbook_edit_data_responseDeleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "' onclick='return confirm(\"Are you sure you want to delete this file? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/></div>" ;
 												}
 												else {
 													print "<input style='margin-top: 5px' type='file' name='response$count' id='response$count'>" ;														
