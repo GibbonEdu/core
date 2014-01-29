@@ -33,12 +33,22 @@ catch(PDOException $e) {
 }
 
 @session_start() ;
+
+//Deal with caching
 if (isset($_SESSION[$guid]["pageLoads"])) {
 	$_SESSION[$guid]["pageLoads"]++ ;
 }
 else {
 	$_SESSION[$guid]["pageLoads"]=0 ;
 }
+$cacheLoad=FALSE ;
+if ($caching>0 AND is_numeric($caching)) {
+	if ($_SESSION[$guid]["pageLoads"]%$caching==0) {
+		$cacheLoad=TRUE ;
+	}
+}
+
+
 $_SESSION[$guid]["sidebarExtra"]="" ;
 $_SESSION[$guid]["sidebarExtraPosition"]="" ;
 if (isset($_GET["q"])) {
@@ -134,7 +144,7 @@ else {
 		
 			<?
 			//Set theme
-			if ($_SESSION[$guid]["pageLoads"]%$caching==0 OR $_SESSION[$guid]["themeCSS"]=="" OR isset($_SESSION[$guid]["themeJS"])==FALSE OR $_SESSION[$guid]["gibbonThemeID"]=="" OR $_SESSION[$guid]["gibbonThemeName"]=="") {
+			if ($cacheLoad OR $_SESSION[$guid]["themeCSS"]=="" OR isset($_SESSION[$guid]["themeJS"])==FALSE OR $_SESSION[$guid]["gibbonThemeID"]=="" OR $_SESSION[$guid]["gibbonThemeName"]=="") {
 				$_SESSION[$guid]["themeCSS"]="<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />" ;
 				$_SESSION[$guid]["themeJS"]="<script type='text/javascript' src='./themes/Default/js/common.js'></script>" ;
 				$_SESSION[$guid]["gibbonThemeID"]="001" ;
@@ -310,7 +320,7 @@ else {
 										}
 										
 										//STARS!
-										if ($_SESSION[$guid]["pageLoads"]%$caching==0) {
+										if ($cacheLoad) {
 											$_SESSION[$guid]["likeCount"]=0 ;
 											$_SESSION[$guid]["likeCountTitle"]="" ;
 											//Count crowd assessment likes
@@ -379,7 +389,7 @@ else {
 											if (isset($_GET["deleteReturn"])) {
 												$deleteReturn=$_GET["deleteReturn"] ;
 											}
-											if ($_SESSION[$guid]["pageLoads"]%$caching==0 OR ($q=="/modules/Messenger/messenger_post.php" AND $addReturn=="success0") OR ($q=="/modules/Messenger/messenger_manage_edit.php" AND $updateReturn=="success0") OR ($q=="/modules/Messenger/messenger_manage.php" AND $deleteReturn=="success0")) {
+											if ($cacheLoad OR ($q=="/modules/Messenger/messenger_post.php" AND $addReturn=="success0") OR ($q=="/modules/Messenger/messenger_manage_edit.php" AND $updateReturn=="success0") OR ($q=="/modules/Messenger/messenger_manage.php" AND $deleteReturn=="success0")) {
 												$messages=getMessages($guid, $connection2, "result") ;					
 												$messages=unserialize($messages) ;
 												try {
@@ -485,7 +495,7 @@ else {
 										
 									print "</div>" ;
 									
-									if ($_SESSION[$guid]["pageLoads"]%$caching==0) {
+									if ($cacheLoad) {
 										$_SESSION[$guid]["mainMenu"]=mainMenu($connection2, $guid) ;
 									}
 									print $_SESSION[$guid]["mainMenu"] ;

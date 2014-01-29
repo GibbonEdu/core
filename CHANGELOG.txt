@@ -26,6 +26,9 @@ Markbook: added ability to delete uploaded response file
 
 User Admin: fixed "image delete link, confirm cancel not working" issue
 	Edited file /modules/User Admin/user_manage_edit.php
+
+Index: fixed warnings generated when caching set to 0
+	Edited file /index.php
 	
 
 v7.1.01
