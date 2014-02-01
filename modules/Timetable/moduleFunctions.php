@@ -1077,12 +1077,13 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 				}
 			}
 			
+			$allDay=0 ;
+			
 			//Draw periods from school calendar
 			if ($eventsSchool!=FALSE) {
 				$height=0 ;
 				$top=0 ;
 				$bg="rgba(119,161,61,$schoolCalendarAlpha)" ;
-				$allDay=0 ;
 				foreach ($eventsSchool AS $event) {
 					if (date("Y-m-d",$event[2])==date("Y-m-d", ($startDayStamp+(86400*$count)))) {
 						if ($event[1]=="All Day") {

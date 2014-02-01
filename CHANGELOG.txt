@@ -29,6 +29,9 @@ User Admin: fixed "image delete link, confirm cancel not working" issue
 
 Index: fixed warnings generated when caching set to 0
 	Edited file /index.php
+
+Timetable: fixed PHP notice issue
+	Edited file /modules/Timetable/moduleFunctions.php
 	
 
 v7.1.01
