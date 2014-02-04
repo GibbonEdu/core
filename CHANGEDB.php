@@ -1511,11 +1511,19 @@ ALTER TABLE `gibbonApplicationForm` ADD `paypalPaymentTransactionID` VARCHAR( 50
 $count++ ;
 $sql[$count][0]="7.1.02" ;
 $sql[$count][1]="
+ALTER TABLE gibbonPerson ADD INDEX (username,email) ;end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'departureReasons', 'Departure Reasons', 'Comma-separated list of reasons for departure from school. If blank, user can enter any text.', '');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleOAuth', 'Google OAuth', 'Enable OAuth login via a Google Account.', 'N');end
-INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleOAuthDomains', 'Google OAuth Domains', 'If Google OAuth is enabled, what domains should we match on. Comma-separated list.', '');end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'Students', 'extendedBriefProfile', 'Extended Brief Profile', 'The extended version of the brief student profile includes contact information of parents.', 'N');end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleOAuth', 'Google OAuth Switch', 'Allow Users to sign in with school Google account.', 'N');end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleClientName', 'Google Developers Client Name', 'Name of Google Project in Devlopers Console.', NULL);end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleClientID', 'Google Developers Client ID', 'Client ID for Google Project In Developers Console.', NULL);end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleClientSecret', 'Google Developers Client Secret', 'Client Secret for Google Project In Developers Console.', NULL);end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleRedirectUrl', 'Google Developers Redirect Url', 'Google Redirect on sucessful auth.', NULL);end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleDeveloperKey', 'Google Developers Developer Key', 'Google project Developer Key.', NULL);end
 INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES (NULL, (SELECT gibbonModuleID FROM gibbonModule WHERE name='Students'), 'Letters Home by Roll Group', 0, 'Reports', 'Show students in roll group, less those with an older sibling, so that letters can be carried home by oldest in family.', 'report_lettersHome_byRollGroup.php', 'report_lettersHome_byRollGroup.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Students' AND gibbonAction.name='Letters Home by Roll Group'));end
+
 
 -- LAST ICHK
 -- LAST HLY
