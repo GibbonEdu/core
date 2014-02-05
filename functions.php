@@ -241,7 +241,7 @@ function getStudentFastFinder($connection2, $guid) {
 		$output.="<h2>" ;
 		$output.="Fast Student Finder<br/>" ;
 		if (getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2)=="Staff") {
-			$output.="<span style='font-size: 50%; font-weight: normal; font-style: italic; line-height: 80%'>Total Enrollment: " . $resultList->rowCount() . "</span>" ;
+			$output.="<span style='font-size: 50%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em' >Total Enrollment: " . $resultList->rowCount() . "</span>" ;
 		}
 		$output.="</h2>" ;
 		
@@ -771,6 +771,7 @@ function msort($array, $id="id", $sort_ascending=true) {
 
 //Create the sidebar
 function sidebar($connection2, $guid) {
+	$googleOAuth=getSettingByScope( $connection2, "User Admin", "googleOAuth" ) ;
 	if (isset($_GET["loginReturn"])) {
 		$loginReturn=$_GET["loginReturn"] ;
 	}
@@ -794,6 +795,13 @@ function sidebar($connection2, $guid) {
 		else if ($loginReturn=="fail6") {
 			$loginReturnMessage ="Too many failed logins: please <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/passwordReset.php'>reset password</a>." ;	
 		}
+		else if ($loginReturn=="fail7") {
+			$loginReturnMessage ="Error with Google Authentication. Please contact <a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a> if you have any questions." ;	
+		}
+		else if ($loginReturn=="fail8") {
+			$loginReturnMessage ="Gmail account doesn't match the email stored in Gibbon. If you have logged in with your school Gmail account please contact <a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a> if you have any questions." ;	
+		}
+		
 		print "<div class='error'>" ;
 			print $loginReturnMessage;
 		print "</div>" ;
@@ -806,6 +814,8 @@ function sidebar($connection2, $guid) {
 	}
 	
 	if (isset($_SESSION[$guid]["username"])==FALSE) {
+		if($googleOAuth == "N"){
+			
 		?>
 		<h2>
 			Login
@@ -891,7 +901,110 @@ function sidebar($connection2, $guid) {
 		</form>
 	<?
 	}
-	
+	}
+	// Add Google Login Button
+	if ((isset($_SESSION[$guid]["username"])==FALSE) && (isset($_SESSION[$guid]["email"])==FALSE)) {
+		if($googleOAuth == "Y"){
+			
+		?>
+        
+        <h2>
+			Login with Google
+		</h2>
+        
+        <script>
+			$(function(){
+				$('#siteloader').load('lib/googleOAuth/index.php');
+			});
+		</script>
+        <div id="siteloader"></div>
+        
+        <h2>
+			Direct Login
+		</h2>
+        <form name="loginForm" method="post" action="./login.php?<? if (isset($_GET["q"])) { print "q=" . $_GET["q"] ; } ?>">
+			<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">	
+				<tr>
+					<td> 
+						<b>Username</b>
+					</td>
+					<td class="right">
+						<input name="username" id="username" maxlength=20 type="text" style="width:120px">
+						<script type="text/javascript">
+							var username=new LiveValidation('username', {onlyOnSubmit: true });
+							username.add(Validate.Presence);
+						 </script> 
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b>Password</b>
+					</td>
+					<td class="right">
+						<input name="password" id="password" maxlength=20 type="password" style="width:120px">
+						<script type="text/javascript">
+							var password=new LiveValidation('password', {onlyOnSubmit: true });
+							password.add(Validate.Presence);
+						 </script> 
+					</td>
+				</tr>
+				<tr class='schoolYear' class='schoolYear'>
+					<td> 
+						<b>School Year</b>
+					</td>
+					<td class="right">
+						<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width: 120px">
+							<?
+							try {
+								$dataSelect=array(); 
+								$sqlSelect="SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber" ;
+								$resultSelect=$connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+							while ($rowSelect=$resultSelect->fetch()) {
+								$selected="" ;
+								if ($rowSelect["status"]=="Current") {
+									$selected="selected" ;
+								}
+								print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+							}
+							?>				
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+					</td>
+					<td class="right">
+						<?
+						print "<script type='text/javascript'>" ;	
+							print "$(document).ready(function(){" ;
+								print "\$(\".schoolYear\").hide();" ;
+								print "\$(\".show_hide\").fadeIn(1000);" ;
+								print "\$(\".show_hide\").click(function(){" ;
+								print "\$(\".schoolYear\").fadeToggle(1000);" ;
+								print "});" ;
+							print "});" ;
+						print "</script>" ;
+						?>
+						<span style='font-size: 10px'><a class='show_hide' onclick='false' href='#'>Options</a> . <a href="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php?q=passwordReset.php">Forgot Password?</a></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="right" colspan=2>
+						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+						<input type="submit" value="Login">
+					</td>
+				</tr>
+			</table>
+		</form>
+		
+	<?
+	}
+	}
 	//Show Module Menu
 	//Check address to see if we are in the module area
 	if (substr($_SESSION[$guid]["address"],0,8)=="/modules") {
@@ -2491,5 +2604,7 @@ class ExportToExcel
 		$_SESSION[$guid]["exportToExcelParams"]=$params ;
 		require_once "$php_page";
 	}
+	
+	
 }
 ?>

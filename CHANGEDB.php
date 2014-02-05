@@ -1511,6 +1511,7 @@ ALTER TABLE `gibbonApplicationForm` ADD `paypalPaymentTransactionID` VARCHAR( 50
 $count++ ;
 $sql[$count][0]="7.1.02" ;
 $sql[$count][1]="
+
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'departureReasons', 'Departure Reasons', 'Comma-separated list of reasons for departure from school. If blank, user can enter any text.', '');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleOAuth', 'Google OAuth', 'Enable OAuth login via a Google Account.', 'N');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleOAuthDomains', 'Google OAuth Domains', 'If Google OAuth is enabled, what domains should we match on. Comma-separated list.', '');end
@@ -1519,6 +1520,17 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 
 -- LAST ICHK
 -- LAST HLY
+
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleClientName', 'Google Developers Client Name', 'Name of Google Project in Devlopers Console.', NULL);end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleClientID', 'Google Developers Client ID', 'Client ID for Google Project In Developers Console.', NULL);end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleClientSecret', 'Google Developers Client Secret', 'Client Secret for Google Project In Developers Console.', NULL);end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleRedirectUrl', 'Google Developers Redirect Url', 'Google Redirect on sucessful auth.', NULL);end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleDeveloperKey', 'Google Developers Developer Key', 'Google project Developer Key.', NULL);end
+ALTER TABLE gibbonPerson ADD INDEX (username,email) ;end
+DELETE  FROM `gibbonSetting` WHERE name = 'googleOAuthDomains';end
+
+--CKY
+
 
 ";
 

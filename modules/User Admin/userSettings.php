@@ -176,11 +176,52 @@ else {
 					</select>
 				</td>
 			</tr>
+            
 			<tr>
 				<?
 				try {
 					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='googleOAuthDomains'" ;
+					$sql="SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='googleClientName'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><? print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=4 type="text" style="width: 300px"><? print $row["value"] ?></textarea>
+				</td>
+			</tr>
+            
+            <tr>
+				<?
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='googleClientID'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><? print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=4 type="text" style="width: 300px"><? print $row["value"] ?></textarea>
+				</td>
+			</tr>
+            
+            <tr>
+				<?
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='googleClientSecret'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -196,6 +237,46 @@ else {
 				</td>
 			</tr>
 			
+            <tr>
+				<?
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='googleRedirectUri'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><? print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=4 type="text" style="width: 300px"><? print $row["value"] ?></textarea>
+				</td>
+			</tr>
+            
+            <tr>
+				<?
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='googleDeveloperKey'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><? print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=4 type="text" style="width: 300px"><? print $row["value"] ?></textarea>
+				</td>
+			</tr>
+            
 			<tr class='break'>
 				<td colspan=2> 
 					<h3>Privacy Options</h3>
