@@ -796,10 +796,10 @@ function sidebar($connection2, $guid) {
 			$loginReturnMessage ="Too many failed logins: please <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/passwordReset.php'>reset password</a>." ;	
 		}
 		else if ($loginReturn=="fail7") {
-			$loginReturnMessage ="Error with Google Authentication please contact the IT Department" ;	
+			$loginReturnMessage ="Error with Google Authentication. Please contact <a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a> if you have any questions." ;	
 		}
 		else if ($loginReturn=="fail8") {
-			$loginReturnMessage ="Gmail account doesn't match the email stored in Gibbon. If you have logged in with your school Gmail account please contact the IT Department" ;	
+			$loginReturnMessage ="Gmail account doesn't match the email stored in Gibbon. If you have logged in with your school Gmail account please contact <a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a> if you have any questions." ;	
 		}
 		
 		print "<div class='error'>" ;
@@ -2604,5 +2604,7 @@ class ExportToExcel
 		$_SESSION[$guid]["exportToExcelParams"]=$params ;
 		require_once "$php_page";
 	}
+	
+	
 }
 ?>
