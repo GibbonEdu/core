@@ -52,7 +52,7 @@ else {
 	$googleClientName=$_POST["googleClientName"] ; 	
 	$googleClientID=$_POST["googleClientID"] ; 
 	$googleClientSecret=$_POST["googleClientSecret"] ;
-	$googleRedirectUrl=$_POST["googleRedirectUrl"] ;
+	$googleRedirectUri=$_POST["googleRedirectUri"] ;
 	$googleDeveloperKey=$_POST["googleDeveloperKey"] ;
 	$privacy=$_POST["privacy"] ; 	
 	$privacyBlurb=$_POST["privacyBlurb"] ; 	
@@ -145,8 +145,8 @@ else {
 	}
 	
 	try {
-		$data=array("value"=>$googleRedirectUrl); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='googleRedirectUrl'" ;
+		$data=array("value"=>$googleRedirectUri); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='googleRedirectUri'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
