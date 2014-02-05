@@ -24,6 +24,11 @@ include "config.php" ;
 
 $URL="./index.php" ;
 
+unset($_SESSION['access_token']);
+unset($_SESSION['gplusuer']);
+ 
+session_destroy();
+
 $_SESSION[$guid]=NULL ;
 header("Location: {$URL}");
 ?>
