@@ -33,11 +33,10 @@ Index: fixed warnings generated when caching set to 0
 Timetable: fixed PHP notice issue
 	Edited file /modules/Timetable/moduleFunctions.php
 
-
-Login: edited functions.php to add alternative lgoin in sidebar for google OAuth2
-
-		added googleOauth folder in to lib.
-
+Login: added alternative lgoin in sidebar using Google OAuth2
+	Added googleOauth folder to /lib
+	Edited files /modules/User Admin/userSettings*.php
+	Edited functions.php
 	
 
 v7.1.01

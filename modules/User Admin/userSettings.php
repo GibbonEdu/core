@@ -241,7 +241,7 @@ else {
 				<?
 				try {
 					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='googleRedirectUri'" ;
+					$sql="SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='googleRedirectUrl'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
