@@ -304,8 +304,8 @@ else {
 							<a href='<? print $_SESSION[$guid]["absoluteURL"] ?>'><img height='107px' width='250px' class="logo" alt="Logo" src="<? print $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ; ?>"/></a>
 						</div>
 						<div id="header-right">
-							<?
-								if ($_SESSION[$guid]["username"]!="") {
+							<? 
+								if (isset($_SESSION[$guid]["username"]) && $_SESSION[$guid]["username"]!="") {
 									print "<div class='minorLinks'>" ;
 										print $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"] . " . " ;
 										print "<a href='./logout.php'>Logout</a> . <a href='./index.php?q=preferences.php'>Preferences</a>" ;
@@ -500,6 +500,7 @@ else {
 									}
 									print $_SESSION[$guid]["mainMenu"] ;
 								}
+							
 							?>
 						</div>
 					</div>
