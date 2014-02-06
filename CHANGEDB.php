@@ -1517,10 +1517,6 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleOAuthDomains', 'Google OAuth Domains', 'If Google OAuth is enabled, what domains should we match on. Comma-separated list.', '');end
 INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES (NULL, (SELECT gibbonModuleID FROM gibbonModule WHERE name='Students'), 'Letters Home by Roll Group', 0, 'Reports', 'Show students in roll group, less those with an older sibling, so that letters can be carried home by oldest in family.', 'report_lettersHome_byRollGroup.php', 'report_lettersHome_byRollGroup.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Students' AND gibbonAction.name='Letters Home by Roll Group'));end
-
--- LAST ICHK
--- LAST HLY
-
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleClientName', 'Google Developers Client Name', 'Name of Google Project in Devlopers Console.', '');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleClientID', 'Google Developers Client ID', 'Client ID for Google Project In Developers Console.', '');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleClientSecret', 'Google Developers Client Secret', 'Client Secret for Google Project In Developers Console.', '');end
@@ -1529,8 +1525,9 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 ALTER TABLE gibbonPerson ADD INDEX (username,email) ;end
 DELETE  FROM `gibbonSetting` WHERE name = 'googleOAuthDomains';end
 
---CKY
-
+-- LAST CKY
+-- LAST ICHK
+-- LAST HLY
 
 ";
 
