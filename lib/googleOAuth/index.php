@@ -243,7 +243,7 @@ a{
 }
 .wrapper{
 	margin: 0 auto;
-	width: 209px;
+	width: 254px;
 	height: 46px;
 }
 .mytable{
@@ -258,7 +258,7 @@ a{
 <div class="wrapper">
 <?php 
 if(isset($authUrl)) {
-	echo "<a class='login' href='$authUrl'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/g_login_btn.png' alt='Google login using php api for your website' title='login with google' /></a>";
+	echo "<a class='login' target='_top' href='$authUrl'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/g_login_btn.png' alt='Google login using php api for your website' title='login with google' /></a>";
 	} else {
 	echo "<a class='logout' href='index.php?logout'>Logout</a>";
 }
