@@ -1524,11 +1524,6 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'User Admin', 'googleDeveloperKey', 'Google Developers Developer Key', 'Google project Developer Key.', '');end
 ALTER TABLE gibbonPerson ADD INDEX (username,email) ;end
 DELETE  FROM `gibbonSetting` WHERE name = 'googleOAuthDomains';end
-
--- LAST CKY
--- LAST ICHK
--- LAST HLY
-
 ";
 
 

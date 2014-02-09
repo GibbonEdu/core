@@ -37,7 +37,6 @@ Login: added alternative lgoin in sidebar using Google OAuth2
 	Added googleOauth folder to /lib
 	Edited files /modules/User Admin/userSettings*.php
 	Edited functions.php
-	
 
 v7.1.01
 -------

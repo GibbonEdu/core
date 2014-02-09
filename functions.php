@@ -799,7 +799,7 @@ function sidebar($connection2, $guid) {
 			$loginReturnMessage ="Error with Google Authentication. Please contact <a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a> if you have any questions." ;	
 		}
 		else if ($loginReturn=="fail8") {
-			$loginReturnMessage ="Gmail account doesn't match the email stored in Gibbon. If you have logged in with your school Gmail account please contact <a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a> if you have any questions." ;	
+			$loginReturnMessage ="Gmail account doesn't match the email stored in " . $_SESSION[$guid]["systemName"] . ". If you have logged in with your school Gmail account please contact <a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a> if you have any questions." ;	
 		}
 		
 		print "<div class='error'>" ;
