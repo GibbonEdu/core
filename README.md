@@ -4,9 +4,14 @@ Gibbon is a flexible, open source school management platform designed to make li
 
 The Core repository represents the bulk of Gibbon, including all of its primary functionality. The core can be extended through the use of plugins and themes, which are provided separately.
 
-For support, email support@gibbonedu.org.
-
 Gibbon is open source, and maintained for the benefit of teachers, students, parents and schools.
+
+
+Installation & Support
+======================
+For installation instructions, visit http://gibbonedu.org/support/administrators/installing-gibbon.
+
+For support visit http://gibbonedu.org/support or email support@gibbonedu.org.
 
 
 Bleeding Edge?
