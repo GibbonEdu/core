@@ -36,28 +36,28 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage ="Update failed because you do not have access to this action." ;	
+			$updateReturnMessage ="Your request failed because you do not have access to this action." ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage ="Update failed because a required parameter was not set." ;	
+			$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage ="Update failed due to a database error." ;	
+			$updateReturnMessage ="Your request failed due to a database error." ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage ="Update failed because your inputs were invalid." ;	
+			$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage ="Update failed some values need to be unique but were not." ;	
+			$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage ="Add failed because the passwords did not match." ;	
+			$updateReturnMessage ="Your request failed because your passwords did not match." ;	
 		}
 		else if ($updateReturn=="fail6") {
-			$updateReturnMessage ="Update failed because your password to not meet the minimum requirements for strength." ;	
+			$updateReturnMessage ="Your request failed because your password to not meet the minimum requirements for strength." ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage ="Update was successful." ;	
+			$updateReturnMessage ="Your request was successful. ." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

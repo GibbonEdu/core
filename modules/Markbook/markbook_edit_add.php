@@ -74,25 +74,25 @@ else {
 				$class="error" ;
 				if (!($addReturn=="")) {
 					if ($addReturn=="fail0") {
-						$addReturnMessage ="Add failed because you do not have access to this action." ;	
+						$addReturnMessage ="Your request failed because you do not have access to this action." ;	
 					}
 					else if ($addReturn=="fail2") {
-						$addReturnMessage ="Add failed due to a database error." ;	
+						$addReturnMessage ="Your request failed due to a database error." ;	
 					}
 					else if ($addReturn=="fail3") {
-						$addReturnMessage ="Add failed because your inputs were invalid." ;	
+						$addReturnMessage ="Your request failed because your inputs were invalid." ;	
 					}
 					else if ($addReturn=="fail4") {
-						$addReturnMessage ="Add failed some values need to be unique but were not." ;	
+						$addReturnMessage ="Your request failed because your inputs were invalid." ;	
 					}
 					else if ($addReturn=="fail5") {
-						$addReturnMessage ="Add failed because your attachment could not be uploaded." ;	
+						$addReturnMessage ="Your request failed due to an attachment error." ;	
 					}
 					else if ($addReturn=="fail6") {
-						$addReturnMessage ="Add failed because you already have one \"End of Year\" column for this class." ;	
+						$addReturnMessage ="Your request failed because you already have one \"End of Year\" column for this class." ;	
 					}
 					else if ($addReturn=="success0") {
-						$addReturnMessage ="Add was successful. You can add another record if you wish." ;	
+						$addReturnMessage ="Your request was successful. You can now add another record if you wish." ;	
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;

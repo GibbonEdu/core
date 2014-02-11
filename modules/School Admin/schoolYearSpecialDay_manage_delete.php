@@ -36,16 +36,16 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="fail0") {
-			$deleteReturnMessage ="Update failed because you do not have access to this action." ;	
+			$deleteReturnMessage ="Your request failed because you do not have access to this action." ;	
 		}
 		else if ($deleteReturn=="fail1") {
-			$deleteReturnMessage ="Update failed because a required parameter was not set." ;	
+			$deleteReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($deleteReturn=="fail2") {
-			$deleteReturnMessage ="Update failed due to a database error." ;	
+			$deleteReturnMessage ="Your request failed due to a database error." ;	
 		}
 		else if ($deleteReturn=="fail3") {
-			$deleteReturnMessage ="Update failed because your inputs were invalid." ;	
+			$deleteReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		print "<div class='$class'>" ;
 			print $deleteReturnMessage;
@@ -83,7 +83,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Are you sure you want to delete special day "<? print $row["name"] ?>"?</b><br/>
+							<b>Are you sure you want to delete "<? print $row["name"] ?>"?</b><br/>
 							<span style="font-size: 90%; color: #cc0000"><i>This operation cannot be undone, and may lead to loss of vital data in your system.<br/>PROCEED WITH CAUTION!</i></span>
 						</td>
 						<td class="right">

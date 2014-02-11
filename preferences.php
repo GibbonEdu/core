@@ -66,22 +66,22 @@ if (!($editReturn=="")) {
 		$editReturnMessage ="Required fields not set." ;	
 	}
 	else if ($editReturn=="fail1") {
-		$editReturnMessage ="Update failed due to database error." ;	
+		$editReturnMessage ="Your request failed due to a database error." ;	
 	}
 	else if ($editReturn=="fail2") {
-		$editReturnMessage ="Update failed due to non-matching passwords." ;	
+		$editReturnMessage ="Your request failed due to non-matching passwords." ;	
 	}
 	else if ($editReturn=="fail3") {
-		$editReturnMessage ="Update failed due to incorrect current password." ;	
+		$editReturnMessage ="Your request failed due to incorrect current password." ;	
 	}
 	else if ($editReturn=="fail6") {
-		$editReturnMessage ="Update failed because your password to not meet the minimum requirements for strength." ;	
+		$editReturnMessage ="Your request failed because your password to not meet the minimum requirements for strength." ;	
 	}
 	else if ($editReturn=="fail7") {
-		$editReturnMessage ="Update failed because your new password is the same as your old password." ;	
+		$editReturnMessage ="Your request failed because your new password is the same as your current password." ;	
 	}	
 	else if ($editReturn=="success0") {
-		$editReturnMessage ="Update was successful." ;	
+		$editReturnMessage ="Your request was successful. ." ;	
 		$class="success" ;
 	}
 	print "<div class='$class'>" ;

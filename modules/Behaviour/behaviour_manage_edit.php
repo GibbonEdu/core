@@ -47,25 +47,25 @@ else {
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="fail0") {
-				$updateReturnMessage ="Update failed because you do not have access to this action." ;	
+				$updateReturnMessage ="Your request failed because you do not have access to this action." ;	
 			}
 			else if ($updateReturn=="fail1") {
-				$updateReturnMessage ="Update failed because a required parameter was not set." ;	
+				$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
 			}
 			else if ($updateReturn=="fail2") {
-				$updateReturnMessage ="Update failed due to a database error." ;	
+				$updateReturnMessage ="Your request failed due to a database error." ;	
 			}
 			else if ($updateReturn=="fail3") {
-				$updateReturnMessage ="Update failed because your inputs were invalid." ;	
+				$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
 			}
 			else if ($updateReturn=="fail4") {
-				$updateReturnMessage ="Update failed some values need to be unique but were not." ;	
+				$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
 			}
 			else if ($updateReturn=="fail5") {
-				$updateReturnMessage ="Update failed because your attachment could not be uploaded." ;	
+				$updateReturnMessage ="Your request failed due to an attachment error." ;	
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage ="Update was successful." ;	
+				$updateReturnMessage ="Your request was successful. ." ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -78,19 +78,19 @@ else {
 		$class="error" ;
 		if (!($deleteReturn=="")) {
 			if ($deleteReturn=="fail0") {
-				$deleteReturnMessage ="Delete failed because you do not have access to this action." ;	
+				$deleteReturnMessage ="Your request failed because you do not have access to this action." ;	
 			}
 			else if ($deleteReturn=="fail1") {
-				$deleteReturnMessage ="Delete failed because a required parameter was not set." ;	
+				$deleteReturnMessage ="Your request failed because your inputs were invalid." ;	
 			}
 			else if ($deleteReturn=="fail2") {
-				$deleteReturnMessage ="Delete failed due to a database error." ;	
+				$deleteReturnMessage ="Your request failed due to a database error." ;	
 			}
 			else if ($deleteReturn=="fail3") {
-				$deleteReturnMessage ="Delete failed because your inputs were invalid." ;	
+				$deleteReturnMessage ="Your request failed because your inputs were invalid." ;	
 			}
 			else if ($deleteReturn=="success0") {
-				$deleteReturnMessage ="Delete was successful." ;	
+				$deleteReturnMessage ="Your request was successful." ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;

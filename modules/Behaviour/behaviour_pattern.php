@@ -38,7 +38,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Delete was successful." ;	
+			$deleteReturnMessage ="Your request was successful." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

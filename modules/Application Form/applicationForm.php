@@ -80,19 +80,19 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage ="Add failed because you do not have access to this action." ;	
+			$addReturnMessage ="Your request failed because you do not have access to this action." ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage ="Add failed due to a database error." ;	
+			$addReturnMessage ="Your request failed due to a database error." ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage ="Add failed because your inputs were invalid." ;	
+			$addReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage ="Add failed because some values need to be unique but were not." ;	
+			$addReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage ="Add failed because the passwords did not match." ;	
+			$addReturnMessage ="Your request failed because your passwords did not match." ;	
 		}
 		else if ($addReturn=="success0" OR $addReturn=="success1" OR $addReturn=="success2" ) {
 			if ($addReturn=="success0") {

@@ -40,14 +40,14 @@ $time=time() ;
 if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_manage_add.php")==FALSE) {
 	//Fail 0
 	print "<span style='font-weight: bold; color: #ff0000'>" ;
-		print "Add failed because you do not have access to this action." ;
+		print "Your request failed because you do not have access to this action." ;
 	print "</span>" ;
 }
 else {
 	if (empty($_POST)) {
 		//Fail 5
 		print "<span style='font-weight: bold; color: #ff0000'>" ;
-			print "Add failed due to an attachment error." ;
+			print "Your request failed due to an attachment error." ;
 		print "</span>" ;
 	}
 	else {
@@ -78,7 +78,7 @@ else {
 		if (($type!="File" AND $type!="Link") OR is_null($content) OR $name=="" OR $category=="" OR $tags=="" OR $id=="") {
 			//Fail 3
 			print "<span style='font-weight: bold; color: #ff0000'>" ;
-				print "Add failed because your inputs were invalid." ;
+				print "Your request failed because your inputs were invalid." ;
 			print "</span>" ;
 		}
 		else {
@@ -100,7 +100,7 @@ else {
 					if (!(move_uploaded_file($_FILES[$id . "file"]["tmp_name"],$path . "/" . $attachment))) {
 						//Fail 5
 						print "<span style='font-weight: bold; color: #ff0000'>" ;
-							print "Add failed due to an attachment error." ;
+							print "Your request failed due to an attachment error." ;
 						print "</span>" ;
 					}
 				}
@@ -115,7 +115,7 @@ else {
 			catch(PDOException $e) { 
 				//Fail 2
 				print "<span style='font-weight: bold; color: #ff0000'>" ;
-					print "Add failed due to a database error." ;
+					print "Your request failed due to a database error." ;
 				print "</span>" ;
 				break ;
 			}		
@@ -172,7 +172,7 @@ else {
 			catch(PDOException $e) { 
 				//Fail 2
 				print "<span style='font-weight: bold; color: #ff0000'>" ;
-					print "Add failed due to a database error." ;
+					print "Your request failed due to a database error." ;
 				print "</span>" ;
 				break ;
 			}		
@@ -194,7 +194,7 @@ else {
 			
 			if ($partialFail==TRUE) {
 				print "<span style='font-weight: bold; color: #ff0000'>" ;
-					print "Some aspects of the update failed." ;
+					print "Your request was successful, but some data was not properly saved." ;
 				print "</span>" ;
 			}
 			else {

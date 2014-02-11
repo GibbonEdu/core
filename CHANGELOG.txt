@@ -1,5 +1,11 @@
 CHANGELOG
 =========
+v8.0.00
+-------
+Multilingual: implemented ability to have internationalised interface language
+	1. Rationalised standard strings across the system
+		Edited various files
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)

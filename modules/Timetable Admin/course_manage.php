@@ -36,19 +36,19 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage ="Add failed because you do not have access to this action." ;	
+			$addReturnMessage ="Your request failed because you do not have access to this action." ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage ="Add failed due to a database error." ;	
+			$addReturnMessage ="Your request failed due to a database error." ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage ="Add failed because your inputs were invalid." ;	
+			$addReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage ="Update failed some values need to be unique but were not." ;	
+			$addReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage ="Update failed some values need to be unique but were not." ;	
+			$addReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($addReturn=="success0") {
 			$addReturnMessage ="Add was successful." ;	
@@ -64,7 +64,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Delete was successful. The system has made a moderate effort to remove all participant records." ;	
+			$deleteReturnMessage ="Your request was successful. The system has made a moderate effort to remove all participant records." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

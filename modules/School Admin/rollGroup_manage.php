@@ -36,7 +36,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Delete was successful. A reasonable effort was made to remove the enrolment record for all students in this roll group." ;	
+			$deleteReturnMessage ="Your request was successful. A reasonable effort was made to remove the enrolment record for all students in this roll group." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

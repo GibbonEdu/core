@@ -66,19 +66,19 @@ else {
 			$class="error" ;
 			if (!($rejectReturn=="")) {
 				if ($rejectReturn=="fail0") {
-					$rejectReturnMessage ="Update failed because you do not have access to this action." ;	
+					$rejectReturnMessage ="Your request failed because you do not have access to this action." ;	
 				}
 				else if ($rejectReturn=="fail1") {
-					$rejectReturnMessage ="Update failed because a required parameter was not set." ;	
+					$rejectReturnMessage ="Your request failed because your inputs were invalid." ;	
 				}
 				else if ($rejectReturn=="fail2") {
-					$rejectReturnMessage ="Update failed due to a database error." ;	
+					$rejectReturnMessage ="Your request failed due to a database error." ;	
 				}
 				else if ($rejectReturn=="fail3") {
-					$rejectReturnMessage ="Update failed because your inputs were invalid." ;	
+					$rejectReturnMessage ="Your request failed because your inputs were invalid." ;	
 				}
 				else if ($rejectReturn=="success1") {
-					$rejectReturnMessage ="Update was successful, but status could not be updated." ;	
+					$rejectReturnMessage ="Your request was successful. , but status could not be updated." ;	
 				}
 				print "<div class='$class'>" ;
 					print $rejectReturnMessage;

@@ -35,22 +35,22 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage ="Update failed because you do not have access to this action." ;	
+			$updateReturnMessage ="Your request failed because you do not have access to this action." ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage ="Update failed because a required parameter was not set." ;	
+			$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage ="Update failed due to a database error." ;	
+			$updateReturnMessage ="Your request failed due to a database error." ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage ="Update failed because your inputs were invalid." ;	
+			$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage ="Update failed some values need to be unique but were not." ;	
+			$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage ="Update was successful." ;	
+			$updateReturnMessage ="Your request was successful. ." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -63,22 +63,22 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage ="Add failed because you do not have access to this action." ;	
+			$addReturnMessage ="Your request failed because you do not have access to this action." ;	
 		}
 		else if ($addReturn=="fail1") {
-			$addReturnMessage ="Add failed because a required parameter was not set." ;	
+			$addReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage ="Add failed due to a database error." ;	
+			$addReturnMessage ="Your request failed due to a database error." ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage ="Add failed because your inputs were invalid." ;	
+			$addReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage ="Add failed because the person already exists as a child or adult in this family." ;	
+			$addReturnMessage ="Your request failed because the person already exists as a child or adult in this family." ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage ="Update was successful." ;	
+			$addReturnMessage ="Your request was successful. ." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -91,7 +91,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Delete was successful." ;	
+			$deleteReturnMessage ="Your request was successful." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

@@ -47,25 +47,25 @@ else {
 		$class="error" ;
 		if (!($copyReturn=="")) {
 			if ($copyReturn=="fail0") {
-				$copyReturnMessage ="Update failed because you do not have access to this action." ;	
+				$copyReturnMessage ="Your request failed because you do not have access to this action." ;	
 			}
 			else if ($copyReturn=="fail1") {
-				$copyReturnMessage ="Update failed because a required parameter was not set." ;	
+				$copyReturnMessage ="Your request failed because your inputs were invalid." ;	
 			}
 			else if ($copyReturn=="fail2") {
-				$copyReturnMessage ="Update failed due to a database error." ;	
+				$copyReturnMessage ="Your request failed due to a database error." ;	
 			}
 			else if ($copyReturn=="fail3") {
-				$copyReturnMessage ="Update failed because your inputs were invalid." ;	
+				$copyReturnMessage ="Your request failed because your inputs were invalid." ;	
 			}
 			else if ($copyReturn=="fail4") {
-				$copyReturnMessage ="Update failed some values need to be unique but were not." ;	
+				$copyReturnMessage ="Your request failed because your inputs were invalid." ;	
 			}
 			else if ($copyReturn=="fail5") {
-				$copyReturnMessage ="Add failed due to an attachment error." ;	
+				$copyReturnMessage ="Your request failed due to an attachment error." ;	
 			}
 			else if ($copyReturn=="success0") {
-				$copyReturnMessage ="Update was successful." ;	
+				$copyReturnMessage ="Your request was successful. ." ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;

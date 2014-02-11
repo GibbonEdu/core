@@ -1526,5 +1526,13 @@ ALTER TABLE gibbonPerson ADD INDEX (username,email) ;end
 DELETE  FROM `gibbonSetting` WHERE name = 'googleOAuthDomains';end
 ";
 
+//v8.0.00
+$count++ ;
+$sql[$count][0]="8.0.00" ;
+$sql[$count][1]="
+
+
+";
+
 
 ?>

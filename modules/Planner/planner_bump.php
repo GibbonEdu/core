@@ -120,16 +120,16 @@ else {
 					$class="error" ;
 					if (!($bumpReturn=="")) {
 						if ($bumpReturn=="fail0") {
-							$bumpReturnMessage ="Update failed because you do not have access to this action." ;	
+							$bumpReturnMessage ="Your request failed because you do not have access to this action." ;	
 						}
 						else if ($bumpReturn=="fail1") {
-							$bumpReturnMessage ="Update failed because a required parameter was not set." ;	
+							$bumpReturnMessage ="Your request failed because your inputs were invalid." ;	
 						}
 						else if ($bumpReturn=="fail2") {
-							$bumpReturnMessage ="Update failed due to a database error." ;	
+							$bumpReturnMessage ="Your request failed due to a database error." ;	
 						}
 						else if ($bumpReturn=="fail3") {
-							$bumpReturnMessage ="Update failed because your inputs were invalid." ;	
+							$bumpReturnMessage ="Your request failed because your inputs were invalid." ;	
 						}
 						print "<div class='$class'>" ;
 							print $bumpReturnMessage;

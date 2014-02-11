@@ -37,7 +37,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Delete was successful. The system has made a moderate effort to remove all child and adult records for this family." ;	
+			$deleteReturnMessage ="Your request was successful. The system has made a moderate effort to remove all child and adult records for this family." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

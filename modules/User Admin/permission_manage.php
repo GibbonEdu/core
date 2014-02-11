@@ -36,16 +36,16 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage ="Update failed because you do not have access to this action." ;	
+			$updateReturnMessage ="Your request failed because you do not have access to this action." ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage ="Update failed due to a database error." ;	
+			$updateReturnMessage ="Your request failed due to a database error." ;	
 		}
 		else if ($updateReturn=="fail3") {
 			$updateReturnMessage ="Your PHP environment cannot handle all of the fields in this form (the current limit is " . ini_get("max_input_vars") . "). Ask your web host or system administrator to increase the value of the max_input_vars in php.ini." ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage ="Update was successful." ;	
+			$updateReturnMessage ="Your request was successful. ." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

@@ -53,7 +53,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Delete was successful." ;	
+			$deleteReturnMessage ="Your request was successful." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -66,13 +66,13 @@ else {
 	$class="error" ;
 	if (!($bulkReturn=="")) {
 		if ($bulkReturn=="fail0") {
-			$bulkReturnMessage ="Add failed because you do not have access to this action." ;	
+			$bulkReturnMessage ="Your request failed because you do not have access to this action." ;	
 		}
 		else if ($bulkReturn=="fail2") {
-			$bulkReturnMessage ="Add failed due to a database error." ;	
+			$bulkReturnMessage ="Your request failed due to a database error." ;	
 		}
 		else if ($bulkReturn=="fail3") {
-			$bulkReturnMessage ="Add failed because your inputs were invalid." ;	
+			$bulkReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($bulkReturn=="fail5") {
 			$bulkReturnMessage ="Some elements of your bulk process failed, but others were successful." ;	
