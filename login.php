@@ -167,8 +167,7 @@ else {
 							$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"]=$rowYear["sequenceNumber"] ;
 						}
 					}
-		
-		
+					
 					//USER EXISTS, SET SESSION VARIABLES
 					$_SESSION[$guid]["username"]=$username ;
 					$_SESSION[$guid]["passwordStrong"]=$passwordStrong ;
@@ -196,7 +195,49 @@ else {
 					$_SESSION[$guid]["personalBackground"]=$row["personalBackground"] ;
 					$_SESSION[$guid]["messengerLastBubble"]=$row["messengerLastBubble"] ;
 					$_SESSION[$guid]["gibbonThemeIDPersonal"]=$row["gibbonThemeIDPersonal"] ;
-			
+					$_SESSION[$guid]["gibboni18nIDPersonal"]=$row["gibboni18nIDPersonal"] ;
+					
+					//Allow for non-system default language to be specified from login form
+					if ($_POST["gibboni18nID"]!=$_SESSION[$guid]["i18n"]["gibboni18nID"]) {
+						try {
+							$dataLanguage=array("gibboni18nID"=>$_POST["gibboni18nID"]); 
+							$sqlLanguage="SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID" ; 
+							$resultLanguage=$connection2->prepare($sqlLanguage);
+							$resultLanguage->execute($dataLanguage);
+						}
+						catch(PDOException $e) { }
+						if ($resultLanguage->rowCount()==1) {
+							$rowLanguage=$resultLanguage->fetch() ;
+							$_SESSION[$guid]["i18n"]["gibboni18nID"]=$rowLanguage["gibboni18nID"] ;
+							$_SESSION[$guid]["i18n"]["code"]=$rowLanguage["code"] ;
+							$_SESSION[$guid]["i18n"]["name"]=$rowLanguage["name"] ;
+							$_SESSION[$guid]["i18n"]["dateFormat"]=$rowLanguage["dateFormat"] ;
+							$_SESSION[$guid]["i18n"]["currencyCode"]=$rowLanguage["currencyCode"] ;
+							$_SESSION[$guid]["i18n"]["currencySymbol"]=$rowLanguage["currencySymbol"] ;
+						}
+					}
+					else {
+						//If no language specified, get user preference if it exists
+						if (!is_null($_SESSION[$guid]["gibboni18nIDPersonal"])) {
+							try {
+								$dataLanguage=array("gibboni18nID"=>$_SESSION[$guid]["gibboni18nIDPersonal"]); 
+								$sqlLanguage="SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID" ; 
+								$resultLanguage=$connection2->prepare($sqlLanguage);
+								$resultLanguage->execute($dataLanguage);
+							}
+							catch(PDOException $e) { }
+							if ($resultLanguage->rowCount()==1) {
+								$rowLanguage=$resultLanguage->fetch() ;
+								$_SESSION[$guid]["i18n"]["gibboni18nID"]=$rowLanguage["gibboni18nID"] ;
+								$_SESSION[$guid]["i18n"]["code"]=$rowLanguage["code"] ;
+								$_SESSION[$guid]["i18n"]["name"]=$rowLanguage["name"] ;
+								$_SESSION[$guid]["i18n"]["dateFormat"]=$rowLanguage["dateFormat"] ;
+								$_SESSION[$guid]["i18n"]["currencyCode"]=$rowLanguage["currencyCode"] ;
+								$_SESSION[$guid]["i18n"]["currencySymbol"]=$rowLanguage["currencySymbol"] ;
+							}
+						}
+					}
+					
 					//Make best effort to set IP address and other details, but no need to error check etc.
 					try {
 						$data=array( "lastIPAddress" => $_SERVER["REMOTE_ADDR"], "lastTimestamp" => date("Y-m-d H:i:s"), "failCount"=>0, "username" => $username ); 

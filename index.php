@@ -49,8 +49,19 @@ if ($caching>0 AND is_numeric($caching)) {
 }
 
 
+
+//Set sidebar values (from the entrySidebar field in gibbonAction and from $_GET variable)
 $_SESSION[$guid]["sidebarExtra"]="" ;
 $_SESSION[$guid]["sidebarExtraPosition"]="" ;
+if (isset($_GET["sidebar"])) {
+	$sidebar=$_GET["sidebar"] ;
+}
+else {
+	$sidebar="" ;
+}
+
+
+//Deal with address param q
 if (isset($_GET["q"])) {
 	$_SESSION[$guid]["address"]=$_GET["q"] ;
 }
@@ -59,17 +70,26 @@ else {
 }
 $_SESSION[$guid]["module"]=getModuleName($_SESSION[$guid]["address"]) ;
 $_SESSION[$guid]["action"]=getActionName($_SESSION[$guid]["address"]) ;
+$q=NULL ;
+if (isset($_GET["q"])) {
+	$q=$_GET["q"] ;
+}
+
 
 //Check to see if system settings are set from databases
 if (@$_SESSION[$guid]["systemSettingsSet"]==FALSE) {
 	getSystemSettings($guid, $connection2) ;
 }
 
-//Get address variable q
-$q=NULL ;
-if (isset($_GET["q"])) {
-	$q=$_GET["q"] ;
-}
+
+//Test i18n settings
+$_SESSION[$guid]["i18n"]["gibboni18nID"] ;
+$_SESSION[$guid]["i18n"]["code"] ;
+$_SESSION[$guid]["i18n"]["name"] ;
+$_SESSION[$guid]["i18n"]["dateFormat"] ;
+$_SESSION[$guid]["i18n"]["currencyCode"];
+$_SESSION[$guid]["i18n"]["currencySymbol"] ;
+
 //Check for force password reset flag
 if (isset($_SESSION[$guid]["passwordForceReset"])) {
 	if ($_SESSION[$guid]["passwordForceReset"]=="Y" AND $q!="preferences.php") {
@@ -81,13 +101,6 @@ if (isset($_SESSION[$guid]["passwordForceReset"])) {
 }
 
 
-//Set sidebar value (from the entrySidebar field in gibbonAction and from $_GET variable)
-if (isset($_GET["sidebar"])) {
-	$sidebar=$_GET["sidebar"] ;
-}
-else {
-	$sidebar="" ;
-}
 if ($_SESSION[$guid]["address"]!="") {
 	try {
 		$dataSidebar=array("action"=>"%" . $_SESSION[$guid]["action"] . "%", "name"=>$_SESSION[$guid]["module"]); 

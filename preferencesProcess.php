@@ -48,6 +48,10 @@ $gibbonThemeIDPersonal=$_POST["gibbonThemeIDPersonal"] ;
 if ($gibbonThemeIDPersonal=="") {
 	$gibbonThemeIDPersonal=NULL ;
 }
+$gibboni18nIDPersonal=$_POST["gibboni18nIDPersonal"] ;
+if ($gibboni18nIDPersonal=="") {
+	$gibboni18nIDPersonal=NULL ;
+}
 
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php" ;
 
@@ -59,8 +63,8 @@ if (FALSE) {
 //Otherwise proceed
 else {
 	try {
-		$data=array("calendarFeedPersonal"=>$calendarFeedPersonal, "personalBackground"=>$personalBackground, "gibbonThemeIDPersonal"=>$gibbonThemeIDPersonal, "username"=>$_SESSION[$guid]["username"]); 
-		$sql="UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal, personalBackground=:personalBackground, gibbonThemeIDPersonal=:gibbonThemeIDPersonal WHERE (username=:username)" ;
+		$data=array("calendarFeedPersonal"=>$calendarFeedPersonal, "personalBackground"=>$personalBackground, "gibbonThemeIDPersonal"=>$gibbonThemeIDPersonal, "gibboni18nIDPersonal"=>$gibboni18nIDPersonal, "username"=>$_SESSION[$guid]["username"]); 
+		$sql="UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal, personalBackground=:personalBackground, gibbonThemeIDPersonal=:gibbonThemeIDPersonal, gibboni18nIDPersonal=:gibboni18nIDPersonal WHERE (username=:username)" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -70,9 +74,51 @@ else {
 		break ;
 	}
 	
+	//Update personal preferences in session
 	$_SESSION[$guid]["calendarFeedPersonal"]=$calendarFeedPersonal ;
 	$_SESSION[$guid]["personalBackground"]=$personalBackground ;
 	$_SESSION[$guid]["gibbonThemeIDPersonal"]=$gibbonThemeIDPersonal ;
+	$_SESSION[$guid]["gibboni18nIDPersonal"]=$gibboni18nIDPersonal ;
+	
+	//Update language settings in session (to personal preference if set, or system default if not)
+	if (!is_null($gibboni18nIDPersonal)) {
+		try {
+			$data=array("gibboni18nID"=>$gibboni18nIDPersonal); 
+			$sql="SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID" ; 
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 	}
+		if ($result->rowCount()==1) {
+			$row=$result->fetch() ;
+			$_SESSION[$guid]["i18n"]["gibboni18nID"]=$row["gibboni18nID"] ;
+			$_SESSION[$guid]["i18n"]["code"]=$row["code"] ;
+			$_SESSION[$guid]["i18n"]["name"]=$row["name"] ;
+			$_SESSION[$guid]["i18n"]["dateFormat"]=$row["dateFormat"] ;
+			$_SESSION[$guid]["i18n"]["currencyCode"]=$row["currencyCode"] ;
+			$_SESSION[$guid]["i18n"]["currencySymbol"]=$row["currencySymbol"] ;
+		}
+	}
+	else {
+		try {
+			$data=array(); 
+			$sql="SELECT * FROM gibboni18n WHERE systemDefault='Y'" ; 
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { }
+		if ($result->rowCount()==1) {
+			$row=$result->fetch() ;
+			$_SESSION[$guid]["i18n"]["gibboni18nID"]=$row["gibboni18nID"] ;
+			$_SESSION[$guid]["i18n"]["code"]=$row["code"] ;
+			$_SESSION[$guid]["i18n"]["name"]=$row["name"] ;
+			$_SESSION[$guid]["i18n"]["dateFormat"]=$row["dateFormat"] ;
+			$_SESSION[$guid]["i18n"]["currencyCode"]=$row["currencyCode"] ;
+			$_SESSION[$guid]["i18n"]["currencySymbol"]=$row["currencySymbol"] ;
+		}
+	}
+	
+	
 	$_SESSION[$guid]["pageLoads"]=NULL ;
 	$URL=$URL . "&editReturn=success0" ;
 	header("Location: {$URL}");

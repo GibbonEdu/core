@@ -71,7 +71,16 @@ else {
 			header("Location: {$URL}");
 		}
 		else {
-			//Deactivate all themes
+			//Update session variables
+			$row=$result->fetch() ;
+			$_SESSION[$guid]["i18n"]["gibboni18nID"]=$row["gibboni18nID"] ;
+			$_SESSION[$guid]["i18n"]["code"]=$row["code"] ;
+			$_SESSION[$guid]["i18n"]["name"]=$row["name"] ;
+			$_SESSION[$guid]["i18n"]["dateFormat"]=$row["dateFormat"] ;
+			$_SESSION[$guid]["i18n"]["currencyCode"]=$row["currencyCode"] ;
+			$_SESSION[$guid]["i18n"]["currencySymbol"]=$row["currencySymbol"] ;
+			
+			//Deactivate all languages
 			try {
 				$data=array(); 
 				$sql="UPDATE gibboni18n SET systemDefault='N'" ;
@@ -98,7 +107,7 @@ else {
 				header("Location: {$URL}");
 				break ;
 			}
-
+			
 			//Success 0
 			$URL=$URL . "&updateReturn=success0" ;
 			header("Location: {$URL}");

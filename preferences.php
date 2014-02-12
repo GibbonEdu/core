@@ -276,6 +276,38 @@ if ($result->rowCount()==1) {
 			</td>
 		</tr>
 		
+		<tr>
+			<td> 
+				<b>Personal Language</b><br/>
+				<span style="font-size: 90%"><i>Override the system default language.</i></span>
+			</td>
+			<td class="right">
+				<select name="gibboni18nIDPersonal" id="gibboni18nIDPersonal" style="width: 302px">
+					<?
+					print "<option value=''></option>" ;
+					try {
+						$dataSelect=array(); 
+						$sqlSelect="SELECT * FROM gibboni18n ORDER BY name" ;
+						$resultSelect=$connection2->prepare($sqlSelect);
+						$resultSelect->execute($dataSelect);
+					}
+					catch(PDOException $e) { }
+					while ($rowSelect=$resultSelect->fetch()) {
+						$selected="" ;
+						if ($_SESSION[$guid]["gibboni18nIDPersonal"]==$rowSelect["gibboni18nID"]) {
+							$selected="selected" ;
+						}
+						$default="" ;
+						if ($rowSelect["systemDefault"]=="Y") {
+							$default=" (System Default)" ;
+						}
+						print "<option $selected value='" . $rowSelect["gibboni18nID"] . "'>" . $rowSelect["name"] . " $default</option>" ;
+					}
+					?>				
+				</select>
+			</td>
+		</tr>
+		
 		
 		<tr>
 			<td>

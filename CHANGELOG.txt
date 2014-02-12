@@ -20,10 +20,19 @@ Internationalisation: added localisation folder for jqueryUI datepicker
 Internationalisation: added folders for store localisation data
 	New folders /i18n, /i18n/en-US, /i18n/en-GB, /i18n/es, l18n/zh-CN
 
-Internationalisation: added system for storing and management localisations and system defaults
+Internationalisation: added system for storing and managing localisations and system defaults
 	New table gibboni18n
 	Added values to tables gibbonAction, gibbonPermission
 	New files /modules/System Admin/i18n_manageProcess*.php
+	Edited file /functions.php
+
+Internationalisation: added ability to choose language on login
+	Edited file /functions.php, /login.php
+
+Internationalisation: added ability for a user to choose language preference
+	Edited table gibbonPerson
+	Edited files /preferences*.php, login.php 
+	Edited file /lib/googleOAuth/index.php
 	
 
 v7.1.02

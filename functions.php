@@ -846,7 +846,7 @@ function sidebar($connection2, $guid) {
 						 </script> 
 					</td>
 				</tr>
-				<tr class='schoolYear' class='schoolYear'>
+				<tr class='schoolYear' id='schoolYear'>
 					<td> 
 						<b>School Year</b>
 					</td>
@@ -873,6 +873,33 @@ function sidebar($connection2, $guid) {
 						</select>
 					</td>
 				</tr>
+				<tr class='language' id='language'>
+					<td> 
+						<b>Language</b>
+					</td>
+					<td class="right">
+						<select name="gibboni18nID" id="gibboni18nID" style="width: 120px">
+							<?
+							try {
+								$dataSelect=array(); 
+								$sqlSelect="SELECT * FROM gibboni18n ORDER BY name" ;
+								$resultSelect=$connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+							while ($rowSelect=$resultSelect->fetch()) {
+								$selected="" ;
+								if ($rowSelect["systemDefault"]=="Y") {
+									$selected="selected" ;
+								}
+								print "<option $selected value='" . $rowSelect["gibboni18nID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+							}
+							?>				
+						</select>
+					</td>
+				</tr>
 				<tr>
 					<td> 
 					</td>
@@ -881,9 +908,11 @@ function sidebar($connection2, $guid) {
 						print "<script type='text/javascript'>" ;	
 							print "$(document).ready(function(){" ;
 								print "\$(\".schoolYear\").hide();" ;
+								print "\$(\".language\").hide();" ;
 								print "\$(\".show_hide\").fadeIn(1000);" ;
 								print "\$(\".show_hide\").click(function(){" ;
 								print "\$(\".schoolYear\").fadeToggle(1000);" ;
+								print "\$(\".language\").fadeToggle(1000);" ;
 								print "});" ;
 							print "});" ;
 						print "</script>" ;
@@ -948,7 +977,7 @@ function sidebar($connection2, $guid) {
 						 </script> 
 					</td>
 				</tr>
-				<tr class='schoolYear' class='schoolYear'>
+				<tr class='schoolYear' id='schoolYear'>
 					<td> 
 						<b>School Year</b>
 					</td>
@@ -975,6 +1004,33 @@ function sidebar($connection2, $guid) {
 						</select>
 					</td>
 				</tr>
+				<tr class='language' id='language'>
+					<td> 
+						<b>Language</b>
+					</td>
+					<td class="right">
+						<select name="gibboni18nID" id="gibboni18nID" style="width: 120px">
+							<?
+							try {
+								$dataSelect=array(); 
+								$sqlSelect="SELECT * FROM gibboni18n ORDER BY name" ;
+								$resultSelect=$connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+							while ($rowSelect=$resultSelect->fetch()) {
+								$selected="" ;
+								if ($rowSelect["systemDefault"]=="Y") {
+									$selected="selected" ;
+								}
+								print "<option $selected value='" . $rowSelect["gibboni18nID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+							}
+							?>				
+						</select>
+					</td>
+				</tr>
 				<tr>
 					<td> 
 					</td>
@@ -983,9 +1039,11 @@ function sidebar($connection2, $guid) {
 						print "<script type='text/javascript'>" ;	
 							print "$(document).ready(function(){" ;
 								print "\$(\".schoolYear\").hide();" ;
+								print "\$(\".language\").hide();" ;
 								print "\$(\".show_hide\").fadeIn(1000);" ;
 								print "\$(\".show_hide\").click(function(){" ;
 								print "\$(\".schoolYear\").fadeToggle(1000);" ;
+								print "\$(\".language\").fadeToggle(1000);" ;
 								print "});" ;
 							print "});" ;
 						print "</script>" ;
@@ -2129,6 +2187,8 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy="", $divExtr
 
 //Gets system settings from database and writes them to individual session variables.
 function getSystemSettings($guid, $connection2) {
+	
+	//System settings from gibbonSetting
 	try {
 		$data=array(); 
 		$sql="SELECT * FROM gibbonSetting WHERE scope='System'" ;
@@ -2143,6 +2203,27 @@ function getSystemSettings($guid, $connection2) {
 		$name=$row["name"] ;
 		$_SESSION[$guid][$name]= $row["value"] ;
 	}
+	
+	//Language settings from gibboni18n
+	try {
+		$data=array(); 
+		$sql="SELECT * FROM gibboni18n WHERE systemDefault='Y'" ; 
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$_SESSION[$guid]["systemSettingsSet"]=FALSE ;
+	}
+	if ($result->rowCount()==1) {
+		$row=$result->fetch() ;
+		$_SESSION[$guid]["i18n"]["gibboni18nID"]=$row["gibboni18nID"] ;
+		$_SESSION[$guid]["i18n"]["code"]=$row["code"] ;
+		$_SESSION[$guid]["i18n"]["name"]=$row["name"] ;
+		$_SESSION[$guid]["i18n"]["dateFormat"]=$row["dateFormat"] ;
+		$_SESSION[$guid]["i18n"]["currencyCode"]=$row["currencyCode"] ;
+		$_SESSION[$guid]["i18n"]["currencySymbol"]=$row["currencySymbol"] ;
+	}
+		
 	$_SESSION[$guid]["systemSettingsSet"]=TRUE ;
 }
 

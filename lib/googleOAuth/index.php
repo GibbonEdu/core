@@ -339,6 +339,27 @@ try {
 					$_SESSION[$guid]["personalBackground"]=$row["personalBackground"] ;
 					$_SESSION[$guid]["messengerLastBubble"]=$row["messengerLastBubble"] ;
 					$_SESSION[$guid]["gibbonThemeIDPersonal"]=$row["gibbonThemeIDPersonal"] ;
+					$_SESSION[$guid]["gibboni18nIDPersonal"]=$row["gibboni18nIDPersonal"] ;
+					
+					//If user has personal language set, load it to session variable.
+					if (!is_null($_SESSION[$guid]["gibboni18nIDPersonal"])) {
+						try {
+							$dataLanguage=array("gibboni18nID"=>$_SESSION[$guid]["gibboni18nIDPersonal"]); 
+							$sqlLanguage="SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID" ; 
+							$resultLanguage=$connection2->prepare($sqlLanguage);
+							$resultLanguage->execute($dataLanguage);
+						}
+						catch(PDOException $e) { }
+						if ($resultLanguage->rowCount()==1) {
+							$rowLanguage=$resultLanguage->fetch() ;
+							$_SESSION[$guid]["i18n"]["gibboni18nID"]=$rowLanguage["gibboni18nID"] ;
+							$_SESSION[$guid]["i18n"]["code"]=$rowLanguage["code"] ;
+							$_SESSION[$guid]["i18n"]["name"]=$rowLanguage["name"] ;
+							$_SESSION[$guid]["i18n"]["dateFormat"]=$rowLanguage["dateFormat"] ;
+							$_SESSION[$guid]["i18n"]["currencyCode"]=$rowLanguage["currencyCode"] ;
+							$_SESSION[$guid]["i18n"]["currencySymbol"]=$rowLanguage["currencySymbol"] ;
+						}
+					}
 			
 					//Make best effort to set IP address and other details, but no need to error check etc.
 					try {
