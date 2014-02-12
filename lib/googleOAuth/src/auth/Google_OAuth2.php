@@ -19,6 +19,7 @@ require_once "Google_Verifier.php";
 require_once "Google_LoginTicket.php";
 require_once "service/Google_Utils.php";
 
+
 /**
  * Authentication class that deals with the OAuth 2 web-server authentication flow
  *
@@ -33,8 +34,8 @@ class Google_OAuth2 extends Google_Auth {
   public $token;
   public $redirectUri;
   public $state;
-  public $accessType = 'offline';
-  public $approvalPrompt = 'force';
+  public $accessType = 'online';
+  public $approvalPrompt = 'auto';
   public $requestVisibleActions;
 
   /** @var Google_AssertionCredentials $assertionCredentials */
