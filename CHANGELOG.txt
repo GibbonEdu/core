@@ -33,6 +33,9 @@ Internationalisation: added ability for a user to choose language preference
 	Edited table gibbonPerson
 	Edited files /preferences*.php, login.php 
 	Edited file /lib/googleOAuth/index.php
+
+User Admin: added Name In Characters to user sync,
+	Edited file /modules/User Admin/import_users.php
 	
 
 v7.1.02
