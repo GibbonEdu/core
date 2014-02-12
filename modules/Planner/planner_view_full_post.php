@@ -184,7 +184,7 @@ else {
 						$updateReturnMessage ="Your request failed because you do not have access to this action." ;	
 					}
 					else if ($updateReturn=="success0") {
-						$updateReturnMessage ="Your request was successful. ." ;	
+						$updateReturnMessage ="Your request was completed successfully." ;	
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;

@@ -45,7 +45,7 @@ else {
 			$updateReturnMessage ="Your PHP environment cannot handle all of the fields in this form (the current limit is " . ini_get("max_input_vars") . "). Ask your web host or system administrator to increase the value of the max_input_vars in php.ini." ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage ="Your request was successful. ." ;	
+			$updateReturnMessage ="Your request was completed successfully." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

@@ -48,7 +48,7 @@ else {
 
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print "There are no activities to display." ;
+		print "There are no records to display." ;
 		print "</div>" ;
 	}
 	else {

@@ -36,7 +36,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Your request was successful. A reasonable effort was made to remove the enrolment record for all students in this roll group." ;	
+			$deleteReturnMessage ="Your request was completed successfully.A reasonable effort was made to remove the enrolment record for all students in this roll group." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -113,7 +113,7 @@ else {
 		
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print "There are no roll groups to display." ;
+			print "There are no records to display." ;
 			print "</div>" ;
 		}
 		else {

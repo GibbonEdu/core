@@ -107,7 +107,7 @@ else {
 
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print "There are no students with individual needs to display." ;
+			print "There are no records to display." ;
 			print "</div>" ;
 		}
 		else {

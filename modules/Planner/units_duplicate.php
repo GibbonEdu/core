@@ -68,7 +68,7 @@ else {
 				$updateReturnMessage ="Update succeeded, although some lessons or resources could not be saved." ;	
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage ="Your request was successful. ." ;	
+				$updateReturnMessage ="Your request was completed successfully." ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;

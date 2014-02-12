@@ -174,7 +174,7 @@ else {
 							
 							if ($resultRows->rowCount()<1) {
 								print "<div class='error'>" ;
-									print "There are now rows to display." ;
+									print "There are no records to display." ;
 								print "</div>" ;
 							}
 							else {
@@ -311,7 +311,7 @@ else {
 							
 							if ($resultColumns->rowCount()<1) {
 								print "<div class='error'>" ;
-									print "There are now columns to display." ;
+									print "There are no records to display." ;
 								print "</div>" ;
 							}
 							else {

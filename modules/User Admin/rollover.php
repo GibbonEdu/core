@@ -53,7 +53,7 @@ else {
 			$addReturnMessage ="Your request was successful, but some data was not properly saved." ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage ="Your request was successful. You can now add another record if you wish." ;	
+			$addReturnMessage ="Your request was completed successfully.You can now add another record if you wish." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -290,7 +290,7 @@ else {
 
 					if ($resultExpect->rowCount()<1) {
 						print "<div class='error'>" ;
-						print "There are no expected users to display." ;
+						print "There are no records to display." ;
 						print "</div>" ;
 					}
 					else {
@@ -371,7 +371,7 @@ else {
 						
 						if ($resultEnrol->rowCount()<1) {
 							print "<div class='error'>" ;
-							print "There are no enroled users to display." ;
+							print "There are no records to display." ;
 							print "</div>" ;
 						}
 						else {
@@ -460,7 +460,7 @@ else {
 						
 						if ($resultEnrol->rowCount()<1) {
 							print "<div class='error'>" ;
-							print "There are no users to display." ;
+							print "There are no records to display." ;
 							print "</div>" ;
 						}
 						else {
@@ -623,7 +623,7 @@ else {
 						}
 						if ($resultReenrol->rowCount()<1) {
 							print "<div class='error'>" ;
-							print "There are no re-enroled users to display." ;
+							print "There are no records to display." ;
 							print "</div>" ;
 						}
 						else {
@@ -736,7 +736,7 @@ else {
 					
 					if ($resultFinal->rowCount()<1) {
 						print "<div class='error'>" ;
-						print "There are no final year users to display." ;
+						print "There are no records to display." ;
 						print "</div>" ;
 					}
 					else {
@@ -813,7 +813,7 @@ else {
 					
 					if ($resultRegister->rowCount()<1) {
 						print "<div class='error'>" ;
-						print "There are no registered users to display." ;
+						print "There are no records to display." ;
 						print "</div>" ;
 					}
 					else {
@@ -1081,7 +1081,7 @@ else {
 							}
 							else {
 								print "<div class='success'>" ;
-								print "Your request was successful. ." ;
+								print "Your request was completed successfully." ;
 								print "</div>" ;
 							}
 						}
@@ -1455,7 +1455,7 @@ else {
 							}
 							else {
 								print "<div class='success'>" ;
-								print "Your request was successful. ." ;
+								print "Your request was completed successfully." ;
 								print "</div>" ;
 							}
 						}

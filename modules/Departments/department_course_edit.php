@@ -91,7 +91,7 @@ else {
 					$updateReturnMessage ="Your request failed due to an attachment error." ;	
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage ="Your request was successful. ." ;	
+					$updateReturnMessage ="Your request was completed successfully." ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;

@@ -78,7 +78,7 @@ else {
 					$rejectReturnMessage ="Your request failed because your inputs were invalid." ;	
 				}
 				else if ($rejectReturn=="success1") {
-					$rejectReturnMessage ="Your request was successful. , but status could not be updated." ;	
+					$rejectReturnMessage ="Your request was completed successfully., but status could not be updated." ;	
 				}
 				print "<div class='$class'>" ;
 					print $rejectReturnMessage;

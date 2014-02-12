@@ -81,7 +81,7 @@ if (!($editReturn=="")) {
 		$editReturnMessage ="Your request failed because your new password is the same as your current password." ;	
 	}	
 	else if ($editReturn=="success0") {
-		$editReturnMessage ="Your request was successful. ." ;	
+		$editReturnMessage ="Your request was completed successfully." ;	
 		$class="success" ;
 	}
 	print "<div class='$class'>" ;

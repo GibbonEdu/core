@@ -65,7 +65,7 @@ else {
 				$copyReturnMessage ="Your request failed due to an attachment error." ;	
 			}
 			else if ($copyReturn=="success0") {
-				$copyReturnMessage ="Your request was successful. ." ;	
+				$copyReturnMessage ="Your request was completed successfully." ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;

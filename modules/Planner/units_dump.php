@@ -202,7 +202,7 @@ else {
 								
 								if ($resultLessons->rowCount()<1) {
 									print "<div class='warning'>" ;
-									print "There are no lessons to display." ;
+									print "There are no records to display." ;
 									print "</div>" ;
 								}
 								else {

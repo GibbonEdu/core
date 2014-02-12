@@ -137,7 +137,7 @@ else {
 
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-				print "There are no terms in the specied year." ;
+				print "There are no records to display." ;
 			print "</div>" ;
 		}
 		else {

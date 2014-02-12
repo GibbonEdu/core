@@ -111,7 +111,7 @@ else {
 							$updateReturnMessage ="Your request failed due to an attachment error." ;	
 						}
 						else if ($updateReturn=="success0") {
-							$updateReturnMessage ="Your request was successful. ." ;	
+							$updateReturnMessage ="Your request was completed successfully." ;	
 							$class="success" ;
 						}
 						print "<div class='$class'>" ;
@@ -303,7 +303,7 @@ else {
 							if ($resultStudents->rowCount()<1) {
 								print "<tr>" ;
 									print "<td colspan=" . ($columns+1) . ">" ;
-										print "<i>There are no students in this class</i>" ;
+										print "<i>There are no records to display.</i>" ;
 									print "</td>" ;
 								print "</tr>" ;
 							}

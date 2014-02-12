@@ -144,7 +144,7 @@ else {
 				
 				if ($resultUnit->rowCount()<1) {
 					print "<div class='error'>" ;
-					print "There are no units to display in the specified school year" ;
+					print "There are no records to display" ;
 					print "</div>" ;
 				}
 				else {

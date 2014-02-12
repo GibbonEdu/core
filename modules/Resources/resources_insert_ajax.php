@@ -304,7 +304,7 @@ else {
 				
 				if ($result->rowCount()<1) {
 					$output.="<div class='error'>" ;
-					$output.="There are no resources to display." ;
+					$output.="There are no records to display." ;
 					$output.="</div>" ;
 				}
 				else {

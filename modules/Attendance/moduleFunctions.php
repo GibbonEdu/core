@@ -88,7 +88,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 	
 	if ($result->rowCount()<1) {
 		$output.= "<div class='error'>" ;
-			$output.= "There are no terms in the specied year." ;
+			$output.= "There are no records to display." ;
 		$output.= "</div>" ;
 	}
 	else {

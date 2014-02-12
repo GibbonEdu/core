@@ -57,7 +57,7 @@ else {
 			$addReturnMessage ="Your request failed because your password to not meet the minimum requirements for strength." ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage ="Your request was successful. You can now add another record if you wish." ;	
+			$addReturnMessage ="Your request was completed successfully.You can now add another record if you wish." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

@@ -145,7 +145,7 @@ else {
 	print "</h3>" ;
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print "There are no rubrics to display." ;
+		print "There are no records to display." ;
 		print "</div>" ;
 	}
 	else {

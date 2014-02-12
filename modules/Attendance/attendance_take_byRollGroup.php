@@ -57,7 +57,7 @@ else {
 			$updateReturnMessage ="Your request failed because the specified date is not in the future, or is not a school day." ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage ="Your request was successful. ." ;	
+			$updateReturnMessage ="Your request was completed successfully." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -231,7 +231,7 @@ else {
 				
 				if ($resultRollGroup->rowCount()<1) {
 					print "<div class='error'>" ;
-						print "There are no students in the specified roll group.";
+						print "There are no records to display.";
 					print "</div>" ;
 				}
 				else {

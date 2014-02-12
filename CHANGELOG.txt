@@ -2,9 +2,29 @@ CHANGELOG
 =========
 v8.0.00
 -------
-Multilingual: implemented ability to have internationalised interface language
-	1. Rationalised standard strings across the system
-		Edited various files
+User Admin: exposed hidden-by-default Manage Districts setting
+	New values in table gibbonPermission
+	
+Database: fixed issue leading to some tables becoming InnoDB instead of MyISAM
+	Edited table gibbonDistrict
+	Edited dev database environment engine setting
+	
+Internationalisation: Rationalised standard strings across the system
+	Edited various files
+
+Internationalisation: added localisation folder for jqueryUI datepicker
+	New folder /lib/jquery-ui/i18n
+	Removed file /lib/jquery-ui/jquery.ui.datepicker-en-GB.js
+	Edited files /index.php, fullscreen.php
+
+Internationalisation: added folders for store localisation data
+	New folders /i18n, /i18n/en-US, /i18n/en-GB, /i18n/es, l18n/zh-CN
+
+Internationalisation: added system for storing and management localisations and system defaults
+	New table gibboni18n
+	Added values to tables gibbonAction, gibbonPermission
+	New files /modules/System Admin/i18n_manageProcess*.php
+	
 
 v7.1.02
 -------

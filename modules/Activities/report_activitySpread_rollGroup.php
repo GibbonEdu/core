@@ -121,7 +121,7 @@ else {
 
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-				print "There are no records to display in this report." ;
+				print "There are no records to display." ;
 			print "</div>" ;
 		}
 		else {
@@ -257,7 +257,7 @@ else {
 				if ($count==0) {
 					print "<tr class=$rowNum>" ;
 						print "<td colspan=2>" ;
-							print "There are no results in this report." ;
+							print "There are no records to display." ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

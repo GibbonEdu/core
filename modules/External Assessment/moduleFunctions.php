@@ -59,7 +59,7 @@ function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbo
 
 			if ($resultResults->rowCount()<1) {
 				print "<div class='error'>" ;
-				print "There are no results in the specified external assessments." ;
+				print "There are no records to display." ;
 				print "</div>" ;
 			}
 			else {

@@ -76,7 +76,7 @@ else {
 				$updateReturnMessage ="Update succeeded, although some fields were not recorded." ;	
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage ="Your request was successful. . An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>" ; 
+				$updateReturnMessage ="Your request was completed successfully. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>" ; 
 				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
 					$updateReturnMessage=$updateReturnMessage . " Please contact <a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a> if you have any questions." ;	
 				}

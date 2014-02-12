@@ -452,7 +452,7 @@ else {
 			print "</div>" ;
 			
 			print "<div class='error'>" ;
-			print "There are no invoices to display." ;
+			print "There are no records to display." ;
 			print "</div>" ;
 		}
 		else {

@@ -50,7 +50,7 @@ else {
 			$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage ="Your request was successful. ." ;	
+			$updateReturnMessage ="Your request was completed successfully." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -78,7 +78,7 @@ else {
 			$addReturnMessage ="Your request failed because the person already exists as a child or adult in this family." ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage ="Your request was successful. ." ;	
+			$addReturnMessage ="Your request was completed successfully." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -418,7 +418,7 @@ else {
 			
 			if ($resultChildren->rowCount()<1) {
 				print "<div class='error'>" ;
-				print "There are no users to display." ;
+				print "There are no records to display." ;
 				print "</div>" ;
 			}
 			else {
@@ -588,7 +588,7 @@ else {
 			
 			if ($resultAdults->rowCount()<1) {
 				print "<div class='error'>" ;
-				print "There are no users to display." ;
+				print "There are no records to display." ;
 				print "</div>" ;
 			}
 			else {

@@ -62,11 +62,11 @@ else {
 			$updateReturnMessage ="Your request was successful, but some data was not properly saved." ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage ="Your request was successful. ." ;	
+			$updateReturnMessage ="Your request was completed successfully." ;	
 			$class="success" ;
 		}
 		if ($updateReturn=="success1") {
-			$updateReturnMessage ="Your request was successful. , but one or more requested emails could not be sent." ;	
+			$updateReturnMessage ="Your request was completed successfully., but one or more requested emails could not be sent." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -522,7 +522,7 @@ else {
 								}
 								if ($resultFees->rowCount()<1) {
 									print "<div class='error'>" ;
-										print "There are no fees to display" ;
+										print "There are no records to display" ;
 									print "</div>" ;
 								}
 								else {

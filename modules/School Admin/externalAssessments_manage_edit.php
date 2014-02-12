@@ -54,7 +54,7 @@ else {
 			$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage ="Your request was successful. ." ;	
+			$updateReturnMessage ="Your request was completed successfully." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -189,7 +189,7 @@ else {
 			
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print "There are no grades to display." ;
+				print "There are no records to display." ;
 				print "</div>" ;
 			}
 			else {

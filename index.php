@@ -130,7 +130,7 @@ else {
 
 			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery/jquery.js"></script>
 			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/js/jquery-ui.min.js"></script>
-			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/js/jquery.ui.datepicker-en-GB.js"></script>
+			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/i18n/jquery.ui.datepicker-en-GB.js"></script>
 			<script type="text/javascript">$.datepicker.setDefaults($.datepicker.regional['en-GB']);</script>
 			<script type="text/javascript">$(function() { $( document ).tooltip({  show: 800, hide: false, content: function () { return $(this).prop('title')}, position: { my: "center bottom-20", at: "center top", using: function( position, feedback ) { $( this ).css( position ); $( "<div>" ).addClass( "arrow" ).addClass( feedback.vertical ).addClass( feedback.horizontal ).appendTo( this ); } } }); });</script>
 			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-jslatex/jquery.jslatex.js"></script>
@@ -644,7 +644,7 @@ else {
 															$updateReturnMessage ="Your request failed due to a database error." ;	
 														}
 														else if ($updateReturn=="success0") {
-															$updateReturnMessage ="Your request was successful. ." ;	
+															$updateReturnMessage ="Your request was completed successfully." ;	
 															$class="success" ;
 														}
 														print "<div class='$class'>" ;
@@ -752,7 +752,7 @@ else {
 													}
 													if ($classes==FALSE) {
 														print "<div style='margin-top: 2px' class='warning'>" ;
-														print "There are no classes to display" ;
+														print "There are no records to display" ;
 														print "</div>" ;
 													}
 													
@@ -979,7 +979,7 @@ else {
 													}
 													if ($grades==FALSE) {
 														print "<div style='margin-top: 2px' class='warning'>" ;
-														print "There are no grades to display" ;
+														print "There are no records to display" ;
 														print "</div>" ;
 													}
 													
@@ -1024,7 +1024,7 @@ else {
 													
 													if ($deadlines==FALSE) {
 														print "<div style='margin-top: 2px' class='warning'>" ;
-														print "There are no deadlines to display" ;
+														print "There are no records to display" ;
 														print "</div>" ;
 													}
 													
@@ -1071,7 +1071,7 @@ else {
 														$updateReturnMessage ="Your request failed due to a database error." ;	
 													}
 													else if ($updateReturn=="success0") {
-														$updateReturnMessage ="Your request was successful. ." ;	
+														$updateReturnMessage ="Your request was completed successfully." ;	
 														$class="success" ;
 													}
 													print "<div class='$class'>" ;
@@ -1305,7 +1305,7 @@ else {
 													
 													if ($result->rowCount()<1) {
 														print "<div class='error'>" ;
-														print "There are no behaviour records to display." ;
+														print "There are no records to display." ;
 														print "</div>" ;
 													}
 													else {

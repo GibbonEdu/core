@@ -360,7 +360,7 @@ else {
 			}
 			else {
 				print "<div class='warning'>" ;
-					print "There are no records in this report." ;
+					print "There are no records to display." ;
 				print "</div>" ;
 			}
 		}

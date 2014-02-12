@@ -64,7 +64,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Your request was successful. The system has made a moderate effort to remove all participant records." ;	
+			$deleteReturnMessage ="Your request was completed successfully.The system has made a moderate effort to remove all participant records." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -149,7 +149,7 @@ else {
 		
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print "There are no courses to display." ;
+			print "There are no records to display." ;
 			print "</div>" ;
 		}
 		else {

@@ -104,7 +104,7 @@ else {
 					$updateReturnMessage ="Your request failed due to a database error." ;	
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage ="Your request was successful. ." ;	
+					$updateReturnMessage ="Your request was completed successfully." ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -261,7 +261,7 @@ else {
 								
 								if ($result->rowCount()<1) {
 									print "<div class='error'>" ;
-									print "There are no lessons to display." ;
+									print "There are no records to display." ;
 									print "</div>" ;
 								}
 								else {
@@ -428,7 +428,7 @@ else {
 									
 									if ($result->rowCount()<1) {
 										print "<div class='error'>" ;
-										print "There are no lessons to display." ;
+										print "There are no records to display." ;
 										print "</div>" ;
 									}
 									else {
@@ -581,7 +581,7 @@ else {
 						$updateReturnMessage ="Your request failed due to a database error." ;	
 					}
 					else if ($updateReturn=="success0") {
-						$updateReturnMessage ="Your request was successful. ." ;	
+						$updateReturnMessage ="Your request was completed successfully." ;	
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;
@@ -639,7 +639,7 @@ else {
 					
 					if ($result->rowCount()<1) {
 						print "<div class='error'>" ;
-						print "There are no lessons to display." ;
+						print "There are no records to display." ;
 						print "</div>" ;
 					}
 					else {
@@ -849,7 +849,7 @@ else {
 								$updateReturnMessage ="Your request failed due to a database error." ;	
 							}
 							else if ($updateReturn=="success0") {
-								$updateReturnMessage ="Your request was successful. ." ;	
+								$updateReturnMessage ="Your request was completed successfully." ;	
 								$class="success" ;
 							}
 							print "<div class='$class'>" ;
@@ -921,7 +921,7 @@ else {
 						
 						if ($result->rowCount()<1) {
 							print "<div class='error'>" ;
-							print "There are no lessons to display." ;
+							print "There are no records to display." ;
 							print "</div>" ;
 						}
 						else {
@@ -1140,7 +1140,7 @@ else {
 								
 								if (count($lessons)<1) {
 									print "<div class='error'>" ;
-									print "There are no lessons to display." ;
+									print "There are no records to display." ;
 									print "</div>" ;
 								}
 								else {
