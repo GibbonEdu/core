@@ -25,8 +25,10 @@ require_once "service/Google_Utils.php";
  *
  * @author Chris Chabot <chabotc@google.com>
  * @author Chirag Shah <chirags@google.com>
- *
+ * 
  */
+ 
+ // Changed  $accessType from  offline to online and $apprvalPrompt from force to auto - George Tibbetts 2014-02-12
 class Google_OAuth2 extends Google_Auth {
   public $clientId;
   public $clientSecret;
