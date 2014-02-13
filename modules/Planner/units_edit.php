@@ -403,7 +403,7 @@ else {
 																	}
 																	else {
 																		$rowDate=$resultDate->fetch() ;
-																		print dateConvertBack($rowDate["date"]) ;
+																		print dateConvertBack($guid, $rowDate["date"]) ;
 																	}
 																print "</td>" ;
 																print "<td>" ;
@@ -957,7 +957,7 @@ else {
 															}
 															else {
 																$rowDate=$resultDate->fetch() ;
-																print dateConvertBack($rowDate["date"]) ;
+																print dateConvertBack($guid, $rowDate["date"]) ;
 															}
 														print "</td>" ;
 														print "<td>" ;

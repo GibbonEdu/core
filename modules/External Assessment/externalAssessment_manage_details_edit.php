@@ -107,14 +107,14 @@ else {
 					<tr>
 						<td> 
 							<b>Date *</b><br/>
-							<span style="font-size: 90%"><i>Format: dd/mm/yyyy<br/></i></span>
+							<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 						</td>
 						<td class="right" colspan=2>
-							<input name="date" id="date" maxlength=10 value="<? if ($row["date"]!="") { print dateConvertBack($row["date"]) ; } ?>" type="text" style="width: 300px">
+							<input name="date" id="date" maxlength=10 value="<? if ($row["date"]!="") { print dateConvertBack($guid, $row["date"]) ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var date=new LiveValidation('date');
 								date.add(Validate.Presence);
-								date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+								date.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 </script>
 							 <script type="text/javascript">
 								$(function() {

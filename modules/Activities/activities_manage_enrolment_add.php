@@ -115,7 +115,7 @@ else {
 								<b>Listing Dates</b><br/>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<? print dateConvertBack($row["listingStart"]) . "-" . dateConvertBack($row["listingEnd"]) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<? print dateConvertBack($guid, $row["listingStart"]) . "-" . dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 						<tr>
@@ -123,7 +123,7 @@ else {
 								<b>Program Dates</b><br/>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<? print dateConvertBack($row["programStart"]) . "-" . dateConvertBack($row["programEnd"]) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<? print dateConvertBack($guid, $row["programStart"]) . "-" . dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 						<?

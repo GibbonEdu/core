@@ -81,7 +81,7 @@ else {
 			$type="Absent" ;
 			$reason=$_POST["reason"] ;
 			$comment=$_POST["comment"] ;
-			$date=dateConvert($_POST["date"]) ;
+			$date=dateConvert($guid, $_POST["date"]) ;
 			$today=date("Y-m-d");
 			
 			//Check to see if date is in the future and is a school day.

@@ -80,7 +80,7 @@ else {
 			$dob=NULL ;
 		}
 		else {
-			$dob=dateConvert($dob) ;
+			$dob=dateConvert($guid, $dob) ;
 		}
 		$languageHome=$_POST["languageHome"] ;
 		$languageFirst=$_POST["languageFirst"] ;
@@ -96,7 +96,7 @@ else {
 			$visaExpiryDate=NULL ;
 		}
 		else {
-			$visaExpiryDate=dateConvert($visaExpiryDate) ;
+			$visaExpiryDate=dateConvert($guid, $visaExpiryDate) ;
 		}
 		$email=$_POST["email"] ;
 		$phone1Type=$_POST["phone1Type"] ; 
@@ -118,7 +118,7 @@ else {
 		if (isset($_POST["dayType"])) {
 			$dayType=$_POST["dayType"] ;
 		}
-		$dateStart=dateConvert($_POST["dateStart"]) ;
+		$dateStart=dateConvert($guid, $_POST["dateStart"]) ;
 		$gibbonYearGroupIDEntry=$_POST["gibbonYearGroupIDEntry"] ;
 		$schoolName1=$_POST["schoolName1"] ;
 		$schoolAddress1=$_POST["schoolAddress1"] ;
@@ -129,7 +129,7 @@ else {
 			$schoolDate1=NULL ;
 		}
 		else {
-			$schoolDate1=dateConvert($schoolDate1) ;
+			$schoolDate1=dateConvert($guid, $schoolDate1) ;
 		}
 		$schoolName2=$_POST["schoolName2"] ;
 		$schoolAddress2=$_POST["schoolAddress2"] ;
@@ -140,7 +140,7 @@ else {
 			$schoolDate2=NULL ;
 		}
 		else {
-			$schoolDate2=dateConvert($schoolDate2) ;
+			$schoolDate2=dateConvert($guid, $schoolDate2) ;
 		}
 		
 	
@@ -226,7 +226,7 @@ else {
 		$parent1visaExpiryDate=NULL ;
 		if (isset($_POST["parent1visaExpiryDate"])) {
 			if ($_POST["parent1visaExpiryDate"]!="") {
-				$parent1visaExpiryDate=dateConvert($_POST["parent1visaExpiryDate"]) ;
+				$parent1visaExpiryDate=dateConvert($guid, $_POST["parent1visaExpiryDate"]) ;
 			}
 		}
 		$parent1email=NULL ;
@@ -329,7 +329,7 @@ else {
 		$parent2visaExpiryDate=NULL ;
 		if (isset($_POST["parent2visaExpiryDate"])) {
 			if ($_POST["parent2visaExpiryDate"]!="") {
-				$parent2visaExpiryDate=dateConvert($_POST["parent2visaExpiryDate"]) ;
+				$parent2visaExpiryDate=dateConvert($guid, $_POST["parent2visaExpiryDate"]) ;
 			}
 		}
 		$parent2email=NULL ;
@@ -383,7 +383,7 @@ else {
 			$siblingDOB1=NULL ;
 		}
 		else {
-			$siblingDOB1=dateConvert($siblingDOB1);
+			$siblingDOB1=dateConvert($guid, $siblingDOB1);
 		}
 		$siblingSchool1=$_POST["siblingSchool1"] ;
 		$siblingSchoolJoiningDate1=$_POST["siblingSchoolJoiningDate1"] ;
@@ -391,7 +391,7 @@ else {
 			$siblingSchoolJoiningDate1=NULL ;
 		}
 		else {
-			$siblingSchoolJoiningDate1=dateConvert($siblingSchoolJoiningDate1) ;
+			$siblingSchoolJoiningDate1=dateConvert($guid, $siblingSchoolJoiningDate1) ;
 		}
 		$siblingName2=$_POST["siblingName2"] ;
 		$siblingDOB2=$_POST["siblingDOB2"] ;
@@ -399,7 +399,7 @@ else {
 			$siblingDOB2=NULL ;
 		}
 		else {
-			$siblingDOB2=dateConvert($siblingDOB2);
+			$siblingDOB2=dateConvert($guid, $siblingDOB2);
 		}
 		$siblingSchool2=$_POST["siblingSchool2"] ;
 		$siblingSchoolJoiningDate2=$_POST["siblingSchoolJoiningDate2"] ;
@@ -407,7 +407,7 @@ else {
 			$siblingSchoolJoiningDate2=NULL ;
 		}
 		else {
-			$siblingSchoolJoiningDate2=dateConvert($siblingSchoolJoiningDate2) ;
+			$siblingSchoolJoiningDate2=dateConvert($guid, $siblingSchoolJoiningDate2) ;
 		}
 		$siblingName3=$_POST["siblingName3"] ;
 		$siblingDOB3=$_POST["siblingDOB3"] ;
@@ -415,7 +415,7 @@ else {
 			$siblingDOB3=NULL ;
 		}
 		else {
-			$siblingDOB3=dateConvert($siblingDOB3) ;
+			$siblingDOB3=dateConvert($guid, $siblingDOB3) ;
 		}
 		$siblingSchool3=$_POST["siblingSchool3"] ;
 		$siblingSchoolJoiningDate3=$_POST["siblingSchoolJoiningDate3"] ;
@@ -423,7 +423,7 @@ else {
 			$siblingSchoolJoiningDate3=NULL ;
 		}
 		else {
-			$siblingSchoolJoiningDate3=dateConvert($siblingSchoolJoiningDate3) ;
+			$siblingSchoolJoiningDate3=dateConvert($guid, $siblingSchoolJoiningDate3) ;
 		}
 	
 		//GET PAYMENT FIELDS

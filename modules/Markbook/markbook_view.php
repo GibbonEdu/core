@@ -343,7 +343,7 @@ else {
 											print "<br/>" ;
 										}
 										if ($row["completeDate"]!="") {
-											print "Marked on " . dateConvertBack($row["completeDate"]) . "<br/>" ;
+											print "Marked on " . dateConvertBack($guid, $row["completeDate"]) . "<br/>" ;
 										}
 										else {
 											print "Unmarked<br/>" ;
@@ -469,7 +469,7 @@ else {
 											}
 											if ($resultEntry->rowCount()>=1) {
 												$rowEntry=$resultEntry->fetch() ;
-												print "<a title='" . $rowEntry["descriptor"] . " | Test taken on " . dateConvertBack($rowEntry["date"]) . "' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&subpage=External Assessment'>" . $rowEntry["value"] . "</a>" ;
+												print "<a title='" . $rowEntry["descriptor"] . " | Test taken on " . dateConvertBack($guid, $rowEntry["date"]) . "' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&subpage=External Assessment'>" . $rowEntry["value"] . "</a>" ;
 											}	
 										print "</td>" ;
 									}
@@ -579,13 +579,13 @@ else {
 															}
 														
 															if ($rowWork["type"]=="File") {
-																print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
+																print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
 															}
 															else if ($rowWork["type"]=="Link") {
-																print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
+																print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
 															}
 															else {
-																print "<span title='$status. Recorded at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
+																print "<span title='$status. Recorded at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
 															}
 														}
 														else {
@@ -832,7 +832,7 @@ else {
 										}
 									}
 									if ($rowEntry["completeDate"]!="") {
-										print "Marked on " . dateConvertBack($rowEntry["completeDate"]) . "<br/>" ;
+										print "Marked on " . dateConvertBack($guid, $rowEntry["completeDate"]) . "<br/>" ;
 									}
 									else {
 										print "Unmarked<br/>" ;
@@ -968,13 +968,13 @@ else {
 												}
 												
 												if ($rowWork["type"]=="File") {
-													print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
+													print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
 												}
 												else if ($rowWork["type"]=="Link") {
-													print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
+													print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
 												}
 												else {
-													print "<span title='$status. Recorded at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
+													print "<span title='$status. Recorded at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
 												}
 											}
 											else {
@@ -1338,7 +1338,7 @@ else {
 													}
 												}
 												if ($rowEntry["completeDate"]!="") {
-													print "Marked on " . dateConvertBack($rowEntry["completeDate"]) . "<br/>" ;
+													print "Marked on " . dateConvertBack($guid, $rowEntry["completeDate"]) . "<br/>" ;
 												}
 												else {
 													print "Unmarked<br/>" ;
@@ -1476,13 +1476,13 @@ else {
 															}
 															
 															if ($rowWork["type"]=="File") {
-																print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
+																print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
 															}
 															else if ($rowWork["type"]=="Link") {
-																print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
+																print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
 															}
 															else {
-																print "<span title='$status. Recorded at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
+																print "<span title='$status. Recorded at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
 															}
 														}
 														else {

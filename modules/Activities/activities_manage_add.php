@@ -209,13 +209,13 @@ else {
 				<tr>
 					<td> 
 						<b>Listing Start Date *</b><br/>
-						<span style="font-size: 90%"><i>Format: dd/mm/yyyy<br/>Default: 2 weeks before the end of the current term.</i></span>
+						<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/>Default: 2 weeks before the end of the current term.</i></span>
 					</td>
 					<td class="right">
-						<input name="listingStart" id="listingStart" maxlength=10 value="<? if ($listingStart!="") { print dateConvertBack($listingStart) ; } ?>" type="text" style="width: 300px">
+						<input name="listingStart" id="listingStart" maxlength=10 value="<? if ($listingStart!="") { print dateConvertBack($guid, $listingStart) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var listingStart=new LiveValidation('listingStart');
-							listingStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+							listingStart.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 						 </script>
 						 <script type="text/javascript">
 							$(function() {
@@ -227,13 +227,13 @@ else {
 				<tr>
 					<td> 
 						<b>Listing End Date *</b><br/>
-						<span style="font-size: 90%"><i>Format: dd/mm/yyyy<br/>Default: 2 weeks after the start of next term.</i></span>
+						<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/>Default: 2 weeks after the start of next term.</i></span>
 					</td>
 					<td class="right">
-						<input name="listingEnd" id="listingEnd" maxlength=10 value="<? if ($listingEnd!="") { print dateConvertBack($listingEnd) ; } ?>" type="text" style="width: 300px">
+						<input name="listingEnd" id="listingEnd" maxlength=10 value="<? if ($listingEnd!="") { print dateConvertBack($guid, $listingEnd) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var listingEnd=new LiveValidation('listingEnd');
-							listingEnd.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+							listingEnd.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 						 </script>
 						 <script type="text/javascript">
 							$(function() {
@@ -245,13 +245,13 @@ else {
 				<tr>
 					<td> 
 						<b>Program Start Date *</b><br/>
-						<span style="font-size: 90%"><i>Format: dd/mm/yyyy<br/>Default: first day of next term.</i></span>
+						<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/>Default: first day of next term.</i></span>
 					</td>
 					<td class="right">
-						<input name="programStart" id="programStart" maxlength=10 value="<? if ($programStart!="") { print dateConvertBack($programStart) ; } ?>" type="text" style="width: 300px">
+						<input name="programStart" id="programStart" maxlength=10 value="<? if ($programStart!="") { print dateConvertBack($guid, $programStart) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var programStart=new LiveValidation('programStart');
-							programStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+							programStart.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 						 </script>
 						 <script type="text/javascript">
 							$(function() {
@@ -263,13 +263,13 @@ else {
 				<tr>
 					<td> 
 						<b>Program End Date *</b><br/>
-						<span style="font-size: 90%"><i>Format: dd/mm/yyyy<br/>Default: last day of the next term.</i></span>
+						<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/>Default: last day of the next term.</i></span>
 					</td>
 					<td class="right">
-						<input name="programEnd" id="programEnd" maxlength=10 value="<? if ($programEnd!="") { print dateConvertBack($programEnd) ; } ?>" type="text" style="width: 300px">
+						<input name="programEnd" id="programEnd" maxlength=10 value="<? if ($programEnd!="") { print dateConvertBack($guid, $programEnd) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var programEnd=new LiveValidation('programEnd');
-							programEnd.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+							programEnd.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 						 </script>
 						 <script type="text/javascript">
 							$(function() {

@@ -80,7 +80,7 @@ else {
 				//Validate Inputs
 				$returnExpected=NULL ;
 				if ($_POST["returnExpected"]!="") {
-					$returnExpected=dateConvert($_POST["returnExpected"]) ;
+					$returnExpected=dateConvert($guid, $_POST["returnExpected"]) ;
 				}
 				
 				//Write to database

@@ -92,7 +92,7 @@ else {
 				else {
 					//Write to database
 					try {
-						$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "name"=>$name, "active"=>$active, "description"=>$description, "invoiceIssueDate"=>dateConvert($invoiceIssueDate), "invoiceDueDate"=>dateConvert($invoiceDueDate), "gibbonPersonIDUpdate"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonFinanceBillingScheduleID"=>$gibbonFinanceBillingScheduleID); 
+						$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "name"=>$name, "active"=>$active, "description"=>$description, "invoiceIssueDate"=>dateConvert($guid, $invoiceIssueDate), "invoiceDueDate"=>dateConvert($guid, $invoiceDueDate), "gibbonPersonIDUpdate"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonFinanceBillingScheduleID"=>$gibbonFinanceBillingScheduleID); 
 						$sql="UPDATE gibbonFinanceBillingSchedule SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, active=:active, description=:description, invoiceIssueDate=:invoiceIssueDate, invoiceDueDate=:invoiceDueDate, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate='" . date("Y-m-d H:i:s") . "' WHERE gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);

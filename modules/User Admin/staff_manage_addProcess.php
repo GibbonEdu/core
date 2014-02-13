@@ -55,7 +55,7 @@ else {
 	$firstAidQualified=$_POST["firstAidQualified"] ;
 	$firstAidExpiry=NULL ;
 	if ($firstAidQualified=="Y" AND $_POST["firstAidExpiry"]!="") {
-		$firstAidExpiry=dateConvert($_POST["firstAidExpiry"]) ;
+		$firstAidExpiry=dateConvert($guid, $_POST["firstAidExpiry"]) ;
 	}
 	$countryOfOrigin=$_POST["countryOfOrigin"] ;
 	$qualifications=$_POST["qualifications"] ;

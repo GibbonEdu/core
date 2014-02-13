@@ -210,10 +210,10 @@ else {
 							<span style="font-size: 90%"><i>Student's intended first day at school.<br/>dd/mm/yyyy</i></span>
 						</td>
 						<td class="right">
-							<input name="dateStart" id="dateStart" maxlength=10 value="<? print dateConvertBack($row["dateStart"]) ?>" type="text" style="width: 300px">
+							<input name="dateStart" id="dateStart" maxlength=10 value="<? print dateConvertBack($guid, $row["dateStart"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var dateStart=new LiveValidation('dateStart');
-								dateStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+								dateStart.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 </script>
 							 <script type="text/javascript">
 								$(function() {
@@ -502,10 +502,10 @@ else {
 							<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
 						</td>
 						<td class="right">
-							<input name="dob" id="dob" maxlength=10 value="<? print dateConvertBack($row["dob"]) ?>" type="text" style="width: 300px">
+							<input name="dob" id="dob" maxlength=10 value="<? print dateConvertBack($guid, $row["dob"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var dob=new LiveValidation('dob');
-								dob.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+								dob.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 								dob.add(Validate.Presence);
 							 </script>
 							 <script type="text/javascript">
@@ -763,10 +763,10 @@ else {
 							?>
 						</td>
 						<td class="right">
-							<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<? print dateConvertBack($row["visaExpiryDate"]) ?>" type="text" style="width: 300px">
+							<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<? print dateConvertBack($guid, $row["visaExpiryDate"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var visaExpiryDate=new LiveValidation('visaExpiryDate');
-								visaExpiryDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+								visaExpiryDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 </script>
 							 <script type="text/javascript">
 								$(function() {
@@ -934,7 +934,7 @@ else {
 										print "</td>" ;
 										print "<td>" ;
 											?>
-											<input name="<? print "schoolDate$i" ?>" id="<? print "schoolDate$i" ?>" maxlength=10 value="<? print dateConvertBack($row["schoolDate$i"]) ?>" type="text" style="width:90px; float: left">
+											<input name="<? print "schoolDate$i" ?>" id="<? print "schoolDate$i" ?>" maxlength=10 value="<? print dateConvertBack($guid, $row["schoolDate$i"]) ?>" type="text" style="width:90px; float: left">
 											<script type="text/javascript">
 												$(function() {
 													$( "#<? print "schoolDate$i" ?>" ).datepicker();
@@ -1481,10 +1481,10 @@ else {
 									?>
 								</td>
 								<td class="right">
-									<input name="<? print "parent$i" ?>visaExpiryDate" id="<? print "parent$i" ?>visaExpiryDate" maxlength=10 value="<? print dateConvertBack($row["parent" . $i . "visaExpiryDate"]) ?>" type="text" style="width: 300px">
+									<input name="<? print "parent$i" ?>visaExpiryDate" id="<? print "parent$i" ?>visaExpiryDate" maxlength=10 value="<? print dateConvertBack($guid, $row["parent" . $i . "visaExpiryDate"]) ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var <? print "parent$i" ?>visaExpiryDate=new LiveValidation('<? print "parent$i" ?>visaExpiryDate');
-										<? print "parent$i" ?>visaExpiryDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+										<? print "parent$i" ?>visaExpiryDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 									 </script>
 									 <script type="text/javascript">
 										$(function() {
@@ -1709,7 +1709,7 @@ else {
 										print "</td>" ;
 										print "<td>" ;
 											?>
-											<input name="<? print "siblingDOB$i" ?>" id="<? print "siblingDOB$i" ?>" maxlength=10 value="<? print dateConvertBack($row["siblingDOB$i"]) ?>" type="text" style="width:90px; float: left"><br/>
+											<input name="<? print "siblingDOB$i" ?>" id="<? print "siblingDOB$i" ?>" maxlength=10 value="<? print dateConvertBack($guid, $row["siblingDOB$i"]) ?>" type="text" style="width:90px; float: left"><br/>
 											<script type="text/javascript">
 												$(function() {
 													$( "#<? print "siblingDOB$i" ?>" ).datepicker();
@@ -1722,7 +1722,7 @@ else {
 										print "</td>" ;
 										print "<td>" ;
 											?>
-											<input name="<? print "siblingSchoolJoiningDate$i" ?>" id="<? print "siblingSchoolJoiningDate$i" ?>" maxlength=10 value="<? print dateConvertBack($row["siblingSchoolJoiningDate$i"]) ?>" type="text" style="width:90px; float: left">
+											<input name="<? print "siblingSchoolJoiningDate$i" ?>" id="<? print "siblingSchoolJoiningDate$i" ?>" maxlength=10 value="<? print dateConvertBack($guid, $row["siblingSchoolJoiningDate$i"]) ?>" type="text" style="width:90px; float: left">
 											<script type="text/javascript">
 												$(function() {
 													$( "#<? print "siblingSchoolJoiningDate$i" ?>" ).datepicker();

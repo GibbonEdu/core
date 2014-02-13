@@ -82,7 +82,7 @@ else {
 				print "<tr>" ;
 					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Start Date</span><br/>" ;
-						print "<i>" . dateConvertBack($row["dateStart"]). "</i>" ;
+						print "<i>" . dateConvertBack($guid, $row["dateStart"]). "</i>" ;
 					print "</td>" ;
 					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Year of Entry</span><br/>" ;
@@ -194,7 +194,7 @@ else {
 					print "</td>" ;
 					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Date of Birth</span><br/>" ;
-						print "<i>" . dateConvertBack($row["dob"]). "</i>" ;
+						print "<i>" . dateConvertBack($guid, $row["dob"]). "</i>" ;
 					print "</td>" ;
 					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Current/Last School</span><br/>" ;
@@ -281,7 +281,7 @@ else {
 								print "<b>" . $_SESSION[$guid]["country"] . " Visa Expiry Date</b>" ;
 							}
 						print "</span><br/>" ;
-						print "<i>" . dateConvertBack($row["visaExpiryDate"]). "</i>" ;
+						print "<i>" . dateConvertBack($guid, $row["visaExpiryDate"]). "</i>" ;
 					print "</td>" ;
 				print "</tr>" ;
 				print "<tr>" ;
@@ -655,7 +655,7 @@ else {
 							print "</td>" ;
 							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Sibling $siblingCount Date of Birth</span><br/>" ;
-								print "<i>" . dateConvertBack($row["siblingDOB$i"]) . "</i>" ;
+								print "<i>" . dateConvertBack($guid, $row["siblingDOB$i"]) . "</i>" ;
 							print "</td>" ;
 							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Sibling $siblingCount School</span><br/>" ;
@@ -686,7 +686,7 @@ else {
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Sibling $siblingCount Date of Birth</span><br/>" ;
-									print "<i>" . dateConvertBack($rowMember["dob"]) . "</i>" ;
+									print "<i>" . dateConvertBack($guid, $rowMember["dob"]) . "</i>" ;
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Sibling $siblingCount School</span><br/>" ;

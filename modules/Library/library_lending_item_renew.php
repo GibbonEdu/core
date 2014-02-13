@@ -159,7 +159,7 @@ else {
 							<input name="returnExpected" id="returnExpected" maxlength=10 value="<? print date("d/m/Y", time()+($loanLength*60*60*24)) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var returnExpected=new LiveValidation('returnExpected');
-								returnExpected.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+								returnExpected.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 </script>
 							 <script type="text/javascript">
 								$(function() {

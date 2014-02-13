@@ -90,7 +90,7 @@ else {
 				$vendor=$_POST["vendor" . $i] ;
 				$purchaseDate=NULL ;
 				if ($_POST["purchaseDate" . $i]!="") {
-					$purchaseDate=dateConvert($_POST["purchaseDate" . $i]);
+					$purchaseDate=dateConvert($guid, $_POST["purchaseDate" . $i]);
 				}
 				$invoiceNumber=$_POST["invoiceNumber" . $i] ;
 				$comment=$_POST["comment" . $i] ;
@@ -129,7 +129,7 @@ else {
 					foreach ($fieldsIn as $field) {
 						$fieldName=preg_replace("/ /", "", $field["name"]) ;
 						if ($field["type"]=="Date") {
-							$fieldsOut[$field["name"]]=dateConvert($_POST["field" . $fieldName . $i]) ;
+							$fieldsOut[$field["name"]]=dateConvert($guid, $_POST["field" . $fieldName . $i]) ;
 						}
 						else {
 							$fieldsOut[$field["name"]]=$_POST["field" . $fieldName . $i] ;

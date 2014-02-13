@@ -107,7 +107,7 @@ else {
 				$dob=NULL ;
 			}
 			else {
-				$dob=dateConvert($dob) ;
+				$dob=dateConvert($guid, $dob) ;
 			}
 			$email=$_POST["email"] ;
 			$emailAlternate=$_POST["emailAlternate"] ;
@@ -159,7 +159,7 @@ else {
 				$visaExpiryDate=NULL ;
 			}
 			else {
-				$visaExpiryDate=dateConvert($visaExpiryDate) ;
+				$visaExpiryDate=dateConvert($guid, $visaExpiryDate) ;
 			}
 			
 			$profession=NULL ;
@@ -224,14 +224,14 @@ else {
 				$dateStart=NULL ;
 			}
 			else {
-				$dateStart=dateConvert($dateStart) ;
+				$dateStart=dateConvert($guid, $dateStart) ;
 			}
 			$dateEnd=$_POST["dateEnd"] ;
 			if ($dateEnd=="") {
 				$dateEnd=NULL ;
 			}
 			else {
-				$dateEnd=dateConvert($dateEnd) ;
+				$dateEnd=dateConvert($guid, $dateEnd) ;
 			}
 			$gibbonSchoolYearIDClassOf=NULL ;
 			if (isset($_POST["gibbonSchoolYearIDClassOf"])) {

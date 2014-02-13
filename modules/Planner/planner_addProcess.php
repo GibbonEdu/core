@@ -63,7 +63,7 @@ else {
 				$viewBy="date" ;
 			}
 			$gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
-			$date=dateConvert($_POST["date"]) ;
+			$date=dateConvert($guid, $_POST["date"]) ;
 			$timeStart=$_POST["timeStart"] ;
 			$timeEnd=$_POST["timeEnd"] ;
 			$gibbonUnitID=$_POST["gibbonUnitID"] ;
@@ -99,16 +99,16 @@ else {
 					$homeworkDueDateTime="23:59:59" ;
 				}
 				if ($_POST["homeworkDueDate"]!="") {
-					$homeworkDueDate=dateConvert($_POST["homeworkDueDate"]) . " " . $homeworkDueDateTime ;
+					$homeworkDueDate=dateConvert($guid, $_POST["homeworkDueDate"]) . " " . $homeworkDueDateTime ;
 				}
 				
 				if ($_POST["homeworkSubmission"]=="Yes") {
 					$homeworkSubmission="Y" ;
 					if ($_POST["homeworkSubmissionDateOpen"]!="") {
-						$homeworkSubmissionDateOpen=dateConvert($_POST["homeworkSubmissionDateOpen"]) ;
+						$homeworkSubmissionDateOpen=dateConvert($guid, $_POST["homeworkSubmissionDateOpen"]) ;
 					}
 					else {
-						$homeworkSubmissionDateOpen=dateConvert($_POST["date"]) ;
+						$homeworkSubmissionDateOpen=dateConvert($guid, $_POST["date"]) ;
 					}
 					$homeworkSubmissionDrafts=$_POST["homeworkSubmissionDrafts"] ;
 					$homeworkSubmissionType=$_POST["homeworkSubmissionType"] ;

@@ -214,7 +214,7 @@ else {
 											print "<b>" . $rowLessons["name"] . "</b><br/>" ;
 										print "</td>" ;
 										print "<td>" ;
-											print dateConvertBack($rowLessons["date"]) ;
+											print dateConvertBack($guid, $rowLessons["date"]) ;
 										print "</td>" ;
 										print "<td>" ;
 											print substr($rowLessons["timeStart"],0,5) . "-" . substr($rowLessons["timeEnd"],0,5) ;
@@ -268,7 +268,7 @@ else {
 							print "<h4>" ;
 							print $rowHookUnits[$hookOptions["unitNameField"]] ;
 							if ($rowHookUnits[$hookOptions["classLinkStartDateField"]]!="") {
-								print "<span style='font-size: 75%; font-style: italic; font-weight: normal'> Studied from " . dateConvertBack($rowHookUnits[$hookOptions["classLinkStartDateField"]]) . "</span>" ;
+								print "<span style='font-size: 75%; font-style: italic; font-weight: normal'> Studied from " . dateConvertBack($guid, $rowHookUnits[$hookOptions["classLinkStartDateField"]]) . "</span>" ;
 							}
 							if ($rowHooks["name"]!="") {
 								print "<br/><span style='font-size: 75%; font-style: italic; font-weight: normal'>" . $rowHooks["name"] . " Unit</span>" ;
@@ -330,7 +330,7 @@ else {
 												print "<b>" . $rowLessons["name"] . "</b><br/>" ;
 											print "</td>" ;
 											print "<td>" ;
-												print dateConvertBack($rowLessons["date"]) ;
+												print dateConvertBack($guid, $rowLessons["date"]) ;
 											print "</td>" ;
 											print "<td>" ;
 												print substr($rowLessons["timeStart"],0,5) . "-" . substr($rowLessons["timeEnd"],0,5) ;
@@ -414,7 +414,7 @@ else {
 									print "<b>" . $rowLessons["name"] . "</b><br/>" ;
 								print "</td>" ;
 								print "<td>" ;
-									print dateConvertBack($rowLessons["date"]) ;
+									print dateConvertBack($guid, $rowLessons["date"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									print substr($rowLessons["timeStart"],0,5) . "-" . substr($rowLessons["timeEnd"],0,5) ;

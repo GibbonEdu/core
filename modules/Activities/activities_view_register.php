@@ -303,7 +303,7 @@ else {
 															<b>Program Start Date</b><br/>
 														</td>
 														<td class="right">
-															<input readonly name="programStart" id="programStart" maxlength=10 value="<? print dateConvertBack($row["programStart"]) ?>" type="text" style="width: 300px">
+															<input readonly name="programStart" id="programStart" maxlength=10 value="<? print dateConvertBack($guid, $row["programStart"]) ?>" type="text" style="width: 300px">
 														</td>
 													</tr>
 													<tr>
@@ -311,7 +311,7 @@ else {
 															<b>Program End Date</b><br/>
 														</td>
 														<td class="right">
-															<input readonly name="programEnd" id="programEnd" maxlength=10 value="<? print dateConvertBack($row["programEnd"]) ?>" type="text" style="width: 300px">
+															<input readonly name="programEnd" id="programEnd" maxlength=10 value="<? print dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
 														</td>
 													</tr>
 													<?

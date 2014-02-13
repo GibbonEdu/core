@@ -140,7 +140,7 @@ else {
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
 							print "<b>" . $row["subject"] . "</b><br/>" ;
-							print "<span style='font-size: 75%; font-style: italic'>" . dateConvertBack(substr($row["timestamp"],0,10)) . "</span><br/>" ;
+							print "<span style='font-size: 75%; font-style: italic'>" . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "</span><br/>" ;
 						print "</td>" ;
 						print "<td>" ;
 							print formatName($row["title"], $row["preferredName"], $row["surname"], $row["category"]) ;

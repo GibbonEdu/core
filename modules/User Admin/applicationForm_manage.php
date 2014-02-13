@@ -243,7 +243,7 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							print "<b>" . formatName("", $row["preferredName"], $row["surname"], "Student", true) . "</b><br/>" ;
-							print "<span style='font-style: italic; font-size: 85%'>" . dateConvertBack(substr($row["timestamp"],0,10))  . "</span>" ;
+							print "<span style='font-style: italic; font-size: 85%'>" . dateConvertBack($guid, substr($row["timestamp"],0,10))  . "</span>" ;
 						print "</td>" ;
 						print "<td>" ;
 							print substr($row["dob"],0,4) . "<br/>" ;

@@ -243,17 +243,17 @@ else {
 							print "<td>" ;
 								print $rowEvent["status"] . "<br/>" ;
 								if ($rowEvent["timestampOut"]!="") {
-									print "<span style='font-size: 85%; font-style: italic'>" . dateConvertBack(substr($rowEvent["timestampOut"],0,10)) ;
+									print "<span style='font-size: 85%; font-style: italic'>" . dateConvertBack($guid, substr($rowEvent["timestampOut"],0,10)) ;
 									
 									if ($rowEvent["timestampReturn"]!="") {
-										print " - " . dateConvertBack(substr($rowEvent["timestampReturn"],0,10)) ;
+										print " - " . dateConvertBack($guid, substr($rowEvent["timestampReturn"],0,10)) ;
 									}
 									print "</span>" ;
 								}
 							print "</td>" ;
 							print "<td>" ;
 								if ($rowEvent["status"]!="Returned" AND $rowEvent["returnExpected"]!="") {
-									print dateConvertBack(substr($rowEvent["returnExpected"],0,10)) . "<br/>" ;
+									print dateConvertBack($guid, substr($rowEvent["returnExpected"],0,10)) . "<br/>" ;
 								}
 							print "</td>" ;
 							print "<td>" ;

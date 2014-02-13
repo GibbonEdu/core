@@ -104,7 +104,7 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						if ($row["firstDay"]!=NULL AND $row["lastDay"]!=NULL) {
-							print dateConvertBack($row["firstDay"]) . " - " . dateConvertBack($row["lastDay"]) ;
+							print dateConvertBack($guid, $row["firstDay"]) . " - " . dateConvertBack($guid, $row["lastDay"]) ;
 						}
 					print "</td>" ;
 					print "<td>" ;

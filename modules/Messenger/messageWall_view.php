@@ -50,13 +50,13 @@ else {
 	print "<div class='linkTop' style='height: 27px'>" ;
 		 print "<div style='text-align: left; width: 40%; float: left;'>" ;
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messageWall_view.php'>" ;
-				print "<input name='date' maxlength=10 value='" . date("d/m/Y", (dateConvertToTimestamp(dateConvert($date))-(24*60*60))) . "' type='hidden' style='width:100px; float: none; margin-right: 4px;'>" ;
+				print "<input name='date' maxlength=10 value='" . date("d/m/Y", (dateConvertToTimestamp(dateConvert($guid, $date))-(24*60*60))) . "' type='hidden' style='width:100px; float: none; margin-right: 4px;'>" ;
 				?>
 				<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Previous Day'>
 				<?	
 			print "</form>" ;
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messageWall_view.php'>" ;
-				print "<input name='date' maxlength=10 value='" . date("d/m/Y", (dateConvertToTimestamp(dateConvert($date))+(24*60*60))) . "' type='hidden' style='width:100px; float: none; margin-right: 4px;'>" ;
+				print "<input name='date' maxlength=10 value='" . date("d/m/Y", (dateConvertToTimestamp(dateConvert($guid, $date))+(24*60*60))) . "' type='hidden' style='width:100px; float: none; margin-right: 4px;'>" ;
 				?>
 				<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Next Day'>
 				<?	
@@ -68,7 +68,7 @@ else {
 				?>
 				<script type="text/javascript">
 					var date=new LiveValidation('date');
-					date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+					date.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					date.add(Validate.Presence);
 				 </script>
 				 <script type="text/javascript">
@@ -82,6 +82,6 @@ else {
 		print "</div>" ;
 	print "</div>" ;
 	
-	print getMessages($guid, $connection2, "print", dateConvert($date)) ;
+	print getMessages($guid, $connection2, "print", dateConvert($guid, $date)) ;
 }		
 ?>

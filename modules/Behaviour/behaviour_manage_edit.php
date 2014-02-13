@@ -172,10 +172,10 @@ else {
 						<tr>
 							<td> 
 								<b>Date *</b><br/>
-								<span style="font-size: 90%"><i>Format: dd/mm/yyyy</i></span>
+								<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 							</td>
 							<td class="right">
-								<input readonly name="date" id="date" maxlength=10 value="<? print dateConvertBack($row["date"]) ?>" type="text" style="width: 300px">
+								<input readonly name="date" id="date" maxlength=10 value="<? print dateConvertBack($guid, $row["date"]) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 					

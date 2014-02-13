@@ -286,11 +286,11 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 			$return.="<tr>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style2 $style3'>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>Invoice Issue Date</span><br/>" ;
-					$return.=dateConvertBack($row["invoiceIssueDate"]) ;
+					$return.=dateConvertBack($guid, $row["invoiceIssueDate"]) ;
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style2 $style3'>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>Due Date</span><br/>" ;
-					$return.=dateConvertBack($row["invoiceDueDate"]) ;
+					$return.=dateConvertBack($guid, $row["invoiceDueDate"]) ;
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style2 $style3'>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>Invoice Number</span><br/>" ;
@@ -556,11 +556,11 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 			$return.="<tr>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style2 $style3'>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>Due Date</span><br/>" ;
-					$return.=dateConvertBack($row["invoiceDueDate"]) ;
+					$return.=dateConvertBack($guid, $row["invoiceDueDate"]) ;
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style2 $style3'>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>Date Paid</span><br/>" ;
-					$return.=dateConvertBack($row["paidDate"]) ;
+					$return.=dateConvertBack($guid, $row["paidDate"]) ;
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style2 $style3'>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>Invoice Number</span><br/>" ;

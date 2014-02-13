@@ -166,10 +166,10 @@ else {
 							$rowMedical=$resultMedical->fetch() ;
 							//Is last update more recent than 90 days?
 							if (substr($rowMedical["timestamp"],0,10)>date("Y-m-d", (time()-(90*24*60*60)))) {
-								print dateConvertBack(substr($rowMedical["timestamp"],0,10)) ;
+								print dateConvertBack($guid, substr($rowMedical["timestamp"],0,10)) ;
 							}
 							else {
-								print "<span style='color: #ff0000; font-weight: bold'>" . dateConvertBack(substr($rowMedical["timestamp"],0,10)) . "</span>" ;
+								print "<span style='color: #ff0000; font-weight: bold'>" . dateConvertBack($guid, substr($rowMedical["timestamp"],0,10)) . "</span>" ;
 							}
 						}
 						else {

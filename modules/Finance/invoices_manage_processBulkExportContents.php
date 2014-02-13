@@ -153,7 +153,7 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						if ($row["dob"]!="") {
-							print dateConvertBack($row["dob"]) ;
+							print dateConvertBack($guid, $row["dob"]) ;
 						}
 					print "</td>" ;
 					print "<td>" ;
@@ -202,14 +202,14 @@ else {
 						}
 					print "</td>" ;
 					print "<td>" ;
-						print dateConvertBack($row["invoiceIssueDate"]) ;
+						print dateConvertBack($guid, $row["invoiceIssueDate"]) ;
 					print "</td>" ;
 					print "<td>" ;
-						print dateConvertBack($row["invoiceDueDate"]) ;
+						print dateConvertBack($guid, $row["invoiceDueDate"]) ;
 					print "</td>" ;
 					print "<td>" ;
 						if ($row["paidDate"]!="") {
-							print dateConvertBack($row["paidDate"]) ;
+							print dateConvertBack($guid, $row["paidDate"]) ;
 						}
 					print "</td>" ;
 					print "<td>" ;

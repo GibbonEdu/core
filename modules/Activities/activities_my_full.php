@@ -102,11 +102,11 @@ else {
 						else {
 							print "<td style='width: 33%; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Start Date</span><br/>" ;
-								print dateConvertBack($row["programStart"]) ;
+								print dateConvertBack($guid, $row["programStart"]) ;
 							print "</td>" ;
 							print "<td style='width: 33%; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>End Date</span><br/>" ;
-								print dateConvertBack($row["programEnd"]) ;
+								print dateConvertBack($guid, $row["programEnd"]) ;
 							print "</td>" ;
 						}
 						print "<td style='width: 33%; vertical-align: top'>" ;

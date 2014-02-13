@@ -46,7 +46,7 @@ if (isset($_POST["gibbonCourseClassID"])) {
 }
 $date=NULL ;
 if (isset($_POST["date"])) {
-	$date=dateConvert($_POST["date"]) ;
+	$date=dateConvert($guid, $_POST["date"]) ;
 }
 $gibbonCourseClassIDFilter=NULL ;
 if (isset($_GET["gibbonCourseClassIDFilter"])) {

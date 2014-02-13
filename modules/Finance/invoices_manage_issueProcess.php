@@ -119,7 +119,7 @@ else {
 				else {
 					//Write to database
 					try {
-						$data=array("status"=>$status, "notes"=>$notes, "separated"=>$separated, "invoiceDueDate"=>dateConvert($invoiceDueDate), "invoiceIssueDate"=>$invoiceIssueDate, "gibbonPersonIDUpdate"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID); 
+						$data=array("status"=>$status, "notes"=>$notes, "separated"=>$separated, "invoiceDueDate"=>dateConvert($guid, $invoiceDueDate), "invoiceIssueDate"=>$invoiceIssueDate, "gibbonPersonIDUpdate"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID); 
 						$sql="UPDATE gibbonFinanceInvoice SET status=:status, notes=:notes, separated=:separated, invoiceDueDate=:invoiceDueDate, invoiceIssueDate=:invoiceIssueDate, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate='" . date("Y-m-d H:i:s") . "' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);

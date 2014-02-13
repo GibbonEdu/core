@@ -180,7 +180,7 @@ else {
 							$output.="<input name='field" . $fieldName . "' id='field" . $fieldName . "' maxlength=10 value='' type='text' style='width: 300px'>" ;
 							$output.="<script type='text/javascript'>" ;
 								$output.="var field" . $fieldName . "=new LiveValidation('field" . $fieldName . "');" ;
-								$output.="field" . $fieldName . ".add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: 'Use dd/mm/yyyy.' } );" ; 
+								$output.="field" . $fieldName . ".add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: 'Use dd/mm/yyyy.' } );" ; 
 							$output.="</script>" ;
 							$output.="<script type='text/javascript'>" ;
 								$output.="$(function() {" ;

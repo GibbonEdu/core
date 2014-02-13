@@ -134,7 +134,7 @@ else {
 						$complete="N" ;
 					}
 					else {
-						$completeDate=dateConvert($completeDate) ;
+						$completeDate=dateConvert($guid, $completeDate) ;
 						$complete="Y" ;
 					}
 					$viewableStudents=$_POST["viewableStudents"] ;

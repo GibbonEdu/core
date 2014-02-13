@@ -210,10 +210,10 @@ else {
 									<b>Invoice Due Date *</b><br/>
 								</td>
 								<td class="right">
-									<input name="invoiceDueDate" id="invoiceDueDate" value="<? print dateConvertBack($row["invoiceDueDate"]) ?>" type="text" style="width: 300px">
+									<input name="invoiceDueDate" id="invoiceDueDate" value="<? print dateConvertBack($guid, $row["invoiceDueDate"]) ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var invoiceDueDate=new LiveValidation('invoiceDueDate');
-										invoiceDueDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+										invoiceDueDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 										invoiceDueDate.add(Validate.Presence);
 									 </script>
 									 <script type="text/javascript">
@@ -233,7 +233,7 @@ else {
 									<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
 								</td>
 								<td class="right">
-									<input readonly name="invoiceDueDate" id="invoiceDueDate" value="<? print dateConvertBack($row["invoiceDueDate"]) ?>" type="text" style="width: 300px">
+									<input readonly name="invoiceDueDate" id="invoiceDueDate" value="<? print dateConvertBack($guid, $row["invoiceDueDate"]) ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
 							<?
@@ -309,7 +309,7 @@ else {
 								<input name="paidDate" id="paidDate" maxlength=10 value="" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var paidDate=new LiveValidation('paidDate');
-									paidDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+									paidDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 									paidDate.add(Validate.Presence);
 								 </script>
 								 <script type="text/javascript">
@@ -365,7 +365,7 @@ else {
 								<span style="font-size: 90%"><i>Date of payment, not entry to system.</i></span>
 							</td>
 							<td class="right">
-								<input readonly name="paidDate" id="paidDate" maxlength=10 value="<? print dateConvertBack($row["paidDate"]) ; ?>" type="text" style="width: 300px">
+								<input readonly name="paidDate" id="paidDate" maxlength=10 value="<? print dateConvertBack($guid, $row["paidDate"]) ; ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 						<tr>

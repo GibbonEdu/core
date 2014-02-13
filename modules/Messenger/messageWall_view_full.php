@@ -32,7 +32,7 @@ else {
 	$date=date("Y-m-d") ;
 	
 	print "<h1>" ;
-		print "Today's Messages <span style='font-size: 55%; font-style: italic'>(" . dateConvertBack($date) . ")</span>" ;
+		print "Today's Messages <span style='font-size: 55%; font-style: italic'>(" . dateConvertBack($guid, $date) . ")</span>" ;
 	print "</h1>" ;
 	
 	print getMessages($guid, $connection2, "print", $date) ;

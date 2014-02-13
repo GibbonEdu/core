@@ -75,8 +75,8 @@ else {
 			$name=$_POST["name"] ;
 			$status=$_POST["status"] ;
 			$sequenceNumber=$_POST["sequenceNumber"] ;
-			$firstDay=dateConvert($_POST["firstDay"]) ;
-			$lastDay=dateConvert($_POST["lastDay"]) ;
+			$firstDay=dateConvert($guid, $_POST["firstDay"]) ;
+			$lastDay=dateConvert($guid, $_POST["lastDay"]) ;
 			
 			if ($name=="" OR $status=="" OR $sequenceNumber=="" OR is_numeric($sequenceNumber)==FALSE OR $firstDay=="" OR $lastDay=="") {
 				//Fail 3

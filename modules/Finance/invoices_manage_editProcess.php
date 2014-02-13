@@ -109,7 +109,7 @@ else {
 					$order=$_POST["order"] ;
 				}
 				if ($_POST["status"]=="Paid" OR $_POST["status"]=="Refunded") {
-					$paidDate=dateConvert($_POST["paidDate"]) ;
+					$paidDate=dateConvert($guid, $_POST["paidDate"]) ;
 				}
 				else {
 					$paidDate=NULL ;
@@ -121,7 +121,7 @@ else {
 					$paidAmount=NULL ;
 				}
 				if ($row["billingScheduleType"]=="Ad Hoc" AND ($row["status"]=="Pending" OR $row["status"]=="Issued")) {
-					$invoiceDueDate=dateConvert($_POST["invoiceDueDate"]) ;
+					$invoiceDueDate=dateConvert($guid, $_POST["invoiceDueDate"]) ;
 				}
 				else {
 					$invoiceDueDate=$row["invoiceDueDate"] ;

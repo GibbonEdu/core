@@ -141,7 +141,7 @@ else {
 								<b>Listing Dates</b><br/>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<? print dateConvertBack($row["listingStart"]) . "-" . dateConvertBack($row["listingEnd"]) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<? print dateConvertBack($guid, $row["listingStart"]) . "-" . dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 						<tr>
@@ -149,7 +149,7 @@ else {
 								<b>Program Dates</b><br/>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<? print dateConvertBack($row["programStart"]) . "-" . dateConvertBack($row["programEnd"]) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<? print dateConvertBack($guid, $row["programStart"]) . "-" . dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 						<?
@@ -246,7 +246,7 @@ else {
 								print $row["status"] ;
 							print "</td>" ;
 							print "<td>" ;
-								print dateConvertBack(substr($row["timestamp"],0,10)) . " at " . substr($row["timestamp"],11,5) ;
+								print dateConvertBack($guid, substr($row["timestamp"],0,10)) . " at " . substr($row["timestamp"],11,5) ;
 							print "</td>" ;
 							print "<td>" ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_edit.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=" . $_GET["search"] . "'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;

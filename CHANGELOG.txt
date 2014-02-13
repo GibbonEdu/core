@@ -9,33 +9,52 @@ Database: fixed issue leading to some tables becoming InnoDB instead of MyISAM
 	Edited table gibbonDistrict
 	Edited dev database environment engine setting
 	
-Internationalisation: Rationalised standard strings across the system
+i18n: Rationalised standard strings across the system
 	Edited various files
 
-Internationalisation: added localisation folder for jqueryUI datepicker
+i18n: added localisation folder for jqueryUI datepicker
 	New folder /lib/jquery-ui/i18n
 	Removed file /lib/jquery-ui/jquery.ui.datepicker-en-GB.js
 	Edited files /index.php, fullscreen.php
 
-Internationalisation: added folders for store localisation data
+i18n: added folders for store localisation data
 	New folders /i18n, /i18n/en-US, /i18n/en-GB, /i18n/es, l18n/zh-CN
 
-Internationalisation: added system for storing and managing localisations and system defaults
+i18n: added system for storing and managing localisations and system defaults
 	New table gibboni18n
 	Added values to tables gibbonAction, gibbonPermission
 	New files /modules/System Admin/i18n_manageProcess*.php
 	Edited file /functions.php
 
-Internationalisation: added ability to choose language on login
+i18n: added ability to choose language on login
 	Edited file /functions.php, /login.php
 
-Internationalisation: added ability for a user to choose language preference
+i18n: added ability for a user to choose language preference
 	Edited table gibbonPerson
 	Edited files /preferences*.php, login.php 
 	Edited file /lib/googleOAuth/index.php
 
 User Admin: added Name In Characters to user sync,
 	Edited file /modules/User Admin/import_users.php
+
+i18n: adjusted jQueryUI datePicker loading to account for language selection
+	Edited file /index.php
+
+Planner: fixed PHP Notice error
+	Edited file /modules/Planner/planner_editProcess.php
+
+i18n: adjusted internal date conversion functions to account for language
+	Edited file /functions.php
+	Edited various files across the system
+
+i18n: added folder and database record for Traditional Chinese - Hong Kong
+	New folder /l18n/zh-HK
+	Added values in table gibboni18n
+
+i18n: adjusted display of date format and date format error messages to account for language
+	Edited table gibboni18n
+	Edited various files across the system
+
 	
 
 v7.1.02

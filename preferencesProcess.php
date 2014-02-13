@@ -91,12 +91,7 @@ else {
 		catch(PDOException $e) { 	}
 		if ($result->rowCount()==1) {
 			$row=$result->fetch() ;
-			$_SESSION[$guid]["i18n"]["gibboni18nID"]=$row["gibboni18nID"] ;
-			$_SESSION[$guid]["i18n"]["code"]=$row["code"] ;
-			$_SESSION[$guid]["i18n"]["name"]=$row["name"] ;
-			$_SESSION[$guid]["i18n"]["dateFormat"]=$row["dateFormat"] ;
-			$_SESSION[$guid]["i18n"]["currencyCode"]=$row["currencyCode"] ;
-			$_SESSION[$guid]["i18n"]["currencySymbol"]=$row["currencySymbol"] ;
+			setLanguageSession($guid, $row) ;
 		}
 	}
 	else {
@@ -109,12 +104,7 @@ else {
 		catch(PDOException $e) { }
 		if ($result->rowCount()==1) {
 			$row=$result->fetch() ;
-			$_SESSION[$guid]["i18n"]["gibboni18nID"]=$row["gibboni18nID"] ;
-			$_SESSION[$guid]["i18n"]["code"]=$row["code"] ;
-			$_SESSION[$guid]["i18n"]["name"]=$row["name"] ;
-			$_SESSION[$guid]["i18n"]["dateFormat"]=$row["dateFormat"] ;
-			$_SESSION[$guid]["i18n"]["currencyCode"]=$row["currencyCode"] ;
-			$_SESSION[$guid]["i18n"]["currencySymbol"]=$row["currencySymbol"] ;
+			setLanguageSession($guid, $row) ;
 		}
 	}
 	

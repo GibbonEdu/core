@@ -347,7 +347,7 @@ else {
 							print "<i>Unknown</i><br/>" ;
 						}
 						else {
-							print dateConvertBack($row["purchaseDate"]) . "<br/>" ;
+							print dateConvertBack($guid, $row["purchaseDate"]) . "<br/>" ;
 						}
 						print "<span style='font-size: 85%; font-style: italic'>" . $row["vendor"] . "</span>" ;
 					print "</td>" ;

@@ -213,7 +213,7 @@ else {
 						<td class="right">
 							<?
 							if ($row["dateStart"]!="") {
-								print "<u>Start Date</u>: " . dateConvertBack($row["dateStart"]) . "</br>" ;
+								print "<u>Start Date</u>: " . dateConvertBack($guid, $row["dateStart"]) . "</br>" ;
 							}
 							try {
 								$dataSelect=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
@@ -228,7 +228,7 @@ else {
 								print "<u>" . $rowSelect["schoolYear"] . "</u>: " . $rowSelect["rollGroup"] . "<br/>" ;
 							}
 							if ($row["dateEnd"]!="") {
-								print "<u>Edn Date</u>: " . dateConvertBack($row["dateEnd"]) . "</br>" ;
+								print "<u>Edn Date</u>: " . dateConvertBack($guid, $row["dateEnd"]) . "</br>" ;
 							}
 							?>
 						</td>

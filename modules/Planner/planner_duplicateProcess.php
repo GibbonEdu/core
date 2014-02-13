@@ -42,7 +42,7 @@ if ($viewBy!="date" AND $viewBy!="class") {
 	$viewBy="date" ;
 }
 $gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
-$date=dateConvert($_POST["date"]) ;
+$date=dateConvert($guid, $_POST["date"]) ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/planner_duplicate.php&gibbonPlannerEntryID=$gibbonPlannerEntryID" ;
 
 //Params to pass back (viewBy + date or classID)

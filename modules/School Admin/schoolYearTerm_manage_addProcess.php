@@ -49,8 +49,8 @@ else {
 	$sequenceNumber=$_POST["sequenceNumber"] ;
 	$name=$_POST["name"] ;
 	$nameShort=$_POST["nameShort"] ;
-	$firstDay=dateConvert($_POST["firstDay"]) ;
-	$lastDay=dateConvert($_POST["lastDay"]) ;
+	$firstDay=dateConvert($guid, $_POST["firstDay"]) ;
+	$lastDay=dateConvert($guid, $_POST["lastDay"]) ;
 	
 	if ($gibbonSchoolYearID=="" OR $name=="" OR $nameShort=="" OR $sequenceNumber=="" OR is_numeric($sequenceNumber)==FALSE OR $firstDay=="" OR $lastDay=="") {
 		//Fail 3

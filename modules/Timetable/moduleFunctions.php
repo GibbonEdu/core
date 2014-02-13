@@ -184,7 +184,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 			print"<tr>" ;
 				print"<td style='vertical-align: top'>" ; 
 					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
-						print "<input name='ttDate' value='" . date("d/m/Y", ($startDayStamp-(7*24*60*60))) . "' type='hidden'>" ;
+						print "<input name='ttDate' value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp-(7*24*60*60))) . "' type='hidden'>" ;
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;
@@ -193,7 +193,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 						<?	
 					print "</form>" ;
 					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
-						print "<input name='ttDate' value='" . date("d/m/Y", ($startDayStamp+(7*24*60*60))) . "' type='hidden'>" ;
+						print "<input name='ttDate' value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(7*24*60*60))) . "' type='hidden'>" ;
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;
@@ -204,11 +204,11 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				print"</td>" ; 
 				print"<td style='vertical-align: top; text-align: right'>" ;
 					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ; 
-						print "<input name='ttDate' id='ttDate' maxlength=10 value='" . date("d/m/Y", $startDayStamp) . "' type='text' style='height: 22px; width:100px; margin-right: 0px; float: none'> " ;
+						print "<input name='ttDate' id='ttDate' maxlength=10 value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], $startDayStamp) . "' type='text' style='height: 22px; width:100px; margin-right: 0px; float: none'> " ;
 						?>
 						<script type="text/javascript">
 							var ttDate=new LiveValidation('ttDate');
-							ttDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+							ttDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							ttDate.add(Validate.Presence);
 						 </script>
 						 <script type="text/javascript">
@@ -1244,7 +1244,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 			print"<tr>" ;
 				print"<td style='vertical-align: top'>" ; 
 					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
-						print "<input name='ttDate' maxlength=10 value='" . date("d/m/Y", ($startDayStamp-(7*24*60*60))) . "' type='hidden'>" ;
+						print "<input name='ttDate' maxlength=10 value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp-(7*24*60*60))) . "' type='hidden'>" ;
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;
@@ -1253,7 +1253,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 						<?	
 					print "</form>" ;
 					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
-						print "<input name='ttDate' value='" . date("d/m/Y", ($startDayStamp+(7*24*60*60))) . "' type='hidden'>" ;
+						print "<input name='ttDate' value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(7*24*60*60))) . "' type='hidden'>" ;
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;
@@ -1264,11 +1264,11 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				print"</td>" ; 
 				print"<td style='vertical-align: top; text-align: right'>" ; 
 					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
-						print "<input name='ttDate' id='ttDate' maxlength=10 value='" . date("d/m/Y", $startDayStamp) . "' type='text' style='height: 22px; width:100px; margin-right: 0px; float: none'>" ;
+						print "<input name='ttDate' id='ttDate' maxlength=10 value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], $startDayStamp) . "' type='text' style='height: 22px; width:100px; margin-right: 0px; float: none'>" ;
 						?>
 						<script type="text/javascript">
 							var ttDate=new LiveValidation('ttDate');
-							ttDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+							ttDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							ttDate.add(Validate.Presence);
 						 </script>
 						 <script type="text/javascript">

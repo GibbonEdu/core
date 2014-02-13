@@ -270,10 +270,10 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 				catch(PDOException $e) { print $e->getMessage() ; }
 				while ($rowContext=$resultContext->fetch()) {
 					if (isset($cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2])) {
-						$cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2].=$rowContext[$contextDBTableNameField] . " (" . dateConvertBack($rowContext[$contextDBTableDateField]) . ")<br/>" ;
+						$cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2].=$rowContext[$contextDBTableNameField] . " (" . dateConvertBack($guid, $rowContext[$contextDBTableDateField]) . ")<br/>" ;
 					}
 					else {
-						$cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2]=$rowContext[$contextDBTableNameField] . " (" . dateConvertBack($rowContext[$contextDBTableDateField]) . ")<br/>" ;
+						$cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2]=$rowContext[$contextDBTableNameField] . " (" . dateConvertBack($guid, $rowContext[$contextDBTableDateField]) . ")<br/>" ;
 					}
 				}
 			}

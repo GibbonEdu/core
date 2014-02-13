@@ -236,7 +236,7 @@ else {
 									<script type="text/javascript">
 										var nextfirstDay=new LiveValidation('nextfirstDay');
 										nextfirstDay.add(Validate.Presence);
-										nextfirstDay.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+										nextfirstDay.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 									 </script>
 									 <script type="text/javascript">
 										$(function() {
@@ -255,7 +255,7 @@ else {
 									<script type="text/javascript">
 										var nextlastDay=new LiveValidation('nextlastDay');
 										nextlastDay.add(Validate.Presence);
-										nextlastDay.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+										nextlastDay.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 									 </script>
 									 <script type="text/javascript">
 										$(function() {
@@ -932,8 +932,8 @@ else {
 					$name=$_POST["nextname"] ;
 					$status=$_POST["next-status"] ;
 					$sequenceNumber=$_POST["next-sequenceNumber"] ;
-					$firstDay=dateConvert($_POST["nextfirstDay"]) ;
-					$lastDay=dateConvert($_POST["nextlastDay"]) ;
+					$firstDay=dateConvert($guid, $_POST["nextfirstDay"]) ;
+					$lastDay=dateConvert($guid, $_POST["nextlastDay"]) ;
 					
 					if ($name=="" OR $status=="" OR $sequenceNumber=="" OR is_numeric($sequenceNumber)==FALSE OR $firstDay=="" OR $lastDay=="") {
 						print "<div class='error'>" ;

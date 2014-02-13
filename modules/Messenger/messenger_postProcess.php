@@ -74,19 +74,19 @@ else {
 		$date1=NULL ;
 		if (isset($_POST["date1"])) {
 			if ($_POST["date1"]!="") {
-				$date1=dateConvert($_POST["date1"]) ;
+				$date1=dateConvert($guid, $_POST["date1"]) ;
 			}
 		}
 		$date2=NULL ;
 		if (isset($_POST["date2"])) {
 			if ($_POST["date2"]!="") {
-				$date2=dateConvert($_POST["date2"]) ;
+				$date2=dateConvert($guid, $_POST["date2"]) ;
 			}
 		}
 		$date3=NULL ;
 		if (isset($_POST["date3"])) {
 			if ($_POST["date3"]!="") {
-				$date3=dateConvert($_POST["date3"]) ;
+				$date3=dateConvert($guid, $_POST["date3"]) ;
 			}
 		}
 		$sms=NULL ;

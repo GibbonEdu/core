@@ -38,7 +38,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $count=$_POST["count"] ;
 $gibbonPersonID=$_POST["gibbonPersonID"] ;
 $gibbonExternalAssessmentID=$_POST["gibbonExternalAssessmentID"] ;
-$date=dateConvert($_POST["date"]) ;
+$date=dateConvert($guid, $_POST["date"]) ;
 $search=$_GET["search"] ;
 
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/externalAssessment_manage_details_add.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID&gibbonPersonID=$gibbonPersonID&step=2&search=$search" ;

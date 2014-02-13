@@ -59,7 +59,7 @@ else {
 		if ($viewBy=="date") {
 			$date=$_GET["date"] ;
 			if ($_GET["dateHuman"]!="") {
-				$date=dateConvert($_GET["dateHuman"]) ;
+				$date=dateConvert($guid, $_GET["dateHuman"]) ;
 			}
 			if ($date=="") {
 				$date=date("Y-m-d");
@@ -115,7 +115,7 @@ else {
 			}
 		}
 		else {
-			$extra=dateConvertBack($date) ;
+			$extra=dateConvertBack($guid, $date) ;
 		}
 		
 		if ($proceed==FALSE) {
@@ -430,22 +430,22 @@ else {
 					<tr>
 						<td> 
 							<b>Date *</b><br/>
-							<span style="font-size: 90%"><i>Format: dd/mm/yyyy<br/></i></span>
+							<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 						</td>
 						<td class="right">
 							<?
 							if ($viewBy=="date") {
 								?>
-								<input readonly name="date" id="date" maxlength=10 value="<? print dateConvertBack($date) ?>" type="text" style="width: 300px">
+								<input readonly name="date" id="date" maxlength=10 value="<? print dateConvertBack($guid, $date) ?>" type="text" style="width: 300px">
 								<?
 							}
 							else {
 								?>
-								<input name="date" id="date" maxlength=10 value="<? print dateConvertBack($nextDate) ?>" type="text" style="width: 300px">
+								<input name="date" id="date" maxlength=10 value="<? print dateConvertBack($guid, $nextDate) ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var date=new LiveValidation('date');
 									date.add(Validate.Presence);
-									date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+									date.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 								 </script>
 								 <script type="text/javascript">
 									$(function() {
@@ -656,13 +656,13 @@ else {
 					<tr id="homeworkDueDateRow">
 						<td> 
 							<b>Homework Due Date *</b><br/>
-							<span style="font-size: 90%"><i>Format: dd/mm/yyyy<br/></i></span>
+							<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var homeworkDueDate=new LiveValidation('homeworkDueDate');
-								homeworkDueDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+								homeworkDueDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 	homeworkDueDate.add(Validate.Presence);
 								homeworkDueDate.disable();
 							 </script>
@@ -724,13 +724,13 @@ else {
 					<tr id="homeworkSubmissionDateOpenRow">
 						<td> 
 							<b>Submission Open Date</b><br/>
-							<span style="font-size: 90%"><i>Format: dd/mm/yyyy<br/></i></span>
+							<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="homeworkSubmissionDateOpen" id="homeworkSubmissionDateOpen" maxlength=10 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var homeworkSubmissionDateOpen=new LiveValidation('homeworkSubmissionDateOpen');
-								homeworkSubmissionDateOpen.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+								homeworkSubmissionDateOpen.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 </script>
 							 <script type="text/javascript">
 								$(function() {

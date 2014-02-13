@@ -134,7 +134,7 @@ else {
 						}
 					print "</td>" ;
 					print "<td>" ;
-						print dateConvertBack(substr($row["timestamp"],0,10)) . " at " . substr($row["timestamp"],11,5) ;
+						print dateConvertBack($guid, substr($row["timestamp"],0,10)) . " at " . substr($row["timestamp"],11,5) ;
 					print "</td>" ;
 					print "<td>" ;
 						print $row["status"] ;

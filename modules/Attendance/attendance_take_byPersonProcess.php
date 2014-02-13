@@ -42,7 +42,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $gibbonPersonID=$_GET["gibbonPersonID"] ;
 $currentDate=$_POST["currentDate"] ;
 $today=date("Y-m-d");
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=" . dateConvertBack($currentDate) ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=" . dateConvertBack($guid, $currentDate) ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byPerson.php")==FALSE) {
 	//Fail 0

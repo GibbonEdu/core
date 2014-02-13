@@ -33,12 +33,12 @@ else {
 	 	$currentDate=date("Y-m-d");
 	}
 	else {
-		$currentDate=dateConvert($_GET["currentDate"]) ;	 
+		$currentDate=dateConvert($guid, $_GET["currentDate"]) ;	 
 	}
 	
 	//Proceed!
 	print "<h2>" ;
-	print "Students Not Onsite, " . dateConvertBack($currentDate) ;
+	print "Students Not Onsite, " . dateConvertBack($guid, $currentDate) ;
 	print "</h2>" ;
 	
 	

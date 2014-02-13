@@ -183,7 +183,7 @@ else {
 						$response=$_POST["response$i"] ; 	
 						$medication=$_POST["medication$i"] ; 	
 						if ($_POST["lastEpisode$i"]!="") {
-							$lastEpisode=dateConvert($_POST["lastEpisode$i"]) ;
+							$lastEpisode=dateConvert($guid, $_POST["lastEpisode$i"]) ;
 						}
 						else {
 							$lastEpisode=NULL ;
@@ -218,7 +218,7 @@ else {
 						$response=$_POST["response$i"] ; 	
 						$medication=$_POST["medication$i"] ; 	
 						if ($_POST["lastEpisode$i"]!="") {
-							$lastEpisode=dateConvert($_POST["lastEpisode$i"]) ;
+							$lastEpisode=dateConvert($guid, $_POST["lastEpisode$i"]) ;
 						}
 						else {
 							$lastEpisode=NULL ;
@@ -253,7 +253,7 @@ else {
 					$response=$_POST["response"] ; 	
 					$medication=$_POST["medication"] ; 	
 					if ($_POST["lastEpisode"]!="") {
-						$lastEpisode=dateConvert($_POST["lastEpisode"]) ;
+						$lastEpisode=dateConvert($guid, $_POST["lastEpisode"]) ;
 					}
 					else {
 						$lastEpisode=NULL ;

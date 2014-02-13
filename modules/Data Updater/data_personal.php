@@ -466,20 +466,20 @@ else {
 									<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
 								</td>
 								<td class="right">
-									<input name="dob" id="dob" maxlength=10 value="<? print dateConvertBack($row["dob"]) ?>" type="text" style="width: 300px">
+									<input name="dob" id="dob" maxlength=10 value="<? print dateConvertBack($guid, $row["dob"]) ?>" type="text" style="width: 300px">
 									<?
 									$fieldName="dob" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
 											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
-											print $fieldName . "add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: \"Use dd/mm/yyyy.\" } );" ; 
+											print $fieldName . "add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: \"Use dd/mm/yyyy.\" } );" ; 
 										 print "</script>" ;
 									} }
 									else {
 										print "<script type=\"text/javascript\">" ;
 											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . "add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: \"Use dd/mm/yyyy.\" } );" ; 
+											print $fieldName . "add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: \"Use dd/mm/yyyy.\" } );" ; 
 										 print "</script>" ;
 									}
 									?>
@@ -1487,10 +1487,10 @@ else {
 									?>
 								</td>
 								<td class="right">
-									<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<? print dateConvertBack($row["visaExpiryDate"]) ?>" type="text" style="width: 300px">
+									<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<? print dateConvertBack($guid, $row["visaExpiryDate"]) ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var visaExpiryDate=new LiveValidation('visaExpiryDate');
-										visaExpiryDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+										visaExpiryDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 									 	<?
 									 	if ($required["visaExpiryDate"]=="Y") {
 											print "visaExpiryDate.add(Validate.Presence);" ;

@@ -1408,7 +1408,7 @@ function sidebar($connection2, $guid) {
 						
 						print "<li style='$style'>" ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&date=" . $row["date"] . "'>" . $row["course"] . "." . $row["class"] . "</a><br/>" ;
-						print "<span style='font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) ;
+						print "<span style='font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) ;
 						print "</li>" ;
 					}
 					$count++ ;
@@ -2216,15 +2216,22 @@ function getSystemSettings($guid, $connection2) {
 	}
 	if ($result->rowCount()==1) {
 		$row=$result->fetch() ;
-		$_SESSION[$guid]["i18n"]["gibboni18nID"]=$row["gibboni18nID"] ;
-		$_SESSION[$guid]["i18n"]["code"]=$row["code"] ;
-		$_SESSION[$guid]["i18n"]["name"]=$row["name"] ;
-		$_SESSION[$guid]["i18n"]["dateFormat"]=$row["dateFormat"] ;
-		$_SESSION[$guid]["i18n"]["currencyCode"]=$row["currencyCode"] ;
-		$_SESSION[$guid]["i18n"]["currencySymbol"]=$row["currencySymbol"] ;
+		setLanguageSession($guid, $row) ;
 	}
 		
 	$_SESSION[$guid]["systemSettingsSet"]=TRUE ;
+}
+
+//Set language session variables
+function setLanguageSession($guid, $row) {
+	$_SESSION[$guid]["i18n"]["gibboni18nID"]=$row["gibboni18nID"] ;
+	$_SESSION[$guid]["i18n"]["code"]=$row["code"] ;
+	$_SESSION[$guid]["i18n"]["name"]=$row["name"] ;
+	$_SESSION[$guid]["i18n"]["dateFormat"]=$row["dateFormat"] ;
+	$_SESSION[$guid]["i18n"]["dateFormatRegEx"]=$row["dateFormatRegEx"] ;
+	$_SESSION[$guid]["i18n"]["dateFormatPHP"]=$row["dateFormatPHP"] ;
+	$_SESSION[$guid]["i18n"]["currencyCode"]=$row["currencyCode"] ;
+	$_SESSION[$guid]["i18n"]["currencySymbol"]=$row["currencySymbol"] ;
 }
 
 //Gets the desired setting, specified by name and scope.
@@ -2247,28 +2254,35 @@ function getSettingByScope( $connection2, $scope, $name ) {
 	return $output ;
 }
 
-//Converts date from dd/mm/yyyy to YYYY-MM-DD
-function dateConvert ($date) {
+//Converts date from language-specific format to YYYY-MM-DD
+function dateConvert($guid, $date) {
 	$output=FALSE ;
 	
 	if ($date!="") {
-		$firstSlashPosition=2 ;
-		$secondSlashPosition=5 ;
-		
-		$output=substr($date,($secondSlashPosition+1)) . "-" . substr($date,($firstSlashPosition+1),2) . "-" . substr($date,0,$firstSlashPosition) ; 
+		if ($_SESSION[$guid]["i18n"]["dateFormat"]=="mm/dd/yyyy") {
+			$firstSlashPosition=2 ;
+			$secondSlashPosition=5 ;
+			$output=substr($date,($secondSlashPosition+1)) . "-" . substr($date,0,$firstSlashPosition) . "-" . substr($date,($firstSlashPosition+1),2) ; 
+		}
+		else {
+			$output=date('Y-m-d', strtotime(str_replace('/', '-', $date)));
+		}
 	}
 	return $output ;
 }
 
-//Converts date from YYYY-MM-DD to dd/mm/yyyy
-function dateConvertBack ($date) {
+//Converts date from YYYY-MM-DD to language-specific format.
+function dateConvertBack($guid, $date) {
 	$output=FALSE ;
 	
 	if ($date!="") {
-		$firstSlashPosition=4 ;
-		$secondSlashPosition=7 ;
-		
-		$output=substr($date,($secondSlashPosition+1)) . "/" . substr($date,($firstSlashPosition+1),2) . "/" . substr($date,0,$firstSlashPosition) ; 
+		$timestamp=strtotime($date) ;
+		if ($_SESSION[$guid]["i18n"]["dateFormatPHP"]!="") {
+			$output=date($_SESSION[$guid]["i18n"]["dateFormatPHP"], $timestamp) ;
+		}
+		else {
+			$output=date("d/m/Y", $timestamp) ;
+		}
 	}
 	return $output ;
 }

@@ -79,7 +79,7 @@ else {
 			else {
 				//Validate Inputs
 				$count=$_POST["count"] ;
-				$date=dateConvert($_POST["date"]) ;
+				$date=dateConvert($guid, $_POST["date"]) ;
 
 				if ($count=="" OR $date=="") {
 					//Fail 3

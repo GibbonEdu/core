@@ -319,11 +319,11 @@ else {
 						}
 							print "<b>" . formatName("", $row["preferredNameStudent"], $row["surnameStudent"], "Student", true) . "</b><br/>" ;
 							if (substr($row["timestamp"],0,10)>$row["date"]) {
-								print "Updated: " . dateConvertBack(substr($row["timestamp"],0,10)) . "<br/>" ;
-								print "Incident: " . dateConvertBack($row["date"]) . "<br/>" ;
+								print "Updated: " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
+								print "Incident: " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
 							}
 							else {
-								print dateConvertBack($row["date"]) . "<br/>" ;
+								print dateConvertBack($guid, $row["date"]) . "<br/>" ;
 							}
 						print "</td>" ;
 						print "<td style='text-align: center'>" ;

@@ -78,7 +78,7 @@ else {
 	else {
 		//Check unique inputs for uniquness
 		try {
-			$data=array("date"=>dateConvert($date)); 
+			$data=array("date"=>dateConvert($guid, $date)); 
 			$sql="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
@@ -104,7 +104,7 @@ else {
 			else {	
 				//Write to database
 				try {
-					$data=array("gibbonSchoolYearTermID"=>$gibbonSchoolYearTermID, "date"=>dateConvert($date), "type"=>$type, "name"=>$name, "description"=>$description, "schoolOpen"=>$schoolOpen, "schoolStart"=>$schoolStart, "schoolEnd"=>$schoolEnd, "schoolClose"=>$schoolClose); 
+					$data=array("gibbonSchoolYearTermID"=>$gibbonSchoolYearTermID, "date"=>dateConvert($guid, $date), "type"=>$type, "name"=>$name, "description"=>$description, "schoolOpen"=>$schoolOpen, "schoolStart"=>$schoolStart, "schoolEnd"=>$schoolEnd, "schoolClose"=>$schoolClose); 
 					$sql="INSERT INTO gibbonSchoolYearSpecialDay SET gibbonSchoolYearTermID=:gibbonSchoolYearTermID, date=:date, type=:type, name=:name, description=:description,schoolOpen=:schoolOpen, schoolStart=:schoolStart, schoolEnd=:schoolEnd, schoolClose=:schoolClose" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);

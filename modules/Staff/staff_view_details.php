@@ -530,7 +530,7 @@ else {
 							include "./modules/Timetable/moduleFunctions.php" ;
 							$ttDate="" ;
 							if (isset($_POST["ttDate"])) {
-								$ttDate=dateConvertToTimestamp(dateConvert($_POST["ttDate"]));
+								$ttDate=dateConvertToTimestamp(dateConvert($guid, $_POST["ttDate"]));
 							}
 							$tt=renderTT($guid, $connection2,$gibbonPersonID, "", FALSE, $ttDate, "/modules/Staff/staff_view_details.php", "&gibbonPersonID=$gibbonPersonID&subpage=Timetable&search=$search") ;
 							if ($tt!=FALSE) {
@@ -756,7 +756,7 @@ else {
 									else {
 										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=date&date=$date&width=1000&height=550'>" . $row["course"] . "." . $row["class"] . "</a><br/>" ;
 									}
-									print "<span style='font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) ;
+									print "<span style='font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) ;
 									print "</li>" ;
 								}
 								print "</ol>" ;
@@ -865,7 +865,7 @@ else {
 											print "<tr class=$rowNum>" ;
 												print "<td>" ;
 													print "<b>" . $row["course"] . "." . $row["class"] . "</b></br>" ;
-													print dateConvertBack($row["date"]) ;
+													print dateConvertBack($guid, $row["date"]) ;
 												print "</td>" ;
 												print "<td>" ;
 													print "<b>" . $row["name"] . "</b><br/>" ;
@@ -896,7 +896,7 @@ else {
 													}
 												print "</td>" ;
 												print "<td>" ;
-													print dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) ;
+													print dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) ;
 												print "</td>" ;
 												print "<td>" ;
 													if ($row["homeworkSubmission"]=="Y") {

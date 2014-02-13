@@ -103,9 +103,9 @@ function getBorrowingRecord($guid, $connection2, $gibbonPersonID) {
 						}
 					$output.="</td>" ;
 					$output.="<td style='width: 130px'>" ;
-						$output.=dateConvertBack(substr($row["timestampOut"],0,10)) . "<br/>" ;
+						$output.=dateConvertBack($guid, substr($row["timestampOut"],0,10)) . "<br/>" ;
 						if ($row["status"]=="On Loan") {
-							$output.="<span style='font-size: 85%; font-style: italic'>" . dateConvertBack($row["returnExpected"]) . "</span>" ;
+							$output.="<span style='font-size: 85%; font-style: italic'>" . dateConvertBack($guid, $row["returnExpected"]) . "</span>" ;
 						}
 					$output.="</td>" ;
 					$output.="<td>" ;

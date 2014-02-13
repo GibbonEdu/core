@@ -275,7 +275,7 @@ else {
 									print "<b>Response:</b> " . $row["response"] . "<br/>" ;
 								}
 								if ($row["lastEpisode"]!="") {
-									print "<b>Last Episode:</b> " . dateConvertBack($row["lastEpisode"]) . "<br/>" ;
+									print "<b>Last Episode:</b> " . dateConvertBack($guid, $row["lastEpisode"]) . "<br/>" ;
 								}
 								if ($row["lastEpisodeTreatment"]!="") {
 									print "<b>Last Episode Treatment:</b> " . $row["lastEpisodeTreatment"] . "<br/>" ;

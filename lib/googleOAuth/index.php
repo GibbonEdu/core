@@ -352,12 +352,7 @@ try {
 						catch(PDOException $e) { }
 						if ($resultLanguage->rowCount()==1) {
 							$rowLanguage=$resultLanguage->fetch() ;
-							$_SESSION[$guid]["i18n"]["gibboni18nID"]=$rowLanguage["gibboni18nID"] ;
-							$_SESSION[$guid]["i18n"]["code"]=$rowLanguage["code"] ;
-							$_SESSION[$guid]["i18n"]["name"]=$rowLanguage["name"] ;
-							$_SESSION[$guid]["i18n"]["dateFormat"]=$rowLanguage["dateFormat"] ;
-							$_SESSION[$guid]["i18n"]["currencyCode"]=$rowLanguage["currencyCode"] ;
-							$_SESSION[$guid]["i18n"]["currencySymbol"]=$rowLanguage["currencySymbol"] ;
+							setLanguageSession($guid, $rowLanguage) ;
 						}
 					}
 			

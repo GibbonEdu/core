@@ -421,7 +421,7 @@ else {
 									print "Last Episode" ;
 								print "</td>" ;
 								print "<td>" ;
-									print dateConvertBack($rowCond2["lastEpisode"]) ;
+									print dateConvertBack($guid, $rowCond2["lastEpisode"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									$style="" ;
@@ -429,7 +429,7 @@ else {
 										$style="style='color: #ff0000'" ;
 									}
 									print "<span $style>" ;
-									print dateConvertBack($rowCond["lastEpisode"]) ;
+									print dateConvertBack($guid, $rowCond["lastEpisode"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									if ($rowCond2["lastEpisode"]!=$rowCond["lastEpisode"]) { print "<input checked type='checkbox' name='lastEpisodeOn$count'><input name='lastEpisode$count' type='hidden' value='" . htmlprep($rowCond["lastEpisode"]) . "'>" ; }
@@ -627,7 +627,7 @@ else {
 									print "Last Episode" ;
 								print "</td>" ;
 								print "<td>" ;
-									print dateConvertBack($rowCond2["lastEpisode"]) ;
+									print dateConvertBack($guid, $rowCond2["lastEpisode"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									$style="" ;
@@ -635,7 +635,7 @@ else {
 										$style="style='color: #ff0000'" ;
 									}
 									print "<span $style>" ;
-									print dateConvertBack($rowCond["lastEpisode"]) ;
+									print dateConvertBack($guid, $rowCond["lastEpisode"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									if ($rowCond2["lastEpisode"]!=$rowCond["lastEpisode"]) { print "<input checked type='checkbox' name='lastEpisodeOn" . ($count+$count2) . "'><input name='lastEpisode" . ($count+$count2) . "' type='hidden' value='" . htmlprep($rowCond["lastEpisode"]) . "'>" ; }

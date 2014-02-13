@@ -202,7 +202,7 @@ else {
 						print "<i>Unknown</i>" ;
 					}
 					else {
-						print dateConvertBack($row["purchaseDate"]) . " ; " ;
+						print dateConvertBack($guid, $row["purchaseDate"]) . " ; " ;
 					}
 					if ($row["vendor"]!="") {
 						print "; <span style='font-size: 85%; font-style: italic'>" . $row["vendor"] . "</span>" ;

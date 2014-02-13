@@ -54,7 +54,7 @@ else {
 		if ($viewBy=="date") {
 			$date=$_GET["date"] ;
 			if (isset($_GET["dateHuman"])) {
-				$date=dateConvert($_GET["dateHuman"]) ;
+				$date=dateConvert($guid, $_GET["dateHuman"]) ;
 			}
 			if ($date=="") {
 				$date=date("Y-m-d");
@@ -217,7 +217,7 @@ else {
 						$extra=$row["course"] . "." . $row["class"] ;
 					}
 					else {
-						$extra=dateConvertBack($date) ;
+						$extra=dateConvertBack($guid, $date) ;
 					}
 				
 					$params="&gibbonPlannerEntryID=$gibbonPlannerEntryID" ;
@@ -442,7 +442,7 @@ else {
 								print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Date</span><br/>" ;
-									print dateConvertBack($row["date"]) ;
+									print dateConvertBack($guid, $row["date"]) ;
 								print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Time</span><br/>" ;
@@ -681,14 +681,14 @@ else {
 							print "<tr>" ;
 								print "<td style='padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
 									if ($row["homework"]=="Y") {
-										print "<span style='font-weight: bold; color: #CC0000'>Due on " . dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) . " at " . substr($row["homeworkDueDateTime"],11,5) . "</span><br/>" ;
+										print "<span style='font-weight: bold; color: #CC0000'>Due on " . dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) . " at " . substr($row["homeworkDueDateTime"],11,5) . "</span><br/>" ;
 										print $row["homeworkDetails"] . "<br>" ;
 										if ($row["homeworkSubmission"]=="Y") {
 											if ($row["role"]=="Student" AND ($highestAction=="Lesson Planner_viewMyClasses" OR $highestAction=="Lesson Planner_viewAllEditMyClasses")) {
 												print "<span style='font-size: 115%; font-weight: bold'>Online Submission</span><br/>" ;
 												print "<i>Online submission is <b>" . strtolower($row["homeworkSubmissionRequired"]) . "</b> for this homework.</i><br/>" ;
 												if (date("Y-m-d")<$row["homeworkSubmissionDateOpen"]) {
-													print "<i>Submission opens on " . dateConvertBack($row["homeworkSubmissionDateOpen"]) . "</i>" ;
+													print "<i>Submission opens on " . dateConvertBack($guid, $row["homeworkSubmissionDateOpen"]) . "</i>" ;
 												}
 												else {
 													//Check previous submissions!
@@ -748,7 +748,7 @@ else {
 																		<? print $rowVersion["status"] ?><br/>
 																	</td>
 																	<td>
-																		<? print substr($rowVersion["timestamp"],11,5) . " " . dateConvertBack(substr($rowVersion["timestamp"],0,10)) ?><br/>
+																		<? print substr($rowVersion["timestamp"],11,5) . " " . dateConvertBack($guid, substr($rowVersion["timestamp"],0,10)) ?><br/>
 																	</td>
 																	<td>
 																		<? 
@@ -914,7 +914,7 @@ else {
 												print "<span style='font-size: 115%; font-weight: bold'>Online Submission</span><br/>" ;
 												print "<i>Online submission is <b>" . strtolower($row["homeworkSubmissionRequired"]) . "</b> for this homework.</i><br/>" ;
 												if (date("Y-m-d")<$row["homeworkSubmissionDateOpen"]) {
-													print "<i>Submission opens on " . dateConvertBack($row["homeworkSubmissionDateOpen"]) . "</i>" ;
+													print "<i>Submission opens on " . dateConvertBack($guid, $row["homeworkSubmissionDateOpen"]) . "</i>" ;
 												}
 												else {
 													//Check previous submissions!
@@ -978,7 +978,7 @@ else {
 																		<? print $rowVersion["status"] ?><br/>
 																	</td>
 																	<td>
-																		<? print substr($rowVersion["timestamp"],11,5) . " " . dateConvertBack(substr($rowVersion["timestamp"],0,10)) ?><br/>
+																		<? print substr($rowVersion["timestamp"],11,5) . " " . dateConvertBack($guid, substr($rowVersion["timestamp"],0,10)) ?><br/>
 																	</td>
 																	<td>
 																		<? 
@@ -1122,7 +1122,7 @@ else {
 																			?>
 																		</td>
 																		<td>
-																			<? print substr($rowVersion["timestamp"],11,5) . " " . dateConvertBack(substr($rowVersion["timestamp"],0,10)) ?><br/>
+																			<? print substr($rowVersion["timestamp"],11,5) . " " . dateConvertBack($guid, substr($rowVersion["timestamp"],0,10)) ?><br/>
 																		</td>
 																		<td>
 																			<?
@@ -1496,7 +1496,7 @@ else {
 										$_SESSION[$guid]["sidebarExtra"].="Attendance has been taken at the following times for this lesson:";
 										$_SESSION[$guid]["sidebarExtra"].="<ul style='margin-left: 20px'>" ;
 										while ($rowLog=$resultLog->fetch()) {
-											$_SESSION[$guid]["sidebarExtra"].="<li>" . substr($rowLog["timestampTaken"],11,5) . " " . dateConvertBack(substr($rowLog["timestampTaken"],0,10)) . " by " . formatName($rowLog["title"], $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true) ."</li>" ;
+											$_SESSION[$guid]["sidebarExtra"].="<li>" . substr($rowLog["timestampTaken"],11,5) . " " . dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)) . " by " . formatName($rowLog["title"], $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true) ."</li>" ;
 										}
 										$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 									$_SESSION[$guid]["sidebarExtra"].="</div>" ;

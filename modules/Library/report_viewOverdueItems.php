@@ -93,7 +93,7 @@ else {
 					print "<span style='font-size: 85%; font-style: italic'>" . $row["producer"] . "</span>" ;
 				print "</td>" ;
 				print "<td>" ;
-					print dateConvertBack($row["returnExpected"]) ;
+					print dateConvertBack($guid, $row["returnExpected"]) ;
 				print "</td>" ;
 				print "<td>" ;
 					print (strtotime($today)-strtotime($row["returnExpected"]))/(60*60*24) ;

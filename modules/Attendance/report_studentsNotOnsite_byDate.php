@@ -42,7 +42,7 @@ else {
 	 	$currentDate=date("Y-m-d");
 	}
 	else {
-		$currentDate=dateConvert($_GET["currentDate"]) ;	 
+		$currentDate=dateConvert($guid, $_GET["currentDate"]) ;	 
 	}
 	?>
 	
@@ -54,10 +54,10 @@ else {
 					<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="currentDate" id="currentDate" maxlength=10 value="<? print dateConvertBack($currentDate) ?>" type="text" style="width: 300px">
+					<input name="currentDate" id="currentDate" maxlength=10 value="<? print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+						date.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 						date.add(Validate.Presence);
 					 </script>
 					 <script type="text/javascript">
@@ -127,7 +127,7 @@ else {
 			}
 			else {
 				print "<div class='linkTop'>" ;
-				print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentsNotOnsite_byDate_print.php&currentDate=" . dateConvertBack($currentDate) . "'><img title='Print' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+				print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentsNotOnsite_byDate_print.php&currentDate=" . dateConvertBack($guid, $currentDate) . "'><img title='Print' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 				print "</div>" ;
 			
 				$lastPerson="" ;

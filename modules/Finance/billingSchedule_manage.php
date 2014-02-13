@@ -212,10 +212,10 @@ else {
 							print "<b>" . $row["name"] . "</b><br/>" ;
 						print "</td>" ;
 						print "<td>" ;
-							print dateConvertBack($row["invoiceIssueDate"]) ;
+							print dateConvertBack($guid, $row["invoiceIssueDate"]) ;
 						print "</td>" ;
 						print "<td>" ;
-							print dateConvertBack($row["invoiceDueDate"]) ;
+							print dateConvertBack($guid, $row["invoiceDueDate"]) ;
 						print "</td>" ;
 						print "<td>" ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/billingSchedule_manage_edit.php&gibbonFinanceBillingScheduleID=" . $row["gibbonFinanceBillingScheduleID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;

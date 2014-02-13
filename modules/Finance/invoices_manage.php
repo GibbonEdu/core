@@ -630,9 +630,9 @@ else {
 										print "NA<br/>" ;
 									}
 									else {
-										print dateConvertBack($row["invoiceIssueDate"]) . "<br/>" ;
+										print dateConvertBack($guid, $row["invoiceIssueDate"]) . "<br/>" ;
 									}
-									print "<span style='font-style: italic; font-size: 75%'>" . dateConvertBack($row["invoiceDueDate"]) . "</span>" ;
+									print "<span style='font-style: italic; font-size: 75%'>" . dateConvertBack($guid, $row["invoiceDueDate"]) . "</span>" ;
 								print "</td>" ;
 								print "<td>" ;
 									if ($row["status"]!="Cancelled" AND $row["status"]!="Refunded") {

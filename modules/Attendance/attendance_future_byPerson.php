@@ -137,7 +137,7 @@ else {
 				print "The following future absences have been set for the selected student. To edit these, please contact <a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>.";
 				print "<ul>" ;
 				while ($rowLog=$resultLog->fetch()) {
-					print "<li><b>" . dateConvertBack(substr($rowLog["date"],0,10)) . "</b> | Recorded at " . substr($rowLog["timestampTaken"],11) . " on " . dateConvertBack(substr($rowLog["timestampTaken"],0,10)) . " by " . formatName($rowLog["title"], $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true) ."</li>" ;
+					print "<li><b>" . dateConvertBack($guid, substr($rowLog["date"],0,10)) . "</b> | Recorded at " . substr($rowLog["timestampTaken"],11) . " on " . dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)) . " by " . formatName($rowLog["title"], $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true) ."</li>" ;
 				}
 				print "</ul>" ;
 			print "</div>" ;
@@ -172,7 +172,7 @@ else {
 						<input name="date" id="date" maxlength=10 value="" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var date=new LiveValidation('date');
-							date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+							date.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 						 	date.add(Validate.Presence);
 						 </script>
 						 <script type="text/javascript">

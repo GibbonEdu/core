@@ -70,7 +70,7 @@ else {
 			
 			$ttDate=NULL ;
 			if (isset($_POST["ttDate"])) {
-				$ttDate=dateConvertToTimestamp(dateConvert($_POST["ttDate"]));
+				$ttDate=dateConvertToTimestamp(dateConvert($guid, $_POST["ttDate"]));
 			}
 			
 			if (isset($_POST["fromTT"])) {

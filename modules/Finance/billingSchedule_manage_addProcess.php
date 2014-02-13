@@ -65,7 +65,7 @@ else {
 	
 			//Write to database
 			try {
-				$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "name"=>$name, "active"=>$active, "description"=>$description, "invoiceIssueDate"=>dateConvert($invoiceIssueDate), "invoiceDueDate"=>dateConvert($invoiceDueDate), "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"]); 
+				$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "name"=>$name, "active"=>$active, "description"=>$description, "invoiceIssueDate"=>dateConvert($guid, $invoiceIssueDate), "invoiceDueDate"=>dateConvert($guid, $invoiceDueDate), "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"]); 
 				$sql="INSERT INTO gibbonFinanceBillingSchedule SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, active=:active, description=:description, invoiceIssueDate=:invoiceIssueDate, invoiceDueDate=:invoiceDueDate, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator='" . date("Y-m-d H:i:s") . "'" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);

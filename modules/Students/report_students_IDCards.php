@@ -202,7 +202,7 @@ else {
 								print "<td style='padding: 15px 0 0 0 ; text-align: left; width: 280px; vertical-align: top; font-size: 22px'>" ;
 									print "<div style='padding: 5px; background-color: rgba(255,255,255,0.3); min-height: 200px'>" ;
 										print "<div style='font-weight: bold; font-size: 30px'>" .$row["officialName"] . "</div><br/>" ;
-										print "<b>DOB</b>: <span style='float: right'><i>" . dateConvertBack($row["dob"]) . "</i></span><br/>" ;
+										print "<b>DOB</b>: <span style='float: right'><i>" . dateConvertBack($guid, $row["dob"]) . "</i></span><br/>" ;
 										print "<b>" . $_SESSION[$guid]["organisationNameShort"] . " ID</b>: <span style='float: right'><i>" . $row["studentID"] . "</i></span><br/>" ;
 										print "<b>Year/Roll</b>: <span style='float: right'><i>" . $row["year"] . " / " . $row["roll"] . "</i></span><br/>" ;
 										print "<b>School Year</b>: <span style='float: right'><i>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</i></span><br/>" ;

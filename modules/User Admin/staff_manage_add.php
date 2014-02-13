@@ -190,7 +190,7 @@ else {
 					<span style="font-size: 90%"><i>When is first aid certification set to expire.<br/>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="firstAidExpiry" id="firstAidExpiry" maxlength=10 value="<? print dateConvertBack($row["firstAidExpiry"]) ?>" type="text" style="width: 300px">
+					<input name="firstAidExpiry" id="firstAidExpiry" maxlength=10 value="<? print dateConvertBack($guid, $row["firstAidExpiry"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						$(function() {
 							$( "#firstAidExpiry" ).datepicker();

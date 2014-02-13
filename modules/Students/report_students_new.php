@@ -94,7 +94,7 @@ else {
 					<input name="startDateFrom" id="startDateFrom" maxlength=10 value="<? print $startDateFrom ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var startDateFrom=new LiveValidation('startDateFrom');
-						startDateFrom.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+						startDateFrom.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -112,7 +112,7 @@ else {
 					<input name="startDateTo" id="startDateTo" maxlength=10 value="<? print $startDateTo ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var startDateTo=new LiveValidation('startDateTo');
-						startDateTo.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+						startDateTo.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -171,11 +171,11 @@ else {
 			try {
 				if ($type=="Date Range") {
 					if ($ignoreEnrolment!="on") {
-						$data=array("startDateFrom"=>dateConvert($startDateFrom), "startDateTo"=>dateConvert($startDateTo)); 
+						$data=array("startDateFrom"=>dateConvert($guid, $startDateFrom), "startDateTo"=>dateConvert($guid, $startDateTo)); 
 						$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateStart, lastSchool FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE dateStart>=:startDateFrom AND dateStart<=:startDateTo AND status='Full' ORDER BY dateStart, surname, preferredName" ;
 					}
 					else {
-						$data=array("startDateFrom"=>dateConvert($startDateFrom), "startDateTo"=>dateConvert($startDateTo)); 
+						$data=array("startDateFrom"=>dateConvert($guid, $startDateFrom), "startDateTo"=>dateConvert($guid, $startDateTo)); 
 						$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateStart, lastSchool FROM gibbonPerson WHERE dateStart>=:startDateFrom AND dateStart<=:startDateTo AND status='Full' ORDER BY dateStart, surname, preferredName" ;
 					}
 				}
@@ -243,7 +243,7 @@ else {
 										print $row["username"] ;
 									print "</td>" ;
 									print "<td>" ;
-										print dateConvertBack($row["dateStart"]) ;
+										print dateConvertBack($guid, $row["dateStart"]) ;
 									print "</td>" ;
 									print "<td>" ;
 										print $row["lastSchool"] ;
@@ -298,7 +298,7 @@ else {
 									print $row["username"] ;
 								print "</td>" ;
 								print "<td>" ;
-									print dateConvertBack($row["dateStart"]) ;
+									print dateConvertBack($guid, $row["dateStart"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									print $row["lastSchool"] ;

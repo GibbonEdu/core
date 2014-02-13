@@ -88,7 +88,7 @@ else {
 					$lastEpisode=NULL ;
 				}
 				else {
-					$lastEpisode=dateConvert($_POST["lastEpisode"]) ;
+					$lastEpisode=dateConvert($guid, $_POST["lastEpisode"]) ;
 				}
 				$lastEpisodeTreatment=$_POST["lastEpisodeTreatment"] ;
 				$comment=$_POST["comment"] ;

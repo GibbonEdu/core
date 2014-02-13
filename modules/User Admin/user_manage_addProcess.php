@@ -63,7 +63,7 @@ else {
 		$dob=NULL ;
 	}
 	else {
-		$dob=dateConvert($dob) ;
+		$dob=dateConvert($guid, $dob) ;
 	}
 	$email=$_POST["email"] ;
 	$emailAlternate=$_POST["emailAlternate"] ;
@@ -115,7 +115,7 @@ else {
 		$visaExpiryDate=NULL ;
 	}
 	else {
-		$visaExpiryDate=dateConvert($visaExpiryDate) ;
+		$visaExpiryDate=dateConvert($guid, $visaExpiryDate) ;
 	}
 	$profession=$_POST["profession"] ;
 	$employer=$_POST["employer"] ;
@@ -144,7 +144,7 @@ else {
 		$dateStart=NULL ;
 	}
 	else {
-		$dateStart=dateConvert($dateStart);
+		$dateStart=dateConvert($guid, $dateStart);
 	}
 	
 	$gibbonSchoolYearIDClassOf=$_POST["gibbonSchoolYearIDClassOf"] ;

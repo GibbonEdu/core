@@ -99,7 +99,7 @@ else {
 					<input name="date" id="date" maxlength=10 value="<? if ($date!="") { print $date ; } else { print date("d/m/Y", (time()-(604800*26))) ; } ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+						date.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					 	date.add(Validate.Presence);
 					 </script>
 					 <script type="text/javascript">
@@ -193,11 +193,11 @@ else {
 				catch(PDOException $e) { }
 				if ($resultPersonal->rowCount()>0) {
 					$rowPersonal=$resultPersonal->fetch() ;
-					if (dateConvert($date)<=substr($rowPersonal["timestamp"],0,10)) {
-						$personal=dateConvertBack(substr($rowPersonal["timestamp"],0,10)) ;
+					if (dateConvert($guid, $date)<=substr($rowPersonal["timestamp"],0,10)) {
+						$personal=dateConvertBack($guid, substr($rowPersonal["timestamp"],0,10)) ;
 					}
 					else {
-						$personal="<span style='color: #ff0000; font-weight: bold'>" . dateConvertBack(substr($rowPersonal["timestamp"],0,10)) . "</span>" ;
+						$personal="<span style='color: #ff0000; font-weight: bold'>" . dateConvertBack($guid, substr($rowPersonal["timestamp"],0,10)) . "</span>" ;
 						$personalFail=TRUE ;
 					}
 				}
@@ -220,11 +220,11 @@ else {
 				}
 				if ($resultMedical->rowCount()>0) {
 					$rowMedical=$resultMedical->fetch() ;
-					if (dateConvert($date)<=substr($rowMedical["timestamp"],0,10)) {
-						$medical=dateConvertBack(substr($rowMedical["timestamp"],0,10)) ;
+					if (dateConvert($guid, $date)<=substr($rowMedical["timestamp"],0,10)) {
+						$medical=dateConvertBack($guid, substr($rowMedical["timestamp"],0,10)) ;
 					}
 					else {
-						$medical="<span style='color: #ff0000; font-weight: bold'>" . dateConvertBack(substr($rowMedical["timestamp"],0,10)) . "</span>" ;
+						$medical="<span style='color: #ff0000; font-weight: bold'>" . dateConvertBack($guid, substr($rowMedical["timestamp"],0,10)) . "</span>" ;
 						$medicalFail=TRUE ;
 					}
 				}

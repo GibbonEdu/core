@@ -556,13 +556,13 @@ else {
 								<tr>
 									<td> 
 										<b>Grading Completion Date</b><br/>
-										<span style="font-size: 90%"><i>1. Format: dd/mm/yyyy<br/>2. Enter date after grading<br>3. Column is hidden without date</i></span>
+										<span style="font-size: 90%"><i>1. Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/>2. Enter date after grading<br>3. Column is hidden without date</i></span>
 									</td>
 									<td class="right">
-										<input name="completeDate" id="completeDate" maxlength=10 value="<? print dateConvertBack($row2["completeDate"]) ?>" type="text" style="width: 300px">
+										<input name="completeDate" id="completeDate" maxlength=10 value="<? print dateConvertBack($guid, $row2["completeDate"]) ?>" type="text" style="width: 300px">
 										<script type="text/javascript">
 											var completeDate=new LiveValidation('completeDate');
-											completeDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+											completeDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 										 </script>
 										 <script type="text/javascript">
 											$(function() {

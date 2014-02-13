@@ -188,10 +188,10 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input name="purchaseDate" id="purchaseDate" maxlength=10 value="<? print dateConvertBack($row["purchaseDate"]) ?>" type="text" style="width: 300px">
+							<input name="purchaseDate" id="purchaseDate" maxlength=10 value="<? print dateConvertBack($guid, $row["purchaseDate"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var purchaseDate=new LiveValidation('purchaseDate');
-								purchaseDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+								purchaseDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 </script>
 							 <script type="text/javascript">
 								$(function() {
@@ -566,12 +566,12 @@ else {
 									else if ($field["type"]=="Date") {
 										print "<input name='field" . $fieldName . "' id='field" . $fieldName . "' maxlength=10 value='" ;
 										if (isset($fieldValues[$field["name"]])) {
-											print dateConvertBack($fieldValues[$field["name"]]) ;
+											print dateConvertBack($guid, $fieldValues[$field["name"]]) ;
 										}
 										print "' type='text' style='width: 300px'>" ;
 										print "<script type='text/javascript'>" ;
 											print "var field" . $fieldName . "=new LiveValidation('field" . $fieldName . "');" ;
-											print "field" . $fieldName . ".add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: 'Use dd/mm/yyyy.' } );" ; 
+											print "field" . $fieldName . ".add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: 'Use dd/mm/yyyy.' } );" ; 
 										print "</script>" ;
 										print "<script type='text/javascript'>" ;
 											print "$(function() {" ;

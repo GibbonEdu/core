@@ -217,7 +217,7 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									if ($row["complete"]=="Y") {
-										print dateConvertBack($row["completeDate"]) ;
+										print dateConvertBack($guid, $row["completeDate"]) ;
 									}
 								print "</td>" ;
 								print "<td>" ;

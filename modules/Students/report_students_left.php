@@ -64,7 +64,7 @@ else {
 					<script type="text/javascript">
 						var endDateFrom=new LiveValidation('endDateFrom');
 						endDateFrom.add(Validate.Presence);
-						endDateFrom.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+						endDateFrom.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -83,7 +83,7 @@ else {
 					<script type="text/javascript">
 						var endDateTo=new LiveValidation('endDateTo');
 						endDateTo.add(Validate.Presence);
-						endDateTo.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+						endDateTo.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -117,7 +117,7 @@ else {
 		print "</h2>" ;
 		
 		try {
-			$data=array("endDateFrom"=>dateConvert($endDateFrom), "endDateTo"=>dateConvert($endDateTo)); 
+			$data=array("endDateFrom"=>dateConvert($guid, $endDateFrom), "endDateTo"=>dateConvert($guid, $endDateTo)); 
 			if ($ignoreStatus=="on") {
 				$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateEnd, nextSchool, departureReason FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE dateEnd>=:endDateFrom AND dateEnd<=:endDateTo ORDER BY surname, preferredName" ;
 			}
@@ -174,7 +174,7 @@ else {
 							print $row["username"] ;
 						print "</td>" ;
 						print "<td>" ;
-							print dateConvertBack($row["dateEnd"]) . "<br/>" ;
+							print dateConvertBack($guid, $row["dateEnd"]) . "<br/>" ;
 							print "<span style='font-style: italic; font-size: 75%'>" . $row["departureReason"] . "</span>" ;
 						print "</td>" ;
 						print "<td>" ;

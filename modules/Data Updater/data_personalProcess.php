@@ -124,7 +124,7 @@ else {
 					$dob=NULL ;
 				}
 				else {
-					$dob=dateConvert($dob) ;
+					$dob=dateConvert($guid, $dob) ;
 				}
 				$email=$_POST["email"] ;
 				$emailAlternate=$_POST["emailAlternate"] ;
@@ -175,7 +175,7 @@ else {
 					$visaExpiryDate=NULL ;
 				}
 				else {
-					$visaExpiryDate=dateConvert($visaExpiryDate) ;
+					$visaExpiryDate=dateConvert($guid, $visaExpiryDate) ;
 				}
 				$profession=NULL ;
 				if (isset($_POST["profession"])) {

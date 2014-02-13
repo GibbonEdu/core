@@ -55,7 +55,7 @@ else {
 			$date=$_GET["date"] ;
 		}
 		if (isset($_GET["dateHuman"])) {
-			$date=dateConvert($_GET["dateHuman"]) ;
+			$date=dateConvert($guid, $_GET["dateHuman"]) ;
 		}
 		if ($date=="") {
 			$date=date("Y-m-d");
@@ -264,7 +264,7 @@ else {
 								else {
 									print "<b><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=date&date=$date&search=" . $gibbonPersonID . "'>" . $row["course"] . "." . $row["class"] . "</a> - " . $row["name"] . "</b><br/>" ;
 								}
-								print "<span style='margin-left: 15px; font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) ;
+								print "<span style='margin-left: 15px; font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) ;
 								print "</li>" ;
 							}
 							print "</ol>" ;
@@ -374,7 +374,7 @@ else {
 									print "<tr class=$rowNum>" ;
 										print "<td>" ;
 											print "<b>" . $row["course"] . "." . $row["class"] . "</b></br>" ;
-											print dateConvertBack($row["date"]) ;
+											print dateConvertBack($guid, $row["date"]) ;
 										print "</td>" ;
 										print "<td>" ;
 											print "<b>" . $row["name"] . "</b><br/>" ;
@@ -397,7 +397,7 @@ else {
 											}
 										print "</td>" ;
 										print "<td>" ;
-											print dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) ;
+											print dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) ;
 										print "</td>" ;
 										print "<td>" ;
 											if ($row["homeworkSubmission"]=="Y") {
@@ -604,7 +604,7 @@ else {
 					else {
 						print "<b><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=date&date=$date'>" . $row["course"] . "." . $row["class"] . "</a> - " . $row["name"] . "</b><br/>" ;
 					}
-					print "<span style='margin-left: 15px; font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) ;
+					print "<span style='margin-left: 15px; font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) ;
 					print "</li>" ;
 				}
 				print "</ol>" ;
@@ -820,7 +820,7 @@ else {
 							print "<tr class=$rowNum>" ;
 								print "<td>" ;
 									print "<b>" . $row["course"] . "." . $row["class"] . "</b></br>" ;
-									print dateConvertBack($row["date"]) ;
+									print dateConvertBack($guid, $row["date"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									print "<b>" . $row["name"] . "</b><br/>" ;
@@ -843,7 +843,7 @@ else {
 									}
 								print "</td>" ;
 								print "<td>" ;
-									print dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) ;
+									print dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) ;
 								print "</td>" ;
 								if ($category=="Student") {
 									print "<td>" ;

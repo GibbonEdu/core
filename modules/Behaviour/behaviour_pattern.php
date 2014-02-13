@@ -147,7 +147,7 @@ else {
 					<input name="fromDate" id="fromDate" maxlength=10 value="<? if ($fromDate!="") { print $fromDate ; } ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var fromDate=new LiveValidation('fromDate');
-						fromDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+						fromDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					 </script>
 					 <script type="text/javascript">
 						$(function() {
@@ -285,7 +285,7 @@ else {
 			$sqlWhere2.="gibbonBehaviour.level=:level AND " ; 
 		}
 		if ($fromDate!="") {
-			$data["fromDate"]=dateConvert($fromDate) ;
+			$data["fromDate"]=dateConvert($guid, $fromDate) ;
 			$sqlWhere2.="gibbonBehaviour.date>=:fromDate AND " ; 
 		}
 		if ($sqlWhere2=="AND ") {

@@ -42,7 +42,7 @@ if ($viewBy!="date" AND $viewBy!="class") {
 	$viewBy="date" ;
 }
 $gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
-$date=dateConvert($_POST["date"]) ;
+$date=dateConvert($guid, $_POST["date"]) ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/planner_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID" ;
 
 //Params to pass back (viewBy + date or classID)
@@ -141,7 +141,10 @@ else {
 					//Validate Inputs
 					$timeStart=$_POST["timeStart"] ;
 					$timeEnd=$_POST["timeEnd"] ;
-					$gibbonUnitID=$_POST["gibbonUnitID"] ;
+					$gibbonUnitID=NULL ;
+					if (isset($_POST["gibbonUnitID"])) {
+						$gibbonUnitID=$_POST["gibbonUnitID"] ;
+					}
 					if ($gibbonUnitID=="") {
 						$gibbonUnitID=NULL ;
 						$gibbonHookID=NULL ;
@@ -185,13 +188,13 @@ else {
 							$homeworkDueDateTime="23:59:59" ;
 						}
 						if ($_POST["homeworkDueDate"]!="") {
-							$homeworkDueDate=dateConvert($_POST["homeworkDueDate"]) . " " . $homeworkDueDateTime ;
+							$homeworkDueDate=dateConvert($guid, $_POST["homeworkDueDate"]) . " " . $homeworkDueDateTime ;
 						}
 						
 						if ($_POST["homeworkSubmission"]=="Yes") {
 							$homeworkSubmission="Y" ;
 							if ($_POST["homeworkSubmissionDateOpen"]!="") {
-								$homeworkSubmissionDateOpen=dateConvert($_POST["homeworkSubmissionDateOpen"]) ;
+								$homeworkSubmissionDateOpen=dateConvert($guid, $_POST["homeworkSubmissionDateOpen"]) ;
 							}
 							else {
 								$homeworkSubmissionDateOpen=date("Y-m-d") ;

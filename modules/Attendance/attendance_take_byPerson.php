@@ -71,7 +71,7 @@ else {
 	 	$currentDate=date("Y-m-d");
 	}
 	else {
-		$currentDate=dateConvert($_GET["currentDate"]) ;	 
+		$currentDate=dateConvert($guid, $_GET["currentDate"]) ;	 
 	}
 	
 	$today=date("Y-m-d");
@@ -124,10 +124,10 @@ else {
 					<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="currentDate" id="currentDate" maxlength=10 value="<? print dateConvertBack($currentDate) ?>" type="text" style="width: 300px">
+					<input name="currentDate" id="currentDate" maxlength=10 value="<? print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+						date.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 						date.add(Validate.Presence);
 					 </script>
 					 <script type="text/javascript">
@@ -199,7 +199,7 @@ else {
 						print "The following attendance log has been recorded for the selected student today:";
 						print "<ul>" ;
 						while ($rowLog=$resultLog->fetch()) {
-							print "<li><b>" . $rowLog["direction"] . "</b> (" . $rowLog["type"] . ") | Recorded at " . substr($rowLog["timestampTaken"],11) . " on " . dateConvertBack(substr($rowLog["timestampTaken"],0,10)) . " by " . formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true) ."</li>" ;
+							print "<li><b>" . $rowLog["direction"] . "</b> (" . $rowLog["type"] . ") | Recorded at " . substr($rowLog["timestampTaken"],11) . " on " . dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)) . " by " . formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true) ."</li>" ;
 							$lastType=$rowLog["type"] ;
 							$lastReason=$rowLog["reason"] ;
 							$lastComment=$rowLog["comment"] ;

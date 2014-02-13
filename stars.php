@@ -86,7 +86,7 @@ if ($resultLike->rowCount()>0) {
 					print $row["name"] ;
 				print "</td>" ;
 				print "<td>" ;
-					print dateConvertBack(substr($row["timestamp"],0,10)) ;
+					print dateConvertBack($guid, substr($row["timestamp"],0,10)) ;
 				print "</td>" ;
 			print "</tr>" ;
 		}
@@ -150,7 +150,7 @@ if ($resultLike->rowCount()>0) {
 					}
 				print "</td>" ;
 				print "<td>" ;
-					print dateConvertBack(substr($row["timestamp"],0,10)) ;
+					print dateConvertBack($guid, substr($row["timestamp"],0,10)) ;
 				print "</td>" ;
 			print "</tr>" ;
 		}
@@ -219,7 +219,7 @@ if ($resultLike->rowCount()>0) {
 					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&gibbonPlannerEntryHomeworkID=" . $row["gibbonPlannerEntryHomeworkID"] . "&gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] . "'>" . $row["name"] . "</a>" ;
 				print "</td>" ;
 				print "<td>" ;
-					print dateConvertBack(substr($row["timestamp"],0,10)) ;
+					print dateConvertBack($guid, substr($row["timestamp"],0,10)) ;
 				print "</td>" ;
 			print "</tr>" ;
 		}

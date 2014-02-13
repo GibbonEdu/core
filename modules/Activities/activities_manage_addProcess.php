@@ -56,10 +56,10 @@ else {
 		$gibbonSchoolYearTermIDList=substr($gibbonSchoolYearTermIDList,0, -1) ;
 	}
 	else if ($dateType=="Date") {
-		$listingStart=dateConvert($_POST["listingStart"]) ;
-		$listingEnd=dateConvert($_POST["listingEnd"]) ;
-		$programStart=dateConvert($_POST["programStart"]) ;
-		$programEnd=dateConvert($_POST["programEnd"]) ;
+		$listingStart=dateConvert($guid, $_POST["listingStart"]) ;
+		$listingEnd=dateConvert($guid, $_POST["listingEnd"]) ;
+		$programStart=dateConvert($guid, $_POST["programStart"]) ;
+		$programEnd=dateConvert($guid, $_POST["programEnd"]) ;
 	}
 	$gibbonYearGroupIDList="" ;
 	for ($i=0; $i<$_POST["count"]; $i++) {

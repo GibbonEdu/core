@@ -33,12 +33,12 @@ else {
 	 	$currentDate=date("Y-m-d");
 	}
 	else {
-		$currentDate=dateConvert($_GET["currentDate"]) ;	 
+		$currentDate=dateConvert($guid, $_GET["currentDate"]) ;	 
 	}
 	
 	//Proceed!
 	print "<h2>" ;
-	print "Roll Groups Not Registered, " . dateConvertBack($currentDate) ;
+	print "Roll Groups Not Registered, " . dateConvertBack($guid, $currentDate) ;
 	print "</h2>" ;
 	
 	//Produce array of attendance data

@@ -316,20 +316,20 @@ else {
 									$currentName=$rowSpecial["name"] ;
 									$specials[$specialCount][0]=$rowSpecial["date"] ;
 									$specials[$specialCount][1]=$rowSpecial["name"] ;
-									$specials[$specialCount][2]=dateConvertBack($rowSpecial["date"]) ;
-									$originalDate=dateConvertBack($rowSpecial["date"]) ;
+									$specials[$specialCount][2]=dateConvertBack($guid, $rowSpecial["date"]) ;
+									$originalDate=dateConvertBack($guid, $rowSpecial["date"]) ;
 									$specialCount++ ;
 								}
 								else {
 									if ((strtotime($currentDate)-strtotime($lastDate))==86400) {
-										$specials[$specialCount-1][2]=$originalDate . " - " . dateConvertBack($rowSpecial["date"]) ;
+										$specials[$specialCount-1][2]=$originalDate . " - " . dateConvertBack($guid, $rowSpecial["date"]) ;
 									}
 									else {
 										$currentName=$rowSpecial["name"] ;
 										$specials[$specialCount][0]=$rowSpecial["date"] ;
 										$specials[$specialCount][1]=$rowSpecial["name"] ;
-										$specials[$specialCount][2]=dateConvertBack($rowSpecial["date"]) ;
-										$originalDate=dateConvertBack($rowSpecial["date"]) ;
+										$specials[$specialCount][2]=dateConvertBack($guid, $rowSpecial["date"]) ;
+										$originalDate=dateConvertBack($guid, $rowSpecial["date"]) ;
 										$specialCount++ ;
 									}
 								}
@@ -400,7 +400,7 @@ else {
 														print "<b>" . $terms[$termCount][1] . "</b>" ;
 													print "</td>" ;
 													print "<td colspan=6>" ;
-														print dateConvertBack($terms[$termCount][0]) ;
+														print dateConvertBack($guid, $terms[$termCount][0]) ;
 													print "</td>" ;
 												print "</tr>" ;
 												$termCount++ ;
@@ -427,7 +427,7 @@ else {
 													print "<b>Lesson " . ($classCount+1) . "</b>" ;
 												print "</td>" ;
 												print "<td $style>" ;
-													print dateConvertBack($lesson["1"]) . "<br/>" ;
+													print dateConvertBack($guid, $lesson["1"]) . "<br/>" ;
 													 if ($lesson[8]=="Timing Change") {
 														print "<u>" . $lesson[8] . "</u><br/><i>(" . substr($lesson[9],0,5) . "-" . substr($lesson[10],0,5) . ")</i>" ;
 													 }
@@ -469,7 +469,7 @@ else {
 													print "<b>" . $terms[$termCount][1] . "</b>" ;
 												print "</td>" ;
 												print "<td colspan=6>" ;
-													print dateConvertBack($terms[$termCount][0]) ;
+													print dateConvertBack($guid, $terms[$termCount][0]) ;
 												print "</td>" ;
 											print "</tr>" ;
 											$termCount++ ;
@@ -482,7 +482,7 @@ else {
 												print "<b><u>" . $terms[$termCount][1] . "</u></b>" ;
 											print "</td>" ;
 											print "<td colspan=6>" ;
-												print dateConvertBack($terms[$termCount][0]) ;
+												print dateConvertBack($guid, $terms[$termCount][0]) ;
 											print "</td>" ;
 										print "</tr>" ;
 									}

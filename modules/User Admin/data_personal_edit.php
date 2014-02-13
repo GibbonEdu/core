@@ -234,7 +234,7 @@ else {
 							print "Date of Birth" ;
 						print "</td>" ;
 						print "<td>" ;
-							print dateConvertBack($row["dob"]) ;
+							print dateConvertBack($guid, $row["dob"]) ;
 						print "</td>" ;
 						print "<td>" ;
 							$style="" ;
@@ -242,7 +242,7 @@ else {
 								$style="style='color: #ff0000'" ;
 							}
 							print "<span $style>" ;
-							print dateConvertBack($row["newdob"]) ;
+							print dateConvertBack($guid, $row["newdob"]) ;
 							print "</span>" ;
 						print "</td>" ;
 						print "<td>" ;
@@ -733,7 +733,7 @@ else {
 							print "Visa Expiry Date" ;
 						print "</td>" ;
 						print "<td>" ;
-							print dateConvertBack($row["visaExpiryDate"]) ;
+							print dateConvertBack($guid, $row["visaExpiryDate"]) ;
 						print "</td>" ;
 						print "<td>" ;
 							$style="" ;
@@ -741,7 +741,7 @@ else {
 								$style="style='color: #ff0000'" ;
 							}
 							print "<span $style>" ;
-							print dateConvertBack($row["newvisaExpiryDate"]) ;
+							print dateConvertBack($guid, $row["newvisaExpiryDate"]) ;
 							print "</span>" ;
 						print "</td>" ;
 						print "<td>" ;

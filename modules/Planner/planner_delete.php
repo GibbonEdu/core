@@ -62,7 +62,7 @@ else {
 		if ($viewBy=="date") {
 			$date=$_GET["date"] ;
 			if (isset($_GET["dateHuman"])) {
-				$date=dateConvert($_GET["dateHuman"]) ;
+				$date=dateConvert($guid, $_GET["dateHuman"]) ;
 			}
 			if ($date=="") {
 				$date=date("Y-m-d");
@@ -130,7 +130,7 @@ else {
 				//Let's go!
 				$row=$result->fetch() ;
 				if ($viewBy=="date") {
-					$extra=dateConvertBack($date) ;
+					$extra=dateConvertBack($guid, $date) ;
 				}
 				else {
 					$extra=$row["course"] . "." . $row["class"] ;

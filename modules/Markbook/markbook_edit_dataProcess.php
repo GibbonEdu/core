@@ -245,7 +245,7 @@ else {
 					$complete="N" ;
 				}
 				else {
-					$completeDate=dateConvert($completeDate) ;
+					$completeDate=dateConvert($guid, $completeDate) ;
 					$complete="Y" ;
 				}
 				try {

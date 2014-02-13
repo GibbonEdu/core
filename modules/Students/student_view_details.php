@@ -533,7 +533,7 @@ else {
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Date of Birth</span><br/>" ;
 									if (is_null($row["dob"])==FALSE AND $row["dob"]!="0000-00-00") {
-										print dateConvertBack($row["dob"]) ;
+										print dateConvertBack($guid, $row["dob"]) ;
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
@@ -631,7 +631,7 @@ else {
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Start Date</span><br/>" ;
-									print dateConvertBack($row["dateStart"]) ;
+									print dateConvertBack($guid, $row["dateStart"]) ;
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Class Of</span><br/>" ;
@@ -663,7 +663,7 @@ else {
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>End Date</span><br/>" ;
-									print dateConvertBack($row["dateEnd"]) ;
+									print dateConvertBack($guid, $row["dateEnd"]) ;
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Departure Reason</span><br/>" ;
@@ -765,7 +765,7 @@ else {
 										print "<span style='font-size: 115%; font-weight: bold'>" . $_SESSION[$guid]["country"] . " Visa Expiry Date</span><br/>" ;
 									}
 									if ($row["visaExpiryDate"]!="") {
-										print dateConvertBack($row["visaExpiryDate"]) ;
+										print dateConvertBack($guid, $row["visaExpiryDate"]) ;
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
@@ -1444,7 +1444,7 @@ else {
 									print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 										print "<span style='font-size: 115%; font-weight: bold'>Last Episode Date</span><br/>" ;
 										if (is_null($row["dob"])==FALSE AND $row["dob"]!="0000-00-00") {
-											print dateConvertBack($rowCondition["lastEpisode"]) ;
+											print dateConvertBack($guid, $rowCondition["lastEpisode"]) ;
 										}
 									print "</td>" ;
 									print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
@@ -1540,7 +1540,7 @@ else {
 										//COLOR ROW BY STATUS!
 										print "<tr class=$rowNum>" ;
 											print "<td>" ;
-												print dateConvertBack(substr($row["timestamp"],0,10)) . "<br/>" ;
+												print dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
 												print "<span style='font-size: 75%; font-style: italic'>" . substr($row["timestamp"],11,5) . "</span>" ;
 											print "</td>" ;
 											print "<td>" ;
@@ -1823,7 +1823,7 @@ else {
 															}
 														}
 														if ($rowEntry["completeDate"]!="") {
-															print "Marked on " . dateConvertBack($rowEntry["completeDate"]) . "<br/>" ;
+															print "Marked on " . dateConvertBack($guid, $rowEntry["completeDate"]) . "<br/>" ;
 														}
 														else {
 															print "Unmarked<br/>" ;
@@ -1961,13 +1961,13 @@ else {
 																	}
 																	
 																	if ($rowWork["type"]=="File") {
-																		print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
+																		print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
 																	}
 																	else if ($rowWork["type"]=="Link") {
-																		print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
+																		print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
 																	}
 																	else {
-																		print "<span title='$status. Recorded at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
+																		print "<span title='$status. Recorded at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
 																	}
 																}
 																else {
@@ -2104,7 +2104,7 @@ else {
 							include "./modules/Timetable/moduleFunctions.php" ;
 							$ttDate=NULL ;
 							if (isset($_POST["ttDate"])) {
-								$ttDate=dateConvertToTimestamp(dateConvert($_POST["ttDate"]));
+								$ttDate=dateConvertToTimestamp(dateConvert($guid, $_POST["ttDate"]));
 							}
 							$tt=renderTT($guid, $connection2,$gibbonPersonID, "", FALSE, $ttDate, "/modules/Students/student_view_details.php", "&gibbonPersonID=$gibbonPersonID&subpage=Timetable") ;
 							if ($tt!=FALSE) {
@@ -2326,7 +2326,7 @@ else {
 									else {
 										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=date&date=$date&width=1000&height=550'>" . $row["course"] . "." . $row["class"] . "</a><br/>" ;
 									}
-									print "<span style='font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) ;
+									print "<span style='font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) ;
 									print "</li>" ;
 								}
 								print "</ol>" ;
@@ -2439,7 +2439,7 @@ else {
 											print "<tr class=$rowNum>" ;
 												print "<td>" ;
 													print "<b>" . $row["course"] . "." . $row["class"] . "</b></br>" ;
-													print dateConvertBack($row["date"]) ;
+													print dateConvertBack($guid, $row["date"]) ;
 												print "</td>" ;
 												print "<td>" ;
 													print "<b>" . $row["name"] . "</b><br/>" ;
@@ -2470,7 +2470,7 @@ else {
 													}
 												print "</td>" ;
 												print "<td>" ;
-													print dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) ;
+													print dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) ;
 												print "</td>" ;
 												print "<td>" ;
 													if ($row["homeworkSubmission"]=="Y") {

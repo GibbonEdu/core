@@ -1537,6 +1537,22 @@ INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `systemDefault`, `main
 INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES (NULL, (SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin'), 'Language Settings', 0, '', 'Allows administrators to control system-wide language and localisation settings.', 'i18n_manage.php', 'i18n_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Language Settings'));end
 ALTER TABLE `gibbonPerson` ADD `gibboni18nIDPersonal` INT( 4 ) UNSIGNED ZEROFILL NULL DEFAULT NULL ;end
+UPDATE gibboni18n SET dateFormat='d/m/Y' WHERE code='en-GB';end
+UPDATE gibboni18n SET dateFormat='m/d/Y' WHERE code='en-US';end
+UPDATE gibboni18n SET dateFormat='d/m/Y' WHERE code='es';end
+INSERT INTO `gibboni18n` (`code`, `name`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `currencyCode`, `currencySymbol`) VALUES ('zh-HK', '體字 - 香港', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'Y-m-d', 'HKD', '$');end
+ALTER TABLE `gibboni18n` CHANGE `dateFormat` `dateFormatPHP` VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;end
+ALTER TABLE `gibboni18n` ADD `dateFormat` VARCHAR( 20 ) NOT NULL AFTER maintainerWebsite ,ADD `dateFormatRegEx` VARCHAR( 255 ) NOT NULL AFTER dateFormat ;end
+UPDATE gibboni18n SET dateFormat='dd/mm/yyyy' WHERE code='en-GB';end
+UPDATE gibboni18n SET dateFormat='mm/dd/yyyy' WHERE code='en-US';end
+UPDATE gibboni18n SET dateFormat='dd/mm/yyyy' WHERE code='es';end
+UPDATE gibboni18n SET dateFormat='yyyy-mm-dd' WHERE code='zh-CN';end
+UPDATE gibboni18n SET dateFormat='dd/mm/yyyy' WHERE code='zh-HK';end
+UPDATE gibboni18n SET dateFormatRegEx='/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i' WHERE code='en-GB';end
+UPDATE gibboni18n SET dateFormatRegEx='/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i' WHERE code='es';end
+UPDATE gibboni18n SET dateFormatRegEx='/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i' WHERE code='zh-HK';end
+UPDATE gibboni18n SET dateFormatRegEx='/(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20\d\d)/' WHERE code='en-US';end
+UPDATE gibboni18n SET dateFormatRegEx='/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/' WHERE code='zh-CN';end
 
 --LAST ICHK
 --LAST HLY

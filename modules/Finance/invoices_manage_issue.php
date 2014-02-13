@@ -195,7 +195,7 @@ else {
 								}
 								?>
 								<input readonly name="schedule" id="schedule" value="<? print $schedule ?>" type="text" style="width: 300px">
-								<input name="invoiceDueDate" id="invoiceDueDate" value="<? print dateConvertBack($invoiceDueDate) ?>" type="hidden" style="width: 300px">
+								<input name="invoiceDueDate" id="invoiceDueDate" value="<? print dateConvertBack($guid, $invoiceDueDate) ?>" type="hidden" style="width: 300px">
 							</td>
 						</tr>
 						<?
@@ -208,7 +208,7 @@ else {
 								<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
 							</td>
 							<td class="right">
-								<input readonly name="invoiceDueDate" id="invoiceDueDate" value="<? print dateConvertBack($row["invoiceDueDate"]) ?>" type="text" style="width: 300px">
+								<input readonly name="invoiceDueDate" id="invoiceDueDate" value="<? print dateConvertBack($guid, $row["invoiceDueDate"]) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 						<?

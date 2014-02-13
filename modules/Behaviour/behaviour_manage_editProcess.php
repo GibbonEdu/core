@@ -104,7 +104,7 @@ else {
 				}
 				else {
 					try {
-						$data=array("gibbonPersonID"=>$gibbonPersonID, "date"=>dateConvert($date), "type"=>$type, "descriptor"=>$descriptor, "level"=>$level, "comment"=>$comment, "gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonBehaviourID"=>$gibbonBehaviourID); 
+						$data=array("gibbonPersonID"=>$gibbonPersonID, "date"=>dateConvert($guid, $date), "type"=>$type, "descriptor"=>$descriptor, "level"=>$level, "comment"=>$comment, "gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonBehaviourID"=>$gibbonBehaviourID); 
 						$sql="UPDATE gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonSchoolYearID=:gibbonSchoolYearID WHERE gibbonBehaviourID=:gibbonBehaviourID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);

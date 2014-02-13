@@ -125,7 +125,7 @@ else {
 						print "</td>" ;
 						print "<td style='width: 33%; vertical-align: top'>" ;
 							print "<span style='font-size: 115%; font-weight: bold'>Date</span><br/>" ;
-							print dateConvertBack($row["date"]) ;
+							print dateConvertBack($guid, $row["date"]) ;
 						print "</td>" ;
 						print "<td style='width: 33%; vertical-align: top'>" ;
 							print "<span style='font-size: 115%; font-weight: bold'>Time</span><br/>" ;
@@ -219,7 +219,7 @@ else {
 						print "<td style='padding-top: 15px; width: 33%; vertical-align: top' colspan=3>" ;
 							print "<h2>Homework</h2>" ;
 							if ($row["homework"]=="Y") {
-								print "<span style='font-weight: bold; color: #CC0000'>Due on " . dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) . " at " . substr($row["homeworkDueDateTime"],11,5) . "</span><br/>" ;
+								print "<span style='font-weight: bold; color: #CC0000'>Due on " . dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) . " at " . substr($row["homeworkDueDateTime"],11,5) . "</span><br/>" ;
 								print $row["homeworkDetails"] . "<br>" ;
 							}
 							else {

@@ -81,15 +81,6 @@ if (@$_SESSION[$guid]["systemSettingsSet"]==FALSE) {
 	getSystemSettings($guid, $connection2) ;
 }
 
-
-//Test i18n settings
-$_SESSION[$guid]["i18n"]["gibboni18nID"] ;
-$_SESSION[$guid]["i18n"]["code"] ;
-$_SESSION[$guid]["i18n"]["name"] ;
-$_SESSION[$guid]["i18n"]["dateFormat"] ;
-$_SESSION[$guid]["i18n"]["currencyCode"];
-$_SESSION[$guid]["i18n"]["currencySymbol"] ;
-
 //Check for force password reset flag
 if (isset($_SESSION[$guid]["passwordForceReset"])) {
 	if ($_SESSION[$guid]["passwordForceReset"]=="Y" AND $q!="preferences.php") {
@@ -128,7 +119,9 @@ else {
 				print $_SESSION[$guid]["organisationNameShort"] . " - " . $_SESSION[$guid]["systemName"] ;
 				if ($_SESSION[$guid]["address"]!="") {
 					if (strstr($_SESSION[$guid]["address"],"..")==FALSE) {
-						print " - " . getModuleName($_SESSION[$guid]["address"]) ;
+						if (getModuleName($_SESSION[$guid]["address"])!="") {
+							print " - " . getModuleName($_SESSION[$guid]["address"]) ;
+						}
 					}
 				}
 				?>
@@ -143,8 +136,11 @@ else {
 
 			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery/jquery.js"></script>
 			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/js/jquery-ui.min.js"></script>
-			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/i18n/jquery.ui.datepicker-en-GB.js"></script>
-			<script type="text/javascript">$.datepicker.setDefaults($.datepicker.regional['en-GB']);</script>
+			<? if (is_file($_SESSION[$guid]["absolutePath"] . "/lib/jquery-ui/i18n/jquery.ui.datepicker-" . $_SESSION[$guid]["i18n"]["code"] . ".js")) {
+				print "<script type='text/javascript' src='" . $_SESSION[$guid]["absoluteURL"] . "/lib/jquery-ui/i18n/jquery.ui.datepicker-" . $_SESSION[$guid]["i18n"]["code"] . ".js'></script>" ;
+				print "<script type='text/javascript'>$.datepicker.setDefaults($.datepicker.regional['" . $_SESSION[$guid]["i18n"]["code"] . "']);</script>" ;
+			}
+			?>
 			<script type="text/javascript">$(function() { $( document ).tooltip({  show: 800, hide: false, content: function () { return $(this).prop('title')}, position: { my: "center bottom-20", at: "center top", using: function( position, feedback ) { $( this ).css( position ); $( "<div>" ).addClass( "arrow" ).addClass( feedback.vertical ).addClass( feedback.horizontal ).appendTo( this ); } } }); });</script>
 			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-jslatex/jquery.jslatex.js"></script>
 			<script type="text/javascript">$(function () { $(".latex").latex();});</script>
@@ -822,7 +818,7 @@ else {
 																	print "<span title='" . htmlPrep($rowEntry["description"]) . "'>" . $rowEntry["name"] . "</span><br>" ;
 																	print "<span style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
 																	if ($rowEntry["completeDate"]!="") {
-																		print "Marked on " . dateConvertBack($rowEntry["completeDate"]) . "<br/>" ;
+																		print "Marked on " . dateConvertBack($guid, $rowEntry["completeDate"]) . "<br/>" ;
 																	}
 																	else {
 																		print "Unmarked<br/>" ;
@@ -946,13 +942,13 @@ else {
 																				}
 																				
 																				if ($rowWork["type"]=="File") {
-																					print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
+																					print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
 																				}
 																				else if ($rowWork["type"]=="Link") {
-																					print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
+																					print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
 																				}
 																				else {
-																					print "<span title='$status. Recorded at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack(substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
+																					print "<span title='$status. Recorded at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
 																				}
 																			}
 																			else {
@@ -1029,7 +1025,7 @@ else {
 															else {
 																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=" . $students[$i][4] . "&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=date&date=$date&width=1000&height=550'>" . $row["course"] . "." . $row["class"] . "</a> " ;
 															}
-															print "<span style='font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack(substr($row["homeworkDueDateTime"],0,10)) ;
+															print "<span style='font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) ;
 															print "</li>" ;
 														}
 														print "</ol>" ;
@@ -1360,11 +1356,11 @@ else {
 																	print "<td>" ;
 																		print "<b>" . formatName("", $row["preferredNameStudent"], $row["surnameStudent"], "Student", false ) . "</b><br/>" ;
 																		if (substr($row["timestamp"],0,10)>$row["date"]) {
-																			print "Updated: " . dateConvertBack(substr($row["timestamp"],0,10)) . "<br/>" ;
-																			print "Incident: " . dateConvertBack($row["date"]) . "<br/>" ;
+																			print "Updated: " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
+																			print "Incident: " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
 																		}
 																		else {
-																			print dateConvertBack($row["date"]) . "<br/>" ;
+																			print dateConvertBack($guid, $row["date"]) . "<br/>" ;
 																		}
 																	print "</td>" ;
 																	print "<td style='text-align: center'>" ;

@@ -227,7 +227,7 @@ else {
 											$sqlInvoiceAdd="INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Family', billingScheduleType='Scheduled', gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID, notes=:notes, status='Pending', separated='N', gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='" . date("Y-m-d H:i:s") . "'" ;
 										}
 										else {
-											$dataInvoiceAdd=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonFinanceInvoiceeID"=>$gibbonFinanceInvoiceeID, "invoiceDueDate"=>dateConvert($invoiceDueDate), "notes"=>$notes, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"]); 
+											$dataInvoiceAdd=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonFinanceInvoiceeID"=>$gibbonFinanceInvoiceeID, "invoiceDueDate"=>dateConvert($guid, $invoiceDueDate), "notes"=>$notes, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"]); 
 											$sqlInvoiceAdd="INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Family', billingScheduleType='Ad Hoc', status='Pending', invoiceDueDate=:invoiceDueDate, notes=:notes, gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='" . date("Y-m-d H:i:s") . "'" ;
 										}
 										$resultInvoiceAdd=$connection2->prepare($sqlInvoiceAdd);
@@ -297,7 +297,7 @@ else {
 										$sqlInvoiceAdd="UPDATE gibbonFinanceInvoice SET gibbonPersonIDUpdate=:gibbonPersonIDUpdate, notes=:notes, timeStampUpdate='" . date("Y-m-d H:i:s") . "' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
 									}
 									else {
-										$dataInvoiceAdd=array("invoiceDueDate"=>dateConvert($invoiceDueDate), "gibbonPersonIDUpdate"=>$_SESSION[$guid]["gibbonPersonID"], "notes"=>$rowInvoice["notes"] . " " . $notes, "gibbonFinanceInvoiceID"=>$rowInvoice["gibbonFinanceInvoiceID"]); 
+										$dataInvoiceAdd=array("invoiceDueDate"=>dateConvert($guid, $invoiceDueDate), "gibbonPersonIDUpdate"=>$_SESSION[$guid]["gibbonPersonID"], "notes"=>$rowInvoice["notes"] . " " . $notes, "gibbonFinanceInvoiceID"=>$rowInvoice["gibbonFinanceInvoiceID"]); 
 										$sqlInvoiceAdd="UPDATE gibbonFinanceInvoice SET invoiceDueDate=:invoiceDueDate, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, notes=:notes, timeStampUpdate='" . date("Y-m-d H:i:s") . "' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
 									}
 									$resultInvoiceAdd=$connection2->prepare($sqlInvoiceAdd);
@@ -367,7 +367,7 @@ else {
 											$sqlInvoiceAdd="INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Company', billingScheduleType='Scheduled', gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID, notes=:notes, status='Pending', separated='N', gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='" . date("Y-m-d H:i:s") . "'" ;
 										}
 										else {
-											$dataInvoiceAdd=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonFinanceInvoiceeID"=>$gibbonFinanceInvoiceeID, "invoiceDueDate"=>dateConvert($invoiceDueDate), "notes"=>$notes, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"]); 
+											$dataInvoiceAdd=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonFinanceInvoiceeID"=>$gibbonFinanceInvoiceeID, "invoiceDueDate"=>dateConvert($guid, $invoiceDueDate), "notes"=>$notes, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"]); 
 											$sqlInvoiceAdd="INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Company', billingScheduleType='Ad Hoc', status='Pending', invoiceDueDate=:invoiceDueDate, notes=:notes, gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='" . date("Y-m-d H:i:s") . "'" ;
 										}
 										$resultInvoiceAdd=$connection2->prepare($sqlInvoiceAdd);
@@ -437,7 +437,7 @@ else {
 										$sqlInvoiceAdd="UPDATE gibbonFinanceInvoice SET gibbonPersonIDUpdate=:gibbonPersonIDUpdate, notes=:notes, timeStampUpdate='" . date("Y-m-d H:i:s") . "' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
 									}
 									else {
-										$dataInvoiceAdd=array("invoiceDueDate"=>dateConvert($invoiceDueDate), "gibbonPersonIDUpdate"=>$_SESSION[$guid]["gibbonPersonID"], "notes"=>$rowInvoice["notes"] . " " . $notes, "gibbonFinanceInvoiceID"=>$rowInvoice["gibbonFinanceInvoiceID"]); 
+										$dataInvoiceAdd=array("invoiceDueDate"=>dateConvert($guid, $invoiceDueDate), "gibbonPersonIDUpdate"=>$_SESSION[$guid]["gibbonPersonID"], "notes"=>$rowInvoice["notes"] . " " . $notes, "gibbonFinanceInvoiceID"=>$rowInvoice["gibbonFinanceInvoiceID"]); 
 										$sqlInvoiceAdd="UPDATE gibbonFinanceInvoice SET invoiceDueDate=:invoiceDueDate, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, notes=:notes, timeStampUpdate='" . date("Y-m-d H:i:s") . "' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
 									}
 									$resultInvoiceAdd=$connection2->prepare($sqlInvoiceAdd);

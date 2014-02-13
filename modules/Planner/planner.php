@@ -61,7 +61,7 @@ else {
 				$date=$_GET["date"] ;
 			}
 			if (isset($_GET["dateHuman"])) {
-				$date=dateConvert($_GET["dateHuman"]) ;
+				$date=dateConvert($guid, $_GET["dateHuman"]) ;
 			}
 			if ($date=="") {
 				$date=date("Y-m-d");
@@ -478,7 +478,7 @@ else {
 													print "<tr class=$rowNum>" ;
 														print "<td>" ;
 															if (!(is_null($row["date"]))) {
-																print "<b>" . dateConvertBack($row["date"]) . "</b><br/>" ;
+																print "<b>" . dateConvertBack($guid, $row["date"]) . "</b><br/>" ;
 																print date("l", dateConvertToTimestamp($row["date"])) ;
 															}
 														print "</td>" ;
@@ -555,7 +555,7 @@ else {
 			
 			if ($viewBy=="date") {
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Planner " . dateConvertBack($date) . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Planner " . dateConvertBack($guid, $date) . "</div>" ;
 				print "</div>" ;
 				
 				//Get Smart Workflow help message
@@ -985,7 +985,7 @@ else {
 											print "<tr class=$rowNum>" ;
 												print "<td>" ;
 													if (!(is_null($row["date"]))) {
-														print "<b>" . dateConvertBack($row["date"]) . "</b><br/>" ;
+														print "<b>" . dateConvertBack($guid, $row["date"]) . "</b><br/>" ;
 														print date("l", dateConvertToTimestamp($row["date"])) ;
 													}
 												print "</td>" ;
@@ -1190,20 +1190,20 @@ else {
 											$currentName=$rowSpecial["name"] ;
 											$specials[$specialCount][0]=$rowSpecial["date"] ;
 											$specials[$specialCount][1]=$rowSpecial["name"] ;
-											$specials[$specialCount][2]=dateConvertBack($rowSpecial["date"]) ;
-											$originalDate=dateConvertBack($rowSpecial["date"]) ;
+											$specials[$specialCount][2]=dateConvertBack($guid, $rowSpecial["date"]) ;
+											$originalDate=dateConvertBack($guid, $rowSpecial["date"]) ;
 											$specialCount++ ;
 										}
 										else {
 											if ((strtotime($currentDate)-strtotime($lastDate))==86400) {
-												$specials[$specialCount-1][2]=$originalDate . " - " . dateConvertBack($rowSpecial["date"]) ;
+												$specials[$specialCount-1][2]=$originalDate . " - " . dateConvertBack($guid, $rowSpecial["date"]) ;
 											}
 											else {
 												$currentName=$rowSpecial["name"] ;
 												$specials[$specialCount][0]=$rowSpecial["date"] ;
 												$specials[$specialCount][1]=$rowSpecial["name"] ;
-												$specials[$specialCount][2]=dateConvertBack($rowSpecial["date"]) ;
-												$originalDate=dateConvertBack($rowSpecial["date"]) ;
+												$specials[$specialCount][2]=dateConvertBack($guid, $rowSpecial["date"]) ;
+												$originalDate=dateConvertBack($guid, $rowSpecial["date"]) ;
 												$specialCount++ ;
 											}
 										}
@@ -1267,7 +1267,7 @@ else {
 															print "<b>" . $terms[$termCount][1] . "</b>" ;
 														print "</td>" ;
 														print "<td colspan=6>" ;
-															print dateConvertBack($terms[$termCount][0]) ;
+															print dateConvertBack($guid, $terms[$termCount][0]) ;
 														print "</td>" ;
 													print "</tr>" ;
 													$termCount++ ;
@@ -1294,7 +1294,7 @@ else {
 														print "<b>Lesson " . ($classCount+1) . "</b>" ;
 													print "</td>" ;
 													print "<td $style>" ;
-														print "<b>" . dateConvertBack($lesson["1"]) . "</b><br/>" ;
+														print "<b>" . dateConvertBack($guid, $lesson["1"]) . "</b><br/>" ;
 														print date("l", dateConvertToTimestamp($lesson["1"])) . "<br/>" ;
 														print date("F", dateConvertToTimestamp($lesson["1"])) . "<br/>" ;
 														 if ($lesson[8]=="Timing Change") {
@@ -1344,7 +1344,7 @@ else {
 														print "<b>" . $terms[$termCount][1] . "</b>" ;
 													print "</td>" ;
 													print "<td colspan=6>" ;
-														print dateConvertBack($terms[$termCount][0]) ;
+														print dateConvertBack($guid, $terms[$termCount][0]) ;
 													print "</td>" ;
 												print "</tr>" ;
 												$termCount++ ;
@@ -1357,7 +1357,7 @@ else {
 													print "<b><u>" . $terms[$termCount][1] . "</u></b>" ;
 												print "</td>" ;
 												print "<td colspan=6>" ;
-													print dateConvertBack($terms[$termCount][0]) ;
+													print dateConvertBack($guid, $terms[$termCount][0]) ;
 												print "</td>" ;
 											print "</tr>" ;
 										}

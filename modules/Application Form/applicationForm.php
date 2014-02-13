@@ -238,7 +238,7 @@ else {
 					<input name="dob" id="dob" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var dob=new LiveValidation('dob');
-						dob.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+						dob.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					 	dob.add(Validate.Presence);
 					 </script>
 					 <script type="text/javascript">
@@ -498,7 +498,7 @@ else {
 					<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var visaExpiryDate=new LiveValidation('visaExpiryDate');
-						visaExpiryDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+						visaExpiryDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					 </script>
 					 <script type="text/javascript">
 						$(function() {
@@ -632,7 +632,7 @@ else {
 					<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var dateStart=new LiveValidation('dateStart');
-						dateStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+						dateStart.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					 	dateStart.add(Validate.Presence);
 					 </script>
 					 <script type="text/javascript">
@@ -1330,7 +1330,7 @@ else {
 							<input name="<? print "parent$i" ?>visaExpiryDate" id="<? print "parent$i" ?>visaExpiryDate" maxlength=10 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var <? print "parent$i" ?>visaExpiryDate=new LiveValidation('<? print "parent$i" ?>visaExpiryDate');
-								<? print "parent$i" ?>visaExpiryDate.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
+								<? print "parent$i" ?>visaExpiryDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 </script>
 							 <script type="text/javascript">
 								$(function() {
@@ -1582,7 +1582,7 @@ else {
 									print "</td>" ;
 									print "<td>" ;
 										?>
-										<input name="<? print "siblingDOB$rowCount" ?>" id="<? print "siblingDOB$rowCount" ?>" maxlength=10 value="<? print dateConvertBack($rowSibling["dob"]) ?>" type="text" style="width:90px; float: left"><br/>
+										<input name="<? print "siblingDOB$rowCount" ?>" id="<? print "siblingDOB$rowCount" ?>" maxlength=10 value="<? print dateConvertBack($guid, $rowSibling["dob"]) ?>" type="text" style="width:90px; float: left"><br/>
 										<script type="text/javascript">
 											$(function() {
 												$( "#<? print "siblingDOB$rowCount" ?>" ).datepicker();
@@ -1595,7 +1595,7 @@ else {
 									print "</td>" ;
 									print "<td>" ;
 										?>
-										<input name="<? print "siblingSchoolJoiningDate$rowCount" ?>" id="<? print "siblingSchoolJoiningDate$rowCount" ?>" maxlength=10 value="<? print dateConvertBack($rowSibling["dateStart"]) ?>" type="text" style="width:90px; float: left">
+										<input name="<? print "siblingSchoolJoiningDate$rowCount" ?>" id="<? print "siblingSchoolJoiningDate$rowCount" ?>" maxlength=10 value="<? print dateConvertBack($guid, $rowSibling["dateStart"]) ?>" type="text" style="width:90px; float: left">
 										<script type="text/javascript">
 											$(function() {
 												$( "#<? print "siblingSchoolJoiningDate$rowCount" ?>" ).datepicker();

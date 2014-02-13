@@ -338,7 +338,7 @@ else {
 					print "<td>" ;
 						print $row["status"] . "<br/>" ;
 						if ($row["returnExpected"]!="") {
-							print "<span style='font-size: 85%; font-style: italic'>" . dateConvertBack($row["returnExpected"]) . "</span>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . dateConvertBack($guid, $row["returnExpected"]) . "</span>" ;
 						}
 					print "</td>" ;
 					print "<td>" ;
