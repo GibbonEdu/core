@@ -1553,6 +1553,11 @@ UPDATE gibboni18n SET dateFormatRegEx='/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1
 UPDATE gibboni18n SET dateFormatRegEx='/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i' WHERE code='zh-HK';end
 UPDATE gibboni18n SET dateFormatRegEx='/(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20\d\d)/' WHERE code='en-US';end
 UPDATE gibboni18n SET dateFormatRegEx='/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/' WHERE code='zh-CN';end
+UPDATE gibboni18n SET dateFormatPHP='d/m/Y' WHERE code='zh-HK';end
+ALTER TABLE `gibboni18n` CHANGE `dateFormatRegEx` `dateFormatRegEx` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;end
+UPDATE gibboni18n SET dateFormatRegEx='/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i' WHERE code='en-GB';end
+UPDATE gibboni18n SET dateFormatRegEx='/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i' WHERE code='es';end
+UPDATE gibboni18n SET dateFormatRegEx='/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i' WHERE code='zh-HK';end
 
 --LAST ICHK
 --LAST HLY
