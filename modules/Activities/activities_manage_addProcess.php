@@ -45,6 +45,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_mana
 else {
 	//Proceed!
 	$name=$_POST["name"] ;
+	$provider=$_POST["provider"] ;
 	$active=$_POST["active"] ;
 	$dateType=$_POST["dateType"] ;
 	if ($dateType=="Term") {
@@ -106,7 +107,7 @@ else {
 		$rowAI=$resultAI->fetch();
 		$AI=str_pad($rowAI['Auto_increment'], 14, "0", STR_PAD_LEFT) ;
 		
-		if ($dateType=="" OR $name=="" OR $active=="" OR $maxParticipants=="" OR $payment=="" OR ($dateType=="Date" AND ($listingStart=="" OR $listingEnd=="" OR $programStart=="" OR $programEnd=="")) OR ($dateType=="Term" AND $gibbonSchoolYearTermIDList=="")) {
+		if ($dateType=="" OR $name=="" OR $provider=="" OR $active=="" OR $maxParticipants=="" OR $payment=="" OR ($dateType=="Date" AND ($listingStart=="" OR $listingEnd=="" OR $programStart=="" OR $programEnd=="")) OR ($dateType=="Term" AND $gibbonSchoolYearTermIDList=="")) {
 			//Fail 3
 			$URL=$URL . "&addReturn=fail3" ;
 			header("Location: {$URL}");
@@ -118,7 +119,10 @@ else {
 				$gibbonDaysOfWeekID=$_POST["gibbonDaysOfWeekID$i"] ;
 				$timeStart=$_POST["timeStart$i"] ;
 				$timeEnd=$_POST["timeEnd$i"] ;
-				$type=$_POST["type"] ;
+				$type="Internal" ;
+				if (isset($_POST["slot" . $i . "Location"])) {
+					$_POST["slot" . $i . "Location"] ;
+				}
 				$gibbonSpaceID=NULL ;
 				if ($type=="Internal") {
 					if ($_POST["gibbonSpaceID$i"]!="") {
@@ -189,12 +193,12 @@ else {
 			
 			try {
 				if ($dateType=="Date") {
-					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonActivityID"=>$AI, "name"=>$name, "type"=>$type, "active"=>$active, "listingStart"=>$listingStart, "listingEnd"=>$listingEnd, "programStart"=>$programStart, "programEnd"=>$programEnd, "gibbonYearGroupIDList"=>$gibbonYearGroupIDList, "maxParticipants"=>$maxParticipants, "payment"=>$payment, "description"=>$description); 
-					$sql="INSERT INTO gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonActivityID=:gibbonActivityID, name=:name, type=:type, active=:active, gibbonSchoolYearTermIDList='', listingStart=:listingStart, listingEnd=:listingEnd, programStart=:programStart, programEnd=:programEnd, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, payment=:payment, description=:description" ;
+					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonActivityID"=>$AI, "name"=>$name, "provider"=>$provider, "type"=>$type, "active"=>$active, "listingStart"=>$listingStart, "listingEnd"=>$listingEnd, "programStart"=>$programStart, "programEnd"=>$programEnd, "gibbonYearGroupIDList"=>$gibbonYearGroupIDList, "maxParticipants"=>$maxParticipants, "payment"=>$payment, "description"=>$description); 
+					$sql="INSERT INTO gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonActivityID=:gibbonActivityID, name=:name, provider=:provider, type=:type, active=:active, gibbonSchoolYearTermIDList='', listingStart=:listingStart, listingEnd=:listingEnd, programStart=:programStart, programEnd=:programEnd, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, payment=:payment, description=:description" ;
 				}
 				else {
-					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonActivityID"=>$AI, "name"=>$name, "type"=>$type, "active"=>$active, "gibbonSchoolYearTermIDList"=>$gibbonSchoolYearTermIDList, "gibbonYearGroupIDList"=>$gibbonYearGroupIDList, "maxParticipants"=>$maxParticipants, "payment"=>$payment, "description"=>$description); 
-					$sql="INSERT INTO gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonActivityID=:gibbonActivityID, name=:name, type=:type, active=:active, gibbonSchoolYearTermIDList=:gibbonSchoolYearTermIDList, listingStart=NULL, listingEnd=NULL, programStart=NULL, programEnd=NULL, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, payment=:payment, description=:description" ;
+					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonActivityID"=>$AI, "name"=>$name, "provider"=>$provider, "type"=>$type, "active"=>$active, "gibbonSchoolYearTermIDList"=>$gibbonSchoolYearTermIDList, "gibbonYearGroupIDList"=>$gibbonYearGroupIDList, "maxParticipants"=>$maxParticipants, "payment"=>$payment, "description"=>$description); 
+					$sql="INSERT INTO gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonActivityID=:gibbonActivityID, name=:name, provider=:provider, type=:type, active=:active, gibbonSchoolYearTermIDList=:gibbonSchoolYearTermIDList, listingStart=NULL, listingEnd=NULL, programStart=NULL, programEnd=NULL, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, payment=:payment, description=:description" ;
 				}
 				$result=$connection2->prepare($sql);
 				$result->execute($data); 

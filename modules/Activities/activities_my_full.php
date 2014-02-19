@@ -152,6 +152,12 @@ else {
 							}
 						print "</td>" ;
 					print "</tr>" ;
+					print "<tr>" ;
+						print "<td style='padding-top: 15px; width: 33%; vertical-align: top' colspan=3>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>Provider</span><br/>" ;
+							print "<i>" ; if ($row["provider"]=="School") { print $_SESSION[$guid]["organisationNameShort"] ; } else { print "External" ; } ; print "</i>" ;
+						print "</td>" ;
+					print "</tr>" ;
 					if ($row["description"]!="") {
 						print "<tr>" ;
 							print "<td style='text-align: justify; padding-top: 15px; width: 33%; vertical-align: top' colspan=3>" ;

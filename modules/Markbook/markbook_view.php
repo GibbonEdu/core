@@ -258,6 +258,7 @@ else {
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-right: 3px' title='Add Column' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 						}
 						print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view_full.php&gibbonCourseClassID=$gibbonCourseClassID&width=1100&height=550'><img title='Full Screen' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/zoom.png'/></a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-left: 3px' title='Set Targets' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/target.png'/></a>" ;
 						print "</div>" ;
 				
 						print "<table class='mini' cellspacing='0' style='width: 100%; margin-top: 0px'>" ;

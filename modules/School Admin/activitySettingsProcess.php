@@ -60,10 +60,11 @@ else {
 		$activityTypes.=trim($type) . "," ;
 	}
 	$activityTypes=substr($activityTypes,0,-1) ;
-	
+	$disableExternalProviderSignup=$_POST["disableExternalProviderSignup"] ; 	
+	$hideExternalProviderCost=$_POST["hideExternalProviderCost"] ; 	
 	
 	//Validate Inputs
-	if ($dateType=="" OR $access=="" OR $payment=="" OR $enrolmentType=="" OR $backupChoice=="") {
+	if ($dateType=="" OR $access=="" OR $payment=="" OR $enrolmentType=="" OR $backupChoice=="" OR $disableExternalProviderSignup=="" OR $hideExternalProviderCost=="") {
 		//Fail 3
 		$URL=$URL . "&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -142,6 +143,25 @@ else {
 			$fail=TRUE ;
 		}
 		
+		try {
+			$data=array("value"=>$disableExternalProviderSignup); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Activities' AND name='disableExternalProviderSignup'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$hideExternalProviderCost); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Activities' AND name='hideExternalProviderCost'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
 		
 		if ($fail==TRUE) {
 			//Fail 2

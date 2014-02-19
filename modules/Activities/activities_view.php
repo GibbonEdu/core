@@ -63,6 +63,7 @@ else {
 			
 		//Check access controls
 		$access=getSettingByScope($connection2, "Activities", "access") ;
+		$hideExternalProviderCost=getSettingByScope( $connection2, "Activities", "hideExternalProviderCost" ) ;
 		
 		if (!($access=="View" OR $access=="Register")) {
 			print "<div class='error'>" ;
@@ -73,6 +74,13 @@ else {
 			if ($access=="View") {
 				print "<div class='warning'>" ;
 					print "Registration is currently closed, but you can still view activities." ;
+				print "</div>" ;
+			}
+			
+			$disableExternalProviderSignup=getSettingByScope( $connection2, "Activities", "disableExternalProviderSignup" ) ;
+			if ($disableExternalProviderSignup=="Y") {
+				print "<div class='warning'>" ;
+					print "Registration for activities offered by outside providers is disabled. Check activity details for instructions on how to register for such acitvities." ;
 				print "</div>" ;
 			}
 			
@@ -357,6 +365,9 @@ else {
 								print "Activity" ;
 							print "</th>" ;
 							print "<th>" ;
+								print "Provider" ;
+							print "</th>" ;
+							print "<th>" ;
 								print "Days" ;
 							print "</th>" ;
 							print "<th>" ;
@@ -424,6 +435,9 @@ else {
 									print "<i>" . trim($row["type"]) . "</i>" ;
 								print "</td>" ;
 								print "<td>" ;
+									if ($row["provider"]=="School") { print $_SESSION[$guid]["organisationNameShort"] ; } else { print "External" ; }
+								print "</td>" ;
+								print "<td>" ;
 									try {
 										$dataSlots=array("gibbonActivityID"=>$row["gibbonActivityID"]); 
 										$sqlSlots="SELECT DISTINCT nameShort, sequenceNumber FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber" ;
@@ -475,11 +489,16 @@ else {
 									}
 								print "</td>" ;
 								print "<td>" ;
-									if ($row["payment"]==0) {
-										print "<i>None</i>" ;
+									if ($hideExternalProviderCost=="Y" AND $row["provider"]=="External") {
+										print "<i>See activity details</i>" ;
 									}
 									else {
-										print "$" . $row["payment"] ;
+										if ($row["payment"]==0) {
+											print "<i>None</i>" ;
+										}
+										else {
+											print "$" . $row["payment"] ;
+										}
 									}
 								print "</td>" ;
 								if (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0)) {
@@ -489,12 +508,18 @@ else {
 								}
 								print "<td>" ;
 									print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_full.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
-									if (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0)) {
-										if ($resultEnrol->rowCount()<1) {
-											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $search . "&mode=register&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='Register' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a> " ;
-										}
-										else {
-											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $search . "&mode=unregister&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='Unregister' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+									$signup=TRUE ;
+									if ($row["provider"]=="External" AND $disableExternalProviderSignup=="Y") {
+										$signup=FALSE ;
+									}
+									if ($signup) {
+										if (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0)) {
+											if ($resultEnrol->rowCount()<1) {
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $search . "&mode=register&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='Register' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a> " ;
+											}
+											else {
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $search . "&mode=unregister&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='Unregister' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+											}
 										}
 									}
 								print "</td>" ;

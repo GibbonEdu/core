@@ -143,6 +143,19 @@ else {
 						</td>
 					</tr>
 					
+					<tr>
+						<td> 
+							<b>Provider *</b><br/>
+							<span style="font-size: 90%"><i></i></span>
+						</td>
+						<td class="right">
+							<select name="provider" id="provider" style="width: 302px">
+								<option <? if ($row["provider"]=="School") {print "selected ";}?>value="School"><? print $_SESSION[$guid]["organisationNameShort"] ?></option>
+								<option <? if ($row["provider"]=="External") {print "selected ";}?>value="External">External</option>
+							</select>
+						</td>
+					</tr>
+					
 					<?
 					try {
 						$dataType=array(); 

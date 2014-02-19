@@ -39,6 +39,7 @@ else {
 	else {
 		//Check access controls
 		$access=getSettingByScope($connection2, "Activities", "access") ;
+		$hideExternalProviderCost=getSettingByScope( $connection2, "Activities", "hideExternalProviderCost" ) ;
 		
 		if (!($access=="View" OR $access=="Register")) {
 			print "<div class='error'>" ;
@@ -133,11 +134,16 @@ else {
 						print "<tr>" ;
 							print "<td style='padding-top: 15px; width: 33%; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>Payment</span><br/>" ;
-								if ($row["payment"]==0) {
-									print "<i>None</i>" ;
+								if ($hideExternalProviderCost=="Y" AND $row["provider"]=="External") {
+									print "<i>See Description below.</i>" ;
 								}
 								else {
-									print "$" . $row["payment"] ;
+									if ($row["payment"]==0) {
+										print "<i>None</i>" ;
+									}
+									else {
+										print "$" . $row["payment"] ;
+									}
 								}
 							print "</td>" ;
 							print "<td style='padding-top: 15px; width: 33%; vertical-align: top'>" ;
@@ -166,6 +172,12 @@ else {
 									}
 									print "</ul>" ;
 								}
+							print "</td>" ;
+						print "</tr>" ;
+						print "<tr>" ;
+							print "<td style='padding-top: 15px; width: 33%; vertical-align: top' colspan=3>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>Provider</span><br/>" ;
+								print "<i>" ; if ($row["provider"]=="School") { print $_SESSION[$guid]["organisationNameShort"] ; } else { print "External" ; } ; print "</i>" ;
 							print "</td>" ;
 						print "</tr>" ;
 						if ($row["description"]!="") {

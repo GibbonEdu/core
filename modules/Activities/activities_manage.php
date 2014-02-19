@@ -164,7 +164,7 @@ else {
 						print "Cost" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Active" ;
+						print "Provider" ;
 					print "</th>" ;
 					print "<th style='width: 80px'>" ;
 						print "Actions" ;
@@ -262,7 +262,7 @@ else {
 								}
 							print "</td>" ;
 							print "<td>" ;
-								print $row["active"] ;
+								if ($row["provider"]=="School") { print $_SESSION[$guid]["organisationNameShort"] ; } else { print "External" ; }
 							print "</td>" ;
 							print "<td>" ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&search=" . $search . "'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;

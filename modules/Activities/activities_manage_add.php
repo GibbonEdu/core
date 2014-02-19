@@ -86,6 +86,17 @@ else {
 					 </script>
 				</td>
 			</tr>
+			<tr>
+				<td> 
+					<b>Provider *</b><br/>
+				</td>
+				<td class="right">
+					<select name="provider" id="provider" style="width: 302px">
+						<option value="School"><? print $_SESSION[$guid]["organisationNameShort"] ?></option>
+						<option value="External">External</option>
+					</select>
+				</td>
+			</tr>
 			
 			<?
 			try {

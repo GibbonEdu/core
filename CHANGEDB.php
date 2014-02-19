@@ -1558,6 +1558,14 @@ ALTER TABLE `gibboni18n` CHANGE `dateFormatRegEx` `dateFormatRegEx` TEXT CHARACT
 UPDATE gibboni18n SET dateFormatRegEx='/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i' WHERE code='en-GB';end
 UPDATE gibboni18n SET dateFormatRegEx='/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i' WHERE code='es';end
 UPDATE gibboni18n SET dateFormatRegEx='/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i' WHERE code='zh-HK';end
+UPDATE gibbonAction SET URLList='markbook_edit.php, markbook_edit_add.php, markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php' WHERE name ='Edit Markbook_singleClass' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonModule.name='Markbook') ;end
+UPDATE gibbonAction SET URLList='markbook_edit.php, markbook_edit_add.php,markbook_edit_addMulti.php,markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php' WHERE name LIKE 'Edit Markbook%' AND NOT name='Edit Markbook_singleClass' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonModule.name='Markbook') ;end
+ALTER TABLE `gibbonMarkbookEntry` CHANGE `gibbonPersonIDStudent` `gibbonPersonIDStudent` INT( 10 ) UNSIGNED ZEROFILL NOT NULL ;end
+CREATE TABLE `gibbonMarkbookTarget` (  `gibbonMarkbookTargetID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,  `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,  `gibbonPersonIDStudent` int(10) unsigned zerofill NOT NULL,  `gibbonScaleGradeID` int(7) NOT NULL,  PRIMARY KEY (`gibbonMarkbookTargetID`),  UNIQUE KEY `coursePerson` (`gibbonCourseClassID`,`gibbonPersonIDStudent`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'Markbook', 'personalisedWarnings', 'Personalised Warnings', 'Should markbook warnings be based on personal targets, if they are available?', 'Y');end
+ALTER TABLE `gibbonActivity` ADD `provider` ENUM( 'School', 'External' ) NOT NULL DEFAULT 'School' AFTER `name` ;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'Activities', 'disableExternalProviderSignup', 'Disable External Provider Signup', 'Should we turn off the option to sign up for activities provided by an outside agency?', 'N');end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'Activities', 'hideExternalProviderCost', 'Hide External Provider Cost', 'Should we hide the cost of activities provided by an outside agency from the Activities View?', 'N');end
 
 --LAST ICHK
 --LAST HLY

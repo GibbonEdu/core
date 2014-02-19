@@ -55,7 +55,29 @@ i18n: adjusted display of date format and date format error messages to account 
 	Edited table gibboni18n
 	Edited various files across the system
 
+Markbook: added ability to set personalised targets for students by class
+	New table gibbonMarkbookTarget
+	New values in table gibbonSetting
+	New file /themes/Default/target.png
+	Edited values in table gibbonAction
+	Edited file /modules/Markbook/markbook_view.php
+	New files /modules/Markbook/markbook_edit_targets*.php
+	Edited fies /modules/School Admin/markbookSettings*.php
+
+Activities: fixed issue preventing internal locations from being saved
+	Edited files /modules/Activities/activities_manage_editProcess.php, activities_manage_addProcess.php
 	
+Activities: added field to track whether activity is run in school or by outside provider , with setting to block sign up for external activities
+	Edited table gibbonActivity
+	New values in table gibbonSetting
+	Edited files /modules/Activities/*
+	Edited files /modules/School Admin/activitySettings*.php
+
+Activities: added setting to hide cost for external activities
+	New values in table gibbonSetting
+	Edited files /modules/School Admin/activitySettings*.php
+	Edited files /modules/Activities/activities_view.php
+
 
 v7.1.02
 -------

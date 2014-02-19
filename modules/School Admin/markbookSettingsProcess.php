@@ -54,6 +54,7 @@ else {
 	$showStudentEffortWarning=$_POST["showStudentEffortWarning"] ;
 	$showParentAttainmentWarning=$_POST["showParentAttainmentWarning"] ;
 	$showParentEffortWarning=$_POST["showParentEffortWarning"] ;
+	$personalisedWarnings=$_POST["personalisedWarnings"] ;
 	
 	//Validate Inputs
 	if ($markbookType=="") {
@@ -118,6 +119,16 @@ else {
 		try {
 			$data=array("value"=>$showParentEffortWarning); 
 			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='showParentEffortWarning'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$personalisedWarnings); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='personalisedWarnings'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
