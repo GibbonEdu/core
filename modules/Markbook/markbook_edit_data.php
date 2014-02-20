@@ -155,6 +155,28 @@ else {
 								print "<th rowspan=2>" ;
 									print "Student" ;
 								print "</th>" ;
+								
+								print "<th rowspan=2 style='width: 20px'>" ;
+									$title="Personalised target grade" ;
+								
+									//Get PAS
+									$PAS=getSettingByScope($connection2, 'System', 'primaryAssessmentScale') ;
+									try {
+										$dataPAS=array("gibbonScaleID"=>$PAS); 
+										$sqlPAS="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
+										$resultPAS=$connection2->prepare($sqlPAS);
+										$resultPAS->execute($dataPAS);
+									}
+									catch(PDOException $e) { }
+									if ($resultPAS->rowCount()==1) {
+										$rowPAS=$resultPAS->fetch() ;
+										$title.=" | " . $rowPAS["name"] . " Scale " ;
+									}
+								
+									print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>" ;
+										print "Target<br/>" ;
+									print "</div>" ;
+								print "</th>" ;
 							
 								$columnID=array() ;
 								$attainmentID=array() ;
@@ -195,10 +217,10 @@ else {
 									}
 								
 									if ($submission==FALSE) {
-										$span=3 ;
+										$span=4 ;
 									}
 									else {
-										$span=4 ;
+										$span=5 ;
 									}
 									print "<th style='text-align: center' colspan=$span>" ;
 										print "<span title='" . htmlPrep($row2["description"]) . "'>" . $row2["name"] . "<br>" ;
@@ -321,6 +343,22 @@ else {
 									print "<tr class=$rowNum>" ;
 										print "<td>" ;
 											print "<div style='padding: 2px 0px'>" . ($count) . ") <b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&subpage=Markbook#" . $gibbonCourseClassID . "'>" . formatName("", $rowStudents["preferredName"], $rowStudents["surname"], "Student", true) . "</a><br/></div>" ;
+										print "</td>" ;
+										
+										print "<td style='text-align: center'>" ;
+											try {
+												$dataEntry=array("gibbonPersonIDStudent"=>$rowStudents["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
+												$sqlEntry="SELECT * FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonCourseClassID=:gibbonCourseClassID" ;
+												$resultEntry=$connection2->prepare($sqlEntry);
+												$resultEntry->execute($dataEntry);
+											}
+											catch(PDOException $e) { 
+												print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+											}
+											if ($resultEntry->rowCount()>=1) {
+												$rowEntry=$resultEntry->fetch() ;
+												print $rowEntry["value"] ;
+											}	
 										print "</td>" ;
 									
 										for ($i=0;$i<$columns;$i++) {
@@ -493,15 +531,15 @@ else {
 							<tr class='break'>
 								<?
 								if ($submission==FALSE) {
-									$span=4 ;
-									if (isset($row2["gibbonRubricID"])) {
-										$span=5 ;
-									}
-								}
-								else {
 									$span=5 ;
 									if (isset($row2["gibbonRubricID"])) {
 										$span=6 ;
+									}
+								}
+								else {
+									$span=6 ;
+									if (isset($row2["gibbonRubricID"])) {
+										$span=7 ;
 									}
 								}
 								print "<td colspan=$span>" ;

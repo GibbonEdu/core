@@ -258,7 +258,7 @@ else {
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-right: 3px' title='Add Column' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 						}
 						print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view_full.php&gibbonCourseClassID=$gibbonCourseClassID&width=1100&height=550'><img title='Full Screen' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/zoom.png'/></a>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-left: 3px' title='Set Targets' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/target.png'/></a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-left: 3px' title='Set Personalised Attainment Targets' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/target.png'/></a>" ;
 						print "</div>" ;
 				
 						print "<table class='mini' cellspacing='0' style='width: 100%; margin-top: 0px'>" ;
@@ -267,6 +267,7 @@ else {
 									print "Student" ;
 								print "</th>" ;
 								
+								//Show Baseline data header
 								if ($externalAssessment==TRUE) {
 									print "<th rowspan=2 style='width: 20px'>" ;
 										$title=$externalAssessmentFields[2] . " | " ;
@@ -292,6 +293,29 @@ else {
 										print "</div>" ;
 									print "</th>" ;
 								}
+								
+								//Show target grade header
+								print "<th rowspan=2 style='width: 20px'>" ;
+									$title="Personalised attainment target grade" ;
+									
+									//Get PAS
+									$PAS=getSettingByScope($connection2, 'System', 'primaryAssessmentScale') ;
+									try {
+										$dataPAS=array("gibbonScaleID"=>$PAS); 
+										$sqlPAS="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
+										$resultPAS=$connection2->prepare($sqlPAS);
+										$resultPAS->execute($dataPAS);
+									}
+									catch(PDOException $e) { }
+									if ($resultPAS->rowCount()==1) {
+										$rowPAS=$resultPAS->fetch() ;
+										$title.=" | " . $rowPAS["name"] . " Scale " ;
+									}
+									
+									print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>" ;
+										print "Target<br/>" ;
+									print "</div>" ;
+								print "</th>" ;
 								
 								$columnID=array() ;
 								$attainmentID=array() ;
@@ -475,6 +499,22 @@ else {
 										print "</td>" ;
 									}
 									
+									print "<td style='text-align: center'>" ;
+										try {
+											$dataEntry=array("gibbonPersonIDStudent"=>$rowStudents["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
+											$sqlEntry="SELECT * FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonCourseClassID=:gibbonCourseClassID" ;
+											$resultEntry=$connection2->prepare($sqlEntry);
+											$resultEntry->execute($dataEntry);
+										}
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										if ($resultEntry->rowCount()>=1) {
+											$rowEntry=$resultEntry->fetch() ;
+											print $rowEntry["value"] ;
+										}	
+									print "</td>" ;
+									
 									for ($i=0;$i<$columns;$i++) {
 										$row=$result->fetch() ;
 											try {
@@ -491,6 +531,9 @@ else {
 												$styleAttainment="" ;
 												if ($rowEntry["attainmentConcern"]=="Y") {
 													$styleAttainment="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
+												}
+												else if ($rowEntry["attainmentConcern"]=="P") {
+													$styleAttainment="style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'" ;
 												}
 												print "<td style='text-align: center'>" ;
 													$attainment=$rowEntry["attainmentValue"] ;
@@ -862,6 +905,9 @@ else {
 									$styleAttainment="style='font-weight: bold'" ;
 									if ($rowEntry["attainmentConcern"]=="Y" AND $showStudentAttainmentWarning=="Y") {
 										$styleAttainment="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
+									}
+									else if ($rowEntry["attainmentConcern"]=="P" AND $showStudentAttainmentWarning=="Y") {
+										$styleAttainment="style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'" ;
 									}
 									print "<div $styleAttainment>" . $rowEntry["attainmentValue"] ;
 										if ($rowEntry["gibbonRubricIDAttainment"]!="") {
@@ -1368,6 +1414,9 @@ else {
 												$styleAttainment="style='font-weight: bold'" ;
 												if ($rowEntry["attainmentConcern"]=="Y" AND $showParentAttainmentWarning=="Y") {
 													$styleAttainment="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
+												}
+												else if ($rowEntry["attainmentConcern"]=="P" AND $showParentAttainmentWarning=="Y") {
+													$styleAttainment="style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'" ;
 												}
 												print "<div $styleAttainment>" . $rowEntry["attainmentValue"] ;
 													if ($rowEntry["gibbonRubricIDAttainment"]!="") {

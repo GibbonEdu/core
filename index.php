@@ -841,6 +841,9 @@ else {
 																	$styleAttainment="style='font-weight: bold'" ;
 																	if ($rowEntry["attainmentConcern"]=="Y" AND $showParentAttainmentWarning=="Y") {
 																		$styleAttainment="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
+																	}	
+																	else if ($rowEntry["attainmentConcern"]=="P" AND $showParentAttainmentWarning=="Y") {
+																		$styleAttainment="style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'" ;
 																	}
 																	print "<div $styleAttainment>" . $rowEntry["attainmentValue"] ;
 																		if ($rowEntry["gibbonRubricIDAttainment"]!="") {

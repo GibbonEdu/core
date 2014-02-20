@@ -39,6 +39,8 @@ $gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 $gibbonMarkbookColumnID=$_GET["gibbonMarkbookColumnID"] ;
 $URL= $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/markbook_edit_data.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID" ;
 
+$personalisedWarnings=getSettingByScope( $connection2, "Markbook", "personalisedWarnings" ) ;
+
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_data.php")==FALSE) {
 	//Fail 0
 	$URL=$URL . "&updateReturn=fail0" ;
@@ -94,41 +96,80 @@ else {
 						$wordpressCommentPushID=substr($_POST["$i-wordpressCommentPush"], 0, strpos($_POST["$i-wordpressCommentPush"],"-")) ;
 						$wordpressCommentPushAction=substr($_POST["$i-wordpressCommentPush"], (strpos($_POST["$i-wordpressCommentPush"],"-")+1)) ;
 					}
-					//Set and calculate for attainment
-					$attainmentConcern="N" ;
-					$attainmentDescriptor="" ;
-					if ($attainmentValue!="") {
-						$lowestAcceptableAttainment=$_POST["lowestAcceptableAttainment"] ;
-						$scaleAttainment=$_POST["scaleAttainment"] ;
-						try {
-							$dataScale=array("attainmentValue"=>$attainmentValue, "scaleAttainment"=>$scaleAttainment); 
-							$sqlScale="SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:attainmentValue AND gibbonScaleGrade.gibbonScaleID=:scaleAttainment" ;
-							$resultScale=$connection2->prepare($sqlScale);
-							$resultScale->execute($dataScale);
+					
+					//SET AND CALCULATE FOR ATTAINMENT
+					//Check for target grade
+					try {
+						$dataTarget=array("gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent); 
+						$sqlTarget="SELECT * FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonIDStudent=:gibbonPersonIDStudent" ;
+						$resultTarget=$connection2->prepare($sqlTarget);
+						$resultTarget->execute($dataTarget);
+					}
+					catch(PDOException $e) { 
+						$partialFail=TRUE ;
+					}
+					
+					
+					//With personal warnings
+					if ($personalisedWarnings=="Y" AND $resultTarget->rowCount()==1 AND $attainmentValue!="") {
+						$attainmentConcern="N" ;
+						$attainmentDescriptor="" ;
+						$rowTarget=$resultTarget->fetch() ;
+						//Test against target grade and set values accordingly	
+						//On target
+						if ($rowTarget["value"]==$attainmentValue) {
+							$attainmentConcern="N" ;
+							$attainmentDescriptor="Attainment is on personalised target" ;
 						}
-						catch(PDOException $e) { 
-							$partialFail=TRUE ;
+						//Below target
+						else if ($rowTarget["value"]>$attainmentValue) {
+							$attainmentConcern="Y" ;
+							$attainmentDescriptor="Attainment is below personalised target of " . $rowTarget["value"] ;
 						}
-						if ($resultScale->rowCount()!=1) {
-							$partialFail=TRUE ;
+						//Above target
+						else if ($rowTarget["value"]<$attainmentValue) {
+							$attainmentConcern="P" ;
+							$attainmentDescriptor="Attainment is above personalised target of " . $rowTarget["value"] ;
 						}
-						else {
-							$rowScale=$resultScale->fetch() ;
-							$sequence=$rowScale["sequenceNumber"] ;
-							$attainmentDescriptor=$rowScale["descriptor"] ;
-						}
+					
+					}
+					//Without personal warnings
+					else {
+						$attainmentConcern="N" ;
+						$attainmentDescriptor="" ;
+						if ($attainmentValue!="") {
+							$lowestAcceptableAttainment=$_POST["lowestAcceptableAttainment"] ;
+							$scaleAttainment=$_POST["scaleAttainment"] ;
+							try {
+								$dataScale=array("attainmentValue"=>$attainmentValue, "scaleAttainment"=>$scaleAttainment); 
+								$sqlScale="SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:attainmentValue AND gibbonScaleGrade.gibbonScaleID=:scaleAttainment" ;
+								$resultScale=$connection2->prepare($sqlScale);
+								$resultScale->execute($dataScale);
+							}
+							catch(PDOException $e) { 
+								$partialFail=TRUE ;
+							}
+							if ($resultScale->rowCount()!=1) {
+								$partialFail=TRUE ;
+							}
+							else {
+								$rowScale=$resultScale->fetch() ;
+								$sequence=$rowScale["sequenceNumber"] ;
+								$attainmentDescriptor=$rowScale["descriptor"] ;
+							}
 						
-						if ($lowestAcceptableAttainment!="" AND $sequence!="" AND $attainmentValue!="") {
-							if ($sequence>$lowestAcceptableAttainment) {
-								$attainmentConcern="Y" ;
+							if ($lowestAcceptableAttainment!="" AND $sequence!="" AND $attainmentValue!="") {
+								if ($sequence>$lowestAcceptableAttainment) {
+									$attainmentConcern="Y" ;
+								}
 							}
 						}
 					}
 					
+					//SET AND CALCULATE FOR EFFORT
 					$effortConcern="N" ;
 					$effortDescriptor="" ;
 					if ($effortValue!="") {
-						//Set and calculate for effort
 						$lowestAcceptableEffort=$_POST["lowestAcceptableEffort"] ;
 						$scaleEffort=$_POST["scaleEffort"] ;
 						try {

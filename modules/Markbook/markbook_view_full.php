@@ -194,6 +194,29 @@ else {
 									print "</div>" ;
 								print "</th>" ;
 							}
+							
+							//Show target grade header
+							print "<th rowspan=2 style='width: 20px'>" ;
+								$title="Personalised attainment target grade" ;
+								
+								//Get PAS
+								$PAS=getSettingByScope($connection2, 'System', 'primaryAssessmentScale') ;
+								try {
+									$dataPAS=array("gibbonScaleID"=>$PAS); 
+									$sqlPAS="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
+									$resultPAS=$connection2->prepare($sqlPAS);
+									$resultPAS->execute($dataPAS);
+								}
+								catch(PDOException $e) { }
+								if ($resultPAS->rowCount()==1) {
+									$rowPAS=$resultPAS->fetch() ;
+									$title.=" | " . $rowPAS["name"] . " Scale " ;
+								}
+								
+								print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>" ;
+									print "Target<br/>" ;
+								print "</div>" ;
+							print "</th>" ;
 								
 							$columnID=array() ;
 							$attainmentID=array() ;
@@ -383,6 +406,22 @@ else {
 											}	
 										print "</td>" ;
 									}
+									
+									print "<td style='text-align: center'>" ;
+										try {
+											$dataEntry=array("gibbonPersonIDStudent"=>$rowStudents["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
+											$sqlEntry="SELECT * FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonCourseClassID=:gibbonCourseClassID" ;
+											$resultEntry=$connection2->prepare($sqlEntry);
+											$resultEntry->execute($dataEntry);
+										}
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										if ($resultEntry->rowCount()>=1) {
+											$rowEntry=$resultEntry->fetch() ;
+											print $rowEntry["value"] ;
+										}	
+									print "</td>" ;
 								
 									for ($i=($columnsPerPage*$x);$i<ceil(($x+1)*$columnsPerPage);$i++) {
 										if ($i<=($columns-1)) {
@@ -401,6 +440,9 @@ else {
 												$styleAttainment="" ;
 												if ($rowEntry["attainmentConcern"]=="Y") {
 													$styleAttainment="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
+												}
+												else if ($rowEntry["attainmentConcern"]=="P") {
+													$styleAttainment="style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'" ;
 												}
 												print "<td style='padding: 0px 0px; font-size: 90%; text-align: center'>" ;
 													print "<div $styleAttainment title='" . htmlPrep($rowEntry["attainmentDescriptor"]) . "'>" . $rowEntry["attainmentValue"] ;

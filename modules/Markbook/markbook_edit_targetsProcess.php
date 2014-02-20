@@ -57,7 +57,10 @@ else {
 		
 		for ($i=1;$i<=$count;$i++) {
 			$gibbonPersonIDStudent=$_POST["$i-gibbonPersonID"] ;
-			$gibbonScaleGradeID=$_POST["$i-gibbonScaleGradeID"] ;
+			$gibbonScaleGradeID=NULL ;
+			if ($_POST["$i-gibbonScaleGradeID"]!="") {
+				$gibbonScaleGradeID=$_POST["$i-gibbonScaleGradeID"] ;
+			}
 			
 			$selectFail=false ;
 			try {
