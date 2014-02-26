@@ -37,7 +37,7 @@ else {
 	$gibbonRubricID=$_GET["gibbonRubricID"] ;
 	if ($gibbonCourseClassID=="" OR $gibbonMarkbookColumnID=="" OR $gibbonPersonID=="" OR $gibbonRubricID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a class or a markbook column." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

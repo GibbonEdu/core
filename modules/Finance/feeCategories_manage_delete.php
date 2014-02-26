@@ -59,7 +59,7 @@ else {
 	$gibbonFinanceFeeCategoryID=$_GET["gibbonFinanceFeeCategoryID"];
 	if ($gibbonFinanceFeeCategoryID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified an outcome." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

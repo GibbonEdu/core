@@ -77,7 +77,7 @@ else {
 	}
 	if ($gibbonPersonMedicalID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a medical form" ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

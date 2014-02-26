@@ -414,7 +414,7 @@ else {
 							print "<div class='linkTop'>" ;
 								print "<tr>" ;
 									print "<td colspan=3>" ;
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_edit.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=$date&subView=$subView'>Edit Lesson<img style='margin: 0 0 -4px 3px' title='Edit Lesson' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> | " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_edit.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=" . $row["date"] . "&subView=$subView'>Edit Lesson<img style='margin: 0 0 -4px 3px' title='Edit Lesson' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> | " ;
 										try {
 											$dataMarkbook=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"], "gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
 											$sqlMarkbook="SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID" ;

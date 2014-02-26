@@ -56,7 +56,7 @@ else {
 	$gibbonSpaceID=$_GET["gibbonSpaceID"] ;
 	if ($gibbonSpaceID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a space." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

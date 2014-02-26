@@ -67,7 +67,7 @@ else {
 	$gibbonLibraryItemID=$_GET["gibbonLibraryItemID"];
 	if ($gibbonLibraryItemID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a library item." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

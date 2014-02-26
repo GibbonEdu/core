@@ -373,7 +373,7 @@ else {
 						else if ($viewBy=="class") {
 							if ($gibbonCourseClassID=="") {
 								print "<div class='error'>" ;
-									print "You have not specified a class." ;
+									print "You have not specified one or more required parameters." ;
 								print "</div>" ;
 							}
 							else {
@@ -774,7 +774,7 @@ else {
 			else if ($viewBy=="class") {
 				if ($gibbonCourseClassID=="") {
 					print "<div class='error'>" ;
-						print "You have not specified a class." ;
+						print "You have not specified one or more required parameters." ;
 					print "</div>" ;
 				}
 				else {

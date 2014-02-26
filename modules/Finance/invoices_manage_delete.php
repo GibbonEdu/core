@@ -65,7 +65,7 @@ else {
 	
 	if ($gibbonFinanceInvoiceID=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified an invoice or school year." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

@@ -30,7 +30,7 @@ else {
 	
 	if ($gibbonTTColumnID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a column." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

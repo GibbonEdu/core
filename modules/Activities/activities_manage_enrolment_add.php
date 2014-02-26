@@ -69,7 +69,7 @@ else {
 	
 	if ($gibbonActivityID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a school year or course." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

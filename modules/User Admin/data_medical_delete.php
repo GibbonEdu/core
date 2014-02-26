@@ -59,7 +59,7 @@ else {
 	$gibbonPersonMedicalUpdateID=$_GET["gibbonPersonMedicalUpdateID"];
 	if ($gibbonPersonMedicalUpdateID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified an activity." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

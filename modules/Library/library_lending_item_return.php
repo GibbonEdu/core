@@ -31,7 +31,7 @@ else {
 	$gibbonLibraryItemID=$_GET["gibbonLibraryItemID"] ;
 	if ($gibbonLibraryItemEventID=="" OR $gibbonLibraryItemID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a grade scale or grade." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

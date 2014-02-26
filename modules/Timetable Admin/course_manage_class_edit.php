@@ -65,7 +65,7 @@ else {
 	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
 	if ($gibbonCourseClassID=="" OR $gibbonCourseID=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a class, course or school year." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

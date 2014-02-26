@@ -95,7 +95,7 @@ else {
 	$gibbonDepartmentID=$_GET["gibbonDepartmentID"];
 	if ($gibbonDepartmentID=="Y") {
 		print "<div class='error'>" ;
-			print "You have not specified a learning area." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

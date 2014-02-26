@@ -30,7 +30,7 @@ else {
 	$subpage=$_GET["subpage"] ;
 	if ($gibbonPersonID=="" OR $subpage=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a student or subpage." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {
@@ -81,7 +81,7 @@ else {
 			$gibbonStudentNoteID=$_GET["gibbonStudentNoteID"] ;
 			if ($gibbonStudentNoteID=="") {
 				print "<div class='error'>" ;
-					print "You have not specified a note." ;
+					print "You have not specified one or more required parameters." ;
 				print "</div>" ;
 			}
 			else {

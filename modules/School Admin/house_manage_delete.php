@@ -56,7 +56,7 @@ else {
 	$gibbonHouseID=$_GET["gibbonHouseID"] ;
 	if ($gibbonHouseID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a house." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

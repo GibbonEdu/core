@@ -298,7 +298,7 @@ else {
 			
 			if ($gibbonPersonID=="" OR $date=="" OR $type=="" OR $descriptor=="") {
 				print "<div class='error'>" ;
-					print "You have not specified a student or some other required field." ;
+					print "You have not specified one or more required parameters." ;
 				print "</div>" ;
 			}
 			else {

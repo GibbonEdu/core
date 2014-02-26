@@ -78,7 +78,7 @@ else {
 		$gibbonResourceID=$_GET["gibbonResourceID"];
 		if ($gibbonResourceID=="Y") {
 			print "<div class='error'>" ;
-				print "You have not specified a behaviour record." ;
+				print "You have not specified one or more required parameters." ;
 			print "</div>" ;
 		}
 		else {

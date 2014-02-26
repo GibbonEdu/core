@@ -34,7 +34,7 @@ else {
 	
 	if ($gibbonTTDayID=="" OR $gibbonTTID=="" OR $gibbonSchoolYearID=="" OR $gibbonTTColumnRowID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a timetable, timetable day or school year." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

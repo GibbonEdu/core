@@ -40,7 +40,7 @@ else {
 		$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 		if ($gibbonCourseClassID=="") {
 			print "<div class='error'>" ;
-				print "You have not specified a class or a markbook column." ;
+				print "You have not specified one or more required parameters." ;
 			print "</div>" ;
 		}
 		else {

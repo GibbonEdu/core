@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Departments/department_cou
 else {
 	if ($gibbonDepartmentID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a learning area." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

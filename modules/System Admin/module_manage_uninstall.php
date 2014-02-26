@@ -56,7 +56,7 @@ else {
 	$gibbonModuleID=$_GET["gibbonModuleID"] ;
 	if ($gibbonModuleID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a module." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {
@@ -72,7 +72,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The specified module cannot be found." ;
+				print "You have not specified one or more required parameters." ;
 			print "</div>" ;
 		}
 		else {

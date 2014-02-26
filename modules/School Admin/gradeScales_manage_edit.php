@@ -79,7 +79,7 @@ else {
 	$gibbonScaleID=$_GET["gibbonScaleID"] ;
 	if ($gibbonScaleID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a grade scale." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

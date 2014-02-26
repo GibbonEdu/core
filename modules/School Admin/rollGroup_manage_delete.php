@@ -57,7 +57,7 @@ else {
 	$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
 	if ($gibbonRollGroupID=="" AND $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a roll group." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

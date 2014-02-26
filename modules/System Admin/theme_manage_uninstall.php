@@ -56,7 +56,7 @@ else {
 	$gibbonThemeID=$_GET["gibbonThemeID"] ;
 	if ($gibbonThemeID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a theme." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

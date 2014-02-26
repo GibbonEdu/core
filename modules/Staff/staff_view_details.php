@@ -40,7 +40,7 @@ else {
 		$gibbonPersonID=$_GET["gibbonPersonID"] ;
 		if ($gibbonPersonID==FALSE) {
 			print "<div class='error'>" ;
-			print "You have not specified a student." ;
+			print "You have not specified one or more required parameters." ;
 			print "</div>" ;
 		}
 		else {

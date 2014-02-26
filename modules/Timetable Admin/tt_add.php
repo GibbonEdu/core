@@ -66,7 +66,7 @@ else {
 	
 	if ($gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a school year." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

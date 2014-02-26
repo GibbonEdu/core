@@ -56,7 +56,7 @@ else {
 	$gibbonSchoolYearSpecialDayID=$_GET["gibbonSchoolYearSpecialDayID"] ;
 	if ($gibbonSchoolYearSpecialDayID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a special day." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

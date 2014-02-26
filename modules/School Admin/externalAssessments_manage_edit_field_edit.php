@@ -31,7 +31,7 @@ else {
 	$gibbonExternalAssessmentID=$_GET["gibbonExternalAssessmentID"] ;
 	if ($gibbonExternalAssessmentFieldID=="" OR $gibbonExternalAssessmentID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a grade scale or grade." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

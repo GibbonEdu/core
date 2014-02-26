@@ -56,7 +56,7 @@ else {
 	$gibbonRoleID=$_GET["gibbonRoleID"] ;
 	if ($gibbonRoleID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a role." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

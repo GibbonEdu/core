@@ -76,7 +76,7 @@ else {
 	$gibbonFinanceInvoiceeID=$_GET["gibbonFinanceInvoiceeID"];
 	if ($gibbonFinanceInvoiceeID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a category." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

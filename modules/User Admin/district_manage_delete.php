@@ -56,7 +56,7 @@ else {
 	$gibbonDistrictID=$_GET["gibbonDistrictID"] ;
 	if ($gibbonDistrictID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a district." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

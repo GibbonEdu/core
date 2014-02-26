@@ -65,7 +65,7 @@ else {
 	$search=$_GET["search"] ;
 	if ($gibbonPersonID=="" OR $gibbonFamilyID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a person or family." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

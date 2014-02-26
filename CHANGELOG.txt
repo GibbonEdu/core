@@ -85,6 +85,8 @@ Students: created a new report to show privacy choices for students
 	New values in tables gibbonAction, gibbonPermission
 	New file /modules/Students/report_privacy_student.php
 
+Planner: fixed Edit Lesson link, which prevented edit page from working, when viewing from a date having used Previous/Next liks
+	Edited file /modules/Planner/planner_view_full.php
 
 v7.1.02
 -------

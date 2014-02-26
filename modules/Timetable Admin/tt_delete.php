@@ -56,7 +56,7 @@ else {
 	$gibbonTTID=$_GET["gibbonTTID"] ;
 	if ($gibbonTTID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a timetable." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

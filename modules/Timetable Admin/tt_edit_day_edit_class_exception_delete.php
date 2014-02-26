@@ -36,7 +36,7 @@ else {
 	
 	if ($gibbonTTDayID=="" OR $gibbonTTID=="" OR $gibbonSchoolYearID=="" OR $gibbonTTColumnRowID=="" OR $gibbonCourseClassID=="" OR $gibbonTTDayRowClassID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a timetable, timetable day or school year." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {
@@ -60,7 +60,7 @@ else {
 			$gibbonTTDayRowClassExceptionID=$_GET["gibbonTTDayRowClassExceptionID"] ;
 			if ($gibbonTTDayRowClassExceptionID=="") {
 				print "<div class='error'>" ;
-					print "You have not specified an exception." ;
+					print "You have not specified one or more required parameters." ;
 				print "</div>" ;
 			}
 			else {

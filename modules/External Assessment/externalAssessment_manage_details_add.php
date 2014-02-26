@@ -64,7 +64,7 @@ else {
 	
 	if ($gibbonPersonID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a student." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

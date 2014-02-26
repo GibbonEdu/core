@@ -79,7 +79,7 @@ else {
 	$dateStamp=$_GET["dateStamp"] ;
 	if ($gibbonSchoolYearID=="" OR $dateStamp=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a school year or date." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {	

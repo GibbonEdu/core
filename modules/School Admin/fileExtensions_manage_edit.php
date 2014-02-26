@@ -63,7 +63,7 @@ else {
 	$gibbonFileExtensionID=$_GET["gibbonFileExtensionID"] ;
 	if ($gibbonFileExtensionID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a file extension." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

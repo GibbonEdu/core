@@ -110,7 +110,7 @@ else {
 		print "Edit Family" ;
 		print "</h1>" ;
 		print "<div class='error'>" ;
-			print "You have not specified a family." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

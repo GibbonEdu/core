@@ -57,7 +57,7 @@ else {
 	$gibbonPersonID=$_GET["gibbonPersonID"] ;
 	if ($gibbonPersonID=="" OR $gibbonActivityID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a person or activity." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

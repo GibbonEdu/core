@@ -39,7 +39,7 @@ else {
 
 	if ($gibbonSchoolYearID=="" OR $dateStamp=="" OR $gibbonSchoolYearTermID=="" OR $firstDay=="" OR $lastDay=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a school year or other required information." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

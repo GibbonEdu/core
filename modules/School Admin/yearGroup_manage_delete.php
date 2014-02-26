@@ -56,7 +56,7 @@ else {
 	$gibbonYearGroupID=$_GET["gibbonYearGroupID"] ;
 	if ($gibbonYearGroupID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified a year group." ;
+			print "You have not specified one or more required parameters." ;
 		print "</div>" ;
 	}
 	else {

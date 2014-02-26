@@ -77,7 +77,7 @@ else {
 			$gibbonRubricID=$_GET["gibbonRubricID"];
 			if ($gibbonRubricID=="") {
 				print "<div class='error'>" ;
-					print "You have not specified a rubric." ;
+					print "You have not specified one or more required parameters." ;
 				print "</div>" ;
 			}
 			else {
