@@ -473,13 +473,13 @@ else {
 										print "<script type=\"text/javascript\">" ;
 											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
 											print $fieldName . ".add(Validate.Presence);" ;
-											print $fieldName . "add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: \"Use dd/mm/yyyy.\" } );" ; 
+											print $fieldName . "add( Validate.Format, {pattern:" ;  if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } print ", failureMessage: \"Use dd/mm/yyyy.\" } );" ; 
 										 print "</script>" ;
 									} }
 									else {
 										print "<script type=\"text/javascript\">" ;
 											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . "add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: \"Use dd/mm/yyyy.\" } );" ; 
+											print $fieldName . "add( Validate.Format, {pattern:" ; if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } print ", failureMessage: \"Use dd/mm/yyyy.\" } );" ; 
 										 print "</script>" ;
 									}
 									?>

@@ -88,6 +88,13 @@ Students: created a new report to show privacy choices for students
 Planner: fixed Edit Lesson link, which prevented edit page from working, when viewing from a date having used Previous/Next liks
 	Edited file /modules/Planner/planner_view_full.php
 
+Data Updater: fixed i18n issue which stopped page loading
+	Edited file /modules/Data Updater/data_personal.php
+
+Library: fixed i18n issue which stopped page loading
+	Edited file /modules/Library/library_manage_catalog_duplicate.php
+
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)
