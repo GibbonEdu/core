@@ -504,6 +504,7 @@ else {
 								print "</tr> " ;
 							}
 							else {
+								$output="" ;
 								foreach ($fields as $field) {
 									$fieldName=preg_replace("/ /", "", $field["name"]) ;
 									print "<tr>" ;
@@ -512,7 +513,7 @@ else {
 											if ($field["required"]=="Y") {
 												print " *" ;
 											}
-											print "<br/><span style='font-size: 90%'><i>" . $field["description"] . "</i></span>" ;
+											$output.="<br/><span style='font-size: 90%'><i>" . str_replace("dd/mm/yyyy", $_SESSION[$guid]["i18n"]["dateFormat"], $field["description"]) . "</i></span>" ;
 										print "</td>" ;
 										print "<td class='right'>" ;
 											if ($field["type"]=="Text") {
@@ -541,7 +542,7 @@ else {
 												print "<input name='field" . $fieldName . $i . "' id='field" . $fieldName . $i . "' maxlength=10 value='" . dateConvertBack($guid, $fieldValues[$field["name"]]) . "' type='text' style='width: 300px'>" ;
 												print "<script type='text/javascript'>" ;
 													print "var field" . $fieldName . $i . "=new LiveValidation('field" . $fieldName . $i . "');" ;
-													print "field" . $fieldName . $i . ".add( Validate.Format, {pattern:" ; if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } print ", failureMessage: 'Use dd/mm/yyyy.' } );" ; 
+													$output.="field" . $fieldName . ".add( Validate.Format, {pattern:" ; if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  $output.="/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { $output.=$_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } $output.=", failureMessage: 'Use " . $_SESSION[$guid]["i18n"]["dateFormat"] . ".' } );" ; 
 												print "</script>" ;
 												print "<script type='text/javascript'>" ;
 													print "$(function() {" ;
