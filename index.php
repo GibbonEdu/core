@@ -152,6 +152,15 @@ else {
 			<link rel="stylesheet" href="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/thickbox.css" type="text/css" media="screen" />
 		
 			<?
+			//Set up for i18n via gettext
+			if ($_SESSION[$guid]["i18n"]["code"]!=NULL) {
+				putenv("LC_ALL=" . $_SESSION[$guid]["i18n"]["code"]);
+				setlocale(LC_ALL, $_SESSION[$guid]["i18n"]["code"]);
+				bindtextdomain("gibbon", "./i18n");
+				textdomain("gibbon");
+				//Translation is looking for in ["absolutePath"]/i18n/["i18n"]["code"]/LC_MESSAGES/gibbon.mo now
+			}
+			
 			//Set theme
 			if ($cacheLoad OR $_SESSION[$guid]["themeCSS"]=="" OR isset($_SESSION[$guid]["themeJS"])==FALSE OR $_SESSION[$guid]["gibbonThemeID"]=="" OR $_SESSION[$guid]["gibbonThemeName"]=="") {
 				$_SESSION[$guid]["themeCSS"]="<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />" ;

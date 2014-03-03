@@ -91,8 +91,13 @@ Planner: fixed Edit Lesson link, which prevented edit page from working, when vi
 Data Updater: fixed i18n issue which stopped page loading
 	Edited file /modules/Data Updater/data_personal.php
 
-Library: fixed i18n issue which stopped page loading
+i18n: fixed Library issue which stopped page loading for specific types
 	Edited file /modules/Library/library_manage_catalog_duplicate.php
+
+i18n: added environment setting to get ready for gettext calls
+	Edited file /index.php
+
+
 
 
 v7.1.02
