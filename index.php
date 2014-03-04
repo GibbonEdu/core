@@ -158,7 +158,6 @@ else {
 				setlocale(LC_ALL, $_SESSION[$guid]["i18n"]["code"]);
 				bindtextdomain("gibbon", "./i18n");
 				textdomain("gibbon");
-				//Translation is looking for in ["absolutePath"]/i18n/["i18n"]["code"]/LC_MESSAGES/gibbon.mo now
 			}
 			
 			//Set theme
@@ -1075,7 +1074,7 @@ else {
 											}
 											if ($result->rowCount()>0) {
 												print "<h2>" ;
-													print "Today's Lessons" ;
+													print _("Today's Lessons") ;
 												print "</h2>" ;
 												
 												if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -1225,7 +1224,7 @@ else {
 											}
 											catch(PDOException $e) { }
 											if ($result->rowCount()>0) {
-												print "<h2>My Timetable</h2>" ;
+												print "<h2>" . _("My Timetable") . "</h2>" ;
 												print "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>" ;
 													print "<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='Loading' onclick='return false;' /><br/><p style='text-align: center'>Loading</p>" ;
 												print "</div>" ;
@@ -1260,7 +1259,7 @@ else {
 										
 										$h2="My Roll Groups" ;
 										if ($result->rowCount()==1) {
-											$h2="My Roll Group" ;
+											$h2=_("My Roll Group") ;
 										}
 										if ($result->rowCount()>0) {
 											print "<h2>" ;

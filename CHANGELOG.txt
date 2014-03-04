@@ -97,7 +97,8 @@ i18n: fixed Library issue which stopped page loading for specific types
 i18n: added environment setting to get ready for gettext calls
 	Edited file /index.php
 
-
+i18n: wrapped translatable text in _()
+	Edite file /index.php
 
 
 v7.1.02
