@@ -68,7 +68,7 @@ if (isset($_GET["alpha"])) {
 if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_manage_add.php")==FALSE) {
 	//Acess denied
 	$output.="<div class='error'>" ;
-		$output.="You do not have access to this page." ;
+		$output.=_("You do not have access to this page.") ;
 	$output.="</div>" ;
 }
 else {
@@ -389,7 +389,7 @@ else {
 							$output.="</tr>" ;
 							$output.="<tr>" ;
 								$output.="<td class='right' colspan=2>" ;
-									$output.="<span style='font-size: 90%'><i>* denotes a required field</i></span>" ;
+									$output.="<span style='font-size: 90%'><i>* <? print _("denotes a required field") ; ?></i></span>" ;
 								$output.="</td>" ;
 							$output.="</tr>" ;
 					

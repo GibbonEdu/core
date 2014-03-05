@@ -19,19 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 ?>
 
 <h1>
-	Error<BR>
+	<? print _("Error") ; ?><br/>
 </h1>
 <p>
-	One of the following HTTP errors has occured:<br>
-</p>
-<ul>
-	<li>400, bad request</li>
-	<li>403, access denied</li>
-	<li>404, document not found</li>
-	<li>500, internal server error</li>
-</ul>
-<p>
-	This could mean a number of different things, but generally indicates that you have a misspelt an address, or are trying to access a page that you are not permitted to access.<br>
-	<br>
-	If you cannot solve this problem by retyping the address, or through other means, please contact your system administrator.<br>
+	<? print _("An error has occurred. This could mean a number of different things, but generally indicates that you have a misspelt an address, or are trying to access a page that you are not permitted to access.") ?><br/>
+	<br/>
+	<? print _("If you cannot solve this problem by retyping the address, or through other means, please contact your system administrator.") ?><br/>
 </p>

@@ -98,7 +98,7 @@ else {
 				}
 				
 				print "<h1>" ;
-					print $row["name"] . "<br>" ;
+					print $row["name"] . "<br/>" ;
 					if ($row["gibbonUnitID"]!="") {
 						try {
 							$dataUnit=array("gibbonUnitID"=>$row["gibbonUnitID"]); 
@@ -220,7 +220,7 @@ else {
 							print "<h2>Homework</h2>" ;
 							if ($row["homework"]=="Y") {
 								print "<span style='font-weight: bold; color: #CC0000'>Due on " . dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) . " at " . substr($row["homeworkDueDateTime"],11,5) . "</span><br/>" ;
-								print $row["homeworkDetails"] . "<br>" ;
+								print $row["homeworkDetails"] . "<br/>" ;
 							}
 							else {
 								print "No<br/>" ;

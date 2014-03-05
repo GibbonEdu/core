@@ -233,7 +233,7 @@ else {
 					$params=$params."&subView=$subView" ;
 					
 					print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>Planner $extra</a> > </div><div class='trailEnd'>View Lesson Plan</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>Planner $extra</a> > </div><div class='trailEnd'>View Lesson Plan</div>" ;
 					print "</div>" ;
 				
 					if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -326,7 +326,7 @@ else {
 					else {
 						print "<div style='height:50px'>" ;
 							print "<h2>" ;
-								print $row["name"] . "<br>" ;
+								print $row["name"] . "<br/>" ;
 								$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
 								if (isset($unit[0])) {
 									if ($unit[0]!="") {
@@ -682,7 +682,7 @@ else {
 								print "<td style='padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
 									if ($row["homework"]=="Y") {
 										print "<span style='font-weight: bold; color: #CC0000'>Due on " . dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) . " at " . substr($row["homeworkDueDateTime"],11,5) . "</span><br/>" ;
-										print $row["homeworkDetails"] . "<br>" ;
+										print $row["homeworkDetails"] . "<br/>" ;
 										if ($row["homeworkSubmission"]=="Y") {
 											if ($row["role"]=="Student" AND ($highestAction=="Lesson Planner_viewMyClasses" OR $highestAction=="Lesson Planner_viewAllEditMyClasses")) {
 												print "<span style='font-size: 115%; font-weight: bold'>Online Submission</span><br/>" ;
@@ -901,7 +901,7 @@ else {
 																		print "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>" ;
 																		print "<input type='hidden' name='currentDate' value='" . $row["date"] . "'>" ;
 																		?>
-																		<input type="submit" value="Submit">
+																		<input type="submit" value="<? print _("Submit") ; ?>">
 																	</td>
 																</tr>
 															</table>

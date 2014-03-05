@@ -88,7 +88,7 @@ else {
 					$row2=$result2->fetch() ;
 				
 					print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/markbook_view.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>View " . $row["course"] . "." . $row["class"] . " Markbook</a> > </div><div class='trailEnd'>Edit Column</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/markbook_view.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>View " . $row["course"] . "." . $row["class"] . " Markbook</a> > </div><div class='trailEnd'>Edit Column</div>" ;
 					print "</div>" ;
 				
 					if ($row2["groupingID"]!="" AND $row2["gibbonPersonIDCreator"]!=$_SESSION[$guid]["gibbonPersonID"]) {
@@ -556,7 +556,7 @@ else {
 								<tr>
 									<td> 
 										<b>Grading Completion Date</b><br/>
-										<span style="font-size: 90%"><i>1. Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/>2. Enter date after grading<br>3. Column is hidden without date</i></span>
+										<span style="font-size: 90%"><i>1. Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/>2. Enter date after grading<br/>3. Column is hidden without date</i></span>
 									</td>
 									<td class="right">
 										<input name="completeDate" id="completeDate" maxlength=10 value="<? print dateConvertBack($guid, $row2["completeDate"]) ?>" type="text" style="width: 300px">
@@ -610,10 +610,10 @@ else {
 								</tr>
 								<tr>
 									<td>
-										<span style="font-size: 90%"><i>* denotes a required field</i></span>
+										<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
 									</td>
 									<td class="right">
-										<input type="submit" value="Submit">
+										<input type="submit" value="<? print _("Submit") ; ?>">
 									</td>
 								</tr>
 							</table>

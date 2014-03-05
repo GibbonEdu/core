@@ -67,7 +67,7 @@ class html2text
         '/<script[^>]*>.*?<\/script>/i',         // <script>s -- which strip_tags supposedly has problems with
         '/<style[^>]*>.*?<\/style>/i',           // <style>s -- which strip_tags supposedly has problems with
         '/<p[^>]*>/i',                           // <P>
-        '/<br[^>]*>/i',                          // <br>
+        '/<br[^>]*>/i',                          // <br/>
         '/<i[^>]*>(.*?)<\/i>/i',                 // <i>
         '/<em[^>]*>(.*?)<\/em>/i',               // <em>
         '/(<ul[^>]*>|<\/ul>)/i',                 // <ul> and </ul>
@@ -96,7 +96,7 @@ class html2text
         '',                                     // <script>s -- which strip_tags supposedly has problems with
         '',                                     // <style>s -- which strip_tags supposedly has problems with
         "\n\n",                                 // <P>
-        "\n",                                   // <br>
+        "\n",                                   // <br/>
         '_\\1_',                                // <i>
         '_\\1_',                                // <em>
         "\n\n",                                 // <ul> and </ul>
@@ -202,7 +202,7 @@ class html2text
      *  @see $pre_search
      */
     public $pre_replace=array(
-        '<br>',
+        '<br/>',
         '&nbsp;&nbsp;&nbsp;&nbsp;',
         '&nbsp;',
         '',
@@ -544,7 +544,7 @@ class html2text
                 array($this, '_preg_callback'), $this->pre_content);
 
             // convert the content
-            $this->pre_content=sprintf('<div><br>%s<br></div>',
+            $this->pre_content=sprintf('<div><br/>%s<br/></div>',
                 preg_replace($this->pre_search, $this->pre_replace, $this->pre_content));
             // replace the content (use callback because content can contain $0 variable)
             $text=preg_replace_callback('/<pre[^>]*>.*<\/pre>/ismU',

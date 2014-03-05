@@ -627,7 +627,7 @@ class PHPMailer
                 break;
             case 'html':
                 //Cleans up output a bit for a better looking display that's HTML-safe
-                echo htmlentities(preg_replace('/[\r\n]+/', '', $str), ENT_QUOTES, $this->CharSet) . "<br>\n";
+                echo htmlentities(preg_replace('/[\r\n]+/', '', $str), ENT_QUOTES, $this->CharSet) . "<br/>\n";
                 break;
             case 'echo':
             default:

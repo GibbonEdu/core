@@ -91,7 +91,7 @@ else {
 	//My children's classes
 	if ($highestAction=="Lesson Planner_viewMyChildrensClasses") {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php'>My Children's Classes</a> > </div><div class='trailEnd'>Homework + Deadlines</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php'>My Children's Classes</a> > </div><div class='trailEnd'>Homework + Deadlines</div>" ;
 		print "</div>" ;
 	
 		//Test data access field for permission
@@ -171,7 +171,7 @@ else {
 								<?
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php'>Clear Search</a>" ;
 								?>
-								<input type="submit" value="Submit">
+								<input type="submit" value="<? print _("Submit") ; ?>">
 							</td>
 						</tr>
 					</table>
@@ -462,7 +462,7 @@ else {
 		$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 	
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>Planner</a> > </div><div class='trailEnd'>Homework + Deadlines</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>Planner</a> > </div><div class='trailEnd'>Homework + Deadlines</div>" ;
 		print "</div>" ;
 		
 		//Get Smart Workflow help message
@@ -919,7 +919,7 @@ else {
 						?>
 						<tr>
 							<td class="right" colspan=7>
-								<input type="submit" value="Submit">
+								<input type="submit" value="<? print _("Submit") ; ?>">
 							</td>
 						</tr>
 						<?

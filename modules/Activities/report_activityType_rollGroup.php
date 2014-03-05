@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activity
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Activity Type by Roll Group</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Activity Type by Roll Group</div>" ;
 	print "</div>" ;
 	print "<p>" ;
 	print "This report shows the number of activities each student in a roll group has enrol into, broken down by activity type." ;
@@ -96,7 +96,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/report_activityType_rollGroup.php">
-					<input type="submit" value="Submit">
+					<input type="submit" value="<? print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>

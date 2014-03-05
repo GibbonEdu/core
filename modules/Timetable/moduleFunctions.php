@@ -930,11 +930,11 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 					}
 					$output.= "<div $title style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: $bg $style'>" ;
 					if ($height>15 AND $height<30) {
-						$output.= $rowPeriods["name"] . "<br>" ;
+						$output.= $rowPeriods["name"] . "<br/>" ;
 					}
 					else if ($height>=30) {
-						$output.= $rowPeriods["name"] . "<br>" ;
-						$output.= "<i>" . substr($effectiveStart,0,5) . "-" . substr($effectiveEnd,0,5) . "</i><br>" ;
+						$output.= $rowPeriods["name"] . "<br/>" ;
+						$output.= "<i>" . substr($effectiveStart,0,5) . "-" . substr($effectiveEnd,0,5) . "</i><br/>" ;
 					}
 					$output.= "</div>" ;
 					$zCount++ ;
@@ -1009,14 +1009,14 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 						//Create div to represent period
 						$output.= "<div $title style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: $bg;'>" ;
 						if ($height>=45) {
-							$output.= $rowPeriods["name"] . "<br>" ;
+							$output.= $rowPeriods["name"] . "<br/>" ;
 						}
-						$output.= "<i>" . substr($effectiveStart,0,5) . " - " . substr($effectiveEnd,0,5) . "</i><br>" ;
+						$output.= "<i>" . substr($effectiveStart,0,5) . " - " . substr($effectiveEnd,0,5) . "</i><br/>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Departments/department_course_class.php")) {
-							$output.= "<a style='color: rgba(204,0,0,$ttAlpha); text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&subpage=Participants'>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</a><br>" ;
+							$output.= "<a style='color: rgba(204,0,0,$ttAlpha); text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&subpage=Participants'>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</a><br/>" ;
 						}
 						else {
-							$output.= "<span style='font-size: 120%'><b>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</b></span><br>" ;
+							$output.= "<span style='font-size: 120%'><b>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</b></span><br/>" ;
 						}
 						if ($height>=60) {
 							$output.= $rowPeriods["roomName"] ;
@@ -1822,11 +1822,11 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 					}
 					$output.= "<div $title style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: $bg $style'>" ;
 					if ($height>15 AND $height<30) {
-						$output.= $rowPeriods["name"] . "<br>" ;
+						$output.= $rowPeriods["name"] . "<br/>" ;
 					}
 					else if ($height>=30) {
-						$output.= $rowPeriods["name"] . "<br>" ;
-						$output.= "<i>" . substr($effectiveStart,0,5) . "-" . substr($effectiveEnd,0,5) . "</i><br>" ;
+						$output.= $rowPeriods["name"] . "<br/>" ;
+						$output.= "<i>" . substr($effectiveStart,0,5) . "-" . substr($effectiveEnd,0,5) . "</i><br/>" ;
 					}
 					$output.= "</div>" ;
 					$zCount++ ;
@@ -1891,14 +1891,14 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 					//Create div to represent period
 					$output.= "<div $title style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: $bg;'>" ;
 					if ($height>=45) {
-						$output.= $rowPeriods["name"] . "<br>" ;
+						$output.= $rowPeriods["name"] . "<br/>" ;
 					}
-					$output.= "<i>" . substr($effectiveStart,0,5) . " - " . substr($effectiveEnd,0,5) . "</i><br>" ;
+					$output.= "<i>" . substr($effectiveStart,0,5) . " - " . substr($effectiveEnd,0,5) . "</i><br/>" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Department/department_course_class.php")) {
-						$output.= "<a style='color: rgba(204,0,0,$ttAlpha); text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Department/department_course_class.php&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&subpage=Participants'>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</a><br>" ;
+						$output.= "<a style='color: rgba(204,0,0,$ttAlpha); text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Department/department_course_class.php&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&subpage=Participants'>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</a><br/>" ;
 					}
 					else {
-						$output.= "<span style='font-size: 120%'><b>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</b></span><br>" ;
+						$output.= "<span style='font-size: 120%'><b>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</b></span><br/>" ;
 					}
 					if ($height>=60) {
 						$output.= $rowPeriods["roomName"] ;

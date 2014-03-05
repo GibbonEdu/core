@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Timetable/report_viewAvail
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Available Spaces</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Available Spaces</div>" ;
 	print "</div>" ;
 	
 	print "<p>" ;
@@ -139,7 +139,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/report_viewAvailableSpaces.php">
-					<input type="submit" value="Submit">
+					<input type="submit" value="<? print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -543,7 +543,7 @@ else {
 													}
 													$day=$day . "<div style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: $bg; color: rgba(136,136,136, $ttAlpha) $style'>" ;
 													if ($height>15) {
-														$day=$day . $rowPeriods["name"] . "<br>" ;
+														$day=$day . $rowPeriods["name"] . "<br/>" ;
 													}
 													if ($rowPeriods["type"]=="Lesson") {
 														$vacancies="" ;

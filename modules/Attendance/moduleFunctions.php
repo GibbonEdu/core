@@ -67,7 +67,7 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 	}
 }
 
-function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $connection2) {
+function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $connection2, $dateStart, $dateEnd) {
 	$output="" ;
 	
 	if ($print) {
@@ -237,103 +237,126 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 			}
 			//Display grid
 			for ($i=$startDayStamp;$i<=$end;$i=$i+86400) {
-				if (($count%($days["count"]*$weeks))==0 AND $days[date("D",$i)]=="Y") {
-					$output.= "<tr style='height: 45px'>" ;
-				}
-				
-				if ($rowSpecial==TRUE) {
-					list($specialDayYear, $specialDayMonth, $specialDayDay)=explode('-', $rowSpecial["date"]);
-					$specialDayStamp=mktime(0, 0, 0, $specialDayMonth, $specialDayDay, $specialDayYear);
-				}
-				
-				if ($i<$firstDayStamp OR $i>$lastDayStamp) {
-					$output.= "<td style='background-color: #bbbbbb'>" ;
-					$output.= "</td>" ;
-					$count++ ;
-						
-					if ($i==$specialDayStamp) {
-						$rowSpecial=$resultSpecial->fetch() ;
+				if ($days[date("D",$i)]=="Y") {
+					if (($count%($days["count"]*$weeks))==0 AND $days[date("D",$i)]=="Y") {
+						$output.= "<tr style='height: 45px'>" ;
 					}
-				}
-				else {
-					if ($i==$specialDayStamp) {
-						$output.= "<td style='background-color: #bbbbbb'>" ;
+				
+					//Before student started at school
+					if ($dateStart!="" AND date("Y-m-d", $i)<$dateStart) {
+						$output.= "<td style='border: 1px solid #D65602; color: #D65602; background-color: #FFD2A9!important; text-align: center; font-size: 10px'>" ;
+						$output.= date("d/m/Y",$i) . "<br/>" ;
+						$output.= "Before Start Date" ;
 						$output.= "</td>" ;
 						$count++ ;
-						$rowSpecial=$resultSpecial->fetch() ;
+					
 					}
+					//After student left school
+					else if ($dateEnd!="" AND date("Y-m-d", $i)>$dateEnd) {
+						$output.= "<td style='border: 1px solid #D65602; color: #D65602; background-color: #FFD2A9!important; text-align: center; font-size: 10px'>" ;
+						$output.= date("d/m/Y",$i) . "<br/>" ;
+						$output.= "After End Date" ;
+						$output.= "</td>" ;
+						$count++ ;
+					}
+					//Student attending school
 					else {
-						if ($days[date("D",$i)]=="Y") {
-							$countSchoolDays++ ;
-							
-							$log=array() ;
-							$logCount=0 ;
-							try {
-								$dataLog=array("date"=>date("Y-m-d", $i), "gibbonPersonID"=>$gibbonPersonID); 
-								$sqlLog="SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonAttendanceLogPersonID DESC" ;
-								$resultLog=$connection2->prepare($sqlLog);
-								$resultLog->execute($dataLog);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							
-							if ($resultLog->rowCount()<1) {
-								$extraStyle="border: 1px solid #555; color: #555; background-color: #eee; " ;
-							}
-							else {
-								while ($rowLog=$resultLog->fetch()) {
-									$log[$logCount]=$rowLog["type"] ;
-									$logCount++ ;
-								}
-							
-								if ($log[0]=="Absent") {
-									$countAbsent++ ;
-									$extraStyle="border: 1px solid #c00; color: #c00; background-color: #F6CECB; " ;
-								}
-								else {
-									$countPresent++ ;
-									$extraStyle="border: 1px solid #390; color: #390; background-color: #D4F6DC; " ;
-								}
-							}
-							$output.= "<td style='text-align: center; font-size: 10px; $extraStyle'>" ;
-							$output.= date("d/m/Y",$i) . "<br/>" ;
-							if (count($log)>0) {
-								$output.= "<b>" . $log[0] . "</b><br>" ;
-								for ($x=count($log); $x>=0; $x--) {
-									if (isset($log[$x])) {
-										if ($log[$x]=="Present") {
-											$output.= "P" ;
-										}
-										else if ($log[$x]=="Present - Late") {
-											$output.= "PL" ;
-										}
-										else if ($log[$x]=="Present - Offsite") {
-											$output.= "PS" ;
-										}
-										else if ($log[$x]=="Left") {
-											$output.= "L" ;
-										}
-										else if ($log[$x]=="Left - Early") {
-											$output.= "LE" ;
-										}
-										else if ($log[$x]=="Absent") {
-											$output.= "A" ;
-										}
-									}
-									if ($x!=0 AND $x!=count($log)) {
-										$output.= " : " ;	
-									}
-								}
-							}
+						if ($rowSpecial==TRUE) {
+							list($specialDayYear, $specialDayMonth, $specialDayDay)=explode('-', $rowSpecial["date"]);
+							$specialDayStamp=mktime(0, 0, 0, $specialDayMonth, $specialDayDay, $specialDayYear);
+						}
+				
+						if ($i<$firstDayStamp OR $i>$lastDayStamp) {
+							$output.= "<td style='border: 1px solid #aaa; color: #aaa; background-color: #ccc!important; text-align: center; font-size: 10px'>" ;
 							$output.= "</td>" ;
 							$count++ ;
+						
+							if ($i==$specialDayStamp) {
+								$rowSpecial=$resultSpecial->fetch() ;
+							}
+						}
+						else {
+							if ($i==$specialDayStamp) {
+								$output.= "<td style='border: 1px solid #aaa; color: #aaa; background-color: #ccc!important; text-align: center; font-size: 10px'>" ;
+								$output.= $rowSpecial["name"] ;
+								$output.= "</td>" ;
+								$count++ ;
+								$rowSpecial=$resultSpecial->fetch() ;
+							}
+							else {
+								if ($days[date("D",$i)]=="Y") {
+									$countSchoolDays++ ;
+							
+									$log=array() ;
+									$logCount=0 ;
+									try {
+										$dataLog=array("date"=>date("Y-m-d", $i), "gibbonPersonID"=>$gibbonPersonID); 
+										$sqlLog="SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonAttendanceLogPersonID DESC" ;
+										$resultLog=$connection2->prepare($sqlLog);
+										$resultLog->execute($dataLog);
+									}
+									catch(PDOException $e) { 
+										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									}
+							
+									if ($resultLog->rowCount()<1) {
+										$extraStyle="border: 1px solid #555; color: #555; background-color: #eee; " ;
+									}
+									else {
+										while ($rowLog=$resultLog->fetch()) {
+											$log[$logCount]=$rowLog["type"] ;
+											$logCount++ ;
+										}
+							
+										if ($log[0]=="Absent") {
+											$countAbsent++ ;
+											$extraStyle="border: 1px solid #c00; color: #c00; background-color: #F6CECB; " ;
+										}
+										else {
+											$countPresent++ ;
+											$extraStyle="border: 1px solid #390; color: #390; background-color: #D4F6DC; " ;
+										}
+									}
+									$output.= "<td style='text-align: center; font-size: 10px; $extraStyle'>" ;
+									$output.= date("d/m/Y",$i) . "<br/>" ;
+									if (count($log)>0) {
+										$output.= "<b>" . $log[0] . "</b><br/>" ;
+										for ($x=count($log); $x>=0; $x--) {
+											if (isset($log[$x])) {
+												if ($log[$x]=="Present") {
+													$output.= "P" ;
+												}
+												else if ($log[$x]=="Present - Late") {
+													$output.= "PL" ;
+												}
+												else if ($log[$x]=="Present - Offsite") {
+													$output.= "PS" ;
+												}
+												else if ($log[$x]=="Left") {
+													$output.= "L" ;
+												}
+												else if ($log[$x]=="Left - Early") {
+													$output.= "LE" ;
+												}
+												else if ($log[$x]=="Absent") {
+													$output.= "A" ;
+												}
+											}
+											if ($x!=0 AND $x!=count($log)) {
+												$output.= " : " ;	
+											}
+										}
+									}
+									$output.= "</td>" ;
+									$count++ ;
+								}
+							}
 						}
 					}
-				}
 				
-				if (($count%($days["count"]*$weeks))==0 AND $days[date("D",$i)]=="Y") {
-					$output.= "</tr>" ;
+					if (($count%($days["count"]*$weeks))==0 AND $days[date("D",$i)]=="Y") {
+						$output.= "</tr>" ;
+					}
 				}
 			}
 		

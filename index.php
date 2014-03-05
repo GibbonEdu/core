@@ -107,7 +107,7 @@ if ($_SESSION[$guid]["address"]!="") {
 
 //If still false, show warning, otherwise display page
 if ($_SESSION[$guid]["systemSettingsSet"]==FALSE) {
-	print "System Settings are not set: the system cannot be displayed" ;
+	print _("System Settings are not set: the system cannot be displayed") ;
 }
 else {
 	?>
@@ -823,7 +823,7 @@ else {
 										
 															print "<tr class=$rowNum>" ;
 																print "<td>" ;
-																	print "<span title='" . htmlPrep($rowEntry["description"]) . "'>" . $rowEntry["name"] . "</span><br>" ;
+																	print "<span title='" . htmlPrep($rowEntry["description"]) . "'>" . $rowEntry["name"] . "</span><br/>" ;
 																	print "<span style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
 																	if ($rowEntry["completeDate"]!="") {
 																		print "Marked on " . dateConvertBack($guid, $rowEntry["completeDate"]) . "<br/>" ;
@@ -1435,7 +1435,7 @@ else {
 							else {
 								if (strstr($_SESSION[$guid]["address"],"..")!=FALSE) {
 									print "<div class='error'>" ;
-									print "Illegal address detected: access denied." ;
+									print _("Illegal address detected: access denied.") ;
 									print "</div>" ;
 								}
 								else {

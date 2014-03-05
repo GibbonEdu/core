@@ -205,7 +205,7 @@ $output.="<table cellspacing='0' style='width: 100%'>" ;
 					$output.="</tr>" ;
 					$output.="<tr>" ;
 						$output.="<td class='right' colspan=2>" ;
-							$output.="<span style='font-size: 90%'><i>* denotes a required field</i></span>" ;
+							$output.="<span style='font-size: 90%'><i>* <? print _("denotes a required field") ; ?></i></span>" ;
 						$output.="</td>" ;
 					$output.="</tr>" ;
 				

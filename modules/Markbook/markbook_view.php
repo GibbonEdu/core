@@ -64,7 +64,7 @@ else {
 			}
 			if ($gibbonCourseClassID=="") {
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Markbook</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Markbook</div>" ;
 				print "</div>" ;
 				print "<div class='warning'>" ;
 					print "Use the class listing on the right to choose a Markbook to view." ;
@@ -83,7 +83,7 @@ else {
 				}
 				if ($result->rowCount()!=1) {
 					print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Markbook</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Markbook</div>" ;
 					print "</div>" ;
 					print "<div class='error'>" ;
 						print "The selected class does not exist." ;
@@ -94,7 +94,7 @@ else {
 					$courseName=$row["courseName"] ;
 					$gibbonYearGroupIDList=$row["gibbonYearGroupIDList"] ;
 					print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View " . $row["course"] . "." . $row["class"] . " Markbook</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View " . $row["course"] . "." . $row["class"] . " Markbook</div>" ;
 					print "</div>" ;
 					
 					if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -358,7 +358,7 @@ else {
 										$span=5 ;
 									}
 									print "<th style='text-align: center' colspan=$span>" ;
-										print "<span title='" . htmlPrep($row["description"]) . "'>" . $row["name"] . "</span><br>" ;
+										print "<span title='" . htmlPrep($row["description"]) . "'>" . $row["name"] . "</span><br/>" ;
 										print "<span style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
 										$unit=getUnit($connection2, $row["gibbonUnitID"], "", $row["gibbonCourseClassID"]) ;
 										if (isset($unit[0])) {
@@ -672,7 +672,7 @@ else {
 			
 			$entryCount=0 ;
 			print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Markbook</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Markbook</div>" ;
 			print "</div>" ;
 			print "<p>" ;
 				print "This page shows you your academic results throughout your school career. Only subjects with published results are shown." ;
@@ -866,7 +866,7 @@ else {
 							print "<a name='" . $rowEntry["gibbonMarkbookEntryID"] . "'></a>" ; 
 							print "<tr class=$rowNum>" ;
 								print "<td>" ;
-									print "<span title='" . htmlPrep($rowEntry["description"]) . "'><b><u>" . $rowEntry["name"] . "</u></b></span><br>" ;
+									print "<span title='" . htmlPrep($rowEntry["description"]) . "'><b><u>" . $rowEntry["name"] . "</u></b></span><br/>" ;
 									print "<span style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
 									$unit=getUnit($connection2, $rowEntry["gibbonUnitID"], $rowEntry["gibbonHookID"], $rowEntry["gibbonCourseClassID"]) ;
 									if (isset($unit[0])) {
@@ -1070,7 +1070,7 @@ else {
 		else if ($highestAction=="Markbook_viewMyChildrensClasses") {
 			$entryCount=0; 
 			print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Markbook</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Markbook</div>" ;
 			print "</div>" ;
 			print "<p>" ;
 				print "This page shows your children's academic results throughout your school career. Only subjects with published results are shown." ;
@@ -1156,7 +1156,7 @@ else {
 									<?
 									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view.php'>Clear Search</a>" ;
 									?>
-									<input type="submit" value="Submit">
+									<input type="submit" value="<? print _("Submit") ; ?>">
 								</td>
 							</tr>
 						</table>
@@ -1375,7 +1375,7 @@ else {
 										
 										print "<tr class=$rowNum>" ;
 											print "<td>" ;
-												print "<span title='" . htmlPrep($rowEntry["description"]) . "'><b><u>" . $rowEntry["name"] . "</u></b></span><br>" ;
+												print "<span title='" . htmlPrep($rowEntry["description"]) . "'><b><u>" . $rowEntry["name"] . "</u></b></span><br/>" ;
 												print "<span style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
 												$unit=getUnit($connection2, $rowEntry["gibbonUnitID"], $rowEntry["gibbonHookID"], $rowEntry["gibbonCourseClassID"]) ;
 												if (isset($unit[0])) {

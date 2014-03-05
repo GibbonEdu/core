@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/report_familyAddr
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Family Address by Student</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Family Address by Student</div>" ;
 	print "</div>" ;
 	print "<p>" ;
 	print "This report attempts prints the family address(es) based on parents who are labelled as Contract Priority 1." ;
@@ -86,7 +86,7 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="submit" value="Submit">
+					<input type="submit" value="<? print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>

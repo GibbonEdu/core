@@ -18,16 +18,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 print "<div class='trail'>" ;
-print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > </div><div class='trailEnd'>Stars</div>" ;
+print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > </div><div class='trailEnd'>" . _("Stars") . "</div>" ;
 print "</div>" ;
 print "<p>" ;
-print "This page shows you a break down of how your stars have been earned, as well as where your most recent stars in each category have come from." ;
+print _("This page shows you a break down of how your stars have been earned, as well as where your most recent stars in each category have come from.") ;
 print "</p>" ;
 
 //Count planner likes
 try {
 	$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-	$sqlLike="SELECT timestamp, surname, preferredName, gibbonRoleIDPrimary, image_75, gibbonRoleIDPrimary, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonPlannerEntryLike JOIN gibbonPlannerEntry ON (gibbonPlannerEntryLike.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=.gibbonPlannerEntryLike.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC" ;
+	$sqlLike="SELECT timestamp, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRoleIDPrimary, image_75, gibbonRoleIDPrimary, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonPlannerEntryLike JOIN gibbonPlannerEntry ON (gibbonPlannerEntryLike.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=.gibbonPlannerEntryLike.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC" ;
 	$resultLike=$connection2->prepare($sqlLike);
 	$resultLike->execute($dataLike);
 }
@@ -36,21 +36,21 @@ catch(PDOException $e) {
 }
 if ($resultLike->rowCount()>0) {
 	print "<h2>" ;
-	print "Planner Stars <span style='font-size: 65%; font-style: italic; font-weight: normal'> x" . $resultLike->rowCount() . "</span>" ;
+	print _("Planner Stars") . " <span style='font-size: 65%; font-style: italic; font-weight: normal'> x" . $resultLike->rowCount() . "</span>" ;
 	print "</h2>" ;
 	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th style='width: 90px'>" ;
-				print "Photo" ;
+				print _("Photo") ;
 			print "</th>" ;
 			print "<th style='width: 180px'>" ;
-				print "Name" ;
+				print _("Name") ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Class/Lesson" ;
+				print _("Class/Lesson") ;
 			print "</th>" ;
 			print "<th style='width: 70px'>" ;
-				print "Date" ;
+				print _("Date") ;
 			print "</th>" ;
 		print "</tr>" ;
 		
@@ -105,21 +105,21 @@ catch(PDOException $e) {
 }
 if ($resultLike->rowCount()>0) {
 	print "<h2>" ;
-	print "Behaviour Stars <span style='font-size: 65%; font-style: italic; font-weight: normal'> x" . $resultLike->rowCount() . "</span>" ;
+	print _("Behaviour Stars") . " <span style='font-size: 65%; font-style: italic; font-weight: normal'> x" . $resultLike->rowCount() . "</span>" ;
 	print "</h2>" ;
 	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th style='width: 90px'>" ;
-				print "Photo" ;
+				print _("Photo") ;
 			print "</th>" ;
 			print "<th style='width: 180px'>" ;
-				print "Name" ;
+				print _("Name") ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Details" ;
+				print _("Details") ;
 			print "</th>" ;
 			print "<th style='width: 70px'>" ;
-				print "Date" ;
+				print _("Date") ;
 			print "</th>" ;
 		print "</tr>" ;
 		
@@ -170,21 +170,21 @@ catch(PDOException $e) {
 }
 if ($resultLike->rowCount()>0) {
 	print "<h2>" ;
-	print "Crowd Assessment Stars <span style='font-size: 65%; font-style: italic; font-weight: normal'> x" . $resultLike->rowCount() . "</span>" ;
+	print _("Crowd Assessment Stars") ." <span style='font-size: 65%; font-style: italic; font-weight: normal'> x" . $resultLike->rowCount() . "</span>" ;
 	print "</h2>" ;
 	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th style='width: 90px'>" ;
-				print "Photo" ;
+				print _("Photo") ;
 			print "</th>" ;
 			print "<th style='width: 180px'>" ;
-				print "Name" ;
+				print _("Name") ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Lesson" ;
+				print _("Lesson") ;
 			print "</th>" ;
 			print "<th style='width: 70px'>" ;
-				print "Date" ;
+				print _("Date") ;
 			print "</th>" ;
 		print "</tr>" ;
 		

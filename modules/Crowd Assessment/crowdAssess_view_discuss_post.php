@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAsse
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess.php'>View All Assessments</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess_view.php&gibbonPlannerEntryID=" . $_GET["gibbonPlannerEntryID"] . "'>View Assessment</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess_view_discuss.php&gibbonPlannerEntryID=" . $_GET["gibbonPlannerEntryID"] . "&gibbonPlannerEntryHomeworkID=" . $_GET["gibbonPlannerEntryHomeworkID"] . "&gibbonPersonID=" . $_GET["gibbonPersonID"] . "'>Discuss</a> > </div><div class='trailEnd'>Add Post</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess.php'>View All Assessments</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess_view.php&gibbonPlannerEntryID=" . $_GET["gibbonPlannerEntryID"] . "'>View Assessment</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess_view_discuss.php&gibbonPlannerEntryID=" . $_GET["gibbonPlannerEntryID"] . "&gibbonPlannerEntryHomeworkID=" . $_GET["gibbonPlannerEntryHomeworkID"] . "&gibbonPersonID=" . $_GET["gibbonPersonID"] . "'>Discuss</a> > </div><div class='trailEnd'>Add Post</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -128,7 +128,7 @@ else {
 							</tr>
 							<tr>
 								<td class="right" colspan=2>
-									<input type="submit" value="Submit">
+									<input type="submit" value="<? print _("Submit") ; ?>">
 								</td>
 							</tr>
 						</table>

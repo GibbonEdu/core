@@ -45,7 +45,7 @@ else {
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt.php")==FALSE) {
 	//Acess denied
 	$output.="<div class='error'>" ;
-		$output.="You do not have access to this page." ;
+		$output.=_("You do not have access to this page.") ;
 	$output.="</div>" ;
 }
 else {
@@ -77,7 +77,7 @@ else {
 	}
 	else {
 		$output.="<div class='error'>" ;
-			$output.="There is no timetable information for the date specified." ;
+			$output.=_("There is no information for the date specified.") ;
 		$output.="</div>" ;
 	}
 }

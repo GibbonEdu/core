@@ -18,11 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 print "<div class='trail'>" ;
-print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > </div><div class='trailEnd'>Password Reset</div>" ;
+print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > </div><div class='trailEnd'>" . _("Password Reset") . "</div>" ;
 print "</div>" ;
 ?>
 <p>
-	Enter your <? print $_SESSION[$guid]["systemName"] ?> username, or the email address you have listed in <? print $_SESSION[$guid]["systemName"] ?>, and press submit: your password will be reset and emailed to you. 
+	<? print sprintf(_('Enter your %1$s username, or the email address you have listed in the system, and press submit: your password will be reset and emailed to you.'), $_SESSION[$guid]["systemName"]) ; ?>
 </p>
 <?
 if (isset($_GET["editReturn"])) { $editReturn=$_GET["editReturn"] ; } else { $editReturn="" ; }
@@ -61,7 +61,7 @@ if (!($editReturn=="")) {
 		<tr>
 			<td class="right">
 				<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-				<input type="submit" value="Submit">
+				<input type="submit" value="<? print _("Submit") ; ?>">
 			</td>
 		</tr>
 	</table>

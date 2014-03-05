@@ -160,7 +160,7 @@ class SMTP
                     ENT_QUOTES,
                     'UTF-8'
                 )
-                . "<br>\n";
+                . "<br/>\n";
                 break;
             case 'echo':
             default:

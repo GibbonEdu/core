@@ -95,10 +95,14 @@ i18n: fixed Library issue which stopped page loading for specific types
 	Edited file /modules/Library/library_manage_catalog_duplicate.php
 
 i18n: added environment setting to get ready for gettext calls
-	Edited file /index.php
+	Edited file /index.php, fullscreen.php, report.php
 
 i18n: wrapped translatable text in _()
-	Edite file /index.php
+	Edited file /*.php
+
+Attendance: improved display of student absentee record to remove days before student joined school, and days after they left
+	Edited files /modules/Attendance/moduleFunctions.php, report_studentHistory.php
+	Edited file /modules/Students/student_view_details.php
 
 
 v7.1.02

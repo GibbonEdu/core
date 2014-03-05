@@ -35,7 +35,7 @@ else {
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/messenger_manage.php'>Manage Messages</a> > </div><div class='trailEnd'>Edit Message</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/messenger_manage.php'>Manage Messages</a> > </div><div class='trailEnd'>Edit Message</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -171,7 +171,7 @@ else {
 											$( "#date1" ).datepicker();
 										});
 									</script>
-									<br>
+									<br/>
 									<input name="date2" id="date2" maxlength=10 value="<? print dateConvertBack($guid, $row["messageWall_date2"]) ?>" type="text" style="width: 300px; margin-top: 3px">
 									<script type="text/javascript">
 										var date2=new LiveValidation('date2');
@@ -182,7 +182,7 @@ else {
 											$( "#date2" ).datepicker();
 										});
 									</script>
-									<br>
+									<br/>
 									<input name="date3" id="date3" maxlength=10 value="<? print dateConvertBack($guid, $row["messageWall_date3"]) ?>" type="text" style="width: 300px; margin-top: 3px">
 									<script type="text/javascript">
 										var date3=new LiveValidation('date3');
@@ -1319,10 +1319,10 @@ else {
 						
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+								<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
 							</td>
 							<td class="right">
-								<input type="submit" value="Submit">
+								<input type="submit" value="<? print _("Submit") ; ?>">
 							</td>
 						</tr>
 					</table>

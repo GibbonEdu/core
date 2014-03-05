@@ -38,7 +38,7 @@ else {
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > </div><div class='trailEnd'>Duplicate Unit</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > </div><div class='trailEnd'>Duplicate Unit</div>" ;
 		print "</div>" ;
 		
 		//Proceed!
@@ -297,11 +297,11 @@ else {
 										
 										<tr>
 											<td>
-												<span style="font-size: 90%"><i>* denotes a required field</i></span>
+												<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
 											</td>
 											<td class="right">
 												<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-												<input type="submit" value="Submit">
+												<input type="submit" value="<? print _("Submit") ; ?>">
 											</td>
 										</tr>
 									</table>
@@ -498,12 +498,12 @@ else {
 												</tr>
 												<tr>
 													<td>
-														<span style="font-size: 90%"><i>* denotes a required field</i></span>
+														<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
 													</td>
 													<td class="right">
 														<input type="hidden" name="gibbonCourseIDTarget" value="<? print $gibbonCourseIDTarget ?>">
 														<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-														<input type="submit" value="Submit">
+														<input type="submit" value="<? print _("Submit") ; ?>">
 													</td>
 												</tr>
 											</table>

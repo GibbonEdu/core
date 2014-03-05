@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 print "<div class='trail'>" ;
-print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > </div><div class='trailEnd'>Preferences</div>" ;
+print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > </div><div class='trailEnd'>Preferences</div>" ;
 print "</div>" ;
 	
 if (isset($_GET["forceReset"])) {
@@ -108,7 +108,7 @@ if ($result->rowCount()==1) {
 		<tr class='break'>
 			<td colspan=2>
 				<h3>
-					Reset Password
+					<? print _("Reset Password") ; ?>
 				</h3>
 			</td>
 		</tr>
@@ -126,7 +126,7 @@ if ($result->rowCount()==1) {
 		</tr>
 		<tr>
 			<td> 
-				<b>Current Password *</b><br/>
+				<b><? print _("Current Password") ; ?> *</b><br/>
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
@@ -139,7 +139,7 @@ if ($result->rowCount()==1) {
 		</tr>
 		<tr>
 			<td> 
-				<b>New Password *</b><br/>
+				<b><? print _("New Password") ; ?> *</b><br/>
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
@@ -170,7 +170,7 @@ if ($result->rowCount()==1) {
 		</tr>
 		<tr>
 			<td> 
-				<b>Confirm New Password *</b><br/>
+				<b><? print _("Confirm New Password") ; ?> *</b><br/>
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
@@ -184,7 +184,7 @@ if ($result->rowCount()==1) {
 		</tr>
 		<tr>
 			<td>
-				<span style="font-size: 90%"><i>* denotes a required field</i></span>
+				<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
 			</td>
 			<td class="right">
 				<?
@@ -193,7 +193,7 @@ if ($result->rowCount()==1) {
 				}
 				?>
 				<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-				<input type="submit" value="Submit">
+				<input type="submit" value="<? print _("Submit") ; ?>">
 			</td>
 		</tr>
 	</table>
@@ -205,14 +205,14 @@ if ($result->rowCount()==1) {
 		<tr class='break'>
 			<td colspan=2>
 				<h3>
-					Settings
+					<? print _("Settings") ; ?>
 				</h3>
 			</td>
 		</tr>
 		<tr>
 			<td> 
-				<b>Personal Calendar Feed</b><br/>
-				<span style="font-size: 90%"><i>XML feed for the your calendar (Google Calendar only)</i></span>
+				<b><? print _("Personal Calendar Feed") ; ?></b><br/>
+				<span style="font-size: 90%"><i><? print _("XML feed for the your calendar (Google Calendar only)") ; ?></i></span>
 			</td>
 			<td class="right">
 				<input name="calendarFeedPersonal" id="calendarFeedPersonal" value="<? print $row["calendarFeedPersonal"] ?>" type="text" style="width: 300px">
@@ -229,8 +229,8 @@ if ($result->rowCount()==1) {
 			?>
 			<tr>
 				<td> 
-					<b>Personal Background</b><br/>
-					<span style="font-size: 90%"><i>Set your own custom background image.<br/>Please provide URL to image.</i></span>
+					<b><? print _("Personal Background") ; ?></b><br/>
+					<span style="font-size: 90%"><i><? print _("Set your own custom background image.") . "<br/>" . _("Please provide URL to image.") ; ?></i></span>
 				</td>
 				<td class="right">
 					<input name="personalBackground" id="personalBackground" value="<? print $row["personalBackground"] ?>" type="text" style="width: 300px">
@@ -246,8 +246,8 @@ if ($result->rowCount()==1) {
 		
 		<tr>
 			<td> 
-				<b>Personal Theme</b><br/>
-				<span style="font-size: 90%"><i>Override the system theme.</i></span>
+				<b><? print _("Personal Theme") ; ?></b><br/>
+				<span style="font-size: 90%"><i><? print _("Override the system theme.") ; ?></i></span>
 			</td>
 			<td class="right">
 				<select name="gibbonThemeIDPersonal" id="gibbonThemeIDPersonal" style="width: 302px">
@@ -278,8 +278,8 @@ if ($result->rowCount()==1) {
 		
 		<tr>
 			<td> 
-				<b>Personal Language</b><br/>
-				<span style="font-size: 90%"><i>Override the system default language.</i></span>
+				<b><? print _("Personal Language") ; ?></b><br/>
+				<span style="font-size: 90%"><i><? print _("Override the system default language.") ; ?></i></span>
 			</td>
 			<td class="right">
 				<select name="gibboni18nIDPersonal" id="gibboni18nIDPersonal" style="width: 302px">
@@ -311,11 +311,11 @@ if ($result->rowCount()==1) {
 		
 		<tr>
 			<td>
-				<span style="font-size: 90%"><i>* denotes a required field</i></span>
+				<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
 			</td>
 			<td class='right'>
 				<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-				<input type="submit" value="Submit">
+				<input type="submit" value="<? print _("Submit") ; ?>">
 			</td>
 		</tr>
 	</table>

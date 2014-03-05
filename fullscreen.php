@@ -41,7 +41,7 @@ if ($_SESSION[$guid]["systemSettingsSet"]==FALSE) {
 }
 //If still false, show warning, otherwise display page
 if ($_SESSION[$guid]["systemSettingsSet"]==FALSE) {
-	print "System Settings are not set: the system cannot be displayed" ;
+	print _("System Settings are not set: the system cannot be displayed") ;
 }
 else {
 	?>
@@ -55,6 +55,14 @@ else {
 			<meta name="ROBOTS" content="none"/>
 			
 			<?
+			//Set up for i18n via gettext
+			if ($_SESSION[$guid]["i18n"]["code"]!=NULL) {
+				putenv("LC_ALL=" . $_SESSION[$guid]["i18n"]["code"]);
+				setlocale(LC_ALL, $_SESSION[$guid]["i18n"]["code"]);
+				bindtextdomain("gibbon", "./i18n");
+				textdomain("gibbon");
+			}
+			
 			//Set theme
 			$themeCSS="<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />" ;
 			$themeJS="<script type='text/javascript' src='./themes/Default/js/common.js'></script>" ;
@@ -122,13 +130,13 @@ else {
 			$_SESSION[$guid]["action"]=getActionName($_SESSION[$guid]["address"]) ;
 			if ($_SESSION[$guid]["address"]=="") {
 				print "<h1>" ;
-				print "Nothing to display" ;
+				print _("There is no content to display") ;
 				print "</h1>" ;
 			}
 			else {
 				if (strstr($_SESSION[$guid]["address"],"..")!=FALSE) {
 					print "<div class='error'>" ;
-					print "Illegal address detected: access denied." ;
+					print _("Illegal address detected: access denied.") ;
 					print "</div>" ;
 				}
 				else {

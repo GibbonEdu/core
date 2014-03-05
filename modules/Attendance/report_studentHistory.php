@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentH
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Student History</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Student History</div>" ;
 	print "</div>" ;
 	
 	//Get action with highest precendence
@@ -88,7 +88,7 @@ else {
 					<tr>
 						<td colspan=2 class="right">
 							<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/report_studentHistory.php">
-							<input type="submit" value="Submit">
+							<input type="submit" value="<? print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
@@ -101,7 +101,24 @@ else {
 				print "Report Data" ;
 				print "</h2>" ;
 				
-				report_studentHistory($guid, $gibbonPersonID, TRUE, $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2) ;
+				try {
+					$data=array("gibbonPersonID"=>$gibbonPersonID); 
+					$sql="SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				if ($result->rowCount()!=1) {
+					print "<div class='error'>" ;
+					print "The specified record does not exist." ;
+					print "</div>" ;
+				}
+				else {
+					$row=$result->fetch() ;
+					report_studentHistory($guid, $gibbonPersonID, TRUE, $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row["dateStart"], $row["dateEnd"]) ;
+				}
 			}
 		}
 		else if ($highestAction=="Student History_myChildren") {
@@ -188,7 +205,7 @@ else {
 									<?
 									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentHistory.php'>Clear Search</a>" ;
 									?>
-									<input type="submit" value="Submit">
+									<input type="submit" value="<? print _("Submit") ; ?>">
 								</td>
 							</tr>
 						</table>
@@ -223,7 +240,24 @@ else {
 							print "Report Data" ;
 							print "</h2>" ;
 							
-							report_studentHistory($guid, $gibbonPersonID, TRUE, $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2) ;
+							try {
+								$data=array("gibbonPersonID"=>$gibbonPersonID); 
+								$sql="SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName" ;
+								$result=$connection2->prepare($sql);
+								$result->execute($data);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+							if ($result->rowCount()!=1) {
+								print "<div class='error'>" ;
+								print "The specified record does not exist." ;
+								print "</div>" ;
+							}
+							else {
+								$row=$result->fetch() ;
+								report_studentHistory($guid, $gibbonPersonID, TRUE, $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row["dateStart"], $row["dateEnd"]) ;
+							}
 						}
 					}
 				}

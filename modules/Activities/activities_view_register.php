@@ -38,7 +38,7 @@ else {
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_view.php'>View Activities</a> > </div><div class='trailEnd'>Activity Registration</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_view.php'>View Activities</a> > </div><div class='trailEnd'>Activity Registration</div>" ;
 		print "</div>" ;
 		
 		if (isActionAccessible($guid, $connection2,"/modules/Activities/activities_view_register")==FALSE) {
@@ -377,7 +377,7 @@ else {
 												?>
 												<tr>
 													<td>
-														<span style="font-size: 90%"><i>* denotes a required field</i></span>
+														<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
 													</td>
 													<td class="right">
 														<input type="hidden" name="mode" value="<? print $mode ?>">

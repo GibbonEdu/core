@@ -40,7 +40,7 @@ if ($_SESSION[$guid]["systemSettingsSet"]==FALSE) {
 }
 //If still false, show warning, otherwise display page
 if ($_SESSION[$guid]["systemSettingsSet"]==FALSE) {
-	print "System Settings are not set: the system cannot be displayed" ;
+	print _("System Settings are not set: the system cannot be displayed") ;
 }
 else {
 	?>
@@ -54,6 +54,14 @@ else {
 			<meta name="ROBOTS" content="none"/>
 			
 			<?
+			//Set up for i18n via gettext
+			if ($_SESSION[$guid]["i18n"]["code"]!=NULL) {
+				putenv("LC_ALL=" . $_SESSION[$guid]["i18n"]["code"]);
+				setlocale(LC_ALL, $_SESSION[$guid]["i18n"]["code"]);
+				bindtextdomain("gibbon", "./i18n");
+				textdomain("gibbon");
+			}
+			
 			//Set theme
 			$themeCSS="<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />" ;
 			$themeJS="<script type='text/javascript' src='./themes/Default/js/common.js'></script>" ;
@@ -106,7 +114,7 @@ else {
 						<?
 						print "<div style='padding-top: 30px'>" ;
 							print "<p>" ;
-								print "This printout contains information that is the property of " . $_SESSION[$guid]["organisationName"] . ". If you find this report, and do not have permission to read it, please return it to " . $_SESSION[$guid]["organisationAdministratorName"] . " (" . $_SESSION[$guid]["organisationAdministratorEmail"] . "). In the event that it cannot be returned, please destroy it" ;
+								print sprintf(_('This printout contains information that is the property of %1$s. If you find this report, and do not have permission to read it, please return it to %2$s (%3$s). In the event that it cannot be returned, please destroy it.'), $_SESSION[$guid]["organisationName"], $_SESSION[$guid]["organisationAdministratorName"], $_SESSION[$guid]["organisationAdministratorEmail"]) ;
 							print "</p>" ;
 						print "</div>" ;
 						?>
@@ -124,7 +132,7 @@ else {
 					
 					if (strstr($_SESSION[$guid]["address"],"..")!=FALSE) {
 						print "<div class='error'>" ;
-						print "Illegal address detected: access denied." ;
+						print _("Illegal address detected: access denied.") ;
 						print "</div>" ;
 					}
 					else {
@@ -138,7 +146,7 @@ else {
 					?>
 				</div>
 				<div id="footer" style="padding-top: 30px; background-color: #fff; color: #333">
-					<? print "Created by " . $_SESSION[$guid]["username"] . " (" . $_SESSION[$guid]["organisationNameShort"] . ") at " . date("H:i") . " on " . date("d/m/Y") . "." ; ?>
+					<? print sprintf(_('Created by %1$s (%2$s) at %3$s on %4$s.'), $_SESSION[$guid]["username"], $_SESSION[$guid]["organisationNameShort"], date("H:i"), date("d/m/Y")) ; ?>
 				</div>
 			</div>
 		</body>

@@ -39,7 +39,7 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Update Medical Data</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Update Medical Data</div>" ;
 		print "</div>" ;
 		
 		if ($highestAction=="Update Medical Data_any") {
@@ -158,7 +158,7 @@ else {
 				<tr>
 					<td colspan=2 class="right">
 						<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/data_medical.php">
-						<input type="submit" value="Submit">
+						<input type="submit" value="<? print _("Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
@@ -642,7 +642,7 @@ else {
 								</tr>
 								<tr>
 									<td>
-										<span style="font-size: 90%"><i>* denotes a required field</i></span>
+										<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
 									</td>
 									<td class="right">
 										<?php
@@ -654,7 +654,7 @@ else {
 										}
 										?>
 										<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-										<input type="submit" value="Submit">
+										<input type="submit" value="<? print _("Submit") ; ?>">
 									</td>
 								</tr>
 							</table>

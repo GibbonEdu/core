@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/report_emergencyS
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Emergency SMS by Year Group</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Emergency SMS by Year Group</div>" ;
 	print "</div>" ;
 	print "<p>" ;
 	print "This report prints all parent mobile phone numbers, whether or not they are set to receive messages from the school. It is useful when send emergency SMS messages to groups of students. If no parent mobile is available it will display the emergency numbers given in the student record, and this will appear in red." ;
@@ -130,7 +130,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/report_emergencySMS_byYearGroup.php">
-					<input type="submit" value="Submit">
+					<input type="submit" value="<? print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>

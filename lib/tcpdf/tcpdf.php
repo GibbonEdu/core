@@ -69,8 +69,8 @@
 
 /**
  * @file
- * This is a PHP class for generating PDF documents without requiring external extensions.<br>
- * TCPDF project (http://www.tcpdf.org) was originally derived in 2002 from the Public Domain FPDF class by Olivier Plathey (http://www.fpdf.org), but now is almost entirely rewritten.<br>
+ * This is a PHP class for generating PDF documents without requiring external extensions.<br/>
+ * TCPDF project (http://www.tcpdf.org) was originally derived in 2002 from the Public Domain FPDF class by Olivier Plathey (http://www.fpdf.org), but now is almost entirely rewritten.<br/>
  * <h3>TCPDF main features are:</h3>
  * <ul>
  * <li>no external libraries are required for the basic functions;</li>
@@ -125,7 +125,7 @@ require_once(dirname(__FILE__).'/include/tcpdf_static.php');
 /**
  * @class TCPDF
  * PHP class for generating PDF documents without requiring external extensions.
- * TCPDF project (http://www.tcpdf.org) has been originally derived in 2002 from the Public Domain FPDF class by Olivier Plathey (http://www.fpdf.org), but now is almost entirely rewritten.<br>
+ * TCPDF project (http://www.tcpdf.org) has been originally derived in 2002 from the Public Domain FPDF class by Olivier Plathey (http://www.fpdf.org), but now is almost entirely rewritten.<br/>
  * @package com.tecnick.tcpdf
  * @brief PHP class for generating PDF documents without requiring external extensions.
  * @version 6.0.038
@@ -3980,7 +3980,7 @@ class TCPDF {
 	}
 
 	/**
-	 * Returns the length of a string in user unit. A font must be selected.<br>
+	 * Returns the length of a string in user unit. A font must be selected.<br/>
 	 * @param $s (string) The string whose length is to be computed
 	 * @param $fontname (string) Family font. It can be either a name defined by AddFont() or one of the standard families. It is also possible to pass an empty string, in that case, the current family is retained.
 	 * @param $fontstyle (string) Font style. Possible values are (case insensitive):<ul><li>empty string: regular</li><li>B: bold</li><li>I: italic</li><li>U: underline</li><li>D: line-through</li><li>O: overline</li></ul> or any combination. The default value is regular.
@@ -3996,7 +3996,7 @@ class TCPDF {
 	}
 
 	/**
-	 * Returns the string length of an array of chars in user unit or an array of characters widths. A font must be selected.<br>
+	 * Returns the string length of an array of chars in user unit or an array of characters widths. A font must be selected.<br/>
 	 * @param $sa (string) The array of chars whose total length is to be computed
 	 * @param $fontname (string) Family font. It can be either a name defined by AddFont() or one of the standard families. It is also possible to pass an empty string, in that case, the current family is retained.
 	 * @param $fontstyle (string) Font style. Possible values are (case insensitive):<ul><li>empty string: regular</li><li>B: bold</li><li>I: italic</li><li>U: underline</li><li>D: line through</li><li>O: overline</li></ul> or any combination. The default value is regular.
@@ -8862,7 +8862,7 @@ class TCPDF {
 	}
 
 	/**
-	 * Adds unicode fonts.<br>
+	 * Adds unicode fonts.<br/>
 	 * Based on PDF Reference 1.3 (section 5)
 	 * @param $font (array) font data
 	 * @protected
@@ -16217,7 +16217,7 @@ class TCPDF {
 		// define self-closing tags
 		$selfclosingtags=array('area','base','basefont','br','hr','input','img','link','meta');
 		// remove all unsupported tags (the line below lists all supported tags)
-		$html=strip_tags($html, '<marker/><a><b><blockquote><body><br><br/><dd><del><div><dl><dt><em><font><form><h1><h2><h3><h4><h5><h6><hr><hr/><i><img><input><label><li><ol><option><p><pre><s><select><small><span><strike><strong><sub><sup><table><tablehead><tcpdf><td><textarea><th><thead><tr><tt><u><ul>');
+		$html=strip_tags($html, '<marker/><a><b><blockquote><body><br/><br/><dd><del><div><dl><dt><em><font><form><h1><h2><h3><h4><h5><h6><hr><hr/><i><img><input><label><li><ol><option><p><pre><s><select><small><span><strike><strong><sub><sup><table><tablehead><tcpdf><td><textarea><th><thead><tr><tt><u><ul>');
 		//replace some blank characters
 		$html=preg_replace('/<pre/', '<xre', $html); // preserve pre tag
 		$html=preg_replace('/<(table|tr|td|th|tcpdf|blockquote|dd|div|dl|dt|form|h1|h2|h3|h4|h5|h6|br|hr|li|ol|ul|p)([^\>]*)>[\n\r\t]+/', '<\\1\\2>', $html);

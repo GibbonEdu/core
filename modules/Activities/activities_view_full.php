@@ -87,7 +87,7 @@ else {
 					$row=$result->fetch() ;
 					//Should we show date as term or date?
 					print "<h1>" ;
-						print $row["name"] . "<br>" ;
+						print $row["name"] . "<br/>" ;
 						$options=getSettingByScope($connection2, "Activities", "activityTypes") ;
 						if ($options!="") {
 							print "<div style='padding-top: 5px; font-size: 65%; font-style: italic'>" ;

@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_cat
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_manage_catalog.php'>Manage Catalog</a> > </div><div class='trailEnd'>Duplicate Item</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_manage_catalog.php'>Manage Catalog</a> > </div><div class='trailEnd'>Duplicate Item</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["duplicateReturn"])) { $duplicateReturn=$_GET["duplicateReturn"] ; } else { $duplicateReturn="" ; }
@@ -169,7 +169,7 @@ else {
 						
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+								<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
@@ -580,14 +580,14 @@ else {
 						?>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+								<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="count" value="<? print $number ?>">
 								<input type='hidden' name='gibbonLibraryTypeID' value='<? print $_POST["gibbonLibraryTypeID"] ?>'>
 								<input type="hidden" name="gibbonLibraryItemID" value="<? print $row["gibbonLibraryItemID"] ?>">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="Submit">
+								<input type="submit" value="<? print _("Submit") ; ?>">
 							</td>
 						</tr>
 					</table>

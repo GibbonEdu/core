@@ -35,7 +35,7 @@
 
 /**
  * @file
- * This is a PHP class that contains static methods for the TCPDF class.<br>
+ * This is a PHP class that contains static methods for the TCPDF class.<br/>
  * @package com.tecnick.tcpdf
  * @author Nicola Asuni
  * @version 1.0.002
@@ -2119,7 +2119,7 @@ class TCPDF_STATIC {
 		$tidy_body=tidy_get_body($tidy);
 		$html=$tidy_body->value;
 		// fix some self-closing tags
-		$html=str_replace('<br>', '<br />', $html);
+		$html=str_replace('<br/>', '<br />', $html);
 		// remove some empty tag blocks
 		$html=preg_replace('/<div([^\>]*)><\/div>/', '', $html);
 		$html=preg_replace('/<p([^\>]*)><\/p>/', '', $html);

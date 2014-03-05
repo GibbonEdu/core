@@ -1524,7 +1524,7 @@ class TCPDF_FONTS {
 	}
 
 	/**
-	 * Converts array of UTF-8 characters to UTF16-BE string.<br>
+	 * Converts array of UTF-8 characters to UTF16-BE string.<br/>
 	 * Based on: http://www.faqs.org/rfcs/rfc2781.html
 	 * <pre>
 	 *   Encoding UTF-16:
@@ -1707,7 +1707,7 @@ class TCPDF_FONTS {
 	}
 
 	/**
-	 * Converts UTF-8 characters array to array of Latin1 characters array<br>
+	 * Converts UTF-8 characters array to array of Latin1 characters array<br/>
 	 * @param $unicode (array) array containing UTF-8 unicode values
 	 * @return array
 	 * @author Nicola Asuni
@@ -1732,7 +1732,7 @@ class TCPDF_FONTS {
 	}
 
 	/**
-	 * Converts UTF-8 characters array to array of Latin1 string<br>
+	 * Converts UTF-8 characters array to array of Latin1 string<br/>
 	 * @param $unicode (array) array containing UTF-8 unicode values
 	 * @return array
 	 * @author Nicola Asuni
@@ -1757,8 +1757,8 @@ class TCPDF_FONTS {
 	}
 
 	/**
-	 * Converts UTF-8 character to integer value.<br>
-	 * Invalid byte sequences will be replaced with 0xFFFD (replacement character)<br>
+	 * Converts UTF-8 character to integer value.<br/>
+	 * Invalid byte sequences will be replaced with 0xFFFD (replacement character)<br/>
 	 * Based on: http://www.faqs.org/rfcs/rfc3629.html
 	 * <pre>
 	 *    Char. number range  |        UTF-8 octet sequence
@@ -1849,8 +1849,8 @@ class TCPDF_FONTS {
 	}
 
 	/**
-	 * Converts UTF-8 strings to codepoints array.<br>
-	 * Invalid byte sequences will be replaced with 0xFFFD (replacement character)<br>
+	 * Converts UTF-8 strings to codepoints array.<br/>
+	 * Invalid byte sequences will be replaced with 0xFFFD (replacement character)<br/>
 	 * @param $str (string) string to process.
 	 * @param $isunicode (boolean) True when the documetn is in Unicode mode, false otherwise.
 	 * @param $currentfont (array) Reference to current font array.
@@ -1872,7 +1872,7 @@ class TCPDF_FONTS {
 	}
 
 	/**
-	 * Converts UTF-8 strings to Latin1 when using the standard 14 core fonts.<br>
+	 * Converts UTF-8 strings to Latin1 when using the standard 14 core fonts.<br/>
 	 * @param $str (string) string to process.
 	 * @param $isunicode (boolean) True when the documetn is in Unicode mode, false otherwise.
 	 * @param $currentfont (array) Reference to current font array.
@@ -1886,7 +1886,7 @@ class TCPDF_FONTS {
 	}
 
 	/**
-	 * Converts UTF-8 strings to UTF16-BE.<br>
+	 * Converts UTF-8 strings to UTF16-BE.<br/>
 	 * @param $str (string) string to process.
 	 * @param $setbom (boolean) if true set the Byte Order Mark (BOM=0xFEFF)
 	 * @param $isunicode (boolean) True when the documetn is in Unicode mode, false otherwise.

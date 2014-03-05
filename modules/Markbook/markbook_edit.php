@@ -87,7 +87,7 @@ else {
 			else {
 				$row=$result->fetch() ;
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Edit " . $row["course"] . "." . $row["class"] . " Markbook</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Edit " . $row["course"] . "." . $row["class"] . " Markbook</div>" ;
 				print "</div>" ;
 			
 				//Add multiple columns
@@ -177,13 +177,13 @@ else {
 								print "Type" ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Date<br>Complete" ;
+								print "Date<br/>Complete" ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Viewable <br>to Students" ;
+								print "Viewable <br/>to Students" ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Viewable <br>to Parents" ;
+								print "Viewable <br/>to Parents" ;
 							print "</th>" ;
 							print "<th>" ;
 								print "Actions" ;
