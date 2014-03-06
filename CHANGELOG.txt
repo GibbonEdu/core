@@ -104,6 +104,9 @@ Attendance: improved display of student absentee record to remove days before st
 	Edited files /modules/Attendance/moduleFunctions.php, report_studentHistory.php
 	Edited file /modules/Students/student_view_details.php
 
+Themes: added refresh.png to Olden theme
+	Edited file /themes/Olden/img/refresh.png
+
 
 v7.1.02
 -------

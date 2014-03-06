@@ -389,7 +389,7 @@ else {
 							$output.="</tr>" ;
 							$output.="<tr>" ;
 								$output.="<td class='right' colspan=2>" ;
-									$output.="<span style='font-size: 90%'><i>* <? print _("denotes a required field") ; ?></i></span>" ;
+									$output.="<span style='font-size: 90%'><i>* " . _("denotes a required field") . "</i></span>" ;
 								$output.="</td>" ;
 							$output.="</tr>" ;
 					
