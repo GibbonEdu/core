@@ -38,13 +38,13 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage ="Your request failed because you do not have access to this action." ;	
+			$addReturnMessage =_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage ="Your request failed due to a database error." ;	
+			$addReturnMessage =_("Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage ="Your request failed because your inputs were invalid." ;	
+			$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
 			$addReturnMessage ="Your request failed because the selected person is already registered." ;	
@@ -937,7 +937,7 @@ else {
 					
 					if ($name=="" OR $status=="" OR $sequenceNumber=="" OR is_numeric($sequenceNumber)==FALSE OR $firstDay=="" OR $lastDay=="") {
 						print "<div class='error'>" ;
-						print "Your request failed because your inputs were invalid." ;
+						print _("Your request failed because your inputs were invalid.") ;
 						print "</div>" ;
 					}
 					else {
@@ -954,7 +954,7 @@ else {
 						
 						if ($result->rowCount()>0) {
 							print "<div class='error'>" ;
-							print "Your request failed because your inputs were invalid." ;
+							print _("Your request failed because your inputs were invalid.") ;
 							print "</div>" ;
 						}
 						else {	
@@ -1037,7 +1037,7 @@ else {
 						}
 						if ($count=="") {
 							print "<div class='error'>" ;
-							print "Your request failed because your inputs were invalid." ;
+							print _("Your request failed because your inputs were invalid.") ;
 							print "</div>" ;
 						}
 						else {
@@ -1081,7 +1081,7 @@ else {
 							}
 							else {
 								print "<div class='success'>" ;
-								print "Your request was completed successfully." ;
+								print _("Your request was completed successfully.") ;
 								print "</div>" ;
 							}
 						}
@@ -1098,7 +1098,7 @@ else {
 						}
 						if ($count=="") {
 							print "<div class='error'>" ;
-							print "Your request failed because your inputs were invalid." ;
+							print _("Your request failed because your inputs were invalid.") ;
 							print "</div>" ;
 						}
 						else {
@@ -1204,7 +1204,7 @@ else {
 						}
 						if ($count=="") {
 							print "<div class='error'>" ;
-							print "Your request failed because your inputs were invalid." ;
+							print _("Your request failed because your inputs were invalid.") ;
 							print "</div>" ;
 						}
 						else {
@@ -1340,7 +1340,7 @@ else {
 						}
 						if ($count=="") {
 							print "<div class='error'>" ;
-							print "Your request failed because your inputs were invalid." ;
+							print _("Your request failed because your inputs were invalid.") ;
 							print "</div>" ;
 						}
 						else {
@@ -1416,7 +1416,7 @@ else {
 						}
 						if ($count=="") {
 							print "<div class='error'>" ;
-							print "Your request failed because your inputs were invalid." ;
+							print _("Your request failed because your inputs were invalid.") ;
 							print "</div>" ;
 						}
 						else {
@@ -1455,7 +1455,7 @@ else {
 							}
 							else {
 								print "<div class='success'>" ;
-								print "Your request was completed successfully." ;
+								print _("Your request was completed successfully.") ;
 								print "</div>" ;
 							}
 						}
@@ -1472,7 +1472,7 @@ else {
 						}
 						if ($count=="") {
 							print "<div class='error'>" ;
-							print "Your request failed because your inputs were invalid." ;
+							print _("Your request failed because your inputs were invalid.") ;
 							print "</div>" ;
 						}
 						else {

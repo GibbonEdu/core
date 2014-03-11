@@ -54,19 +54,19 @@ else {
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage ="Your request failed because you do not have access to this action." ;	
+					$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
+					$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage ="Your request failed due to a database error." ;	
+					$updateReturnMessage =_("Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
+					$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage ="Your request was completed successfully." ;	
+					$updateReturnMessage =_("Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -92,16 +92,16 @@ else {
 			$class="error" ;
 			if (!($columnDeleteReturn=="")) {
 				if ($columnDeleteReturn=="fail0") {
-					$columnDeleteReturnMessage ="Your request failed because you do not have access to this action." ;	
+					$columnDeleteReturnMessage =_("Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($columnDeleteReturn=="fail1") {
-					$columnDeleteReturnMessage ="Your request failed because your inputs were invalid." ;	
+					$columnDeleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($columnDeleteReturn=="fail2") {
-					$columnDeleteReturnMessage ="Your request failed due to a database error." ;	
+					$columnDeleteReturnMessage =_("Your request failed due to a database error.") ;	
 				}
 				else if ($columnDeleteReturn=="fail3") {
-					$columnDeleteReturnMessage ="Your request failed because your inputs were invalid." ;	
+					$columnDeleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($columnDeleteReturn=="success0") {
 					$columnDeleteReturnMessage ="Column Your request was successful." ;	
@@ -117,16 +117,16 @@ else {
 			$class="error" ;
 			if (!($rowDeleteReturn=="")) {
 				if ($rowDeleteReturn=="fail0") {
-					$rowDeleteReturnMessage ="Your request failed because you do not have access to this action." ;	
+					$rowDeleteReturnMessage =_("Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($rowDeleteReturn=="fail1") {
-					$rowDeleteReturnMessage ="Your request failed because your inputs were invalid." ;	
+					$rowDeleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($rowDeleteReturn=="fail2") {
-					$rowDeleteReturnMessage ="Your request failed due to a database error." ;	
+					$rowDeleteReturnMessage =_("Your request failed due to a database error.") ;	
 				}
 				else if ($rowDeleteReturn=="fail3") {
-					$rowDeleteReturnMessage ="Your request failed because your inputs were invalid." ;	
+					$rowDeleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($rowDeleteReturn=="success0") {
 					$rowDeleteReturnMessage ="Your request was successful." ;	

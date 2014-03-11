@@ -39,13 +39,13 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage ="Your request failed because you do not have access to this action." ;	
+			$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
+			$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage ="Your request failed due to a database error." ;	
+			$updateReturnMessage =_("Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail4") {
 			$updateReturnMessage ="Your request failed because the specified date is not in the future, or is not a school day." ;	
@@ -54,7 +54,7 @@ else {
 			$updateReturnMessage ="Your request failed because the specified date is not in the future, or is not a school day." ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage ="Your request was completed successfully." ;	
+			$updateReturnMessage =_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

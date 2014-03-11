@@ -74,16 +74,16 @@ else {
 				$class="error" ;
 				if (!($addReturn=="")) {
 					if ($addReturn=="fail0") {
-						$addReturnMessage ="Your request failed because you do not have access to this action." ;	
+						$addReturnMessage =_("Your request failed because you do not have access to this action.") ;	
 					}
 					else if ($addReturn=="fail2") {
-						$addReturnMessage ="Your request failed due to a database error." ;	
+						$addReturnMessage =_("Your request failed due to a database error.") ;	
 					}
 					else if ($addReturn=="fail3") {
-						$addReturnMessage ="Your request failed because your inputs were invalid." ;	
+						$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($addReturn=="fail4") {
-						$addReturnMessage ="Your request failed because your inputs were invalid." ;	
+						$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($addReturn=="fail5") {
 						$addReturnMessage ="Your request failed due to an attachment error." ;	

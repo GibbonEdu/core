@@ -59,7 +59,7 @@ else {
 	if (($type!="File" AND $type!="Link") OR is_null($content) OR $name=="" OR $id=="") {
 		//Fail 3
 		print "<span style='font-weight: bold; color: #ff0000'>" ;
-			print "Your request failed because your inputs were invalid." ;
+			print _("Your request failed because your inputs were invalid.") ;
 		print "</span>" ;
 	}
 	else {

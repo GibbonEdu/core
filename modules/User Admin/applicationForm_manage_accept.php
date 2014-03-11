@@ -66,16 +66,16 @@ else {
 			$class="error" ;
 			if (!($acceptReturn=="")) {
 				if ($acceptReturn=="fail0") {
-					$acceptReturnMessage ="Your request failed because you do not have access to this action." ;	
+					$acceptReturnMessage =_("Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($acceptReturn=="fail1") {
-					$acceptReturnMessage ="Your request failed because your inputs were invalid." ;	
+					$acceptReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($acceptReturn=="fail2") {
-					$acceptReturnMessage ="Your request failed due to a database error." ;	
+					$acceptReturnMessage =_("Your request failed due to a database error.") ;	
 				}
 				else if ($acceptReturn=="fail3") {
-					$acceptReturnMessage ="Your request failed because your inputs were invalid." ;	
+					$acceptReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($acceptReturn=="success1") {
 					$acceptReturnMessage ="Your request was completed successfully., but status could not be updated." ;	

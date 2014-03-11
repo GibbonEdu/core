@@ -107,6 +107,10 @@ Attendance: improved display of student absentee record to remove days before st
 Themes: added refresh.png to Olden theme
 	Edited file /themes/Olden/img/refresh.png
 
+i18n: improvements to allow better functioning on more servers
+	Edited values in table gibboni18n
+	Edite folder names in /i18n
+
 
 v7.1.02
 -------

@@ -66,7 +66,7 @@ if (!($editReturn=="")) {
 		$editReturnMessage ="Required fields not set." ;	
 	}
 	else if ($editReturn=="fail1") {
-		$editReturnMessage ="Your request failed due to a database error." ;	
+		$editReturnMessage =_("Your request failed due to a database error.") ;	
 	}
 	else if ($editReturn=="fail2") {
 		$editReturnMessage ="Your request failed due to non-matching passwords." ;	
@@ -81,7 +81,7 @@ if (!($editReturn=="")) {
 		$editReturnMessage ="Your request failed because your new password is the same as your current password." ;	
 	}	
 	else if ($editReturn=="success0") {
-		$editReturnMessage ="Your request was completed successfully." ;	
+		$editReturnMessage =_("Your request was completed successfully.") ;	
 		$class="success" ;
 	}
 	print "<div class='$class'>" ;

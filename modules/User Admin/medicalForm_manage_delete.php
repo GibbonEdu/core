@@ -36,13 +36,13 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="fail0") {
-			$deleteReturnMessage ="Your request failed because you do not have access to this action." ;	
+			$deleteReturnMessage =_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($deleteReturn=="fail1") {
-			$deleteReturnMessage ="Your request failed because your inputs were invalid." ;	
+			$deleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($deleteReturn=="fail2") {
-			$deleteReturnMessage ="Your request failed due to a database error." ;	
+			$deleteReturnMessage =_("Your request failed due to a database error.") ;	
 		}
 		else if ($deleteReturn=="fail3") {
 			$deleteReturnMessage ="Delete removed the medical form but failed to remove associated conditions." ;	

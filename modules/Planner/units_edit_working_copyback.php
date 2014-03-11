@@ -47,25 +47,25 @@ else {
 		$class="error" ;
 		if (!($copyReturn=="")) {
 			if ($copyReturn=="fail0") {
-				$copyReturnMessage ="Your request failed because you do not have access to this action." ;	
+				$copyReturnMessage =_("Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($copyReturn=="fail1") {
-				$copyReturnMessage ="Your request failed because your inputs were invalid." ;	
+				$copyReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($copyReturn=="fail2") {
-				$copyReturnMessage ="Your request failed due to a database error." ;	
+				$copyReturnMessage =_("Your request failed due to a database error.") ;	
 			}
 			else if ($copyReturn=="fail3") {
-				$copyReturnMessage ="Your request failed because your inputs were invalid." ;	
+				$copyReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($copyReturn=="fail4") {
-				$copyReturnMessage ="Your request failed because your inputs were invalid." ;	
+				$copyReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($copyReturn=="fail5") {
 				$copyReturnMessage ="Your request failed due to an attachment error." ;	
 			}
 			else if ($copyReturn=="success0") {
-				$copyReturnMessage ="Your request was completed successfully." ;	
+				$copyReturnMessage =_("Your request was completed successfully.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;

@@ -40,7 +40,7 @@ $time=time() ;
 if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_manage_add.php")==FALSE) {
 	//Fail 0
 	print "<span style='font-weight: bold; color: #ff0000'>" ;
-		print "Your request failed because you do not have access to this action." ;
+		print _("Your request failed because you do not have access to this action.") ;
 	print "</span>" ;
 }
 else {
@@ -78,7 +78,7 @@ else {
 		if (($type!="File" AND $type!="Link") OR is_null($content) OR $name=="" OR $category=="" OR $tags=="" OR $id=="") {
 			//Fail 3
 			print "<span style='font-weight: bold; color: #ff0000'>" ;
-				print "Your request failed because your inputs were invalid." ;
+				print _("Your request failed because your inputs were invalid.") ;
 			print "</span>" ;
 		}
 		else {
@@ -115,7 +115,7 @@ else {
 			catch(PDOException $e) { 
 				//Fail 2
 				print "<span style='font-weight: bold; color: #ff0000'>" ;
-					print "Your request failed due to a database error." ;
+					print _("Your request failed due to a database error.") ;
 				print "</span>" ;
 				break ;
 			}		
@@ -172,7 +172,7 @@ else {
 			catch(PDOException $e) { 
 				//Fail 2
 				print "<span style='font-weight: bold; color: #ff0000'>" ;
-					print "Your request failed due to a database error." ;
+					print _("Your request failed due to a database error.") ;
 				print "</span>" ;
 				break ;
 			}		

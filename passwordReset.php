@@ -33,7 +33,7 @@ if (!($editReturn=="")) {
 		$editReturnMessage ="Email address not set." ;	
 	}
 	else if ($editReturn=="fail1") {
-		$editReturnMessage ="Your request failed due to a database error." ;	
+		$editReturnMessage =_("Your request failed due to a database error.") ;	
 	}
 	else if ($editReturn=="fail2") {
 		$editReturnMessage ="Your request failed due to incorrect or non-unique email address." ;	

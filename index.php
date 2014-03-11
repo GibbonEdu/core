@@ -136,10 +136,16 @@ else {
 
 			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery/jquery.js"></script>
 			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/js/jquery-ui.min.js"></script>
-			<? if (is_file($_SESSION[$guid]["absolutePath"] . "/lib/jquery-ui/i18n/jquery.ui.datepicker-" . $_SESSION[$guid]["i18n"]["code"] . ".js")) {
-				print "<script type='text/javascript' src='" . $_SESSION[$guid]["absoluteURL"] . "/lib/jquery-ui/i18n/jquery.ui.datepicker-" . $_SESSION[$guid]["i18n"]["code"] . ".js'></script>" ;
-				print "<script type='text/javascript'>$.datepicker.setDefaults($.datepicker.regional['" . $_SESSION[$guid]["i18n"]["code"] . "']);</script>" ;
+			<? 
+			if (is_file($_SESSION[$guid]["absolutePath"] . "/lib/jquery-ui/i18n/jquery.ui.datepicker-" . substr($_SESSION[$guid]["i18n"]["code"],0,2) . ".js")) {
+				print "<script type='text/javascript' src='" . $_SESSION[$guid]["absoluteURL"] . "/lib/jquery-ui/i18n/jquery.ui.datepicker-" .  substr($_SESSION[$guid]["i18n"]["code"],0,2) . ".js'></script>" ;
+				print "<script type='text/javascript'>$.datepicker.setDefaults($.datepicker.regional['" .  substr($_SESSION[$guid]["i18n"]["code"],0,2) . "']);</script>" ;
 			}
+			else if (is_file($_SESSION[$guid]["absolutePath"] . "/lib/jquery-ui/i18n/jquery.ui.datepicker-" . str_replace("_","-",$_SESSION[$guid]["i18n"]["code"]) . ".js")) {
+				print "<script type='text/javascript' src='" . $_SESSION[$guid]["absoluteURL"] . "/lib/jquery-ui/i18n/jquery.ui.datepicker-" .  str_replace("_","-",$_SESSION[$guid]["i18n"]["code"]) . ".js'></script>" ;
+				print "<script type='text/javascript'>$.datepicker.setDefaults($.datepicker.regional['" .  str_replace("_","-",$_SESSION[$guid]["i18n"]["code"]) . "']);</script>" ;
+			}
+			
 			?>
 			<script type="text/javascript">$(function() { $( document ).tooltip({  show: 800, hide: false, content: function () { return $(this).prop('title')}, position: { my: "center bottom-20", at: "center top", using: function( position, feedback ) { $( this ).css( position ); $( "<div>" ).addClass( "arrow" ).addClass( feedback.vertical ).addClass( feedback.horizontal ).appendTo( this ); } } }); });</script>
 			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-jslatex/jquery.jslatex.js"></script>
@@ -308,7 +314,7 @@ else {
 			if (isset($_SESSION[$guid]["username"])) {
 				if ($_SESSION[$guid]["gibbonSchoolYearID"]!=$_SESSION[$guid]["gibbonSchoolYearIDCurrent"]) {
 					print "<div style='margin: 10px auto; width:1101px;' class='warning'>" ;
-						print "<b><u>Warning</u></b>: you are logged into the system in school year <b><u>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</b></u>, which is not the current year. Your data may not look quite right (for example, students who have left the school will not appear in previous years), but you should be able to edit information from other years which is not available in the current year." ;
+						print "<b><u>" . sprintf(_('Warning: you are logged into the system in school year %1$s, which is not the current year.'), $_SESSION[$guid]["gibbonSchoolYearName"]) . "</b></u>" . _('Your data may not look quite right (for example, students who have left the school will not appear in previous years), but you should be able to edit information from other years which is not available in the current year.') ;
 					print "</div>" ;
 				}
 			}
@@ -325,15 +331,15 @@ else {
 								if (isset($_SESSION[$guid]["username"]) && $_SESSION[$guid]["username"]!="") {
 									print "<div class='minorLinks'>" ;
 										print $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"] . " . " ;
-										print "<a href='./logout.php'>Logout</a> . <a href='./index.php?q=preferences.php'>Preferences</a>" ;
+										print "<a href='./logout.php'>Logout</a> . <a href='./index.php?q=preferences.php'>" . _('Preferences') . "</a>" ;
 										if ($_SESSION[$guid]["emailLink"]!="") {
-											print " . <a target='_blank' href='" . $_SESSION[$guid]["emailLink"] . "'>Email</a>" ;
+											print " . <a target='_blank' href='" . $_SESSION[$guid]["emailLink"] . "'>" . _('Email') . "</a>" ;
 										}
 										if ($_SESSION[$guid]["webLink"]!="") {
-											print " . <a target='_blank' href='" . $_SESSION[$guid]["webLink"] . "'>" . $_SESSION[$guid]["organisationNameShort"] . " Website</a>" ;
+											print " . <a target='_blank' href='" . $_SESSION[$guid]["webLink"] . "'>" . $_SESSION[$guid]["organisationNameShort"] . " " . _('Website') . "</a>" ;
 										}
 										if ($_SESSION[$guid]["website"]!="") {
-											print " . <a target='_blank' href='" . $_SESSION[$guid]["website"] . "'>My Website</a>" ;
+											print " . <a target='_blank' href='" . $_SESSION[$guid]["website"] . "'>" . _('My Website') . "</a>" ;
 										}
 										
 										//STARS!
@@ -348,7 +354,7 @@ else {
 												$resultLike->execute($dataLike); 
 												if ($resultLike->rowCount()>0) {
 													$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-													$_SESSION[$guid]["likeCountTitle"].="Crowd Assessment: " . count($resultLike) . ", " ;
+													$_SESSION[$guid]["likeCountTitle"].= _('Crowd Assessment') . ": " . count($resultLike) . ", " ;
 												}
 											}
 											catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
@@ -361,7 +367,7 @@ else {
 												$resultLike->execute($dataLike); 
 												if ($resultLike->rowCount()>0) {
 													$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-													$_SESSION[$guid]["likeCountTitle"].="Planner: " . count($resultLike) . ", " ;
+													$_SESSION[$guid]["likeCountTitle"].= _('Planner') . ": " . count($resultLike) . ", " ;
 												}
 											}
 											catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
@@ -374,7 +380,7 @@ else {
 												$resultLike->execute($dataLike); 
 												if ($resultLike->rowCount()>0) {
 													$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-													$_SESSION[$guid]["likeCountTitle"].="Behaviour: " . count($resultLike) . ", " ;
+													$_SESSION[$guid]["likeCountTitle"].= _('Behaviour') . ": " . count($resultLike) . ", " ;
 												}
 											}
 											catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
@@ -452,7 +458,7 @@ else {
 														<div id='messageBubbleArrow' style="left: 650px; top: 21px" class='arrow top'></div>
 														<div id='messageBubble' style="left: 420px; top: 37px; width: 300px; min-width: 300px; max-width: 300px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip"">
 															<div class="ui-tooltip-content">
-																<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>New Messages</div>
+																<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'><? print _('New Messages') ?></div>
 																<?
 																$test=count($output) ;
 																if ($test>3) {
@@ -473,14 +479,14 @@ else {
 																?>
 																<?
 																if (count($output)>3) {
-																	print "<i>Plus more...</i>" ;
+																	print "<i>" . _('Plus more') . "...</i>" ;
 																}
 																?>
 														
 															</div>
 															<div style='text-align: right; margin-top: 20px; color: #666'>
-																<a onclick='$("#messageBubble").hide("fade", {}, 1); $("#messageBubbleArrow").hide("fade", {}, 1)' style='text-decoration: none; color: #666' class='thickbox' href='<? print $URL ?>'>Read All</a> . 
-																<a style='text-decoration: none; color: #666' onclick='$("#messageBubble").hide("fade", {}, 1000); $("#messageBubbleArrow").hide("fade", {}, 1000)' href='#'>Dismiss</a>
+																<a onclick='$("#messageBubble").hide("fade", {}, 1); $("#messageBubbleArrow").hide("fade", {}, 1)' style='text-decoration: none; color: #666' class='thickbox' href='<? print $URL ?>'><? print _('Read All') ?></a> . 
+																<a style='text-decoration: none; color: #666' onclick='$("#messageBubble").hide("fade", {}, 1000); $("#messageBubbleArrow").hide("fade", {}, 1000)' href='#'><? print _('Dismiss') ?></a>
 															</div>
 														</div>
 												
@@ -536,11 +542,11 @@ else {
 								//Welcome message
 								if (isset($_SESSION[$guid]["username"])==FALSE) {
 									print "<div class='trail'>" ;
-									print "<div class='trailEnd'>Home</div>" ;
+									print "<div class='trailEnd'>" . _('Home') . "</div>" ;
 									print "</div>" ;
 									
 									print "<h2>" ;
-									print "Welcome" ;
+									print _("Welcome") ;
 									print "</h2>" ;
 									print "<p>" ;
 									print $_SESSION[$guid]["indexText"] ;
@@ -557,7 +563,7 @@ else {
 												print "Applications" ;
 												print "</h2>" ;
 												print "<p>" ;
-												print "Parents of students interested in study at " . $_SESSION[$guid]["organisationName"] . " may use our <a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Application Form/applicationForm.php'>online form</a> to initiate the application process." ;
+												print sprintf(_('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]["organisationName"], "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Application Form/applicationForm.php'>", "</a>") ;
 												print "</p>" ;
 											}
 										}
@@ -570,13 +576,13 @@ else {
 								}
 								else {
 									print "<div class='trail'>" ;
-									print "<div class='trailEnd'>Home</div>" ;
+									print "<div class='trailEnd'>" . _('Home') . "</div>" ;
 									print "</div>" ;
 									
 									$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 									if ($category==FALSE) {
 										print "<div class='error'>" ;
-										print "Your current role type cannot be determined." ;
+										print _("Your current role type cannot be determined.") ;
 										print "</div>" ;
 									}
 									//Display Parent Dashboard
@@ -623,7 +629,7 @@ else {
 										
 										if ($count>0) {
 											print "<h2>" ;
-												print "Parental Dashboard" ;
+												print _("Parental Dashboard") ;
 											print "</h2>" ;
 											$alert=getAlert($connection2, 002) ;
 											$entryCount=0 ;
@@ -637,31 +643,31 @@ else {
 													print getUserPhoto($guid, $students[$i][5], 75) ;
 													print "<div style='height: 5px'></div>" ;
 													print "<span style='font-size: 70%'>" ;
-														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $students[$i][4] . "'>Student Profile</a><br/>" ;
+														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $students[$i][4] . "'>" . _('Student Profile') . "</a><br/>" ;
 														if (isActionAccessible($guid, $connection2, "/modules/Roll Groups/rollGroups_details.php")) {
-															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $students[$i][7] . "'>Roll Group (" . $students[$i][3] . ")</a>" ;
+															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $students[$i][7] . "'>" . _('Roll Group') . " (" . $students[$i][3] . ")</a>" ;
 														}
 													print "</span>" ;
 												print "</div>" ;
 												print "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 83%'>" ;
 													//Display planner
-													print "<span style='font-size: 85%; font-weight: bold'>Today's Classes</span> . <span style='font-size: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=" . $students[$i][4] . "'>View Planner</a></span>" ;
+													print "<span style='font-size: 85%; font-weight: bold'>" . _('Today\'s Classes') . "</span> . <span style='font-size: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=" . $students[$i][4] . "'>" . _('View Planner') . "</a></span>" ;
 													
 													if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 													$updateReturnMessage ="" ;
 													$class="error" ;
 													if (!($updateReturn=="")) {
 														if ($updateReturn=="fail0") {
-															$updateReturnMessage ="Your request failed because you do not have access to this action." ;	
+															$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
 														}
 														else if ($updateReturn=="fail1") {
-															$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
+															$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 														}
 														else if ($updateReturn=="fail2") {
-															$updateReturnMessage ="Your request failed due to a database error." ;	
+															$updateReturnMessage =_("Your request failed due to a database error.") ;	
 														}
 														else if ($updateReturn=="success0") {
-															$updateReturnMessage ="Your request was completed successfully." ;	
+															$updateReturnMessage =_("Your request was completed successfully.") ;	
 															$class="success" ;
 														}
 														print "<div class='$class'>" ;
@@ -686,22 +692,22 @@ else {
 															print "<table cellspacing='0' style='margin: 3px 0px; width: 100%'>" ;
 																print "<tr class='head'>" ;
 																	print "<th>" ;
-																		print "Class" ;
+																		print _("Class") ;
 																	print "</th>" ;
 																	print "<th>" ;
-																		print "Lesson" ;
+																		print _("Lesson") ;
 																	print "</th>" ;
 																	print "<th>" ;
-																		print "Homework<br/>" ;
+																		print _("Homework") ;
 																	print "</th>" ;
 																	print "<th>" ;
-																		print "Summary" ;
+																		print _("Summary") ;
 																	print "</th>" ;
 																	print "<th>" ;
-																		print "Like" ;
+																		print _("Like") ;
 																	print "</th>" ;
 																	print "<th>" ;
-																		print "Action" ;
+																		print _("Action") ;
 																	print "</th>" ;
 																print "</tr>" ;
 																
@@ -732,7 +738,7 @@ else {
 																			if (isset($unit[0])) {
 																				print $unit[0] ;
 																				if ($unit[1]!="") {
-																					print "<br/><i>" . $unit[1] . " Unit</i>" ;
+																					print "<br/><i>" . $unit[1] . " " . _('Unit') . "</i>" ;
 																				}
 																			}
 																		print "</td>" ;
@@ -760,7 +766,7 @@ else {
 																			}
 																		print "</td>" ;
 																		print "<td>" ;
-																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=" . $students[$i][4] . "&viewBy=date&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&date=$date&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=" . $students[$i][4] . "&viewBy=date&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&date=$date&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 																		print "</td>" ;
 																	print "</tr>" ;
 																}
@@ -769,12 +775,12 @@ else {
 													}
 													if ($classes==FALSE) {
 														print "<div style='margin-top: 2px' class='warning'>" ;
-														print "There are no records to display" ;
+														print _("There are no records to display.") ;
 														print "</div>" ;
 													}
 													
 													//Display recent grades
-													print "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>Recent Grades</span> . <span style='font-size: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php&search=" . $students[$i][4] . "'>View Markbook</a></span></div>" ;
+													print "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>" . _('Recent Grades') . "</span> . <span style='font-size: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php&search=" . $students[$i][4] . "'>" . _('View Markbook') . "</a></span></div>" ;
 													$grades=FALSE ;
 													
 													try {
@@ -793,19 +799,19 @@ else {
 														print "<table cellspacing='0' style='margin: 3px 0px; width: 100%'>" ;
 															print "<tr class='head'>" ;
 															print "<th style='width: 120px'>" ;
-																print "Assessment" ;
+																print _("Assessment") ;
 															print "</th>" ;
 															print "<th style='width: 75px'>" ;
-																print "Attainment" ;
+																print _("Attainment") ;
 															print "</th>" ;
 															print "<th style='width: 75px'>" ;
-																print "Effort" ;
+																print _("Effort") ;
 															print "</th>" ;
 															print "<th>" ;
-																print "Comment" ;
+																print _("Comment") ;
 															print "</th>" ;
 															print "<th style='width: 75px'>" ;
-																print "Submission" ;
+																print _("Submission") ;
 															print "</th>" ;
 														print "</tr>" ;
 														
@@ -825,12 +831,7 @@ else {
 																print "<td>" ;
 																	print "<span title='" . htmlPrep($rowEntry["description"]) . "'>" . $rowEntry["name"] . "</span><br/>" ;
 																	print "<span style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
-																	if ($rowEntry["completeDate"]!="") {
-																		print "Marked on " . dateConvertBack($guid, $rowEntry["completeDate"]) . "<br/>" ;
-																	}
-																	else {
-																		print "Unmarked<br/>" ;
-																	}
+																	print _("Marked on") . " " . dateConvertBack($guid, $rowEntry["completeDate"]) . "<br/>" ;
 																	print "</span>" ;
 																print "</td>" ;
 																print "<td style='text-align: center'>" ;
@@ -901,13 +902,13 @@ else {
 																				print "});" ;
 																			print "</script>" ;
 																			print "<span>" . substr($rowEntry["comment"], 0, 50) . "...<br/>" ;
-																			print "<a title='View Description' class='show_hide-$entryCount' onclick='return false;' href='#'>Read more</a></span><br/>" ;
+																			print "<a title='" . _('View Description') . "' class='show_hide-$entryCount' onclick='return false;' href='#'>" . _('Read more') . "</a></span><br/>" ;
 																		}
 																		else {
 																			print $rowEntry["comment"] ;
 																		}
 																		if ($rowEntry["response"]!="") {
-																			print "<a title='Uploaded Response' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>Uploaded Response</a><br/>" ;
+																			print "<a title='" . _('Uploaded Response') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a><br/>" ;
 																		}
 																	}
 																print "</td>" ;
@@ -999,7 +1000,7 @@ else {
 													}
 													if ($grades==FALSE) {
 														print "<div style='margin-top: 2px' class='warning'>" ;
-														print "There are no records to display" ;
+														print _("There are no records to display.") ;
 														print "</div>" ;
 													}
 													
@@ -1044,7 +1045,7 @@ else {
 													
 													if ($deadlines==FALSE) {
 														print "<div style='margin-top: 2px' class='warning'>" ;
-														print "There are no records to display" ;
+														print _("There are no records to display.") ;
 														print "</div>" ;
 													}
 													
@@ -1082,16 +1083,16 @@ else {
 												$class="error" ;
 												if (!($updateReturn=="")) {
 													if ($updateReturn=="fail0") {
-														$updateReturnMessage ="Your request failed because you do not have access to this action." ;	
+														$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
 													}
 													else if ($updateReturn=="fail1") {
-														$updateReturnMessage ="Your request failed because your inputs were invalid." ;	
+														$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 													}
 													else if ($updateReturn=="fail2") {
-														$updateReturnMessage ="Your request failed due to a database error." ;	
+														$updateReturnMessage =_("Your request failed due to a database error.") ;	
 													}
 													else if ($updateReturn=="success0") {
-														$updateReturnMessage ="Your request was completed successfully." ;	
+														$updateReturnMessage =_("Your request was completed successfully.") ;	
 														$class="success" ;
 													}
 													print "<div class='$class'>" ;

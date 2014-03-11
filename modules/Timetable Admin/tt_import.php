@@ -36,16 +36,16 @@ else {
 	$class="error" ;
 	if (!($importReturn=="")) {
 		if ($importReturn=="fail0") {
-			$importReturnMessage ="Your request failed because you do not have access to this action." ;	
+			$importReturnMessage =_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($importReturn=="fail1") {
-			$importReturnMessage ="Your request failed because your inputs were invalid." ;	
+			$importReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($importReturn=="fail2") {
-			$importReturnMessage ="Your request failed due to a database error." ;	
+			$importReturnMessage =_("Your request failed due to a database error.") ;	
 		}
 		else if ($importReturn=="fail3") {
-			$importReturnMessage ="Your request failed because your inputs were invalid." ;	
+			$importReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 		}
 		print "<div class='$class'>" ;
 			print $importReturnMessage;

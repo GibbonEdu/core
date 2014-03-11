@@ -1,0 +1,3642 @@
+# Gibbon, Flexible & Open School System
+# Copyright (C) 2010, Ross Parker
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+msgid ""
+msgstr ""
+"Project-Id-Version: Gibbon v8.0.00\n"
+"Report-Msgid-Bugs-To: support@gibbonedu.org\n"
+"POT-Creation-Date: 2014-03-05 09:36+0800\n"
+"PO-Revision-Date:2014-03-05 09:36+0800\n"
+"Last-Translator: Nicolas Arriaga <narriaga@ichk.edu.hk>\n"
+"Language-Team: ICHK Spanish <narriaga@ichk.edu.hk>\n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: index.php:1077 index.php:1072 index.php:1072
+msgid "Today's Lessons"
+msgstr "Lecciones de Hoy"
+
+#: index.php:1227 index.php:1222 index.php:1222
+msgid "My Timetable"
+msgstr "Mi Horario"
+
+#: index.php:1262 index.php:1257 index.php:1257
+msgid "My Roll Group"
+msgstr "Mi Rollo Grupo"
+
+#: error.php:22 error.php:22
+msgid "Error"
+msgstr ""
+
+#: error.php:25 error.php:25
+msgid ""
+"An error has occurred. This could mean a number of different things, but "
+"generally indicates that you have a misspelt an address, or are trying to "
+"access a page that you are not permitted to access."
+msgstr ""
+
+#: error.php:27 error.php:27
+msgid ""
+"If you cannot solve this problem by retyping the address, or through other "
+"means, please contact your system administrator."
+msgstr ""
+
+#: fullscreen.php:44 index.php:110 report.php:43 fullscreen.php:44
+#: index.php:110 report.php:43
+msgid "System Settings are not set: the system cannot be displayed"
+msgstr ""
+
+#: fullscreen.php:133 fullscreen.php:133
+msgid "There is no content to display"
+msgstr ""
+
+#: fullscreen.php:139 index.php:1438 report.php:135 index.php:1433
+#: fullscreen.php:139 index.php:1433 report.php:135
+msgid "Illegal address detected: access denied."
+msgstr ""
+
+#: index_tt_ajax.php:48 modules/Library/library_manage_catalog_add_ajax.php:46
+#: modules/Resources/resources_add_ajax.php:71
+#: modules/Resources/resources_insert_ajax.php:81 index_tt_ajax.php:48
+#: modules/Library/library_manage_catalog_add_ajax.php:46
+#: modules/Resources/resources_add_ajax.php:71
+#: modules/Resources/resources_insert_ajax.php:81
+msgid "You do not have access to this page."
+msgstr ""
+
+#: index_tt_ajax.php:80 index_tt_ajax.php:80
+msgid "There is no information for the date specified."
+msgstr ""
+
+#: passwordReset.php:21 preferences.php:21 stars.php:21
+#: modules/Activities/activities_manage.php:34
+#: modules/Activities/activities_manage_add.php:33
+#: modules/Activities/activities_manage_delete.php:34
+#: modules/Activities/activities_manage_edit.php:35
+#: modules/Activities/activities_manage_enrolment.php:34
+#: modules/Activities/activities_manage_enrolment_add.php:34
+#: modules/Activities/activities_manage_enrolment_delete.php:31
+#: modules/Activities/activities_manage_enrolment_edit.php:34
+#: modules/Activities/activities_my.php:33
+#: modules/Activities/activities_view.php:41
+#: modules/Activities/activities_view_register.php:41
+#: modules/Activities/report_activityChoices_byStudent.php:34
+#: modules/Activities/report_activityEnrollmentSummary.php:34
+#: modules/Activities/report_activitySpread_rollGroup.php:34
+#: modules/Activities/report_activityType_rollGroup.php:34
+#: modules/Activities/report_attendance.php:34
+#: modules/Activities/report_participants.php:34
+#: modules/Activities/report_payment.php:34 modules/Application
+#: Form/applicationForm.php:57 Form/applicationForm.php:60
+#: modules/Attendance/attendance_future_byPerson.php:34
+#: modules/Attendance/attendance_take_byPerson.php:34
+#: modules/Attendance/attendance_take_byRollGroup.php:34
+#: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:34
+#: modules/Attendance/report_studentHistory.php:34
+#: modules/Attendance/report_studentsNotOnsite_byDate.php:34
+#: modules/Attendance/report_studentsNotPresent_byDate.php:34
+#: modules/Behaviour/behaviour_manage.php:41
+#: modules/Behaviour/behaviour_manage_add.php:41
+#: modules/Behaviour/behaviour_manage_delete.php:42
+#: modules/Behaviour/behaviour_manage_edit.php:42
+#: modules/Behaviour/behaviour_pattern.php:33
+#: modules/Behaviour/behaviour_view.php:30
+#: modules/Behaviour/behaviour_view_details.php:38 modules/Crowd
+#: Assessment/crowdAssess.php:33 Assessment/crowdAssess_view.php:33
+#: Assessment/crowdAssess_view_discuss.php:33
+#: Assessment/crowdAssess_view_discuss_post.php:33 modules/Data
+#: Updater/data_family.php:42 Updater/data_finance.php:42
+#: Updater/data_medical.php:42 Updater/data_personal.php:42
+#: modules/Departments/department.php:61
+#: modules/Departments/department_course.php:66
+#: modules/Departments/department_course_class.php:104
+#: modules/Departments/department_course_class.php:107
+#: modules/Departments/department_course_edit.php:68
+#: modules/Departments/department_edit.php:59
+#: modules/Departments/departments.php:33 modules/External
+#: Assessment/externalAssessment.php:33
+#: Assessment/externalAssessment_details.php:48
+#: Assessment/externalAssessment_manage_details_add.php:31
+#: Assessment/externalAssessment_manage_details_delete.php:31
+#: Assessment/externalAssessment_manage_details_edit.php:31
+#: modules/Finance/billingSchedule_manage.php:31
+#: modules/Finance/billingSchedule_manage_add.php:31
+#: modules/Finance/billingSchedule_manage_edit.php:31
+#: modules/Finance/feeCategories_manage.php:31
+#: modules/Finance/feeCategories_manage_add.php:34
+#: modules/Finance/feeCategories_manage_delete.php:34
+#: modules/Finance/feeCategories_manage_edit.php:35
+#: modules/Finance/fees_manage.php:31 modules/Finance/fees_manage_add.php:31
+#: modules/Finance/fees_manage_edit.php:31
+#: modules/Finance/invoicees_manage.php:31
+#: modules/Finance/invoicees_manage_edit.php:35
+#: modules/Finance/invoiceReceiptSettings.php:31
+#: modules/Finance/invoices_manage.php:31
+#: modules/Finance/invoices_manage_add.php:34
+#: modules/Finance/invoices_manage_delete.php:42
+#: modules/Finance/invoices_manage_edit.php:42
+#: modules/Finance/invoices_manage_issue.php:42
+#: modules/Finance/invoices_manage_print.php:42 modules/Individual
+#: Needs/in_edit.php:44 Needs/in_edit.php:47 Needs/in_edit.php:50
+#: Needs/in_summary.php:33 Needs/in_view.php:38
+#: modules/Library/library_browse.php:34
+#: modules/Library/library_lending.php:31
+#: modules/Library/library_lending_item.php:34
+#: modules/Library/library_lending_item_edit.php:58
+#: modules/Library/library_lending_item_renew.php:58
+#: modules/Library/library_lending_item_return.php:58
+#: modules/Library/library_lending_item_signout.php:57
+#: modules/Library/library_manage_catalog.php:31
+#: modules/Library/library_manage_catalog_add.php:34
+#: modules/Library/library_manage_catalog_delete.php:34
+#: modules/Library/library_manage_catalog_duplicate.php:35
+#: modules/Library/library_manage_catalog_edit.php:35
+#: modules/Library/report_catalogSummary.php:36
+#: modules/Library/report_studentBorrowingRecord.php:36
+#: modules/Library/report_viewOverdueItems.php:34
+#: modules/Markbook/markbook_edit.php:90
+#: modules/Markbook/markbook_edit_add.php:69
+#: modules/Markbook/markbook_edit_addMulti.php:66
+#: modules/Markbook/markbook_edit_data.php:91
+#: modules/Markbook/markbook_edit_delete.php:91
+#: modules/Markbook/markbook_edit_edit.php:91
+#: modules/Markbook/markbook_edit_targets.php:73
+#: modules/Markbook/markbook_view.php:67 modules/Markbook/markbook_view.php:86
+#: modules/Markbook/markbook_view.php:97
+#: modules/Markbook/markbook_view.php:675
+#: modules/Markbook/markbook_view.php:1073
+#: modules/Messenger/messageWall_view.php:47
+#: modules/Messenger/messenger_manage.php:39
+#: modules/Messenger/messenger_manage_delete.php:39
+#: modules/Messenger/messenger_manage_edit.php:38
+#: modules/Messenger/messenger_post.php:40 modules/Planner/outcomes.php:39
+#: modules/Planner/outcomes_add.php:48 modules/Planner/outcomes_delete.php:48
+#: modules/Planner/outcomes_edit.php:49 modules/Planner/planner.php:90
+#: modules/Planner/planner.php:558 modules/Planner/planner.php:826
+#: modules/Planner/planner_add.php:128 modules/Planner/planner_bump.php:114
+#: modules/Planner/planner_deadlines.php:94
+#: modules/Planner/planner_deadlines.php:465
+#: modules/Planner/planner_delete.php:140
+#: modules/Planner/planner_duplicate.php:138
+#: modules/Planner/planner_edit.php:200
+#: modules/Planner/planner_view_full.php:236
+#: modules/Planner/planner_view_full_post.php:161
+#: modules/Planner/planner_view_full_submit_edit.php:120
+#: modules/Planner/report_goldStars_staff.php:34
+#: modules/Planner/report_workSummary_byRollGroup.php:34
+#: modules/Planner/units.php:41 modules/Planner/units_add.php:42
+#: modules/Planner/units_delete.php:42 modules/Planner/units_dump.php:40
+#: modules/Planner/units_duplicate.php:41 modules/Planner/units_edit.php:53
+#: modules/Planner/units_edit_copyBack.php:42
+#: modules/Planner/units_edit_copyForward.php:42
+#: modules/Planner/units_edit_deploy.php:53
+#: modules/Planner/units_edit_working.php:53
+#: modules/Planner/units_edit_working_add.php:53
+#: modules/Planner/units_edit_working_copyback.php:42
+#: modules/Resources/resources_manage.php:41
+#: modules/Resources/resources_manage_add.php:41
+#: modules/Resources/resources_manage_edit.php:43
+#: modules/Resources/resources_view.php:33 modules/Roll
+#: Groups/rollGroups.php:31 Groups/rollGroups_details.php:59
+#: modules/Rubrics/rubrics.php:39 modules/Rubrics/rubrics_add.php:48
+#: modules/Rubrics/rubrics_delete.php:48 modules/Rubrics/rubrics_edit.php:49
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:49
+#: modules/Rubrics/rubrics_view.php:31 modules/School
+#: Admin/activitySettings.php:31 Admin/alertLevelSettings.php:31
+#: Admin/behaviourSettings.php:31 Admin/daysOfWeek_manage.php:31
+#: Admin/department_manage.php:33 Admin/department_manage_add.php:33
+#: Admin/department_manage_delete.php:34 Admin/department_manage_edit.php:35
+#: Admin/externalAssessments_manage.php:31
+#: Admin/externalAssessments_manage_add.php:34
+#: Admin/externalAssessments_manage_delete.php:31
+#: Admin/externalAssessments_manage_edit.php:34
+#: Admin/externalAssessments_manage_edit_field_add.php:57
+#: Admin/externalAssessments_manage_edit_field_delete.php:58
+#: Admin/externalAssessments_manage_edit_field_edit.php:58
+#: Admin/externalAssessmentSettings.php:31 Admin/fileExtensions_manage.php:31
+#: Admin/fileExtensions_manage_add.php:31
+#: Admin/fileExtensions_manage_delete.php:31
+#: Admin/fileExtensions_manage_edit.php:31 Admin/gradeScales_manage.php:31
+#: Admin/gradeScales_manage_add.php:34 Admin/gradeScales_manage_delete.php:31
+#: Admin/gradeScales_manage_edit.php:34
+#: Admin/gradeScales_manage_edit_grade_add.php:57
+#: Admin/gradeScales_manage_edit_grade_delete.php:58
+#: Admin/gradeScales_manage_edit_grade_edit.php:58 Admin/house_manage.php:31
+#: Admin/house_manage_add.php:31 Admin/house_manage_delete.php:31
+#: Admin/house_manage_edit.php:31 Admin/inDescriptors_manage.php:31
+#: Admin/inDescriptors_manage_add.php:31
+#: Admin/inDescriptors_manage_delete.php:31
+#: Admin/inDescriptors_manage_edit.php:31 Admin/librarySettings.php:31
+#: Admin/markbookSettings.php:31 Admin/plannerSettings.php:31
+#: Admin/resourceSettings.php:31 Admin/rollGroup_manage.php:31
+#: Admin/rollGroup_manage_add.php:31 Admin/rollGroup_manage_delete.php:31
+#: Admin/rollGroup_manage_edit.php:31 Admin/schoolYear_manage.php:31
+#: Admin/schoolYear_manage_add.php:31 Admin/schoolYear_manage_delete.php:31
+#: Admin/schoolYear_manage_edit.php:31
+#: Admin/schoolYearSpecialDay_manage.php:31
+#: Admin/schoolYearSpecialDay_manage_add.php:31
+#: Admin/schoolYearSpecialDay_manage_delete.php:31
+#: Admin/schoolYearSpecialDay_manage_edit.php:31
+#: Admin/schoolYearTerm_manage.php:31 Admin/schoolYearTerm_manage_add.php:31
+#: Admin/schoolYearTerm_manage_delete.php:31
+#: Admin/schoolYearTerm_manage_edit.php:30 Admin/smsSettings.php:31
+#: Admin/space_manage.php:31 Admin/space_manage_add.php:31
+#: Admin/space_manage_delete.php:31 Admin/space_manage_edit.php:31
+#: Admin/studentsSettings.php:31
+#: Admin/studentsSettings_noteCategory_add.php:31
+#: Admin/studentsSettings_noteCategory_delete.php:31
+#: Admin/studentsSettings_noteCategory_edit.php:31
+#: Admin/yearGroup_manage.php:31 Admin/yearGroup_manage_add.php:31
+#: Admin/yearGroup_manage_delete.php:31 Admin/yearGroup_manage_edit.php:31
+#: modules/Staff/staff_view.php:39 modules/Staff/staff_view_details.php:74
+#: modules/Staff/staff_view_details.php:160
+#: modules/Students/report_emergencySMS_byTransport.php:34
+#: modules/Students/report_emergencySMS_byYearGroup.php:34
+#: modules/Students/report_familyAddress_byStudent.php:36
+#: modules/Students/report_lettersHome_byRollGroup.php:34
+#: modules/Students/report_privacy_student.php:34
+#: modules/Students/report_rollGroupSummary.php:34
+#: modules/Students/report_student_dataUpdaterHistory.php:34
+#: modules/Students/report_student_emergencySummary.php:36
+#: modules/Students/report_student_medicalSummary.php:36
+#: modules/Students/report_students_ageGenderSummary.php:34
+#: modules/Students/report_students_byRollGroup.php:34
+#: modules/Students/report_students_IDCards.php:34
+#: modules/Students/report_students_left.php:34
+#: modules/Students/report_students_new.php:34
+#: modules/Students/report_transport_student.php:34
+#: modules/Students/student_view.php:39 modules/Students/student_view.php:138
+#: modules/Students/student_view_details.php:89
+#: modules/Students/student_view_details.php:283
+#: modules/Students/student_view_details_notes_add.php:56
+#: modules/Students/student_view_details_notes_delete.php:56
+#: modules/Students/student_view_details_notes_edit.php:56 modules/System
+#: Admin/i18n_manage.php:31 Admin/module_manage.php:31
+#: Admin/module_manage_edit.php:31 Admin/module_manage_install.php:31
+#: Admin/module_manage_uninstall.php:31 Admin/module_manage_update.php:31
+#: Admin/systemSettings.php:46 Admin/theme_manage.php:31
+#: Admin/theme_manage_install.php:31 Admin/theme_manage_uninstall.php:31
+#: Admin/update.php:31 modules/Timetable/report_viewAvailableSpaces.php:33
+#: modules/Timetable/tt.php:41 modules/Timetable/tt_space.php:41
+#: modules/Timetable/tt_space_view.php:61 modules/Timetable/tt_view.php:82
+#: modules/Timetable Admin/course_manage.php:31 Admin/course_manage_add.php:34
+#: Admin/course_manage_class_add.php:31
+#: Admin/course_manage_class_delete.php:31
+#: Admin/course_manage_class_edit.php:31 Admin/course_manage_delete.php:31
+#: Admin/course_manage_edit.php:34 Admin/courseEnrolment_manage.php:31
+#: Admin/courseEnrolment_manage_byPerson.php:31
+#: Admin/courseEnrolment_manage_byPerson_edit.php:76
+#: Admin/courseEnrolment_manage_byPerson_edit_delete.php:62
+#: Admin/courseEnrolment_manage_byPerson_edit_edit.php:63
+#: Admin/courseEnrolment_manage_class_edit.php:58
+#: Admin/courseEnrolment_manage_class_edit_delete.php:59
+#: Admin/courseEnrolment_manage_class_edit_edit.php:60
+#: Admin/report_classEnrolment_byRollGroup.php:34 Admin/tt.php:31
+#: Admin/tt_add.php:34 Admin/tt_delete.php:31 Admin/tt_edit.php:34
+#: Admin/tt_edit_day_add.php:57 Admin/tt_edit_day_delete.php:59
+#: Admin/tt_edit_day_edit.php:58 Admin/tt_edit_day_edit_class.php:61
+#: Admin/tt_edit_day_edit_class_add.php:61
+#: Admin/tt_edit_day_edit_class_delete.php:63
+#: Admin/tt_edit_day_edit_class_edit.php:84
+#: Admin/tt_edit_day_edit_class_exception.php:82
+#: Admin/tt_edit_day_edit_class_exception_add.php:84
+#: Admin/tt_edit_day_edit_class_exception_delete.php:84 Admin/tt_import.php:31
+#: Admin/ttColumn.php:31 Admin/ttColumn_add.php:34
+#: Admin/ttColumn_delete.php:31 Admin/ttColumn_edit.php:34
+#: Admin/ttColumn_edit_row_add.php:56 Admin/ttColumn_edit_row_delete.php:58
+#: Admin/ttColumn_edit_row_edit.php:58 Admin/ttDates.php:31
+#: Admin/ttDates_edit.php:33 Admin/ttDates_edit_add.php:64
+#: Admin/ttDates_edit_delete.php:60 modules/User
+#: Admin/applicationForm_manage.php:31
+#: Admin/applicationForm_manage_accept.php:35
+#: Admin/applicationForm_manage_delete.php:34
+#: Admin/applicationForm_manage_edit.php:35
+#: Admin/applicationForm_manage_reject.php:35
+#: Admin/applicationFormSettings.php:31 Admin/data_family.php:31
+#: Admin/data_family_delete.php:34 Admin/data_family_edit.php:35
+#: Admin/data_finance.php:31 Admin/data_finance_delete.php:34
+#: Admin/data_finance_edit.php:35 Admin/data_medical.php:31
+#: Admin/data_medical_delete.php:34 Admin/data_medical_edit.php:35
+#: Admin/data_personal.php:31 Admin/data_personal_delete.php:34
+#: Admin/data_personal_edit.php:35 Admin/dataUpdaterSettings.php:31
+#: Admin/district_manage.php:31 Admin/district_manage_add.php:31
+#: Admin/district_manage_delete.php:31 Admin/district_manage_edit.php:31
+#: Admin/family_manage.php:32 Admin/family_manage_add.php:31
+#: Admin/family_manage_delete.php:31 Admin/family_manage_edit.php:31
+#: Admin/family_manage_edit_deleteAdult.php:31
+#: Admin/family_manage_edit_deleteChild.php:31
+#: Admin/family_manage_edit_editAdult.php:31
+#: Admin/family_manage_edit_editChild.php:31 Admin/import_families.php:31
+#: Admin/import_studentEnrolment.php:31 Admin/import_users.php:31
+#: Admin/medicalForm_manage.php:31 Admin/medicalForm_manage_add.php:31
+#: Admin/medicalForm_manage_condition_add.php:31
+#: Admin/medicalForm_manage_condition_delete.php:31
+#: Admin/medicalForm_manage_condition_edit.php:31
+#: Admin/medicalForm_manage_delete.php:31 Admin/medicalForm_manage_edit.php:31
+#: Admin/permission_manage.php:31 Admin/role_manage.php:31
+#: Admin/role_manage_add.php:31 Admin/role_manage_delete.php:31
+#: Admin/role_manage_edit.php:31 Admin/rollover.php:33
+#: Admin/staff_manage.php:31 Admin/staff_manage_add.php:31
+#: Admin/staff_manage_delete.php:31 Admin/staff_manage_edit.php:31
+#: Admin/studentEnrolment_manage.php:31
+#: Admin/studentEnrolment_manage_add.php:31
+#: Admin/studentEnrolment_manage_delete.php:31
+#: Admin/studentEnrolment_manage_edit.php:31 Admin/user_manage.php:31
+#: Admin/user_manage_add.php:31 Admin/user_manage_delete.php:31
+#: Admin/user_manage_edit.php:31 Admin/user_manage_password.php:31
+#: Admin/userSettings.php:31 index.php:539 index.php:573 index.php:539
+#: index.php:573 modules/Activities/activities_manage.php:34
+#: modules/Activities/activities_manage_add.php:33
+#: modules/Activities/activities_manage_delete.php:34
+#: modules/Activities/activities_manage_edit.php:35
+#: modules/Activities/activities_manage_enrolment.php:34
+#: modules/Activities/activities_manage_enrolment_add.php:34
+#: modules/Activities/activities_manage_enrolment_delete.php:31
+#: modules/Activities/activities_manage_enrolment_edit.php:34
+#: modules/Activities/activities_my.php:33
+#: modules/Activities/activities_view.php:41
+#: modules/Activities/activities_view_register.php:41
+#: modules/Activities/report_activityChoices_byStudent.php:34
+#: modules/Activities/report_activityEnrollmentSummary.php:34
+#: modules/Activities/report_activitySpread_rollGroup.php:34
+#: modules/Activities/report_activityType_rollGroup.php:34
+#: modules/Activities/report_attendance.php:34
+#: modules/Activities/report_participants.php:34
+#: modules/Activities/report_payment.php:34
+#: modules/Application Form/applicationForm.php:57
+#: modules/Application Form/applicationForm.php:60
+#: modules/Attendance/attendance_future_byPerson.php:34
+#: modules/Attendance/attendance_take_byPerson.php:34
+#: modules/Attendance/attendance_take_byRollGroup.php:34
+#: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:34
+#: modules/Attendance/report_studentHistory.php:34
+#: modules/Attendance/report_studentsNotOnsite_byDate.php:34
+#: modules/Attendance/report_studentsNotPresent_byDate.php:34
+#: modules/Behaviour/behaviour_manage.php:41
+#: modules/Behaviour/behaviour_manage_add.php:41
+#: modules/Behaviour/behaviour_manage_delete.php:42
+#: modules/Behaviour/behaviour_manage_edit.php:42
+#: modules/Behaviour/behaviour_pattern.php:33
+#: modules/Behaviour/behaviour_view.php:30
+#: modules/Behaviour/behaviour_view_details.php:38
+#: modules/Crowd Assessment/crowdAssess.php:33
+#: modules/Crowd Assessment/crowdAssess_view.php:33
+#: modules/Crowd Assessment/crowdAssess_view_discuss.php:33
+#: modules/Crowd Assessment/crowdAssess_view_discuss_post.php:33
+#: modules/Data Updater/data_family.php:42
+#: modules/Data Updater/data_finance.php:42
+#: modules/Data Updater/data_medical.php:42
+#: modules/Data Updater/data_personal.php:42
+#: modules/Departments/department.php:61
+#: modules/Departments/department_course.php:66
+#: modules/Departments/department_course_class.php:104
+#: modules/Departments/department_course_class.php:107
+#: modules/Departments/department_course_edit.php:68
+#: modules/Departments/department_edit.php:59
+#: modules/Departments/departments.php:33
+#: modules/External Assessment/externalAssessment.php:33
+#: modules/External Assessment/externalAssessment_details.php:48
+#: modules/External Assessment/externalAssessment_manage_details_add.php:31
+#: modules/External Assessment/externalAssessment_manage_details_delete.php:31
+#: modules/External Assessment/externalAssessment_manage_details_edit.php:31
+#: modules/Finance/billingSchedule_manage.php:31
+#: modules/Finance/billingSchedule_manage_add.php:31
+#: modules/Finance/billingSchedule_manage_edit.php:31
+#: modules/Finance/feeCategories_manage.php:31
+#: modules/Finance/feeCategories_manage_add.php:34
+#: modules/Finance/feeCategories_manage_delete.php:34
+#: modules/Finance/feeCategories_manage_edit.php:35
+#: modules/Finance/fees_manage.php:31 modules/Finance/fees_manage_add.php:31
+#: modules/Finance/fees_manage_edit.php:31
+#: modules/Finance/invoicees_manage.php:31
+#: modules/Finance/invoicees_manage_edit.php:35
+#: modules/Finance/invoiceReceiptSettings.php:31
+#: modules/Finance/invoices_manage.php:31
+#: modules/Finance/invoices_manage_add.php:34
+#: modules/Finance/invoices_manage_delete.php:42
+#: modules/Finance/invoices_manage_edit.php:42
+#: modules/Finance/invoices_manage_issue.php:42
+#: modules/Finance/invoices_manage_print.php:42
+#: modules/Individual Needs/in_edit.php:44
+#: modules/Individual Needs/in_edit.php:47
+#: modules/Individual Needs/in_edit.php:50
+#: modules/Individual Needs/in_summary.php:33
+#: modules/Individual Needs/in_view.php:38
+#: modules/Library/library_browse.php:34
+#: modules/Library/library_lending.php:31
+#: modules/Library/library_lending_item.php:34
+#: modules/Library/library_lending_item_edit.php:58
+#: modules/Library/library_lending_item_renew.php:58
+#: modules/Library/library_lending_item_return.php:58
+#: modules/Library/library_lending_item_signout.php:57
+#: modules/Library/library_manage_catalog.php:31
+#: modules/Library/library_manage_catalog_add.php:34
+#: modules/Library/library_manage_catalog_delete.php:34
+#: modules/Library/library_manage_catalog_duplicate.php:35
+#: modules/Library/library_manage_catalog_edit.php:35
+#: modules/Library/report_catalogSummary.php:36
+#: modules/Library/report_studentBorrowingRecord.php:36
+#: modules/Library/report_viewOverdueItems.php:34
+#: modules/Markbook/markbook_edit.php:90
+#: modules/Markbook/markbook_edit_add.php:69
+#: modules/Markbook/markbook_edit_addMulti.php:66
+#: modules/Markbook/markbook_edit_data.php:91
+#: modules/Markbook/markbook_edit_delete.php:91
+#: modules/Markbook/markbook_edit_edit.php:91
+#: modules/Markbook/markbook_edit_targets.php:73
+#: modules/Markbook/markbook_view.php:67 modules/Markbook/markbook_view.php:86
+#: modules/Markbook/markbook_view.php:97
+#: modules/Markbook/markbook_view.php:675
+#: modules/Markbook/markbook_view.php:1073
+#: modules/Messenger/messageWall_view.php:47
+#: modules/Messenger/messenger_manage.php:39
+#: modules/Messenger/messenger_manage_delete.php:39
+#: modules/Messenger/messenger_manage_edit.php:38
+#: modules/Messenger/messenger_post.php:40 modules/Planner/outcomes.php:39
+#: modules/Planner/outcomes_add.php:48 modules/Planner/outcomes_delete.php:48
+#: modules/Planner/outcomes_edit.php:49 modules/Planner/planner.php:90
+#: modules/Planner/planner.php:558 modules/Planner/planner.php:826
+#: modules/Planner/planner_add.php:128 modules/Planner/planner_bump.php:114
+#: modules/Planner/planner_deadlines.php:94
+#: modules/Planner/planner_deadlines.php:465
+#: modules/Planner/planner_delete.php:140
+#: modules/Planner/planner_duplicate.php:138
+#: modules/Planner/planner_edit.php:200
+#: modules/Planner/planner_view_full.php:236
+#: modules/Planner/planner_view_full_post.php:161
+#: modules/Planner/planner_view_full_submit_edit.php:120
+#: modules/Planner/report_goldStars_staff.php:34
+#: modules/Planner/report_workSummary_byRollGroup.php:34
+#: modules/Planner/units.php:41 modules/Planner/units_add.php:42
+#: modules/Planner/units_delete.php:42 modules/Planner/units_dump.php:40
+#: modules/Planner/units_duplicate.php:41 modules/Planner/units_edit.php:53
+#: modules/Planner/units_edit_copyBack.php:42
+#: modules/Planner/units_edit_copyForward.php:42
+#: modules/Planner/units_edit_deploy.php:53
+#: modules/Planner/units_edit_working.php:53
+#: modules/Planner/units_edit_working_add.php:53
+#: modules/Planner/units_edit_working_copyback.php:42
+#: modules/Resources/resources_manage.php:41
+#: modules/Resources/resources_manage_add.php:41
+#: modules/Resources/resources_manage_edit.php:43
+#: modules/Resources/resources_view.php:33
+#: modules/Roll Groups/rollGroups.php:31
+#: modules/Roll Groups/rollGroups_details.php:59
+#: modules/Rubrics/rubrics.php:39 modules/Rubrics/rubrics_add.php:48
+#: modules/Rubrics/rubrics_delete.php:48 modules/Rubrics/rubrics_edit.php:49
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:49
+#: modules/Rubrics/rubrics_view.php:31
+#: modules/School Admin/activitySettings.php:31
+#: modules/School Admin/alertLevelSettings.php:31
+#: modules/School Admin/behaviourSettings.php:31
+#: modules/School Admin/daysOfWeek_manage.php:31
+#: modules/School Admin/department_manage.php:33
+#: modules/School Admin/department_manage_add.php:33
+#: modules/School Admin/department_manage_delete.php:34
+#: modules/School Admin/department_manage_edit.php:35
+#: modules/School Admin/externalAssessments_manage.php:31
+#: modules/School Admin/externalAssessments_manage_add.php:34
+#: modules/School Admin/externalAssessments_manage_delete.php:31
+#: modules/School Admin/externalAssessments_manage_edit.php:34
+#: modules/School Admin/externalAssessments_manage_edit_field_add.php:57
+#: modules/School Admin/externalAssessments_manage_edit_field_delete.php:58
+#: modules/School Admin/externalAssessments_manage_edit_field_edit.php:58
+#: modules/School Admin/externalAssessmentSettings.php:31
+#: modules/School Admin/fileExtensions_manage.php:31
+#: modules/School Admin/fileExtensions_manage_add.php:31
+#: modules/School Admin/fileExtensions_manage_delete.php:31
+#: modules/School Admin/fileExtensions_manage_edit.php:31
+#: modules/School Admin/gradeScales_manage.php:31
+#: modules/School Admin/gradeScales_manage_add.php:34
+#: modules/School Admin/gradeScales_manage_delete.php:31
+#: modules/School Admin/gradeScales_manage_edit.php:34
+#: modules/School Admin/gradeScales_manage_edit_grade_add.php:57
+#: modules/School Admin/gradeScales_manage_edit_grade_delete.php:58
+#: modules/School Admin/gradeScales_manage_edit_grade_edit.php:58
+#: modules/School Admin/house_manage.php:31
+#: modules/School Admin/house_manage_add.php:31
+#: modules/School Admin/house_manage_delete.php:31
+#: modules/School Admin/house_manage_edit.php:31
+#: modules/School Admin/inDescriptors_manage.php:31
+#: modules/School Admin/inDescriptors_manage_add.php:31
+#: modules/School Admin/inDescriptors_manage_delete.php:31
+#: modules/School Admin/inDescriptors_manage_edit.php:31
+#: modules/School Admin/librarySettings.php:31
+#: modules/School Admin/markbookSettings.php:31
+#: modules/School Admin/plannerSettings.php:31
+#: modules/School Admin/resourceSettings.php:31
+#: modules/School Admin/rollGroup_manage.php:31
+#: modules/School Admin/rollGroup_manage_add.php:31
+#: modules/School Admin/rollGroup_manage_delete.php:31
+#: modules/School Admin/rollGroup_manage_edit.php:31
+#: modules/School Admin/schoolYear_manage.php:31
+#: modules/School Admin/schoolYear_manage_add.php:31
+#: modules/School Admin/schoolYear_manage_delete.php:31
+#: modules/School Admin/schoolYear_manage_edit.php:31
+#: modules/School Admin/schoolYearSpecialDay_manage.php:31
+#: modules/School Admin/schoolYearSpecialDay_manage_add.php:31
+#: modules/School Admin/schoolYearSpecialDay_manage_delete.php:31
+#: modules/School Admin/schoolYearSpecialDay_manage_edit.php:31
+#: modules/School Admin/schoolYearTerm_manage.php:31
+#: modules/School Admin/schoolYearTerm_manage_add.php:31
+#: modules/School Admin/schoolYearTerm_manage_delete.php:31
+#: modules/School Admin/schoolYearTerm_manage_edit.php:30
+#: modules/School Admin/smsSettings.php:31
+#: modules/School Admin/space_manage.php:31
+#: modules/School Admin/space_manage_add.php:31
+#: modules/School Admin/space_manage_delete.php:31
+#: modules/School Admin/space_manage_edit.php:31
+#: modules/School Admin/studentsSettings.php:31
+#: modules/School Admin/studentsSettings_noteCategory_add.php:31
+#: modules/School Admin/studentsSettings_noteCategory_delete.php:31
+#: modules/School Admin/studentsSettings_noteCategory_edit.php:31
+#: modules/School Admin/yearGroup_manage.php:31
+#: modules/School Admin/yearGroup_manage_add.php:31
+#: modules/School Admin/yearGroup_manage_delete.php:31
+#: modules/School Admin/yearGroup_manage_edit.php:31
+#: modules/Staff/staff_view.php:39 modules/Staff/staff_view_details.php:74
+#: modules/Staff/staff_view_details.php:160
+#: modules/Students/report_emergencySMS_byTransport.php:34
+#: modules/Students/report_emergencySMS_byYearGroup.php:34
+#: modules/Students/report_familyAddress_byStudent.php:36
+#: modules/Students/report_lettersHome_byRollGroup.php:34
+#: modules/Students/report_privacy_student.php:34
+#: modules/Students/report_rollGroupSummary.php:34
+#: modules/Students/report_student_dataUpdaterHistory.php:34
+#: modules/Students/report_student_emergencySummary.php:36
+#: modules/Students/report_student_medicalSummary.php:36
+#: modules/Students/report_students_ageGenderSummary.php:34
+#: modules/Students/report_students_byRollGroup.php:34
+#: modules/Students/report_students_IDCards.php:34
+#: modules/Students/report_students_left.php:34
+#: modules/Students/report_students_new.php:34
+#: modules/Students/report_transport_student.php:34
+#: modules/Students/student_view.php:39 modules/Students/student_view.php:138
+#: modules/Students/student_view_details.php:89
+#: modules/Students/student_view_details.php:283
+#: modules/Students/student_view_details_notes_add.php:56
+#: modules/Students/student_view_details_notes_delete.php:56
+#: modules/Students/student_view_details_notes_edit.php:56
+#: modules/System Admin/i18n_manage.php:31
+#: modules/System Admin/module_manage.php:31
+#: modules/System Admin/module_manage_edit.php:31
+#: modules/System Admin/module_manage_install.php:31
+#: modules/System Admin/module_manage_uninstall.php:31
+#: modules/System Admin/module_manage_update.php:31
+#: modules/System Admin/systemSettings.php:46
+#: modules/System Admin/theme_manage.php:31
+#: modules/System Admin/theme_manage_install.php:31
+#: modules/System Admin/theme_manage_uninstall.php:31
+#: modules/System Admin/update.php:31
+#: modules/Timetable/report_viewAvailableSpaces.php:33
+#: modules/Timetable/tt.php:41 modules/Timetable/tt_space.php:41
+#: modules/Timetable/tt_space_view.php:61 modules/Timetable/tt_view.php:82
+#: modules/Timetable Admin/course_manage.php:31
+#: modules/Timetable Admin/course_manage_add.php:34
+#: modules/Timetable Admin/course_manage_class_add.php:31
+#: modules/Timetable Admin/course_manage_class_delete.php:31
+#: modules/Timetable Admin/course_manage_class_edit.php:31
+#: modules/Timetable Admin/course_manage_delete.php:31
+#: modules/Timetable Admin/course_manage_edit.php:34
+#: modules/Timetable Admin/courseEnrolment_manage.php:31
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson.php:31
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:76
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_delete.php:62
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:63
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:58
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit_delete.php:59
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:60
+#: modules/Timetable Admin/report_classEnrolment_byRollGroup.php:34
+#: modules/Timetable Admin/tt.php:31 modules/Timetable Admin/tt_add.php:34
+#: modules/Timetable Admin/tt_delete.php:31
+#: modules/Timetable Admin/tt_edit.php:34
+#: modules/Timetable Admin/tt_edit_day_add.php:57
+#: modules/Timetable Admin/tt_edit_day_delete.php:59
+#: modules/Timetable Admin/tt_edit_day_edit.php:58
+#: modules/Timetable Admin/tt_edit_day_edit_class.php:61
+#: modules/Timetable Admin/tt_edit_day_edit_class_add.php:61
+#: modules/Timetable Admin/tt_edit_day_edit_class_delete.php:63
+#: modules/Timetable Admin/tt_edit_day_edit_class_edit.php:84
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception.php:82
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php:84
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception_delete.php:84
+#: modules/Timetable Admin/tt_import.php:31
+#: modules/Timetable Admin/ttColumn.php:31
+#: modules/Timetable Admin/ttColumn_add.php:34
+#: modules/Timetable Admin/ttColumn_delete.php:31
+#: modules/Timetable Admin/ttColumn_edit.php:34
+#: modules/Timetable Admin/ttColumn_edit_row_add.php:56
+#: modules/Timetable Admin/ttColumn_edit_row_delete.php:58
+#: modules/Timetable Admin/ttColumn_edit_row_edit.php:58
+#: modules/Timetable Admin/ttDates.php:31
+#: modules/Timetable Admin/ttDates_edit.php:33
+#: modules/Timetable Admin/ttDates_edit_add.php:64
+#: modules/Timetable Admin/ttDates_edit_delete.php:60
+#: modules/User Admin/applicationForm_manage.php:31
+#: modules/User Admin/applicationForm_manage_accept.php:35
+#: modules/User Admin/applicationForm_manage_delete.php:34
+#: modules/User Admin/applicationForm_manage_edit.php:35
+#: modules/User Admin/applicationForm_manage_reject.php:35
+#: modules/User Admin/applicationFormSettings.php:31
+#: modules/User Admin/data_family.php:31
+#: modules/User Admin/data_family_delete.php:34
+#: modules/User Admin/data_family_edit.php:35
+#: modules/User Admin/data_finance.php:31
+#: modules/User Admin/data_finance_delete.php:34
+#: modules/User Admin/data_finance_edit.php:35
+#: modules/User Admin/data_medical.php:31
+#: modules/User Admin/data_medical_delete.php:34
+#: modules/User Admin/data_medical_edit.php:35
+#: modules/User Admin/data_personal.php:31
+#: modules/User Admin/data_personal_delete.php:34
+#: modules/User Admin/data_personal_edit.php:35
+#: modules/User Admin/dataUpdaterSettings.php:31
+#: modules/User Admin/district_manage.php:31
+#: modules/User Admin/district_manage_add.php:31
+#: modules/User Admin/district_manage_delete.php:31
+#: modules/User Admin/district_manage_edit.php:31
+#: modules/User Admin/family_manage.php:32
+#: modules/User Admin/family_manage_add.php:31
+#: modules/User Admin/family_manage_delete.php:31
+#: modules/User Admin/family_manage_edit.php:31
+#: modules/User Admin/family_manage_edit_deleteAdult.php:31
+#: modules/User Admin/family_manage_edit_deleteChild.php:31
+#: modules/User Admin/family_manage_edit_editAdult.php:31
+#: modules/User Admin/family_manage_edit_editChild.php:31
+#: modules/User Admin/import_families.php:31
+#: modules/User Admin/import_studentEnrolment.php:31
+#: modules/User Admin/import_users.php:31
+#: modules/User Admin/medicalForm_manage.php:31
+#: modules/User Admin/medicalForm_manage_add.php:31
+#: modules/User Admin/medicalForm_manage_condition_add.php:31
+#: modules/User Admin/medicalForm_manage_condition_delete.php:31
+#: modules/User Admin/medicalForm_manage_condition_edit.php:31
+#: modules/User Admin/medicalForm_manage_delete.php:31
+#: modules/User Admin/medicalForm_manage_edit.php:31
+#: modules/User Admin/permission_manage.php:31
+#: modules/User Admin/role_manage.php:31
+#: modules/User Admin/role_manage_add.php:31
+#: modules/User Admin/role_manage_delete.php:31
+#: modules/User Admin/role_manage_edit.php:31
+#: modules/User Admin/rollover.php:33 modules/User Admin/staff_manage.php:31
+#: modules/User Admin/staff_manage_add.php:31
+#: modules/User Admin/staff_manage_delete.php:31
+#: modules/User Admin/staff_manage_edit.php:31
+#: modules/User Admin/studentEnrolment_manage.php:31
+#: modules/User Admin/studentEnrolment_manage_add.php:31
+#: modules/User Admin/studentEnrolment_manage_delete.php:31
+#: modules/User Admin/studentEnrolment_manage_edit.php:31
+#: modules/User Admin/user_manage.php:31
+#: modules/User Admin/user_manage_add.php:31
+#: modules/User Admin/user_manage_delete.php:31
+#: modules/User Admin/user_manage_edit.php:31
+#: modules/User Admin/user_manage_password.php:31
+#: modules/User Admin/userSettings.php:31 passwordReset.php:21
+#: preferences.php:21 stars.php:21
+msgid "Home"
+msgstr ""
+
+#: passwordReset.php:21 passwordReset.php:21
+msgid "Password Reset"
+msgstr ""
+
+#: passwordReset.php:25 passwordReset.php:25
+#, php-format
+msgid ""
+"Enter your %1$s username, or the email address you have listed in the "
+"system, and press submit: your password will be reset and emailed to you."
+msgstr ""
+
+#: passwordReset.php:64 preferences.php:196 preferences.php:318
+#: modules/Activities/activities_manage.php:79
+#: modules/Activities/activities_manage_add.php:612
+#: modules/Activities/activities_manage_edit.php:798
+#: modules/Activities/activities_manage_enrolment_add.php:245
+#: modules/Activities/activities_manage_enrolment_edit.php:149
+#: modules/Activities/activities_view.php:206
+#: modules/Activities/report_activityChoices_byStudent.php:97
+#: modules/Activities/report_activitySpread_rollGroup.php:99
+#: modules/Activities/report_activityType_rollGroup.php:99
+#: modules/Activities/report_attendance.php:93
+#: modules/Activities/report_participants.php:93 modules/Application
+#: Form/applicationForm.php:2098
+#: modules/Attendance/attendance_future_byPerson.php:224
+#: modules/Attendance/attendance_take_byPerson.php:344
+#: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:73
+#: modules/Attendance/report_studentHistory.php:91
+#: modules/Attendance/report_studentHistory.php:191
+#: modules/Attendance/report_studentsNotOnsite_byDate.php:73
+#: modules/Attendance/report_studentsNotPresent_byDate.php:73
+#: modules/Behaviour/behaviour_manage_add.php:411
+#: modules/Behaviour/behaviour_manage_edit.php:377
+#: modules/Behaviour/behaviour_view.php:62 modules/Crowd
+#: Assessment/crowdAssess_view_discuss_post.php:131 modules/Data
+#: Updater/data_family.php:155 Updater/data_family.php:359
+#: Updater/data_finance.php:165 Updater/data_finance.php:468
+#: Updater/data_medical.php:161 Updater/data_medical.php:657
+#: Updater/data_personal.php:179 Updater/data_personal.php:1645
+#: modules/Departments/department_course_edit.php:123
+#: modules/Departments/department_edit.php:478 modules/External
+#: Assessment/externalAssessment.php:65
+#: Assessment/externalAssessment_manage_details_add.php:630
+#: Assessment/externalAssessment_manage_details_edit.php:273
+#: modules/Finance/billingSchedule_manage.php:114
+#: modules/Finance/billingSchedule_manage_add.php:191
+#: modules/Finance/billingSchedule_manage_edit.php:208
+#: modules/Finance/feeCategories_manage_add.php:118
+#: modules/Finance/feeCategories_manage_edit.php:148
+#: modules/Finance/fees_manage.php:114 modules/Finance/fees_manage_add.php:216
+#: modules/Finance/fees_manage_edit.php:242
+#: modules/Finance/invoicees_manage.php:133
+#: modules/Finance/invoicees_manage_edit.php:299
+#: modules/Finance/invoiceReceiptSettings.php:282
+#: modules/Finance/invoices_manage_add.php:378
+#: modules/Finance/invoices_manage_edit.php:879
+#: modules/Finance/invoices_manage_issue.php:374 modules/Individual
+#: Needs/in_edit.php:257 Needs/in_view.php:73
+#: modules/Library/library_manage_catalog_add.php:495
+#: modules/Library/library_manage_catalog_duplicate.php:590
+#: modules/Library/library_manage_catalog_edit.php:633
+#: modules/Library/report_studentBorrowingRecord.php:79
+#: modules/Markbook/markbook_edit_add.php:559
+#: modules/Markbook/markbook_edit_addMulti.php:468
+#: modules/Markbook/markbook_edit_data.php:578
+#: modules/Markbook/markbook_edit_edit.php:616
+#: modules/Markbook/markbook_edit_targets.php:195
+#: modules/Markbook/markbook_view.php:1159
+#: modules/Messenger/messenger_manage_edit.php:1325
+#: modules/Messenger/messenger_post.php:1057
+#: modules/Planner/outcomes_add.php:274 modules/Planner/outcomes_edit.php:261
+#: modules/Planner/planner.php:187 modules/Planner/planner_add.php:1258
+#: modules/Planner/planner_deadlines.php:174
+#: modules/Planner/planner_deadlines.php:922
+#: modules/Planner/planner_duplicate.php:481
+#: modules/Planner/planner_edit.php:1440
+#: modules/Planner/planner_view_full.php:904
+#: modules/Planner/planner_view_full_post.php:224
+#: modules/Planner/planner_view_full_submit_edit.php:231
+#: modules/Planner/planner_view_full_submit_edit.php:451
+#: modules/Planner/report_workSummary_byRollGroup.php:82
+#: modules/Planner/units_duplicate.php:304
+#: modules/Planner/units_duplicate.php:506
+#: modules/Planner/units_edit_copyForward.php:268
+#: modules/Planner/units_edit_working_copyback.php:199
+#: modules/Resources/resources_manage.php:91
+#: modules/Resources/resources_manage_add.php:399
+#: modules/Resources/resources_manage_edit.php:422
+#: modules/Rubrics/rubrics_add.php:332 modules/Rubrics/rubrics_edit.php:368
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:384 modules/School
+#: Admin/activitySettings.php:289 Admin/alertLevelSettings.php:162
+#: Admin/behaviourSettings.php:161 Admin/daysOfWeek_manage.php:292
+#: Admin/department_manage_add.php:201 Admin/department_manage_edit.php:336
+#: Admin/externalAssessments_manage_add.php:125
+#: Admin/externalAssessments_manage_edit.php:165
+#: Admin/externalAssessments_manage_edit_field_add.php:205
+#: Admin/externalAssessments_manage_edit_field_edit.php:219
+#: Admin/externalAssessmentSettings.php:163
+#: Admin/fileExtensions_manage_add.php:112
+#: Admin/fileExtensions_manage_edit.php:141
+#: Admin/gradeScales_manage_add.php:137 Admin/gradeScales_manage_edit.php:205
+#: Admin/gradeScales_manage_edit_grade_add.php:145
+#: Admin/gradeScales_manage_edit_grade_edit.php:146
+#: Admin/house_manage_add.php:94 Admin/house_manage_edit.php:123
+#: Admin/inDescriptors_manage_add.php:119
+#: Admin/inDescriptors_manage_edit.php:157 Admin/librarySettings.php:133
+#: Admin/markbookSettings.php:236 Admin/plannerSettings.php:227
+#: Admin/resourceSettings.php:133 Admin/rollGroup_manage_add.php:253
+#: Admin/rollGroup_manage_edit.php:278 Admin/schoolYear_manage_add.php:145
+#: Admin/schoolYear_manage_edit.php:174
+#: Admin/schoolYearSpecialDay_manage_add.php:305
+#: Admin/schoolYearSpecialDay_manage_edit.php:322
+#: Admin/schoolYearTerm_manage_add.php:175
+#: Admin/schoolYearTerm_manage_edit.php:206 Admin/smsSettings.php:151
+#: Admin/space_manage_add.php:291 Admin/space_manage_edit.php:326
+#: Admin/studentsSettings.php:180
+#: Admin/studentsSettings_noteCategory_add.php:105
+#: Admin/studentsSettings_noteCategory_edit.php:144
+#: Admin/yearGroup_manage_add.php:108 Admin/yearGroup_manage_edit.php:137
+#: modules/Staff/staff_view.php:70
+#: modules/Students/report_emergencySMS_byTransport.php:133
+#: modules/Students/report_emergencySMS_byYearGroup.php:133
+#: modules/Students/report_familyAddress_byStudent.php:89
+#: modules/Students/report_student_dataUpdaterHistory.php:124
+#: modules/Students/report_student_emergencySummary.php:89
+#: modules/Students/report_student_medicalSummary.php:89
+#: modules/Students/report_students_byRollGroup.php:85
+#: modules/Students/report_students_IDCards.php:113
+#: modules/Students/report_students_left.php:107
+#: modules/Students/report_students_new.php:136
+#: modules/Students/student_view.php:175
+#: modules/Students/student_view_details_notes_add.php:158
+#: modules/Students/student_view_details_notes_edit.php:171 modules/System
+#: Admin/i18n_manage.php:130 Admin/module_manage_edit.php:148
+#: Admin/module_manage_install.php:96 Admin/module_manage_update.php:139
+#: Admin/systemSettings.php:1059 Admin/theme_manage.php:170
+#: Admin/theme_manage_install.php:84 Admin/update.php:108
+#: modules/Timetable/report_viewAvailableSpaces.php:142
+#: modules/Timetable/tt.php:96 modules/Timetable/tt_space.php:77
+#: modules/Timetable Admin/course_manage_add.php:191
+#: Admin/course_manage_class_add.php:163
+#: Admin/course_manage_class_edit.php:165 Admin/course_manage_edit.php:211
+#: Admin/courseEnrolment_manage_byPerson.php:135
+#: Admin/courseEnrolment_manage_byPerson_edit.php:223
+#: Admin/courseEnrolment_manage_byPerson_edit_edit.php:179
+#: Admin/courseEnrolment_manage_class_edit.php:198
+#: Admin/courseEnrolment_manage_class_edit_edit.php:170
+#: Admin/report_classEnrolment_byRollGroup.php:79 Admin/tt_add.php:173
+#: Admin/tt_edit.php:193 Admin/tt_edit_day_add.php:177
+#: Admin/tt_edit_day_edit.php:177 Admin/tt_edit_day_edit_class_add.php:221
+#: Admin/tt_edit_day_edit_class_edit.php:203
+#: Admin/tt_edit_day_edit_class_exception_add.php:140 Admin/tt_import.php:150
+#: Admin/ttColumn_add.php:101 Admin/ttColumn_edit.php:140
+#: Admin/ttColumn_edit_row_add.php:218 Admin/ttColumn_edit_row_edit.php:220
+#: Admin/ttDates_edit_add.php:172 modules/User
+#: Admin/applicationForm_manage.php:148
+#: Admin/applicationForm_manage_edit.php:2185
+#: Admin/applicationFormSettings.php:494 Admin/district_manage_add.php:81
+#: Admin/district_manage_edit.php:110 Admin/family_manage.php:77
+#: Admin/family_manage_add.php:192 Admin/family_manage_edit.php:269
+#: Admin/family_manage_edit.php:407 Admin/family_manage_edit.php:575
+#: Admin/family_manage_edit.php:849 Admin/family_manage_edit_editAdult.php:235
+#: Admin/family_manage_edit_editChild.php:131 Admin/import_families.php:129
+#: Admin/import_studentEnrolment.php:102 Admin/import_users.php:111
+#: Admin/medicalForm_manage.php:76 Admin/medicalForm_manage_add.php:166
+#: Admin/medicalForm_manage_condition_add.php:242
+#: Admin/medicalForm_manage_condition_edit.php:258
+#: Admin/medicalForm_manage_edit.php:195 Admin/role_manage_add.php:134
+#: Admin/role_manage_edit.php:163 Admin/staff_manage.php:70
+#: Admin/staff_manage_add.php:275 Admin/staff_manage_edit.php:286
+#: Admin/studentEnrolment_manage.php:123
+#: Admin/studentEnrolment_manage_add.php:207
+#: Admin/studentEnrolment_manage_edit.php:243 Admin/user_manage.php:76
+#: Admin/user_manage_add.php:1257 Admin/user_manage_edit.php:1595
+#: Admin/user_manage_password.php:185 Admin/userSettings.php:435
+#: modules/Attendance/report_studentHistory.php:208
+#: modules/Activities/activities_manage.php:79
+#: modules/Activities/activities_manage_add.php:612
+#: modules/Activities/activities_manage_edit.php:798
+#: modules/Activities/activities_manage_enrolment_add.php:245
+#: modules/Activities/activities_manage_enrolment_edit.php:149
+#: modules/Activities/activities_view.php:206
+#: modules/Activities/report_activityChoices_byStudent.php:97
+#: modules/Activities/report_activitySpread_rollGroup.php:99
+#: modules/Activities/report_activityType_rollGroup.php:99
+#: modules/Activities/report_attendance.php:93
+#: modules/Activities/report_participants.php:93
+#: modules/Application Form/applicationForm.php:2098
+#: modules/Attendance/attendance_future_byPerson.php:224
+#: modules/Attendance/attendance_take_byPerson.php:344
+#: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:73
+#: modules/Attendance/report_studentHistory.php:91
+#: modules/Attendance/report_studentHistory.php:208
+#: modules/Attendance/report_studentsNotOnsite_byDate.php:73
+#: modules/Attendance/report_studentsNotPresent_byDate.php:73
+#: modules/Behaviour/behaviour_manage_add.php:411
+#: modules/Behaviour/behaviour_manage_edit.php:377
+#: modules/Behaviour/behaviour_view.php:62
+#: modules/Crowd Assessment/crowdAssess_view_discuss_post.php:131
+#: modules/Data Updater/data_family.php:155
+#: modules/Data Updater/data_family.php:359
+#: modules/Data Updater/data_finance.php:165
+#: modules/Data Updater/data_finance.php:468
+#: modules/Data Updater/data_medical.php:161
+#: modules/Data Updater/data_medical.php:657
+#: modules/Data Updater/data_personal.php:179
+#: modules/Data Updater/data_personal.php:1645
+#: modules/Departments/department_course_edit.php:123
+#: modules/Departments/department_edit.php:478
+#: modules/External Assessment/externalAssessment.php:65
+#: modules/External Assessment/externalAssessment_manage_details_add.php:630
+#: modules/External Assessment/externalAssessment_manage_details_edit.php:273
+#: modules/Finance/billingSchedule_manage.php:114
+#: modules/Finance/billingSchedule_manage_add.php:191
+#: modules/Finance/billingSchedule_manage_edit.php:208
+#: modules/Finance/feeCategories_manage_add.php:118
+#: modules/Finance/feeCategories_manage_edit.php:148
+#: modules/Finance/fees_manage.php:114 modules/Finance/fees_manage_add.php:216
+#: modules/Finance/fees_manage_edit.php:242
+#: modules/Finance/invoicees_manage.php:133
+#: modules/Finance/invoicees_manage_edit.php:299
+#: modules/Finance/invoiceReceiptSettings.php:282
+#: modules/Finance/invoices_manage_add.php:378
+#: modules/Finance/invoices_manage_edit.php:879
+#: modules/Finance/invoices_manage_issue.php:374
+#: modules/Individual Needs/in_edit.php:257
+#: modules/Individual Needs/in_view.php:73
+#: modules/Library/library_manage_catalog_add.php:495
+#: modules/Library/library_manage_catalog_duplicate.php:590
+#: modules/Library/library_manage_catalog_edit.php:633
+#: modules/Library/report_studentBorrowingRecord.php:79
+#: modules/Markbook/markbook_edit_add.php:559
+#: modules/Markbook/markbook_edit_addMulti.php:468
+#: modules/Markbook/markbook_edit_data.php:578
+#: modules/Markbook/markbook_edit_edit.php:616
+#: modules/Markbook/markbook_edit_targets.php:195
+#: modules/Markbook/markbook_view.php:1159
+#: modules/Messenger/messenger_manage_edit.php:1325
+#: modules/Messenger/messenger_post.php:1057
+#: modules/Planner/outcomes_add.php:274 modules/Planner/outcomes_edit.php:261
+#: modules/Planner/planner.php:187 modules/Planner/planner_add.php:1258
+#: modules/Planner/planner_deadlines.php:174
+#: modules/Planner/planner_deadlines.php:922
+#: modules/Planner/planner_duplicate.php:481
+#: modules/Planner/planner_edit.php:1440
+#: modules/Planner/planner_view_full.php:904
+#: modules/Planner/planner_view_full_post.php:224
+#: modules/Planner/planner_view_full_submit_edit.php:231
+#: modules/Planner/planner_view_full_submit_edit.php:451
+#: modules/Planner/report_workSummary_byRollGroup.php:82
+#: modules/Planner/units_duplicate.php:304
+#: modules/Planner/units_duplicate.php:506
+#: modules/Planner/units_edit_copyForward.php:268
+#: modules/Planner/units_edit_working_copyback.php:199
+#: modules/Resources/resources_manage.php:91
+#: modules/Resources/resources_manage_add.php:399
+#: modules/Resources/resources_manage_edit.php:422
+#: modules/Rubrics/rubrics_add.php:332 modules/Rubrics/rubrics_edit.php:368
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:384
+#: modules/School Admin/activitySettings.php:289
+#: modules/School Admin/alertLevelSettings.php:162
+#: modules/School Admin/behaviourSettings.php:161
+#: modules/School Admin/daysOfWeek_manage.php:292
+#: modules/School Admin/department_manage_add.php:201
+#: modules/School Admin/department_manage_edit.php:336
+#: modules/School Admin/externalAssessments_manage_add.php:125
+#: modules/School Admin/externalAssessments_manage_edit.php:165
+#: modules/School Admin/externalAssessments_manage_edit_field_add.php:205
+#: modules/School Admin/externalAssessments_manage_edit_field_edit.php:219
+#: modules/School Admin/externalAssessmentSettings.php:163
+#: modules/School Admin/fileExtensions_manage_add.php:112
+#: modules/School Admin/fileExtensions_manage_edit.php:141
+#: modules/School Admin/gradeScales_manage_add.php:137
+#: modules/School Admin/gradeScales_manage_edit.php:205
+#: modules/School Admin/gradeScales_manage_edit_grade_add.php:145
+#: modules/School Admin/gradeScales_manage_edit_grade_edit.php:146
+#: modules/School Admin/house_manage_add.php:94
+#: modules/School Admin/house_manage_edit.php:123
+#: modules/School Admin/inDescriptors_manage_add.php:119
+#: modules/School Admin/inDescriptors_manage_edit.php:157
+#: modules/School Admin/librarySettings.php:133
+#: modules/School Admin/markbookSettings.php:236
+#: modules/School Admin/plannerSettings.php:227
+#: modules/School Admin/resourceSettings.php:133
+#: modules/School Admin/rollGroup_manage_add.php:253
+#: modules/School Admin/rollGroup_manage_edit.php:278
+#: modules/School Admin/schoolYear_manage_add.php:145
+#: modules/School Admin/schoolYear_manage_edit.php:174
+#: modules/School Admin/schoolYearSpecialDay_manage_add.php:305
+#: modules/School Admin/schoolYearSpecialDay_manage_edit.php:322
+#: modules/School Admin/schoolYearTerm_manage_add.php:175
+#: modules/School Admin/schoolYearTerm_manage_edit.php:206
+#: modules/School Admin/smsSettings.php:151
+#: modules/School Admin/space_manage_add.php:291
+#: modules/School Admin/space_manage_edit.php:326
+#: modules/School Admin/studentsSettings.php:180
+#: modules/School Admin/studentsSettings_noteCategory_add.php:105
+#: modules/School Admin/studentsSettings_noteCategory_edit.php:144
+#: modules/School Admin/yearGroup_manage_add.php:108
+#: modules/School Admin/yearGroup_manage_edit.php:137
+#: modules/Staff/staff_view.php:70
+#: modules/Students/report_emergencySMS_byTransport.php:133
+#: modules/Students/report_emergencySMS_byYearGroup.php:133
+#: modules/Students/report_familyAddress_byStudent.php:89
+#: modules/Students/report_student_dataUpdaterHistory.php:124
+#: modules/Students/report_student_emergencySummary.php:89
+#: modules/Students/report_student_medicalSummary.php:89
+#: modules/Students/report_students_byRollGroup.php:85
+#: modules/Students/report_students_IDCards.php:113
+#: modules/Students/report_students_left.php:107
+#: modules/Students/report_students_new.php:136
+#: modules/Students/student_view.php:175
+#: modules/Students/student_view_details_notes_add.php:158
+#: modules/Students/student_view_details_notes_edit.php:171
+#: modules/System Admin/i18n_manage.php:130
+#: modules/System Admin/module_manage_edit.php:148
+#: modules/System Admin/module_manage_install.php:96
+#: modules/System Admin/module_manage_update.php:139
+#: modules/System Admin/systemSettings.php:1059
+#: modules/System Admin/theme_manage.php:170
+#: modules/System Admin/theme_manage_install.php:84
+#: modules/System Admin/update.php:108
+#: modules/Timetable/report_viewAvailableSpaces.php:142
+#: modules/Timetable/tt.php:96 modules/Timetable/tt_space.php:77
+#: modules/Timetable Admin/course_manage_add.php:191
+#: modules/Timetable Admin/course_manage_class_add.php:163
+#: modules/Timetable Admin/course_manage_class_edit.php:165
+#: modules/Timetable Admin/course_manage_edit.php:211
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson.php:135
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:223
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:179
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:198
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:170
+#: modules/Timetable Admin/report_classEnrolment_byRollGroup.php:79
+#: modules/Timetable Admin/tt_add.php:173
+#: modules/Timetable Admin/tt_edit.php:193
+#: modules/Timetable Admin/tt_edit_day_add.php:177
+#: modules/Timetable Admin/tt_edit_day_edit.php:177
+#: modules/Timetable Admin/tt_edit_day_edit_class_add.php:221
+#: modules/Timetable Admin/tt_edit_day_edit_class_edit.php:203
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php:140
+#: modules/Timetable Admin/tt_import.php:150
+#: modules/Timetable Admin/ttColumn_add.php:101
+#: modules/Timetable Admin/ttColumn_edit.php:140
+#: modules/Timetable Admin/ttColumn_edit_row_add.php:218
+#: modules/Timetable Admin/ttColumn_edit_row_edit.php:220
+#: modules/Timetable Admin/ttDates_edit_add.php:172
+#: modules/User Admin/applicationForm_manage.php:148
+#: modules/User Admin/applicationForm_manage_edit.php:2185
+#: modules/User Admin/applicationFormSettings.php:494
+#: modules/User Admin/district_manage_add.php:81
+#: modules/User Admin/district_manage_edit.php:110
+#: modules/User Admin/family_manage.php:77
+#: modules/User Admin/family_manage_add.php:192
+#: modules/User Admin/family_manage_edit.php:269
+#: modules/User Admin/family_manage_edit.php:407
+#: modules/User Admin/family_manage_edit.php:575
+#: modules/User Admin/family_manage_edit.php:849
+#: modules/User Admin/family_manage_edit_editAdult.php:235
+#: modules/User Admin/family_manage_edit_editChild.php:131
+#: modules/User Admin/import_families.php:129
+#: modules/User Admin/import_studentEnrolment.php:102
+#: modules/User Admin/import_users.php:111
+#: modules/User Admin/medicalForm_manage.php:76
+#: modules/User Admin/medicalForm_manage_add.php:166
+#: modules/User Admin/medicalForm_manage_condition_add.php:242
+#: modules/User Admin/medicalForm_manage_condition_edit.php:258
+#: modules/User Admin/medicalForm_manage_edit.php:195
+#: modules/User Admin/role_manage_add.php:134
+#: modules/User Admin/role_manage_edit.php:163
+#: modules/User Admin/staff_manage.php:70
+#: modules/User Admin/staff_manage_add.php:275
+#: modules/User Admin/staff_manage_edit.php:286
+#: modules/User Admin/studentEnrolment_manage.php:123
+#: modules/User Admin/studentEnrolment_manage_add.php:207
+#: modules/User Admin/studentEnrolment_manage_edit.php:243
+#: modules/User Admin/user_manage.php:76
+#: modules/User Admin/user_manage_add.php:1257
+#: modules/User Admin/user_manage_edit.php:1595
+#: modules/User Admin/user_manage_password.php:185
+#: modules/User Admin/userSettings.php:435 passwordReset.php:64
+#: preferences.php:196 preferences.php:318
+msgid "Submit"
+msgstr ""
+
+#: preferences.php:111 preferences.php:111
+msgid "Reset Password"
+msgstr ""
+
+#: preferences.php:129 preferences.php:129
+msgid "Current Password"
+msgstr ""
+
+#: preferences.php:142 preferences.php:142
+msgid "New Password"
+msgstr ""
+
+#: preferences.php:173 preferences.php:173
+msgid "Confirm New Password"
+msgstr ""
+
+#: preferences.php:187 preferences.php:314
+#: modules/Activities/activities_manage_add.php:607
+#: modules/Activities/activities_manage_edit.php:794
+#: modules/Activities/activities_manage_enrolment_add.php:241
+#: modules/Activities/activities_manage_enrolment_edit.php:144
+#: modules/Activities/activities_view_register.php:380 modules/Application
+#: Form/applicationForm.php:2094
+#: modules/Attendance/attendance_future_byPerson.php:220
+#: modules/Attendance/attendance_take_byPerson.php:339
+#: modules/Behaviour/behaviour_manage_add.php:266
+#: modules/Behaviour/behaviour_manage_add.php:401
+#: modules/Behaviour/behaviour_manage_edit.php:373 modules/Data
+#: Updater/data_family.php:347 Updater/data_finance.php:456
+#: Updater/data_medical.php:645 Updater/data_personal.php:1633
+#: modules/External Assessment/externalAssessment_manage_details_add.php:214
+#: Assessment/externalAssessment_manage_details_add.php:623
+#: Assessment/externalAssessment_manage_details_edit.php:266
+#: modules/Finance/billingSchedule_manage_add.php:186
+#: modules/Finance/billingSchedule_manage_edit.php:203
+#: modules/Finance/feeCategories_manage_add.php:114
+#: modules/Finance/feeCategories_manage_edit.php:144
+#: modules/Finance/fees_manage_add.php:211
+#: modules/Finance/fees_manage_edit.php:237
+#: modules/Finance/invoicees_manage_edit.php:295
+#: modules/Finance/invoiceReceiptSettings.php:278
+#: modules/Finance/invoices_manage_add.php:373
+#: modules/Finance/invoices_manage_edit.php:874
+#: modules/Finance/invoices_manage_issue.php:369
+#: modules/Library/library_lending_item_edit.php:260
+#: modules/Library/library_lending_item_renew.php:174
+#: modules/Library/library_lending_item_return.php:194
+#: modules/Library/library_lending_item_signout.php:309
+#: modules/Library/library_manage_catalog_add.php:491
+#: modules/Library/library_manage_catalog_duplicate.php:172
+#: modules/Library/library_manage_catalog_duplicate.php:583
+#: modules/Library/library_manage_catalog_edit.php:628
+#: modules/Markbook/markbook_edit_add.php:556
+#: modules/Markbook/markbook_edit_addMulti.php:465
+#: modules/Markbook/markbook_edit_edit.php:613
+#: modules/Messenger/messenger_manage_edit.php:1322
+#: modules/Messenger/messenger_post.php:1054
+#: modules/Planner/outcomes_add.php:270 modules/Planner/outcomes_edit.php:257
+#: modules/Planner/planner_add.php:1255
+#: modules/Planner/planner_duplicate.php:251
+#: modules/Planner/planner_duplicate.php:473
+#: modules/Planner/planner_edit.php:1437 modules/Planner/units_add.php:556
+#: modules/Planner/units_duplicate.php:300
+#: modules/Planner/units_duplicate.php:501 modules/Planner/units_edit.php:772
+#: modules/Planner/units_edit_copyForward.php:260
+#: modules/Planner/units_edit_working_copyback.php:193
+#: modules/Resources/resources_manage_add.php:395
+#: modules/Resources/resources_manage_edit.php:418
+#: modules/Rubrics/rubrics_add.php:328 modules/Rubrics/rubrics_edit.php:364
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:380 modules/School
+#: Admin/activitySettings.php:285 Admin/alertLevelSettings.php:157
+#: Admin/behaviourSettings.php:157 Admin/daysOfWeek_manage.php:288
+#: Admin/department_manage_add.php:198 Admin/department_manage_edit.php:333
+#: Admin/externalAssessments_manage_add.php:121
+#: Admin/externalAssessments_manage_edit.php:160
+#: Admin/externalAssessments_manage_edit_field_add.php:200
+#: Admin/externalAssessments_manage_edit_field_edit.php:214
+#: Admin/fileExtensions_manage_add.php:108
+#: Admin/fileExtensions_manage_edit.php:137
+#: Admin/gradeScales_manage_add.php:133 Admin/gradeScales_manage_edit.php:200
+#: Admin/gradeScales_manage_edit_grade_add.php:140
+#: Admin/gradeScales_manage_edit_grade_edit.php:141
+#: Admin/house_manage_add.php:90 Admin/house_manage_edit.php:119
+#: Admin/inDescriptors_manage_add.php:115
+#: Admin/inDescriptors_manage_edit.php:153 Admin/librarySettings.php:129
+#: Admin/markbookSettings.php:232 Admin/plannerSettings.php:223
+#: Admin/resourceSettings.php:129 Admin/rollGroup_manage_add.php:248
+#: Admin/rollGroup_manage_edit.php:273 Admin/schoolYear_manage_add.php:141
+#: Admin/schoolYear_manage_edit.php:170
+#: Admin/schoolYearSpecialDay_manage_add.php:296
+#: Admin/schoolYearSpecialDay_manage_edit.php:317
+#: Admin/schoolYearTerm_manage_add.php:171
+#: Admin/schoolYearTerm_manage_edit.php:202 Admin/smsSettings.php:147
+#: Admin/space_manage_add.php:287 Admin/space_manage_edit.php:322
+#: Admin/studentsSettings.php:176
+#: Admin/studentsSettings_noteCategory_add.php:101
+#: Admin/studentsSettings_noteCategory_edit.php:140
+#: Admin/yearGroup_manage_add.php:104 Admin/yearGroup_manage_edit.php:133
+#: modules/Students/student_view_details_notes_add.php:154
+#: modules/Students/student_view_details_notes_edit.php:167 modules/System
+#: Admin/module_manage_edit.php:144 Admin/module_manage_install.php:93
+#: Admin/systemSettings.php:1055 Admin/theme_manage_install.php:81
+#: modules/Timetable Admin/course_manage_add.php:186
+#: Admin/course_manage_class_add.php:157
+#: Admin/course_manage_class_edit.php:159 Admin/course_manage_edit.php:206
+#: Admin/courseEnrolment_manage_byPerson_edit.php:219
+#: Admin/courseEnrolment_manage_byPerson_edit_edit.php:174
+#: Admin/courseEnrolment_manage_class_edit.php:194
+#: Admin/courseEnrolment_manage_class_edit_edit.php:165 Admin/tt_add.php:168
+#: Admin/tt_edit.php:187 Admin/tt_edit_day_add.php:171
+#: Admin/tt_edit_day_edit.php:170 Admin/tt_edit_day_edit_class_add.php:215
+#: Admin/tt_edit_day_edit_class_edit.php:199 Admin/tt_import.php:145
+#: Admin/ttColumn_add.php:96 Admin/ttColumn_edit.php:135
+#: Admin/ttColumn_edit_row_add.php:213 Admin/ttColumn_edit_row_edit.php:215
+#: Admin/ttDates_edit_add.php:167 modules/User
+#: Admin/applicationForm_manage_edit.php:2179
+#: Admin/applicationFormSettings.php:490 Admin/district_manage_add.php:77
+#: Admin/district_manage_edit.php:106 Admin/family_manage_add.php:188
+#: Admin/family_manage_edit.php:265 Admin/family_manage_edit.php:571
+#: Admin/family_manage_edit.php:845 Admin/family_manage_edit_editAdult.php:231
+#: Admin/family_manage_edit_editChild.php:127 Admin/import_families.php:124
+#: Admin/import_studentEnrolment.php:97 Admin/import_users.php:106
+#: Admin/medicalForm_manage_add.php:162
+#: Admin/medicalForm_manage_condition_add.php:237
+#: Admin/medicalForm_manage_condition_edit.php:253
+#: Admin/medicalForm_manage_edit.php:190 Admin/role_manage_add.php:130
+#: Admin/role_manage_edit.php:159 Admin/staff_manage_add.php:271
+#: Admin/staff_manage_edit.php:282 Admin/studentEnrolment_manage_add.php:202
+#: Admin/studentEnrolment_manage_edit.php:238 Admin/user_manage_add.php:1253
+#: Admin/user_manage_edit.php:1591 Admin/user_manage_password.php:181
+#: Admin/userSettings.php:431 modules/Resources/resources_add_ajax.php:392
+#: modules/Resources/resources_addQuick_ajax.php:208
+#: modules/Activities/activities_manage_add.php:607
+#: modules/Activities/activities_manage_edit.php:794
+#: modules/Activities/activities_manage_enrolment_add.php:241
+#: modules/Activities/activities_manage_enrolment_edit.php:144
+#: modules/Activities/activities_view_register.php:380
+#: modules/Application Form/applicationForm.php:2094
+#: modules/Attendance/attendance_future_byPerson.php:220
+#: modules/Attendance/attendance_take_byPerson.php:339
+#: modules/Behaviour/behaviour_manage_add.php:266
+#: modules/Behaviour/behaviour_manage_add.php:401
+#: modules/Behaviour/behaviour_manage_edit.php:373
+#: modules/Data Updater/data_family.php:347
+#: modules/Data Updater/data_finance.php:456
+#: modules/Data Updater/data_medical.php:645
+#: modules/Data Updater/data_personal.php:1633
+#: modules/External Assessment/externalAssessment_manage_details_add.php:214
+#: modules/External Assessment/externalAssessment_manage_details_add.php:623
+#: modules/External Assessment/externalAssessment_manage_details_edit.php:266
+#: modules/Finance/billingSchedule_manage_add.php:186
+#: modules/Finance/billingSchedule_manage_edit.php:203
+#: modules/Finance/feeCategories_manage_add.php:114
+#: modules/Finance/feeCategories_manage_edit.php:144
+#: modules/Finance/fees_manage_add.php:211
+#: modules/Finance/fees_manage_edit.php:237
+#: modules/Finance/invoicees_manage_edit.php:295
+#: modules/Finance/invoiceReceiptSettings.php:278
+#: modules/Finance/invoices_manage_add.php:373
+#: modules/Finance/invoices_manage_edit.php:874
+#: modules/Finance/invoices_manage_issue.php:369
+#: modules/Library/library_lending_item_edit.php:260
+#: modules/Library/library_lending_item_renew.php:174
+#: modules/Library/library_lending_item_return.php:194
+#: modules/Library/library_lending_item_signout.php:309
+#: modules/Library/library_manage_catalog_add.php:491
+#: modules/Library/library_manage_catalog_duplicate.php:172
+#: modules/Library/library_manage_catalog_duplicate.php:583
+#: modules/Library/library_manage_catalog_edit.php:628
+#: modules/Markbook/markbook_edit_add.php:556
+#: modules/Markbook/markbook_edit_addMulti.php:465
+#: modules/Markbook/markbook_edit_edit.php:613
+#: modules/Messenger/messenger_manage_edit.php:1322
+#: modules/Messenger/messenger_post.php:1054
+#: modules/Planner/outcomes_add.php:270 modules/Planner/outcomes_edit.php:257
+#: modules/Planner/planner_add.php:1255
+#: modules/Planner/planner_duplicate.php:251
+#: modules/Planner/planner_duplicate.php:473
+#: modules/Planner/planner_edit.php:1437 modules/Planner/units_add.php:556
+#: modules/Planner/units_duplicate.php:300
+#: modules/Planner/units_duplicate.php:501 modules/Planner/units_edit.php:772
+#: modules/Planner/units_edit_copyForward.php:260
+#: modules/Planner/units_edit_working_copyback.php:193
+#: modules/Resources/resources_add_ajax.php:392
+#: modules/Resources/resources_addQuick_ajax.php:208
+#: modules/Resources/resources_manage_add.php:395
+#: modules/Resources/resources_manage_edit.php:418
+#: modules/Rubrics/rubrics_add.php:328 modules/Rubrics/rubrics_edit.php:364
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:380
+#: modules/School Admin/activitySettings.php:285
+#: modules/School Admin/alertLevelSettings.php:157
+#: modules/School Admin/behaviourSettings.php:157
+#: modules/School Admin/daysOfWeek_manage.php:288
+#: modules/School Admin/department_manage_add.php:198
+#: modules/School Admin/department_manage_edit.php:333
+#: modules/School Admin/externalAssessments_manage_add.php:121
+#: modules/School Admin/externalAssessments_manage_edit.php:160
+#: modules/School Admin/externalAssessments_manage_edit_field_add.php:200
+#: modules/School Admin/externalAssessments_manage_edit_field_edit.php:214
+#: modules/School Admin/fileExtensions_manage_add.php:108
+#: modules/School Admin/fileExtensions_manage_edit.php:137
+#: modules/School Admin/gradeScales_manage_add.php:133
+#: modules/School Admin/gradeScales_manage_edit.php:200
+#: modules/School Admin/gradeScales_manage_edit_grade_add.php:140
+#: modules/School Admin/gradeScales_manage_edit_grade_edit.php:141
+#: modules/School Admin/house_manage_add.php:90
+#: modules/School Admin/house_manage_edit.php:119
+#: modules/School Admin/inDescriptors_manage_add.php:115
+#: modules/School Admin/inDescriptors_manage_edit.php:153
+#: modules/School Admin/librarySettings.php:129
+#: modules/School Admin/markbookSettings.php:232
+#: modules/School Admin/plannerSettings.php:223
+#: modules/School Admin/resourceSettings.php:129
+#: modules/School Admin/rollGroup_manage_add.php:248
+#: modules/School Admin/rollGroup_manage_edit.php:273
+#: modules/School Admin/schoolYear_manage_add.php:141
+#: modules/School Admin/schoolYear_manage_edit.php:170
+#: modules/School Admin/schoolYearSpecialDay_manage_add.php:296
+#: modules/School Admin/schoolYearSpecialDay_manage_edit.php:317
+#: modules/School Admin/schoolYearTerm_manage_add.php:171
+#: modules/School Admin/schoolYearTerm_manage_edit.php:202
+#: modules/School Admin/smsSettings.php:147
+#: modules/School Admin/space_manage_add.php:287
+#: modules/School Admin/space_manage_edit.php:322
+#: modules/School Admin/studentsSettings.php:176
+#: modules/School Admin/studentsSettings_noteCategory_add.php:101
+#: modules/School Admin/studentsSettings_noteCategory_edit.php:140
+#: modules/School Admin/yearGroup_manage_add.php:104
+#: modules/School Admin/yearGroup_manage_edit.php:133
+#: modules/Students/student_view_details_notes_add.php:154
+#: modules/Students/student_view_details_notes_edit.php:167
+#: modules/System Admin/module_manage_edit.php:144
+#: modules/System Admin/module_manage_install.php:93
+#: modules/System Admin/systemSettings.php:1055
+#: modules/System Admin/theme_manage_install.php:81
+#: modules/Timetable Admin/course_manage_add.php:186
+#: modules/Timetable Admin/course_manage_class_add.php:157
+#: modules/Timetable Admin/course_manage_class_edit.php:159
+#: modules/Timetable Admin/course_manage_edit.php:206
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:219
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:174
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:194
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:165
+#: modules/Timetable Admin/tt_add.php:168
+#: modules/Timetable Admin/tt_edit.php:187
+#: modules/Timetable Admin/tt_edit_day_add.php:171
+#: modules/Timetable Admin/tt_edit_day_edit.php:170
+#: modules/Timetable Admin/tt_edit_day_edit_class_add.php:215
+#: modules/Timetable Admin/tt_edit_day_edit_class_edit.php:199
+#: modules/Timetable Admin/tt_import.php:145
+#: modules/Timetable Admin/ttColumn_add.php:96
+#: modules/Timetable Admin/ttColumn_edit.php:135
+#: modules/Timetable Admin/ttColumn_edit_row_add.php:213
+#: modules/Timetable Admin/ttColumn_edit_row_edit.php:215
+#: modules/Timetable Admin/ttDates_edit_add.php:167
+#: modules/User Admin/applicationForm_manage_edit.php:2179
+#: modules/User Admin/applicationFormSettings.php:490
+#: modules/User Admin/district_manage_add.php:77
+#: modules/User Admin/district_manage_edit.php:106
+#: modules/User Admin/family_manage_add.php:188
+#: modules/User Admin/family_manage_edit.php:265
+#: modules/User Admin/family_manage_edit.php:571
+#: modules/User Admin/family_manage_edit.php:845
+#: modules/User Admin/family_manage_edit_editAdult.php:231
+#: modules/User Admin/family_manage_edit_editChild.php:127
+#: modules/User Admin/import_families.php:124
+#: modules/User Admin/import_studentEnrolment.php:97
+#: modules/User Admin/import_users.php:106
+#: modules/User Admin/medicalForm_manage_add.php:162
+#: modules/User Admin/medicalForm_manage_condition_add.php:237
+#: modules/User Admin/medicalForm_manage_condition_edit.php:253
+#: modules/User Admin/medicalForm_manage_edit.php:190
+#: modules/User Admin/role_manage_add.php:130
+#: modules/User Admin/role_manage_edit.php:159
+#: modules/User Admin/staff_manage_add.php:271
+#: modules/User Admin/staff_manage_edit.php:282
+#: modules/User Admin/studentEnrolment_manage_add.php:202
+#: modules/User Admin/studentEnrolment_manage_edit.php:238
+#: modules/User Admin/user_manage_add.php:1253
+#: modules/User Admin/user_manage_edit.php:1591
+#: modules/User Admin/user_manage_password.php:181
+#: modules/User Admin/userSettings.php:431 preferences.php:187
+#: preferences.php:314
+msgid "denotes a required field"
+msgstr ""
+
+#: preferences.php:208 preferences.php:208
+msgid "Settings"
+msgstr ""
+
+#: preferences.php:214 preferences.php:214
+msgid "Personal Calendar Feed"
+msgstr ""
+
+#: preferences.php:215 preferences.php:215
+msgid "XML feed for the your calendar (Google Calendar only)"
+msgstr ""
+
+#: preferences.php:232 preferences.php:232
+msgid "Personal Background"
+msgstr ""
+
+#: preferences.php:233 preferences.php:233
+msgid "Set your own custom background image."
+msgstr ""
+
+#: preferences.php:233 preferences.php:233
+msgid "Please provide URL to image."
+msgstr ""
+
+#: preferences.php:249 preferences.php:249
+msgid "Personal Theme"
+msgstr ""
+
+#: preferences.php:250 preferences.php:250
+msgid "Override the system theme."
+msgstr ""
+
+#: preferences.php:281 preferences.php:281
+msgid "Personal Language"
+msgstr ""
+
+#: preferences.php:282 preferences.php:282
+msgid "Override the system default language."
+msgstr ""
+
+#: report.php:117 report.php:117
+#, php-format
+msgid ""
+"This printout contains information that is the property of %1$s. If you find "
+"this report, and do not have permission to read it, please return it to %2$s "
+"(%3$s). In the event that it cannot be returned, please destroy it."
+msgstr ""
+
+#: report.php:149 report.php:149
+#, php-format
+msgid "Created by %1$s (%2$s) at %3$s on %4$s."
+msgstr ""
+
+#: stars.php:21 stars.php:21
+msgid "Stars"
+msgstr ""
+
+#: stars.php:24 stars.php:24
+msgid ""
+"This page shows you a break down of how your stars have been earned, as well "
+"as where your most recent stars in each category have come from."
+msgstr ""
+
+#: stars.php:39 stars.php:39
+msgid "Planner Stars"
+msgstr ""
+
+#: stars.php:44 stars.php:113 stars.php:178 stars.php:44 stars.php:113
+#: stars.php:178
+msgid "Photo"
+msgstr ""
+
+#: stars.php:47 stars.php:116 stars.php:181 stars.php:47 stars.php:116
+#: stars.php:181
+msgid "Name"
+msgstr ""
+
+#: stars.php:50 stars.php:50
+msgid "Class/Lesson"
+msgstr ""
+
+#: stars.php:53 stars.php:122 stars.php:187 stars.php:53 stars.php:122
+#: stars.php:187
+msgid "Date"
+msgstr ""
+
+#: stars.php:108 stars.php:108
+msgid "Behaviour Stars"
+msgstr ""
+
+#: stars.php:119 stars.php:119
+msgid "Details"
+msgstr ""
+
+#: stars.php:173 stars.php:173
+msgid "Crowd Assessment Stars"
+msgstr ""
+
+#: stars.php:184 index.php:692 index.php:692 stars.php:184
+msgid "Lesson"
+msgstr ""
+
+#: index.php:311 index.php:311
+#, php-format
+msgid ""
+"Warning: you are logged into the system in school year %1$s, which is not "
+"the current year."
+msgstr ""
+
+#: index.php:311 index.php:311
+msgid ""
+"Your data may not look quite right (for example, students who have left the "
+"school will not appear in previous years), but you should be able to edit "
+"information from other years which is not available in the current year."
+msgstr ""
+
+#: index.php:328 index.php:328
+msgid "Preferences"
+msgstr ""
+
+#: index.php:330 index.php:330
+msgid "Email"
+msgstr ""
+
+#: index.php:333 index.php:333
+msgid "Website"
+msgstr ""
+
+#: index.php:336 index.php:336
+msgid "My Website"
+msgstr ""
+
+#: index.php:351 index.php:351
+msgid "Crowd Assessment"
+msgstr ""
+
+#: index.php:364 index.php:364
+msgid "Planner"
+msgstr ""
+
+#: index.php:377 index.php:377
+msgid "Behaviour"
+msgstr ""
+
+#: index.php:455 index.php:455
+msgid "New Messages"
+msgstr ""
+
+#: index.php:476 index.php:476
+msgid "Plus more"
+msgstr ""
+
+#: index.php:482 index.php:482
+msgid "Read All"
+msgstr ""
+
+#: index.php:483 index.php:483
+msgid "Dismiss"
+msgstr ""
+
+#: index.php:543 index.php:543
+msgid "Welcome"
+msgstr ""
+
+#: index.php:560 index.php:560
+#, php-format
+msgid ""
+"Parents of students interested in study at %1$s may use our %2$s online form"
+"%3$s to initiate the application process."
+msgstr ""
+
+#: index.php:579 index.php:579
+msgid "Your current role type cannot be determined."
+msgstr ""
+
+#: index.php:626 index.php:626
+msgid "Parental Dashboard"
+msgstr ""
+
+#: index.php:640 index.php:640
+msgid "Student Profile"
+msgstr ""
+
+#: index.php:642 index.php:642
+msgid "Roll Group"
+msgstr ""
+
+#: index.php:648 index.php:648
+msgid "Today's Classes"
+msgstr ""
+
+#: index.php:648 index.php:648
+msgid "View Planner"
+msgstr ""
+
+#: index.php:655 index.php:1080
+#: modules/Activities/activities_manage_add.php:41
+#: modules/Activities/activities_manage_delete.php:42
+#: modules/Activities/activities_manage_edit.php:43
+#: modules/Activities/activities_manage_edit.php:74
+#: modules/Activities/activities_manage_enrolment.php:42
+#: modules/Activities/activities_manage_enrolment.php:73
+#: modules/Activities/activities_manage_enrolment_add.php:42
+#: modules/Activities/activities_manage_enrolment_delete.php:39
+#: modules/Activities/activities_manage_enrolment_edit.php:42
+#: modules/Application Form/applicationForm.php:83
+#: modules/Attendance/attendance_future_byPerson.php:42
+#: modules/Attendance/attendance_take_byPerson.php:42
+#: modules/Attendance/attendance_take_byRollGroup.php:42
+#: modules/Behaviour/behaviour_manage_add.php:49
+#: modules/Behaviour/behaviour_manage_delete.php:50
+#: modules/Behaviour/behaviour_manage_edit.php:50
+#: modules/Behaviour/behaviour_manage_edit.php:81 modules/Crowd
+#: Assessment/crowdAssess_view.php:41 Assessment/crowdAssess_view.php:56
+#: Assessment/crowdAssess_view_discuss.php:41
+#: Assessment/crowdAssess_view_discuss.php:56
+#: Assessment/crowdAssess_view_discuss_post.php:41
+#: Assessment/crowdAssess_view_discuss_post.php:56 modules/Data
+#: Updater/data_family.php:61 Updater/data_finance.php:61
+#: Updater/data_medical.php:61 Updater/data_personal.php:61
+#: modules/Departments/department_course_edit.php:76
+#: modules/Departments/department_edit.php:67
+#: modules/Departments/department_edit.php:98 modules/External
+#: Assessment/externalAssessment_manage_details_add.php:39
+#: Assessment/externalAssessment_manage_details_delete.php:39
+#: Assessment/externalAssessment_manage_details_edit.php:39
+#: modules/Finance/billingSchedule_manage_add.php:39
+#: modules/Finance/billingSchedule_manage_edit.php:39
+#: modules/Finance/feeCategories_manage_add.php:42
+#: modules/Finance/feeCategories_manage_delete.php:42
+#: modules/Finance/feeCategories_manage_edit.php:43
+#: modules/Finance/fees_manage_add.php:39
+#: modules/Finance/fees_manage_edit.php:39
+#: modules/Finance/invoicees_manage_edit.php:43
+#: modules/Finance/invoiceReceiptSettings.php:39
+#: modules/Finance/invoices_manage.php:69
+#: modules/Finance/invoices_manage_add.php:42
+#: modules/Finance/invoices_manage_delete.php:50
+#: modules/Finance/invoices_manage_edit.php:50
+#: modules/Finance/invoices_manage_print.php:50 modules/Individual
+#: Needs/in_edit.php:59 modules/Library/library_lending_item_edit.php:66
+#: modules/Library/library_lending_item_return.php:66
+#: modules/Library/library_manage_catalog_add.php:42
+#: modules/Library/library_manage_catalog_delete.php:42
+#: modules/Library/library_manage_catalog_edit.php:43
+#: modules/Markbook/markbook_edit_add.php:77
+#: modules/Markbook/markbook_edit_addMulti.php:74
+#: modules/Markbook/markbook_edit_data.php:99
+#: modules/Markbook/markbook_edit_delete.php:105
+#: modules/Markbook/markbook_edit_edit.php:105
+#: modules/Markbook/markbook_edit_targets.php:81
+#: modules/Messenger/messenger_manage_delete.php:47
+#: modules/Messenger/messenger_manage_edit.php:46
+#: modules/Messenger/messenger_post.php:48 modules/Planner/outcomes_add.php:56
+#: modules/Planner/outcomes_delete.php:56 modules/Planner/outcomes_edit.php:57
+#: modules/Planner/planner.php:98 modules/Planner/planner.php:575
+#: modules/Planner/planner.php:843 modules/Planner/planner_add.php:136
+#: modules/Planner/planner_bump.php:123
+#: modules/Planner/planner_deadlines.php:483
+#: modules/Planner/planner_delete.php:149 modules/Planner/planner_edit.php:208
+#: modules/Planner/planner_edit.php:255
+#: modules/Planner/planner_view_full.php:244
+#: modules/Planner/planner_view_full.php:300
+#: modules/Planner/planner_view_full_post.php:169
+#: modules/Planner/planner_view_full_post.php:184
+#: modules/Planner/planner_view_full_submit_edit.php:128
+#: modules/Planner/planner_view_full_submit_edit.php:143
+#: modules/Planner/units_add.php:50 modules/Planner/units_add.php:59
+#: modules/Planner/units_delete.php:50 modules/Planner/units_duplicate.php:50
+#: modules/Planner/units_edit.php:61 modules/Planner/units_edit_deploy.php:61
+#: modules/Planner/units_edit_working.php:61
+#: modules/Planner/units_edit_working.php:92
+#: modules/Planner/units_edit_working_add.php:61
+#: modules/Planner/units_edit_working_copyback.php:50
+#: modules/Resources/resources_add_ajaxProcess.php:43
+#: modules/Resources/resources_manage_add.php:49
+#: modules/Resources/resources_manage_edit.php:51
+#: modules/Rubrics/rubrics_add.php:56 modules/Rubrics/rubrics_delete.php:56
+#: modules/Rubrics/rubrics_edit.php:57 modules/Rubrics/rubrics_edit.php:95
+#: modules/Rubrics/rubrics_edit.php:120
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:57 modules/School
+#: Admin/activitySettings.php:39 Admin/alertLevelSettings.php:39
+#: Admin/behaviourSettings.php:39 Admin/daysOfWeek_manage.php:39
+#: Admin/department_manage_add.php:41 Admin/department_manage_delete.php:42
+#: Admin/department_manage_edit.php:43 Admin/department_manage_edit.php:74
+#: Admin/externalAssessments_manage.php:39
+#: Admin/externalAssessments_manage_add.php:42
+#: Admin/externalAssessments_manage_delete.php:39
+#: Admin/externalAssessments_manage_edit.php:42
+#: Admin/externalAssessments_manage_edit_field_add.php:65
+#: Admin/externalAssessments_manage_edit_field_delete.php:66
+#: Admin/externalAssessments_manage_edit_field_edit.php:66
+#: Admin/externalAssessmentSettings.php:39
+#: Admin/fileExtensions_manage_add.php:39
+#: Admin/fileExtensions_manage_delete.php:39
+#: Admin/fileExtensions_manage_edit.php:39 Admin/gradeScales_manage.php:42
+#: Admin/gradeScales_manage_add.php:42 Admin/gradeScales_manage_delete.php:39
+#: Admin/gradeScales_manage_edit.php:42
+#: Admin/gradeScales_manage_edit_grade_add.php:65
+#: Admin/gradeScales_manage_edit_grade_delete.php:66
+#: Admin/gradeScales_manage_edit_grade_edit.php:66
+#: Admin/house_manage_add.php:39 Admin/house_manage_delete.php:39
+#: Admin/house_manage_edit.php:39 Admin/inDescriptors_manage_add.php:39
+#: Admin/inDescriptors_manage_delete.php:39
+#: Admin/inDescriptors_manage_edit.php:39 Admin/librarySettings.php:39
+#: Admin/markbookSettings.php:39 Admin/plannerSettings.php:39
+#: Admin/resourceSettings.php:39 Admin/rollGroup_manage_add.php:39
+#: Admin/rollGroup_manage_delete.php:39 Admin/rollGroup_manage_edit.php:39
+#: Admin/schoolYear_manage_add.php:39 Admin/schoolYear_manage_delete.php:39
+#: Admin/schoolYear_manage_edit.php:39
+#: Admin/schoolYearSpecialDay_manage.php:39
+#: Admin/schoolYearSpecialDay_manage_delete.php:39
+#: Admin/schoolYearSpecialDay_manage_edit.php:39
+#: Admin/schoolYearTerm_manage_add.php:39
+#: Admin/schoolYearTerm_manage_delete.php:39
+#: Admin/schoolYearTerm_manage_edit.php:38 Admin/smsSettings.php:39
+#: Admin/space_manage_add.php:39 Admin/space_manage_delete.php:39
+#: Admin/space_manage_edit.php:39 Admin/studentsSettings.php:39
+#: Admin/studentsSettings_noteCategory_add.php:39
+#: Admin/studentsSettings_noteCategory_delete.php:39
+#: Admin/studentsSettings_noteCategory_edit.php:39
+#: Admin/yearGroup_manage_add.php:39 Admin/yearGroup_manage_delete.php:39
+#: Admin/yearGroup_manage_edit.php:39
+#: modules/Students/student_view_details_notes_add.php:64
+#: modules/Students/student_view_details_notes_delete.php:64
+#: modules/Students/student_view_details_notes_edit.php:64 modules/System
+#: Admin/i18n_manage.php:39 Admin/module_manage_edit.php:39
+#: Admin/module_manage_update.php:39 Admin/systemSettings.php:54
+#: Admin/theme_manage.php:52 Admin/update.php:39 modules/Timetable
+#: Admin/course_manage.php:39 Admin/course_manage_add.php:42
+#: Admin/course_manage_class_add.php:39
+#: Admin/course_manage_class_delete.php:39
+#: Admin/course_manage_class_edit.php:39 Admin/course_manage_delete.php:39
+#: Admin/course_manage_edit.php:42
+#: Admin/courseEnrolment_manage_byPerson_edit.php:84
+#: Admin/courseEnrolment_manage_byPerson_edit_delete.php:70
+#: Admin/courseEnrolment_manage_byPerson_edit_edit.php:71
+#: Admin/courseEnrolment_manage_class_edit.php:66
+#: Admin/courseEnrolment_manage_class_edit_edit.php:68 Admin/tt.php:39
+#: Admin/tt_add.php:42 Admin/tt_delete.php:39 Admin/tt_edit.php:42
+#: Admin/tt_edit_day_add.php:65 Admin/tt_edit_day_delete.php:67
+#: Admin/tt_edit_day_edit.php:66 Admin/tt_edit_day_edit_class.php:69
+#: Admin/tt_edit_day_edit_class_add.php:69
+#: Admin/tt_edit_day_edit_class_delete.php:71
+#: Admin/tt_edit_day_edit_class_edit.php:92
+#: Admin/tt_edit_day_edit_class_exception.php:90
+#: Admin/tt_edit_day_edit_class_exception_add.php:93
+#: Admin/tt_edit_day_edit_class_exception_delete.php:92 Admin/tt_import.php:39
+#: Admin/ttColumn.php:42 Admin/ttColumn_add.php:42
+#: Admin/ttColumn_delete.php:39 Admin/ttColumn_edit.php:42
+#: Admin/ttColumn_edit_row_add.php:64 Admin/ttColumn_edit_row_delete.php:66
+#: Admin/ttColumn_edit_row_edit.php:66 Admin/ttDates.php:39
+#: Admin/ttDates_edit.php:41 Admin/ttDates_edit_add.php:72
+#: Admin/ttDates_edit_delete.php:68 modules/User
+#: Admin/applicationForm_manage_accept.php:69
+#: Admin/applicationForm_manage_delete.php:42
+#: Admin/applicationForm_manage_edit.php:69
+#: Admin/applicationForm_manage_reject.php:69
+#: Admin/applicationFormSettings.php:39 Admin/data_family_delete.php:42
+#: Admin/data_family_edit.php:67 Admin/data_finance_delete.php:42
+#: Admin/data_finance_edit.php:67 Admin/data_medical_delete.php:42
+#: Admin/data_medical_edit.php:67 Admin/data_personal_delete.php:42
+#: Admin/data_personal_edit.php:67 Admin/dataUpdaterSettings.php:39
+#: Admin/district_manage_add.php:39 Admin/district_manage_delete.php:39
+#: Admin/district_manage_edit.php:39 Admin/family_manage_add.php:39
+#: Admin/family_manage_delete.php:39 Admin/family_manage_edit.php:38
+#: Admin/family_manage_edit.php:66 Admin/family_manage_edit_deleteAdult.php:39
+#: Admin/family_manage_edit_deleteChild.php:39
+#: Admin/family_manage_edit_editAdult.php:39
+#: Admin/family_manage_edit_editChild.php:39
+#: Admin/medicalForm_manage_add.php:39
+#: Admin/medicalForm_manage_condition_add.php:39
+#: Admin/medicalForm_manage_condition_delete.php:39
+#: Admin/medicalForm_manage_condition_edit.php:39
+#: Admin/medicalForm_manage_delete.php:39 Admin/medicalForm_manage_edit.php:39
+#: Admin/permission_manage.php:39 Admin/role_manage_add.php:39
+#: Admin/role_manage_delete.php:39 Admin/role_manage_edit.php:39
+#: Admin/rollover.php:41 Admin/staff_manage_add.php:39
+#: Admin/staff_manage_delete.php:39 Admin/staff_manage_edit.php:39
+#: Admin/studentEnrolment_manage_add.php:39
+#: Admin/studentEnrolment_manage_delete.php:39
+#: Admin/studentEnrolment_manage_edit.php:39 Admin/user_manage_add.php:39
+#: Admin/user_manage_delete.php:39 Admin/user_manage_edit.php:39
+#: Admin/user_manage_password.php:39 Admin/userSettings.php:39 index.php:655
+#: index.php:1080 modules/Activities/activities_manage_add.php:41
+#: modules/Activities/activities_manage_delete.php:42
+#: modules/Activities/activities_manage_edit.php:43
+#: modules/Activities/activities_manage_edit.php:74
+#: modules/Activities/activities_manage_enrolment.php:42
+#: modules/Activities/activities_manage_enrolment.php:73
+#: modules/Activities/activities_manage_enrolment_add.php:42
+#: modules/Activities/activities_manage_enrolment_delete.php:39
+#: modules/Activities/activities_manage_enrolment_edit.php:42
+#: modules/Application Form/applicationForm.php:83
+#: modules/Attendance/attendance_future_byPerson.php:42
+#: modules/Attendance/attendance_take_byPerson.php:42
+#: modules/Attendance/attendance_take_byRollGroup.php:42
+#: modules/Behaviour/behaviour_manage_add.php:49
+#: modules/Behaviour/behaviour_manage_delete.php:50
+#: modules/Behaviour/behaviour_manage_edit.php:50
+#: modules/Behaviour/behaviour_manage_edit.php:81
+#: modules/Crowd Assessment/crowdAssess_view.php:41
+#: modules/Crowd Assessment/crowdAssess_view.php:56
+#: modules/Crowd Assessment/crowdAssess_view_discuss.php:41
+#: modules/Crowd Assessment/crowdAssess_view_discuss.php:56
+#: modules/Crowd Assessment/crowdAssess_view_discuss_post.php:41
+#: modules/Crowd Assessment/crowdAssess_view_discuss_post.php:56
+#: modules/Data Updater/data_family.php:61
+#: modules/Data Updater/data_finance.php:61
+#: modules/Data Updater/data_medical.php:61
+#: modules/Data Updater/data_personal.php:61
+#: modules/Departments/department_course_edit.php:76
+#: modules/Departments/department_edit.php:67
+#: modules/Departments/department_edit.php:98
+#: modules/External Assessment/externalAssessment_manage_details_add.php:39
+#: modules/External Assessment/externalAssessment_manage_details_delete.php:39
+#: modules/External Assessment/externalAssessment_manage_details_edit.php:39
+#: modules/Finance/billingSchedule_manage_add.php:39
+#: modules/Finance/billingSchedule_manage_edit.php:39
+#: modules/Finance/feeCategories_manage_add.php:42
+#: modules/Finance/feeCategories_manage_delete.php:42
+#: modules/Finance/feeCategories_manage_edit.php:43
+#: modules/Finance/fees_manage_add.php:39
+#: modules/Finance/fees_manage_edit.php:39
+#: modules/Finance/invoicees_manage_edit.php:43
+#: modules/Finance/invoiceReceiptSettings.php:39
+#: modules/Finance/invoices_manage.php:69
+#: modules/Finance/invoices_manage_add.php:42
+#: modules/Finance/invoices_manage_delete.php:50
+#: modules/Finance/invoices_manage_edit.php:50
+#: modules/Finance/invoices_manage_print.php:50
+#: modules/Individual Needs/in_edit.php:59
+#: modules/Library/library_lending_item_edit.php:66
+#: modules/Library/library_lending_item_return.php:66
+#: modules/Library/library_manage_catalog_add.php:42
+#: modules/Library/library_manage_catalog_delete.php:42
+#: modules/Library/library_manage_catalog_edit.php:43
+#: modules/Markbook/markbook_edit_add.php:77
+#: modules/Markbook/markbook_edit_addMulti.php:74
+#: modules/Markbook/markbook_edit_data.php:99
+#: modules/Markbook/markbook_edit_delete.php:105
+#: modules/Markbook/markbook_edit_edit.php:105
+#: modules/Markbook/markbook_edit_targets.php:81
+#: modules/Messenger/messenger_manage_delete.php:47
+#: modules/Messenger/messenger_manage_edit.php:46
+#: modules/Messenger/messenger_post.php:48 modules/Planner/outcomes_add.php:56
+#: modules/Planner/outcomes_delete.php:56 modules/Planner/outcomes_edit.php:57
+#: modules/Planner/planner.php:98 modules/Planner/planner.php:575
+#: modules/Planner/planner.php:843 modules/Planner/planner_add.php:136
+#: modules/Planner/planner_bump.php:123
+#: modules/Planner/planner_deadlines.php:483
+#: modules/Planner/planner_delete.php:149 modules/Planner/planner_edit.php:208
+#: modules/Planner/planner_edit.php:255
+#: modules/Planner/planner_view_full.php:244
+#: modules/Planner/planner_view_full.php:300
+#: modules/Planner/planner_view_full_post.php:169
+#: modules/Planner/planner_view_full_post.php:184
+#: modules/Planner/planner_view_full_submit_edit.php:128
+#: modules/Planner/planner_view_full_submit_edit.php:143
+#: modules/Planner/units_add.php:50 modules/Planner/units_add.php:59
+#: modules/Planner/units_delete.php:50 modules/Planner/units_duplicate.php:50
+#: modules/Planner/units_edit.php:61 modules/Planner/units_edit_deploy.php:61
+#: modules/Planner/units_edit_working.php:61
+#: modules/Planner/units_edit_working.php:92
+#: modules/Planner/units_edit_working_add.php:61
+#: modules/Planner/units_edit_working_copyback.php:50
+#: modules/Resources/resources_add_ajaxProcess.php:43
+#: modules/Resources/resources_manage_add.php:49
+#: modules/Resources/resources_manage_edit.php:51
+#: modules/Rubrics/rubrics_add.php:56 modules/Rubrics/rubrics_delete.php:56
+#: modules/Rubrics/rubrics_edit.php:57 modules/Rubrics/rubrics_edit.php:95
+#: modules/Rubrics/rubrics_edit.php:120
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:57
+#: modules/School Admin/activitySettings.php:39
+#: modules/School Admin/alertLevelSettings.php:39
+#: modules/School Admin/behaviourSettings.php:39
+#: modules/School Admin/daysOfWeek_manage.php:39
+#: modules/School Admin/department_manage_add.php:41
+#: modules/School Admin/department_manage_delete.php:42
+#: modules/School Admin/department_manage_edit.php:43
+#: modules/School Admin/department_manage_edit.php:74
+#: modules/School Admin/externalAssessments_manage.php:39
+#: modules/School Admin/externalAssessments_manage_add.php:42
+#: modules/School Admin/externalAssessments_manage_delete.php:39
+#: modules/School Admin/externalAssessments_manage_edit.php:42
+#: modules/School Admin/externalAssessments_manage_edit_field_add.php:65
+#: modules/School Admin/externalAssessments_manage_edit_field_delete.php:66
+#: modules/School Admin/externalAssessments_manage_edit_field_edit.php:66
+#: modules/School Admin/externalAssessmentSettings.php:39
+#: modules/School Admin/fileExtensions_manage_add.php:39
+#: modules/School Admin/fileExtensions_manage_delete.php:39
+#: modules/School Admin/fileExtensions_manage_edit.php:39
+#: modules/School Admin/gradeScales_manage.php:42
+#: modules/School Admin/gradeScales_manage_add.php:42
+#: modules/School Admin/gradeScales_manage_delete.php:39
+#: modules/School Admin/gradeScales_manage_edit.php:42
+#: modules/School Admin/gradeScales_manage_edit_grade_add.php:65
+#: modules/School Admin/gradeScales_manage_edit_grade_delete.php:66
+#: modules/School Admin/gradeScales_manage_edit_grade_edit.php:66
+#: modules/School Admin/house_manage_add.php:39
+#: modules/School Admin/house_manage_delete.php:39
+#: modules/School Admin/house_manage_edit.php:39
+#: modules/School Admin/inDescriptors_manage_add.php:39
+#: modules/School Admin/inDescriptors_manage_delete.php:39
+#: modules/School Admin/inDescriptors_manage_edit.php:39
+#: modules/School Admin/librarySettings.php:39
+#: modules/School Admin/markbookSettings.php:39
+#: modules/School Admin/plannerSettings.php:39
+#: modules/School Admin/resourceSettings.php:39
+#: modules/School Admin/rollGroup_manage_add.php:39
+#: modules/School Admin/rollGroup_manage_delete.php:39
+#: modules/School Admin/rollGroup_manage_edit.php:39
+#: modules/School Admin/schoolYear_manage_add.php:39
+#: modules/School Admin/schoolYear_manage_delete.php:39
+#: modules/School Admin/schoolYear_manage_edit.php:39
+#: modules/School Admin/schoolYearSpecialDay_manage.php:39
+#: modules/School Admin/schoolYearSpecialDay_manage_delete.php:39
+#: modules/School Admin/schoolYearSpecialDay_manage_edit.php:39
+#: modules/School Admin/schoolYearTerm_manage_add.php:39
+#: modules/School Admin/schoolYearTerm_manage_delete.php:39
+#: modules/School Admin/schoolYearTerm_manage_edit.php:38
+#: modules/School Admin/smsSettings.php:39
+#: modules/School Admin/space_manage_add.php:39
+#: modules/School Admin/space_manage_delete.php:39
+#: modules/School Admin/space_manage_edit.php:39
+#: modules/School Admin/studentsSettings.php:39
+#: modules/School Admin/studentsSettings_noteCategory_add.php:39
+#: modules/School Admin/studentsSettings_noteCategory_delete.php:39
+#: modules/School Admin/studentsSettings_noteCategory_edit.php:39
+#: modules/School Admin/yearGroup_manage_add.php:39
+#: modules/School Admin/yearGroup_manage_delete.php:39
+#: modules/School Admin/yearGroup_manage_edit.php:39
+#: modules/Students/student_view_details_notes_add.php:64
+#: modules/Students/student_view_details_notes_delete.php:64
+#: modules/Students/student_view_details_notes_edit.php:64
+#: modules/System Admin/i18n_manage.php:39
+#: modules/System Admin/module_manage_edit.php:39
+#: modules/System Admin/module_manage_update.php:39
+#: modules/System Admin/systemSettings.php:54
+#: modules/System Admin/theme_manage.php:52 modules/System Admin/update.php:39
+#: modules/Timetable Admin/course_manage.php:39
+#: modules/Timetable Admin/course_manage_add.php:42
+#: modules/Timetable Admin/course_manage_class_add.php:39
+#: modules/Timetable Admin/course_manage_class_delete.php:39
+#: modules/Timetable Admin/course_manage_class_edit.php:39
+#: modules/Timetable Admin/course_manage_delete.php:39
+#: modules/Timetable Admin/course_manage_edit.php:42
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:84
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_delete.php:70
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:71
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:66
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:68
+#: modules/Timetable Admin/tt.php:39 modules/Timetable Admin/tt_add.php:42
+#: modules/Timetable Admin/tt_delete.php:39
+#: modules/Timetable Admin/tt_edit.php:42
+#: modules/Timetable Admin/tt_edit_day_add.php:65
+#: modules/Timetable Admin/tt_edit_day_delete.php:67
+#: modules/Timetable Admin/tt_edit_day_edit.php:66
+#: modules/Timetable Admin/tt_edit_day_edit_class.php:69
+#: modules/Timetable Admin/tt_edit_day_edit_class_add.php:69
+#: modules/Timetable Admin/tt_edit_day_edit_class_delete.php:71
+#: modules/Timetable Admin/tt_edit_day_edit_class_edit.php:92
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception.php:90
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php:93
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception_delete.php:92
+#: modules/Timetable Admin/tt_import.php:39
+#: modules/Timetable Admin/ttColumn.php:42
+#: modules/Timetable Admin/ttColumn_add.php:42
+#: modules/Timetable Admin/ttColumn_delete.php:39
+#: modules/Timetable Admin/ttColumn_edit.php:42
+#: modules/Timetable Admin/ttColumn_edit_row_add.php:64
+#: modules/Timetable Admin/ttColumn_edit_row_delete.php:66
+#: modules/Timetable Admin/ttColumn_edit_row_edit.php:66
+#: modules/Timetable Admin/ttDates.php:39
+#: modules/Timetable Admin/ttDates_edit.php:41
+#: modules/Timetable Admin/ttDates_edit_add.php:72
+#: modules/Timetable Admin/ttDates_edit_delete.php:68
+#: modules/User Admin/applicationForm_manage_accept.php:69
+#: modules/User Admin/applicationForm_manage_delete.php:42
+#: modules/User Admin/applicationForm_manage_edit.php:69
+#: modules/User Admin/applicationForm_manage_reject.php:69
+#: modules/User Admin/applicationFormSettings.php:39
+#: modules/User Admin/data_family_delete.php:42
+#: modules/User Admin/data_family_edit.php:67
+#: modules/User Admin/data_finance_delete.php:42
+#: modules/User Admin/data_finance_edit.php:67
+#: modules/User Admin/data_medical_delete.php:42
+#: modules/User Admin/data_medical_edit.php:67
+#: modules/User Admin/data_personal_delete.php:42
+#: modules/User Admin/data_personal_edit.php:67
+#: modules/User Admin/dataUpdaterSettings.php:39
+#: modules/User Admin/district_manage_add.php:39
+#: modules/User Admin/district_manage_delete.php:39
+#: modules/User Admin/district_manage_edit.php:39
+#: modules/User Admin/family_manage_add.php:39
+#: modules/User Admin/family_manage_delete.php:39
+#: modules/User Admin/family_manage_edit.php:38
+#: modules/User Admin/family_manage_edit.php:66
+#: modules/User Admin/family_manage_edit_deleteAdult.php:39
+#: modules/User Admin/family_manage_edit_deleteChild.php:39
+#: modules/User Admin/family_manage_edit_editAdult.php:39
+#: modules/User Admin/family_manage_edit_editChild.php:39
+#: modules/User Admin/medicalForm_manage_add.php:39
+#: modules/User Admin/medicalForm_manage_condition_add.php:39
+#: modules/User Admin/medicalForm_manage_condition_delete.php:39
+#: modules/User Admin/medicalForm_manage_condition_edit.php:39
+#: modules/User Admin/medicalForm_manage_delete.php:39
+#: modules/User Admin/medicalForm_manage_edit.php:39
+#: modules/User Admin/permission_manage.php:39
+#: modules/User Admin/role_manage_add.php:39
+#: modules/User Admin/role_manage_delete.php:39
+#: modules/User Admin/role_manage_edit.php:39
+#: modules/User Admin/rollover.php:41
+#: modules/User Admin/staff_manage_add.php:39
+#: modules/User Admin/staff_manage_delete.php:39
+#: modules/User Admin/staff_manage_edit.php:39
+#: modules/User Admin/studentEnrolment_manage_add.php:39
+#: modules/User Admin/studentEnrolment_manage_delete.php:39
+#: modules/User Admin/studentEnrolment_manage_edit.php:39
+#: modules/User Admin/user_manage_add.php:39
+#: modules/User Admin/user_manage_delete.php:39
+#: modules/User Admin/user_manage_edit.php:39
+#: modules/User Admin/user_manage_password.php:39
+#: modules/User Admin/userSettings.php:39
+msgid "Your request failed because you do not have access to this action."
+msgstr ""
+
+#: index.php:658 index.php:1083
+#: modules/Activities/activities_manage_add.php:47
+#: modules/Activities/activities_manage_delete.php:45
+#: modules/Activities/activities_manage_delete.php:51
+#: modules/Activities/activities_manage_edit.php:46
+#: modules/Activities/activities_manage_edit.php:52
+#: modules/Activities/activities_manage_edit.php:55
+#: modules/Activities/activities_manage_edit.php:77
+#: modules/Activities/activities_manage_edit.php:83
+#: modules/Activities/activities_manage_enrolment.php:45
+#: modules/Activities/activities_manage_enrolment.php:51
+#: modules/Activities/activities_manage_enrolment.php:54
+#: modules/Activities/activities_manage_enrolment.php:76
+#: modules/Activities/activities_manage_enrolment.php:82
+#: modules/Activities/activities_manage_enrolment_add.php:45
+#: modules/Activities/activities_manage_enrolment_add.php:51
+#: modules/Activities/activities_manage_enrolment_add.php:54
+#: modules/Activities/activities_manage_enrolment_add.php:57
+#: modules/Activities/activities_manage_enrolment_delete.php:42
+#: modules/Activities/activities_manage_enrolment_delete.php:48
+#: modules/Activities/activities_manage_enrolment_edit.php:45
+#: modules/Activities/activities_manage_enrolment_edit.php:51
+#: modules/Activities/activities_manage_enrolment_edit.php:54
+#: modules/Application Form/applicationForm.php:89 Form/applicationForm.php:92
+#: modules/Attendance/attendance_future_byPerson.php:45
+#: modules/Attendance/attendance_take_byPerson.php:45
+#: modules/Attendance/attendance_take_byRollGroup.php:45
+#: modules/Behaviour/behaviour_manage_add.php:55
+#: modules/Behaviour/behaviour_manage_add.php:58
+#: modules/Behaviour/behaviour_manage_delete.php:53
+#: modules/Behaviour/behaviour_manage_delete.php:59
+#: modules/Behaviour/behaviour_manage_edit.php:53
+#: modules/Behaviour/behaviour_manage_edit.php:59
+#: modules/Behaviour/behaviour_manage_edit.php:62
+#: modules/Behaviour/behaviour_manage_edit.php:84
+#: modules/Behaviour/behaviour_manage_edit.php:90 modules/Crowd
+#: Assessment/crowdAssess_view.php:44 Assessment/crowdAssess_view.php:50
+#: Assessment/crowdAssess_view.php:53
+#: Assessment/crowdAssess_view_discuss.php:44
+#: Assessment/crowdAssess_view_discuss.php:50
+#: Assessment/crowdAssess_view_discuss.php:53
+#: Assessment/crowdAssess_view_discuss_post.php:44
+#: Assessment/crowdAssess_view_discuss_post.php:50
+#: Assessment/crowdAssess_view_discuss_post.php:53 modules/Data
+#: Updater/data_family.php:64 Updater/data_family.php:70
+#: Updater/data_family.php:73 Updater/data_finance.php:64
+#: Updater/data_finance.php:70 Updater/data_finance.php:73
+#: Updater/data_medical.php:64 Updater/data_medical.php:70
+#: Updater/data_medical.php:73 Updater/data_personal.php:64
+#: Updater/data_personal.php:70 Updater/data_personal.php:73
+#: modules/Departments/department_course_edit.php:79
+#: modules/Departments/department_course_edit.php:85
+#: modules/Departments/department_course_edit.php:88
+#: modules/Departments/department_edit.php:70
+#: modules/Departments/department_edit.php:76
+#: modules/Departments/department_edit.php:79
+#: modules/Departments/department_edit.php:101
+#: modules/Departments/department_edit.php:107 modules/External
+#: Assessment/externalAssessment_manage_details_add.php:45
+#: Assessment/externalAssessment_manage_details_add.php:48
+#: Assessment/externalAssessment_manage_details_add.php:51
+#: Assessment/externalAssessment_manage_details_delete.php:42
+#: Assessment/externalAssessment_manage_details_delete.php:48
+#: Assessment/externalAssessment_manage_details_edit.php:42
+#: Assessment/externalAssessment_manage_details_edit.php:48
+#: Assessment/externalAssessment_manage_details_edit.php:51
+#: modules/Finance/billingSchedule_manage_add.php:45
+#: modules/Finance/billingSchedule_manage_add.php:48
+#: modules/Finance/billingSchedule_manage_edit.php:42
+#: modules/Finance/billingSchedule_manage_edit.php:48
+#: modules/Finance/billingSchedule_manage_edit.php:51
+#: modules/Finance/feeCategories_manage_add.php:48
+#: modules/Finance/feeCategories_manage_delete.php:45
+#: modules/Finance/feeCategories_manage_delete.php:51
+#: modules/Finance/feeCategories_manage_edit.php:46
+#: modules/Finance/feeCategories_manage_edit.php:52
+#: modules/Finance/feeCategories_manage_edit.php:55
+#: modules/Finance/fees_manage_add.php:45
+#: modules/Finance/fees_manage_add.php:48
+#: modules/Finance/fees_manage_edit.php:42
+#: modules/Finance/fees_manage_edit.php:48
+#: modules/Finance/fees_manage_edit.php:51
+#: modules/Finance/invoicees_manage_edit.php:46
+#: modules/Finance/invoicees_manage_edit.php:52
+#: modules/Finance/invoicees_manage_edit.php:55
+#: modules/Finance/invoiceReceiptSettings.php:42
+#: modules/Finance/invoiceReceiptSettings.php:48
+#: modules/Finance/invoices_manage.php:75
+#: modules/Finance/invoices_manage_add.php:48
+#: modules/Finance/invoices_manage_delete.php:53
+#: modules/Finance/invoices_manage_delete.php:59
+#: modules/Finance/invoices_manage_edit.php:53
+#: modules/Finance/invoices_manage_edit.php:59
+#: modules/Finance/invoices_manage_print.php:53
+#: modules/Finance/invoices_manage_print.php:59 modules/Individual
+#: Needs/in_edit.php:62 Needs/in_edit.php:68 Needs/in_edit.php:71
+#: modules/Library/library_lending_item_edit.php:69
+#: modules/Library/library_lending_item_edit.php:75
+#: modules/Library/library_lending_item_edit.php:78
+#: modules/Library/library_lending_item_return.php:69
+#: modules/Library/library_lending_item_return.php:75
+#: modules/Library/library_lending_item_return.php:78
+#: modules/Library/library_manage_catalog_add.php:48
+#: modules/Library/library_manage_catalog_delete.php:45
+#: modules/Library/library_manage_catalog_delete.php:51
+#: modules/Library/library_manage_catalog_edit.php:46
+#: modules/Library/library_manage_catalog_edit.php:52
+#: modules/Markbook/markbook_edit_add.php:83
+#: modules/Markbook/markbook_edit_add.php:86
+#: modules/Markbook/markbook_edit_addMulti.php:80
+#: modules/Markbook/markbook_edit_addMulti.php:83
+#: modules/Markbook/markbook_edit_data.php:102
+#: modules/Markbook/markbook_edit_delete.php:108
+#: modules/Markbook/markbook_edit_delete.php:114
+#: modules/Markbook/markbook_edit_edit.php:108
+#: modules/Markbook/markbook_edit_edit.php:114
+#: modules/Markbook/markbook_edit_edit.php:117
+#: modules/Markbook/markbook_edit_targets.php:84
+#: modules/Messenger/messenger_manage_delete.php:50
+#: modules/Messenger/messenger_manage_delete.php:56
+#: modules/Messenger/messenger_manage_edit.php:49
+#: modules/Messenger/messenger_manage_edit.php:55
+#: modules/Messenger/messenger_manage_edit.php:58
+#: modules/Messenger/messenger_post.php:54 modules/Planner/outcomes_add.php:62
+#: modules/Planner/outcomes_delete.php:59
+#: modules/Planner/outcomes_delete.php:65 modules/Planner/outcomes_edit.php:60
+#: modules/Planner/outcomes_edit.php:66 modules/Planner/outcomes_edit.php:69
+#: modules/Planner/planner.php:101 modules/Planner/planner.php:578
+#: modules/Planner/planner.php:846 modules/Planner/planner_add.php:142
+#: modules/Planner/planner_add.php:145 modules/Planner/planner_bump.php:126
+#: modules/Planner/planner_bump.php:132 modules/Planner/planner_delete.php:152
+#: modules/Planner/planner_delete.php:158 modules/Planner/planner_edit.php:211
+#: modules/Planner/planner_edit.php:217 modules/Planner/planner_edit.php:220
+#: modules/Planner/planner_edit.php:258 modules/Planner/planner_edit.php:264
+#: modules/Planner/planner_view_full.php:247
+#: modules/Planner/planner_view_full.php:303
+#: modules/Planner/planner_view_full_post.php:172
+#: modules/Planner/planner_view_full_post.php:178
+#: modules/Planner/planner_view_full_post.php:181
+#: modules/Planner/planner_view_full_submit_edit.php:131
+#: modules/Planner/planner_view_full_submit_edit.php:137
+#: modules/Planner/planner_view_full_submit_edit.php:140
+#: modules/Planner/units_add.php:56 modules/Planner/units_delete.php:53
+#: modules/Planner/units_delete.php:59 modules/Planner/units_duplicate.php:53
+#: modules/Planner/units_duplicate.php:59
+#: modules/Planner/units_duplicate.php:62 modules/Planner/units_edit.php:64
+#: modules/Planner/units_edit.php:70 modules/Planner/units_edit.php:73
+#: modules/Planner/units_edit_deploy.php:64
+#: modules/Planner/units_edit_deploy.php:70
+#: modules/Planner/units_edit_deploy.php:73
+#: modules/Planner/units_edit_working.php:64
+#: modules/Planner/units_edit_working.php:70
+#: modules/Planner/units_edit_working.php:73
+#: modules/Planner/units_edit_working.php:98
+#: modules/Planner/units_edit_working_add.php:64
+#: modules/Planner/units_edit_working_add.php:70
+#: modules/Planner/units_edit_working_add.php:73
+#: modules/Planner/units_edit_working_copyback.php:53
+#: modules/Planner/units_edit_working_copyback.php:59
+#: modules/Planner/units_edit_working_copyback.php:62
+#: modules/Resources/resources_add_ajaxProcess.php:81
+#: modules/Resources/resources_addQuick_ajaxProcess.php:62
+#: modules/Resources/resources_manage_add.php:55
+#: modules/Resources/resources_manage_add.php:58
+#: modules/Resources/resources_manage_edit.php:54
+#: modules/Resources/resources_manage_edit.php:60
+#: modules/Resources/resources_manage_edit.php:63
+#: modules/Rubrics/rubrics_add.php:62 modules/Rubrics/rubrics_delete.php:59
+#: modules/Rubrics/rubrics_delete.php:65 modules/Rubrics/rubrics_edit.php:60
+#: modules/Rubrics/rubrics_edit.php:66 modules/Rubrics/rubrics_edit.php:98
+#: modules/Rubrics/rubrics_edit.php:104 modules/Rubrics/rubrics_edit.php:123
+#: modules/Rubrics/rubrics_edit.php:129
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:60
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:66 modules/School
+#: Admin/activitySettings.php:42 Admin/activitySettings.php:48
+#: Admin/alertLevelSettings.php:42 Admin/alertLevelSettings.php:48
+#: Admin/behaviourSettings.php:42 Admin/behaviourSettings.php:48
+#: Admin/daysOfWeek_manage.php:42 Admin/daysOfWeek_manage.php:48
+#: Admin/daysOfWeek_manage.php:51 Admin/department_manage_add.php:47
+#: Admin/department_manage_add.php:50 Admin/department_manage_delete.php:45
+#: Admin/department_manage_delete.php:51 Admin/department_manage_edit.php:46
+#: Admin/department_manage_edit.php:52 Admin/department_manage_edit.php:55
+#: Admin/department_manage_edit.php:77 Admin/department_manage_edit.php:83
+#: Admin/externalAssessments_manage.php:45
+#: Admin/externalAssessments_manage.php:48
+#: Admin/externalAssessments_manage.php:51
+#: Admin/externalAssessments_manage_add.php:48
+#: Admin/externalAssessments_manage_add.php:51
+#: Admin/externalAssessments_manage_add.php:54
+#: Admin/externalAssessments_manage_delete.php:42
+#: Admin/externalAssessments_manage_delete.php:48
+#: Admin/externalAssessments_manage_edit.php:45
+#: Admin/externalAssessments_manage_edit.php:51
+#: Admin/externalAssessments_manage_edit.php:54
+#: Admin/externalAssessments_manage_edit_field_add.php:71
+#: Admin/externalAssessments_manage_edit_field_add.php:74
+#: Admin/externalAssessments_manage_edit_field_add.php:77
+#: Admin/externalAssessments_manage_edit_field_delete.php:69
+#: Admin/externalAssessments_manage_edit_field_delete.php:75
+#: Admin/externalAssessments_manage_edit_field_edit.php:69
+#: Admin/externalAssessments_manage_edit_field_edit.php:75
+#: Admin/externalAssessments_manage_edit_field_edit.php:78
+#: Admin/externalAssessmentSettings.php:42
+#: Admin/externalAssessmentSettings.php:48
+#: Admin/fileExtensions_manage_add.php:45
+#: Admin/fileExtensions_manage_add.php:48
+#: Admin/fileExtensions_manage_delete.php:42
+#: Admin/fileExtensions_manage_delete.php:48
+#: Admin/fileExtensions_manage_edit.php:42
+#: Admin/fileExtensions_manage_edit.php:48
+#: Admin/fileExtensions_manage_edit.php:51 Admin/gradeScales_manage.php:48
+#: Admin/gradeScales_manage.php:51 Admin/gradeScales_manage.php:54
+#: Admin/gradeScales_manage_add.php:48 Admin/gradeScales_manage_add.php:51
+#: Admin/gradeScales_manage_add.php:54 Admin/gradeScales_manage_delete.php:42
+#: Admin/gradeScales_manage_delete.php:48 Admin/gradeScales_manage_edit.php:45
+#: Admin/gradeScales_manage_edit.php:51 Admin/gradeScales_manage_edit.php:54
+#: Admin/gradeScales_manage_edit_grade_add.php:71
+#: Admin/gradeScales_manage_edit_grade_add.php:74
+#: Admin/gradeScales_manage_edit_grade_add.php:77
+#: Admin/gradeScales_manage_edit_grade_delete.php:69
+#: Admin/gradeScales_manage_edit_grade_delete.php:75
+#: Admin/gradeScales_manage_edit_grade_edit.php:69
+#: Admin/gradeScales_manage_edit_grade_edit.php:75
+#: Admin/gradeScales_manage_edit_grade_edit.php:78
+#: Admin/house_manage_add.php:45 Admin/house_manage_add.php:48
+#: Admin/house_manage_delete.php:42 Admin/house_manage_delete.php:48
+#: Admin/house_manage_edit.php:42 Admin/house_manage_edit.php:48
+#: Admin/house_manage_edit.php:51 Admin/inDescriptors_manage_add.php:45
+#: Admin/inDescriptors_manage_add.php:48
+#: Admin/inDescriptors_manage_delete.php:42
+#: Admin/inDescriptors_manage_delete.php:48
+#: Admin/inDescriptors_manage_edit.php:42
+#: Admin/inDescriptors_manage_edit.php:48
+#: Admin/inDescriptors_manage_edit.php:51 Admin/librarySettings.php:42
+#: Admin/librarySettings.php:48 Admin/markbookSettings.php:42
+#: Admin/markbookSettings.php:48 Admin/plannerSettings.php:42
+#: Admin/plannerSettings.php:48 Admin/resourceSettings.php:42
+#: Admin/resourceSettings.php:48 Admin/rollGroup_manage_add.php:45
+#: Admin/rollGroup_manage_add.php:48 Admin/rollGroup_manage_delete.php:42
+#: Admin/rollGroup_manage_delete.php:48 Admin/rollGroup_manage_edit.php:42
+#: Admin/rollGroup_manage_edit.php:48 Admin/rollGroup_manage_edit.php:51
+#: Admin/schoolYear_manage_add.php:45 Admin/schoolYear_manage_add.php:48
+#: Admin/schoolYear_manage_delete.php:42 Admin/schoolYear_manage_delete.php:48
+#: Admin/schoolYear_manage_edit.php:42 Admin/schoolYear_manage_edit.php:48
+#: Admin/schoolYear_manage_edit.php:51
+#: Admin/schoolYearSpecialDay_manage.php:45
+#: Admin/schoolYearSpecialDay_manage.php:48
+#: Admin/schoolYearSpecialDay_manage.php:51
+#: Admin/schoolYearSpecialDay_manage_delete.php:42
+#: Admin/schoolYearSpecialDay_manage_delete.php:48
+#: Admin/schoolYearSpecialDay_manage_edit.php:42
+#: Admin/schoolYearSpecialDay_manage_edit.php:48
+#: Admin/schoolYearSpecialDay_manage_edit.php:51
+#: Admin/schoolYearTerm_manage_add.php:45
+#: Admin/schoolYearTerm_manage_add.php:48
+#: Admin/schoolYearTerm_manage_delete.php:42
+#: Admin/schoolYearTerm_manage_delete.php:48
+#: Admin/schoolYearTerm_manage_edit.php:41
+#: Admin/schoolYearTerm_manage_edit.php:47
+#: Admin/schoolYearTerm_manage_edit.php:50 Admin/smsSettings.php:42
+#: Admin/smsSettings.php:48 Admin/space_manage_add.php:45
+#: Admin/space_manage_add.php:48 Admin/space_manage_delete.php:42
+#: Admin/space_manage_delete.php:48 Admin/space_manage_edit.php:42
+#: Admin/space_manage_edit.php:48 Admin/space_manage_edit.php:51
+#: Admin/studentsSettings.php:42 Admin/studentsSettings.php:48
+#: Admin/studentsSettings_noteCategory_add.php:45
+#: Admin/studentsSettings_noteCategory_add.php:48
+#: Admin/studentsSettings_noteCategory_delete.php:42
+#: Admin/studentsSettings_noteCategory_delete.php:48
+#: Admin/studentsSettings_noteCategory_edit.php:42
+#: Admin/studentsSettings_noteCategory_edit.php:48
+#: Admin/studentsSettings_noteCategory_edit.php:51
+#: Admin/yearGroup_manage_add.php:45 Admin/yearGroup_manage_add.php:48
+#: Admin/yearGroup_manage_delete.php:42 Admin/yearGroup_manage_delete.php:48
+#: Admin/yearGroup_manage_edit.php:42 Admin/yearGroup_manage_edit.php:48
+#: Admin/yearGroup_manage_edit.php:51
+#: modules/Students/student_view_details_notes_add.php:70
+#: modules/Students/student_view_details_notes_add.php:73
+#: modules/Students/student_view_details_notes_delete.php:67
+#: modules/Students/student_view_details_notes_delete.php:73
+#: modules/Students/student_view_details_notes_edit.php:67
+#: modules/Students/student_view_details_notes_edit.php:73
+#: modules/Students/student_view_details_notes_edit.php:76 modules/System
+#: Admin/i18n_manage.php:42 Admin/module_manage_edit.php:42
+#: Admin/module_manage_edit.php:48 Admin/module_manage_edit.php:51
+#: Admin/module_manage_update.php:42 Admin/module_manage_update.php:48
+#: Admin/systemSettings.php:57 Admin/systemSettings.php:63
+#: Admin/theme_manage.php:55 Admin/update.php:42 Admin/update.php:48
+#: modules/Timetable Admin/course_manage.php:45 Admin/course_manage.php:48
+#: Admin/course_manage.php:51 Admin/course_manage_add.php:48
+#: Admin/course_manage_add.php:51 Admin/course_manage_add.php:54
+#: Admin/course_manage_class_add.php:45 Admin/course_manage_class_add.php:48
+#: Admin/course_manage_class_add.php:51
+#: Admin/course_manage_class_delete.php:42
+#: Admin/course_manage_class_delete.php:48
+#: Admin/course_manage_class_edit.php:42 Admin/course_manage_class_edit.php:48
+#: Admin/course_manage_class_edit.php:51 Admin/course_manage_delete.php:42
+#: Admin/course_manage_delete.php:48 Admin/course_manage_edit.php:45
+#: Admin/course_manage_edit.php:51 Admin/course_manage_edit.php:54
+#: Admin/courseEnrolment_manage_byPerson_edit.php:87
+#: Admin/courseEnrolment_manage_byPerson_edit.php:93
+#: Admin/courseEnrolment_manage_byPerson_edit.php:96
+#: Admin/courseEnrolment_manage_byPerson_edit_delete.php:73
+#: Admin/courseEnrolment_manage_byPerson_edit_delete.php:79
+#: Admin/courseEnrolment_manage_byPerson_edit_edit.php:74
+#: Admin/courseEnrolment_manage_byPerson_edit_edit.php:80
+#: Admin/courseEnrolment_manage_byPerson_edit_edit.php:83
+#: Admin/courseEnrolment_manage_class_edit.php:69
+#: Admin/courseEnrolment_manage_class_edit.php:75
+#: Admin/courseEnrolment_manage_class_edit.php:78
+#: Admin/courseEnrolment_manage_class_edit_edit.php:71
+#: Admin/courseEnrolment_manage_class_edit_edit.php:77
+#: Admin/courseEnrolment_manage_class_edit_edit.php:80 Admin/tt.php:45
+#: Admin/tt.php:48 Admin/tt.php:51 Admin/tt_add.php:48 Admin/tt_add.php:51
+#: Admin/tt_add.php:54 Admin/tt_delete.php:42 Admin/tt_delete.php:48
+#: Admin/tt_edit.php:45 Admin/tt_edit.php:51 Admin/tt_edit.php:54
+#: Admin/tt_edit_day_add.php:71 Admin/tt_edit_day_add.php:74
+#: Admin/tt_edit_day_add.php:77 Admin/tt_edit_day_delete.php:70
+#: Admin/tt_edit_day_delete.php:76 Admin/tt_edit_day_edit.php:69
+#: Admin/tt_edit_day_edit.php:75 Admin/tt_edit_day_edit.php:78
+#: Admin/tt_edit_day_edit_class.php:72 Admin/tt_edit_day_edit_class.php:78
+#: Admin/tt_edit_day_edit_class.php:81 Admin/tt_edit_day_edit_class_add.php:75
+#: Admin/tt_edit_day_edit_class_add.php:78
+#: Admin/tt_edit_day_edit_class_add.php:81
+#: Admin/tt_edit_day_edit_class_delete.php:74
+#: Admin/tt_edit_day_edit_class_delete.php:80
+#: Admin/tt_edit_day_edit_class_edit.php:95
+#: Admin/tt_edit_day_edit_class_edit.php:101
+#: Admin/tt_edit_day_edit_class_exception.php:93
+#: Admin/tt_edit_day_edit_class_exception.php:99
+#: Admin/tt_edit_day_edit_class_exception_add.php:96
+#: Admin/tt_edit_day_edit_class_exception_add.php:102
+#: Admin/tt_edit_day_edit_class_exception_delete.php:95
+#: Admin/tt_edit_day_edit_class_exception_delete.php:101
+#: Admin/tt_import.php:42 Admin/tt_import.php:48 Admin/ttColumn.php:48
+#: Admin/ttColumn.php:51 Admin/ttColumn.php:54 Admin/ttColumn_add.php:48
+#: Admin/ttColumn_add.php:51 Admin/ttColumn_add.php:54
+#: Admin/ttColumn_delete.php:42 Admin/ttColumn_delete.php:48
+#: Admin/ttColumn_edit.php:45 Admin/ttColumn_edit.php:51
+#: Admin/ttColumn_edit.php:54 Admin/ttColumn_edit_row_add.php:70
+#: Admin/ttColumn_edit_row_add.php:73 Admin/ttColumn_edit_row_add.php:76
+#: Admin/ttColumn_edit_row_delete.php:69 Admin/ttColumn_edit_row_delete.php:75
+#: Admin/ttColumn_edit_row_edit.php:69 Admin/ttColumn_edit_row_edit.php:75
+#: Admin/ttColumn_edit_row_edit.php:78 Admin/ttDates.php:45
+#: Admin/ttDates.php:48 Admin/ttDates.php:51 Admin/ttDates_edit.php:44
+#: Admin/ttDates_edit.php:50 Admin/ttDates_edit.php:53
+#: Admin/ttDates_edit_add.php:78 Admin/ttDates_edit_delete.php:71
+#: Admin/ttDates_edit_delete.php:77 modules/User
+#: Admin/applicationForm_manage_accept.php:72
+#: Admin/applicationForm_manage_accept.php:78
+#: Admin/applicationForm_manage_delete.php:45
+#: Admin/applicationForm_manage_delete.php:51
+#: Admin/applicationForm_manage_edit.php:72
+#: Admin/applicationForm_manage_edit.php:78
+#: Admin/applicationForm_manage_reject.php:72
+#: Admin/applicationForm_manage_reject.php:78
+#: Admin/applicationFormSettings.php:42 Admin/applicationFormSettings.php:48
+#: Admin/data_family_delete.php:45 Admin/data_family_delete.php:51
+#: Admin/data_family_edit.php:70 Admin/data_family_edit.php:76
+#: Admin/data_finance_delete.php:45 Admin/data_finance_delete.php:51
+#: Admin/data_finance_edit.php:70 Admin/data_finance_edit.php:76
+#: Admin/data_medical_delete.php:45 Admin/data_medical_delete.php:51
+#: Admin/data_medical_edit.php:70 Admin/data_medical_edit.php:76
+#: Admin/data_personal_delete.php:45 Admin/data_personal_delete.php:51
+#: Admin/data_personal_edit.php:70 Admin/data_personal_edit.php:76
+#: Admin/dataUpdaterSettings.php:42 Admin/dataUpdaterSettings.php:48
+#: Admin/district_manage_add.php:45 Admin/district_manage_add.php:48
+#: Admin/district_manage_delete.php:42 Admin/district_manage_delete.php:48
+#: Admin/district_manage_edit.php:42 Admin/district_manage_edit.php:48
+#: Admin/district_manage_edit.php:51 Admin/family_manage_add.php:45
+#: Admin/family_manage_add.php:48 Admin/family_manage_delete.php:42
+#: Admin/family_manage_delete.php:48 Admin/family_manage_edit.php:41
+#: Admin/family_manage_edit.php:47 Admin/family_manage_edit.php:50
+#: Admin/family_manage_edit.php:69 Admin/family_manage_edit.php:75
+#: Admin/family_manage_edit_deleteAdult.php:42
+#: Admin/family_manage_edit_deleteAdult.php:48
+#: Admin/family_manage_edit_deleteChild.php:42
+#: Admin/family_manage_edit_deleteChild.php:48
+#: Admin/family_manage_edit_editAdult.php:42
+#: Admin/family_manage_edit_editAdult.php:48
+#: Admin/family_manage_edit_editAdult.php:51
+#: Admin/family_manage_edit_editChild.php:42
+#: Admin/family_manage_edit_editChild.php:48
+#: Admin/family_manage_edit_editChild.php:51
+#: Admin/medicalForm_manage_add.php:45
+#: Admin/medicalForm_manage_condition_add.php:45
+#: Admin/medicalForm_manage_condition_delete.php:42
+#: Admin/medicalForm_manage_condition_delete.php:48
+#: Admin/medicalForm_manage_condition_edit.php:42
+#: Admin/medicalForm_manage_condition_edit.php:48
+#: Admin/medicalForm_manage_condition_edit.php:51
+#: Admin/medicalForm_manage_delete.php:42 Admin/medicalForm_manage_edit.php:42
+#: Admin/medicalForm_manage_edit.php:48 Admin/role_manage_add.php:45
+#: Admin/role_manage_add.php:48 Admin/role_manage_delete.php:42
+#: Admin/role_manage_delete.php:48 Admin/role_manage_edit.php:42
+#: Admin/role_manage_edit.php:48 Admin/role_manage_edit.php:51
+#: Admin/rollover.php:47 Admin/rollover.php:940 Admin/rollover.php:957
+#: Admin/rollover.php:1040 Admin/rollover.php:1101 Admin/rollover.php:1207
+#: Admin/rollover.php:1343 Admin/rollover.php:1419 Admin/rollover.php:1475
+#: Admin/staff_manage_add.php:45 Admin/staff_manage_add.php:48
+#: Admin/staff_manage_delete.php:42 Admin/staff_manage_delete.php:48
+#: Admin/staff_manage_edit.php:42 Admin/staff_manage_edit.php:48
+#: Admin/staff_manage_edit.php:51 Admin/studentEnrolment_manage_add.php:45
+#: Admin/studentEnrolment_manage_add.php:48
+#: Admin/studentEnrolment_manage_delete.php:42
+#: Admin/studentEnrolment_manage_delete.php:48
+#: Admin/studentEnrolment_manage_edit.php:42
+#: Admin/studentEnrolment_manage_edit.php:48
+#: Admin/studentEnrolment_manage_edit.php:51 Admin/user_manage_add.php:45
+#: Admin/user_manage_add.php:48 Admin/user_manage_delete.php:42
+#: Admin/user_manage_delete.php:48 Admin/user_manage_edit.php:42
+#: Admin/user_manage_edit.php:48 Admin/user_manage_edit.php:51
+#: Admin/user_manage_password.php:42 Admin/user_manage_password.php:48
+#: Admin/user_manage_password.php:51 Admin/userSettings.php:42
+#: Admin/userSettings.php:48 index.php:658 index.php:1083
+#: modules/Activities/activities_manage_add.php:47
+#: modules/Activities/activities_manage_delete.php:45
+#: modules/Activities/activities_manage_delete.php:51
+#: modules/Activities/activities_manage_edit.php:46
+#: modules/Activities/activities_manage_edit.php:52
+#: modules/Activities/activities_manage_edit.php:55
+#: modules/Activities/activities_manage_edit.php:77
+#: modules/Activities/activities_manage_edit.php:83
+#: modules/Activities/activities_manage_enrolment.php:45
+#: modules/Activities/activities_manage_enrolment.php:51
+#: modules/Activities/activities_manage_enrolment.php:54
+#: modules/Activities/activities_manage_enrolment.php:76
+#: modules/Activities/activities_manage_enrolment.php:82
+#: modules/Activities/activities_manage_enrolment_add.php:45
+#: modules/Activities/activities_manage_enrolment_add.php:51
+#: modules/Activities/activities_manage_enrolment_add.php:54
+#: modules/Activities/activities_manage_enrolment_add.php:57
+#: modules/Activities/activities_manage_enrolment_delete.php:42
+#: modules/Activities/activities_manage_enrolment_delete.php:48
+#: modules/Activities/activities_manage_enrolment_edit.php:45
+#: modules/Activities/activities_manage_enrolment_edit.php:51
+#: modules/Activities/activities_manage_enrolment_edit.php:54
+#: modules/Application Form/applicationForm.php:89
+#: modules/Application Form/applicationForm.php:92
+#: modules/Attendance/attendance_future_byPerson.php:45
+#: modules/Attendance/attendance_take_byPerson.php:45
+#: modules/Attendance/attendance_take_byRollGroup.php:45
+#: modules/Behaviour/behaviour_manage_add.php:55
+#: modules/Behaviour/behaviour_manage_add.php:58
+#: modules/Behaviour/behaviour_manage_delete.php:53
+#: modules/Behaviour/behaviour_manage_delete.php:59
+#: modules/Behaviour/behaviour_manage_edit.php:53
+#: modules/Behaviour/behaviour_manage_edit.php:59
+#: modules/Behaviour/behaviour_manage_edit.php:62
+#: modules/Behaviour/behaviour_manage_edit.php:84
+#: modules/Behaviour/behaviour_manage_edit.php:90
+#: modules/Crowd Assessment/crowdAssess_view.php:44
+#: modules/Crowd Assessment/crowdAssess_view.php:50
+#: modules/Crowd Assessment/crowdAssess_view.php:53
+#: modules/Crowd Assessment/crowdAssess_view_discuss.php:44
+#: modules/Crowd Assessment/crowdAssess_view_discuss.php:50
+#: modules/Crowd Assessment/crowdAssess_view_discuss.php:53
+#: modules/Crowd Assessment/crowdAssess_view_discuss_post.php:44
+#: modules/Crowd Assessment/crowdAssess_view_discuss_post.php:50
+#: modules/Crowd Assessment/crowdAssess_view_discuss_post.php:53
+#: modules/Data Updater/data_family.php:64
+#: modules/Data Updater/data_family.php:70
+#: modules/Data Updater/data_family.php:73
+#: modules/Data Updater/data_finance.php:64
+#: modules/Data Updater/data_finance.php:70
+#: modules/Data Updater/data_finance.php:73
+#: modules/Data Updater/data_medical.php:64
+#: modules/Data Updater/data_medical.php:70
+#: modules/Data Updater/data_medical.php:73
+#: modules/Data Updater/data_personal.php:64
+#: modules/Data Updater/data_personal.php:70
+#: modules/Data Updater/data_personal.php:73
+#: modules/Departments/department_course_edit.php:79
+#: modules/Departments/department_course_edit.php:85
+#: modules/Departments/department_course_edit.php:88
+#: modules/Departments/department_edit.php:70
+#: modules/Departments/department_edit.php:76
+#: modules/Departments/department_edit.php:79
+#: modules/Departments/department_edit.php:101
+#: modules/Departments/department_edit.php:107
+#: modules/External Assessment/externalAssessment_manage_details_add.php:45
+#: modules/External Assessment/externalAssessment_manage_details_add.php:48
+#: modules/External Assessment/externalAssessment_manage_details_add.php:51
+#: modules/External Assessment/externalAssessment_manage_details_delete.php:42
+#: modules/External Assessment/externalAssessment_manage_details_delete.php:48
+#: modules/External Assessment/externalAssessment_manage_details_edit.php:42
+#: modules/External Assessment/externalAssessment_manage_details_edit.php:48
+#: modules/External Assessment/externalAssessment_manage_details_edit.php:51
+#: modules/Finance/billingSchedule_manage_add.php:45
+#: modules/Finance/billingSchedule_manage_add.php:48
+#: modules/Finance/billingSchedule_manage_edit.php:42
+#: modules/Finance/billingSchedule_manage_edit.php:48
+#: modules/Finance/billingSchedule_manage_edit.php:51
+#: modules/Finance/feeCategories_manage_add.php:48
+#: modules/Finance/feeCategories_manage_delete.php:45
+#: modules/Finance/feeCategories_manage_delete.php:51
+#: modules/Finance/feeCategories_manage_edit.php:46
+#: modules/Finance/feeCategories_manage_edit.php:52
+#: modules/Finance/feeCategories_manage_edit.php:55
+#: modules/Finance/fees_manage_add.php:45
+#: modules/Finance/fees_manage_add.php:48
+#: modules/Finance/fees_manage_edit.php:42
+#: modules/Finance/fees_manage_edit.php:48
+#: modules/Finance/fees_manage_edit.php:51
+#: modules/Finance/invoicees_manage_edit.php:46
+#: modules/Finance/invoicees_manage_edit.php:52
+#: modules/Finance/invoicees_manage_edit.php:55
+#: modules/Finance/invoiceReceiptSettings.php:42
+#: modules/Finance/invoiceReceiptSettings.php:48
+#: modules/Finance/invoices_manage.php:75
+#: modules/Finance/invoices_manage_add.php:48
+#: modules/Finance/invoices_manage_delete.php:53
+#: modules/Finance/invoices_manage_delete.php:59
+#: modules/Finance/invoices_manage_edit.php:53
+#: modules/Finance/invoices_manage_edit.php:59
+#: modules/Finance/invoices_manage_print.php:53
+#: modules/Finance/invoices_manage_print.php:59
+#: modules/Individual Needs/in_edit.php:62
+#: modules/Individual Needs/in_edit.php:68
+#: modules/Individual Needs/in_edit.php:71
+#: modules/Library/library_lending_item_edit.php:69
+#: modules/Library/library_lending_item_edit.php:75
+#: modules/Library/library_lending_item_edit.php:78
+#: modules/Library/library_lending_item_return.php:69
+#: modules/Library/library_lending_item_return.php:75
+#: modules/Library/library_lending_item_return.php:78
+#: modules/Library/library_manage_catalog_add.php:48
+#: modules/Library/library_manage_catalog_delete.php:45
+#: modules/Library/library_manage_catalog_delete.php:51
+#: modules/Library/library_manage_catalog_edit.php:46
+#: modules/Library/library_manage_catalog_edit.php:52
+#: modules/Markbook/markbook_edit_add.php:83
+#: modules/Markbook/markbook_edit_add.php:86
+#: modules/Markbook/markbook_edit_addMulti.php:80
+#: modules/Markbook/markbook_edit_addMulti.php:83
+#: modules/Markbook/markbook_edit_data.php:102
+#: modules/Markbook/markbook_edit_delete.php:108
+#: modules/Markbook/markbook_edit_delete.php:114
+#: modules/Markbook/markbook_edit_edit.php:108
+#: modules/Markbook/markbook_edit_edit.php:114
+#: modules/Markbook/markbook_edit_edit.php:117
+#: modules/Markbook/markbook_edit_targets.php:84
+#: modules/Messenger/messenger_manage_delete.php:50
+#: modules/Messenger/messenger_manage_delete.php:56
+#: modules/Messenger/messenger_manage_edit.php:49
+#: modules/Messenger/messenger_manage_edit.php:55
+#: modules/Messenger/messenger_manage_edit.php:58
+#: modules/Messenger/messenger_post.php:54 modules/Planner/outcomes_add.php:62
+#: modules/Planner/outcomes_delete.php:59
+#: modules/Planner/outcomes_delete.php:65 modules/Planner/outcomes_edit.php:60
+#: modules/Planner/outcomes_edit.php:66 modules/Planner/outcomes_edit.php:69
+#: modules/Planner/planner.php:101 modules/Planner/planner.php:578
+#: modules/Planner/planner.php:846 modules/Planner/planner_add.php:142
+#: modules/Planner/planner_add.php:145 modules/Planner/planner_bump.php:126
+#: modules/Planner/planner_bump.php:132 modules/Planner/planner_delete.php:152
+#: modules/Planner/planner_delete.php:158 modules/Planner/planner_edit.php:211
+#: modules/Planner/planner_edit.php:217 modules/Planner/planner_edit.php:220
+#: modules/Planner/planner_edit.php:258 modules/Planner/planner_edit.php:264
+#: modules/Planner/planner_view_full.php:247
+#: modules/Planner/planner_view_full.php:303
+#: modules/Planner/planner_view_full_post.php:172
+#: modules/Planner/planner_view_full_post.php:178
+#: modules/Planner/planner_view_full_post.php:181
+#: modules/Planner/planner_view_full_submit_edit.php:131
+#: modules/Planner/planner_view_full_submit_edit.php:137
+#: modules/Planner/planner_view_full_submit_edit.php:140
+#: modules/Planner/units_add.php:56 modules/Planner/units_delete.php:53
+#: modules/Planner/units_delete.php:59 modules/Planner/units_duplicate.php:53
+#: modules/Planner/units_duplicate.php:59
+#: modules/Planner/units_duplicate.php:62 modules/Planner/units_edit.php:64
+#: modules/Planner/units_edit.php:70 modules/Planner/units_edit.php:73
+#: modules/Planner/units_edit_deploy.php:64
+#: modules/Planner/units_edit_deploy.php:70
+#: modules/Planner/units_edit_deploy.php:73
+#: modules/Planner/units_edit_working.php:64
+#: modules/Planner/units_edit_working.php:70
+#: modules/Planner/units_edit_working.php:73
+#: modules/Planner/units_edit_working.php:98
+#: modules/Planner/units_edit_working_add.php:64
+#: modules/Planner/units_edit_working_add.php:70
+#: modules/Planner/units_edit_working_add.php:73
+#: modules/Planner/units_edit_working_copyback.php:53
+#: modules/Planner/units_edit_working_copyback.php:59
+#: modules/Planner/units_edit_working_copyback.php:62
+#: modules/Resources/resources_add_ajaxProcess.php:81
+#: modules/Resources/resources_addQuick_ajaxProcess.php:62
+#: modules/Resources/resources_manage_add.php:55
+#: modules/Resources/resources_manage_add.php:58
+#: modules/Resources/resources_manage_edit.php:54
+#: modules/Resources/resources_manage_edit.php:60
+#: modules/Resources/resources_manage_edit.php:63
+#: modules/Rubrics/rubrics_add.php:62 modules/Rubrics/rubrics_delete.php:59
+#: modules/Rubrics/rubrics_delete.php:65 modules/Rubrics/rubrics_edit.php:60
+#: modules/Rubrics/rubrics_edit.php:66 modules/Rubrics/rubrics_edit.php:98
+#: modules/Rubrics/rubrics_edit.php:104 modules/Rubrics/rubrics_edit.php:123
+#: modules/Rubrics/rubrics_edit.php:129
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:60
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:66
+#: modules/School Admin/activitySettings.php:42
+#: modules/School Admin/activitySettings.php:48
+#: modules/School Admin/alertLevelSettings.php:42
+#: modules/School Admin/alertLevelSettings.php:48
+#: modules/School Admin/behaviourSettings.php:42
+#: modules/School Admin/behaviourSettings.php:48
+#: modules/School Admin/daysOfWeek_manage.php:42
+#: modules/School Admin/daysOfWeek_manage.php:48
+#: modules/School Admin/daysOfWeek_manage.php:51
+#: modules/School Admin/department_manage_add.php:47
+#: modules/School Admin/department_manage_add.php:50
+#: modules/School Admin/department_manage_delete.php:45
+#: modules/School Admin/department_manage_delete.php:51
+#: modules/School Admin/department_manage_edit.php:46
+#: modules/School Admin/department_manage_edit.php:52
+#: modules/School Admin/department_manage_edit.php:55
+#: modules/School Admin/department_manage_edit.php:77
+#: modules/School Admin/department_manage_edit.php:83
+#: modules/School Admin/externalAssessments_manage.php:45
+#: modules/School Admin/externalAssessments_manage.php:48
+#: modules/School Admin/externalAssessments_manage.php:51
+#: modules/School Admin/externalAssessments_manage_add.php:48
+#: modules/School Admin/externalAssessments_manage_add.php:51
+#: modules/School Admin/externalAssessments_manage_add.php:54
+#: modules/School Admin/externalAssessments_manage_delete.php:42
+#: modules/School Admin/externalAssessments_manage_delete.php:48
+#: modules/School Admin/externalAssessments_manage_edit.php:45
+#: modules/School Admin/externalAssessments_manage_edit.php:51
+#: modules/School Admin/externalAssessments_manage_edit.php:54
+#: modules/School Admin/externalAssessments_manage_edit_field_add.php:71
+#: modules/School Admin/externalAssessments_manage_edit_field_add.php:74
+#: modules/School Admin/externalAssessments_manage_edit_field_add.php:77
+#: modules/School Admin/externalAssessments_manage_edit_field_delete.php:69
+#: modules/School Admin/externalAssessments_manage_edit_field_delete.php:75
+#: modules/School Admin/externalAssessments_manage_edit_field_edit.php:69
+#: modules/School Admin/externalAssessments_manage_edit_field_edit.php:75
+#: modules/School Admin/externalAssessments_manage_edit_field_edit.php:78
+#: modules/School Admin/externalAssessmentSettings.php:42
+#: modules/School Admin/externalAssessmentSettings.php:48
+#: modules/School Admin/fileExtensions_manage_add.php:45
+#: modules/School Admin/fileExtensions_manage_add.php:48
+#: modules/School Admin/fileExtensions_manage_delete.php:42
+#: modules/School Admin/fileExtensions_manage_delete.php:48
+#: modules/School Admin/fileExtensions_manage_edit.php:42
+#: modules/School Admin/fileExtensions_manage_edit.php:48
+#: modules/School Admin/fileExtensions_manage_edit.php:51
+#: modules/School Admin/gradeScales_manage.php:48
+#: modules/School Admin/gradeScales_manage.php:51
+#: modules/School Admin/gradeScales_manage.php:54
+#: modules/School Admin/gradeScales_manage_add.php:48
+#: modules/School Admin/gradeScales_manage_add.php:51
+#: modules/School Admin/gradeScales_manage_add.php:54
+#: modules/School Admin/gradeScales_manage_delete.php:42
+#: modules/School Admin/gradeScales_manage_delete.php:48
+#: modules/School Admin/gradeScales_manage_edit.php:45
+#: modules/School Admin/gradeScales_manage_edit.php:51
+#: modules/School Admin/gradeScales_manage_edit.php:54
+#: modules/School Admin/gradeScales_manage_edit_grade_add.php:71
+#: modules/School Admin/gradeScales_manage_edit_grade_add.php:74
+#: modules/School Admin/gradeScales_manage_edit_grade_add.php:77
+#: modules/School Admin/gradeScales_manage_edit_grade_delete.php:69
+#: modules/School Admin/gradeScales_manage_edit_grade_delete.php:75
+#: modules/School Admin/gradeScales_manage_edit_grade_edit.php:69
+#: modules/School Admin/gradeScales_manage_edit_grade_edit.php:75
+#: modules/School Admin/gradeScales_manage_edit_grade_edit.php:78
+#: modules/School Admin/house_manage_add.php:45
+#: modules/School Admin/house_manage_add.php:48
+#: modules/School Admin/house_manage_delete.php:42
+#: modules/School Admin/house_manage_delete.php:48
+#: modules/School Admin/house_manage_edit.php:42
+#: modules/School Admin/house_manage_edit.php:48
+#: modules/School Admin/house_manage_edit.php:51
+#: modules/School Admin/inDescriptors_manage_add.php:45
+#: modules/School Admin/inDescriptors_manage_add.php:48
+#: modules/School Admin/inDescriptors_manage_delete.php:42
+#: modules/School Admin/inDescriptors_manage_delete.php:48
+#: modules/School Admin/inDescriptors_manage_edit.php:42
+#: modules/School Admin/inDescriptors_manage_edit.php:48
+#: modules/School Admin/inDescriptors_manage_edit.php:51
+#: modules/School Admin/librarySettings.php:42
+#: modules/School Admin/librarySettings.php:48
+#: modules/School Admin/markbookSettings.php:42
+#: modules/School Admin/markbookSettings.php:48
+#: modules/School Admin/plannerSettings.php:42
+#: modules/School Admin/plannerSettings.php:48
+#: modules/School Admin/resourceSettings.php:42
+#: modules/School Admin/resourceSettings.php:48
+#: modules/School Admin/rollGroup_manage_add.php:45
+#: modules/School Admin/rollGroup_manage_add.php:48
+#: modules/School Admin/rollGroup_manage_delete.php:42
+#: modules/School Admin/rollGroup_manage_delete.php:48
+#: modules/School Admin/rollGroup_manage_edit.php:42
+#: modules/School Admin/rollGroup_manage_edit.php:48
+#: modules/School Admin/rollGroup_manage_edit.php:51
+#: modules/School Admin/schoolYear_manage_add.php:45
+#: modules/School Admin/schoolYear_manage_add.php:48
+#: modules/School Admin/schoolYear_manage_delete.php:42
+#: modules/School Admin/schoolYear_manage_delete.php:48
+#: modules/School Admin/schoolYear_manage_edit.php:42
+#: modules/School Admin/schoolYear_manage_edit.php:48
+#: modules/School Admin/schoolYear_manage_edit.php:51
+#: modules/School Admin/schoolYearSpecialDay_manage.php:45
+#: modules/School Admin/schoolYearSpecialDay_manage.php:48
+#: modules/School Admin/schoolYearSpecialDay_manage.php:51
+#: modules/School Admin/schoolYearSpecialDay_manage_delete.php:42
+#: modules/School Admin/schoolYearSpecialDay_manage_delete.php:48
+#: modules/School Admin/schoolYearSpecialDay_manage_edit.php:42
+#: modules/School Admin/schoolYearSpecialDay_manage_edit.php:48
+#: modules/School Admin/schoolYearSpecialDay_manage_edit.php:51
+#: modules/School Admin/schoolYearTerm_manage_add.php:45
+#: modules/School Admin/schoolYearTerm_manage_add.php:48
+#: modules/School Admin/schoolYearTerm_manage_delete.php:42
+#: modules/School Admin/schoolYearTerm_manage_delete.php:48
+#: modules/School Admin/schoolYearTerm_manage_edit.php:41
+#: modules/School Admin/schoolYearTerm_manage_edit.php:47
+#: modules/School Admin/schoolYearTerm_manage_edit.php:50
+#: modules/School Admin/smsSettings.php:42
+#: modules/School Admin/smsSettings.php:48
+#: modules/School Admin/space_manage_add.php:45
+#: modules/School Admin/space_manage_add.php:48
+#: modules/School Admin/space_manage_delete.php:42
+#: modules/School Admin/space_manage_delete.php:48
+#: modules/School Admin/space_manage_edit.php:42
+#: modules/School Admin/space_manage_edit.php:48
+#: modules/School Admin/space_manage_edit.php:51
+#: modules/School Admin/studentsSettings.php:42
+#: modules/School Admin/studentsSettings.php:48
+#: modules/School Admin/studentsSettings_noteCategory_add.php:45
+#: modules/School Admin/studentsSettings_noteCategory_add.php:48
+#: modules/School Admin/studentsSettings_noteCategory_delete.php:42
+#: modules/School Admin/studentsSettings_noteCategory_delete.php:48
+#: modules/School Admin/studentsSettings_noteCategory_edit.php:42
+#: modules/School Admin/studentsSettings_noteCategory_edit.php:48
+#: modules/School Admin/studentsSettings_noteCategory_edit.php:51
+#: modules/School Admin/yearGroup_manage_add.php:45
+#: modules/School Admin/yearGroup_manage_add.php:48
+#: modules/School Admin/yearGroup_manage_delete.php:42
+#: modules/School Admin/yearGroup_manage_delete.php:48
+#: modules/School Admin/yearGroup_manage_edit.php:42
+#: modules/School Admin/yearGroup_manage_edit.php:48
+#: modules/School Admin/yearGroup_manage_edit.php:51
+#: modules/Students/student_view_details_notes_add.php:70
+#: modules/Students/student_view_details_notes_add.php:73
+#: modules/Students/student_view_details_notes_delete.php:67
+#: modules/Students/student_view_details_notes_delete.php:73
+#: modules/Students/student_view_details_notes_edit.php:67
+#: modules/Students/student_view_details_notes_edit.php:73
+#: modules/Students/student_view_details_notes_edit.php:76
+#: modules/System Admin/i18n_manage.php:42
+#: modules/System Admin/module_manage_edit.php:42
+#: modules/System Admin/module_manage_edit.php:48
+#: modules/System Admin/module_manage_edit.php:51
+#: modules/System Admin/module_manage_update.php:42
+#: modules/System Admin/module_manage_update.php:48
+#: modules/System Admin/systemSettings.php:57
+#: modules/System Admin/systemSettings.php:63
+#: modules/System Admin/theme_manage.php:55 modules/System Admin/update.php:42
+#: modules/System Admin/update.php:48
+#: modules/Timetable Admin/course_manage.php:45
+#: modules/Timetable Admin/course_manage.php:48
+#: modules/Timetable Admin/course_manage.php:51
+#: modules/Timetable Admin/course_manage_add.php:48
+#: modules/Timetable Admin/course_manage_add.php:51
+#: modules/Timetable Admin/course_manage_add.php:54
+#: modules/Timetable Admin/course_manage_class_add.php:45
+#: modules/Timetable Admin/course_manage_class_add.php:48
+#: modules/Timetable Admin/course_manage_class_add.php:51
+#: modules/Timetable Admin/course_manage_class_delete.php:42
+#: modules/Timetable Admin/course_manage_class_delete.php:48
+#: modules/Timetable Admin/course_manage_class_edit.php:42
+#: modules/Timetable Admin/course_manage_class_edit.php:48
+#: modules/Timetable Admin/course_manage_class_edit.php:51
+#: modules/Timetable Admin/course_manage_delete.php:42
+#: modules/Timetable Admin/course_manage_delete.php:48
+#: modules/Timetable Admin/course_manage_edit.php:45
+#: modules/Timetable Admin/course_manage_edit.php:51
+#: modules/Timetable Admin/course_manage_edit.php:54
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:87
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:93
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:96
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_delete.php:73
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_delete.php:79
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:74
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:80
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:83
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:69
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:75
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:78
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:71
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:77
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:80
+#: modules/Timetable Admin/tt.php:45 modules/Timetable Admin/tt.php:48
+#: modules/Timetable Admin/tt.php:51 modules/Timetable Admin/tt_add.php:48
+#: modules/Timetable Admin/tt_add.php:51 modules/Timetable Admin/tt_add.php:54
+#: modules/Timetable Admin/tt_delete.php:42
+#: modules/Timetable Admin/tt_delete.php:48
+#: modules/Timetable Admin/tt_edit.php:45
+#: modules/Timetable Admin/tt_edit.php:51
+#: modules/Timetable Admin/tt_edit.php:54
+#: modules/Timetable Admin/tt_edit_day_add.php:71
+#: modules/Timetable Admin/tt_edit_day_add.php:74
+#: modules/Timetable Admin/tt_edit_day_add.php:77
+#: modules/Timetable Admin/tt_edit_day_delete.php:70
+#: modules/Timetable Admin/tt_edit_day_delete.php:76
+#: modules/Timetable Admin/tt_edit_day_edit.php:69
+#: modules/Timetable Admin/tt_edit_day_edit.php:75
+#: modules/Timetable Admin/tt_edit_day_edit.php:78
+#: modules/Timetable Admin/tt_edit_day_edit_class.php:72
+#: modules/Timetable Admin/tt_edit_day_edit_class.php:78
+#: modules/Timetable Admin/tt_edit_day_edit_class.php:81
+#: modules/Timetable Admin/tt_edit_day_edit_class_add.php:75
+#: modules/Timetable Admin/tt_edit_day_edit_class_add.php:78
+#: modules/Timetable Admin/tt_edit_day_edit_class_add.php:81
+#: modules/Timetable Admin/tt_edit_day_edit_class_delete.php:74
+#: modules/Timetable Admin/tt_edit_day_edit_class_delete.php:80
+#: modules/Timetable Admin/tt_edit_day_edit_class_edit.php:95
+#: modules/Timetable Admin/tt_edit_day_edit_class_edit.php:101
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception.php:93
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception.php:99
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php:96
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php:102
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception_delete.php:95
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception_delete.php:101
+#: modules/Timetable Admin/tt_import.php:42
+#: modules/Timetable Admin/tt_import.php:48
+#: modules/Timetable Admin/ttColumn.php:48
+#: modules/Timetable Admin/ttColumn.php:51
+#: modules/Timetable Admin/ttColumn.php:54
+#: modules/Timetable Admin/ttColumn_add.php:48
+#: modules/Timetable Admin/ttColumn_add.php:51
+#: modules/Timetable Admin/ttColumn_add.php:54
+#: modules/Timetable Admin/ttColumn_delete.php:42
+#: modules/Timetable Admin/ttColumn_delete.php:48
+#: modules/Timetable Admin/ttColumn_edit.php:45
+#: modules/Timetable Admin/ttColumn_edit.php:51
+#: modules/Timetable Admin/ttColumn_edit.php:54
+#: modules/Timetable Admin/ttColumn_edit_row_add.php:70
+#: modules/Timetable Admin/ttColumn_edit_row_add.php:73
+#: modules/Timetable Admin/ttColumn_edit_row_add.php:76
+#: modules/Timetable Admin/ttColumn_edit_row_delete.php:69
+#: modules/Timetable Admin/ttColumn_edit_row_delete.php:75
+#: modules/Timetable Admin/ttColumn_edit_row_edit.php:69
+#: modules/Timetable Admin/ttColumn_edit_row_edit.php:75
+#: modules/Timetable Admin/ttColumn_edit_row_edit.php:78
+#: modules/Timetable Admin/ttDates.php:45
+#: modules/Timetable Admin/ttDates.php:48
+#: modules/Timetable Admin/ttDates.php:51
+#: modules/Timetable Admin/ttDates_edit.php:44
+#: modules/Timetable Admin/ttDates_edit.php:50
+#: modules/Timetable Admin/ttDates_edit.php:53
+#: modules/Timetable Admin/ttDates_edit_add.php:78
+#: modules/Timetable Admin/ttDates_edit_delete.php:71
+#: modules/Timetable Admin/ttDates_edit_delete.php:77
+#: modules/User Admin/applicationForm_manage_accept.php:72
+#: modules/User Admin/applicationForm_manage_accept.php:78
+#: modules/User Admin/applicationForm_manage_delete.php:45
+#: modules/User Admin/applicationForm_manage_delete.php:51
+#: modules/User Admin/applicationForm_manage_edit.php:72
+#: modules/User Admin/applicationForm_manage_edit.php:78
+#: modules/User Admin/applicationForm_manage_reject.php:72
+#: modules/User Admin/applicationForm_manage_reject.php:78
+#: modules/User Admin/applicationFormSettings.php:42
+#: modules/User Admin/applicationFormSettings.php:48
+#: modules/User Admin/data_family_delete.php:45
+#: modules/User Admin/data_family_delete.php:51
+#: modules/User Admin/data_family_edit.php:70
+#: modules/User Admin/data_family_edit.php:76
+#: modules/User Admin/data_finance_delete.php:45
+#: modules/User Admin/data_finance_delete.php:51
+#: modules/User Admin/data_finance_edit.php:70
+#: modules/User Admin/data_finance_edit.php:76
+#: modules/User Admin/data_medical_delete.php:45
+#: modules/User Admin/data_medical_delete.php:51
+#: modules/User Admin/data_medical_edit.php:70
+#: modules/User Admin/data_medical_edit.php:76
+#: modules/User Admin/data_personal_delete.php:45
+#: modules/User Admin/data_personal_delete.php:51
+#: modules/User Admin/data_personal_edit.php:70
+#: modules/User Admin/data_personal_edit.php:76
+#: modules/User Admin/dataUpdaterSettings.php:42
+#: modules/User Admin/dataUpdaterSettings.php:48
+#: modules/User Admin/district_manage_add.php:45
+#: modules/User Admin/district_manage_add.php:48
+#: modules/User Admin/district_manage_delete.php:42
+#: modules/User Admin/district_manage_delete.php:48
+#: modules/User Admin/district_manage_edit.php:42
+#: modules/User Admin/district_manage_edit.php:48
+#: modules/User Admin/district_manage_edit.php:51
+#: modules/User Admin/family_manage_add.php:45
+#: modules/User Admin/family_manage_add.php:48
+#: modules/User Admin/family_manage_delete.php:42
+#: modules/User Admin/family_manage_delete.php:48
+#: modules/User Admin/family_manage_edit.php:41
+#: modules/User Admin/family_manage_edit.php:47
+#: modules/User Admin/family_manage_edit.php:50
+#: modules/User Admin/family_manage_edit.php:69
+#: modules/User Admin/family_manage_edit.php:75
+#: modules/User Admin/family_manage_edit_deleteAdult.php:42
+#: modules/User Admin/family_manage_edit_deleteAdult.php:48
+#: modules/User Admin/family_manage_edit_deleteChild.php:42
+#: modules/User Admin/family_manage_edit_deleteChild.php:48
+#: modules/User Admin/family_manage_edit_editAdult.php:42
+#: modules/User Admin/family_manage_edit_editAdult.php:48
+#: modules/User Admin/family_manage_edit_editAdult.php:51
+#: modules/User Admin/family_manage_edit_editChild.php:42
+#: modules/User Admin/family_manage_edit_editChild.php:48
+#: modules/User Admin/family_manage_edit_editChild.php:51
+#: modules/User Admin/medicalForm_manage_add.php:45
+#: modules/User Admin/medicalForm_manage_condition_add.php:45
+#: modules/User Admin/medicalForm_manage_condition_delete.php:42
+#: modules/User Admin/medicalForm_manage_condition_delete.php:48
+#: modules/User Admin/medicalForm_manage_condition_edit.php:42
+#: modules/User Admin/medicalForm_manage_condition_edit.php:48
+#: modules/User Admin/medicalForm_manage_condition_edit.php:51
+#: modules/User Admin/medicalForm_manage_delete.php:42
+#: modules/User Admin/medicalForm_manage_edit.php:42
+#: modules/User Admin/medicalForm_manage_edit.php:48
+#: modules/User Admin/role_manage_add.php:45
+#: modules/User Admin/role_manage_add.php:48
+#: modules/User Admin/role_manage_delete.php:42
+#: modules/User Admin/role_manage_delete.php:48
+#: modules/User Admin/role_manage_edit.php:42
+#: modules/User Admin/role_manage_edit.php:48
+#: modules/User Admin/role_manage_edit.php:51
+#: modules/User Admin/rollover.php:47 modules/User Admin/rollover.php:940
+#: modules/User Admin/rollover.php:957 modules/User Admin/rollover.php:1040
+#: modules/User Admin/rollover.php:1101 modules/User Admin/rollover.php:1207
+#: modules/User Admin/rollover.php:1343 modules/User Admin/rollover.php:1419
+#: modules/User Admin/rollover.php:1475
+#: modules/User Admin/staff_manage_add.php:45
+#: modules/User Admin/staff_manage_add.php:48
+#: modules/User Admin/staff_manage_delete.php:42
+#: modules/User Admin/staff_manage_delete.php:48
+#: modules/User Admin/staff_manage_edit.php:42
+#: modules/User Admin/staff_manage_edit.php:48
+#: modules/User Admin/staff_manage_edit.php:51
+#: modules/User Admin/studentEnrolment_manage_add.php:45
+#: modules/User Admin/studentEnrolment_manage_add.php:48
+#: modules/User Admin/studentEnrolment_manage_delete.php:42
+#: modules/User Admin/studentEnrolment_manage_delete.php:48
+#: modules/User Admin/studentEnrolment_manage_edit.php:42
+#: modules/User Admin/studentEnrolment_manage_edit.php:48
+#: modules/User Admin/studentEnrolment_manage_edit.php:51
+#: modules/User Admin/user_manage_add.php:45
+#: modules/User Admin/user_manage_add.php:48
+#: modules/User Admin/user_manage_delete.php:42
+#: modules/User Admin/user_manage_delete.php:48
+#: modules/User Admin/user_manage_edit.php:42
+#: modules/User Admin/user_manage_edit.php:48
+#: modules/User Admin/user_manage_edit.php:51
+#: modules/User Admin/user_manage_password.php:42
+#: modules/User Admin/user_manage_password.php:48
+#: modules/User Admin/user_manage_password.php:51
+#: modules/User Admin/userSettings.php:42
+#: modules/User Admin/userSettings.php:48
+msgid "Your request failed because your inputs were invalid."
+msgstr ""
+
+#: index.php:661 index.php:1086 passwordReset.php:36 preferences.php:69
+#: modules/Activities/activities_manage_add.php:44
+#: modules/Activities/activities_manage_delete.php:48
+#: modules/Activities/activities_manage_edit.php:49
+#: modules/Activities/activities_manage_edit.php:80
+#: modules/Activities/activities_manage_enrolment.php:48
+#: modules/Activities/activities_manage_enrolment.php:79
+#: modules/Activities/activities_manage_enrolment_add.php:48
+#: modules/Activities/activities_manage_enrolment_delete.php:45
+#: modules/Activities/activities_manage_enrolment_edit.php:48
+#: modules/Application Form/applicationForm.php:86
+#: modules/Attendance/attendance_future_byPerson.php:48
+#: modules/Attendance/attendance_take_byPerson.php:48
+#: modules/Attendance/attendance_take_byRollGroup.php:48
+#: modules/Behaviour/behaviour_manage_add.php:52
+#: modules/Behaviour/behaviour_manage_delete.php:56
+#: modules/Behaviour/behaviour_manage_edit.php:56
+#: modules/Behaviour/behaviour_manage_edit.php:87 modules/Crowd
+#: Assessment/crowdAssess_view.php:47
+#: Assessment/crowdAssess_view_discuss.php:47
+#: Assessment/crowdAssess_view_discuss_post.php:47 modules/Data
+#: Updater/data_family.php:67 Updater/data_finance.php:67
+#: Updater/data_medical.php:67 Updater/data_personal.php:67
+#: modules/Departments/department_course_edit.php:82
+#: modules/Departments/department_edit.php:73
+#: modules/Departments/department_edit.php:104 modules/External
+#: Assessment/externalAssessment_manage_details_add.php:42
+#: Assessment/externalAssessment_manage_details_delete.php:45
+#: Assessment/externalAssessment_manage_details_edit.php:45
+#: modules/Finance/billingSchedule_manage_add.php:42
+#: modules/Finance/billingSchedule_manage_edit.php:45
+#: modules/Finance/feeCategories_manage_add.php:45
+#: modules/Finance/feeCategories_manage_delete.php:48
+#: modules/Finance/feeCategories_manage_edit.php:49
+#: modules/Finance/fees_manage_add.php:42
+#: modules/Finance/fees_manage_edit.php:45
+#: modules/Finance/invoicees_manage_edit.php:49
+#: modules/Finance/invoices_manage.php:72
+#: modules/Finance/invoices_manage_add.php:45
+#: modules/Finance/invoices_manage_delete.php:56
+#: modules/Finance/invoices_manage_edit.php:56
+#: modules/Finance/invoices_manage_print.php:56 modules/Individual
+#: Needs/in_edit.php:65 modules/Library/library_lending_item_edit.php:72
+#: modules/Library/library_lending_item_return.php:72
+#: modules/Library/library_manage_catalog_add.php:45
+#: modules/Library/library_manage_catalog_delete.php:48
+#: modules/Library/library_manage_catalog_edit.php:49
+#: modules/Markbook/markbook_edit_add.php:80
+#: modules/Markbook/markbook_edit_addMulti.php:77
+#: modules/Markbook/markbook_edit_data.php:105
+#: modules/Markbook/markbook_edit_delete.php:111
+#: modules/Markbook/markbook_edit_edit.php:111
+#: modules/Markbook/markbook_edit_targets.php:87
+#: modules/Messenger/messenger_manage_delete.php:53
+#: modules/Messenger/messenger_manage_edit.php:52
+#: modules/Messenger/messenger_post.php:51 modules/Planner/outcomes_add.php:59
+#: modules/Planner/outcomes_delete.php:62 modules/Planner/outcomes_edit.php:63
+#: modules/Planner/planner.php:104 modules/Planner/planner.php:581
+#: modules/Planner/planner.php:849 modules/Planner/planner_add.php:139
+#: modules/Planner/planner_bump.php:129
+#: modules/Planner/planner_deadlines.php:486
+#: modules/Planner/planner_delete.php:155 modules/Planner/planner_edit.php:214
+#: modules/Planner/planner_view_full.php:250
+#: modules/Planner/planner_view_full.php:306
+#: modules/Planner/planner_view_full_post.php:175
+#: modules/Planner/planner_view_full_submit_edit.php:134
+#: modules/Planner/units_add.php:53 modules/Planner/units_delete.php:56
+#: modules/Planner/units_duplicate.php:56 modules/Planner/units_edit.php:67
+#: modules/Planner/units_edit_deploy.php:67
+#: modules/Planner/units_edit_working.php:67
+#: modules/Planner/units_edit_working.php:95
+#: modules/Planner/units_edit_working_add.php:67
+#: modules/Planner/units_edit_working_copyback.php:56
+#: modules/Resources/resources_add_ajaxProcess.php:118
+#: modules/Resources/resources_add_ajaxProcess.php:175
+#: modules/Resources/resources_manage_add.php:52
+#: modules/Resources/resources_manage_edit.php:57
+#: modules/Rubrics/rubrics_add.php:59 modules/Rubrics/rubrics_delete.php:62
+#: modules/Rubrics/rubrics_edit.php:63 modules/Rubrics/rubrics_edit.php:101
+#: modules/Rubrics/rubrics_edit.php:126
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:63 modules/School
+#: Admin/alertLevelSettings.php:45 Admin/daysOfWeek_manage.php:45
+#: Admin/department_manage_add.php:44 Admin/department_manage_delete.php:48
+#: Admin/department_manage_edit.php:49 Admin/department_manage_edit.php:80
+#: Admin/externalAssessments_manage.php:42
+#: Admin/externalAssessments_manage_add.php:45
+#: Admin/externalAssessments_manage_delete.php:45
+#: Admin/externalAssessments_manage_edit.php:48
+#: Admin/externalAssessments_manage_edit_field_add.php:68
+#: Admin/externalAssessments_manage_edit_field_delete.php:72
+#: Admin/externalAssessments_manage_edit_field_edit.php:72
+#: Admin/externalAssessmentSettings.php:45
+#: Admin/fileExtensions_manage_add.php:42
+#: Admin/fileExtensions_manage_delete.php:45
+#: Admin/fileExtensions_manage_edit.php:45 Admin/gradeScales_manage.php:45
+#: Admin/gradeScales_manage_add.php:45 Admin/gradeScales_manage_delete.php:45
+#: Admin/gradeScales_manage_edit.php:48
+#: Admin/gradeScales_manage_edit_grade_add.php:68
+#: Admin/gradeScales_manage_edit_grade_delete.php:72
+#: Admin/gradeScales_manage_edit_grade_edit.php:72
+#: Admin/house_manage_add.php:42 Admin/house_manage_delete.php:45
+#: Admin/house_manage_edit.php:45 Admin/inDescriptors_manage_add.php:42
+#: Admin/inDescriptors_manage_delete.php:45
+#: Admin/inDescriptors_manage_edit.php:45 Admin/rollGroup_manage_add.php:42
+#: Admin/rollGroup_manage_delete.php:45 Admin/rollGroup_manage_edit.php:45
+#: Admin/schoolYear_manage_add.php:42 Admin/schoolYear_manage_delete.php:45
+#: Admin/schoolYear_manage_edit.php:45
+#: Admin/schoolYearSpecialDay_manage.php:42
+#: Admin/schoolYearSpecialDay_manage_delete.php:45
+#: Admin/schoolYearSpecialDay_manage_edit.php:45
+#: Admin/schoolYearTerm_manage_add.php:42
+#: Admin/schoolYearTerm_manage_delete.php:45
+#: Admin/schoolYearTerm_manage_edit.php:44 Admin/space_manage_add.php:42
+#: Admin/space_manage_delete.php:45 Admin/space_manage_edit.php:45
+#: Admin/studentsSettings_noteCategory_add.php:42
+#: Admin/studentsSettings_noteCategory_delete.php:45
+#: Admin/studentsSettings_noteCategory_edit.php:45
+#: Admin/yearGroup_manage_add.php:42 Admin/yearGroup_manage_delete.php:45
+#: Admin/yearGroup_manage_edit.php:45
+#: modules/Students/student_view_details_notes_add.php:67
+#: modules/Students/student_view_details_notes_delete.php:70
+#: modules/Students/student_view_details_notes_edit.php:70 modules/System
+#: Admin/i18n_manage.php:45 Admin/module_manage_edit.php:45
+#: Admin/module_manage_update.php:45 Admin/theme_manage.php:58
+#: modules/Timetable Admin/course_manage.php:42 Admin/course_manage_add.php:45
+#: Admin/course_manage_class_add.php:42
+#: Admin/course_manage_class_delete.php:45
+#: Admin/course_manage_class_edit.php:45 Admin/course_manage_delete.php:45
+#: Admin/course_manage_edit.php:48
+#: Admin/courseEnrolment_manage_byPerson_edit.php:90
+#: Admin/courseEnrolment_manage_byPerson_edit_delete.php:76
+#: Admin/courseEnrolment_manage_byPerson_edit_edit.php:77
+#: Admin/courseEnrolment_manage_class_edit.php:72
+#: Admin/courseEnrolment_manage_class_edit_edit.php:74 Admin/tt.php:42
+#: Admin/tt_add.php:45 Admin/tt_delete.php:45 Admin/tt_edit.php:48
+#: Admin/tt_edit_day_add.php:68 Admin/tt_edit_day_edit.php:72
+#: Admin/tt_edit_day_edit_class.php:75 Admin/tt_edit_day_edit_class_add.php:72
+#: Admin/tt_edit_day_edit_class_delete.php:77
+#: Admin/tt_edit_day_edit_class_edit.php:98
+#: Admin/tt_edit_day_edit_class_exception.php:96
+#: Admin/tt_edit_day_edit_class_exception_add.php:99
+#: Admin/tt_edit_day_edit_class_exception_delete.php:98 Admin/tt_import.php:45
+#: Admin/ttColumn.php:45 Admin/ttColumn_add.php:45
+#: Admin/ttColumn_delete.php:45 Admin/ttColumn_edit.php:48
+#: Admin/ttColumn_edit_row_add.php:67 Admin/ttColumn_edit_row_delete.php:72
+#: Admin/ttColumn_edit_row_edit.php:72 Admin/ttDates.php:42
+#: Admin/ttDates_edit.php:47 Admin/ttDates_edit_add.php:75
+#: Admin/ttDates_edit_delete.php:74 modules/User
+#: Admin/applicationForm_manage_accept.php:75
+#: Admin/applicationForm_manage_edit.php:75
+#: Admin/applicationForm_manage_reject.php:75 Admin/data_family_delete.php:48
+#: Admin/data_family_edit.php:73 Admin/data_finance_delete.php:48
+#: Admin/data_finance_edit.php:73 Admin/data_medical_delete.php:48
+#: Admin/data_medical_edit.php:73 Admin/data_personal_delete.php:48
+#: Admin/data_personal_edit.php:73 Admin/district_manage_add.php:42
+#: Admin/district_manage_delete.php:45 Admin/district_manage_edit.php:45
+#: Admin/family_manage_add.php:42 Admin/family_manage_delete.php:45
+#: Admin/family_manage_edit.php:44 Admin/family_manage_edit.php:72
+#: Admin/family_manage_edit_deleteAdult.php:45
+#: Admin/family_manage_edit_deleteChild.php:45
+#: Admin/family_manage_edit_editAdult.php:45
+#: Admin/family_manage_edit_editChild.php:45
+#: Admin/medicalForm_manage_add.php:42
+#: Admin/medicalForm_manage_condition_add.php:42
+#: Admin/medicalForm_manage_condition_delete.php:45
+#: Admin/medicalForm_manage_condition_edit.php:45
+#: Admin/medicalForm_manage_delete.php:45 Admin/medicalForm_manage_edit.php:45
+#: Admin/permission_manage.php:42 Admin/role_manage_add.php:42
+#: Admin/role_manage_delete.php:45 Admin/role_manage_edit.php:45
+#: Admin/rollover.php:44 Admin/staff_manage_add.php:42
+#: Admin/staff_manage_delete.php:45 Admin/staff_manage_edit.php:45
+#: Admin/studentEnrolment_manage_add.php:42
+#: Admin/studentEnrolment_manage_delete.php:45
+#: Admin/studentEnrolment_manage_edit.php:45 Admin/user_manage_add.php:42
+#: Admin/user_manage_delete.php:45 Admin/user_manage_edit.php:45
+#: Admin/user_manage_password.php:45 index.php:661 index.php:1086
+#: modules/Activities/activities_manage_add.php:44
+#: modules/Activities/activities_manage_delete.php:48
+#: modules/Activities/activities_manage_edit.php:49
+#: modules/Activities/activities_manage_edit.php:80
+#: modules/Activities/activities_manage_enrolment.php:48
+#: modules/Activities/activities_manage_enrolment.php:79
+#: modules/Activities/activities_manage_enrolment_add.php:48
+#: modules/Activities/activities_manage_enrolment_delete.php:45
+#: modules/Activities/activities_manage_enrolment_edit.php:48
+#: modules/Application Form/applicationForm.php:86
+#: modules/Attendance/attendance_future_byPerson.php:48
+#: modules/Attendance/attendance_take_byPerson.php:48
+#: modules/Attendance/attendance_take_byRollGroup.php:48
+#: modules/Behaviour/behaviour_manage_add.php:52
+#: modules/Behaviour/behaviour_manage_delete.php:56
+#: modules/Behaviour/behaviour_manage_edit.php:56
+#: modules/Behaviour/behaviour_manage_edit.php:87
+#: modules/Crowd Assessment/crowdAssess_view.php:47
+#: modules/Crowd Assessment/crowdAssess_view_discuss.php:47
+#: modules/Crowd Assessment/crowdAssess_view_discuss_post.php:47
+#: modules/Data Updater/data_family.php:67
+#: modules/Data Updater/data_finance.php:67
+#: modules/Data Updater/data_medical.php:67
+#: modules/Data Updater/data_personal.php:67
+#: modules/Departments/department_course_edit.php:82
+#: modules/Departments/department_edit.php:73
+#: modules/Departments/department_edit.php:104
+#: modules/External Assessment/externalAssessment_manage_details_add.php:42
+#: modules/External Assessment/externalAssessment_manage_details_delete.php:45
+#: modules/External Assessment/externalAssessment_manage_details_edit.php:45
+#: modules/Finance/billingSchedule_manage_add.php:42
+#: modules/Finance/billingSchedule_manage_edit.php:45
+#: modules/Finance/feeCategories_manage_add.php:45
+#: modules/Finance/feeCategories_manage_delete.php:48
+#: modules/Finance/feeCategories_manage_edit.php:49
+#: modules/Finance/fees_manage_add.php:42
+#: modules/Finance/fees_manage_edit.php:45
+#: modules/Finance/invoicees_manage_edit.php:49
+#: modules/Finance/invoices_manage.php:72
+#: modules/Finance/invoices_manage_add.php:45
+#: modules/Finance/invoices_manage_delete.php:56
+#: modules/Finance/invoices_manage_edit.php:56
+#: modules/Finance/invoices_manage_print.php:56
+#: modules/Individual Needs/in_edit.php:65
+#: modules/Library/library_lending_item_edit.php:72
+#: modules/Library/library_lending_item_return.php:72
+#: modules/Library/library_manage_catalog_add.php:45
+#: modules/Library/library_manage_catalog_delete.php:48
+#: modules/Library/library_manage_catalog_edit.php:49
+#: modules/Markbook/markbook_edit_add.php:80
+#: modules/Markbook/markbook_edit_addMulti.php:77
+#: modules/Markbook/markbook_edit_data.php:105
+#: modules/Markbook/markbook_edit_delete.php:111
+#: modules/Markbook/markbook_edit_edit.php:111
+#: modules/Markbook/markbook_edit_targets.php:87
+#: modules/Messenger/messenger_manage_delete.php:53
+#: modules/Messenger/messenger_manage_edit.php:52
+#: modules/Messenger/messenger_post.php:51 modules/Planner/outcomes_add.php:59
+#: modules/Planner/outcomes_delete.php:62 modules/Planner/outcomes_edit.php:63
+#: modules/Planner/planner.php:104 modules/Planner/planner.php:581
+#: modules/Planner/planner.php:849 modules/Planner/planner_add.php:139
+#: modules/Planner/planner_bump.php:129
+#: modules/Planner/planner_deadlines.php:486
+#: modules/Planner/planner_delete.php:155 modules/Planner/planner_edit.php:214
+#: modules/Planner/planner_view_full.php:250
+#: modules/Planner/planner_view_full.php:306
+#: modules/Planner/planner_view_full_post.php:175
+#: modules/Planner/planner_view_full_submit_edit.php:134
+#: modules/Planner/units_add.php:53 modules/Planner/units_delete.php:56
+#: modules/Planner/units_duplicate.php:56 modules/Planner/units_edit.php:67
+#: modules/Planner/units_edit_deploy.php:67
+#: modules/Planner/units_edit_working.php:67
+#: modules/Planner/units_edit_working.php:95
+#: modules/Planner/units_edit_working_add.php:67
+#: modules/Planner/units_edit_working_copyback.php:56
+#: modules/Resources/resources_add_ajaxProcess.php:118
+#: modules/Resources/resources_add_ajaxProcess.php:175
+#: modules/Resources/resources_manage_add.php:52
+#: modules/Resources/resources_manage_edit.php:57
+#: modules/Rubrics/rubrics_add.php:59 modules/Rubrics/rubrics_delete.php:62
+#: modules/Rubrics/rubrics_edit.php:63 modules/Rubrics/rubrics_edit.php:101
+#: modules/Rubrics/rubrics_edit.php:126
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:63
+#: modules/School Admin/alertLevelSettings.php:45
+#: modules/School Admin/daysOfWeek_manage.php:45
+#: modules/School Admin/department_manage_add.php:44
+#: modules/School Admin/department_manage_delete.php:48
+#: modules/School Admin/department_manage_edit.php:49
+#: modules/School Admin/department_manage_edit.php:80
+#: modules/School Admin/externalAssessments_manage.php:42
+#: modules/School Admin/externalAssessments_manage_add.php:45
+#: modules/School Admin/externalAssessments_manage_delete.php:45
+#: modules/School Admin/externalAssessments_manage_edit.php:48
+#: modules/School Admin/externalAssessments_manage_edit_field_add.php:68
+#: modules/School Admin/externalAssessments_manage_edit_field_delete.php:72
+#: modules/School Admin/externalAssessments_manage_edit_field_edit.php:72
+#: modules/School Admin/externalAssessmentSettings.php:45
+#: modules/School Admin/fileExtensions_manage_add.php:42
+#: modules/School Admin/fileExtensions_manage_delete.php:45
+#: modules/School Admin/fileExtensions_manage_edit.php:45
+#: modules/School Admin/gradeScales_manage.php:45
+#: modules/School Admin/gradeScales_manage_add.php:45
+#: modules/School Admin/gradeScales_manage_delete.php:45
+#: modules/School Admin/gradeScales_manage_edit.php:48
+#: modules/School Admin/gradeScales_manage_edit_grade_add.php:68
+#: modules/School Admin/gradeScales_manage_edit_grade_delete.php:72
+#: modules/School Admin/gradeScales_manage_edit_grade_edit.php:72
+#: modules/School Admin/house_manage_add.php:42
+#: modules/School Admin/house_manage_delete.php:45
+#: modules/School Admin/house_manage_edit.php:45
+#: modules/School Admin/inDescriptors_manage_add.php:42
+#: modules/School Admin/inDescriptors_manage_delete.php:45
+#: modules/School Admin/inDescriptors_manage_edit.php:45
+#: modules/School Admin/rollGroup_manage_add.php:42
+#: modules/School Admin/rollGroup_manage_delete.php:45
+#: modules/School Admin/rollGroup_manage_edit.php:45
+#: modules/School Admin/schoolYear_manage_add.php:42
+#: modules/School Admin/schoolYear_manage_delete.php:45
+#: modules/School Admin/schoolYear_manage_edit.php:45
+#: modules/School Admin/schoolYearSpecialDay_manage.php:42
+#: modules/School Admin/schoolYearSpecialDay_manage_delete.php:45
+#: modules/School Admin/schoolYearSpecialDay_manage_edit.php:45
+#: modules/School Admin/schoolYearTerm_manage_add.php:42
+#: modules/School Admin/schoolYearTerm_manage_delete.php:45
+#: modules/School Admin/schoolYearTerm_manage_edit.php:44
+#: modules/School Admin/space_manage_add.php:42
+#: modules/School Admin/space_manage_delete.php:45
+#: modules/School Admin/space_manage_edit.php:45
+#: modules/School Admin/studentsSettings_noteCategory_add.php:42
+#: modules/School Admin/studentsSettings_noteCategory_delete.php:45
+#: modules/School Admin/studentsSettings_noteCategory_edit.php:45
+#: modules/School Admin/yearGroup_manage_add.php:42
+#: modules/School Admin/yearGroup_manage_delete.php:45
+#: modules/School Admin/yearGroup_manage_edit.php:45
+#: modules/Students/student_view_details_notes_add.php:67
+#: modules/Students/student_view_details_notes_delete.php:70
+#: modules/Students/student_view_details_notes_edit.php:70
+#: modules/System Admin/i18n_manage.php:45
+#: modules/System Admin/module_manage_edit.php:45
+#: modules/System Admin/module_manage_update.php:45
+#: modules/System Admin/theme_manage.php:58
+#: modules/Timetable Admin/course_manage.php:42
+#: modules/Timetable Admin/course_manage_add.php:45
+#: modules/Timetable Admin/course_manage_class_add.php:42
+#: modules/Timetable Admin/course_manage_class_delete.php:45
+#: modules/Timetable Admin/course_manage_class_edit.php:45
+#: modules/Timetable Admin/course_manage_delete.php:45
+#: modules/Timetable Admin/course_manage_edit.php:48
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:90
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_delete.php:76
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:77
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:72
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:74
+#: modules/Timetable Admin/tt.php:42 modules/Timetable Admin/tt_add.php:45
+#: modules/Timetable Admin/tt_delete.php:45
+#: modules/Timetable Admin/tt_edit.php:48
+#: modules/Timetable Admin/tt_edit_day_add.php:68
+#: modules/Timetable Admin/tt_edit_day_edit.php:72
+#: modules/Timetable Admin/tt_edit_day_edit_class.php:75
+#: modules/Timetable Admin/tt_edit_day_edit_class_add.php:72
+#: modules/Timetable Admin/tt_edit_day_edit_class_delete.php:77
+#: modules/Timetable Admin/tt_edit_day_edit_class_edit.php:98
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception.php:96
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php:99
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception_delete.php:98
+#: modules/Timetable Admin/tt_import.php:45
+#: modules/Timetable Admin/ttColumn.php:45
+#: modules/Timetable Admin/ttColumn_add.php:45
+#: modules/Timetable Admin/ttColumn_delete.php:45
+#: modules/Timetable Admin/ttColumn_edit.php:48
+#: modules/Timetable Admin/ttColumn_edit_row_add.php:67
+#: modules/Timetable Admin/ttColumn_edit_row_delete.php:72
+#: modules/Timetable Admin/ttColumn_edit_row_edit.php:72
+#: modules/Timetable Admin/ttDates.php:42
+#: modules/Timetable Admin/ttDates_edit.php:47
+#: modules/Timetable Admin/ttDates_edit_add.php:75
+#: modules/Timetable Admin/ttDates_edit_delete.php:74
+#: modules/User Admin/applicationForm_manage_accept.php:75
+#: modules/User Admin/applicationForm_manage_edit.php:75
+#: modules/User Admin/applicationForm_manage_reject.php:75
+#: modules/User Admin/data_family_delete.php:48
+#: modules/User Admin/data_family_edit.php:73
+#: modules/User Admin/data_finance_delete.php:48
+#: modules/User Admin/data_finance_edit.php:73
+#: modules/User Admin/data_medical_delete.php:48
+#: modules/User Admin/data_medical_edit.php:73
+#: modules/User Admin/data_personal_delete.php:48
+#: modules/User Admin/data_personal_edit.php:73
+#: modules/User Admin/district_manage_add.php:42
+#: modules/User Admin/district_manage_delete.php:45
+#: modules/User Admin/district_manage_edit.php:45
+#: modules/User Admin/family_manage_add.php:42
+#: modules/User Admin/family_manage_delete.php:45
+#: modules/User Admin/family_manage_edit.php:44
+#: modules/User Admin/family_manage_edit.php:72
+#: modules/User Admin/family_manage_edit_deleteAdult.php:45
+#: modules/User Admin/family_manage_edit_deleteChild.php:45
+#: modules/User Admin/family_manage_edit_editAdult.php:45
+#: modules/User Admin/family_manage_edit_editChild.php:45
+#: modules/User Admin/medicalForm_manage_add.php:42
+#: modules/User Admin/medicalForm_manage_condition_add.php:42
+#: modules/User Admin/medicalForm_manage_condition_delete.php:45
+#: modules/User Admin/medicalForm_manage_condition_edit.php:45
+#: modules/User Admin/medicalForm_manage_delete.php:45
+#: modules/User Admin/medicalForm_manage_edit.php:45
+#: modules/User Admin/permission_manage.php:42
+#: modules/User Admin/role_manage_add.php:42
+#: modules/User Admin/role_manage_delete.php:45
+#: modules/User Admin/role_manage_edit.php:45
+#: modules/User Admin/rollover.php:44
+#: modules/User Admin/staff_manage_add.php:42
+#: modules/User Admin/staff_manage_delete.php:45
+#: modules/User Admin/staff_manage_edit.php:45
+#: modules/User Admin/studentEnrolment_manage_add.php:42
+#: modules/User Admin/studentEnrolment_manage_delete.php:45
+#: modules/User Admin/studentEnrolment_manage_edit.php:45
+#: modules/User Admin/user_manage_add.php:42
+#: modules/User Admin/user_manage_delete.php:45
+#: modules/User Admin/user_manage_edit.php:45
+#: modules/User Admin/user_manage_password.php:45 passwordReset.php:36
+#: preferences.php:69
+msgid "Your request failed due to a database error."
+msgstr ""
+
+#: index.php:664 index.php:1089 preferences.php:84
+#: modules/Activities/activities_manage_edit.php:61
+#: modules/Activities/activities_manage_enrolment.php:60
+#: modules/Activities/activities_manage_enrolment_edit.php:57
+#: modules/Attendance/attendance_future_byPerson.php:57
+#: modules/Attendance/attendance_take_byPerson.php:57
+#: modules/Attendance/attendance_take_byRollGroup.php:60
+#: modules/Behaviour/behaviour_manage_edit.php:68 modules/Crowd
+#: Assessment/crowdAssess_view.php:59
+#: Assessment/crowdAssess_view_discuss.php:59
+#: Assessment/crowdAssess_view_discuss_post.php:59
+#: modules/Departments/department_course_edit.php:94
+#: modules/Departments/department_edit.php:85 modules/External
+#: Assessment/externalAssessment_manage_details_edit.php:54
+#: modules/Finance/billingSchedule_manage_edit.php:54
+#: modules/Finance/feeCategories_manage_edit.php:61
+#: modules/Finance/fees_manage_edit.php:54
+#: modules/Finance/invoicees_manage_edit.php:61
+#: modules/Finance/invoiceReceiptSettings.php:51
+#: modules/Finance/invoices_manage_edit.php:65
+#: modules/Finance/invoices_manage_print.php:65 modules/Individual
+#: Needs/in_edit.php:77 modules/Library/library_manage_catalog_edit.php:58
+#: modules/Markbook/markbook_edit_data.php:114
+#: modules/Markbook/markbook_edit_edit.php:126
+#: modules/Markbook/markbook_edit_targets.php:93
+#: modules/Messenger/messenger_manage_edit.php:61
+#: modules/Planner/outcomes_edit.php:75 modules/Planner/planner.php:107
+#: modules/Planner/planner.php:584 modules/Planner/planner.php:852
+#: modules/Planner/planner_deadlines.php:492
+#: modules/Planner/planner_edit.php:229
+#: modules/Planner/planner_view_full.php:265
+#: modules/Planner/planner_view_full_post.php:187
+#: modules/Planner/planner_view_full_submit_edit.php:146
+#: modules/Planner/units_duplicate.php:71 modules/Planner/units_edit.php:82
+#: modules/Planner/units_edit_deploy.php:79
+#: modules/Planner/units_edit_working.php:79
+#: modules/Planner/units_edit_working_add.php:79
+#: modules/Planner/units_edit_working_copyback.php:68
+#: modules/Resources/resources_manage_edit.php:69
+#: modules/Rubrics/rubrics_edit.php:69 modules/School
+#: Admin/activitySettings.php:51 Admin/alertLevelSettings.php:54
+#: Admin/behaviourSettings.php:51 Admin/daysOfWeek_manage.php:54
+#: Admin/department_manage_edit.php:61
+#: Admin/externalAssessments_manage_edit.php:57
+#: Admin/externalAssessments_manage_edit_field_edit.php:81
+#: Admin/externalAssessmentSettings.php:54
+#: Admin/fileExtensions_manage_edit.php:54
+#: Admin/gradeScales_manage_edit.php:57
+#: Admin/gradeScales_manage_edit_grade_edit.php:81
+#: Admin/house_manage_edit.php:54 Admin/inDescriptors_manage_edit.php:54
+#: Admin/librarySettings.php:51 Admin/markbookSettings.php:51
+#: Admin/plannerSettings.php:51 Admin/resourceSettings.php:51
+#: Admin/rollGroup_manage_edit.php:54 Admin/schoolYear_manage_edit.php:54
+#: Admin/schoolYearSpecialDay_manage_edit.php:54
+#: Admin/schoolYearTerm_manage_edit.php:53 Admin/smsSettings.php:51
+#: Admin/space_manage_edit.php:54 Admin/studentsSettings.php:51
+#: Admin/studentsSettings_noteCategory_edit.php:54
+#: Admin/yearGroup_manage_edit.php:54
+#: modules/Students/student_view_details_notes_edit.php:79 modules/System
+#: Admin/i18n_manage.php:48 Admin/module_manage_edit.php:54
+#: Admin/module_manage_update.php:54 Admin/systemSettings.php:66
+#: Admin/theme_manage.php:64 Admin/update.php:51 modules/Timetable
+#: Admin/course_manage_class_edit.php:54 Admin/course_manage_edit.php:57
+#: Admin/courseEnrolment_manage_byPerson_edit.php:102
+#: Admin/courseEnrolment_manage_byPerson_edit_edit.php:86
+#: Admin/courseEnrolment_manage_class_edit.php:84
+#: Admin/courseEnrolment_manage_class_edit_edit.php:83 Admin/tt_edit.php:57
+#: Admin/tt_edit_day_edit.php:81 Admin/tt_edit_day_edit_class.php:84
+#: Admin/tt_edit_day_edit_class_edit.php:104
+#: Admin/tt_edit_day_edit_class_exception.php:102
+#: Admin/tt_edit_day_edit_class_exception_add.php:105
+#: Admin/tt_edit_day_edit_class_exception_delete.php:104
+#: Admin/ttColumn_edit.php:57 Admin/ttColumn_edit_row_edit.php:81
+#: Admin/ttDates_edit.php:56 modules/User
+#: Admin/applicationForm_manage_edit.php:84
+#: Admin/applicationFormSettings.php:51 Admin/data_family_edit.php:82
+#: Admin/data_finance_edit.php:82 Admin/data_medical_edit.php:86
+#: Admin/data_personal_edit.php:82 Admin/dataUpdaterSettings.php:51
+#: Admin/district_manage_edit.php:54 Admin/family_manage_edit.php:53
+#: Admin/family_manage_edit.php:81 Admin/family_manage_edit_editAdult.php:54
+#: Admin/family_manage_edit_editChild.php:54
+#: Admin/medicalForm_manage_condition_edit.php:54
+#: Admin/medicalForm_manage_edit.php:51 Admin/permission_manage.php:48
+#: Admin/role_manage_edit.php:54 Admin/rollover.php:1084
+#: Admin/rollover.php:1458 Admin/staff_manage_edit.php:54
+#: Admin/studentEnrolment_manage_edit.php:54 Admin/user_manage_edit.php:57
+#: Admin/user_manage_password.php:60 Admin/userSettings.php:51 index.php:664
+#: index.php:1089 modules/Activities/activities_manage_edit.php:61
+#: modules/Activities/activities_manage_enrolment.php:60
+#: modules/Activities/activities_manage_enrolment_edit.php:57
+#: modules/Attendance/attendance_future_byPerson.php:57
+#: modules/Attendance/attendance_take_byPerson.php:57
+#: modules/Attendance/attendance_take_byRollGroup.php:60
+#: modules/Behaviour/behaviour_manage_edit.php:68
+#: modules/Crowd Assessment/crowdAssess_view.php:59
+#: modules/Crowd Assessment/crowdAssess_view_discuss.php:59
+#: modules/Crowd Assessment/crowdAssess_view_discuss_post.php:59
+#: modules/Departments/department_course_edit.php:94
+#: modules/Departments/department_edit.php:85
+#: modules/External Assessment/externalAssessment_manage_details_edit.php:54
+#: modules/Finance/billingSchedule_manage_edit.php:54
+#: modules/Finance/feeCategories_manage_edit.php:61
+#: modules/Finance/fees_manage_edit.php:54
+#: modules/Finance/invoicees_manage_edit.php:61
+#: modules/Finance/invoiceReceiptSettings.php:51
+#: modules/Finance/invoices_manage_edit.php:65
+#: modules/Finance/invoices_manage_print.php:65
+#: modules/Individual Needs/in_edit.php:77
+#: modules/Library/library_manage_catalog_edit.php:58
+#: modules/Markbook/markbook_edit_data.php:114
+#: modules/Markbook/markbook_edit_edit.php:126
+#: modules/Markbook/markbook_edit_targets.php:93
+#: modules/Messenger/messenger_manage_edit.php:61
+#: modules/Planner/outcomes_edit.php:75 modules/Planner/planner.php:107
+#: modules/Planner/planner.php:584 modules/Planner/planner.php:852
+#: modules/Planner/planner_deadlines.php:492
+#: modules/Planner/planner_edit.php:229
+#: modules/Planner/planner_view_full.php:265
+#: modules/Planner/planner_view_full_post.php:187
+#: modules/Planner/planner_view_full_submit_edit.php:146
+#: modules/Planner/units_duplicate.php:71 modules/Planner/units_edit.php:82
+#: modules/Planner/units_edit_deploy.php:79
+#: modules/Planner/units_edit_working.php:79
+#: modules/Planner/units_edit_working_add.php:79
+#: modules/Planner/units_edit_working_copyback.php:68
+#: modules/Resources/resources_manage_edit.php:69
+#: modules/Rubrics/rubrics_edit.php:69
+#: modules/School Admin/activitySettings.php:51
+#: modules/School Admin/alertLevelSettings.php:54
+#: modules/School Admin/behaviourSettings.php:51
+#: modules/School Admin/daysOfWeek_manage.php:54
+#: modules/School Admin/department_manage_edit.php:61
+#: modules/School Admin/externalAssessments_manage_edit.php:57
+#: modules/School Admin/externalAssessments_manage_edit_field_edit.php:81
+#: modules/School Admin/externalAssessmentSettings.php:54
+#: modules/School Admin/fileExtensions_manage_edit.php:54
+#: modules/School Admin/gradeScales_manage_edit.php:57
+#: modules/School Admin/gradeScales_manage_edit_grade_edit.php:81
+#: modules/School Admin/house_manage_edit.php:54
+#: modules/School Admin/inDescriptors_manage_edit.php:54
+#: modules/School Admin/librarySettings.php:51
+#: modules/School Admin/markbookSettings.php:51
+#: modules/School Admin/plannerSettings.php:51
+#: modules/School Admin/resourceSettings.php:51
+#: modules/School Admin/rollGroup_manage_edit.php:54
+#: modules/School Admin/schoolYear_manage_edit.php:54
+#: modules/School Admin/schoolYearSpecialDay_manage_edit.php:54
+#: modules/School Admin/schoolYearTerm_manage_edit.php:53
+#: modules/School Admin/smsSettings.php:51
+#: modules/School Admin/space_manage_edit.php:54
+#: modules/School Admin/studentsSettings.php:51
+#: modules/School Admin/studentsSettings_noteCategory_edit.php:54
+#: modules/School Admin/yearGroup_manage_edit.php:54
+#: modules/Students/student_view_details_notes_edit.php:79
+#: modules/System Admin/i18n_manage.php:48
+#: modules/System Admin/module_manage_edit.php:54
+#: modules/System Admin/module_manage_update.php:54
+#: modules/System Admin/systemSettings.php:66
+#: modules/System Admin/theme_manage.php:64 modules/System Admin/update.php:51
+#: modules/Timetable Admin/course_manage_class_edit.php:54
+#: modules/Timetable Admin/course_manage_edit.php:57
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:102
+#: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:86
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:84
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:83
+#: modules/Timetable Admin/tt_edit.php:57
+#: modules/Timetable Admin/tt_edit_day_edit.php:81
+#: modules/Timetable Admin/tt_edit_day_edit_class.php:84
+#: modules/Timetable Admin/tt_edit_day_edit_class_edit.php:104
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception.php:102
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php:105
+#: modules/Timetable Admin/tt_edit_day_edit_class_exception_delete.php:104
+#: modules/Timetable Admin/ttColumn_edit.php:57
+#: modules/Timetable Admin/ttColumn_edit_row_edit.php:81
+#: modules/Timetable Admin/ttDates_edit.php:56
+#: modules/User Admin/applicationForm_manage_edit.php:84
+#: modules/User Admin/applicationFormSettings.php:51
+#: modules/User Admin/data_family_edit.php:82
+#: modules/User Admin/data_finance_edit.php:82
+#: modules/User Admin/data_medical_edit.php:86
+#: modules/User Admin/data_personal_edit.php:82
+#: modules/User Admin/dataUpdaterSettings.php:51
+#: modules/User Admin/district_manage_edit.php:54
+#: modules/User Admin/family_manage_edit.php:53
+#: modules/User Admin/family_manage_edit.php:81
+#: modules/User Admin/family_manage_edit_editAdult.php:54
+#: modules/User Admin/family_manage_edit_editChild.php:54
+#: modules/User Admin/medicalForm_manage_condition_edit.php:54
+#: modules/User Admin/medicalForm_manage_edit.php:51
+#: modules/User Admin/permission_manage.php:48
+#: modules/User Admin/role_manage_edit.php:54
+#: modules/User Admin/rollover.php:1084 modules/User Admin/rollover.php:1458
+#: modules/User Admin/staff_manage_edit.php:54
+#: modules/User Admin/studentEnrolment_manage_edit.php:54
+#: modules/User Admin/user_manage_edit.php:57
+#: modules/User Admin/user_manage_password.php:60
+#: modules/User Admin/userSettings.php:51 preferences.php:84
+msgid "Your request was completed successfully."
+msgstr ""
+
+#: index.php:689 index.php:689
+msgid "Class"
+msgstr ""
+
+#: index.php:695 index.php:695
+msgid "Homework"
+msgstr ""
+
+#: index.php:698 index.php:698
+msgid "Summary"
+msgstr ""
+
+#: index.php:701 index.php:701
+msgid "Like"
+msgstr ""
+
+#: index.php:704 index.php:704
+msgid "Action"
+msgstr ""
+
+#: index.php:735 index.php:735
+msgid "Unit"
+msgstr ""
+
+#: index.php:763 index.php:763
+msgid "View Details"
+msgstr ""
+
+#: index.php:772 index.php:997 index.php:1042
+#: modules/Departments/department_course_class.php:147
+#: modules/Finance/invoices_manage_edit.php:525 index.php:772 index.php:997
+#: index.php:1042 modules/Departments/department_course_class.php:147
+#: modules/Finance/invoices_manage_edit.php:525
+msgid "There are no records to display."
+msgstr ""
+
+#: index.php:777 index.php:777
+msgid "Recent Grades"
+msgstr ""
+
+#: index.php:777 index.php:777
+msgid "View Markbook"
+msgstr ""
+
+#: index.php:796 index.php:796
+msgid "Assessment"
+msgstr ""
+
+#: index.php:799 index.php:799
+msgid "Attainment"
+msgstr ""
+
+#: index.php:802 index.php:802
+msgid "Effort"
+msgstr ""
+
+#: index.php:805 index.php:805
+msgid "Comment"
+msgstr ""
+
+#: index.php:808 index.php:808
+msgid "Submission"
+msgstr ""
+
+#: index.php:828 index.php:828
+msgid "Marked on"
+msgstr ""
+
+#: index.php:899 index.php:899
+msgid "View Description"
+msgstr ""
+
+#: index.php:899 index.php:899
+msgid "Read more"
+msgstr ""
+
+#: index.php:905 index.php:905
+msgid "Uploaded Response"
+msgstr ""

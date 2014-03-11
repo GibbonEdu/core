@@ -66,13 +66,13 @@ else {
 	$class="error" ;
 	if (!($bulkReturn=="")) {
 		if ($bulkReturn=="fail0") {
-			$bulkReturnMessage ="Your request failed because you do not have access to this action." ;	
+			$bulkReturnMessage =_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($bulkReturn=="fail2") {
-			$bulkReturnMessage ="Your request failed due to a database error." ;	
+			$bulkReturnMessage =_("Your request failed due to a database error.") ;	
 		}
 		else if ($bulkReturn=="fail3") {
-			$bulkReturnMessage ="Your request failed because your inputs were invalid." ;	
+			$bulkReturnMessage =_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($bulkReturn=="fail5") {
 			$bulkReturnMessage ="Some elements of your bulk process failed, but others were successful." ;	

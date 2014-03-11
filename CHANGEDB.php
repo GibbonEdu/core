@@ -1572,9 +1572,15 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 ALTER TABLE `gibbonMarkbookEntry` CHANGE `attainmentConcern` `attainmentConcern` ENUM( 'N', 'Y', 'P' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '''P'' denotes that student has exceed their personal target';end
 ALTER TABLE `gibbonMarkbookTarget` CHANGE `gibbonScaleGradeID` `gibbonScaleGradeID` INT( 7 ) NULL DEFAULT NULL ;end
 ALTER TABLE `gibbonMarkbookEntry` CHANGE `attainmentDescriptor` `attainmentDescriptor` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL , CHANGE `effortDescriptor` `effortDescriptor` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;end
+UPDATE gibboni18n SET name='Español - España', code='es_ES' WHERE code='ES';end
+UPDATE gibboni18n SET code='en_GB' WHERE code='en-GB';end
+UPDATE gibboni18n SET code='en_US' WHERE code='en-US';end
+UPDATE gibboni18n SET code='zh_CN' WHERE code='zh-CN';end
+UPDATE gibboni18n SET code='zh_HK' WHERE code='zh-HK';end
 
 --LAST ICHK
 --LAST HLY
+--LAST HLY SERVER DEV
 
 ";
 
