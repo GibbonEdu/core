@@ -109,8 +109,25 @@ Themes: added refresh.png to Olden theme
 
 i18n: improvements to allow better functioning on more servers
 	Edited values in table gibboni18n
-	Edite folder names in /i18n
+	Edited folder names in /i18n
 
+Planner: fixed PHP notice errors
+	Edited file /modules/Planner/planner_add.php
+
+Messenger: made sending from school email address cleaner and more logical
+	Edited file /modules/Messenger/messenger_postProcess.php
+
+Markbook: suppressed PHP notices to do with WP comment push
+	Edited file /modules/Markbook/markbook_edit_dataAjax.php
+
+Behaviour: fixed PHP notice issue when landing on behaviour add
+	Edited file index.php
+
+Markbook: added clear delineation between columns in teacher overview
+	Edited files /modules/Markbook/markbook_view.php, markbook_view_full.php
+
+i18n: fixed issue with date validation in en_US
+	Update values in gibboni18n
 
 v7.1.02
 -------

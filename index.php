@@ -933,51 +933,47 @@ else {
 																			if ($resultWork->rowCount()>0) {
 																				$rowWork=$resultWork->fetch() ;
 																				
-																				if ($rowWork["status"]=="Exemption") {
-																					$linkText="EX" ;
-																				}
-																				else if ($rowWork["version"]=="Final") {
-																					$linkText="FN" ;
+																				if ($rowWork["status"]=="Exemption" OR $rowWork["version"]=="Final") {
+																					$linkText=substr(_($rowWork["version"]),0,2) ;
 																				}
 																				else {
-																					$linkText="D" . $rowWork["count"] ;
+																					$linkText=substr(_("Draft"),0,2) ;
 																				}
 																				
 																				$style="" ;
-																				$status="On Time" ;
+																				$status=_("On Time") ;
 																				if ($rowWork["status"]=="Exemption") {
-																					$status="Exemption" ;
+																					$status=_("Exemption") ;
 																				}
 																				else if ($rowWork["status"]=="Late") {
 																					$style="style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'" ;
-																					$status="Late" ;
+																					$status=_("Late") ;
 																				}
 																				
 																				if ($rowWork["type"]=="File") {
-																					print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
+																					print "<span title='" . $rowWork["version"] . ". $status. " . sprintf(_('Submitted at %1$s on %2$s'),substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
 																				}
 																				else if ($rowWork["type"]=="Link") {
-																					print "<span title='" . $rowWork["version"] . ". $status. Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
+																					print "<span title='" . $rowWork["version"] . ". $status. " . sprintf(_('Submitted at %1$s on %2$s'),substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
 																				}
 																				else {
-																					print "<span title='$status. Recorded at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
+																					print "<span title='$status. " . sprintf(_('Recorded at %1$s on %2$s'),substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style>$linkText</span>" ;
 																				}
 																			}
 																			else {
 																				if (date("Y-m-d H:i:s")<$homeworkDueDateTime[$i]) {
-																					print "<span title='Pending'>Pending</span>" ;
+																					print "<span title='" . _('Pending') . "'>" . _('Pending') . "</span>" ;
 																				}
 																				else {
-																					
 																					if ($students[$i][6]>$rowSub["date"]) {
-																						print "<span title='Student joined school after lesson was taught.' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>" ;
+																						print "<span title='" . _('Student joined school after lesson was taught.') . "' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>" . _("NA") . "</span>" ;
 																					}
 																					else {
 																						if ($rowSub["homeworkSubmissionRequired"]=="Compulsory") {
-																							print "<span title='Incomplete' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>Incomplete</span>" ;
+																							print "<span title='" . _('Incomplete') . "' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>" . _('Incomplete') . "</span>" ;
 																						}
 																						else {
-																							print "Not submitted online" ;
+																							print _("Not submitted online") ;
 																						}
 																					}
 																				}	
@@ -1005,7 +1001,7 @@ else {
 													}
 													
 													//Display upcoming deadlines
-													print "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>Upcoming Deadlines</span> . <span style='font-size: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_deadlines.php&search=" . $students[$i][4] . "'>View All Deadlines</a></span></div>" ;
+													print "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>" . _('Upcoming Deadlines') . "</span> . <span style='font-size: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_deadlines.php&search=" . $students[$i][4] . "'>". _('View All Deadlines') . "</a></span></div>" ;
 													$deadlines=FALSE ;
 													
 													try {
@@ -1037,7 +1033,7 @@ else {
 															else {
 																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=" . $students[$i][4] . "&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=date&date=$date&width=1000&height=550'>" . $row["course"] . "." . $row["class"] . "</a> " ;
 															}
-															print "<span style='font-style: italic'>Due at " . substr($row["homeworkDueDateTime"],11,5) . " on " . dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) ;
+															print "<span style='font-style: italic'>" . sprintf(_('Due at %1$s on %2$s'), substr($row["homeworkDueDateTime"],11,5), dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10))) ;
 															print "</li>" ;
 														}
 														print "</ol>" ;
@@ -1101,28 +1097,28 @@ else {
 												} 
 												
 												print "<div class='linkTop'>" ;
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php'>View Planner</a>" ;
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php'>" . _('View Planner') . "</a>" ;
 												print "</div>" ;
 												
 												print "<table cellspacing='0' style='width: 100%'>" ;
 													print "<tr class='head'>" ;
 														print "<th>" ;
-															print "Class<br/>" ;
+															print _("Class") . "<br/>" ;
 														print "</th>" ;
 														print "<th>" ;
-															print "Lesson/Unit" ;
+															print _("Lesson/Unit") ;
 														print "</th>" ;
 														print "<th>" ;
-															print "Homework" ;
+															print _("Homework") ;
 														print "</th>" ;
 														print "<th>" ;
-															print "Summary" ;
+															print _("Summary") ;
 														print "</th>" ;
 														print "<th>" ;
-															print "Like" ;
+															print _("Like") ;
 														print "</th>" ;
 														print "<th>" ;
-															print "Action" ;
+															print _("Action") ;
 														print "</th>" ;
 													print "</tr>" ;
 													
@@ -1155,16 +1151,21 @@ else {
 																	if (isset($unit[0])) {
 																		print $unit[0] ;
 																		if ($unit[1]!="") {
-																			print "<br/><i>" . $unit[1] . " Unit</i>" ;
+																			print "<br/><i>" . $unit[1] . " " . _('Unit') . "</i>" ;
 																		}
 																	}
 																print "</td>" ;
 																print "<td>" ;
-																	print $row["homework"] ;
+																	if ($row["homework"]=="Y") {
+																		print _("Yes") ;
+																	}
+																	else {
+																		print _("No") ;
+																	}
 																	if ($row["homeworkSubmission"]=="Y") {
-																		print "+OS" ;
+																		print "<br/>+" . _("Submission") ;
 																		if ($row["homeworkCrowdAssess"]=="Y") {
-																			print "+CA" ;
+																			print "<br/>+" . _("Crowd Assessment") ;
 																		}
 																	}
 																print "</td>" ;
@@ -1227,7 +1228,7 @@ else {
 											if ($result->rowCount()>0) {
 												print "<h2>" . _("My Timetable") . "</h2>" ;
 												print "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>" ;
-													print "<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='Loading' onclick='return false;' /><br/><p style='text-align: center'>Loading</p>" ;
+													print "<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Loading') . "' onclick='return false;' /><br/><p style='text-align: center'>" . _('Loading') . "</p>" ;
 												print "</div>" ;
 											}
 										}
@@ -1240,7 +1241,10 @@ else {
 													ajaxOptions: {
 														error: function( xhr, status, index, anchor ) {
 															$( anchor.hash ).html(
-																"Couldn't load this tab." );
+																"<?
+																print _("Couldn't load this tab.") ; 
+																?>"
+															);
 														}
 													}
 												});
@@ -1258,7 +1262,7 @@ else {
 											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
 										
-										$h2="My Roll Groups" ;
+										$h2=_("My Roll Groups") ;
 										if ($result->rowCount()==1) {
 											$h2=_("My Roll Group") ;
 										}
@@ -1270,8 +1274,8 @@ else {
 											?>
 											<div id="tabs" style='margin: 10px 0 20px 0'>
 												<ul>
-													<li><a href="#tabs-1">Students</a></li>
-													<li><a href="#tabs-2">Behaviour</a></li>
+													<li><a href="#tabs-1"><? print _('Students') ?></a></li>
+													<li><a href="#tabs-2"><? print _('Behaviour') ?></a></li>
 												</ul>
 												<div id="tabs-1">
 													<?
@@ -1285,8 +1289,8 @@ else {
 															print "</h4>" ;
 														}
 														print "<div class='linkTop' style='margin-top: 0px'>" ;
-														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'><img title='Take Attendance' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a> " ;
-														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/indexExport.php?gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'><img title='Export to Excel' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
+														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'><img title='" . _('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a> " ;
+														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/indexExport.php?gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'><img title='" . _('Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
 														print "</div>" ;
 														
 														printRollGroupTable($guid, $row["gibbonRollGroupID"],5,$connection2) ;
@@ -1300,10 +1304,6 @@ else {
 													if ($result->rowCount()==1) {
 														$plural="" ;
 													}
-													print "<p>" ;
-													print "This report shows all behaviour record entries for the current school year in your roll group" . $plural . "." ;
-													print "</p>" ;
-													
 													try {
 														$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 														$sql="SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID2 AND ($sqlWhere) ORDER BY timestamp DESC" ; 
@@ -1316,39 +1316,39 @@ else {
 													
 													if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_add.php")) {
 														print "<div class='linkTop'>" ;
-															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_add.php'><img style='margin: 0 0 -4px 3px' title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='><img style='margin: 0 0 -4px 3px' title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 															$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
 															if ($policyLink!="") {
-																print " | <a target='_blank' href='$policyLink'>View Behaviour Policy</a>" ;
+																print " | <a target='_blank' href='$policyLink'>" . _('View Behaviour Policy') . "</a>" ;
 															}
 														print "</div>" ;
 													}
 													
 													if ($result->rowCount()<1) {
 														print "<div class='error'>" ;
-														print "There are no records to display." ;
+														print _("There are no records to display.") ;
 														print "</div>" ;
 													}
 													else {
 														print "<table cellspacing='0' style='width: 100%'>" ;
 															print "<tr class='head'>" ;
 																print "<th>" ;
-																	print "Student & Date" ;
+																	print _("Student & Date") ;
 																print "</th>" ;
 																print "<th>" ;
-																	print "Type" ;
+																	print _("Type") ;
 																print "</th>" ;
 																print "<th>" ;
-																	print "Descriptor" ;
+																	print _("Descriptor") ;
 																print "</th>" ;
 																print "<th>" ;
-																	print "Level" ;
+																	print _("Level") ;
 																print "</th>" ;
 																print "<th>" ;
-																	print "Teacher" ;
+																	print _("Teacher") ;
 																print "</th>" ;
 																print "<th>" ;
-																	print "Action" ;
+																	print _("Action") ;
 																print "</th>" ;
 															print "</tr>" ;
 															
@@ -1368,8 +1368,8 @@ else {
 																	print "<td>" ;
 																		print "<b>" . formatName("", $row["preferredNameStudent"], $row["surnameStudent"], "Student", false ) . "</b><br/>" ;
 																		if (substr($row["timestamp"],0,10)>$row["date"]) {
-																			print "Updated: " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
-																			print "Incident: " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
+																			print _("Date Updated") . ": " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
+																			print _("Incident Date") . ": " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
 																		}
 																		else {
 																			print dateConvertBack($guid, $row["date"]) . "<br/>" ;
@@ -1377,10 +1377,10 @@ else {
 																	print "</td>" ;
 																	print "<td style='text-align: center'>" ;
 																		if ($row["type"]=="Negative") {
-																			print "<img title='At Risk' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+																			print "<img title='" . _('Negative') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 																		}
 																		else if ($row["type"]=="Positive") {
-																			print "<img title='Excellence' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+																			print "<img title='" . _('Position') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 																		}
 																	print "</td>" ;
 																	print "<td>" ;
@@ -1403,7 +1403,7 @@ else {
 																			print "});" ;
 																		print "</script>" ;
 																		if ($row["comment"]!="") {
-																			print "<a title='View Description' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
+																			print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
 																		}
 																	print "</td>" ;
 																print "</tr>" ;
@@ -1463,8 +1463,8 @@ else {
 						?>
 					</div>
 					<div id="footer">
-						Powered by <a href="http://gibbonedu.org">Gibbon</a> v<? print $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<? print date("Y") ?><br/>
-						<span style='font-size: 90%; '>Created under the <a href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a></span><br/>
+						<? print _("Powered by") ?> <a href="http://gibbonedu.org">Gibbon</a> v<? print $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<? print date("Y") ?><br/>
+						<span style='font-size: 90%; '><? print _("Created under the") ?> <a href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a></span><br/>
 						<img style='z-index: 100; margin-bottom: -57px; margin-right: -50px' alt='Logo Small' src='./themes/Default/img/logoFooter.png'/>
 					</div>
 				</div>

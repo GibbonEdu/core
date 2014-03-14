@@ -63,7 +63,7 @@ else {
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print "There are no records to display." ;
+		print _("There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -142,8 +142,8 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						if ($row["status"]=="Pending") {
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/data_finance_edit.php&gibbonFinanceInvoiceeUpdateID=" . $row["gibbonFinanceInvoiceeUpdateID"] . "'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/data_finance_delete.php&gibbonFinanceInvoiceeUpdateID=" . $row["gibbonFinanceInvoiceeUpdateID"] . "'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/data_finance_edit.php&gibbonFinanceInvoiceeUpdateID=" . $row["gibbonFinanceInvoiceeUpdateID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/data_finance_delete.php&gibbonFinanceInvoiceeUpdateID=" . $row["gibbonFinanceInvoiceeUpdateID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 						}
 					print "</td>" ;
 				print "</tr>" ;

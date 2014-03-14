@@ -1446,6 +1446,9 @@ else {
 				
 				//Prep email array
 				$emails.="$from," ; //Add sender as recipient
+				if ($from!=$_SESSION[$guid]["email"]) {
+					$emails.=$_SESSION[$guid]["email"] . "," ; //If sender is using school-wide address, and them to recipient list.
+				}
 				$emails=explode(",",substr($emails,0,-1)) ;
 				$emails=array_unique($emails) ;
 				natcasesort($emails) ;
@@ -1459,7 +1462,12 @@ else {
 				$bodyPlain=strip_tags($bodyPlain, '<a>');
 
 				$mail=new PHPMailer;
-				$mail->SetFrom($from, $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
+				if ($from!=$_SESSION[$guid]["email"]) {	//If sender is using school-wide address, send from school
+					$mail->SetFrom($from, $_SESSION[$guid]["organisationName"]);
+				}
+				else { //Else, send from individual
+					$mail->SetFrom($from, $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
+				}
 				foreach ($emails AS $address) {
 					$mail->AddBCC($address);
 				}

@@ -1328,7 +1328,7 @@ else {
 								
 								if ($result->rowCount()<1) {
 									print "<div class='error'>" ;
-									print "There are no records to display." ;
+									print _("There are no records to display.") ;
 									print "</div>" ;
 								}
 								else {
@@ -1366,7 +1366,7 @@ else {
 													print $row["role"] ;
 												print "</td>" ;
 												print "<td>" ;
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_edit_guest_deleteProcess.php?gibbonPlannerEntryGuestID=" . $row["gibbonPlannerEntryGuestID"] . "&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&address=" . $_GET["q"] . "'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_edit_guest_deleteProcess.php?gibbonPlannerEntryGuestID=" . $row["gibbonPlannerEntryGuestID"] . "&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&address=" . $_GET["q"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 												print "</td>" ;
 											print "</tr>" ;
 										}

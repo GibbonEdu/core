@@ -35,7 +35,7 @@ else {
 	print "</div>" ;
 	
 	print "<div class='linkTop'>" ;
-	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/report_transport_studentExport.php?address=" . $_GET["q"] . "'><img title='Export to Excel' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
+	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/report_transport_studentExport.php?address=" . $_GET["q"] . "'><img title='" . _('Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
 	print "</div>" ;
 	
 	try {
@@ -168,7 +168,7 @@ else {
 		if ($count==0) {
 			print "<tr class=$rowNum>" ;
 				print "<td colspan=2>" ;
-					print "There are no records to display." ;
+					print _("There are no records to display.") ;
 				print "</td>" ;
 			print "</tr>" ;
 		}

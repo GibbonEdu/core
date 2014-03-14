@@ -290,7 +290,7 @@ else {
 
 					if ($resultExpect->rowCount()<1) {
 						print "<div class='error'>" ;
-						print "There are no records to display." ;
+						print _("There are no records to display.") ;
 						print "</div>" ;
 					}
 					else {
@@ -371,7 +371,7 @@ else {
 						
 						if ($resultEnrol->rowCount()<1) {
 							print "<div class='error'>" ;
-							print "There are no records to display." ;
+							print _("There are no records to display.") ;
 							print "</div>" ;
 						}
 						else {
@@ -460,7 +460,7 @@ else {
 						
 						if ($resultEnrol->rowCount()<1) {
 							print "<div class='error'>" ;
-							print "There are no records to display." ;
+							print _("There are no records to display.") ;
 							print "</div>" ;
 						}
 						else {
@@ -623,7 +623,7 @@ else {
 						}
 						if ($resultReenrol->rowCount()<1) {
 							print "<div class='error'>" ;
-							print "There are no records to display." ;
+							print _("There are no records to display.") ;
 							print "</div>" ;
 						}
 						else {
@@ -736,7 +736,7 @@ else {
 					
 					if ($resultFinal->rowCount()<1) {
 						print "<div class='error'>" ;
-						print "There are no records to display." ;
+						print _("There are no records to display.") ;
 						print "</div>" ;
 					}
 					else {
@@ -813,7 +813,7 @@ else {
 					
 					if ($resultRegister->rowCount()<1) {
 						print "<div class='error'>" ;
-						print "There are no records to display." ;
+						print _("There are no records to display.") ;
 						print "</div>" ;
 					}
 					else {

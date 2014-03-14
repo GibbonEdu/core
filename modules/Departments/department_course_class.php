@@ -223,11 +223,16 @@ else {
 											print $rowLessons["summary"] ;
 										print "</td>" ;
 										print "<td>" ;
-											print $rowLessons["homework"] ;
+											if ($row["homework"]=="Y") {
+												print _("Yes") ;
+											}
+											else {
+												print _("No") ;
+											}
 											if ($rowLessons["homeworkSubmission"]=="Y") {
-												print "+OS" ;
+												print "<br/>+" . _("Submission") ;
 												if ($rowLessons["homeworkCrowdAssess"]=="Y") {
-													print "+CA" ;
+													print "<br/>+" . _("Crowd Assessment") ;
 												}
 											}
 										print "</td>" ;
@@ -339,11 +344,16 @@ else {
 												print $rowLessons["summary"] ;
 											print "</td>" ;
 											print "<td>" ;
-												print $rowLessons["homework"] ;
+												if ($row["homework"]=="Y") {
+													print _("Yes") ;
+												}
+												else {
+													print _("No") ;
+												}
 												if ($rowLessons["homeworkSubmission"]=="Y") {
-													print "+OS" ;
+													print "<br/>+" . _("Submission") ;
 													if ($rowLessons["homeworkCrowdAssess"]=="Y") {
-														print "+CA" ;
+														print "<br/>+" . _("Crowd Assessment") ;
 													}
 												}
 											print "</td>" ;
@@ -423,11 +433,16 @@ else {
 									print $rowLessons["summary"] ;
 								print "</td>" ;
 								print "<td>" ;
-									print $rowLessons["homework"] ;
+									if ($row["homework"]=="Y") {
+										print _("Yes") ;
+									}
+									else {
+										print _("No") ;
+									}
 									if ($rowLessons["homeworkSubmission"]=="Y") {
-										print "+OS" ;
+										print "<br/>+" . _("Submission") ;
 										if ($rowLessons["homeworkCrowdAssess"]=="Y") {
-											print "+CA" ;
+											print "<br/>+" . _("Crowd Assessment") ;
 										}
 									}
 								print "</td>" ;
@@ -442,7 +457,7 @@ else {
 			else if ($subpage=="Participants") {
 				print "<div class='linkTop'>" ;
 				if (getHighestGroupedAction($guid, "/modules/Students/student_view_details.php", $connection2)=="View Student Profile_full") {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_course_classExport.php?gibbonCourseClassID=$gibbonCourseClassID&address=" . $_GET["q"] . "'><img title='Export to Excel' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_course_classExport.php?gibbonCourseClassID=$gibbonCourseClassID&address=" . $_GET["q"] . "'><img title='" . _('Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
 				}
 				print "</div>" ;
 				

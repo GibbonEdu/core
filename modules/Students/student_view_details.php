@@ -1497,12 +1497,12 @@ else {
 							}
 							
 							print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=$search&subpage=Notes'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=$search&subpage=Notes'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 							print "</div>" ;
 							
 							if ($result->rowCount()<1) {
 								print "<div class='error'>" ;
-								print "There are no records to display." ;
+								print _("There are no records to display.") ;
 								print "</div>" ;
 							}
 							else {
@@ -1554,8 +1554,8 @@ else {
 											print "</td>" ;
 											print "<td>" ;
 												if ($row["gibbonPersonIDCreator"]==$_SESSION[$guid]["gibbonPersonID"]) {
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_edit.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&subpage=Notes'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_delete.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&subpage=Notes'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_edit.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&subpage=Notes'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_delete.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&subpage=Notes'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 												}
 												print "<script type='text/javascript'>" ;	
 													print "$(document).ready(function(){" ;
@@ -1566,7 +1566,7 @@ else {
 														print "});" ;
 													print "});" ;
 												print "</script>" ;
-												print "<a title='View Description' class='show_hide-$count' onclick='return false;' href='#'><img title='View Note' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png'/></a></span><br/>" ;
+												print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='return false;' href='#'><img title='View Note' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png'/></a></span><br/>" ;
 											print "</td>" ;
 										print "</tr>" ;
 										print "<tr class='note-$count' id='note-$count'>" ;
@@ -1907,7 +1907,7 @@ else {
 																	print "});" ;
 																print "</script>" ;
 																print "<span>" . substr($rowEntry["comment"], 0, 50) . "...<br/>" ;
-																print "<a title='View Description' class='show_hide-$entryCount' onclick='return false;' href='#'>Read more</a></span><br/>" ;
+																print "<a title='" . _('View Description') . "' class='show_hide-$entryCount' onclick='return false;' href='#'>Read more</a></span><br/>" ;
 															}
 															else {
 																print $rowEntry["comment"] ;
@@ -2189,7 +2189,7 @@ else {
 						
 									if ($result->rowCount()<1) {
 										print "<div class='error'>" ;
-										print "There are no records to display." ;
+										print _("There are no records to display.") ;
 										print "</div>" ;
 									}
 									else {
@@ -2362,7 +2362,7 @@ else {
 							
 							if ($result->rowCount()<1) {
 								print "<div class='error'>" ;
-								print "There are no records to display." ;
+								print _("There are no records to display.") ;
 								print "</div>" ;
 							}
 							else {

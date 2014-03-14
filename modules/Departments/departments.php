@@ -135,7 +135,7 @@ else {
 	
 	if ($departments==FALSE) {
 		print "<div class='warning'>" ;
-			print "There are no records to display." ;
+			print _("There are no records to display.") ;
 		print "</div>" ;
 	}
 	

@@ -255,13 +255,13 @@ else {
 								//Only show add if user has edit rights
 								if ($highestAction=="Lesson Planner_viewAllEditMyClasses" OR $highestAction=="Lesson Planner_viewEditAllClasses") {
 									print "<div class='linkTop'>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_add.php&date=$date'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_add.php&date=$date'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 									print "</div>" ;
 								}
 								
 								if ($result->rowCount()<1) {
 									print "<div class='error'>" ;
-									print "There are no records to display." ;
+									print _("There are no records to display.") ;
 									print "</div>" ;
 								}
 								else {
@@ -324,11 +324,16 @@ else {
 														print substr($row["timeStart"],0,5) . "-" . substr($row["timeEnd"],0,5) ;
 													print "</td>" ;
 													print "<td>" ;
-														print $row["homework"] ;
+														if ($row["homework"]=="Y") {
+															print _("Yes") ;
+														}
+														else {
+															print _("No") ;
+														}
 														if ($row["homeworkSubmission"]=="Y") {
-															print "+OS" ;
+															print "<br/>+" . _("Submission") ;
 															if ($row["homeworkCrowdAssess"]=="Y") {
-																print "+CA" ;
+																print "<br/>+" . _("Crowd Assessment") ;
 															}
 														}
 													print "</td>" ;
@@ -422,13 +427,13 @@ else {
 									//Only show add if user has edit rights
 									if ($highestAction=="Lesson Planner_viewAllEditMyClasses" OR $highestAction=="Lesson Planner_viewEditAllClasses") {
 										print "<div class='linkTop'>" ;
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 										print "</div>" ;
 									}
 									
 									if ($result->rowCount()<1) {
 										print "<div class='error'>" ;
-										print "There are no records to display." ;
+										print _("There are no records to display.") ;
 										print "</div>" ;
 									}
 									else {
@@ -498,11 +503,16 @@ else {
 															}
 														print "</td>" ;
 														print "<td>" ;
-															print $row["homework"] ;
+															if ($row["homework"]=="Y") {
+																print _("Yes") ;
+															}
+															else {
+																print _("No") ;
+															}
 															if ($row["homeworkSubmission"]=="Y") {
-																print "+OS" ;
+																print "<br/>+" . _("Submission") ;
 																if ($row["homeworkCrowdAssess"]=="Y") {
-																	print "+CA" ;
+																	print "<br/>+" . _("Crowd Assessment") ;
 																}
 															}
 														print "</td>" ;
@@ -633,13 +643,13 @@ else {
 					//Only show add if user has edit rights
 					if ($highestAction=="Lesson Planner_viewEditMyClasses" OR $highestAction=="Lesson Planner_viewEditAllClasses") {
 						print "<div class='linkTop'>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_add.php&date=$date'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_add.php&date=$date'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 						print "</div>" ;
 					}
 					
 					if ($result->rowCount()<1) {
 						print "<div class='error'>" ;
-						print "There are no records to display." ;
+						print _("There are no records to display.") ;
 						print "</div>" ;
 					}
 					else {
@@ -708,11 +718,16 @@ else {
 											print substr($row["timeStart"],0,5) . "-" . substr($row["timeEnd"],0,5) ;
 										print "</td>" ;
 										print "<td>" ;
-											print $row["homework"] ;
+											if ($row["homework"]=="Y") {
+												print _("Yes") ;
+											}
+											else {
+												print _("No") ;
+											}
 											if ($row["homeworkSubmission"]=="Y") {
-												print "+OS" ;
+												print "<br/>+" . _("Submission") ;
 												if ($row["homeworkCrowdAssess"]=="Y") {
-													print "+CA" ;
+													print "<br/>+" . _("Crowd Assessment") ;
 												}
 											}
 										print "</td>" ;
@@ -759,8 +774,8 @@ else {
 										print "<td>" ;
 											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 											if ($highestAction=="Lesson Planner_viewAllEditMyClasses" OR $highestAction=="Lesson Planner_viewEditAllClasses") {
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_edit.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_delete.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_edit.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_delete.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_duplicate.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img title='Duplicate' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a>" ;
 											}
 										print "</td>" ;
@@ -915,13 +930,13 @@ else {
 							$style="" ;
 							if ($subView=="year") { $style="style='font-weight: bold'" ; }
 							print "<a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=year'>Year Overview</a> | " ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img style='margin-bottom: -4px' title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img style='margin-bottom: -4px' title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 							print "</div>" ;
 						}
 						
 						if ($result->rowCount()<1) {
 							print "<div class='error'>" ;
-							print "There are no records to display." ;
+							print _("There are no records to display.") ;
 							print "</div>" ;
 						}
 						else {
@@ -1007,11 +1022,16 @@ else {
 													}
 												print "</td>" ;
 												print "<td>" ;
-													print $row["homework"] ;
+													if ($row["homework"]=="Y") {
+														print _("Yes") ;
+													}
+													else {
+														print _("No") ;
+													}
 													if ($row["homeworkSubmission"]=="Y") {
-														print "+OS" ;
+														print "<br/>+" . _("Submission") ;
 														if ($row["homeworkCrowdAssess"]=="Y") {
-															print "+CA" ;
+															print "<br/>+" . _("Crowd Assessment") ;
 														}
 													}
 												print "</td>" ;
@@ -1058,9 +1078,9 @@ else {
 												print "<td>" ;
 													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 													if ((($highestAction=="Lesson Planner_viewAllEditMyClasses" AND $teacher==TRUE) OR $highestAction=="Lesson Planner_viewEditAllClasses")) {
-														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_edit.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_edit.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_bump.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='Bump Forward' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_right.png'/></a>" ;
-														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_delete.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_delete.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_duplicate.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img title='Duplicate' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a>" ;
 													}
 												print "</td>" ;
@@ -1140,7 +1160,7 @@ else {
 								
 								if (count($lessons)<1) {
 									print "<div class='error'>" ;
-									print "There are no records to display." ;
+									print _("There are no records to display.") ;
 									print "</div>" ;
 								}
 								else {
@@ -1321,14 +1341,14 @@ else {
 													print "</td>" ;
 													print "<td $style>" ;
 														if ($lesson["0"]=="Unplanned") {
-															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=" . $lesson[1] . "&timeStart=" . $lesson[2] . "&timeEnd=" . $lesson[3] . "&subView=$subView'><img style='margin-bottom: -4px' title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=" . $lesson[1] . "&timeStart=" . $lesson[2] . "&timeEnd=" . $lesson[3] . "&subView=$subView'><img style='margin-bottom: -4px' title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 														}
 														else {
 															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&gibbonPlannerEntryID=" . $lesson[12] . "&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550&subView=$subView'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 															if ((($highestAction=="Lesson Planner_viewAllEditMyClasses" AND $teacher==TRUE) OR $highestAction=="Lesson Planner_viewEditAllClasses")) {
-																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_edit.php&gibbonPlannerEntryID=" . $lesson[12] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_edit.php&gibbonPlannerEntryID=" . $lesson[12] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_bump.php&gibbonPlannerEntryID=" . $lesson[12] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='Bump Forward' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_right.png'/></a>" ;
-																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_delete.php&gibbonPlannerEntryID=" . $lesson[12] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_delete.php&gibbonPlannerEntryID=" . $lesson[12] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_duplicate.php&gibbonPlannerEntryID=" . $lesson[12] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&subView=$subView'><img title='Duplicate' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a>" ;
 															}
 														}

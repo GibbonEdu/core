@@ -222,7 +222,7 @@ else {
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;
 					print "<td colspan=3>" ;
-						print "There are no records to display." ;
+						print _("There are no records to display.") ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

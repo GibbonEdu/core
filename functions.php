@@ -50,69 +50,69 @@ function getSmartWorkflowHelp($connection2, $guid, $step="") {
 		if ($row["smartWorkflowHelp"]=="Y") {
 			$output="<div id='smartWorkflowHelp' class='message' style='padding-top: 14px'>" ;
 				$output.="<div style='padding: 0 7px'>" ;
-					$output.="<span style='font-size: 175%'><i><b>Smart Workflow</b></i> Getting Started</span><br/>" ;
-					$output.="Designed and built by teachers, Gibbon's Smart Workflow takes care of the boring stuff, so you can get on with teaching.<br/>" ;
+					$output.="<span style='font-size: 175%'><i><b>" . _('Smart Workflow') . "</b></i> " . _('Getting Started') . "</span><br/>" ;
+					$output.=_("Designed and built by teachers, Gibbon's Smart Workflow takes care of the boring stuff, so you can get on with teaching.") . "<br/>" ;
 				$output.="</div>" ;
 				$output.="<table cellspacing='0' style='width: 100%; margin: 10px 0px; border-spacing: 4px;'>" ;
 					$output.="<tr>" ;
 						if ($step==1) {
 							$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-								$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>One</span><br/>" ;
-								$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>Create<br/>Outcomes</span><br/></span>" ;
+								$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . _('One') . "</span><br/>" ;
+								$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(_('Create %1$s Outcomes'), "<br/>") . "</span><br/></span>" ;
 							$output.="</td>" ;
 						}
 						else {
 							$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-								$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>One</span><br/>" ;
-								$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/outcomes.php'>Create<br/>Outcomes</span><br/></a>" ;
+								$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . _('One') . "</span><br/>" ;
+								$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/outcomes.php'>" . sprintf(_('Create %1$s Outcomes'), "<br/>") . "</span><br/></a>" ;
 							$output.="</td>" ;
 						}
 						if ($step==2) {
 							$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-								$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>Two</span><br/>" ;
-								$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>Plan & Deploy<br/>Smart Units</span><br/></span>" ;
+								$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . _('Two') . "</span><br/>" ;
+								$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(_('Plan & Deploy %1$s Smart Units'), "<br/>") . "</span><br/></span>" ;
 							$output.="</td>" ;
 						}
 						else {
 							$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-								$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>Two</span><br/>" ;
-								$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units.php'>Plan & Deploy<br/>Smart Units</span><br/></a>" ;
+								$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . _('Two') . "</span><br/>" ;
+								$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units.php'>" . sprintf(_('Plan & Deploy %1$s Smart Units'), "<br/>") . "</span><br/></a>" ;
 							$output.="</td>" ;
 						}
 						if ($step==3) {
 							$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-								$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>Three</span><br/>" ;
-								$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>Share, Teach<br/>& Interact</span><br/></span>" ;
+								$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . _('Three') . "</span><br/>" ;
+								$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(_('Share, Teach %1$s & Interact'), "<br/>") . "</span><br/></span>" ;
 							$output.="</td>" ;
 						}
 						else {
 							$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-								$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>Three</span><br/>" ;
-								$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php'>Share, Teach<br/>& Interact</span><br/></a>" ;
+								$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . _('Three') . "</span><br/>" ;
+								$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php'>" . sprintf(_('Share, Teach %1$s & Interact'), "<br/>") . "</span><br/></a>" ;
 							$output.="</td>" ;
 						}
 						if ($step==4) {
 							$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-								$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>Four</span><br/>" ;
-								$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>Assign & Collect<br/>Work</span><br/></span>" ;
+								$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . _('Four<') . "/span><br/>" ;
+								$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(_('Assign & Collect %1$s Work'), "<br/>") . "</span><br/></span>" ;
 							$output.="</td>" ;
 						}
 						else {
 							$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-								$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>Four</span><br/>" ;
-							$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_deadlines.php'>Assign & Collect<br/>Work</span><br/></a>" ;
+								$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . _('Four') . "</span><br/>" ;
+							$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_deadlines.php'>" . sprintf(_('Assign & Collect %1$s Work'), "<br/>") . "</span><br/></a>" ;
 							$output.="</td>" ;
 						}
 						if ($step==5) {
 							$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-								$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>Five</span><br/>" ;
-								$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>Assess & Give<br/>Feedback</span><br/></span>" ;
+								$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . _('Five') . "</span><br/>" ;
+								$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(_('Assess & Give %1$s Feedback'), "<br/>") . "</span><br/></span>" ;
 							$output.="</td>" ;
 						}
 						else {
 							$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-								$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>Five</span><br/>" ;
-							$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php'>Assess & Give<br/>Feedback</span><br/></a>" ;
+								$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . _('Five') . "</span><br/>" ;
+							$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php'>" . sprintf(_('Assess & Give %1$s Feedback'), "<br/>") . "</span><br/></a>" ;
 							$output.="</td>" ;
 						}
 					$output.="</tr>" ;
@@ -144,7 +144,7 @@ function getSmartWorkflowHelp($connection2, $guid, $step="") {
 					}
 				$output.="</table>" ;
 				$output.="<div style='text-align: right; font-size: 90%; padding: 0 7px'>" ;
-					$output.="<a title='Dismiss Smart Workflow Help' onclick='$(\"#smartWorkflowHelp\").fadeOut(1000); $.ajax({ url: \"" . $_SESSION[$guid]["absoluteURL"] . "/index_SmartWorkflowHelpAjax.php\"})' href='#'>Dismiss Smart Workflow Help</a>" ;
+					$output.="<a title='". _('Dismiss Smart Workflow Help') . "' onclick='$(\"#smartWorkflowHelp\").fadeOut(1000); $.ajax({ url: \"" . $_SESSION[$guid]["absoluteURL"] . "/index_SmartWorkflowHelpAjax.php\"})' href='#'>" . _('Dismiss Smart Workflow Help') . "</a>" ;
 				$output.="</div>" ;
 			$output.="</div>" ;
 		}

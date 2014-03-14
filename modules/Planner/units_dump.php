@@ -202,7 +202,7 @@ else {
 								
 								if ($resultLessons->rowCount()<1) {
 									print "<div class='warning'>" ;
-									print "There are no records to display." ;
+									print _("There are no records to display.") ;
 									print "</div>" ;
 								}
 								else {
@@ -316,7 +316,7 @@ else {
 													print "});" ;
 												print "</script>" ;
 												if ($rowBlocks["content"]!="") {
-													print "<a title='View Description' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
+													print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
 												}
 											print "</td>" ;
 										print "</tr>" ;

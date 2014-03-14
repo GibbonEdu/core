@@ -231,12 +231,12 @@ else {
 			}
 			
 			print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/course_manage_class_add.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=$gibbonCourseID'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/course_manage_class_add.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=$gibbonCourseID'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 			print "</div>" ;
 			
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print "There are no records to display." ;
+				print _("There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
@@ -296,8 +296,8 @@ else {
 								print $row["reportable"] ;
 							print "</td>" ;
 							print "<td>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/course_manage_class_edit.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/course_manage_class_delete.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/course_manage_class_edit.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/course_manage_class_delete.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							print "</td>" ;
 						print "</tr>" ;
 						

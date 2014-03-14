@@ -177,7 +177,7 @@ else {
 		
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print "There are no records to display." ;
+			print _("There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -247,7 +247,7 @@ else {
 							print $row["rollGroup"] ;
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&type=" . $row["type"] . "&allUsers=$allUsers&search=$search'><img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&type=" . $row["type"] . "&allUsers=$allUsers&search=$search'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

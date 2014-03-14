@@ -58,7 +58,7 @@ else {
 		$dateStamp=NULL ;
 		if ($viewBy=="date") {
 			$date=$_GET["date"] ;
-			if ($_GET["dateHuman"]!="") {
+			if (isset($_GET["dateHuman"])==TRUE) {
 				$date=dateConvert($guid, $_GET["dateHuman"]) ;
 			}
 			if ($date=="") {
@@ -463,7 +463,7 @@ else {
 							<span style="font-size: 90%"><i>Format: hh:mm (24hr)<br/></i></span>
 						</td>
 						<td class="right">
-							<input name="timeStart" id="timeStart" maxlength=5 value="<? print substr($nextTimeStart,0,5) ?>" type="text" style="width: 300px">
+							<input name="timeStart" id="timeStart" maxlength=5 value="<? if (isset($nextTimeStart)) { print substr($nextTimeStart,0,5) ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var timeStart=new LiveValidation('timeStart');
 								timeStart.add(Validate.Presence);
@@ -496,7 +496,7 @@ else {
 							<span style="font-size: 90%"><i>Format: hh:mm (24hr)<br/></i></span>
 						</td>
 						<td class="right">
-							<input name="timeEnd" id="timeEnd" maxlength=5 value="<? print substr($nextTimeEnd,0,5) ?>" type="text" style="width: 300px">
+							<input name="timeEnd" id="timeEnd" maxlength=5 value="<? if (isset($nextTimeEnd)) { print substr($nextTimeEnd,0,5) ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var timeEnd=new LiveValidation('timeEnd');
 								timeEnd.add(Validate.Presence);

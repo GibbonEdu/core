@@ -124,7 +124,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 					<div style='margin-bottom: 5px'>
 						<?
 						if ($mode!="plannerEdit" AND $mode!="embed") {
-							print "<img id='delete$i' title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
+							print "<img id='delete$i' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
 						}
 						if ($mode=="workingEdit") {
 							//Check that block is still connected to master (poor design in original smart units means that they might be disconnected, and so copyback will not work.
@@ -710,7 +710,7 @@ function makeBlockOutcome($guid,  $i, $type="", $gibbonOutcomeID="", $title="", 
 					<td style='text-align: right; width: 50%'>
 						<div style='margin-bottom: 25px'>
 							<?
-							print "<img id='" . $type  . "delete$i' title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
+							print "<img id='" . $type  . "delete$i' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
 							print "<div id='" . $type . "show$i' style='margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\")'></div>" ;
 							?>
 						</div>

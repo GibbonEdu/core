@@ -497,7 +497,7 @@ else {
 
 							if ($resultField->rowCount()<1) {
 								print "<div class='error'>" ;
-								print "There are no records to display." ;
+								print _("There are no records to display.") ;
 								print "</div>" ;
 							}
 							else {

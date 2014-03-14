@@ -35,7 +35,7 @@ if ($location!="") {
 	if (strstr($site, "<meta name=\"generator\" content=\"WordPress") OR strstr($site, "wp-content")) {
 		$action="" ;
 		$doc=new DOMDocument();
-		$doc->loadHtml($site);
+		@$doc->loadHtml($site);
 		
 		//Get form action
 		$selector=new DOMXpath($doc);
@@ -50,7 +50,7 @@ if ($location!="") {
 		//Get post ID
 		$id="" ;
 		$doc->preserveWhiteSpace=FALSE;
-		$doc->loadXml($xhtml);
+		@$doc->loadXml($xhtml);
 		foreach( $doc->getElementsByTagName('link') as $node ) {
 			if ($node->getAttribute('rel')=="shortlink") {
 				$id=$node->getAttribute('href') ;

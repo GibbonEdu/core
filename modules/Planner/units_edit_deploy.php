@@ -277,7 +277,7 @@ else {
 							
 							if (count($lessons)<1) {
 								print "<div class='error'>" ;
-								print "There are no records to display." ;
+								print _("There are no records to display.") ;
 								print "</div>" ;
 							}
 							else {
@@ -564,7 +564,7 @@ else {
 									$lessonCount=$_POST["count"] ;
 									if ($lessonCount<1) {
 										print "<div class='error'>" ;
-										print "There are no records to display." ;
+										print _("There are no records to display.") ;
 										print "</div>" ;
 									}
 									else {
@@ -585,7 +585,7 @@ else {
 										$cells=count($lessons) ;
 										if ($cells<1) {
 											print "<div class='error'>" ;
-											print "There are no records to display." ;
+											print _("There are no records to display.") ;
 											print "</div>" ;
 										}
 										else {

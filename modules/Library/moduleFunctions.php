@@ -119,7 +119,7 @@ function getBorrowingRecord($guid, $connection2, $gibbonPersonID) {
 							$output.="});" ;
 						$output.="</script>" ;
 						if ($row["fields"]!="") {
-							$output.="<a title='View Description' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Details' onclick='return false;' /></a>" ;
+							$output.="<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Details' onclick='return false;' /></a>" ;
 						}
 					$output.="</td>" ;
 				$output.="</tr>" ;

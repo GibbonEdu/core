@@ -158,7 +158,7 @@ else {
 
 								if ($result->rowCount()<1) {
 									print "<div class='error'>" ;
-									print "There are no records to display." ;
+									print _("There are no records to display.") ;
 									print "</div>" ;
 								}
 								else {
@@ -201,7 +201,7 @@ else {
 													print $row["type"] ;
 												print "</td>" ;
 												print "<td>" ;
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_edit_resource_deleteProcess.php?gibbonDepartmentResourceID=" . $row["gibbonDepartmentResourceID"] . "&gibbonDepartmentID=" . $row["gibbonDepartmentID"] . "&address=" . $_GET["q"] . "'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_edit_resource_deleteProcess.php?gibbonDepartmentResourceID=" . $row["gibbonDepartmentResourceID"] . "&gibbonDepartmentID=" . $row["gibbonDepartmentID"] . "&address=" . $_GET["q"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 												print "</td>" ;
 											print "</tr>" ;
 										}
