@@ -68,29 +68,20 @@ else {
 		print "</div>" ;
 	} 
 	
-	?>
-    
-    <?
 	//Check for uploads folder and see if it is writable.
 	$file = "uploads";
-if(!is_dir($file))
-
-  {
-  $class="error" ;
-   print "<div class='$class'>" ;
-   print "Your uploads folder doesn't exist so you cannot install modules.";
-   print "</div>";
-  }
-
-if(!is_writable("uploads")){
-$class="error" ;
- print "<div class='$class'>" ;
-  print "Your uploads folder in the root of ". $_SESSION[$guid]["systemName"]. " is not writable. You cannot install modules until this is rectified.";
-    print "</div>";
-}
- 
-
- 
+	if(!is_dir($file)) {
+  		$class="error" ;
+	   print "<div class='$class'>" ;
+	   print "Your uploads folder doesn't exist so you cannot install modules.";
+	   print "</div>";
+  	}
+	if(!is_writable("uploads")) {
+		$class="error" ;
+		print "<div class='$class'>" ;
+		print "Your uploads folder in the root of ". $_SESSION[$guid]["systemName"]. " is not writable. You cannot install modules until this is rectified.";
+		print "</div>";
+	}
 	
 	?>
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_installProcess.php?return=" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
