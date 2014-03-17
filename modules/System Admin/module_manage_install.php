@@ -42,7 +42,7 @@ else {
 			$addReturnMessage ="Install failed due to a database error." ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage ="Install failed because your manifest file was invalid." ;	
+			$addReturnMessage ="Install failed because either the manifest file was invalid or the uploads folder is not accessible to _www" ;	
 		}
 		else if ($addReturn=="fail4") {
 			$addReturnMessage ="Install failed because a module with the same name is already installed." ;	
@@ -69,12 +69,36 @@ else {
 	} 
 	
 	?>
+    
+    <?
+	//Check for uploads folder and see if it is writable.
+	$file = "uploads";
+if(!is_dir($file))
+
+  {
+  $class="error" ;
+   print "<div class='$class'>" ;
+   print "Your uploads folder doesn't exist so you cannot install modules.";
+   print "</div>";
+  }
+
+if(!is_writable("uploads")){
+$class="error" ;
+ print "<div class='$class'>" ;
+  print "Your uploads folder in the root of ". $_SESSION[$guid]["systemName"]. " is not writable. You cannot install modules until this is rectified.";
+    print "</div>";
+}
+ 
+
+ 
+	
+	?>
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_installProcess.php?return=" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
 					<b>Module Manifest *</b><br/>
-					<span style="font-size: 90%"><i>1. Unzip module in server /modules.<br/>2. Make local copy of manifest.php.<br/>3. Select manifest.php</i></span>
+					<span style="font-size: 90%"><i>1. Unzip module in server /modules.<br/>2. Make local copy of manifest.php.<br/>3. Open manifest.php and check the module name ($name).<br/>4. Rename the folder you unziped to the server to match $name.<br/>5. Make sure you have a folder named uploads in the root of <? print $_SESSION[$guid]["systemName"] ?><br/>6. Check that uploads is writable by _www.<br/>7. Select manifest.php.</i></span>
 				</td>
 				<td class="right">
 					<input type="file" name="file" id="file"><br/><br/>
