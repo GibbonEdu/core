@@ -258,7 +258,7 @@ else {
 						$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($deleteReturn=="fail2") {
-						$deleteReturnMessage="Your request was successful, but some data was not properly saved.") ;	
+						$deleteReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
 					}
 					else if ($deleteReturn=="fail3") {
 						$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
