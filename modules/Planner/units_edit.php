@@ -54,32 +54,32 @@ else {
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-		$updateReturnMessage ="" ;
+		$updateReturnMessage="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="fail0") {
-				$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+				$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($updateReturn=="fail1") {
-				$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail2") {
-				$updateReturnMessage =_("Your request failed due to a database error.") ;	
+				$updateReturnMessage=_("Your request failed due to a database error.") ;	
 			}
 			else if ($updateReturn=="fail3") {
-				$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail4") {
-				$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail5") {
-				$updateReturnMessage ="Your request failed due to an attachment error." ;	
+				$updateReturnMessage="Your request failed due to an attachment error." ;	
 			}
 			else if ($updateReturn=="fail6") {
-				$updateReturnMessage ="Your request was successful, but some data was not properly saved." ;	
+				$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage =_("Your request was completed successfully.") ;	
+				$updateReturnMessage=_("Your request was completed successfully.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -88,11 +88,11 @@ else {
 		} 
 		
 		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-		$addReturnMessage ="" ;
+		$addReturnMessage="" ;
 		$class="error" ;
 		if (!($addReturn=="")) {
 			if ($addReturn=="success0") {
-				$addReturnMessage ="Your Smart Unit was successfully created: you can now <b><u>edit and deploy it using the form below</u></b>." ;	
+				$addReturnMessage="Your Smart Unit was successfully created: you can now <b><u>edit and deploy it using the form below</u></b>." ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -101,26 +101,26 @@ else {
 		} 
 		
 		if (isset($_GET["deployReturn"])) { $deployReturn=$_GET["deployReturn"] ; } else { $deployReturn="" ; }
-		$deployReturnMessage ="" ;
+		$deployReturnMessage="" ;
 		$class="error" ;
 		if (!($deployReturn=="")) {
 			if ($deployReturn=="fail0") {
-				$deployReturnMessage ="Deploy failed because you do not have access to this action." ;	
+				$deployReturnMessage="Deploy failed because you do not have access to this action." ;	
 			}
 			else if ($deployReturn=="fail2") {
-				$deployReturnMessage ="Deploy failed due to a database error." ;	
+				$deployReturnMessage="Deploy failed due to a database error." ;	
 			}
 			else if ($deployReturn=="fail3") {
-				$deployReturnMessage ="Deploy failed because your inputs were invalid." ;	
+				$deployReturnMessage="Deploy failed because your inputs were invalid." ;	
 			}
 			else if ($deployReturn=="fail4") {
-				$deployReturnMessage ="Deploy failed because you do not have access to the specified course." ;	
+				$deployReturnMessage="Deploy failed because you do not have access to the specified course." ;	
 			}
 			else if ($deployReturn=="fail6") {
-				$deployReturnMessage ="Some aspects of the deploy failed." ;	
+				$deployReturnMessage="Some aspects of the deploy failed." ;	
 			}
 			else if ($deployReturn=="success0") {
-				$deployReturnMessage ="Deploy was successful." ;	
+				$deployReturnMessage="Deploy was successful." ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -133,7 +133,7 @@ else {
 		$class="error" ;
 		if (!($copyReturn=="")) {
 			if ($copyReturn=="success0") {
-				$copyReturnMessage ="Copy was successful. The blocks from the selected working unit have replaced those in the master unit (see below for the new block listing)." ;	
+				$copyReturnMessage="Copy was successful. The blocks from the selected working unit have replaced those in the master unit (see below for the new block listing)." ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -142,11 +142,11 @@ else {
 		} 
 		
 		if (isset($_GET["copyForwardReturn"])) { $copyForwardReturn=$_GET["copyForwardReturn"] ; } else { $copyForwardReturn="" ; }
-		$copyForwardReturnMessage ="" ;
+		$copyForwardReturnMessage="" ;
 		$class="error" ;
 		if (!($copyForwardReturn=="")) {
 			if ($copyForwardReturn=="success0") {
-				$copyForwardReturnMessage ="Copy forward was successful. You can now work on your new unit below." ;	
+				$copyForwardReturnMessage="Copy forward was successful. You can now work on your new unit below." ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -285,7 +285,7 @@ else {
 											?>
 											
 											$(".embeddable").click(function(){
-												if ($('input[name=embeddable]:checked').val() == "Y" ) {
+												if ($('input[name=embeddable]:checked').val()=="Y" ) {
 													$("#embeddableRow").slideDown("fast", $("#embeddableRow").css("display","table-row"));
 												} else {
 													$("#embeddableRow").css("display","none");
@@ -414,7 +414,7 @@ else {
 																		else {
 																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=" . $rowClassData["gibbonUnitClassID"] . "'><img title='Edit Unit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 																		}
-																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&viewBy=class'><img style='margin-top: 3px' title='View Planner' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.gif'/></a> " ;
+																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&viewBy=class'><img style='margin-top: 3px' title='" . _('View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.gif'/></a> " ;
 																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_copyBack.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=" . $rowClassData["gibbonUnitClassID"] . "'><img title='Copy Back' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copyback.png'/></a> " ;
 																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_copyForward.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=" . $rowClassData["gibbonUnitClassID"] . "'><img title='Copy Forward' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copyforward.png'/></a> " ;
 																	}
@@ -663,7 +663,7 @@ else {
 																		if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 																			print "<optgroup label='--" . $currentCategory . "--'>" ;
 																			print "<option class='$currentCategory' value='0'>Choose an outcome to add it to this unit</option>" ;
-																			$categories[$categoryCount]= $currentCategory ;
+																			$categories[$categoryCount]=$currentCategory ;
 																			$categoryCount++ ;
 																		}
 																		print "<option class='all " . $rowSelect["category"] . "'   value='" . $rowSelect["gibbonOutcomeID"] . "'>" . $rowSelect["name"] . "</option>" ;
@@ -705,7 +705,7 @@ else {
 																		if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 																			print "<optgroup label='--" . $currentCategory . "--'>" ;
 																			print "<option class='$currentCategory' value='0'>Choose an outcome to add it to this unit</option>" ;
-																			$categories[$categoryCount]= $currentCategory ;
+																			$categories[$categoryCount]=$currentCategory ;
 																			$categoryCount++ ;
 																		}
 																		print "<option class='all " . $rowSelect["category"] . "'   value='" . $rowSelect["gibbonOutcomeID"] . "'>" . $rowSelect["name"] . "</option>" ;
@@ -967,7 +967,7 @@ else {
 															else {
 																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=" . $rowClass[$hookOptions["classLinkIDField"]] . "'><img title='Edit Unit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 															}
-															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&viewBy=class'><img style='margin-top: 3px' title='View Planner' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.gif'/></a> " ;
+															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&viewBy=class'><img style='margin-top: 3px' title='" . _('View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.gif'/></a> " ;
 														print "</td>" ;
 													print "</tr>" ;
 													$classCount++ ;

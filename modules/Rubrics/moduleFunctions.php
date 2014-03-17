@@ -292,11 +292,11 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 						$output.="$('div.historical').css('display','none');" ;
 								
 						$output.="$('#type').change(function(){" ;
-							$output.="if ($('select.type option:selected').val() == 'Current' ) {" ;
+							$output.="if ($('select.type option:selected').val()=='Current' ) {" ;
 								$output.="$('div.historical').css('display','none');" ;
 								$output.="$('div.currentView').css('display','block');" ;
 							$output.="} " ;
-							$output.="else if ($('select.type option:selected').val() == 'Historical' ) {" ;
+							$output.="else if ($('select.type option:selected').val()=='Historical' ) {" ;
 								$output.="$('div.currentView').css('display','none');" ;
 								$output.="$('div.historical').css('display','block');" ;
 							$output.="}" ; 
@@ -415,7 +415,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 									$output.="<script type='text/javascript'>" ;
 										$output.="$(document).ready(function(){" ;
 											$output.="$(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").click(function(){" ;
-												$output.="if ($(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").css('background-color') == \"rgb(251, 251, 251)\" ) {" ;
+												$output.="if ($(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").css('background-color')==\"rgb(251, 251, 251)\" ) {" ;
 													$output.="$(\"#" . $rows[$i][0] . "-" . $columns[$n][0] . "\").css('background', 'none').css('background-color', '#79FA74');" ;
 													$output.="var request=$.ajax({ url: \"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Rubrics/rubrics_data_saveAjax.php\", type: \"GET\", data: {mode: \"Add\", gibbonRubricID : \"" . $gibbonRubricID . "\", gibbonPersonID : \"" . $gibbonPersonID . "\",gibbonRubricCellID : \"" . $cells[$rows[$i][0]][$columns[$n][0]][1] . "\",contextDBTable : \"" . $contextDBTable . "\",contextDBTableID : \"" . $contextDBTableID . "\"}, dataType: \"html\"});" ;
 												$output.="}" ; 

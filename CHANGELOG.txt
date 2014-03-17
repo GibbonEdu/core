@@ -129,6 +129,16 @@ Markbook: added clear delineation between columns in teacher overview
 i18n: fixed issue with date validation in en_US
 	Update values in gibboni18n
 
+Index: changed Quick Student Finder to Find Staff & Students
+	Edited file /functions.php
+	New filed /indexFindRedirect.php
+
+Functions: delete deprecated function conditional_escape
+	Edited file /functions.php
+
+School Admin: deleted orphan file
+	Deleted file /modules/School Admin/index.php
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)
@@ -3767,7 +3777,7 @@ Various modules
 	Added link to class planner
 
 Various files
-	Changed alt= in images to title= to enable tooltip
+	Changed alt=in images to title=to enable tooltip
 	
 functions.php
 	getSelf(): remove &thickbox=... from query string in getSelf() to stop thickbox coming up on "Back" press (very rare set of circumstances to get this one).

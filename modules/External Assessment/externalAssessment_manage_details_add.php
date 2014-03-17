@@ -32,26 +32,26 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage ="" ;
+	$addReturnMessage="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage =_("Your request failed due to a database error.") ;	
+			$addReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage ="Add was successful." ;	
+			$addReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -154,14 +154,14 @@ else {
 							</td>
 						</tr>
 						
-						<!=- Copy CATS GCSE Targets to GCSE =->
+						<!=- Copy CATS GCSE Targets to GCSE=->
 						<script type="text/javascript">
 							$(document).ready(function(){
 								$("#copyToGCSE").css("display","none");
 								
 										
 								$("#gibbonExternalAssessmentID").change(function(){
-									if ($('#gibbonExternalAssessmentID option:selected').val() == "0002" ) {
+									if ($('#gibbonExternalAssessmentID option:selected').val()=="0002" ) {
 										$("#copyToGCSE").slideDown("fast", $("#copyToGCSE").css("display","table-row")); 
 									}
 									else {
@@ -180,13 +180,13 @@ else {
 							</td>
 						</tr>
 						
-						<!=- Use GCSE Grades to create IB =->
+						<!=- Use GCSE Grades to create IB=->
 						<script type="text/javascript">
 							$(document).ready(function(){
 								$("#copyToIB").css("display","none");
 								
 								$("#gibbonExternalAssessmentID").change(function(){
-									if ($('#gibbonExternalAssessmentID option:selected').val() == "0003" ) {
+									if ($('#gibbonExternalAssessmentID option:selected').val()=="0003" ) {
 										$("#copyToIB").slideDown("fast", $("#copyToIB").css("display","table-row")); 
 									}
 									else {

@@ -36,26 +36,26 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["duplicateReturn"])) { $duplicateReturn=$_GET["duplicateReturn"] ; } else { $duplicateReturn="" ; }
-	$duplicateReturnMessage ="" ;
+	$duplicateReturnMessage="" ;
 	$class="error" ;
 	if (!($duplicateReturn=="")) {
 		if ($duplicateReturn=="fail0") {
-			$duplicateReturnMessage ="Duplicate failed because you do not have access to this action." ;	
+			$duplicateReturnMessage="Duplicate failed because you do not have access to this action." ;	
 		}
 		else if ($duplicateReturn=="fail1") {
-			$duplicateReturnMessage ="Duplicate failed because a required parameter was not set." ;	
+			$duplicateReturnMessage="Duplicate failed because a required parameter was not set." ;	
 		}
 		else if ($duplicateReturn=="fail2") {
-			$duplicateReturnMessage ="Duplicate failed due to a database error." ;	
+			$duplicateReturnMessage="Duplicate failed due to a database error." ;	
 		}
 		else if ($duplicateReturn=="fail3") {
-			$duplicateReturnMessage ="Duplicate failed because your inputs were invalid." ;	
+			$duplicateReturnMessage="Duplicate failed because your inputs were invalid." ;	
 		}
 		else if ($duplicateReturn=="fail3") {
-			$duplicateReturnMessage ="Some aspects of the duplicate failed." ;	
+			$duplicateReturnMessage="Some aspects of the duplicate failed." ;	
 		}
 		else if ($duplicateReturn=="success0") {
-			$duplicateReturnMessage ="Duplicate was successful." ;	
+			$duplicateReturnMessage="Duplicate was successful." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -338,10 +338,10 @@ else {
 							<script type="text/javascript">
 								$(document).ready(function(){
 									$("#ownershipType<? print $i ?>").change(function(){
-										if ($('select.ownershipType<? print $i ?> option:selected').val() == "School" ) {
+										if ($('select.ownershipType<? print $i ?> option:selected').val()=="School" ) {
 											$("#ownershipTypeIndividualRow<? print $i ?>").css("display","none");
 											$("#ownershipTypeSchoolRow<? print $i ?>").slideDown("fast", $("#ownershipTypeSchoolRow<? print $i ?>").css("display","table-row")); 
-										} else if ($('select.ownershipType<? print $i ?> option:selected').val() == "Individual" ) {
+										} else if ($('select.ownershipType<? print $i ?> option:selected').val()=="Individual" ) {
 											$("#ownershipTypeSchoolRow<? print $i ?>").css("display","none");
 											$("#ownershipTypeIndividualRow<? print $i ?>").slideDown("fast", $("#ownershipTypeIndividualRow<? print $i ?>).css("display","table-row")); 
 										} 

@@ -248,7 +248,7 @@ else {
 					$families=array() ;
 					$familyCount=0 ;
 					$familySuccessCount=0 ;
-					while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !== FALSE) {
+					while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !==FALSE) {
 						if ($data[0]!="" AND $data[1]!="") {
 							$families[$familySuccessCount]["familySync"]=$data[0] ;
 							$families[$familySuccessCount]["name"]=$data[1] ;
@@ -298,7 +298,7 @@ else {
 					$parents=array() ;
 					$parentCount=0 ;
 					$parentSuccessCount=0 ;
-					while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !== FALSE) {
+					while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !==FALSE) {
 						if ($data[0]!="" AND $data[1]!="" AND $data[2]!="") {
 							$parents[$parentSuccessCount]["familySync"]=$data[0] ;
 							$parents[$parentSuccessCount]["username"]=$data[1] ;
@@ -344,7 +344,7 @@ else {
 					$children=array() ;
 					$childCount=0 ;
 					$childSuccessCount=0 ;
-					while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !== FALSE) {
+					while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !==FALSE) {
 						if ($data[0]!="" AND $data[1]!="") {
 							$children[$childSuccessCount]["familySync"]=$data[0] ;
 							$children[$childSuccessCount]["username"]=$data[1] ;

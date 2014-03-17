@@ -139,26 +139,26 @@ else {
 				print "</div>" ;
 				
 				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-				$updateReturnMessage ="" ;
+				$updateReturnMessage="" ;
 				$class="error" ;
 				if (!($updateReturn=="")) {
 					if ($updateReturn=="fail0") {
-						$updateReturnMessage ="Duplicate failed because you do not have access to this action." ;	
+						$updateReturnMessage="Duplicate failed because you do not have access to this action." ;	
 					}
 					else if ($updateReturn=="fail1") {
-						$updateReturnMessage ="Duplicate failed because a required parameter was not set." ;	
+						$updateReturnMessage="Duplicate failed because a required parameter was not set." ;	
 					}
 					else if ($updateReturn=="fail2") {
-						$updateReturnMessage ="Duplicate failed due to a database error." ;	
+						$updateReturnMessage="Duplicate failed due to a database error." ;	
 					}
 					else if ($updateReturn=="fail3") {
-						$updateReturnMessage ="Duplicate failed because your inputs were invalid." ;	
+						$updateReturnMessage="Duplicate failed because your inputs were invalid." ;	
 					}
 					else if ($updateReturn=="fail4") {
-						$updateReturnMessage ="Duplicate failed some values need to be unique but were not." ;	
+						$updateReturnMessage="Duplicate failed some values need to be unique but were not." ;	
 					}
 					else if ($updateReturn=="fail5") {
-						$updateReturnMessage ="Duplicate failed because your attachment could not be uploaded." ;	
+						$updateReturnMessage="Duplicate failed because your attachment could not be uploaded." ;	
 					}
 					print "<div class='$class'>" ;
 						print $updateReturnMessage;

@@ -476,20 +476,20 @@ else {
 		
 		//Proceed!
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-		$updateReturnMessage ="" ;
+		$updateReturnMessage="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="fail0") {
-				$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+				$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($updateReturn=="fail2") {
-				$updateReturnMessage =_("Your request failed due to a database error.") ;	
+				$updateReturnMessage=_("Your request failed due to a database error.") ;	
 			}
 			else if ($updateReturn=="fail5") {
-				$updateReturnMessage ="Your request was successful, but some data was not properly saved." ;	
+				$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage =_("Your request was completed successfully.") ;	
+				$updateReturnMessage=_("Your request was completed successfully.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;

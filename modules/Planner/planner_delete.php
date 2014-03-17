@@ -142,20 +142,20 @@ else {
 				
 				//Proceed!
 				if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-				$deleteReturnMessage ="" ;
+				$deleteReturnMessage="" ;
 				$class="error" ;
 				if (!($deleteReturn=="")) {
 					if ($deleteReturn=="fail0") {
-						$deleteReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+						$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 					}
 					else if ($deleteReturn=="fail1") {
-						$deleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+						$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($deleteReturn=="fail2") {
-						$deleteReturnMessage =_("Your request failed due to a database error.") ;	
+						$deleteReturnMessage=_("Your request failed due to a database error.") ;	
 					}
 					else if ($deleteReturn=="fail3") {
-						$deleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+						$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					print "<div class='$class'>" ;
 						print $deleteReturnMessage;

@@ -32,20 +32,20 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage ="" ;
+	$deleteReturnMessage="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="fail0") {
-			$deleteReturnMessage ="Uninstall failed because you do not have access to this action." ;	
+			$deleteReturnMessage="Uninstall failed because you do not have access to this action." ;	
 		}
 		else if ($deleteReturn=="fail1") {
-			$deleteReturnMessage ="Uninstall failed because a required parameter was not set." ;	
+			$deleteReturnMessage="Uninstall failed because a required parameter was not set." ;	
 		}
 		else if ($deleteReturn=="fail2") {
-			$deleteReturnMessage ="Uninstall failed because your inputs were invalid." ;	
+			$deleteReturnMessage="Uninstall failed because your inputs were invalid." ;	
 		}
 		else if ($deleteReturn=="fail3") {
-			$deleteReturnMessage ="Uninstall encountered a partial fail: the module may or may not still work." ;	
+			$deleteReturnMessage="Uninstall encountered a partial fail: the module may or may not still work." ;	
 		}
 		print "<div class='$class'>" ;
 			print $deleteReturnMessage;

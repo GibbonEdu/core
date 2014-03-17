@@ -33,10 +33,10 @@ abstract class Google_Cache {
    * @param boolean|int $expiration Expiration time in seconds
    *
    */
-  abstract function get($key, $expiration = false);
+  abstract function get($key, $expiration=false);
 
   /**
-   * Store the key => $value set. The $value is serialized
+   * Store the key=> $value set. The $value is serialized
    * by this function so can be of any type
    *
    * @param string $key Key of the data

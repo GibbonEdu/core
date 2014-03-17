@@ -179,13 +179,13 @@ class POP3
     {
         $this->host=$host;
         // If no port value provided, use default
-        if ($port === false) {
+        if ($port===false) {
             $this->port=$this->POP3_PORT;
         } else {
             $this->port=$port;
         }
         // If no timeout value provided, use default
-        if ($tval === false) {
+        if ($tval===false) {
             $this->tval=$this->POP3_TIMEOUT;
         } else {
             $this->tval=$tval;
@@ -239,18 +239,18 @@ class POP3
         //  Restore the error handler
         restore_error_handler();
         //  Does the Error Log now contain anything?
-        if ($this->error && $this->do_debug >= 1) {
+        if ($this->error && $this->do_debug >=1) {
             $this->displayErrors();
         }
         //  Did we connect?
-        if ($this->pop_conn == false) {
+        if ($this->pop_conn==false) {
             //  It would appear not...
             $this->error=array(
-                'error' => "Failed to connect to server $host on port $port",
-                'errno' => $errno,
-                'errstr' => $errstr
+                'error'=> "Failed to connect to server $host on port $port",
+                'errno'=> $errno,
+                'errstr'=> $errstr
             );
-            if ($this->do_debug >= 1) {
+            if ($this->do_debug >=1) {
                 $this->displayErrors();
             }
             return false;
@@ -262,7 +262,7 @@ class POP3
             stream_set_timeout($this->pop_conn, $tval, 0);
         } else {
             //  Does not work on Windows
-            if (substr(PHP_OS, 0, 3) !== 'WIN') {
+            if (substr(PHP_OS, 0, 3) !=='WIN') {
                 socket_set_timeout($this->pop_conn, $tval, 0);
             }
         }
@@ -288,10 +288,10 @@ class POP3
      */
     public function login($username='', $password='')
     {
-        if ($this->connected == false) {
+        if ($this->connected==false) {
             $this->error='Not connected to POP3 server';
 
-            if ($this->do_debug >= 1) {
+            if ($this->do_debug >=1) {
                 $this->displayErrors();
             }
         }
@@ -338,7 +338,7 @@ class POP3
     private function getResponse($size=128)
     {
         $r=fgets($this->pop_conn, $size);
-        if ($this->do_debug >= 1) {
+        if ($this->do_debug >=1) {
             echo "Server -> Client: $r";
         }
         return $r;
@@ -353,7 +353,7 @@ class POP3
     private function sendString($string)
     {
         if ($this->pop_conn) {
-            if ($this->do_debug >= 2) { //Show client messages when debug >= 2
+            if ($this->do_debug >=2) { //Show client messages when debug >=2
                 echo "Client -> Server: $string";
             }
             return fwrite($this->pop_conn, $string, strlen($string));
@@ -370,13 +370,13 @@ class POP3
      */
     private function checkResponse($string)
     {
-        if (substr($string, 0, 3) !== '+OK') {
+        if (substr($string, 0, 3) !=='+OK') {
             $this->error=array(
-                'error' => "Server reported an error: $string",
-                'errno' => 0,
-                'errstr' => ''
+                'error'=> "Server reported an error: $string",
+                'errno'=> 0,
+                'errstr'=> ''
             );
-            if ($this->do_debug >= 1) {
+            if ($this->do_debug >=1) {
                 $this->displayErrors();
             }
             return false;
@@ -409,11 +409,11 @@ class POP3
     private function catchWarning($errno, $errstr, $errfile, $errline)
     {
         $this->error[]=array(
-            'error' => "Connecting to the POP3 server raised a PHP warning: ",
-            'errno' => $errno,
-            'errstr' => $errstr,
-            'errfile' => $errfile,
-            'errline' => $errline
+            'error'=> "Connecting to the POP3 server raised a PHP warning: ",
+            'errno'=> $errno,
+            'errstr'=> $errstr,
+            'errfile'=> $errfile,
+            'errline'=> $errline
         );
     }
 }

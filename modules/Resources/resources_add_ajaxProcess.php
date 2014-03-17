@@ -194,7 +194,7 @@ else {
 			
 			if ($partialFail==TRUE) {
 				print "<span style='font-weight: bold; color: #ff0000'>" ;
-					print "Your request was successful, but some data was not properly saved." ;
+					print _("Your request was successful, but some data was not properly saved.") ;
 				print "</span>" ;
 			}
 			else {

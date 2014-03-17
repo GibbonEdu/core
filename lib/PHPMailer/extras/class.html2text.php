@@ -257,12 +257,12 @@ class html2text
         // 'inline' (show links inline)
         // 'nextline' (show links on the next line)
         // 'table' (if a table of link URLs should be listed after the text.
-        'do_links' => 'inline',
+        'do_links'=> 'inline',
 
         //  Maximum width of the formatted text, in columns.
         //  Set this value to 0 (or less) to ignore word wrapping
         //  and not constrain text to a fixed-width column.
-        'width' => 70,
+        'width'=> 70,
     );
 
 
@@ -379,7 +379,7 @@ class html2text
         } else {
             // Strip any trailing slashes for consistency (relative
             // URLs may already start with a slash like "/file.html")
-            if ( substr($url, -1) == '/' ) {
+            if ( substr($url, -1)=='/' ) {
                 $url=substr($url, 0, -1);
             }
             $this->url=$url;
@@ -404,9 +404,9 @@ class html2text
 
         // Add link list
         if (!empty($this->_link_list)) {
-            $text .= "\n\nLinks:\n------\n";
-            foreach ($this->_link_list as $idx => $url) {
-                $text .= '[' . ($idx+1) . '] ' . $url . "\n";
+            $text .="\n\nLinks:\n------\n";
+            foreach ($this->_link_list as $idx=> $url) {
+                $text .='[' . ($idx+1) . '] ' . $url . "\n";
             }
         }
 
@@ -466,7 +466,7 @@ class html2text
         $text=ltrim($text, "\n");
 
         // Wrap the text to a readable format
-        // for PHP versions >= 4.0.2. Default width is 75
+        // for PHP versions >=4.0.2. Default width is 75
         // If width is 0 or less, don't wrap the text.
         if ( $this->_options['width'] > 0 ) {
             $text=wordwrap($text, $this->_options['width']);
@@ -489,7 +489,7 @@ class html2text
     private function _build_link_list( $link, $display, $link_override=null)
     {
         $link_method=($link_override) ? $link_override : $this->_options['do_links'];
-        if ($link_method == 'none')
+        if ($link_method=='none')
             return $display;
 
 
@@ -502,22 +502,22 @@ class html2text
         }
         else {
             $url=$this->url;
-            if (substr($link, 0, 1) != '/') {
-                $url .= '/';
+            if (substr($link, 0, 1) !='/') {
+                $url .='/';
             }
-            $url .= "$link";
+            $url .="$link";
         }
 
-        if ($link_method == 'table')
+        if ($link_method=='table')
         {
-            if (($index=array_search($url, $this->_link_list)) === false) {
+            if (($index=array_search($url, $this->_link_list))===false) {
                 $index=count($this->_link_list);
                 $this->_link_list[]=$url;
             }
 
             return $display . ' [' . ($index+1) . ']';
         }
-        elseif ($link_method == 'nextline')
+        elseif ($link_method=='nextline')
         {
             return $display . "\n[" . $url . ']';
         }
@@ -569,7 +569,7 @@ class html2text
             $start=0;
             $taglen=0;
             foreach ($matches[0] as $m) {
-                if ($m[0][0] == '<' && $m[0][1] == '/') {
+                if ($m[0][0]=='<' && $m[0][1]=='/') {
                     $level--;
                     if ($level < 0) {
                         $level=0; // malformed HTML: go to next blockquote
@@ -578,14 +578,14 @@ class html2text
                         // skip inner blockquote
                     }
                     else {
-                        $end =$m[1];
-                        $len =$end - $taglen - $start;
+                        $end=$m[1];
+                        $len=$end - $taglen - $start;
                         // Get blockquote content
                         $body=substr($text, $start + $taglen - $diff, $len);
 
                         // Set text width
                         $p_width=$this->_options['width'];
-                        if ($this->_options['width'] > 0) $this->_options['width'] -= 2;
+                        if ($this->_options['width'] > 0) $this->_options['width'] -=2;
                         // Convert blockquote content
                         $body=trim($body);
                         $this->_converter($body);
@@ -603,7 +603,7 @@ class html2text
                     }
                 }
                 else {
-                    if ($level == 0) {
+                    if ($level==0) {
                         $start=$m[1];
                         $taglen=strlen($m[0]);
                     }
@@ -665,8 +665,8 @@ class html2text
         $chunks=preg_split('/(<[^>]*>)/', $str, null, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 
         // convert toupper only the text between HTML tags
-        foreach ($chunks as $idx => $chunk) {
-            if ($chunk[0] != '<') {
+        foreach ($chunks as $idx=> $chunk) {
+            if ($chunk[0] !='<') {
                 $chunks[$idx]=$this->_strtoupper($chunk);
             }
         }

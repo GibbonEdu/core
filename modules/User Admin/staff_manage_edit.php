@@ -32,26 +32,26 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage ="" ;
+	$updateReturnMessage="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage =_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage =_("Your request was completed successfully.") ;	
+			$updateReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -170,7 +170,7 @@ else {
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$("#firstAidQualified").change(function(){
-								if ($('select.firstAidQualified option:selected').val() == "Y" ) {
+								if ($('select.firstAidQualified option:selected').val()=="Y" ) {
 									$("#firstAidExpiryRow").slideDown("fast", $("#firstAidExpiryRow").css("display","table-row")); 
 								} else {
 									$("#firstAidExpiryRow").css("display","none");

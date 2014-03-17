@@ -37,7 +37,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 $gibbonMarkbookColumnID=$_GET["gibbonMarkbookColumnID"] ;
-$URL= $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/markbook_edit_data.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/markbook_edit_data.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID" ;
 
 $personalisedWarnings=getSettingByScope( $connection2, "Markbook", "personalisedWarnings" ) ;
 
@@ -267,13 +267,13 @@ else {
 					//Attempt WordPress Comment Push
 					if ($wordpressCommentPushAction!="" AND $wordpressCommentPushID!="") {
 						$data="comment_post_ID=" . urlencode($wordpressCommentPushID) . "&author=" . urlencode(formatName($_SESSION[$guid]["title"], $_SESSION[$guid]["preferredName"], $_SESSION[$guid]["surname"], "Staff")) . "&email=" . urlencode($_SESSION[$guid]["email"]) . "&url=" . urlencode($_SESSION[$guid]["website"]) . "&comment=" . urlencode($comment) ;
-						$params=array('http' => array('method' => 'POST','content' => $data));
+						$params=array('http'=> array('method'=> 'POST','content'=> $data));
 						$ctx=stream_context_create($params);
 						$fp=@fopen($wordpressCommentPushAction, 'rb', false, $ctx);
 						if (!$fp) {
 							$partialFail=TRUE ;
 						}
-						if (@stream_get_contents($fp) === false) {
+						if (@stream_get_contents($fp)===false) {
 							$partialFail=TRUE ;
 						}
 					}

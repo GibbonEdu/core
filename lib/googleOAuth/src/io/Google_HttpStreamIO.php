@@ -25,15 +25,15 @@ require_once 'Google_CacheParser.php';
 
 class Google_HttpStreamIO extends Google_IO {
 
-  private static $ENTITY_HTTP_METHODS = array("POST" => null, "PUT" => null);
+  private static $ENTITY_HTTP_METHODS=array("POST"=> null, "PUT"=> null);
 
-  private static $DEFAULT_HTTP_CONTEXT = array(
-    "follow_location" => 0,
-    "ignore_errors" => 1,
+  private static $DEFAULT_HTTP_CONTEXT=array(
+    "follow_location"=> 0,
+    "ignore_errors"=> 1,
   );
 
-  private static $DEFAULT_SSL_CONTEXT = array(
-    "verify_peer" => true,
+  private static $DEFAULT_SSL_CONTEXT=array(
+    "verify_peer"=> true,
   );
 
   /**
@@ -47,7 +47,7 @@ class Google_HttpStreamIO extends Google_IO {
    * responseHttpCode, responseHeaders and responseBody.
    */
   public function authenticatedRequest(Google_HttpRequest $request) {
-    $request = Google_Client::$auth->sign($request);
+    $request=Google_Client::$auth->sign($request);
     return $this->makeRequest($request);
   }
 
@@ -61,64 +61,64 @@ class Google_HttpStreamIO extends Google_IO {
    */
   public function makeRequest(Google_HttpRequest $request) {
     // First, check to see if we have a valid cached version.
-    $cached = $this->getCachedRequest($request);
-    if ($cached !== false) {
+    $cached=$this->getCachedRequest($request);
+    if ($cached !==false) {
       if (!$this->checkMustRevaliadateCachedRequest($cached, $request)) {
         return $cached;
       }
     }
 
-    $default_options = stream_context_get_options(stream_context_get_default());
+    $default_options=stream_context_get_options(stream_context_get_default());
 
-    $requestHttpContext = array_key_exists('http', $default_options) ?
+    $requestHttpContext=array_key_exists('http', $default_options) ?
         $default_options['http'] : array();
     if (array_key_exists($request->getRequestMethod(),
           self::$ENTITY_HTTP_METHODS)) {
-      $request = $this->processEntityRequest($request);
+      $request=$this->processEntityRequest($request);
     }
 
     if ($request->getPostBody()) {
-      $requestHttpContext["content"] = $request->getPostBody();
+      $requestHttpContext["content"]=$request->getPostBody();
     }
 
-    $requestHeaders = $request->getRequestHeaders();
+    $requestHeaders=$request->getRequestHeaders();
     if ($requestHeaders && is_array($requestHeaders)) {
-      $headers = "";
-      foreach($requestHeaders as $k => $v) {
-        $headers .= "$k: $v\n";
+      $headers="";
+      foreach($requestHeaders as $k=> $v) {
+        $headers .="$k: $v\n";
       }
-      $requestHttpContext["header"] = $headers;
+      $requestHttpContext["header"]=$headers;
     }
 
-    $requestHttpContext["method"] = $request->getRequestMethod();
-    $requestHttpContext["user_agent"] = $request->getUserAgent();
+    $requestHttpContext["method"]=$request->getRequestMethod();
+    $requestHttpContext["user_agent"]=$request->getUserAgent();
 
-    $requestSslContext = array_key_exists('ssl', $default_options) ?
+    $requestSslContext=array_key_exists('ssl', $default_options) ?
         $default_options['ssl'] : array();
 
     if (!array_key_exists("cafile", $requestSslContext)) {
-      $requestSslContext["cafile"] = dirname(__FILE__) . '/cacerts.pem';
+      $requestSslContext["cafile"]=dirname(__FILE__) . '/cacerts.pem';
     }
 
-    $options = array("http" => array_merge(self::$DEFAULT_HTTP_CONTEXT,
+    $options=array("http"=> array_merge(self::$DEFAULT_HTTP_CONTEXT,
                                                  $requestHttpContext),
-                     "ssl" => array_merge(self::$DEFAULT_SSL_CONTEXT,
+                     "ssl"=> array_merge(self::$DEFAULT_SSL_CONTEXT,
                                           $requestSslContext));
 
-    $context = stream_context_create($options);
+    $context=stream_context_create($options);
 
-    $response_data = file_get_contents($request->getUrl(),
+    $response_data=file_get_contents($request->getUrl(),
                                        false,
                                        $context);
 
-    if (false === $response_data) {
+    if (false===$response_data) {
       throw new Google_IOException("HTTP Error: Unable to connect");
     }
 
-    $respHttpCode = $this->getHttpResponseCode($http_response_header);
-    $responseHeaders = $this->getHttpResponseHeaders($http_response_header);
+    $respHttpCode=$this->getHttpResponseCode($http_response_header);
+    $responseHeaders=$this->getHttpResponseHeaders($http_response_header);
 
-    if ($respHttpCode == 304 && $cached) {
+    if ($respHttpCode==304 && $cached) {
       // If the server responded NOT_MODIFIED, return the cached request.
       $this->updateCachedRequest($cached, $responseHeaders);
       return $cached;
@@ -141,12 +141,12 @@ class Google_HttpStreamIO extends Google_IO {
   }
 
   private function getHttpResponseCode($response_headers) {
-    $header_count = count($response_headers);
+    $header_count=count($response_headers);
 
-    for ($i = 0; $i < $header_count; $i++) {
-      $header = $response_headers[$i];
-      if (strncasecmp("HTTP", $header, strlen("HTTP")) == 0) {
-        $response = explode(' ', $header);
+    for ($i=0; $i < $header_count; $i++) {
+      $header=$response_headers[$i];
+      if (strncasecmp("HTTP", $header, strlen("HTTP"))==0) {
+        $response=explode(' ', $header);
         return $response[1];
       }
     }
@@ -154,14 +154,14 @@ class Google_HttpStreamIO extends Google_IO {
   }
 
   private function getHttpResponseHeaders($response_headers) {
-    $header_count = count($response_headers);
-    $headers = array();
+    $header_count=count($response_headers);
+    $headers=array();
 
-    for ($i = 0; $i < $header_count; $i++) {
-      $header = $response_headers[$i];
-      $header_parts = explode(':', $header);
-      if (count($header_parts) == 2) {
-        $headers[$header_parts[0]] = $header_parts[1];
+    for ($i=0; $i < $header_count; $i++) {
+      $header=$response_headers[$i];
+      $header_parts=explode(':', $header);
+      if (count($header_parts)==2) {
+        $headers[$header_parts[0]]=$header_parts[1];
       }
     }
 

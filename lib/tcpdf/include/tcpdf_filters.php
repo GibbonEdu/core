@@ -154,14 +154,14 @@ class TCPDF_FILTERS {
 		$data=preg_replace('/[\s]/', '', $data);
 		// check for EOD character: GREATER-THAN SIGN (3Eh)
 		$eod=strpos($data, '>');
-		if ($eod !== false) {
+		if ($eod !==false) {
 			// remove EOD and extra data (if any)
 			$data=substr($data, 0, $eod);
 			$eod=true;
 		}
 		// get data length
 		$data_length=strlen($data);
-		if (($data_length % 2) != 0) {
+		if (($data_length % 2) !=0) {
 			// odd number of hexadecimal digits
 			if ($eod) {
 				// EOD shall behave as if a 0 (zero) followed the last digit
@@ -193,13 +193,13 @@ class TCPDF_FILTERS {
 		// all white-space characters shall be ignored
 		$data=preg_replace('/[\s]/', '', $data);
 		// remove start sequence 2-character sequence <~ (3Ch)(7Eh)
-		if (strpos($data, '<~') !== false) {
+		if (strpos($data, '<~') !==false) {
 			// remove EOD and extra data (if any)
 			$data=substr($data, 2);
 		}
 		// check for EOD: 2-character sequence ~> (7Eh)(3Eh)
 		$eod=strpos($data, '~>');
-		if ($eod !== false) {
+		if ($eod !==false) {
 			// remove EOD and extra data (if any)
 			$data=substr($data, 0, $eod);
 		}
@@ -220,17 +220,17 @@ class TCPDF_FILTERS {
 		for ($i=0; $i < $data_length; ++$i) {
 			// get char value
 			$char=ord($data[$i]);
-			if ($char == 122) { // 'z'
-				if ($group_pos == 0) {
-					$decoded .= $zseq;
+			if ($char==122) { // 'z'
+				if ($group_pos==0) {
+					$decoded .=$zseq;
 				} else {
 					self::Error('decodeFilterASCII85Decode: invalid code');
 				}
 			} else {
 				// the value represented by a group of 5 characters should never be greater than 2^32 - 1
-				$tuple += (($char - 33) * $pow85[$group_pos]);
-				if ($group_pos == 4) {
-					$decoded .= chr($tuple >> 24).chr($tuple >> 16).chr($tuple >> 8).chr($tuple);
+				$tuple +=(($char - 33) * $pow85[$group_pos]);
+				if ($group_pos==4) {
+					$decoded .=chr($tuple >> 24).chr($tuple >> 16).chr($tuple >> 8).chr($tuple);
 					$tuple=0;
 					$group_pos=0;
 				} else {
@@ -239,20 +239,20 @@ class TCPDF_FILTERS {
 			}
 		}
 		if ($group_pos > 1) {
-			$tuple += $pow85[($group_pos - 1)];
+			$tuple +=$pow85[($group_pos - 1)];
 		}
 		// last tuple (if any)
 		switch ($group_pos) {
 			case 4: {
-				$decoded .= chr($tuple >> 24).chr($tuple >> 16).chr($tuple >> 8);
+				$decoded .=chr($tuple >> 24).chr($tuple >> 16).chr($tuple >> 8);
 				break;
 			}
 			case 3: {
-				$decoded .= chr($tuple >> 24).chr($tuple >> 16);
+				$decoded .=chr($tuple >> 24).chr($tuple >> 16);
 				break;
 			}
 			case 2: {
-				$decoded .= chr($tuple >> 24);
+				$decoded .=chr($tuple >> 24);
 				break;
 			}
 			case 1: {
@@ -279,7 +279,7 @@ class TCPDF_FILTERS {
 		// convert string to binary string
 		$bitstring='';
 		for ($i=0; $i < $data_length; ++$i) {
-			$bitstring .= sprintf('%08b', ord($data{$i}));
+			$bitstring .=sprintf('%08b', ord($data{$i}));
 		}
 		// get the number of bits
 		$data_length=strlen($bitstring);
@@ -295,12 +295,12 @@ class TCPDF_FILTERS {
 		// previous val
 		$prev_index=0;
 		// while we encounter EOD marker (257), read code_length bits
-		while (($data_length > 0) AND (($index=bindec(substr($bitstring, 0, $bitlen))) != 257)) {
+		while (($data_length > 0) AND (($index=bindec(substr($bitstring, 0, $bitlen))) !=257)) {
 			// remove read bits from string
 			$bitstring=substr($bitstring, $bitlen);
 			// update number of bits
-			$data_length -= $bitlen;
-			if ($index == 256) { // clear-table marker
+			$data_length -=$bitlen;
+			if ($index==256) { // clear-table marker
 				// reset code length in bits
 				$bitlen=9;
 				// reset dictionary index
@@ -311,32 +311,32 @@ class TCPDF_FILTERS {
 				for ($i=0; $i < 256; ++$i) {
 					$dictionary[$i]=chr($i);
 				}
-			} elseif ($prev_index == 256) {
+			} elseif ($prev_index==256) {
 				// first entry
-				$decoded .= $dictionary[$index];
+				$decoded .=$dictionary[$index];
 				$prev_index=$index;
 			} else {
 				// check if index exist in the dictionary
 				if ($index < $dix) {
 					// index exist on dictionary
-					$decoded .= $dictionary[$index];
+					$decoded .=$dictionary[$index];
 					$dic_val=$dictionary[$prev_index].$dictionary[$index]{0};
 					// store current index
 					$prev_index=$index;
 				} else {
 					// index do not exist on dictionary
 					$dic_val=$dictionary[$prev_index].$dictionary[$prev_index]{0};
-					$decoded .= $dic_val;
+					$decoded .=$dic_val;
 				}
 				// update dictionary
 				$dictionary[$dix]=$dic_val;
 				++$dix;
 				// change bit length by case
-				if ($dix == 2047) {
+				if ($dix==2047) {
 					$bitlen=12;
-				} elseif ($dix == 1023) {
+				} elseif ($dix==1023) {
 					$bitlen=11;
-				} elseif ($dix == 511) {
+				} elseif ($dix==511) {
 					$bitlen=10;
 				}
 			}
@@ -355,7 +355,7 @@ class TCPDF_FILTERS {
 	public static function decodeFilterFlateDecode($data) {
 		// intialize string to return
 		$decoded=@gzuncompress($data);
-		if ($decoded === false) {
+		if ($decoded===false) {
 			self::Error('decodeFilterFlateDecode: invalid code');
 		}
 		return $decoded;
@@ -377,21 +377,21 @@ class TCPDF_FILTERS {
 		while($i < $data_length) {
 			// get current byte value
 			$byte=ord($data{$i});
-			if ($byte == 128) {
+			if ($byte==128) {
 				// a length value of 128 denote EOD
 				break;
 			} elseif ($byte < 128) {
 				// if the length byte is in the range 0 to 127
 				// the following length + 1 (1 to 128) bytes shall be copied literally during decompression
-				$decoded .= substr($data, ($i + 1), ($byte + 1));
+				$decoded .=substr($data, ($i + 1), ($byte + 1));
 				// move to next block
-				$i += ($byte + 2);
+				$i +=($byte + 2);
 			} else {
 				// if length is in the range 129 to 255,
 				// the following single byte shall be copied 257 - length (2 to 128) times during decompression
-				$decoded .= str_repeat($data{($i + 1)}, (257 - $byte));
+				$decoded .=str_repeat($data{($i + 1)}, (257 - $byte));
 				// move to next block
-				$i += 2;
+				$i +=2;
 			}
 		}
 		return $decoded;

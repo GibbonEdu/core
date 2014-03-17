@@ -201,32 +201,32 @@ else {
 				print "</div>" ;
 				
 				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-				$updateReturnMessage ="" ;
+				$updateReturnMessage="" ;
 				$class="error" ;
 				if (!($updateReturn=="")) {
 					if ($updateReturn=="fail0") {
-						$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+						$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 					}
 					else if ($updateReturn=="fail1") {
-						$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail2") {
-						$updateReturnMessage =_("Your request failed due to a database error.") ;	
+						$updateReturnMessage=_("Your request failed due to a database error.") ;	
 					}
 					else if ($updateReturn=="fail3") {
-						$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail4") {
-						$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail5") {
-						$updateReturnMessage ="Your request failed due to an attachment error." ;	
+						$updateReturnMessage="Your request failed due to an attachment error." ;	
 					}
 					else if ($updateReturn=="fail6") {
-						$updateReturnMessage ="Your request failed due to an attachment error." ;	
+						$updateReturnMessage="Your request failed due to an attachment error." ;	
 					}
 					else if ($updateReturn=="success0") {
-						$updateReturnMessage =_("Your request was completed successfully.") ;	
+						$updateReturnMessage=_("Your request was completed successfully.") ;	
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;
@@ -235,11 +235,11 @@ else {
 				} 
 				
 				if (isset($_GET["duplicateReturn"])) { $duplicateReturn=$_GET["duplicateReturn"] ; } else { $duplicateReturn="" ; }
-				$duplicateReturnMessage ="" ;
+				$duplicateReturnMessage="" ;
 				$class="error" ;
 				if (!($duplicateReturn=="")) {
 					if ($duplicateReturn=="success0") {
-						$duplicateReturnMessage ="Duplication was successful. You can now edit more details of your newly duplicated entry." ;	
+						$duplicateReturnMessage="Duplication was successful. You can now edit more details of your newly duplicated entry." ;	
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;
@@ -248,23 +248,23 @@ else {
 				} 
 				
 				if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-				$deleteReturnMessage ="" ;
+				$deleteReturnMessage="" ;
 				$class="error" ;
 				if (!($deleteReturn=="")) {
 					if ($deleteReturn=="fail0") {
-						$deleteReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+						$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 					}
 					else if ($deleteReturn=="fail1") {
-						$deleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+						$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($deleteReturn=="fail2") {
-						$deleteReturnMessage ="Your request was successful, but some data was not properly saved." ;	
+						$deleteReturnMessage="Your request was successful, but some data was not properly saved.") ;	
 					}
 					else if ($deleteReturn=="fail3") {
-						$deleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+						$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($deleteReturn=="success0") {
-						$deleteReturnMessage ="Your request was successful." ;	
+						$deleteReturnMessage=_("Your request was completed successfully.") ;		
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;
@@ -681,7 +681,7 @@ else {
 								
 								//Response to clicking on homework control
 								$(".homework").click(function(){
-									if ($('input[name=homework]:checked').val() == "Yes" ) {
+									if ($('input[name=homework]:checked').val()=="Yes" ) {
 										homeworkDueDate.enable();
 										homeworkDetails.enable();
 										$("#homeworkDueDateRow").slideDown("fast", $("#homeworkDueDateRow").css("display","table-row")); 
@@ -689,14 +689,14 @@ else {
 										$("#homeworkDetailsRow").slideDown("fast", $("#homeworkDetailsRow").css("display","table-row")); 
 										$("#homeworkSubmissionRow").slideDown("fast", $("#homeworkSubmissionRow").css("display","table-row")); 					
 									
-										if ($('input[name=homeworkSubmission]:checked').val() == "Yes" ) {
+										if ($('input[name=homeworkSubmission]:checked').val()=="Yes" ) {
 											$("#homeworkSubmissionDateOpenRow").slideDown("fast", $("#homeworkSubmissionDateOpenRow").css("display","table-row")); 
 											$("#homeworkSubmissionDraftsRow").slideDown("fast", $("#homeworkSubmissionDraftsRow").css("display","table-row")); 
 											$("#homeworkSubmissionTypeRow").slideDown("fast", $("#homeworkSubmissionTypeRow").css("display","table-row")); 
 											$("#homeworkSubmissionRequiredRow").slideDown("fast", $("#homeworkSubmissionRequiredRow").css("display","table-row")); 
 											$("#homeworkCrowdAssessRow").slideDown("fast", $("#homeworkCrowdAssessRow").css("display","table-row")); 
 											
-											if ($('input[name=homeworkCrowdAssess]:checked').val() == "Yes" ) {
+											if ($('input[name=homeworkCrowdAssess]:checked').val()=="Yes" ) {
 												$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row")); 
 												
 											} else {
@@ -728,14 +728,14 @@ else {
 								 
 								 //Response to clicking on online submission control
 								 $(".homeworkSubmission").click(function(){
-									if ($('input[name=homeworkSubmission]:checked').val() == "Yes" ) {
+									if ($('input[name=homeworkSubmission]:checked').val()=="Yes" ) {
 										$("#homeworkSubmissionDateOpenRow").slideDown("fast", $("#homeworkSubmissionDateOpenRow").css("display","table-row")); 
 										$("#homeworkSubmissionDraftsRow").slideDown("fast", $("#homeworkSubmissionDraftsRow").css("display","table-row")); 
 										$("#homeworkSubmissionTypeRow").slideDown("fast", $("#homeworkSubmissionTypeRow").css("display","table-row")); 
 										$("#homeworkSubmissionRequiredRow").slideDown("fast", $("#homeworkSubmissionRequiredRow").css("display","table-row")); 
 										$("#homeworkCrowdAssessRow").slideDown("fast", $("#homeworkCrowdAssessRow").css("display","table-row")); 
 									
-										if ($('input[name=homeworkCrowdAssess]:checked').val() == "Yes" ) {
+										if ($('input[name=homeworkCrowdAssess]:checked').val()=="Yes" ) {
 											$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row")); 
 											
 										} else {
@@ -753,7 +753,7 @@ else {
 								 
 								 //Response to clicking on crowd assessment control
 								 $(".homeworkCrowdAssess").click(function(){
-									if ($('input[name=homeworkCrowdAssess]:checked').val() == "Yes" ) {
+									if ($('input[name=homeworkCrowdAssess]:checked').val()=="Yes" ) {
 										$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row")); 
 										
 									} else {
@@ -1170,7 +1170,7 @@ else {
 																if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 																	print "<optgroup label='--" . $currentCategory . "--'>" ;
 																	print "<option class='$currentCategory' value='0'>Choose an outcome to add it to this lesson</option>" ;
-																	$categories[$categoryCount]= $currentCategory ;
+																	$categories[$categoryCount]=$currentCategory ;
 																	$categoryCount++ ;
 																}
 																print "<option class='all " . $rowSelect["category"] . "'   value='" . $rowSelect["gibbonOutcomeID"] . "'>" . $rowSelect["name"] . "</option>" ;
@@ -1212,7 +1212,7 @@ else {
 																if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 																	print "<optgroup label='--" . $currentCategory . "--'>" ;
 																	print "<option class='$currentCategory' value='0'>Choose an outcome to add it to this lesson</option>" ;
-																	$categories[$categoryCount]= $currentCategory ;
+																	$categories[$categoryCount]=$currentCategory ;
 																	$categoryCount++ ;
 																}
 																print "<option class='all " . $rowSelect["category"] . "'   value='" . $rowSelect["gibbonOutcomeID"] . "'>" . $rowSelect["name"] . "</option>" ;

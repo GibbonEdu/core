@@ -45,8 +45,8 @@ function getNonTTYearGroups($connection2, $gibbonSchoolYearID, $gibbonTTID="") {
 		catch(PDOException $e) { }
 		
 		if ($resultTT->rowCount()<1) {
-			$output.= $row["gibbonYearGroupID"] . "," ;
-			$output.= $row["name"] . "," ;
+			$output.=$row["gibbonYearGroupID"] . "," ;
+			$output.=$row["name"] . "," ;
 		}
 	}
 	

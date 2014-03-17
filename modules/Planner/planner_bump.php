@@ -116,20 +116,20 @@ else {
 					
 					//Proceed!
 					if (isset($_GET["bumpReturn"])) { $bumpReturn=$_GET["bumpReturn"] ; } else { $bumpReturn="" ; }
-					$bumpReturnMessage ="" ;
+					$bumpReturnMessage="" ;
 					$class="error" ;
 					if (!($bumpReturn=="")) {
 						if ($bumpReturn=="fail0") {
-							$bumpReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+							$bumpReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 						}
 						else if ($bumpReturn=="fail1") {
-							$bumpReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+							$bumpReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 						}
 						else if ($bumpReturn=="fail2") {
-							$bumpReturnMessage =_("Your request failed due to a database error.") ;	
+							$bumpReturnMessage=_("Your request failed due to a database error.") ;	
 						}
 						else if ($bumpReturn=="fail3") {
-							$bumpReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+							$bumpReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 						}
 						print "<div class='$class'>" ;
 							print $bumpReturnMessage;

@@ -72,7 +72,7 @@ else {
 		//Check fail count, reject & alert if 3rd time
 		if ($row["failCount"]>=3) {
 			try {
-				$data=array("lastFailIPAddress" => $_SERVER["REMOTE_ADDR"], "lastFailTimestamp" => date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
+				$data=array("lastFailIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastFailTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
 				$sqlSecure="UPDATE gibbonPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)";
 				$resultSecure=$connection2->prepare($sqlSecure);
 				$resultSecure->execute($data); 
@@ -110,7 +110,7 @@ else {
 					$passwordStrong=hash("sha256", $salt.$password) ;
 			
 					try {
-						$dataSecure=array("passwordStrong" => $passwordStrong, "passwordStrongSalt" => $salt, "username" => $username ); 
+						$dataSecure=array("passwordStrong"=> $passwordStrong, "passwordStrongSalt"=> $salt, "username"=> $username ); 
 						$sqlSecure="UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt WHERE (username=:username)";
 						$resultSecure=$connection2->prepare($sqlSecure);
 						$resultSecure->execute($dataSecure); 
@@ -125,7 +125,7 @@ else {
 			if ($passwordTest!=true) {
 				//FAIL PASSWORD
 				try {
-					$dataSecure=array("lastFailIPAddress" => $_SERVER["REMOTE_ADDR"], "lastFailTimestamp" => date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
+					$dataSecure=array("lastFailIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastFailTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
 					$sqlSecure="UPDATE gibbonPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)";
 					$resultSecure=$connection2->prepare($sqlSecure);
 					$resultSecure->execute($dataSecure); 
@@ -230,7 +230,7 @@ else {
 					
 					//Make best effort to set IP address and other details, but no need to error check etc.
 					try {
-						$data=array( "lastIPAddress" => $_SERVER["REMOTE_ADDR"], "lastTimestamp" => date("Y-m-d H:i:s"), "failCount"=>0, "username" => $username ); 
+						$data=array( "lastIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>0, "username"=> $username ); 
 						$sql="UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data); 

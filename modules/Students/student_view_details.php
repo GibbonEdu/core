@@ -1470,11 +1470,11 @@ else {
 						}
 						else {
 							if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-							$deleteReturnMessage ="" ;
+							$deleteReturnMessage="" ;
 							$class="error" ;
 							if (!($deleteReturn=="")) {
 								if ($deleteReturn=="success0") {
-									$deleteReturnMessage ="Your request was successful." ;	
+									$deleteReturnMessage=_("Your request was completed successfully.") ;		
 									$class="success" ;
 								}
 								print "<div class='$class'>" ;
@@ -1714,7 +1714,7 @@ else {
 													/* Show/Hide detail control */
 													$(document).ready(function(){
 														$(".details").click(function(){
-															if ($('input[name=details]:checked').val() == "Yes" ) {
+															if ($('input[name=details]:checked').val()=="Yes" ) {
 																$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
 															} 
 															else {
@@ -2626,125 +2626,125 @@ else {
 					
 				
 					//PERSONAL DATA MENU ITEMS
-					$_SESSION[$guid]["sidebarExtra"].= "<h4>Personal</h4>" ;
-					$_SESSION[$guid]["sidebarExtra"].= "<ul>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<h4>Personal</h4>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
 					$style="" ;
 					if ($subpage=="Summary") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Summary'>Summary</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Summary'>Summary</a></li>" ;
 					$style="" ;
 					if ($subpage=="Personal") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Personal'>Personal</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Personal'>Personal</a></li>" ;
 					$style="" ;
 					if ($subpage=="Family") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Family'>Family</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Family'>Family</a></li>" ;
 					$style="" ;
 					if ($subpage=="Emergency Contacts") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Emergency Contacts'>Emergency Contacts</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Emergency Contacts'>Emergency Contacts</a></li>" ;
 					$style="" ;
 					if ($subpage=="Medical") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Medical'>Medical</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Medical'>Medical</a></li>" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details_notes_add.php")) {
 						$style="" ;
 						if ($subpage=="Notes") {
 							$style="style='font-weight: bold'" ;
 						}
-						$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Notes'>Notes</a></li>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Notes'>Notes</a></li>" ;
 					}
 					if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentHistory.php")) {
 						$style="" ;
 						if ($subpage=="School Attendance") {
 							$style="style='font-weight: bold'" ;
 						}
-						$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=School Attendance'>School Attendance</a></li>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=School Attendance'>School Attendance</a></li>" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].= "</ul>" ;
+					$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					
 					
 					//ARR MENU ITEMS
 					if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php") OR isActionAccessible($guid, $connection2, "/modules/External Assessment/externalAssessment_details.php")) {
-						$_SESSION[$guid]["sidebarExtra"].= "<h4>ARR</h4>" ;
-						$_SESSION[$guid]["sidebarExtra"].= "<ul>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<h4>ARR</h4>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php")) {
 							$style="" ;
 							if ($subpage=="Markbook") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Markbook'>Markbook</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Markbook'>Markbook</a></li>" ;
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/External Assessment/externalAssessment_details.php")) {
 							$style="" ;
 							if ($subpage=="External Assessment") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=External Assessment'>External Assessment</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=External Assessment'>External Assessment</a></li>" ;
 						}
-						$_SESSION[$guid]["sidebarExtra"].= "</ul>" ;
+						$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					}
 					
 					//T&L MENU ITEMS
 					if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activityChoices_byStudent.php") OR isActionAccessible($guid, $connection2, "/modules/Individual Needs/in_view.php") OR isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php") OR isActionAccessible($guid, $connection2, "/modules/Planner/planner_edit.php") OR isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full.php")) {
-						$_SESSION[$guid]["sidebarExtra"].= "<h4>T&L</h4>" ;
-						$_SESSION[$guid]["sidebarExtra"].= "<ul>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<h4>T&L</h4>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activityChoices_byStudent.php")) {
 							$style="" ;
 							if ($subpage=="Activities") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Activities'>Activities</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Activities'>Activities</a></li>" ;
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_edit.php") OR isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full.php")) {
 							$style="" ;
 							if ($subpage=="Homework") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Homework'>Homework</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Homework'>Homework</a></li>" ;
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Individual Needs/in_view.php")) {
 							$style="" ;
 							if ($subpage=="Individual Needs") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Individual Needs'>Individual Needs</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Individual Needs'>Individual Needs</a></li>" ;
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Library/report_studentBorrowingRecord.php")) {
 							$style="" ;
 							if ($subpage=="Library Borrowing Record") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Library Borrowing Record'>Library Borrowing Record</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Library Borrowing Record'>Library Borrowing Record</a></li>" ;
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php")) {
 							$style="" ;
 							if ($subpage=="Timetable") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Timetable'>Timetable</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Timetable'>Timetable</a></li>" ;
 						}
-						$_SESSION[$guid]["sidebarExtra"].= "</ul>" ;
+						$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					}
 					
 					//PEOPLE MENU ITEMS
 					if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_view.php")) {
-						$_SESSION[$guid]["sidebarExtra"].= "<h4>People</h4>" ;
-						$_SESSION[$guid]["sidebarExtra"].= "<ul>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<h4>People</h4>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_view.php")) {
 							$style="" ;
 							if ($subpage=="Behaviour Record") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Behaviour Record'>Behaviour Record</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Behaviour Record'>Behaviour Record</a></li>" ;
 						}
-						$_SESSION[$guid]["sidebarExtra"].= "</ul>" ;
+						$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					}
 					
 					//GET HOOKS AND DISPLAY LINKS
@@ -2784,12 +2784,12 @@ else {
 						}
 						
 						if (count($hooks)>0) {
-							$_SESSION[$guid]["sidebarExtra"].= "<h4>Extras</h4>" ;
-							$_SESSION[$guid]["sidebarExtra"].= "<ul>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<h4>Extras</h4>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
 								foreach ($hooks as $hook) {
 									$_SESSION[$guid]["sidebarExtra"].=$hook ;
 								}
-							$_SESSION[$guid]["sidebarExtra"].= "</ul>" ;
+							$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 						}
 					}
 				}

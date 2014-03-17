@@ -976,7 +976,7 @@ class TCPDF_STATIC {
 	 */
 	public static function isValidURL($url) {
 		$headers=@get_headers($url);
-    	return (strpos($headers[0], '200') !== false);
+    	return (strpos($headers[0], '200') !==false);
 	}
 
 	/**
@@ -1007,7 +1007,7 @@ class TCPDF_STATIC {
 
 	/**
 	 * Get the border mode accounting for multicell position (opens bottom side of multicell crossing pages)
-	 * @param $brd (mixed) Indicates if borders must be drawn around the cell block. The value can be a number:<ul><li>0: no border (default)</li><li>1: frame</li></ul>or a string containing some or all of the following characters (in any order):<ul><li>L: left</li><li>T: top</li><li>R: right</li><li>B: bottom</li></ul> or an array of line styles for each border group: array('LTRB' => array('width' => 2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)))
+	 * @param $brd (mixed) Indicates if borders must be drawn around the cell block. The value can be a number:<ul><li>0: no border (default)</li><li>1: frame</li></ul>or a string containing some or all of the following characters (in any order):<ul><li>L: left</li><li>T: top</li><li>R: right</li><li>B: bottom</li></ul> or an array of line styles for each border group: array('LTRB'=> array('width'=> 2, 'cap'=> 'butt', 'join'=> 'miter', 'dash'=> 0, 'color'=> array(0, 0, 0)))
 	 * @param $position (string) multicell position: 'start', 'middle', 'end'
 	 * @param $opencell (boolean) True when the cell is left open at the page bottom, false otherwise.
 	 * @return border mode array
@@ -1018,7 +1018,7 @@ class TCPDF_STATIC {
 		if ((!$opencell) OR empty($brd)) {
 			return $brd;
 		}
-		if ($brd == 1) {
+		if ($brd==1) {
 			$brd='LTRB';
 		}
 		if (is_string($brd)) {
@@ -1026,14 +1026,14 @@ class TCPDF_STATIC {
 			$slen=strlen($brd);
 			$newbrd=array();
 			for ($i=0; $i < $slen; ++$i) {
-				$newbrd[$brd[$i]]=array('cap' => 'square', 'join' => 'miter');
+				$newbrd[$brd[$i]]=array('cap'=> 'square', 'join'=> 'miter');
 			}
 			$brd=$newbrd;
 		}
-		foreach ($brd as $border => $style) {
+		foreach ($brd as $border=> $style) {
 			switch ($position) {
 				case 'start': {
-					if (strpos($border, 'B') !== false) {
+					if (strpos($border, 'B') !==false) {
 						// remove bottom line
 						$newkey=str_replace('B', '', $border);
 						if (strlen($newkey) > 0) {
@@ -1044,7 +1044,7 @@ class TCPDF_STATIC {
 					break;
 				}
 				case 'middle': {
-					if (strpos($border, 'B') !== false) {
+					if (strpos($border, 'B') !==false) {
 						// remove bottom line
 						$newkey=str_replace('B', '', $border);
 						if (strlen($newkey) > 0) {
@@ -1053,7 +1053,7 @@ class TCPDF_STATIC {
 						unset($brd[$border]);
 						$border=$newkey;
 					}
-					if (strpos($border, 'T') !== false) {
+					if (strpos($border, 'T') !==false) {
 						// remove bottom line
 						$newkey=str_replace('T', '', $border);
 						if (strlen($newkey) > 0) {
@@ -1064,7 +1064,7 @@ class TCPDF_STATIC {
 					break;
 				}
 				case 'end': {
-					if (strpos($border, 'T') !== false) {
+					if (strpos($border, 'T') !==false) {
 						// remove bottom line
 						$newkey=str_replace('T', '', $border);
 						if (strlen($newkey) > 0) {
@@ -1087,7 +1087,7 @@ class TCPDF_STATIC {
 	 * @public static
 	 */
 	public static function empty_string($str) {
-		return (is_null($str) OR (is_string($str) AND (strlen($str) == 0)));
+		return (is_null($str) OR (is_string($str) AND (strlen($str)==0)));
 	}
 
 	/**
@@ -1109,7 +1109,7 @@ class TCPDF_STATIC {
 	 */
 	public static function _escape($s) {
 		// the chr(13) substitution fixes the Bugs item #1421290.
-		return strtr($s, array(')' => '\\)', '(' => '\\(', '\\' => '\\\\', chr(13) => '\r'));
+		return strtr($s, array(')'=> '\\)', '('=> '\\(', '\\'=> '\\\\', chr(13)=> '\r'));
 	}
 
 	/**
@@ -1120,7 +1120,7 @@ class TCPDF_STATIC {
 	 * @public static
 	 */
 	public static function _escapeXML($str) {
-		$replaceTable=array("\0" => '', '&' => '&amp;', '<' => '&lt;', '>' => '&gt;');
+		$replaceTable=array("\0"=> '', '&'=> '&amp;', '<'=> '&lt;', '>'=> '&gt;');
 		$str=strtr($str, $replaceTable);
 		return $str;
 	}
@@ -1133,7 +1133,7 @@ class TCPDF_STATIC {
 	 * @public static
 	 */
 	public static function objclone($object) {
-		if (($object instanceof Imagick) AND (version_compare(phpversion('imagick'), '3.0.1') !== 1)) {
+		if (($object instanceof Imagick) AND (version_compare(phpversion('imagick'), '3.0.1') !==1)) {
 			// on the versions after 3.0.1 the clone() method was deprecated in favour of clone keyword
 			return @$object->clone();
 		}
@@ -1166,9 +1166,9 @@ class TCPDF_STATIC {
 	public static function replacePageNumAliases($page, $replace, $diff=0) {
 		foreach ($replace as $rep) {
 			foreach ($rep[3] as $a) {
-				if (strpos($page, $a) !== false) {
+				if (strpos($page, $a) !==false) {
 					$page=str_replace($a, $rep[0], $page);
-					$diff += ($rep[2] - $rep[1]);
+					$diff +=($rep[2] - $rep[1]);
 				}
 			}
 		}
@@ -1183,7 +1183,7 @@ class TCPDF_STATIC {
 	 * @public static
 	 */
 	public static function getTimestamp($date) {
-		if (($date[0] == 'D') AND ($date[1] == ':')) {
+		if (($date[0]=='D') AND ($date[1]==':')) {
 			// remove date prefix if present
 			$date=substr($date, 2);
 		}
@@ -1255,7 +1255,7 @@ class TCPDF_STATIC {
 	public static function _getFWORD($str, $offset) {
 		$v=self::_getUSHORT($str, $offset);
 		if ($v > 0x7fff) {
-			$v -= 0x10000;
+			$v -=0x10000;
 		}
 		return $v;
 	}
@@ -1317,12 +1317,12 @@ class TCPDF_STATIC {
 	 */
 	public static function rfread($handle, $length) {
 		$data=fread($handle, $length);
-		if ($data === false) {
+		if ($data===false) {
 			return false;
 		}
 		$rest=($length - strlen($data));
 		if ($rest > 0) {
-			$data .= self::rfread($handle, $rest);
+			$data .=self::rfread($handle, $rest);
 		}
 		return $data;
 	}
@@ -1347,40 +1347,40 @@ class TCPDF_STATIC {
 	 * @public static
 	 */
 	public static function getRandomSeed($seed='') {
-		$seed .= microtime();
-		if (function_exists('openssl_random_pseudo_bytes') AND (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN')) {
+		$seed .=microtime();
+		if (function_exists('openssl_random_pseudo_bytes') AND (strtoupper(substr(PHP_OS, 0, 3)) !=='WIN')) {
 			// this is not used on windows systems because it is very slow for a know bug
-			$seed .= openssl_random_pseudo_bytes(512);
+			$seed .=openssl_random_pseudo_bytes(512);
 		} else {
 			for ($i=0; $i < 23; ++$i) {
-				$seed .= uniqid('', true);
+				$seed .=uniqid('', true);
 			}
 		}
-		$seed .= uniqid('', true);
-		$seed .= rand();
-		$seed .= getmypid();
-		$seed .= __FILE__;
+		$seed .=uniqid('', true);
+		$seed .=rand();
+		$seed .=getmypid();
+		$seed .=__FILE__;
 		if (isset($_SERVER['REMOTE_ADDR'])) {
-			$seed .= $_SERVER['REMOTE_ADDR'];
+			$seed .=$_SERVER['REMOTE_ADDR'];
 		}
 		if (isset($_SERVER['HTTP_USER_AGENT'])) {
-			$seed .= $_SERVER['HTTP_USER_AGENT'];
+			$seed .=$_SERVER['HTTP_USER_AGENT'];
 		}
 		if (isset($_SERVER['HTTP_ACCEPT'])) {
-			$seed .= $_SERVER['HTTP_ACCEPT'];
+			$seed .=$_SERVER['HTTP_ACCEPT'];
 		}
 		if (isset($_SERVER['HTTP_ACCEPT_ENCODING'])) {
-			$seed .= $_SERVER['HTTP_ACCEPT_ENCODING'];
+			$seed .=$_SERVER['HTTP_ACCEPT_ENCODING'];
 		}
 		if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-			$seed .= $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+			$seed .=$_SERVER['HTTP_ACCEPT_LANGUAGE'];
 		}
 		if (isset($_SERVER['HTTP_ACCEPT_CHARSET'])) {
-			$seed .= $_SERVER['HTTP_ACCEPT_CHARSET'];
+			$seed .=$_SERVER['HTTP_ACCEPT_CHARSET'];
 		}
-		$seed .= rand();
-		$seed .= uniqid('', true);
-		$seed .= microtime();
+		$seed .=rand();
+		$seed .=uniqid('', true);
+		$seed .=microtime();
 		return $seed;
 	}
 
@@ -1408,7 +1408,7 @@ class TCPDF_STATIC {
 	public static function _AES($key, $text) {
 		// padding (RFC 2898, PKCS #5: Password-Based Cryptography Specification Version 2.0)
 		$padding=16 - (strlen($text) % 16);
-		$text .= str_repeat(chr($padding), $padding);
+		$text .=str_repeat(chr($padding), $padding);
 		$iv=mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC), MCRYPT_RAND);
 		$text=mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $text, MCRYPT_MODE_CBC, $iv);
 		$text=$iv.$text;
@@ -1432,7 +1432,7 @@ class TCPDF_STATIC {
 			// try to use mcrypt function if exist
 			return $out;
 		}
-		if ($last_enc_key != $key) {
+		if ($last_enc_key !=$key) {
 			$k=str_repeat($key, ((256 / strlen($key)) + 1));
 			$rc4=range(0, 255);
 			$j=0;
@@ -1458,7 +1458,7 @@ class TCPDF_STATIC {
 			$rc4[$a]=$rc4[$b];
 			$rc4[$b]=$t;
 			$k=$rc4[($rc4[$a] + $rc4[$b]) % 256];
-			$out .= chr(ord($text[$i]) ^ $k);
+			$out .=chr(ord($text[$i]) ^ $k);
 		}
 		return $out;
 	}
@@ -1473,26 +1473,26 @@ class TCPDF_STATIC {
 	 */
 	public static function getUserPermissionCode($permissions, $mode=0) {
 		$options=array(
-			'owner' => 2, // bit 2 -- inverted logic: cleared by default
-			'print' => 4, // bit 3
-			'modify' => 8, // bit 4
-			'copy' => 16, // bit 5
-			'annot-forms' => 32, // bit 6
-			'fill-forms' => 256, // bit 9
-			'extract' => 512, // bit 10
-			'assemble' => 1024,// bit 11
-			'print-high' => 2048 // bit 12
+			'owner'=> 2, // bit 2 -- inverted logic: cleared by default
+			'print'=> 4, // bit 3
+			'modify'=> 8, // bit 4
+			'copy'=> 16, // bit 5
+			'annot-forms'=> 32, // bit 6
+			'fill-forms'=> 256, // bit 9
+			'extract'=> 512, // bit 10
+			'assemble'=> 1024,// bit 11
+			'print-high'=> 2048 // bit 12
 			);
 		$protection=2147422012; // 32 bit: (01111111 11111111 00001111 00111100)
 		foreach ($permissions as $permission) {
 			if (isset($options[$permission])) {
-				if (($mode > 0) OR ($options[$permission] <= 32)) {
+				if (($mode > 0) OR ($options[$permission] <=32)) {
 					// set only valid permissions
-					if ($options[$permission] == 2) {
+					if ($options[$permission]==2) {
 						// the logic for bit 2 is inverted (cleared by default)
-						$protection += $options[$permission];
+						$protection +=$options[$permission];
 					} else {
-						$protection -= $options[$permission];
+						$protection -=$options[$permission];
 					}
 				}
 			}
@@ -1511,13 +1511,13 @@ class TCPDF_STATIC {
 	public static function convertHexStringToString($bs) {
 		$string=''; // string to be returned
 		$bslength=strlen($bs);
-		if (($bslength % 2) != 0) {
+		if (($bslength % 2) !=0) {
 			// padding
-			$bs .= '0';
+			$bs .='0';
 			++$bslength;
 		}
-		for ($i=0; $i < $bslength; $i += 2) {
-			$string .= chr(hexdec($bs[$i].$bs[($i + 1)]));
+		for ($i=0; $i < $bslength; $i +=2) {
+			$string .=chr(hexdec($bs[$i].$bs[($i + 1)]));
 		}
 		return $string;
 	}
@@ -1534,7 +1534,7 @@ class TCPDF_STATIC {
 		$bs='';
 		$chars=preg_split('//', $s, -1, PREG_SPLIT_NO_EMPTY);
 		foreach ($chars as $c) {
-			$bs .= sprintf('%02s', dechex(ord($c)));
+			$bs .=sprintf('%02s', dechex(ord($c)));
 		}
 		return $bs;
 	}
@@ -1550,9 +1550,9 @@ class TCPDF_STATIC {
 	public static function getEncPermissionsString($protection) {
 		$binprot=sprintf('%032b', $protection);
 		$str=chr(bindec(substr($binprot, 24, 8)));
-		$str .= chr(bindec(substr($binprot, 16, 8)));
-		$str .= chr(bindec(substr($binprot, 8, 8)));
-		$str .= chr(bindec(substr($binprot, 0, 8)));
+		$str .=chr(bindec(substr($binprot, 16, 8)));
+		$str .=chr(bindec(substr($binprot, 8, 8)));
+		$str .=chr(bindec(substr($binprot, 0, 8)));
 		return $str;
 	}
 
@@ -1569,10 +1569,10 @@ class TCPDF_STATIC {
 		$length=strlen($name);
 		for ($i=0; $i < $length; ++$i) {
 			$chr=$name[$i];
-			if (preg_match('/[0-9a-zA-Z]/', $chr) == 1) {
-				$escname .= $chr;
+			if (preg_match('/[0-9a-zA-Z]/', $chr)==1) {
+				$escname .=$chr;
 			} else {
-				$escname .= sprintf('#%02X', ord($chr));
+				$escname .=sprintf('#%02X', ord($chr));
 			}
 		}
 		return $escname;
@@ -1678,7 +1678,7 @@ class TCPDF_STATIC {
 			$opt['mk']['if']['a'][1]=$prop['buttonAlignY'];
 		}
 		// buttonFitBounds: If true, the extent to which the icon may be scaled is set to the bounds of the button field.
-		if (isset($prop['buttonFitBounds']) AND ($prop['buttonFitBounds'] == 'true')) {
+		if (isset($prop['buttonFitBounds']) AND ($prop['buttonFitBounds']=='true')) {
 			$opt['mk']['if']['fb']=true;
 		}
 		// buttonScaleHow: Controls how the icon is scaled (if necessary) to fit inside the button face.
@@ -1783,76 +1783,76 @@ class TCPDF_STATIC {
 			$ff=0; // default value
 		}
 		// readonly: The read-only characteristic of a field. If a field is read-only, the user can see the field but cannot change it.
-		if (isset($prop['readonly']) AND ($prop['readonly'] == 'true')) {
-			$ff += 1 << 0;
+		if (isset($prop['readonly']) AND ($prop['readonly']=='true')) {
+			$ff +=1 << 0;
 		}
 		// required: Specifies whether a field requires a value.
-		if (isset($prop['required']) AND ($prop['required'] == 'true')) {
-			$ff += 1 << 1;
+		if (isset($prop['required']) AND ($prop['required']=='true')) {
+			$ff +=1 << 1;
 		}
 		// multiline: Controls how text is wrapped within the field.
-		if (isset($prop['multiline']) AND ($prop['multiline'] == 'true')) {
-			$ff += 1 << 12;
+		if (isset($prop['multiline']) AND ($prop['multiline']=='true')) {
+			$ff +=1 << 12;
 		}
 		// password: Specifies whether the field should display asterisks when data is entered in the field.
-		if (isset($prop['password']) AND ($prop['password'] == 'true')) {
-			$ff += 1 << 13;
+		if (isset($prop['password']) AND ($prop['password']=='true')) {
+			$ff +=1 << 13;
 		}
 		// NoToggleToOff: If set, exactly one radio button shall be selected at all times; selecting the currently selected button has no effect.
-		if (isset($prop['NoToggleToOff']) AND ($prop['NoToggleToOff'] == 'true')) {
-			$ff += 1 << 14;
+		if (isset($prop['NoToggleToOff']) AND ($prop['NoToggleToOff']=='true')) {
+			$ff +=1 << 14;
 		}
 		// Radio: If set, the field is a set of radio buttons.
-		if (isset($prop['Radio']) AND ($prop['Radio'] == 'true')) {
-			$ff += 1 << 15;
+		if (isset($prop['Radio']) AND ($prop['Radio']=='true')) {
+			$ff +=1 << 15;
 		}
 		// Pushbutton: If set, the field is a pushbutton that does not retain a permanent value.
-		if (isset($prop['Pushbutton']) AND ($prop['Pushbutton'] == 'true')) {
-			$ff += 1 << 16;
+		if (isset($prop['Pushbutton']) AND ($prop['Pushbutton']=='true')) {
+			$ff +=1 << 16;
 		}
 		// Combo: If set, the field is a combo box; if clear, the field is a list box.
-		if (isset($prop['Combo']) AND ($prop['Combo'] == 'true')) {
-			$ff += 1 << 17;
+		if (isset($prop['Combo']) AND ($prop['Combo']=='true')) {
+			$ff +=1 << 17;
 		}
 		// editable: Controls whether a combo box is editable.
-		if (isset($prop['editable']) AND ($prop['editable'] == 'true')) {
-			$ff += 1 << 18;
+		if (isset($prop['editable']) AND ($prop['editable']=='true')) {
+			$ff +=1 << 18;
 		}
 		// Sort: If set, the field's option items shall be sorted alphabetically.
-		if (isset($prop['Sort']) AND ($prop['Sort'] == 'true')) {
-			$ff += 1 << 19;
+		if (isset($prop['Sort']) AND ($prop['Sort']=='true')) {
+			$ff +=1 << 19;
 		}
 		// fileSelect: If true, sets the file-select flag in the Options tab of the text field (Field is Used for File Selection).
-		if (isset($prop['fileSelect']) AND ($prop['fileSelect'] == 'true')) {
-			$ff += 1 << 20;
+		if (isset($prop['fileSelect']) AND ($prop['fileSelect']=='true')) {
+			$ff +=1 << 20;
 		}
 		// multipleSelection: If true, indicates that a list box allows a multiple selection of items.
-		if (isset($prop['multipleSelection']) AND ($prop['multipleSelection'] == 'true')) {
-			$ff += 1 << 21;
+		if (isset($prop['multipleSelection']) AND ($prop['multipleSelection']=='true')) {
+			$ff +=1 << 21;
 		}
 		// doNotSpellCheck: If true, spell checking is not performed on this editable text field.
-		if (isset($prop['doNotSpellCheck']) AND ($prop['doNotSpellCheck'] == 'true')) {
-			$ff += 1 << 22;
+		if (isset($prop['doNotSpellCheck']) AND ($prop['doNotSpellCheck']=='true')) {
+			$ff +=1 << 22;
 		}
 		// doNotScroll: If true, the text field does not scroll and the user, therefore, is limited by the rectangular region designed for the field.
-		if (isset($prop['doNotScroll']) AND ($prop['doNotScroll'] == 'true')) {
-			$ff += 1 << 23;
+		if (isset($prop['doNotScroll']) AND ($prop['doNotScroll']=='true')) {
+			$ff +=1 << 23;
 		}
 		// comb: If set to true, the field background is drawn as series of boxes (one for each character in the value of the field) and each character of the content is drawn within those boxes. The number of boxes drawn is determined from the charLimit property. It applies only to text fields. The setter will also raise if any of the following field properties are also set multiline, password, and fileSelect. A side-effect of setting this property is that the doNotScroll property is also set.
-		if (isset($prop['comb']) AND ($prop['comb'] == 'true')) {
-			$ff += 1 << 24;
+		if (isset($prop['comb']) AND ($prop['comb']=='true')) {
+			$ff +=1 << 24;
 		}
 		// radiosInUnison: If false, even if a group of radio buttons have the same name and export value, they behave in a mutually exclusive fashion, like HTML radio buttons.
-		if (isset($prop['radiosInUnison']) AND ($prop['radiosInUnison'] == 'true')) {
-			$ff += 1 << 25;
+		if (isset($prop['radiosInUnison']) AND ($prop['radiosInUnison']=='true')) {
+			$ff +=1 << 25;
 		}
 		// richText: If true, the field allows rich text formatting.
-		if (isset($prop['richText']) AND ($prop['richText'] == 'true')) {
-			$ff += 1 << 25;
+		if (isset($prop['richText']) AND ($prop['richText']=='true')) {
+			$ff +=1 << 25;
 		}
 		// commitOnSelChange: Controls whether a field value is committed after a selection change.
-		if (isset($prop['commitOnSelChange']) AND ($prop['commitOnSelChange'] == 'true')) {
-			$ff += 1 << 26;
+		if (isset($prop['commitOnSelChange']) AND ($prop['commitOnSelChange']=='true')) {
+			$ff +=1 << 26;
 		}
 		$opt['ff']=$ff;
 		// defaultValue: The default value of a field - that is, the value that the field is set to when the form is reset.
@@ -1861,19 +1861,19 @@ class TCPDF_STATIC {
 		}
 		$f=4; // default value for annotation flags
 		// readonly: The read-only characteristic of a field. If a field is read-only, the user can see the field but cannot change it.
-		if (isset($prop['readonly']) AND ($prop['readonly'] == 'true')) {
-			$f += 1 << 6;
+		if (isset($prop['readonly']) AND ($prop['readonly']=='true')) {
+			$f +=1 << 6;
 		}
 		// display: Controls whether the field is hidden or visible on screen and in print.
 		if (isset($prop['display'])) {
-			if ($prop['display'] == 'display.visible') {
+			if ($prop['display']=='display.visible') {
 				//
-			} elseif ($prop['display'] == 'display.hidden') {
-				$f += 1 << 1;
-			} elseif ($prop['display'] == 'display.noPrint') {
-				$f -= 1 << 2;
-			} elseif ($prop['display'] == 'display.noView') {
-				$f += 1 << 5;
+			} elseif ($prop['display']=='display.hidden') {
+				$f +=1 << 1;
+			} elseif ($prop['display']=='display.noPrint') {
+				$f -=1 << 2;
+			} elseif ($prop['display']=='display.noView') {
+				$f +=1 << 5;
 			}
 		}
 		$opt['f']=$f;
@@ -1885,7 +1885,7 @@ class TCPDF_STATIC {
 		if (isset($prop['value'])) {
 			if (is_array($prop['value'])) {
 				$opt['opt']=array();
-				foreach ($prop['value'] AS $key => $optval) {
+				foreach ($prop['value'] AS $key=> $optval) {
 					// exportValues: An array of strings representing the export values for the field.
 					if (isset($prop['exportValues'][$key])) {
 						$opt['opt'][$key]=array($prop['exportValues'][$key], $prop['value'][$key]);
@@ -1999,7 +1999,7 @@ class TCPDF_STATIC {
 		$cssblocks=array();
 		$matches=array();
 		if (preg_match_all('/@media[\s]+([^\§]*)§([^§]*)§/i', $cssdata, $matches) > 0) {
-			foreach ($matches[1] as $key => $type) {
+			foreach ($matches[1] as $key=> $type) {
 				$cssblocks[$type]=$matches[2][$key];
 			}
 			// remove media blocks
@@ -2007,21 +2007,21 @@ class TCPDF_STATIC {
 		}
 		// keep 'all' and 'print' media, other media types are discarded
 		if (isset($cssblocks['all']) AND !empty($cssblocks['all'])) {
-			$cssdata .= $cssblocks['all'];
+			$cssdata .=$cssblocks['all'];
 		}
 		if (isset($cssblocks['print']) AND !empty($cssblocks['print'])) {
-			$cssdata .= $cssblocks['print'];
+			$cssdata .=$cssblocks['print'];
 		}
 		// reset css blocks array
 		$cssblocks=array();
 		$matches=array();
 		// explode css data string into array
-		if (substr($cssdata, -1) == '}') {
+		if (substr($cssdata, -1)=='}') {
 			// remove last parethesis
 			$cssdata=substr($cssdata, 0, -1);
 		}
 		$matches=explode('}', $cssdata);
-		foreach ($matches as $key => $block) {
+		foreach ($matches as $key=> $block) {
 			// index 0 contains the CSS selector, index 1 contains CSS properties
 			$cssblocks[$key]=explode('{', $block);
 			if (!isset($cssblocks[$key][1])) {
@@ -2030,16 +2030,16 @@ class TCPDF_STATIC {
 			}
 		}
 		// split groups of selectors (comma-separated list of selectors)
-		foreach ($cssblocks as $key => $block) {
+		foreach ($cssblocks as $key=> $block) {
 			if (strpos($block[0], ',') > 0) {
 				$selectors=explode(',', $block[0]);
 				foreach ($selectors as $sel) {
-					$cssblocks[]=array(0 => trim($sel), 1 => $block[1]);
+					$cssblocks[]=array(0=> trim($sel), 1=> $block[1]);
 				}
 				unset($cssblocks[$key]);
 			}
 		}
-		// covert array to selector => properties
+		// covert array to selector=> properties
 		$cssdata=array();
 		foreach ($cssblocks as $block) {
 			$selector=$block[0];
@@ -2048,9 +2048,9 @@ class TCPDF_STATIC {
 			$a=0; // the declaration is not from is a 'style' attribute
 			$b=intval(preg_match_all('/[\#]/', $selector, $matches)); // number of ID attributes
 			$c=intval(preg_match_all('/[\[\.]/', $selector, $matches)); // number of other attributes
-			$c += intval(preg_match_all('/[\:]link|visited|hover|active|focus|target|lang|enabled|disabled|checked|indeterminate|root|nth|first|last|only|empty|contains|not/i', $selector, $matches)); // number of pseudo-classes
+			$c +=intval(preg_match_all('/[\:]link|visited|hover|active|focus|target|lang|enabled|disabled|checked|indeterminate|root|nth|first|last|only|empty|contains|not/i', $selector, $matches)); // number of pseudo-classes
 			$d=intval(preg_match_all('/[\>\+\~\s]{1}[a-zA-Z0-9]+/', ' '.$selector, $matches)); // number of element names
-			$d += intval(preg_match_all('/[\:][\:]/', $selector, $matches)); // number of pseudo-elements
+			$d +=intval(preg_match_all('/[\:][\:]/', $selector, $matches)); // number of pseudo-elements
 			$specificity=$a.$b.$c.$d;
 			// add specificity to the beginning of the selector
 			$cssdata[$specificity.' '.$selector]=$block[1];
@@ -2076,24 +2076,24 @@ class TCPDF_STATIC {
 	 */
 	public static function fixHTMLCode($html, $default_css='', $tagvs='', $tidy_options='', &$tagvspaces) {
 		// configure parameters for HTML Tidy
-		if ($tidy_options === '') {
+		if ($tidy_options==='') {
 			$tidy_options=array (
-				'clean' => 1,
-				'drop-empty-paras' => 0,
-				'drop-proprietary-attributes' => 1,
-				'fix-backslash' => 1,
-				'hide-comments' => 1,
-				'join-styles' => 1,
-				'lower-literals' => 1,
-				'merge-divs' => 1,
-				'merge-spans' => 1,
-				'output-xhtml' => 1,
-				'word-2000' => 1,
-				'wrap' => 0,
-				'output-bom' => 0,
-				//'char-encoding' => 'utf8',
-				//'input-encoding' => 'utf8',
-				//'output-encoding' => 'utf8'
+				'clean'=> 1,
+				'drop-empty-paras'=> 0,
+				'drop-proprietary-attributes'=> 1,
+				'fix-backslash'=> 1,
+				'hide-comments'=> 1,
+				'join-styles'=> 1,
+				'lower-literals'=> 1,
+				'merge-divs'=> 1,
+				'merge-spans'=> 1,
+				'output-xhtml'=> 1,
+				'word-2000'=> 1,
+				'wrap'=> 0,
+				'output-bom'=> 0,
+				//'char-encoding'=> 'utf8',
+				//'input-encoding'=> 'utf8',
+				//'output-encoding'=> 'utf8'
 			);
 		}
 		// clean up the HTML code
@@ -2123,7 +2123,7 @@ class TCPDF_STATIC {
 		// remove some empty tag blocks
 		$html=preg_replace('/<div([^\>]*)><\/div>/', '', $html);
 		$html=preg_replace('/<p([^\>]*)><\/p>/', '', $html);
-		if ($tagvs !== '') {
+		if ($tagvs !=='') {
 			// set vertical space for some XHTML tags
 			$tagvspaces=$tagvs;
 		}
@@ -2159,7 +2159,7 @@ class TCPDF_STATIC {
 			$offset=$parentop[1];
 			$lasttag=array_pop($matches[2]);
 			$lasttag=strtolower(trim($lasttag[0]));
-			if (($lasttag == '*') OR ($lasttag == $tag)) {
+			if (($lasttag=='*') OR ($lasttag==$tag)) {
 				// the last element on selector is our tag or 'any tag'
 				$attrib=array_pop($matches[3]);
 				$attrib=strtolower(trim($attrib[0]));
@@ -2173,7 +2173,7 @@ class TCPDF_STATIC {
 							break;
 						}
 						case '#': { // ID
-							if (substr($attrib, 1) == $id) {
+							if (substr($attrib, 1)==$id) {
 								$valid=true;
 							}
 							break;
@@ -2186,7 +2186,7 @@ class TCPDF_STATIC {
 								if (isset($dom[$key]['attribute'][$att])) {
 									switch ($attrmatch[2]) {
 										case '=': {
-											if ($dom[$key]['attribute'][$att] == $val) {
+											if ($dom[$key]['attribute'][$att]==$val) {
 												$valid=true;
 											}
 											break;
@@ -2198,25 +2198,25 @@ class TCPDF_STATIC {
 											break;
 										}
 										case '^=': {
-											if ($val == substr($dom[$key]['attribute'][$att], 0, strlen($val))) {
+											if ($val==substr($dom[$key]['attribute'][$att], 0, strlen($val))) {
 												$valid=true;
 											}
 											break;
 										}
 										case '$=': {
-											if ($val == substr($dom[$key]['attribute'][$att], -strlen($val))) {
+											if ($val==substr($dom[$key]['attribute'][$att], -strlen($val))) {
 												$valid=true;
 											}
 											break;
 										}
 										case '*=': {
-											if (strpos($dom[$key]['attribute'][$att], $val) !== false) {
+											if (strpos($dom[$key]['attribute'][$att], $val) !==false) {
 												$valid=true;
 											}
 											break;
 										}
 										case '|=': {
-											if ($dom[$key]['attribute'][$att] == $val) {
+											if ($dom[$key]['attribute'][$att]==$val) {
 												$valid=true;
 											} elseif (preg_match('/'.$val.'[\-]{1}/i', $dom[$key]['attribute'][$att]) > 0) {
 												$valid=true;
@@ -2232,7 +2232,7 @@ class TCPDF_STATIC {
 							break;
 						}
 						case ':': { // pseudo-class or pseudo-element
-							if ($attrib{1} == ':') { // pseudo-element
+							if ($attrib{1}==':') { // pseudo-element
 								// pseudo-elements are not supported!
 								// (::first-line, ::first-letter, ::before, ::after)
 							} else { // pseudo-class
@@ -2308,7 +2308,7 @@ class TCPDF_STATIC {
 			$selectors=$dom[($dom[$key]['parent'])]['csssel'];
 		}
 		// get all styles that apply
-		foreach($css as $selector => $style) {
+		foreach($css as $selector=> $style) {
 			$pos=strpos($selector, ' ');
 			// get specificity
 			$specificity=substr($selector, 0, $pos);
@@ -2318,18 +2318,18 @@ class TCPDF_STATIC {
 			if (self::isValidCSSSelectorForTag($dom, $key, $selector)) {
 				if (!in_array($selector, $selectors)) {
 					// add style if not already added on parent selector
-					$cssarray[]=array('k' => $selector, 's' => $specificity, 'c' => $style);
+					$cssarray[]=array('k'=> $selector, 's'=> $specificity, 'c'=> $style);
 					$selectors[]=$selector;
 				}
 			}
 		}
 		if (isset($dom[$key]['attribute']['style'])) {
 			// attach inline style (latest properties have high priority)
-			$cssarray[]=array('k' => '', 's' => '1000', 'c' => $dom[$key]['attribute']['style']);
+			$cssarray[]=array('k'=> '', 's'=> '1000', 'c'=> $dom[$key]['attribute']['style']);
 		}
 		// order the css array to account for specificity
 		$cssordered=array();
-		foreach ($cssarray as $key => $val) {
+		foreach ($cssarray as $key=> $val) {
 			$skey=sprintf('%04d', $key);
 			$cssordered[$val['s'].'_'.$skey]=$val;
 		}
@@ -2353,16 +2353,16 @@ class TCPDF_STATIC {
 			foreach ($csscmds as $cmd) {
 				if (!empty($cmd)) {
 					$pos=strpos($cmd, ':');
-					if ($pos !== false) {
+					if ($pos !==false) {
 						$cmd=substr($cmd, 0, ($pos + 1));
-						if (strpos($tagstyle, $cmd) !== false) {
+						if (strpos($tagstyle, $cmd) !==false) {
 							// remove duplicate commands (last commands have high priority)
 							$tagstyle=preg_replace('/'.$cmd.'[^;]+/i', '', $tagstyle);
 						}
 					}
 				}
 			}
-			$tagstyle .= ';'.$style['c'];
+			$tagstyle .=';'.$style['c'];
 		}
 		// remove multiple semicolons
 		$tagstyle=preg_replace('/[;]+/', ';', $tagstyle);
@@ -2378,56 +2378,56 @@ class TCPDF_STATIC {
 	 */
 	public static function intToRoman($number) {
 		$roman='';
-		while ($number >= 1000) {
-			$roman .= 'M';
-			$number -= 1000;
+		while ($number >=1000) {
+			$roman .='M';
+			$number -=1000;
 		}
-		while ($number >= 900) {
-			$roman .= 'CM';
-			$number -= 900;
+		while ($number >=900) {
+			$roman .='CM';
+			$number -=900;
 		}
-		while ($number >= 500) {
-			$roman .= 'D';
-			$number -= 500;
+		while ($number >=500) {
+			$roman .='D';
+			$number -=500;
 		}
-		while ($number >= 400) {
-			$roman .= 'CD';
-			$number -= 400;
+		while ($number >=400) {
+			$roman .='CD';
+			$number -=400;
 		}
-		while ($number >= 100) {
-			$roman .= 'C';
-			$number -= 100;
+		while ($number >=100) {
+			$roman .='C';
+			$number -=100;
 		}
-		while ($number >= 90) {
-			$roman .= 'XC';
-			$number -= 90;
+		while ($number >=90) {
+			$roman .='XC';
+			$number -=90;
 		}
-		while ($number >= 50) {
-			$roman .= 'L';
-			$number -= 50;
+		while ($number >=50) {
+			$roman .='L';
+			$number -=50;
 		}
-		while ($number >= 40) {
-			$roman .= 'XL';
-			$number -= 40;
+		while ($number >=40) {
+			$roman .='XL';
+			$number -=40;
 		}
-		while ($number >= 10) {
-			$roman .= 'X';
-			$number -= 10;
+		while ($number >=10) {
+			$roman .='X';
+			$number -=10;
 		}
-		while ($number >= 9) {
-			$roman .= 'IX';
-			$number -= 9;
+		while ($number >=9) {
+			$roman .='IX';
+			$number -=9;
 		}
-		while ($number >= 5) {
-			$roman .= 'V';
-			$number -= 5;
+		while ($number >=5) {
+			$roman .='V';
+			$number -=5;
 		}
-		while ($number >= 4) {
-			$roman .= 'IV';
-			$number -= 4;
+		while ($number >=4) {
+			$roman .='IV';
+			$number -=4;
 		}
-		while ($number >= 1) {
-			$roman .= 'I';
+		while ($number >=1) {
+			$roman .='I';
 			--$number;
 		}
 		return $roman;
@@ -2446,7 +2446,7 @@ class TCPDF_STATIC {
 		$length=strlen($haystack);
 		$offset=($offset > 0)?($length - $offset):abs($offset);
 		$pos=strpos(strrev($haystack), strrev($needle), $offset);
-		return ($pos === false)?false:($length - $pos - strlen($needle));
+		return ($pos===false)?false:($length - $pos - strlen($needle));
 	}
 
 	/**
@@ -2617,7 +2617,7 @@ class TCPDF_STATIC {
 		$tm=array(1, 0, 0, 1, 0, 0);
 		$transform=array();
 		if (preg_match_all('/(matrix|translate|scale|rotate|skewX|skewY)[\s]*\(([^\)]+)\)/si', $attribute, $transform, PREG_SET_ORDER) > 0) {
-			foreach ($transform as $key => $data) {
+			foreach ($transform as $key=> $data) {
 				if (!empty($data[2])) {
 					$a=1;
 					$b=0;
@@ -2718,7 +2718,7 @@ class TCPDF_STATIC {
 			$angle=M_PI;
 		}
 		if ((($x1 * $y2) - ($x2 * $y1)) < 0) {
-			$angle *= -1;
+			$angle *=-1;
 		}
 		return $angle;
 	}
@@ -2738,12 +2738,12 @@ class TCPDF_STATIC {
 	 */
 	public static function pregSplit($pattern, $modifiers, $subject, $limit=NULL, $flags=NULL) {
 		// the bug only happens on PHP 5.2 when using the u modifier
-		if ((strpos($modifiers, 'u') === FALSE) OR (count(preg_split('//u', "\n\t", -1, PREG_SPLIT_NO_EMPTY)) == 2)) {
+		if ((strpos($modifiers, 'u')===FALSE) OR (count(preg_split('//u', "\n\t", -1, PREG_SPLIT_NO_EMPTY))==2)) {
 			return preg_split($pattern.$modifiers, $subject, $limit, $flags);
 		}
 		// preg_split is bugged - try alternative solution
 		$ret=array();
-		while (($nl=strpos($subject, "\n")) !== FALSE) {
+		while (($nl=strpos($subject, "\n")) !==FALSE) {
 			$ret=array_merge($ret, preg_split($pattern.$modifiers, substr($subject, 0, $nl), $limit, $flags));
 			$ret[]="\n";
 			$subject=substr($subject, ($nl + 1));
@@ -2768,13 +2768,13 @@ class TCPDF_STATIC {
 		$alt=array($file);
 		// replace URL relative path with full real server path
 		if ((strlen($file) > 1)
-			AND ($file[0] == '/')
-			AND ($file[1] != '/')
+			AND ($file[0]=='/')
+			AND ($file[1] !='/')
 			AND !empty($_SERVER['DOCUMENT_ROOT'])
-			AND ($_SERVER['DOCUMENT_ROOT'] != '/')) {
+			AND ($_SERVER['DOCUMENT_ROOT'] !='/')) {
 			$findroot=strpos($file, $_SERVER['DOCUMENT_ROOT']);
-			if (($findroot === false) OR ($findroot > 1)) {
-				if (substr($_SERVER['DOCUMENT_ROOT'], -1) == '/') {
+			if (($findroot===false) OR ($findroot > 1)) {
+				if (substr($_SERVER['DOCUMENT_ROOT'], -1)=='/') {
 					$tmp=substr($_SERVER['DOCUMENT_ROOT'], 0, -1).$file;
 				} else {
 					$tmp=$_SERVER['DOCUMENT_ROOT'].$file;
@@ -2792,8 +2792,8 @@ class TCPDF_STATIC {
 			}
 		}
 		$urldata=@parse_url($url);
-		if (!isset($urldata['query']) OR (strlen($urldata['query']) <= 0)) {
-			if (strpos($url, K_PATH_URL) === 0) {
+		if (!isset($urldata['query']) OR (strlen($urldata['query']) <=0)) {
+			if (strpos($url, K_PATH_URL)===0) {
 				// convert URL to full server path
 				$tmp=str_replace(K_PATH_URL, K_PATH_MAIN, $url);
 				$tmp=htmlspecialchars_decode(urldecode($tmp));
@@ -2802,7 +2802,7 @@ class TCPDF_STATIC {
 		}
 		foreach ($alt as $f) {
 			$ret=@file_get_contents($f);
-			if (($ret === FALSE)
+			if (($ret===FALSE)
 				AND !ini_get('allow_url_fopen')
 				AND function_exists('curl_init')
 				AND preg_match('%^(https?|ftp)://%', $f)) {
@@ -2812,7 +2812,7 @@ class TCPDF_STATIC {
 				curl_setopt($cs, CURLOPT_BINARYTRANSFER, true);
 				curl_setopt($cs, CURLOPT_FAILONERROR, true);
 				curl_setopt($cs, CURLOPT_RETURNTRANSFER, true);
-				if ((ini_get('open_basedir') == '') AND (!ini_get('safe_mode'))) {
+				if ((ini_get('open_basedir')=='') AND (!ini_get('safe_mode'))) {
 					curl_setopt($cs, CURLOPT_FOLLOWLOCATION, true);
 				}
 				curl_setopt($cs, CURLOPT_CONNECTTIMEOUT, 5);
@@ -2823,7 +2823,7 @@ class TCPDF_STATIC {
 				$ret=curl_exec($cs);
 				curl_close($cs);
 			}
-			if ($ret !== FALSE) {
+			if ($ret !==FALSE) {
 				break;
 			}
 		}

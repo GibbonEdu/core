@@ -39,26 +39,26 @@ else {
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-		$updateReturnMessage ="" ;
+		$updateReturnMessage="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="fail0") {
-				$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+				$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($updateReturn=="fail1") {
-				$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail2") {
-				$updateReturnMessage =_("Your request failed due to a database error.") ;	
+				$updateReturnMessage=_("Your request failed due to a database error.") ;	
 			}
 			else if ($updateReturn=="fail3") {
-				$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail4") {
-				$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage =_("Your request was completed successfully.") ;	
+				$updateReturnMessage=_("Your request was completed successfully.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -137,7 +137,7 @@ else {
 							<script type="text/javascript">
 								$(document).ready(function(){
 									$(".messageWall").click(function(){
-										if ($('input[name=messageWall]:checked').val() == "Y" ) {
+										if ($('input[name=messageWall]:checked').val()=="Y" ) {
 											$("#messageWallRow").slideDown("fast", $("#messageWallRow").css("display","table-row")); 
 										} else {
 											$("#messageWallRow").css("display","none");
@@ -269,7 +269,7 @@ else {
 										$("#roleRow").css("display","none");
 									<? } ?>
 									$(".role").click(function(){
-										if ($('input[name=role]:checked').val() == "Y" ) {
+										if ($('input[name=role]:checked').val()=="Y" ) {
 											$("#roleRow").slideDown("fast", $("#roleRow").css("display","table-row")); 
 										} else {
 											$("#roleRow").css("display","none");
@@ -344,7 +344,7 @@ else {
 										$("#yearGroupRow4").css("display","none");
 									<? } ?>
 									$(".yearGroup").click(function(){
-										if ($('input[name=yearGroup]:checked').val() == "Y" ) {
+										if ($('input[name=yearGroup]:checked').val()=="Y" ) {
 											$("#yearGroupRow").slideDown("fast", $("#yearGroupRow").css("display","table-row")); 
 											$("#yearGroupRow2").slideDown("fast", $("#yearGroupRow2").css("display","table-row")); 
 											$("#yearGroupRow3").slideDown("fast", $("#yearGroupRow3").css("display","table-row")); 
@@ -491,7 +491,7 @@ else {
 										$("#rollGroupRow4").css("display","none");
 									<? } ?>
 									$(".rollGroup").click(function(){
-										if ($('input[name=rollGroup]:checked').val() == "Y" ) {
+										if ($('input[name=rollGroup]:checked').val()=="Y" ) {
 											$("#rollGroupRow").slideDown("fast", $("#rollGroupRow").css("display","table-row")); 
 											$("#rollGroupRow2").slideDown("fast", $("#rollGroupRow2").css("display","table-row")); 
 											$("#rollGroupRow3").slideDown("fast", $("#rollGroupRow3").css("display","table-row")); 
@@ -650,7 +650,7 @@ else {
 										$("#courseRow4").css("display","none");
 									<? } ?>
 									$(".course").click(function(){
-										if ($('input[name=course]:checked').val() == "Y" ) {
+										if ($('input[name=course]:checked').val()=="Y" ) {
 											$("#courseRow").slideDown("fast", $("#courseRow").css("display","table-row")); 
 											$("#courseRow2").slideDown("fast", $("#courseRow2").css("display","table-row")); 
 											$("#courseRow3").slideDown("fast", $("#courseRow3").css("display","table-row")); 
@@ -803,7 +803,7 @@ else {
 										$("#classRow4").css("display","none");
 									<? } ?>
 									$(".class").click(function(){
-										if ($('input[name=class]:checked').val() == "Y" ) {
+										if ($('input[name=class]:checked').val()=="Y" ) {
 											$("#classRow").slideDown("fast", $("#classRow").css("display","table-row")); 
 											$("#classRow2").slideDown("fast", $("#classRow2").css("display","table-row")); 
 											$("#classRow3").slideDown("fast", $("#classRow3").css("display","table-row")); 
@@ -956,7 +956,7 @@ else {
 										$("#activitiesRow4").css("display","none");
 									<? } ?>
 									$(".activity").click(function(){
-										if ($('input[name=activity]:checked').val() == "Y" ) {
+										if ($('input[name=activity]:checked').val()=="Y" ) {
 											$("#activitiesRow").slideDown("fast", $("#activitiesRow").css("display","table-row")); 
 											$("#activitiesRow2").slideDown("fast", $("#activitiesRow2").css("display","table-row")); 
 											$("#activitiesRow3").slideDown("fast", $("#activitiesRow3").css("display","table-row")); 
@@ -1112,7 +1112,7 @@ else {
 										$("#applicantsRow").css("display","none");
 									<? } ?>
 									$(".applicants").click(function(){
-										if ($('input[name=applicants]:checked').val() == "Y" ) {
+										if ($('input[name=applicants]:checked').val()=="Y" ) {
 											$("#applicantsRow").slideDown("fast", $("#applicantsRow").css("display","table-row")); 
 										} else {
 											$("#applicantsRow").css("display","none");
@@ -1183,7 +1183,7 @@ else {
 										$("#housesRow").css("display","none");
 									<? } ?>
 									$(".houses").click(function(){
-										if ($('input[name=houses]:checked').val() == "Y" ) {
+										if ($('input[name=houses]:checked').val()=="Y" ) {
 											$("#housesRow").slideDown("fast", $("#housesRow").css("display","table-row")); 
 										} else {
 											$("#housesRow").css("display","none");
@@ -1261,7 +1261,7 @@ else {
 										$("#individualsRow").css("display","none");
 									<? } ?>
 									$(".individuals").click(function(){
-										if ($('input[name=individuals]:checked').val() == "Y" ) {
+										if ($('input[name=individuals]:checked').val()=="Y" ) {
 											$("#individualsRow").slideDown("fast", $("#individualsRow").css("display","table-row")); 
 										} else {
 											$("#individualsRow").css("display","none");

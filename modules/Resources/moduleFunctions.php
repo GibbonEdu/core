@@ -66,7 +66,7 @@ function getTagCloud($guid, $connection2, $tagCount=50) {
 		$max_font_size=30;
 		
 		$spread=$max_count - $min_count;
-		if($spread == 0) {
+		if($spread==0) {
 			$spread=1;
 		}
 		
@@ -80,7 +80,7 @@ function getTagCloud($guid, $connection2, $tagCount=50) {
 			$cloud_tags[]="<a style='font-size: " . floor($size) . "px' class='tag_cloud' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_view.php&tag=" . str_replace("&", "%26", $tag) . "' title='$count resources'>" . htmlspecialchars(stripslashes($tag)) . "</a>" ;
 		}
 		$output.="<p style='margin-top: 10px; line-height: 220%'>" ;
-		$output.= join("\n", $cloud_tags) . "\n";
+		$output.=join("\n", $cloud_tags) . "\n";
 		$output.="</p>" ;
 	}
 	else {

@@ -67,7 +67,7 @@ else {
 		if ($row["name"]=="Print Publication") {
 			print "<script type='text/javascript'>" ;
 				print "function stopRKey(evt) {" ;
-					print "var evt=(evt) ? evt : ((event) ? event : null); var node=(evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null); if ((evt.keyCode == 13) && (node.type==\"text\"))  {return false;}" ;
+					print "var evt=(evt) ? evt : ((event) ? event : null); var node=(evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null); if ((evt.keyCode==13) && (node.type==\"text\"))  {return false;}" ;
 				print "}" ;
 				print "document.onkeypress=stopRKey;" ; 	
 				
@@ -79,7 +79,7 @@ else {
 						print "}" ;
 						print "if (isbn) {" ;
 							print "$.get((\"https://www.googleapis.com/books/v1/volumes?q=isbn:\" + isbn), function(data){" ;
-								print "if(data.constructor === String){" ;
+								print "if(data.constructor===String){" ;
 									print "var obj=jQuery.parseJSON(data);" ;
 								print "} else {" ;
 									print "var obj=data;" ;

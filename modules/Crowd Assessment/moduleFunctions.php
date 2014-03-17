@@ -93,42 +93,42 @@ function sidebarExtra($guid, $connection2) {
 	}
 	
 		
-	$output.= "<h2>" ;
-	$output.= "Recent Discussion" ;
-	$output.= "</h2>" ;
+	$output.="<h2>" ;
+	$output.="Recent Discussion" ;
+	$output.="</h2>" ;
 		
 	if (count($myWork)>0 OR count($myReplies)>0) {
 		
-		$output.= "<h5 style='margin-top: 2px'>" ;
-		$output.= "Crowd Assessment" ;
-		$output.= "</h5>" ;
+		$output.="<h5 style='margin-top: 2px'>" ;
+		$output.="Crowd Assessment" ;
+		$output.="</h5>" ;
 		
 		if (count($myWork)>0) {
-			$output.= "<p>" ;
-			$output.= "Comments on my work:" ;
-			$output.= "</p>" ;
+			$output.="<p>" ;
+			$output.="Comments on my work:" ;
+			$output.="</p>" ;
 		
-			$output.= "<ul>" ;
+			$output.="<ul>" ;
 			for ($i=0; $i<$countWork; $i++) {
-				$output.= "<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=" . $myWork[$i][3] . "&gibbonPlannerEntryHomeworkID=" . $myWork[$i][2] . "&gibbonPersonID=" . $myWork[$i][4] . "'>" . $myWork[$i][0] . " - " . $myWork[$i][1] . "</a></li>" ;
+				$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=" . $myWork[$i][3] . "&gibbonPlannerEntryHomeworkID=" . $myWork[$i][2] . "&gibbonPersonID=" . $myWork[$i][4] . "'>" . $myWork[$i][0] . " - " . $myWork[$i][1] . "</a></li>" ;
 			}
-			$output.= "</ul>" ;
+			$output.="</ul>" ;
 		}
 		
 		if (count($myReplies)>0) {
-			$output.= "<p>" ;
-			$output.= "Replies to me:" ;
-			$output.= "</p>" ;
+			$output.="<p>" ;
+			$output.="Replies to me:" ;
+			$output.="</p>" ;
 		
-			$output.= "<ul>" ;
+			$output.="<ul>" ;
 			for ($i=0; $i<$countReply; $i++) {
-				$output.= "<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=" . $myReplies[$i][3] . "&gibbonPlannerEntryHomeworkID=" . $myReplies[$i][2] . "&gibbonPersonID=" . $myReplies[$i][4] . "#" . $myReplies[$i][5] . "'>" . $myReplies[$i][0] . " - " . $myReplies[$i][1] . "</a></li>" ;
+				$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=" . $myReplies[$i][3] . "&gibbonPlannerEntryHomeworkID=" . $myReplies[$i][2] . "&gibbonPersonID=" . $myReplies[$i][4] . "#" . $myReplies[$i][5] . "'>" . $myReplies[$i][0] . " - " . $myReplies[$i][1] . "</a></li>" ;
 			}
-			$output.= "</ul>" ;
+			$output.="</ul>" ;
 		}
 	}
 	else {
-	$output.= "<p><i>There has been no activity since your last login.</i></p>" ;
+	$output.="<p><i>There has been no activity since your last login.</i></p>" ;
 	}
 			
 	return $output ;
@@ -413,13 +413,13 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
 		$resultDiscuss->execute($dataDiscuss);
 	}
 	catch(PDOException $e) { 
-		$output.= "<div class='error'>" . $e->getMessage() . "</div>" ; 
+		$output.="<div class='error'>" . $e->getMessage() . "</div>" ; 
 	}
 
 	if ($level==0 AND $resultDiscuss->rowCount()==0) {
-		$output.= "<div class='error'>" ;
-			$output.= "This conversation has not yet begun!" ;
-		$output.= "</div>" ;
+		$output.="<div class='error'>" ;
+			$output.="This conversation has not yet begun!" ;
+		$output.="</div>" ;
 	}
 	else {
 		 while ($rowDiscuss=$resultDiscuss->fetch()) {
@@ -431,25 +431,25 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
 				$border="2px solid #333" ;
 				$margintop="0px" ;
 			}
-			$output.= "<a name='" . $rowDiscuss["gibbonCrowdAssessDiscussID"] . "'></a>" ; 
-			$output.= "<table cellspacing='0' style='width: " . (760-($level*15)) . "px ; padding: 1px 3px; margin-bottom: -2px; margin-top: $margintop; margin-left: " . ($level*15) . "px; border: $border ; background-color: #f9f9f9'>" ;
-				$output.= "<tr>" ;
-					$output.= "<td style='color: #777'><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) ." said</i>:</td>" ;
-					$output.= "<td style='color: #777; text-align: right'><i>Posted at <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack($guid, substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;
-				$output.= "</tr>" ;
-				$output.= "<tr>" ;
+			$output.="<a name='" . $rowDiscuss["gibbonCrowdAssessDiscussID"] . "'></a>" ; 
+			$output.="<table cellspacing='0' style='width: " . (760-($level*15)) . "px ; padding: 1px 3px; margin-bottom: -2px; margin-top: $margintop; margin-left: " . ($level*15) . "px; border: $border ; background-color: #f9f9f9'>" ;
+				$output.="<tr>" ;
+					$output.="<td style='color: #777'><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) ." said</i>:</td>" ;
+					$output.="<td style='color: #777; text-align: right'><i>Posted at <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack($guid, substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;
+				$output.="</tr>" ;
+				$output.="<tr>" ;
 					$borderleft="4px solid #1B9F13" ;
 					if ($rowDiscuss["timestamp"]>=$_SESSION[$guid]["lastTimestamp"]) {
 						$borderleft="4px solid #c00" ;
 					}
-					$output.= "<td style='padding: 1px 4px; border-left: $borderleft' colspan=2><b>" . $rowDiscuss["comment"] . "</b></td>" ;
-				$output.= "</tr>" ;
-				$output.= "<tr>" ;
-					$output.= "<td style='text-align: right' colspan=2><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss_post.php&gibbonPersonID=$gibbonPersonID&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&replyTo=" . $rowDiscuss["gibbonCrowdAssessDiscussID"] . "'>Reply</a></td>" ;
-				$output.= "</tr>" ;
+					$output.="<td style='padding: 1px 4px; border-left: $borderleft' colspan=2><b>" . $rowDiscuss["comment"] . "</b></td>" ;
+				$output.="</tr>" ;
+				$output.="<tr>" ;
+					$output.="<td style='text-align: right' colspan=2><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss_post.php&gibbonPersonID=$gibbonPersonID&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&replyTo=" . $rowDiscuss["gibbonCrowdAssessDiscussID"] . "'>Reply</a></td>" ;
+				$output.="</tr>" ;
 				
 				
-			$output.= "</table>" ; 
+			$output.="</table>" ; 
 			
 			//Get any replies
 			try {
@@ -459,10 +459,10 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
 				$resultReplies->execute($dataReplies);
 			}
 			catch(PDOException $e) { 
-				$output.= "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				$output.="<div class='error'>" . $e->getMessage() . "</div>" ; 
 			}
 			while ($rowReplies=$resultReplies->fetch()) {
-				$output.= getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $rowDiscuss["gibbonCrowdAssessDiscussID"], ($level+1), $rowReplies["gibbonCrowdAssessDiscussID"], $gibbonPersonID, $gibbonPlannerEntryID) ;
+				$output.=getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $rowDiscuss["gibbonCrowdAssessDiscussID"], ($level+1), $rowReplies["gibbonCrowdAssessDiscussID"], $gibbonPersonID, $gibbonPlannerEntryID) ;
 			}
 		}
 	}

@@ -60,16 +60,16 @@ class GoogleSpell extends SpellChecker {
 		// Setup XML request
 		$xml='<?xml version="1.0" encoding="utf-8" ?><spellrequest textalreadyclipped="0" ignoredups="0" ignoredigits="1" ignoreallcaps="1"><text>' . $str . '</text></spellrequest>';
 
-		$header ="POST ".$path." HTTP/1.0 \r\n";
-		$header .= "MIME-Version: 1.0 \r\n";
-		$header .= "Content-type: application/PTI26 \r\n";
-		$header .= "Content-length: ".strlen($xml)." \r\n";
-		$header .= "Content-transfer-encoding: text \r\n";
-		$header .= "Request-number: 1 \r\n";
-		$header .= "Document-type: Request \r\n";
-		$header .= "Interface-Version: Test 1.4 \r\n";
-		$header .= "Connection: close \r\n\r\n";
-		$header .= $xml;
+		$header="POST ".$path." HTTP/1.0 \r\n";
+		$header .="MIME-Version: 1.0 \r\n";
+		$header .="Content-type: application/PTI26 \r\n";
+		$header .="Content-length: ".strlen($xml)." \r\n";
+		$header .="Content-transfer-encoding: text \r\n";
+		$header .="Request-number: 1 \r\n";
+		$header .="Document-type: Request \r\n";
+		$header .="Interface-Version: Test 1.4 \r\n";
+		$header .="Connection: close \r\n\r\n";
+		$header .=$xml;
 
 		// Use curl if it exists
 		if (function_exists('curl_init')) {
@@ -91,7 +91,7 @@ class GoogleSpell extends SpellChecker {
 				// Read response
 				$xml="";
 				while (!feof($fp))
-					$xml .= fgets($fp, 128);
+					$xml .=fgets($fp, 128);
 
 				fclose($fp);
 			} else
@@ -122,32 +122,32 @@ if (!function_exists('mb_substr')) {
 		$limit=strlen($str);
 
 		for ($s=0; $start > 0;--$start) {// found the real start
-			if ($s >= $limit)
+			if ($s >=$limit)
 				break;
 
-			if ($str[$s] <= "\x7F")
+			if ($str[$s] <="\x7F")
 				++$s;
 			else {
 				++$s; // skip length
 
-				while ($str[$s] >= "\x80" && $str[$s] <= "\xBF")
+				while ($str[$s] >="\x80" && $str[$s] <="\xBF")
 					++$s;
 			}
 		}
 
-		if ($len == '')
+		if ($len=='')
 			return substr($str, $s);
 		else
 			for ($e=$s; $len > 0; --$len) {//found the real end
-				if ($e >= $limit)
+				if ($e >=$limit)
 					break;
 
-				if ($str[$e] <= "\x7F")
+				if ($str[$e] <="\x7F")
 					++$e;
 				else {
 					++$e;//skip length
 
-					while ($str[$e] >= "\x80" && $str[$e] <= "\xBF" && $e < $limit)
+					while ($str[$e] >="\x80" && $str[$e] <="\xBF" && $e < $limit)
 						++$e;
 				}
 			}

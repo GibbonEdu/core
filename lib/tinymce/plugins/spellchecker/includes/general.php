@@ -32,7 +32,7 @@ function getRequestParam($name, $default_value=false) {
 	if (is_array($_REQUEST[$name])) {
 		$newarray=array();
 
-		foreach ($_REQUEST[$name] as $name => $value)
+		foreach ($_REQUEST[$name] as $name=> $value)
 			$newarray[$name]=$value;
 
 		return $newarray;

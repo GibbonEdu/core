@@ -11,20 +11,20 @@ Danish (da)
 
   Quizdeltagerne spiste jordbær med fløde, mens cirkusklovnen
   Wolther spillede på xylofon.
-  (= Quiz contestants were eating strawbery with cream while Wolther
+  (=Quiz contestants were eating strawbery with cream while Wolther
   the circus clown played on xylophone.)
 
 German (de)
 -----------
 
   Falsches Üben von Xylophonmusik quält jeden größeren Zwerg
-  (= Wrongful practicing of xylophone music tortures every larger dwarf)
+  (=Wrongful practicing of xylophone music tortures every larger dwarf)
 
   Zwölf Boxkämpfer jagten Eva quer über den Sylter Deich
-  (= Twelve boxing fighters hunted Eva across the dike of Sylt)
+  (=Twelve boxing fighters hunted Eva across the dike of Sylt)
 
   Heizölrückstoßabdämpfung
-  (= fuel oil recoil absorber)
+  (=fuel oil recoil absorber)
   (jqvwxy missing, but all non-ASCII letters in one word)
 
 English (en)
@@ -67,7 +67,7 @@ Hungarian (hu)
 --------------
 
   Árvíztűrő tükörfúrógép
-  (= flood-proof mirror-drilling machine, only all non-ASCII letters)
+  (=flood-proof mirror-drilling machine, only all non-ASCII letters)
 
 Icelandic (is)
 --------------
@@ -81,10 +81,10 @@ Greek (el)
 -------------
 
   Γαζέες καὶ μυρτιὲς δὲν θὰ βρῶ πιὰ στὸ χρυσαφὶ ξέφωτο
-  (= No more shall I see acacias or myrtles in the golden clearing)
+  (=No more shall I see acacias or myrtles in the golden clearing)
 
   Ξεσκεπάζω τὴν ψυχοφθόρα βδελυγμία
-  (= I uncover the soul-destroying abhorrence)
+  (=I uncover the soul-destroying abhorrence)
 
 Hebrew (iw)
 -----------
@@ -95,7 +95,7 @@ Polish (pl)
 -----------
 
   Pchnąć w tę łódź jeża lub osiem skrzyń fig
-  (= To push a hedgehog or eight bins of figs in this boat)
+  (=To push a hedgehog or eight bins of figs in this boat)
   
   Zażółć gęślą jaźń
 
@@ -103,7 +103,7 @@ Russian (ru)
 ------------
 
   В чащах юга жил бы цитрус? Да, но фальшивый экземпляр!
-  (= Would a citrus live in the bushes of south? Yes, but only a fake one!)
+  (=Would a citrus live in the bushes of south? Yes, but only a fake one!)
 
 Thai (th)
 ---------

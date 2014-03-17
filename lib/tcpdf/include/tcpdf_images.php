@@ -72,7 +72,7 @@ class TCPDF_IMAGES {
 		$type='';
 		if (isset($iminfo['mime']) AND !empty($iminfo['mime'])) {
 			$mime=explode('/', $iminfo['mime']);
-			if ((count($mime) > 1) AND ($mime[0] == 'image') AND (!empty($mime[1]))) {
+			if ((count($mime) > 1) AND ($mime[0]=='image') AND (!empty($mime[1]))) {
 				$type=strtolower(trim($mime[1]));
 			}
 		}
@@ -82,7 +82,7 @@ class TCPDF_IMAGES {
 				$type=strtolower(trim($fileinfo['extension']));
 			}
 		}
-		if ($type == 'jpg') {
+		if ($type=='jpg') {
 			$type='jpeg';
 		}
 		return $type;
@@ -100,8 +100,8 @@ class TCPDF_IMAGES {
 		// transparency index
 		$tid=imagecolortransparent($image);
 		// default transparency color
-		$tcol=array('red' => 255, 'green' => 255, 'blue' => 255);
-		if ($tid >= 0) {
+		$tcol=array('red'=> 255, 'green'=> 255, 'blue'=> 255);
+		if ($tid >=0) {
 			// get the colors for the transparency index
 			$tcol=imagecolorsforindex($image, $tid);
 		}
@@ -165,7 +165,7 @@ class TCPDF_IMAGES {
 			//Missing or incorrect image file
 			return false;
 		}
-		if ($a[2] != 2) {
+		if ($a[2] !=2) {
 			// Not a JPEG file
 			return false;
 		}
@@ -202,7 +202,7 @@ class TCPDF_IMAGES {
 		// check for embedded ICC profile
 		$icc=array();
 		$offset=0;
-		while (($pos=strpos($data, "ICC_PROFILE\0", $offset)) !== false) {
+		while (($pos=strpos($data, "ICC_PROFILE\0", $offset)) !==false) {
 			// get ICC sequence length
 			$length=(TCPDF_STATIC::_getUSHORT($data, ($pos - 2)) - 16);
 			// marker sequence number
@@ -218,14 +218,14 @@ class TCPDF_IMAGES {
 		if (count($icc) > 0) {
 			ksort($icc);
 			$icc=implode('', $icc);
-			if ((ord($icc{36}) != 0x61) OR (ord($icc{37}) != 0x63) OR (ord($icc{38}) != 0x73) OR (ord($icc{39}) != 0x70)) {
+			if ((ord($icc{36}) !=0x61) OR (ord($icc{37}) !=0x63) OR (ord($icc{38}) !=0x73) OR (ord($icc{39}) !=0x70)) {
 				// invalid ICC profile
 				$icc=false;
 			}
 		} else {
 			$icc=false;
 		}
-		return array('w' => $a[0], 'h' => $a[1], 'ch' => $channels, 'icc' => $icc, 'cs' => $colspace, 'bpc' => $bpc, 'f' => 'DCTDecode', 'data' => $data);
+		return array('w'=> $a[0], 'h'=> $a[1], 'ch'=> $channels, 'icc'=> $icc, 'cs'=> $colspace, 'bpc'=> $bpc, 'f'=> 'DCTDecode', 'data'=> $data);
 	}
 
 	/**
@@ -236,18 +236,18 @@ class TCPDF_IMAGES {
 	 */
 	public static function _parsepng($file) {
 		$f=fopen($file, 'rb');
-		if ($f === false) {
+		if ($f===false) {
 			// Can't open image file
 			return false;
 		}
 		//Check signature
-		if (fread($f, 8) != chr(137).'PNG'.chr(13).chr(10).chr(26).chr(10)) {
+		if (fread($f, 8) !=chr(137).'PNG'.chr(13).chr(10).chr(26).chr(10)) {
 			// Not a PNG file
 			return false;
 		}
 		//Read header chunk
 		fread($f, 4);
-		if (fread($f, 4) != 'IHDR') {
+		if (fread($f, 4) !='IHDR') {
 			//Incorrect PNG file
 			return false;
 		}
@@ -255,34 +255,34 @@ class TCPDF_IMAGES {
 		$h=TCPDF_STATIC::_freadint($f);
 		$bpc=ord(fread($f, 1));
 		$ct=ord(fread($f, 1));
-		if ($ct == 0) {
+		if ($ct==0) {
 			$colspace='DeviceGray';
-		} elseif ($ct == 2) {
+		} elseif ($ct==2) {
 			$colspace='DeviceRGB';
-		} elseif ($ct == 3) {
+		} elseif ($ct==3) {
 			$colspace='Indexed';
 		} else {
 			// alpha channel
 			fclose($f);
 			return 'pngalpha';
 		}
-		if (ord(fread($f, 1)) != 0) {
+		if (ord(fread($f, 1)) !=0) {
 			// Unknown compression method
 			fclose($f);
 			return false;
 		}
-		if (ord(fread($f, 1)) != 0) {
+		if (ord(fread($f, 1)) !=0) {
 			// Unknown filter method
 			fclose($f);
 			return false;
 		}
-		if (ord(fread($f, 1)) != 0) {
+		if (ord(fread($f, 1)) !=0) {
 			// Interlacing not supported
 			fclose($f);
 			return false;
 		}
 		fread($f, 4);
-		$channels=($ct == 2 ? 3 : 1);
+		$channels=($ct==2 ? 3 : 1);
 		$parms='/DecodeParms << /Predictor 15 /Colors '.$channels.' /BitsPerComponent '.$bpc.' /Columns '.$w.' >>';
 		//Scan chunks looking for palette, transparency and image data
 		$pal='';
@@ -292,29 +292,29 @@ class TCPDF_IMAGES {
 		do {
 			$n=TCPDF_STATIC::_freadint($f);
 			$type=fread($f, 4);
-			if ($type == 'PLTE') {
+			if ($type=='PLTE') {
 				// read palette
 				$pal=TCPDF_STATIC::rfread($f, $n);
 				fread($f, 4);
-			} elseif ($type == 'tRNS') {
+			} elseif ($type=='tRNS') {
 				// read transparency info
 				$t=TCPDF_STATIC::rfread($f, $n);
-				if ($ct == 0) {
+				if ($ct==0) {
 					$trns=array(ord($t{1}));
-				} elseif ($ct == 2) {
+				} elseif ($ct==2) {
 					$trns=array(ord($t{1}), ord($t{3}), ord($t{5}));
 				} else {
 					$pos=strpos($t, chr(0));
-					if ($pos !== false) {
+					if ($pos !==false) {
 						$trns=array($pos);
 					}
 				}
 				fread($f, 4);
-			} elseif ($type == 'IDAT') {
+			} elseif ($type=='IDAT') {
 				// read image data block
-				$data .= TCPDF_STATIC::rfread($f, $n);
+				$data .=TCPDF_STATIC::rfread($f, $n);
 				fread($f, 4);
-			} elseif ($type == 'iCCP') {
+			} elseif ($type=='iCCP') {
 				// skip profile name
 				$len=0;
 				while ((ord(fread($f, 1)) > 0) AND ($len < 80)) {
@@ -323,7 +323,7 @@ class TCPDF_IMAGES {
 				// skip null separator
 				fread($f, 1);
 				// get compression method
-				if (ord(fread($f, 1)) != 0) {
+				if (ord(fread($f, 1)) !=0) {
 					// Unknown filter method
 					fclose($f);
 					return false;
@@ -333,19 +333,19 @@ class TCPDF_IMAGES {
 				// decompress profile
 				$icc=gzuncompress($icc);
 				fread($f, 4);
-			} elseif ($type == 'IEND') {
+			} elseif ($type=='IEND') {
 				break;
 			} else {
 				TCPDF_STATIC::rfread($f, $n + 4);
 			}
 		} while ($n);
-		if (($colspace == 'Indexed') AND (empty($pal))) {
+		if (($colspace=='Indexed') AND (empty($pal))) {
 			// Missing palette
 			fclose($f);
 			return false;
 		}
 		fclose($f);
-		return array('w' => $w, 'h' => $h, 'ch' => $channels, 'icc' => $icc, 'cs' => $colspace, 'bpc' => $bpc, 'f' => 'FlateDecode', 'parms' => $parms, 'pal' => $pal, 'trns' => $trns, 'data' => $data);
+		return array('w'=> $w, 'h'=> $h, 'ch'=> $channels, 'icc'=> $icc, 'cs'=> $colspace, 'bpc'=> $bpc, 'f'=> 'FlateDecode', 'parms'=> $parms, 'pal'=> $pal, 'trns'=> $trns, 'data'=> $data);
 	}
 
 } // END OF TCPDF_IMAGES CLASS

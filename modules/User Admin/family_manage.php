@@ -33,11 +33,11 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage ="" ;
+	$deleteReturnMessage="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Your request was completed successfully.The system has made a moderate effort to remove all child and adult records for this family." ;	
+			$deleteReturnMessage="Your request was completed successfully.The system has made a moderate effort to remove all child and adult records for this family." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -96,7 +96,7 @@ else {
 			$data=array("search"=>"%$search%"); 
 			$sql="SELECT * FROM gibbonFamily WHERE (name LIKE :search) ORDER BY name" ; 	
 		}
-		$sqlPage= $sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ;
+		$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}

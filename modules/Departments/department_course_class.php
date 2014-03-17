@@ -123,10 +123,10 @@ else {
 			if ($subpage=="Study Plan") {
 				print "<div style='margin-top: 0px' class='linkTop'>" ;
 				if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID=$gibbonCourseClassID&viewBy=class'><img style='margin-top: 3px' title='View Planner' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.gif'/></a> " ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID=$gibbonCourseClassID&viewBy=class'><img style='margin-top: 3px' title='" . _('View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.gif'/></a> " ;
 				}
 				if (getHighestGroupedAction($guid, "/modules/Markbook/markbook_view.php", $connection2)=="View Markbook_allClassesAllData") {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-top: 3px' title='View Markbook' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.gif'/></a> " ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-top: 3px' " . _('View Markbook') . " src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.gif'/></a> " ;
 				}
 				print "</div>" ;
 				
@@ -486,18 +486,18 @@ else {
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . $row["course"] . "." . $row["class"] . " Information" ;
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
-			$_SESSION[$guid]["sidebarExtra"]= $_SESSION[$guid]["sidebarExtra"] . "<ul>" ;
+			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ul>" ;
 			$style="" ;
 			if ($subpage=="Study Plan") {
 				$style="style='font-weight: bold'" ;
 			}
-			$_SESSION[$guid]["sidebarExtra"]= $_SESSION[$guid]["sidebarExtra"] . "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=$gibbonCourseClassID&subpage=Study Plan'>Study Plan</a></li>" ;
+			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=$gibbonCourseClassID&subpage=Study Plan'>Study Plan</a></li>" ;
 			$style="" ;
 			if ($subpage=="Participants") {
 				$style="style='font-weight: bold'" ;
 			}
-			$_SESSION[$guid]["sidebarExtra"]= $_SESSION[$guid]["sidebarExtra"] . "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=$gibbonCourseClassID&subpage=Participants'>Participants</a></li>" ;
-			$_SESSION[$guid]["sidebarExtra"]= $_SESSION[$guid]["sidebarExtra"] . "</ul>" ;
+			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=$gibbonCourseClassID&subpage=Participants'>Participants</a></li>" ;
+			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</ul>" ;
 			
 			//Print related class list
 			try {

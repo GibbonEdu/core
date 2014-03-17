@@ -34,26 +34,26 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage ="" ;
+	$addReturnMessage="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage =_("Your request failed due to a database error.") ;	
+			$addReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage ="YoYour request failed because your inputs were invalid." ;	
+			$addReturnMessage="YoYour request failed because your inputs were invalid." ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage ="Add succeeded, but there were problems uploading one or more attachments." ;	
+			$addReturnMessage="Add succeeded, but there were problems uploading one or more attachments." ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage ="Your request was completed successfully.You can now add another record if you wish." ;	
+			$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -377,7 +377,7 @@ else {
 					$("#slot1ButtonRow").css("display","none");
 					
 					$(".slot1Location").click(function(){
-						if ($('input[name=slot1Location]:checked').val() == "External" ) {
+						if ($('input[name=slot1Location]:checked').val()=="External" ) {
 							$("#slot1InternalRow").css("display","none");
 							$("#slot1ExternalRow").slideDown("fast", $("#slot1ExternalRow").css("display","table-row")); 
 							$("#slot1ButtonRow").slideDown("fast", $("#slot1ButtonRow").css("display","table-row")); 
@@ -413,7 +413,7 @@ else {
 				/* Resource 2 Option Control */
 				$(document).ready(function(){
 					$(".slot2Location").click(function(){
-						if ($('input[name=slot2Location]:checked').val() == "External" ) {
+						if ($('input[name=slot2Location]:checked').val()=="External" ) {
 							$("#slot2InternalRow").css("display","none");
 							$("#slot2ExternalRow").slideDown("fast", $("#slot2ExternalRow").css("display","table-row")); 
 						} else {

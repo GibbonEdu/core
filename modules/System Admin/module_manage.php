@@ -32,11 +32,11 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage ="" ;
+	$deleteReturnMessage="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Uninstall was successful. You will still need to remove the module's files and database tables yourself." ;	
+			$deleteReturnMessage="Uninstall was successful. You will still need to remove the module's files and database tables yourself." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

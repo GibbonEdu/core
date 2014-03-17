@@ -50,23 +50,23 @@ else {
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-			$updateReturnMessage ="" ;
+			$updateReturnMessage="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage =_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=_("Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage =_("Your request was completed successfully.") ;	
+					$updateReturnMessage=_("Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -75,11 +75,11 @@ else {
 			} 
 			
 			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-			$addReturnMessage ="" ;
+			$addReturnMessage="" ;
 			$class="error" ;
 			if (!($addReturn=="")) {
 				if ($addReturn=="success0") {
-					$addReturnMessage ="Add was successful. You can now edit your rubric." ;	
+					$addReturnMessage=_("Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -88,23 +88,23 @@ else {
 			} 
 			
 			if (isset($_GET["columnDeleteReturn"])) { $columnDeleteReturn=$_GET["columnDeleteReturn"] ; } else { $columnDeleteReturn="" ; }
-			$columnDeleteReturnMessage ="" ;
+			$columnDeleteReturnMessage="" ;
 			$class="error" ;
 			if (!($columnDeleteReturn=="")) {
 				if ($columnDeleteReturn=="fail0") {
-					$columnDeleteReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+					$columnDeleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($columnDeleteReturn=="fail1") {
-					$columnDeleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$columnDeleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($columnDeleteReturn=="fail2") {
-					$columnDeleteReturnMessage =_("Your request failed due to a database error.") ;	
+					$columnDeleteReturnMessage=_("Your request failed due to a database error.") ;	
 				}
 				else if ($columnDeleteReturn=="fail3") {
-					$columnDeleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$columnDeleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($columnDeleteReturn=="success0") {
-					$columnDeleteReturnMessage ="Column Your request was successful." ;	
+					$columnDeleteReturnMessage="Your request was successful." ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -113,23 +113,23 @@ else {
 			} 
 			
 			if (isset($_GET["rowDeleteReturn"])) { $rowDeleteReturn=$_GET["rowDeleteReturn"] ; } else { $rowDeleteReturn="" ; }
-			$rowDeleteReturnMessage ="" ;
+			$rowDeleteReturnMessage="" ;
 			$class="error" ;
 			if (!($rowDeleteReturn=="")) {
 				if ($rowDeleteReturn=="fail0") {
-					$rowDeleteReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+					$rowDeleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($rowDeleteReturn=="fail1") {
-					$rowDeleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$rowDeleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($rowDeleteReturn=="fail2") {
-					$rowDeleteReturnMessage =_("Your request failed due to a database error.") ;	
+					$rowDeleteReturnMessage=_("Your request failed due to a database error.") ;	
 				}
 				else if ($rowDeleteReturn=="fail3") {
-					$rowDeleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$rowDeleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($rowDeleteReturn=="success0") {
-					$rowDeleteReturnMessage ="Your request was successful." ;	
+					$rowDeleteReturnMessage="Your request was successful." ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -138,26 +138,26 @@ else {
 			} 
 			
 			if (isset($_GET["cellEditReturn"])) { $cellEditReturn=$_GET["cellEditReturn"] ; } else { $cellEditReturn="" ; }
-			$cellEditReturnMessage ="" ;
+			$cellEditReturnMessage="" ;
 			$class="error" ;
 			if (!($cellEditReturn=="")) {
 				if ($cellEditReturn=="fail0") {
-					$cellEditReturnMessage ="Cell edit failed because you do not have access to this action." ;	
+					$cellEditReturnMessage="Cell edit failed because you do not have access to this action." ;	
 				}
 				else if ($cellEditReturn=="fail1") {
-					$cellEditReturnMessage ="Cell edit failed because a required parameter was not set." ;	
+					$cellEditReturnMessage="Cell edit failed because a required parameter was not set." ;	
 				}
 				else if ($cellEditReturn=="fail2") {
-					$cellEditReturnMessage ="Cell edit failed due to a database error." ;	
+					$cellEditReturnMessage="Cell edit failed due to a database error." ;	
 				}
 				else if ($cellEditReturn=="fail3") {
-					$cellEditReturnMessage ="Cell edit failed because your inputs were invalid." ;	
+					$cellEditReturnMessage="Cell edit failed because your inputs were invalid." ;	
 				}
 				else if ($cellEditReturn=="fail5") {
-					$cellEditReturnMessage ="Cell edit experienced partial failure." ;	
+					$cellEditReturnMessage="Cell edit experienced partial failure." ;	
 				}
 				else if ($cellEditReturn=="success0") {
-					$cellEditReturnMessage ="Cell edit was successful." ;	
+					$cellEditReturnMessage="Cell edit was successful." ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;

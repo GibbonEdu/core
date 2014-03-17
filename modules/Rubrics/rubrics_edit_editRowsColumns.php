@@ -50,23 +50,23 @@ else {
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-			$updateReturnMessage ="" ;
+			$updateReturnMessage="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage =_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=_("Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail4") {
-					$updateReturnMessage ="Your request was successful, but some data was not properly saved." ;	
+					$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
 				}
 				print "<div class='$class'>" ;
 					print $updateReturnMessage;
@@ -209,11 +209,11 @@ else {
 													?>
 													
 													$(".type-<? print $count ?>").click(function(){
-														if ($('input[name=type-<? print $count ?>]:checked').val() == "Standalone" ) {
+														if ($('input[name=type-<? print $count ?>]:checked').val()=="Standalone" ) {
 															$("#gibbonOutcomeID-<? print $count ?>").css("display","none");
 															$("#rowTitle-<? print $count ?>").css("display","block"); 
 														}
-														else if ($('input[name=type-<? print $count ?>]:checked').val() == "Outcome Based" ) {
+														else if ($('input[name=type-<? print $count ?>]:checked').val()=="Outcome Based" ) {
 															$("#rowTitle-<? print $count ?>").css("display","none");
 															$("#gibbonOutcomeID-<? print $count ?>").css("display","block"); 
 														}

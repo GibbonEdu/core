@@ -42,15 +42,15 @@ else {
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-		$updateReturnMessage ="" ;
+		$updateReturnMessage="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="success0") {
-				$updateReturnMessage ="Registration was successful." ;	
+				$updateReturnMessage="Registration was successful." ;	
 				$class="success" ;
 			}
 			if ($updateReturn=="success1") {
-				$updateReturnMessage ="Unregistration was successful." ;	
+				$updateReturnMessage="Unregistration was successful." ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -319,7 +319,7 @@ else {
 					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 				}
 				
-				$sqlPage= $sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
+				$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
 			
 				if ($result->rowCount()<1) {
 					print "<div class='error'>" ;

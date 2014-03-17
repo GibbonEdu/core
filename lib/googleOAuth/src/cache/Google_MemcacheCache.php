@@ -24,15 +24,15 @@
  * @author Chris Chabot <chabotc@google.com>
  */
 class Google_MemcacheCache extends Google_Cache {
-  private $connection = false;
+  private $connection=false;
 
   public function __construct() {
     global $apiConfig;
     if (! function_exists('memcache_connect')) {
       throw new Google_CacheException("Memcache functions not available");
     }
-    $this->host = $apiConfig['ioMemCacheCache_host'];
-    $this->port = $apiConfig['ioMemCacheCache_port'];
+    $this->host=$apiConfig['ioMemCacheCache_host'];
+    $this->port=$apiConfig['ioMemCacheCache_port'];
     if (empty($this->host) || empty($this->port)) {
       throw new Google_CacheException("You need to supply a valid memcache host and port");
     }
@@ -40,7 +40,7 @@ class Google_MemcacheCache extends Google_Cache {
 
   private function isLocked($key) {
     $this->check();
-    if ((@memcache_get($this->connection, $key . '.lock')) === false) {
+    if ((@memcache_get($this->connection, $key . '.lock'))===false) {
       return false;
     }
     return true;
@@ -61,14 +61,14 @@ class Google_MemcacheCache extends Google_Cache {
 
   private function waitForLock($key) {
     $this->check();
-    // 20 x 250 = 5 seconds
-    $tries = 20;
-    $cnt = 0;
+    // 20 x 250=5 seconds
+    $tries=20;
+    $cnt=0;
     do {
       // 250 ms is a long time to sleep, but it does stop the server from burning all resources on polling locks..
       usleep(250);
       $cnt ++;
-    } while ($cnt <= $tries && $this->isLocked($key));
+    } while ($cnt <=$tries && $this->isLocked($key));
     if ($this->isLocked($key)) {
       // 5 seconds passed, assume the owning process died off and remove it
       $this->removeLock($key);
@@ -78,7 +78,7 @@ class Google_MemcacheCache extends Google_Cache {
   // I prefer lazy initialization since the cache isn't used every request
   // so this potentially saves a lot of overhead
   private function connect() {
-    if (! $this->connection = @memcache_pconnect($this->host, $this->port)) {
+    if (! $this->connection=@memcache_pconnect($this->host, $this->port)) {
       throw new Google_CacheException("Couldn't connect to memcache server");
     }
   }
@@ -92,9 +92,9 @@ class Google_MemcacheCache extends Google_Cache {
   /**
    * @inheritDoc
    */
-  public function get($key, $expiration = false) {
+  public function get($key, $expiration=false) {
     $this->check();
-    if (($ret = @memcache_get($this->connection, $key)) === false) {
+    if (($ret=@memcache_get($this->connection, $key))===false) {
       return false;
     }
     if (is_numeric($expiration) && (time() - $ret['time'] > $expiration)) {
@@ -113,8 +113,8 @@ class Google_MemcacheCache extends Google_Cache {
   public function set($key, $value) {
     $this->check();
     // we store it with the cache_time default expiration so objects will at least get cleaned eventually.
-    if (@memcache_set($this->connection, $key, array('time' => time(),
-        'data' => $value), false) == false) {
+    if (@memcache_set($this->connection, $key, array('time'=> time(),
+        'data'=> $value), false)==false) {
       throw new Google_CacheException("Couldn't store data in cache");
     }
   }

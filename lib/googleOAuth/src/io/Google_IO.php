@@ -26,8 +26,8 @@ require_once 'io/Google_REST.php';
  * @author Chris Chabot <chabotc@google.com>
  */
 abstract class Google_IO {
-  const CONNECTION_ESTABLISHED = "HTTP/1.0 200 Connection established\r\n\r\n";
-  const FORM_URLENCODED = 'application/x-www-form-urlencoded';
+  const CONNECTION_ESTABLISHED="HTTP/1.0 200 Connection established\r\n\r\n";
+  const FORM_URLENCODED='application/x-www-form-urlencoded';
   /**
    * An utility function that first calls $this->auth->sign($request) and then executes makeRequest()
    * on that signed request. Used for when a request should be authenticated
@@ -73,7 +73,7 @@ abstract class Google_IO {
    * false if the operation was unsuccessful.
    */
   protected function getCachedRequest(Google_HttpRequest $request) {
-    if (false == Google_CacheParser::isRequestCacheable($request)) {
+    if (false==Google_CacheParser::isRequestCacheable($request)) {
       false;
     }
 
@@ -87,25 +87,25 @@ abstract class Google_IO {
    * @return Google_HttpRequest Processed request with the enclosed entity.
    */
   protected function processEntityRequest(Google_HttpRequest $request) {
-    $postBody = $request->getPostBody();
-    $contentType = $request->getRequestHeader("content-type");
+    $postBody=$request->getPostBody();
+    $contentType=$request->getRequestHeader("content-type");
 
     // Set the default content-type as application/x-www-form-urlencoded.
-    if (false == $contentType) {
-      $contentType = self::FORM_URLENCODED;
-      $request->setRequestHeaders(array('content-type' => $contentType));
+    if (false==$contentType) {
+      $contentType=self::FORM_URLENCODED;
+      $request->setRequestHeaders(array('content-type'=> $contentType));
     }
 
     // Force the payload to match the content-type asserted in the header.
-    if ($contentType == self::FORM_URLENCODED && is_array($postBody)) {
-      $postBody = http_build_query($postBody, '', '&');
+    if ($contentType==self::FORM_URLENCODED && is_array($postBody)) {
+      $postBody=http_build_query($postBody, '', '&');
       $request->setPostBody($postBody);
     }
 
     // Make sure the content-length header is set.
     if (!$postBody || is_string($postBody)) {
-      $postsLength = strlen($postBody);
-      $request->setRequestHeaders(array('content-length' => $postsLength));
+      $postsLength=strlen($postBody);
+      $request->setRequestHeaders(array('content-length'=> $postsLength));
     }
 
     return $request;
@@ -121,13 +121,13 @@ abstract class Google_IO {
    */
   protected function checkMustRevaliadateCachedRequest($cached, $request) {
     if (Google_CacheParser::mustRevalidate($cached)) {
-      $addHeaders = array();
+      $addHeaders=array();
       if ($cached->getResponseHeader('etag')) {
         // [13.3.4] If an entity tag has been provided by the origin server,
         // we must use that entity tag in any cache-conditional request.
-        $addHeaders['If-None-Match'] = $cached->getResponseHeader('etag');
+        $addHeaders['If-None-Match']=$cached->getResponseHeader('etag');
       } elseif ($cached->getResponseHeader('date')) {
-        $addHeaders['If-Modified-Since'] = $cached->getResponseHeader('date');
+        $addHeaders['If-Modified-Since']=$cached->getResponseHeader('date');
       }
 
       $request->setRequestHeaders($addHeaders);
@@ -144,15 +144,15 @@ abstract class Google_IO {
    */
   protected function updateCachedRequest($cached, $responseHeaders) {
     if (isset($responseHeaders['connection'])) {
-      $hopByHop = array_merge(
+      $hopByHop=array_merge(
         self::$HOP_BY_HOP,
         explode(',', $responseHeaders['connection'])
       );
 
-      $endToEnd = array();
+      $endToEnd=array();
       foreach($hopByHop as $key) {
         if (isset($responseHeaders[$key])) {
-          $endToEnd[$key] = $responseHeaders[$key];
+          $endToEnd[$key]=$responseHeaders[$key];
         }
       }
       $cached->setResponseHeaders($endToEnd);

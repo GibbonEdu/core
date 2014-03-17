@@ -28,30 +28,30 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/externalAsses
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage External Assessments</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage External Assessments') , "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage ="" ;
+	$addReturnMessage="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage =_("Your request failed due to a database error.") ;	
+			$addReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage ="Add was successful." ;	
+			$addReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -60,11 +60,11 @@ else {
 	} 
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage ="" ;
+	$deleteReturnMessage="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Your request was successful." ;	
+			$deleteReturnMessage=_("Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

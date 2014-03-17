@@ -32,11 +32,11 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage ="" ;
+	$deleteReturnMessage="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Your request was completed successfully.A reasonable effort was made to remove the enrolment record for all students in this roll group." ;	
+			$deleteReturnMessage="Your request was completed successfully.A reasonable effort was made to remove the enrolment record for all students in this roll group." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

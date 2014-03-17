@@ -28,30 +28,30 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/daysOfWeek_ma
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>External Assessment Settings</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('External Assessment Settings') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage ="" ;
+	$updateReturnMessage="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage =_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage ="Your request was successful, but some data was not properly saved." ;	
+			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage =_("Your request was completed successfully.") ;	
+			$updateReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -73,23 +73,23 @@ else {
 	//Let's go!
 	?>
 	<h2>
-		Primary External Assessement
+		<? print _('Primary External Assessement') ; ?>
 	</h2>
 	<p>
-		These settings allow a particular type of external assessment to be associated with each year group. The selected assessment wil be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). In addition, a particular field category can be chosen from which to draw data (if no category is chosen, the system will try to pick the best data automatically).
+		<? print _('These settings allow a particular type of external assessment to be associated with each year group. The selected assessment wil be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). In addition, a particular field category can be chosen from which to draw data (if no category is chosen, the system will try to pick the best data automatically).') ; ?>
 	</p>
 	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessmentSettingsProcess.php"?>">
 		<?
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Year Group" ;
+					print _("Year Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "External Assessment" ;
+					print _("External Assessment") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Field Set" ;
+					print _("Field Set") ;
 				print "</th>" ;
 			print "</tr>" ;
 			

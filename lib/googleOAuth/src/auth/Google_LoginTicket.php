@@ -21,7 +21,7 @@
  * @author Brian Eaton <beaton@google.com>
  */
 class Google_LoginTicket {
-  const USER_ATTR = "id";
+  const USER_ATTR="id";
 
   // Information from id token envelope.
   private $envelope;
@@ -36,8 +36,8 @@ class Google_LoginTicket {
    * @param string $payload Information from a verified authentication token.
    */
   public function __construct($envelope, $payload) {
-    $this->envelope = $envelope;
-    $this->payload = $payload;
+    $this->envelope=$envelope;
+    $this->payload=$payload;
   }
 
   /**
@@ -58,6 +58,6 @@ class Google_LoginTicket {
    * @return array
    */
   public function getAttributes() {
-    return array("envelope" => $this->envelope, "payload" => $this->payload);
+    return array("envelope"=> $this->envelope, "payload"=> $this->payload);
   }
 }

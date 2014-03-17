@@ -188,7 +188,7 @@ else {
 					$users=array() ;
 					$userCount=0 ;
 					$userSuccessCount=0 ;
-					while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !== FALSE) {
+					while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !==FALSE) {
 						if ($data[0]!="" AND $data[1]!="" AND $data[2]!="") {
 							$users[$userSuccessCount]["username"]=$data[0] ;
 							$users[$userSuccessCount]["rollGroup"]=$data[1] ;

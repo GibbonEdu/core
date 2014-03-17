@@ -32,20 +32,20 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage ="" ;
+	$updateReturnMessage="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage =_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage ="Your PHP environment cannot handle all of the fields in this form (the current limit is " . ini_get("max_input_vars") . "). Ask your web host or system administrator to increase the value of the max_input_vars in php.ini." ;	
+			$updateReturnMessage="Your PHP environment cannot handle all of the fields in this form (the current limit is " . ini_get("max_input_vars") . "). Ask your web host or system administrator to increase the value of the max_input_vars in php.ini." ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage =_("Your request was completed successfully.") ;	
+			$updateReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -189,9 +189,9 @@ else {
 				print "<tr>" ;
 					print "<td colspan='6'>" ;	
 						print "<div class='error'>" ;
-						print "php.ini max_input_vars = " . $max_input_vars . "<br />";
-						print "Number of inputs on this page = " . $totalCount . "<br/>";
-						print "This form is very large and data will be truncated unless you edit php.ini. Add the line <strong>max_input_vars = 5000</strong> to your php.ini file on your server." ;
+						print "php.ini max_input_vars=" . $max_input_vars . "<br />";
+						print "Number of inputs on this page=" . $totalCount . "<br/>";
+						print "This form is very large and data will be truncated unless you edit php.ini. Add the line <strong>max_input_vars=5000</strong> to your php.ini file on your server." ;
 						print "</div>" ;	
 					print "</td>" ;
 				print "</tr>" ;

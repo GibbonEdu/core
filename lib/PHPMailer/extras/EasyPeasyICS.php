@@ -35,11 +35,11 @@ class EasyPeasyICS {
 	 */	
 	public function addEvent($start, $end, $summary="", $description="", $url=""){
 		$this->events[]=array(
-			"start" => $start,
-			"end"   => $end,
-			"summary" => $summary,
-			"description" => $description,
-			"url" => $url
+			"start"=> $start,
+			"end"  => $end,
+			"summary"=> $summary,
+			"description"=> $description,
+			"url"=> $url
 		);
 	}//function
 	
@@ -50,7 +50,7 @@ class EasyPeasyICS {
 		$ics="";
 	
 		//Add header
-		$ics .= "BEGIN:VCALENDAR
+		$ics .="BEGIN:VCALENDAR
 METHOD:PUBLISH
 VERSION:2.0
 X-WR-CALNAME:".$this->calendarName."
@@ -58,7 +58,7 @@ PRODID:-//hacksw/handcal//NONSGML v1.0//EN";
 		
 		//Add events
 		foreach($this->events as $event){
-			$ics .= "
+			$ics .="
 BEGIN:VEVENT
 UID:". md5(uniqid(mt_rand(), true)) ."@EasyPeasyICS.php
 DTSTAMP:" . gmdate('Ymd').'T'. gmdate('His') . "Z
@@ -72,7 +72,7 @@ END:VEVENT";
 		
 		
 		//Footer
-		$ics .= "
+		$ics .="
 END:VCALENDAR";
 
 

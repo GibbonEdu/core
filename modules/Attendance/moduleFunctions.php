@@ -87,18 +87,18 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 	}
 	
 	if ($result->rowCount()<1) {
-		$output.= "<div class='error'>" ;
-			$output.= "There are no records to display." ;
-		$output.= "</div>" ;
+		$output.="<div class='error'>" ;
+			$output.="There are no records to display." ;
+		$output.="</div>" ;
 	}
 	else {
 		$countSchoolDays=0 ;
 		$countAbsent=0 ;
 		$countPresent=0 ;
 		while ($row=$result->fetch()) {
-			$output.= "<h4>" ;
-				$output.= $row["name"] ;
-			$output.= "</h4>" ;
+			$output.="<h4>" ;
+				$output.=$row["name"] ;
+			$output.="</h4>" ;
 			list($firstDayYear, $firstDayMonth, $firstDayDay)=explode('-', $row["firstDay"]);
 			$firstDayStamp=mktime(0, 0, 0, $firstDayMonth, $firstDayDay, $firstDayYear);
 			list($lastDayYear, $lastDayMonth, $lastDayDay)=explode('-', $row["lastDay"]);
@@ -186,48 +186,48 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 			$count=0;
 			$weeks=2;
 			
-			$output.= "<table class='mini' cellspacing='0' style='width: 100%'>" ;
-			$output.= "<tr class='head'>" ;
+			$output.="<table class='mini' cellspacing='0' style='width: 100%'>" ;
+			$output.="<tr class='head'>" ;
 				for ($w=0; $w<$weeks; $w++) {
 					if ($days["Mon"]=="Y") {
-						$output.= "<th style='width: 14px'>" ;
-							$output.= "Mon" ;
-						$output.= "</th>" ;
+						$output.="<th style='width: 14px'>" ;
+							$output.="Mon" ;
+						$output.="</th>" ;
 					}
 					if ($days["Tue"]=="Y") {
-						$output.= "<th style='width: 14px'>" ;
-							$output.= "Tue" ;
-						$output.= "</th>" ;
+						$output.="<th style='width: 14px'>" ;
+							$output.="Tue" ;
+						$output.="</th>" ;
 				
 					}
 					if ($days["Wed"]=="Y") {
-						$output.= "<th style='width: 14px'>" ;
-							$output.= "Wed" ;
-						$output.= "</th>" ;
+						$output.="<th style='width: 14px'>" ;
+							$output.="Wed" ;
+						$output.="</th>" ;
 				
 					}
 					if ($days["Thu"]=="Y") {
-						$output.= "<th style='width: 14px'>" ;
-							$output.= "Thu" ;
-						$output.= "</th>" ;
+						$output.="<th style='width: 14px'>" ;
+							$output.="Thu" ;
+						$output.="</th>" ;
 					}
 					if ($days["Fri"]=="Y") {
-						$output.= "<th style='width: 14px'>" ;
-							$output.= "Fri" ;
-						$output.= "</th>" ;
+						$output.="<th style='width: 14px'>" ;
+							$output.="Fri" ;
+						$output.="</th>" ;
 					}
 					if ($days["Sat"]=="Y") {
-						$output.= "<th style='width: 14px'>" ;
-							$output.= "Sat" ;
-						$output.= "</th>" ;
+						$output.="<th style='width: 14px'>" ;
+							$output.="Sat" ;
+						$output.="</th>" ;
 					}
 					if ($days["Sun"]=="Y") {
-						$output.= "<th style='width: 15px'>" ;
-							$output.= "Sun" ;
-						$output.= "</th>" ;
+						$output.="<th style='width: 15px'>" ;
+							$output.="Sun" ;
+						$output.="</th>" ;
 					}
 				}
-			$output.= "</tr>" ;
+			$output.="</tr>" ;
 			
 			//Make sure we are not showing future dates
 			$now=mktime(0, 0, 0, date("m"), date("d"), date("Y"));
@@ -239,24 +239,24 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 			for ($i=$startDayStamp;$i<=$end;$i=$i+86400) {
 				if ($days[date("D",$i)]=="Y") {
 					if (($count%($days["count"]*$weeks))==0 AND $days[date("D",$i)]=="Y") {
-						$output.= "<tr style='height: 45px'>" ;
+						$output.="<tr style='height: 45px'>" ;
 					}
 				
 					//Before student started at school
 					if ($dateStart!="" AND date("Y-m-d", $i)<$dateStart) {
-						$output.= "<td style='border: 1px solid #D65602; color: #D65602; background-color: #FFD2A9!important; text-align: center; font-size: 10px'>" ;
-						$output.= date("d/m/Y",$i) . "<br/>" ;
-						$output.= "Before Start Date" ;
-						$output.= "</td>" ;
+						$output.="<td style='border: 1px solid #D65602; color: #D65602; background-color: #FFD2A9!important; text-align: center; font-size: 10px'>" ;
+						$output.=date("d/m/Y",$i) . "<br/>" ;
+						$output.="Before Start Date" ;
+						$output.="</td>" ;
 						$count++ ;
 					
 					}
 					//After student left school
 					else if ($dateEnd!="" AND date("Y-m-d", $i)>$dateEnd) {
-						$output.= "<td style='border: 1px solid #D65602; color: #D65602; background-color: #FFD2A9!important; text-align: center; font-size: 10px'>" ;
-						$output.= date("d/m/Y",$i) . "<br/>" ;
-						$output.= "After End Date" ;
-						$output.= "</td>" ;
+						$output.="<td style='border: 1px solid #D65602; color: #D65602; background-color: #FFD2A9!important; text-align: center; font-size: 10px'>" ;
+						$output.=date("d/m/Y",$i) . "<br/>" ;
+						$output.="After End Date" ;
+						$output.="</td>" ;
 						$count++ ;
 					}
 					//Student attending school
@@ -267,8 +267,8 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 						}
 				
 						if ($i<$firstDayStamp OR $i>$lastDayStamp) {
-							$output.= "<td style='border: 1px solid #aaa; color: #aaa; background-color: #ccc!important; text-align: center; font-size: 10px'>" ;
-							$output.= "</td>" ;
+							$output.="<td style='border: 1px solid #aaa; color: #aaa; background-color: #ccc!important; text-align: center; font-size: 10px'>" ;
+							$output.="</td>" ;
 							$count++ ;
 						
 							if ($i==$specialDayStamp) {
@@ -277,9 +277,9 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 						}
 						else {
 							if ($i==$specialDayStamp) {
-								$output.= "<td style='border: 1px solid #aaa; color: #aaa; background-color: #ccc!important; text-align: center; font-size: 10px'>" ;
-								$output.= $rowSpecial["name"] ;
-								$output.= "</td>" ;
+								$output.="<td style='border: 1px solid #aaa; color: #aaa; background-color: #ccc!important; text-align: center; font-size: 10px'>" ;
+								$output.=$rowSpecial["name"] ;
+								$output.="</td>" ;
 								$count++ ;
 								$rowSpecial=$resultSpecial->fetch() ;
 							}
@@ -317,37 +317,37 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 											$extraStyle="border: 1px solid #390; color: #390; background-color: #D4F6DC; " ;
 										}
 									}
-									$output.= "<td style='text-align: center; font-size: 10px; $extraStyle'>" ;
-									$output.= date("d/m/Y",$i) . "<br/>" ;
+									$output.="<td style='text-align: center; font-size: 10px; $extraStyle'>" ;
+									$output.=date("d/m/Y",$i) . "<br/>" ;
 									if (count($log)>0) {
-										$output.= "<b>" . $log[0] . "</b><br/>" ;
+										$output.="<b>" . $log[0] . "</b><br/>" ;
 										for ($x=count($log); $x>=0; $x--) {
 											if (isset($log[$x])) {
 												if ($log[$x]=="Present") {
-													$output.= "P" ;
+													$output.="P" ;
 												}
 												else if ($log[$x]=="Present - Late") {
-													$output.= "PL" ;
+													$output.="PL" ;
 												}
 												else if ($log[$x]=="Present - Offsite") {
-													$output.= "PS" ;
+													$output.="PS" ;
 												}
 												else if ($log[$x]=="Left") {
-													$output.= "L" ;
+													$output.="L" ;
 												}
 												else if ($log[$x]=="Left - Early") {
-													$output.= "LE" ;
+													$output.="LE" ;
 												}
 												else if ($log[$x]=="Absent") {
-													$output.= "A" ;
+													$output.="A" ;
 												}
 											}
 											if ($x!=0 AND $x!=count($log)) {
-												$output.= " : " ;	
+												$output.=" : " ;	
 											}
 										}
 									}
-									$output.= "</td>" ;
+									$output.="</td>" ;
 									$count++ ;
 								}
 							}
@@ -355,12 +355,12 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 					}
 				
 					if (($count%($days["count"]*$weeks))==0 AND $days[date("D",$i)]=="Y") {
-						$output.= "</tr>" ;
+						$output.="</tr>" ;
 					}
 				}
 			}
 		
-			$output.= "</table>" ;		
+			$output.="</table>" ;		
 		}
 	}
 	

@@ -26,23 +26,23 @@ print "</div>" ;
 </p>
 <?
 if (isset($_GET["editReturn"])) { $editReturn=$_GET["editReturn"] ; } else { $editReturn="" ; }
-$editReturnMessage ="" ;
+$editReturnMessage="" ;
 $class="error" ;
 if (!($editReturn=="")) {
 	if ($editReturn=="fail0") {
-		$editReturnMessage ="Email address not set." ;	
+		$editReturnMessage="Email address not set." ;	
 	}
 	else if ($editReturn=="fail1") {
-		$editReturnMessage =_("Your request failed due to a database error.") ;	
+		$editReturnMessage=_("Your request failed due to a database error.") ;	
 	}
 	else if ($editReturn=="fail2") {
-		$editReturnMessage ="Your request failed due to incorrect or non-unique email address." ;	
+		$editReturnMessage="Your request failed due to incorrect or non-unique email address." ;	
 	}
 	else if ($editReturn=="fail3") {
-		$editReturnMessage ="Failed to send update email." ;	
+		$editReturnMessage="Failed to send update email." ;	
 	}
 	else if ($editReturn=="success0") {
-		$editReturnMessage ="Password changed successfully, please check your email." ;	
+		$editReturnMessage="Password changed successfully, please check your email." ;	
 		$class="success" ;
 	}
 	print "<div class='$class'>" ;

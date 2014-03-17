@@ -242,7 +242,7 @@ else {
 					$users=array() ;
 					$userCount=0 ;
 					$userSuccessCount=0 ;
-					while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !== FALSE) {
+					while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !==FALSE) {
 						if ($data[1]!="" AND $data[2]!="" AND $data[4]!="" AND $data[5]!="" AND $data[6]!="" ) {
 							$users[$userSuccessCount]["title"]="" ; if (isset($data[0])) { $users[$userSuccessCount]["title"]=$data[0] ; }
 							$users[$userSuccessCount]["surname"]="" ; if (isset($data[1])) { $users[$userSuccessCount]["surname"]=$data[1] ;  }

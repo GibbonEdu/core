@@ -101,7 +101,7 @@ else {
 						$content=$_POST['html'] ;
 					}
 					else if ($type=="Link") {
-						$content= $_POST['link'] ;
+						$content=$_POST['link'] ;
 					}
 					$name=$_POST["name"] ; 
 					$category=$_POST["category"] ; 

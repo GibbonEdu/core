@@ -35,26 +35,26 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage ="" ;
+	$addReturnMessage="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage =_("Your request failed due to a database error.") ;	
+			$addReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage ="Your request failed because the selected ID is already in use." ;	
+			$addReturnMessage="Your request failed because the selected ID is already in use." ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage ="Add succeeded, but there were problems uploading one or more attachments." ;	
+			$addReturnMessage="Add succeeded, but there were problems uploading one or more attachments." ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage ="Your request was completed successfully.You can now add another record if you wish." ;	
+			$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -234,12 +234,12 @@ else {
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$("#imageType").change(function(){
-						if ($('select.imageType option:selected').val() == "Link" ) {
+						if ($('select.imageType option:selected').val()=="Link" ) {
 							$("#imageFileRow").css("display","none");
 							$("#imageLinkRow").slideDown("fast", $("#imageLinkRow").css("display","table-row")); 
 							imageLink.enable();
 							imageFile.disable();
-						} else if ($('select.imageType option:selected').val() == "File" ) {
+						} else if ($('select.imageType option:selected').val()=="File" ) {
 							$("#imageLinkRow").css("display","none");
 							$("#imageFileRow").slideDown("fast", $("#imageFileRow").css("display","table-row")); 
 							imageFile.enable();
@@ -335,10 +335,10 @@ else {
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$("#ownershipType").change(function(){
-						if ($('select.ownershipType option:selected').val() == "School" ) {
+						if ($('select.ownershipType option:selected').val()=="School" ) {
 							$("#ownershipTypeIndividualRow").css("display","none");
 							$("#ownershipTypeSchoolRow").slideDown("fast", $("#ownershipTypeSchoolRow").css("display","table-row")); 
-						} else if ($('select.ownershipType option:selected').val() == "Individual" ) {
+						} else if ($('select.ownershipType option:selected').val()=="Individual" ) {
 							$("#ownershipTypeSchoolRow").css("display","none");
 							$("#ownershipTypeIndividualRow").slideDown("fast", $("#ownershipTypeIndividualRow").css("display","table-row")); 
 						} 

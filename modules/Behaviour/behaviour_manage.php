@@ -42,11 +42,11 @@ else {
 		print "</div>" ;
 		
 		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-		$deleteReturnMessage ="" ;
+		$deleteReturnMessage="" ;
 		$class="error" ;
 		if (!($deleteReturn=="")) {
 			if ($deleteReturn=="success0") {
-				$deleteReturnMessage ="Your request was successful." ;	
+				$deleteReturnMessage=_("Your request was completed successfully.") ;		
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -249,7 +249,7 @@ else {
 		catch(PDOException $e) { 
 			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 		}
-		$sqlPage= $sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ;
+		$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ;
 		
 		print "<div class='linkTop'>" ;
 			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_add.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type'><img style='margin: 0 0 -4px 3px' title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;

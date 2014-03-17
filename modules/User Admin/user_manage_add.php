@@ -32,32 +32,32 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage ="" ;
+	$addReturnMessage="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage =_("Your request failed due to a database error.") ;	
+			$addReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage ="Your request failed because your passwords did not match." ;	
+			$addReturnMessage="Your request failed because your passwords did not match." ;	
 		}
 		else if ($addReturn=="fail6") {
-			$addReturnMessage ="Your request failed due to an attachment error." ;	
+			$addReturnMessage="Your request failed due to an attachment error." ;	
 		}
 		else if ($addReturn=="fail7") {
-			$addReturnMessage ="Your request failed because your password to not meet the minimum requirements for strength." ;	
+			$addReturnMessage="Your request failed because your password to not meet the minimum requirements for strength." ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage ="Your request was completed successfully.You can now add another record if you wish." ;	
+			$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -397,7 +397,7 @@ else {
 						$(document).ready(function(){
 							$(".address").slideUp("fast");
 							$("#showAddresses").click(function(){
-								if ($('input[name=showAddresses]:checked').val() == "Yes" ) {
+								if ($('input[name=showAddresses]:checked').val()=="Yes" ) {
 									$(".address").slideDown("fast", $(".address").css("display","table-row")); 
 								} 
 								else {

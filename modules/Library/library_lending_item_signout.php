@@ -58,23 +58,23 @@ else {
 			print "</div>" ;
 			
 			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-			$addReturnMessage ="" ;
+			$addReturnMessage="" ;
 			$class="error" ;
 			if (!($addReturn=="")) {
 				if ($addReturn=="fail0") {
-					$addReturnMessage ="Sign out failed because you do not have access to this action." ;	
+					$addReturnMessage="Sign out failed because you do not have access to this action." ;	
 				}
 				else if ($addReturn=="fail2") {
-					$addReturnMessage ="Sign out failed due to a database error." ;	
+					$addReturnMessage="Sign out failed due to a database error." ;	
 				}
 				else if ($addReturn=="fail3") {
-					$addReturnMessage ="Sign out failed because your inputs were invalid." ;	
+					$addReturnMessage="Sign out failed because your inputs were invalid." ;	
 				}
 				else if ($addReturn=="fail4") {
-					$addReturnMessage ="Sign out failed some values need to be unique but were not." ;	
+					$addReturnMessage="Sign out failed some values need to be unique but were not." ;	
 				}
 				else if ($addReturn=="fail5") {
-					$addReturnMessage ="Sign out failed some values need to be unique but were not." ;	
+					$addReturnMessage="Sign out failed some values need to be unique but were not." ;	
 				}
 				print "<div class='$class'>" ;
 					print $addReturnMessage;

@@ -35,11 +35,11 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage ="" ;
+	$updateReturnMessage="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="success0") {
-			$updateReturnMessage ="Return was successful." ;	
+			$updateReturnMessage="Return was successful." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -49,11 +49,11 @@ else {
 	
 	//Proceed!
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage ="" ;
+	$addReturnMessage="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="success0") {
-			$addReturnMessage ="Sign out was successful." ;	
+			$addReturnMessage="Sign out was successful." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

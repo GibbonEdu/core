@@ -129,29 +129,29 @@ else {
 			print "</div>" ;
 			
 			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-			$addReturnMessage ="" ;
+			$addReturnMessage="" ;
 			$class="error" ;
 			if (!($addReturn=="")) {
 				if ($addReturn=="fail0") {
-					$addReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+					$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($addReturn=="fail2") {
-					$addReturnMessage =_("Your request failed due to a database error.") ;	
+					$addReturnMessage=_("Your request failed due to a database error.") ;	
 				}
 				else if ($addReturn=="fail3") {
-					$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($addReturn=="fail4") {
-					$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($addReturn=="fail5") {
-					$addReturnMessage ="Your request was successful, but some data was not properly saved." ;	
+					$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
 				}
 				else if ($addReturn=="fail6") {
-					$addReturnMessage ="Your request failed due to an attachment error." ;	
+					$addReturnMessage="Your request failed due to an attachment error." ;	
 				}
 				else if ($addReturn=="success0") {
-					$addReturnMessage ="Your request was completed successfully.You can now add another record if you wish." ;	
+					$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -556,7 +556,7 @@ else {
 							
 							//Response to clicking on homework control
 							$(".homework").click(function(){
-								if ($('input[name=homework]:checked').val() == "Yes" ) {
+								if ($('input[name=homework]:checked').val()=="Yes" ) {
 									homeworkDueDate.enable();
 									homeworkDetails.enable();
 									$("#homeworkDueDateRow").slideDown("fast", $("#homeworkDueDateRow").css("display","table-row")); 
@@ -564,14 +564,14 @@ else {
 									$("#homeworkDetailsRow").slideDown("fast", $("#homeworkDetailsRow").css("display","table-row")); 
 									$("#homeworkSubmissionRow").slideDown("fast", $("#homeworkSubmissionRow").css("display","table-row")); 					
 								
-									if ($('input[name=homeworkSubmission]:checked').val() == "Yes" ) {
+									if ($('input[name=homeworkSubmission]:checked').val()=="Yes" ) {
 										$("#homeworkSubmissionDateOpenRow").slideDown("fast", $("#homeworkSubmissionDateOpenRow").css("display","table-row")); 
 										$("#homeworkSubmissionDraftsRow").slideDown("fast", $("#homeworkSubmissionDraftsRow").css("display","table-row")); 
 										$("#homeworkSubmissionTypeRow").slideDown("fast", $("#homeworkSubmissionTypeRow").css("display","table-row")); 
 										$("#homeworkSubmissionRequiredRow").slideDown("fast", $("#homeworkSubmissionRequiredRow").css("display","table-row")); 
 										$("#homeworkCrowdAssessRow").slideDown("fast", $("#homeworkCrowdAssessRow").css("display","table-row")); 
 										
-										if ($('input[name=homeworkCrowdAssess]:checked').val() == "Yes" ) {
+										if ($('input[name=homeworkCrowdAssess]:checked').val()=="Yes" ) {
 											$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row")); 
 											
 										} else {
@@ -603,14 +603,14 @@ else {
 							 
 							 //Response to clicking on online submission control
 							 $(".homeworkSubmission").click(function(){
-								if ($('input[name=homeworkSubmission]:checked').val() == "Yes" ) {
+								if ($('input[name=homeworkSubmission]:checked').val()=="Yes" ) {
 									$("#homeworkSubmissionDateOpenRow").slideDown("fast", $("#homeworkSubmissionDateOpenRow").css("display","table-row")); 
 									$("#homeworkSubmissionDraftsRow").slideDown("fast", $("#homeworkSubmissionDraftsRow").css("display","table-row")); 
 									$("#homeworkSubmissionTypeRow").slideDown("fast", $("#homeworkSubmissionTypeRow").css("display","table-row")); 
 									$("#homeworkSubmissionRequiredRow").slideDown("fast", $("#homeworkSubmissionRequiredRow").css("display","table-row")); 
 									$("#homeworkCrowdAssessRow").slideDown("fast", $("#homeworkCrowdAssessRow").css("display","table-row")); 
 								
-									if ($('input[name=homeworkCrowdAssess]:checked').val() == "Yes" ) {
+									if ($('input[name=homeworkCrowdAssess]:checked').val()=="Yes" ) {
 										$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row")); 
 										
 									} else {
@@ -628,7 +628,7 @@ else {
 							 
 							 //Response to clicking on crowd assessment control
 							 $(".homeworkCrowdAssess").click(function(){
-								if ($('input[name=homeworkCrowdAssess]:checked').val() == "Yes" ) {
+								if ($('input[name=homeworkCrowdAssess]:checked').val()=="Yes" ) {
 									$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row")); 
 									
 								} else {
@@ -978,7 +978,7 @@ else {
 															if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 																print "<optgroup label='--" . $currentCategory . "--'>" ;
 																print "<option class='$currentCategory' value='0'>Choose an outcome to add it to this lesson</option>" ;
-																$categories[$categoryCount]= $currentCategory ;
+																$categories[$categoryCount]=$currentCategory ;
 																$categoryCount++ ;
 															}
 															print "<option class='all " . $rowSelect["category"] . "'   value='" . $rowSelect["gibbonOutcomeID"] . "'>" . $rowSelect["name"] . "</option>" ;
@@ -1021,7 +1021,7 @@ else {
 																if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 																	print "<optgroup label='--" . $currentCategory . "--'>" ;
 																	print "<option class='$currentCategory' value='0'>Choose an outcome to add it to this lesson</option>" ;
-																	$categories[$categoryCount]= $currentCategory ;
+																	$categories[$categoryCount]=$currentCategory ;
 																	$categoryCount++ ;
 																}
 																print "<option class='all " . $rowSelect["category"] . "'   value='" . $rowSelect["gibbonOutcomeID"] . "'>" . $rowSelect["name"] . "</option>" ;
@@ -1119,7 +1119,7 @@ else {
 								$("#twitterRowDetails").css("display","none");
 								
 								$(".advanced").click(function(){
-									if ($('input[name=advanced]:checked').val() == "Yes" ) {
+									if ($('input[name=advanced]:checked').val()=="Yes" ) {
 										$("#accessRow").slideDown("fast", $("#accessRow").css("display","table-row")); 
 										$("#accessRowStudents").slideDown("fast", $("#accessRowStudents").css("display","table-row")); 
 										$("#accessRowParents").slideDown("fast", $("#accessRowParents").css("display","table-row")); 

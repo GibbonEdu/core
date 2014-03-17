@@ -13,7 +13,7 @@ class EnchantSpell extends SpellChecker {
 	/**
 	 * Spellchecks an array of words.
 	 *
-	 * @param String $lang Selected language code (like en_US or de_DE). Shortcodes like "en" and "de" work with enchant >= 1.4.1
+	 * @param String $lang Selected language code (like en_US or de_DE). Shortcodes like "en" and "de" work with enchant >=1.4.1
 	 * @param Array $words Array of words to check.
 	 * @return Array of misspelled words.
 	 */
@@ -24,7 +24,7 @@ class EnchantSpell extends SpellChecker {
 			$d=enchant_broker_request_dict($r, $lang);
 			
 			$returnData=array();
-			foreach($words as $key => $value) {
+			foreach($words as $key=> $value) {
 				$correct=enchant_dict_check($d, $value);
 				if(!$correct) {
 					$returnData[]=trim($value);
@@ -42,7 +42,7 @@ class EnchantSpell extends SpellChecker {
 	/**
 	 * Returns suggestions for a specific word.
 	 *
-	 * @param String $lang Selected language code (like en_US or de_DE). Shortcodes like "en" and "de" work with enchant >= 1.4.1
+	 * @param String $lang Selected language code (like en_US or de_DE). Shortcodes like "en" and "de" work with enchant >=1.4.1
 	 * @param String $word Specific word to get suggestions for.
 	 * @return Array of suggestions for the specified word.
 	 */

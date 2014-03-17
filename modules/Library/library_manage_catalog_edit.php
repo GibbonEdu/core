@@ -36,26 +36,26 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage ="" ;
+	$updateReturnMessage="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage =_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage ="Your request failed because the selected ID is already in use." ;	
+			$updateReturnMessage="Your request failed because the selected ID is already in use." ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage =_("Your request was completed successfully.") ;	
+			$updateReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -214,12 +214,12 @@ else {
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$("#imageType").change(function(){
-								if ($('select.imageType option:selected').val() == "Link" ) {
+								if ($('select.imageType option:selected').val()=="Link" ) {
 									$("#imageFileRow").css("display","none");
 									$("#imageLinkRow").slideDown("fast", $("#imageLinkRow").css("display","table-row")); 
 									imageLink.enable();
 									imageFile.disable();
-								} else if ($('select.imageType option:selected').val() == "File" ) {
+								} else if ($('select.imageType option:selected').val()=="File" ) {
 									$("#imageLinkRow").css("display","none");
 									$("#imageFileRow").slideDown("fast", $("#imageFileRow").css("display","table-row")); 
 									imageFile.enable();
@@ -325,10 +325,10 @@ else {
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$("#ownershipType").change(function(){
-								if ($('select.ownershipType option:selected').val() == "School" ) {
+								if ($('select.ownershipType option:selected').val()=="School" ) {
 									$("#ownershipTypeIndividualRow").css("display","none");
 									$("#ownershipTypeSchoolRow").slideDown("fast", $("#ownershipTypeSchoolRow").css("display","table-row")); 
-								} else if ($('select.ownershipType option:selected').val() == "Individual" ) {
+								} else if ($('select.ownershipType option:selected').val()=="Individual" ) {
 									$("#ownershipTypeSchoolRow").css("display","none");
 									$("#ownershipTypeIndividualRow").slideDown("fast", $("#ownershipTypeIndividualRow").css("display","table-row")); 
 								} 
@@ -452,10 +452,10 @@ else {
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$("#borrowable").change(function(){
-								if ($('select.borrowable option:selected').val() == "Y" ) {
+								if ($('select.borrowable option:selected').val()=="Y" ) {
 									$("#statusRowNotBorrowable").css("display","none");
 									$("#statusRowBorrowable").slideDown("fast", $("#statusRowBorrowable").css("display","table-row")); 
-								} else if ($('select.borrowable option:selected').val() == "N" ) {
+								} else if ($('select.borrowable option:selected').val()=="N" ) {
 									$("#statusRowBorrowable").css("display","none");
 									$("#statusRowNotBorrowable").slideDown("fast", $("#statusRowNotBorrowable").css("display","table-row")); 
 								}

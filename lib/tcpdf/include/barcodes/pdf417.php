@@ -126,10 +126,10 @@ class PDF417 {
 	 * @protected
 	 */
 	protected $textlatch=array(
-		'01' => array(27), '02' => array(28), '03' => array(28,25), //
-		'10' => array(28,28), '12' => array(28), '13' => array(28,25), //
-		'20' => array(28), '21' => array(27), '23' => array(25), //
-		'30' => array(29), '31' => array(29,27), '32' => array(29,28) //
+		'01'=> array(27), '02'=> array(28), '03'=> array(28,25), //
+		'10'=> array(28,28), '12'=> array(28), '13'=> array(28,25), //
+		'20'=> array(28), '21'=> array(27), '23'=> array(25), //
+		'30'=> array(29), '31'=> array(29,27), '32'=> array(29,28) //
 	);
 
 	/**
@@ -531,7 +531,7 @@ class PDF417 {
 	 */
 	public function __construct($code, $ecl=-1, $aspectratio=2, $macro=array()) {
 		$barcode_array=array();
-		if ((is_null($code)) OR ($code == '\0') OR ($code == '')) {
+		if ((is_null($code)) OR ($code=='\0') OR ($code=='')) {
 			return false;
 		}
 		// get the input sequence array
@@ -541,7 +541,7 @@ class PDF417 {
 			$cw=$this->getCompaction($seq[0], $seq[1], true);
 			$codewords=array_merge($codewords, $cw);
 		}
-		if ($codewords[0] == 900) {
+		if ($codewords[0]==900) {
 			// Text Alpha is the default mode, so remove the first code
 			array_shift($codewords);
 		}
@@ -565,25 +565,25 @@ class PDF417 {
 			// optional fields
 			$optmodes=array(900,902,902,900,900,902,902);
 			$optsize=array(-1,2,4,-1,-1,-1,2);
-			foreach ($optmodes as $k => $omode) {
+			foreach ($optmodes as $k=> $omode) {
 				if (isset($macro['option_'.$k])) {
 					$macrocw[]=923;
 					$macrocw[]=$k;
-					if ($optsize[$k] == 2) {
+					if ($optsize[$k]==2) {
 						$macro['option_'.$k]=sprintf('%05d', $macro['option_'.$k]);
-					} elseif ($optsize[$k] == 4) {
+					} elseif ($optsize[$k]==4) {
 						$macro['option_'.$k]=sprintf('%010d', $macro['option_'.$k]);
 					}
 					$cw=$this->getCompaction($omode, $macro['option_'.$k], false);
 					$macrocw=array_merge($macrocw, $cw);
 				}
 			}
-			if ($macro['segment_index'] == ($macro['segment_total'] - 1)) {
+			if ($macro['segment_index']==($macro['segment_total'] - 1)) {
 				// end of control block
 				$macrocw[]=922;
 			}
 			// update total codewords
-			$numcw += count($macrocw);
+			$numcw +=count($macrocw);
 		}
 		// set error correction level
 		$ecl=$this->getErrorCorrectionLevel($ecl, $numcw);
@@ -624,9 +624,9 @@ class PDF417 {
 		// calculate padding
 		$pad=($size - $nce);
 		if ($pad > 0) {
-			if (($size - $rows) == $nce) {
+			if (($size - $rows)==$nce) {
 				--$rows;
-				$size -= $rows;
+				$size -=$rows;
 			} else {
 				// add pading
 				$codewords=array_merge($codewords, array_fill(0, $pad, 900));
@@ -679,10 +679,10 @@ class PDF417 {
 				}
 			}
 			// left row indicator
-			$row .= sprintf('%17b', $this->clusters[$cid][$L]);
+			$row .=sprintf('%17b', $this->clusters[$cid][$L]);
 			// for each column
 			for ($c=0; $c < $cols; ++$c) {
-				$row .= sprintf('%17b', $this->clusters[$cid][$codewords[$k]]);
+				$row .=sprintf('%17b', $this->clusters[$cid][$codewords[$k]]);
 				++$k;
 			}
 			switch ($cid) {
@@ -700,9 +700,9 @@ class PDF417 {
 				}
 			}
 			// right row indicator
-			$row .= sprintf('%17b', $this->clusters[$cid][$L]);
+			$row .=sprintf('%17b', $this->clusters[$cid][$L]);
 			// row stop code
-			$row .= $pstop;
+			$row .=$pstop;
 			// convert the string to array
 			$arow=preg_split('//', $row, -1, PREG_SPLIT_NO_EMPTY);
 			// duplicate row to get the desired height
@@ -745,7 +745,7 @@ class PDF417 {
 		$maxerrsize=(928 - $numcw); // available codewords for error
 		while ($maxecl > 0) {
 			$errsize=(2 << $ecl);
-			if ($maxerrsize >= $errsize) {
+			if ($maxerrsize >=$errsize) {
 				break;
 			}
 			--$maxecl;
@@ -787,7 +787,7 @@ class PDF417 {
 		// initialize array of error correction codewords
 		$ecw=array_fill(0, $eclsize, 0);
 		// for each data codeword
-		foreach($cw as $k => $d) {
+		foreach($cw as $k=> $d) {
 			$t1=($d + $ecw[$eclmaxid]) % 929;
 			for ($j=$eclmaxid; $j > 0; --$j) {
 				$t2=($t1 * $ecc[$j]) % 929;
@@ -798,8 +798,8 @@ class PDF417 {
 			$t3=929 - $t2;
 			$ecw[0]=$t3 % 929;
 		}
-		foreach($ecw as $j => $e) {
-			if ($e != 0) {
+		foreach($ecw as $j=> $e) {
+			if ($e !=0) {
 				$ecw[$j]=929 - $e;
 			}
 		}
@@ -837,9 +837,9 @@ class PDF417 {
 						$prevtxtseq=substr($prevseq, $txtoffset, ($txtseq[1] - $txtoffset));
 						if (strlen($prevtxtseq) > 0) {
 							// add BYTE sequence
-							if ((strlen($prevtxtseq) == 1) AND ((count($sequence_array) > 0) AND ($sequence_array[(count($sequence_array) - 1)][0] == 900))) {
+							if ((strlen($prevtxtseq)==1) AND ((count($sequence_array) > 0) AND ($sequence_array[(count($sequence_array) - 1)][0]==900))) {
 								$sequence_array[]=array(913, $prevtxtseq);
-							} elseif ((strlen($prevtxtseq) % 6) == 0) {
+							} elseif ((strlen($prevtxtseq) % 6)==0) {
 								$sequence_array[]=array(924, $prevtxtseq);
 							} else {
 								$sequence_array[]=array(901, $prevtxtseq);
@@ -879,18 +879,18 @@ class PDF417 {
 				$codelen=strlen($code);
 				for ($i=0; $i < $codelen; ++$i) {
 					$chval=ord($code{$i});
-					if (($k=array_search($chval, $this->textsubmodes[$submode])) !== false) {
+					if (($k=array_search($chval, $this->textsubmodes[$submode])) !==false) {
 						// we are on the same sub-mode
 						$txtarr[]=$k;
 					} else {
 						// the sub-mode is changed
 						for ($s=0; $s < 4; ++$s) {
 							// search new sub-mode
-							if (($s != $submode) AND (($k=array_search($chval, $this->textsubmodes[$s])) !== false)) {
+							if (($s !=$submode) AND (($k=array_search($chval, $this->textsubmodes[$s])) !==false)) {
 								// $s is the new submode
-								if (((($i + 1) == $codelen) OR ((($i + 1) < $codelen) AND (array_search(ord($code{($i + 1)}), $this->textsubmodes[$submode]) !== false))) AND (($s == 3) OR (($s == 0) AND ($submode == 1)))) {
+								if (((($i + 1)==$codelen) OR ((($i + 1) < $codelen) AND (array_search(ord($code{($i + 1)}), $this->textsubmodes[$submode]) !==false))) AND (($s==3) OR (($s==0) AND ($submode==1)))) {
 									// shift (temporary change only for this char)
-									if ($s == 3) {
+									if ($s==3) {
 										// shift to puntuaction
 										$txtarr[]=29;
 									} else {
@@ -899,7 +899,7 @@ class PDF417 {
 									}
 								} else {
 									// latch
-									$txtarr	= array_merge($txtarr, $this->textlatch[''.$submode.$s]);
+									$txtarr	=array_merge($txtarr, $this->textlatch[''.$submode.$s]);
 									// set new submode
 									$submode=$s;
 								}
@@ -911,13 +911,13 @@ class PDF417 {
 					}
 				}
 				$txtarrlen=count($txtarr);
-				if (($txtarrlen % 2) != 0) {
+				if (($txtarrlen % 2) !=0) {
 					// add padding
 					$txtarr[]=29;
 					++$txtarrlen;
 				}
 				// calculate codewords
-				for ($i=0; $i < $txtarrlen; $i += 2) {
+				for ($i=0; $i < $txtarrlen; $i +=2) {
 					$cw[]=(30 * $txtarr[$i]) + $txtarr[($i + 1)];
 				}
 				break;
@@ -933,7 +933,7 @@ class PDF417 {
 						$rest='';
 						$sublen=strlen($code);
 					}
-					if ($sublen == 6) {
+					if ($sublen==6) {
 						$t=bcmul(''.ord($code{0}), '1099511627776');
 						$t=bcadd($t, bcmul(''.ord($code{1}), '4294967296'));
 						$t=bcadd($t, bcmul(''.ord($code{2}), '16777216'));
@@ -947,7 +947,7 @@ class PDF417 {
 							$t=bcdiv($t, '900');
 							// prepend the value to the beginning of the array
 							array_unshift($cw6, $d);
-						} while ($t != '0');
+						} while ($t !='0');
 						// append the result array at the end
 						$cw=array_merge($cw, $cw6);
 					} else {
@@ -972,7 +972,7 @@ class PDF417 {
 						$d=bcmod($t, '900');
 						$t=bcdiv($t, '900');
 						array_unshift($cw, $d);
-					} while ($t != '0');
+					} while ($t !='0');
 					$code=$rest;
 				}
 				break;

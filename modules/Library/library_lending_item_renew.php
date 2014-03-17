@@ -59,26 +59,26 @@ else {
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-			$updateReturnMessage ="" ;
+			$updateReturnMessage="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage ="Renewal failed because you do not have access to this action." ;	
+					$updateReturnMessage="Renewal failed because you do not have access to this action." ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage ="Renewal failed because a required parameter was not set." ;	
+					$updateReturnMessage="Renewal failed because a required parameter was not set." ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage ="Renewal failed due to a database error." ;	
+					$updateReturnMessage="Renewal failed due to a database error." ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage ="Renewal failed because your inputs were invalid." ;	
+					$updateReturnMessage="Renewal failed because your inputs were invalid." ;	
 				}
 				else if ($updateReturn=="fail4") {
-					$updateReturnMessage ="Renewal failed some values need to be unique but were not." ;	
+					$updateReturnMessage="Renewal failed some values need to be unique but were not." ;	
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage ="Renewal was successful." ;	
+					$updateReturnMessage="Renewal was successful." ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;

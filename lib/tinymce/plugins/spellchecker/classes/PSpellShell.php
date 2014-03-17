@@ -21,7 +21,7 @@ class PSpellShell extends SpellChecker {
 		if ($fh=fopen($this->_tmpfile, "w")) {
 			fwrite($fh, "!\n");
 
-			foreach($words as $key => $value)
+			foreach($words as $key=> $value)
 				fwrite($fh, "^" . $value . "\n");
 
 			fclose($fh);
@@ -38,7 +38,7 @@ class PSpellShell extends SpellChecker {
 			$matches=array();
 
 			// Skip this line.
-			if (strpos($dstr, "@") === 0)
+			if (strpos($dstr, "@")===0)
 				continue;
 
 			preg_match("/\& ([^ ]+) .*/i", $dstr, $matches);
@@ -82,7 +82,7 @@ class PSpellShell extends SpellChecker {
 			$matches=array();
 
 			// Skip this line.
-			if (strpos($dstr, "@") === 0)
+			if (strpos($dstr, "@")===0)
 				continue;
 
 			preg_match("/\&[^:]+:(.*)/i", $dstr, $matches);

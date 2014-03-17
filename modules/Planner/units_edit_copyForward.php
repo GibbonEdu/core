@@ -43,20 +43,20 @@ else {
 		print "</div>" ;
 		
 		if (isset($_GET["copyForwardReturn"])) { $copyForwardReturn=$_GET["copyForwardReturn"] ; } else { $copyForwardReturn="" ; }
-		$copyForwardReturnMessage ="" ;
+		$copyForwardReturnMessage="" ;
 		$class="error" ;
 		if (!($copyForwardReturn=="")) {
 			if ($copyForwardReturn=="fail0") {
-				$copyForwardReturnMessage ="Copy failed because you do not have access to this action." ;	
+				$copyForwardReturnMessage="Copy failed because you do not have access to this action." ;	
 			}
 			else if ($copyForwardReturn=="fail2") {
-				$copyForwardReturnMessage ="Copy failed due to a database error." ;	
+				$copyForwardReturnMessage="Copy failed due to a database error." ;	
 			}
 			else if ($copyForwardReturn=="fail3") {
-				$copyForwardReturnMessage ="Copy failed because your inputs were invalid." ;	
+				$copyForwardReturnMessage="Copy failed because your inputs were invalid." ;	
 			}
 			else if ($copyForwardReturn=="fail6") {
-				$copyForwardReturnMessage ="Copy succeeded, but there were problems uploading one or more attachments." ;	
+				$copyForwardReturnMessage="Copy succeeded, but there were problems uploading one or more attachments." ;	
 			}
 			print "<div class='$class'>" ;
 				print $copyForwardReturnMessage;

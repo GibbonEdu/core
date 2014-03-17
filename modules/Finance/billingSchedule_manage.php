@@ -138,7 +138,7 @@ else {
 				$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "search"=>"%$search%",); 
 				$sql="SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND name LIKE :search ORDER BY invoiceIssueDate, name" ; 
 			}
-			$sqlPage= $sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
+			$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

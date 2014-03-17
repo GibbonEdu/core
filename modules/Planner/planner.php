@@ -91,20 +91,20 @@ else {
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-			$updateReturnMessage ="" ;
+			$updateReturnMessage="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage =_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=_("Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage =_("Your request was completed successfully.") ;	
+					$updateReturnMessage=_("Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -230,11 +230,11 @@ else {
 							}
 							else {
 								if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-								$deleteReturnMessage ="" ;
+								$deleteReturnMessage="" ;
 								$class="error" ;
 								if (!($deleteReturn=="")) {
 									if ($deleteReturn=="success0") {
-										$deleteReturnMessage ="Your request was successful." ;	
+										$deleteReturnMessage=_("Your request was completed successfully.") ;		
 										$class="success" ;
 									}
 									print "<div class='$class'>" ;
@@ -402,11 +402,11 @@ else {
 									$row=$result->fetch() ;
 									
 									if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-									$deleteReturnMessage ="" ;
+									$deleteReturnMessage="" ;
 									$class="error" ;
 									if (!($deleteReturn=="")) {
 										if ($deleteReturn=="success0") {
-											$deleteReturnMessage ="Your request was successful." ;	
+											$deleteReturnMessage=_("Your request was completed successfully.") ;		
 											$class="success" ;
 										}
 										print "<div class='$class'>" ;
@@ -578,20 +578,20 @@ else {
 				}
 				
 				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-				$updateReturnMessage ="" ;
+				$updateReturnMessage="" ;
 				$class="error" ;
 				if (!($updateReturn=="")) {
 					if ($updateReturn=="fail0") {
-						$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+						$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 					}
 					else if ($updateReturn=="fail1") {
-						$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail2") {
-						$updateReturnMessage =_("Your request failed due to a database error.") ;	
+						$updateReturnMessage=_("Your request failed due to a database error.") ;	
 					}
 					else if ($updateReturn=="success0") {
-						$updateReturnMessage =_("Your request was completed successfully.") ;	
+						$updateReturnMessage=_("Your request was completed successfully.") ;	
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;
@@ -606,11 +606,11 @@ else {
 				}
 				else {
 					if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-					$deleteReturnMessage ="" ;
+					$deleteReturnMessage="" ;
 					$class="error" ;
 					if (!($deleteReturn=="")) {
 						if ($deleteReturn=="success0") {
-							$deleteReturnMessage ="Your request was successful." ;	
+							$deleteReturnMessage=_("Your request was completed successfully.") ;		
 							$class="success" ;
 						}
 						print "<div class='$class'>" ;
@@ -851,20 +851,20 @@ else {
 						}
 	
 						if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-						$updateReturnMessage ="" ;
+						$updateReturnMessage="" ;
 						$class="error" ;
 						if (!($updateReturn=="")) {
 							if ($updateReturn=="fail0") {
-								$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+								$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 							}
 							else if ($updateReturn=="fail1") {
-								$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+								$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 							}
 							else if ($updateReturn=="fail2") {
-								$updateReturnMessage =_("Your request failed due to a database error.") ;	
+								$updateReturnMessage=_("Your request failed due to a database error.") ;	
 							}
 							else if ($updateReturn=="success0") {
-								$updateReturnMessage =_("Your request was completed successfully.") ;	
+								$updateReturnMessage=_("Your request was completed successfully.") ;	
 								$class="success" ;
 							}
 							print "<div class='$class'>" ;
@@ -873,11 +873,11 @@ else {
 						} 
 						
 						if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-						$deleteReturnMessage ="" ;
+						$deleteReturnMessage="" ;
 						$class="error" ;
 						if (!($deleteReturn=="")) {
 							if ($deleteReturn=="success0") {
-								$deleteReturnMessage ="Your request was successful." ;	
+								$deleteReturnMessage=_("Your request was completed successfully.") ;		
 								$class="success" ;
 							}
 							print "<div class='$class'>" ;
@@ -886,11 +886,11 @@ else {
 						}
 						
 						if (isset($_GET["bumpReturn"])) { $bumpReturn=$_GET["bumpReturn"] ; } else { $bumpReturn="" ; }
-						$bumpReturnMessage ="" ;
+						$bumpReturnMessage="" ;
 						$class="error" ;
 						if (!($bumpReturn=="")) {
 							if ($bumpReturn=="success0") {
-								$bumpReturnMessage ="Bump was successful. It is possible that some lessons have not been moved forward (if there was no space for them), but a reasonable effort has been made." ;	
+								$bumpReturnMessage="Bump was successful. It is possible that some lessons have not been moved forward (if there was no space for them), but a reasonable effort has been made." ;	
 								$class="success" ;
 							}
 							print "<div class='$class'>" ;

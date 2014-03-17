@@ -59,29 +59,29 @@ if (isset($_GET["editReturn"])) {
 else {
 	$editReturn="" ;
 }
-$editReturnMessage ="" ;
+$editReturnMessage="" ;
 $class="error" ;
 if (!($editReturn=="")) {
 	if ($editReturn=="fail0") {
-		$editReturnMessage ="Required fields not set." ;	
+		$editReturnMessage="Required fields not set." ;	
 	}
 	else if ($editReturn=="fail1") {
-		$editReturnMessage =_("Your request failed due to a database error.") ;	
+		$editReturnMessage=_("Your request failed due to a database error.") ;	
 	}
 	else if ($editReturn=="fail2") {
-		$editReturnMessage ="Your request failed due to non-matching passwords." ;	
+		$editReturnMessage="Your request failed due to non-matching passwords." ;	
 	}
 	else if ($editReturn=="fail3") {
-		$editReturnMessage ="Your request failed due to incorrect current password." ;	
+		$editReturnMessage="Your request failed due to incorrect current password." ;	
 	}
 	else if ($editReturn=="fail6") {
-		$editReturnMessage ="Your request failed because your password to not meet the minimum requirements for strength." ;	
+		$editReturnMessage="Your request failed because your password to not meet the minimum requirements for strength." ;	
 	}
 	else if ($editReturn=="fail7") {
-		$editReturnMessage ="Your request failed because your new password is the same as your current password." ;	
+		$editReturnMessage="Your request failed because your new password is the same as your current password." ;	
 	}	
 	else if ($editReturn=="success0") {
-		$editReturnMessage =_("Your request was completed successfully.") ;	
+		$editReturnMessage=_("Your request was completed successfully.") ;	
 		$class="success" ;
 	}
 	print "<div class='$class'>" ;

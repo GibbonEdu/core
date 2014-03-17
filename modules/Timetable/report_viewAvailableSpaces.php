@@ -89,7 +89,7 @@ else {
 						?>
 					</select>
 					<script type="text/javascript">
-						var gibbonTTID= new LiveValidation('gibbonTTID');
+						var gibbonTTID=new LiveValidation('gibbonTTID');
 						gibbonTTID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 					 </script>	
 				</td>

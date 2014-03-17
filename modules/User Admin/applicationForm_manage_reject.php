@@ -62,23 +62,23 @@ else {
 		}
 		else {
 			if (isset($_GET["rejectReturn"])) { $rejectReturn=$_GET["rejectReturn"] ; } else { $rejectReturn="" ; }
-			$rejectReturnMessage ="" ;
+			$rejectReturnMessage="" ;
 			$class="error" ;
 			if (!($rejectReturn=="")) {
 				if ($rejectReturn=="fail0") {
-					$rejectReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+					$rejectReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($rejectReturn=="fail1") {
-					$rejectReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$rejectReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($rejectReturn=="fail2") {
-					$rejectReturnMessage =_("Your request failed due to a database error.") ;	
+					$rejectReturnMessage=_("Your request failed due to a database error.") ;	
 				}
 				else if ($rejectReturn=="fail3") {
-					$rejectReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$rejectReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($rejectReturn=="success1") {
-					$rejectReturnMessage ="Your request was completed successfully., but status could not be updated." ;	
+					$rejectReturnMessage="Your request was completed successfully., but status could not be updated." ;	
 				}
 				print "<div class='$class'>" ;
 					print $rejectReturnMessage;

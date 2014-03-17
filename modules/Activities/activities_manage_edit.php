@@ -36,29 +36,29 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage ="" ;
+	$updateReturnMessage="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage =_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage ="Your request failed due to an attachment error." ;	
+			$updateReturnMessage="Your request failed due to an attachment error." ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage =_("Your request was completed successfully.") ;	
+			$updateReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -67,23 +67,23 @@ else {
 	} 
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage ="" ;
+	$deleteReturnMessage="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="fail0") {
-			$deleteReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($deleteReturn=="fail1") {
-			$deleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($deleteReturn=="fail2") {
-			$deleteReturnMessage =_("Your request failed due to a database error.") ;	
+			$deleteReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($deleteReturn=="fail3") {
-			$deleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Your request was successful." ;	
+			$deleteReturnMessage=_("Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -498,7 +498,7 @@ else {
 							$("#slot1ButtonRow").css("display","none");
 							
 							$(".slot1Location").click(function(){
-								if ($('input[name=slot1Location]:checked').val() == "External" ) {
+								if ($('input[name=slot1Location]:checked').val()=="External" ) {
 									$("#slot1InternalRow").css("display","none");
 									$("#slot1ExternalRow").slideDown("fast", $("#slot1ExternalRow").css("display","table-row")); 
 									$("#slot1ButtonRow").slideDown("fast", $("#slot1ButtonRow").css("display","table-row")); 
@@ -534,7 +534,7 @@ else {
 						/* Resource 2 Option Control */
 						$(document).ready(function(){
 							$(".slot2Location").click(function(){
-								if ($('input[name=slot2Location]:checked').val() == "External" ) {
+								if ($('input[name=slot2Location]:checked').val()=="External" ) {
 									$("#slot2InternalRow").css("display","none");
 									$("#slot2ExternalRow").slideDown("fast", $("#slot2ExternalRow").css("display","table-row")); 
 								} else {

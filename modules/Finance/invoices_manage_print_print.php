@@ -64,10 +64,10 @@ else {
 			
 			$statusExtra="" ;
 			if ($row["status"]=="Issued" AND $row["invoiceDueDate"]<date("Y-m-d")) {
-				$statusExtra= "Overdue" ;
+				$statusExtra="Overdue" ;
 			}
 			if ($row["status"]=="Paid" AND $row["invoiceDueDate"]<$row["paidDate"]) {
-				$statusExtra= "Late" ;
+				$statusExtra="Late" ;
 			}
 			
 			if ($type=="invoice") {
@@ -83,7 +83,7 @@ else {
 				$invoiceContents=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], FALSE, TRUE) ;
 				if ($invoiceContents==FALSE) {
 					print "<div class='error'>" ;
-						print "An error occurred in retrieving the invoice." ;
+						print _("An error occurred.") ;
 					print "</div>" ;
 				}
 				else {
@@ -135,7 +135,7 @@ else {
 				$invoiceContents=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) ;
 				if ($invoiceContents==FALSE) {
 					print "<div class='error'>" ;
-						print "An error occurred in retrieving the invoice." ;
+						print _("An error occurred.") ;
 					print "</div>" ;
 				}
 				else {
@@ -152,7 +152,7 @@ else {
 				$receiptContents=receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) ;
 				if ($receiptContents==FALSE) {
 					print "<div class='error'>" ;
-						print "An error occurred in retrieving the invoice." ;
+						print _("An error occurred.") ;
 					print "</div>" ;
 				}
 				else {

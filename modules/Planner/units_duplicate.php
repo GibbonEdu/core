@@ -43,32 +43,32 @@ else {
 		
 		//Proceed!
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-		$updateReturnMessage ="" ;
+		$updateReturnMessage="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="fail0") {
-				$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+				$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($updateReturn=="fail1") {
-				$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail2") {
-				$updateReturnMessage =_("Your request failed due to a database error.") ;	
+				$updateReturnMessage=_("Your request failed due to a database error.") ;	
 			}
 			else if ($updateReturn=="fail3") {
-				$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail4") {
-				$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail5") {
-				$updateReturnMessage ="Your request failed due to an attachment error." ;	
+				$updateReturnMessage="Your request failed due to an attachment error." ;	
 			}
 			else if ($updateReturn=="fail6") {
-				$updateReturnMessage ="Update succeeded, although some lessons or resources could not be saved." ;	
+				$updateReturnMessage="Update succeeded, although some lessons or resources could not be saved." ;	
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage =_("Your request was completed successfully.") ;	
+				$updateReturnMessage=_("Your request was completed successfully.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -333,7 +333,7 @@ else {
 													/* Resource 1 Option Control */
 													$(document).ready(function(){
 														$(".copyLessons").click(function(){
-															if ($('input[name=copyLessons]:checked').val() == "Yes" ) {
+															if ($('input[name=copyLessons]:checked').val()=="Yes" ) {
 																$("#sourceClass").slideDown("fast", $("#sourceClass").css("display","table-row")); 
 																$("#targetClass").slideDown("fast", $("#targetClass").css("display","table-row")); 
 															} else {

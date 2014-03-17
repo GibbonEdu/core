@@ -103,25 +103,25 @@ class TCPDF2DBarcode {
 			}
 			case 'PDF417': { // PDF417 (ISO/IEC 15438:2006)
 				require_once(dirname(__FILE__).'/pdf417.php');
-				if (!isset($mode[1]) OR ($mode[1] === '')) {
+				if (!isset($mode[1]) OR ($mode[1]==='')) {
 					$aspectratio=2; // default aspect ratio (width / height)
 				} else {
 					$aspectratio=floatval($mode[1]);
 				}
-				if (!isset($mode[2]) OR ($mode[2] === '')) {
+				if (!isset($mode[2]) OR ($mode[2]==='')) {
 					$ecl=-1; // default error correction level (auto)
 				} else {
 					$ecl=intval($mode[2]);
 				}
 				// set macro block
 				$macro=array();
-				if (isset($mode[3]) AND ($mode[3] !== '') AND isset($mode[4]) AND ($mode[4] !== '') AND isset($mode[5]) AND ($mode[5] !== '')) {
+				if (isset($mode[3]) AND ($mode[3] !=='') AND isset($mode[4]) AND ($mode[4] !=='') AND isset($mode[5]) AND ($mode[5] !=='')) {
 					$macro['segment_total']=intval($mode[3]);
 					$macro['segment_index']=intval($mode[4]);
 					$macro['file_id']=strtr($mode[5], "\xff", ',');
 					for ($i=0; $i < 7; ++$i) {
 						$o=$i + 6;
-						if (isset($mode[$o]) AND ($mode[$o] !== '')) {
+						if (isset($mode[$o]) AND ($mode[$o] !=='')) {
 							// add option
 							$macro['option_'.$i]=strtr($mode[$o], "\xff", ',');
 						}
@@ -138,7 +138,7 @@ class TCPDF2DBarcode {
 				if (strlen($code) < 3) {
 					break;
 				}
-				if ($qrtype == 'RAW') {
+				if ($qrtype=='RAW') {
 					// comma-separated rows
 					$rows=explode(',', $code);
 				} else { // RAW2

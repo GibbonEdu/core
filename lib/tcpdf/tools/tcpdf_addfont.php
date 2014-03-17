@@ -41,7 +41,7 @@
  * @version 1.0.000
  */
 
-if (php_sapi_name() != 'cli') {
+if (php_sapi_name() !='cli') {
   echo 'You need to run this command from console.';
   exit(1);
 }
@@ -87,7 +87,7 @@ Options:
 	            9.8.2 Font Descriptor Flags): +1 for fixed font; +4 for
 	            symbol or +32 for non-symbol; +64 for italic. Fixed and
 	            Italic mode are generally autodetected so you have to
-	            set it to 32=non-symbolic font (default) or 4 =
+	            set it to 32=non-symbolic font (default) or 4=
 	            symbolic font.
 
 	-o
@@ -138,16 +138,16 @@ $options=array('type'=>'', 'enc'=>'', 'flags'=>32, 'outpath'=>K_PATH_FONTS, 'pla
 
 // short input options
 $sopt='';
-$sopt .= 't:';
-$sopt .= 'e:';
-$sopt .= 'f:';
-$sopt .= 'o:';
-$sopt .= 'p:';
-$sopt .= 'n:';
-$sopt .= 'b';
-$sopt .= 'l';
-$sopt .= 'i:';
-$sopt .= 'h';
+$sopt .='t:';
+$sopt .='e:';
+$sopt .='f:';
+$sopt .='o:';
+$sopt .='p:';
+$sopt .='n:';
+$sopt .='b';
+$sopt .='l';
+$sopt .='i:';
+$sopt .='h';
 
 // long input options
 $lopt=array();
@@ -166,7 +166,7 @@ $lopt[]='help';
 $inopt=getopt($sopt, $lopt);
 
 // import options (with some sanitization)
-foreach ($inopt as $opt => $val) {
+foreach ($inopt as $opt=> $val) {
 	switch ($opt) {
 		case 't':
 		case 'type': {
@@ -188,8 +188,8 @@ foreach ($inopt as $opt => $val) {
 		case 'o':
 		case 'outpath': {
 			$options['outpath']=realpath($val);
-			if (substr($options['outpath'], -1) != '/') {
-				$options['outpath'] .= '/';
+			if (substr($options['outpath'], -1) !='/') {
+				$options['outpath'] .='/';
 			}
 			break;
 		}
@@ -248,7 +248,7 @@ $errors=false;
 foreach ($options['fonts'] as $font) {
 	$fontfile=realpath($font);
 	$fontname=TCPDF_FONTS::addTTFfont($fontfile, $options['type'], $options['enc'], $options['flags'], $options['outpath'], $options['platid'], $options['encid'], $options['addcbbox'], $options['link']);
-	if ($fontname === false) {
+	if ($fontname===false) {
 		$errors=true;
 		echo "--- ERROR: can't add ".$font."\n";
 	} else {

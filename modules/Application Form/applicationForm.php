@@ -76,36 +76,36 @@ else {
 	}
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage ="" ;
+	$addReturnMessage="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage =_("Your request failed due to a database error.") ;	
+			$addReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage ="Your request failed because your passwords did not match." ;	
+			$addReturnMessage="Your request failed because your passwords did not match." ;	
 		}
 		else if ($addReturn=="success0" OR $addReturn=="success1" OR $addReturn=="success2" ) {
 			if ($addReturn=="success0") {
-				$addReturnMessage ="Your application was successfully submitted. Our admissions team will review your application and be in touch in due course." ;
+				$addReturnMessage="Your application was successfully submitted. Our admissions team will review your application and be in touch in due course." ;
 			}
 			else if ($addReturn=="success1") {
-				$addReturnMessage ="Your application was successfully submitted and <font style='font-weight: bold; text-decoration: underline'>payment has been made to your credit card</font>. Our admissions team will review your application and be in touch in due course." ;
+				$addReturnMessage="Your application was successfully submitted and <font style='font-weight: bold; text-decoration: underline'>payment has been made to your credit card</font>. Our admissions team will review your application and be in touch in due course." ;
 			}
 			else if ($addReturn=="success2") {
-				$addReturnMessage ="Your application was successfully submitted, but <font style='font-weight: bold; text-decoration: underline'>payment could not be made to your credit card</font>. Our admissions team will review your application and be in touch in due course." ;
+				$addReturnMessage="Your application was successfully submitted, but <font style='font-weight: bold; text-decoration: underline'>payment could not be made to your credit card</font>. Our admissions team will review your application and be in touch in due course." ;
 			}
 			else if ($addReturn=="success3") {
-				$addReturnMessage ="Your application was successfully submitted, <font style='font-weight: bold; text-decoration: underline; color: #ff0000'>payment has been made to your credit card, but there has been an error recording your payment. Please print this screen and contact the school ASAP.</font> Our admissions team will review your application and be in touch in due course." ;
+				$addReturnMessage="Your application was successfully submitted, <font style='font-weight: bold; text-decoration: underline; color: #ff0000'>payment has been made to your credit card, but there has been an error recording your payment. Please print this screen and contact the school ASAP.</font> Our admissions team will review your application and be in touch in due course." ;
 			}
 			if ($_GET["id"]!="") {
 				$addReturnMessage=$addReturnMessage . "<br/><br/>If you need to contact the school in reference to this application, please quote the following number: <b><u>" . $_GET["id"] . "</b></u>." ;
@@ -986,7 +986,7 @@ else {
 									/* Advanced Options Control */
 									$(document).ready(function(){
 										$("#secondParent").click(function(){
-											if ($('input[name=secondParent]:checked').val() == "No" ) {
+											if ($('input[name=secondParent]:checked').val()=="No" ) {
 												$(".secondParent").slideUp("fast"); 	
 												$("#parent2title").attr("disabled", "disabled");
 												$("#parent2surname").attr("disabled", "disabled");
@@ -1763,7 +1763,7 @@ else {
 					
 					
 					$(".payment").click(function(){
-						if ($('input[name=payment]:checked').val() == "Family" ) {
+						if ($('input[name=payment]:checked').val()=="Family" ) {
 							$("#companyNameRow").css("display","none");
 							$("#companyContactRow").css("display","none");
 							$("#companyAddressRow").css("display","none");
@@ -1780,14 +1780,14 @@ else {
 							$("#companyCCFamilyRow").slideDown("fast", $("#companyCCFamilyRow").css("display","table-row")); 
 							$("#companyPhoneRow").slideDown("fast", $("#companyPhoneRow").css("display","table-row")); 
 							$("#companyAllRow").slideDown("fast", $("#companyAllRow").css("display","table-row")); 
-							if ($('input[name=companyAll]:checked').val() == "N" ) {
+							if ($('input[name=companyAll]:checked').val()=="N" ) {
 								$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row")); 
 							}
 						}
 					 });
 					 
 					 $(".companyAll").click(function(){
-						if ($('input[name=companyAll]:checked').val() == "Y" ) {
+						if ($('input[name=companyAll]:checked').val()=="Y" ) {
 							$("#companyCategoriesRow").css("display","none");
 						} else {
 							$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row")); 
@@ -2015,7 +2015,7 @@ else {
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$("#howDidYouHear").change(function(){
-						if ($('#howDidYouHear option:selected').val() == "Please select..." ) {
+						if ($('#howDidYouHear option:selected').val()=="Please select..." ) {
 							$("#tellUsMoreRow").css("display","none");
 						}
 						else {

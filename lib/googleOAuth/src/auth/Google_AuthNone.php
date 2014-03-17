@@ -21,7 +21,7 @@
  * @author Chirag Shah <chirags@google.com>
  */
 class Google_AuthNone extends Google_Auth {
-  public $key = null;
+  public $key=null;
 
   public function __construct() {
     global $apiConfig;
@@ -30,7 +30,7 @@ class Google_AuthNone extends Google_Auth {
     }
   }
 
-  public function setDeveloperKey($key) {$this->key = $key;}
+  public function setDeveloperKey($key) {$this->key=$key;}
   public function authenticate($service) {/*noop*/}
   public function setAccessToken($accessToken) {/* noop*/}
   public function getAccessToken() {return null;}
@@ -40,7 +40,7 @@ class Google_AuthNone extends Google_Auth {
 
   public function sign(Google_HttpRequest $request) {
     if ($this->key) {
-      $request->setUrl($request->getUrl() . ((strpos($request->getUrl(), '?') === false) ? '?' : '&')
+      $request->setUrl($request->getUrl() . ((strpos($request->getUrl(), '?')===false) ? '?' : '&')
           . 'key='.urlencode($this->key));
     }
     return $request;

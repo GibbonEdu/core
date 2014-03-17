@@ -32,23 +32,23 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage ="" ;
+	$addReturnMessage="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage ="Install failed because you do not have access to this action." ;	
+			$addReturnMessage="Install failed because you do not have access to this action." ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage ="Install failed due to a database error." ;	
+			$addReturnMessage="Install failed due to a database error." ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage ="Install failed because your manifest file was invalid." ;	
+			$addReturnMessage="Install failed because your manifest file was invalid." ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage ="Install failed because a theme with the same name is already installed." ;	
+			$addReturnMessage="Install failed because a theme with the same name is already installed." ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage ="Install was successful. You can Install another module if you wish." ;	
+			$addReturnMessage="Install was successful. You can Install another module if you wish." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

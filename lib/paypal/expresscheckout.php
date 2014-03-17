@@ -16,9 +16,9 @@ catch(PDOException $e) {
 @session_start() ;
 
 require_once ("paypalfunctions.php");
-// ==================================
+//==================================
 // PayPal Express Checkout Module
-// ==================================
+//==================================
 
 //'------------------------------------
 //' The paymentAmount is the total value of 

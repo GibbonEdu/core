@@ -35,20 +35,20 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage ="" ;
+	$addReturnMessage="" ;
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage =_("Your request failed due to a database error.") ;	
+			$addReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage ="Some aspects of your update failed, effecting the following areas:<ul>" ;	
+			$addReturnMessage="Some aspects of your update failed, effecting the following areas:<ul>" ;	
 			if ($_GET["studentFailCount"]) {
 				$addReturnMessage.="<li>" . $_GET["studentFailCount"] . " students encountered problems.</li>" ;
 			}
@@ -61,7 +61,7 @@ else {
 			$addReturnMessage.="</ul>It is recommended that you remove all pending invoices and try to recreate them." ;
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage ="Add was successful. You can add more records if you wish." ;	
+			$addReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -208,7 +208,7 @@ else {
 						$("#schedulingRow").slideDown("fast", $("#schedulingRow").css("display","table-row")); 
 						
 						$(".scheduling").click(function(){
-							if ($('input[name=scheduling]:checked').val() == "Scheduled" ) {
+							if ($('input[name=scheduling]:checked').val()=="Scheduled" ) {
 								$("#adHocRow").css("display","none");
 								invoiceDueDate.disable() ;
 								$("#schedulingRow").slideDown("fast", $("#schedulingRow").css("display","table-row")); 
@@ -337,7 +337,7 @@ else {
 														$currentCategory=$rowSelect["category"] ;
 														if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 															print "<optgroup label='--" . $currentCategory . "--'>" ;
-															$categories[$categoryCount]= $currentCategory ;
+															$categories[$categoryCount]=$currentCategory ;
 															$categoryCount++ ;
 														}
 														print "<option value='" . $rowSelect["gibbonFinanceFeeID"] . "'>" . $rowSelect["name"] . "</option>" ;

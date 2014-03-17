@@ -62,7 +62,7 @@ else {
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$("#type").change(function(){
-						if ($('select.type option:selected').val() == "Date Range" ) {
+						if ($('select.type option:selected').val()=="Date Range" ) {
 							$("#startDateFromRow").slideDown("fast", $("#startDateFromRow").css("display","table-row")); 
 							$("#startDateToRow").slideDown("fast", $("#startDateToRow").css("display","table-row")); 
 						} else {

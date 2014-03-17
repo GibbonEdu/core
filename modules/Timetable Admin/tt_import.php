@@ -32,20 +32,20 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["importReturn"])) { $importReturn=$_GET["importReturn"] ; } else { $importReturn="" ; }
-	$importReturnMessage ="" ;
+	$importReturnMessage="" ;
 	$class="error" ;
 	if (!($importReturn=="")) {
 		if ($importReturn=="fail0") {
-			$importReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$importReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($importReturn=="fail1") {
-			$importReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$importReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($importReturn=="fail2") {
-			$importReturnMessage =_("Your request failed due to a database error.") ;	
+			$importReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($importReturn=="fail3") {
-			$importReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$importReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		print "<div class='$class'>" ;
 			print $importReturnMessage;
@@ -268,7 +268,7 @@ else {
 						$importFail=false ;
 						$csvFile=$_FILES['file']['tmp_name'] ;
 						$handle=fopen($csvFile, "r");
-						while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !== FALSE) {
+						while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !==FALSE) {
 							try {
 								$data=array("courseNameShort"=>$data[0], "classNameShort"=>$data[1], "dayName"=>$data[2], "rowName"=>$data[3], "teacherUsernameList"=>$data[4], "spaceName"=>$data[5]); 
 								$sql="INSERT INTO gibbonTTImport SET courseNameShort=:courseNameShort, classNameShort=:classNameShort, dayName=:dayName, rowName=:rowName, teacherUsernameList=:teacherUsernameList, spaceName=:spaceName" ;

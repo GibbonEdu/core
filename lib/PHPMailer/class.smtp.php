@@ -186,7 +186,7 @@ class SMTP
         // Make sure we are __not__ connected
         if ($this->connected()) {
             // Already connected, generate error
-            $this->error=array('error' => 'Already connected to a server');
+            $this->error=array('error'=> 'Already connected to a server');
             return false;
         }
 
@@ -211,11 +211,11 @@ class SMTP
         // Verify we connected properly
         if (empty($this->smtp_conn)) {
             $this->error=array(
-                'error' => 'Failed to connect to server',
-                'errno' => $errno,
-                'errstr' => $errstr
+                'error'=> 'Failed to connect to server',
+                'errno'=> $errno,
+                'errstr'=> $errstr
             );
-            if ($this->do_debug >= 1) {
+            if ($this->do_debug >=1) {
                 $this->edebug(
                     'SMTP -> ERROR: ' . $this->error['error']
                     . ": $errstr ($errno)"
@@ -226,9 +226,9 @@ class SMTP
 
         // SMTP server can take longer to respond, give longer timeout for first read
         // Windows does not have support for this timeout function
-        if (substr(PHP_OS, 0, 3) != 'WIN') {
+        if (substr(PHP_OS, 0, 3) !='WIN') {
             $max=ini_get('max_execution_time');
-            if ($max != 0 && $timeout > $max) { // Don't bother if unlimited
+            if ($max !=0 && $timeout > $max) { // Don't bother if unlimited
                 @set_time_limit($timeout);
             }
             stream_set_timeout($this->smtp_conn, $timeout, 0);
@@ -237,7 +237,7 @@ class SMTP
         // Get any announcement
         $announce=$this->get_lines();
 
-        if ($this->do_debug >= 2) {
+        if ($this->do_debug >=2) {
             $this->edebug('SMTP -> FROM SERVER:' . $announce);
         }
 
@@ -331,8 +331,8 @@ class SMTP
                 $ntlm_client=new ntlm_sasl_client_class;
                 //Check that functions are available
                 if (!$ntlm_client->Initialize($temp)) {
-                    $this->error=array('error' => $temp->error);
-                    if ($this->do_debug >= 1) {
+                    $this->error=array('error'=> $temp->error);
+                    if ($this->do_debug >=1) {
                         $this->edebug(
                             'You need to enable some modules in your php.ini file: '
                             . $this->error['error']
@@ -435,7 +435,7 @@ class SMTP
             $sock_status=stream_get_meta_data($this->smtp_conn);
             if ($sock_status['eof']) {
                 // the socket is valid but we are not connected
-                if ($this->do_debug >= 1) {
+                if ($this->do_debug >=1) {
                     $this->edebug(
                         'SMTP -> NOTICE: EOF caught while checking if connected'
                     );
@@ -520,7 +520,7 @@ class SMTP
 
         foreach ($lines as $line) {
             $lines_out=null;
-            if ($line == '' && $in_headers) {
+            if ($line=='' && $in_headers) {
                 $in_headers=false;
             }
             // ok we need to break this line up into several smaller lines
@@ -549,7 +549,7 @@ class SMTP
             // send the lines to the server
             while (list(, $line_out)=@each($lines_out)) {
                 if (strlen($line_out) > 0) {
-                    if (substr($line_out, 0, 1) == '.') {
+                    if (substr($line_out, 0, 1)=='.') {
                         $line_out='.' . $line_out;
                     }
                 }
@@ -681,7 +681,7 @@ class SMTP
     {
         if (!$this->connected()) {
             $this->error=array(
-                "error" => "Called $command without being connected"
+                "error"=> "Called $command without being connected"
             );
             return false;
         }
@@ -690,18 +690,18 @@ class SMTP
         $reply=$this->get_lines();
         $code=substr($reply, 0, 3);
 
-        if ($this->do_debug >= 2) {
+        if ($this->do_debug >=2) {
             $this->edebug('SMTP -> FROM SERVER:' . $reply);
         }
 
         if (!in_array($code, (array)$expect)) {
             $this->last_reply=null;
             $this->error=array(
-                "error" => "$command command failed",
-                "smtp_code" => $code,
-                "detail" => substr($reply, 4)
+                "error"=> "$command command failed",
+                "smtp_code"=> $code,
+                "detail"=> substr($reply, 4)
             );
-            if ($this->do_debug >= 1) {
+            if ($this->do_debug >=1) {
                 $this->edebug(
                     'SMTP -> ERROR: ' . $this->error['error'] . ': ' . $reply
                 );
@@ -766,9 +766,9 @@ class SMTP
     public function turn()
     {
         $this->error=array(
-            'error' => 'The SMTP TURN command is not implemented'
+            'error'=> 'The SMTP TURN command is not implemented'
         );
-        if ($this->do_debug >= 1) {
+        if ($this->do_debug >=1) {
             $this->edebug('SMTP -> NOTICE: ' . $this->error['error']);
         }
         return false;
@@ -782,7 +782,7 @@ class SMTP
      */
     public function client_send($data)
     {
-        if ($this->do_debug >= 1) {
+        if ($this->do_debug >=1) {
             $this->edebug("CLIENT -> SMTP: $data");
         }
         return fwrite($this->smtp_conn, $data);
@@ -831,22 +831,22 @@ class SMTP
         }
         while (is_resource($this->smtp_conn) && !feof($this->smtp_conn)) {
             $str=@fgets($this->smtp_conn, 515);
-            if ($this->do_debug >= 4) {
+            if ($this->do_debug >=4) {
                 $this->edebug("SMTP -> get_lines(): \$data was \"$data\"");
                 $this->edebug("SMTP -> get_lines(): \$str is \"$str\"");
             }
-            $data .= $str;
-            if ($this->do_debug >= 4) {
+            $data .=$str;
+            if ($this->do_debug >=4) {
                 $this->edebug("SMTP -> get_lines(): \$data is \"$data\"");
             }
             // if 4th character is a space, we are done reading, break the loop
-            if (substr($str, 3, 1) == ' ') {
+            if (substr($str, 3, 1)==' ') {
                 break;
             }
             // Timed-out? Log and break
             $info=stream_get_meta_data($this->smtp_conn);
             if ($info['timed_out']) {
-                if ($this->do_debug >= 4) {
+                if ($this->do_debug >=4) {
                     $this->edebug(
                         'SMTP -> get_lines(): timed-out (' . $this->Timeout . ' sec)'
                     );
@@ -856,7 +856,7 @@ class SMTP
             // Now check if reads took too long
             if ($endtime) {
                 if (time() > $endtime) {
-                    if ($this->do_debug >= 4) {
+                    if ($this->do_debug >=4) {
                         $this->edebug(
                             'SMTP -> get_lines(): timelimit reached ('
                             . $this->Timelimit . ' sec)'

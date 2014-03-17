@@ -35,9 +35,9 @@ set_include_path(dirname(__FILE__) . PATH_SEPARATOR . get_include_path());
 require_once "config.php";
 // If a local configuration file is found, merge it's values with the default configuration
 if (file_exists(dirname(__FILE__)  . '/local_config.php')) {
-  $defaultConfig = $apiConfig;
+  $defaultConfig=$apiConfig;
   require_once (dirname(__FILE__)  . '/local_config.php');
-  $apiConfig = array_merge($defaultConfig, $apiConfig);
+  $apiConfig=array_merge($defaultConfig, $apiConfig);
 }
 
 // Include the top level classes, they each include their own dependencies
@@ -84,46 +84,46 @@ class Google_Client {
    * @static
    * @var boolean $useBatch
    */
-  static $useBatch = false;
+  static $useBatch=false;
 
   /** @var array $scopes */
-  protected $scopes = array();
+  protected $scopes=array();
 
   /** @var bool $useObjects */
-  protected $useObjects = false;
+  protected $useObjects=false;
 
   // definitions of services that are discovered.
-  protected $services = array();
+  protected $services=array();
 
   // Used to track authenticated state, can't discover services after doing authenticate()
-  private $authenticated = false;
+  private $authenticated=false;
 
-  public function __construct($config = array()) {
+  public function __construct($config=array()) {
     global $apiConfig;
-    $apiConfig = array_merge($apiConfig, $config);
-    self::$cache = new $apiConfig['cacheClass']();
-    self::$auth = new $apiConfig['authClass']();
-    self::$io = new $apiConfig['ioClass']();
+    $apiConfig=array_merge($apiConfig, $config);
+    self::$cache=new $apiConfig['cacheClass']();
+    self::$auth=new $apiConfig['authClass']();
+    self::$io=new $apiConfig['ioClass']();
   }
 
   /**
    * Add a service
    */
-  public function addService($service, $version = false) {
+  public function addService($service, $version=false) {
     global $apiConfig;
     if ($this->authenticated) {
       throw new Google_Exception('Cant add services after having authenticated');
     }
-    $this->services[$service] = array();
+    $this->services[$service]=array();
     if (isset($apiConfig['services'][$service])) {
       // Merge the service descriptor with the default values
-      $this->services[$service] = array_merge($this->services[$service], $apiConfig['services'][$service]);
+      $this->services[$service]=array_merge($this->services[$service], $apiConfig['services'][$service]);
     }
   }
 
-  public function authenticate($code = null) {
-    $service = $this->prepareService();
-    $this->authenticated = true;
+  public function authenticate($code=null) {
+    $service=$this->prepareService();
+    $this->authenticated=true;
     return self::$auth->authenticate($service, $code);
   }
 
@@ -132,27 +132,27 @@ class Google_Client {
    * @visible For Testing
    */
   public function prepareService() {
-    $service = array();
-    $scopes = array();
+    $service=array();
+    $scopes=array();
     if ($this->scopes) {
-      $scopes = $this->scopes;
+      $scopes=$this->scopes;
     } else {
-      foreach ($this->services as $key => $val) {
+      foreach ($this->services as $key=> $val) {
         if (isset($val['scope'])) {
           if (is_array($val['scope'])) {
-            $scopes = array_merge($val['scope'], $scopes);
+            $scopes=array_merge($val['scope'], $scopes);
           } else {
-            $scopes[] = $val['scope'];
+            $scopes[]=$val['scope'];
           }
         } else {
-          $scopes[] = 'https://www.googleapis.com/auth/' . $key;
+          $scopes[]='https://www.googleapis.com/auth/' . $key;
         }
         unset($val['discoveryURI']);
         unset($val['scope']);
-        $service = array_merge($service, $val);
+        $service=array_merge($service, $val);
       }
     }
-    $service['scope'] = implode(' ', $scopes);
+    $service['scope']=implode(' ', $scopes);
     return $service;
   }
 
@@ -164,8 +164,8 @@ class Google_Client {
    *  "expires_in":3600, "id_token":"TOKEN", "created":1320790426}
    */
   public function setAccessToken($accessToken) {
-    if ($accessToken == null || 'null' == $accessToken) {
-      $accessToken = null;
+    if ($accessToken==null || 'null'==$accessToken) {
+      $accessToken=null;
     }
     self::$auth->setAccessToken($accessToken);
   }
@@ -175,7 +175,7 @@ class Google_Client {
    * @param string $authClassName
    */
   public function setAuthClass($authClassName) {
-    self::$auth = new $authClassName();
+    self::$auth=new $authClassName();
   }
 
   /**
@@ -183,7 +183,7 @@ class Google_Client {
    * @return string
    */
   public function createAuthUrl() {
-    $service = $this->prepareService();
+    $service=$this->prepareService();
     return self::$auth->createAuthUrl($service['scope']);
   }
 
@@ -194,8 +194,8 @@ class Google_Client {
    *  "expires_in":3600,"id_token":"TOKEN", "created":1320790426}
    */
   public function getAccessToken() {
-    $token = self::$auth->getAccessToken();
-    return (null == $token || 'null' == $token) ? null : $token;
+    $token=self::$auth->getAccessToken();
+    return (null==$token || 'null'==$token) ? null : $token;
   }
 
   /**
@@ -248,7 +248,7 @@ class Google_Client {
    */
   public function setApplicationName($applicationName) {
     global $apiConfig;
-    $apiConfig['application_name'] = $applicationName;
+    $apiConfig['application_name']=$applicationName;
   }
 
   /**
@@ -257,8 +257,8 @@ class Google_Client {
    */
   public function setClientId($clientId) {
     global $apiConfig;
-    $apiConfig['oauth2_client_id'] = $clientId;
-    self::$auth->clientId = $clientId;
+    $apiConfig['oauth2_client_id']=$clientId;
+    self::$auth->clientId=$clientId;
   }
 
   /**
@@ -274,8 +274,8 @@ class Google_Client {
    */
   public function setClientSecret($clientSecret) {
     global $apiConfig;
-    $apiConfig['oauth2_client_secret'] = $clientSecret;
-    self::$auth->clientSecret = $clientSecret;
+    $apiConfig['oauth2_client_secret']=$clientSecret;
+    self::$auth->clientSecret=$clientSecret;
   }
 
   /**
@@ -291,8 +291,8 @@ class Google_Client {
    */
   public function setRedirectUri($redirectUri) {
     global $apiConfig;
-    $apiConfig['oauth2_redirect_uri'] = $redirectUri;
-    self::$auth->redirectUri = $redirectUri;
+    $apiConfig['oauth2_redirect_uri']=$redirectUri;
+    self::$auth->redirectUri=$redirectUri;
   }
 
   /**
@@ -318,7 +318,7 @@ class Google_Client {
    * @param string|null $token The token (access token or a refresh token) that should be revoked.
    * @return boolean Returns True if the revocation was successful, otherwise False.
    */
-  public function revokeToken($token = null) {
+  public function revokeToken($token=null) {
     self::$auth->revokeToken($token);
   }
 
@@ -330,7 +330,7 @@ class Google_Client {
    * @return Google_LoginTicket Returns an apiLoginTicket if the verification was
    * successful.
    */
-  public function verifyIdToken($token = null) {
+  public function verifyIdToken($token=null) {
     return self::$auth->verifyIdToken($token);
   }
 
@@ -349,7 +349,7 @@ class Google_Client {
    * @param array $scopes, ie: array('https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/moderator')
    */
   public function setScopes($scopes) {
-    $this->scopes = is_string($scopes) ? explode(" ", $scopes) : $scopes;
+    $this->scopes=is_string($scopes) ? explode(" ", $scopes) : $scopes;
   }
 
   /**
@@ -370,7 +370,7 @@ class Google_Client {
    * @param array $requestVisibleActions Array of app activity types
    */
   public function setRequestVisibleActions($requestVisibleActions) {
-    self::$auth->requestVisibleActions =
+    self::$auth->requestVisibleActions=
             join(" ", $requestVisibleActions);
   }
 
@@ -383,7 +383,7 @@ class Google_Client {
    */
   public function setUseObjects($useObjects) {
     global $apiConfig;
-    $apiConfig['use_objects'] = $useObjects;
+    $apiConfig['use_objects']=$useObjects;
   }
 
   /**
@@ -394,7 +394,7 @@ class Google_Client {
    * @experimental
    */
   public function setUseBatch($useBatch) {
-    self::$useBatch = $useBatch;
+    self::$useBatch=$useBatch;
   }
 
   /**
@@ -430,7 +430,7 @@ class Google_ServiceException extends Google_Exception {
   /**
    * Optional list of errors returned in a JSON body of an HTTP error response.
    */
-  protected $errors = array();
+  protected $errors=array();
 
   /**
    * Override default constructor to add ability to set $errors.
@@ -441,15 +441,15 @@ class Google_ServiceException extends Google_Exception {
    * @param [{string, string}] errors List of errors returned in an HTTP
    * response.  Defaults to [].
    */
-  public function __construct($message, $code = 0, Exception $previous = null,
-                              $errors = array()) {
-    if(version_compare(PHP_VERSION, '5.3.0') >= 0) {
+  public function __construct($message, $code=0, Exception $previous=null,
+                              $errors=array()) {
+    if(version_compare(PHP_VERSION, '5.3.0') >=0) {
       parent::__construct($message, $code, $previous);
     } else {
       parent::__construct($message, $code);
     }
 
-    $this->errors = $errors;
+    $this->errors=$errors;
   }
 
   /**

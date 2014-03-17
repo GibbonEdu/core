@@ -32,15 +32,15 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["issueReturn"])) { $issueReturn=$_GET["issueReturn"] ; } else { $issueReturn="" ; }
-	$issueReturnMessage ="" ;
+	$issueReturnMessage="" ;
 	$class="error" ;
 	if (!($issueReturn=="")) {
 		if ($issueReturn=="success0") {
-			$issueReturnMessage ="Issue was successful." ;	
+			$issueReturnMessage="Issue was successful." ;	
 			$class="success" ;
 		}
 		if ($issueReturn=="success1") {
-			$issueReturnMessage ="Issue was successful, but one or more requested emails could not be sent." ;	
+			$issueReturnMessage="Issue was successful, but one or more requested emails could not be sent." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -49,11 +49,11 @@ else {
 	} 
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage ="" ;
+	$deleteReturnMessage="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Your request was successful." ;	
+			$deleteReturnMessage=_("Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -62,27 +62,27 @@ else {
 	} 
 	
 	if (isset($_GET["bulkReturn"])) { $bulkReturn=$_GET["bulkReturn"] ; } else { $bulkReturn="" ; }
-	$bulkReturnMessage ="" ;
+	$bulkReturnMessage="" ;
 	$class="error" ;
 	if (!($bulkReturn=="")) {
 		if ($bulkReturn=="fail0") {
-			$bulkReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$bulkReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($bulkReturn=="fail2") {
-			$bulkReturnMessage =_("Your request failed due to a database error.") ;	
+			$bulkReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($bulkReturn=="fail3") {
-			$bulkReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$bulkReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($bulkReturn=="fail5") {
-			$bulkReturnMessage ="Some elements of your bulk process failed, but others were successful." ;	
+			$bulkReturnMessage="Some elements of your bulk process failed, but others were successful." ;	
 		}
 		else if ($bulkReturn=="success0") {
-			$bulkReturnMessage ="Bulk process was successful." ;	
+			$bulkReturnMessage="Bulk process was successful." ;	
 			$class="success" ;
 		}
 		if ($bulkReturn=="success1") {
-			$bulkReturnMessage ="Bulk process was successful, but one or more requested emails could not be sent." ;	
+			$bulkReturnMessage="Bulk process was successful, but one or more requested emails could not be sent." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -547,10 +547,10 @@ else {
 							//Work out extra status information
 							$statusExtra="" ;
 							if ($row["status"]=="Issued" AND $row["invoiceDueDate"]<date("Y-m-d")) {
-								$statusExtra= "Overdue" ;
+								$statusExtra="Overdue" ;
 							}
 							if ($row["status"]=="Paid" AND $row["invoiceDueDate"]<$row["paidDate"]) {
-								$statusExtra= "Late" ;
+								$statusExtra="Late" ;
 							}
 				
 							//Color row by status

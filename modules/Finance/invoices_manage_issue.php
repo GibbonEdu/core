@@ -47,23 +47,23 @@ else {
 	print "</p>" ;
 	
 	if (isset($_GET["issueReturn"])) { $issueReturn=$_GET["issueReturn"] ; } else { $issueReturn="" ; }
-	$issueReturnMessage ="" ;
+	$issueReturnMessage="" ;
 	$class="error" ;
 	if (!($issueReturn=="")) {
 		if ($issueReturn=="fail0") {
-			$issueReturnMessage ="Issue failed because you do not have access to this action." ;	
+			$issueReturnMessage="Issue failed because you do not have access to this action." ;	
 		}
 		else if ($issueReturn=="fail1") {
-			$issueReturnMessage ="Issue failed because a required parameter was not set." ;	
+			$issueReturnMessage="Issue failed because a required parameter was not set." ;	
 		}
 		else if ($issueReturn=="fail2") {
-			$issueReturnMessage ="Issue failed due to a database error." ;	
+			$issueReturnMessage="Issue failed due to a database error." ;	
 		}
 		else if ($issueReturn=="fail3") {
-			$issueReturnMessage ="Issue failed because your inputs were invalid." ;	
+			$issueReturnMessage="Issue failed because your inputs were invalid." ;	
 		}
 		else if ($issueReturn=="fail4") {
-			$issueReturnMessage ="Some aspects of your issue failed, but others were successful. Because of the errors, the system did not attempt to send any requested emails." ;	
+			$issueReturnMessage="Some aspects of your issue failed, but others were successful. Because of the errors, the system did not attempt to send any requested emails." ;	
 		}
 		print "<div class='$class'>" ;
 			print $issueReturnMessage;

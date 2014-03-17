@@ -29,7 +29,7 @@ class Google_FileCache extends Google_Cache {
 
   public function __construct() {
     global $apiConfig;
-    $this->path = $apiConfig['ioFileCache_directory'];
+    $this->path=$apiConfig['ioFileCache_directory'];
   }
 
   private function isLocked($storageFile) {
@@ -38,7 +38,7 @@ class Google_FileCache extends Google_Cache {
   }
 
   private function createLock($storageFile) {
-    $storageDir = dirname($storageFile);
+    $storageDir=dirname($storageFile);
     if (! is_dir($storageDir)) {
       // @codeCoverageIgnoreStart
       if (! @mkdir($storageDir, 0755, true)) {
@@ -58,16 +58,16 @@ class Google_FileCache extends Google_Cache {
   }
 
   private function waitForLock($storageFile) {
-    // 20 x 250 = 5 seconds
-    $tries = 20;
-    $cnt = 0;
+    // 20 x 250=5 seconds
+    $tries=20;
+    $cnt=0;
     do {
       // make sure PHP picks up on file changes. This is an expensive action but really can't be avoided
       clearstatcache();
       // 250 ms is a long time to sleep, but it does stop the server from burning all resources on polling locks..
       usleep(250);
       $cnt ++;
-    } while ($cnt <= $tries && $this->isLocked($storageFile));
+    } while ($cnt <=$tries && $this->isLocked($storageFile));
     if ($this->isLocked($storageFile)) {
       // 5 seconds passed, assume the owning process died off and remove it
       $this->removeLock($storageFile);
@@ -85,8 +85,8 @@ class Google_FileCache extends Google_Cache {
     return $this->getCacheDir($hash) . '/' . $hash;
   }
 
-  public function get($key, $expiration = false) {
-    $storageFile = $this->getCacheFile(md5($key));
+  public function get($key, $expiration=false) {
+    $storageFile=$this->getCacheFile(md5($key));
     // See if this storage file is locked, if so we wait up to 5 seconds for the lock owning process to
     // complete it's work. If the lock is not released within that time frame, it's cleaned up.
     // This should give us a fair amount of 'Cache Stampeding' protection
@@ -94,10 +94,10 @@ class Google_FileCache extends Google_Cache {
       $this->waitForLock($storageFile);
     }
     if (file_exists($storageFile) && is_readable($storageFile)) {
-      $now = time();
-      if (! $expiration || (($mtime = @filemtime($storageFile)) !== false && ($now - $mtime) < $expiration)) {
-        if (($data = @file_get_contents($storageFile)) !== false) {
-          $data = unserialize($data);
+      $now=time();
+      if (! $expiration || (($mtime=@filemtime($storageFile)) !==false && ($now - $mtime) < $expiration)) {
+        if (($data=@file_get_contents($storageFile)) !==false) {
+          $data=unserialize($data);
           return $data;
         }
       }
@@ -106,8 +106,8 @@ class Google_FileCache extends Google_Cache {
   }
 
   public function set($key, $value) {
-    $storageDir = $this->getCacheDir(md5($key));
-    $storageFile = $this->getCacheFile(md5($key));
+    $storageDir=$this->getCacheDir(md5($key));
+    $storageFile=$this->getCacheFile(md5($key));
     if ($this->isLocked($storageFile)) {
       // some other process is writing to this file too, wait until it's done to prevent hiccups
       $this->waitForLock($storageFile);
@@ -119,7 +119,7 @@ class Google_FileCache extends Google_Cache {
     }
     // we serialize the whole request object, since we don't only want the
     // responseContent but also the postBody used, headers, size, etc
-    $data = serialize($value);
+    $data=serialize($value);
     $this->createLock($storageFile);
     if (! @file_put_contents($storageFile, $data)) {
       $this->removeLock($storageFile);
@@ -129,7 +129,7 @@ class Google_FileCache extends Google_Cache {
   }
 
   public function delete($key) {
-    $file = $this->getCacheFile(md5($key));
+    $file=$this->getCacheFile(md5($key));
     if (! @unlink($file)) {
       throw new Google_CacheException("Cache file could not be deleted");
     }

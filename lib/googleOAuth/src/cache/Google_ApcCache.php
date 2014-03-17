@@ -32,7 +32,7 @@ class googleApcCache extends Google_Cache {
   }
 
   private function isLocked($key) {
-    if ((@apc_fetch($key . '.lock')) === false) {
+    if ((@apc_fetch($key . '.lock'))===false) {
       return false;
     }
     return true;
@@ -50,14 +50,14 @@ class googleApcCache extends Google_Cache {
   }
 
   private function waitForLock($key) {
-    // 20 x 250 = 5 seconds
-    $tries = 20;
-    $cnt = 0;
+    // 20 x 250=5 seconds
+    $tries=20;
+    $cnt=0;
     do {
       // 250 ms is a long time to sleep, but it does stop the server from burning all resources on polling locks..
       usleep(250);
       $cnt ++;
-    } while ($cnt <= $tries && $this->isLocked($key));
+    } while ($cnt <=$tries && $this->isLocked($key));
     if ($this->isLocked($key)) {
       // 5 seconds passed, assume the owning process died off and remove it
       $this->removeLock($key);
@@ -67,9 +67,9 @@ class googleApcCache extends Google_Cache {
    /**
    * @inheritDoc
    */
-  public function get($key, $expiration = false) {
+  public function get($key, $expiration=false) {
 
-    if (($ret = @apc_fetch($key)) === false) {
+    if (($ret=@apc_fetch($key))===false) {
       return false;
     }
     if (!$expiration || (time() - $ret['time'] > $expiration)) {
@@ -83,7 +83,7 @@ class googleApcCache extends Google_Cache {
    * @inheritDoc
    */
   public function set($key, $value) {
-    if (@apc_store($key, array('time' => time(), 'data' => serialize($value))) == false) {
+    if (@apc_store($key, array('time'=> time(), 'data'=> serialize($value)))==false) {
       throw new Google_CacheException("Couldn't store data");
     }
   }

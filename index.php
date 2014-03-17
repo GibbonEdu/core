@@ -225,23 +225,23 @@ else {
 			
 			//Initialise tinymce
 			$initArray=array (
-				'script_url' => $_SESSION[$guid]["absoluteURL"] . "/lib/tiny_mce/tiny_mce.js",
-				'mode' => 'textareas',
-				'editor_selector' => 'tinymce',
-				'width' => '738px',
-				'theme' => 'advanced',
-				'skin' => 'wp_theme',
-				'theme_advanced_buttons1' => "formatselect, bold, italic, underline,forecolor,backcolor,separator,justifyleft, justifycenter, justifyright, justifyfull, separator, bullist, numlist,outdent, indent, separator, link, unlink, separator, hr,removeformat, charmap, table,image",
-				'theme_advanced_buttons2' => "",
-				'theme_advanced_buttons3' => "",
-				'theme_advanced_buttons4' => "",
-				'theme_advanced_toolbar_location' => 'top',
-				'theme_advanced_toolbar_align' => 'left',
-				'theme_advanced_statusbar_location' => 'bottom',
-				'theme_advanced_resizing' => true,
-				'theme_advanced_resize_horizontal' => false,
-				'dialog_type' => 'modal',
-				'formats' => "{
+				'script_url'=> $_SESSION[$guid]["absoluteURL"] . "/lib/tiny_mce/tiny_mce.js",
+				'mode'=> 'textareas',
+				'editor_selector'=> 'tinymce',
+				'width'=> '738px',
+				'theme'=> 'advanced',
+				'skin'=> 'wp_theme',
+				'theme_advanced_buttons1'=> "formatselect, bold, italic, underline,forecolor,backcolor,separator,justifyleft, justifycenter, justifyright, justifyfull, separator, bullist, numlist,outdent, indent, separator, link, unlink, separator, hr,removeformat, charmap, table,image",
+				'theme_advanced_buttons2'=> "",
+				'theme_advanced_buttons3'=> "",
+				'theme_advanced_buttons4'=> "",
+				'theme_advanced_toolbar_location'=> 'top',
+				'theme_advanced_toolbar_align'=> 'left',
+				'theme_advanced_statusbar_location'=> 'bottom',
+				'theme_advanced_resizing'=> true,
+				'theme_advanced_resize_horizontal'=> false,
+				'dialog_type'=> 'modal',
+				'formats'=> "{
 					alignleft : [
 						{selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li', styles : {textAlign : 'left'}},
 						{selector : 'img,table', classes : 'alignleft'}
@@ -256,37 +256,37 @@ else {
 					],
 					strikethrough : {inline : 'del'}
 				}",
-				'relative_urls' => false,
-				'remove_script_host' => false,
-				'convert_urls' => false,
-				'apply_source_formatting' => false,
-				'remove_linebreaks' => true,
-				'gecko_spellcheck' => true,
-				'keep_styles' => false,
-				'entities' => '38,amp,60,lt,62,gt',
-				'accessibility_focus' => true,
-				'tabfocus_elements' => 'major-publishing-actions',
-				'media_strict' => false,
-				'paste_remove_styles' => true,
-				'paste_remove_spans' => true,
-				'paste_strip_class_attributes' => 'all',
-				'paste_text_use_dialog' => true,
-				'extended_valid_elements' => getSettingByScope($connection2, "System", "allowableHTML"),
-				'wp_fullscreen_content_css' => "/plugins/wpfullscreen/css/wp-fullscreen.css",
-				'plugins' => "table,advlink,contextmenu,paste,visualchars,template,advimage"
+				'relative_urls'=> false,
+				'remove_script_host'=> false,
+				'convert_urls'=> false,
+				'apply_source_formatting'=> false,
+				'remove_linebreaks'=> true,
+				'gecko_spellcheck'=> true,
+				'keep_styles'=> false,
+				'entities'=> '38,amp,60,lt,62,gt',
+				'accessibility_focus'=> true,
+				'tabfocus_elements'=> 'major-publishing-actions',
+				'media_strict'=> false,
+				'paste_remove_styles'=> true,
+				'paste_remove_spans'=> true,
+				'paste_strip_class_attributes'=> 'all',
+				'paste_text_use_dialog'=> true,
+				'extended_valid_elements'=> getSettingByScope($connection2, "System", "allowableHTML"),
+				'wp_fullscreen_content_css'=> "/plugins/wpfullscreen/css/wp-fullscreen.css",
+				'plugins'=> "table,advlink,contextmenu,paste,visualchars,template,advimage"
 			);
 			
 			$mce_options='';
-			foreach ( $initArray as $k => $v ) {
+			foreach ( $initArray as $k=> $v ) {
 				if ( is_bool($v) ) {
 					$val=$v ? 'true' : 'false';
-					$mce_options .= $k . ':' . $val . ', ';
+					$mce_options .=$k . ':' . $val . ', ';
 					continue;
-				} elseif ( !empty($v) && is_string($v) && ( ('{' == $v{0} && '}' == $v{strlen($v) - 1}) || ('[' == $v{0} && ']' == $v{strlen($v) - 1}) || preg_match('/^\(?function ?\(/', $v) ) ) {
-					$mce_options .= $k . ':' . $v . ', ';
+				} elseif ( !empty($v) && is_string($v) && ( ('{'==$v{0} && '}'==$v{strlen($v) - 1}) || ('['==$v{0} && ']'==$v{strlen($v) - 1}) || preg_match('/^\(?function ?\(/', $v) ) ) {
+					$mce_options .=$k . ':' . $v . ', ';
 					continue;
 				}
-				$mce_options .= $k . ':"' . $v . '", ';
+				$mce_options .=$k . ':"' . $v . '", ';
 			}
 			$mce_options=rtrim( trim($mce_options), '\n\r,' );
 			?>
@@ -354,7 +354,7 @@ else {
 												$resultLike->execute($dataLike); 
 												if ($resultLike->rowCount()>0) {
 													$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-													$_SESSION[$guid]["likeCountTitle"].= _('Crowd Assessment') . ": " . count($resultLike) . ", " ;
+													$_SESSION[$guid]["likeCountTitle"].=_('Crowd Assessment') . ": " . count($resultLike) . ", " ;
 												}
 											}
 											catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
@@ -367,7 +367,7 @@ else {
 												$resultLike->execute($dataLike); 
 												if ($resultLike->rowCount()>0) {
 													$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-													$_SESSION[$guid]["likeCountTitle"].= _('Planner') . ": " . count($resultLike) . ", " ;
+													$_SESSION[$guid]["likeCountTitle"].=_('Planner') . ": " . count($resultLike) . ", " ;
 												}
 											}
 											catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
@@ -380,7 +380,7 @@ else {
 												$resultLike->execute($dataLike); 
 												if ($resultLike->rowCount()>0) {
 													$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-													$_SESSION[$guid]["likeCountTitle"].= _('Behaviour') . ": " . count($resultLike) . ", " ;
+													$_SESSION[$guid]["likeCountTitle"].=_('Behaviour') . ": " . count($resultLike) . ", " ;
 												}
 											}
 											catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
@@ -560,7 +560,7 @@ else {
 											$rowIntro=$resultIntro->fetch() ;
 											if ($rowIntro["value"]=="Y") {
 												print "<h2 style='margin-top: 30px'>" ;
-												print "Applications" ;
+												print _("Applications") ;
 												print "</h2>" ;
 												print "<p>" ;
 												print sprintf(_('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]["organisationName"], "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Application Form/applicationForm.php'>", "</a>") ;
@@ -654,20 +654,20 @@ else {
 													print "<span style='font-size: 85%; font-weight: bold'>" . _('Today\'s Classes') . "</span> . <span style='font-size: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=" . $students[$i][4] . "'>" . _('View Planner') . "</a></span>" ;
 													
 													if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-													$updateReturnMessage ="" ;
+													$updateReturnMessage="" ;
 													$class="error" ;
 													if (!($updateReturn=="")) {
 														if ($updateReturn=="fail0") {
-															$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+															$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 														}
 														else if ($updateReturn=="fail1") {
-															$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+															$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 														}
 														else if ($updateReturn=="fail2") {
-															$updateReturnMessage =_("Your request failed due to a database error.") ;	
+															$updateReturnMessage=_("Your request failed due to a database error.") ;	
 														}
 														else if ($updateReturn=="success0") {
-															$updateReturnMessage =_("Your request was completed successfully.") ;	
+															$updateReturnMessage=_("Your request was completed successfully.") ;	
 															$class="success" ;
 														}
 														print "<div class='$class'>" ;
@@ -1075,20 +1075,20 @@ else {
 												print "</h2>" ;
 												
 												if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-												$updateReturnMessage ="" ;
+												$updateReturnMessage="" ;
 												$class="error" ;
 												if (!($updateReturn=="")) {
 													if ($updateReturn=="fail0") {
-														$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+														$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 													}
 													else if ($updateReturn=="fail1") {
-														$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+														$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 													}
 													else if ($updateReturn=="fail2") {
-														$updateReturnMessage =_("Your request failed due to a database error.") ;	
+														$updateReturnMessage=_("Your request failed due to a database error.") ;	
 													}
 													else if ($updateReturn=="success0") {
-														$updateReturnMessage =_("Your request was completed successfully.") ;	
+														$updateReturnMessage=_("Your request was completed successfully.") ;	
 														$class="success" ;
 													}
 													print "<div class='$class'>" ;

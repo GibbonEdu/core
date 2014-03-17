@@ -107,12 +107,12 @@ class TCPDF2DBarcode {
 	 */
 	public function getBarcodeSVGcode($w=3, $h=3, $color='black') {
 		// replace table for special characters
-		$repstr=array("\0" => '', '&' => '&amp;', '<' => '&lt;', '>' => '&gt;');
+		$repstr=array("\0"=> '', '&'=> '&amp;', '<'=> '&lt;', '>'=> '&gt;');
 		$svg='<'.'?'.'xml version="1.0" standalone="no"'.'?'.'>'."\n";
-		$svg .= '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'."\n";
-		$svg .= '<svg width="'.round(($this->barcode_array['num_cols'] * $w), 3).'" height="'.round(($this->barcode_array['num_rows'] * $h), 3).'" version="1.1" xmlns="http://www.w3.org/2000/svg">'."\n";
-		$svg .= "\t".'<desc>'.strtr($this->barcode_array['code'], $repstr).'</desc>'."\n";
-		$svg .= "\t".'<g id="elements" fill="'.$color.'" stroke="none">'."\n";
+		$svg .='<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'."\n";
+		$svg .='<svg width="'.round(($this->barcode_array['num_cols'] * $w), 3).'" height="'.round(($this->barcode_array['num_rows'] * $h), 3).'" version="1.1" xmlns="http://www.w3.org/2000/svg">'."\n";
+		$svg .="\t".'<desc>'.strtr($this->barcode_array['code'], $repstr).'</desc>'."\n";
+		$svg .="\t".'<g id="elements" fill="'.$color.'" stroke="none">'."\n";
 		// print barcode elements
 		$y=0;
 		// for each row
@@ -120,16 +120,16 @@ class TCPDF2DBarcode {
 			$x=0;
 			// for each column
 			for ($c=0; $c < $this->barcode_array['num_cols']; ++$c) {
-				if ($this->barcode_array['bcode'][$r][$c] == 1) {
+				if ($this->barcode_array['bcode'][$r][$c]==1) {
 					// draw a single barcode cell
-					$svg .= "\t\t".'<rect x="'.$x.'" y="'.$y.'" width="'.$w.'" height="'.$h.'" />'."\n";
+					$svg .="\t\t".'<rect x="'.$x.'" y="'.$y.'" width="'.$w.'" height="'.$h.'" />'."\n";
 				}
-				$x += $w;
+				$x +=$w;
 			}
-			$y += $h;
+			$y +=$h;
 		}
-		$svg .= "\t".'</g>'."\n";
-		$svg .= '</svg>'."\n";
+		$svg .="\t".'</g>'."\n";
+		$svg .='</svg>'."\n";
 		return $svg;
 	}
 
@@ -150,15 +150,15 @@ class TCPDF2DBarcode {
 			$x=0;
 			// for each column
 			for ($c=0; $c < $this->barcode_array['num_cols']; ++$c) {
-				if ($this->barcode_array['bcode'][$r][$c] == 1) {
+				if ($this->barcode_array['bcode'][$r][$c]==1) {
 					// draw a single barcode cell
-					$html .= '<div style="background-color:'.$color.';width:'.$w.'px;height:'.$h.'px;position:absolute;left:'.$x.'px;top:'.$y.'px;">&nbsp;</div>'."\n";
+					$html .='<div style="background-color:'.$color.';width:'.$w.'px;height:'.$h.'px;position:absolute;left:'.$x.'px;top:'.$y.'px;">&nbsp;</div>'."\n";
 				}
-				$x += $w;
+				$x +=$w;
 			}
-			$y += $h;
+			$y +=$h;
 		}
-		$html .= '</div>'."\n";
+		$html .='</div>'."\n";
 		return $html;
 	}
 
@@ -199,7 +199,7 @@ class TCPDF2DBarcode {
 			$x=0;
 			// for each column
 			for ($c=0; $c < $this->barcode_array['num_cols']; ++$c) {
-				if ($this->barcode_array['bcode'][$r][$c] == 1) {
+				if ($this->barcode_array['bcode'][$r][$c]==1) {
 					// draw a single barcode cell
 					if ($imagick) {
 						$bar->rectangle($x, $y, ($x + $w - 1), ($y + $h - 1));
@@ -207,9 +207,9 @@ class TCPDF2DBarcode {
 						imagefilledrectangle($png, $x, $y, ($x + $w - 1), ($y + $h - 1), $fgcol);
 					}
 				}
-				$x += $w;
+				$x +=$w;
 			}
-			$y += $h;
+			$y +=$h;
 		}
 		// send headers
 		header('Content-Type: image/png');
@@ -245,25 +245,25 @@ class TCPDF2DBarcode {
 			}
 			case 'PDF417': { // PDF417 (ISO/IEC 15438:2006)
 				require_once(dirname(__FILE__).'/include/barcodes/pdf417.php');
-				if (!isset($mode[1]) OR ($mode[1] === '')) {
+				if (!isset($mode[1]) OR ($mode[1]==='')) {
 					$aspectratio=2; // default aspect ratio (width / height)
 				} else {
 					$aspectratio=floatval($mode[1]);
 				}
-				if (!isset($mode[2]) OR ($mode[2] === '')) {
+				if (!isset($mode[2]) OR ($mode[2]==='')) {
 					$ecl=-1; // default error correction level (auto)
 				} else {
 					$ecl=intval($mode[2]);
 				}
 				// set macro block
 				$macro=array();
-				if (isset($mode[3]) AND ($mode[3] !== '') AND isset($mode[4]) AND ($mode[4] !== '') AND isset($mode[5]) AND ($mode[5] !== '')) {
+				if (isset($mode[3]) AND ($mode[3] !=='') AND isset($mode[4]) AND ($mode[4] !=='') AND isset($mode[5]) AND ($mode[5] !=='')) {
 					$macro['segment_total']=intval($mode[3]);
 					$macro['segment_index']=intval($mode[4]);
 					$macro['file_id']=strtr($mode[5], "\xff", ',');
 					for ($i=0; $i < 7; ++$i) {
 						$o=$i + 6;
-						if (isset($mode[$o]) AND ($mode[$o] !== '')) {
+						if (isset($mode[$o]) AND ($mode[$o] !=='')) {
 							// add option
 							$macro['option_'.$i]=strtr($mode[$o], "\xff", ',');
 						}
@@ -291,7 +291,7 @@ class TCPDF2DBarcode {
 				if (strlen($code) < 3) {
 					break;
 				}
-				if ($qrtype == 'RAW') {
+				if ($qrtype=='RAW') {
 					// comma-separated rows
 					$rows=explode(',', $code);
 				} else { // RAW2

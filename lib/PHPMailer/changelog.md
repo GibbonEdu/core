@@ -346,8 +346,8 @@ $mail->set('X-MSMail-Priority', 'Normal');
 $mail=new PHPMailer();
 $mail->Mailer="smtp";
 $mail->Host="smtp.example.com";
-$mail->SMTPSecure  ="tls"; // option
-//$mail->SMTPSecure  ="ssl";  // option
+$mail->SMTPSecure ="tls"; // option
+//$mail->SMTPSecure ="ssl";  // option
 ...
 $mail->Send();
 ```

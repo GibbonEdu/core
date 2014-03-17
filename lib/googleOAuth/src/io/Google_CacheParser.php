@@ -20,8 +20,8 @@
  * @author Chirag Shah <chirags@google.com>
  */
 class Google_CacheParser {
-  public static $CACHEABLE_HTTP_METHODS = array('GET', 'HEAD');
-  public static $CACHEABLE_STATUS_CODES = array('200', '203', '300', '301');
+  public static $CACHEABLE_HTTP_METHODS=array('GET', 'HEAD');
+  public static $CACHEABLE_STATUS_CODES=array('200', '203', '300', '301');
 
   private function __construct() {}
 
@@ -34,7 +34,7 @@ class Google_CacheParser {
    * False if the request is uncacheable.
    */
   public static function isRequestCacheable (Google_HttpRequest $resp) {
-    $method = $resp->getRequestMethod();
+    $method=$resp->getRequestMethod();
     if (! in_array($method, self::$CACHEABLE_HTTP_METHODS)) {
       return false;
     }
@@ -61,33 +61,33 @@ class Google_CacheParser {
   public static function isResponseCacheable (Google_HttpRequest $resp) {
     // First, check if the HTTP request was cacheable before inspecting the
     // HTTP response.
-    if (false == self::isRequestCacheable($resp)) {
+    if (false==self::isRequestCacheable($resp)) {
       return false;
     }
 
-    $code = $resp->getResponseHttpCode();
+    $code=$resp->getResponseHttpCode();
     if (! in_array($code, self::$CACHEABLE_STATUS_CODES)) {
       return false;
     }
 
     // The resource is uncacheable if the resource is already expired and
     // the resource doesn't have an ETag for revalidation.
-    $etag = $resp->getResponseHeader("etag");
-    if (self::isExpired($resp) && $etag == false) {
+    $etag=$resp->getResponseHeader("etag");
+    if (self::isExpired($resp) && $etag==false) {
       return false;
     }
 
     // [rfc2616-14.9.2]  If [no-store is] sent in a response, a cache MUST NOT
     // store any part of either this response or the request that elicited it.
-    $cacheControl = $resp->getParsedCacheControl();
+    $cacheControl=$resp->getParsedCacheControl();
     if (isset($cacheControl['no-store'])) {
       return false;
     }
 
     // Pragma: no-cache is an http request directive, but is occasionally
     // used as a response header incorrectly.
-    $pragma = $resp->getResponseHeader('pragma');
-    if ($pragma == 'no-cache' || strpos($pragma, 'no-cache') !== false) {
+    $pragma=$resp->getResponseHeader('pragma');
+    if ($pragma=='no-cache' || strpos($pragma, 'no-cache') !==false) {
       return false;
     }
 
@@ -95,7 +95,7 @@ class Google_CacheParser {
     // a cache cannot determine from the request headers of a subsequent request
     // whether this response is the appropriate representation."
     // Given this, we deem responses with the Vary header as uncacheable.
-    $vary = $resp->getResponseHeader('vary');
+    $vary=$resp->getResponseHeader('vary');
     if ($vary) {
       return false;
     }
@@ -112,50 +112,50 @@ class Google_CacheParser {
   public static function isExpired(Google_HttpRequest $resp) {
     // HTTP/1.1 clients and caches MUST treat other invalid date formats,
     // especially including the value “0”, as in the past.
-    $parsedExpires = false;
-    $responseHeaders = $resp->getResponseHeaders();
+    $parsedExpires=false;
+    $responseHeaders=$resp->getResponseHeaders();
     if (isset($responseHeaders['expires'])) {
-      $rawExpires = $responseHeaders['expires'];
+      $rawExpires=$responseHeaders['expires'];
       // Check for a malformed expires header first.
-      if (empty($rawExpires) || (is_numeric($rawExpires) && $rawExpires <= 0)) {
+      if (empty($rawExpires) || (is_numeric($rawExpires) && $rawExpires <=0)) {
         return true;
       }
 
       // See if we can parse the expires header.
-      $parsedExpires = strtotime($rawExpires);
-      if (false == $parsedExpires || $parsedExpires <= 0) {
+      $parsedExpires=strtotime($rawExpires);
+      if (false==$parsedExpires || $parsedExpires <=0) {
         return true;
       }
     }
 
     // Calculate the freshness of an http response.
-    $freshnessLifetime = false;
-    $cacheControl = $resp->getParsedCacheControl();
+    $freshnessLifetime=false;
+    $cacheControl=$resp->getParsedCacheControl();
     if (isset($cacheControl['max-age'])) {
-      $freshnessLifetime = $cacheControl['max-age'];
+      $freshnessLifetime=$cacheControl['max-age'];
     }
 
-    $rawDate = $resp->getResponseHeader('date');
-    $parsedDate = strtotime($rawDate);
+    $rawDate=$resp->getResponseHeader('date');
+    $parsedDate=strtotime($rawDate);
 
-    if (empty($rawDate) || false == $parsedDate) {
-      $parsedDate = time();
+    if (empty($rawDate) || false==$parsedDate) {
+      $parsedDate=time();
     }
-    if (false == $freshnessLifetime && isset($responseHeaders['expires'])) {
-      $freshnessLifetime = $parsedExpires - $parsedDate;
+    if (false==$freshnessLifetime && isset($responseHeaders['expires'])) {
+      $freshnessLifetime=$parsedExpires - $parsedDate;
     }
 
-    if (false == $freshnessLifetime) {
+    if (false==$freshnessLifetime) {
       return true;
     }
 
     // Calculate the age of an http response.
-    $age = max(0, time() - $parsedDate);
+    $age=max(0, time() - $parsedDate);
     if (isset($responseHeaders['age'])) {
-      $age = max($age, strtotime($responseHeaders['age']));
+      $age=max($age, strtotime($responseHeaders['age']));
     }
 
-    return $freshnessLifetime <= $age;
+    return $freshnessLifetime <=$age;
   }
 
   /**

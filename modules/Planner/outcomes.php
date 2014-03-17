@@ -49,11 +49,11 @@ else {
 		}
 		
 		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-		$deleteReturnMessage ="" ;
+		$deleteReturnMessage="" ;
 		$class="error" ;
 		if (!($deleteReturn=="")) {
 			if ($deleteReturn=="success0") {
-				$deleteReturnMessage ="Your request was successful." ;	
+				$deleteReturnMessage=_("Your request was completed successfully.") ;		
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;

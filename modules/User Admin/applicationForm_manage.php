@@ -32,11 +32,11 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage ="" ;
+	$deleteReturnMessage="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Your request was successful." ;	
+			$deleteReturnMessage=_("Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -45,11 +45,11 @@ else {
 	}
 	
 	if (isset($_GET["rejectReturn"])) { $rejectReturn=$_GET["rejectReturn"] ; } else { $rejectReturn="" ; }
-	$rejectReturnMessage ="" ;
+	$rejectReturnMessage="" ;
 	$class="error" ;
 	if (!($rejectReturn=="")) {
 		if ($rejectReturn=="success0") {
-			$rejectReturnMessage ="Application was sucessfully rejected." ;	
+			$rejectReturnMessage="Application was sucessfully rejected." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -164,7 +164,7 @@ else {
 				$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%", "search4"=>"%$search%"); 
 				$sql="SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonYearGroup ON (gibbonApplicationForm.gibbonYearGroupIDEntry=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonSchoolYearIDEntry=:gibbonSchoolYearID AND (preferredName LIKE :search1 OR surname LIKE :search2 OR gibbonApplicationFormID LIKE :search3 OR paypalPaymentTransactionID LIKE :search4) ORDER BY status, priority DESC, timestamp DESC" ; 
 			}
-			$sqlPage= $sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
+			$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

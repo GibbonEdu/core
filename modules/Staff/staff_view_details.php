@@ -967,31 +967,31 @@ else {
 					$_SESSION[$guid]["sidebarExtra"].=getUserPhoto($guid, $row["image_240"], 240) ;
 					
 					//PERSONAL DATA MENU ITEMS
-					$_SESSION[$guid]["sidebarExtra"].= "<h4>Personal</h4>" ;
-					$_SESSION[$guid]["sidebarExtra"].= "<ul>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<h4>Personal</h4>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
 					$style="" ;
 					if ($subpage=="Summary") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Summary'>Summary</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Summary'>Summary</a></li>" ;
 					$style="" ;
 					if ($subpage=="Personal") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Personal'>Personal</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Personal'>Personal</a></li>" ;
 					$style="" ;
 					if ($subpage=="Emergency Contacts") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Emergency Contacts'>Emergency Contacts</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Emergency Contacts'>Emergency Contacts</a></li>" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php")) {
 						$style="" ;
 						if ($subpage=="Timetable") {
 							$style="style='font-weight: bold'" ;
 						}
-						$_SESSION[$guid]["sidebarExtra"].= "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Timetable'>Timetable</a></li>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Timetable'>Timetable</a></li>" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].= "</ul>" ;
+					$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					
 				}
 			}

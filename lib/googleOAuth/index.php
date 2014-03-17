@@ -46,7 +46,7 @@ require_once 'src/contrib/Google_Oauth2Service.php';
 //Get Google Oauth Details
 try {
 		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='User Admin' and name = 'googleClientName'" ;
+		$sql="SELECT value from gibbonSetting where scope='User Admin' and name='googleClientName'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -62,12 +62,12 @@ try {
 	}
 	else {
 		$row=$result->fetch() ;
-		$googleClientName = $row['value'];
+		$googleClientName=$row['value'];
 	}
 	
 	try {
 		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='User Admin' and name = 'googleClientID'" ;
+		$sql="SELECT value from gibbonSetting where scope='User Admin' and name='googleClientID'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -83,13 +83,13 @@ try {
 	}
 	else {
 		$row=$result->fetch() ;
-		$googleClientID = $row['value'];
+		$googleClientID=$row['value'];
 	}
 
 
 try {
 		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='User Admin' and name = 'googleClientSecret'" ;
+		$sql="SELECT value from gibbonSetting where scope='User Admin' and name='googleClientSecret'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -105,12 +105,12 @@ try {
 	}
 	else {
 		$row=$result->fetch() ;
-		$googleClientSecret = $row['value'];
+		$googleClientSecret=$row['value'];
 	}
 	
 try {
 		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='User Admin' and name = 'googleRedirectUri'" ;
+		$sql="SELECT value from gibbonSetting where scope='User Admin' and name='googleRedirectUri'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -126,12 +126,12 @@ try {
 	}
 	else {
 		$row=$result->fetch() ;
-		$googleRedirectUri = $row['value'];
+		$googleRedirectUri=$row['value'];
 	}
 	
 try {
 		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='User Admin' and name = 'googleDeveloperKey'" ;
+		$sql="SELECT value from gibbonSetting where scope='User Admin' and name='googleDeveloperKey'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -147,21 +147,21 @@ try {
 	}
 	else {
 		$row=$result->fetch() ;
-		$googleDeveloperKey = $row['value'];
+		$googleDeveloperKey=$row['value'];
 	}
 
-$client = new Google_Client();
+$client=new Google_Client();
 $client->setApplicationName($googleClientName); // Set your applicatio name
 $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me')); // set scope during user login
 $client->setClientId($googleClientID); // paste the client id which you get from google API Console
 $client->setClientSecret($googleClientSecret); // set the client secret
 $client->setRedirectUri($googleRedirectUri); // paste the redirect URI where you given in APi Console. You will get the Access Token here during login success
 $client->setDeveloperKey($googleDeveloperKey); // Developer key
-$plus 		= new Google_PlusService($client);
-$oauth2 	= new Google_Oauth2Service($client); // Call the OAuth2 class for get email address
+$plus 		=new Google_PlusService($client);
+$oauth2 	=new Google_Oauth2Service($client); // Call the OAuth2 class for get email address
 if(isset($_GET['code'])) {
 	$client->authenticate(); // Authenticate
-	$_SESSION['access_token'] = $client->getAccessToken(); // get the access token here
+	$_SESSION['access_token']=$client->getAccessToken(); // get the access token here
 	header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 }
 
@@ -170,20 +170,20 @@ if(isset($_SESSION['access_token'])) {
 }
 
 if ($client->getAccessToken()) {
-  $user 		= $oauth2->userinfo->get();
-  $me 			= $plus->people->get('me');
-  $optParams 	= array('maxResults' => 100);
-  $activities 	= $plus->activities->listActivities('me', 'public',$optParams);
+  $user 		=$oauth2->userinfo->get();
+  $me 			=$plus->people->get('me');
+  $optParams 	=array('maxResults'=> 100);
+  $activities 	=$plus->activities->listActivities('me', 'public',$optParams);
   // The access token may have been updated lazily.
-  $_SESSION['access_token'] 		= $client->getAccessToken();
-  $email 							= filter_var($user['email'], FILTER_SANITIZE_EMAIL); // get the USER EMAIL ADDRESS using OAuth2
-  $_SESSION['emailaddress'] = $email;
+  $_SESSION['access_token'] 		=$client->getAccessToken();
+  $email 							=filter_var($user['email'], FILTER_SANITIZE_EMAIL); // get the USER EMAIL ADDRESS using OAuth2
+  $_SESSION['emailaddress']=$email;
 } else {
-	$authUrl = $client->createAuthUrl();
+	$authUrl=$client->createAuthUrl();
 }
 
 if(isset($me)){ 
-	$_SESSION['gplusuer'] = $me; // start the session
+	$_SESSION['gplusuer']=$me; // start the session
 	try {
 		$data=array("email"=>$email); 
 		$sql="SELECT * FROM gibbonPerson WHERE (email=:email)" ;
@@ -284,10 +284,10 @@ try {
 	}
 	else {
 		$row=$result->fetch() ;
-		$username = $row['username'];
+		$username=$row['username'];
 		if ($row["failCount"]>=3) {
 			try {
-				$data=array("lastFailIPAddress" => $_SERVER["REMOTE_ADDR"], "lastFailTimestamp" => date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
+				$data=array("lastFailIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastFailTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
 				$sqlSecure="UPDATE gibbonPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)";
 				$resultSecure=$connection2->prepare($sqlSecure);
 				$resultSecure->execute($data); 
@@ -358,7 +358,7 @@ try {
 			
 					//Make best effort to set IP address and other details, but no need to error check etc.
 					try {
-						$data=array( "lastIPAddress" => $_SERVER["REMOTE_ADDR"], "lastTimestamp" => date("Y-m-d H:i:s"), "failCount"=>0, "username" => $username ); 
+						$data=array( "lastIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>0, "username"=> $username ); 
 						$sql="UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data); 

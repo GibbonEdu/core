@@ -32,29 +32,29 @@ else {
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage ="" ;
+	$updateReturnMessage="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage =_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage ="Your request was successful, but some data was not properly saved." ;	
+			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage =_("Your request was completed successfully.") ;	
+			$updateReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -63,11 +63,11 @@ else {
 	} 
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage ="" ;
+	$deleteReturnMessage="" ;
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage ="Your request was successful." ;	
+			$deleteReturnMessage=_("Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -345,20 +345,20 @@ else {
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$("#status").change(function(){
-								if ($('#status option:selected').val() == "Left" ) {
+								if ($('#status option:selected').val()=="Left" ) {
 									if ($('#dateEnd').val()=="") {
 										alert("The End Date field has been automatically set to today's date. Please change it if necessary.") ;									
 										$('#dateEnd').val('<? print date("d/m/Y") ?>') ;
 									}
 								}
-								else if ($('#status option:selected').val() == "Full" ) {
+								else if ($('#status option:selected').val()=="Full" ) {
 									alert("The Start and End Date fields have been automatically updated. Please change them if necessary.") ;
 									if ($('#dateStart').val()=="") {
 										$('#dateStart').val('<? print date("d/m/Y") ?>') ;
 									}
 									$('#dateEnd').val('') ;
 								}
-								else if ($('#status option:selected').val() == "Expected" ) {
+								else if ($('#status option:selected').val()=="Expected" ) {
 									alert("The Start and End Date fields have been automatically emptied. Please change them if necessary.") ;
 									$('#dateStart').val('') ;
 									$('#dateEnd').val('') ;
@@ -467,7 +467,7 @@ else {
 									}
 									?>
 									$("#showAddresses").click(function(){
-										if ($('input[name=showAddresses]:checked').val() == "Yes" ) {
+										if ($('input[name=showAddresses]:checked').val()=="Yes" ) {
 											$(".address").slideDown("fast", $(".address").css("display","table-row")); 
 										} 
 										else {

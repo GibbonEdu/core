@@ -116,11 +116,11 @@ class Moxiecode_Logger {
 
 		// Is KB
 		if (strpos((strtolower($size)), "k") > 0)
-			$logMaxSizeBytes *= 1024;
+			$logMaxSizeBytes *=1024;
 
 		// Is MB
 		if (strpos((strtolower($size)), "m") > 0)
-			$logMaxSizeBytes *= (1024 * 1024);
+			$logMaxSizeBytes *=(1024 * 1024);
 
 		$this->_maxSizeBytes=$logMaxSizeBytes;
 		$this->_maxSize=$size;
@@ -164,23 +164,23 @@ class Moxiecode_Logger {
 	}
 
 	function isDebugEnabled() {
-		return $this->_level >= MC_LOGGER_DEBUG;
+		return $this->_level >=MC_LOGGER_DEBUG;
 	}
 
 	function isInfoEnabled() {
-		return $this->_level >= MC_LOGGER_INFO;
+		return $this->_level >=MC_LOGGER_INFO;
 	}
 
 	function isWarnEnabled() {
-		return $this->_level >= MC_LOGGER_WARN;
+		return $this->_level >=MC_LOGGER_WARN;
 	}
 
 	function isErrorEnabled() {
-		return $this->_level >= MC_LOGGER_ERROR;
+		return $this->_level >=MC_LOGGER_ERROR;
 	}
 
 	function isFatalEnabled() {
-		return $this->_level >= MC_LOGGER_FATAL;
+		return $this->_level >=MC_LOGGER_FATAL;
 	}
 
 	function _logMsg($level, $message) {
@@ -248,7 +248,7 @@ class Moxiecode_Logger {
 		}
 
 		// Append log line
-		if (($fp=@fopen($logFile, "a")) != null) {
+		if (($fp=@fopen($logFile, "a")) !=null) {
 			@fputs($fp, $message);
 			@fflush($fp);
 			@fclose($fp);

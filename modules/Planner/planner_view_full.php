@@ -237,32 +237,32 @@ else {
 					print "</div>" ;
 				
 					if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-					$updateReturnMessage ="" ;
+					$updateReturnMessage="" ;
 					$class="error" ;
 					if (!($updateReturn=="")) {
 						if ($updateReturn=="fail0") {
-							$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+							$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 						}
 						else if ($updateReturn=="fail1") {
-							$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+							$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 						}
 						else if ($updateReturn=="fail2") {
-							$updateReturnMessage =_("Your request failed due to a database error.") ;	
+							$updateReturnMessage=_("Your request failed due to a database error.") ;	
 						}
 						else if ($updateReturn=="fail3") {
-							$updateReturnMessage ="Your request was successful, but some data was not properly saved." ;	
+							$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
 						}
 						else if ($updateReturn=="fail4") {
-							$updateReturnMessage ="Your request failed because the specified date is not in the future, or is not a school day." ;	
+							$updateReturnMessage="Your request failed because the specified date is not in the future, or is not a school day." ;	
 						}
 						else if ($updateReturn=="fail5") {
-							$updateReturnMessage ="Your request failed because the specified date is not in the future, or is not a school day." ;	
+							$updateReturnMessage="Your request failed because the specified date is not in the future, or is not a school day." ;	
 						}
 						else if ($updateReturn=="fail6") {
-							$updateReturnMessage ="Your request failed due to a problem with your link or file." ;	
+							$updateReturnMessage="Your request failed due to a problem with your link or file." ;	
 						}
 						else if ($updateReturn=="success0") {
-							$updateReturnMessage =_("Your request was completed successfully.") ;	
+							$updateReturnMessage=_("Your request was completed successfully.") ;	
 							$class="success" ;
 						}
 						print "<div class='$class'>" ;
@@ -271,20 +271,20 @@ else {
 					} 
 				
 					if (isset($_GET["postReturn"])) { $postReturn=$_GET["postReturn"] ; } else { $postReturn="" ; }
-					$postReturnMessage ="" ;
+					$postReturnMessage="" ;
 					$class="error" ;
 					if (!($postReturn=="")) {
 						if ($postReturn=="fail0") {
-							$postReturnMessage ="Post failed because you do not have access to this action." ;	
+							$postReturnMessage="Post failed because you do not have access to this action." ;	
 						}
 						else if ($postReturn=="fail1") {
-							$postReturnMessage ="Post failed because a required parameter was not set." ;	
+							$postReturnMessage="Post failed because a required parameter was not set." ;	
 						}
 						else if ($postReturn=="fail2") {
-							$postReturnMessage ="Post failed due to a database error." ;	
+							$postReturnMessage="Post failed due to a database error." ;	
 						}
 						else if ($postReturn=="success0") {
-							$postReturnMessage ="Post was successful." ;	
+							$postReturnMessage="Post was successful." ;	
 							$class="success" ;
 						}
 						print "<div class='$class'>" ;
@@ -293,20 +293,20 @@ else {
 					} 
 				
 					if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-					$deleteReturnMessage ="" ;
+					$deleteReturnMessage="" ;
 					$class="error" ;
 					if (!($deleteReturn=="")) {
 						if ($deleteReturn=="fail0") {
-							$deleteReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+							$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 						}
 						else if ($deleteReturn=="fail1") {
-							$deleteReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+							$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 						}
 						else if ($deleteReturn=="fail2") {
-							$deleteReturnMessage =_("Your request failed due to a database error.") ;	
+							$deleteReturnMessage=_("Your request failed due to a database error.") ;	
 						}
 						else if ($deleteReturn=="success0") {
-							$deleteReturnMessage ="Your request was successful." ;	
+							$deleteReturnMessage=_("Your request was completed successfully.") ;		
 							$class="success" ;
 						}
 						print "<div class='$class'>" ;
@@ -840,7 +840,7 @@ else {
 																		?>
 																	
 																		$(".type").click(function(){
-																			if ($('input[name=type]:checked').val() == "Link" ) {
+																			if ($('input[name=type]:checked').val()=="Link" ) {
 																				$("#fileRow").css("display","none");
 																				$("#linkRow").slideDown("fast", $("#linkRow").css("display","table-row")); 
 																			} else {
@@ -1730,7 +1730,7 @@ else {
 								?>
 							
 								$(".confidentialPlan").click(function(){
-									if ($('input[name=confidentialPlan]:checked').val() == "Yes" ) {
+									if ($('input[name=confidentialPlan]:checked').val()=="Yes" ) {
 										$("#teachersNotes").slideDown("fast", $(".teachersNotes").css("{'display' : 'table-row', 'border' : 'right'}")); 
 										$(".teachersNotes").slideDown("fast", $("#teachersNotes").css("{'display' : 'table-row', 'border' : 'right'}")); 
 										<?

@@ -98,11 +98,11 @@ else {
 					print "</div>" ;
 					
 					if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-					$deleteReturnMessage ="" ;
+					$deleteReturnMessage="" ;
 					$class="error" ;
 					if (!($deleteReturn=="")) {
 						if ($deleteReturn=="success0") {
-							$deleteReturnMessage ="Your request was successful." ;	
+							$deleteReturnMessage=_("Your request was completed successfully.") ;		
 							$class="success" ;
 						}
 						print "<div class='$class'>" ;
@@ -774,7 +774,7 @@ else {
 								/* Show/Hide detail control */
 								$(document).ready(function(){
 									$(".details").click(function(){
-										if ($('input[name=details]:checked').val() == "Yes" ) {
+										if ($('input[name=details]:checked').val()=="Yes" ) {
 											$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
 										} 
 										else {
@@ -1285,7 +1285,7 @@ else {
 											/* Show/Hide detail control */
 											$(document).ready(function(){
 												$(".details").click(function(){
-													if ($('input[name=details]:checked').val() == "Yes" ) {
+													if ($('input[name=details]:checked').val()=="Yes" ) {
 														$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
 													} 
 													else {

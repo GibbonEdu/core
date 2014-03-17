@@ -203,23 +203,23 @@ else {
 								}
 								else {
 									if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-									$updateReturnMessage ="" ;
+									$updateReturnMessage="" ;
 									$class="error" ;
 									if (!($updateReturn=="")) {
 										if ($updateReturn=="fail0") {
-											$updateReturnMessage ="Registration failed because you do not have access to this action." ;	
+											$updateReturnMessage="Registration failed because you do not have access to this action." ;	
 										}
 										else if ($updateReturn=="fail2") {
-											$updateReturnMessage ="Registration failed due to a database error." ;	
+											$updateReturnMessage="Registration failed due to a database error." ;	
 										}
 										else if ($updateReturn=="fail3") {
-											$updateReturnMessage ="Registration failed because your inputs were invalid." ;	
+											$updateReturnMessage="Registration failed because your inputs were invalid." ;	
 										}
 										else if ($updateReturn=="fail4") {
-											$updateReturnMessage ="Registration failed some values need to be unique but were not." ;	
+											$updateReturnMessage="Registration failed some values need to be unique but were not." ;	
 										}
 										else if ($updateReturn=="fail5") {
-											$updateReturnMessage ="Registration failed because you are already registered in this activity." ;	
+											$updateReturnMessage="Registration failed because you are already registered in this activity." ;	
 										}
 										print "<div class='$class'>" ;
 											print $updateReturnMessage;
@@ -450,17 +450,17 @@ else {
 								else {
 							
 									if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-									$updateReturnMessage ="" ;
+									$updateReturnMessage="" ;
 									$class="error" ;
 									if (!($updateReturn=="")) {
 										if ($updateReturn=="fail0") {
-											$updateReturnMessage ="Unregistration failed because you do not have access to this action." ;	
+											$updateReturnMessage="Unregistration failed because you do not have access to this action." ;	
 										}
 										else if ($updateReturn=="fail2") {
-											$updateReturnMessage ="Unregistration failed due to a database error." ;	
+											$updateReturnMessage="Unregistration failed due to a database error." ;	
 										}
 										else if ($updateReturn=="fail5") {
-											$updateReturnMessage ="Unregistration failed because you are not already registered in this activity." ;	
+											$updateReturnMessage="Unregistration failed because you are not already registered in this activity." ;	
 										}
 										print "<div class='$class'>" ;
 											print $updateReturnMessage;

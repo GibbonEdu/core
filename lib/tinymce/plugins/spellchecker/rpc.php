@@ -58,10 +58,10 @@ if (isset($config['general.remote_rpc_url'])) {
 
 	// Setup request
 	$req="POST " . $url["path"] . " HTTP/1.0\r\n";
-	$req .= "Connection: close\r\n";
-	$req .= "Host: " . $url['host'] . "\r\n";
-	$req .= "Content-Length: " . strlen($raw) . "\r\n";
-	$req .= "\r\n" . $raw;
+	$req .="Connection: close\r\n";
+	$req .="Host: " . $url['host'] . "\r\n";
+	$req .="Content-Length: " . strlen($raw) . "\r\n";
+	$req .="\r\n" . $raw;
 
 	if (!isset($url['port']) || !$url['port'])
 		$url['port']=80;
@@ -76,7 +76,7 @@ if (isset($config['general.remote_rpc_url'])) {
 		// Read response headers and data
 		$resp="";
 		while (!feof($socket))
-				$resp .= fgets($socket, 4096);
+				$resp .=fgets($socket, 4096);
 
 		fclose($socket);
 
@@ -101,9 +101,9 @@ if (isset($config['general.engine'])) {
 
 // Request and response id should always be the same
 $output=array(
-	"id" => $input->id,
-	"result" => $result,
-	"error" => null
+	"id"=> $input->id,
+	"result"=> $result,
+	"error"=> null
 );
 
 // Return JSON encoded string

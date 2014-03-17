@@ -43,29 +43,29 @@ else {
 		print "</div>" ;
 		
 		if (isset($_GET["copyReturn"])) { $copyReturn=$_GET["copyReturn"] ; } else { $copyReturn="" ; }
-		$copyReturnMessage ="" ;
+		$copyReturnMessage="" ;
 		$class="error" ;
 		if (!($copyReturn=="")) {
 			if ($copyReturn=="fail0") {
-				$copyReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+				$copyReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($copyReturn=="fail1") {
-				$copyReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+				$copyReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($copyReturn=="fail2") {
-				$copyReturnMessage =_("Your request failed due to a database error.") ;	
+				$copyReturnMessage=_("Your request failed due to a database error.") ;	
 			}
 			else if ($copyReturn=="fail3") {
-				$copyReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+				$copyReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($copyReturn=="fail4") {
-				$copyReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+				$copyReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($copyReturn=="fail5") {
-				$copyReturnMessage ="Your request failed due to an attachment error." ;	
+				$copyReturnMessage="Your request failed due to an attachment error." ;	
 			}
 			else if ($copyReturn=="success0") {
-				$copyReturnMessage =_("Your request was completed successfully.") ;	
+				$copyReturnMessage=_("Your request was completed successfully.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;

@@ -37,7 +37,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 $gibbonMarkbookColumnID=$_GET["gibbonMarkbookColumnID"] ;
-$URL= $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/markbook_edit_edit.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/markbook_edit_edit.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_edit.php")==FALSE) {
 	//Fail 0

@@ -70,29 +70,29 @@ else {
 				print "</div>" ;
 			
 				if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-				$addReturnMessage ="" ;
+				$addReturnMessage="" ;
 				$class="error" ;
 				if (!($addReturn=="")) {
 					if ($addReturn=="fail0") {
-						$addReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+						$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 					}
 					else if ($addReturn=="fail2") {
-						$addReturnMessage =_("Your request failed due to a database error.") ;	
+						$addReturnMessage=_("Your request failed due to a database error.") ;	
 					}
 					else if ($addReturn=="fail3") {
-						$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+						$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($addReturn=="fail4") {
-						$addReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+						$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($addReturn=="fail5") {
-						$addReturnMessage ="Your request failed due to an attachment error." ;	
+						$addReturnMessage="Your request failed due to an attachment error." ;	
 					}
 					else if ($addReturn=="fail6") {
-						$addReturnMessage ="Your request failed because you already have one \"End of Year\" column for this class." ;	
+						$addReturnMessage="Your request failed because you already have one \"End of Year\" column for this class." ;	
 					}
 					else if ($addReturn=="success0") {
-						$addReturnMessage ="Your request was completed successfully.You can now add another record if you wish." ;	
+						$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;
@@ -101,11 +101,11 @@ else {
 				} 
 			
 				if (isset($_GET["addReturnPlanner"])) { $addReturnPlanner=$_GET["addReturnPlanner"] ; } else { $addReturnPlanner="" ; }
-				$addReturnPlannerMessage ="" ;
+				$addReturnPlannerMessage="" ;
 				$class="error" ;
 				if (!($addReturnPlanner=="")) {
 					if ($addReturnPlanner=="success0") {
-						$addReturnPlannerMessage ="Planner was successfully added: you opted to add a linked Markbook column, and you can now do so below." ;	
+						$addReturnPlannerMessage="Planner was successfully added: you opted to add a linked Markbook column, and you can now do so below." ;	
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;

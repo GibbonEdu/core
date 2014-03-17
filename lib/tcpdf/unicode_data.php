@@ -18230,7 +18230,7 @@ public $uni_mirror=array (
 0xFF63=>0xFF62);
 
 /**
- * @var Arabic shape substitutions: char code => (isolated, final, initial, medial)
+ * @var Arabic shape substitutions: char code=> (isolated, final, initial, medial)
  * @access public
  */
 public $uni_arabicsubst=array(
@@ -18313,20 +18313,20 @@ public $uni_arabicsubst=array(
 );
 
 /**
- * @var Arabic laa letter: char code => isolated, final, initial, medial
+ * @var Arabic laa letter: char code=> isolated, final, initial, medial
  * @access public
  */
 public $uni_laa_array=array (
-1570 =>array(65269, 65270, 65269, 65270),
-1571 =>array(65271, 65272, 65271, 65272),
-1573 =>array(65273, 65274, 65273, 65274),
-1575 =>array(65275, 65276, 65275, 65276)
+1570=>array(65269, 65270, 65269, 65270),
+1571=>array(65271, 65272, 65271, 65272),
+1573=>array(65273, 65274, 65273, 65274),
+1575=>array(65275, 65276, 65275, 65276)
 );
 
 /**
  * @var Array of character substitutions for sequences of two diacritics symbols.
  * Putting the combining mark and character in the same glyph allows us to avoid the two marks overlapping each other in an illegible manner.
- * second NSM char code => substitution char
+ * second NSM char code=> substitution char
  * @access public
  */
 public $uni_diacritics=array (

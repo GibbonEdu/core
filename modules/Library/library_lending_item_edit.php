@@ -59,26 +59,26 @@ else {
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-			$updateReturnMessage ="" ;
+			$updateReturnMessage="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage =_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=_("Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail4") {
-					$updateReturnMessage =_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage ="Sign out was successful." ;	
+					$updateReturnMessage="Sign out was successful." ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;

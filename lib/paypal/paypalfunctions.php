@@ -33,7 +33,7 @@
 	' For the live site, the URL is        https://www.paypal.com/webscr&cmd=_express-checkout&token=
 	*/
 	
-	if ($SandboxFlag == true) 
+	if ($SandboxFlag==true) 
 	{
 		$API_Endpoint="https://api-3t.sandbox.paypal.com/nvp";
 		$PAYPAL_URL="https://www.sandbox.paypal.com/webscr?cmd=_express-checkout&token=";
@@ -47,7 +47,7 @@
 	$USE_PROXY=false;
 	$version="93";
 
-	if (session_id() == "") 
+	if (session_id()=="") 
 		@session_start();
 
 	/* An express checkout transaction starts with a token, that
@@ -199,9 +199,9 @@
 		//'---------------------------------------------------------------------------
 	    $resArray=hash_call("GetExpressCheckoutDetails",$nvpstr, $guid);
 	    $ack=strtoupper($resArray["ACK"]);
-		if($ack == "SUCCESS" || $ack=="SUCCESSWITHWARNING")
+		if($ack=="SUCCESS" || $ack=="SUCCESSWITHWARNING")
 		{	
-			$_SESSION[$guid]['payer_id'] =	$resArray['PAYERID'];
+			$_SESSION[$guid]['payer_id']=	$resArray['PAYERID'];
 		} 
 		return $resArray;
 	}
@@ -225,15 +225,15 @@
 		
 
 		//Format the other parameters that were stored in the session from the previous calls	
-		$token 				= urlencode($token);
-		$paymentType 		= urlencode($_SESSION[$guid]['PaymentType']);
-		$currencyCodeType 	= urlencode($_SESSION[$guid]['currencyCodeType']);
-		$payerID 			= urlencode($payer_id);
+		$token 				=urlencode($token);
+		$paymentType 		=urlencode($_SESSION[$guid]['PaymentType']);
+		$currencyCodeType 	=urlencode($_SESSION[$guid]['currencyCodeType']);
+		$payerID 			=urlencode($payer_id);
 
-		$serverName 		= urlencode($_SERVER['SERVER_NAME']);
+		$serverName 		=urlencode($_SERVER['SERVER_NAME']);
 
-		$nvpstr ='&TOKEN=' . $token . '&PAYERID=' . $payerID . '&PAYMENTREQUEST_0_PAYMENTACTION=' . $paymentType . '&PAYMENTREQUEST_0_AMT=' . $FinalPaymentAmt;
-		$nvpstr .= '&PAYMENTREQUEST_0_CURRENCYCODE=' . $currencyCodeType . '&IPADDRESS=' . $serverName; 
+		$nvpstr='&TOKEN=' . $token . '&PAYERID=' . $payerID . '&PAYMENTREQUEST_0_PAYMENTACTION=' . $paymentType . '&PAYMENTREQUEST_0_AMT=' . $FinalPaymentAmt;
+		$nvpstr .='&PAYMENTREQUEST_0_CURRENCYCODE=' . $currencyCodeType . '&IPADDRESS=' . $serverName; 
 
 		 /* Make the call to PayPal to finalize payment
 		    If an error occured, show the resulting errors
@@ -399,7 +399,7 @@
 		while(strlen($nvpstr))
 		{
 			//postion of Key
-			$keypos= strpos($nvpstr,'=');
+			$keypos=strpos($nvpstr,'=');
 			//position of value
 			$valuepos=strpos($nvpstr,'&') ? strpos($nvpstr,'&'): strlen($nvpstr);
 
@@ -407,7 +407,7 @@
 			$keyval=substr($nvpstr,$intial,$keypos);
 			$valval=substr($nvpstr,$keypos+1,$valuepos-$keypos-1);
 			//decoding the respose
-			$nvpArray[urldecode($keyval)] =urldecode( $valval);
+			$nvpArray[urldecode($keyval)]=urldecode( $valval);
 			$nvpstr=substr($nvpstr,$valuepos+1,strlen($nvpstr));
 	     }
 		return $nvpArray;

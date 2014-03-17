@@ -37,7 +37,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonSchoolYearID=$_POST["gibbonSchoolYearID"] ;
 $gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
-$URL= $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/rollGroup_manage_edit.php&gibbonRollGroupID=$gibbonRollGroupID&gibbonSchoolYearID=$gibbonSchoolYearID" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/rollGroup_manage_edit.php&gibbonRollGroupID=$gibbonRollGroupID&gibbonSchoolYearID=$gibbonSchoolYearID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/rollGroup_manage_edit.php")==FALSE) {
 	//Fail 0
