@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -39,7 +39,7 @@ else {
 	
 	if ($gibbonPersonID=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified one or more required parameters." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -66,7 +66,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The specified class cannot be found." ;
+				print _("The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {

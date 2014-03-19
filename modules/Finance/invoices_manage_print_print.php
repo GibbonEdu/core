@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage_print.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -39,7 +39,7 @@ else {
 	
 	if ($gibbonFinanceInvoiceID=="" OR $gibbonSchoolYearID=="" OR $type=="") {
 		print "<div class='error'>" ;
-			print "You have not specified one or more required parameters." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -55,7 +55,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The specified invoice cannot be found." ;
+				print _("The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {

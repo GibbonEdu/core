@@ -26,7 +26,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/outcomes_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -40,7 +40,7 @@ else {
 	else {
 		if ($highestAction!="Manage Outcomes_viewEditAll" AND $highestAction!="Manage Outcomes_viewAllEditLearningArea") {
 			print "<div class='error'>" ;
-				print "You do not have access to this action." ;
+				print _("You do not have access to this action.") ;
 			print "</div>" ;
 		}
 		else {
@@ -84,7 +84,7 @@ else {
 			$gibbonOutcomeID=$_GET["gibbonOutcomeID"];
 			if ($gibbonOutcomeID=="") {
 				print "<div class='error'>" ;
-					print "You have not specified one or more required parameters." ;
+					print _("You have not specified one or more required parameters.") ;
 				print "</div>" ;
 			}
 			else {
@@ -106,7 +106,7 @@ else {
 				
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print "The selected outcome does not exist." ;
+						print _("The specified record does not exist.") ;
 					print "</div>" ;
 				}
 				else {
@@ -157,7 +157,7 @@ else {
 							
 							<tr>
 								<td> 
-									<b>Name *</b><br/>
+									<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
 								</td>
 								<td class="right">
 									<input name="name" id="name" maxlength=100 value="<? print $row["name"] ?>" type="text" style="width: 300px">

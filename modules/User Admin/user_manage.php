@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -60,7 +60,7 @@ else {
 			<tr>
 				<td> 
 					<b>Search For</b><br/>
-					<span style="font-size: 90%"><i>Preferred, surname, username, email.</i></span>
+					<span style="font-size: 90%"><i>Preferred, surname, username, email, phone number, vehicle registration</i></span>
 				</td>
 				<td class="right">
 					<input name="search" id="search" maxlength=20 value="<? if (isset($_GET["search"])) { print $_GET["search"] ; } ?>" type="text" style="width: 300px">
@@ -92,8 +92,8 @@ else {
 		$data=array(); 
 		$sql="SELECT * FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) ORDER BY surname, preferredName" ; 
 		if ($search!="") {
-			$data=array("search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%", "search4"=>"%$search%", "search5"=>"%$search%"); 
-			$sql="SELECT * FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE (preferredName LIKE :search1 OR surname LIKE :search2 OR username LIKE :search3 OR email LIKE :search4 OR emailAlternate LIKE :search5) ORDER BY surname, preferredName" ; 	
+			$data=array("search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%", "search4"=>"%$search%", "search5"=>"%$search%", "search6"=>"%$search%", "search7"=>"%$search%", "search8"=>"%$search%", "search9"=>"%$search%", "search10"=>"%$search%"); 
+			$sql="SELECT * FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE (preferredName LIKE :search1 OR surname LIKE :search2 OR username LIKE :search3 OR email LIKE :search4 OR emailAlternate LIKE :search5 OR phone1 LIKE :search6 OR phone2 LIKE :search7 OR phone3 LIKE :search8 OR phone4 LIKE :search9 OR vehicleRegistration LIKE :search10) ORDER BY surname, preferredName" ; 	
 		}
 		$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ;
 		$result=$connection2->prepare($sql);

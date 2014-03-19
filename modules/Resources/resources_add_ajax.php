@@ -209,7 +209,7 @@ else {
 							$output.="</tr>" ;
 							$output.="<tr>" ;
 								$output.="<td> " ;
-									$output.="<b>Name *</b><br/>" ;
+									$output.="<b>" . _('Name') . " *</b><br/>" ;
 									$output.="<span style='font-size: 90%'><i></i></span>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;

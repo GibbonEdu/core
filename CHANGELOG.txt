@@ -139,6 +139,20 @@ Functions: delete deprecated function conditional_escape
 School Admin: deleted orphan file
 	Deleted file /modules/School Admin/index.php
 
+User Admin: added new status "Waiting List"
+	Edited table gibbonApplicationForm
+	Edited files /modules/User Admin/applicationForm_manage*.php
+
+User Admin: added phone and vehicle registration search to user admin
+	Edited file /modules/User Admin/user_manage.php
+
+Messenger: added ability for priviledged users to set replyto address in outgoing emails
+	Edited files /modules/Messenger/messenger_post*.php
+
+User Admin: moved Student Enrolment into User Management category
+	Edited values in table gibbonAction
+	
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)

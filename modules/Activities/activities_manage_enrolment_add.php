@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage_enrolment_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -69,7 +69,7 @@ else {
 	
 	if ($gibbonActivityID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified one or more required parameters." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -85,7 +85,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The specified school year does not exist." ;
+				print _("The specified record does not exist.") ;
 			print "</div>" ;
 		}
 		else {

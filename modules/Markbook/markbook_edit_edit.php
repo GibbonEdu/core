@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -41,7 +41,7 @@ else {
 		$gibbonMarkbookColumnID=$_GET["gibbonMarkbookColumnID"] ;
 		if ($gibbonCourseClassID=="" OR $gibbonMarkbookColumnID=="") {
 			print "<div class='error'>" ;
-				print "You have not specified one or more required parameters." ;
+				print _("You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -255,7 +255,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Name *</b><br/>
+										<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
 									</td>
 									<td class="right">
 										<input name="name" id="name" maxlength=20 value="<? print htmlPrep($row2["name"]) ?>" type="text" style="width: 300px">
@@ -267,7 +267,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Description *</b><br/>
+										<? print "<b>" . _('Description') . " *</b><br/>" ; ?>
 									</td>
 									<td class="right">
 										<input name="description" id="description" maxlength=255 value="<? print htmlPrep($row2["description"]) ?>" type="text" style="width: 300px">

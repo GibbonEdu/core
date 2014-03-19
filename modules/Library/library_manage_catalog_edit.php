@@ -26,7 +26,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_catalog_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -67,7 +67,7 @@ else {
 	$gibbonLibraryItemID=$_GET["gibbonLibraryItemID"];
 	if ($gibbonLibraryItemID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified one or more required parameters." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -83,7 +83,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The selected rubric does not exist." ;
+				print _("The specified record does not exist.") ;
 			print "</div>" ;
 		}
 		else {
@@ -121,7 +121,7 @@ else {
 					</tr>
 					<tr id='nameRow'>
 						<td> 
-							<b>Name *</b><br/>
+							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
 							<span style="font-size: 90%"><i>Volume or product name.</i></span>
 						</td>
 						<td class="right">
@@ -513,7 +513,7 @@ else {
 					
 					if ($resultFields->rowCount()!=1) {
 						print "<div class='error'>" ;
-							print "The specified type cannot be found." ;
+							print _("The specified record cannot be found.") ;
 						print "</div>" ;
 					}
 					else {

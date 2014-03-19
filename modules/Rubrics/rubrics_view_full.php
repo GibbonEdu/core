@@ -34,7 +34,7 @@ else {
 	$gibbonRubricID=$_GET["gibbonRubricID"] ;
 	if ($gibbonRubricID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified one or more required parameters." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -50,7 +50,7 @@ else {
 
 	if ($result3->rowCount()!=1) {
 		print "<div class='error'>" ;
-			print "The selected rubric does not exist." ;
+			print _("The specified record does not exist.") ;
 		print "</div>" ;
 	}
 	else {

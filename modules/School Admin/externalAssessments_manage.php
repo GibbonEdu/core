@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/externalAssessments_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage External Assessments') , "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage External Assessments') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -95,16 +95,16 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Name" ;
+					print _("Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Description" ;
+					print _("Description") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Active" ;
+					print _("Active") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Actions" ;
+					print _("Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			

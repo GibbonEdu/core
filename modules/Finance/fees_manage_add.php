@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Finance/fees_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -67,7 +67,7 @@ else {
 	$search=$_GET["search"] ;
 	if ($gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified one or more required parameters." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -110,7 +110,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Name *</b><br/>
+						<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
 					</td>
 					<td class="right">
 						<input name="name" id="name" maxlength=100 value="" type="text" style="width: 300px">

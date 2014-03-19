@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Data Updater/data_medical.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -224,7 +224,7 @@ else {
 
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print "The specified person cannot be found." ;
+						print _("The specified record cannot be found.") ;
 					print "</div>" ;
 				}
 				else {

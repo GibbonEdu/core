@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_bump.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -67,7 +67,7 @@ else {
 		
 		if ($viewBy=="date") {
 			print "<div class='error'>" ;
-				print "You do not have access to this action." ;
+				print _("You do not have access to this action.") ;
 			print "</div>" ;
 		}
 		else {
@@ -79,7 +79,7 @@ else {
 			$gibbonPlannerEntryID=$_GET["gibbonPlannerEntryID"] ;
 			if ($gibbonPlannerEntryID=="" OR ($viewBy=="class" AND $gibbonCourseClassID=="Y")) {
 				print "<div class='error'>" ;
-					print "You have not specified one or more required parameters." ;
+					print _("You have not specified one or more required parameters.") ;
 				print "</div>" ;
 			}
 			else {
@@ -153,7 +153,7 @@ else {
 									<input name="date" id="date" value="<? print $date ?>" type="hidden">
 									<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<? print $gibbonCourseClassID ?>" type="hidden">
 									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="Yes">
+									<input type="submit" value="<? print _('Yes') ; ?>">
 								</td>
 								<td class="right">
 									

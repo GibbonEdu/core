@@ -85,7 +85,7 @@ else {
 			
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print "The specified year does not exist." ;
+					print _("The specified record does not exist.") ;
 				print "</div>" ;
 			}
 			else {

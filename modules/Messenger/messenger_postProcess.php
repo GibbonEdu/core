@@ -67,6 +67,7 @@ else {
 		if ($email=="Y") {
 			$from=$_POST["from"] ;
 		}
+		$emailReplyTo=$_POST["emailReplyTo"] ;
 		$messageWall=$_POST["messageWall"] ;
 		if ($messageWall!="Y") {
 			$messageWall="N" ;
@@ -1476,7 +1477,10 @@ else {
 				$mail->Subject=$subject ;
 				$mail->Body=$body ;
 				$mail->AltBody=$bodyPlain ;
-
+				if ($emailReplyTo!="") {
+					$mail->AddReplyTo($emailReplyTo, '');
+				}
+				
 				if(!$mail->Send()) {
 				 	$partialFail=TRUE ;
 				}

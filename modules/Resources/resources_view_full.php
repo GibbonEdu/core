@@ -51,7 +51,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='warning'>" ;
-				print "Resource does not exist." ;
+				print _("The specified record does not exist.") ;
 			print "</div>" ;
 		}
 		else {

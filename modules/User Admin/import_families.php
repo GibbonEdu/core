@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/import_studentEnrolment.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -96,7 +96,6 @@ else {
 				<tr>
 					<td> 
 						<b>Field Delimiter *</b><br/>
-						<span style="font-size: 90%"><i>Must be unique for this school year.</i></span>
 					</td>
 					<td class="right">
 						<input type="text" style="width: 300px" name="fieldDelimiter" value="," maxlength=1>

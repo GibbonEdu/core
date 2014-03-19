@@ -26,7 +26,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm_manage_accept.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -41,13 +41,13 @@ else {
 	$search=$_GET["search"] ;
 	if ($gibbonApplicationFormID=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified one or more required parameters." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
 		try {
 			$data=array("gibbonApplicationFormID"=>$gibbonApplicationFormID); 
-			$sql="SELECT * FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND status='Pending'" ;
+			$sql="SELECT * FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND (status='Pending' OR status='Waiting List')" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

@@ -1578,10 +1578,13 @@ UPDATE gibboni18n SET code='en_US' WHERE code='en-US';end
 UPDATE gibboni18n SET code='zh_CN' WHERE code='zh-CN';end
 UPDATE gibboni18n SET code='zh_HK' WHERE code='zh-HK';end
 UPDATE gibboni18n SET dateFormatRegEx='/(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20\\d\\d)/' WHERE code='en_US';end
+ALTER TABLE `gibbonApplicationForm` CHANGE `status` `status` ENUM( 'Pending', 'Waiting List', 'Accepted', 'Rejected', 'Withdrawn' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Pending';end
+UPDATE gibbonAction SET category='User Management' WHERE name='Student Enrolment' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonModule.name='User Admin') ;end
+
 
 --LAST ICHK
 --LAST HLY
---LAST HLY SERVER DEV
+
 
 ";
 

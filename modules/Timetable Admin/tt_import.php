@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_delete.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -57,7 +57,7 @@ else {
 	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
 	if ($gibbonTTID=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified one or more required parameters." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -73,7 +73,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The specified timetable cannot be found." ;
+				print _("The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -117,7 +117,7 @@ else {
 						<tr>
 							<td> 
 								<b>Field Delimiter *</b><br/>
-								<span style="font-size: 90%"><i>Must be unique for this school year.</i></span>
+								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
 								<input type="text" style="width: 300px" name="fieldDelimiter" value="," maxlength=1>

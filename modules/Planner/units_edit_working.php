@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_edit_working.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -117,7 +117,7 @@ else {
 		$gibbonUnitClassID=$_GET["gibbonUnitClassID"]; 
 		if ($gibbonCourseID=="" OR $gibbonSchoolYearID=="" OR $gibbonCourseClassID=="" OR $gibbonUnitClassID=="") {
 			print "<div class='error'>" ;
-				print "You have not specified one or more required parameters." ;
+				print _("You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -151,7 +151,7 @@ else {
 				//Check if unit specified
 				if ($gibbonUnitID=="") {
 					print "<div class='error'>" ;
-						print "You have not specified one or more required parameters." ;
+						print _("You have not specified one or more required parameters.") ;
 					print "</div>" ;
 				}
 				else {
@@ -191,7 +191,7 @@ else {
 					
 					if ($result->rowCount()!=1) {
 						print "<div class='error'>" ;
-							print "The specified unit cannot be found." ;
+							print _("The specified record cannot be found.") ;
 						print "</div>" ;
 					}
 					else {
@@ -293,7 +293,7 @@ else {
 											print "<div id='sortable$i' style='min-height: 60px; font-size: 120%; font-style: italic'>" ;
 												print "<div id='head$i' class='head' style='height: 54px; font-size: 85%; padding: 3px'>" ;
 													
-													print "<a onclick='return confirm(\"Are you sure you want to jump to this lesson? Any unsaved changes will be lost.\")' style='font-weight: bold; font-style: normal; color: #333' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $rowLessons["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "'>" . ($i+1) . ". " . $rowLessons["name"] . "</a> <a onclick='return confirm(\"Are you sure you want to delete this lesson? Any unsaved changes will be lost.\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working_lessonDelete.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID&address=" . $_GET["q"] . "&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/ style='position: absolute; margin: -1px 0px 2px 10px'></a><br/>" ;
+													print "<a onclick='return confirm(\"Are you sure you want to jump to this lesson? Any unsaved changes will be lost.\")' style='font-weight: bold; font-style: normal; color: #333' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $rowLessons["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "'>" . ($i+1) . ". " . $rowLessons["name"] . "</a> <a onclick='return confirm(\"Are you sure you want to delete this record? Any unsaved changes will be lost.\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working_lessonDelete.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID&address=" . $_GET["q"] . "&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/ style='position: absolute; margin: -1px 0px 2px 10px'></a><br/>" ;
 													
 													try {
 														$dataTT=array("date"=>$rowLessons["date"], "timeStart"=>$rowLessons["timeStart"], "timeEnd"=>$rowLessons["timeEnd"], "gibbonCourseClassID"=>$gibbonCourseClassID); 

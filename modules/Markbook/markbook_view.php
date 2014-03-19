@@ -86,7 +86,7 @@ else {
 					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Markbook</div>" ;
 					print "</div>" ;
 					print "<div class='error'>" ;
-						print "The selected class does not exist." ;
+						print _("The specified record does not exist.") ;
 					print "</div>" ;	
 				}
 				else {

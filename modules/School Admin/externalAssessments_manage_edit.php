@@ -25,13 +25,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/externalAssessments_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessments_manage.php'>Manage External Assessments</a> > </div><div class='trailEnd'>Edit External Assessment</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessments_manage.php'>" . _('Manage External Assessments') . "</a> > </div><div class='trailEnd'>" . _('Edit External Assessment') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -79,7 +79,7 @@ else {
 	$gibbonExternalAssessmentID=$_GET["gibbonExternalAssessmentID"] ;
 	if ($gibbonExternalAssessmentID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified one or more required parameters." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -95,7 +95,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The specified grade scale cannot be found." ;
+				print _("The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -106,8 +106,8 @@ else {
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
-						<b>Name *</b><br/>
-						<span style="font-size: 90%"><i>Must be unique for this school year.</i></span>
+						<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+						<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="name" id="name" maxlength=50 value="<? if (isset($row["name"])) { print htmlPrep($row["name"]) ; } ?>" type="text" style="width: 300px">
@@ -119,7 +119,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Short Name *</b><br/>
+						<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -132,8 +132,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Description *</b><br/>
-						<span style="font-size: 90%"><i>Brief description of how scale is used.</i></span>
+						<? print "<b>" . _('Description') . " *</b><br/>" ; ?>
+						<span style="font-size: 90%"><i><? print _('Brief description of how scale is used.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="description" id="description" maxlength=50 value="<? if (isset($row["description"])) { print $row["description"] ; } ?>" type="text" style="width: 300px">
@@ -146,7 +146,6 @@ else {
 				<tr>
 					<td> 
 						<b>Active *</b><br/>
-						<span style="font-size: 90%"><i>Is this scale in active use?</i></span>
 					</td>
 					<td class="right">
 						<select name="active" id="active" style="width: 302px">
@@ -170,7 +169,7 @@ else {
 			<?
 			
 			print "<h2>" ;
-			print "Edit Fields" ;
+			print _("Edit Fields") ;
 			print "</h2>" ;
 			
 			try {
@@ -196,16 +195,16 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print "Name" ;
+							print _("Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Category" ;
+							print _("Category") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Order" ;
+							print _("Order") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Actions" ;
+							print _("Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					

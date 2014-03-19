@@ -25,7 +25,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -109,11 +109,14 @@ else {
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$("#emailRow").css("display","none");
+							$("#emailReplyToRow").css("display","none");
 							$(".email").click(function(){
 								if ($('input[name=email]:checked').val()=="Y" ) {
 									$("#emailRow").slideDown("fast", $("#emailRow").css("display","table-row")); 
+									$("#emailReplyToRow").slideDown("fast", $("#emailRow").css("display","table-row")); 
 								} else {
 									$("#emailRow").css("display","none");
+									$("#emailReplyToRow").css("display","none");
 								}
 							 });
 						});
@@ -144,6 +147,22 @@ else {
 						</td>
 					</tr>
 					<?
+					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_fromSchool")) { 
+						?>
+						<tr id="emailReplyToRow">
+							<td> 
+								<b>Reply To </b><br/>
+							</td>
+							<td class="right">
+								<input name="emailReplyTo" id="emailReplyTo" maxlength=255 value="" type="text" style="width: 300px">
+								<script type="text/javascript">
+									var emailReplyTo=new LiveValidation('emailReplyTo');
+									emailReplyTo.add(Validate.Email);
+								 </script>
+							</td>
+						</tr>
+						<?
+					}
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byMessageWall")) {
 					?>

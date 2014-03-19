@@ -26,7 +26,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm_manage_reject.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -41,7 +41,7 @@ else {
 	$search=$_GET["search"] ;
 	if ($gibbonApplicationFormID=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified one or more required parameters." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -57,7 +57,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The selected application does not exist." ;
+				print _("The specified record does not exist.") ;
 			print "</div>" ;
 		}
 		else {
@@ -108,7 +108,7 @@ else {
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
 							<input name="gibbonApplicationFormID" id="gibbonApplicationFormID" value="<? print $gibbonApplicationFormID ?>" type="hidden">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="Yes">
+							<input type="submit" value="<? print _('Yes') ; ?>">
 						</td>
 					</tr>
 				</table>

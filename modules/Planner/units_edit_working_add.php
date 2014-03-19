@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_edit_working_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -92,7 +92,7 @@ else {
 		$gibbonUnitClassID=$_GET["gibbonUnitClassID"]; 
 		if ($gibbonCourseID=="" OR $gibbonSchoolYearID=="" OR $gibbonCourseClassID=="" OR $gibbonUnitClassID=="") {
 			print "<div class='error'>" ;
-				print "You have not specified one or more required parameters." ;
+				print _("You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -126,7 +126,7 @@ else {
 				//Check if unit specified
 				if ($gibbonUnitID=="") {
 					print "<div class='error'>" ;
-						print "You have not specified one or more required parameters." ;
+						print _("You have not specified one or more required parameters.") ;
 					print "</div>" ;
 				}
 				else {
@@ -166,7 +166,7 @@ else {
 					
 					if ($result->rowCount()!=1) {
 						print "<div class='error'>" ;
-							print "The specified unit cannot be found." ;
+							print _("The specified record cannot be found.") ;
 						print "</div>" ;
 					}
 					else {

@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/rollover.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -878,7 +878,7 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;	
 						print "<tr>" ;
 							print "<td>" ;
-								print "<span style='font-size: 90%'><i>* <? print _("denotes a required field") ; ?></i></span>" ;
+								print "<span style='font-size: 90%'><i>* " . _("denotes a required field") . "</i></span>" ;
 							print "</td>" ;
 							print "<td class='right'>" ;
 								print "<input type='hidden' name='nextYear' value='$nextYear'>" ;

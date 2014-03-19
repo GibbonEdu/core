@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_delete.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -69,7 +69,7 @@ else {
 		$gibbonUnitID=$_GET["gibbonUnitID"]; 
 		if ($gibbonCourseID=="" OR $gibbonSchoolYearID=="") {
 			print "<div class='error'>" ;
-				print "You have not specified one or more required parameters." ;
+				print _("You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -98,7 +98,7 @@ else {
 				//Check if unit specified
 				if ($gibbonUnitID=="") {
 					print "<div class='error'>" ;
-						print "You have not specified one or more required parameters." ;
+						print _("You have not specified one or more required parameters.") ;
 					print "</div>" ;
 				}
 				else {
@@ -114,7 +114,7 @@ else {
 					
 					if ($result->rowCount()!=1) {
 						print "<div class='error'>" ;
-							print "The specified unit cannot be found." ;
+							print _("The specified record cannot be found.") ;
 						print "</div>" ;
 					}
 					else {
@@ -125,8 +125,8 @@ else {
 							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr>
 									<td> 
-										<b>Are you sure you want to delete "<? print $row["name"] ?>"?</b><br/>
-										<span style="font-size: 90%; color: #cc0000"><i>This operation cannot be undone, and may lead to loss of vital data in your system.<br/>PROCEED WITH CAUTION!</i></span>
+										<b><? print _('Are you sure you want to delete this record?') ; ?></b><br/>
+							<span style="font-size: 90%; color: #cc0000"><i><? print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
 									</td>
 									<td class="right">
 										
@@ -138,7 +138,7 @@ else {
 										<input name="gibbonUnitID" id="gibbonUnitID" value="<? print $gibbonUnitID ?>" type="hidden">
 										<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
 										<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-										<input type="submit" value="Yes">
+										<input type="submit" value="<? print _('Yes') ; ?>">
 									</td>
 									<td class="right">
 										

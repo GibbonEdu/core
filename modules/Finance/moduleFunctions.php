@@ -63,7 +63,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 				<? } ?>
 				
 				$('#delete<? print $i ?>').unbind('click').click(function() {
-					if (confirm("Are you sure you want to delete this block?")) {
+					if (confirm("Are you sure you want to delete this record?")) {
 						$('#blockOuter<? print $i ?>').fadeOut(600, function(){ $('#block<? print $i ?>').remove(); });
 						fee<? print $i ?>.destroy() ;
 					}

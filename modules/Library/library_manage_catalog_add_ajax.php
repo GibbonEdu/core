@@ -57,7 +57,7 @@ else {
 	
 	if ($result->rowCount()!=1) {
 		$output.="<div class='error'>" ;
-			$output.="The specified type cannot be found." ;
+			$output.=_("The specified recod cannot be found.") ;
 		$output.="</div>" ;
 	}
 	else {
@@ -85,7 +85,7 @@ else {
 									print "var obj=data;" ;
 								print "}" ;
 								print "if (obj['totalItems']==0) {" ;
-									print "alert('This title cannot be found.');" ;
+									print "alert('" . _('The specified record cannot be found.') . "');" ;
 								print "} else {" ;
 									//SET FIELDS
 									print "$(\"#name\").val(obj['items'][0]['volumeInfo']['title']);" ;

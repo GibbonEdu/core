@@ -193,7 +193,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 	
 	if ($result->rowCount()!=1) {
 		print "<div class='error'>" ;
-			print "The requested rubric cannot be found." ;
+			print _("The specified record cannot be found.") ;
 		print "</div>" ; 
 	}
 	else {

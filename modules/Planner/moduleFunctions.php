@@ -102,7 +102,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 				<? } ?>
 			
 				$('#delete<? print $i ?>').unbind('click').click(function() {
-					if (confirm("Are you sure you want to delete this block?")) {
+					if (confirm("Are you sure you want to delete this record?")) {
 						$('#blockOuter<? print $i ?>').fadeOut(600, function(){ $('#block<? print $i ?>').remove(); });
 					}
 				});
@@ -684,7 +684,7 @@ function makeBlockOutcome($guid,  $i, $type="", $gibbonOutcomeID="", $title="", 
 				});
 				
 				$('#<? print $type ?>delete<? print $i ?>').unbind('click').click(function() {
-					if (confirm("Are you sure you want to delete this block?")) {
+					if (confirm("Are you sure you want to delete this record?")) {
 						$('#<? print $type ?>blockOuter<? print $i ?>').fadeOut(600, function(){ $('#<? print $type ?><? print $i ?>'); });
 						$('#<? print $type ?>blockOuter<? print $i ?>').remove();
 						<? print $type ?>Used[<? print $type ?>Used.indexOf("<? print $gibbonOutcomeID ?>")]="x" ;

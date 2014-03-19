@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/gradeScales_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -67,8 +67,8 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Name *</b><br/>
-					<span style="font-size: 90%"><i>Must be unique.</i></span>
+					<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+					<span style="font-size: 90%"><i><? print _('Must be unique.') ; ?></i></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=40 value="" type="text" style="width: 300px">
@@ -80,8 +80,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Short Name *</b><br/>
-					<span style="font-size: 90%"><i>Must be unique.</i></span>
+					<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+					<span style="font-size: 90%"><i><? print _('Must be unique.') ; ?></i></span>
 				</td>
 				<td class="right">
 					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">
@@ -107,7 +107,6 @@ else {
 			<tr>
 				<td> 
 					<b>Active *</b><br/>
-					<span style="font-size: 90%"><i>Is this scale in active use?</i></span>
 				</td>
 				<td class="right">
 					<select name="active" id="active" style="width: 302px">

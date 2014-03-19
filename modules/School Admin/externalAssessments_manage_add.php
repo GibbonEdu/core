@@ -25,13 +25,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/externalAssessments_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessments_manage.php'>Manage External Assessments</a> > </div><div class='trailEnd'>Add External Assessment</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessments_manage.php'>" . _('Manage External Assessments') . "</a> > </div><div class='trailEnd'>" . _('Add External Assessment') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -67,8 +67,8 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Name *</b><br/>
-					<span style="font-size: 90%"><i>Must be unique.</i></span>
+					<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+					<span style="font-size: 90%"><i><? print _('Must be unique.') ; ?></i></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=50 value="" type="text" style="width: 300px">
@@ -80,8 +80,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Short Name *</b><br/>
-					<span style="font-size: 90%"><i>Must be unique.</i></span>
+					<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+					<span style="font-size: 90%"><i><? print _('Must be unique.') ; ?></i></span>
 				</td>
 				<td class="right">
 					<input name="nameShort" id="nameShort" maxlength=10 value="" type="text" style="width: 300px">
@@ -93,8 +93,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Description *</b><br/>
-					<span style="font-size: 90%"><i>Brief description of assessment and how it is used.</i></span>
+					<? print "<b>" . _('Description') . " *</b><br/>" ; ?>
+					<span style="font-size: 90%"><i><? print _('Brief description of assessment and how it is used.') ; ?> </i></span>
 				</td>
 				<td class="right">
 					<input name="description" id="description" maxlength=255 value="" type="text" style="width: 300px">
@@ -106,8 +106,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Active *</b><br/>
-					<span style="font-size: 90%"><i>Is this scale in active use?</i></span>
+					<b><? print _('Active') ; ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="active" id="active" style="width: 302px">

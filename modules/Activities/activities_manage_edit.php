@@ -26,7 +26,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -95,7 +95,7 @@ else {
 	$gibbonActivityID=$_GET["gibbonActivityID"];
 	if ($gibbonActivityID=="Y") {
 		print "<div class='error'>" ;
-			print "You have not specified one or more required parameters." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -132,7 +132,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Name *</b><br/>
+							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=40 value="<? print $row["name"] ?>" type="text" style="width: 300px">

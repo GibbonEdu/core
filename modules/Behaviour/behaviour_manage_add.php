@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -298,7 +298,7 @@ else {
 			
 			if ($gibbonPersonID=="" OR $date=="" OR $type=="" OR $descriptor=="") {
 				print "<div class='error'>" ;
-					print "You have not specified one or more required parameters." ;
+					print _("You have not specified one or more required parameters.") ;
 				print "</div>" ;
 			}
 			else {

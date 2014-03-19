@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/studentsSettings_noteCategory_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -64,8 +64,8 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Name *</b><br/>
-					<span style="font-size: 90%"><i>Must be unique.</i></span>
+					<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+					<span style="font-size: 90%"><i><? print _('Must be unique.') ; ?></i></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=30 value="" type="text" style="width: 300px">

@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/role_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -92,7 +92,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Short Name *</b><br/>
+					<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
 					<span style="font-size: 90%"><i>Needs to be unique.</i></span>
 				</td>
 				<td class="right">
@@ -105,7 +105,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Description *</b><br/>
+					<? print "<b>" . _('Description') . " *</b><br/>" ; ?>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">

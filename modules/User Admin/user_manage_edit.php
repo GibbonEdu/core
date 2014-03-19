@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -79,7 +79,7 @@ else {
 	$gibbonPersonID=$_GET["gibbonPersonID"] ;
 	if ($gibbonPersonID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified one or more required parameters." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -95,7 +95,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The specified person cannot be found." ;
+				print _("The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -1400,7 +1400,7 @@ else {
 						<td class="right">
 							<?
 							if ($row["image_240"]!="") {
-								print "Current attachment: <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_240"] . "'>" . $row["image_240"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=240' onclick='return confirm(\"Are you sure you want to delete this image? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
+								print "Current attachment: <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_240"] . "'>" . $row["image_240"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=240' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
 							}
 							?>
 							<input type="file" name="file1" id="file1"><br/><br/>
@@ -1423,7 +1423,7 @@ else {
 						<td class="right">
 							<?
 							if ($row["image_75"]!="") {
-								print "Current attachment: <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_75"] . "'>" . $row["image_75"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=75' onclick='return confirm(\"Are you sure you want to delete this image? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
+								print "Current attachment: <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_75"] . "'>" . $row["image_75"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=75' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
 							}
 							?>
 							<input type="file" name="file2" id="file2"><br/><br/>

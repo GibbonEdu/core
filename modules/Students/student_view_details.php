@@ -25,7 +25,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -45,7 +45,7 @@ else {
 		
 		if ($gibbonPersonID==FALSE) {
 			print "<div class='error'>" ;
-			print "You have not specified one or more required parameters." ;
+			print _("You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {

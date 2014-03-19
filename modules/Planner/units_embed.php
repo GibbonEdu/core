@@ -66,7 +66,7 @@ print "<script type=\"text/javascript\" src=" . $_SESSION[$guid]["absoluteURL"] 
 
 if ($gibbonCourseID=="" OR $gibbonSchoolYearID=="") {
 	print "<div class='error'>" ;
-		print "You have not specified one or more required parameters." ;
+		print _("You have not specified one or more required parameters.") ;
 	print "</div>" ;
 }
 else {
@@ -93,13 +93,13 @@ else {
 		//Check if unit specified
 		if ($gibbonUnitID=="") {
 			print "<div class='error'>" ;
-				print "You have not specified one or more required parameters." ;
+				print _("You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
 			if ($gibbonUnitID=="") {
 				print "<div class='error'>" ;
-					print "You have not specified one or more required parameters." ;
+					print _("You have not specified one or more required parameters.") ;
 				print "</div>" ;
 			}
 			else {
@@ -115,7 +115,7 @@ else {
 				
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print "The specified unit cannot be found." ;
+						print _("The specified record cannot be found.") ;
 					print "</div>" ;
 				}
 				else {

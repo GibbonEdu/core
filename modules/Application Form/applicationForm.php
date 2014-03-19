@@ -47,7 +47,7 @@ if (isset($_SESSION[$guid]["gibbonPersonID"])) {
 if ($proceed==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {

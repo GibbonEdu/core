@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_data.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -41,7 +41,7 @@ else {
 		$gibbonMarkbookColumnID=$_GET["gibbonMarkbookColumnID"] ;
 		if ($gibbonCourseClassID=="" OR $gibbonMarkbookColumnID=="") {
 			print "<div class='error'>" ;
-				print "You have not specified one or more required parameters." ;
+				print _("You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -509,7 +509,7 @@ else {
 												print "<br/>" ;
 												if ($rowEntry["response"]!="") {
 													print "<input type='hidden' name='response$count' id='response$count' value='" . $rowEntry["response"] . "'>" ;														
-													print "<div style='width: 330px; float: right'><a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>Uploaded Response</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Markbook/markbook_edit_data_responseDeleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "' onclick='return confirm(\"Are you sure you want to delete this file? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/></div>" ;
+													print "<div style='width: 330px; float: right'><a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>Uploaded Response</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Markbook/markbook_edit_data_responseDeleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/></div>" ;
 												}
 												else {
 													print "<input style='margin-top: 5px' type='file' name='response$count' id='response$count'>" ;														

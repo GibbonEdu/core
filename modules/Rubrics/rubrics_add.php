@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -39,7 +39,7 @@ else {
 	else {
 		if ($highestAction!="Manage Rubrics_viewEditAll" AND $highestAction!="Manage Rubrics_viewAllEditLearningArea") {
 			print "<div class='error'>" ;
-				print "You do not have access to this action." ;
+				print _("You do not have access to this action.") ;
 			print "</div>" ;
 		}
 		else {
@@ -176,7 +176,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Name *</b><br/>
+							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=50 value="" type="text" style="width: 300px">

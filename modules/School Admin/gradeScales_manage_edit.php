@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/gradeScales_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -79,7 +79,7 @@ else {
 	$gibbonScaleID=$_GET["gibbonScaleID"] ;
 	if ($gibbonScaleID=="") {
 		print "<div class='error'>" ;
-			print "You have not specified one or more required parameters." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -95,7 +95,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The specified grade scale cannot be found." ;
+				print _("The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -106,8 +106,8 @@ else {
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
-						<b>Name *</b><br/>
-						<span style="font-size: 90%"><i>Must be unique for this school year.</i></span>
+						<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+						<span style="font-size: 90%"><i><? print _('Must be unique for this school year.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="name" id="name" maxlength=40 value="<? if (isset($row["name"])) { print htmlPrep($row["name"]) ; } ?>" type="text" style="width: 300px">
@@ -119,7 +119,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Short Name *</b><br/>
+						<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -146,7 +146,6 @@ else {
 				<tr>
 					<td> 
 						<b>Active *</b><br/>
-						<span style="font-size: 90%"><i>Is this scale in active use?</i></span>
 					</td>
 					<td class="right">
 						<select name="active" id="active" style="width: 302px">

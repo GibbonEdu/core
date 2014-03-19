@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this action." ;
+		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -78,7 +78,7 @@ else {
 		}
 		if ($result->rowcount()!=1) {
 			print "<div class='error'>" ;
-				print "The specified year does not exist." ;
+				print _("The specified record does not exist.") ;
 			print "</div>" ;
 		}
 		else {
@@ -325,7 +325,7 @@ else {
 							print $row["priority"] ;
 						print "</td>" ;
 						print "<td>" ;
-							if ($row["status"]=="Pending") {
+							if ($row["status"]=="Pending" OR $row["status"]=="Waiting List") {
 								print "<a style='margin-left: 1px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_accept.php&gibbonApplicationFormID=" . $row["gibbonApplicationFormID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='Accept' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/></a>" ;
 								print "<a style='margin-left: 5px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_reject.php&gibbonApplicationFormID=" . $row["gibbonApplicationFormID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='Reject' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a>" ;
 								print "<br/>" ;
