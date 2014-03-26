@@ -14,12 +14,12 @@ For installation instructions, visit http://gibbonedu.org/support/administrators
 For support visit http://gibbonedu.org/support or email support@gibbonedu.org.
 
 
-Bleeding Edge?
+Cutting Edge?
 ==============
 If you want to run the latest version of Gibbon, prerelease, you can get the source from our GitHub repo (https://github.com/GibbonEdu/core).
 
 Remember, though, it is not stable, and you may lose data. This is not for the faint of heart.
 
-Also, if you do this, you will need to manually update your database using CHANGELOG.DB. Yyou can install using gibbon.sql which is from the last stable release, and then update using the most recent changes listed in CHANGEDB.php. Just remember to update the most recent changes every time you update your codebase from GitHub.
+As of the latest commit on 26/03/2014 you no longer need to manually update database changes when running Cutting Edge code. Simply go to Admin > System Admin > System Settings and enable Cutting Edge Code. When you want to update, get the latest commit from GitHub, upload it to your server and go to Admin > System Admin > Update to run the new lines. 
 
 Please report any bugs to support@gibbonedu.org.
