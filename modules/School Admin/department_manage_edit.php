@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/department_ma
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_manage.php'>Manage Departments</a> > </div><div class='trailEnd'>Edit Department</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_manage.php'>" . _('Manage Departments') . "</a> > </div><div class='trailEnd'>" . _('Edit Department') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -55,7 +55,7 @@ else {
 			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage="Your request failed due to an attachment error." ;	
+			$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
 		}
 		else if ($updateReturn=="success0") {
 			$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -111,7 +111,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The selected learning areas does not exist or you do not have access to it." ;
+				print _("The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -122,13 +122,13 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2>
-							<h3>General Information</h3>
+							<h3><? print _('General Information') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Type *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i><br/></span>
+							<b><? print _('Type') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i><br/></span>
 						</td>
 						<td class="right">
 							<? $type=$row["type"] ; ?>
@@ -161,7 +161,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Subject Listing</b><br/>
+							<b><? print _('Subject Listing') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="subjectListing" id="subjectListing" maxlength=255 value="<? print $row["subjectListing"] ?>" type="text" style="width: 300px">
@@ -169,22 +169,22 @@ else {
 					</tr>
 					<tr>
 						<td colspan=2> 
-							<b>Blurb</b> 
+							<b><? print _('Blurb') ?></b> 
 							<? print getEditor($guid,  TRUE, "blurb", $row["blurb"], 20 ) ?>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Logo</b><br/>
+							<b><? print _('Logo') ?></b><br/>
 							<span style="font-size: 90%"><i>125x125px jpg/png/gif</i><br/></span>
 							<? if ($row["logo"]!="") { ?>
-							<span style="font-size: 90%"><i>Will overwrite existing attachment</i></span>
+							<span style="font-size: 90%"><i><? print _('Will overwrite existing attachment') ?></i></span>
 							<? } ?>
 						</td>
 						<td class="right">
 							<?
 							if ($row["logo"]!="") {
-								print "Current attachment: <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["logo"] . "'>" . $row["logo"] . "</a><br/><br/>" ;
+								print _("Current attachment:") . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["logo"] . "'>" . $row["logo"] . "</a><br/><br/>" ;
 							}
 							?>
 							<input type="file" name="file" id="file"><br/><br/>
@@ -195,13 +195,13 @@ else {
 							
 							<script type="text/javascript">
 								var file=new LiveValidation('file');
-								file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+								file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "<? print _('Illegal file type!') ?>", partialMatch: true, caseSensitive: false } );
 							</script>
 						</td>
 					</tr>
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>Current Staff</h3>
+							<h3><? print _('Current Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
@@ -227,13 +227,13 @@ else {
 								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
-											print "Name" ;
+											print _("Name") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Role" ;
+											print _("Role") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Action" ;
+											print _("Action") ;
 										print "</th>" ;
 									print "</tr>" ;
 									
@@ -268,13 +268,13 @@ else {
 					</tr>
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>New Staff</h3>
+							<h3><? print _('New Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
 					<td> 
 						<b>Staff</b><br/>
-						<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+						<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 					</td>
 					<td class="right">
 						<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
@@ -296,31 +296,31 @@ else {
 					
 					<tr id='roleLARow'>
 						<td> 
-							<b>Role</b><br/>
+							<b><? print _('Role') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="role" id="role" style="width: 302px">
 								<?
 								if ($type=="Learning Area") {
 									?>
-									<option value="Coordinator">Coordinator</option>
-									<option value="Assistant Coordinator">Assistant Coordinator</option>
-									<option value="Teacher (Curriculum)">Teacher (Curriculum)</option>
-									<option value="Teacher">Teacher</option>
-									<option value="Other">Other</option>
+									<option value="Coordinator"><? print _('Coordinator') ?></option>
+									<option value="Assistant Coordinator"><? print _('Assistant Coordinator') ?></option>
+									<option value="Teacher (Curriculum)"><? print _('Teacher (Curriculum)') ?></option>
+									<option value="Teacher"><? print _('Teacher') ?></option>
+									<option value="Other"><? print _('Other') ?></option>
 									<?
 								}
 								else if ($type=="Administration") {
 									?>
-									<option value="Director">Director</option>
-									<option value="Manager">Manager</option>
-									<option value="Administrator">Administrator</option>
-									<option value="Other">Other</option>
+									<option value="Director"><? print _('Director') ?></option>
+									<option value="Manager"><? print _('Manager') ?></option>
+									<option value="Administrator"><? print _('Administrator') ?></option>
+									<option value="Other"><? print _('Other') ?></option>
 									<?
 								}
 								else {
 									?>
-									<option value="Other">Other</option>
+									<option value="Other"><? print _('Other') ?></option>
 									<?
 								}
 								?>

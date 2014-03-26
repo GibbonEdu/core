@@ -122,7 +122,7 @@ else {
 			
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print "The selected planner entry does not exist, is in a previous school year, or you do not have access to it." ;
+					print _("The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -220,10 +220,10 @@ else {
 						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail5") {
-						$updateReturnMessage="Your request failed due to an attachment error." ;	
+						$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
 					}
 					else if ($updateReturn=="fail6") {
-						$updateReturnMessage="Your request failed due to an attachment error." ;	
+						$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
 					}
 					else if ($updateReturn=="success0") {
 						$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -1336,7 +1336,7 @@ else {
 									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
-												print "Name" ;
+												print _("Name") ;
 											print "</th>" ;
 											print "<th>" ;
 												print "Role" ;
@@ -1383,7 +1383,7 @@ else {
 						<tr>
 						<td> 
 							<b>Guest List</b><br/>
-							<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="guests[]" id="guests[]" multiple style="width: 302px; height: 150px">

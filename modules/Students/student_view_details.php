@@ -2216,7 +2216,7 @@ else {
 													print "Status" ;
 												print "</th>" ;
 												print "<th>" ;
-													print "Actions" ;
+													print _("Actions") ;
 												print "</th>" ;
 											print "</tr>" ;
 									

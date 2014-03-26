@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/house_manage_
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/house_manage.php'>Manage Houses</a> > </div><div class='trailEnd'>Add House</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/house_manage.php'>" . _('Manage Houses') . "</a> > </div><div class='trailEnd'>" . _('Add House') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -48,7 +48,7 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -61,8 +61,8 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>House Name *</b><br/>
-					<span style="font-size: 90%"><i>Needs to be unique.</i></span>
+					<b><? print _('Name') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=10 value="" type="text" style="width: 300px">
@@ -75,7 +75,7 @@ else {
 			<tr>
 				<td> 
 					<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-					<span style="font-size: 90%"><i>Needs to be unique.</i></span>
+					<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">

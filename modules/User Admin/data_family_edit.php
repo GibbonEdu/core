@@ -55,7 +55,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The selected activity does not exist, is in a previous school year, or you do not have access to it." ;
+				print _("The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {

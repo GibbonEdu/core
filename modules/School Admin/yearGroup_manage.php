@@ -70,13 +70,13 @@ else {
 					print "Sequence" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Name" ;
+					print _("Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Short Name" ;
+					print _("Short Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Actions" ;
+					print _("Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			

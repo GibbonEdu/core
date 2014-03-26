@@ -106,7 +106,7 @@ else {
 					<tr>
 						<td> 
 							<b>Type *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly style='width: 300px' type='text' value='<? print $row["type"] ?>' />
@@ -286,7 +286,7 @@ else {
 					
 					<tr id="locationRow">
 						<td> 
-							<b>Location</b><br/>
+							<b><? print _('Location') ?> *</b><br/>
 							<span style="font-size: 90%"><i>Item's main location.</i></span>
 						</td>
 						<td class="right">

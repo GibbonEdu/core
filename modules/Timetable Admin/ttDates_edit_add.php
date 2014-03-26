@@ -91,7 +91,7 @@ else {
 						<tr>
 							<td> 
 								<b>Year *</b><br/>
-								<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
 								<input readonly name="name" id="name" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
@@ -104,7 +104,7 @@ else {
 						<tr>
 							<td> 
 								<b>Date *</b><br/>
-								<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
 								<input hidden name="dateStamp" id="dateStamp" maxlength=20 value="<? print $dateStamp ?>" type="text" style="width: 300px">

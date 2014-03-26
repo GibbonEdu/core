@@ -91,7 +91,7 @@ else {
 					<tr>
 						<td> 
 							<b>School Year Name *</b><br/>
-							<span style="font-size: 90%"><i>Needs to be unique.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=9 value="<? if (isset($row["name"])) { print htmlPrep($row["name"]) ; } ?>" type="text" style="width: 300px">

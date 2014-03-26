@@ -217,6 +217,36 @@ else {
 				<?
 				try {
 					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='cuttingEdgeCode'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><? print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
+						<?
+						$selected="" ;
+						if ($row["value"]=="Y" ) { $selected="selected" ; }
+						print "<option $selected value='Y'>Y</option>" ;
+						$selected="" ;
+						if ($row["value"]=="N" ) { $selected="selected" ; }
+						print "<option $selected value='N'>N</option>" ;
+						?>			
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<?
+				try {
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='statsCollection'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);

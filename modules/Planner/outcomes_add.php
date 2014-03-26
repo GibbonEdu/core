@@ -68,7 +68,7 @@ else {
 					$addReturnMessage="Add succeeded, but there were problems uploading one or more attachments." ;	
 				}
 				else if ($addReturn=="success0") {
-					$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+					$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -197,13 +197,13 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Active *</b><br/>
+							<b><? print _('Active') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="active" id="active" style="width: 302px">
-								<option value="Y">Y</option>
-								<option value="N">N</option>
+								<option value="Y"><? print _('Y') ?></option>
+								<option value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -252,7 +252,7 @@ else {
 							<? 
 							$yearGroups=getYearGroups($connection2) ;
 							if ($yearGroups=="") {
-								print "<i>No year groups available.</i>" ;
+								print "<i>" . _('No year groups available.') . "</i>" ;
 							}
 							else {
 								for ($i=0; $i<count($yearGroups); $i=$i+2) {

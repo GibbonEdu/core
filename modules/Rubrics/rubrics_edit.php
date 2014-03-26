@@ -253,13 +253,13 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Active *</b><br/>
+									<b><? print _('Active') ?> *</b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
 									<select name="active" id="active" style="width: 302px">
-										<option <? if ($row["active"]=="Y") { print "selected" ; } ?> value="Y">Y</option>
-										<option <? if ($row["active"]=="N") { print "selected" ; } ?> value="N">N</option>
+										<option <? if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><? print _('Y') ?></option>
+										<option <? if ($row["active"]=="N") { print "selected" ; } ?> value="N"><? print _('N') ?></option>
 									</select>
 								</td>
 							</tr>
@@ -308,7 +308,7 @@ else {
 									<? 
 									$yearGroups=getYearGroups($connection2) ;
 									if ($yearGroups=="") {
-										print "<i>No year groups available.</i>" ;
+										print "<i>" . _('No year groups available.') . "</i>" ;
 									}
 									else {
 										for ($i=0; $i<count($yearGroups); $i=$i+2) {
@@ -327,7 +327,7 @@ else {
 							<tr>
 								<td> 
 									<b>Grading Scale</b><br/>
-									<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+									<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 								</td>
 								<td class="right">
 									<?

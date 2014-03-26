@@ -120,7 +120,7 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th style='width: 150px'>" ;
-					print "Name" ;
+					print _("Name") ;
 				print "</th>" ;
 				print "<th>" ;
 					print "Roll Group" ;
@@ -140,7 +140,7 @@ else {
 					print "Conditions" ;
 				print "</th>" ;
 				print "<th style='width: 80px'>" ;
-					print "Actions" ;
+					print _("Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			

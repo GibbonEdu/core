@@ -55,7 +55,7 @@ else {
 			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage="Your request failed due to an attachment error." ;	
+			$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
 		}
 		else if ($updateReturn=="success0") {
 			$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -111,7 +111,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The selected activity does not exist, is in a previous school year, or you do not have access to it." ;
+				print _("The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -197,7 +197,7 @@ else {
 					
 					<tr>
 						<td> 
-							<b>Active *</b><br/>
+							<b><? print _('Active') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -330,7 +330,7 @@ else {
 							<? 
 							$yearGroups=getYearGroups($connection2, $_SESSION[$guid]["gibbonSchoolYearID"]) ;
 							if ($yearGroups=="") {
-								print "<i>No year groups available.</i>" ;
+								print "<i>" . _('No year groups available.') . "</i>" ;
 							}
 							else {
 								for ($i=0; $i<count($yearGroups); $i=$i+2) {
@@ -420,7 +420,7 @@ else {
 								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
-											print "Name" ;
+											print _("Name") ;
 										print "</th>" ;
 										print "<th>" ;
 											print "Time" ;
@@ -710,7 +710,7 @@ else {
 								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
-											print "Name" ;
+											print _("Name") ;
 										print "</th>" ;
 										print "<th>" ;
 											print "Role" ;
@@ -757,7 +757,7 @@ else {
 					<tr>
 					<td> 
 						<b>Staff</b><br/>
-						<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+						<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 					</td>
 					<td class="right">
 						<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">

@@ -51,13 +51,13 @@ else {
 			$addReturnMessage="Your request failed because your passwords did not match." ;	
 		}
 		else if ($addReturn=="fail6") {
-			$addReturnMessage="Your request failed due to an attachment error." ;	
+			$addReturnMessage=_("Your request failed due to an attachment error.") ;	
 		}
 		else if ($addReturn=="fail7") {
 			$addReturnMessage="Your request failed because your password to not meet the minimum requirements for strength." ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -324,8 +324,8 @@ else {
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="canLogin">
-						<option value="Y">Y</option>
-						<option value="N">N</option>
+						<option value="Y"><? print _('Y') ?></option>
+						<option value="N"><? print _('N') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -336,8 +336,8 @@ else {
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="passwordForceReset">
-						<option value="Y">Y</option>
-						<option value="N">N</option>
+						<option value="Y"><? print _('Y') ?></option>
+						<option value="N"><? print _('N') ?></option>
 					</select>
 				</td>
 			</tr>

@@ -91,7 +91,7 @@ else {
 					<tr>
 						<td> 
 							<b>Module Name *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="name" id="name" maxlength=20 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
@@ -104,7 +104,7 @@ else {
 					<tr>
 						<td> 
 							<? print "<b>" . _('Description') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="description" id="description" maxlength=100 value="<? print htmlPrep($row["description"]) ?>" type="text" style="width: 300px">
@@ -129,7 +129,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Active *</b><br/>
+							<b><? print _('Active') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">

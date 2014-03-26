@@ -76,13 +76,13 @@ else {
 					print "Exentsion" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Name" ;
+					print _("Name") ;
 				print "</th>" ;
 				print "<th>" ;
 					print "Type" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Actions" ;
+					print _("Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			

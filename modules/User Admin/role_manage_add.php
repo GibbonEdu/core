@@ -48,7 +48,7 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -80,7 +80,7 @@ else {
 			<tr>
 				<td> 
 					<b>Role Name *</b><br/>
-					<span style="font-size: 90%"><i>Needs to be unique.</i></span>
+					<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=20 value="" type="text" style="width: 300px">
@@ -93,7 +93,7 @@ else {
 			<tr>
 				<td> 
 					<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-					<span style="font-size: 90%"><i>Needs to be unique.</i></span>
+					<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">
@@ -119,7 +119,7 @@ else {
 			<tr>
 				<td> 
 					<b>Type *</b><br/>
-					<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+					<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="type" id="type" readonly="readonly" maxlength=20 value="Additional" type="text" style="width: 300px">

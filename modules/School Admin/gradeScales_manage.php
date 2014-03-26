@@ -28,10 +28,10 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/gradeScales_m
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Grade Scales</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Grade Scales') . "</div>" ;
 	print "</div>" ;
 	print "<p>" ;
-	print "Grade scales are used through the ARR modules to control what grades can be entered into the system. Edit some of the inbuilt scales can impact other areas of the system: it is advised to take a backup of the entire system before doing this." ;
+	print _("Grade scales are used through the ARR modules to control what grades can be entered into the system. Editing some of the inbuilt scales can impact other areas of the system: it is advised to take a backup of the entire system before doing this.") ;
 	print "</p>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -98,19 +98,19 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Name" ;
+					print _("Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Usage" ;
+					print _("Usage") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Active" ;
+					print _("Active") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Numeric?" ;
+					print _("Numeric") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Actions" ;
+					print _("Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			

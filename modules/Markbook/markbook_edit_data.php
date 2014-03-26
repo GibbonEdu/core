@@ -63,7 +63,7 @@ else {
 		
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print "The selected class does not exist, or you do not have access to it." ;
+					print _("The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -108,7 +108,7 @@ else {
 							$updateReturnMessage="Some updates failed due to a database error." ;	
 						}
 						else if ($updateReturn=="fail5") {
-							$updateReturnMessage="Your request failed due to an attachment error." ;	
+							$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
 						}
 						else if ($updateReturn=="success0") {
 							$updateReturnMessage=_("Your request was completed successfully.") ;	

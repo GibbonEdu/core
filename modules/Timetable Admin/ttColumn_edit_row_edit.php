@@ -91,7 +91,7 @@ else {
 					<tr>
 						<td> 
 							<b>Column *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="columnName" id="columnName" maxlength=20 value="<? print $row["columnName"] ?>" type="text" style="width: 300px">

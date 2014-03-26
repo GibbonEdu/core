@@ -94,7 +94,7 @@ else {
 					<tr>
 						<td> 
 							<b>Timetable *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="ttName" id="ttName" maxlength=20 value="<? print $row["ttName"] ?>" type="text" style="width: 300px">
@@ -107,7 +107,7 @@ else {
 					<tr>
 						<td> 
 							<b>Day *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="dayName" id="dayName" maxlength=20 value="<? print $row["dayName"] ?>" type="text" style="width: 300px">
@@ -120,7 +120,7 @@ else {
 					<tr>
 						<td> 
 							<b>Period *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="rowName" id="rowName" maxlength=20 value="<? print $row["rowName"] ?>" type="text" style="width: 300px">
@@ -180,7 +180,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Location</b><br/>
+							<b><? print _('Location') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">

@@ -100,7 +100,7 @@ else {
 					<tr>
 						<td> 
 							<b>Activity *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="yearName" id="yearName" maxlength=20 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
@@ -109,7 +109,7 @@ else {
 					<tr>
 						<td> 
 							<b>Student *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="courseName" id="courseName" maxlength=20 value="<? print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student") ?>" type="text" style="width: 300px">

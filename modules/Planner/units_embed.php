@@ -82,7 +82,7 @@ else {
 
 	if ($result->rowCount()!=1) {
 		print "<div class='error'>" ;
-			print "The specified course cannot be found or you do not have access to it." ;
+			print _("The selected record does not exist, or you do not have access to it.") ;
 		print "</div>" ;
 	}
 	else {
@@ -172,7 +172,7 @@ else {
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
-									print "Name" ;
+									print _("Name") ;
 								print "</th>" ;
 								print "<th>" ;
 									print "Year Groups" ;

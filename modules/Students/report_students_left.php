@@ -135,7 +135,7 @@ else {
 						print "Count" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Name" ;
+						print _("Name") ;
 					print "</th>" ;
 					print "<th>" ;
 						print "Username" ;

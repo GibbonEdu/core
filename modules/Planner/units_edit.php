@@ -73,7 +73,7 @@ else {
 				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail5") {
-				$updateReturnMessage="Your request failed due to an attachment error." ;	
+				$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
 			}
 			else if ($updateReturn=="fail6") {
 				$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
@@ -183,7 +183,7 @@ else {
 
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print "The specified course cannot be found or you do not have access to it." ;
+						print _("The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 				else {
@@ -226,8 +226,8 @@ else {
 									</tr>
 									<tr>
 										<td> 
-											<b>School Year *</b><br/>
-											<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+											<b><? print _('School Year') ?> *</b><br/>
+											<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 										</td>
 										<td class="right">
 											<input readonly name="yearName" id="yearName" maxlength=20 value="<? print $yearName ?>" type="text" style="width: 300px">
@@ -236,7 +236,7 @@ else {
 									<tr>
 										<td> 
 											<b>Course *</b><br/>
-											<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+											<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 										</td>
 										<td class="right">
 											<input readonly name="courseName" id="courseName" maxlength=20 value="<? print $row["courseName"] ?>" type="text" style="width: 300px">
@@ -346,7 +346,7 @@ else {
 																print "First Lesson<br/><span style='font-size: 80%'>dd/mm/yyy<y/span>" ;
 															print "</th>" ;
 															print "<th>" ;
-																print "Actions" ;
+																print _("Actions") ;
 															print "</th>" ;
 														print "</tr>" ;
 												
@@ -803,7 +803,7 @@ else {
 
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print "The specified course cannot be found or you do not have access to it." ;
+						print _("The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 				else {
@@ -856,8 +856,8 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>School Year *</b><br/>
-										<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+										<b><? print _('School Year') ?> *</b><br/>
+										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<input readonly name="yearName" id="yearName" maxlength=20 value="<? print $yearName ?>" type="text" style="width: 300px">
@@ -866,7 +866,7 @@ else {
 								<tr>
 									<td> 
 										<b>Course *</b><br/>
-										<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<input readonly name="courseName" id="courseName" maxlength=20 value="<? print $row["nameShort"] ?>" type="text" style="width: 300px">
@@ -875,7 +875,7 @@ else {
 								<tr>
 									<td> 
 										<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-										<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<input readonly name="name" id="name" maxlength=40 value="<? print $row["name"] ?>" type="text" style="width: 300px">
@@ -920,7 +920,7 @@ else {
 														print "First Lesson<br/><span style='font-size: 80%'>dd/mm/yyy<y/span>" ;
 													print "</th>" ;
 													print "<th>" ;
-														print "Actions" ;
+														print _("Actions") ;
 													print "</th>" ;
 												print "</tr>" ;
 											

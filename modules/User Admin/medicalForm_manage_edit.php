@@ -111,7 +111,7 @@ else {
 					<tr>
 						<td> 
 							<b>Person *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<?
@@ -226,7 +226,7 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print "Name" ;
+							print _("Name") ;
 						print "</th>" ;
 						print "<th>" ;
 							print "Risk" ;
@@ -241,7 +241,7 @@ else {
 							print "Comment" ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Actions" ;
+							print _("Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					

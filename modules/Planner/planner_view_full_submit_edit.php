@@ -89,7 +89,7 @@ else {
 			
 			if ($result->rowCount()!=1) {
 				print "<div class='warning'>" ;
-					print "Lesson does not exist or you do not have access to it." ;
+					print _("The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -200,7 +200,7 @@ else {
 										<tr>
 											<td> 
 												<b>Student *</b><br/>
-												<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+												<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
 												<input readonly name="courseName" id="courseName" maxlength=20 value="<? print formatName("", htmlPrep($rowSubmission["preferredName"]), htmlPrep($rowSubmission["surname"]), "Student") ?>" type="text" style="width: 300px">
@@ -265,7 +265,7 @@ else {
 										<tr>
 											<td> 
 												<b>Student *</b><br/>
-												<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+												<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
 												<input readonly name="courseName" id="courseName" maxlength=20 value="<? print formatName("", htmlPrep($rowSubmission["preferredName"]), htmlPrep($rowSubmission["surname"]), "Student") ?>" type="text" style="width: 300px">

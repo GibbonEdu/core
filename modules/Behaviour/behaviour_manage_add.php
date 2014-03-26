@@ -61,7 +61,7 @@ else {
 				$addReturnMessage="Add succeeded, but there were problems uploading one or more attachments." ;	
 			}
 			else if ($addReturn=="success0") {
-				$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+				$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;

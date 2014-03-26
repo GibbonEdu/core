@@ -116,7 +116,7 @@ else {
 						<tr>
 							<td> 
 								<b>Type *</b><br/>
-								<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
 								<input readonly style='width: 300px' type='text' value='<? print $row["type"] ?>' />
@@ -126,7 +126,7 @@ else {
 						<tr>
 							<td> 
 								<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-								<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
 								<input readonly name="name" id="name" maxlength=255 value="<? print $row["name"] ?>" type="text" style="width: 300px">
@@ -135,7 +135,7 @@ else {
 						<tr>
 							<td> 
 								<b>ID *</b><br/>
-								<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
 								<input readonly name="id" id="id" maxlength=255 value="<? print $row["id"] ?>" type="text" style="width: 300px">
@@ -144,7 +144,7 @@ else {
 						<tr>
 							<td> 
 								<b>Author/Brand *</b><br/>
-								<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
 								<input readonly name="producer" id="producer" maxlength=255 value="<? print $row["producer"] ?>" type="text" style="width: 300px">
@@ -299,7 +299,7 @@ else {
 							</tr>
 							<tr id="locationRow">
 								<td> 
-									<b>Location</b><br/>
+									<b><? print _('Location') ?> *</b><br/>
 									<span style="font-size: 90%"><i>Item's main location.</i></span>
 								</td>
 								<td class="right">

@@ -55,7 +55,7 @@ else {
 			$row=$result->fetch() ;
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage.php'>Manage Grade Scales</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage_edit.php&gibbonScaleID=$gibbonScaleID'>Edit Grade Scale</a> > </div><div class='trailEnd'>Edit Grade</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage.php'>" . _('Manage Grade Scales') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage_edit.php&gibbonScaleID=$gibbonScaleID'>" . _('Edit Grade Scale') . "</a> > </div><div class='trailEnd'>" . _('Edit Grade') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -90,8 +90,8 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Grade Scales *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<b><? print _('Grade Scale') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="name" id="name" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
@@ -99,8 +99,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Value *</b><br/>
-							<span style="font-size: 90%"><i>Must be unique for this grade scale.</i></span>
+							<b><? print _('Value') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Must be unique for this grade scale.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="value" id="value" maxlength=10 value="<? if (isset($row["value"])) { print $row["value"] ; } ?>" type="text" style="width: 300px">
@@ -112,7 +112,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Descriptor *</b><br/>
+							<b><? print _('Descriptor') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -125,8 +125,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Sequence Number *</b><br/>
-							<span style="font-size: 90%"><i>Must be unique for this grade scale.</i></span>
+							<b><? print _('Sequence Number') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Must be unique for this grade scale.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="<? if (isset($row["sequenceNumber"])) { print $row["sequenceNumber"] ; } ?>" type="text" style="width: 300px">

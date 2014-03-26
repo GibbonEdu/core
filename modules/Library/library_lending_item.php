@@ -194,7 +194,7 @@ else {
 							print "Recorded By" ;
 						print "</th>" ;
 						print "<th style='width: 80px'>" ;
-							print "Actions" ;
+							print _("Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					

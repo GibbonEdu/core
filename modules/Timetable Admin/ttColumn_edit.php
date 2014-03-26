@@ -171,10 +171,10 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print "Name" ;
+							print _("Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Short Name" ;
+							print _("Short Name") ;
 						print "</th>" ;
 						print "<th>" ;
 							print "Time" ;
@@ -183,7 +183,7 @@ else {
 							print "Type" ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Actions" ;
+							print _("Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					

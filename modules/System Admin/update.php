@@ -58,59 +58,130 @@ else {
 	
 	getSystemSettings($guid, $connection2) ;
 	
-	$versionDB=$_SESSION[$guid]["version"] ;
+	$versionDB=getSettingByScope( $connection2, "System", "version" ) ;
 	$versionCode=$version ;
 	
 	print "<p>" ;
 		print "This page allows you to semi-automatically update your Gibbon installation to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades." ;
 	print "</p>" ;
 	
-	if ($updateReturn=="success0") {
-		print "<p>" ;
-			print "<b>You seem to be all up to date, good work buddy!</b>" ;
-		print "</p>" ;
+	$cuttingEdgeCode=getSettingByScope( $connection2, "System", "cuttingEdgeCode" ) ;
+	if ($cuttingEdgeCode!="Y") {
+		if ($updateReturn=="success0") {
+			print "<p>" ;
+				print "<b>You seem to be all up to date, good work buddy!</b>" ;
+			print "</p>" ;
+		}
+		else if ($versionDB==$versionCode) {
+			//Instructions on how to update
+			print "<h3>" ;
+				print "Update Instructions" ;
+			print "</h3>" ;
+			print "<ol>" ;
+				print "<li>You are currently using Gibbon v$versionCode.</i></li>" ;
+				print "<li>Check <a target='_blank' href='http://www.gibbonedu.org'>gibbonedu.org</a> for a newer version of Gibbon.</li>" ;
+				print "<li>Download the latest version, and unzip it on your computer.</li>" ;
+				print "<li>Use an FTP client to upload the new files to your server, making sure not to overwrite the <u>uploads</u> folder and the <u>config.php</u> file.</li>" ;
+				print "<li>Reload this page and follow the instructions to update your database to the latest version.</li>" ;
+			print "</ol>" ;
+		}
+		else if ($versionDB>$versionCode) {
+			//Error
+			print "<div class='error'>" ;
+				print "An error has occurred determining the version of the system you are using." ;
+			print "</div>" ;
+		}
+		else if ($versionDB<$versionCode) {
+			//Time to update
+			print "<h3>" ;
+				print "Datebase Update" ;
+			print "</h3>" ;
+			print "<p>" ;
+				print "It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v$versionDB to v$versionCode. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!</b>" ;
+			print "</p>" ;
+			?>
+			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/updateProcess.php?type=regularRelease" ?>">
+				<table cellspacing='0' style="width: 100%">	
+					<tr>
+						<td class="right"> 
+							<input type="hidden" name="versionDB" value="<? print $versionDB ?>">
+							<input type="hidden" name="versionCode" value="<? print $versionCode ?>">
+							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<? print _("Submit") ; ?>">
+						</td>
+					</tr>
+				</table>
+			</form>
+			<?
+		}
 	}
-	else if ($versionDB==$versionCode) {
-		//Instructions on how to update
-		print "<h3>" ;
-			print "Update Instructions" ;
-		print "</h3>" ;
-		print "<ol>" ;
-			print "<li>You are currently using Gibbon v$versionCode.</i></li>" ;
-			print "<li>Check <a target='_blank' href='http://www.gibbonedu.org'>gibbonedu.org</a> for a newer version of Gibbon.</li>" ;
-			print "<li>Download the latest version, and unzip it on your computer.</li>" ;
-			print "<li>Use an FTP client to upload the new files to your server, making sure not to overwrite the <u>uploads</u> folder and the <u>config.php</u> file.</li>" ;
-			print "<li>Reload this page and follow the instructions to update your database to the latest version.</li>" ;
-		print "</ol>" ;
-	}
-	else if ($versionDB>$versionCode) {
-		//Error
-		print "<div class='error'>" ;
-			print "An error has occurred determining the version of the system you are using." ;
+	else {
+		$cuttingEdgeCodeLine=getSettingByScope( $connection2, "System", "cuttingEdgeCodeLine" ) ;
+		if ($cuttingEdgeCodeLine=="" OR is_null($cuttingEdgeCodeLine)) {
+			$cuttingEdgeCodeLine=0 ;
+		}
+		
+		//Check to see if there are any updates
+		include "./CHANGEDB.php" ;
+		$versionMax=$sql[(count($sql)-1)][0] ;
+		$update=FALSE ;
+		if ($versionMax>$versionDB) {
+			$update=TRUE ;
+		}
+		else {
+			$sqlTokens=explode(";end", $sql[(count($sql)-1)][1]) ;
+			$versionMaxLinesMax=(count($sqlTokens)-1) ;
+			if ($versionMaxLinesMax>$cuttingEdgeCodeLine) {
+				$update=TRUE ;
+			}
+		}
+		
+		//Go! Start with warning about cutting edge code
+		print "<div class='warning'>" ;
+			print _('Your system is set up to run Cutting Edge code, which may or may not be as reliable as regular release code. Backup before installing, and avoid using cutting edge in production.') ;
 		print "</div>" ;
-	}
-	else if ($versionDB<$versionCode) {
-		//Time to update
-		print "<h3>" ;
-			print "Datebase Update" ;
-		print "</h3>" ;
-		print "<p>" ;
-			print "It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v$versionDB to v$versionCode. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!</b>" ;
-		print "</p>" ;
-		?>
-		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/updateProcess.php" ?>">
-			<table cellspacing='0' style="width: 100%">	
-				<tr>
-					<td class="right"> 
-						<input type="hidden" name="versionDB" value="<? print $versionDB ?>">
-						<input type="hidden" name="versionCode" value="<? print $versionCode ?>">
-						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<? print _("Submit") ; ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
-		<?
+		
+		if ($updateReturn=="success0") {
+			print "<p>" ;
+				print "<b>You seem to be all up to date, good work buddy!</b>" ;
+			print "</p>" ;
+		}
+		else if ($update==FALSE) {
+			//Instructions on how to update
+			print "<h3>" ;
+				print "Update Instructions" ;
+			print "</h3>" ;
+			print "<ol>" ;
+				print "<li>You are currently using Cutting Edge Gibbon v$versionCode.</i></li>" ;
+				print "<li>Check <a target='_blank' href='https://github.com/GibbonEdu/core'>our GitHub repo</a> to get the latest commits.</li>" ;
+				print "<li>Download the latest commits, and unzip it on your computer.</li>" ;
+				print "<li>Use an FTP client to upload the new files to your server, making sure not to overwrite the <u>uploads</u> folder and the <u>config.php</u> file.</li>" ;
+				print "<li>Reload this page and follow the instructions to update your database to the latest version.</li>" ;
+			print "</ol>" ;
+		}
+		else if ($update==TRUE) {
+			//Time to update
+			print "<h3>" ;
+				print "Datebase Update" ;
+			print "</h3>" ;
+			print "<p>" ;
+				print "It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v$versionDB line $cuttingEdgeCodeLine to v$versionCode line $versionMaxLinesMax. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!</b>" ;
+			print "</p>" ;
+			?>
+			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/updateProcess.php?type=cuttingEdge" ?>">
+				<table cellspacing='0' style="width: 100%">	
+					<tr>
+						<td class="right"> 
+							<input type="hidden" name="versionDB" value="<? print $versionDB ?>">
+							<input type="hidden" name="versionCode" value="<? print $versionCode ?>">
+							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<? print _("Submit") ; ?>">
+						</td>
+					</tr>
+				</table>
+			</form>
+			<?
+		}
 	}
 }
 ?>

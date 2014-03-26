@@ -54,7 +54,7 @@ else {
 			$addReturnMessage="Add succeeded, but there were problems uploading one or more attachments." ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -300,7 +300,7 @@ else {
 			
 			<tr id="locationRow" style='display: none'>
 				<td> 
-					<b>Location</b><br/>
+					<b><? print _('Location') ?> *</b><br/>
 					<span style="font-size: 90%"><i>Item's main location.</i></span>
 				</td>
 				<td class="right">

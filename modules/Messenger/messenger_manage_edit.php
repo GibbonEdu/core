@@ -297,7 +297,7 @@ else {
 							<tr id="roleRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Roles</b><br/>
-									<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="roles[]" id="roles[]" multiple style="width: 302px; height: 100px">
@@ -390,7 +390,7 @@ else {
 							<tr id="yearGroupRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Year Groups</b><br/>
-									<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="yearGroups[]" id="yearGroups[]" multiple style="width: 302px; height: 100px">
@@ -537,7 +537,7 @@ else {
 							<tr id="rollGroupRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Roll Groups</b><br/>
-									<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="rollGroups[]" id="rollGroups[]" multiple style="width: 302px; height: 100px">
@@ -696,7 +696,7 @@ else {
 							<tr id="courseRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Courses</b><br/>
-									<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="courses[]" id="courses[]" multiple style="width: 302px; height: 100px">
@@ -849,7 +849,7 @@ else {
 							<tr id="classRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Classes</b><br/>
-									<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="classes[]" id="classes[]" multiple style="width: 302px; height: 100px">
@@ -1002,7 +1002,7 @@ else {
 							<tr id="activitiesRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Activities</b><br/>
-									<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' activities="right">
 									<select name="activities[]" id="activities[]" multiple style="width: 302px; height: 100px">
@@ -1140,7 +1140,7 @@ else {
 							<tr id="applicantsRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Years</b><br/>
-									<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="applicantList[]" id="applicantList[]" multiple style="width: 302px; height: 100px">
@@ -1211,7 +1211,7 @@ else {
 							<tr id="housesRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Houses</b><br/>
-									<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="houseList[]" id="houseList[]" multiple style="width: 302px; height: 100px">
@@ -1289,7 +1289,7 @@ else {
 							<tr id="individualsRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Individuals</b><br/>
-									<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="individualList[]" id="individualList[]" multiple style="width: 302px; height: 100px">

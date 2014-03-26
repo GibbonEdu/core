@@ -99,7 +99,7 @@ else {
 					<tr>
 						<td> 
 							<b>Person *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<?

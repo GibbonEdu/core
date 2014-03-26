@@ -458,7 +458,7 @@ else {
 							<tr>
 								<td> 
 									<b>Assessment Type *</b><br/>
-									<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+									<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 								</td>
 								<td class="right" colspan=2>
 									<input readonly name="name" id="name" maxlength=20 value="<? print $rowSelect["name"] ?>" type="text" style="width: 300px; text-align: right">

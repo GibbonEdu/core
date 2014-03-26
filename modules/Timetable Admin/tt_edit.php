@@ -106,8 +106,8 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>School Year *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<b><? print _('School Year') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="gibbonSchoolYearID" id="gibbonSchoolYearID" maxlength=20 value="<? print $row["yearName"] ?>" type="text" style="width: 300px">
@@ -166,7 +166,7 @@ else {
 							<? 
 							$yearGroups=getNonTTYearGroups($connection2, $_GET["gibbonSchoolYearID"], $gibbonTTID) ;
 							if ($yearGroups=="") {
-								print "<i>No year groups available.</i>" ;
+								print "<i>" . _('No year groups available.') . "</i>" ;
 							}
 							else {
 								for ($i=0; $i<count($yearGroups); $i=$i+2) {
@@ -224,16 +224,16 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print "Name" ;
+							print _("Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Short Name" ;
+							print _("Short Name") ;
 						print "</th>" ;
 						print "<th>" ;
 							print "Column" ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Actions" ;
+							print _("Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					

@@ -114,7 +114,7 @@ else {
 					<tr>
 						<td> 
 							<b>Participants</b><br/>
-							<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
@@ -242,7 +242,7 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print "Name" ;
+								print _("Name") ;
 							print "</th>" ;
 							print "<th>" ;
 								print "Email" ;
@@ -251,7 +251,7 @@ else {
 								print "Class Role" ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Actions" ;
+								print _("Actions") ;
 							print "</th>" ;
 							print "<th>" ;
 								?>
@@ -335,7 +335,7 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print "Name" ;
+								print _("Name") ;
 							print "</th>" ;
 							print "<th>" ;
 								print "Email" ;
@@ -344,7 +344,7 @@ else {
 								print "Class Role" ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Actions" ;
+								print _("Actions") ;
 							print "</th>" ;
 						print "</tr>" ;
 						

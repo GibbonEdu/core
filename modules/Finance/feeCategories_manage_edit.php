@@ -55,7 +55,7 @@ else {
 			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage="Your request failed due to an attachment error." ;	
+			$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
 		}
 		else if ($updateReturn=="success0") {
 			$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -121,13 +121,13 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Active *</b><br/>
+							<b><? print _('Active') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="active" id="active" style="width: 302px">
-								<option <? if ($row["active"]=="Y") { print "selected" ; } ?> value="Y">Y</option>
-								<option <? if ($row["active"]=="N") { print "selected" ; } ?> value="N">N</option>
+								<option <? if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><? print _('Y') ?></option>
+								<option <? if ($row["active"]=="N") { print "selected" ; } ?> value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>

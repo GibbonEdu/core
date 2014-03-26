@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/gradeScales_m
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage.php'>Manage Grade Scales</a> > </div><div class='trailEnd'>Add Grade Scale</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage.php'>" . _('Manage Grade Scales') . "</a> > </div><div class='trailEnd'>" . _('Add Grade Scale') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -93,8 +93,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Usage *</b><br/>
-					<span style="font-size: 90%"><i>Brief description of how scale is used.</i></span>
+					<b><? print _('Usage') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('Brief description of how scale is used.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="usage" id="usage" maxlength=50 value="" type="text" style="width: 300px">
@@ -106,24 +106,24 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Active *</b><br/>
+					<b><? print _('Active') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="active" id="active" style="width: 302px">
-						<option value="Y">Y</option>
-						<option value="N">N</option>
+						<option value="Y"><? print _('Y') ?></option>
+						<option value="N"><? print _('N') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Numeric? *</b><br/>
-					<span style="font-size: 90%"><i>Does this scale use only numeric grades? Note, grade "Incomplete" is exempt.</i></span>
+					<b><? print _('Numeric') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('Does this scale use only numeric grades? Note, grade "Incomplete" is exempt.') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="numeric" id="numeric" style="width: 302px">
-						<option value="Y">Y</option>
-						<option value="N">N</option>
+						<option value="Y"><? print _('Y') ?></option>
+						<option value="N"><? print _('N') ?></option>
 					</select>
 				</td>
 			</tr>

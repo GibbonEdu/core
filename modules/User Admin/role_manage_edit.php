@@ -109,7 +109,7 @@ else {
 					<tr>
 						<td> 
 							<b>Role Name *</b><br/>
-							<span style="font-size: 90%"><i>Needs to be unique.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=20 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
@@ -122,7 +122,7 @@ else {
 					<tr>
 						<td> 
 							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i>Needs to be unique.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="nameShort" id="nameShort" maxlength=4 value="<? print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
@@ -148,7 +148,7 @@ else {
 					<tr>
 						<td> 
 							<b>Type *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="type" id="type" readonly="readonly" maxlength=20 value="Additional" type="text" style="width: 300px">

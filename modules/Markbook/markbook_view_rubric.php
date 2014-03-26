@@ -73,7 +73,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The selected class does not exist, or you do not have access to it." ;
+				print _("The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -89,7 +89,7 @@ else {
 
 			if ($result2->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print "The selected column does not exist, or you do not have access to it." ;
+					print _("The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {

@@ -111,8 +111,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>School Year *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<b><? print _('School Year') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<?
@@ -136,7 +136,7 @@ else {
 					<tr>
 						<td> 
 							<b>Invoicee *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<?
@@ -162,7 +162,7 @@ else {
 					<tr>
 						<td> 
 							<b>Scheduling *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="billingScheduleType" id="billingScheduleType" value="<? print $row["billingScheduleType"] ?>" type="text" style="width: 300px">
@@ -174,7 +174,7 @@ else {
 						<tr>
 							<td> 
 								<b>Billing Schedule *</b><br/>
-								<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
 								<?
@@ -205,7 +205,7 @@ else {
 						<tr>
 							<td> 
 								<b>Invoice Due Date *</b><br/>
-								<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
 								<input readonly name="invoiceDueDate" id="invoiceDueDate" value="<? print dateConvertBack($guid, $row["invoiceDueDate"]) ?>" type="text" style="width: 300px">

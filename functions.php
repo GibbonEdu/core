@@ -1595,18 +1595,18 @@ function getMaxUpload( $multiple="" ) {
 	$output.="<div style='margin-top: 5px; font-style: italic; text-align: right; color: #c00'>" ;
 	if ($multiple==TRUE) {
 		if ($post<$file) {
-			$output.=sprintf(_('Maximum size for all files: " .%1$sMB'), $post) . "<br/>" ;
+			$output.=sprintf(_('Maximum size for all files: %1$sMB'), $post) . "<br/>" ;
 		}
 		else {
-			$output.=sprintf(_('Maximum size for all files: " .%1$sMB'), $file) . "<br/>" ;
+			$output.=sprintf(_('Maximum size for all files: %1$sMB'), $file) . "<br/>" ;
 		}
 	}
 	else {
 		if ($post<$file) {
-			$output.=sprintf(_('Maximum file size: " .%1$sMB'), $post) . "<br/>" ;
+			$output.=sprintf(_('Maximum file size: %1$sMB'), $post) . "<br/>" ;
 		}
 		else {
-			$output.=sprintf(_('Maximum file size: " .%1$sMB'), $file) . "<br/>" ;
+			$output.=sprintf(_('Maximum file size: %1$sMB'), $file) . "<br/>" ;
 		}
 	}
 	$output.="</div>" ; 

@@ -53,7 +53,7 @@ else {
 			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -199,7 +199,7 @@ else {
 							<tr>
 								<td> 
 									<b>School Year Name *</b><br/>
-									<span style="font-size: 90%"><i>Needs to be unique.</i></span>
+									<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="nextname" id="nextname" maxlength=9 value="" type="text" style="width: 300px">
@@ -297,7 +297,7 @@ else {
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
-									print "Name" ;
+									print _("Name") ;
 								print "</th>" ;
 								print "<th>" ;
 									print "Primary Role" ;
@@ -378,7 +378,7 @@ else {
 							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr class='head'>" ;
 									print "<th>" ;
-										print "Name" ;
+										print _("Name") ;
 									print "</th>" ;
 									print "<th>" ;
 										print "Primary Role" ;
@@ -493,7 +493,7 @@ else {
 							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr class='head'>" ;
 									print "<th>" ;
-										print "Name" ;
+										print _("Name") ;
 									print "</th>" ;
 									print "<th>" ;
 										print "Primary Role" ;
@@ -630,7 +630,7 @@ else {
 							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr class='head'>" ;
 									print "<th>" ;
-										print "Name" ;
+										print _("Name") ;
 									print "</th>" ;
 									print "<th>" ;
 										print "Primary Role" ;
@@ -743,7 +743,7 @@ else {
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
-									print "Name" ;
+									print _("Name") ;
 								print "</th>" ;
 								print "<th>" ;
 									print "Primary Role" ;
@@ -820,7 +820,7 @@ else {
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
-									print "Name" ;
+									print _("Name") ;
 								print "</th>" ;
 								print "<th>" ;
 									print "Primary Role" ;

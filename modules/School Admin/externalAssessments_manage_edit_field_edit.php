@@ -55,7 +55,7 @@ else {
 			$row=$result->fetch() ;
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessments_manage.php'>Manage External Assessments</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessments_manage_edit.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'>Edit Grade Scale</a> > </div><div class='trailEnd'>Edit Grade</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessments_manage.php'>" . _('Manage External Assessments') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessments_manage_edit.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'>" . _('Edit External Assessment') . "</a> > </div><div class='trailEnd'>" . _('Edit Grade') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -90,8 +90,8 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Grade Scale *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<b><? print _('External Assessment') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="name" id="name" value="<? print $row["assName"] ?>" type="text" style="width: 300px">
@@ -112,7 +112,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Category *</b><br/>
+							<b><? print _('Category') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="category" id="category" maxlength=10 value="<? if (isset($row["category"])) { print $row["category"] ; } ?>" type="text" style="width: 300px">
@@ -124,8 +124,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Order *</b><br/>
-							<span style="font-size: 90%"><i>Order in which fields appear within category<br/>Should be unique for this category.<br/></i></span>
+							<b><? print _('Order') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Order in which fields appear within category<br/>Should be unique for this category.') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="order" id="order" maxlength=4 value="<? if (isset($row["order"])) { print $row["order"] ; } ?>" type="text" style="width: 300px">
@@ -137,8 +137,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Grade Scale *</b><br/>
-							<span style="font-size: 90%"><i>Grade scale used to control values that can be assigned.</i></span>
+							<b><? print _('Grade Scale') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Grade scale used to control values that can be assigned.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="gibbonScaleID" id="gibbonScaleID" style="width: 302px">
@@ -169,8 +169,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Year Groups</b><br/>
-							<span style="font-size: 90%"><i>Year groups to which this field is relevant.</i></span>
+							<b><? print _('Year Groups') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Year groups to which this field is relevant.') ?></i></span>
 						</td>
 						<td class="right">
 							<?
@@ -184,10 +184,10 @@ else {
 								});
 							</script>
 							<?
-							print "All / None <input type='checkbox' class='checkall'><br/>" ;
+							print _("All") .  " / " . _("None") . " <input type='checkbox' class='checkall'><br/>" ;
 							$yearGroups=getYearGroups($connection2) ;
 							if ($yearGroups=="") {
-								print "<i>No year groups available.</i>" ;
+								print "<i>" . _('No year groups available.') . "</i>" ;
 							}
 							else {
 								$selectedYears=explode(",", $row["gibbonYearGroupIDList"]) ;

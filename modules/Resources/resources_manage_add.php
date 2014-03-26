@@ -58,13 +58,13 @@ else {
 				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($addReturn=="fail5") {
-				$addReturnMessage="Your request failed due to an attachment error." ;	
+				$addReturnMessage=_("Your request failed due to an attachment error.") ;	
 			}
 			else if ($addReturn=="fail6") {
 				$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
 			}
 			else if ($addReturn=="success0") {
-				$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+				$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -366,7 +366,7 @@ else {
 						print "All / None <input type='checkbox' class='checkall' checked><br/>" ;
 						$yearGroups=getYearGroups($connection2) ;
 						if ($yearGroups=="") {
-							print "<i>No year groups available.</i>" ;
+							print "<i>" . _('No year groups available.') . "</i>" ;
 						}
 						else {
 							for ($i=0; $i<count($yearGroups); $i=$i+2) {

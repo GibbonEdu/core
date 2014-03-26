@@ -136,7 +136,7 @@ else {
 				<tr>
 					<td> 
 						<b>Sequence Number *</b><br/>
-						<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+						<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 					</td>
 					<td class="right">
 						<input readonly type='text' name="<? print "sequenceNumber" .$count ?>" id="<? print "sequenceNumber" .$count ?>" maxlength=4 value="<? print $row["sequenceNumber"] ?>" style="width: 300px">

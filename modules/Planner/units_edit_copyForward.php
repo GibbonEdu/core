@@ -92,7 +92,7 @@ else {
 			
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print "The specified course cannot be found or you do not have access to it." ;
+					print _("The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -141,8 +141,8 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>School Year *</b><br/>
-										<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+										<b><? print _('School Year') ?> *</b><br/>
+										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<?
@@ -153,7 +153,7 @@ else {
 								<tr>
 									<td> 
 										<b>Class *</b><br/>
-										<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<? print "<input readonly value='" . $course . "." . $class . "' type='text' style='width: 300px'>" ; ?>
@@ -162,7 +162,7 @@ else {
 								<tr>
 									<td> 
 										<b>Unit *</b><br/>
-										<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<? print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>

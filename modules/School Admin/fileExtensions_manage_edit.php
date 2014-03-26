@@ -91,7 +91,7 @@ else {
 					<tr>
 						<td> 
 							<b>Extension *</b><br/>
-							<span style="font-size: 90%"><i>Needs to be unique.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="extension" id="extension" maxlength=7 value="<? print $row["extension"] ?>" type="text" style="width: 300px">

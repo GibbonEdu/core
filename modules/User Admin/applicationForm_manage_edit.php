@@ -110,7 +110,7 @@ else {
 					<tr>
 						<td> 
 							<b>Application ID *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="gibbonApplicationFormID" id="gibbonApplicationFormID" value="<? print htmlPrep($row["gibbonApplicationFormID"]) ?>" type="text" style="width: 300px">
@@ -169,7 +169,7 @@ else {
 						<tr>
 							<td> 
 								<b>Status *</b><br/>
-								<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
 								<input readonly name="status" id="status" maxlength=20 value="<? print htmlPrep($row["status"]) ?>" type="text" style="width: 300px">
@@ -2075,7 +2075,7 @@ else {
 								<tr>
 									<td> 
 										<? print "<b>" . $rowFile["name"] . "</b><br/>" ?>
-										<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<?

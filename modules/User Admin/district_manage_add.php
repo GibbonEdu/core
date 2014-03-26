@@ -48,7 +48,7 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -62,7 +62,7 @@ else {
 			<tr>
 				<td> 
 					<b>District Name *</b><br/>
-					<span style="font-size: 90%"><i>Needs to be unique.</i></span>
+					<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=30 value="" type="text" style="width: 300px">

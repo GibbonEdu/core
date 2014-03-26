@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/rollGroup_man
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Roll Groups</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Roll Groups') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -36,7 +36,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage="Your request was completed successfully.A reasonable effort was made to remove the enrolment record for all students in this roll group." ;	
+			$deleteReturnMessage="Your request was completed successfully." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -83,14 +83,14 @@ else {
 		print "<div class='linkTop'>" ;
 			//Print year picker
 			if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>Previous Year</a> " ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Previous Year') . "</a> " ;
 			}
 			else {
 				print "Previous Year " ;
 			}
 			print " | " ;
 			if (getNextSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>Next Year</a> " ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Next Year') . "</a> " ;
 			}
 			else {
 				print "Next Year " ;
@@ -120,22 +120,20 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print "School Year" ;
+						print _("School Year") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Name" ;
+						print _("Name") . "<br/>" ;
+						print "<span style='font-size: 85%; font-style: italic'>" . _("Short Name") . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Short Name" ;
+						print _("Form Tutors") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Form Tutors" ;
+						print _("Space") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Room" ;
-					print "</th>" ;
-					print "<th>" ;
-						print "Actions" ;
+						print _("Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -155,10 +153,8 @@ else {
 							print $row["yearName"] ;
 						print "</td>" ;
 						print "<td>" ;
-							print $row["name"] ;
-						print "</td>" ;
-						print "<td>" ;
-							print $row["nameShort"] ;
+							print "<b>" . $row["name"] ."</b><br/>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . $row["nameShort"] . "</span>" ;
 						print "</td>" ;
 						print "<td>" ;
 							try {

@@ -100,8 +100,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>School Year *</b><br/>
-						<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+						<b><? print _('School Year') ?> *</b><br/>
+						<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 					</td>
 					<td class="right">
 						<?
@@ -130,7 +130,7 @@ else {
 				<tr>
 					<td> 
 						<b>Invoicees *</b><br/>
-						<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple. If a student is missing from this list, visit <a href='<? print $_SESSION[$guid]["absoluteURL"] ?>/index.php?q=/modules/Finance/invoicees_manage.php'>Manage Invoicees</a> to automatically generate them.</i></span>
+						<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?> If a student is missing from this list, visit <a href='<? print $_SESSION[$guid]["absoluteURL"] ?>/index.php?q=/modules/Finance/invoicees_manage.php'>Manage Invoicees</a> to automatically generate them.</i></span>
 					</td>
 					<td class="right">
 						<select name="gibbonFinanceInvoiceeIDs[]" id="gibbonFinanceInvoiceeIDs[]" multiple style="width: 302px; height: 150px">

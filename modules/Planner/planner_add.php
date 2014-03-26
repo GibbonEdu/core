@@ -148,10 +148,10 @@ else {
 					$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
 				}
 				else if ($addReturn=="fail6") {
-					$addReturnMessage="Your request failed due to an attachment error." ;	
+					$addReturnMessage=_("Your request failed due to an attachment error.") ;	
 				}
 				else if ($addReturn=="success0") {
-					$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+					$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -1200,7 +1200,7 @@ else {
 					<tr id="guestListRow">
 						<td> 
 							<b>Guest List</b><br/>
-							<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="guests[]" id="guests[]" multiple style="width: 302px; height: 150px">

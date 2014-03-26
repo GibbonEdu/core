@@ -73,7 +73,7 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Name" ;
+					print _("Name") ;
 				print "</th>" ;
 				print "<th style='width: 200px;'>" ;
 					print "Description" ;
@@ -82,7 +82,7 @@ else {
 					print "Type" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Active" ;
+					print _("Active") ;
 				print "</th>" ;
 				print "<th>" ;
 					print "Version" ;

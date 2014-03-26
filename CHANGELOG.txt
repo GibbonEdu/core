@@ -151,6 +151,14 @@ Messenger: added ability for priviledged users to set replyto address in outgoin
 
 User Admin: moved Student Enrolment into User Management category
 	Edited values in table gibbonAction
+
+General: changed appearance of main menu
+	Edited values in table gibbonModule
+	Edited file /themes/Default/css/main.css
+
+General: added ability for system to update with cutting edge code from GitHub (rather than finished versions)
+	New values in gibbonSetting
+	Edited files /modules/System Admin/systemSettings*.php, update*.php
 	
 
 v7.1.02

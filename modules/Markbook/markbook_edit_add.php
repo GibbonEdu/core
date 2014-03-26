@@ -60,7 +60,7 @@ else {
 			}
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print "The specified class does not exist, or you do not have access to it." ;
+					print _("The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -86,13 +86,13 @@ else {
 						$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($addReturn=="fail5") {
-						$addReturnMessage="Your request failed due to an attachment error." ;	
+						$addReturnMessage=_("Your request failed due to an attachment error.") ;	
 					}
 					else if ($addReturn=="fail6") {
 						$addReturnMessage="Your request failed because you already have one \"End of Year\" column for this class." ;	
 					}
 					else if ($addReturn=="success0") {
-						$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+						$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;
@@ -119,7 +119,7 @@ else {
 						<tr>
 							<td> 
 								<b>Class *</b><br/>
-								<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
 								<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<? print $row["course"] . "." . $row["class"] ?>" type="text" style="width: 300px">
@@ -487,8 +487,8 @@ else {
 							</td>
 							<td class="right">
 								<select name="viewableStudents" id="viewableStudents" style="width: 302px">
-									<option value="Y">Y</option>
-									<option value="N">N</option>
+									<option value="Y"><? print _('Y') ?></option>
+									<option value="N"><? print _('N') ?></option>
 								</select>
 							</td>
 						</tr>
@@ -499,8 +499,8 @@ else {
 							</td>
 							<td class="right">
 								<select name="viewableParents" id="viewableParents" style="width: 302px">
-									<option value="Y">Y</option>
-									<option value="N">N</option>
+									<option value="Y"><? print _('Y') ?></option>
+									<option value="N"><? print _('N') ?></option>
 								</select>
 							</td>
 						</tr>

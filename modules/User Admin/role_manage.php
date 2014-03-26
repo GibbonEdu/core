@@ -70,10 +70,10 @@ else {
 					print "Category" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Name" ;
+					print _("Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Short Name" ;
+					print _("Short Name") ;
 				print "</th>" ;
 				print "<th>" ;
 					print "Description" ;

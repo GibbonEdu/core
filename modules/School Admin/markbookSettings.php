@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/behaviourSett
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Markbook Settings</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Markbook Settings') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -101,8 +101,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="On") {print "selected ";} ?>value="On">On</option>
-						<option <? if ($row["value"]=="Off") {print "selected ";} ?>value="Off">Off</option>
+						<option <? if ($row["value"]=="On") {print "selected ";} ?>value="On"><? print _('On') ?></option>
+						<option <? if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><? print _('Off') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -125,8 +125,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y">Y</option>
-						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N">N</option>
+						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><? print _('Y') ?></option>
+						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N"><? print _('N') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -149,8 +149,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y">Y</option>
-						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N">N</option>
+						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><? print _('Y') ?></option>
+						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N"><? print _('N') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -173,8 +173,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y">Y</option>
-						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N">N</option>
+						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><? print _('Y') ?></option>
+						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N"><? print _('N') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -197,8 +197,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y">Y</option>
-						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N">N</option>
+						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><? print _('Y') ?></option>
+						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N"><? print _('N') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -221,8 +221,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y">Y</option>
-						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N">N</option>
+						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><? print _('Y') ?></option>
+						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N"><? print _('N') ?></option>
 					</select>
 				</td>
 			</tr>

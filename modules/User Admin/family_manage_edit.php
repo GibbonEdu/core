@@ -428,7 +428,7 @@ else {
 							print "Photo" ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Name" ;
+							print _("Name") ;
 						print "</th>" ;
 						print "<th>" ;
 							print "Status" ;
@@ -440,7 +440,7 @@ else {
 							print "Comment" ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Actions" ;
+							print _("Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					
@@ -598,7 +598,7 @@ else {
 							print "Photo" ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Name" ;
+							print _("Name") ;
 						print "</th>" ;
 						print "<th>" ;
 							print "Status" ;
@@ -625,7 +625,7 @@ else {
 							print "<span title='Contact by Mail'>M</span>" ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Actions" ;
+							print _("Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					
@@ -743,8 +743,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="childDataAccess" id="childDataAccess" style="width: 302px">
-								<option value="Y">Y</option>
-								<option value="N">N</option>
+								<option value="Y"><? print _('Y') ?></option>
+								<option value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -798,8 +798,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="contactCall" id="contactCall" style="width: 302px">
-								<option value="Y">Y</option>
-								<option value="N">N</option>
+								<option value="Y"><? print _('Y') ?></option>
+								<option value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -810,8 +810,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="contactSMS" id="contactSMS" style="width: 302px">
-								<option value="Y">Y</option>
-								<option value="N">N</option>
+								<option value="Y"><? print _('Y') ?></option>
+								<option value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -822,8 +822,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="contactEmail" id="contactEmail" style="width: 302px">
-								<option value="Y">Y</option>
-								<option value="N">N</option>
+								<option value="Y"><? print _('Y') ?></option>
+								<option value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -834,8 +834,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="contactMail" id="contactMail" style="width: 302px">
-								<option value="Y">Y</option>
-								<option value="N">N</option>
+								<option value="Y"><? print _('Y') ?></option>
+								<option value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>

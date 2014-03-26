@@ -149,16 +149,16 @@ else {
 						print "Category" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Name" ;
+						print _("Name") ;
 					print "</th>" ;
 					print "<th>" ;
 						print "Year Groups" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Active" ;
+						print _("Active") ;
 					print "</th>" ;
 					print "<th style='width: 80px'>" ;
-						print "Actions" ;
+						print _("Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
 				

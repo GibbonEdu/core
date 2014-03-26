@@ -116,13 +116,13 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Active *</b><br/>
+							<b><? print _('Active') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="active" id="active" style="width: 302px">
-								<option <? if ($row["active"]=="Y") { print "selected" ; } ?> value="Y">Y</option>
-								<option <? if ($row["active"]=="N") { print "selected" ; } ?> value="N">N</option>
+								<option <? if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><? print _('Y') ?></option>
+								<option <? if ($row["active"]=="N") { print "selected" ; } ?> value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>

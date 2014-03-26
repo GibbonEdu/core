@@ -131,14 +131,14 @@ else {
 			print "<div class='linkTop'>" ;
 				//Print year picker
 				if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>Previous Year</a> " ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Previous Year') . "</a> " ;
 				}
 				else {
 					print "Previous Year " ;
 				}
 				print " | " ;
 				if (getNextSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>Next Year</a> " ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Next Year') . "</a> " ;
 				}
 				else {
 					print "Next Year " ;
@@ -198,13 +198,13 @@ else {
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th style='width: 150px'>" ;
-									print "Name" ;
+									print _("Name") ;
 								print "</th>" ;
 								print "<th style='width: 450px'>" ;
 									print "Description" ;
 								print "</th>" ;
 								print "<th style='width: 120px'>" ;
-									print "Actions" ;
+									print _("Actions") ;
 								print "</th>" ;
 							print "</tr>" ;
 							
@@ -262,13 +262,13 @@ else {
 									print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th style='width: 150px'>" ;
-											print "Name" ;
+											print _("Name") ;
 										print "</th>" ;
 										print "<th style='width: 450px'>" ;
 											print "Description" ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Actions" ;
+											print _("Actions") ;
 										print "</th>" ;
 									print "</tr>" ;
 							

@@ -144,7 +144,7 @@ else {
 				}		
 				if ($result->rowCount()!=1) {
 					print "<div class='warning'>" ;
-						print "Lesson does not exist or you do not have access to it." ;
+						print _("The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 				else {
@@ -320,7 +320,7 @@ else {
 					}
 					if (($row["role"]=="Student" AND $row["viewableStudents"]=="N") AND ($highestAction=="Lesson Planner_viewMyChildrensClasses" AND $row["viewableParents"]=="N")) {
 						print "<div class='warning'>" ;
-							print "Lesson does not exist or you do not have access to it." ;
+							print _("The selected record does not exist, or you do not have access to it.") ;
 						print "</div>" ;
 					}
 					else {
@@ -1193,13 +1193,13 @@ else {
 													print "Category" ;
 												print "</th>" ;
 												print "<th>" ;
-													print "Name" ;
+													print _("Name") ;
 												print "</th>" ;
 												print "<th>" ;
 													print "Year Groups" ;
 												print "</th>" ;
 												print "<th>" ;
-													print "Actions" ;
+													print _("Actions") ;
 												print "</th>" ;
 											print "</tr>" ;
 								
@@ -1364,13 +1364,13 @@ else {
 																print "Category" ;
 															print "</th>" ;
 															print "<th>" ;
-																print "Name" ;
+																print _("Name") ;
 															print "</th>" ;
 															print "<th>" ;
 																print "Year Groups" ;
 															print "</th>" ;
 															print "<th>" ;
-																print "Actions" ;
+																print _("Actions") ;
 															print "</th>" ;
 														print "</tr>" ;
 

@@ -49,7 +49,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The specified learning area cannot be found or you do not have access to it." ;
+				print _("The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -79,7 +79,7 @@ else {
 					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail5") {
-					$updateReturnMessage="Your request failed due to an attachment error." ;	
+					$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
 				}
 				else if ($updateReturn=="success0") {
 					$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -166,7 +166,7 @@ else {
 									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
-												print "Name" ;
+												print _("Name") ;
 											print "</th>" ;
 											print "<th>" ;
 												print "Type" ;

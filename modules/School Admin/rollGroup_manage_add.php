@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/rollGroup_man
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rollGroup_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Roll Groups</a> > </div><div class='trailEnd'>Add Roll Group</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rollGroup_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Roll Groups') . "</a> > </div><div class='trailEnd'>" . _('Add Roll Group') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -48,7 +48,7 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -86,8 +86,8 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>School Year *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+							<b><? print _('School Year') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
@@ -99,7 +99,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Roll Group Name *</b><br/>
+							<b><? print _('Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i>Needs to be unique in school year.</i></span>
 						</td>
 						<td class="right">
@@ -125,8 +125,8 @@ else {
 					</tr>
 					<tr>
 						<td rowspan=3> 
-							<b>Form Tutors</b><br/>
-							<span style="font-size: 90%"><i>Up to 3 per form. The first-listed will be marked as "Main Tutor".</i></span>
+							<b><? print _('Tutors') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Up to 3 per roll group. The first-listed will be marked as "Main Tutor".') ?></i></span>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="gibbonPersonIDTutor">
@@ -186,7 +186,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Location</b><br/>
+							<b><? print _('Location') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -213,8 +213,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Next Roll Group</b><br/>
-							<span style="font-size: 90%"><i>Set student progression on rollover.</i></span>
+							<b><? print _('Next Roll Group') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Sets student progression on rollover.') ?></i></span>
 						</td>
 						<td class="right">
 							<?

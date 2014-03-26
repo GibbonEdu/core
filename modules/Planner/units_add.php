@@ -59,13 +59,13 @@ else {
 				$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($addReturn=="fail5") {
-				$addReturnMessage="Your request failed due to an attachment error." ;	
+				$addReturnMessage=_("Your request failed due to an attachment error.") ;	
 			}
 			else if ($addReturn=="fail6") {
 				$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
 			}
 			else if ($addReturn=="success0") {
-				$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+				$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -140,8 +140,8 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>School Year *</b><br/>
-										<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+										<b><? print _('School Year') ?> *</b><br/>
+										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<input readonly name="yearName" id="yearName" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
@@ -150,7 +150,7 @@ else {
 								<tr>
 									<td> 
 										<b>Course *</b><br/>
-										<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<input readonly name="courseName" id="courseName" maxlength=20 value="<? print $rowCourse["nameShort"] ?>" type="text" style="width: 300px">
@@ -236,8 +236,8 @@ else {
 															?>
 															<input name="gibbonCourseClassID<? print $classCount?>" id="gibbonCourseClassID<? print $classCount?>" maxlength=10 value="<? print $rowClass["gibbonCourseClassID"] ?>" type="hidden" style="width: 300px">
 															<select name="running<? print $classCount?>" id="running<? print $classCount?>" style="width:100%">
-																<option value="N">N</option>
-																<option value="Y">Y</option>
+																<option value="N"><? print _('N') ?></option>
+																<option value="Y"><? print _('Y') ?></option>
 															</select>
 															<?
 														print "</td>" ;

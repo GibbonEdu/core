@@ -91,7 +91,7 @@ else {
 
 			if ($resultCourse->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print "The specified course cannot be found or you do not have access to it." ;
+					print _("The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {

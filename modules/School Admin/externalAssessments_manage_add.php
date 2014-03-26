@@ -110,8 +110,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="active" id="active" style="width: 302px">
-						<option value="Y">Y</option>
-						<option value="N">N</option>
+						<option value="Y"><? print _('Y') ?></option>
+						<option value="N"><? print _('N') ?></option>
 					</select>
 				</td>
 			</tr>

@@ -91,7 +91,7 @@ else {
 					<tr>
 						<td> 
 							<b>Year Group Name *</b><br/>
-							<span style="font-size: 90%"><i>Needs to be unique.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="name" id="name" value="<? print $row["name"] ?>" type="text" style="width: 300px">
@@ -104,7 +104,7 @@ else {
 					<tr>
 						<td> 
 							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i>Needs to be unique.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="nameShort" id="nameShort" value="<? print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">

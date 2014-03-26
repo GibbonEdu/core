@@ -151,7 +151,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Location</b><br/>
+					<b><? print _('Location') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -339,7 +339,7 @@ else {
 					print "<span style='font-size: 85%; font-style: italic'>Borrowable</span>" ;
 				print "</th>" ;
 				print "<th style='width: 100px'>" ;
-					print "Actions" ;
+					print _("Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			

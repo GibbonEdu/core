@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/department_ma
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_manage.php'>Manage Departments</a> > </div><div class='trailEnd'>Add Learning Area</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_manage.php'>" . _('Manage Departments') . "</a> > </div><div class='trailEnd'>" . _('Add Learning Area') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -50,10 +50,10 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage="Your request failed due to an attachment error." ;	
+			$addReturnMessage=_("Your request failed due to an attachment error.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -80,7 +80,7 @@ else {
 			</script>
 			<tr>
 				<td> 
-					<b>Type *</b><br/>
+					<b><? print _('Type') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="type" id="type" class='type' style="width: 300px">
@@ -115,7 +115,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Subject Listing</b><br/>
+					<b><? print _('Subject Listing') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="subjectListing" id="subjectListing" maxlength=255 value="" type="text" style="width: 300px">
@@ -123,13 +123,13 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2> 
-					<b>Blurb</b> 
+					<b><? print _('Blurb') ?></b> 
 					<? print getEditor($guid,  TRUE, "blurb", "", 20 ) ?>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Logo</b><br/>
+					<b><? print _('Logo') ?></b><br/>
 					<span style="font-size: 90%"><i>125x125px jpg/png/gif</i></span>
 				</td>
 				<td class="right">
@@ -147,8 +147,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Staff</b><br/>
-					<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+					<b><? print _('Staff') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
@@ -168,15 +168,15 @@ else {
 				</td>
 			<tr id='roleLARow'>
 				<td> 
-					<b>Role</b><br/>
+					<b><? print _('Role') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="roleLA" id="roleLA" style="width: 302px">
-						<option value="Coordinator">Coordinator</option>
-						<option value="Assistant Coordinator">Assistant Coordinator</option>
-						<option value="Teacher (Curriculum)">Teacher (Curriculum)</option>
-						<option value="Teacher">Teacher</option>
-						<option value="Other">Other</option>
+						<option value="Coordinator"><? print _('Coordinator') ?></option>
+						<option value="Assistant Coordinator"><? print _('Assistant Coordinator') ?></option>
+						<option value="Teacher (Curriculum)"><? print _('Teacher (Curriculum)') ?></option>
+						<option value="Teacher"><? print _('Teacher') ?></option>
+						<option value="Other"><? print _('Other') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -186,10 +186,10 @@ else {
 				</td>
 				<td class="right">
 					<select name="roleAdmin" id="roleAdmin" style="width: 302px">
-						<option value="Director">Director</option>
-						<option value="Manager">Manager</option>
-						<option value="Administrator">Administrator</option>
-						<option value="Other">Other</option>
+						<option value="Director"><? print _('Director') ?></option>
+						<option value="Manager"><? print _('Manager') ?></option>
+						<option value="Administrator"><? print _('Administrator') ?></option>
+						<option value="Other"><? print _('Other') ?></option>
 					</select>
 				</td>
 			</tr>

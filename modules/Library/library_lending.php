@@ -132,7 +132,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Location</b><br/>
+					<b><? print _('Location') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -266,7 +266,7 @@ else {
 					print "<span style='font-size: 85%; font-style: italic'>Return Date</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Actions" ;
+					print _("Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			

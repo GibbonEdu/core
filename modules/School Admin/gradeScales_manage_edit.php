@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/gradeScales_m
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage.php'>Manage Grade Scales</a> > </div><div class='trailEnd'>Edit Grade Scale</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage.php'>" . _('Manage Grade Scales') . "</a> > </div><div class='trailEnd'>" . _('Edit Grade Scale') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -132,8 +132,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Usage *</b><br/>
-						<span style="font-size: 90%"><i>Brief description of how scale is used.</i></span>
+						<b><? print _('Usage') ?> *</b><br/>
+						<span style="font-size: 90%"><i><? print _('Brief description of how scale is used.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="usage" id="usage" maxlength=50 value="<? if (isset($row["usage"])) { print $row["usage"] ; } ?>" type="text" style="width: 300px">
@@ -145,12 +145,12 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Active *</b><br/>
+						<b><? print _('Active') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<select name="active" id="active" style="width: 302px">
-							<option <? if ($row["active"]=="Y") { print "selected" ; } ?> value="Y">Y</option>
-							<option <? if ($row["active"]=="N") { print "selected" ; } ?> value="N">N</option>
+							<option <? if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><? print _('Y') ?></option>
+							<option <? if ($row["active"]=="N") { print "selected" ; } ?> value="N"><? print _('N') ?></option>
 						</select>
 					</td>
 				</tr>
@@ -161,15 +161,15 @@ else {
 					</td>
 					<td class="right">
 						<select name="numeric" id="numeric" style="width: 302px">
-							<option <? if ($row["numeric"]=="Y") { print "selected" ; } ?> value="Y">Y</option>
-							<option <? if ($row["numeric"]=="N") { print "selected" ; } ?> value="N">N</option>
+							<option <? if ($row["numeric"]=="Y") { print "selected" ; } ?> value="Y"><? print _('Y') ?></option>
+							<option <? if ($row["numeric"]=="N") { print "selected" ; } ?> value="N"><? print _('N') ?></option>
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b>Lowest Acceptable</b><br/>
-						<span style="font-size: 90%"><i>This is the lowest grade a student can get without being unsatisfactory.</i></span>
+						<b><? print _('Lowest Acceptable') ?></b><br/>
+						<span style="font-size: 90%"><i><? print _('This is the lowest grade a student can get without being unsatisfactory.') ?></i></span>
 					</td>
 					<td class="right">
 						<select name="lowestAcceptable" id="lowestAcceptable" style="width: 302px">
@@ -209,7 +209,7 @@ else {
 			<?
 			
 			print "<h2>" ;
-			print "Edit Grades" ;
+			print _("Edit Grades") ;
 			print "</h2>" ;
 			
 			try {
@@ -235,16 +235,16 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print "Value" ;
+							print _("Value") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Descriptor" ;
+							print _("Descriptor") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Sequence Number" ;
+							print _("Sequence Number") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Actions" ;
+							print _("Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					

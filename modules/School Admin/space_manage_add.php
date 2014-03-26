@@ -51,7 +51,7 @@ else {
 			$addReturnMessage="Your request failed because your passwords did not match." ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -162,8 +162,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="computer" id="computer" style="width: 302px">
-						<option value="N">N</option>
-						<option value="Y">Y</option>
+						<option value="N"><? print _('N') ?></option>
+						<option value="Y"><? print _('Y') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -186,8 +186,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="projector" id="projector" style="width: 302px">
-						<option value="N">N</option>
-						<option value="Y">Y</option>
+						<option value="N"><? print _('N') ?></option>
+						<option value="Y"><? print _('Y') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -198,8 +198,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="tv" id="tv" style="width: 302px">
-						<option value="N">N</option>
-						<option value="Y">Y</option>
+						<option value="N"><? print _('N') ?></option>
+						<option value="Y"><? print _('Y') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -210,8 +210,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="dvd" id="dvd" style="width: 302px">
-						<option value="N">N</option>
-						<option value="Y">Y</option>
+						<option value="N"><? print _('N') ?></option>
+						<option value="Y"><? print _('Y') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -222,8 +222,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="hifi" id="hifi" style="width: 302px">
-						<option value="N">N</option>
-						<option value="Y">Y</option>
+						<option value="N"><? print _('N') ?></option>
+						<option value="Y"><? print _('Y') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -234,8 +234,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="speakers" id="speakers" style="width: 302px">
-						<option value="N">N</option>
-						<option value="Y">Y</option>
+						<option value="N"><? print _('N') ?></option>
+						<option value="Y"><? print _('Y') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -246,8 +246,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="iwb" id="iwb" style="width: 302px">
-						<option value="N">N</option>
-						<option value="Y">Y</option>
+						<option value="N"><? print _('N') ?></option>
+						<option value="Y"><? print _('Y') ?></option>
 					</select>
 				</td>
 			</tr>

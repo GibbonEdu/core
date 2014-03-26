@@ -292,7 +292,7 @@ else {
 							print "</tr>" ;
 							print "<tr class='odd'>" ;
 								print "<td>" ;
-									print "Name" ;
+									print _("Name") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["name"] ;
@@ -506,7 +506,7 @@ else {
 							print "</tr>" ;
 							print "<tr class='odd'>" ;
 								print "<td>" ;
-									print "Name" ;
+									print _("Name") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["name"] ;

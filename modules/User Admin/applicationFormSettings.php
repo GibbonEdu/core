@@ -291,8 +291,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="On") {print "selected ";} ?>value="On">On</option>
-						<option <? if ($row["value"]=="Off") {print "selected ";} ?>value="Off">Off</option>
+						<option <? if ($row["value"]=="On") {print "selected ";} ?>value="On"><? print _('On') ?></option>
+						<option <? if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><? print _('Off') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -336,8 +336,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="On") {print "selected ";} ?>value="On">On</option>
-						<option <? if ($row["value"]=="Off") {print "selected ";} ?>value="Off">Off</option>
+						<option <? if ($row["value"]=="On") {print "selected ";} ?>value="On"><? print _('On') ?></option>
+						<option <? if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><? print _('Off') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -441,8 +441,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="On") {print "selected ";} ?>value="On">On</option>
-						<option <? if ($row["value"]=="Off") {print "selected ";} ?>value="Off">Off</option>
+						<option <? if ($row["value"]=="On") {print "selected ";} ?>value="On"><? print _('On') ?></option>
+						<option <? if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><? print _('Off') ?></option>
 					</select>
 				</td>
 			</tr>

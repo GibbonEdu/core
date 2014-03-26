@@ -62,7 +62,7 @@ else {
 				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail5") {
-				$updateReturnMessage="Your request failed due to an attachment error." ;	
+				$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
 			}
 			else if ($updateReturn=="success0") {
 				$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -124,7 +124,7 @@ else {
 		
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print "The selected behaviour record does not exist, is in a previous school year, or you do not have access to it." ;
+					print _("The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {

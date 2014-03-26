@@ -157,7 +157,7 @@ else {
 				<tr>
 					<td> 
 						<b>Type *</b><br/>
-						<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+						<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 					</td>
 					<td class="right">
 						<input readonly name="type" id="type" maxlength=10 value="Absent" type="text" style="width: 300px">

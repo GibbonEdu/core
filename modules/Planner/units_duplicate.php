@@ -62,7 +62,7 @@ else {
 				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail5") {
-				$updateReturnMessage="Your request failed due to an attachment error." ;	
+				$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
 			}
 			else if ($updateReturn=="fail6") {
 				$updateReturnMessage="Update succeeded, although some lessons or resources could not be saved." ;	
@@ -104,7 +104,7 @@ else {
 
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print "The specified course cannot be found or you do not have access to it." ;
+					print _("The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -166,8 +166,8 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b>School Year *</b><br/>
-												<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+												<b><? print _('School Year') ?> *</b><br/>
+												<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
 												<?
@@ -194,7 +194,7 @@ else {
 										<tr>
 											<td> 
 												<b>Course *</b><br/>
-												<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+												<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
 												<? print "<input readonly value='" . $row["courseName"] . "' type='text' style='width: 300px'>" ; ?>
@@ -203,7 +203,7 @@ else {
 										<tr>
 											<td> 
 												<b>Unit *</b><br/>
-												<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+												<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
 												<? print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
@@ -288,7 +288,7 @@ else {
 										<tr>
 											<td> 
 												<b>Unit *</b><br/>
-												<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+												<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
 												<? print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
@@ -360,8 +360,8 @@ else {
 												</tr>
 												<tr>
 													<td> 
-														<b>School Year *</b><br/>
-														<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+														<b><? print _('School Year') ?> *</b><br/>
+														<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 													</td>
 													<td class="right">
 														<?
@@ -387,7 +387,7 @@ else {
 												<tr>
 													<td> 
 														<b>Course *</b><br/>
-														<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+														<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 													</td>
 													<td class="right">
 														<? print "<input readonly value='" . $row["courseName"] . "' type='text' style='width: 300px'>" ; ?>
@@ -396,7 +396,7 @@ else {
 												<tr>
 													<td> 
 														<b>Unit *</b><br/>
-														<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+														<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 													</td>
 													<td class="right">
 														<? print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
@@ -450,7 +450,7 @@ else {
 												<tr>
 													<td> 
 														<b>School Year*</b><br/>
-														<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+														<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 													</td>
 													<td class="right">
 														<? print "<input readonly value='$year' type='text' style='width: 300px'>" ; ?>
@@ -459,7 +459,7 @@ else {
 												<tr>
 													<td> 
 														<b>Course *</b><br/>
-														<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+														<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 													</td>
 													<td class="right">
 														<? print "<input readonly value='$course' type='text' style='width: 300px'>" ; ?>
@@ -468,7 +468,7 @@ else {
 												<tr>
 													<td> 
 														<b>Unit *</b><br/>
-														<span style="font-size: 90%"><i>This value cannot be changed.</i></span>
+														<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 													</td>
 													<td class="right">
 														<? print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
@@ -477,7 +477,7 @@ else {
 												<tr id="targetClass">
 													<td> 
 														<b>Classes *</b><br/>
-														<span style="font-size: 90%"><i>Use Control and/or Shift to select multiple.</i></span>
+														<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 													</td>
 													<td class="right">
 														<select name="gibbonCourseClassIDTarget[]" id="gibbonCourseClassIDTarget[]" multiple style="width: 302px; height: 100px">

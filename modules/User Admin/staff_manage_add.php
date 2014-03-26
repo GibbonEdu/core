@@ -51,7 +51,7 @@ else {
 			$addReturnMessage="Your request failed because your passwords did not match." ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage="Your request was completed successfully.You can now add another record if you wish." ;	
+			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -179,8 +179,8 @@ else {
 				<td class="right">
 					<select style="width: 302px" name="firstAidQualified" id="firstAidQualified" class="firstAidQualified">
 						<option value=""></option>
-						<option value="Y">Y</option>
-						<option value="N">N</option>
+						<option value="Y"><? print _('Y') ?></option>
+						<option value="N"><? print _('N') ?></option>
 					</select>
 				</td>
 			</tr>

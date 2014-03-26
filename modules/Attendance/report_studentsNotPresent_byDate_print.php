@@ -98,7 +98,7 @@ else {
 						print "Roll Group" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Name" ;
+						print _("Name") ;
 					print "</th>" ;
 					print "<th>" ;
 						print "Status" ;
