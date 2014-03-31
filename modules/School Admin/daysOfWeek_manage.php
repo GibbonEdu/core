@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/daysOfWeek_ma
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Days of the Week</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Days of the Week') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -71,7 +71,7 @@ else {
 
 	if ($result->rowCount()!=7) {
 		print "<div class='error'>" ;
-			print "There is a problem with your database information for school days." ;
+			print _("There is a problem with your database information for school days.") ;
 		print "</div>" ;
 	}
 	else {
@@ -90,7 +90,7 @@ else {
 				<input name="<?print $row["name"]?>sequenceNumber" id="<?print $row["name"]?>sequenceNumber" maxlength=2 value="<? print $row["sequenceNumber"] ?>" type="hidden" style="width: 300px">
 				<tr>
 					<td> 
-						<b>School Day *</b>
+						<b><? print _('School Day') ?> *</b>
 					</td>
 					<td class="right">
 						<select style="width: 302px" name="<?print $row["name"]?>schoolDay" id="<?print $row["name"]?>schoolDay">
@@ -109,7 +109,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>School Opens</b>
+						<b><? print _('School Opens') ?></b>
 					</td>
 					<td class="right">
 						<select style="width:100px" name="<?print $row["name"]?>schoolOpenM" id="<?print $row["name"]?>schoolOpenM">
@@ -152,7 +152,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>School Starts</b>
+						<b><? print _('School Starts') ?></b>
 					</td>
 					<td class="right">
 						<select style="width:100px" name="<?print $row["name"]?>schoolStartM" id="<?print $row["name"]?>schoolStartM">
@@ -195,7 +195,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>School Ends</b>
+						<b><? print _('School Ends') ?></b>
 					</td>
 					<td class="right">
 						<select style="width:100px" name="<?print $row["name"]?>schoolEndM" id="<?print $row["name"]?>schoolEndM">
@@ -238,7 +238,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>School Closes</b>
+						<b><? print _('School Closes') ?></b>
 					</td>
 					<td class="right">
 						<select style="width:100px" name="<?print $row["name"]?>schoolCloseM" id="<?print $row["name"]?>schoolCloseM">

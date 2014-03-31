@@ -219,7 +219,7 @@ else {
 				</td>
 				<td class="right">
 					<select name="gender" id="gender" style="width: 302px">
-						<option value="Please select...">Please select...</option>
+						<option value="Please select..."><? print _('Please select...') ?></option>
 						<option value="F">F</option>
 						<option value="M">M</option>
 					</select>
@@ -934,7 +934,7 @@ else {
 						</td>
 						<td class="right">
 							<select name="parent1relationship" id="parent1relationship" style="width: 302px">
-								<option value="Please select...">Please select...</option>
+								<option value="Please select..."><? print _('Please select...') ?></option>
 								<option value="Mother">Mother</option>
 								<option value="Father">Father</option>
 								<option value="Step-Mother">Step-Mother</option>
@@ -1059,7 +1059,7 @@ else {
 						</td>
 						<td class="right">
 							<select style="width: 302px" id="<? print "parent$i" ?>title" name="<? print "parent$i" ?>title">
-								<option value="Please select...">Please select...</option>
+								<option value="Please select..."><? print _('Please select...') ?></option>
 								<option value="Ms. ">Ms.</option>
 								<option value="Miss ">Miss</option>
 								<option value="Mr. ">Mr.</option>
@@ -1139,7 +1139,7 @@ else {
 						</td>
 						<td class="right">
 							<select name="<? print "parent$i" ?>gender" id="<? print "parent$i" ?>gender" style="width: 302px">
-								<option value="Please select...">Please select...</option>
+								<option value="Please select..."><? print _('Please select...') ?></option>
 								<option value="F">F</option>
 								<option value="M">M</option>
 							</select>
@@ -1155,7 +1155,7 @@ else {
 						</td>
 						<td class="right">
 							<select name="<? print "parent$i" ?>relationship" id="<? print "parent$i" ?>relationship" style="width: 302px">
-								<option value="Please select...">Please select...</option>
+								<option value="Please select..."><? print _('Please select...') ?></option>
 								<option value="Mother">Mother</option>
 								<option value="Father">Father</option>
 								<option value="Step-Mother">Step-Mother</option>

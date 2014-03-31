@@ -782,7 +782,7 @@ else {
 															<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 																<tr>
 																	<td> 
-																		<b>Type *</b><br/>
+																		<b><? print _('Type') ?> *</b><br/>
 																	</td>
 																	<td class="right">
 																		<?

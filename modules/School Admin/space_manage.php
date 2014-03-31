@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/space_manage.
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Spaces</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Spaces') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -81,19 +81,16 @@ else {
 					print _("Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Type" ;
+					print _("Type") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Staff" ;
+					print _("Staff") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Capacity" ;
+					print _("Capacity") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Facilities" ;
-				print "</th>" ;
-				print "<th>" ;
-					print "Comment" ;
+					print _("Facilities") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Actions") ;
@@ -145,38 +142,35 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						if ($row["computer"]=="Y") {
-							print "Teaching computer<br/>" ;
+							print _("Teaching computer") . "<br/>" ;
 						}
 						if ($row["computerStudent"]>0) {
 							print $row["computerStudent"] . " student computers<br/>" ;
 						}
 						if ($row["projector"]=="Y") {
-							print "Projector<br/>" ;
+							print _("Projector") . "<br/>" ;
 						}
 						if ($row["tv"]=="Y") {
-							print "TV<br/>" ;
+							print _("TV") . "<br/>" ;
 						}
 						if ($row["dvd"]=="Y") {
-							print "DVD Player<br/>" ;
+							print _("DVD Player") . "<br/>" ;
 						}
 						if ($row["hifi"]=="Y") {
-							print "Hifi<br/>" ;
+							print _("Hifi") . "<br/>" ;
 						}
 						if ($row["speakers"]=="Y") {
-							print "Speakers<br/>" ;
+							print _("Speakers") . "<br/>" ;
 						}
 						if ($row["iwb"]=="Y") {
-							print "Interactive White Board<br/>" ;
+							print _("Interactive White Board") . "<br/>" ;
 						}
 						if ($row["phoneInternal"]!="") {
-							print "Extension Number: " . $row["phoneInternal"] . "<br/>" ;
+							print _("Extension Number") . ": " . $row["phoneInternal"] . "<br/>" ;
 						}
 						if ($row["phoneExternal"]!="") {
-							print "Phone Number: " . $row["phoneExternal"] . "<br/>" ;
+							print _("Phone Number") . ": " . $row["phoneExternal"] . "<br/>" ;
 						}
-					print "</td>" ;
-					print "<td>" ;
-						print $row["comment"] ;
 					print "</td>" ;
 					print "<td>" ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/space_manage_edit.php&gibbonSpaceID=" . $row["gibbonSpaceID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;

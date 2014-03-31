@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/daysOfWeek_ma
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Alert Levels</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Alert Levels') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -84,7 +84,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Name *</b>
+						<b><? print _('Name') ?> *</b>
 					</td>
 					<td class="right">
 						<input type='hidden' name="<? print "gibbonAlertLevelID" .$count ?>" id="<? print "gibbonAlertLevelID" .$count ?>" value="<? print $row["gibbonAlertLevelID"] ?>">
@@ -97,7 +97,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Short Name *</b>
+						<b><? print _('Short Name') ?> *</b>
 					</td>
 					<td class="right">
 						<input type='text' name="<? print "nameShort" .$count ?>" id="<? print "nameShort" .$count ?>" maxlength=4 value="<? print $row["nameShort"] ?>" style="width: 300px">
@@ -109,7 +109,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Font/Border Color *</b><br/>
+						<b><? print _('Font/Border Color') ?> *</b><br/>
 						<span style="font-size: 90%"><i>RGB Hex value, without leading #.</i></span>
 					</td>
 					<td class="right">
@@ -122,7 +122,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Background Color *</b><br/>
+						<b><? print _('Background Color') ?> *</b><br/>
 						<span style="font-size: 90%"><i>RGB Hex value, without leading #.</i></span>
 					</td>
 					<td class="right">
@@ -135,7 +135,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Sequence Number *</b><br/>
+						<b><? print _('Sequence Number') ?> *</b><br/>
 						<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 					</td>
 					<td class="right">

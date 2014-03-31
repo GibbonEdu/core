@@ -1592,7 +1592,7 @@ function getMaxUpload( $multiple="" ) {
 	$post=substr(ini_get("post_max_size"),0,(strlen(ini_get("post_max_size"))-1)) ;
 	$file=substr(ini_get("upload_max_filesize"),0,(strlen(ini_get("upload_max_filesize"))-1)) ;
 	
-	$output.="<div style='margin-top: 5px; font-style: italic; text-align: right; color: #c00'>" ;
+	$output.="<div style='margin-top: 5px; font-style: italic; color: #c00'>" ;
 	if ($multiple==TRUE) {
 		if ($post<$file) {
 			$output.=sprintf(_('Maximum size for all files: %1$sMB'), $post) . "<br/>" ;

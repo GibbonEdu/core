@@ -74,7 +74,7 @@ else {
 			</script>
 			<tr>
 				<td> 
-					<b>Type *</b><br/>
+					<b><? print _('Type') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="type" id="type" class="type">

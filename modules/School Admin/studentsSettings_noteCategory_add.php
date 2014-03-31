@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/studentsSetti
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/studentsSettings.php'>Manage Students Settings</a> > </div><div class='trailEnd'>Add Note Category</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/studentsSettings.php'>" . _('Manage Students Settings') . "</a> > </div><div class='trailEnd'>" . _('Add Note Category') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -46,9 +46,6 @@ else {
 		}
 		else if ($addReturn=="fail4") {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail5") {
-			$addReturnMessage="Your request failed because your passwords did not match." ;	
 		}
 		else if ($addReturn=="success0") {
 			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
@@ -89,8 +86,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Template</b><br/>
-					<span style="font-size: 90%"><i>HTML code to be inserted into blank note.</i></span>
+					<b><? print _('Template') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('HTML code to be inserted into blank note.') ?></i></span>
 				</td>
 				<td class="right">
 					<textarea name="template" id="template" rows=8 style="width: 300px"></textarea>

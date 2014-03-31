@@ -108,11 +108,11 @@ else {
 			</script>
 			<tr>
 				<td> 
-					<b>Type *</b><br/>
+					<b><? print _('Type') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="type" id="type" class='type' style="width: 302px">
-						<option value="Please select...">Please select...</option>
+						<option value="Please select..."><? print _('Please select...') ?></option>
 						<?
 						try {
 							$dataSelect=array(); 

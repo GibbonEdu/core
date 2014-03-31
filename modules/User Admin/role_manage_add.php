@@ -65,7 +65,7 @@ else {
 				</td>
 				<td class="right">
 					<select name="category" id="category" style="width: 302px">
-						<option value="Please select...">Please select...</option>
+						<option value="Please select..."><? print _('Please select...') ?></option>
 						<option value="Staff">Staff</option>
 						<option value="Student">Student</option>
 						<option value="Parent">Parent</option>
@@ -118,7 +118,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Type *</b><br/>
+					<b><? print _('Type') ?> *</b><br/>
 					<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 				</td>
 				<td class="right">

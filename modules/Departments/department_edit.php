@@ -169,7 +169,7 @@ else {
 												print _("Name") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Type" ;
+												print _("Type") ;
 											print "</th>" ;
 											print "<th>" ;
 												print "Action" ;

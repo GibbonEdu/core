@@ -164,7 +164,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Description</b><br/>
+							<b><? print _('Description') ?></b><br/>
 						</td>
 						<td class="right">
 							<textarea name='description' id='description' rows=5 style='width: 300px'><? print htmlPrep($row["description"])?></textarea>

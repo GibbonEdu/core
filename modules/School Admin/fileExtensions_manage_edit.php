@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/fileExtension
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/fileExtensions_manage.php'>Manage File Extensions</a> > </div><div class='trailEnd'>Edit File Extensions</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/fileExtensions_manage.php'>" . _('Manage File Extensions') . "</a> > </div><div class='trailEnd'>" . _('Edit File Extensions') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -90,7 +90,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Extension *</b><br/>
+							<b><? print _('Extension') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
@@ -116,19 +116,19 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Type *</b><br/>
+							<b><? print _('Type') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="type" id="type" style="width: 302px">
-								<option value="Please select...">Please select...</option>
-								<option <? if ($row["type"]=="Document") { print "selected" ; } ?> value="Document">Document</option>
-								<option <? if ($row["type"]=="Spreadsheet") { print "selected" ; } ?> value="Spreadsheet">Spreadsheet</option>
-								<option <? if ($row["type"]=="Presentation") { print "selected" ; } ?> value="Presentation">Presentation</option>
-								<option <? if ($row["type"]=="Graphics/Design") { print "selected" ; } ?> value="Graphics/Design">Graphics/Design</option>
-								<option <? if ($row["type"]=="Video") { print "selected" ; } ?> value="Video">Video</option>
-								<option <? if ($row["type"]=="Audio") { print "selected" ; } ?> value="Audio">Audio</option>
-								<option <? if ($row["type"]=="Other") { print "selected" ; } ?> value="Other">Other</option>
+								<option value="Please select..."><? print _('Please select...') ?></option>
+								<option <? if ($row["type"]=="Document") { print "selected" ; } ?> value="Document"><? print _('Document') ?></option>
+								<option <? if ($row["type"]=="Spreadsheet") { print "selected" ; } ?> value="Spreadsheet"><? print _('Spreadsheet') ?></option>
+								<option <? if ($row["type"]=="Presentation") { print "selected" ; } ?> value="Presentation"><? print _('Presentation') ?></option>
+								<option <? if ($row["type"]=="Graphics/Design") { print "selected" ; } ?> value="Graphics/Design"><? print _('Graphics/Design') ?></option>
+								<option <? if ($row["type"]=="Video") { print "selected" ; } ?> value="Video"><? print _('Video') ?></option>
+								<option <? if ($row["type"]=="Audio") { print "selected" ; } ?> value="Audio"><? print _('Audio') ?></option>
+								<option <? if ($row["type"]=="Other") { print "selected" ; } ?> value="Other"><? print _('Other') ?></option>
 							</select>
 						</td>
 					</tr>

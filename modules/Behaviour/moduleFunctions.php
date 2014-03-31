@@ -76,7 +76,7 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 							print "Date" ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Type" ;
+							print _("Type") ;
 						print "</th>" ;
 						print "<th>" ;
 							print "Descriptor" ;

@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/space_manage_
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/space_manage.php'>Manage Spaces</a> > </div><div class='trailEnd'>Edit Space</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/space_manage.php'>" . _('Manage Spaces') . "</a> > </div><div class='trailEnd'>" . _('Edit Space') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -116,27 +116,27 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Type *</b><br/>
+							<b><? print _('Type') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="type" id="type" style="width: 302px">
-								<option <? if ($row["type"]=="Classroom") {print "selected ";} ?>value="Classroom">Classroom</option>
-								<option <? if ($row["type"]=="Performance") {print "selected ";} ?>value="Performance">Performance</option>
-								<option <? if ($row["type"]=="Hall") {print "selected ";} ?>value="Hall">Hall</option>
-								<option <? if ($row["type"]=="Outdoor") {print "selected ";} ?>value="Outdoor">Outdoor</option>
-								<option <? if ($row["type"]=="Undercover") {print "selected ";} ?>value="Undercover">Undercover</option>
-								<option <? if ($row["type"]=="Storage") {print "selected ";} ?>value="Storage">Storage</option>
-								<option <? if ($row["type"]=="Office") {print "selected ";} ?>value="Office">Office</option>
-								<option <? if ($row["type"]=="Staffroom") {print "selected ";} ?>value="Staffroom">Staffroom</option>
-								<option <? if ($row["type"]=="Study") {print "selected ";} ?>value="Study">Study</option>
-								<option <? if ($row["type"]=="Library") {print "selected ";} ?>value="Library">Library</option>
-								<option <? if ($row["type"]=="Other") {print "selected ";} ?>value="Other">Other</option>
+								<option <? if ($row["type"]=="Classroom") {print "selected ";} ?>value="Classroom"><? print _('Classroom') ?></option>
+								<option <? if ($row["type"]=="Performance") {print "selected ";} ?>value="Performance"><? print _('Performance') ?></option>
+								<option <? if ($row["type"]=="Hall") {print "selected ";} ?>value="Hall"><? print _('Hall') ?></option>
+								<option <? if ($row["type"]=="Outdoor") {print "selected ";} ?>value="Outdoor"><? print _('Outdoor') ?></option>
+								<option <? if ($row["type"]=="Undercover") {print "selected ";} ?>value="Undercover"><? print _('Undercover') ?></option>
+								<option <? if ($row["type"]=="Storage") {print "selected ";} ?>value="Storage"><? print _('Storage') ?></option>
+								<option <? if ($row["type"]=="Office") {print "selected ";} ?>value="Office"><? print _('Office') ?></option>
+								<option <? if ($row["type"]=="Staffroom") {print "selected ";} ?>value="Staffroom"><? print _('Staffroom') ?></option>
+								<option <? if ($row["type"]=="Study") {print "selected ";} ?>value="Study"><? print _('Study') ?></option>
+								<option <? if ($row["type"]=="Library") {print "selected ";} ?>value="Library"><? print _('Library') ?></option>
+								<option <? if ($row["type"]=="Other") {print "selected ";} ?>value="Other"><? print _('Other') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>User 1</b>
+							<b><? print _('User 1') ?></b>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="gibbonPersonID1">
@@ -158,7 +158,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>User 2</b>
+							<b><? print _('User 2') ?></b>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="gibbonPersonID2">
@@ -180,7 +180,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Capacity</b><br/>
+							<b><? print _('Capacity') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -193,7 +193,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Teacher's Computer *</b><br/>
+							<b><? print _('Teacher\'s Computer') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="computer" id="computer" style="width: 302px">
@@ -204,8 +204,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Student Computers *</b><br/>
-							<span style="font-size: 90%"><i>How many are there?</i></span>
+							<b><? print _('Student Computers') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('How many are there?') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="computerStudent" id="computerStudent" maxlength=5 value="<? print htmlPrep($row["computerStudent"]) ?>" type="text" style="width: 300px">
@@ -217,7 +217,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Projector *</b><br/>
+							<b><? print _('Projector') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="projector" id="projector" style="width: 302px">
@@ -229,7 +229,7 @@ else {
 					
 					<tr>
 						<td> 
-							<b>TV *</b><br/>
+							<b><? print _('TV') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="tv" id="tv" style="width: 302px">
@@ -241,7 +241,7 @@ else {
 					
 					<tr>
 						<td> 
-							<b>DVD Player *</b><br/>
+							<b><? print _('DVD Player') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="dvd" id="dvd" style="width: 302px">
@@ -253,7 +253,7 @@ else {
 					
 					<tr>
 						<td> 
-							<b>HiFi *</b><br/>
+							<b><? print _('HiFi') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="hifi" id="hifi" style="width: 302px">
@@ -265,7 +265,7 @@ else {
 					
 					<tr>
 						<td> 
-							<b>Speakers *</b><br/>
+							<b><? print _('Speakers') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="speakers" id="speakers" style="width: 302px">
@@ -277,7 +277,7 @@ else {
 					
 					<tr>
 						<td> 
-							<b>Interactive White Board *</b><br/>
+							<b><? print _('Interactive White Board') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="iwb" id="iwb" style="width: 302px">
@@ -288,8 +288,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Extension</b><br/>
-							<span style="font-size: 90%"><i>Room's internal phone number.</i></span>
+							<b><? print _('Extension') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Room\'s internal phone number.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="phoneInternal" id="phoneInternal" maxlength=5 value="<? print htmlPrep($row["phoneInternal"]) ?>" type="text" style="width: 300px">
@@ -297,8 +297,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Phone Number</b><br/>
-							<span style="font-size: 90%"><i>Room's external phone number.</i></span>
+							<b><? print _('Phone Number') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Room\'s external phone number.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="phoneExternal" id="phoneExternal" maxlength=20 value="<? print htmlPrep($row["phoneExternal"]) ?>" type="text" style="width: 300px">
@@ -306,15 +306,10 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Comment</b><br/>
-							<span style="font-size: 90%"><i>1000 character limit</i></span>
+							<b><? print _('Comment') ?></b><br/>
 						</td>
 						<td class="right">
 							<textarea name="comment" id="comment" rows=8 style="width: 300px"><? print $row["comment"] ?></textarea>
-							<script type="text/javascript">
-								var comment=new LiveValidation('comment');
-								comment.add( Validate.Length, { maximum: 1000 } );
-							 </script>
 						</td>
 					</tr>
 					<tr>

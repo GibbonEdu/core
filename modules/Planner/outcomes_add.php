@@ -89,7 +89,7 @@ else {
 							if ($highestAction=="Manage Outcomes_viewEditAll") {
 								?>
 								<select name="scope" id="scope" style="width: 302px">
-									<option value="Please select...">Please select...</option>
+									<option value="Please select..."><? print _('Please select...') ?></option>
 									<option value="School">School</option>
 									<option value="Learning Area">Learning Area</option>
 								</select>
@@ -153,7 +153,7 @@ else {
 							catch(PDOException $e) { }
 							?>
 							<select name="gibbonDepartmentID" id="gibbonDepartmentID" style="width: 302px">
-								<option value="Please select...">Please select...</option>
+								<option value="Please select..."><? print _('Please select...') ?></option>
 								<?
 								while ($rowSelect=$resultSelect->fetch()) {
 									print "<option value='" . $rowSelect["gibbonDepartmentID"] . "'>" . $rowSelect["name"] . "</option>" ;
@@ -237,7 +237,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Description</b><br/>
+							<b><? print _('Description') ?></b><br/>
 						</td>
 						<td class="right">
 							<textarea name='description' id='description' rows=5 style='width: 300px'></textarea>

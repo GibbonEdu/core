@@ -42,7 +42,7 @@ else {
 			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage="Update of one or more fields failed due to a database error." ;	
+			$updateReturnMessage=_("One or more of the fields in your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
 			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	

@@ -181,7 +181,7 @@ else {
 					
 						<tr>
 							<td> 
-								<b>Type *</b><br/>
+								<b><? print _('Type') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
@@ -218,7 +218,7 @@ else {
 									</td>
 									<td class="right">
 										<select name="descriptor" id="descriptor" style="width: 302px">
-											<option value="Please select...">Please select...</option>
+											<option value="Please select..."><? print _('Please select...') ?></option>
 											<?
 											if ($row["descriptor"]=="Quick Star") {
 												print "<option class='Positive' value='Quick Star'>Quick Star</option>" ;
@@ -281,7 +281,7 @@ else {
 									</td>
 									<td class="right">
 										<select name="level" id="level" style="width: 302px">
-											<option value="Please select...">Please select...</option>
+											<option value="Please select..."><? print _('Please select...') ?></option>
 											<?
 											for ($i=0; $i<count($optionsLevels); $i++) {
 												$selected="" ;

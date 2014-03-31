@@ -160,7 +160,7 @@ else {
 				</td>
 				<td class="right">
 					<select name="gender" id="gender" style="width: 302px">
-						<option value="Please select...">Please select...</option>
+						<option value="Please select..."><? print _('Please select...') ?></option>
 						<option value="F">F</option>
 						<option value="M">M</option>
 					</select>

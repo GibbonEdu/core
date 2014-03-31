@@ -131,11 +131,11 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Type *</b><br/>
+					<b><? print _('Type') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="type" id="type" style="width: 302px">
-						<option value="Please select...">Please select...</option>
+						<option value="Please select..."><? print _('Please select...') ?></option>
 						<option value="Teaching">Teaching</option>
 						<option value="Support">Support</option>
 					</select>

@@ -569,10 +569,10 @@ else {
 							</tr>
 							<tr>
 								<?
-								print "<td>" ;
+								print "<td style='text-align: left' colspan='2'>" ;
 									print getMaxUpload(TRUE) ;
 								print "</td>" ;
-								print "<td class='right' colspan=" . ($span-1) . ">" ;
+								print "<td class='right' colspan=" . ($span-2) . ">" ;
 								?>
 									<input name="count" id="count" value="<? print $count ?>" type="hidden">
 									<input type="submit" value="<? print _("Submit") ; ?>">

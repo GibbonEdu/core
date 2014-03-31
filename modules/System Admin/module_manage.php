@@ -79,7 +79,7 @@ else {
 					print "Description" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Type" ;
+					print _("Type") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Active") ;

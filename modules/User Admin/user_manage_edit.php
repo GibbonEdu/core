@@ -223,7 +223,7 @@ else {
 						</td>
 						<td class="right">
 							<select name="gender" id="gender" style="width: 302px">
-								<option value="Please select...">Please select...</option>
+								<option value="Please select..."><? print _('Please select...') ?></option>
 								<option <? if ($row["gender"]=="F") {print "selected ";}?>value="F">F</option>
 								<option <? if ($row["gender"]=="M") {print "selected ";}?>value="M">M</option>
 							</select>

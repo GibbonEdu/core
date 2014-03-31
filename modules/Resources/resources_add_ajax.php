@@ -145,7 +145,7 @@ else {
 						
 							$output.="<tr>" ;
 								$output.="<td>" ;
-									$output.="<b>Type *</b><br/>" ;
+									$output.="<b>" . _('Type') . " *</b><br/>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;
 									$output.="<select name='" . $id . "type' id='" . $id . "type' class='" . $id . "type' style='width: 302px'>" ;
@@ -372,7 +372,7 @@ else {
 						
 							$output.="<tr>" ;
 								$output.="<td>" ;
-									$output.="<b>Description</b><br/>" ;
+									$output.="<b>" . _('Description') . "</b><br/>" ;
 									$output.="<span style='font-size: 90%'><i></i></span>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;

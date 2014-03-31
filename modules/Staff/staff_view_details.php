@@ -624,7 +624,7 @@ else {
 												$options=getSettingByScope($connection2, "Activities", "activityTypes") ;
 												if ($options!="") {
 													print "<th>" ;
-														print "Type" ;
+														print _("Type") ;
 													print "</th>" ;
 												}
 												print "<th>" ;

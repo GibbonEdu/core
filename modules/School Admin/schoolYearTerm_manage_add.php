@@ -90,8 +90,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Sequence Number *</b><br/>
-					<span style="font-size: 90%"><i>Needs to be unique. Controls the chronological ordering of terms.</i></span>
+					<b><? print _('Sequence Number') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('Must be unique. Controls chronological ordering.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="sequenceNumber" id="sequenceNumber" maxlength=3 value="<? print $row["sequenceNumber"] ?>" type="text" style="width: 300px">

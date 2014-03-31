@@ -487,7 +487,7 @@ else {
 						</td>
 						<td class="right">
 							<select name="gender" id="gender" style="width: 302px">
-								<option value="Please select...">Please select...</option>
+								<option value="Please select..."><? print _('Please select...') ?></option>
 								<option <? if ($row["gender"]=="F") { print "selected" ; } ?> value="F">F</option>
 								<option <? if ($row["gender"]=="M") { print "selected" ; } ?> value="M">M</option>
 							</select>
@@ -1095,7 +1095,7 @@ else {
 								</td>
 								<td class="right">
 									<select name="parent1relationship" id="parent1relationship" style="width: 302px">
-										<option value="Please select...">Please select...</option>
+										<option value="Please select..."><? print _('Please select...') ?></option>
 										<option <? if ($row["parent1relationship"]=="Mother") { print "selected" ; } ?> value="Mother">Mother</option>
 										<option <? if ($row["parent1relationship"]=="Father") { print "selected" ; } ?> value="Father">Father</option>
 										<option <? if ($row["parent1relationship"]=="Step-Mother") { print "selected" ; } ?> value="Step-Mother">Step-Mother</option>
@@ -1153,7 +1153,7 @@ else {
 										<?
 										if ($i==1) {
 											?>
-											<option value="Please select...">Please select...</option>
+											<option value="Please select..."><? print _('Please select...') ?></option>
 										<?
 										}
 										else {
@@ -1272,7 +1272,7 @@ else {
 								</td>
 								<td class="right">
 									<select name="<? print "parent$i" ?>gender" id="<? print "parent$i" ?>gender" style="width: 302px">
-										<option value="Please select...">Please select...</option>
+										<option value="Please select..."><? print _('Please select...') ?></option>
 										<option <? if ($row["parent$i" . "gender"]=="F") { print "selected" ; } ?> value="F">F</option>
 										<option <? if ($row["parent$i" . "gender"]=="M") { print "selected" ; } ?> value="M">M</option>
 									</select>

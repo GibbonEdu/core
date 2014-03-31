@@ -109,7 +109,7 @@ else {
 						</td>
 						<td class="right">
 							<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
-								<option value="Please select...">Please select...</option>
+								<option value="Please select..."><? print _('Please select...') ?></option>
 								<?
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -157,7 +157,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Type *</b><br/>
+							<b><? print _('Type') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -194,7 +194,7 @@ else {
 								</td>
 								<td class="right">
 									<select name="descriptor" id="descriptor" style="width: 302px">
-										<option value="Please select...">Please select...</option>
+										<option value="Please select..."><? print _('Please select...') ?></option>
 										<?
 										for ($i=0; $i<count($optionsPositive); $i++) {
 										?>
@@ -234,7 +234,7 @@ else {
 							</td>
 							<td class="right">
 								<select name="level" id="level" style="width: 302px">
-									<option value="Please select...">Please select...</option>
+									<option value="Please select..."><? print _('Please select...') ?></option>
 									<?
 									for ($i=0; $i<count($optionsLevels); $i++) {
 									?>

@@ -136,13 +136,14 @@ else {
 					print "</th>" ;
 					print "<th>" ;
 						print _("Name") ;
+						print "<span style='font-style: italic; font-size: 85%'>Roll Group</span>" ;
 					print "</th>" ;
 					print "<th>" ;
 						print "Username" ;
 					print "</th>" ;
 					print "<th>" ;
 						print "End Date<br/>" ;
-						print "<span style='font-style: italic; font-size: 75%'>Departure Reason</span>" ;
+						print "<span style='font-style: italic; font-size: 85%'>Departure Reason</span>" ;
 					print "</th>" ;
 					print "<th>" ;
 						print "Next School" ;
@@ -168,14 +169,27 @@ else {
 							print $count ;
 						print "</td>" ;
 						print "<td>" ;
-							print formatName("", $row["preferredName"], $row["surname"], "Student", TRUE) ;
+							print formatName("", $row["preferredName"], $row["surname"], "Student", TRUE) . "<br/>" ;
+							try {
+								$dataCurrent=array("gibbonPersonID"=>$row["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+								$sqlCurrent="SELECT name FROM gibbonStudentEnrolment JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID" ;
+								$resultCurrent=$connection2->prepare($sqlCurrent);
+								$resultCurrent->execute($dataCurrent);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+							if ($resultCurrent->rowCount()==1) {
+								$rowCurrent=$resultCurrent->fetch() ;
+								print "<span style='font-style: italic; font-size: 85%'>" . $rowCurrent["name"] . "</span>" ;
+							}
 						print "</td>" ;
 						print "<td>" ;
 							print $row["username"] ;
 						print "</td>" ;
 						print "<td>" ;
 							print dateConvertBack($guid, $row["dateEnd"]) . "<br/>" ;
-							print "<span style='font-style: italic; font-size: 75%'>" . $row["departureReason"] . "</span>" ;
+							print "<span style='font-style: italic; font-size: 85%'>" . $row["departureReason"] . "</span>" ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["nextSchool"] ;

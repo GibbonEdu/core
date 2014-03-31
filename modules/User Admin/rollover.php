@@ -219,8 +219,8 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Sequence Number *</b><br/>
-									<span style="font-size: 90%"><i>Needs to be unique. Controls the chronological ordering of years.</i></span>
+									<b><? print _('Sequence Number') ?> *</b><br/>
+									<span style="font-size: 90%"><i><? print _('Must be unique. Controls chronological ordering.') ?></i></span>
 								</td>
 								<td class="right">
 									<input readonly name="next-sequenceNumber" id="next-sequenceNumber" maxlength=3 value="<? print ($sequenceNext+1) ?>" type="text" style="width: 300px">
@@ -829,7 +829,7 @@ else {
 									print "Register" ;
 								print "</th>" ;
 								print "<th>" ;
-									print "Type" ;
+									print _("Type") ;
 								print "</th>" ;
 								print "<th>" ;
 									print "Job Title" ;

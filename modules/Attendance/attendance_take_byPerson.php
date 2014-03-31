@@ -285,7 +285,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Type *</b><br/>
+								<b><? print _('Type') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">

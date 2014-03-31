@@ -292,7 +292,7 @@ else {
 					print "Name &<br/>Contributor" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Type" ;
+					print _("Type") ;
 				print "</th>" ;
 				print "<th>" ;
 					print "Category &<br/>Purpose" ;

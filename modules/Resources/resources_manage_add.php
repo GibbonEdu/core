@@ -128,11 +128,11 @@ else {
 				</script>
 				<tr>
 					<td> 
-						<b>Type *</b><br/>
+						<b><? print _('Type') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<select name="type" id="type" class='type' style="width: 302px">
-							<option value="Please select...">Please select...</option>
+							<option value="Please select..."><? print _('Please select...') ?></option>
 							<option id='type' name="type" value="File" /> File
 							<option id='type' name="type" value="HTML" /> HMTL
 							<option id='type' name="type" value="Link" /> Link
@@ -238,7 +238,7 @@ else {
 							</td>
 							<td class="right">
 								<select name="category" id="category" style="width: 302px">
-									<option value="Please select...">Please select...</option>
+									<option value="Please select..."><? print _('Please select...') ?></option>
 									<?
 									for ($i=0; $i<count($options); $i++) {
 									?>
@@ -382,7 +382,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Description</b><br/>
+						<b><? print _('Description') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">

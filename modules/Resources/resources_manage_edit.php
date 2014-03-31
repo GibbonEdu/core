@@ -236,7 +236,7 @@ else {
 									</td>
 									<td class="right">
 										<select name="category" id="category" style="width: 302px">
-											<option value="Please select...">Please select...</option>
+											<option value="Please select..."><? print _('Please select...') ?></option>
 											<?
 											for ($i=0; $i<count($options); $i++) {
 												$selected="" ;
@@ -405,7 +405,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Description</b><br/>
+								<b><? print _('Description') ?></b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">

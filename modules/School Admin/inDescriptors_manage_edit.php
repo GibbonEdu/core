@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/inDescriptors
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/inDescriptors_manage.php'>Manage Individual Needs Descriptors</a> > </div><div class='trailEnd'>Edit Descriptor</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/inDescriptors_manage.php'>" . _('Manage Individual Needs Descriptors') . "</a> > </div><div class='trailEnd'>" . _('Edit Descriptor') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -129,7 +129,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Sequence Number *</b><br/>
+							<b><? print _('Sequence Number') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('Must be unique.') ; ?></i></span>
 						</td>
 						<td class="right">
@@ -142,7 +142,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Description</b><br/>
+							<b><? print _('Description') ?></b><br/>
 						</td>
 						<td class="right">
 							<textarea name="description" id="description" rows=8 style="width: 300px"><? print $row["description"] ?></textarea>

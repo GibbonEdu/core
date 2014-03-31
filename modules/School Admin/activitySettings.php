@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/activitySetti
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Activity Settings</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Activity Settings') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -42,7 +42,7 @@ else {
 			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage="Update of one or more fields failed due to a database error." ;	
+			$updateReturnMessage=_("One or more of the fields in your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
 			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
@@ -76,8 +76,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="Date") {print "selected ";} ?>value="Date">Date</option>
-						<option <? if ($row["value"]=="Term") {print "selected ";} ?>value="Term">Term</option>
+						<option <? if ($row["value"]=="Date") {print "selected ";} ?>value="Date"><? print _('Date') ?></option>
+						<option <? if ($row["value"]=="Term") {print "selected ";} ?>value="Term"><? print _('Term') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -114,12 +114,12 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="0") {print "selected ";} ?>value="0">0</option>
-						<option <? if ($row["value"]=="1") {print "selected ";} ?>value="1">1</option>
-						<option <? if ($row["value"]=="2") {print "selected ";} ?>value="2">2</option>
-						<option <? if ($row["value"]=="3") {print "selected ";} ?>value="3">3</option>
-						<option <? if ($row["value"]=="4") {print "selected ";} ?>value="4">4</option>
-						<option <? if ($row["value"]=="5") {print "selected ";} ?>value="5">5</option>
+						<option <? if ($row["value"]=="0") {print "selected ";} ?>value="0"><? print _('0') ?></option>
+						<option <? if ($row["value"]=="1") {print "selected ";} ?>value="1"><? print _('1') ?></option>
+						<option <? if ($row["value"]=="2") {print "selected ";} ?>value="2"><? print _('2') ?></option>
+						<option <? if ($row["value"]=="3") {print "selected ";} ?>value="3"><? print _('3') ?></option>
+						<option <? if ($row["value"]=="4") {print "selected ";} ?>value="4"><? print _('4') ?></option>
+						<option <? if ($row["value"]=="5") {print "selected ";} ?>value="5"><? print _('5') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -140,9 +140,9 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="None") {print "selected ";} ?>value="None">None</option>
-						<option <? if ($row["value"]=="View") {print "selected ";} ?>value="View">View</option>
-						<option <? if ($row["value"]=="Register") {print "selected ";} ?>value="Register">Register</option>
+						<option <? if ($row["value"]=="None") {print "selected ";} ?>value="None"><? print _('None') ?></option>
+						<option <? if ($row["value"]=="View") {print "selected ";} ?>value="View"><? print _('View') ?></option>
+						<option <? if ($row["value"]=="Register") {print "selected ";} ?>value="Register"><? print _('Register') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -163,10 +163,10 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="None") {print "selected ";} ?>value="None">None</option>
-						<option <? if ($row["value"]=="Single") {print "selected ";} ?>value="Single">Single</option>
-						<option <? if ($row["value"]=="Per Activity") {print "selected ";} ?>value="Per Activity">Per Activity</option>
-						<option <? if ($row["value"]=="Single + Per Activity") {print "selected ";} ?>value="Single + Per Activity">Single + Per Activity</option>
+						<option <? if ($row["value"]=="None") {print "selected ";} ?>value="None"><? print _('None') ?></option>
+						<option <? if ($row["value"]=="Single") {print "selected ";} ?>value="Single"><? print _('Single') ?></option>
+						<option <? if ($row["value"]=="Per Activity") {print "selected ";} ?>value="Per Activity"><? print _('Per Activity') ?></option>
+						<option <? if ($row["value"]=="Single + Per Activity") {print "selected ";} ?>value="Single + Per Activity"><? print _('Single + Per Activity') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -187,8 +187,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="Competitive") {print "selected ";} ?>value="Competitive">Competitive</option>
-						<option <? if ($row["value"]=="Selection") {print "selected ";} ?>value="Selection">Selection</option>
+						<option <? if ($row["value"]=="Competitive") {print "selected ";} ?>value="Competitive"><? print _('Competitive') ?></option>
+						<option <? if ($row["value"]=="Selection") {print "selected ";} ?>value="Selection"><? print _('Selection') ?></option>
 					</select>
 				</td>
 			</tr>

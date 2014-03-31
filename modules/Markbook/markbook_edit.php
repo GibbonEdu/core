@@ -174,7 +174,7 @@ else {
 								print "Name/Unit" ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Type" ;
+								print _("Type") ;
 							print "</th>" ;
 							print "<th>" ;
 								print "Date<br/>Complete" ;

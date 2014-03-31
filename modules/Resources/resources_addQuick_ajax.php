@@ -128,7 +128,7 @@ $output.="<table cellspacing='0' style='width: 100%'>" ;
 					
 					$output.="<tr>" ;
 						$output.="<td>" ;
-							$output.="<b>Type *</b><br/>" ;
+							$output.="<b>" . _('Type') . " *</b><br/>" ;
 						$output.="</td>" ;
 						$output.="<td class='right'>" ;
 							$output.="<select name='" . $id . "type' id='" . $id . "type' class='" . $id . "type' style='width: 302px'>" ;

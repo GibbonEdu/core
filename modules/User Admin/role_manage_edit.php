@@ -94,7 +94,7 @@ else {
 						</td>
 						<td class="right">
 							<select name="category" id="category" style="width: 302px">
-								<option value="Please select...">Please select...</option>
+								<option value="Please select..."><? print _('Please select...') ?></option>
 								<option <? if ($row["category"]=="Staff") { print "selected " ; } ?>value="Staff">Staff</option>
 								<option <? if ($row["category"]=="Student") { print "selected " ; } ?>value="Student">Student</option>
 								<option <? if ($row["category"]=="Parent") { print "selected " ; } ?>value="Parent">Parent</option>
@@ -147,7 +147,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Type *</b><br/>
+							<b><? print _('Type') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">

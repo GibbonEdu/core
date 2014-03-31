@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/fileExtension
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/fileExtensions_manage.php'>Manage File Extensions</a> > </div><div class='trailEnd'>Add File Extension</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/fileExtensions_manage.php'>" . _('Manage File Extensions') . "</a> > </div><div class='trailEnd'>" . _('Add File Extension') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -61,7 +61,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Extension *</b><br/>
+					<b><? print _('Extension') ?> *</b><br/>
 					<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 				</td>
 				<td class="right">
@@ -87,20 +87,24 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Type *</b><br/>
+					<b><? print _('Type') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<select name="type" id="type" style="width: 302px">
-						<option value="Please select...">Please select...</option>
-						<option value="Document">Document</option>
-						<option value="Spreadsheet">Spreadsheet</option>
-						<option value="Presentation">Presentation</option>
-						<option value="Graphics/Design">Graphics/Design</option>
-						<option value="Video">Video</option>
-						<option value="Audio">Audio</option>
-						<option value="Other">Other</option>
+						<option value="Please select..."><? print _('Please select...') ?></option>
+						<option value="Document"><? print _('Document') ?></option>
+						<option value="Spreadsheet"><? print _('Spreadsheet') ?></option>
+						<option value="Presentation"><? print _('Presentation') ?></option>
+						<option value="Graphics/Design"><? print _('Graphics/Design') ?></option>
+						<option value="Video"><? print _('Video') ?></option>
+						<option value="Audio"><? print _('Audio') ?></option>
+						<option value="Other"><? print _('Other') ?></option>
 					</select>
+					<script type="text/javascript">
+						var type=new LiveValidation('type');
+						type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+					 </script>
 				</td>
 			</tr>
 			<tr>

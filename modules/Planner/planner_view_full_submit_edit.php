@@ -273,7 +273,7 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b>Type *</b><br/>
+												<b><? print _('Type') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<?

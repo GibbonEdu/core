@@ -159,6 +159,9 @@ General: changed appearance of main menu
 General: added ability for system to update with cutting edge code from GitHub (rather than finished versions)
 	New values in gibbonSetting
 	Edited files /modules/System Admin/systemSettings*.php, update*.php
+
+Students: added roll group to student leavers report
+	Edited file /modules/Students/report_students_left.php
 	
 
 v7.1.02

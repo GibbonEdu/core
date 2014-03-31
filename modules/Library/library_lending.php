@@ -256,7 +256,7 @@ else {
 					print "<span style='font-size: 85%; font-style: italic'>Producer</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Type" ;
+					print _("Type") ;
 				print "</th>" ;
 				print "<th>" ;
 					print "Location" ;

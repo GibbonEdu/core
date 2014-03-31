@@ -138,11 +138,11 @@ else {
 					
 					<tr>
 						<td> 
-							<b>Type *</b><br/>
+							<b><? print _('Type') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="type" id="type" style="width: 302px">
-								<option value="Please select...">Please select...</option>
+								<option value="Please select..."><? print _('Please select...') ?></option>
 								<option <? if ($row["type"]=="Teaching") { print "selected " ;} ?>value="Teaching">Teaching</option>
 								<option <? if ($row["type"]=="Support") { print "selected " ;}?>value="Support">Support</option>
 							</select>

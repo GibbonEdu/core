@@ -90,7 +90,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Year Group Name *</b><br/>
+							<b><? print _('Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
@@ -116,8 +116,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Sequence Number *</b><br/>
-							<span style="font-size: 90%"><i>Needs to be unique. Controls chronological year ordering.</i></span>
+							<b><? print _('Sequence Number') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Must be unique. Controls chronological ordering.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="sequenceNumber" ID="sequenceNumber" value="<? print $row["sequenceNumber"] ?>" type="text" style="width: 300px">

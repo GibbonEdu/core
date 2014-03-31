@@ -156,7 +156,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Type *</b><br/>
+						<b><? print _('Type') ?> *</b><br/>
 						<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 					</td>
 					<td class="right">

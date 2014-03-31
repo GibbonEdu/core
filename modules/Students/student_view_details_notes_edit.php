@@ -136,7 +136,7 @@ else {
 									</td>
 									<td class="right">
 										<select name="gibbonStudentNoteCategoryID" id="gibbonStudentNoteCategoryID" style="width: 302px">
-											<option value="Please select...">Please select...</option>
+											<option value="Please select..."><? print _('Please select...') ?></option>
 											<?
 											while ($rowCategories=$resultCategories->fetch()) {
 												$selected="" ;
