@@ -512,7 +512,7 @@ else {
 						<td class="right">
 							<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
 								<?
-								print "<option value='Please select...'>Please select...</option>" ;
+								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								?>
 								<optgroup label='--Enroled Students--'>
 								<?
@@ -700,7 +700,7 @@ else {
 						<td class="right">
 							<select name="gibbonPersonID2" id="gibbonPersonID2" style="width: 302px">
 								<?
-								print "<option value='Please select...'>Please select...</option>" ;
+								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT status, gibbonPersonID, preferredName, surname FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName" ;

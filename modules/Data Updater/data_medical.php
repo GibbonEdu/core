@@ -386,7 +386,7 @@ else {
 														$resultSelect->execute($dataSelect);
 													}
 													catch(PDOException $e) { }
-													print "<option value='Please select...'>Please select...</option>" ;
+													print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 													while ($rowSelect=$resultSelect->fetch()) {
 														 if ($rowCond["name"]==$rowSelect["name"]) {
 															print "<option selected value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
@@ -469,7 +469,7 @@ else {
 										<tr>
 											<td> 
 												<b>Last Episode Date</b><br/>
-												<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
+												<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 											</td>
 											<td class="right">
 												<input name="lastEpisode<? print $count ?>" id="lastEpisode<? print $count ?>" maxlength=10 value="<? print dateConvertBack($guid, $rowCond["lastEpisode"]) ?>" type="text" style="width: 300px">
@@ -604,7 +604,7 @@ else {
 								<tr>
 									<td> 
 										<b>Last Episode Date</b><br/>
-										<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
+										<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 									</td>
 									<td class="right">
 										<input name="lastEpisode" id="lastEpisode" maxlength=10 value="<? print dateConvertBack($guid, $rowCond["lastEpisode"]) ?>" type="text" style="width: 300px">

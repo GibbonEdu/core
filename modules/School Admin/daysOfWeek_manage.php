@@ -114,7 +114,7 @@ else {
 					<td class="right">
 						<select style="width:100px" name="<?print $row["name"]?>schoolOpenM" id="<?print $row["name"]?>schoolOpenM">
 							<?
-							print "<option value='Minutes'>Minutes</option>" ;
+							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
 							for ($i=0;$i<60;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -132,7 +132,7 @@ else {
 						</select>
 						<select style="width:100px" name="<?print $row["name"]?>schoolOpenH" id="<?print $row["name"]?>schoolOpenH">
 							<?
-							print "<option value='Hours'>Hours</option>" ;
+							print "<option value='Hours'>" . _('Hours') . "</option>" ;
 							for ($i=0;$i<24;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -157,7 +157,7 @@ else {
 					<td class="right">
 						<select style="width:100px" name="<?print $row["name"]?>schoolStartM" id="<?print $row["name"]?>schoolStartM">
 							<?
-							print "<option value='Minutes'>Minutes</option>" ;
+							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
 							for ($i=0;$i<60;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -175,7 +175,7 @@ else {
 						</select>
 						<select style="width:100px" name="<?print $row["name"]?>schoolStartH" id="<?print $row["name"]?>schoolStartH">
 							<?
-							print "<option value='Hours'>Hours</option>" ;
+							print "<option value='Hours'>" . _('Hours') . "</option>" ;
 							for ($i=0;$i<24;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -200,7 +200,7 @@ else {
 					<td class="right">
 						<select style="width:100px" name="<?print $row["name"]?>schoolEndM" id="<?print $row["name"]?>schoolEndM">
 							<?
-							print "<option value='Minutes'>Minutes</option>" ;
+							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
 							for ($i=0;$i<60;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -218,7 +218,7 @@ else {
 						</select>
 						<select style="width:100px" name="<?print $row["name"]?>schoolEndH" id="<?print $row["name"]?>schoolEndH">
 							<?
-							print "<option value='Hours'>Hours</option>" ;
+							print "<option value='Hours'>" . _('Hours') . "</option>" ;
 							for ($i=0;$i<24;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -243,7 +243,7 @@ else {
 					<td class="right">
 						<select style="width:100px" name="<?print $row["name"]?>schoolCloseM" id="<?print $row["name"]?>schoolCloseM">
 							<?
-							print "<option value='Minutes'>Minutes</option>" ;
+							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
 							for ($i=0;$i<60;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -261,7 +261,7 @@ else {
 						</select>
 						<select style="width:100px" name="<?print $row["name"]?>schoolCloseH" id="<?print $row["name"]?>schoolCloseH">
 							<?
-							print "<option value='Hours'>Hours</option>" ;
+							print "<option value='Hours'>" . _('Hours') . "</option>" ;
 							for ($i=0;$i<24;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {

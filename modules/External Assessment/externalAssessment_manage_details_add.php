@@ -141,7 +141,7 @@ else {
 										$resultSelect->execute($dataSelect);
 									}
 									catch(PDOException $e) { }
-									print "<option value='Please select...'>Please select...</option>" ;
+									print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 									while ($rowSelect=$resultSelect->fetch()) {
 										print "<option id='gibbonExternalAssessmentID' value='" . $rowSelect["gibbonExternalAssessmentID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 									}

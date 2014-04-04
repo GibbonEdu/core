@@ -230,7 +230,7 @@ else {
 					<td class="right">
 						<select name="gibbonFinanceBillingScheduleID" id="gibbonFinanceBillingScheduleID" style="width: 302px">
 							<?
-							print "<option value='Please select...'>Please select...</option>" ;
+							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 							try {
 								$dataSelect=array(); 
 								$sqlSelect="SELECT * FROM gibbonFinanceBillingSchedule WHERE active='Y' ORDER BY name" ;

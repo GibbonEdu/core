@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/schoolYearSpe
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/schoolYearSpecialDay_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Special Days</a> > </div><div class='trailEnd'>Add Special Day</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/schoolYearSpecialDay_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Special Days') . "</a> > </div><div class='trailEnd'>" . _('Add Special Day') . "</div>" ;
 	print "</div>" ;
 	
 	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
@@ -60,7 +60,7 @@ else {
 		}
 		else if ($dateStamp<$firstDay OR $dateStamp>$lastDay) {
 			print "<div class='error'>" ;
-				print "The specified date is outside of the allowed range." ;
+				print _("The specified date is outside of the allowed range.") ;
 			print "</div>" ;
 		}
 		else {
@@ -69,8 +69,8 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Date *</b><br/>
-							<span style="font-size: 90%"><i>Must be unique. This value cannot be changed.</i></span>
+							<b><? print _('Date') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Must be unique.') ?> <? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="date" id="date" maxlength=10 value="<? print date("d/m/Y",$dateStamp) ?>" type="text" style="width: 300px">
@@ -83,13 +83,13 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Type *</b>
+							<b><? print _('Type') ?> *</b>
 						</td>
 						<td class="right">
 							<select name="type" id="type" style="width: 302px">
 								<option value="Please select..."><? print _('Please select...') ?></option>
-								<option value="School Closure">School Closure</option>
-								<option value="Timing Change">Timing Change</option>
+								<option value="School Closure"><? print _('School Closure') ?></option>
+								<option value="Timing Change"><? print _('Timing Change') ?></option>
 							</select>
 							<script type="text/javascript">
 								var type=new LiveValidation('type');
@@ -121,12 +121,12 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>School Opens</b>
+							<b><? print _('School Opens') ?></b>
 						</td>
 						<td class="right">
 							<select style="width:100px" name="schoolOpenM" id="schoolOpenM">
 								<?
-								print "<option value='Minutes'>Minutes</option>" ;
+								print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
 								for ($i=0;$i<60;$i++) {
 									$iPrint=$i;
 									if (strlen($i)==1) {
@@ -144,7 +144,7 @@ else {
 							</select>
 							<select style="width:100px" name="schoolOpenH" id="schoolOpenH">
 								<?
-								print "<option value='Hours'>Hours</option>" ;
+								print "<option value='Hours'>" . _('Hours') . "</option>" ;
 								for ($i=0;$i<24;$i++) {
 									$iPrint=$i;
 									if (strlen($i)==1) {
@@ -164,12 +164,12 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>School Starts</b>
+							<b><? print _('School Starts') ?></b>
 						</td>
 						<td class="right">
 							<select style="width:100px" name="schoolStartM" id="schoolStartM">
 								<?
-								print "<option value='Minutes'>Minutes</option>" ;
+								print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
 								for ($i=0;$i<60;$i++) {
 									$iPrint=$i;
 									if (strlen($i)==1) {
@@ -187,7 +187,7 @@ else {
 							</select>
 							<select style="width:100px" name="schoolStartH" id="schoolStartH">
 								<?
-								print "<option value='Hours'>Hours</option>" ;
+								print "<option value='Hours'>" . _('Hours') . "</option>" ;
 								for ($i=0;$i<24;$i++) {
 									$iPrint=$i;
 									if (strlen($i)==1) {
@@ -207,12 +207,12 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>School Ends</b>
+							<b><? print _('School Ends') ?></b>
 						</td>
 						<td class="right">
 							<select style="width:100px" name="schoolEndM" id="schoolEndM">
 								<?
-								print "<option value='Minutes'>Minutes</option>" ;
+								print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
 								for ($i=0;$i<60;$i++) {
 									$iPrint=$i;
 									if (strlen($i)==1) {
@@ -230,7 +230,7 @@ else {
 							</select>
 							<select style="width:100px" name="schoolEndH" id="schoolEndH">
 								<?
-								print "<option value='Hours'>Hours</option>" ;
+								print "<option value='Hours'>" . _('Hours') . "</option>" ;
 								for ($i=0;$i<24;$i++) {
 									$iPrint=$i;
 									if (strlen($i)==1) {
@@ -250,12 +250,12 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>School Closes</b>
+							<b><? print _('School Closes') ?></b>
 						</td>
 						<td class="right">
 							<select style="width:100px" name="schoolCloseM" id="schoolCloseM">
 								<?
-								print "<option value='Minutes'>Minutes</option>" ;
+								print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
 								for ($i=0;$i<60;$i++) {
 									$iPrint=$i;
 									if (strlen($i)==1) {
@@ -273,7 +273,7 @@ else {
 							</select>
 							<select style="width:100px" name="schoolCloseH" id="schoolCloseH">
 								<?
-								print "<option value='Hours'>Hours</option>" ;
+								print "<option value='Hours'>" . _('Hours') . "</option>" ;
 								for ($i=0;$i<24;$i++) {
 									$iPrint=$i;
 									if (strlen($i)==1) {

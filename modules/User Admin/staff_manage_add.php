@@ -82,7 +82,7 @@ else {
 				<td class="right">
 					<select style="width: 302px" name="gibbonPersonID" id="gibbonPersonID">
 						<?
-						print "<option value='Please select...'>Please select...</option>" ;
+						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 						try {
 							$data=array(); 
 							$sql="SELECT * FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName" ;

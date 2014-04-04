@@ -51,7 +51,7 @@ else {
 			<tr>
 				<td> 
 					<b>Date *</b><br/>
-					<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
+					<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
 					<input name="currentDate" id="currentDate" maxlength=10 value="<? print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">

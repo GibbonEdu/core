@@ -187,7 +187,7 @@ else {
 						<td class="right">
 							<?
 							print "<select name='gibbonPersonIDStatusResponsible' id='gibbonPersonIDStatusResponsible' style='width: 300px'>" ;
-								print "<option value='Please select...'>Please select...</option>" ;
+								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								print "<optgroup label='--Students By Roll Group--'>" ;
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 

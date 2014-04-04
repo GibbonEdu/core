@@ -229,7 +229,7 @@ else {
 							<tr>
 								<td> 
 									<b>First Day *</b><br/>
-									<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
+									<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 								</td>
 								<td class="right">
 									<input name="nextfirstDay" id="nextfirstDay" maxlength=10 value="" type="text" style="width: 300px">
@@ -248,7 +248,7 @@ else {
 							<tr>
 								<td> 
 									<b>Last Day *</b><br/>
-									<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
+									<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 								</td>
 								<td class="right">
 									<input name="nextlastDay" id="nextlastDay" maxlength=10 value="" type="text" style="width: 300px">

@@ -73,14 +73,14 @@ else {
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Previous Year') . "</a> " ;
 			}
 			else {
-				print "Previous Year " ;
+				print _("Previous Year") . " " ;
 			}
 			print " | " ;
 			if (getNextSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Next Year') . "</a> " ;
 			}
 			else {
-				print "Next Year " ;
+				print _("Next Year") . " " ;
 			}
 		print "</div>" ;
 		

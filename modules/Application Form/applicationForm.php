@@ -232,7 +232,7 @@ else {
 			<tr>
 				<td> 
 					<b>Date of Birth *</b><br/>
-					<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
+					<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
 					<input name="dob" id="dob" maxlength=10 value="" type="text" style="width: 300px">
@@ -602,7 +602,7 @@ else {
 				<td class="right">
 					<select name="gibbonSchoolYearIDEntry" id="gibbonSchoolYearIDEntry" style="width: 302px">
 						<?
-						print "<option value='Please select...'>Please select...</option>" ;
+						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT * FROM gibbonSchoolYear WHERE (status='Current' OR status='Upcoming') ORDER BY sequenceNumber" ;
@@ -650,7 +650,7 @@ else {
 				<td class="right">
 					<select name="gibbonYearGroupIDEntry" id="gibbonYearGroupIDEntry" style="width: 302px">
 						<?
-						print "<option value='Please select...'>Please select...</option>" ;
+						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber" ;
@@ -871,7 +871,7 @@ else {
 								$resultSelect->execute($dataSelect);
 							}
 							catch(PDOException $e) { }
-							print "<option value='Please select...'>Please select...</option>" ;
+							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 							while ($rowSelect=$resultSelect->fetch()) {
 								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
 							}
@@ -1677,7 +1677,7 @@ else {
 					<td class="right">
 						<select name="languageChoice" id="languageChoice" style="width: 302px">
 							<?
-							print "<option value='Please select...'>Please select...</option>" ;
+							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 							$languageOptionsLanguageList=getSettingByScope($connection2, "Application Form", "languageOptionsLanguageList") ;
 							$languages=explode(",", $languageOptionsLanguageList) ;
 							foreach ($languages as $language) {
@@ -1996,7 +1996,7 @@ else {
 					}
 					else {
 						print "<select name='howDidYouHear' id='howDidYouHear' style='width: 302px'>" ;
-							print "<option value='Please select...'>Please select...</option>" ;
+							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 							$howDidYouHears=explode(",", $howDidYouHearList) ;
 							foreach ($howDidYouHears as $howDidYouHear) {
 								print "<option value='" . trim($howDidYouHear) . "'>" . trim($howDidYouHear) . "</option>" ;

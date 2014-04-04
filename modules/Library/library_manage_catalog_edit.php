@@ -542,7 +542,7 @@ else {
 									else if ($field["type"]=="Select") {
 										print "<select name='field" . $fieldName . "' id='field" . $fieldName . "' type='text' style='width: 300px'>" ;
 											if ($field["required"]=="Y") {
-												print "<option value='Please select...'>Please select...</option>" ;
+												print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 											}
 											$options=explode(",", $field["options"]) ;
 											foreach ($options as $option) {

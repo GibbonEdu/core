@@ -147,7 +147,7 @@ else {
 						<td class="right">
 							<select name="gibbonYearGroupID" id="gibbonYearGroupID" style="width: 302px">
 								<?
-								print "<option value='Please select...'>Please select...</option>" ;
+								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber" ;
@@ -180,7 +180,7 @@ else {
 						<td class="right">
 							<select name="gibbonRollGroupID" id="gibbonRollGroupID" style="width: 302px">
 								<?
-								print "<option value='Please select...'>Please select...</option>" ;
+								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
 									$sqlSelect="SELECT gibbonRollGroupID, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;

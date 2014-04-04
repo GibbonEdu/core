@@ -1053,7 +1053,7 @@ else {
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
 						<?
-						print "<option value='Please select...'>Please select...</option>" ;
+						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT * FROM gibbonScale WHERE active='Y' ORDER BY name" ;

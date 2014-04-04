@@ -318,7 +318,7 @@ else {
 								<td class="right">
 									<select name="homeAddressCountry" id="homeAddressCountry" style="width: 302px">
 										<?
-										print "<option value='Please select...'>Please select...</option>" ;
+										print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 										try {
 											$dataSelect=array(); 
 											$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;

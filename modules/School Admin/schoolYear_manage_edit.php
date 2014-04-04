@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/schoolYear_ma
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/schoolYear_manage.php'>Manage School Years</a> > </div><div class='trailEnd'>Edit School Year</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/schoolYear_manage.php'>" . _('Manage School Years') . "</a> > </div><div class='trailEnd'>" . _('Edit School Year') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -90,7 +90,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>School Year Name *</b><br/>
+							<b><? print _('Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
@@ -103,13 +103,13 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Status *</b>
+							<b><? print _('Status') ?> *</b>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="status">
-								<option <? if ($row["status"]=="Past") { print "selected ";} ?>value="Past">Past</option>
-								<option <? if ($row["status"]=="Current") { print "selected ";} ?>value="Current">Current</option>
-								<option <? if ($row["status"]=="Upcoming") { print "selected ";} ?>value="Upcoming">Upcoming</option>
+								<option <? if ($row["status"]=="Past") { print "selected ";} ?>value="Past"><? print _('Past') ?></option>
+								<option <? if ($row["status"]=="Current") { print "selected ";} ?>value="Current"><? print _('Current') ?></option>
+								<option <? if ($row["status"]=="Upcoming") { print "selected ";} ?>value="Upcoming"><? print _('Upcoming') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -129,8 +129,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>First Day *</b><br/>
-							<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
+							<b><? print _('First Day') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 						</td>
 						<td class="right">
 							<input name="firstDay" id="firstDay" maxlength=10 value="<? if (isset($row["firstDay"])) { print dateConvertBack($guid, $row["firstDay"]) ; } ?>" type="text" style="width: 300px">
@@ -148,8 +148,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Last Day *</b><br/>
-							<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
+							<b><? print _('Last Day') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 						</td>
 						<td class="right">
 							<input name="lastDay" id="lastDay" maxlength=10 value="<? if (isset($row["lastDay"])) { print dateConvertBack($guid, $row["lastDay"]) ; } ?>" type="text" style="width: 300px">

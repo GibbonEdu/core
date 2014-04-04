@@ -141,7 +141,7 @@ else {
 			<tr>
 				<td> 
 					<b>From Date</b><br/>
-					<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
+					<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
 					<input name="fromDate" id="fromDate" maxlength=10 value="<? if ($fromDate!="") { print $fromDate ; } ?>" type="text" style="width: 300px">

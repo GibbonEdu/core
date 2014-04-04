@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/schoolYearSpe
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Special Days</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Special Days') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -114,14 +114,14 @@ else {
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manage.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Previous Year') . "</a> " ;
 			}
 			else {
-				print "Previous Year " ;
+				print _("Previous Year") . " " ;
 			}
 			print " | " ;
 			if (getNextSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manage.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Next Year') . "</a> " ;
 			}
 			else {
-				print "Next Year " ;
+				print _("Next Year") . " " ;
 			}
 		print "</div>" ;
 		
@@ -137,7 +137,7 @@ else {
 		
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-				print "There are no terms in the specied year." ;
+				print _("There are no terms in the specied year.") ;
 			print "</div>" ;
 		}
 		else {
@@ -224,25 +224,25 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th style='width: 14px'>" ;
-						print "Monday" ;
+						print _("Monday") ;
 					print "</th>" ;
 					print "<th style='width: 14px'>" ;
-						print "Tuesday" ;
+						print _("Tuesday") ;
 					print "</th>" ;
 					print "<th style='width: 14px'>" ;
-						print "Wednesday" ;
+						print _("Wednesday") ;
 					print "</th>" ;
 					print "<th style='width: 14px'>" ;
-						print "Thursday" ;
+						print _("Thursday") ;
 					print "</th>" ;
 					print "<th style='width: 14px'>" ;
-						print "Friday" ;
+						print _("Friday") ;
 					print "</th>" ;
 					print "<th style='width: 14px'>" ;
-						print "Saturday" ;
+						print _("Saturday") ;
 					print "</th>" ;
 					print "<th style='width: 15px'>" ;
-						print "Sunday" ;
+						print _("Sunday") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -277,7 +277,7 @@ else {
 							else {
 								print "<span style='color: #000000'>" . date("d/m/Y",$i) . "<br/>School Day</span>" ;
 								print "<br/>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=" . $i . "&gibbonSchoolYearTermID=" . $row["gibbonSchoolYearTermID"] . "&firstDay=$firstDayStamp&lastDay=$lastDayStamp'><img style='margin-top: 3px' title='Add' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=" . $i . "&gibbonSchoolYearTermID=" . $row["gibbonSchoolYearTermID"] . "&firstDay=$firstDayStamp&lastDay=$lastDayStamp'><img style='margin-top: 3px' title='" . _('Add Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a> " ;
 							}
 						print "</td>" ;
 					}

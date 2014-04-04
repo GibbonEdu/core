@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/schoolYear_ma
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage School Year</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage School Year') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -60,23 +60,23 @@ else {
 	
 	if ($result->rowcount()<1) {
 		print "<div class='error'>" ;
-		print "There are no school years to display." ;
+		print _("There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Sequence" ;
+					print _("Sequence") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Dates" ;
+					print _("Dates") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Status" ;
+					print _("Status") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Actions") ;

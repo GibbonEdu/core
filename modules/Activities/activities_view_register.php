@@ -345,7 +345,7 @@ else {
 														<td class="right">
 															<select name="gibbonActivityIDBackup" id="gibbonActivityIDBackup" style="width: 302px">
 																<?
-																print "<option value='Please select...'>Please select...</option>" ;
+																print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 																
 																try {
 																	if ($dateType!="Date") {

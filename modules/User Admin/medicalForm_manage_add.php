@@ -75,7 +75,7 @@ else {
 				<td class="right">
 					<select style="width: 302px" name="gibbonPersonID" id="gibbonPersonID">
 						<?
-						print "<option value='Please select...'>Please select...</option>" ;
+						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 						try {
 							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 							$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' ORDER BY surname, preferredName" ;

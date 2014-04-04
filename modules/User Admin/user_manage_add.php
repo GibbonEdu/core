@@ -173,7 +173,7 @@ else {
 			<tr>
 				<td> 
 					<b>Date of Birth</b><br/>
-					<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
+					<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
 					<input name="dob" id="dob" maxlength=10 value="" type="text" style="width: 300px">
@@ -201,7 +201,7 @@ else {
 				<td class="right">
 					<select name="gibbonRoleIDPrimary" id="gibbonRoleIDPrimary" style="width: 302px">
 						<?
-						print "<option value='Please select...'>Please select...</option>" ;
+						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT * FROM gibbonRole ORDER BY name" ;

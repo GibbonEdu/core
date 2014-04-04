@@ -223,7 +223,7 @@ else {
 											<td class="right">
 												<select name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo" style="width: 302px">
 													<?
-													print "<option value='Please select...'>Please select...</option>" ;
+													print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 													try {
 														$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 														$sqlSelect="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
@@ -409,7 +409,7 @@ else {
 													<td class="right">
 														<select name="gibbonCourseClassIDSource" id="gibbonCourseClassIDSource" style="width: 302px">
 															<?
-															print "<option value='Please select...'>Please select...</option>" ;
+															print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 															try {
 																$dataSelect=array("gibbonCourseID"=>$gibbonCourseID); 
 																$sqlSelect="SELECT gibbonCourseClassID, gibbonCourseClass.nameShort AS class, gibbonCourse.nameShort AS course FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID" ;

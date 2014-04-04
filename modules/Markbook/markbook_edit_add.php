@@ -292,7 +292,7 @@ else {
 										$resultSelect->execute($dataSelect);
 									}
 									catch(PDOException $e) { }
-									print "<option value='Please select...'>Please select...</option>" ;
+									print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 									while ($rowSelect=$resultSelect->fetch()) {
 										$selected="" ;
 										if ($rowSelect["gibbonScaleID"]==$_SESSION[$guid]["primaryAssessmentScale"]) {
@@ -393,7 +393,7 @@ else {
 										$resultSelect->execute($dataSelect);
 									}
 									catch(PDOException $e) { }
-									print "<option value='Please select...'>Please select...</option>" ;
+									print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 									while ($rowSelect=$resultSelect->fetch()) {
 										$selected="" ;
 										if ($rowSelect["gibbonScaleID"]==$_SESSION[$guid]["primaryAssessmentScale"]) {

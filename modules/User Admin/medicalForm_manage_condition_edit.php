@@ -122,7 +122,7 @@ else {
 						<td class="right">
 							<select style="width: 302px" name="name" id="name">
 								<?
-								print "<option value='Please select...'>Please select...</option>" ;
+								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonMedicalCondition ORDER BY name" ;
@@ -212,7 +212,7 @@ else {
 					<tr>
 						<td> 
 							<b>Last Episode Date</b><br/>
-							<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
+							<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 						</td>
 						<td class="right">
 							<input name="lastEpisode" id="lastEpisode" maxlength=10 value="<? print dateConvertBack($guid, $row["lastEpisode"]) ?>" type="text" style="width: 300px">

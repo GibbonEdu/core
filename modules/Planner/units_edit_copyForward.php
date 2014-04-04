@@ -182,7 +182,7 @@ else {
 									<td class="right">
 										<select name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo" style="width: 302px">
 											<?
-											print "<option value='Please select...'>Please select...</option>" ;
+											print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 											try {
 												$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 												$sqlSelect="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;

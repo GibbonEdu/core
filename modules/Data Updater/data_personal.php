@@ -352,7 +352,7 @@ else {
 								</td>
 								<td class="right">
 									<select style="width: 302px" name="title" id="title">
-										<? if ($required["title"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; } ?>
+										<? if ($required["title"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
 										<option <? if ($row["title"]=="Ms. ") {print "selected ";}?>value="Ms. ">Ms.</option>
 										<option <? if ($row["title"]=="Miss ") {print "selected ";}?>value="Miss ">Miss.</option>
 										<option <? if ($row["title"]=="Mr. ") {print "selected ";}?>value="Mr. ">Mr.</option>
@@ -463,7 +463,7 @@ else {
 							<tr>
 								<td> 
 									<b>Date of Birth<? if (isset($required["dob"])) { if ($required["dob"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
+									<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 								</td>
 								<td class="right">
 									<input name="dob" id="dob" maxlength=10 value="<? print dateConvertBack($guid, $row["dob"]) ?>" type="text" style="width: 300px">
@@ -527,7 +527,7 @@ else {
 									</td>
 									<td class="right">
 										<select name="emergency1Relationship" id="emergency1Relationship" style="width: 302px">
-											<? if ($required["emergency1Relationship"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; } ?>
+											<? if ($required["emergency1Relationship"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
 											<option <? if ($row["emergency1Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
 											<option <? if ($row["emergency1Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
 											<option <? if ($row["emergency1Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
@@ -604,7 +604,7 @@ else {
 									</td>
 									<td class="right">
 										<select name="emergency2Relationship" id="emergency2Relationship" style="width: 302px">
-											<? if ($required["emergency2Relationship"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; } ?>
+											<? if ($required["emergency2Relationship"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
 											<option <? if ($row["emergency2Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
 											<option <? if ($row["emergency2Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
 											<option <? if ($row["emergency2Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
@@ -839,7 +839,7 @@ else {
 											$resultSelect->execute($dataSelect);
 										}
 										catch(PDOException $e) { }
-										if ($required["address1Country"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; }
+										if ($required["address1Country"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; }
 										while ($rowSelect=$resultSelect->fetch()) {
 											$selected="" ;
 											if ($rowSelect["printable_name"]==$row["address1Country"]) {
@@ -973,7 +973,7 @@ else {
 											$resultSelect->execute($dataSelect);
 										}
 										catch(PDOException $e) { }
-										if ($required["address2Country"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; }
+										if ($required["address2Country"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; }
 										while ($rowSelect=$resultSelect->fetch()) {
 											$selected="" ;
 											if ($rowSelect["printable_name"]==$row["address2Country"]) {
@@ -1015,7 +1015,7 @@ else {
 											?>									
 											<select name="phone<? print $i ?>CountryCode" id="phone<? print $i ?>CountryCode" style="width: 60px">
 												<?
-												if ($required["phone" . $i]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; }
+												if ($required["phone" . $i]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; }
 												try {
 													$dataSelect=array(); 
 													$sqlSelect="SELECT * FROM gibbonCountry ORDER BY printable_name" ;
@@ -1043,7 +1043,7 @@ else {
 											} }
 											?>
 											<select style="width: 70px" name="phone<? print $i ?>Type" id="phone<? print $i ?>Type">
-												<? if ($required["phone" . $i]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; } ?>
+												<? if ($required["phone" . $i]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
 												<option <? if ($row["phone" . $i . "Type"]=="Mobile") { print "selected" ; }?> value="Mobile">Mobile</option>
 												<option <? if ($row["phone" . $i . "Type"]=="Home") { print "selected" ; }?> value="Home">Home</option>
 												<option <? if ($row["phone" . $i . "Type"]=="Work") { print "selected" ; }?> value="Work">Work</option>
@@ -1193,7 +1193,7 @@ else {
 											$resultSelect->execute($dataSelect);
 										}
 										catch(PDOException $e) { }
-										if ($required["countryOfBirth"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; }
+										if ($required["countryOfBirth"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; }
 										while ($rowSelect=$resultSelect->fetch()) {
 											$selected="" ;
 											if ($row["countryOfBirth"]==$rowSelect["printable_name"]) {
@@ -1220,7 +1220,7 @@ else {
 								</td>
 								<td class="right">
 									<select name="ethnicity" id="ethnicity" style="width: 302px">
-										<? if ($required["ethnicity"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; } ?>
+										<? if ($required["ethnicity"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
 										<?
 										$ethnicities=explode(",", getSettingByScope($connection2, "User Admin", "ethnicity")) ;
 										foreach ($ethnicities as $ethnicity) {
@@ -1249,7 +1249,7 @@ else {
 								</td>
 								<td class="right">
 									<select name="religion" id="religion" style="width: 302px">
-										<? if ($required["religion"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; } ?>
+										<? if ($required["religion"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
 										<option <? if ($row["religion"]=="Nonreligious/Agnostic/Atheist") {print "selected ";}?>value="Nonreligious/Agnostic/Atheist">Nonreligious/Agnostic/Atheist</option>
 										<option <? if ($row["religion"]=="Buddhism") {print "selected ";}?>value="Buddhism">Buddhism</option>
 										<option <? if ($row["religion"]=="Christianity") {print "selected ";}?>value="Christianity">Christianity</option>
@@ -1276,7 +1276,7 @@ else {
 								<td class="right">
 									<select name="citizenship1" id="citizenship1" style="width: 302px">
 										<?
-										if ($required["citizenship1"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; }
+										if ($required["citizenship1"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; }
 										$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;
 										if ($nationalityList=="") {
 											try {
@@ -1337,7 +1337,7 @@ else {
 								<td class="right">
 									<select name="citizenship2" id="citizenship2" style="width: 302px">
 										<?
-										if ($required["citizenship2"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; }
+										if ($required["citizenship2"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; }
 										$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;
 										if ($nationalityList=="") {
 											try {
@@ -1449,7 +1449,7 @@ else {
 									}
 									else {
 										print "<select name='residencyStatus' id='residencyStatus' style='width: 302px'>" ;
-											if ($required["residencyStatus"]=="Y") { print "<option value='Please select...'>Please select...</option>" ; } else { print "<option value=''></option>" ; }
+											if ($required["residencyStatus"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; }
 											$residencyStatuses=explode(",", $residencyStatusList) ;
 											foreach ($residencyStatuses as $residencyStatus) {
 												$selected="" ;

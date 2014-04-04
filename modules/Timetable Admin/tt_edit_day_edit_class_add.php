@@ -139,7 +139,7 @@ else {
 							<select name="gibbonCourseClassID" id="gibbonCourseClassID" style="width: 302px">
 								<?
 								$years=explode(",", $row["gibbonYearGroupIDList"]) ;
-								print "<option value='Please select...'>Please select...</option>" ;
+								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
 									if (count($years)>0) {
