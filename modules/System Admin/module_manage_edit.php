@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/module_manage
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/module_manage.php'>Manage Modules</a> > </div><div class='trailEnd'>Edit Module</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/module_manage.php'>" . _('Manage Modules') . "</a> > </div><div class='trailEnd'>" . _('Edit Module') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -90,7 +90,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Module Name *</b><br/>
+							<b><? print _('Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -116,8 +116,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Category *</b><br/>
-							<span style="font-size: 90%"><i>Determines menu structure</i></span>
+							<b><? print _('Category') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Determines menu structure') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="category" id="category" maxlength=10 value="<? print htmlPrep($row["category"]) ?>" type="text" style="width: 300px">
@@ -134,8 +134,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="active" id="active" style="width: 302px">
-								<option <? if ($row["active"]=="Y") {print "selected ";}?>value="Y">Y</option>
-								<option <? if ($row["active"]=="N") {print "selected ";}?>value="N">N</option>
+								<option <? if ($row["active"]=="Y") {print "selected ";}?>value="Y"><? print _('Y') ?></option>
+								<option <? if ($row["active"]=="N") {print "selected ";}?>value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>

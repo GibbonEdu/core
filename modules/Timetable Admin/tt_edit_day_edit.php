@@ -55,7 +55,7 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Timetables</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Edit Timetable</a> > </div><div class='trailEnd'>Edit Timetable Day</div>" ; 
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Timetables') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Edit Timetable') . "</a> > </div><div class='trailEnd'>" . _('Edit Timetable Day') . "</div>" ; 
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -104,7 +104,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Timetable *</b><br/>
+							<b><? print _('Timetable') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -118,7 +118,7 @@ else {
 					<tr>
 						<td> 
 							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i>Must be unique for this course.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique for this timetable.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=12 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
@@ -131,7 +131,7 @@ else {
 					<tr>
 						<td> 
 							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i>Must be unique for this course.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique for this timetable.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="nameShort" id="nameShort" maxlength=4 value="<? print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
@@ -143,8 +143,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Timetable Column *</b><br/>
-							<span style="font-size: 90%"><i>Add structure to the day.</i></span>
+							<b><? print _('Timetable Column') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<?
@@ -182,7 +182,7 @@ else {
 			<?
 			
 			print "<h2>" ;
-			print "Edit Classes by Period" ;
+			print _("Edit Classes by Period") ;
 			print "</h2>" ;
 			
 			try {
@@ -210,13 +210,13 @@ else {
 							print _("Short Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Time" ;
+							print _("Time") ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Type") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Classes" ;
+							print _("Classes") ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Actions") ;

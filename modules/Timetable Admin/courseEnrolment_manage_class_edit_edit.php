@@ -57,7 +57,7 @@ else {
 			$row=$result->fetch() ;
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Enrolment by Class</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage_class_edit.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Edit " . $row["courseNameShort"] . "." . $row["name"] . " Enrolment</a> > </div><div class='trailEnd'>Edit Participant</div>" ; 
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Enrolment by Class') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage_class_edit.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . sprintf(_('Edit %1$s.%2$s Enrolment'), $row["courseNameShort"], $row["name"]) . "</a> > </div><div class='trailEnd'>" . _('Edit Participant') . "</div>" ; 
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -105,7 +105,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Course *</b><br/>
+							<b><? print _('Course') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -118,7 +118,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Class *</b><br/>
+							<b><? print _('Class') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -131,7 +131,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Participant *</b><br/>
+							<b><? print _('Participant') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -145,18 +145,17 @@ else {
 					
 					<tr>
 						<td> 
-							<b>Role *</b><br/>
-							<span style="font-size: 90%"><i>Must be unique for this course.</i></span>
+							<b><? print _('Role') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="role">
-								<option <? if ($row["role"]=="Student") { print "selected ";} ?>value="Student">Student</option>
-								<option <? if ($row["role"]=="Student - Left") { print "selected ";} ?>value="Student - Left">Student - Left</option>
-								<option <? if ($row["role"]=="Teacher") { print "selected ";} ?>value="Teacher">Teacher</option>
-								<option <? if ($row["role"]=="Teacher - Left") { print "selected ";} ?>value="Teacher - Left">Teacher - Left</option>
-								<option <? if ($row["role"]=="Assistant") { print "selected ";} ?>value="Assistant">Assistant</option>
-								<option <? if ($row["role"]=="Technician") { print "selected ";} ?>value="Technician">Technician</option>
-								<option <? if ($row["role"]=="Parent") { print "selected ";} ?>value="Parent">Parent</option>
+								<option <? if ($row["role"]=="Student") { print "selected ";} ?>value="Student"><? print _('Student') ?></option>
+								<option <? if ($row["role"]=="Student - Left") { print "selected ";} ?>value="Student - Left"><? print _('Student - Left') ?></option>
+								<option <? if ($row["role"]=="Teacher") { print "selected ";} ?>value="Teacher"><? print _('Teacher') ?></option>
+								<option <? if ($row["role"]=="Teacher - Left") { print "selected ";} ?>value="<? print _('Teacher - Left">Teacher - Left') ?></option>
+								<option <? if ($row["role"]=="Assistant") { print "selected ";} ?>value="<? print _('Assistant">Assistant') ?></option>
+								<option <? if ($row["role"]=="Technician") { print "selected ";} ?>value="<? print _('Technician">Technician') ?></option>
+								<option <? if ($row["role"]=="Parent") { print "selected ";} ?>value="Parent"><? print _('Parent') ?></option>
 							</select>
 						</td>
 					</tr>

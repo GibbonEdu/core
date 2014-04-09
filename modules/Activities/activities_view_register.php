@@ -74,7 +74,7 @@ else {
 					
 					if ($_GET["search"]!="" OR $gibbonPersonID!="") {
 						print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_view.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "'>Back to Search Results</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_view.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "'>" . _('Back to Search Results') . "</a>" ;
 						print "</div>" ;
 					}
 
@@ -368,7 +368,7 @@ else {
 															</select>
 															<script type="text/javascript">
 																var gibbonActivityIDBackup=new LiveValidation('gibbonActivityIDBackup');
-																gibbonActivityIDBackup.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+																gibbonActivityIDBackup.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 															 </script>
 														</td>
 													</tr>

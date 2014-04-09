@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/theme_manage.
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Themes</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Themes') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -36,7 +36,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage="Uninstall was successful. You will still need to remove the theme's files yourself." ;	
+			$deleteReturnMessage=_("Uninstall was successful. You will still need to remove the theme's files yourself.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -58,7 +58,7 @@ else {
 			$updateReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage="Your request failed because at least one theme must remain active." ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="success0") {
 			$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -96,19 +96,19 @@ else {
 						print _("Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Description" ;
+						print _("Description") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Version" ;
+						print _("Version") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Author" ;
+						print _("Author") ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Active") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Action" ;
+						print _("Action") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -158,7 +158,7 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["name"]!="Default") {
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstall.php&gibbonThemeID=" . $row["gibbonThemeID"] . "'><img title='Uninstall' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstall.php&gibbonThemeID=" . $row["gibbonThemeID"] . "'><img title='" . _('Remove Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;

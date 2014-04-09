@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/course_man
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Courses & Classes</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Courses & Classes') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -64,7 +64,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage="Your request was completed successfully.The system has made a moderate effort to remove all participant records." ;	
+			$deleteReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -166,10 +166,10 @@ else {
 						print _("Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Learning Area" ;
+						print _("Learning Area") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Classes" ;
+						print _("Classes") ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Actions") ;

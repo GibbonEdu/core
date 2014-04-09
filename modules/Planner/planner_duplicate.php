@@ -182,7 +182,7 @@ else {
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
-									<b>Class *</b><br/>
+									<b><? print _('Class') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<select name="gibbonCourseClassID" id="gibbonCourseClassID" style="width: 302px">
@@ -212,7 +212,7 @@ else {
 									</select>
 									<script type="text/javascript">
 										var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
-										gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+										gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 									 </script>
 								</td>
 							</tr>
@@ -278,7 +278,7 @@ else {
 							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr>
 									<td> 
-										<b>Class *</b><br/>
+										<b><? print _('Class') ?> *</b><br/>
 										<span style="font-size: 90%"><i>This value cannot be changed<br/></i></span>
 									</td>
 									<td class="right">
@@ -404,8 +404,8 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Start Time *</b><br/>
-										<span style="font-size: 90%"><i>Format: hh:mm (24hr)<br/></i></span>
+										<b><? print _('Start Time') ?> *</b><br/>
+										<span style="font-size: 90%"><i><? print _('Format: hh:mm (24hr)') ?><br/></i></span>
 									</td>
 									<td class="right">
 										<input name="timeStart" id="timeStart" maxlength=5 value="<? print substr($nextTimeStart,0,5) ?>" type="text" style="width: 300px">
@@ -437,8 +437,8 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>End Time *</b><br/>
-										<span style="font-size: 90%"><i>Format: hh:mm (24hr)<br/></i></span>
+										<b><? print _('End Time') ?> *</b><br/>
+										<span style="font-size: 90%"><i><? print _('Format: hh:mm (24hr)') ?><br/></i></span>
 									</td>
 									<td class="right">
 										<input name="timeEnd" id="timeEnd" maxlength=5 value="<? print substr($nextTimeEnd,0,5) ?>" type="text" style="width: 300px">

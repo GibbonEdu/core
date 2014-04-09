@@ -399,7 +399,7 @@ else {
 												</select>
 												<script type="text/javascript">
 													var name<? print $count ?>=new LiveValidation('name<? print $count ?>');
-													name<? print $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+													name<? print $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 												 </script>	
 											</td>
 										</tr>
@@ -430,7 +430,7 @@ else {
 												</select>
 												<script type="text/javascript">
 													var gibbonAlertLevelID<? print $count ?>=new LiveValidation('gibbonAlertLevelID<? print $count ?>');
-													gibbonAlertLevelID<? print $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+													gibbonAlertLevelID<? print $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 												 </script>	
 											</td>
 										</tr>

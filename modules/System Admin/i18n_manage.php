@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/i18n_manage.p
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Language Settings</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Language Settings') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -76,13 +76,13 @@ else {
 						print _("Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Code" ;
+						print _("Code") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Maintainer" ;
+						print _("Maintainer") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Default" ;
+						print _("Default") ;
 					print "</th>" ;
 				print "</tr>" ;
 				

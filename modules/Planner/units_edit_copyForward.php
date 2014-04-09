@@ -152,7 +152,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Class *</b><br/>
+										<b><? print _('Class') ?> *</b><br/>
 										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
@@ -207,13 +207,13 @@ else {
 										</select>
 										<script type="text/javascript">
 											var gibbonSchoolYearIDCopyTo=new LiveValidation('gibbonSchoolYearIDCopyTo');
-											gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+											gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 										 </script>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b>Course *</b><br/>
+										<b><? print _('Course') ?> *</b><br/>
 									</td>
 									<td class="right">
 										<select name="gibbonCourseIDTarget" id="gibbonCourseIDTarget" style="width: 302px">

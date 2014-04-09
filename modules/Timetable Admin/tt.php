@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt.php")==
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Timetables</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Timetables') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -155,10 +155,10 @@ else {
 						print _("Short Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Year Groups" ;
+						print _("Year Groups") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Active?" ;
+						print _("Active?") ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Actions") ;
@@ -227,7 +227,7 @@ else {
 						print "<td>" ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_edit.php&gibbonTTID=" . $row["gibbonTTID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_delete.php&gibbonTTID=" . $row["gibbonTTID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_import.php&gibbonTTID=" . $row["gibbonTTID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='Import' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/upload.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_import.php&gibbonTTID=" . $row["gibbonTTID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Import') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/upload.png'/></a> " ;
 						print "</td>" ;
 					print "</tr>" ;
 					

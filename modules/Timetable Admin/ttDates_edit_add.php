@@ -37,7 +37,7 @@ else {
 	else {
 		if (isSchoolOpen($guid, date("Y-m-d", $dateStamp), $connection2, TRUE)!=TRUE) {
 			print "<div class='error'>" ;
-				print "School is not open on the specified day." ;
+				print _("School is not open on the specified day.") ;
 			print "</div>" ;
 		}
 		else {
@@ -61,7 +61,7 @@ else {
 				
 				//Proceed!
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttDates.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Tie Days to Dates</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp''>Edit Days in Date</a> > </div><div class='trailEnd'>Add Day to Date</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttDates.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Tie Days to Dates') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp'>" . _('Edit Days in Date') . "</a> > </div><div class='trailEnd'>" . _('Add Day to Date') . "</div>" ;
 				print "</div>" ;
 				
 				if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -90,7 +90,7 @@ else {
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
-								<b>Year *</b><br/>
+								<b><? print _('Year') ?> *</b><br/>
 								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
@@ -103,7 +103,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Date *</b><br/>
+								<b><? print _('Date') ?> *</b><br/>
 								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
@@ -117,7 +117,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Day</b><br/>
+								<b><? print _('Day') ?></b><br/>
 							</td>
 							<td class="right">
 								<select style="width: 302px" name="gibbonTTDayID">

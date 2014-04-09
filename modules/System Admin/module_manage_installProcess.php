@@ -154,33 +154,35 @@ else {
 							}
 							
 							//Create module actions
-							for ($i=0;$i<count($actionRows);$i++) {
-								$categoryPermissionStaff="Y" ;
-								$categoryPermissionStudent="Y" ;
-								$categoryPermissionParent="Y" ;
-								$categoryPermissionOther="Y" ;
-								if ($actionRows[$i]["categoryPermissionStaff"]=="N") {
-									$categoryPermissionStaff="N" ;
-								}
-								if ($actionRows[$i]["categoryPermissionStudent"]=="N") {
-									$categoryPermissionStudent="N" ;
-								}
-								if ($actionRows[$i]["categoryPermissionParent"]=="N") {
-									$categoryPermissionParent="N" ;
-								}
-								if ($actionRows[$i]["categoryPermissionOther"]=="N") {
-									$categoryPermissionOther="N" ;
-								}
+							if (is_null($actionRows)==FALSE) {
+								for ($i=0;$i<count($actionRows);$i++) {
+									$categoryPermissionStaff="Y" ;
+									$categoryPermissionStudent="Y" ;
+									$categoryPermissionParent="Y" ;
+									$categoryPermissionOther="Y" ;
+									if ($actionRows[$i]["categoryPermissionStaff"]=="N") {
+										$categoryPermissionStaff="N" ;
+									}
+									if ($actionRows[$i]["categoryPermissionStudent"]=="N") {
+										$categoryPermissionStudent="N" ;
+									}
+									if ($actionRows[$i]["categoryPermissionParent"]=="N") {
+										$categoryPermissionParent="N" ;
+									}
+									if ($actionRows[$i]["categoryPermissionOther"]=="N") {
+										$categoryPermissionOther="N" ;
+									}
 								
-								try {
-									$dataModule=array("gibbonModuleID"=>$gibbonModuleID, "name"=>$actionRows[$i]["name"], "precedence"=>$actionRows[$i]["precedence"], "category"=>$actionRows[$i]["category"], "description"=>$actionRows[$i]["description"], "URLList"=>$actionRows[$i]["URLList"], "entryURL"=>$actionRows[$i]["entryURL"], "defaultPermissionAdmin"=>$actionRows[$i]["defaultPermissionAdmin"], "defaultPermissionTeacher"=>$actionRows[$i]["defaultPermissionTeacher"], "defaultPermissionStudent"=>$actionRows[$i]["defaultPermissionStudent"], "defaultPermissionParent"=>$actionRows[$i]["defaultPermissionParent"], "defaultPermissionSupport"=>$actionRows[$i]["defaultPermissionSupport"], "categoryPermissionStaff"=>$categoryPermissionStaff, "categoryPermissionStudent"=>$categoryPermissionStudent, "categoryPermissionParent"=>$categoryPermissionParent, "categoryPermissionOther"=>$categoryPermissionOther); 
-									$sqlModule="INSERT INTO gibbonAction SET gibbonModuleID=:gibbonModuleID, name=:name, precedence=:precedence, category=:category, description=:description, URLList=:URLList, entryURL=:entryURL, defaultPermissionAdmin=:defaultPermissionAdmin, defaultPermissionTeacher=:defaultPermissionTeacher, defaultPermissionStudent=:defaultPermissionStudent, defaultPermissionParent=:defaultPermissionParent, defaultPermissionSupport=:defaultPermissionSupport, categoryPermissionStaff=:categoryPermissionStaff, categoryPermissionStudent=:categoryPermissionStudent, categoryPermissionParent=:categoryPermissionParent, categoryPermissionOther=:categoryPermissionOther" ;
-									$resultModule=$connection2->prepare($sqlModule);
-									$resultModule->execute($dataModule);
-								}
-								catch(PDOException $e) {
-									$_SESSION[$guid]["moduleInstallError"].=$sqlModule . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
-									$partialFail=TRUE ;
+									try {
+										$dataModule=array("gibbonModuleID"=>$gibbonModuleID, "name"=>$actionRows[$i]["name"], "precedence"=>$actionRows[$i]["precedence"], "category"=>$actionRows[$i]["category"], "description"=>$actionRows[$i]["description"], "URLList"=>$actionRows[$i]["URLList"], "entryURL"=>$actionRows[$i]["entryURL"], "defaultPermissionAdmin"=>$actionRows[$i]["defaultPermissionAdmin"], "defaultPermissionTeacher"=>$actionRows[$i]["defaultPermissionTeacher"], "defaultPermissionStudent"=>$actionRows[$i]["defaultPermissionStudent"], "defaultPermissionParent"=>$actionRows[$i]["defaultPermissionParent"], "defaultPermissionSupport"=>$actionRows[$i]["defaultPermissionSupport"], "categoryPermissionStaff"=>$categoryPermissionStaff, "categoryPermissionStudent"=>$categoryPermissionStudent, "categoryPermissionParent"=>$categoryPermissionParent, "categoryPermissionOther"=>$categoryPermissionOther); 
+										$sqlModule="INSERT INTO gibbonAction SET gibbonModuleID=:gibbonModuleID, name=:name, precedence=:precedence, category=:category, description=:description, URLList=:URLList, entryURL=:entryURL, defaultPermissionAdmin=:defaultPermissionAdmin, defaultPermissionTeacher=:defaultPermissionTeacher, defaultPermissionStudent=:defaultPermissionStudent, defaultPermissionParent=:defaultPermissionParent, defaultPermissionSupport=:defaultPermissionSupport, categoryPermissionStaff=:categoryPermissionStaff, categoryPermissionStudent=:categoryPermissionStudent, categoryPermissionParent=:categoryPermissionParent, categoryPermissionOther=:categoryPermissionOther" ;
+										$resultModule=$connection2->prepare($sqlModule);
+										$resultModule->execute($dataModule);
+									}
+									catch(PDOException $e) {
+										$_SESSION[$guid]["moduleInstallError"].=$sqlModule . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
+										$partialFail=TRUE ;
+									}
 								}
 							}
 							

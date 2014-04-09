@@ -341,7 +341,7 @@ else {
 					
 							$output.="<tr>" ;
 								$output.="<td>" ;
-									$output.="<b>Year Groups</b><br/>" ;
+									$output.="<b><? print _('Year Groups') ?></b><br/>" ;
 									$output.="<span style='font-size: 90%'><i>Students year groups which may participate<br/></i></span>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;

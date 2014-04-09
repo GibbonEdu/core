@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnro
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Course Enrolment by Person</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Course Enrolment by Person') . "</div>" ;
 	print "</div>" ;
 	
 	$gibbonSchoolYearID="" ;
@@ -95,15 +95,15 @@ else {
 		}
 		
 		print "<h3>" ;
-		print "Filters" ;
+		print _("Filters") ;
 		print "</h3>" ;
 		?>
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
-						<b>Search For</b><br/>
-						<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
+						<b><? print _('Search For') ?></b><br/>
+						<span style="font-size: 90%"><i><? print _('Preferred, surname, username.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="search" id="search" maxlength=20 value="<? print $search ?>" type="text" style="width: 300px">
@@ -111,8 +111,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>All Users</b><br/>
-						<span style="font-size: 90%"><i>Include non-staff, non-student users.</i></span>
+						<b><? print _('All Users') ?></b><br/>
+						<span style="font-size: 90%"><i><? print _('Include non-staff, non-student users.') ?></i></span>
 					</td>
 					<td class="right">
 						<?
@@ -140,7 +140,7 @@ else {
 		<?
 		
 		print "<h3>" ;
-		print "View" ;
+		print _("View") ;
 		print "</h3>" ;
 		
 		//Set pagination variable
@@ -191,13 +191,13 @@ else {
 						print _("Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Role Category" ;
+						print _("Role Category") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Year Group" ;
+						print _("Year Group") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Roll Group" ;
+						print _("Roll Group") ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Actions") ;
@@ -230,10 +230,10 @@ else {
 						print "<td>" ;
 							if ($allUsers=="on") {
 								if ($row["yearGroup"]!="") {
-									print "Student" ;
+									print _("Student") ;
 								}
 								else {
-									print "Non-student" ;
+									print _("Non-student") ;
 								}
 							}
 							else {

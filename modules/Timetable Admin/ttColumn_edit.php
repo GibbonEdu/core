@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/ttColumn_e
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttColumn.php'>Manage Columns</a> > </div><div class='trailEnd'>Edit Column</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttColumn.php'>" . _('Manage Columns') . "</a> > </div><div class='trailEnd'>" . _('Edit Column') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -107,7 +107,6 @@ else {
 					<tr>
 						<td> 
 							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i><? print _('Must be unique for this school year.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=30 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
@@ -145,7 +144,7 @@ else {
 			<?
 			
 			print "<h2>" ;
-			print "Edit Column Rows" ;
+			print _("Edit Column Rows") ;
 			print "</h2>" ;
 			
 			try {
@@ -177,7 +176,7 @@ else {
 							print _("Short Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Time" ;
+							print _("Time") ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Type") ;

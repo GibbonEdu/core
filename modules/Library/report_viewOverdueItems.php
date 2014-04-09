@@ -35,7 +35,7 @@ else {
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print "Report Data" ;
+	print _("Report Data") ;
 	print "</h2>" ;
 	
 	$today=date("Y-m-d") ;

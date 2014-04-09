@@ -43,7 +43,7 @@ else {
 
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>System Settings</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('System Settings') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -76,7 +76,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>System</h3>
+					<h3><? print _('System Settings') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -276,7 +276,7 @@ else {
 		
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Organisation</h3>
+					<h3><? print _('Organisation Settings') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -535,12 +535,12 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Security</h3>
+					<h3><? print _('Security Settings') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2> 
-					<h4>Password Policy</h4>
+					<h4><? print _('Password Policy') ?></h4>
 				</td>
 			</tr>
 			<tr>
@@ -664,7 +664,7 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2> 
-					<h4>Miscellaneous</h4>
+					<h4><? print _('Miscellaneous') ?></h4>
 				</td>
 			</tr>
 			<tr>
@@ -691,7 +691,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Calendar, Web & Email</h3>
+					<h3><? print _('Calendar, Web & Email') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -772,7 +772,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>PayPal Payment Gateway</h3>
+					<h3><? print _('PayPal Payment Gateway') ?></h3>
 				</td>
 			</tr>
 			
@@ -917,7 +917,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Miscellaneous</h3>
+					<h3><? print _('Miscellaneous') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -1075,7 +1075,7 @@ else {
 					</select>
 					<script type="text/javascript">
 						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+						<? print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 					 </script>
 				</td>
 			</tr>

@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/course_man
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/course_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Courses & Classes</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/course_manage_edit.php&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Edit Course & Classes</a> > </div><div class='trailEnd'>Add Class</div>" ; 
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/course_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Courses & Classes') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/course_manage_edit.php&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Edit Course & Classes') . "</a> > </div><div class='trailEnd'>" . _('Add Class') . "</div>" ; 
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -103,7 +103,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Course *</b><br/>
+							<b><? print _('Course') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -117,7 +117,7 @@ else {
 					<tr>
 						<td> 
 							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i>Must be unique for this course.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique for this course.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=10 value="" type="text" style="width: 300px">
@@ -130,7 +130,7 @@ else {
 					<tr>
 						<td> 
 							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i>Must be unique for this course.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique for this course.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="nameShort" id="nameShort" maxlength=5 value="" type="text" style="width: 300px">
@@ -142,13 +142,13 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Reportable?</b><br/>
-							<span style="font-size: 90%"><i>Should this class show in reports?</i></span>
+							<b><? print _('Reportable?') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Should this class show in reports?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="reportable" id="reportable" style="width: 302px">
-								<option value="Y">Yes</option>
-								<option value="N">No</option>
+								<option value="Y"><? print _('Y') ?></option>
+								<option value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>

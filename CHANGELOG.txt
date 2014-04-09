@@ -162,6 +162,12 @@ General: added ability for system to update with cutting edge code from GitHub (
 
 Students: added roll group to student leavers report
 	Edited file /modules/Students/report_students_left.php
+
+General: higher quality favicon
+	Edited file /favicon.ico
+
+Lib: upgraded PHPMaier to latest version to solve random white space issue
+	Edited files /lib/PHPMailer/*
 	
 
 v7.1.02

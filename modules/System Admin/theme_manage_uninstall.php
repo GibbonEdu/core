@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/theme_manage_
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/theme_manage.php'>Manage Themes</a> > </div><div class='trailEnd'>Uninstall Theme</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/theme_manage.php'>" . _('Manage Themes') . "</a> > </div><div class='trailEnd'>" . _('Uninstall Theme') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -36,16 +36,16 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="fail0") {
-			$deleteReturnMessage="Uninstall failed because you do not have access to this action." ;	
+			$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($deleteReturn=="fail1") {
-			$deleteReturnMessage="Uninstall failed because a required parameter was not set." ;	
+			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($deleteReturn=="fail2") {
-			$deleteReturnMessage="Uninstall encountered a partial fail: the module may or may not still work." ;	
+			$deleteReturnMessage=_("Your request encountered a partial fail: the module may or may not still work.") ;	
 		}
 		else if ($deleteReturn=="fail3") {
-			$deleteReturnMessage="Uninstall failed because module does not exist or is active." ;	
+			$deleteReturnMessage=_("Your request failed because theme does not exist or is active.") ;	
 		}
 		print "<div class='$class'>" ;
 			print $deleteReturnMessage;
@@ -72,7 +72,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The specified theme cannot be found or is active and so cannot be removed." ;
+				print ("The specified theme cannot be found or is active and so cannot be removed.") ;
 			print "</div>" ;
 		}
 		else {
@@ -83,8 +83,8 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Are you sure you want to uninstall "<? print $row["name"] ?>"?</b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i>This operation cannot be undone, and may lead to loss of vital data in your system.<br/>PROCEED WITH CAUTION!</i></span>
+							<b><? print _('Are you sure you want to delete this record?') ; ?></b><br/>
+							<span style="font-size: 90%; color: #cc0000"><i><? print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
 						</td>
 						<td class="right">
 							

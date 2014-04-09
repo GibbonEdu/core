@@ -163,7 +163,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonScaleID=new LiveValidation('gibbonScaleID');
-								gibbonScaleID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								gibbonScaleID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 							</script>
 						</td>
 					</tr>

@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_edit.ph
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Timetables</a> > </div><div class='trailEnd'>Edit Timetable</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Timetables') . "</a> > </div><div class='trailEnd'>" . _('Edit Timetable') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -145,22 +145,22 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Active</b><br/>
+							<b><? print _('Active') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="active">
 								<?
-								print "<option " ; if ($row["active"]=="Y") { print "selected "; } ; print "value='Y'>Y</option>" ;
-								print "<option " ; if ($row["active"]=="N") { print "selected "; } ; print " value='N'>N</option>" ;
+								print "<option " ; if ($row["active"]=="Y") { print "selected "; } ; print "value='Y'>" . _('Y') . "</option>" ;
+								print "<option " ; if ($row["active"]=="N") { print "selected "; } ; print " value='N'>" . _('N') . "</option>" ;
 								?>				
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Year Groups</b><br/>
-							<span style="font-size: 90%"><i>Groups not in an active TT this year.</i></span>
+							<b><? print _('Year Groups') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Groups not in an active TT this year.') ?></i></span>
 						</td>
 						<td class="right">
 							<? 
@@ -198,7 +198,7 @@ else {
 			<?
 			
 			print "<h2>" ;
-			print "Edit Timetable Days" ;
+			print _("Edit Timetable Days") ;
 			print "</h2>" ;
 			
 			try {
@@ -230,7 +230,7 @@ else {
 							print _("Short Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Column" ;
+							print _("Column") ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Actions") ;

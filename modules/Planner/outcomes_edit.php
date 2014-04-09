@@ -229,7 +229,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Year Groups</b><br/>
+									<b><? print _('Year Groups') ?></b><br/>
 									<span style="font-size: 90%"><i>Relevant student year groups<br/></i></span>
 								</td>
 								<td class="right">

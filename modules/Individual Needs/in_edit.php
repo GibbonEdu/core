@@ -127,12 +127,12 @@ else {
 			
 			if ($search!="" AND $source=="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_view.php&search=" . $search . "'>Back to Search Results</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_view.php&search=" . $search . "'>" . _('Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 			else if (($gibbonINDescriptorID!="" OR $gibbonAlertLevelID!="" OR $gibbonRollGroupID!="" OR $gibbonYearGroupID!="") AND $source=="summary") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_summary.php&gibbonINDescriptorID=" . $gibbonINDescriptorID . "&gibbonAlertLevelID=" . $gibbonAlertLevelID . "&=gibbonRollGroupID" . $gibbonRollGroupID . "&gibbonYearGroupID=" . $gibbonYearGroupID . "'>Back to Search Results</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_summary.php&gibbonINDescriptorID=" . $gibbonINDescriptorID . "&gibbonAlertLevelID=" . $gibbonAlertLevelID . "&=gibbonRollGroupID" . $gibbonRollGroupID . "&gibbonYearGroupID=" . $gibbonYearGroupID . "'>" . _('Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 

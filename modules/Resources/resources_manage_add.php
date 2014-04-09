@@ -74,7 +74,7 @@ else {
 		
 		if ($_GET["search"]!="") {
 			print "<div class='linkTop'>" ;
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_manage.php&search=" . $_GET["search"] . "'>Back to Search Results</a>" ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_manage.php&search=" . $_GET["search"] . "'>" . _('Back to Search Results') . "</a>" ;
 			print "</div>" ;
 		}
 		
@@ -139,7 +139,7 @@ else {
 						</select>
 						<script type="text/javascript">
 							var type=new LiveValidation('type');
-							type.add(Validate.Inclusion, { within: ['File','HTML','Link'], failureMessage: "Select something!"});
+							type.add(Validate.Inclusion, { within: ['File','HTML','Link'], failureMessage: "<? print _('Select something!') ?>"});
 						</script>
 					</td>
 				</tr>
@@ -249,7 +249,7 @@ else {
 								</select>
 								<script type="text/javascript">
 									var category=new LiveValidation('category');
-									category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+									category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 								 </script>
 							</td>
 						</tr>
@@ -348,7 +348,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Year Groups</b><br/>
+						<b><? print _('Year Groups') ?></b><br/>
 						<span style="font-size: 90%"><i>Students year groups which may participate<br/></i></span>
 					</td>
 					<td class="right">

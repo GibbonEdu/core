@@ -285,7 +285,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Class *</b><br/>
+								<b><? print _('Class') ?> *</b><br/>
 							</td>
 							<td class="right">
 								<select name="gibbonCourseClassID" id="gibbonCourseClassID" style="width: 302px">
@@ -315,7 +315,7 @@ else {
 								</select>
 								<script type="text/javascript">
 									var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
-									gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+									gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 								 </script>
 							</td>
 						</tr>
@@ -433,8 +433,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Start Time *</b><br/>
-								<span style="font-size: 90%"><i>Format: hh:mm (24hr)<br/></i></span>
+								<b><? print _('Start Time') ?> *</b><br/>
+								<span style="font-size: 90%"><i><? print _('Format: hh:mm (24hr)') ?><br/></i></span>
 							</td>
 							<td class="right">
 								<input name="timeStart" id="timeStart" maxlength=5 value="<? print substr($row["timeStart"],0,5) ?>" type="text" style="width: 300px">
@@ -466,8 +466,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>End Time *</b><br/>
-								<span style="font-size: 90%"><i>Format: hh:mm (24hr)<br/></i></span>
+								<b><? print _('End Time') ?> *</b><br/>
+								<span style="font-size: 90%"><i><? print _('Format: hh:mm (24hr)') ?><br/></i></span>
 							</td>
 							<td class="right">
 								<input name="timeEnd" id="timeEnd" maxlength=5 value="<? print substr($row["timeEnd"],0,5) ?>" type="text" style="width: 300px">
@@ -829,7 +829,7 @@ else {
 						<tr id="homeworkDueDateTimeRow">
 							<td> 
 								<b>Homework Due Date Time</b><br/>
-								<span style="font-size: 90%"><i>Format: hh:mm (24hr)<br/></i></span>
+								<span style="font-size: 90%"><i><? print _('Format: hh:mm (24hr)') ?><br/></i></span>
 							</td>
 							<td class="right">
 								<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<? if ($row["homework"]=="Y") { print substr($row["homeworkDueDateTime"],11,5) ; } else if ($homeworkDueDateTime!="") { print substr($homeworkDueDateTime,0,5) ; } ?>" type="text" style="width: 300px">

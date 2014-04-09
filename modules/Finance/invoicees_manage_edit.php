@@ -68,7 +68,7 @@ else {
 	
 	if ($_GET["search"]!="" OR $_GET["allUsers"]=="on") {
 		print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoicees_manage.php&search=" . $_GET["search"] . "&allUsers=" . $_GET["allUsers"] . "'>Back to Search Results</a>" ;
+			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoicees_manage.php&search=" . $_GET["search"] . "&allUsers=" . $_GET["allUsers"] . "'>" . _('Back to Search Results') . "</a>" ;
 		print "</div>" ;
 	}
 	

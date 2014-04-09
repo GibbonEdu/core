@@ -53,7 +53,7 @@ else {
 			$row=$result->fetch() ;
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttColumn.php'>Manage Columns</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttColumn_edit.php&gibbonTTColumnID=$gibbonTTColumnID'>Edit Column</a> > </div><div class='trailEnd'>Add Column Row</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttColumn.php'>" . _('Manage Columns') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttColumn_edit.php&gibbonTTColumnID=$gibbonTTColumnID'>" . _('Edit Column') . "</a> > </div><div class='trailEnd'>" . _('Add Column Row') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -88,7 +88,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Column *</b><br/>
+							<b><? print _('Column') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -102,7 +102,7 @@ else {
 					<tr>
 						<td> 
 							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i>Must be unique for this timetable.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique for this column.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=12 value="" type="text" style="width: 300px">
@@ -115,7 +115,7 @@ else {
 					<tr>
 						<td> 
 							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i>Must be unique for this timetable.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique for this column.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">
@@ -127,8 +127,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Start Time *</b><br/>
-							<span style="font-size: 90%"><i>Format: hh:mm (24hr)<br/></i></span>
+							<b><? print _('Start Time') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Format: hh:mm (24hr)') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="timeStart" id="timeStart" maxlength=5 value="" type="text" style="width: 300px">
@@ -160,8 +160,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>End Time *</b><br/>
-							<span style="font-size: 90%"><i>Format: hh:mm (24hr)<br/></i></span>
+							<b><? print _('End Time') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Format: hh:mm (24hr)') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="timeEnd" id="timeEnd" maxlength=5 value="" type="text" style="width: 300px">
@@ -198,12 +198,12 @@ else {
 						<td class="right">
 							<select style="width: 302px" name="type">
 								<?
-								print "<option value='Lesson'>Lesson</option>" ;
-								print "<option value='Pastoral'>Pastoral</option>" ;
-								print "<option value='Sport'>Sport</option>" ;
-								print "<option value='Break'>Break</option>" ;
-								print "<option value='Service'>Service</option>" ;
-								print "<option value='Other'>Other</option>" ;
+								print "<option value='Lesson'>" . _('Lesson') . "</option>" ;
+								print "<option value='Pastoral'>" . _('Pastoral') . "</option>" ;
+								print "<option value='Sport'>" . _('Sport') . "</option>" ;
+								print "<option value='Break'>" . _('Break') . "</option>" ;
+								print "<option value='Service'>" . _('Service') . "</option>" ;
+								print "<option value='Other'>" . _('Other') . "</option>" ;
 								?>
 							</select>
 						</td>

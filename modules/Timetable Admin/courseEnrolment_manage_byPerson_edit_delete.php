@@ -59,7 +59,7 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&allUsers=$allUsers'>Enrolment by Person</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage_byPerson_edit.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&type=" . $_GET["type"] . "&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&allUsers=$allUsers'>" . $row["preferredName"] . " " . $row["surname"] . "</a> > </div><div class='trailEnd'>Delete Participant</div>" ; 
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&allUsers=$allUsers'>" . _('Enrolment by Person') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage_byPerson_edit.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&type=" . $_GET["type"] . "&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&allUsers=$allUsers'>" . $row["preferredName"] . " " . $row["surname"] . "</a> > </div><div class='trailEnd'>" . _('Delete Participant') . "</div>" ; 
 			print "</div>" ;
 			
 			if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -85,7 +85,7 @@ else {
 	
 			print "<div class='linkTop'>" ;
 				if ($search!="") {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type'>Back</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type'>" . _('Back') . "</a>" ;
 				}
 			print "</div>" ;
 			?>

@@ -137,7 +137,7 @@ else {
 						if ($policyLink!="") {
 							print " | " ;
 						}
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] . "'>Back to Search Results</a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] . "'>" . _('Back to Search Results') . "</a>" ;
 					}
 				print "</div>" ;
 		
@@ -247,7 +247,7 @@ else {
 										</select>
 										<script type="text/javascript">
 											var descriptor=new LiveValidation('descriptor');
-											descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+											descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 										 </script>
 										 <script type="text/javascript">
 											$("#descriptor").chainedTo("#type");
@@ -296,7 +296,7 @@ else {
 										</select>
 										<script type="text/javascript">
 											var level=new LiveValidation('level');
-											level.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+											level.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 										 </script>
 									</td>
 								</tr>

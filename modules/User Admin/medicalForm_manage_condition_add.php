@@ -83,7 +83,7 @@ else {
 			
 			if ($search!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_edit.php&search=$search&gibbonPersonMedicalID=$gibbonPersonMedicalID'>Back</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_edit.php&search=$search&gibbonPersonMedicalID=$gibbonPersonMedicalID'>" . _('Back') . "</a>" ;
 				print "</div>" ;
 			}
 			?>
@@ -130,7 +130,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
-								name.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								name.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 							 </script>	
 						</td>
 					</tr>
@@ -157,7 +157,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonAlertLevelID=new LiveValidation('gibbonAlertLevelID');
-								gibbonAlertLevelID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								gibbonAlertLevelID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 							 </script>	
 						</td>
 					</tr>

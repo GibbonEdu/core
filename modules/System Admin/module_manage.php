@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/module_manage
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Modules</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Modules') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -76,7 +76,7 @@ else {
 					print _("Name") ;
 				print "</th>" ;
 				print "<th style='width: 200px;'>" ;
-					print "Description" ;
+					print _("Description") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Type") ;
@@ -85,13 +85,13 @@ else {
 					print _("Active") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Version" ;
+					print _("Version") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Author" ;
+					print _("Author") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Action" ;
+					print _("Action") ;
 				print "</th>" ;
 			print "</tr>" ;
 			

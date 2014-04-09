@@ -100,7 +100,7 @@ else {
 	if ($gibbonActivityID!="") {
 		$output="" ;
 		print "<h2>" ;
-		print "Report Data" ;
+		print _("Report Data") ;
 		print "</h2>" ;
 		
 		try {

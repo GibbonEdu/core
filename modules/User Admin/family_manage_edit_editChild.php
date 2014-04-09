@@ -90,7 +90,7 @@ else {
 			
 			if ($search!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=$gibbonFamilyID&search=$search'>Back</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=$gibbonFamilyID&search=$search'>" . _('Back') . "</a>" ;
 				print "</div>" ;
 			}
 			?>
@@ -105,7 +105,7 @@ else {
 							<input readonly name="child" id="child" maxlength=200 value="<? print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student") ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var child=new LiveValidation('child');
-								child.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								child.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>

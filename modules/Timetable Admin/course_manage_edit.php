@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/course_man
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/course_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Courses & Classes</a> > </div><div class='trailEnd'>Edit Course & Classes</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/course_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Courses & Classes') . "</a> > </div><div class='trailEnd'>" . _('Edit Course & Classes') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -67,7 +67,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage="Your request was completed successfully.The system has made a moderate effort to remove all participant records." ;	
+			$deleteReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -119,7 +119,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Learning Area</b><br/>
+						<b><? print _('Learning Area') ?></b><br/>
 					</td>
 					<td class="right">
 						<select style="width: 302px" name="gibbonDepartmentID">
@@ -172,14 +172,14 @@ else {
 				</tr>
 				<tr>
 					<td colspan=2> 
-						<b>Blurb</b> 
+						<b><? print _('Blurb') ?></b> 
 						<? print getEditor($guid,  TRUE, "description", $row["description"], 20 ) ?>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b>Year Groups</b><br/>
-						<span style="font-size: 90%"><i>Groups not in an active TT this year.</i></span>
+						<b><? print _('Year Groups') ?></b><br/>
+						<span style="font-size: 90%"><i><? print _('Enrolable year groups.') ?></i></span>
 					</td>
 					<td class="right">
 						<? 
@@ -216,7 +216,7 @@ else {
 			<?
 			
 			print "<h2>" ;
-			print "Edit Classes" ;
+			print _("Edit Classes") ;
 			print "</h2>" ;
 			
 			//Set pagination variable
@@ -249,10 +249,10 @@ else {
 							print _("Short Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Participants" ;
+							print _("Participants") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Reportable" ;
+							print _("Reportable") ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Actions") ;

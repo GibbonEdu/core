@@ -115,7 +115,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonSchoolYearTermID=new LiveValidation('gibbonSchoolYearTermID');
-								gibbonSchoolYearTermID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								gibbonSchoolYearTermID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>

@@ -102,7 +102,7 @@ else {
 		$_SESSION[$guid]["report_student_emergencySummary.php_choices"]=$choices ;
 		
 		print "<h2>" ;
-		print "Report Data" ;
+		print _("Report Data") ;
 		print "</h2>" ;
 		
 		try {

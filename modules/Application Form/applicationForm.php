@@ -225,7 +225,7 @@ else {
 					</select>
 					<script type="text/javascript">
 						var gender=new LiveValidation('gender');
-						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 					 </script>
 				</td>
 			</tr>
@@ -619,7 +619,7 @@ else {
 					</select>
 					<script type="text/javascript">
 						var gibbonSchoolYearIDEntry=new LiveValidation('gibbonSchoolYearIDEntry');
-						gibbonSchoolYearIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+						gibbonSchoolYearIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 					 </script>
 				</td>
 			</tr>
@@ -667,7 +667,7 @@ else {
 					</select>
 					<script type="text/javascript">
 						var gibbonYearGroupIDEntry=new LiveValidation('gibbonYearGroupIDEntry');
-						gibbonYearGroupIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+						gibbonYearGroupIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 					 </script>
 				</td>
 			</tr>
@@ -879,7 +879,7 @@ else {
 						</select>
 						<script type="text/javascript">
 							var homeAddressCountry=new LiveValidation('homeAddressCountry');
-							homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+							homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 						 </script>
 					</td>
 				</tr>
@@ -950,7 +950,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var parent1relationship=new LiveValidation('parent1relationship');
-								parent1relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								parent1relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>
@@ -1068,7 +1068,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var <? print "parent$i" ?>title=new LiveValidation('<? print "parent$i" ?>title');
-								<? print "parent$i" ?>title.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								<? print "parent$i" ?>title.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>
@@ -1145,7 +1145,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var <? print "parent$i" ?>gender=new LiveValidation('<? print "parent$i" ?>gender');
-								<? print "parent$i" ?>gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								<? print "parent$i" ?>gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>
@@ -1171,7 +1171,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var <? print "parent$i" ?>relationship=new LiveValidation('<? print "parent$i" ?>relationship');
-								<? print "parent$i" ?>relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								<? print "parent$i" ?>relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>
@@ -1687,7 +1687,7 @@ else {
 						</select>
 						<script type="text/javascript">
 							var languageChoice=new LiveValidation('languageChoice');
-							languageChoice.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+							languageChoice.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 						 </script>
 					</td>
 				</tr>
@@ -2005,7 +2005,7 @@ else {
 						?>
 						<script type="text/javascript">
 							var howDidYouHear=new LiveValidation('howDidYouHear');
-							howDidYouHear.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+							howDidYouHear.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 						</script>
 						<?
 					}

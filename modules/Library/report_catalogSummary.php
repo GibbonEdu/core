@@ -187,7 +187,7 @@ else {
 	print "</form>" ;
 	
 	print "<h3>" ;
-		print "Report Data" ;
+		print _("Report Data") ;
 	print "</h3>" ;
 	
 	print "<div class='linkTop'>" ;

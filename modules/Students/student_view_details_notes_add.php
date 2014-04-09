@@ -84,7 +84,7 @@ else {
 
 			if ($_GET["search"]!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage'>Back to Search Results</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage'>" . _('Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 
@@ -117,7 +117,7 @@ else {
 								</select>
 								<script type="text/javascript">
 									var gibbonStudentNoteCategoryID=new LiveValidation('gibbonStudentNoteCategoryID');
-									gibbonStudentNoteCategoryID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+									gibbonStudentNoteCategoryID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 								 </script>
 								 <script type="text/javascript">
 								 	$("#gibbonStudentNoteCategoryID").change(function() {

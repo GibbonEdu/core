@@ -118,7 +118,7 @@ else {
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
-								<b>Class *</b><br/>
+								<b><? print _('Class') ?> *</b><br/>
 								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
@@ -270,7 +270,7 @@ else {
 									</select>
 									<script type="text/javascript">
 										var type=new LiveValidation('type');
-										type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+										type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 									 </script>
 								</td>
 							</tr>
@@ -304,7 +304,7 @@ else {
 								</select>
 								<script type="text/javascript">
 									var gibbonScaleIDAttainment=new LiveValidation('gibbonScaleIDAttainment');
-									gibbonScaleIDAttainment.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+									gibbonScaleIDAttainment.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 								 </script>
 							</td>
 						</tr>
@@ -374,7 +374,7 @@ else {
 								</select>
 								<script type="text/javascript">
 									var gibbonScaleIDEffort=new LiveValidation('gibbonScaleIDEffort');
-									gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+									gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 								 </script>
 							</td>
 						</tr>
@@ -405,7 +405,7 @@ else {
 								</select>
 								<script type="text/javascript">
 									var gibbonScaleIDEffort=new LiveValidation('gibbonScaleIDEffort');
-									gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+									gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 								 </script>
 							</td>
 						</tr>
@@ -475,7 +475,7 @@ else {
 								</select>
 								<script type="text/javascript">
 									var gibbonScaleIDEffort=new LiveValidation('gibbonScaleIDEffort');
-									gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+									gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 								 </script>
 							</td>
 						</tr>

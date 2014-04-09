@@ -63,7 +63,7 @@ else {
 	
 	if ($_GET["search"]!="") {
 		print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php&search=" .$_GET["search"] . "'>Back to Search Results</a>" ;
+			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php&search=" .$_GET["search"] . "'>" . _('Back to Search Results') . "</a>" ;
 		print "</div>" ;
 	}
 	?>
@@ -296,7 +296,7 @@ else {
 			
 			<tr>
 				<td> 
-					<b>Year Groups</b><br/>
+					<b><? print _('Year Groups') ?></b><br/>
 					<span style="font-size: 90%"><i>Students year groups which may participate<br/></i></span>
 				</td>
 				<td class="right">

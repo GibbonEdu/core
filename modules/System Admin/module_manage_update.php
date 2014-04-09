@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/module_manage
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/module_manage.php'>Manage Modules</a> > </div><div class='trailEnd'>Update Module</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/module_manage.php'>" . _('Manage Modules') . "</a> > </div><div class='trailEnd'>" . _('Update Module') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -48,7 +48,7 @@ else {
 			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage="Your request failed." ;	
+			$updateReturnMessage=_("Your request failed.") ;	
 		}
 		else if ($updateReturn=="success0") {
 			$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -90,43 +90,43 @@ else {
 			if (file_exists($_SESSION[$guid]["absolutePath"] . "/modules/" . $row["name"] . "/version.php")) {
 				include $_SESSION[$guid]["absolutePath"] . "/modules/" . $row["name"] . "/version.php" ;
 			}	
-			$versionCode=$moduleVersion ;
+			@$versionCode=$moduleVersion ;
 			
 			print "<p>" ;
-				print "This page allows you to semi-automatically update the " . htmlPrep($row["name"]) . " module to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades." ;
+				print sprintf(_('This page allows you to semi-automatically update the %1$s module to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.'), htmlPrep($row["name"])) ;
 			print "</p>" ;
 			
 			if ($updateReturn=="success0") {
 				print "<p>" ;
-					print "<b>You seem to be all up to date, good work!</b>" ;
+					print "<b>" . _('You seem to be all up to date, good work!') . "</b>" ;
 				print "</p>" ;
 			}
 			else if ($versionDB>$versionCode OR $versionCode=="") {
 				//Error
 				print "<div class='error'>" ;
-					print "An error has occurred determining the version of the system you are using." ;
+					print _("An error has occurred determining the version of the system you are using.") ;
 				print "</div>" ;
 			}
 			else if ($versionDB==$versionCode) {
 				//Instructions on how to update
 				print "<h3>" ;
-					print "Update Instructions" ;
+					print _("Update Instructions") ;
 				print "</h3>" ;
 				print "<ol>" ;
-					print "<li>You are currently using " . htmlPrep($row["name"]) . " v$versionCode.</i></li>" ;
-					print "<li>Check <a target='_blank' href='http://www.gibbonedu.org'>gibbonedu.org</a> for a newer version of this module.</li>" ;
-					print "<li>Download the latest version, and unzip it on your computer.</li>" ;
-					print "<li>Use an FTP client to upload the new files to your server\'s modules folder</li>" ;
-					print "<li>Reload this page and follow the instructions to update your database to the latest version.</li>" ;
+					print "<li>" . sprintf(_('You are currently using %1$s v%2$s.'),  htmlPrep($row["name"]), $versionCode) . "</i></li>" ;
+					print "<li>" . sprintf(_('Check %1$s for a newer version of this module.'), "<a target='_blank' href='http://www.gibbonedu.org'>gibbonedu.org</a>") . "</li>" ;
+					print "<li>" . _('Download the latest version, and unzip it on your computer.') . "</li>" ;
+					print "<li>" . _('Use an FTP client to upload the new files to your server\'s modules folder.') . "</li>" ;
+					print "<li>" . _('Reload this page and follow the instructions to update your database to the latest version.') . "</li>" ;
 				print "</ol>" ;
 			}
 			else if ($versionDB<$versionCode) {
 				//Time to update
 				print "<h3>" ;
-					print "Datebase Update" ;
+					print _("Datebase Update") ;
 				print "</h3>" ;
 				print "<p>" ;
-					print "It seems that you have updated your " . htmlPrep($row["name"]) . " module code to a new version, and are ready to update your databse from v$versionDB to v$versionCode. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!</b>" ;
+					print sprintf(_('It seems that you have updated your %1$s module code to a new version, and are ready to update your databse from v%2$s to v%3$s. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), htmlPrep($row["name"]), $versionDB, $versionCode) . "</b>" ;
 				print "</p>" ;
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_updateProcess.php?&gibbonModuleID=$gibbonModuleID" ?>">

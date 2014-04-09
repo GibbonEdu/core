@@ -55,7 +55,7 @@ else {
 			$row=$result->fetch() ;
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttColumn.php'>Manage Columns</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttColumn_edit.php&gibbonTTColumnID=$gibbonTTColumnID'>Edit Column</a> > </div><div class='trailEnd'>Edit Column Row</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttColumn.php'>" . _('Manage Columns') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttColumn_edit.php&gibbonTTColumnID=$gibbonTTColumnID'>" . _('Edit Column') . "</a> > </div><div class='trailEnd'>" . _('Edit Column Row') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -90,7 +90,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Column *</b><br/>
+							<b><? print _('Column') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -104,7 +104,7 @@ else {
 					<tr>
 						<td> 
 							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i>Must be unique for this timetable.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique for this column.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=12 value="<? print $row["name"] ?>" type="text" style="width: 300px">
@@ -117,7 +117,7 @@ else {
 					<tr>
 						<td> 
 							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i>Must be unique for this timetable.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique for this column.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="nameShort" id="nameShort" maxlength=4 value="<? print $row["nameShort"] ?>" type="text" style="width: 300px">
@@ -129,8 +129,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Start Time *</b><br/>
-							<span style="font-size: 90%"><i>Format: hh:mm (24hr)<br/></i></span>
+							<b><? print _('Start Time') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Format: hh:mm (24hr)') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="timeStart" id="timeStart" maxlength=5 value="<? print substr($row["timeStart"],0,5) ?>" type="text" style="width: 300px">
@@ -162,8 +162,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>End Time *</b><br/>
-							<span style="font-size: 90%"><i>Format: hh:mm (24hr)<br/></i></span>
+							<b><? print _('End Time') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Format: hh:mm (24hr)') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="timeEnd" id="timeEnd" maxlength=5 value="<? print substr($row["timeEnd"],0,5) ?>" type="text" style="width: 300px">
@@ -195,17 +195,17 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Type</b><br/>
+							<b><? print _('Type') ?></b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="type">
 								<?
-								print "<option " ; if ($row["type"]=="Lesson") { print "selected "; } ; print " value='Lesson'>Lesson</option>" ;
-								print "<option " ; if ($row["type"]=="Pastoral") { print "selected "; } ; print " value='Pastoral'>Pastoral</option>" ;
-								print "<option " ; if ($row["type"]=="Sport") { print "selected "; } ; print " value='Sport'>Sport</option>" ;
-								print "<option " ; if ($row["type"]=="Break") { print "selected "; } ; print " value='Break'>Break</option>" ;
-								print "<option " ; if ($row["type"]=="Service") { print "selected "; } ; print " value='Service'>Service</option>" ;
-								print "<option " ; if ($row["type"]=="Other") { print "selected "; } ; print " value='Other'>Other</option>" ;
+								print "<option " ; if ($row["type"]=="Lesson") { print "selected "; } ; print " value='Lesson'>" . _('Lesson') . "</option>" ;
+								print "<option " ; if ($row["type"]=="Pastoral") { print "selected "; } ; print " value='Pastoral'>" . _('Pastoral') . "</option>" ;
+								print "<option " ; if ($row["type"]=="Sport") { print "selected "; } ; print " value='Sport'>" . _('Sport') . "</option>" ;
+								print "<option " ; if ($row["type"]=="Break") { print "selected "; } ; print " value='Break'>" . _('Break') . "</option>" ;
+								print "<option " ; if ($row["type"]=="Service") { print "selected "; } ; print " value='Service'>" . _('Service') . "</option>" ;
+								print "<option " ; if ($row["type"]=="Other") { print "selected "; } ; print " value='Other'>" . _('Other') . "</option>" ;
 								?>
 							</select>
 						</td>

@@ -125,7 +125,7 @@ else {
 	if (count($choices)>0) {
 		
 		print "<h2>" ;
-		print "Report Data" ;
+		print _("Report Data") ;
 		print "</h2>" ;
 		
 		try {

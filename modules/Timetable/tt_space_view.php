@@ -63,7 +63,7 @@ else {
 			
 			if ($_GET["search"]!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt_space.php&search=" . $_GET["search"] . "'>Back to Search Results</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt_space.php&search=" . $_GET["search"] . "'>" . _('Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 		

@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnro
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Course Enrolment by Class</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Course Enrolment by Class') . "</div>" ;
 	print "</div>" ;
 	
 	$gibbonSchoolYearID="" ;
@@ -118,7 +118,7 @@ else {
 				
 				if ($resultClass->rowCount()<1) {
 					print "<div class='error'>" ;
-					print "There are no classes to display." ;
+					print _("There are no records to display.") ;
 					print "</div>" ;
 				}
 				else {
@@ -131,16 +131,16 @@ else {
 								print _("Short Name") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Participants<br/>" ;
-								print "<span style='font-size: 85%; font-style: italic'>Active</span>" ;
+								print _("Participants") . "<br/>" ;
+								print "<span style='font-size: 85%; font-style: italic'>" . _('Active') . "</span>" ;
 							print "</th>" ;
 							print "<th>" ;
 								print "Participants<br/>" ;
-								print "<span style='font-size: 85%; font-style: italic'>Expected</span>" ;
+								print "<span style='font-size: 85%; font-style: italic'>" . _('Expected') . "</span>" ;
 							print "</th>" ;
 							print "<th>" ;
 								print "Participants<br/>" ;
-								print "<span style='font-size: 85%; font-style: italic'>Total</span>" ;
+								print "<span style='font-size: 85%; font-style: italic'>" . _('Total') . "</span>" ;
 							print "</th>" ;
 							print "<th style='width: 55px'>" ;
 								print _("Actions") ;

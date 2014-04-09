@@ -55,7 +55,7 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Enrolment by Class</a> > </div><div class='trailEnd'>Edit " . $row["courseNameShort"] . "." . $row["name"] . " Enrolment</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Enrolment by Class') . "</a> > </div><div class='trailEnd'>" . sprintf(_('Edit %1$s.%2$s Enrolment'), $row["courseNameShort"], $row["name"]) . "</div>" ;
 			print "</div>" ;
 
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -103,22 +103,19 @@ else {
 			} 
 	
 			print "<h2>" ;
-			print "Add Participants" ;
+			print _("Add Participants") ;
 			print "</h2>" ;
-			print "<p>" ;
-				print "Selected users will be added as students: you can use the table below to change users to other roles." ;
-			print "</p>" ;
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_class_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Participants</b><br/>
+							<b><? print _('Participants') ?></b><br/>
 							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
-								<optgroup label='--Enrolable Students--'>
+								<optgroup label='--<? print _('Enrolable Students') ?>--'>
 								<?
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -153,7 +150,7 @@ else {
 								}
 								?>
 								</optgroup>
-								<optgroup label='--All Users--'>
+								<optgroup label='--<? print _('All Users') ?>--'>
 								<?
 								try {
 									$dataSelect=array(); 
@@ -176,16 +173,15 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Role *</b><br/>
-							<span style="font-size: 90%"><i>Must be unique for this course.</i></span>
+							<b><? print _('Role') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="role">
-								<option value="Student">Student</option>
-								<option value="Teacher">Teacher</option>
-								<option value="Assistant">Assistant</option>
-								<option value="Technician">Technician</option>
-								<option value="Parent">Parent</option>
+								<option value="Student"><? print _('Student') ?></option>
+								<option value="Teacher"><? print _('Teacher') ?></option>
+								<option value="Assistant"><? print _('Assistant') ?></option>
+								<option value="Technician"><? print _('Technician') ?></option>
+								<option value="Parent"><? print _('Parent') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -203,7 +199,7 @@ else {
 
 			<?	
 			print "<h2>" ;
-			print "Current Participants" ;
+			print _("Current Participants") ;
 			print "</h2>" ;
 			
 			try {
@@ -228,13 +224,13 @@ else {
 						?>
 						<input style='margin-top: 0px; float: right' type='submit' value='Go'>
 						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-							<option value="Select action">Select action</option>
-							<option value="Mark as left">Mark as left</option>
-							<option value="Delete">Delete</option>
+							<option value="Select action"><? print _('Select action') ?></option>
+							<option value="Mark as left"><? print _('Mark as left') ?></option>
+							<option value="Delete"><? print _('Delete') ?></option>
 						</select>
 						<script type="text/javascript">
 							var action=new LiveValidation('action');
-							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "Select something!"});
+							action.add(Validate.Exclusion, { within: ['<? print _('Select action') ?>'], failureMessage: "<? print _('Select something!') ?>"});
 						</script>
 						<?
 					print "</div>" ;
@@ -245,10 +241,10 @@ else {
 								print _("Name") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Email" ;
+								print _("Email") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Class Role" ;
+								print _("Role") ;
 							print "</th>" ;
 							print "<th>" ;
 								print _("Actions") ;
@@ -312,7 +308,7 @@ else {
 			}
 			
 			print "<h2>" ;
-			print "Former Participants" ;
+			print _("Former Participants") ;
 			print "</h2>" ;
 			
 			try {
@@ -338,10 +334,10 @@ else {
 								print _("Name") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Email" ;
+								print _("Email") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Class Role" ;
+								print _("Class Role") ;
 							print "</th>" ;
 							print "<th>" ;
 								print _("Actions") ;

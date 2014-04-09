@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/theme_manage_
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/theme_manage.php'>Manage Themes</a> > </div><div class='trailEnd'>Install Theme</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/theme_manage.php'>" . _('Manage Themes') . "</a> > </div><div class='trailEnd'>" . _('Install Theme') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -36,19 +36,19 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage="Install failed because you do not have access to this action." ;	
+			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage="Install failed due to a database error." ;	
+			$addReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage="Install failed because your manifest file was invalid." ;	
+			$addReturnMessage=_("Your request failed because your manifest file was invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage="Install failed because a theme with the same name is already installed." ;	
+			$addReturnMessage=_("Your request failed because a theme with the same name is already installed.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage="Install was successful. You can Install another module if you wish." ;	
+			$addReturnMessage=_("Your request was successful. You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -61,8 +61,8 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Theme Manifest *</b><br/>
-					<span style="font-size: 90%"><i>1. Unzip theme in server /themes.<br/>2. Make local copy of manifest.php.<br/>3. Select manifest.php</i></span>
+					<b><? print _('Theme Manifest') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('1. Unzip theme in server /themes.<br/>2. Make local copy of manifest.php.<br/>3. Select manifest.php') ?></i></span>
 				</td>
 				<td class="right">
 					<input type="file" name="file" id="file"><br/><br/>

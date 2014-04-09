@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/course_man
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/course_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Courses & Classes</a> > </div><div class='trailEnd'>Add Course</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/course_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Courses & Classes') . "</a> > </div><div class='trailEnd'>" . _('Add Course') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -106,7 +106,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Learning Area</b><br/>
+							<b><? print _('Learning Area') ?></b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="gibbonDepartmentID">
@@ -156,14 +156,14 @@ else {
 					</tr>
 					<tr>
 						<td colspan=2> 
-							<b>Blurb</b> 
+							<b><? print _('Blurb') ?></b> 
 							<? print getEditor($guid,  TRUE, "description", "", 20 ) ?>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Year Groups</b><br/>
-							<span style="font-size: 90%"><i>Enrolable year groups.</i></span>
+							<b><? print _('Year Groups') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Enrolable year groups.') ?></i></span>
 						</td>
 						<td class="right">
 							<? 

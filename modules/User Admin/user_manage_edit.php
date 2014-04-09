@@ -127,7 +127,7 @@ else {
 			
 			if ($search!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php&search=" . $search . "'>Back to Search Results</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php&search=" . $search . "'>" . _('Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 			?>
@@ -229,7 +229,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gender=new LiveValidation('gender');
-								gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>
@@ -287,7 +287,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonRoleIDPrimary=new LiveValidation('gibbonRoleIDPrimary');
-								gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>
@@ -323,7 +323,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonRoleIDPrimary=new LiveValidation('gibbonRoleIDPrimary');
-								gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>

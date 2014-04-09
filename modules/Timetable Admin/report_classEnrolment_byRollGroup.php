@@ -31,11 +31,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/report_cla
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Class Enrolment by Roll Group</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Class Enrolment by Roll Group') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print "Choose Roll Group" ;
+	print _("Choose Roll Group") ;
 	print "</h2>" ;
 	
 	$gibbonRollGroupID="" ;
@@ -85,7 +85,7 @@ else {
 	
 	if ($gibbonRollGroupID!="") {
 		print "<h2>" ;
-		print "Report Data" ;
+		print _("Report Data") ;
 		print "</h2>" ;
 		
 		try {
@@ -101,13 +101,13 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Roll Group" ;
+					print _("Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Student" ;
+					print _("Student") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Class Count" ;
+					print _("Class Count") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -144,7 +144,7 @@ else {
 							print $resultCount->rowCount();
 						}
 						else {
-							print "<i>NA</i>" ;
+							print "<i>" . _('NA') . "</i>" ;
 						}
 					print "</td>" ;
 				print "</tr>" ;

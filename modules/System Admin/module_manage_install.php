@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/module_manage
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/module_manage.php'>Manage Modules</a> > </div><div class='trailEnd'>Install Module</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/module_manage.php'>" . _('Manage Modules') . "</a> > </div><div class='trailEnd'>" . _('Install Module') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -36,32 +36,32 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage ="Install failed because you do not have access to this action." ;	
+			$addReturnMessage =_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage ="Install failed due to a database error." ;	
+			$addReturnMessage =_("Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage ="Install failed because either the manifest file was invalid or the uploads folder is not accessible to _www" ;	
+			$addReturnMessage =_("Install failed because either the manifest file was invalid or because there was a problem with the uploads folder") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage ="Install failed because a module with the same name is already installed." ;	
+			$addReturnMessage =("Install failed because a module with the same name is already installed.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage ="Install failed, but module was added to the system and set non-active." ;	
+			$addReturnMessage =_("Install failed, but module was added to the system and set non-active.") ;	
 		}
 		else if ($addReturn=="fail6") {
-			$addReturnMessage ="Install was successful, but module could not be activated." ;
+			$addReturnMessage =_("Install was successful, but module could not be activated.") ;
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage ="Install was successful. You can Install another module if you wish." ;	
+			$addReturnMessage =_("Your request was successful. You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
 			print $addReturnMessage;
 			if (isset($_SESSION[$guid]["moduleInstallError"])) {
 				if ($_SESSION[$guid]["moduleInstallError"]!="") {
-					print "The following SQL statements caused errors: " . $_SESSION[$guid]["moduleInstallError"] ;
+					print _("The following SQL statements caused errors:") . " " . $_SESSION[$guid]["moduleInstallError"] ;
 				}
 				$_SESSION[$guid]["moduleInstallError"]=NULL ;
 			}
@@ -73,13 +73,13 @@ else {
 	if(!is_dir($file)) {
   		$class="error" ;
 	   print "<div class='$class'>" ;
-	   print "Your uploads folder doesn't exist so you cannot install modules.";
+	   print _("Your uploads folder doesn't exist so you cannot install modules.") ;
 	   print "</div>";
   	}
 	if(!is_writable("uploads")) {
 		$class="error" ;
 		print "<div class='$class'>" ;
-		print "Your uploads folder in the root of ". $_SESSION[$guid]["systemName"]. " is not writable. You cannot install modules until this is rectified.";
+		print _("Your uploads folder is not writable. You cannot install modules until this is rectified.") ;
 		print "</div>";
 	}
 	
@@ -88,8 +88,8 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Module Manifest *</b><br/>
-					<span style="font-size: 90%"><i>1. Unzip module in server /modules.<br/>2. Make local copy of manifest.php.<br/>3. Open manifest.php and check the module name ($name).<br/>4. Rename the folder you unziped to the server to match $name.<br/>5. Make sure you have a folder named uploads in the root of <? print $_SESSION[$guid]["systemName"] ?><br/>6. Check that uploads is writable by _www.<br/>7. Select manifest.php.</i></span>
+					<b><? print _('Module Manifest') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('1. Unzip module in server /modules.<br/>2. Make local copy of manifest.php.<br/>3. Open manifest.php and check the module name.<br/>4. Rename the folder you unziped to the server to match the module name.<br/>5. Make sure you have a folder named uploads in the root of your Gibbon installation.<br/>6. Check that uploads is writable by _www.<br/>7. Select manifest.php.') ?></i></span>
 				</td>
 				<td class="right">
 					<input type="file" name="file" id="file"><br/><br/>

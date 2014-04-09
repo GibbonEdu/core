@@ -475,7 +475,7 @@ else {
 						?>
 						<input style='margin-top: 0px; float: right' type='submit' value='Go'>
 						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-							<option value="Select action">Select action</option>
+							<option value="Select action"><? print _('Select action') ?></option>
 							<?
 							if ($status=="Pending") {
 								print "<option value=\"delete\">Delete</option>" ;
@@ -489,7 +489,7 @@ else {
 						</select>
 						<script type="text/javascript">
 							var action=new LiveValidation('action');
-							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "Select something!"});
+							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<? print _('Select something!') ?>"});
 						</script>
 						<?
 					print "</div>" ;	

@@ -93,7 +93,7 @@ else {
 			$dateType=getSettingByScope($connection2, "Activities", "dateType") ;
 			if ($_GET["search"]!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php&search=" .$_GET["search"] . "'>Back to Search Results</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php&search=" .$_GET["search"] . "'>" . _('Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 			?>
@@ -160,7 +160,7 @@ else {
 						</td>
 						<td class="right">
 							<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
-								<optgroup label='--Enrolable Students--'>
+								<optgroup label='--<? print _('Enrolable Students') ?>--'>
 								<?
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -196,7 +196,7 @@ else {
 								}
 								?>
 								</optgroup>
-								<optgroup label='--All Users--'>
+								<optgroup label='--<? print _('All Users') ?>--'>
 								<?
 								try {
 									$dataSelect=array(); 

@@ -87,7 +87,7 @@ else {
 	else {
 		if ($status!="" OR $gibbonFinanceInvoiceeID!="" OR $monthOfIssue!="" OR $gibbonFinanceBillingScheduleID!="") {
 			print "<div class='linkTop'>" ;
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>Back to Search Results</a>" ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" . _('Back to Search Results') . "</a>" ;
 			print "</div>" ;
 		}
 		?>
@@ -245,7 +245,7 @@ else {
 						</select>
 						<script type="text/javascript">
 							var gibbonFinanceBillingScheduleID=new LiveValidation('gibbonFinanceBillingScheduleID');
-							gibbonFinanceBillingScheduleID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+							gibbonFinanceBillingScheduleID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 						 </script>
 					</td>
 				</tr>

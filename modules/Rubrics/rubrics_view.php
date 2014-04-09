@@ -165,7 +165,7 @@ else {
 					print _("Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Year Groups" ;
+					print _("Year Groups") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Actions") ;

@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/ttDates.ph
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Tie Days to Dates</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Tie Days to Dates') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -224,25 +224,25 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th style='width: 14px'>" ;
-							print "Monday" ;
+							print _("Monday") ;
 						print "</th>" ;
 						print "<th style='width: 14px'>" ;
-							print "Tuesday" ;
+							print _("Tuesday") ;
 						print "</th>" ;
 						print "<th style='width: 14px'>" ;
-							print "Wednesday" ;
+							print _("Wednesday") ;
 						print "</th>" ;
 						print "<th style='width: 14px'>" ;
-							print "Thursday" ;
+							print _("Thursday") ;
 						print "</th>" ;
 						print "<th style='width: 14px'>" ;
-							print "Friday" ;
+							print _("Friday") ;
 						print "</th>" ;
 						print "<th style='width: 14px'>" ;
-							print "Saturday" ;
+							print _("Saturday") ;
 						print "</th>" ;
 						print "<th style='width: 15px'>" ;
-							print "Sunday" ;
+							print _("Sunday") ;
 						print "</th>" ;
 					print "</tr>" ;
 					
@@ -276,10 +276,10 @@ else {
 							else {
 								print "<td style='vertical-align: top; text-align: center; background-color: #eeeeee; font-size: 10px'>" ;
 									if ($i==$specialDayStamp AND $rowSpecial["type"]=="Timing Change") {
-										 print "<span style='color: #000000'>" . date("d/m/Y",$i) . "<br/></span><span style='color: #f00'>Timing Change</span>" ;
+										 print "<span style='color: #000000'>" . date("d/m/Y",$i) . "<br/></span><span style='color: #f00'>" . _('Timing Change') . "</span>" ;
 									}
 									else {
-										print "<span style='color: #000000'>" . date("d/m/Y",$i) . "<br/>School Day</span>" ;
+										print "<span style='color: #000000'>" . date("d/m/Y",$i) . "<br/>" . _('School Day') . "</span>" ;
 									}
 									print "<br/>" ;
 									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=" . $i . "'><img style='margin-top: 3px' title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a><br/>" ;

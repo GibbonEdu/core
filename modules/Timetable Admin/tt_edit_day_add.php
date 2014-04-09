@@ -54,7 +54,7 @@ else {
 			$row=$result->fetch() ;
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Timetables</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Edit Timetable</a> > </div><div class='trailEnd'>Add Timetable Day</div>" ; 
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Timetables') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Edit Timetable') . "</a> > </div><div class='trailEnd'>" . _('Add Timetable Day') . "</div>" ; 
 			print "</div>" ;
 			
 			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -102,7 +102,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Timetable *</b><br/>
+							<b><? print _('Timetable') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -116,7 +116,7 @@ else {
 					<tr>
 						<td> 
 							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i>Must be unique for this timetable.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique for this timetable.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=12 value="" type="text" style="width: 300px">
@@ -129,7 +129,7 @@ else {
 					<tr>
 						<td> 
 							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i>Must be unique for this timetable.</i></span>
+							<span style="font-size: 90%"><i><? print _('Must be unique for this timetable.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">
@@ -141,8 +141,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Timetable Column *</b><br/>
-							<span style="font-size: 90%"><i>Add structure to the day.</i></span>
+							<b><? print _('Timetable Column') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="gibbonTTColumnID" id="gibbonTTColumnID" style="width: 302px">
@@ -162,7 +161,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonTTColumnID=new LiveValidation('gibbonTTColumnID');
-								gibbonTTColumnID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								gibbonTTColumnID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>

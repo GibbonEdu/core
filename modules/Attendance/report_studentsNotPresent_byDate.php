@@ -79,7 +79,7 @@ else {
 	
 	if ($currentDate!="") {
 		print "<h2>" ;
-		print "Report Data" ;
+		print _("Report Data") ;
 		print "</h2>" ;
 		
 		//Produce array of attendance data

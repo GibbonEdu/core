@@ -88,7 +88,7 @@ else {
 					print "<div class='linkTop'>" ;
 					
 						if ($search!="") {
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt.php&search=" . $search . "&allUsers=$allUsers'>Back to Search Results</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt.php&search=" . $search . "&allUsers=$allUsers'>" . _('Back to Search Results') . "</a>" ;
 						}
 						if ($role=="Student" OR $role=="Staff" OR $allUsers=="on") {
 							if ($search!="") {

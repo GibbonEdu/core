@@ -86,7 +86,7 @@ else {
 		else {
 			if ($search!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/External Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search'>Back</a>" ;				
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/External Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search'>" . _('Back') . "</a>" ;				
 				print "</div>" ;
 			}
 			$row=$result->fetch() ;
@@ -149,7 +149,7 @@ else {
 								</select>
 								<script type="text/javascript">
 									var gibbonExternalAssessmentID=new LiveValidation('gibbonExternalAssessmentID');
-									gibbonExternalAssessmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+									gibbonExternalAssessmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 								</script>
 							</td>
 						</tr>

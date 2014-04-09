@@ -95,7 +95,7 @@ else {
 								</select>
 								<script type="text/javascript">
 									var scope=new LiveValidation('scope');
-									scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+									scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 								 </script>
 								 <?
 							}
@@ -162,7 +162,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonDepartmentID=new LiveValidation('gibbonDepartmentID');
-								gibbonDepartmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+								gibbonDepartmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
 								<?
 								if ($highestAction=="Manage Outcomes_viewEditAll") {
 									print "gibbonDepartmentID.disable();" ;
@@ -245,7 +245,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Year Groups</b><br/>
+							<b><? print _('Year Groups') ?></b><br/>
 							<span style="font-size: 90%"><i>Relevant student year groups<br/></i></span>
 						</td>
 						<td class="right">
