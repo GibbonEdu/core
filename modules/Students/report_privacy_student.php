@@ -59,7 +59,7 @@ else {
 					print "#" ;
 				print "</th>" ;
 				print "<th rowspan=2>" ;
-					print "Roll Group" ;
+					print _("Roll Group") ;
 				print "</th>" ;
 				print "<th rowspan=2>" ;
 					print "Student" ;

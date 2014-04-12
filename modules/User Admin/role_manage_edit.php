@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/role_manage_edi
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/role_manage.php'>Manage Role</a> > </div><div class='trailEnd'>Edit Role</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/role_manage.php'>" . _('Manage Role') . "</a> > </div><div class='trailEnd'>" . _('Edit Role') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -90,15 +90,15 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Category *</b><br/>
+							<b><? print _('Category') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="category" id="category" style="width: 302px">
 								<option value="Please select..."><? print _('Please select...') ?></option>
-								<option <? if ($row["category"]=="Staff") { print "selected " ; } ?>value="Staff">Staff</option>
-								<option <? if ($row["category"]=="Student") { print "selected " ; } ?>value="Student">Student</option>
-								<option <? if ($row["category"]=="Parent") { print "selected " ; } ?>value="Parent">Parent</option>
-								<option <? if ($row["category"]=="Other") { print "selected " ; } ?>value="Other">Other</option>
+								<option <? if ($row["category"]=="Staff") { print "selected " ; } ?>value="Staff"><? print _('Staff') ?></option>
+								<option <? if ($row["category"]=="Student") { print "selected " ; } ?>value="Student"><? print _('Student') ?></option>
+								<option <? if ($row["category"]=="Parent") { print "selected " ; } ?>value="Parent"><? print _('Parent') ?></option>
+								<option <? if ($row["category"]=="Other") { print "selected " ; } ?>value="Other"><? print _('Other') ?></option>
 							</select>
 							<script type="text/javascript">
 								var category=new LiveValidation('category');
@@ -108,7 +108,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Role Name *</b><br/>
+							<b><? print _('Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">

@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/studentEnrolmen
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Student Enrolment</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Student Enrolment') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -98,7 +98,7 @@ else {
 		print "</div>" ;
 	
 		print "<h3>" ;
-		print "Search" ;
+		print _("Search") ;
 		print "</h3>" ;
 		?>
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -106,8 +106,8 @@ else {
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
 					<td> 
-						<b>Search For</b><br/>
-						<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
+						<b><? print _('Search For') ?></b><br/>
+						<span style="font-size: 90%"><i><? print _('Preferred, surname, username.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="search" id="search" maxlength=20 value="<? if (isset($_GET["search"])) { print $_GET["search"] ; } ?>" type="text" style="width: 300px">
@@ -118,7 +118,7 @@ else {
 						<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/studentEnrolment_manage.php">
 						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 						<?
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage.php'>Clear Search</a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage.php'>" . _('Clear Search') . "</a>" ;
 						?>
 						<input type="submit" value="<? print _("Submit") ; ?>">
 					</td>
@@ -128,10 +128,10 @@ else {
 		<?
 		
 		print "<h3>" ;
-		print "View" ;
+		print _("View") ;
 		print "</h3>" ;
 		print "<p>" ;
-		print "Students highlighted in red are marked as 'Full' but have either not reached their start date, or have exceeded their end date." ;
+		print _("Students highlighted in red are marked as 'Full' but have either not reached their start date, or have exceeded their end date.") ;
 		print "<p>" ;
 		
 		//Set pagination variable
@@ -179,10 +179,10 @@ else {
 						print _("Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Year Group" ;
+						print _("Year Group") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Roll Group" ;
+						print _("Roll Group") ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Actions") ;

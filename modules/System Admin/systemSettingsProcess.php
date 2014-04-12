@@ -79,6 +79,8 @@ else {
 	$paypalAPIUsername=$_POST["paypalAPIUsername"] ;
 	$paypalAPIPassword=$_POST["paypalAPIPassword"] ;
 	$paypalAPISignature=$_POST["paypalAPISignature"] ;
+	$gibboneduComOrganisationName=$_POST["gibboneduComOrganisationName"] ;
+	$gibboneduComOrganisationKey=$_POST["gibboneduComOrganisationKey"] ;
 	
 	//Validate Inputs
 	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $cuttingEdgeCode=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $currency=="" OR $enablePayments=="") {
@@ -268,6 +270,27 @@ else {
 		try {
 			$data=array("currency"=>$currency); 
 			$sql="UPDATE gibbonSetting SET value=:currency WHERE scope='System' AND name='currency'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		
+		try {
+			$data=array("gibboneduComOrganisationName"=>$gibboneduComOrganisationName); 
+			$sql="UPDATE gibbonSetting SET value=:gibboneduComOrganisationName WHERE scope='System' AND name='gibboneduComOrganisationName'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("gibboneduComOrganisationKey"=>$gibboneduComOrganisationKey); 
+			$sql="UPDATE gibbonSetting SET value=:gibboneduComOrganisationKey WHERE scope='System' AND name='gibboneduComOrganisationKey'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

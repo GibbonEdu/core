@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/studentEnrolmen
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/studentEnrolment_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Student Enrolment</a> > </div><div class='trailEnd'>Edit Student Enrolment</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/studentEnrolment_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Student Enrolment') . "</a> > </div><div class='trailEnd'>" . _('Edit Student Enrolment') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -128,7 +128,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Student *</b><br/>
+							<b><? print _('Student') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -141,7 +141,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Year Group *</b><br/>
+							<b><? print _('Year Group') ?> *</b><br/>
 							<span style="font-size: 90%"></span>
 						</td>
 						<td class="right">
@@ -207,13 +207,13 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>School History</b><br/>
+							<b><? print _('School History') ?></b><br/>
 							<span style="font-size: 90%"></span>
 						</td>
 						<td class="right">
 							<?
 							if ($row["dateStart"]!="") {
-								print "<u>Start Date</u>: " . dateConvertBack($guid, $row["dateStart"]) . "</br>" ;
+								print "<u>" . _('Start Date') . "</u>: " . dateConvertBack($guid, $row["dateStart"]) . "</br>" ;
 							}
 							try {
 								$dataSelect=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
@@ -228,7 +228,7 @@ else {
 								print "<u>" . $rowSelect["schoolYear"] . "</u>: " . $rowSelect["rollGroup"] . "<br/>" ;
 							}
 							if ($row["dateEnd"]!="") {
-								print "<u>Edn Date</u>: " . dateConvertBack($guid, $row["dateEnd"]) . "</br>" ;
+								print "<u>" . _('End Date') . "</u>: " . dateConvertBack($guid, $row["dateEnd"]) . "</br>" ;
 							}
 							?>
 						</td>

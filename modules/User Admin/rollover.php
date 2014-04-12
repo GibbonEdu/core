@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/rollover.php")=
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Rollover</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Rollover') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -45,9 +45,6 @@ else {
 		}
 		else if ($addReturn=="fail3") {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage="Your request failed because the selected person is already registered." ;	
 		}
 		else if ($addReturn=="fail5") {
 			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
@@ -72,13 +69,13 @@ else {
 	//Step 1
 	if ($step==1) {
 		print "<h3>" ;
-		print "Step 1" ;
+		print _("Step 1") ;
 		print "</h3>" ;
 		
 		$nextYear=getNextSchoolYearID($_SESSION[$guid]["gibbonSchoolYearID"], $connection2) ;
 		if ($nextYear==FALSE) {
 			print "<div class='error'>" ;
-			print "The next school year cannot be determined, so this action cannot be performed." ;
+			print _("The next school year cannot be determined, so this action cannot be performed.") ;
 			print "</div>" ;
 			}
 		else {
@@ -97,7 +94,7 @@ else {
 			$nameNext=$rowNext["name"] ;
 			if ($nameNext=="") {
 				print "<div class='error'>" ;
-				print "The next school year cannot be determined, so this action cannot be performed." ;
+				print _("The next school year cannot be determined, so this action cannot be performed.") ;
 				print "</div>" ;
 			}
 			else {
@@ -107,7 +104,7 @@ else {
 						<tr>
 							<td colspan=2 style='text-align: justify'> 
 								<?
-								print "By clicking the \"Proceed\" button below you will initiate the rollover from <b>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</b> to <b>$nameNext</b>. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! <span style='color: #cc0000'><i>You are really, very strongly advised to backup all data before you proceed</i></span>." ;
+								print sprintf(_('By clicking the "Proceed" button below you will initiate the rollover from %1$s to %2$s. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), "<b>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</b>", "<b>" . $nameNext. "</b>", "<span style=\"color: #cc0000\"><i>", "</i></span>") ;
 								?>
 							</td>
 						</tr>
@@ -124,13 +121,13 @@ else {
 	}
 	else if ($step==2) {
 		print "<h3>" ;
-		print "Step 2" ;
+		print _("Step 2") ;
 		print "</h3>" ;
 		
 		$nextYear=$_POST["nextYear"] ;
 		if ($nextYear=="" OR $nextYear!=getNextSchoolYearID($_SESSION[$guid]["gibbonSchoolYearID"], $connection2)) {
 			print "<div class='error'>" ;
-			print "The next school year cannot be determined, so this action cannot be performed." ;
+			print _("The next school year cannot be determined, so this action cannot be performed.") ;
 			print "</div>" ;
 		}
 		else {
@@ -150,12 +147,12 @@ else {
 			$sequenceNext=$rowNext["sequenceNumber"] ;
 			if ($nameNext=="" OR $sequenceNext=="") {
 				print "<div class='error'>" ;
-				print "The next school year cannot be determined, so this action cannot be performed." ;
+				print _("The next school year cannot be determined, so this action cannot be performed.") ;
 				print "</div>" ;
 				}
 			else {
 				print "<p>" ;
-				print "In rolling over to $nameNext, the following actions will take place. You may need to adjust some fields below to get the result you desire." ;
+				print sprintf(_('In rolling over to %1$s, the following actions will take place. You may need to adjust some fields below to get the result you desire.'), $nameNext) ;
 				print "</p>" ;
 				
 				print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollover.php&step=3'>" ;
@@ -192,13 +189,13 @@ else {
 					//ADD YEAR FOLLOWING NEXT
 					if (getNextSchoolYearID($nextYear, $connection2)==FALSE) {
 						print "<h4>" ;
-						print "Add Year Following $nameNext" ;
+						print sprintf(_('Add Year Following %1$s'), $nameNext) ;
 						print "</h4>" ;
 						?>
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
-									<b>School Year Name *</b><br/>
+									<b><? print _('School Year Name') ?> *</b><br/>
 									<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
 								</td>
 								<td class="right">
@@ -211,7 +208,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Status *</b>
+									<b><? print _('Status') ?> *</b>
 								</td>
 								<td class="right">
 									<input readonly name="next-status" id="next-status" value="Upcoming" type="text" style="width: 300px">
@@ -228,7 +225,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>First Day *</b><br/>
+									<b><? print _('First Day') ?> *</b><br/>
 									<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 								</td>
 								<td class="right">
@@ -247,7 +244,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Last Day *</b><br/>
+									<b><? print _('Last Day') ?> *</b><br/>
 									<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 								</td>
 								<td class="right">
@@ -271,10 +268,10 @@ else {
 					
 					//SET EXPECTED USERS TO FULL
 					print "<h4>" ;
-					print "Set Expected Users To Full" ;
+					print _("Set Expected Users To Full") ;
 					print "</h4>" ;
 					print "<p>" ;
-					print "This step primes newcomers who have status set to \"Expected\" to be enrolled as students or added as staff (below)." ;
+					print _("This step primes newcomers who have status set to \"Expected\" to be enrolled as students or added as staff (below).") ;
 					print "</p>" ;
 					
 					
@@ -300,13 +297,13 @@ else {
 									print _("Name") ;
 								print "</th>" ;
 								print "<th>" ;
-									print "Primary Role" ;
+									print _("Primary Role") ;
 								print "</th>" ;
 								print "<th>" ;
-									print "Current Status" ;
+									print _("Current Status") ;
 								print "</th>" ;
 								print "<th>" ;
-									print "New Status" ;
+									print _("New Status") ;
 								print "</th>" ;
 							print "</tr>" ;
 							
@@ -335,9 +332,9 @@ else {
 									print "</td>" ;
 									print "<td>" ;
 										print "<select name='$count-expect-status' id='$count-expect-status' style='float: left; width:110px'>" ;
-											print "<option value='Expected'>Expected</option>" ;	
-											print "<option selected value='Full'>Full</option>" ;
-											print "<option value='Left'>Left</option>" ;
+											print "<option value='Expected'>" . _('Expected') . "</option>" ;	
+											print "<option selected value='Full'>" . _('Full') . "</option>" ;
+											print "<option value='Left'>" . _('Left') . "</option>" ;
 										print "</select>" ;
 									print "</td>" ;
 								print "</tr>" ;
@@ -349,14 +346,14 @@ else {
 					
 					//ENROL NEW STUDENTS
 					print "<h4>" ;
-					print "Enrol New Students (Status Expected)" ;
+					print _("Enrol New Students (Status Expected)") ;
 					print "</h4>" ;
 					print "<p>" ;
-					print "Take students who are marked expected and enrol them. All parents of new students who are enroled below will have their status set to \"Full\". If a student is not enrolled, they will be set to \"Left\"." ;
+					print _("Take students who are marked expected and enrol them. All parents of new students who are enroled below will have their status set to \"Full\". If a student is not enrolled, they will be set to \"Left\".") ;
 					print "</p>" ;
 					
 					if ($yearGroupOptions=="" OR $rollGroupOptions=="") {
-						print "<div class='error'>Year groups or roll groups are not properly set up, so you cannot proceed with this section.</div>" ; 
+						print "<div class='error'>" . _('Year groups or roll groups are not properly set up, so you cannot proceed with this section.') . "</div>" ; 
 					}
 					else {
 						try {
@@ -381,16 +378,16 @@ else {
 										print _("Name") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Primary Role" ;
+										print _("Primary Role") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Enrol" ;
+										print _("Enrol") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Year Group" ;
+										print _("Year Group") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Roll Group" ;
+										print _("Roll Group") ;
 									print "</th>" ;
 								print "</tr>" ;
 								
@@ -436,14 +433,14 @@ else {
 					}
 					
 					print "<h4>" ;
-					print "Enrol New Students (Status Full)" ;
+					print _("Enrol New Students (Status Full)") ;
 					print "</h4>" ;
 					print "<p>" ;
-					print "Take new students who are already set as full, but who were not enrolled last year, and enrol them. These students probably came through the Online Application form, and may already be enrolled in next year: if this is the case, their enrolment will be updated as per the information below. All parents of new students who are enroled below will have their status set to \"Full\". If a student is not enrolled, they will be set to \"Left\"" ;
+					print _("Take new students who are already set as full, but who were not enrolled last year, and enrol them. These students probably came through the Online Application form, and may already be enrolled in next year: if this is the case, their enrolment will be updated as per the information below. All parents of new students who are enroled below will have their status set to \"Full\". If a student is not enrolled, they will be set to \"Left\"") ;
 					print "</p>" ;
 					
 					if ($yearGroupOptions=="" OR $rollGroupOptions=="") {
-						print "<div class='error'>Year groups or roll groups are not properly set up, so you cannot proceed with this section.</div>" ; 
+						print "<div class='error'>" . _('Year groups or roll groups are not properly set up, so you cannot proceed with this section.') . "</div>" ; 
 					}
 					else {
 						$students=array() ;
@@ -486,7 +483,7 @@ else {
 						
 						if ($count<1) {
 							print "<div class='error'>" ;
-							print "There are no users to display." ;
+							print _("There are no records to display.") ;
 							print "</div>" ;
 						}
 						else {
@@ -496,16 +493,16 @@ else {
 										print _("Name") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Primary Role" ;
+										print _("Primary Role") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Enrol" ;
+										print _("Enrol") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Year Group" ;
+										print _("Year Group") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Roll Group" ;
+										print _("Roll Group") ;
 									print "</th>" ;
 								print "</tr>" ;
 								
@@ -600,16 +597,16 @@ else {
 					
 					//RE-ENROL OTHER STUDENTS
 					print "<h4>" ;
-					print "Re-Enrol Other Students" ;
+					print _("Re-Enrol Other Students") ;
 					print "</h4>" ;
 					print "<p>" ;
-					print "Any students who are not re-enroled will have their status set to \"Left\"." ;
+					print _("Any students who are not re-enroled will have their status set to \"Left\".") ;
 					print "</p>" ;
 					
 					$lastYearGroup=getLastYearGroupID($connection2) ;
 					
 					if ($yearGroupOptions=="" OR $rollGroupOptions=="") {
-						print "<div class='error'>Year groups or roll groups are not properly set up, so you cannot proceed with this section.</div>" ; 
+						print "<div class='error'>" . _('Year groups or roll groups are not properly set up, so you cannot proceed with this section.') . "</div>" ; 
 					}
 					else {
 						try {
@@ -633,16 +630,16 @@ else {
 										print _("Name") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Primary Role" ;
+										print _("Primary Role") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Reenrol" ;
+										print _("Reenrol") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Year Group" ;
+										print _("Year Group") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Roll Group" ;
+										print _("Roll Group") ;
 									print "</th>" ;
 								print "</tr>" ;
 								
@@ -721,7 +718,7 @@ else {
 					
 					//SET FINAL YEAR STUDENTS TO LEFT
 					print "<h4>" ;
-					print "Set Final Year Students To Left" ;
+					print _("Set Final Year Students To Left") ;
 					print "</h4>" ;
 					
 					try {
@@ -746,13 +743,13 @@ else {
 									print _("Name") ;
 								print "</th>" ;
 								print "<th>" ;
-									print "Primary Role" ;
+									print _("Primary Role") ;
 								print "</th>" ;
 								print "<th>" ;
-									print "Current Status" ;
+									print _("Current Status") ;
 								print "</th>" ;
 								print "<th>" ;
-									print "New Status" ;
+									print _("New Status") ;
 								print "</th>" ;
 							print "</tr>" ;
 							
@@ -781,8 +778,8 @@ else {
 									print "</td>" ;
 									print "<td>" ;
 										print "<select name='$count-final-status' id='$count-final-status' style='float: left; width:110px'>" ;
-											print "<option value='Full'>Full</option>" ;
-											print "<option selected value='Left'>Left</option>" ;
+											print "<option value='Full'>" . _('Full') . "</option>" ;
+											print "<option selected value='Left'>" . _('Left') . "</option>" ;
 										print "</select>" ;
 									print "</td>" ;
 								print "</tr>" ;
@@ -795,10 +792,10 @@ else {
 					
 					//REGISTER NEW STAFF
 					print "<h4>" ;
-					print "Register New Staff" ;
+					print _("Register New Staff") ;
 					print "</h4>" ;
 					print "<p>" ;
-					print "Any staff who are not registered will have their status set to \"Left\"." ;
+					print _("Any staff who are not registered will have their status set to \"Left\".") ;
 					print "</p>" ;
 					
 					try {
@@ -823,16 +820,16 @@ else {
 									print _("Name") ;
 								print "</th>" ;
 								print "<th>" ;
-									print "Primary Role" ;
+									print _("Primary Role") ;
 								print "</th>" ;
 								print "<th>" ;
-									print "Register" ;
+									print _("Register") ;
 								print "</th>" ;
 								print "<th>" ;
 									print _("Type") ;
 								print "</th>" ;
 								print "<th>" ;
-									print "Job Title" ;
+									print _("Job Title") ;
 								print "</th>" ;
 							print "</tr>" ;
 							
@@ -861,8 +858,8 @@ else {
 									print "</td>" ;
 									print "<td>" ;
 										print "<select name='$count-register-type' id='$count-register-type' style='float: left; width:110px'>" ;
-											print "<option value='Teaching'>Teaching</option>" ;	
-											print "<option value='Support'>Support</option>" ;
+											print "<option value='Teaching'>" . _('Teaching') . "</option>" ;	
+											print "<option value='Support'>" . _('Support') . "</option>" ;
 										print "</select>" ;
 									print "</td>" ;
 									print "<td>" ;
@@ -894,7 +891,7 @@ else {
 		$nextYear=$_POST["nextYear"] ;
 		if ($nextYear=="" OR $nextYear!=getNextSchoolYearID($_SESSION[$guid]["gibbonSchoolYearID"], $connection2)) {
 			print "<div class='error'>" ;
-			print "The next school year cannot be determined, so this action cannot be performed." ;
+			print _("The next school year cannot be determined, so this action cannot be performed.") ;
 			print "</div>" ;
 		}
 		else {
@@ -914,19 +911,19 @@ else {
 			$sequenceNext=$rowNext["sequenceNumber"] ;
 			if ($nameNext=="" OR $sequenceNext=="") {
 				print "<div class='error'>" ;
-				print "The next school year cannot be determined, so this action cannot be performed." ;
+				print _("The next school year cannot be determined, so this action cannot be performed.") ;
 				print "</div>" ;
 			}
 			else {
 				print "<h3>" ;
-				print "Step 3" ;
+				print _("Step 3") ;
 				print "</h3>" ;
 				
 				//ADD YEAR FOLLOWING NEXT
 				if (getNextSchoolYearID($nextYear, $connection2)==FALSE) {
 					//ADD YEAR FOLLOWING NEXT
 					print "<h4>" ;
-					print "Add Year Following $nameNext" ;
+					print sprintf(_('Add Year Following %1$s', $nameNext)) ;
 					print "</h4>" ;
 					
 					$name=$_POST["nextname"] ;
@@ -972,7 +969,7 @@ else {
 							}
 							if ($fail==false) {
 								print "<div class='success'>" ;
-								print "Your request was completed successfully." ;
+								print _("Your request was completed successfully.") ;
 								print "</div>" ;
 							}
 						}
@@ -984,7 +981,7 @@ else {
 				
 				//ADVANCE SCHOOL YEAR
 				print "<h4>" ;
-				print "Advance School Year" ;
+				print _("Advance School Year") ;
 				print "</h4>" ;
 				
 				//Write to database
@@ -997,7 +994,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					print "<div class='error'>" ;
-					print "Advance failed due to a database error." ;
+					print _("Your request failed due to a database error.") ;
 					print "</div>" ; 
 					$advance=false ;
 				}
@@ -1011,7 +1008,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						print "<div class='error'>" ;
-						print "Advance failed due to a database error." ;
+						print _("Your request failed due to a database error.") ;
 						print "</div>" ; 
 						$advance2=false ;
 					}
@@ -1022,13 +1019,13 @@ else {
 						$_SESSION[$guid]["gibbonSchoolYearSequenceNumberCurrent"]=$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"] ;
 						
 						print "<div class='success'>" ;
-						print "Advance was successful, you are now in a new academic year!" ;
+						print _("Advance was successful, you are now in a new academic year!") ;
 						print "</div>" ;
 						
 						
 						//SET EXPECTED USERS TO FULL
 						print "<h4>" ;
-						print "Set Expected Users To Full" ;
+						print _("Set Expected Users To Full") ;
 						print "</h4>" ;
 						
 						$count=NULL ;
@@ -1071,12 +1068,12 @@ else {
 							//Feedback result!
 							if ($success==0) {
 								print "<div class='error'>" ;
-								print "Your request failed." ;
+								print _("Your request failed.") ;
 								print "</div>" ;
 							}
 							else if ($success<$count) {
 								print "<div class='warning'>" ;
-								print ($count-$success) . " updates failed." ;
+								print sprintf(_('%1$s updates failed.'), ($count-$success)) ;
 								print "</div>" ;
 							}
 							else {
@@ -1089,7 +1086,7 @@ else {
 						
 						//ENROL NEW STUDENTS
 						print "<h4>" ;
-						print "Enrol New Students (Status Expected)" ;
+						print _("Enrol New Students (Status Expected)") ;
 						print "</h4>" ;
 						
 						$count=NULL ;
@@ -1177,17 +1174,17 @@ else {
 							//Feedback result!
 							if ($success==0) {
 								print "<div class='error'>" ;
-								print "Your request failed." ;
+								print _("Your request failed.") ;
 								print "</div>" ;
 							}
 							else if ($success<$count) {
 								print "<div class='warning'>" ;
-								print ($count-$success) . " adds failed." ;
+								print sprintf(_('%1$s adds failed.'), ($count-$success)) ;
 								print "</div>" ;
 							}
 							else {
 								print "<div class='success'>" ;
-								print "Your request was completed successfully." ;
+								print _("Your request was completed successfully.") ;
 								print "</div>" ;
 							}
 						}
@@ -1195,7 +1192,7 @@ else {
 						
 						//ENROL NEW STUDENTS
 						print "<h4>" ;
-						print "Enrol New Students (Status Full)" ;
+						print _("Enrol New Students (Status Full)") ;
 						print "</h4>" ;
 						
 						$count=NULL ;
@@ -1313,17 +1310,17 @@ else {
 							//Feedback result!
 							if ($success==0) {
 								print "<div class='error'>" ;
-								print "Your request failed." ;
+								print _("Your request failed.") ;
 								print "</div>" ;
 							}
 							else if ($success<$count) {
 								print "<div class='warning'>" ;
-								print ($count-$success) . " adds failed." ;
+								print  sprintf(_('%1$s adds failed.'), ($count-$success)) ;
 								print "</div>" ;
 							}
 							else {
 								print "<div class='success'>" ;
-								print "Your request was completed successfully." ;
+								print _("Your request was completed successfully.") ;
 								print "</div>" ;
 							}
 						}
@@ -1331,7 +1328,7 @@ else {
 						
 						//RE-ENROL OTHER STUDENTS
 						print "<h4>" ;
-						print "Re-Enrol Other Students" ;
+						print _("Re-Enrol Other Students") ;
 						print "</h4>" ;
 						
 						$count=NULL ;
@@ -1389,17 +1386,17 @@ else {
 							//Feedback result!
 							if ($success==0) {
 								print "<div class='error'>" ;
-								print "Your request failed." ;
+								print _("Your request failed.") ;
 								print "</div>" ;
 							}
 							else if ($success<$count) {
 								print "<div class='warning'>" ;
-								print ($count-$success) . " adds failed." ;
+								print sprintf(_('%1$s adds failed.'), ($count-$success)) ;
 								print "</div>" ;
 							}
 							else {
 								print "<div class='success'>" ;
-								print "Your request was completed successfully." ;
+								print _("Your request was completed successfully.") ;
 								print "</div>" ;
 							}
 						}
@@ -1407,7 +1404,7 @@ else {
 						
 						//SET FINAL YEAR STUDENTS TO LEFT
 						print "<h4>" ;
-						print "Set Final Year Students To Left" ;
+						print _("Set Final Year Students To Left") ;
 						print "</h4>" ;
 						
 						$count=NULL ;
@@ -1445,12 +1442,12 @@ else {
 							//Feedback result!
 							if ($success==0) {
 								print "<div class='error'>" ;
-								print "Your request failed." ;
+								print _("Your request failed.") ;
 								print "</div>" ;
 							}
 							else if ($success<$count) {
 								print "<div class='warning'>" ;
-								print ($count-$success) . " updates failed." ;
+								print sprintf(_('%1$s updates failed.'), ($count-$success)) ;
 								print "</div>" ;
 							}
 							else {
@@ -1463,7 +1460,7 @@ else {
 						
 						//REGISTER NEW STAFF
 						print "<h4>" ;
-						print "Register New Staff" ;
+						print _("Register New Staff") ;
 						print "</h4>" ;
 						
 						$count=NULL ;
@@ -1549,17 +1546,17 @@ else {
 							//Feedback result!
 							if ($success==0) {
 								print "<div class='error'>" ;
-								print "Your request failed." ;
+								print _("Your request failed.") ;
 								print "</div>" ;
 							}
 							else if ($success<$count) {
 								print "<div class='warning'>" ;
-								print ($count-$success) . " adds failed." ;
+								print sprintf(_('%1$s adds failed'), ($count-$success)) ;
 								print "</div>" ;
 							}
 							else {
 								print "<div class='success'>" ;
-								print "Your request was completed successfully." ;
+								print _("Your request was completed successfully.") ;
 								print "</div>" ;
 							}
 						}

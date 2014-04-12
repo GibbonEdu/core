@@ -29,7 +29,7 @@ else {
 	//Set returnTo point for upcoming pages
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Families</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Families') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -37,7 +37,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage="Your request was completed successfully.The system has made a moderate effort to remove all child and adult records for this family." ;	
+			$deleteReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -52,7 +52,7 @@ else {
 	}
 	
 	print "<h2>" ;
-	print "Search" ;
+	print _("Search") ;
 	print "</h2>" ;
 	?>
 	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -60,8 +60,8 @@ else {
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td> 
-					<b>Search For</b><br/>
-					<span style="font-size: 90%"><i>Family name.</i></span>
+					<b><? print _('Search For') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('Family name.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="search" id="search" maxlength=20 value="<? if (isset($_GET["search"])) { print $_GET["search"] ; }?>" type="text" style="width: 300px">
@@ -72,7 +72,7 @@ else {
 					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/family_manage.php">
 					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 					<?
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/family_manage.php'>Clear Search</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/family_manage.php'>" . _('Clear Search') . "</a>" ;
 					?>
 					<input type="submit" value="<? print _("Submit") ; ?>">
 				</td>
@@ -82,7 +82,7 @@ else {
 	<?
 	
 	print "<h2>" ;
-	print "View" ;
+	print _("View") ;
 	print "</h2>" ;
 	
 	$search=NULL ;
@@ -124,13 +124,13 @@ else {
 					print _("Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Status" ;
+					print _("Status") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Adults" ;
+					print _("Adults") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Children" ;
+					print _("Children") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Actions") ;

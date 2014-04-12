@@ -222,14 +222,9 @@ else {
 					<tr>
 						<td> 
 							<b>Comment</b><br/>
-							<span style="font-size: 90%"><i>1000 character limit</i></span>
 						</td>
 						<td class="right">
 							<textarea name="comment" id="comment" rows=8 style="width: 300px"></textarea>
-							<script type="text/javascript">
-								var comment=new LiveValidation('comment');
-								comment.add( Validate.Length, { maximum: 1000 } );
-							 </script>
 						</td>
 					</tr>
 					<tr>

@@ -104,7 +104,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Student *</b><br/>
+							<b><? print _('Student') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -312,7 +312,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Student *</b><br/>
+								<b><? print _('Student') ?> *</b><br/>
 								<span style="font-size: 90%"><i>This value cannot be changed</i></span>
 							</td>
 							<td class="right">

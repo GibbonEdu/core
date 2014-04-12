@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/family_manage_e
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage.php'>Manage Families</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=" . $_GET["gibbonFamilyID"] . "'>Edit Family</a> > </div><div class='trailEnd'>Edit Adult</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage.php'>" . _('Manage Families') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=" . $_GET["gibbonFamilyID"] . "'>" . _('Edit Family') . "</a> > </div><div class='trailEnd'>" . _('Edit Adult') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -98,52 +98,44 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Adult's Name *</b><br/>
+							<b><? print _('Adult\'s Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="child" id="child" maxlength=200 value="<? print formatName(htmlPrep($row["title"]), htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Parent") ?>" type="text" style="width: 300px">
-							<script type="text/javascript">
-								var child=new LiveValidation('child');
-								child.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
-							 </script>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Comment</b><br/>
-							<span style="font-size: 90%"><i>Data displayed in full Student Profile<br/>1000 character limit<br/></i></span>
+							<b><? print _('Comment') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Data displayed in full Student Profile') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<textarea name="comment" id="comment" rows=8 style="width: 300px"><? print $row["comment"] ?></textarea>
-							<script type="text/javascript">
-								var comment=new LiveValidation('comment');
-								comment.add( Validate.Length, { maximum: 1000 } );
-							 </script>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Data Access?</b><br/>
-							<span style="font-size: 90%"><i>Access data on family's children?</i></span>
+							<b><? print _('Data Access?') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Access data on family\'s children?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="childDataAccess" id="childDataAccess" style="width: 302px">
-								<option <? if ($row["childDataAccess"]=="Y") { print "selected ";} ?>value="Y">Y</option>
-								<option <? if ($row["childDataAccess"]=="N") { print "selected ";} ?>value="N">N</option>
+								<option <? if ($row["childDataAccess"]=="Y") { print "selected ";} ?>value="Y"><? print _('Y') ?></option>
+								<option <? if ($row["childDataAccess"]=="N") { print "selected ";} ?>value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Contact Priority</b><br/>
-							<span style="font-size: 90%"><i>The order in which school should contact family members.</i></span>
+							<b><? print _('Contact Priority') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('The order in which school should contact family members.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactPriority" id="contactPriority" style="width: 302px">
-								<option <? if ($row["contactPriority"]=="1") { print "selected ";} ?>value="1">1</option>
-								<option <? if ($row["contactPriority"]=="2") { print "selected ";} ?>value="2">2</option>
-								<option <? if ($row["contactPriority"]=="3") { print "selected ";} ?>value="3">3</option>
+								<option <? if ($row["contactPriority"]=="1") { print "selected ";} ?>value="1"><? print _('1') ?></option>
+								<option <? if ($row["contactPriority"]=="2") { print "selected ";} ?>value="2"><? print _('2') ?></option>
+								<option <? if ($row["contactPriority"]=="3") { print "selected ";} ?>value="3"><? print _('3') ?></option>
 							</select>
 							<script type="text/javascript">
 								/* Advanced Options Control */
@@ -180,49 +172,49 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Call?</b><br/>
-							<span style="font-size: 90%"><i>Receive non-emergency phone calls from school?</i></span>
+							<b><? print _('Call?') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Receive non-emergency phone calls from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactCall" id="contactCall" style="width: 302px">
-								<option <? if ($row["contactCall"]=="Y") { print "selected ";} ?>value="Y">Y</option>
-								<option <? if ($row["contactCall"]=="N") { print "selected ";} ?>value="N">N</option>
+								<option <? if ($row["contactCall"]=="Y") { print "selected ";} ?>value="Y"><? print _('Y') ?></option>
+								<option <? if ($row["contactCall"]=="N") { print "selected ";} ?>value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>SMS?</b><br/>
-							<span style="font-size: 90%"><i>Receive non-emergency SMS messages from school?</i></span>
+							<b><? print _('SMS?') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Receive non-emergency SMS messages from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactSMS" id="contactSMS" style="width: 302px">
-								<option <? if ($row["contactSMS"]=="Y") { print "selected ";} ?>value="Y">Y</option>
-								<option <? if ($row["contactSMS"]=="N") { print "selected ";} ?>value="N">N</option>
+								<option <? if ($row["contactSMS"]=="Y") { print "selected ";} ?>value="Y"><? print _('Y') ?></option>
+								<option <? if ($row["contactSMS"]=="N") { print "selected ";} ?>value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Email?</b><br/>
-							<span style="font-size: 90%"><i>Receive non-emergency emails from school?</i></span>
+							<b><? print _('Email?') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Receive non-emergency emails from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactEmail" id="contactEmail" style="width: 302px">
-								<option <? if ($row["contactEmail"]=="Y") { print "selected ";} ?>value="Y">Y</option>
-								<option <? if ($row["contactEmail"]=="N") { print "selected ";} ?>value="N">N</option>
+								<option <? if ($row["contactEmail"]=="Y") { print "selected ";} ?>value="Y"><? print _('Y') ?></option>
+								<option <? if ($row["contactEmail"]=="N") { print "selected ";} ?>value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Mail?</b><br/>
-							<span style="font-size: 90%"><i>Receive postage mail from school?</i></span>
+							<b><? print _('Mail?') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Receive postage mail from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactMail" id="contactMail" style="width: 302px">
-								<option <? if ($row["contactMail"]=="Y") { print "selected ";} ?>value="Y">Y</option>
-								<option <? if ($row["contactMail"]=="N") { print "selected ";} ?>value="N">N</option>
+								<option <? if ($row["contactMail"]=="Y") { print "selected ";} ?>value="Y"><? print _('Y') ?></option>
+								<option <? if ($row["contactMail"]=="N") { print "selected ";} ?>value="N"><? print _('N') ?></option>
 							</select>
 						</td>
 					</tr>

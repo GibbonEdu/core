@@ -168,6 +168,10 @@ General: higher quality favicon
 
 Lib: upgraded PHPMaier to latest version to solve random white space issue
 	Edited files /lib/PHPMailer/*
+
+gibbonedu.com: added settings to allow integration of services from gibbonedu.com
+	New values in table gibbonSetting
+	Edited files /modules/System Admin/systemSettings*.php
 	
 
 v7.1.02

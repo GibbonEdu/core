@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/staff_manage_ad
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/staff_manage.php'>Manage Staff</a> > </div><div class='trailEnd'>Add Staff</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/staff_manage.php'>" . _('Manage Staff') . "</a> > </div><div class='trailEnd'>" . _('Add Staff') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -71,13 +71,13 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Basic Information</h3>
+					<h3><? print _('Basic Information') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Person *</b><br/>
-					<span style="font-size: 90%"><i>Value must be unique.</i></span>		
+					<b><? print _('Person') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>		
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="gibbonPersonID" id="gibbonPersonID">
@@ -105,8 +105,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Initials</b><br/>
-					<span style="font-size: 90%"><i>Needs to be unique if set.</i></span>
+					<b><? print _('Initials') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('Must unique if set.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="initials" id="initials" maxlength=4 value="" type="text" style="width: 300px">
@@ -147,7 +147,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Job Title</b><br/>
+					<b><? print _('Job Title') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="jobTitle" id="jobTitle" maxlength=100 value="" type="text" style="width: 300px">
@@ -156,7 +156,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>First Aid</h3>
+					<h3><? print _('First Aid') ?></h3>
 				</td>
 			</tr>
 			<!-- FIELDS & CONTROLS FOR TYPE -->
@@ -173,7 +173,7 @@ else {
 			</script>
 			<tr>
 				<td> 
-					<b>First Aid Qualified?</b><br/>
+					<b><? print _('First Aid Qualified?') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -186,8 +186,8 @@ else {
 			</tr>
 			<tr id='firstAidExpiryRow' style='display: none'>
 				<td> 
-					<b>First Aid Expiry</b><br/>
-					<span style="font-size: 90%"><i>When is first aid certification set to expire.<br/>dd/mm/yyyy</i></span>
+					<b><? print _('First Aid Expiry') ?></b><br/>
+					<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 				</td>
 				<td class="right">
 					<input name="firstAidExpiry" id="firstAidExpiry" maxlength=10 value="<? print dateConvertBack($guid, $row["firstAidExpiry"]) ?>" type="text" style="width: 300px">
@@ -201,13 +201,12 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Biography</h3>
+					<h3><? print _('Biography') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Country Of Origin</b><br/>
-					<span style="font-size: 90%"><i>Where does this staff member come from?</i></span>
+					<b><? print _('Country Of Origin') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="countryOfOrigin" id="countryOfOrigin" style="width: 302px">
@@ -229,7 +228,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Qualifications</b><br/>
+					<b><? print _('Qualifications') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="qualifications" id="qualifications" maxlength=80 value="" type="text" style="width: 300px">
@@ -237,8 +236,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Grouping</b><br/>
-					<span style="font-size: 90%"><i>Used for group staff when creating a staff directory.</i></span>
+					<b><? print _('Grouping') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('Used for group staff when creating a staff directory.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="biographicalGrouping" id="biographicalGrouping" maxlength=100 value="" type="text" style="width: 300px">
@@ -246,8 +245,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Grouping Priority</b><br/>
-					<span style="font-size: 90%"><i>Higher numbers move teachers up the order within their grouping.</i></span>
+					<b><? print _('Grouping Priority') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('Higher numbers move teachers up the order within their grouping.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="biographicalGroupingPriority" id="biographicalGroupingPriority" maxlength=4 value="0" type="text" style="width: 300px">
@@ -259,7 +258,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Biography</b><br/>
+					<b><? print _('Biography') ?></b><br/>
 				</td>
 				<td class="right">
 					<textarea name='biography' id='biography' rows=10 style='width: 300px'></textarea>

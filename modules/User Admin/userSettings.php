@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage User Settings</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage User Settings') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -61,7 +61,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Field Values</h3>
+					<h3><? print _('Field Values') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -151,8 +151,8 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Authentication Settings</h3>
-					If your school uses Google Apps, you can enable single sign on via Gibbon. This process makes use of OAuth, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, <a href='http://gibbonedu.org/support/administrators/authenticating-with-google-oauth/' target='_blank'>click here</a>.
+					<h3><? print _('Authentication Settings') ?></h3>
+					<? print sprintf(_('If your school uses Google Apps, you can enable single sign on via Gibbon. This process makes use of OAuth, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s.'), "<a href='http://gibbonedu.org/support/administrators/authenticating-with-google-oauth/' target='_blank'>", "</a>") ?>
 				</td>
 			</tr>
 			<tr>
@@ -280,7 +280,7 @@ else {
             
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Privacy Options</h3>
+					<h3><? print _('Privacy Options') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -350,7 +350,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>User Interface Options</h3>
+					<h3><? print _('User Interface Options') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -378,12 +378,8 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Day-Type Options</h3>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2> 
-					<p>Allows for choice of different day-types (e.g. full-day, half-day).</p>
+					<h3><? print _('Day-Type Options') ?></h3>
+					<p><? print _('Allows for choice of different day-types (e.g. full-day, half-day).') ?></p>
 				</td>
 			</tr>
 			<tr>

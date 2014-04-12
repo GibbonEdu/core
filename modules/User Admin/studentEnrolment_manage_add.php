@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/studentEnrolmen
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/studentEnrolment_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Student Enrolment</a> > </div><div class='trailEnd'>Add Student Enrolment</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/studentEnrolment_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Student Enrolment') . "</a> > </div><div class='trailEnd'>" . _('Add Student Enrolment') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -51,7 +51,7 @@ else {
 			$addReturnMessage="Your request failed because your passwords did not match." ;	
 		}
 		else if ($addReturn=="fail6") {
-			$addReturnMessage="Your request failed because the student is already registered in the specified year." ;	
+			$addReturnMessage="Your request failed because your inputs were invalid." ;	
 		}
 		else if ($addReturn=="success0") {
 			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
@@ -110,7 +110,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Student *</b><br/>
+						<b><? print _('Student') ?> *</b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -137,7 +137,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Year Group *</b><br/>
+						<b><? print _('Year Group') ?> *</b><br/>
 						<span style="font-size: 90%"></span>
 					</td>
 					<td class="right">

@@ -90,7 +90,7 @@ else {
 					print "Student" ;
 				print "</th>" ;
 				print "<th style='width: 120px'>" ;
-					print "Roll Group" ;
+					print _("Roll Group") ;
 				print "</th>" ;
 				print "<th style='width: 120px'>" ;
 					print "Invoice To</span>" ;

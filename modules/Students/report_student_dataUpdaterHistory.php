@@ -165,7 +165,7 @@ else {
 					print "Student" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Roll Group" ;
+					print _("Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
 					print "Personal<br/>Data" ;

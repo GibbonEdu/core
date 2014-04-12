@@ -199,7 +199,7 @@ else {
 									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 										<tr>
 											<td> 
-												<b>Student *</b><br/>
+												<b><? print _('Student') ?> *</b><br/>
 												<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
@@ -264,7 +264,7 @@ else {
 									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 										<tr>
 											<td> 
-												<b>Student *</b><br/>
+												<b><? print _('Student') ?> *</b><br/>
 												<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">

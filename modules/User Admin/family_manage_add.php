@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/family_manage_a
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage.php'>Manage Families</a> > </div><div class='trailEnd'>Add Family</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage.php'>" . _('Manage Families') . "</a> > </div><div class='trailEnd'>" . _('Add Family') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -71,13 +71,13 @@ else {
 			<tr class='break'>
 				<td colspan=2>
 					<h3>
-						General Information
+						<? print _('General Information') ?>
 					</h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Family Name *</b><br/>
+					<b><? print _('Name') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -90,22 +90,21 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Status *</b><br/>
+					<b><? print _('Status') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="status" id="status" style="width: 302px">
-						<option value="Married">Married</option>
-						<option value="Separated">Separated</option>
-						<option value="Divorced">Divorced</option>
-						<option value="De Facto">De Facto</option>
-						<option value="Other">Other</option>	
+						<option value="Married"><? print _('Married') ?></option>
+						<option value="Separated"><? print _('Separated') ?></option>
+						<option value="Divorced"><? print _('Divorced') ?></option>
+						<option value="De Facto"><? print _('De Facto') ?></option>
+						<option value="Other"><? print _('Other') ?></option>	
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Home Language</b><br/>
-					<span style="font-size: 90%"><i>Formal name to address parents with.</i></span>
+					<b><? print _('Home Language') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="languageHome" id="languageHome" maxlength=100 value="" type="text" style="width: 300px">
@@ -113,8 +112,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Address Name *</b><br/>
-					<span style="font-size: 90%"><i>Formal name to address parents with.</i></span>
+					<b><? print _('Address Name') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('Formal name to address parents with.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="nameAddress" id="nameAddress" maxlength=100 value="" type="text" style="width: 300px">
@@ -126,8 +125,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Home Address</b><br/>
-					<span style="font-size: 90%"><i>Unit, Building, Street</i></span>
+					<b><? print _('Home Address') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('Unit, Building, Street') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="homeAddress" id="homeAddress" maxlength=255 value="" type="text" style="width: 300px">
@@ -135,8 +134,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Home Address (District)</b><br/>
-					<span style="font-size: 90%"><i>County, State, District</i></span>
+					<b><? print _('Home Address (District)') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('County, State, District') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="" type="text" style="width: 300px">
@@ -163,7 +162,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Home Address (Country)</b><br/>
+					<b><? print _('Home Address (Country)') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="homeAddressCountry" id="homeAddressCountry" style="width: 302px">

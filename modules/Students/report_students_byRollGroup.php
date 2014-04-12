@@ -158,7 +158,7 @@ else {
 		print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Roll Group" ;
+					print _("Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
 					print "Student" ;

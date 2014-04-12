@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/family_manage_e
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage.php'>Manage Families</a> > </div><div class='trailEnd'>Edit Family</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage.php'>" . _('Manage Families') . "</a> > </div><div class='trailEnd'>" . _('Edit Family') . "</div>" ;
 	print "</div>" ;
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage="" ;
@@ -75,7 +75,7 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage="Your request failed because the person already exists as a child or adult in this family." ;	
+			$addReturnMessage=_("Your request failed because the person already exists as a member of this family.") ;	
 		}
 		else if ($addReturn=="success0") {
 			$addReturnMessage=_("Your request was completed successfully.") ;	
@@ -107,7 +107,7 @@ else {
 	}
 	if ($gibbonFamilyID=="") {
 		print "<h1>" ;
-		print "Edit Family" ;
+		print _("Edit Family") ;
 		print "</h1>" ;
 		print "<div class='error'>" ;
 			print _("You have not specified one or more required parameters.") ;
@@ -148,13 +148,13 @@ else {
 					<tr class='break'>
 						<td colspan=2> 
 							<h3>
-								General Information
+								<? print _('General Information') ?>
 							</h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Family Name *</b><br/>
+							<b><? print _('Family Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -163,22 +163,21 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Status</b><br/>
+							<b><? print _('Status') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="status" id="status" style="width: 302px">
-								<option <? if ($row["status"]=="Married") { print "selected " ; } ?>value="Married">Married</option>
-								<option <? if ($row["status"]=="Separated") { print "selected " ; } ?>value="Separated">Separated</option>
-								<option <? if ($row["status"]=="Divorced") { print "selected " ; } ?>value="Divorced">Divorced</option>
-								<option <? if ($row["status"]=="De Facto") { print "selected " ; } ?>value="De Facto">De Facto</option>
-								<option <? if ($row["status"]=="Other") { print "selected " ; } ?>value="Other">Other</option>
+								<option <? if ($row["status"]=="Married") { print "selected " ; } ?>value="Married"><? print _('Married') ?></option>
+								<option <? if ($row["status"]=="Separated") { print "selected " ; } ?>value="Separated"><? print _('Separated') ?></option>
+								<option <? if ($row["status"]=="Divorced") { print "selected " ; } ?>value="Divorced"><? print _('Divorced') ?></option>
+								<option <? if ($row["status"]=="De Facto") { print "selected " ; } ?>value="De Facto"><? print _('De Facto') ?></option>
+								<option <? if ($row["status"]=="Other") { print "selected " ; } ?>value="Other"><? print _('Other') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Home Language</b><br/>
-							<span style="font-size: 90%"><i>Formal name to address parents with.</i></span>
+							<b><? print _('Home Language') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="languageHome" id="languageHome" maxlength=100 value="<? print $row["languageHome"] ?>" type="text" style="width: 300px">
@@ -186,8 +185,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Address Name *</b><br/>
-							<span style="font-size: 90%"><i>Formal name to address parents with.</i></span>
+							<b><? print _('Address Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Formal name to address parents with.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="nameAddress" id="nameAddress" maxlength=100 value="<? print $row["nameAddress"] ?>" type="text" style="width: 300px">
@@ -199,8 +198,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Home Address</b><br/>
-							<span style="font-size: 90%"><i>Unit, Building, Street</i></span>
+							<b><? print _('Home Address') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Unit, Building, Street') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="homeAddress" id="homeAddress" maxlength=255 value="<? print $row["homeAddress"] ?>" type="text" style="width: 300px">
@@ -208,8 +207,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Home Address (District)</b><br/>
-							<span style="font-size: 90%"><i>County, State, District</i></span>
+							<b><? print _('Home Address (District)') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('County, State, District') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<? print $row["homeAddressDistrict"] ?>" type="text" style="width: 300px">
@@ -236,7 +235,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Home Address (Country)</b><br/>
+							<b><? print _('Home Address (Country)') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="homeAddressCountry" id="homeAddressCountry" style="width: 302px">
@@ -342,20 +341,20 @@ else {
 
 			
 			print "<h3>" ;
-			print "Relationships" ;
+			print _("Relationships") ;
 			print "</h3>" ;
 			print "<p>" ;
-			print "Use the table below to show how each child is related to each adult in the family." ;
+			print _("Use the table below to show how each child is related to each adult in the family.") ;
 			print "</p>" ;
 			if ($resultChildren->rowCount()<1 OR $resultAdults->rowCount()<1) {
-				print "<div class='error'>There are not enough people in this family to form relationships.</div>" ; 
+				print "<div class='error'>" . _('There are not enough people in this family to form relationships.') . "</div>" ; 
 			}			
 			else {
 				print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_relationshipsProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search'>" ;
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print "Adults" ;
+								print _("Adults") ;
 							print "</th>" ;
 							foreach ($children AS $child) {
 								print "<th>" ;
@@ -381,18 +380,18 @@ else {
 										?>
 										<select name="relationships[]" id="relationships[]" style="width: 100%">
 											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="") { print "selected" ; } ?> value=""></option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Mother") { print "selected" ; } ?> value="Mother">Mother</option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Father") { print "selected" ; } ?> value="Father">Father</option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Step-Mother") { print "selected" ; } ?> value="Step-Mother">Step-Mother</option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Step-Father") { print "selected" ; } ?> value="Step-Father">Step-Father</option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Adoptive Parent") { print "selected" ; } ?> value="Adoptive Parent">Adoptive Parent</option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Guardian") { print "selected" ; } ?> value="Guardian">Guardian</option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Grandmother") { print "selected" ; } ?> value="Grandmother">Grandmother</option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Grandfather") { print "selected" ; } ?> value="Grandfather">Grandfather</option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Aunt") { print "selected" ; } ?> value="Aunt">Aunt</option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Uncle") { print "selected" ; } ?> value="Uncle">Uncle</option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Nanny/Helper") { print "selected" ; } ?> value="Nanny/Helper">Nanny/Helper</option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Other") { print "selected" ; } ?> value="Other">Other</option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Mother") { print "selected" ; } ?> value="Mother"><? print _('Mother') ?></option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Father") { print "selected" ; } ?> value="Father"><? print _('Father') ?></option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Step-Mother") { print "selected" ; } ?> value="Step-Mother"><? print _('Step-Mother') ?></option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Step-Father") { print "selected" ; } ?> value="Step-Father"><? print _('Step-Father') ?></option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Adoptive Parent") { print "selected" ; } ?> value="Adoptive Parent"><? print _('Adoptive Parent') ?></option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Guardian") { print "selected" ; } ?> value="Guardian"><? print _('Guardian') ?></option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Grandmother") { print "selected" ; } ?> value="Grandmother"><? print _('Grandmother') ?></option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Grandfather") { print "selected" ; } ?> value="Grandfather"><? print _('Grandfather') ?></option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Aunt") { print "selected" ; } ?> value="Aunt"><? print _('Aunt') ?></option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Uncle") { print "selected" ; } ?> value="Uncle"><? print _('Uncle') ?></option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Nanny/Helper") { print "selected" ; } ?> value="Nanny/Helper"><? print _('Nanny/Helper') ?></option>
+											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Other") { print "selected" ; } ?> value="Other"><? print _('Other') ?></option>
 										</select>
 										<input type="hidden" name="gibbonPersonID1[]" value="<? print $adult["gibbonPersonID"] ?>">
 										<input type="hidden" name="gibbonPersonID2[]" value="<? print $child["gibbonPersonID"] ?>">
@@ -412,7 +411,7 @@ else {
 			}
 			
 			print "<h3>" ;
-			print "View Children" ;
+			print _("View Children") ;
 			print "</h3>" ;
 			
 			
@@ -425,19 +424,19 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print "Photo" ;
+							print _("Photo") ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Status" ;
+							print _("Status") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Roll Group" ;
+							print _("Roll Group") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Comment" ;
+							print _("Comment") ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Actions") ;
@@ -487,7 +486,7 @@ else {
 							print "<td>" ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_editChild.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=" . $child["gibbonPersonID"] . "&search=$search'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_deleteChild.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=" . $child["gibbonPersonID"] . "&search=$search'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/user_manage_password.php&gibbonPersonID=" . $child["gibbonPersonID"] . "&search=$search'><img title='Change Password' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/key.png'/></a>" ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/user_manage_password.php&gibbonPersonID=" . $child["gibbonPersonID"] . "&search=$search'><img title='" ._('Change Password') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/key.png'/></a>" ;
 							print "</td>" ;
 						print "</tr>" ;
 					}
@@ -500,13 +499,13 @@ else {
 					<tr class='break'>
 						<td colspan=2>
 							<h3>
-							Add Child
+							<? print _('Add Child') ?>
 							</h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Child's Name *</b><br/>
+							<b><? print _('Child\'s Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -514,7 +513,7 @@ else {
 								<?
 								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								?>
-								<optgroup label='--Enroled Students--'>
+								<optgroup label='--<? print _('Enroled Students') ?>--'>
 								<?
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -554,15 +553,10 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Comment</b><br/>
-							<span style="font-size: 90%"><i>1000 character limit<br/></i></span>
+							<b><? print _('Comment') ?></b><br/>
 						</td>
 						<td class="right">
 							<textarea name="comment" id="comment" rows=8 style="width: 300px"></textarea>
-							<script type="text/javascript">
-								var comment=new LiveValidation('comment');
-								comment.add( Validate.Length, { maximum: 1000 } );
-							 </script>
 						</td>
 					</tr>
 					</tr>
@@ -580,10 +574,10 @@ else {
 
 			<?	
 			print "<h3>" ;
-			print "View Adults" ;
+			print _("View Adults") ;
 			print "</h3>" ;
 			print "<div class='warning'>" ;
-				print "Logic exists to try and ensure that there is always one and only one parent with Contact Priority set to 1. This may result in values being set which are not exactly what you chose." ;
+				print _("Logic exists to try and ensure that there is always one and only one parent with Contact Priority set to 1. This may result in values being set which are not exactly what you chose.") ;
 			print "</div>" ;
 			
 			if ($resultAdults->rowCount()<1) {
@@ -595,34 +589,31 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print "Photo" ;
-						print "</th>" ;
-						print "<th>" ;
 							print _("Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Status" ;
+							print _("Status") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Comment" ;
+							print _("Comment") ;
 						print "</th>" ;
-						print "<th style='padding-left: 1px; padding-right: 1px'>" ;
-							print "<span title='Data Access'>A</span>" ;
+						print "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px; height: 100px'>" ;
+							print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>" ._('Data Access') . "</div>" ;
 						print "</th>" ;
-						print "<th style='padding-left: 1px; padding-right: 1px'>" ;
-							print "<span title='Contact Priority'>CP</span>" ;
+						print "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>" ;
+							print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>" ._('Contact Priority') . "</div>" ;
 						print "</th>" ;
-						print "<th style='padding-left: 1px; padding-right: 1px'>" ;
-							print "<span title='Contact by Phone'>C</span>" ;
+						print "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>" ;
+							print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>" ._('Contact By Phone') . "</div>" ;
 						print "</th>" ;
-						print "<th style='padding-left: 1px; padding-right: 1px'>" ;
-							print "<span title='Contact by SMS'>S</span>" ;
+						print "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>" ;
+							print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>" ._('Contact By SMS') . "</div>" ;
 						print "</th>" ;
-						print "<th style='padding-left: 1px; padding-right: 1px'>" ;
-							print "<span title='Contact by Email'>E</span>" ;
+						print "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>" ;
+							print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>" ._('Contact By Email') . "</div>" ;
 						print "</th>" ;
-						print "<th style='padding-left: 1px; padding-right: 1px'>" ;
-							print "<span title='Contact by Mail'>M</span>" ;
+						print "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>" ;
+							print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>" ._('Contact By Mail') . "</div>" ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Actions") ;
@@ -642,9 +633,6 @@ else {
 						
 						//COLOR ROW BY STATUS!
 						print "<tr class=$rowNum>" ;
-							print "<td>" ;
-								printUserPhoto($guid, $adult["image_75"], 75) ;
-							print "</td>" ;
 							print "<td>" ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=" . $adult["gibbonPersonID"] . "'>" . formatName($adult["title"], $adult["preferredName"], $adult["surname"], "Parent") . "</a>" ;
 							print "</td>" ;
@@ -675,7 +663,7 @@ else {
 							print "<td>" ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_editAdult.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=" . $adult["gibbonPersonID"] . "&search=$search'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_deleteAdult.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=" . $adult["gibbonPersonID"] . "&search=$search'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/user_manage_password.php&gibbonPersonID=" . $adult["gibbonPersonID"] . "&search=$search'><img title='Change Password' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/key.png'/></a>" ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/user_manage_password.php&gibbonPersonID=" . $adult["gibbonPersonID"] . "&search=$search'><img title='" . _('Change Password') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/key.png'/></a>" ;
 							print "</td>" ;
 						print "</tr>" ;
 					}
@@ -688,13 +676,13 @@ else {
 					<tr class='break'>
 						<td colspan=2>
 							<h3>
-							Add Adult
+							<? print _('Add Adult') ?>
 							</h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Adult's Name *</b><br/>
+							<b><? print _('Adult\'s Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -725,8 +713,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Comment</b><br/>
-							<span style="font-size: 90%"><i>Data displayed in full Student Profile<br/>1000 character limit<br/></i></span>
+							<b><? print _('Comment') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Data displayed in full Student Profile') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<textarea name="comment2" id="comment2" rows=8 style="width: 300px"></textarea>
@@ -738,8 +726,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Data Access?</b><br/>
-							<span style="font-size: 90%"><i>Access data on family's children?</i></span>
+							<b><? print _('Data Access?') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Access data on family\'s children?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="childDataAccess" id="childDataAccess" style="width: 302px">
@@ -750,14 +738,14 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Contact Priority</b><br/>
-							<span style="font-size: 90%"><i>The order in which school should contact family members.</i></span>
+							<b><? print _('Contact Priority') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('The order in which school should contact family members.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactPriority" id="contactPriority" style="width: 302px">
-								<option value="1">1</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
+								<option value="1"><? print _('1') ?></option>
+								<option value="2"><? print _('2') ?></option>
+								<option value="3"><? print _('3') ?></option>
 							</select>
 							<script type="text/javascript">
 								/* Advanced Options Control */
@@ -793,8 +781,8 @@ else {
 					
 					<tr>
 						<td> 
-							<b>Call?</b><br/>
-							<span style="font-size: 90%"><i>Receive non-emergency phone calls from school?</i></span>
+							<b><? print _('Call?') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Receive non-emergency phone calls from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactCall" id="contactCall" style="width: 302px">
@@ -805,8 +793,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>SMS?</b><br/>
-							<span style="font-size: 90%"><i>Receive non-emergency SMS messages from school?</i></span>
+							<b><? print _('SMS?') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Receive non-emergency SMS messages from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactSMS" id="contactSMS" style="width: 302px">
@@ -817,8 +805,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Email?</b><br/>
-							<span style="font-size: 90%"><i>Receive non-emergency emails from school?</i></span>
+							<b><? print _('Email?') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Receive non-emergency emails from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactEmail" id="contactEmail" style="width: 302px">
@@ -829,8 +817,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Mail?</b><br/>
-							<span style="font-size: 90%"><i>Receive postage mail from school?</i></span>
+							<b><? print _('Mail?') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Receive postage mail from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactMail" id="contactMail" style="width: 302px">

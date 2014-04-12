@@ -51,7 +51,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Student *</b><br/>
+					<b><? print _('Student') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">

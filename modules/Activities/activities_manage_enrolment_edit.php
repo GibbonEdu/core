@@ -108,7 +108,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Student *</b><br/>
+							<b><? print _('Student') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">

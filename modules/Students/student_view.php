@@ -92,10 +92,10 @@ else {
 								print _("Name") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Year Group" ;
+								print _("Year Group") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Roll Group" ;
+								print _("Roll Group") ;
 							print "</th>" ;
 							print "<th>" ;
 								print _("Actions") ;
@@ -170,7 +170,7 @@ else {
 							<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/student_view.php">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<?
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view.php'>Clear Search</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view.php'>" . _('Clear Search') . "</a>" ;
 							?>
 							<input type="submit" value="<? print _("Submit") ; ?>">
 						</td>
@@ -221,10 +221,10 @@ else {
 							print _("Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Year Group" ;
+							print _("Year Group") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Roll Group" ;
+							print _("Roll Group") ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Actions") ;

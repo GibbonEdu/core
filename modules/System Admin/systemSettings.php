@@ -772,6 +772,54 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
+					<h3><? print _('gibbonedu.com Value-Added Services') ?></h3>
+				</td>
+			</tr>
+			<tr>
+				<?
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='gibboneduComOrganisationName'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><? print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+				</td>
+				<td class="right">
+					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print $row["value"] ?>" type="text" style="width: 300px">
+				</td>
+			</tr>
+			<tr>
+				<?
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='gibboneduComOrganisationKey'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><? print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+				</td>
+				<td class="right">
+					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print $row["value"] ?>" type="text" style="width: 300px">
+				</td>
+			</tr>
+			
+			<tr class='break'>
+				<td colspan=2> 
 					<h3><? print _('PayPal Payment Gateway') ?></h3>
 				</td>
 			</tr>

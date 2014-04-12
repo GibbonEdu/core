@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Application Form Settings</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Application Form Settings') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -61,7 +61,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>General Options</h3>
+					<h3><? print _('General Options') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -202,8 +202,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N">No</option>
-						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y">Yes</option>
+						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N"><? print _('N') ?></option>
+						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><? print _('Y') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -248,7 +248,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Notification Options</h3>
+					<h3><? print _('Notification Options') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -345,7 +345,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Required Documents Options</h3>
+					<h3><? print _('Required Documents Options') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -414,12 +414,12 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Language Learning Options</h3>
+					<h3><? print _('Language Learning Options') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2> 
-					<p>Set values for applicants to specify which language they wish to learn.</p>
+					<p><? print _('Set values for applicants to specify which language they wish to learn.') ?></p>
 				</td>
 			</tr>
 			<tr>

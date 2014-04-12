@@ -333,10 +333,10 @@ else {
 					print "<span style='font-size: 75%; font-style: italic'>(Current Year Only)</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Year Group" ;
+					print _("Year Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Roll Group" ;
+					print _("Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Actions") ;
