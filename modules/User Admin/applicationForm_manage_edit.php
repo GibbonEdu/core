@@ -78,7 +78,7 @@ else {
 					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="success1") {
-					$updateReturnMessage="Your request was completed successfully., but status could not be updated." ;	
+					$updateReturnMessage=_("Your request was completed successfully, but status could not be updated.") ;	
 				}
 				else if ($updateReturn=="success0") {
 					$updateReturnMessage=_("Your request was completed successfully.") ;	

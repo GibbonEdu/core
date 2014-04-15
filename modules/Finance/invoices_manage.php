@@ -503,7 +503,7 @@ else {
 								print "Roll Group</span>" ;
 							print "</th>" ;
 							print "<th style='width: 100px'>" ;
-								print "Status" ;
+								print _("Status") ;
 							print "</th>" ;
 							print "<th style='width: 90px'>" ;
 								print "Schedule" ;

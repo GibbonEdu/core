@@ -182,7 +182,7 @@ else {
 					print _("Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Status" ;
+					print _("Status") ;
 				print "</th>" ;
 				print "<th>" ;
 					print "Invoice To" ;

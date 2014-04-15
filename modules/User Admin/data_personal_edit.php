@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/data_personal_e
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/data_personal.php'>Personal Data Updates</a> > </div><div class='trailEnd'>Edit Request</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/data_personal.php'>" . _('Personal Data Updates') . "</a> > </div><div class='trailEnd'>" . _('Edit Request') . "</div>" ;
 	print "</div>" ;
 	
 	//Check if school year specified
@@ -76,7 +76,7 @@ else {
 					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="success1") {
-					$updateReturnMessage="Your request was completed successfully., but status could not be updated." ;	
+					$updateReturnMessage=_("Your request was completed successfully, but status could not be updated.") ;	
 				}
 				else if ($updateReturn=="success0") {
 					$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -95,16 +95,16 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print "Field" ;
+							print _("Field") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Current Value" ;
+							print _("Current Value") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "New Value" ;
+							print _("New Value") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Accept" ;
+							print _("Accept") ;
 						print "</th>" ;
 					print "</tr>" ;
 					
@@ -113,7 +113,7 @@ else {
 					//COLOR ROW BY STATUS!
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Title" ;
+							print _("Title") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["title"] ;
@@ -132,7 +132,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Surname" ;
+							print _("Surname") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["surname"] ;
@@ -151,7 +151,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "First Name" ;
+							print _("First Name") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["firstName"] ;
@@ -171,7 +171,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Preferred Names" ;
+							print _("Preferred Name") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["preferredName"] ;
@@ -191,7 +191,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Official Name" ;
+							print _("Official Name") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["officialName"] ;
@@ -211,7 +211,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Name In Characters" ;
+							print _("Name In Characters") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["nameInCharacters"] ;
@@ -231,7 +231,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Date of Birth" ;
+							print _("Date of Birth") ;
 						print "</td>" ;
 						print "<td>" ;
 							print dateConvertBack($guid, $row["dob"]) ;
@@ -251,7 +251,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Email" ;
+							print _("Email") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["email"] ;
@@ -271,7 +271,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Alternate Email" ;
+							print _("Alternate Email") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emailAlternate"] ;
@@ -291,7 +291,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Address 1" ;
+							print _("Address 1") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["address1"] ;
@@ -311,7 +311,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Address 1 District" ;
+							print _("Address 1 District") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["address1District"] ;
@@ -331,7 +331,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Address 1 Country" ;
+							print _("Address 1 Country") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["address1Country"] ;
@@ -351,7 +351,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Address 2" ;
+							print _("Address 2") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["address2"] ;
@@ -371,7 +371,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Address 2 District" ;
+							print _("Address 2 District") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["address2District"] ;
@@ -391,7 +391,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Address 2 Country" ;
+							print _("Address 2 Country") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["address2Country"] ;
@@ -418,7 +418,7 @@ else {
 						}
 						print "<tr class='$class'>" ;
 							print "<td>" ;
-								print "Phone $i Type" ;
+								print sprintf(_('Phone %1$s Type'), $i) ;
 							print "</td>" ;
 							print "<td>" ;
 								print $row["phone" . $i . "Type"] ;
@@ -443,7 +443,7 @@ else {
 						}
 						print "<tr class='$class'>" ;
 							print "<td>" ;
-								print "Phone $i Country Code" ;
+								print sprintf(_('Phone %1$s Country Code'), $i) ;
 							print "</td>" ;
 							print "<td>" ;
 								print $row["phone" . $i . "CountryCode"] ;
@@ -468,7 +468,7 @@ else {
 						}
 						print "<tr class='$class'>" ;
 							print "<td>" ;
-								print "Phone $i" ;
+								print _("Phone") . " " . $i ;
 							print "</td>" ;
 							print "<td>" ;
 								print $row["phone" . $i] ;
@@ -489,7 +489,7 @@ else {
 					}
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "First Language" ;
+							print _("First Language") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["languageFirst"] ;
@@ -509,7 +509,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Second Language" ;
+							print _("Second Language") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["languageSecond"] ;
@@ -529,7 +529,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Third Language" ;
+							print _("Third Language") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["languageThird"] ;
@@ -550,7 +550,7 @@ else {
 					
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Country of Birth" ;
+							print _("Country of Birth") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["countryOfBirth"] ;
@@ -570,7 +570,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Ethnicity" ;
+							print _("Ethnicity") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["ethnicity"] ;
@@ -590,7 +590,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Citizenship 1" ;
+							print _("Citizenship 1") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["citizenship1"] ;
@@ -610,7 +610,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Citizenship 1 Passport" ;
+							print _("Citizenship 1 Passport") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["citizenship1Passport"] ;
@@ -630,7 +630,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Citizenship 2" ;
+							print _("Citizenship 2") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["citizenship2"] ;
@@ -650,7 +650,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Citizenship 2 Passport" ;
+							print _("Citizenship 2 Passport") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["citizenship2Passport"] ;
@@ -670,7 +670,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Religion" ;
+							print _("Religion") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["religion"] ;
@@ -690,7 +690,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "National ID Card Number" ;
+							print _("National ID Card Number") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["nationalIDCardNumber"] ;
@@ -710,7 +710,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Residency Status" ;
+							print _("Residency Status") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["residencyStatus"] ;
@@ -730,7 +730,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Visa Expiry Date" ;
+							print _("Visa Expiry Date") ;
 						print "</td>" ;
 						print "<td>" ;
 							print dateConvertBack($guid, $row["visaExpiryDate"]) ;
@@ -750,7 +750,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Profession" ;
+							print _("Profession") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["profession"] ;
@@ -770,7 +770,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Employer" ;
+							print _("Employer") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["employer"] ;
@@ -790,7 +790,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Job Title" ;
+							print _("Job Title") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["jobTitle"] ;
@@ -810,7 +810,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Emergency 1 Name" ;
+							print _("Emergency 1 Name") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency1Name"] ;
@@ -830,7 +830,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Emergency 1 Number 1" ;
+							print _("Emergency 1 Number 1") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency1Number1"] ;
@@ -850,7 +850,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Emergency 1 Number 2" ;
+							print _("Emergency 1 Number 2") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency1Number2"] ;
@@ -870,7 +870,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Emergency 1 Relationship" ;
+							print _("Emergency 1 Relationship") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency1Relationship"] ;
@@ -890,7 +890,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Emergency 2 Name" ;
+							print _("Emergency 2 Name") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency2Name"] ;
@@ -910,7 +910,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Emergency 2 Number 1" ;
+							print _("Emergency 2 Number 1") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency2Number1"] ;
@@ -930,7 +930,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Emergency 2 Number 2" ;
+							print _("Emergency 2 Number 2") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency2Number2"] ;
@@ -950,7 +950,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Emergency 2 Relationship" ;
+							print _("Emergency 2 Relationship") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency2Relationship"] ;
@@ -970,7 +970,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Vehicle Registration" ;
+							print _("Vehicle Registration") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["vehicleRegistration"] ;
@@ -1013,7 +1013,7 @@ else {
 							if ($privacySetting=="Y" AND $privacyBlurb!="") {
 								print "<tr class='even'>" ;
 									print "<td>" ;
-										print "Image Privacy" ;
+										print _("Image Privacy") ;
 									print "</td>" ;
 									print "<td>" ;
 										print $row["privacy"] ;
@@ -1038,7 +1038,6 @@ else {
 					if ($privacySet==false) {
 						print "<input type=\"hidden\" name=\"newprivacyOn\" value=\"\">" ;
 					}
-					
 					
 					print "<tr>" ;
 							print "<td class='right' colspan=4>" ;

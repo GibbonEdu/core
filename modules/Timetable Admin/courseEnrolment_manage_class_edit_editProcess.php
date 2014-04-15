@@ -81,6 +81,7 @@ else {
 			else {
 				//Validate Inputs
 				$role=$_POST["role"] ;
+				$reportable=$_POST["reportable"] ;
 
 				if ($role=="") {
 					//Fail 3
@@ -90,8 +91,8 @@ else {
 				else {
 					//Write to database
 					try {
-						$data=array("role"=>$role, "gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonPersonID"=>$gibbonPersonID); 
-						$sql="UPDATE gibbonCourseClassPerson SET role=:role WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID" ;
+						$data=array("role"=>$role, "reportable"=>$reportable, "gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonPersonID"=>$gibbonPersonID); 
+						$sql="UPDATE gibbonCourseClassPerson SET role=:role, reportable=:reportable WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/data_family_edi
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/data_family.php'>Family Data Updates</a> > </div><div class='trailEnd'>Edit Request</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/data_family.php'>" . _('Family Data Updates') . "</a> > </div><div class='trailEnd'>" . _('Edit Request') . "</div>" ;
 	print "</div>" ;
 	
 	//Check if school year specified
@@ -76,7 +76,7 @@ else {
 					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="success1") {
-					$updateReturnMessage="Your request was completed successfully., but status could not be updated." ;	
+					$updateReturnMessage=_("Your request was completed successfully, but status could not be updated.") ;	
 				}
 				else if ($updateReturn=="success0") {
 					$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -95,16 +95,16 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print "Field" ;
+							print _("Field") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Current Value" ;
+							print _("Current Value") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "New Value" ;
+							print _("New Value") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Accept" ;
+							print _("Accept") ;
 						print "</th>" ;
 					print "</tr>" ;
 					
@@ -113,7 +113,7 @@ else {
 					//COLOR ROW BY STATUS!
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Address Name" ;
+							print _("Address Name") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["nameAddress"] ;
@@ -132,7 +132,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Home Address" ;
+							print _("Home Address") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["homeAddress"] ;
@@ -151,7 +151,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print "Home Address (District)" ;
+							print _("Home Address (District)") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["homeAddressDistrict"] ;
@@ -170,7 +170,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print "Home Address (Country)" ;
+							print _("Home Address (Country)") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["homeAddressCountry"] ;

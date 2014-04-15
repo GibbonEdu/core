@@ -216,7 +216,7 @@ else {
 							print "Student" ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Status" ;
+							print _("Status") ;
 						print "</th>" ;
 						print "<th>" ;
 							print "Timestamp" ;

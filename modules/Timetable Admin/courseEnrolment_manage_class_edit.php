@@ -247,6 +247,9 @@ else {
 								print _("Role") ;
 							print "</th>" ;
 							print "<th>" ;
+								print _("Reportable") ;
+							print "</th>" ;
+							print "<th>" ;
 								print _("Actions") ;
 							print "</th>" ;
 							print "<th>" ;
@@ -284,6 +287,9 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									print $row["role"] ;
+								print "</td>" ;
+								print "<td>" ;
+									print $row["reportable"] ;
 								print "</td>" ;
 								print "<td>" ;
 									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_class_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=" . $row["gibbonPersonID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;

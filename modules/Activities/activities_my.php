@@ -67,7 +67,7 @@ else {
 					print "Role" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Status" ;
+					print _("Status") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Actions") ;

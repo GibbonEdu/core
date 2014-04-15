@@ -102,7 +102,7 @@ else {
 					print "Gender" ;
 				print "</th>" ;
 				print "<th style='width: 100px'>" ;
-					print "Status" ;
+					print _("Status") ;
 				print "</th>" ;
 				print "<th style='width: 90px'>" ;
 					print "Schedule" ;

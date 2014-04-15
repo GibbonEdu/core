@@ -229,7 +229,7 @@ else {
 			
 			try {
 				$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonPersonID"=>$gibbonPersonID); 
-				$sql="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, role FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT role LIKE '%left' ORDER BY course, class" ;
+				$sql="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, role, gibbonCourseClassPerson.reportable FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT role LIKE '%left' ORDER BY course, class" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -272,6 +272,9 @@ else {
 								print _("Class Role") ;
 							print "</th>" ;
 							print "<th>" ;
+								print _("Reportable") ;
+							print "</th>" ;
+							print "<th>" ;
 								print _("Actions") ;
 							print "</th>" ;
 							print "<th>" ;
@@ -309,6 +312,9 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									print $row["role"] ;
+								print "</td>" ;
+								print "<td>" ;
+									print $row["reportable"] ;
 								print "</td>" ;
 								print "<td>" ;
 									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_edit.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
