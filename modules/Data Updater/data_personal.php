@@ -343,7 +343,7 @@ else {
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr class='break'>
 								<td colspan=2> 
-									<h3>Basic Information</h3>
+									<h3><? print _('Basic Information') ?></h3>
 								</td>
 							</tr>
 							<tr>
@@ -373,7 +373,7 @@ else {
 							<tr>
 								<td> 
 									<b>Surname<? if (isset($required["surname"])) { if ($required["surname"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i>Family name as shown in ID documents.</i></span>
+									<span style="font-size: 90%"><i><? print _('Family name as shown in ID documents.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="surname" id="surname" maxlength=30 value="<? print htmlPrep($row["surname"]) ?>" type="text" style="width: 300px">
@@ -391,7 +391,7 @@ else {
 							<tr>
 								<td> 
 									<b>First Name<? if (isset($required["firstName"])) { if ($required["firstName"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i>First name as shown in ID documents.</i></span>
+									<span style="font-size: 90%"><i><? print _('First name as shown in ID documents.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="firstName" id="firstName" maxlength=30 value="<? print htmlPrep($row["firstName"]) ?>" type="text" style="width: 300px">
@@ -409,7 +409,7 @@ else {
 							<tr>
 								<td> 
 									<b>Preferred Name<? if (isset($required["preferredName"])) { if ($required["preferredName"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i>Most common name, alias, nickname, etc.</i></span>
+									<span style="font-size: 90%"><i><? print _('Most common name, alias, nickname, etc.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="preferredName" id="preferredName" maxlength=30 value="<? print htmlPrep($row["preferredName"]) ?>" type="text" style="width: 300px">
@@ -427,7 +427,7 @@ else {
 							<tr>
 								<td> 
 									<b>Official Name<? if (isset($required["officialName"])) { if ($required["officialName"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i>Full name as shown in ID documents.</i></span>
+									<span style="font-size: 90%"><i><? print _('Full name as shown in ID documents.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="officialName" id="officialName" maxlength=150 value="<? print htmlPrep($row["officialName"]) ?>" type="text" style="width: 300px">
@@ -445,7 +445,7 @@ else {
 							<tr>
 								<td> 
 									<b>Name In Characters<? if (isset($required["nameInCharacters"])) { if ($required["nameInCharacters"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i>Chinese or other character-based name.</i></span>
+									<span style="font-size: 90%"><i><? print _('Chinese or other character-based name.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="<? print htmlPrep($row["nameInCharacters"]) ?>" type="text" style="width: 300px">
@@ -773,7 +773,7 @@ else {
 							<tr class='address'>
 								<td> 
 									<b>Address 1<? if (isset($required["address1"])) { if ($required["address1"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i><span style="font-size: 90%"><i>Unit, Building, Street</i></span></i></span>
+									<span style="font-size: 90%"><i><span style="font-size: 90%"><i><? print _('Unit, Building, Street') ?></i></span></i></span>
 								</td>
 								<td class="right">
 									<input name="address1" id="address1" maxlength=255 value="<? print htmlPrep($row["address1"]) ?>" type="text" style="width: 300px">
@@ -791,7 +791,7 @@ else {
 							<tr class='address'>
 								<td> 
 									<b>Address 1 District<? if (isset($required["address1District"])) { if ($required["address1District"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i>County, State, District</i></span>
+									<span style="font-size: 90%"><i><? print _('County, State, District') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="address1District" id="address1District" maxlength=30 value="<? print $row["address1District"] ?>" type="text" style="width: 300px">
@@ -907,7 +907,7 @@ else {
 							<tr class='address'>
 								<td> 
 									<b>Address 2<? if (isset($required["address2"])) { if ($required["address2"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i><span style="font-size: 90%"><i>Unit, Building, Street</i></span></i></span>
+									<span style="font-size: 90%"><i><span style="font-size: 90%"><i><? print _('Unit, Building, Street') ?></i></span></i></span>
 								</td>
 								<td class="right">
 									<input name="address2" id="address2" maxlength=255 value="<? print htmlPrep($row["address2"]) ?>" type="text" style="width: 300px">
@@ -925,7 +925,7 @@ else {
 							<tr class='address'>
 								<td> 
 									<b>Address 2 District<? if (isset($required["address2District"])) { if ($required["address2District"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i>County, State, District</i></span>
+									<span style="font-size: 90%"><i><? print _('County, State, District') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="address2District" id="address2District" maxlength=30 value="<? print $row["address2District"] ?>" type="text" style="width: 300px">
@@ -1000,7 +1000,7 @@ else {
 									<tr>
 										<td> 
 											<b>Phone <? print $i ?><? if (isset($required["phone" . $i])) { if ($required["phone" . $i]=="Y") { print " *" ; } } ?></b><br/>
-											<span style="font-size: 90%"><i>Type, country code, number</i></span>
+											<span style="font-size: 90%"><i><? print _('Type, country code, number.') ?></i></span>
 										</td>
 										<td class="right">
 											<input name="phone<? print $i ?>" id="phone<? print $i ?>" maxlength=20 value="<? print $row["phone" . $i] ?>" type="text" style="width: 160px">
@@ -1483,7 +1483,7 @@ else {
 									else {
 										print "<b>" . $_SESSION[$guid]["country"] . " Visa Expiry Date" . $star . "</b><br/>" ;
 									}
-									print "<span style='font-size: 90%'><i>dd/mm/yyyy. If relevant.</i></span>" ;
+									print "<span style='font-size: 90%'><i>Format " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . _('If relevant.') . "</i></span>" ;
 									?>
 								</td>
 								<td class="right">

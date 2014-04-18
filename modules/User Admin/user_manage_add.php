@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_add
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php'>Manage Users</a> > </div><div class='trailEnd'>Add User</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php'>" . _('Manage Users') . "</a> > </div><div class='trailEnd'>" . _('Add User') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -48,13 +48,13 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage="Your request failed because your passwords did not match." ;	
+			$addReturnMessage=_("Your request failed because your passwords did not match.") ;	
 		}
 		else if ($addReturn=="fail6") {
 			$addReturnMessage=_("Your request failed due to an attachment error.") ;	
 		}
 		else if ($addReturn=="fail7") {
-			$addReturnMessage="Your request failed because your password to not meet the minimum requirements for strength." ;	
+			$addReturnMessage=_("Your request failed because your password to not meet the minimum requirements for strength.") ;	
 		}
 		else if ($addReturn=="success0") {
 			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
@@ -75,28 +75,28 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Basic Information</h3>
+					<h3><? print _('Basic Information') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Title</b><br/>
+					<b><? print _('Title') ?></b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="title">
 						<option value=""></option>
-						<option value="Ms. ">Ms.</option>
-						<option value="Miss ">Miss</option>
-						<option value="Mr. ">Mr.</option>
-						<option value="Mrs. ">Mrs.</option>
-						<option value="Dr. ">Dr.</option>
+						<option value="Ms. "><? print _('Ms.') ?></option>
+						<option value="Miss "><? print _('Miss') ?></option>
+						<option value="Mr. "><? print _('Mr.') ?></option>
+						<option value="Mrs. "><? print _('Mrs.') ?></option>
+						<option value="Dr. "><? print _('Dr.') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Surname *</b><br/>
-					<span style="font-size: 90%"><i>Family name as shown in ID documents.</i></span>
+					<b><? print _('Surname') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('Family name as shown in ID documents.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
@@ -108,8 +108,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>First Name *</b><br/>
-					<span style="font-size: 90%"><i>First name as shown in ID documents.</i></span>
+					<b><? print _('First Name') ?>*</b><br/>
+					<span style="font-size: 90%"><i><? print _('First name as shown in ID documents.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
@@ -121,8 +121,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Preferred Name *</b><br/>
-					<span style="font-size: 90%"><i>Most common name, alias, nickname, etc.</i></span>
+					<b><? print _('Preferred Name') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('Most common name, alias, nickname, etc.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" style="width: 300px">
@@ -134,8 +134,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Official Name *</b><br/>
-					<span style="font-size: 90%"><i>Full name as shown in ID documents.</i></span>
+					<b><? print _('Official Name') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('Full name as shown in ID documents.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="officialName" id="officialName" maxlength=150 value="" type="text" style="width: 300px">
@@ -147,8 +147,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Name In Characters</b><br/>
-					<span style="font-size: 90%"><i>Chinese or other character-based name.</i></span>
+					<b><? print _('Name In Characters') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('Chinese or other character-based name.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="" type="text" style="width: 300px">
@@ -156,13 +156,13 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Gender *</b><br/>
+					<b><? print _('Gender') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="gender" id="gender" style="width: 302px">
 						<option value="Please select..."><? print _('Please select...') ?></option>
-						<option value="F">F</option>
-						<option value="M">M</option>
+						<option value="F"><? print _('Female') ?></option>
+						<option value="M"><? print _('Male') ?></option>
 					</select>
 					<script type="text/javascript">
 						var gender=new LiveValidation('gender');
@@ -172,7 +172,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Date of Birth</b><br/>
+					<b><? print _('Date of Birth') ?></b><br/>
 					<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
@@ -190,13 +190,13 @@ else {
 			</tr>
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>System Access</h3>
+					<h3><? print _('System Access') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Primary Role *</b><br/>
-					<span style="font-size: 90%"><i>Controls what a user can do and see.</i></span>
+					<b><? print _('Primary Role') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('Controls what a user can do and see.') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="gibbonRoleIDPrimary" id="gibbonRoleIDPrimary" style="width: 302px">
@@ -222,8 +222,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Username *</b><br/>
-					<span style="font-size: 90%"><i>Needs to be unique. System login name.</i></span>
+					<b><? print _('Username') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('Must be unique. System login name. Cannot be changed.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="username" id="username" maxlength=20 value="" type="text" style="width: 300px">
@@ -261,7 +261,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Password *</b><br/>
+					<b><? print _('Password') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -272,15 +272,15 @@ else {
 						<?
 						$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
 						if ($alpha=="Y") {
-							print "password.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"Does not meet password policy.\" } );" ;
+							print "password.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
 						}
 						$numeric=getSettingByScope( $connection2, "System", "passwordPolicyNumeric" ) ;
 						if ($numeric=="Y") {
-							print "password.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"Does not meet password policy.\" } );" ;
+							print "password.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
 						}
 						$punctuation=getSettingByScope( $connection2, "System", "passwordPolicyNonAlphaNumeric" ) ;
 						if ($punctuation=="Y") {
-							print "password.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"Does not meet password policy.\" } );" ;
+							print "password.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
 						}
 						$minLength=getSettingByScope( $connection2, "System", "passwordPolicyMinLength" ) ;
 						if (is_numeric($minLength)) {
@@ -292,7 +292,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Confirm Password *</b><br/>
+					<b><? print _('Confirm Password') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -306,50 +306,50 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Status *</b><br/>
-					<span style="font-size: 90%"><i>This determines visibility within the system.</i></span>
+					<b><? print _('Status') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('This determines visibility within the system.') ?></i></span>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="status">
-						<option value="Full">Full</option>
-						<option value="Expected">Expected</option>
-						<option value="Left">Left</option>
+						<option value="Full"><? print _('Full') ?></option>
+						<option value="Expected"><? print _('Expected') ?></option>
+						<option value="Left"><? print _('Left') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Can Login? *</b><br/>
+					<b><? print _('Can Login?') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="canLogin">
-						<option value="Y"><? print _('Y') ?></option>
-						<option value="N"><? print _('N') ?></option>
+						<option value="Y"><? print _('Yes') ?></option>
+						<option value="N"><? print _('No') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Force Reset Password? *</b><br/>
-					<span style="font-size: 90%"><i>User will be prompted on next login.</i></span>
+					<b><? print _('Force Reset Password?') ?> *</b><br/>
+					<span style="font-size: 90%"><i><? print _('User will be prompted on next login.') ?></i></span>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="passwordForceReset">
-						<option value="Y"><? print _('Y') ?></option>
-						<option value="N"><? print _('N') ?></option>
+						<option value="Y"><? print _('Yes') ?></option>
+						<option value="N"><? print _('No') ?></option>
 					</select>
 				</td>
 			</tr>
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Contact Information</h3>
+					<h3><? print _('Contact Information') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Email</b><br/>
+					<b><? print _('Email') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="email" id="email" maxlength=50 value="" type="text" style="width: 300px">
@@ -361,7 +361,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Alternate Email</b><br/>
+					<b><? print _('Alternate Email') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -375,11 +375,11 @@ else {
 			<tr>
 				<td colspan=2> 
 					<div class='warning'>
-						Address information for an individual only needs to be set under the following conditions:
+						<? print _('Address information for an individual only needs to be set under the following conditions:') ?>
 						<ol>
-							<li>If the user is not in a family.</li>
-							<li>If the user's family does not have a home address set.</li>
-							<li>If the user needs an address in addition to their family's home address.</li>
+							<li><? print _('If the user is not in a family.') ?></li>
+							<li><? print _('If the user\'s family does not have a home address set.') ?></li>
+							<li><? print _('If the user needs an address in addition to their family\'s home address.') ?></li>
 						</ol>
 					</div>
 				</td>
@@ -389,7 +389,7 @@ else {
 			?>
 			<tr>
 				<td> 
-					<b>Enter Personal Address?</b><br/>
+					<b><? print _('Enter Personal Address?') ?></b><br/>
 				</td>
 				<td class='right' colspan=2> 
 					<script type="text/javascript">
@@ -418,8 +418,8 @@ else {
 			</tr>
 			<tr class='address'>
 				<td> 
-					<b>Address 1</b><br/>
-					<span style="font-size: 90%"><i>Unit, Building, Street</i></span>
+					<b><? print _('Address 1') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('Unit, Building, Street') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="address1" id="address1" maxlength=255 value="" type="text" style="width: 300px">
@@ -427,8 +427,8 @@ else {
 			</tr>
 			<tr class='address'>
 				<td> 
-					<b>Address 1 District</b><br/>
-					<span style="font-size: 90%"><i>County, State, District</i></span>
+					<b><? print _('Address 1 District') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('County, State, District') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="address1District" id="address1District" maxlength=30 value="" type="text" style="width: 300px">
@@ -455,7 +455,7 @@ else {
 			</tr>
 			<tr class='address'>
 				<td> 
-					<b>Address 1 Country</b><br/>
+					<b><? print _('Address 1 Country') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="address1Country" id="address1Country" style="width: 302px">
@@ -477,8 +477,8 @@ else {
 			</tr>
 			<tr class='address'>
 				<td> 
-					<b>Address 2</b><br/>
-					<span style="font-size: 90%"><i>Unit, Building, Street</i></span>
+					<b><? print _('Address 2') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('Unit, Building, Street') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="address2" id="address2" maxlength=255 value="" type="text" style="width: 300px">
@@ -486,8 +486,8 @@ else {
 			</tr>
 			<tr class='address'>
 				<td> 
-					<b>Address 2 District</b><br/>
-					<span style="font-size: 90%"><i>County, State, District</i></span>
+					<b><? print _('Address 2 District') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('County, State, District') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="address2District" id="address2District" maxlength=30 value="" type="text" style="width: 300px">
@@ -514,7 +514,7 @@ else {
 			</tr>
 			<tr class='address'>
 				<td> 
-					<b>Address 2 Country</b><br/>
+					<b><? print _('Address 2 Country') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="address2Country" id="address2Country" style="width: 302px">
@@ -539,8 +539,8 @@ else {
 				?>
 				<tr>
 					<td> 
-						<b>Phone <? print $i ?></b><br/>
-						<span style="font-size: 90%"><i>Type, country code, number</i></span>
+						<b><? print _('Phone') ?> <? print $i ?></b><br/>
+						<span style="font-size: 90%"><i><? print _('Type, country code, number.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="phone<? print $i ?>" id="phone<? print $i ?>" maxlength=20 value="" type="text" style="width: 160px">
@@ -561,12 +561,12 @@ else {
 						</select>
 						<select style="width: 70px" name="phone<? print $i ?>Type">
 							<option value=""></option>
-							<option value="Mobile">Mobile</option>
-							<option value="Home">Home</option>
-							<option value="Work">Work</option>
-							<option value="Fax">Fax</option>
-							<option value="Pager">Pager</option>
-							<option value="Other">Other</option>
+							<option value="Mobile"><? print _('Mobile') ?></option>
+							<option value="Home"><? print _('Home') ?></option>
+							<option value="Work"><? print _('Work') ?></option>
+							<option value="Fax"><? print _('Fax') ?></option>
+							<option value="Pager"><? print _('Pager') ?></option>
+							<option value="Other"><? print _('Other') ?></option>
 						</select>
 						
 					</td>
@@ -576,8 +576,8 @@ else {
 			?>
 			<tr>
 				<td> 
-					<b>Website</b><br/>
-					<span style="font-size: 90%"><i>Include http://</i></span>
+					<b><? print _('Website') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('Include http://') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="website" id="website" maxlength=255 value="" type="text" style="width: 300px">
@@ -591,7 +591,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>School Information</h3>
+					<h3><? print _('School Information') ?></h3>
 				</td>
 			</tr>
 			<?
@@ -600,7 +600,7 @@ else {
 					?>
 					<tr>
 						<td> 
-							<b>Day Type</b><br/>
+							<b><? print _('Day Type') ?></b><br/>
 							<span style="font-size: 90%"><i><? print getSettingByScope($connection2, 'User Admin', 'dayTypeText') ; ?></i></span>
 						</td>
 						<td class="right">
@@ -620,7 +620,7 @@ else {
 				?>
 			<tr>
 				<td> 
-					<b>Last School</b><br/>
+					<b><? print _('Last School') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="lastSchool" id="lastSchool" maxlength=30 value="" type="text" style="width: 300px">
@@ -647,8 +647,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Start Date</b><br/>
-					<span style="font-size: 90%"><i>Student's first day at school.<br/>dd/mm/yyyy</i></span>
+					<b><? print _('Start Date') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('Users\'s first day at school.') ?><br/> Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 				</td>
 				<td class="right">
 					<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" style="width: 300px">
@@ -665,8 +665,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Class Of</b><br/>
-					<span style="font-size: 90%"><i>When is the student expected to graduate?</i></span>
+					<b><? print _('Class Of') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('When is the student expected to graduate?') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="gibbonSchoolYearIDClassOf" id="gibbonSchoolYearIDClassOf" style="width: 302px">
@@ -691,12 +691,12 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Background Information</h3>
+					<h3><? print _('Background Information') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>First Language</b><br/>
+					<b><? print _('First Language') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="languageFirst" id="languageFirst" maxlength=30 value="" type="text" style="width: 300px">
@@ -723,7 +723,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Second Language</b><br/>
+					<b><? print _('Second Language') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="languageSecond" id="languageSecond" maxlength=30 value="" type="text" style="width: 300px">
@@ -750,7 +750,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Third Language</b><br/>
+					<b><? print _('Third Language') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="languageThird" id="languageThird" maxlength=30 value="" type="text" style="width: 300px">
@@ -777,7 +777,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Country of Birth</b><br/>
+					<b><? print _('Country of Birth') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="countryOfBirth" id="countryOfBirth" style="width: 302px">
@@ -799,7 +799,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Ethnicity</b><br/>
+					<b><? print _('Ethnicity') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="ethnicity" id="ethnicity" style="width: 302px">
@@ -815,24 +815,24 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Religion</b><br/>
+					<b><? print _('Religion') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="religion" id="religion" style="width: 302px">
 						<option value=""></option>
-						<option value="Nonreligious/Agnostic/Atheist">Nonreligious/Agnostic/Atheist</option>
-						<option value="Buddhism">Buddhism</option>
-						<option value="Christianity">Christianity</option>
-						<option value="Hinduism">Hinduism</option>
-						<option value="Islam">Islam</option>
-						<option value="Judaism">Judaism</option>
-						<option value="Other">Other</option>	
+						<option value="Nonreligious/Agnostic/Atheist"><? print _('Nonreligious/Agnostic/Atheist') ?></option>
+						<option value="Buddhism"><? print _('Buddhism') ?></option>
+						<option value="Christianity"><? print _('Christianity') ?></option>
+						<option value="Hinduism"><? print _('Hinduism') ?></option>
+						<option value="Islam"><? print _('Islam') ?></option>
+						<option value="Judaism"><? print _('Judaism') ?></option>
+						<option value="Other"><? print _('Other') ?></option>	
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Citizenship 1</b><br/>
+					<b><? print _('Citizenship 1') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="citizenship1" id="countryOfBirth" style="width: 302px">
@@ -863,7 +863,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Citizenship 1 Passport Number</b><br/>
+					<b><? print _('Citizenship 1 Passport Number') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="" type="text" style="width: 300px">
@@ -871,7 +871,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Citizenship 2</b><br/>
+					<b><? print _('Citizenship 2') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="citizenship2" id="countryOfBirth" style="width: 302px">
@@ -902,7 +902,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Citizenship 2 Passport Number</b><br/>
+					<b><? print _('Citizenship 2 Passport Number') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="citizenship2Passport" id="citizenship2Passport" maxlength=30 value="" type="text" style="width: 300px">
@@ -912,10 +912,10 @@ else {
 				<td> 
 					<?
 					if ($_SESSION[$guid]["country"]=="") {
-						print "<b>National ID Card Number</b><br/>" ;
+						print "<b>" . _('National ID Card Number') . "</b><br/>" ;
 					}
 					else {
-						print "<b>" . $_SESSION[$guid]["country"] . " ID Card Number</b><br/>" ;
+						print "<b>" . $_SESSION[$guid]["country"] . " " . _('ID Card Number') . "</b><br/>" ;
 					}
 					?>
 				</td>
@@ -927,10 +927,10 @@ else {
 				<td> 
 					<?
 					if ($_SESSION[$guid]["country"]=="") {
-						print "<b>Residency/Visa Type</b><br/>" ;
+						print "<b>" . _('Residency/Visa Type') . "</b><br/>" ;
 					}
 					else {
-						print "<b>" . $_SESSION[$guid]["country"] . " Residency/Visa Type</b><br/>" ;
+						print "<b>" . $_SESSION[$guid]["country"] . " " . _('Residency/Visa Type') . "</b><br/>" ;
 					}
 					?>
 				</td>
@@ -938,7 +938,7 @@ else {
 					<?
 					$residencyStatusList=getSettingByScope($connection2, "User Admin", "residencyStatus") ;
 					if ($residencyStatusList=="") {
-						print "<input name='residencyStatus' id='residencyStatus' maxlength=30 value='" .$row["residencyStatus"] . "' type='text' style='width: 300px'>" ;
+						print "<input name='residencyStatus' id='residencyStatus' maxlength=30 value='' type='text' style='width: 300px'>" ;
 					}
 					else {
 						print "<select name='residencyStatus' id='residencyStatus' style='width: 302px'>" ;
@@ -956,12 +956,12 @@ else {
 				<td> 
 					<?
 					if ($_SESSION[$guid]["country"]=="") {
-						print "<b>Visa Expiry Date</b><br/>" ;
+						print "<b>" . _('Visa Expiry Date') . "</b><br/>" ;
 					}
 					else {
-						print "<b>" . $_SESSION[$guid]["country"] . " Visa Expiry Date</b><br/>" ;
+						print "<b>" . $_SESSION[$guid]["country"] . " " . _('Visa Expiry Date') . "</b><br/>" ;
 					}
-					print "<span style='font-size: 90%'><i>dd/mm/yyyy. If relevant.</i></span>" ;
+					print "<span style='font-size: 90%'><i>Format " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . _('If relevant.') . "</i></span>" ;
 					?>
 				</td>
 				<td class="right">
@@ -981,12 +981,12 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Employment</h3>
+					<h3><? print _('Employment') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Profession</b><br/>
+					<b><? print _('Profession') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="profession" id="profession" maxlength=30 value="" type="text" style="width: 300px">
@@ -994,7 +994,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Employer</b><br/>
+					<b><? print _('Employer') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="employer" id="employer" maxlength=30 value="" type="text" style="width: 300px">
@@ -1002,7 +1002,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Job Title</b><br/>
+					<b><? print _('Job Title') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="jobTitle" id="jobTitle" maxlength=30 value="" type="text" style="width: 300px">
@@ -1012,17 +1012,17 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Emergency Contacts</h3>
+					<h3><? print _('Emergency Contacts') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2> 
-					These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members. 
+					<? print _('These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.') ?> 
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Contact 1 Name</b><br/>
+					<b><? print _('Contact 1 Name') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="emergency1Name" id="emergency1Name" maxlength=30 value="" type="text" style="width: 300px">
@@ -1030,23 +1030,23 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Contact 1 Relationship</b><br/>
+					<b><? print _('Contact 1 Relationship') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="emergency1Relationship" id="emergency1Relationship" style="width: 302px">
 						<option></option>
-						<option value="Parent">Parent</option>
-						<option value="Spouse">Spouse</option>
-						<option value="Offspring">Offspring</option>
-						<option value="Friend">Friend</option>
-						<option value="Doctor">Doctor</option>
-						<option value="Other">Other</option>
+						<option value="Parent"><? print _('Parent') ?></option>
+						<option value="Spouse"><? print _('Spouse') ?></option>
+						<option value="Offspring"><? print _('Offspring') ?></option>
+						<option value="Friend"><? print _('Friend') ?></option>
+						<option value="Doctor"><? print _('Doctor') ?></option>
+						<option value="Other"><? print _('Other') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Contact 1 Number 1</b><br/>
+					<b><? print _('Contact 1 Number 1') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="emergency1Number1" id="emergency1Number1" maxlength=30 value="" type="text" style="width: 300px">
@@ -1054,7 +1054,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Contact 1 Number 2</b><br/>
+					<b><? print _('Contact 1 Number 2') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="emergency1Number2" id="emergency1Number2" maxlength=30 value="" type="text" style="width: 300px">
@@ -1062,7 +1062,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Contact 2 Name</b><br/>
+					<b><? print _('Contact 2 Name') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="emergency2Name" id="emergency2Name" maxlength=30 value="" type="text" style="width: 300px">
@@ -1070,23 +1070,23 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Contact 2 Relationship</b><br/>
+					<b><? print _('Contact 2 Relationship') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="emergency2Relationship" id="emergency2Relationship" style="width: 302px">
 						<option></option>
-						<option value="Parent">Parent</option>
-						<option value="Spouse">Spouse</option>
-						<option value="Offspring">Offspring</option>
-						<option value="Friend">Friend</option>
-						<option value="Doctor">Doctor</option>
-						<option value="Other">Other</option>
+						<option value="Parent"><? print _('Parent') ?></option>
+						<option value="Spouse"><? print _('Spouse') ?></option>
+						<option value="Offspring"><? print _('Offspring') ?></option>
+						<option value="Friend"><? print _('Friend') ?></option>
+						<option value="Doctor"><? print _('Doctor') ?></option>
+						<option value="Other"><? print _('Other') ?></option>
 					</select>	
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Contact 2 Number 1</b><br/>
+					<b><? print _('Contact 2 Number 1') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="emergency2Number1" id="emergency2Number1" maxlength=30 value="" type="text" style="width: 300px">
@@ -1094,7 +1094,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Contact 2 Number 2</b><br/>
+					<b><? print _('Contact 2 Number 2') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="" type="text" style="width: 300px">
@@ -1103,13 +1103,13 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Images</h3>
+					<h3><? print _('Images') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Medium Portrait</b><br/>
-					<span style="font-size: 90%"><i>240px by 320px</i></span>
+					<b><? print _('Medium Portrait') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('240px by 320px') ?></i></span>
 				</td>
 				<td class="right">
 					<input type="file" name="file1" id="file1"><br/><br/>
@@ -1121,8 +1121,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Small Portrait</b><br/>
-					<span style="font-size: 90%"><i>75px by 100px</i></span>
+					<b><? print _('Small Portrait') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('75px by 100px') ?></i></span>
 				</td>
 				<td class="right">
 					<input type="file" name="file2" id="file2"><br/><br/>
@@ -1138,13 +1138,12 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Misc</h3>
+					<h3><? print _('Miscellaneous') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>House</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<b><? print _('House') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="gibbonHouseID" id="gibbonHouseID" style="width: 302px">
@@ -1166,8 +1165,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Student ID</b><br/>
-					<span style="font-size: 90%"><i>If set, must be unqiue.</i></span>
+					<b><? print _('Student ID') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('If set, must be unqiue.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="studentID" id="studentID" maxlength=10 value="" type="text" style="width: 300px">
@@ -1175,7 +1174,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Transport</b><br/>
+					<b><? print _('Transport') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -1203,7 +1202,7 @@ else {
 			</script>
 			<tr>
 				<td> 
-					<b>Locker Number</b><br/>
+					<b><? print _('Locker Number') ?></b><br/>
 					<span style="font-size: 90%"></span>
 				</td>
 				<td class="right">
@@ -1212,7 +1211,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Vehicle Registration</b><br/>
+					<b><? print _('Vehicle Registration') ?></b><br/>
 					<span style="font-size: 90%"></span>
 				</td>
 				<td class="right">
@@ -1227,7 +1226,7 @@ else {
 				?>
 				<tr>
 					<td> 
-						<b>Privacy *</b><br/>
+						<b><? print _('Privacy') ?> *</b><br/>
 						<span style="font-size: 90%"><i><? print htmlPrep($privacyBlurb) ?><br/>
 						</i></span>
 					</td>

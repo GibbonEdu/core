@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_man
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage.php'>Manage Medical Forms</a> > </div><div class='trailEnd'>Add Medical Form</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage.php'>" . _('Manage Medical Forms') . "</a> > </div><div class='trailEnd'>" . _('Add Medical Form') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -45,7 +45,7 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage="Your request failed because the specified user already has a medical form record." ;
+			$addReturnMessage=_("Your request failed because the specified user already has a medical form record.") ;
 		}
 		else if ($addReturn=="success0") {
 			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
@@ -70,7 +70,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Person *</b><br/>
+					<b><? print _('Person') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="gibbonPersonID" id="gibbonPersonID">
@@ -101,7 +101,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Blood Type</b><br/>
+					<b><? print _('Blood Type') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -120,40 +120,35 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Long-Term Medication?</b><br/>
+					<b><? print _('Long-Term Medication?') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="longTermMedication">
 						<option value=""></option>
-						<option value="Y"><? print _('Y') ?></option>
-						<option value="N"><? print _('N') ?></option>
+						<option value="Y"><? print _('Yes') ?></option>
+						<option value="N"><? print _('No') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Medication Details</b><br/>
-					<span style="font-size: 90%"><i>1000 character limit</i></span>
+					<b><? print _('Medication Details') ?></b><br/>
 				</td>
 				<td class="right">
 					<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rows=8 style="width: 300px"></textarea>
-					<script type="text/javascript">
-						var longTermMedicationDetails=new LiveValidation('longTermMedicationDetails');
-						longTermMedicationDetails.add( Validate.Length, { maximum: 1000 } );
-					 </script>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Tetanus Within Last 10 Years?</b><br/>
+					<b><? print _('Tetanus Within Last 10 Years?') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="tetanusWithin10Years">
 						<option value=""></option>
-						<option value="Y"><? print _('Y') ?></option>
-						<option value="N"><? print _('N') ?></option>
+						<option value="Y"><? print _('Yes') ?></option>
+						<option value="N"><? print _('No') ?></option>
 					</select>
 				</td>
 			</tr>

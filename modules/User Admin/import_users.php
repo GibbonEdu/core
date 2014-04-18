@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/import_users.ph
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Sync Users</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Sync Users') . "</div>" ;
 	print "</div>" ;
 	
 	$step=NULL ;
@@ -46,17 +46,17 @@ else {
 	if ($step==1) {
 		?>
 		<h2>
-			Step 1 - Select CSV Files
+			<? print _('Step 1 - Select CSV Files') ?>
 		</h2>
 		<p>
-			This page allows you to import user data from a CSV file. The import includes all users, whether they be students, staff, parents or other. The system will take the import and set any existing users not present in the file to "Left", whilst importing new users into the system. New users will be assigned a random password, unless a default is set. Select the CSV file you wish to use for the synchronise operation.<br/>
+			<? print _('This page allows you to import user data from a CSV file. The import includes all users, whether they be students, staff, parents or other. The system will take the import and set any existing users not present in the file to "Left", whilst importing new users into the system. New users will be assigned a random password, unless a default is set. Select the CSV file you wish to use for the synchronise operation.') ?><br/>
 		</p>
 		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/import_users.php&step=2" ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
-						<b>CSV File *</b><br/>
-						<span style="font-size: 90%"><i>See Notes below for specification.</i></span>
+						<b><? print _('CSV File') ?> *</b><br/>
+						<span style="font-size: 90%"><i><? print _('See Notes below for specification.') ?></i></span>
 					</td>
 					<td class="right">
 						<input type="file" name="file" id="file" size="chars">
@@ -68,7 +68,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Field Delimiter *</b><br/>
+						<b><? print _('Field Delimiter') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<input type="text" style="width: 300px" name="fieldDelimiter" value="," maxlength=1>
@@ -80,7 +80,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>String Enclosure *</b><br/>
+						<b><? print _('String Enclosure') ?> *</b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -93,7 +93,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Default Password</b><br/>
+						<b><? print _('Default Password') ?></b><br/>
 						<span style="font-size: 90%"><i>If not set, random passwords will be used.</i></span>
 					</td>
 					<td class="right">
@@ -116,73 +116,73 @@ else {
 		
 		
 		<h4>
-			Notes
+			<? print _('Notes') ?>
 		</h4>
 		<ol>
-			<li style='color: #c00; font-weight: bold'>THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.</li>
-			<li>You may only submit CSV files.</li>
-			<li>Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).</li>
-			<li>Your import should only include those users whose status is set "Full" (e.g. current users).</li>
-			<li>The submitted file must have the following fields in the following order (* denotes required field): 
+			<li style='color: #c00; font-weight: bold'><? print _('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+			<li><? print _('You may only submit CSV files.') ?></li>
+			<li><? print _('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+			<li><? print _('Your import should only include those users whose status is set "Full" (e.g. current users).') ?></li>
+			<li><? print _('The submitted file must have the following fields in the following order (* denotes required field):') ?></li> 
 				<ol>
-					<li><b>Title</b> - e.g. Mr, Mrs, Dr,</li>
-					<li><b>Surname *</b> - family name</li>
-					<li><b>First Name *</b> - given name</li>
-					<li><b>Preferred Name *</b> - most common name, alias, nickname, handle, etc</li>
-					<li><b>Official Name *</b> - full name as shown in ID documents.</li>
-					<li><b>Gender *</b> - F or M</li>
-					<li><b>Username *</b> - must be unique</li>
-					<li><b>House</b> - house short name, as set in School Admin (must already exist)</li>
-					<li><b>DOB</b> - date of birth (yyyy-mm-dd)</li>
-					<li><b>Role</b> - Teacher, Support Staff, Student or Parent</li>
-					<li><b>Email</b></li>
-					<li><b>Image (75) - path from /uploads/ to small portrait image (75px by 100px)</b></li>
-					<li><b>Image (240)</b> - path from /uploads/ to medium portrait image (240px by 320px)</li>
-					<li><b>Address 1</b> - Unit, Building, Street</li>
-					<li><b>Address 1 (District)</b> - County, State, District</li>
-					<li><b>Address 1 (Country)</b></li>
-					<li><b>Address 2</b> - Unit, Building, Street</li>
-					<li><b>Address 2 (District)</b>< - County, State, District/li>
-					<li><b>Address 2 (Country)</b></li>
-					<li><b>Phone 1 (Type)</b> - Mobile, Home, Work, Fax, Page, Other</li>
-					<li><b>Phone 1 (Country Code)</b> - IDD code, without 00 or +</li>
-					<li><b>Phone 1</b> - no spaces or punctuation, just numbers</li>
-					<li><b>Phone 2 (Type)</b> - Mobile, Home, Work, Fax, Page, Other</li>
-					<li><b>Phone 2 (Country Code)</b> - IDD code, without 00 or +</li>
-					<li><b>Phone 2</b> - no spaces or punctuation, just numbers</li>
-					<li><b>Phone 3 (Type)</b> - Mobile, Home, Work, Fax, Page, Other</li>
-					<li><b>Phone 3 (Country Code)</b> - IDD code, without 00 or +</li>
-					<li><b>Phone 3</b> - no spaces or punctuation, just numbers</li>
-					<li><b>Phone 4 (Type)</b> - Mobile, Home, Work, Fax, Page, Other</li>
-					<li><b>Phone 4 (Country Code)</b> - IDD code, without 00 or +</li>
-					<li><b>Phone 4</b> - no spaces or punctuation, just numbers</li>
-					<li><b>Website</b> - must start with http:// or https://</li>
-					<li><b>First Language</b></li>
-					<li><b>Second Language</b></li>
-					<li><b>Profession</b> - for parents only</li>
-					<li><b>Employer</b> - for parents only</li>
-					<li><b>Job Title</b> - for parents only</li>
-					<li><b>Emergency Contact 1 (Name)</b> - for students and staff only</li>
-					<li><b>Emergency Contact 1 (Phone 1)</b> - for students and staff only</li>
-					<li><b>Emergency Contact 1 (Phone 2)</b> - for students and staff only</li>
-					<li><b>Emergency Contact 1 (Relationship)</b> - for students and staff only</li>
-					<li><b>Emergency Contact 2 (Name)</b> - for students and staff only</li>
-					<li><b>Emergency Contact 2 (Phone 1)</b> - for students and staff only</li>
-					<li><b>Emergency Contact 2 (Phone 2)</b> - for students and staff only</li>
-					<li><b>Emergency Contact 2 (Relationship)</b> - for students and staff only</li>
-					<li><b>Start Date</b> - yyyy-mm-dd</li>
-					<li><b>End Date</b> - yyyy-mm-dd</li>
-					<li><b>Name In Characters</b> - e.g. Chinese name.</li>
+					<li><b><? print _('Title') ?></b> - <? print _('e.g. Mr, Mrs, Dr') ?></li>
+					<li><b><? print _('Surname') ?> *</b> - <? print _('Family name') ?></li>
+					<li><b><? print _('First Name') ?> *</b> - <? print _('Given name') ?></li>
+					<li><b><? print _('Preferred Name') ?> *</b> - <? print _('Most common name, alias, nickname, handle, etc') ?></li>
+					<li><b><? print _('Official Name') ?> *</b> - <? print _('Full name as shown in ID documents.') ?></li>
+					<li><b><? print _('Gender') ?> *</b> - <? print _('F or M') ?></li>
+					<li><b><? print _('Username') ?> *</b> - <? print _('Must be unique') ?></li>
+					<li><b><? print _('House') ?></b> - <? print _('House short name, as set in School Admin. Must already exist).') ?>/li>
+					<li><b><? print _('DOB') ?></b> - <? print _('Date of birth') ?> (yyyy-mm-dd)</li>
+					<li><b><? print _('Role') ?></b> - <? print _('Teacher, Support Staff, Student or Parent') ?></li>
+					<li><b><? print _('Email') ?></b></li>
+					<li><b><? print _('Image (75)') ?></b> - <? print _('path from /uploads/ to small portrait image (75px by 100px)') ?></b></li>
+					<li><b><? print _('Image (240)') ?></b> - <? print _('path from /uploads/ to medium portrait image (240px by 320px)') ?></li>
+					<li><b><? print _('Address 1') ?></b> - <? print _('Unit, Building, Street') ?></li>
+					<li><b><? print _('Address 1 (District)') ?></b> - <? print _('County, State, District') ?></li>
+					<li><b><? print _('Address 1 (Country)') ?></b></li>
+					<li><b><? print _('Address 2') ?></b> - <? print _('Unit, Building, Street') ?></li>
+					<li><b><? print _('Address 2 (District)') ?></b>< - County, State, District') ?>/li>
+					<li><b><? print _('Address 2 (Country)') ?></b></li>
+					<li><b><? print _('Phone 1 (Type)') ?></b> - <? print _('Mobile, Home, Work, Fax, Page, Other') ?></li>
+					<li><b><? print _('Phone 1 (Country Code)') ?></b> - <? print _('IDD code, without 00 or +') ?></li>
+					<li><b><? print _('Phone 1<') ?></b> - <? print _('No spaces or punctuation, just numbers') ?></li>
+					<li><b><? print _('Phone 2 (Type)') ?></b> - <? print _('Mobile, Home, Work, Fax, Page, Other') ?></li>
+					<li><b><? print _('Phone 2 (Country Code)') ?></b> - <? print _('IDD code, without 00 or +') ?></li>
+					<li><b><? print _('Phone 2') ?></b> - <? print _('No spaces or punctuation, just numbers') ?></li>
+					<li><b><? print _('Phone 3 (Type)') ?></b> - <? print _('Mobile, Home, Work, Fax, Page, Other') ?></li>
+					<li><b><? print _('Phone 3 (Country Code)') ?></b> - <? print _('IDD code, without 00 or +') ?></li>
+					<li><b><? print _('Phone 3') ?></b> - <? print _('No spaces or punctuation, just numbers') ?></li>
+					<li><b><? print _('Phone 4 (Type)') ?></b> - <? print _('Mobile, Home, Work, Fax, Page, Other') ?></li>
+					<li><b><? print _('Phone 4 (Country Code)') ?></b> - <? print _('IDD code, without 00 or +') ?></li>
+					<li><b><? print _('Phone 4') ?></b> - <? print _('No spaces or punctuation, just numbers') ?></li>
+					<li><b><? print _('Website') ?></b> - <? print _('Must start with http:// or https://') ?></li>
+					<li><b><? print _('First Language') ?></b></li>
+					<li><b><? print _('Second Language') ?></b></li>
+					<li><b><? print _('Profession') ?></b> - <? print _('For parents only') ?></li>
+					<li><b><? print _('Employer') ?></b> - <? print _('For parents only') ?></li>
+					<li><b><? print _('Job Title') ?></b> - <? print _('For parents only') ?></li>
+					<li><b><? print _('Emergency 1 Name') ?></b> - <? print _('For students and staff only') ?></li>
+					<li><b><? print _('Emergency 1 Number 1') ?></b> - <? print _('For students and staff only') ?></li>
+					<li><b><? print _('Emergency 1 Number 2') ?></b> - <? print _('For students and staff only') ?></li>
+					<li><b><? print _('Emergency 1  Relationship') ?></b> - <? print _('For students and staff only') ?></li>
+					<li><b><? print _('Emergency 2 Name') ?></b> - <? print _('For students and staff only') ?></li>
+					<li><b><? print _('Emergency 2 Number 1') ?></b> - <? print _('For students and staff only') ?></li>
+					<li><b><? print _('Emergency 2 Number 2') ?></b> - <? print _('For students and staff only') ?></li>
+					<li><b><? print _('Emergency 2  Relationship') ?></b> - <? print _('For students and staff only') ?></li>
+					<li><b><? print _('Start Date') ?></b> - yyyy-mm-dd</li>
+					<li><b><? print _('End Date') ?></b> - yyyy-mm-dd</li>
+					<li><b><? print _('Name In Characters') ?></b> - <? print _('e.g. Chinese name') ?></li>
 				</ol>
 			</li>
-			<li>Do not include a header row in the CSV files.</li>
+			<li><? print _('Do not include a header row in the CSV files.') ?></li>
 		</ol>
 	<?
 	}
 	else if ($step==2) {
 		?>
 		<h2>
-			Step 2 - Data Check & Confirm
+			<? print _('Step 2 - Data Check & Confirm') ?>
 		</h2>
 		<?
 		
@@ -190,14 +190,14 @@ else {
 		if (($_FILES['file']['type']!="text/csv") AND ($_FILES['file']['type']!="text/comma-separated-values") AND ($_FILES['file']['type']!="text/x-comma-separated-values") AND ($_FILES['file']['type']!="application/vnd.ms-excel")) {
 			?>
 			<div class='error'>
-				Import cannot proceed, as the submitted file has a MIME-TYPE of "<? print $_FILES['file']['type'] ?>", and as such does not appear to be a CSV file.<br/>
+				<? print sprintf(_('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
 			</div>
 			<?
 		}
 		else if (($_POST["fieldDelimiter"]=="") OR ($_POST["stringEnclosure"]=="")) {
 			?>
 			<div class='error'>
-				Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.<br/>
+				<? print _('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
 			</div>
 			<?
 		}
@@ -206,7 +206,7 @@ else {
 			
 			//PREPARE TABLES
 			print "<h4>" ;
-				print "Prepare Database Tables" ;
+				print _("Prepare Database Tables") ;
 			print "</h4>" ;
 			//Lock tables
 			$lockFail=false ;
@@ -220,12 +220,12 @@ else {
 			}
 			if ($lockFail==true) {
 				print "<div class='error'>" ;
-					print "The database could not be locked for use." ;
+					print _("The database could not be locked for use.") ;
 				print "</div>" ;	
 			}
 			else if ($lockFail==false) {
 				print "<div class='success'>" ;
-					print "The database was successfully locked." ;
+					print _("The database was successfully locked.") ;
 				print "</div>" ;	
 			}	
 			
@@ -233,7 +233,7 @@ else {
 				//READ IN DATA
 				if ($proceed==true) {
 					print "<h4>" ;
-						print "File Import" ;
+						print _("File Import") ;
 					print "</h4>" ;
 					$importFail=false ;
 					$csvFile=$_FILES['file']['tmp_name'] ;
@@ -296,7 +296,7 @@ else {
 						}
 						else {
 							print "<div class='error'>" ;
-								print "User with username " . $data[7] . " had some information malformations." ;
+								print sprintf(_('User with username %1$s had some information malformations.'), $data[7]) ;
 							print "</div>" ;
 						}
 						$userCount++ ;
@@ -304,24 +304,24 @@ else {
 					fclose($handle);
 					if ($userSuccessCount==0) {
 						print "<div class='error'>" ;
-							print "No useful users were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted." ;
+							print _("No useful users were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
 					else if ($userSuccessCount<$userCount) {
 						print "<div class='error'>" ;
-							print "Some users could not be successfully read or used, so the import will be aborted." ;
+							print _("Some users could not be successfully read or used, so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
 					else if ($userSuccessCount==$userCount) {
 						print "<div class='success'>" ;
-							print "All users could be read and used, so the import will proceed." ;
+							print _("All users could be read and used, so the import will proceed.") ;
 						print "</div>" ;
 					}
 					else {
 						print "<div class='error'>" ;
-							print "An unknown error occured, so the import will be aborted.." ;
+							print _("An unknown error occured, so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
@@ -331,7 +331,7 @@ else {
 				if ($proceed==TRUE) {
 					//SET USERS NOT IN IMPORT TO LEFT
 					print "<h4>" ;
-						print "Set To Left" ;
+						print _("Set To Left") ;
 					print "</h4>" ;
 					$setLeftFail=FALSE ;
 					$usernameWhere="(" ; 
@@ -353,18 +353,18 @@ else {
 					
 					if ($setLeftFail==TRUE) {
 						print "<div class='error'>" ;
-							print "An error was encountered in setting users not in the import to Left" ;
+							print _("An error was encountered in setting users not in the import to Left") ;
 						print "</div>" ;
 					}
 					else {
 						print "<div class='success'>" ;
-							print "All users not in the import (except you) have been set to left." ;
+							print _("All users not in the import (except you) have been set to left.") ;
 						print "</div>" ;
 					}
 			
 					//CHECK USERS IN IMPORT FOR EXISTENCE, IF NOT EXIST, ADD THEM, IF THEY ARE UPDATE THEM
 					print "<h4>" ;
-						print "Update & Insert" ;
+						print _("Update & Insert") ;
 					print "</h4>" ;
 					foreach ($users AS $user) {
 						$userProceed=TRUE ;
@@ -380,7 +380,7 @@ else {
 						
 						if ($userProceed==FALSE) {
 							print "<div class='error'>" ;
-								print "There was an error locating user " . $user["username"] . "." ;
+								print _("There was an error locating user:") . " " . $user["username"] . "." ;
 							print "</div>" ;
 						}
 						else {
@@ -420,12 +420,12 @@ else {
 								//Spit out results
 								if ($updateUserFail==TRUE) {
 									print "<div class='error'>" ;
-										print "There was an error updating user " . $user["username"] . "." ;
+										print _("There was an error updating user:") . " " . $user["username"] . "." ;
 									print "</div>" ;
 								}
 								else {
 									print "<div class='success'>" ;
-										print "User " . $user["username"] . " was successfully updated." ;
+										print sprintf(_('User %1$s was successfully updated.'), $user["username"]) ;
 									print "</div>" ;
 								}
 							}
@@ -458,7 +458,7 @@ else {
 								
 								if ($role=="") {
 									print "<div class='error'>" ;
-										print "There was an error with the role of user " . $user["username"] . "." ;
+										print _("There was an error with the role of user:") . " " . $user["username"] . "." ;
 									print "</div>" ;
 								}
 								else {
@@ -476,19 +476,19 @@ else {
 									//Spit out results
 									if ($addUserFail==TRUE) {
 										print "<div class='error'>" ;
-											print "There was an error creating user " . $user["username"] . "." ;
+											print _("There was an error creating user:") . " " . $user["username"] . "." ;
 										print "</div>" ;
 									}
 									else {
 										print "<div class='success'>" ;
-											print "User " . $user["username"] . " was successfully created with password $password." ;
+											print sprintf(_('User %1$s was successfully created with password %2$s.'), $user["username"], $password) ;
 										print "</div>" ;
 									}
 								}
 							}
 							else {
 								print "<div class='error'>" ;
-									print "There was an error locating user " . $user["username"] . "." ;
+									print _("There was an error locating user:") . " " . $user["username"] . "." ;
 								print "</div>" ;
 							}	
 						}

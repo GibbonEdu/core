@@ -149,8 +149,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="reportable" id="reportable" style="width: 302px">
-								<option <? if ($row["reportable"]=="Y") {print "selected ";}?>value="Y"><? print _('Y') ?></option>
-								<option <? if ($row["reportable"]=="N") {print "selected ";}?>value="N"><? print _('N') ?></option>
+								<option <? if ($row["reportable"]=="Y") {print "selected ";}?>value="Y"><? print _('Yes') ?></option>
+								<option <? if ($row["reportable"]=="N") {print "selected ";}?>value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>

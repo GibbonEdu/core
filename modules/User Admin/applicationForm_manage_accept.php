@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/applicationForm_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Application Forms</a> > </div><div class='trailEnd'>Accept Application</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/applicationForm_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Application Forms') . "</a> > </div><div class='trailEnd'>" . _('Accept Application') . "</div>" ;
 	print "</div>" ;
 	
 	//Check if school year specified
@@ -57,7 +57,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "The selected application does not exist or has already been processed." ;
+				print _("The selected application does not exist or has already been processed.") ;
 			print "</div>" ;
 		}
 		else {
@@ -78,7 +78,7 @@ else {
 					$acceptReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($acceptReturn=="success1") {
-					$acceptReturnMessage="Your request was completed successfully., but status could not be updated." ;	
+					$acceptReturnMessage=_("Your request was completed successfully., but status could not be updated.") ;	
 				}
 				print "<div class='$class'>" ;
 					print $acceptReturnMessage;
@@ -98,7 +98,7 @@ else {
 			//Step 1
 			if ($step==1) {
 				print "<h3>" ;
-				print "Step $step" ;
+				print _("Step") . " $step" ;
 				print "</h3>" ;
 				
 				print "<div class='linkTop'>" ;
@@ -111,7 +111,7 @@ else {
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
-								<b>Are you sure you want to accept the application for <? print formatName("", $row["preferredName"], $row["surname"], "Student") ?>?</b><br/>
+								<b><? print sprintf(_('Are you sure you want to accept the application for %1$s?'), formatName("", $row["preferredName"], $row["surname"], "Student")) ?></b><br/>
 								<br/>
 								<?
 								$checkedStudent="" ;
@@ -119,49 +119,49 @@ else {
 									$checkedStudent="checked" ;
 								}
 								?>
-								<input <? print $checkedStudent ?> type='checkbox' name='informStudent'/> Automatically inform <u>student</u> of their Gibbon login details by email?<br/>
+								<input <? print $checkedStudent ?> type='checkbox' name='informStudent'/> <? print _('Automatically inform <u>student</u> of their Gibbon login details by email?') ?><br/>
 								<?
 								$checkedParents="" ;
 								if (getSettingByScope( $connection2, "Application Form", "notificationParentsDefault")=="On") {
 									$checkedParents="checked" ;
 								}
 								?>
-								<input <? print $checkedParents ?> type='checkbox' name='informParents'/> Automatically inform <u>parents</u> of their Gibbon login details by email?<br/>
+								<input <? print $checkedParents ?> type='checkbox' name='informParents'/> <? print _('Automatically inform <u>parents</u> of their Gibbon login details by email?') ?><br/>
 								
 								<br/>
-								<i><u>The system will perform the following actions:</u></i><br/>
+								<i><u><? print _('The system will perform the following actions:') ?></u></i><br/>
 								<ol>
-									<li>Create a Gibbon user account for the student.</li>
+									<li><? print _('Create a Gibbon user account for the student.') ?></li>
 									<?
 									if ($row["gibbonRollGroupID"]!="") {
-										print "<li>Enrol the student in the selected school year (as the student has been assigned to a roll group).</li>" ;
+										print "<li>" . _('Enrol the student in the selected school year (as the student has been assigned to a roll group).') . "</li>" ;
 									}
 									?>
-									<li>Save the student's payment preferences.</li>
+									<li><? print _('Save the student\'s payment preferences.') ?></li>
 									<?
 									if ($row["gibbonFamilyID"]!="") {
-										print "<li>Link the student to their family (who are already in Gibbon).</li>" ;
+										print "<li>" . _('Link the student to their family (who are already in Gibbon).') . "</li>" ;
 									}
 									else {
-										print "<li>Create a new family.</li>" ;
-										print "<li>Create user accounts for the parents.</li>" ;
-										print "<li>Link students and parents to the family.</li>" ;
+										print "<li>" . _('Create a new family.') . "</li>" ;
+										print "<li>" . _('Create user accounts for the parents.') . "</li>" ;
+										print "<li>" . _('Link student and parents to the family.') . "</li>" ;
 									}
 									?>
-									<li>Set the status of the application to Accepted.</li>
+									<li><? print _('Set the status of the application to "Accepted".') ?></li>
 								</ol>
 								<br/>
-								<i><u>But you may wish to manually do the following:</u></i><br/>
+								<i><u><? print _('But you may wish to manually do the following:') ?></u></i><br/>
 								<ol>
 									<?
 									if ($row["gibbonRollGroupID"]=="") {
-										print "<li>Enrol the student in the relevant academic year (this will not be done automatically, as the student has not been assigned to a roll group).</li>" ;
+										print "<li>" . _('Enrol the student in the relevant academic year (this will not be done automatically, as the student has not been assigned to a roll group).') . "</li>" ;
 									}
 									?>
-									<li>Create a medical record for the student.</li>
-									<li>Create an individual needs record for the student.</li>
-									<li>Create a note of the student's scholarship information outside of Gibbon.</li>
-									<li>Create a timetable for the student.</li>
+									<li><? print _('Create a medical record for the student.') ?></li>
+									<li><? print _('Create an individual needs record for the student.') ?></li>
+									<li><? print _('Create a note of the student\'s scholarship information outside of Gibbon.') ?></li>
+									<li><? print _('Create a timetable for the student.') ?></li>
 								</ol>
 							</td>
 						</tr>
@@ -179,7 +179,7 @@ else {
 			}
 			else if ($step==2) {
 				print "<h3>" ;
-				print "Step $step" ;
+				print _("Step") . " $step" ;
 				print "</h3>" ;
 				
 				print "<div class='linkTop'>" ;
@@ -306,19 +306,19 @@ else {
 				
 				if ($failStudent==TRUE) {
 					print "<div class='error'>" ;
-					print "Student could not be created!" ;
+					print _("Student could not be created!") ;
 					print "</div>" ;
 				}
 				else {
 					print "<h4>" ;
-					print "Student Details" ;
+					print _("Student Details") ;
 					print "</h4>" ;
 					print "<ul>" ;
 						print "<li><b>gibbonPersonID</b>: $gibbonPersonID</li>" ;
-						print "<li><b>Name</b>: " . formatName("", $row["preferredName"], $row["surname"], "Student") . "</li>" ;
-						print "<li><b>Email</b>: " . $row["email"] . "</li>" ;
-						print "<li><b>Username</b>: $username</li>" ;
-						print "<li><b>Password</b>: $password</li>" ;
+						print "<li><b>" . _('Name')  ."</b>: " . formatName("", $row["preferredName"], $row["surname"], "Student") . "</li>" ;
+						print "<li><b>" . _('Email') . "</b>: " . $row["email"] . "</li>" ;
+						print "<li><b>" . _('Username') . "</b>: $username</li>" ;
+						print "<li><b>" . _('Password') ."</b>: $password</li>" ;
 					print "</ul>" ;
 					
 					
@@ -333,7 +333,7 @@ else {
 						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 					}	
 					if ($resultDoc->rowCount()>0) {
-						$note="<p><b>Application Documents: </b><br/>" ;
+						$note="<p><b>" . _('Application Documents:') . " </b><br/>" ;
 						while ($rowDoc=$resultDoc->fetch()) {
 							$note.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowDoc["path"] . "'>" . $rowDoc["name"] . "</a><br/>" ;
 						}
@@ -372,7 +372,7 @@ else {
 						//Report back
 						if ($enrolmentOK==false) {
 							print "<div class='warning'>" ;
-							print "Student could not be enrolled, so this will have to be done manually at a later date." ;
+							print _("Student could not be enrolled, so this will have to be done manually at a later date.") ;
 							print "</div>" ;
 						}
 						else {
@@ -380,7 +380,7 @@ else {
 							print "Student Enrolment" ;
 							print "</h4>" ;
 							print "<ul>" ;
-								print "<li>The student has successfully been enrolled in the specified school year, year group and roll group.</li>" ;
+								print "<li>" . _('The student has successfully been enrolled in the specified school year, year group and roll group.') . "</li>" ;
 							print "</ul>" ;
 						}
 					}
@@ -395,6 +395,7 @@ else {
 						$companyEmail=$row["companyEmail"] ;
 						$companyPhone=$row["companyPhone"] ;
 						$companyAll=$row["companyAll"] ;
+						$gibbonFinanceFeeCategoryIDList=NULL ;
 						if ($companyAll=="N") {
 							$gibbonFinanceFeeCategoryIDList="" ;
 							$gibbonFinanceFeeCategoryIDArray=explode(",",$row["gibbonFinanceFeeCategoryIDList"]) ;
@@ -429,7 +430,7 @@ else {
 					
 					if ($paymentOK==false) {
 						print "<div class='warning'>" ;
-						print "Student payment details could not be saved, but we will continue, as this is a minor issue." ;
+						print _("Student payment details could not be saved, but we will continue, as this is a minor issue.") ;
 						print "</div>" ;
 					}
 					
@@ -545,17 +546,17 @@ else {
 						
 						if ($failFamily==TRUE) {
 							print "<div class='warning'>" ;
-							print "Student could not be linked to family!" ;
+							print _("Student could not be linked to family!") ;
 							print "</div>" ;
 						}
 						else {
 							print "<h4>" ;
-							print "Family" ;
+							print _("Family") ;
 							print "</h4>" ;
 							print "<ul>" ;
 								print "<li><b>gibbonFamilyID</b>: " . $row["gibbonFamilyID"] . "</li>" ;
-								print "<li><b>Family Name</b>: $familyName </li>" ;
-								print "<li><b>Roles</b>: System has tried to assign parents \"Parent\" role access if they did not already have it.</li>" ;
+								print "<li><b>" . _('Family Name') . "</b>: $familyName </li>" ;
+								print "<li><b>" . _('Roles') . "</b>: " . _('System has tried to assign parents "Parent" role access if they did not already have it.') . "</li>" ;
 							print "</ul>" ;
 						}
 					}
@@ -630,17 +631,17 @@ else {
 
 						if ($failFamily==TRUE) {
 							print "<div class='error'>" ;
-							print "Family could not be created!" ;
+							print _("Family could not be created!") ;
 							print "</div>" ;
 						}
 						else {
 							print "<h4>" ;
-							print "Family Details" ;
+							print _("Family Details") ;
 							print "</h4>" ;
 							print "<ul>" ;
 								print "<li><b>gibbonFamilyID</b>: $gibbonFamilyID</li>" ;
-								print "<li><b>Family Name</b>: $familyName</li>" ;
-								print "<li><b>Address Name</b>: $nameAddress</li>" ;
+								print "<li><b>" . _('Family Name') . "</b>: $familyName</li>" ;
+								print "<li><b>" . _('Address Name') . "</b>: $nameAddress</li>" ;
 							print "</ul>" ;
 							
 							//LINK STUDENT INTO FAMILY
@@ -679,7 +680,7 @@ else {
 								
 								if ($failFamily==TRUE) {
 									print "<div class='warning'>" ;
-									print "Student could not be linked to family!" ;
+									print _("Student could not be linked to family!") ;
 									print "</div>" ;
 								}
 							}
@@ -692,9 +693,9 @@ else {
 								print "Parent 1" ;
 								print "</h4>" ;
 								print "<ul>" ;
-									print "<li>Parent 1 already exists in Gibbon, and so does not need a new account.</li>" ;
+									print "<li>" . _('Parent 1 already exists in Gibbon, and so does not need a new account.') . "</li>" ;
 									print "<li><b>gibbonPersonID</b>: $gibbonPersonIDParent1</li>" ;
-									print "<li><b>Name</b>: " . formatName("", $row["parent1preferredName"], $row["parent1surname"], "Parent") . "</li>" ;
+									print "<li><b>" . _('Name') . "</b>: " . formatName("", $row["parent1preferredName"], $row["parent1surname"], "Parent") . "</li>" ;
 								print "</ul>" ;
 								
 								//LINK PARENT 1 INTO FAMILY
@@ -732,7 +733,7 @@ else {
 									
 									if ($failFamily==TRUE) {
 										print "<div class='warning'>" ;
-										print "Parent 1 could not be linked to family!" ;
+										print _("Parent 1 could not be linked to family!") ;
 										print "</div>" ;
 									}
 								}
@@ -841,19 +842,19 @@ else {
 								
 								if ($failParent1==TRUE) {
 									print "<div class='error'>" ;
-									print "Parent 1 could not be created!" ;
+									print _("Parent 1 could not be created!") ;
 									print "</div>" ;
 								}
 								else {
 									print "<h4>" ;
-									print "Parent 1" ;
+									print _("Parent 1") ;
 									print "</h4>" ;
 									print "<ul>" ;
 										print "<li><b>gibbonPersonID</b>: $gibbonPersonIDParent1</li>" ;
-										print "<li><b>Name</b>: " . formatName("", $row["parent1preferredName"], $row["parent1surname"], "Parent") . "</li>" ;
-										print "<li><b>Email</b>: " . $row["parent1email"] . "</li>" ;
-										print "<li><b>Username</b>: $username</li>" ;
-										print "<li><b>Password</b>: $password</li>" ;
+										print "<li><b>" . _('Name') . "</b>: " . formatName("", $row["parent1preferredName"], $row["parent1surname"], "Parent") . "</li>" ;
+										print "<li><b>" . _('Email') . "</b>: " . $row["parent1email"] . "</li>" ;
+										print "<li><b>" . _('Username') . "</b>: $username</li>" ;
+										print "<li><b>" . _('Password') . "</b>: $password</li>" ;
 									print "</ul>" ;
 									
 									//LINK PARENT 1 INTO FAMILY
@@ -891,7 +892,7 @@ else {
 										
 										if ($failFamily==TRUE) {
 											print "<div class='warning'>" ;
-											print "Parent 1 could not be linked to family!" ;
+											print _("Parent 1 could not be linked to family!") ;
 											print "</div>" ;
 										}
 										
@@ -1004,19 +1005,19 @@ else {
 
 								if ($failParent2==TRUE) {
 									print "<div class='error'>" ;
-									print "Parent 2 could not be created!" ;
+									print _("Parent 2 could not be created!") ;
 									print "</div>" ;
 								}
 								else {
 									print "<h4>" ;
-									print "Parent 2" ;
+									print _("Parent 2") ;
 									print "</h4>" ;
 									print "<ul>" ;
 										print "<li><b>gibbonPersonID</b>: $gibbonPersonIDParent2</li>" ;
-										print "<li><b>Name</b>: " . formatName("", $row["parent2preferredName"], $row["parent2surname"], "Parent") . "</li>" ;
-										print "<li><b>Email</b>: " . $row["parent2email"] . "</li>" ;
-										print "<li><b>Username</b>: $username</li>" ;
-										print "<li><b>Password</b>: $password</li>" ;
+										print "<li><b>" . _('Name') . "</b>: " . formatName("", $row["parent2preferredName"], $row["parent2surname"], "Parent") . "</li>" ;
+										print "<li><b>" . _('Email') . "</b>: " . $row["parent2email"] . "</li>" ;
+										print "<li><b>" . _('Username') . "</b>: $username</li>" ;
+										print "<li><b>" . _('Password') . "</b>: $password</li>" ;
 									print "</ul>" ;
 									
 									
@@ -1055,7 +1056,7 @@ else {
 										
 										if ($failFamily==TRUE) {
 											print "<div class='warning'>" ;
-											print "Parent 2 could not be linked to family!" ;
+											print _("Parent 2 could not be linked to family!") ;
 											print "</div>" ;
 										}
 										
@@ -1078,15 +1079,15 @@ else {
 					//SEND INFORM STUDENT EMAIL
 					if ($informStudent=="Y") {
 						print "<h4>" ;
-						print "Student Welcome Email" ;
+						print _("Student Welcome Email") ;
 						print "</h4>" ;
 						$notificationStudentMessage=getSettingByScope( $connection2, "Application Form", "notificationStudentMessage" ) ;
 						foreach ($informStudentArray AS $informStudentEntry) {
 							if ($informStudentEntry["email"]!="" AND $informStudentEntry["surname"]!="" AND $informStudentEntry["preferredName"]!="" AND $informStudentEntry["username"]!="" AND $informStudentEntry["password"]) {
 								$to=$informStudentEntry["email"];
-								$subject="Welcome to " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationNameShort"] ;
+								$subject=sprintf(_('Welcome to %1$s at %2$s'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationNameShort"]) ;
 								if ($notificationStudentMessage!="" ) {
-									$body="Dear " . formatName("", $informStudentEntry["preferredName"], $informStudentEntry["surname"], "Student") . ",\n\nWelcome to " . $_SESSION[$guid]["systemName"] . ", " . $_SESSION[$guid]["organisationNameShort"] . "'s system for managing school information. You can access the system by going to " . $_SESSION[$guid]["absoluteURL"] . " and logging with your new username (" . $informStudentEntry["username"] . ") and password (" . $informStudentEntry["password"] . ").\n\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\n\n$notificationStudentMessage\n\nPlease feel free to reply to this email should you have any questions.\n\n" . $_SESSION[$guid]["organisationAdministratorName"] . ",\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
+									$body=sprintf(_('Dear %1$s,\n\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging with your new username (%5$s) and password (%6$s).\n\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\n\n'), formatName("", $informStudentEntry["preferredName"], $informStudentEntry["surname"], "Student"), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["absoluteURL"], $informStudentEntry["username"], $informStudentEntry["password"]) . $notificationParentsMessage . sprintf(_('\n\nPlease feel free to reply to this email should you have any questions.\n\n%1$s,\n\n%2$s Administrator'), $_SESSION[$guid]["organisationAdministratorName"], $_SESSION[$guid]["systemName"]);
 								}
 								else {
 									$body="Dear " . formatName("", $informStudentEntry["preferredName"], $informStudentEntry["surname"], "Student") . ",\n\nWelcome to " . $_SESSION[$guid]["systemName"] . ", " . $_SESSION[$guid]["organisationNameShort"] . "'s system for managing school information. You can access the system by going to " . $_SESSION[$guid]["absoluteURL"] . " and logging with your new username (" . $informStudentEntry["username"] . ") and password (" . $informStudentEntry["password"] . ").\n\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\n\nPlease feel free to reply to this email should you have any questions.\n\n" . $_SESSION[$guid]["organisationAdministratorName"] . ",\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
@@ -1095,12 +1096,12 @@ else {
 
 								if (mail($to, $subject, $body, $headers)) {
 									print "<div class='success'>" ;
-										print "A welcome email was successfully sent to " . formatName("", $informStudentEntry["preferredName"], $informStudentEntry["surname"], "Student") . "." ;
+										print _("A welcome email was successfully sent to") . " " . formatName("", $informStudentEntry["preferredName"], $informStudentEntry["surname"], "Student") . "." ;
 									print "</div>" ;
 								}
 								else {
 									print "<div class='error'>" ;
-										print "A welcome email could not be sent to " . formatName("", $informStudentEntry["preferredName"], $informStudentEntry["surname"], "Student") . "." ;
+										print _("A welcome email could not be sent to") . " " . formatName("", $informStudentEntry["preferredName"], $informStudentEntry["surname"], "Student") . "." ;
 									print "</div>" ;
 								}
 							}
@@ -1116,23 +1117,23 @@ else {
 						foreach ($informParentsArray AS $informParentsEntry) {
 							if ($informParentsEntry["email"]!="" AND $informParentsEntry["surname"]!="" AND $informParentsEntry["preferredName"]!="" AND $informParentsEntry["username"]!="" AND $informParentsEntry["password"]) {
 								$to=$informParentsEntry["email"];
-								$subject="Welcome to " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationNameShort"] ;
+								$subject=sprintf(_('Welcome to %1$s at %2$s'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationNameShort"]) ;
 								if ($notificationParentsMessage!="" ) {
-									$body="Dear " . formatName("", $informParentsEntry["preferredName"], $informParentsEntry["surname"], "Student") . ",\n\nWelcome to " . $_SESSION[$guid]["systemName"] . ", " . $_SESSION[$guid]["organisationNameShort"] . "'s system for managing school information. You can access the system by going to " . $_SESSION[$guid]["absoluteURL"] . " and logging with your new username (" . $informParentsEntry["username"] . ") and password (" . $informParentsEntry["password"] . "). You can learn more about using " . $_SESSION[$guid]["systemName"] . " on the official support website (http://gibbonedu.org/support/parents).\n\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\n\n$notificationParentsMessage\n\nPlease feel free to reply to this email should you have any questions.\n\n" . $_SESSION[$guid]["organisationAdministratorName"] . ",\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
+									$body=sprintf(_('Dear %1$s,\n\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (http://gibbonedu.org/support/parents).\n\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\n\n'), formatName("", $informParentsEntry["preferredName"], $informParentsEntry["surname"], "Student"), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["absoluteURL"], $informParentsEntry["username"], $informParentsEntry["password"], $_SESSION[$guid]["systemName"]) . $notificationParentsMessage . sprintf(_('\n\nPlease feel free to reply to this email should you have any questions.\n\n%1$s,\n\n%2$s Administrator'), $_SESSION[$guid]["organisationAdministratorName"], $_SESSION[$guid]["systemName"]);
 								}
 								else {
-									$body="Dear " . formatName("", $informParentsEntry["preferredName"], $informParentsEntry["surname"], "Student") . ",\n\nWelcome to " . $_SESSION[$guid]["systemName"] . ", " . $_SESSION[$guid]["organisationNameShort"] . "'s system for managing school information. You can access the system by going to " . $_SESSION[$guid]["absoluteURL"] . " and logging with your new username (" . $informParentsEntry["username"] . ") and password (" . $informParentsEntry["password"] . "). You can learn more about using " . $_SESSION[$guid]["systemName"] . " on the official support website (http://gibbonedu.org/support/parents).\n\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\n\nPlease feel free to reply to this email should you have any questions.\n\n" . $_SESSION[$guid]["organisationAdministratorName"] . ",\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
+									$body=sprintf(_('Dear %1$s,\n\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (http://gibbonedu.org/support/parents).\n\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\n\n'), formatName("", $informParentsEntry["preferredName"], $informParentsEntry["surname"], "Student"), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["absoluteURL"], $informParentsEntry["username"], $informParentsEntry["password"], $_SESSION[$guid]["systemName"]) . sprintf(_('\n\nPlease feel free to reply to this email should you have any questions.\n\n%1$s,\n\n%2$s Administrator'), $_SESSION[$guid]["organisationAdministratorName"], $_SESSION[$guid]["systemName"]);
 								}
 								$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
 
 								if (mail($to, $subject, $body, $headers)) {
 									print "<div class='success'>" ;
-										print "A welcome email was successfully sent to " . formatName("", $informParentsEntry["preferredName"], $informParentsEntry["surname"], "Student") . "." ;
+										print _("A welcome email was successfully sent to") . " " . formatName("", $informParentsEntry["preferredName"], $informParentsEntry["surname"], "Student") . "." ;
 									print "</div>" ;
 								}
 								else {
 									print "<div class='error'>" ;
-										print "A welcome email could not be sent to " . formatName("", $informParentsEntry["preferredName"], $informParentsEntry["surname"], "Student") . "." ;
+										print _("A welcome email could not be sent to") . " " . formatName("", $informParentsEntry["preferredName"], $informParentsEntry["surname"], "Student") . "." ;
 									print "</div>" ;
 								}
 							}
@@ -1154,26 +1155,26 @@ else {
 					
 					if ($failStatus==true) {
 						print "<div class='error'>" ;
-						print "Student status could not be updated...student is in the system, but acceptance has failed." ;
+						print _("Student status could not be updated:student is in the system, but acceptance has failed.") ;
 						print "</div>" ;
 					}
 					else {
 						print "<h4>" ;
-						print "Application Status" ;
+						print _("Application Status") ;
 						print "</h4>" ;
 						print "<ul>" ;
-							print "<li><b>Status</b>: Accepted</li>" ;
+							print "<li><b>" . _('Status') . "</b>: ".  _('Accepted') . "</li>" ;
 						print "</ul>" ;
 						
 						print "<div class='success' style='margin-bottom: 20px'>" ;
-						print "Applicant has been successfully accepted into ICHK. <i><u>You may wish to now do the following:</u></i><br/>" ;
+						print _("Applicant has been successfully accepted into ICHK.") . " <i><u>" . _('You may wish to now do the following:') . "</u></i><br/>" ;
 						print "<ol>" ;
-							print "<li>Enrol the student in the relevant academic year.</li>" ;
-							print "<li>Create a medical record for the student.</li>" ;
-							print "<li>Create an individual needs record for the student.</li>" ;
-							print "<li>Create a note of the student's scholarship information outside of Gibbon.</li>" ;
-							print "<li>Create a timetable for the student.</li>" ;
-							print "<li>Inform the student and their parents of their Gibbon login details (if this was not done automatically).</li>" ;
+							print "<li>" . _('Enrol the student in the relevant academic year.') . "</li>" ;
+							print "<li>" . _('Create a medical record for the student.') . "</li>" ;
+							print "<li>" . _('Create an individual needs record for the student.') . "</li>" ;
+							print "<li>" . _('Create a note of the student\'s scholarship information outside of Gibbon.') . "</li>" ;
+							print "<li>" . _('Create a timetable for the student.') . "</li>" ;
+							print "<li>" . _('Inform the student and their parents of their Gibbon login details (if this was not done automatically).') . "</li>" ;
 						print "</ol>" ;
 						print "</div>" ;
 					}

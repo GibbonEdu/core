@@ -258,8 +258,8 @@ else {
 								</td>
 								<td class="right">
 									<select name="active" id="active" style="width: 302px">
-										<option <? if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><? print _('Y') ?></option>
-										<option <? if ($row["active"]=="N") { print "selected" ; } ?> value="N"><? print _('N') ?></option>
+										<option <? if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><? print _('Yes') ?></option>
+										<option <? if ($row["active"]=="N") { print "selected" ; } ?> value="N"><? print _('No') ?></option>
 									</select>
 								</td>
 							</tr>

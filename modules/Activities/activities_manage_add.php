@@ -71,7 +71,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Basic Information</h3>
+					<h3><? print _('Basic Information') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -146,8 +146,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="active" id="active" style="width: 302px">
-						<option value="Y"><? print _('Y') ?></option>
-						<option value="N"><? print _('N') ?></option>
+						<option value="Y"><? print _('Yes') ?></option>
+						<option value="N"><? print _('No') ?></option>
 					</select>
 				</td>
 			</tr>

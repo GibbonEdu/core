@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_man
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage.php'>Manage Medical Forms</a> > </div><div class='trailEnd'>Edit Medical Form</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage.php'>" . _('Manage Medical Forms') . "</a> > </div><div class='trailEnd'>" . _('Edit Medical Form') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -110,7 +110,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Person *</b><br/>
+							<b><? print _('Person') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -129,7 +129,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Blood Type</b><br/>
+							<b><? print _('Blood Type') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -148,7 +148,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Long-Term Medication?</b><br/>
+							<b><? print _('Long-Term Medication?') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -161,27 +161,21 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Medication Details</b><br/>
-							<span style="font-size: 90%"><i>1000 character limit</i></span>
+							<b><? print _('Medication Details') ?></b><br/>
 						</td>
 						<td class="right">
 							<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rows=8 style="width: 300px"><? print $row["longTermMedicationDetails"] ?></textarea>
-							<script type="text/javascript">
-								var longTermMedicationDetails=new LiveValidation('longTermMedicationDetails');
-								longTermMedicationDetails.add( Validate.Length, { maximum: 1000 } );
-							 </script>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Tetanus Within Last 10 Years?</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<b><? print _('Tetanus Within Last 10 Years?') ?></b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="tetanusWithin10Years">
 								<option <? if ($row["tetanusWithin10Years"]=="") {print "selected ";}?>value=""></option>
-								<option <? if ($row["tetanusWithin10Years"]=="Y") {print "selected ";}?>value="Y">Y</option>
-								<option <? if ($row["tetanusWithin10Years"]=="N") {print "selected ";}?>value="N">N</option>
+								<option <? if ($row["tetanusWithin10Years"]=="Y") {print "selected ";}?>value="Y"><? print _('Yes') ?></option>
+								<option <? if ($row["tetanusWithin10Years"]=="N") {print "selected ";}?>value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>						
@@ -200,7 +194,7 @@ else {
 			<?
 			
 			print "<h2>" ;
-			print "Medical Conditions" ;
+			print _("Medical Conditions") ;
 			print "</h2>" ;
 			
 			try {
@@ -229,16 +223,16 @@ else {
 							print _("Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Risk" ;
+							print _("Risk") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Details" ;
+							print _("Details") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Medication" ;
+							print _("Medication") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Comment" ;
+							print _("Comment") ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Actions") ;
@@ -266,19 +260,19 @@ else {
 							print "</td>" ;
 							print "<td>" ;
 								if ($row["triggers"]!="") {
-									print "<b>Triggers:</b> " . $row["triggers"] . "<br/>" ;
+									print "<b>" . _('Triggers') . ":</b> " . $row["triggers"] . "<br/>" ;
 								}
 								if ($row["reaction"]!="") {
-									print "<b>Reaction:</b> " . $row["reaction"] . "<br/>" ;
+									print "<b>" . _('Reaction') . ":</b> " . $row["reaction"] . "<br/>" ;
 								}
 								if ($row["response"]!="") {
-									print "<b>Response:</b> " . $row["response"] . "<br/>" ;
+									print "<b>" . _('Response') . ":</b> " . $row["response"] . "<br/>" ;
 								}
 								if ($row["lastEpisode"]!="") {
-									print "<b>Last Episode:</b> " . dateConvertBack($guid, $row["lastEpisode"]) . "<br/>" ;
+									print "<b>" . _('Last Episode') . ":</b> " . dateConvertBack($guid, $row["lastEpisode"]) . "<br/>" ;
 								}
 								if ($row["lastEpisodeTreatment"]!="") {
-									print "<b>Last Episode Treatment:</b> " . $row["lastEpisodeTreatment"] . "<br/>" ;
+									print "<b>" . _('Last Episode Treatment') . ":</b> " . $row["lastEpisodeTreatment"] . "<br/>" ;
 								}
 							print "</td>" ;
 							print "<td>" ;

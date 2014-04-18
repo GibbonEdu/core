@@ -970,11 +970,11 @@ else {
 												print $rowFamily["homeAddress"] ;
 											print "</td>" ;
 											print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-												print "<span style='font-size: 115%; font-weight: bold'>Home Address District</span><br/>" ;
+												print "<span style='font-size: 115%; font-weight: bold'>Home Address (District)</span><br/>" ;
 												print $rowFamily["homeAddressDistrict"] ;
 											print "</td>" ;
 											print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-												print "<span style='font-size: 115%; font-weight: bold'>Home Address Country</span><br/>" ;
+												print "<span style='font-size: 115%; font-weight: bold'>Home Address (Country)</span><br/>" ;
 												print $rowFamily["homeAddressCountry"] ;
 											print "</td>" ;
 										print "</tr>" ;

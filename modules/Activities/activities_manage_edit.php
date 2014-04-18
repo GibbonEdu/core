@@ -127,7 +127,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>Basic Information</h3>
+							<h3><? print _('Basic Information') ?></h3>
 						</td>
 					</tr>
 					<tr>

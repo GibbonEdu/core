@@ -136,8 +136,8 @@ else {
 						<td class="right">
 							<select style="width: 302px" name="active">
 								<?
-								print "<option value='Y'>" . _('Y') . "</option>" ;
-								print "<option value='N'>" . _('N') . "</option>" ;
+								print "<option value='Y'>" . _('Yes') . "</option>" ;
+								print "<option value='N'>" . _('No') . "</option>" ;
 								?>				
 							</select>
 						</td>

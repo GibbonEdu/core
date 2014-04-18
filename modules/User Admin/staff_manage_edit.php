@@ -186,8 +186,8 @@ else {
 						<td class="right">
 							<select style="width: 302px" name="firstAidQualified" id="firstAidQualified" class="firstAidQualified">
 								<option <? if ($row["firstAidQualified"]=="") { print "selected" ; } ?> value=""></option>
-								<option <? if ($row["firstAidQualified"]=="Y") { print "selected" ; } ?> value="Y"><? print _('Y') ?></option>
-								<option <? if ($row["firstAidQualified"]=="N") { print "selected" ; } ?> value="N"><? print _('N') ?></option>
+								<option <? if ($row["firstAidQualified"]=="Y") { print "selected" ; } ?> value="Y"><? print _('Yes') ?></option>
+								<option <? if ($row["firstAidQualified"]=="N") { print "selected" ; } ?> value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>

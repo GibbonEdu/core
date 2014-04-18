@@ -97,7 +97,7 @@ else {
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
 					<td> 
-						<b>Search For</b><br/>
+						<b><? print _('Search For') ?></b><br/>
 						<span style="font-size: 90%"><i>Billing schedule name.</i></span>
 					</td>
 					<td class="right">

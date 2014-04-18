@@ -121,8 +121,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="childDataAccess" id="childDataAccess" style="width: 302px">
-								<option <? if ($row["childDataAccess"]=="Y") { print "selected ";} ?>value="Y"><? print _('Y') ?></option>
-								<option <? if ($row["childDataAccess"]=="N") { print "selected ";} ?>value="N"><? print _('N') ?></option>
+								<option <? if ($row["childDataAccess"]=="Y") { print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
+								<option <? if ($row["childDataAccess"]=="N") { print "selected ";} ?>value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -177,8 +177,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="contactCall" id="contactCall" style="width: 302px">
-								<option <? if ($row["contactCall"]=="Y") { print "selected ";} ?>value="Y"><? print _('Y') ?></option>
-								<option <? if ($row["contactCall"]=="N") { print "selected ";} ?>value="N"><? print _('N') ?></option>
+								<option <? if ($row["contactCall"]=="Y") { print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
+								<option <? if ($row["contactCall"]=="N") { print "selected ";} ?>value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -189,8 +189,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="contactSMS" id="contactSMS" style="width: 302px">
-								<option <? if ($row["contactSMS"]=="Y") { print "selected ";} ?>value="Y"><? print _('Y') ?></option>
-								<option <? if ($row["contactSMS"]=="N") { print "selected ";} ?>value="N"><? print _('N') ?></option>
+								<option <? if ($row["contactSMS"]=="Y") { print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
+								<option <? if ($row["contactSMS"]=="N") { print "selected ";} ?>value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -201,8 +201,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="contactEmail" id="contactEmail" style="width: 302px">
-								<option <? if ($row["contactEmail"]=="Y") { print "selected ";} ?>value="Y"><? print _('Y') ?></option>
-								<option <? if ($row["contactEmail"]=="N") { print "selected ";} ?>value="N"><? print _('N') ?></option>
+								<option <? if ($row["contactEmail"]=="Y") { print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
+								<option <? if ($row["contactEmail"]=="N") { print "selected ";} ?>value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -213,8 +213,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="contactMail" id="contactMail" style="width: 302px">
-								<option <? if ($row["contactMail"]=="Y") { print "selected ";} ?>value="Y"><? print _('Y') ?></option>
-								<option <? if ($row["contactMail"]=="N") { print "selected ";} ?>value="N"><? print _('N') ?></option>
+								<option <? if ($row["contactMail"]=="Y") { print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
+								<option <? if ($row["contactMail"]=="N") { print "selected ";} ?>value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>

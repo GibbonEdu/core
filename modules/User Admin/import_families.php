@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/import_studentE
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Sync Families</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>". _('Sync Families') . "</div>" ;
 	print "</div>" ;
 	
 	$step=NULL ;
@@ -46,17 +46,17 @@ else {
 	if ($step==1) {
 		?>
 		<h2>
-			Step 1 - Select CSV Files
+			<? print _('Step 1 - Select CSV Files') ?>
 		</h2>
 		<p>
-			This page allows you to import student enrolment data from a CSV file. The import includes all current students, giving their school year and roll group. The system will remove all enrolments in the current year, and add those provided in the import file. Select the CSV file you wish to use for the synchronise operation.<br/>
+			<? print _('This page allows you to import student enrolment data from a CSV file. The import includes all current students, giving their school year and roll group. The system will remove all enrolments in the current year, and add those provided in the import file. Select the CSV file you wish to use for the synchronise operation.') ?><br/>
 		</p>
 		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/import_families.php&step=2" ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
-						<b>Family CSV File *</b><br/>
-						<span style="font-size: 90%"><i>See Notes below for specification.</i></span>
+						<b><? print _('Family CSV File') ?> *</b><br/>
+						<span style="font-size: 90%"><i><? print _('See Notes below for specification.') ?></i></span>
 					</td>
 					<td class="right">
 						<input type="file" name="fileFamily" id="fileFamily" size="chars">
@@ -68,8 +68,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Parent CSV File *</b><br/>
-						<span style="font-size: 90%"><i>See Notes below for specification.</i></span>
+						<b><? print _('Parent CSV File') ?> *</b><br/>
+						<span style="font-size: 90%"><i><? print _('See Notes below for specification.') ?></i></span>
 					</td>
 					<td class="right">
 						<input type="file" name="fileParent" id="fileParent" size="chars">
@@ -81,8 +81,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Child CSV File *</b><br/>
-						<span style="font-size: 90%"><i>See Notes below for specification.</i></span>
+						<b><? print _('Child CSV File') ?> *</b><br/>
+						<span style="font-size: 90%"><i><? print _('See Notes below for specification.') ?></i></span>
 					</td>
 					<td class="right">
 						<input type="file" name="fileChild" id="fileChild" size="chars">
@@ -95,7 +95,7 @@ else {
 				
 				<tr>
 					<td> 
-						<b>Field Delimiter *</b><br/>
+						<b><? print _('Field Delimiter') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<input type="text" style="width: 300px" name="fieldDelimiter" value="," maxlength=1>
@@ -107,7 +107,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>String Enclosure *</b><br/>
+						<b><? print _('String Enclosure') ?> *</b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -132,46 +132,46 @@ else {
 		</form>
 		
 		<h4>
-			Notes
+			<? print _('Notes') ?>
 		</h4>
 		<ol>
-			<li style='color: #c00; font-weight: bold'>THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.</li>
-			<li>You may only submit CSV files.</li>
-			<li>Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).</li>
-			<li>Your import should only include all current students.</li>
-			<li>The submitted <b><u>family file</u></b> must have the following fields in the following order (* denotes required field): 
+			<li style='color: #c00; font-weight: bold'><? print _('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+			<li><? print _('You may only submit CSV files.') ?></li>
+			<li><? print _('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+			<li><? print _('Your import should only include all current students.') ?></li>
+			<li><? print _('The submitted <b><u>family file</u></b> must have the following fields in the following order (* denotes required field)') ?>: 
 				<ol>
-					<li><b>Family Sync Key *</b> - unique ID for family, according to source system.</li>
-					<li><b>Name *</b> - name by which family is known.</li>
-					<li><b>Address Name</b> - name to appear on written communication to family.</li>
-					<li><b>Home Address</b> - Unit, Building, Street, etc.</li>
-					<li><b>Home Address (District)</b> - County, State, District, etc.</li>
-					<li><b>Home Address (Country)</b></li>
-					<li><b>Marital Status</b> - Married, Separated, Divorced, De Facto or Other</li>
-					<li><b>Home Language</b></li>
+					<li><b><? print _('Family Sync Key') ?> *</b> - <? print _('Unique ID for family, according to source system.') ?></li>
+					<li><b><? print _('Name') ?> *</b> - <? print _('Name by which family is known.') ?></li>
+					<li><b><? print _('Address Name') ?></b> - <? print _('Name to appear on written communication to family.') ?></li>
+					<li><b><? print _('Home Address') ?></b> - <? print _('Unit, Building, Street') ?></li>
+					<li><b><? print _('Home Address (District)') ?></b> - <? print _('County, State, District') ?></li>
+					<li><b><? print _('Home Address (Country)') ?></b></li>
+					<li><b><? print _('Marital Status') ?></b> - <? print _('Married, Separated, Divorced, De Facto or Other') ?></li>
+					<li><b><? print _('Home Language') ?></b></li>
 				</ol>
 			</li>
-			<li>The submitted <b><u>parent file</u></b> must have the following fields in the following order (* denotes required field): 
+			<li><? print _('The submitted <b><u>parent file</u></b> must have the following fields in the following order (* denotes required field):') ?> 
 				<ol>
-					<li><b>Family Sync Key *</b> - unique ID for family, according to source system.</li>
-					<li><b>Username *</b> - parent username.</li>
-					<li><b>Contact Priority *</b> - 1, 2 or 3 (each family needs one and only one 1).</li>
+					<li><b><? print _('Family Sync Key') ?> *</b> - <? print _('Unique ID for family, according to source system.') ?></li>
+					<li><b><? print _('Username') ?> *</b> - <? print _('Parent username') ?>.</li>
+					<li><b><? print _('Contact Priority') ?> *</b> - <? print _('1, 2 or 3 (each family needs one and only one 1).') ?></li>
 				</ol>
 			</li>
-			<li>The submitted <b><u>child file</u></b> must have the following fields in the following order (* denotes required field): 
+			<li><? print _('The submitted <b><u>child file</u></b> must have the following fields in the following order (* denotes required field):') ?> 
 				<ol>
-					<li><b>Family Sync Key *</b> - unique ID for family, according to source system.</li>
-					<li><b>Username *</b> - child username.</li>
+					<li><b><? print _('Family Sync Key') ?> *</b> - <? print _('Unique ID for family, according to source system.') ?></li>
+					<li><b><? print _('Username') ?> *</b> - <? print _('Child username.') ?></li>
 				</ol>
 			</li>
-			<li>Do not include a header row in the CSV files.</li>
+			<li><? print _('Do not include a header row in the CSV files.') ?></li>
 		</ol>
 	<?
 	}
 	else if ($step==2) {
 		?>
 		<h2>
-			Step 2 - Data Check & Confirm
+			<? print _('Step 2 - Data Check & Confirm') ?>
 		</h2>
 		<?
 		
@@ -180,28 +180,28 @@ else {
 		if (($_FILES['fileFamily']['type']!="text/csv") AND ($_FILES['fileFamily']['type']!="text/comma-separated-values") AND ($_FILES['fileFamily']['type']!="text/x-comma-separated-values") AND ($_FILES['fileFamily']['type']!="application/vnd.ms-excel")) {
 			?>
 			<div class='error'>
-				Import cannot proceed, as the submitted family file has a MIME-TYPE of "<? print $_FILES['fileFamily']['type'] ?>", and as such does not appear to be a CSV file.<br/>
+				<? print sprintf(_('Import cannot proceed, as the submitted family file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileFamily']['type']) ?><br/>
 			</div>
 			<?
 		}
 		else if (($_FILES['fileParent']['type']!="text/csv") AND ($_FILES['fileParent']['type']!="text/comma-separated-values") AND ($_FILES['fileParent']['type']!="text/x-comma-separated-values") AND ($_FILES['fileParent']['type']!="application/vnd.ms-excel")) {
 			?>
 			<div class='error'>
-				Import cannot proceed, as the submitted parent file has a MIME-TYPE of "<? print $_FILES['fileParent']['type'] ?>", and as such does not appear to be a CSV file.<br/>
+				<? print sprintf(_('Import cannot proceed, as the submitted parent file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileParent']['type']) ?><br/>
 			</div>
 			<?
 		}
 		else if (($_FILES['fileChild']['type']!="text/csv") AND ($_FILES['fileChild']['type']!="text/comma-separated-values") AND ($_FILES['fileChild']['type']!="text/x-comma-separated-values") AND ($_FILES['fileChild']['type']!="application/vnd.ms-excel")) {
 			?>
 			<div class='error'>
-				Import cannot proceed, as the submitted parent file has a MIME-TYPE of "<? print $_FILES['fileChild']['type'] ?>", and as such does not appear to be a CSV file.<br/>
+				<? print sprintf(_('Import cannot proceed, as the submitted parent file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileChild']['type']) ?><br/>
 			</div>
 			<?
 		}
 		else if (($_POST["fieldDelimiter"]=="") OR ($_POST["stringEnclosure"]=="")) {
 			?>
 			<div class='error'>
-				Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.<br/>
+				<? print _('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
 			</div>
 			<?
 		}
@@ -210,7 +210,7 @@ else {
 			
 			//PREPARE TABLES
 			print "<h4>" ;
-				print "Prepare Database Tables" ;
+				print _("Prepare Database Tables") ;
 			print "</h4>" ;
 			//Lock tables
 			$lockFail=false ;
@@ -224,12 +224,12 @@ else {
 			}
 			if ($lockFail==true) {
 				print "<div class='error'>" ;
-					print "The database could not be locked for use." ;
+					print _("The database could not be locked for use.") ;
 				print "</div>" ;	
 			}
 			else if ($lockFail==false) {
 				print "<div class='success'>" ;
-					print "The database was successfully locked." ;
+					print _("The database was successfully locked.") ;
 				print "</div>" ;	
 			}	
 			
@@ -237,7 +237,7 @@ else {
 				//READ IN DATA
 				if ($proceed==true) {
 					print "<h4>" ;
-						print "File Import" ;
+						print _("File Import") ;
 					print "</h4>" ;
 					$importFail=false ;
 					
@@ -261,7 +261,7 @@ else {
 						}
 						else {
 							print "<div class='error'>" ;
-								print "Family with sync key " . $data[0] . " had some information malformations." ;
+								print sprintf(_('Family with sync key %1$s had some information malformations.'), $data[0]) ;
 							print "</div>" ;
 						}
 						$familyCount++ ;
@@ -269,24 +269,24 @@ else {
 					fclose($handle);
 					if ($familySuccessCount==0) {
 						print "<div class='error'>" ;
-							print "No useful families were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted." ;
+							print _("No useful families were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
 					else if ($familySuccessCount<$familyCount) {
 						print "<div class='error'>" ;
-							print "Some families could not be successfully read or used, so the import will be aborted." ;
+							print _("Some families could not be successfully read or used, so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
 					else if ($familySuccessCount==$familyCount) {
 						print "<div class='success'>" ;
-							print "All families could be read and used, so the import will proceed." ;
+							print _("All families could be read and used, so the import will proceed.") ;
 						print "</div>" ;
 					}
 					else {
 						print "<div class='error'>" ;
-							print "An unknown family error occured, so the import will be aborted.." ;
+							print _("An unknown family error occured, so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
@@ -306,7 +306,7 @@ else {
 						}
 						else {
 							print "<div class='error'>" ;
-								print "Parent with username " . $data[1] . " had some information malformations." ;
+								print sprintf(_('Parent with username %1$s had some information malformations.'), $data[1]) ;
 							print "</div>" ;
 						}
 						$parentCount++ ;
@@ -314,24 +314,24 @@ else {
 					fclose($handle);
 					if ($parentSuccessCount==0) {
 						print "<div class='error'>" ;
-							print "No useful parents were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted." ;
+							print _("No useful parents were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
 					else if ($parentSuccessCount<$parentCount) {
 						print "<div class='error'>" ;
-							print "Some parents could not be successfully read or used, so the import will be aborted." ;
+							print _("Some parents could not be successfully read or used, so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
 					else if ($parentSuccessCount==$parentCount) {
 						print "<div class='success'>" ;
-							print "All parents could be read and used, so the import will proceed." ;
+							print _("All parents could be read and used, so the import will proceed.") ;
 						print "</div>" ;
 					}
 					else {
 						print "<div class='error'>" ;
-							print "An unknown parent error occured, so the import will be aborted.." ;
+							print _("An unknown parent error occured, so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
@@ -351,7 +351,7 @@ else {
 						}
 						else {
 							print "<div class='error'>" ;
-								print "Child with username " . $data[1] . " had some information malformations." ;
+								print sprintf(_('Child with username %1$s had some information malformations.'), $data[1]) ;
 							print "</div>" ;
 						}
 						$childCount++ ;
@@ -359,24 +359,24 @@ else {
 					fclose($handle);
 					if ($childSuccessCount==0) {
 						print "<div class='error'>" ;
-							print "No useful children were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted." ;
+							print _("No useful children were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
 					else if ($childSuccessCount<$childCount) {
 						print "<div class='error'>" ;
-							print "Some children could not be successfully read or used, so the import will be aborted." ;
+							print _("Some children could not be successfully read or used, so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
 					else if ($childSuccessCount==$childCount) {
 						print "<div class='success'>" ;
-							print "All children could be read and used, so the import will proceed." ;
+							print _("All children could be read and used, so the import will proceed.") ;
 						print "</div>" ;
 					}
 					else {
 						print "<div class='error'>" ;
-							print "An unknown error occured, so the import will be aborted.." ;
+							print _("An unknown error occured, so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
@@ -385,7 +385,7 @@ else {
 				if ($proceed==TRUE) {
 					//CHECK FAMILIES IN IMPORT FOR EXISTENCE, IF NOT EXIST, ADD THEM, IF THEY ARE UPDATE THEM
 					print "<h4>" ;
-						print "Update & Insert Families" ;
+						print _("Update & Insert Families") ;
 					print "</h4>" ;
 					foreach ($families AS $family) {
 						$familyProceed=TRUE ;
@@ -401,7 +401,7 @@ else {
 						
 						if ($familyProceed==FALSE) {
 							print "<div class='error'>" ;
-								print "There was an error locating family: " . $family["familySync"] . "." ;
+								print _("There was an error locating family:") . " " . $family["familySync"] . "." ;
 							print "</div>" ;
 						}
 						else {
@@ -422,12 +422,12 @@ else {
 								//Spit out results
 								if ($updateFamilyFail==TRUE) {
 									print "<div class='error'>" ;
-										print "There was an error updating family: " . $family["familySync"] . "." ;
+										print _("There was an error updating family:") . " " . $family["familySync"] . "." ;
 									print "</div>" ;
 								}
 								else {
 									print "<div class='success'>" ;
-										print "Family " . $family["familySync"] . " was successfully updated." ;
+										print sprintf(_('Family %1$s was successfully updated.'), $family["familySync"]) ;
 									print "</div>" ;
 								}
 							}
@@ -447,18 +447,18 @@ else {
 								//Spit out results
 								if ($addFamilyFail==TRUE) {
 									print "<div class='error'>" ;
-										print "There was an error creating family: " . $family["familySync"] . "." ;
+										print _("There was an error creating family:") ." " . $family["familySync"] . "." ;
 									print "</div>" ;
 								}
 								else {
 									print "<div class='success'>" ;
-										print "Family " . $family["familySync"] . " was successfully created." ;
+										print sprintf(_('Family %1$s was successfully created.'), $family["familySync"]) ;
 									print "</div>" ;
 								}
 							}
 							else {
 								print "<div class='error'>" ;
-									print "There was an error locating family " . $family["familySync"] . "." ;
+									print _("There was an error locating family:") . " " . $family["familySync"] . "." ;
 								print "</div>" ;
 							}	
 						}
@@ -466,7 +466,7 @@ else {
 					
 					//CHECK PARENTS IN IMPORT FOR EXISTENCE, IF NOT EXIST, ADD THEM, IF THEY ARE UPDATE THEM
 					print "<h4>" ;
-						print "Update & Insert Parents" ;
+						print _("Update & Insert Parents") ;
 					print "</h4>" ;
 					foreach ($parents AS $parent) {
 						$familyProceed=TRUE ;
@@ -483,7 +483,7 @@ else {
 						
 						if ($familyProceed==FALSE) {
 							print "<div class='error'>" ;
-								print "There was an error locating parent: " . $parent["username"] . "." ;
+								print _("There was an error locating parent:") . " " . $parent["username"] . "." ;
 							print "</div>" ;
 						}
 						else {
@@ -504,12 +504,12 @@ else {
 								//Spit out results
 								if ($updateFamilyFail==TRUE) {
 									print "<div class='error'>" ;
-										print "There was an error parent : " . $parent["username"] . "." ;
+										print _("There was an error parent:") . " " . $parent["username"] . "." ;
 									print "</div>" ;
 								}
 								else {
 									print "<div class='success'>" ;
-										print "Parent " . $parent["username"] . " was successfully updated." ;
+										print sprintf(_('Parent %1$s was successfully updated.'), $parent["username"]) ;
 									print "</div>" ;
 								}
 							}
@@ -529,18 +529,18 @@ else {
 								//Spit out results
 								if ($addFamilyFail==TRUE) {
 									print "<div class='error'>" ;
-										print "There was an error creating parent: " . $parent["username"] . "." ;
+										print _("There was an error creating parent:") . " " . $parent["username"] . "." ;
 									print "</div>" ;
 								}
 								else {
 									print "<div class='success'>" ;
-										print "Family " . $parent["username"] . " was successfully created." ;
+										print sprintf(_('Family %1$s was successfully created.'), $parent["username"]) ;
 									print "</div>" ;
 								}
 							}
 							else {
 								print "<div class='error'>" ;
-									print "There was an error locating family " . $parent["username"] . "." ;
+									print _("There was an error locating family:") . " " . $parent["username"] . "." ;
 								print "</div>" ;
 							}	
 						}
@@ -548,7 +548,7 @@ else {
 					
 					//CHECK STuDENTS IN IMPORT FOR EXISTENCE, IF NOT EXIST, ADD THEM, IF THEY ARE UPDATE THEM
 					print "<h4>" ;
-						print "Update & Insert Students" ;
+						print _("Update & Insert Students") ;
 					print "</h4>" ;
 					foreach ($children AS $child) {
 						$familyProceed=TRUE ;
@@ -565,7 +565,7 @@ else {
 						
 						if ($familyProceed==FALSE) {
 							print "<div class='error'>" ;
-								print "There was an error locating student: " . $child["username"] . "." ;
+								print _("There was an error locating student:") . " " . $child["username"] . "." ;
 							print "</div>" ;
 						}
 						else {
@@ -588,17 +588,17 @@ else {
 								//Spit out results
 								if ($updateFamilyFail==TRUE) {
 									print "<div class='error'>" ;
-										print "There was an error student : " . $child["username"] . "." ;
+										print _("There was an error student:") . " " . $child["username"] . "." ;
 									print "</div>" ;
 								}
 								else {
 									print "<div class='success'>" ;
-										print "Student " . $child["username"] . " was successfully updated." ;
+										print sprintf(_('Student %1$s was successfully updated.'), $child["username"]) ;
 									print "</div>" ;
 								}*/
 								
 								print "<div class='success'>" ;
-									print "Student " . $child["username"] . " was successfully updated." ;
+									print sprintf(_('Student %1$s was successfully updated.'), $child["username"]) ;
 								print "</div>" ;
 							}
 							else if ($result->rowCount()==0) {
@@ -617,18 +617,18 @@ else {
 								//Spit out results
 								if ($addFamilyFail==TRUE) {
 									print "<div class='error'>" ;
-										print "There was an error creating student: " . $child["username"] . "." ;
+										print _("There was an error creating student:") . " " . $child["username"] . "." ;
 									print "</div>" ;
 								}
 								else {
 									print "<div class='success'>" ;
-										print "Student " . $child["username"] . " was successfully created." ;
+										print sprintf(_('Student %1$s was successfully created.'), $child["username"]) ;
 									print "</div>" ;
 								}
 							}
 							else {
 								print "<div class='error'>" ;
-									print "There was an error locating student " . $child["username"] . "." ;
+									print _("There was an error locating student:") . " " . $child["username"] . "." ;
 								print "</div>" ;
 							}	
 						}

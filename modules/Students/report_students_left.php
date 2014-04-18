@@ -139,7 +139,7 @@ else {
 						print "<span style='font-style: italic; font-size: 85%'>Roll Group</span>" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Username" ;
+						print _("Username") ;
 					print "</th>" ;
 					print "<th>" ;
 						print "End Date<br/>" ;

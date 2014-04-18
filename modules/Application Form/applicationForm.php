@@ -155,7 +155,7 @@ else {
 			<tr>
 				<td> 
 					<b>Surname *</b><br/>
-					<span style="font-size: 90%"><i>Family name as shown in ID documents.</i></span>
+					<span style="font-size: 90%"><i><? print _('Family name as shown in ID documents.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
@@ -168,7 +168,7 @@ else {
 			<tr>
 				<td> 
 					<b>First Name *</b><br/>
-					<span style="font-size: 90%"><i>First name as shown in ID documents.</i></span>
+					<span style="font-size: 90%"><i><? print _('First name as shown in ID documents.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
@@ -181,7 +181,7 @@ else {
 			<tr>
 				<td> 
 					<b>Preferred Name *</b><br/>
-					<span style="font-size: 90%"><i>Most common name, alias, nickname, etc.</i></span>
+					<span style="font-size: 90%"><i><? print _('Most common name, alias, nickname, etc.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" style="width: 300px">
@@ -194,7 +194,7 @@ else {
 			<tr>
 				<td> 
 					<b>Official Name *</b><br/>
-					<span style="font-size: 90%"><i>Full name as shown in ID documents.</i></span>
+					<span style="font-size: 90%"><i><? print _('Full name as shown in ID documents.') ?></i></span>
 				</td>
 				<td class="right">
 					<input title='Please enter full name as shown in ID documents' name="officialName" id="officialName" maxlength=150 value="" type="text" style="width: 300px">
@@ -207,7 +207,7 @@ else {
 			<tr>
 				<td> 
 					<b>Name In Characters</b><br/>
-					<span style="font-size: 90%"><i>Chinese or other character-based name.</i></span>
+					<span style="font-size: 90%"><i><? print _('Chinese or other character-based name.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="" type="text" style="width: 300px">
@@ -220,8 +220,8 @@ else {
 				<td class="right">
 					<select name="gender" id="gender" style="width: 302px">
 						<option value="Please select..."><? print _('Please select...') ?></option>
-						<option value="F">F</option>
-						<option value="M">M</option>
+						<option value="F"><? print _('Female') ?></option>
+						<option value="M"><? print _('Male') ?></option>
 					</select>
 					<script type="text/javascript">
 						var gender=new LiveValidation('gender');
@@ -491,7 +491,7 @@ else {
 					else {
 						print "<b>" . $_SESSION[$guid]["country"] . " Visa Expiry Date</b><br/>" ;
 					}
-					print "<span style='font-size: 90%'><i>dd/mm/yyyy. If relevant.</i></span>" ;
+					print "<span style='font-size: 90%'><i>Format " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . _('If relevant.') . "</i></span>" ;
 					?>
 				</td>
 				<td class="right">
@@ -532,7 +532,7 @@ else {
 				<tr>
 					<td> 
 						<b>Phone <? print $i ?></b><br/>
-						<span style="font-size: 90%"><i>Type, country code, number</i></span>
+						<span style="font-size: 90%"><i><? print _('Type, country code, number.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="phone<? print $i ?>" id="phone<? print $i ?>" maxlength=20 value="" type="text" style="width: 160px">
@@ -815,7 +815,7 @@ else {
 				<tr>
 					<td> 
 						<b>Home Address *</b><br/>
-						<span style="font-size: 90%"><i>Unit, Building, Street</i></span>
+						<span style="font-size: 90%"><i><? print _('Unit, Building, Street') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="homeAddress" id="homeAddress" maxlength=255 value="" type="text" style="width: 300px">
@@ -828,7 +828,7 @@ else {
 				<tr>
 					<td> 
 						<b>Home Address (District) *</b><br/>
-						<span style="font-size: 90%"><i>County, State, District</i></span>
+						<span style="font-size: 90%"><i><? print _('County, State, District') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="" type="text" style="width: 300px">
@@ -913,7 +913,7 @@ else {
 					<tr>
 						<td> 
 							<b>Surname</b><br/>
-							<span style="font-size: 90%"><i>Family name as shown in ID documents.</i></span>
+							<span style="font-size: 90%"><i><? print _('Family name as shown in ID documents.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name='parent1surname' maxlength=30 value="<? print $_SESSION[$guid]["surname"] ?>" type="text" style="width: 300px">
@@ -922,7 +922,7 @@ else {
 					<tr>
 						<td> 
 							<b>Preferred Name</b><br/>
-							<span style="font-size: 90%"><i>Most common name, alias, nickname, etc.</i></span>
+							<span style="font-size: 90%"><i><? print _('Most common name, alias, nickname, etc.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name='parent1preferredName' maxlength=30 value="<? print $_SESSION[$guid]["preferredName"] ?>" type="text" style="width: 300px">
@@ -1075,7 +1075,7 @@ else {
 					<tr <? if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
 							<b>Surname *</b><br/>
-							<span style="font-size: 90%"><i>Family name as shown in ID documents.</i></span>
+							<span style="font-size: 90%"><i><? print _('Family name as shown in ID documents.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="<? print "parent$i" ?>surname" id="<? print "parent$i" ?>surname" maxlength=30 value="" type="text" style="width: 300px">
@@ -1088,7 +1088,7 @@ else {
 					<tr <? if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
 							<b>First Name *</b><br/>
-							<span style="font-size: 90%"><i>First name as shown in ID documents.</i></span>
+							<span style="font-size: 90%"><i><? print _('First name as shown in ID documents.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="<? print "parent$i" ?>firstName" id="<? print "parent$i" ?>firstName" maxlength=30 value="" type="text" style="width: 300px">
@@ -1101,7 +1101,7 @@ else {
 					<tr <? if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
 							<b>Preferred Name *</b><br/>
-							<span style="font-size: 90%"><i>Most common name, alias, nickname, etc.</i></span>
+							<span style="font-size: 90%"><i><? print _('Most common name, alias, nickname, etc.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="<? print "parent$i" ?>preferredName" id="<? print "parent$i" ?>preferredName" maxlength=30 value="" type="text" style="width: 300px">
@@ -1114,7 +1114,7 @@ else {
 					<tr <? if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
 							<b>Official Name *</b><br/>
-							<span style="font-size: 90%"><i>Full name as shown in ID documents.</i></span>
+							<span style="font-size: 90%"><i><? print _('Full name as shown in ID documents.') ?></i></span>
 						</td>
 						<td class="right">
 							<input title='Please enter full name as shown in ID documents' name="<? print "parent$i" ?>officialName" id="<? print "parent$i" ?>officialName" maxlength=150 value="" type="text" style="width: 300px">
@@ -1127,7 +1127,7 @@ else {
 					<tr <? if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
 							<b>Name In Characters</b><br/>
-							<span style="font-size: 90%"><i>Chinese or other character-based name.</i></span>
+							<span style="font-size: 90%"><i><? print _('Chinese or other character-based name.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="<? print "parent$i" ?>nameInCharacters" id="<? print "parent$i" ?>nameInCharacters" maxlength=20 value="" type="text" style="width: 300px">
@@ -1140,8 +1140,8 @@ else {
 						<td class="right">
 							<select name="<? print "parent$i" ?>gender" id="<? print "parent$i" ?>gender" style="width: 302px">
 								<option value="Please select..."><? print _('Please select...') ?></option>
-								<option value="F">F</option>
-								<option value="M">M</option>
+								<option value="F"><? print _('Female') ?></option>
+								<option value="M"><? print _('Male') ?></option>
 							</select>
 							<script type="text/javascript">
 								var <? print "parent$i" ?>gender=new LiveValidation('<? print "parent$i" ?>gender');
@@ -1323,7 +1323,7 @@ else {
 							else {
 								print "<b>" . $_SESSION[$guid]["country"] . " Visa Expiry Date</b><br/>" ;
 							}
-							print "<span style='font-size: 90%'><i>dd/mm/yyyy. If relevant.</i></span>" ;
+							print "<span style='font-size: 90%'><i>Format " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . _('If relevant.') . "</i></span>" ;
 							?>
 						</td>
 						<td class="right">
@@ -1368,7 +1368,7 @@ else {
 						<tr <? if ($i==2) { print "class='secondParent'" ; }?>>
 							<td> 
 								<b>Phone <? print $y ; if ($y==1) { print " *" ;}?></b><br/>
-								<span style="font-size: 90%"><i>Type, country code, number</i></span>
+								<span style="font-size: 90%"><i><? print _('Type, country code, number.') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="<? print "parent$i" ?>phone<? print $y ?>" id="<? print "parent$i" ?>phone<? print $y ?>" maxlength=20 value="" type="text" style="width: 160px">

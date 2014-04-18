@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_man
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage.php'>Manage Medical Forms</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_edit.php&&gibbonPersonMedicalID=" . $_GET["gibbonPersonMedicalID"] . "'>Edit Medical Form</a> > </div><div class='trailEnd'>Add Condition</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage.php'>" . _('Manage Medical Forms') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_edit.php&&gibbonPersonMedicalID=" . $_GET["gibbonPersonMedicalID"] . "'>" . _('Edit Medical Form') . "</a> > </div><div class='trailEnd'>" . _('Add Condition') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -91,7 +91,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Person *</b><br/>
+							<b><? print _('Person') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -110,7 +110,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Condition Name *</b><br/>
+							<b><? print _('Condition Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="name" id="name">
@@ -136,7 +136,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Risk *</b><br/>
+							<b><? print _('Risk') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="gibbonAlertLevelID" id="gibbonAlertLevelID" style="width: 302px">
@@ -163,7 +163,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Triggers</b><br/>
+							<b><? print _('Triggers') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="triggers" id="triggers" maxlength=255 value="" type="text" style="width: 300px">
@@ -171,7 +171,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Reaction</b><br/>
+							<b><? print _('Reaction') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="reaction" id="reaction" maxlength=255 value="" type="text" style="width: 300px">
@@ -179,7 +179,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Response</b><br/>
+							<b><? print _('Response') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="response" id="response" maxlength=255 value="" type="text" style="width: 300px">
@@ -187,7 +187,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Medication</b><br/>
+							<b><? print _('Medication') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="medication" id="medication" maxlength=255 value="" type="text" style="width: 300px">
@@ -195,7 +195,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Last Episode Date</b><br/>
+							<b><? print _('Last Episode Date') ?></b><br/>
 							<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 						</td>
 						<td class="right">
@@ -213,7 +213,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Last Episode Treatment</b><br/>
+							<b><? print _('Last Episode Treatment') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="lastEpisodeTreatment" id="lastEpisodeTreatment" maxlength=255 value="" type="text" style="width: 300px">
@@ -221,7 +221,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Comment</b><br/>
+							<b><? print _('Comment') ?></b><br/>
 						</td>
 						<td class="right">
 							<textarea name="comment" id="comment" rows=8 style="width: 300px"></textarea>

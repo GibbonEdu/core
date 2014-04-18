@@ -147,8 +147,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="reportable" id="reportable" style="width: 302px">
-								<option value="Y"><? print _('Y') ?></option>
-								<option value="N"><? print _('N') ?></option>
+								<option value="Y"><? print _('Yes') ?></option>
+								<option value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>

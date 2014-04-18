@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/applicationForm_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Application Forms</a> > </div><div class='trailEnd'>Edit Form</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/applicationForm_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Application Forms') . "</a> > </div><div class='trailEnd'>" . _('Edit Form') . "</div>" ;
 	print "</div>" ;
 	
 	//Check if school year specified
@@ -97,19 +97,19 @@ else {
 				if ($search!="") {
 					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>" . _('Back to Search Results') . "</a> | " ;
 				}
-				print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_edit_print.php&gibbonApplicationFormID=$gibbonApplicationFormID'><img title='Print' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+				print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_edit_print.php&gibbonApplicationFormID=$gibbonApplicationFormID'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 			print "</div>" ;
 			?>
 			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_editProcess.php?search=$search" ?>" enctype="multipart/form-data">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>For Office Use</h3>
+							<h3><? print _('For Office Use') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Application ID *</b><br/>
+							<b><? print _('Application ID') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -118,8 +118,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Priority *</b><br/>
-							<span style="font-size: 90%"><i>Higher priority applicants appear first in list of applications.</i></span>
+							<b><? print _('Priority') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Higher priority applicants appear first in list of applications.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="priority" id="priority" style="width: 302px">
@@ -150,15 +150,15 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Status *</b><br/>
-								<span style="font-size: 90%"><i>Manually set status. "Approved" not permitted.</i></span>
+								<b><? print _('Status') ?> *</b><br/>
+								<span style="font-size: 90%"><i><? print _('Manually set status. "Approved" not permitted.') ?></i></span>
 							</td>
 							<td class="right">
 								<select name="status" id="status" style="width: 302px">
-									<option <? if ($row["status"]=="Pending") { print "selected" ; } ?> value="Pending">Pending</option>
-									<option <? if ($row["status"]=="Waiting List") { print "selected" ; } ?> value="Waiting List">Waiting List</option>
-									<option <? if ($row["status"]=="Rejected") { print "selected" ; } ?> value="Rejected">Rejected</option>
-									<option <? if ($row["status"]=="Withdrawn") { print "selected" ; } ?> value="Withdrawn">Withdrawn</option>
+									<option <? if ($row["status"]=="Pending") { print "selected" ; } ?> value="Pending"><? print _('Pending') ?></option>
+									<option <? if ($row["status"]=="Waiting List") { print "selected" ; } ?> value="Waiting List"><? print _('Waiting List') ?></option>
+									<option <? if ($row["status"]=="Rejected") { print "selected" ; } ?> value="Rejected"><? print _('Rejected') ?></option>
+									<option <? if ($row["status"]=="Withdrawn") { print "selected" ; } ?> value="Withdrawn"><? print _('Withdrawn') ?></option>
 								</select>
 							</td>
 						</tr>
@@ -168,7 +168,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Status *</b><br/>
+								<b><? print _('Status') ?> *</b><br/>
 								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
@@ -182,8 +182,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Milestones</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<b><? print _('Milestones') ?></b><br/>
 							</td>
 							<td class="right">
 								<?
@@ -207,8 +206,8 @@ else {
 					?>
 					<tr>
 						<td> 
-							<b>Start Date</b><br/>
-							<span style="font-size: 90%"><i>Student's intended first day at school.<br/>dd/mm/yyyy</i></span>
+							<b><? print _('Start Date') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Student\'s intended first day at school.') ?><br/>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></i></span>
 						</td>
 						<td class="right">
 							<input name="dateStart" id="dateStart" maxlength=10 value="<? print dateConvertBack($guid, $row["dateStart"]) ?>" type="text" style="width: 300px">
@@ -225,8 +224,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Year of Entry *</b><br/>
-							<span style="font-size: 90%"><i>When will the student join?</i></span>
+							<b><? print _('Year of Entry') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('When will the student join?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="gibbonSchoolYearIDEntry" id="gibbonSchoolYearIDEntry" style="width: 302px">
@@ -258,8 +257,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Year Group at Entry *</b><br/>
-							<span style="font-size: 90%"><i>Which year level will student enter.</i></span>
+							<b><? print _('Year Group at Entry') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Which year level will student enter.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="gibbonYearGroupIDEntry" id="gibbonYearGroupIDEntry" style="width: 302px">
@@ -296,7 +295,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Day Type</b><br/>
+								<b><? print _('Day Type') ?></b><br/>
 								<span style="font-size: 90%"><i><? print getSettingByScope($connection2, 'User Admin', 'dayTypeText') ; ?></i></span>
 							</td>
 							<td class="right">
@@ -319,8 +318,8 @@ else {
 					?>
 					<tr>
 						<td> 
-							<b>Roll Group at Entry</b><br/>
-							<span style="font-size: 90%">If set, the student will automatically be enrolled on Accept.</span>
+							<b><? print _('Roll Group at Entry') ?></b><br/>
+							<span style="font-size: 90%"><? print _('If set, the student will automatically be enrolled on Accept.') ?></span>
 						</td>
 						<td class="right">
 							<select name="gibbonRollGroupID" id="gibbonRollGroupID" style="width: 302px">
@@ -363,8 +362,8 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Payment *</b><br/>
-								<span style="font-size: 90%"><i>Has payment (<? print $currency . $applicationFee ?>) been made for this application.</i></span>
+								<b><? print _('Payment') ?> *</b><br/>
+								<span style="font-size: 90%"><i><? print sprintf(_('Has payment (%1$s %2$s) been made for this application.'), $currency, $applicationFee) ?></i></span>
 							</td>
 							<td class="right">
 								<select name="paymentMade" id="paymentMade" style="width: 302px">
@@ -382,16 +381,16 @@ else {
 									<span style="font-size: 90%"><i>
 										<?
 											if ($row["paypalPaymentToken"]!="") {
-												print "PayPal Payment Token: " . $row["paypalPaymentToken"] . "<br/>" ;
+												print _("PayPal Payment Token:") . " " . $row["paypalPaymentToken"] . "<br/>" ;
 											}
 											if ($row["paypalPaymentPayerID"]!="") {
-												print "PayPal Payment Payer ID: " . $row["paypalPaymentPayerID"] . "<br/>" ;
+												print _("PayPal Payment Payer ID:") . " " . $row["paypalPaymentPayerID"] . "<br/>" ;
 											}
 											if ($row["paypalPaymentTransactionID"]!="") {
-												print "PayPal Payment Transaction ID: " . $row["paypalPaymentTransactionID"] . "<br/>" ;
+												print _("PayPal Payment Transaction ID:") . " " . $row["paypalPaymentTransactionID"] . "<br/>" ;
 											}
 											if ($row["paypalPaymentReceiptID"]!="") {
-												print "PayPal Payment Receipt ID: " . $row["paypalPaymentReceiptID"] . "<br/>" ;
+												print _("PayPal Payment Receipt ID:") . " " . $row["paypalPaymentReceiptID"] . "<br/>" ;
 											}
 										?>
 									</i></span>
@@ -404,26 +403,26 @@ else {
 					?>
 					<tr>
 						<td colspan=2 style='padding-top: 15px'> 
-							<b>Notes</b><br/>
+							<b><? print _('Notes') ?></b><br/>
 							<textarea name="notes" id="notes" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><? print htmlPrep($row["notes"]) ?></textarea>
 						</td>
 					</tr>
 					
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>Student</h3>
+							<h3><? print _('Student') ?></h3>
 						</td>
 					</tr>
 					
 					<tr>
 						<td colspan=2> 
-							<h4>Student Personal Data</h4>
+							<h4><? print _('Student Personal Data') ?></h4>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Surname *</b><br/>
-							<span style="font-size: 90%"><i>Family name as shown in ID documents.</i></span>
+							<b><? print _('Surname') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Family name as shown in ID documents.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="surname" id="surname" maxlength=30 value="<? print $row["surname"] ?>" type="text" style="width: 300px">
@@ -435,8 +434,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>First Name *</b><br/>
-							<span style="font-size: 90%"><i>First name as shown in ID documents.</i></span>
+							<b><? print _('First Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('First name as shown in ID documents.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="firstName" id="firstName" maxlength=30 value="<? print $row["firstName"] ?>" type="text" style="width: 300px">
@@ -448,8 +447,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Preferred Name *</b><br/>
-							<span style="font-size: 90%"><i>Most common name, alias, nickname, etc.</i></span>
+							<b><? print _('Preferred Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Most common name, alias, nickname, etc.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="preferredName" id="preferredName" maxlength=30 value="<? print $row["preferredName"] ?>" type="text" style="width: 300px">
@@ -461,8 +460,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Official Name *</b><br/>
-							<span style="font-size: 90%"><i>Full name as shown in ID documents.</i></span>
+							<b><? print _('Official Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Full name as shown in ID documents.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="officialName" id="officialName" maxlength=150 value="<? print $row["officialName"] ?>" type="text" style="width: 300px">
@@ -474,8 +473,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Name In Characters</b><br/>
-							<span style="font-size: 90%"><i>Chinese or other character-based name.</i></span>
+							<b><? print _('Name In Characters') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Chinese or other character-based name.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="<? print $row["nameInCharacters"] ?>" type="text" style="width: 300px">
@@ -483,13 +482,13 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Gender *</b><br/>
+							<b><? print _('Gender') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="gender" id="gender" style="width: 302px">
 								<option value="Please select..."><? print _('Please select...') ?></option>
-								<option <? if ($row["gender"]=="F") { print "selected" ; } ?> value="F">F</option>
-								<option <? if ($row["gender"]=="M") { print "selected" ; } ?> value="M">M</option>
+								<option <? if ($row["gender"]=="F") { print "selected" ; } ?> value="F"><? print _('Female') ?></option>
+								<option <? if ($row["gender"]=="M") { print "selected" ; } ?> value="M"><? print _('Male') ?></option>
 							</select>
 							<script type="text/javascript">
 								var gender=new LiveValidation('gender');
@@ -499,7 +498,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Date of Birth *</b><br/>
+							<b><? print _('Date of Birth') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 						</td>
 						<td class="right">
@@ -520,13 +519,13 @@ else {
 					
 					<tr>
 						<td colspan=2> 
-							<h4>Student Background</h4>
+							<h4><? print _('Student Background') ?></h4>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Home Language</b><br/>
-							<span style="font-size: 90%"><i>The primary language used in the student's home.</i></span>
+							<b><? print _('Home Language') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('The primary language used in the student\'s home.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="languageHome" id="languageHome" maxlength=30 value="<? print $row["languageHome"] ?>" type="text" style="width: 300px">
@@ -553,8 +552,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>First Language</b><br/>
-							<span style="font-size: 90%"><i>Student's native/first/mother language. </i></span>
+							<b><? print _('First Language<') ?>/b><br/>
+							<span style="font-size: 90%"><i><? print _('Student\'s native/first/mother language.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="languageFirst" id="languageFirst" maxlength=30 value="<? print $row["languageFirst"] ?>" type="text" style="width: 300px">
@@ -581,7 +580,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Second Language</b><br/>
+							<b><? print _('Second Language') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="languageSecond" id="languageSecond" maxlength=30 value="<? print $row["languageSecond"] ?>" type="text" style="width: 300px">
@@ -608,7 +607,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Third Language</b><br/>
+							<b><? print _('Third Language') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="languageThird" id="languageThird" maxlength=30 value="<? print $row["languageThird"] ?>" type="text" style="width: 300px">
@@ -635,7 +634,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Country of Birth</b><br/>
+							<b><? print _('Country of Birth') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="countryOfBirth" id="countryOfBirth" style="width: 302px">
@@ -661,7 +660,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Citizenship</b><br/>
+							<b><? print _('Citizenship') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="citizenship1" id="citizenship1" style="width: 302px">
@@ -697,7 +696,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Citizenship Passport Number</b><br/>
+							<b><? print _('Citizenship Passport Number') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="<? print $row["citizenship1Passport"] ?>" type="text" style="width: 300px">
@@ -707,10 +706,10 @@ else {
 						<td> 
 						<?
 						if ($_SESSION[$guid]["country"]=="") {
-							print "<b>National ID Card Number</b><br/>" ;
+							print "<b>" . _('National ID Card Number') . "</b><br/>" ;
 						}
 						else {
-							print "<b>" . $_SESSION[$guid]["country"] . " ID Card Number</b><br/>" ;
+							print "<b>" . $_SESSION[$guid]["country"] . " " . _('ID Card Number') . "</b><br/>" ;
 						}
 						?>
 					</td>
@@ -722,10 +721,10 @@ else {
 						<td> 
 							<?
 							if ($_SESSION[$guid]["country"]=="") {
-								print "<b>Residency/Visa Type</b><br/>" ;
+								print "<b>" . _('Residency/Visa Type') . "</b><br/>" ;
 							}
 							else {
-								print "<b>" . $_SESSION[$guid]["country"] . " Residency/Visa Type</b><br/>" ;
+								print "<b>" . $_SESSION[$guid]["country"] . " " . _('Residency/Visa Type') . "</b><br/>" ;
 							}
 							?>
 						</td>
@@ -755,12 +754,12 @@ else {
 						<td> 
 							<?
 							if ($_SESSION[$guid]["country"]=="") {
-								print "<b>Visa Expiry Date</b><br/>" ;
+								print "<b>" . _('Visa Expiry Date') . "</b><br/>" ;
 							}
 							else {
-								print "<b>" . $_SESSION[$guid]["country"] . " Visa Expiry Date</b><br/>" ;
+								print "<b>" . $_SESSION[$guid]["country"] . " " . _('Visa Expiry Date') . "</b><br/>" ;
 							}
-							print "<span style='font-size: 90%'><i>dd/mm/yyyy. If relevant.</i></span>" ;
+							print "<span style='font-size: 90%'><i>Format " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . _('If relevant.') . "</i></span>" ;
 							?>
 						</td>
 						<td class="right">
@@ -780,12 +779,12 @@ else {
 					
 					<tr>
 						<td colspan=2> 
-							<h4>Student Contact</h4>
+							<h4><? print _('Student Contact') ?></h4>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Email</b><br/>
+							<b><? print _('Email') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="email" id="email" maxlength=50 value="<? print $row["email"] ?>" type="text" style="width: 300px">
@@ -800,8 +799,8 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Phone <? print $i ?></b><br/>
-								<span style="font-size: 90%"><i>Type, country code, number</i></span>
+								<b><? print _('Phone') ?> <? print $i ?></b><br/>
+								<span style="font-size: 90%"><i><? print _('Type, country code, number.') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="phone<? print $i ?>" id="phone<? print $i ?>" maxlength=20 value="<? print $row["phone" . $i] ?>" type="text" style="width: 160px">
@@ -826,12 +825,12 @@ else {
 								</select>
 								<select style="width: 70px" name="phone<? print $i ?>Type">
 									<option <? if ($row["phone" . $i . "Type"]=="") { print "selected" ; }?> value=""></option>
-									<option <? if ($row["phone" . $i . "Type"]=="Mobile") { print "selected" ; }?> value="Mobile">Mobile</option>
-									<option <? if ($row["phone" . $i . "Type"]=="Home") { print "selected" ; }?> value="Home">Home</option>
-									<option <? if ($row["phone" . $i . "Type"]=="Work") { print "selected" ; }?> value="Work">Work</option>
-									<option <? if ($row["phone" . $i . "Type"]=="Fax") { print "selected" ; }?> value="Fax">Fax</option>
-									<option <? if ($row["phone" . $i . "Type"]=="Pager") { print "selected" ; }?> value="Pager">Pager</option>
-									<option <? if ($row["phone" . $i . "Type"]=="Other") { print "selected" ; }?> value="Other">Other</option>
+									<option <? if ($row["phone" . $i . "Type"]=="Mobile") { print "selected" ; }?> value="Mobile"><? print _('Mobile') ?></option>
+									<option <? if ($row["phone" . $i . "Type"]=="Home") { print "selected" ; }?> value="Home"><? print _('Home') ?></option>
+									<option <? if ($row["phone" . $i . "Type"]=="Work") { print "selected" ; }?> value="Work"><? print _('Work') ?></option>
+									<option <? if ($row["phone" . $i . "Type"]=="Fax") { print "selected" ; }?> value="Fax"><? print _('Fax') ?></option>
+									<option <? if ($row["phone" . $i . "Type"]=="Pager") { print "selected" ; }?> value="Pager"><? print _('Pager') ?></option>
+									<option <? if ($row["phone" . $i . "Type"]=="Other") { print "selected" ; }?> value="Other"><? print _('Other') ?></option>
 								</select>
 							</td>
 						</tr>
@@ -840,20 +839,20 @@ else {
 					?>					
 					<tr>
 						<td colspan=2> 
-							<h4>Student Medical & Development</h4>
+							<h4><? print _('Student Medical & Development') ?></h4>
 						</td>
 					</tr>
 					<tr>
 						<td colspan=2 style='padding-top: 15px'> 
-							<b>Medical Information</b><br/>
-							<span style="font-size: 90%"><i>Please indicate any medical conditions.</i></span><br/>
+							<b><? print _('Medical Information') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Please indicate any medical conditions.') ?></i></span><br/>
 							<textarea name="medicalInformation" id="medicalInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><? print htmlPrep($row["medicalInformation"]) ?></textarea>
 						</td>
 					</tr>
 					<tr>
 						<td colspan=2 style='padding-top: 15px'> 
-							<b>Development Information</b><br/>
-							<span style="font-size: 90%"><i>Provide any comments or information concerning your child’s development that may be relevant to your child’s performance in the classroom or elsewhere? (Incorrect or withheld information may affect continued enrolment).</i></span><br/> 					
+							<b><? print _('Development Information') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Provide any comments or information concerning your child’s development that may be relevant to your child’s performance in the classroom or elsewhere? (Incorrect or withheld information may affect continued enrolment).') ?></i></span><br/> 					
 							<textarea name="developmentInformation" id="developmentInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><? print htmlPrep($row["developmentInformation"]) ?></textarea>
 						</td>
 					</tr>
@@ -862,8 +861,8 @@ else {
 					
 					<tr>
 						<td colspan=2> 
-							<h4>Previous Schools</h4>
-							<p>Please give information on the last two schools attended by the applicant.</p>
+							<h4><? print _('Previous Schools') ?></h4>
+							<p><? print _('Please give information on the last two schools attended by the applicant.') ?></p>
 						</td>
 					</tr>
 					<tr>
@@ -872,19 +871,19 @@ else {
 							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr class='head'>" ;
 									print "<th>" ;
-										print "School Name" ;
+										print _("School Name") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Address" ;
+										print _("Address") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Grades<br/>Attended" ;
+										print _("Grades<br/>Attended") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Language of<br/>Instruction" ;
+										print _("Language of<br/>Instruction") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Joining Date<br/><span style='font-size: 80%'>dd/mm/yyyy</span>" ;
+										print _("Joining Date") . "<br/><span style='font-size: 80%'>" ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print "</span>" ;
 									print "</th>" ;
 								print "</tr>" ;
 								
@@ -960,21 +959,21 @@ else {
 						<tr class='break'>
 							<td colspan=2> 
 								<h3>
-									Home Address
+									<? print _('Home Address') ?>
 								</h3>
 							</td>
 						</tr>
 						<tr>
 							<td colspan=2> 
 								<p>
-									This address will be used for all members of the family. If an individual within the family needs a different address, this can be set through Data Updater after admission. 
+									<? print _('This address will be used for all members of the family. If an individual within the family needs a different address, this can be set through Data Updater after admission.') ?> 
 								</p>
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b>Home Address *</b><br/>
-								<span style="font-size: 90%"><i>Unit, Building, Street</i></span>
+								<b><? print _('Home Address') ?> *</b><br/>
+								<span style="font-size: 90%"><i><? print _('Unit, Building, Street') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="homeAddress" id="homeAddress" maxlength=255 value="<? print $row["homeAddress"] ?>" type="text" style="width: 300px">
@@ -986,8 +985,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Home Address (District) *</b><br/>
-								<span style="font-size: 90%"><i>County, State, District</i></span>
+								<b><? print _('Home Address') ?> (District) *</b><br/>
+								<span style="font-size: 90%"><i><? print _('County, State, District') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<? print $row["homeAddressDistrict"] ?>" type="text" style="width: 300px">
@@ -1018,7 +1017,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Address (Country) *</b><br/>
+								<b><? print _('Home Address (Country)') ?> *</b><br/>
 							</td>
 							<td class="right">
 								<select name="homeAddressCountry" id="homeAddressCountry" style="width: 302px">
@@ -1054,7 +1053,7 @@ else {
 							<tr class='break'>
 								<td colspan=2> 
 									<h3>
-										Parent/Guardian 1
+										<? print _('Parent/Guardian 1') ?>
 										<?
 										if ($i==1) {
 											print "<span style='font-size: 75%'></span>" ;
@@ -1066,14 +1065,14 @@ else {
 							<tr>
 								<td colspan=2> 
 									<p>
-										The parent is already a Gibbon user, and so their details cannot be edited in this view.
+										<? print _('The parent is already a Gibbon user, and so their details cannot be edited in this view.') ?>
 									</p>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b>Surname</b><br/>
-									<span style="font-size: 90%"><i>Family name as shown in ID documents.</i></span>
+									<b><? print _('Surname') ?></b><br/>
+									<span style="font-size: 90%"><i><? print _('Family name as shown in ID documents.') ?></i></span>
 								</td>
 								<td class="right">
 									<input readonly name='parent1surname' maxlength=30 value="<? print $row["parent1surname"] ?>" type="text" style="width: 300px">
@@ -1081,8 +1080,8 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Preferred Name</b><br/>
-									<span style="font-size: 90%"><i>Most common name, alias, nickname, etc.</i></span>
+									<b><? print _('Preferred Name') ?></b><br/>
+									<span style="font-size: 90%"><i><? print _('Most common name, alias, nickname, etc.') ?></i></span>
 								</td>
 								<td class="right">
 									<input readonly name='parent1preferredName' maxlength=30 value="<? print $row["parent1preferredName"] ?>" type="text" style="width: 300px">
@@ -1091,23 +1090,23 @@ else {
 							
 							<tr>
 								<td> 
-									<b>Relationship *</b><br/>
+									<b><? print _('Relationship') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<select name="parent1relationship" id="parent1relationship" style="width: 302px">
 										<option value="Please select..."><? print _('Please select...') ?></option>
-										<option <? if ($row["parent1relationship"]=="Mother") { print "selected" ; } ?> value="Mother">Mother</option>
-										<option <? if ($row["parent1relationship"]=="Father") { print "selected" ; } ?> value="Father">Father</option>
-										<option <? if ($row["parent1relationship"]=="Step-Mother") { print "selected" ; } ?> value="Step-Mother">Step-Mother</option>
-										<option <? if ($row["parent1relationship"]=="Step-Father") { print "selected" ; } ?> value="Step-Father">Step-Father</option>
-										<option <? if ($row["parent1relationship"]=="Adoptive Parent") { print "selected" ; } ?> value="Adoptive Parent">Adoptive Parent</option>
-										<option <? if ($row["parent1relationship"]=="Guardian") { print "selected" ; } ?> value="Guardian">Guardian</option>
-										<option <? if ($row["parent1relationship"]=="Grandmother") { print "selected" ; } ?> value="Grandmother">Grandmother</option>
-										<option <? if ($row["parent1relationship"]=="Grandfather") { print "selected" ; } ?> value="Grandfather">Grandfather</option>
-										<option <? if ($row["parent1relationship"]=="Aunt") { print "selected" ; } ?> value="Aunt">Aunt</option>
-										<option <? if ($row["parent1relationship"]=="Uncle") { print "selected" ; } ?> value="Uncle">Uncle</option>
-										<option <? if ($row["parent1relationship"]=="Nanny/Helper") { print "selected" ; } ?> value="Nanny/Helper">Nanny/Helper</option>
-										<option <? if ($row["parent1relationship"]=="Other") { print "selected" ; } ?> value="Other">Other</option>
+										<option <? if ($row["parent1relationship"]=="Mother") { print "selected" ; } ?> value="Mother"><? print _('Mother') ?></option>
+										<option <? if ($row["parent1relationship"]=="Father") { print "selected" ; } ?> value="Father"><? print _('Father') ?></option>
+										<option <? if ($row["parent1relationship"]=="Step-Mother") { print "selected" ; } ?> value="Step-Mother"><? print _('Step-Mother') ?></option>
+										<option <? if ($row["parent1relationship"]=="Step-Father") { print "selected" ; } ?> value="Step-Father"><? print _('Step-Father') ?></option>
+										<option <? if ($row["parent1relationship"]=="Adoptive Parent") { print "selected" ; } ?> value="Adoptive Parent"><? print _('Adoptive Parent') ?></option>
+										<option <? if ($row["parent1relationship"]=="Guardian") { print "selected" ; } ?> value="Guardian"><? print _('Guardian') ?></option>
+										<option <? if ($row["parent1relationship"]=="Grandmother") { print "selected" ; } ?> value="Grandmother"><? print _('Grandmother') ?></option>
+										<option <? if ($row["parent1relationship"]=="Grandfather") { print "selected" ; } ?> value="Grandfather"><? print _('Grandfather') ?></option>
+										<option <? if ($row["parent1relationship"]=="Aunt") { print "selected" ; } ?> value="Aunt"><? print _('Aunt') ?></option>
+										<option <? if ($row["parent1relationship"]=="Uncle") { print "selected" ; } ?> value="Uncle"><? print _('Uncle') ?></option>
+										<option <? if ($row["parent1relationship"]=="Nanny/Helper") { print "selected" ; } ?> value="Nanny/Helper"><? print _('Nanny/Helper') ?></option>
+										<option <? if ($row["parent1relationship"]=="Other") { print "selected" ; } ?> value="Other"><? print _('Other') ?></option>
 									</select>
 									<script type="text/javascript">
 										var parent1relationship=new LiveValidation('parent1relationship');
@@ -1126,13 +1125,13 @@ else {
 							<tr class='break'>
 								<td colspan=2> 
 									<h3>
-										Parent/Guardian <? print $i ?>
+										<? print _('Parent/Guardian') ?> <? print $i ?>
 										<?
 										if ($i==1) {
-											print "<span style='font-size: 75%'> (e.g. mother)</span>" ;
+											print "<span style='font-size: 75%'>" . _('(e.g. mother)') . "</span>" ;
 										}
 										else if ($i==2 AND $row["parent1gibbonPersonID"]=="") {
-											print "<span style='font-size: 75%'> (e.g. father)</span>" ;
+											print "<span style='font-size: 75%'>" .  _('(e.g. father)') . "</span>" ;
 										}
 										?>
 									</h3>
@@ -1140,12 +1139,12 @@ else {
 							</tr>
 							<tr>
 								<td colspan=2> 
-									<h4>Parent/Guardian <? print $i ?> Personal Data</h4>
+									<h4><? print sprintf(_('Parent/Guardian %1$s Personal Data'), $i) ?></h4>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b>Title<? if ($i==1) { print " *" ;}?></b><br/>
+									<b><? print _('Title') ?><? if ($i==1) { print " *" ;}?></b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
@@ -1162,11 +1161,11 @@ else {
 											<?
 										}
 										?>
-										<option <? if ($row["parent$i" . "title"]=="Ms. ") { print "selected" ; } ?> value="Ms. ">Ms.</option>
-										<option <? if ($row["parent$i" . "title"]=="Miss ") { print "selected" ; } ?> value="Miss ">Miss</option>
-										<option <? if ($row["parent$i" . "title"]=="Mr. ") { print "selected" ; } ?> value="Mr. ">Mr.</option>
-										<option <? if ($row["parent$i" . "title"]=="Mrs. ") { print "selected" ; } ?> value="Mrs. ">Mrs.</option>
-										<option <? if ($row["parent$i" . "title"]=="Dr. ") { print "selected" ; } ?> value="Dr. ">Dr.</option>
+										<option <? if ($row["parent$i" . "title"]=="Ms. ") { print "selected" ; } ?> value="Ms. "><? print _('Ms') ?></option>
+										<option <? if ($row["parent$i" . "title"]=="Miss ") { print "selected" ; } ?> value="Miss "><? print _('Miss') ?></option>
+										<option <? if ($row["parent$i" . "title"]=="Mr. ") { print "selected" ; } ?> value="Mr. "><? print _('Mr.') ?></option>
+										<option <? if ($row["parent$i" . "title"]=="Mrs. ") { print "selected" ; } ?> value="Mrs. "><? print _('Mrs.') ?></option>
+										<option <? if ($row["parent$i" . "title"]=="Dr. ") { print "selected" ; } ?> value="Dr. "><? print _('Dr.') ?></option>
 									</select>
 									
 									<?
@@ -1183,8 +1182,8 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Surname<? if ($i==1) { print " *" ;}?></b><br/>
-									<span style="font-size: 90%"><i>Family name as shown in ID documents.</i></span>
+									<b><? print _('Surname') ?><? if ($i==1) { print " *" ;}?></b><br/>
+									<span style="font-size: 90%"><i><? print _('Family name as shown in ID documents.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="<? print "parent$i" ?>surname" id="<? print "parent$i" ?>surname" maxlength=30 value="<? print $row["parent$i" . "surname"] ;?>" type="text" style="width: 300px">
@@ -1202,8 +1201,8 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>First Name<? if ($i==1) { print " *" ;}?></b><br/>
-									<span style="font-size: 90%"><i>First name as shown in ID documents.</i></span>
+									<b><? print _('First Name') ?><? if ($i==1) { print " *" ;}?></b><br/>
+									<span style="font-size: 90%"><i><? print _('First name as shown in ID documents.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="<? print "parent$i" ?>firstName" id="<? print "parent$i" ?>firstName" maxlength=30 value="<? print $row["parent$i" . "firstName"] ;?>" type="text" style="width: 300px">
@@ -1221,8 +1220,8 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Preferred Name<? if ($i==1) { print " *" ;}?></b><br/>
-									<span style="font-size: 90%"><i>Most common name, alias, nickname, etc.</i></span>
+									<b><? print _('Preferred Name') ?><? if ($i==1) { print " *" ;}?></b><br/>
+									<span style="font-size: 90%"><i><? print _('Most common name, alias, nickname, etc.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="<? print "parent$i" ?>preferredName" id="<? print "parent$i" ?>preferredName" maxlength=30 value="<? print $row["parent$i" . "preferredName"] ;?>" type="text" style="width: 300px">
@@ -1240,8 +1239,8 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Official Name<? if ($i==1) { print " *" ;}?></b><br/>
-									<span style="font-size: 90%"><i>Full name as shown in ID documents.</i></span>
+									<b><? print _('Official Name') ?><? if ($i==1) { print " *" ;}?></b><br/>
+									<span style="font-size: 90%"><i><? print _('Full name as shown in ID documents.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="<? print "parent$i" ?>officialName" id="<? print "parent$i" ?>officialName" maxlength=30 value="<? print $row["parent$i" . "officialName"] ;?>" type="text" style="width: 300px">
@@ -1259,8 +1258,8 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Name In Characters</b><br/>
-									<span style="font-size: 90%"><i>Chinese or other character-based name.</i></span>
+									<b><? print _('Name In Characters') ?></b><br/>
+									<span style="font-size: 90%"><i><? print _('Chinese or other character-based name.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="<? print "parent$i" ?>nameInCharacters" id="<? print "parent$i" ?>nameInCharacters" maxlength=20 value="<? print $row["parent$i" . "nameInCharacters"] ;?>" type="text" style="width: 300px">
@@ -1268,7 +1267,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Gender<? if ($i==1) { print " *" ;}?></b><br/>
+									<b><? print _('Gender') ?><? if ($i==1) { print " *" ;}?></b><br/>
 								</td>
 								<td class="right">
 									<select name="<? print "parent$i" ?>gender" id="<? print "parent$i" ?>gender" style="width: 302px">
@@ -1290,7 +1289,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Relationship<? if ($i==1) { print " *" ;}?></b><br/>
+									<b><? print _('Relationship') ?><? if ($i==1) { print " *" ;}?></b><br/>
 								</td>
 								<td class="right">
 									<select name="<? print "parent$i" ?>relationship" id="<? print "parent$i" ?>relationship" style="width: 302px">
@@ -1301,18 +1300,18 @@ else {
 										else {
 											print "<option value=\"\"></option>" ;
 										}?>
-										<option <? if ($row["parent" . $i . "relationship"]=="Mother") { print "selected" ; } ?> value="Mother">Mother</option>
-										<option <? if ($row["parent" . $i . "relationship"]=="Father") { print "selected" ; } ?> value="Father">Father</option>
-										<option <? if ($row["parent" . $i . "relationship"]=="Step-Mother") { print "selected" ; } ?> value="Step-Mother">Step-Mother</option>
-										<option <? if ($row["parent" . $i . "relationship"]=="Step-Father") { print "selected" ; } ?> value="Step-Father">Step-Father</option>
-										<option <? if ($row["parent" . $i . "relationship"]=="Adoptive Parent") { print "selected" ; } ?> value="Adoptive Parent">Adoptive Parent</option>
-										<option <? if ($row["parent" . $i . "relationship"]=="Guardian") { print "selected" ; } ?> value="Guardian">Guardian</option>
-										<option <? if ($row["parent" . $i . "relationship"]=="Grandmother") { print "selected" ; } ?> value="Grandmother">Grandmother</option>
-										<option <? if ($row["parent" . $i . "relationship"]=="Grandfather") { print "selected" ; } ?> value="Grandfather">Grandfather</option>
-										<option <? if ($row["parent" . $i . "relationship"]=="Aunt") { print "selected" ; } ?> value="Aunt">Aunt</option>
-										<option <? if ($row["parent" . $i . "relationship"]=="Uncle") { print "selected" ; } ?> value="Uncle">Uncle</option>
-										<option <? if ($row["parent" . $i . "relationship"]=="Nanny/Helper") { print "selected" ; } ?> value="Nanny/Helper">Nanny/Helper</option>
-										<option <? if ($row["parent" . $i . "relationship"]=="Other") { print "selected" ; } ?> value="Other">Other</option>
+										<option <? if ($row["parent" . $i . "relationship"]=="Mother") { print "selected" ; } ?> value="Mother"><? print _('Mother') ?></option>
+										<option <? if ($row["parent" . $i . "relationship"]=="Father") { print "selected" ; } ?> value="Father"><? print _('Father') ?></option>
+										<option <? if ($row["parent" . $i . "relationship"]=="Step-Mother") { print "selected" ; } ?> value="Step-Mother"><? print _('Step-Mother') ?></option>
+										<option <? if ($row["parent" . $i . "relationship"]=="Step-Father") { print "selected" ; } ?> value="Step-Father"><? print _('Step-Father') ?></option>
+										<option <? if ($row["parent" . $i . "relationship"]=="Adoptive Parent") { print "selected" ; } ?> value="Adoptive Parent"><? print _('Adoptive Parent') ?></option>
+										<option <? if ($row["parent" . $i . "relationship"]=="Guardian") { print "selected" ; } ?> value="Guardian"><? print _('Guardian') ?></option>
+										<option <? if ($row["parent" . $i . "relationship"]=="Grandmother") { print "selected" ; } ?> value="Grandmother"><? print _('Grandmother') ?></option>
+										<option <? if ($row["parent" . $i . "relationship"]=="Grandfather") { print "selected" ; } ?> value="Grandfather"><? print _('Grandfather') ?></option>
+										<option <? if ($row["parent" . $i . "relationship"]=="Aunt") { print "selected" ; } ?> value="Aunt"><? print _('Aunt') ?></option>
+										<option <? if ($row["parent" . $i . "relationship"]=="Uncle") { print "selected" ; } ?> value="Uncle"><? print _('Uncle') ?></option>
+										<option <? if ($row["parent" . $i . "relationship"]=="Nanny/Helper") { print "selected" ; } ?> value="Nanny/Helper"><? print _('Nanny/Helper') ?></option>
+										<option <? if ($row["parent" . $i . "relationship"]=="Other") { print "selected" ; } ?> value="Other"><? print _('Other') ?></option>
 									</select>
 									<?
 									if ($i==1) {
@@ -1329,12 +1328,12 @@ else {
 							
 							<tr>
 								<td colspan=2> 
-									<h4>Parent/Guardian <? print $i ?> Background</h4>
+									<h4><? print sprintf(_('Parent/Guardian %1$s Background'), $i) ?></h4>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b>First Language </b><br/>
+									<b><? print _('First Language') ?></b><br/>
 								</td>
 								<td class="right">
 									<input name="<? print "parent$i" ?>languageFirst" id="<? print "parent$i" ?>languageFirst" maxlength=30 value="<? print $row["parent" . $i ."languageFirst"] ?>" type="text" style="width: 300px">
@@ -1361,7 +1360,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Second Language</b><br/>
+									<b><? print _('Second Language') ?></b><br/>
 								</td>
 								<td class="right">
 									<input name="<? print "parent$i" ?>languageSecond" id="<? print "parent$i" ?>languageSecond" maxlength=30 value="<? print $row["parent" . $i ."languageSecond"] ?>" type="text" style="width: 300px">
@@ -1388,7 +1387,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Citizenship</b><br/>
+									<b><? print _('Citizenship') ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="<? print "parent$i" ?>citizenship1" id="<? print "parent$i" ?>citizenship1" style="width: 302px">
@@ -1425,10 +1424,10 @@ else {
 								<td> 
 									<?
 									if ($_SESSION[$guid]["country"]=="") {
-										print "<b>National ID Card Number</b><br/>" ;
+										print "<b>" . _('National ID Card Number') . "</b><br/>" ;
 									}
 									else {
-										print "<b>" . $_SESSION[$guid]["country"] . " ID Card Number</b><br/>" ;
+										print "<b>" . $_SESSION[$guid]["country"] . " " . _('ID Card Number') . "</b><br/>" ;
 									}
 									?>
 								</td>
@@ -1440,10 +1439,10 @@ else {
 								<td> 
 									<?
 									if ($_SESSION[$guid]["country"]=="") {
-										print "<b>Residency/Visa Type</b><br/>" ;
+										print "<b>" . _('Residency/Visa Type') . "</b><br/>" ;
 									}
 									else {
-										print "<b>" . $_SESSION[$guid]["country"] . " Residency/Visa Type</b><br/>" ;
+										print "<b>" . $_SESSION[$guid]["country"] . " " . _('Residency/Visa Type') . "</b><br/>" ;
 									}
 									?>
 								</td>
@@ -1473,12 +1472,12 @@ else {
 								<td> 
 									<?
 									if ($_SESSION[$guid]["country"]=="") {
-										print "<b>Visa Expiry Date</b><br/>" ;
+										print "<b>" . _('Visa Expiry Date') . "</b><br/>" ;
 									}
 									else {
-										print "<b>" . $_SESSION[$guid]["country"] . " Visa Expiry Date</b><br/>" ;
+										print "<b>" . $_SESSION[$guid]["country"] . " " . _('Visa Expiry Date') . "</b><br/>" ;
 									}
-									print "<span style='font-size: 90%'><i>dd/mm/yyyy. If relevant.</i></span>" ;
+									print "<span style='font-size: 90%'><i>Format " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . _('If relevant.') . "</i></span>" ;
 									?>
 								</td>
 								<td class="right">
@@ -1498,12 +1497,12 @@ else {
 							
 							<tr>
 								<td colspan=2> 
-									<h4>Parent/Guardian <? print $i ?> Contact</h4>
+									<h4><? print sprintf(_('Parent/Guardian %1$s Contact'), $i) ?></h4>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b>Email<? if ($i==1) { print " *" ;}?></b><br/>
+									<b><? print _('Email') ?><? if ($i==1) { print " *" ;}?></b><br/>
 								</td>
 								<td class="right">
 									<input name="<? print "parent$i" ?>email" id="<? print "parent$i" ?>email" maxlength=50 value="<? print $row["parent$i" . "email"] ;?>" type="text" style="width: 300px">
@@ -1523,8 +1522,8 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b>Phone <? print $y ; if ($i==1 AND $y==1) { print " *" ;}?></b><br/>
-										<span style="font-size: 90%"><i>Type, country code, number</i></span>
+										<b><? print _('Phone') ?> <? print $y ; if ($i==1 AND $y==1) { print " *" ;}?></b><br/>
+										<span style="font-size: 90%"><i><? print _('Type, country code, number.') ?></i></span>
 									</td>
 									<td class="right">
 										<input name="<? print "parent$i" ?>phone<? print $y ?>" id="<? print "parent$i" ?>phone<? print $y ?>" maxlength=20 value="<? print $row["parent" . $i . "phone" . $y] ?>" type="text" style="width: 160px">
@@ -1559,12 +1558,12 @@ else {
 										</select>
 										<select style="width: 70px" name="<? print "parent$i" ?>phone<? print $y ?>Type">
 											<option <? if ($row["parent" . $i . "phone" . $y . "Type"]=="") { print "selected" ; }?> value=""></option>
-											<option <? if ($row["parent" . $i . "phone" . $y . "Type"]=="Mobile") { print "selected" ; }?> value="Mobile">Mobile</option>
-											<option <? if ($row["parent" . $i . "phone" . $y . "Type"]=="Home") { print "selected" ; }?> value="Home">Home</option>
-											<option <? if ($row["parent" . $i . "phone" . $y . "Type"]=="Work") { print "selected" ; }?> value="Work">Work</option>
-											<option <? if ($row["parent" . $i . "phone" . $y . "Type"]=="Fax") { print "selected" ; }?> value="Fax">Fax</option>
-											<option <? if ($row["parent" . $i . "phone" . $y . "Type"]=="Pager") { print "selected" ; }?> value="Pager">Pager</option>
-											<option <? if ($row["parent" . $i . "phone" . $y . "Type"]=="Other") { print "selected" ; }?> value="Other">Other</option>
+											<option <? if ($row["parent" . $i . "phone" . $y . "Type"]=="Mobile") { print "selected" ; }?> value="Mobile"><? print _('Mobile') ?></option>
+											<option <? if ($row["parent" . $i . "phone" . $y . "Type"]=="Home") { print "selected" ; }?> value="Home"><? print _('Home') ?></option>
+											<option <? if ($row["parent" . $i . "phone" . $y . "Type"]=="Work") { print "selected" ; }?> value="Work"><? print _('Work') ?></option>
+											<option <? if ($row["parent" . $i . "phone" . $y . "Type"]=="Fax") { print "selected" ; }?> value="Fax"><? print _('Fax') ?></option>
+											<option <? if ($row["parent" . $i . "phone" . $y . "Type"]=="Pager") { print "selected" ; }?> value="Pager"><? print _('Pager') ?></option>
+											<option <? if ($row["parent" . $i . "phone" . $y . "Type"]=="Other") { print "selected" ; }?> value="Other"><? print _('Other') ?></option>
 										</select>
 									</td>
 								</tr>
@@ -1574,12 +1573,12 @@ else {
 							
 							<tr>
 								<td colspan=2> 
-									<h4>Employment</h4>
+									<h4><? print _('Employment') ?></h4>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b>Profession</b><br/>
+									<b><? print _('Profession') ?></b><br/>
 								</td>
 								<td class="right">
 									<input name="<? print "parent$i" ?>profession" id="<? print "parent$i" ?>profession" maxlength=30 value="<? print $row["parent$i" . "profession"] ;?>" type="text" style="width: 300px">
@@ -1587,7 +1586,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Employer</b><br/>
+									<b><? print _('Employer') ?></b><br/>
 								</td>
 								<td class="right">
 									<input name="<? print "parent$i" ?>employer" id="<? print "parent$i" ?>employer" maxlength=30 value="<? print $row["parent$i" . "employer"] ;?>" type="text" style="width: 300px">
@@ -1601,12 +1600,12 @@ else {
 						<input type="hidden" name="gibbonFamily" value="TRUE">
 						<tr class='break'>
 							<td colspan=2> 
-								<h3>Family</h3>
+								<h3><? print _('Family') ?></h3>
 							</td>
 						</tr>
 						<tr>
 							<td colspan=2> 
-								<p>The applying family is already a member of <? print $_SESSION[$guid]["organisationName"] ?>.</p>
+								<p><? print sprintf(_('The applying family is already a member of %1$s.'), $_SESSION[$guid]["organisationName"]) ?></p>
 							</td>
 						</tr>
 						<tr>
@@ -1631,10 +1630,10 @@ else {
 									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
-												print "Family Name" ;
+												print _("Family Name") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Parents" ;
+												print _("Parents") ;
 											print "</th>" ;
 										print "</tr>" ;
 										print "<tr class='even'>" ;
@@ -1668,7 +1667,7 @@ else {
 					?>
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>Siblings</h3>
+							<h3><? print _('Siblings') ?></h3>
 						</td>
 					</tr>
 					<tr>
@@ -1682,16 +1681,16 @@ else {
 							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr class='head'>" ;
 									print "<th>" ;
-										print "Sibling Name" ;
+										print _("Sibling Name") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Date of Birth<br/><span style='font-size: 80%'>dd/mm/yyyy</span>" ;
+										print _("Date of Birth") . "<br/><span style='font-size: 80%'>" ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print "</span>" ;
 									print "</th>" ;
 									print "<th>" ;
-										print "School Attending" ;
+										print _("School Attending") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Joining Date<br/><span style='font-size: 80%'>dd/mm/yyyy</span>" ;
+										print _("Joining Date") . "<br/><span style='font-size: 80%'>" ;if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print "</span>" ;
 									print "</th>" ;
 								print "</tr>" ;
 								
@@ -1744,7 +1743,7 @@ else {
 						?>
 						<tr class='break'>
 							<td colspan=2> 
-								<h3>Language Selection</h3>
+								<h3><? print _('Language Selection') ?></h3>
 								<?
 								$languageOptionsBlurb=getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb') ;
 								if ($languageOptionsBlurb!="") {
@@ -1757,8 +1756,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Language Choice</b><br/>
-								<span style="font-size: 90%"><i>Please choose preferred additional language to study.</i></span>
+								<b><? print _('Language Choice') ?></b><br/>
+								<span style="font-size: 90%"><i><? print _('Please choose preferred additional language to study.') ?></i></span>
 							</td>
 							<td class="right">
 								<select name="languageChoice" id="languageChoice" style="width: 302px">
@@ -1779,8 +1778,8 @@ else {
 						</tr>
 						<tr>
 							<td colspan=2 style='padding-top: 15px'> 
-								<b>Language Choice Experience</b><br/>
-								<span style="font-size: 90%"><i>Has the applicant studied the selected language before? If so, please describe the level and type of experience.</i></span><br/> 					
+								<b><? print _('Language Choice Experience') ?></b><br/>
+								<span style="font-size: 90%"><i><? print _('Has the applicant studied the selected language before? If so, please describe the level and type of experience.') ?></i></span><br/> 					
 								<textarea name="languageChoiceExperience" id="languageChoiceExperience" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><? print htmlPrep($row["languageChoiceExperience"]) ;?></textarea>
 							</td>
 						</tr>
@@ -1790,7 +1789,7 @@ else {
 		
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>Scholarships</h3>
+							<h3><? print _('Scholarships') ?></h3>
 							<?
 							//Get scholarships info
 							try {
@@ -1815,12 +1814,12 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Interest</b><br/>
-							<span style="font-size: 90%"><i>Indicate if you are interested in a scholarship.</i></span><br/>
+							<b><? print _('Interest') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Indicate if you are interested in a scholarship.') ?></i></span><br/>
 						</td>
 						<td class="right">
-							<input <? if ($row["scholarshipInterest"]=="Y") { print "checked" ; } ?> type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> Yes
-							<input <? if ($row["scholarshipInterest"]=="N") { print "checked" ; } ?> type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="N" /> No
+							<input <? if ($row["scholarshipInterest"]=="Y") { print "checked" ; } ?> type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> <? print _('Yes') ?>
+							<input <? if ($row["scholarshipInterest"]=="N") { print "checked" ; } ?> type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="N" /><? print _('No') ?>
 						</td>
 					</tr>
 					<tr>
@@ -1829,15 +1828,15 @@ else {
 							<span style="font-size: 90%"><i>Is a scholarship <b>required</b> for you to take up a place at <? print $_SESSION[$guid]["organisationNameShort"] ?>?</i></span><br/>
 						</td>
 						<td class="right">
-							<input <? if ($row["scholarshipRequired"]=="Y") { print "checked" ; } ?> type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> Yes
-							<input <? if ($row["scholarshipRequired"]=="N") { print "checked" ; } ?> type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="N" /> No
+							<input <? if ($row["scholarshipRequired"]=="Y") { print "checked" ; } ?> type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> <? print _('Yes') ?>
+							<input <? if ($row["scholarshipRequired"]=="N") { print "checked" ; } ?> type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="N" /> <? print _('No') ?>
 						</td>
 					</tr>
 					
 					
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>Payment</h3>
+							<h3><? print _('Payment') ?></h3>
 						</td>
 					</tr>
 					<script type="text/javascript">
@@ -1896,21 +1895,21 @@ else {
 					</script>
 					<tr id="familyRow">
 						<td colspan=2'>
-							<p>If you choose family, future invoices will be sent according to family contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.</p>
+							<p><? print _('If you choose family, future invoices will be sent according to family contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.') ?></p>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Send Invoices To</b><br/>
+							<b><? print _('Send Invoices To') ?></b><br/>
 						</td>
 						<td class="right">
-							<input <? if ($row["payment"]=="Family") { print "checked" ; } ?> type="radio" name="payment" value="Family" class="payment" /> Family
-							<input <? if ($row["payment"]=="Company") { print "checked" ; } ?> type="radio" name="payment" value="Company" class="payment" /> Company
+							<input <? if ($row["payment"]=="Family") { print "checked" ; } ?> type="radio" name="payment" value="Family" class="payment" /> <? print _('Family') ?>
+							<input <? if ($row["payment"]=="Company") { print "checked" ; } ?> type="radio" name="payment" value="Company" class="payment" /> <? print _('Company') ?>
 						</td>
 					</tr>
 					<tr id="companyNameRow">
 						<td> 
-							<b>Company Name</b><br/>
+							<b><? print _('Company Name') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="companyName" id="companyName" maxlength=100 value="<? print $row["companyName"] ?>" type="text" style="width: 300px">
@@ -1918,7 +1917,7 @@ else {
 					</tr>
 					<tr id="companyContactRow">
 						<td> 
-							<b>Company Contact Person</b><br/>
+							<b><? print _('Company Contact Person') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="companyContact" id="companyContact" maxlength=100 value="<? print $row["companyContact"] ?>" type="text" style="width: 300px">
@@ -1926,7 +1925,7 @@ else {
 					</tr>
 					<tr id="companyAddressRow">
 						<td> 
-							<b>Company Address</b><br/>
+							<b><? print _('Company Address') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="companyAddress" id="companyAddress" maxlength=255 value="<? print $row["companyAddress"] ?>" type="text" style="width: 300px">
@@ -1934,7 +1933,7 @@ else {
 					</tr>
 					<tr id="companyEmailRow">
 						<td> 
-							<b>Company Email</b><br/>
+							<b><? print _('Company Email') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="companyEmail" id="companyEmail" maxlength=255 value="<? print $row["companyEmail"] ?>" type="text" style="width: 300px">
@@ -1946,19 +1945,19 @@ else {
 					</tr>
 					<tr id="companyCCFamilyRow">
 						<td> 
-							<b>CC Family?</b><br/>
-							<span style="font-size: 90%"><i>Should the family be sent a copy of billing emails?</i></span>
+							<b><? print _('CC Family?') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Should the family be sent a copy of billing emails?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="companyCCFamily" id="companyCCFamily" style="width: 302px">
-								<option <? if ($row["companyCCFamily"]=="N") { print "selected" ; } ?> value="N" /> No
-								<option <? if ($row["companyCCFamily"]=="Y") { print "selected" ; } ?> value="Y" /> Yes
+								<option <? if ($row["companyCCFamily"]=="N") { print "selected" ; } ?> value="N" /> <? print _('No') ?>
+								<option <? if ($row["companyCCFamily"]=="Y") { print "selected" ; } ?> value="Y" /> <? print _('Yes') ?>
 							</select>
 						</td>
 					</tr>
 					<tr id="companyPhoneRow">
 						<td> 
-							<b>Company Phone</b><br/>
+							<b><? print _('Company Phone') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="companyPhone" id="companyPhone" maxlength=20 value="<? print $row["companyPhone"] ?>" type="text" style="width: 300px">
@@ -1979,18 +1978,18 @@ else {
 						?>
 						<tr id="companyAllRow">
 							<td> 
-								<b>Company All?</b><br/>
-								<span style="font-size: 90%"><i>Should all items be billed to the specified company, or just some?</i></span>
+								<b><? print _('Company All?') ?></b><br/>
+								<span style="font-size: 90%"><i><? print _('Should all items be billed to the specified company, or just some?') ?></i></span>
 							</td>
 							<td class="right">
-								<input type="radio" name="companyAll" value="Y" class="companyAll" <? if ($row["companyAll"]=="Y" OR $row["companyAll"]=="") { print "checked" ; } ?> /> All
-								<input type="radio" name="companyAll" value="N" class="companyAll" <? if ($row["companyAll"]=="N") { print "checked" ; } ?> /> Selected
+								<input type="radio" name="companyAll" value="Y" class="companyAll" <? if ($row["companyAll"]=="Y" OR $row["companyAll"]=="") { print "checked" ; } ?> /> <? print _('All') ?>
+								<input type="radio" name="companyAll" value="N" class="companyAll" <? if ($row["companyAll"]=="N") { print "checked" ; } ?> /> <? print _('Selected') ?>
 							</td>
 						</tr>
 						<tr id="companyCategoriesRow">
 							<td> 
-								<b>Company Fee Categories</b><br/>
-								<span style="font-size: 90%"><i>If the specified company is not paying all fees, which categories are they paying?</i></span>
+								<b><? print _('Company Fee Categories') ?></b><br/>
+								<span style="font-size: 90%"><i><? print _('If the specified company is not paying all fees, which categories are they paying?') ?></i></span>
 							</td>
 							<td class="right">
 								<?
@@ -2019,7 +2018,7 @@ else {
 						?>
 						<tr class='break'>
 							<td colspan=2> 
-								<h3>Supporting Documents</h3>
+								<h3><? print _('Supporting Documents') ?></h3>
 							</td>
 						</tr>
 						<?
@@ -2104,12 +2103,12 @@ else {
 					
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>Miscellaneous</h3>
+							<h3><? print _('Miscellaneous') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>How Did You Hear About Us?</b><br/>
+							<b><? print _('How Did You Hear About Us?') ?></b><br/>
 						</td>
 						<td class="right">
 							<?
@@ -2135,8 +2134,8 @@ else {
 					</tr>
 					<tr id="tellUsMoreRow">
 						<td> 
-							<b>Tell Us More </b><br/>
-							<span style="font-size: 90%"><i>The name of a person or link to a website.</i></span>
+							<b><? print _('Tell Us More') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('The name of a person or link to a website.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="howDidYouHearMore" id="howDidYouHearMore" maxlength=255 value="<? print $row["howDidYouHearMore"] ?>" type="text" style="width: 300px">
@@ -2150,7 +2149,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Privacy *</b><br/>
+								<b><? print _('Privacy') ?> *</b><br/>
 								<span style="font-size: 90%"><i><? print htmlPrep($privacyBlurb) ?><br/>
 								</i></span>
 							</td>

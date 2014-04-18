@@ -20,6 +20,8 @@ If you want to run the latest version of Gibbon, prerelease, you can get the sou
 
 Remember, though, it is not stable, and you may lose data. This is not for the faint of heart.
 
+For installation instructions, visit http://gibbonedu.org/support/administrators/installing-gibbon, and make sure to follow the additional instructions for cutting edge code.
+
 As of the latest commit on 26/03/2014 you no longer need to manually update database changes when running Cutting Edge code. Simply go to Admin > System Admin > System Settings and enable Cutting Edge Code. When you want to update, get the latest commit from GitHub, upload it to your server and go to Admin > System Admin > Update to run the new lines. 
 
 Please report any bugs to support@gibbonedu.org.

@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/import_studentE
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Sync Student Enrolment</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Sync Student Enrolment') . "</div>" ;
 	print "</div>" ;
 	
 	$step=NULL ;
@@ -46,17 +46,17 @@ else {
 	if ($step==1) {
 		?>
 		<h2>
-			Step 1 - Select CSV Files
+			<? print _('Step 1 - Select CSV Files') ?>
 		</h2>
 		<p>
-			This page allows you to import student enrolment data from a CSV file. The import includes all current students, giving their school year and roll group. The system will remove all enrolments in the current year, and add those provided in the import file. Select the CSV file you wish to use for the synchronise operation.<br/>
+			<? print _('This page allows you to import student enrolment data from a CSV file. The import includes all current students, giving their school year and roll group. The system will remove all enrolments in the current year, and add those provided in the import file. Select the CSV file you wish to use for the synchronise operation.') ?><br/>
 		</p>
 		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/import_studentEnrolment.php&step=2" ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
-						<b>CSV File *</b><br/>
-						<span style="font-size: 90%"><i>See Notes below for specification.</i></span>
+						<b><? print _('CSV File') ?> *</b><br/>
+						<span style="font-size: 90%"><i><? print _('See Notes below for specification.') ?></i></span>
 					</td>
 					<td class="right">
 						<input type="file" name="file" id="file" size="chars">
@@ -68,7 +68,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Field Delimiter *</b><br/>
+						<b><? print _('Field Delimiter') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<input type="text" style="width: 300px" name="fieldDelimiter" value="," maxlength=1>
@@ -80,7 +80,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>String Enclosure *</b><br/>
+						<b><? print _('String Enclosure') ?> *</b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -107,28 +107,28 @@ else {
 		
 		
 		<h4>
-			Notes
+			<? print _('Notes') ?>
 		</h4>
 		<ol>
-			<li style='color: #c00; font-weight: bold'>THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.</li>
-			<li>You may only submit CSV files.</li>
-			<li>Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).</li>
-			<li>Your import should only include all current students.</li>
-			<li>The submitted file must have the following fields in the following order (all fields are required): 
+			<li style='color: #c00; font-weight: bold'><? print _('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+			<li><? print _('You may only submit CSV files.') ?></li>
+			<li><? print _('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+			<li><? print _('Your import should only include all current students.') ?></li>
+			<li><? print _('The submitted file must have the following fields in the following order (all fields are required):') ?></li> 
 				<ol>
-					<li><b>Username</b> - must be unique</li>
-					<li><b>Roll Group</b> - roll group short name, as set in School Admin (must already exist)</li>
-					<li><b>Year Group</b> - year group short name, as set in School Admin (must already exist).</li>
+					<li><b><? print _('Username') ?></b> - <? print _('Must be unique.') ?></li>
+					<li><b><? print _('Roll Group') ?></b> - <? print _('Roll group short name, as set in School Admim. Nust already exist.') ?></li>
+					<li><b><? print _('Year Group') ?></b> - <? print _('Year group short name, as set in School Admin. Mmust already exist.') ?></li>
 				</ol>
 			</li>
-			<li>Do not include a header row in the CSV files.</li>
+			<li><? print _('Do not include a header row in the CSV files.') ?></li>
 		</ol>
 	<?
 	}
 	else if ($step==2) {
 		?>
 		<h2>
-			Step 2 - Data Check & Confirm
+			<? print _('Step 2 - Data Check & Confirm') ?>
 		</h2>
 		<?
 		
@@ -136,14 +136,14 @@ else {
 		if (($_FILES['file']['type']!="text/csv") AND ($_FILES['file']['type']!="text/comma-separated-values") AND ($_FILES['file']['type']!="text/x-comma-separated-values") AND ($_FILES['file']['type']!="application/vnd.ms-excel")) {
 			?>
 			<div class='error'>
-				Import cannot proceed, as the submitted file has a MIME-TYPE of "<? print $_FILES['file']['type'] ?>", and as such does not appear to be a CSV file.<br/>
+				<? print sprintf(_('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
 			</div>
 			<?
 		}
 		else if (($_POST["fieldDelimiter"]=="") OR ($_POST["stringEnclosure"]=="")) {
 			?>
 			<div class='error'>
-				Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.<br/>
+				<? print _('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
 			</div>
 			<?
 		}
@@ -152,7 +152,7 @@ else {
 			
 			//PREPARE TABLES
 			print "<h4>" ;
-				print "Prepare Database Tables" ;
+				print _("Prepare Database Tables") ;
 			print "</h4>" ;
 			//Lock tables
 			$lockFail=false ;
@@ -166,12 +166,12 @@ else {
 			}
 			if ($lockFail==true) {
 				print "<div class='error'>" ;
-					print "The database could not be locked for use." ;
+					print _("The database could not be locked for use.") ;
 				print "</div>" ;	
 			}
 			else if ($lockFail==false) {
 				print "<div class='success'>" ;
-					print "The database was successfully locked." ;
+					print _("The database was successfully locked.") ;
 				print "</div>" ;	
 			}	
 			
@@ -179,7 +179,7 @@ else {
 				//READ IN DATA
 				if ($proceed==true) {
 					print "<h4>" ;
-						print "File Import" ;
+						print _("File Import") ;
 					print "</h4>" ;
 					$importFail=false ;
 					$csvFile=$_FILES['file']['tmp_name'] ;
@@ -196,7 +196,7 @@ else {
 						}
 						else {
 							print "<div class='error'>" ;
-								print "Student with username " . $data[7] . " had some information malformations." ;
+								print sprintf(_('Student with username %1$s had some information malformations.'), $data[7]) ;
 							print "</div>" ;
 						}
 						$userCount++ ;
@@ -204,24 +204,24 @@ else {
 					fclose($handle);
 					if ($userSuccessCount==0) {
 						print "<div class='error'>" ;
-							print "No useful students were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted." ;
+							print _("No useful students were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
 					else if ($userSuccessCount<$userCount) {
 						print "<div class='error'>" ;
-							print "Some students could not be successfully read or used, so the import will be aborted." ;
+							print _("Some students could not be successfully read or used, so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
 					else if ($userSuccessCount==$userCount) {
 						print "<div class='success'>" ;
-							print "All students could be read and used, so the import will proceed." ;
+							print _("All students could be read and used, so the import will proceed.") ;
 						print "</div>" ;
 					}
 					else {
 						print "<div class='error'>" ;
-							print "An unknown error occured, so the import will be aborted.." ;
+							print _("An unknown error occured, so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
@@ -231,7 +231,7 @@ else {
 				if ($proceed==TRUE) {
 					//SET USERS NOT IN IMPORT TO LEFT
 					print "<h4>" ;
-						print "Delete All Enrolments" ;
+						print _("Delete All Enrolments") ;
 					print "</h4>" ;
 					$deleteAllFail=FALSE ;
 					try {
@@ -246,18 +246,18 @@ else {
 					
 					if ($deleteAllFail==TRUE) {
 						print "<div class='error'>" ;
-							print "An error was encountered in deleting all enrolments." ;
+							print _("An error was encountered in deleting all enrolments.") ;
 						print "</div>" ;
 					}
 					else {
 						print "<div class='success'>" ;
-							print "All enrolments were deleted." ;
+							print _("All enrolments were deleted.") ;
 						print "</div>" ;
 					}
 					
 					if ($deleteAllFail==FALSE) {
 						print "<h4>" ;
-							print "Enrol All Students" ;
+							print _("Enrol All Students") ;
 						print "</h4>" ;
 						foreach ($users AS $user) {
 							$addUserFail=FALSE ;
@@ -276,12 +276,12 @@ else {
 							if ($addUserFail==TRUE) {
 								print "<div class='error'>" ;
 									
-									print "There was an error enroling student: " . $user["username"] . "." ;
+									print _("There was an error enroling student:") . " " . $user["username"] . "." ;
 								print "</div>" ;
 							}
 							else {
 								print "<div class='success'>" ;
-									print "User " . $user["username"] . " was successfully enroled." ;
+									print sprintf(_('User %1$s was successfully enroled.'), $user["username"]) ;
 								print "</div>" ;
 							}
 						}

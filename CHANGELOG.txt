@@ -177,6 +177,8 @@ Timetable Admin: added new field "reportable" to gibbonCourseClassPerson to say 
 	Edited table gibbonCourseClassPerson
 	Edited files /modules/Timetable Admin/courseEnrolment_manage_class_edit_edit*.php, courseEnrolment_manage_class_edit.php, courseEnrolment_manage_byPerson_edit.php, courseEnrolment_manage_byPerson_edit_edit*.php
 	
+Default: added new icon run.png to default theme
+	New file /themes/Default/img/run.png, help.png
 
 v7.1.02
 -------

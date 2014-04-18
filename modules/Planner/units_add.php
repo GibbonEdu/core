@@ -236,8 +236,8 @@ else {
 															?>
 															<input name="gibbonCourseClassID<? print $classCount?>" id="gibbonCourseClassID<? print $classCount?>" maxlength=10 value="<? print $rowClass["gibbonCourseClassID"] ?>" type="hidden" style="width: 300px">
 															<select name="running<? print $classCount?>" id="running<? print $classCount?>" style="width:100%">
-																<option value="N"><? print _('N') ?></option>
-																<option value="Y"><? print _('Y') ?></option>
+																<option value="N"><? print _('No') ?></option>
+																<option value="Y"><? print _('Yes') ?></option>
 															</select>
 															<?
 														print "</td>" ;

@@ -87,7 +87,7 @@ else {
 		}
 		else {
 			print "<div class='linkTop'>" ;
-			print "<a href='javascript:window.print()'><img title='Print' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+			print "<a href='javascript:window.print()'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 			print "</div>" ;
 		
 			$lastPerson="" ;

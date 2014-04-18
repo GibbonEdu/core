@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_pas
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php'>Manage Users</a> > </div><div class='trailEnd'>Reset User Password</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php'>" . _('Manage Users') . "</a> > </div><div class='trailEnd'>" . _('Reset User Password') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -51,10 +51,10 @@ else {
 			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage="Your request failed because your passwords did not match." ;	
+			$updateReturnMessage=_("Your request failed because your passwords did not match.") ;	
 		}
 		else if ($updateReturn=="fail6") {
-			$updateReturnMessage="Your request failed because your password to not meet the minimum requirements for strength." ;	
+			$updateReturnMessage=_("Your request failed because your password to not meet the minimum requirements for strength.") ;	
 		}
 		else if ($updateReturn=="success0") {
 			$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -108,7 +108,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Username *</b><br/>
+							<b><? print _('Username') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -121,7 +121,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Password *</b><br/>
+							<b><? print _('Password') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -132,15 +132,15 @@ else {
 								<?
 								$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
 								if ($alpha=="Y") {
-									print "passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"Does not meet password policy.\" } );" ;
+									print "passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
 								}
 								$numeric=getSettingByScope( $connection2, "System", "passwordPolicyNumeric" ) ;
 								if ($numeric=="Y") {
-									print "passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"Does not meet password policy.\" } );" ;
+									print "passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
 								}
 								$punctuation=getSettingByScope( $connection2, "System", "passwordPolicyNonAlphaNumeric" ) ;
 								if ($punctuation=="Y") {
-									print "passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"Does not meet password policy.\" } );" ;
+									print "passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
 								}
 								$minLength=getSettingByScope( $connection2, "System", "passwordPolicyMinLength" ) ;
 								if (is_numeric($minLength)) {
@@ -152,7 +152,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Confirm Password *</b><br/>
+							<b><? print _('Confirm Password') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -166,13 +166,13 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Force Reset Password? *</b><br/>
-							<span style="font-size: 90%"><i>User will be prompted on next login.</i></span>
+							<b><? print _('Force Reset Password?') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('User will be prompted on next login.') ?></i></span>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="passwordForceReset">
-								<option <? if ($row["passwordForceReset"]=="Y") {print "selected ";}?>value="Y">Y</option>
-								<option <? if ($row["passwordForceReset"]=="N") {print "selected ";}?>value="N">N</option>
+								<option <? if ($row["passwordForceReset"]=="Y") {print "selected ";}?>value="Y"><? print _('Yes') ?></option>
+								<option <? if ($row["passwordForceReset"]=="N") {print "selected ";}?>value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>

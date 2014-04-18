@@ -269,7 +269,7 @@ else {
 							<tr>
 								<td> 
 									<b>Home Address *</b><br/>
-									<span style="font-size: 90%"><i>Unit, Building, Street</i></span>
+									<span style="font-size: 90%"><i><? print _('Unit, Building, Street') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="homeAddress" id="homeAddress" maxlength=255 value="<? print $row["homeAddress"] ?>" type="text" style="width: 300px">
@@ -282,7 +282,7 @@ else {
 							<tr>
 								<td> 
 									<b>Home Address (District) *</b><br/>
-									<span style="font-size: 90%"><i>County, State, District</i></span>
+									<span style="font-size: 90%"><i><? print _('County, State, District') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<? print $row["homeAddressDistrict"] ?>" type="text" style="width: 300px">

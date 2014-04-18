@@ -179,8 +179,8 @@ else {
 				<td class="right">
 					<select style="width: 302px" name="firstAidQualified" id="firstAidQualified" class="firstAidQualified">
 						<option value=""></option>
-						<option value="Y"><? print _('Y') ?></option>
-						<option value="N"><? print _('N') ?></option>
+						<option value="Y"><? print _('Yes') ?></option>
+						<option value="N"><? print _('No') ?></option>
 					</select>
 				</td>
 			</tr>

@@ -159,8 +159,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="computer" id="computer" style="width: 302px">
-						<option value="N"><? print _('N') ?></option>
-						<option value="Y"><? print _('Y') ?></option>
+						<option value="N"><? print _('No') ?></option>
+						<option value="Y"><? print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -183,8 +183,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="projector" id="projector" style="width: 302px">
-						<option value="N"><? print _('N') ?></option>
-						<option value="Y"><? print _('Y') ?></option>
+						<option value="N"><? print _('No') ?></option>
+						<option value="Y"><? print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -195,8 +195,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="tv" id="tv" style="width: 302px">
-						<option value="N"><? print _('N') ?></option>
-						<option value="Y"><? print _('Y') ?></option>
+						<option value="N"><? print _('No') ?></option>
+						<option value="Y"><? print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -207,8 +207,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="dvd" id="dvd" style="width: 302px">
-						<option value="N"><? print _('N') ?></option>
-						<option value="Y"><? print _('Y') ?></option>
+						<option value="N"><? print _('No') ?></option>
+						<option value="Y"><? print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -219,8 +219,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="hifi" id="hifi" style="width: 302px">
-						<option value="N"><? print _('N') ?></option>
-						<option value="Y"><? print _('Y') ?></option>
+						<option value="N"><? print _('No') ?></option>
+						<option value="Y"><? print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -231,8 +231,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="speakers" id="speakers" style="width: 302px">
-						<option value="N"><? print _('N') ?></option>
-						<option value="Y"><? print _('Y') ?></option>
+						<option value="N"><? print _('No') ?></option>
+						<option value="Y"><? print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -243,8 +243,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="iwb" id="iwb" style="width: 302px">
-						<option value="N"><? print _('N') ?></option>
-						<option value="Y"><? print _('Y') ?></option>
+						<option value="N"><? print _('No') ?></option>
+						<option value="Y"><? print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>

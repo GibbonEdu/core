@@ -151,8 +151,8 @@ else {
 						<td class="right">
 							<select style="width: 302px" name="active">
 								<?
-								print "<option " ; if ($row["active"]=="Y") { print "selected "; } ; print "value='Y'>" . _('Y') . "</option>" ;
-								print "<option " ; if ($row["active"]=="N") { print "selected "; } ; print " value='N'>" . _('N') . "</option>" ;
+								print "<option " ; if ($row["active"]=="Y") { print "selected "; } ; print "value='Y'>" . _('Yes') . "</option>" ;
+								print "<option " ; if ($row["active"]=="N") { print "selected "; } ; print " value='N'>" . _('No') . "</option>" ;
 								?>				
 							</select>
 						</td>

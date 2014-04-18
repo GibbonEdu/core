@@ -731,8 +731,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="childDataAccess" id="childDataAccess" style="width: 302px">
-								<option value="Y"><? print _('Y') ?></option>
-								<option value="N"><? print _('N') ?></option>
+								<option value="Y"><? print _('Yes') ?></option>
+								<option value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -786,8 +786,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="contactCall" id="contactCall" style="width: 302px">
-								<option value="Y"><? print _('Y') ?></option>
-								<option value="N"><? print _('N') ?></option>
+								<option value="Y"><? print _('Yes') ?></option>
+								<option value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -798,8 +798,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="contactSMS" id="contactSMS" style="width: 302px">
-								<option value="Y"><? print _('Y') ?></option>
-								<option value="N"><? print _('N') ?></option>
+								<option value="Y"><? print _('Yes') ?></option>
+								<option value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -810,8 +810,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="contactEmail" id="contactEmail" style="width: 302px">
-								<option value="Y"><? print _('Y') ?></option>
-								<option value="N"><? print _('N') ?></option>
+								<option value="Y"><? print _('Yes') ?></option>
+								<option value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -822,8 +822,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="contactMail" id="contactMail" style="width: 302px">
-								<option value="Y"><? print _('Y') ?></option>
-								<option value="N"><? print _('N') ?></option>
+								<option value="Y"><? print _('Yes') ?></option>
+								<option value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>

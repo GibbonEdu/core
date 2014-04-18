@@ -201,7 +201,7 @@ else {
 								print _("Roll Group") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Username" ;
+								print _("Username") ;
 							print "</th>" ;
 							print "<th>" ;
 								print "Start Date" ;
@@ -263,7 +263,7 @@ else {
 								print _("Name") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Username" ;
+								print _("Username") ;
 							print "</th>" ;
 							print "<th>" ;
 								print "Start Date" ;

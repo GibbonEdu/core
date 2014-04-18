@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/applicationForm_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Application Forms</a> > </div><div class='trailEnd'>Reject Application</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/applicationForm_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Application Forms') . "</a> > </div><div class='trailEnd'>" . _('Reject Application') . "</div>" ;
 	print "</div>" ;
 	
 	//Check if school year specified
@@ -78,7 +78,7 @@ else {
 					$rejectReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($rejectReturn=="success1") {
-					$rejectReturnMessage="Your request was completed successfully., but status could not be updated." ;	
+					$rejectReturnMessage=_("Your request was completed successfully., but status could not be updated.") ;	
 				}
 				print "<div class='$class'>" ;
 					print $rejectReturnMessage;
@@ -100,7 +100,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Are you sure you want to reject the application for <? print formatName("", $row["preferredName"], $row["surname"], "Student") ?>?</b><br/>
+							<b><? print sprintf(_('Are you sure you want to reject the application for %1$s?'), formatName("", $row["preferredName"], $row["surname"], "Student")) ?></b><br/>
 						</td>
 					</tr>
 					<tr>

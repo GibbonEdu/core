@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Application Forms</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Application Forms') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -122,7 +122,7 @@ else {
 		}
 		
 		print "<h4>" ;
-		print "Search" ;
+		print _("Search") ;
 		print "</h2>" ;
 		?>
 		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -130,8 +130,8 @@ else {
 				<tr><td style="width: 40%"></td><td></td></tr>
 				<tr>
 					<td> 
-						<b>Search For</b><br/>
-						<span style="font-size: 90%"><i>Application ID, preferred, surname, PayPal transaction ID</i></span>
+						<b><? print _('Search For') ?></b><br/>
+						<span style="font-size: 90%"><i><? print _('Application ID, preferred, surname, PayPal transaction ID') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="search" id="search" maxlength=20 value="<? print $search ?>" type="text" style="width: 300px">
@@ -153,7 +153,7 @@ else {
 		<?
 		
 		print "<h4>" ;
-		print "View" ;
+		print _("View") ;
 		print "</h2>" ;
 		
 		
@@ -185,25 +185,25 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print "ID</span>" ;
+						print _("ID") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Student<br/><span style='font-style: italic; font-size: 85%'>Application Date</span>" ;
+						print _("Student") . "<br/><span style='font-style: italic; font-size: 85%'>" . _("Application Date") . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Birth Year<br/><span style='font-style: italic; font-size: 85%'>Entry Year</span>" ;
+						print _("Birth Year") . "<br/><span style='font-style: italic; font-size: 85%'>" . _("Entry Year") ."</span>" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Parents" ;
+						print _("Parents") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Last School" ;
+						print _("Last School") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Status<br/><span style='font-style: italic; font-size: 85%'>Milestones</span>" ;
+						print _("Status") . "<br/><span style='font-style: italic; font-size: 85%'>" . _('Milestones') . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Priority" ;
+						print _("Priority") ;
 					print "</th>" ;
 					print "<th style='width: 80px'>" ;
 						print _("Actions") ;
@@ -326,8 +326,8 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["status"]=="Pending" OR $row["status"]=="Waiting List") {
-								print "<a style='margin-left: 1px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_accept.php&gibbonApplicationFormID=" . $row["gibbonApplicationFormID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='Accept' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/></a>" ;
-								print "<a style='margin-left: 5px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_reject.php&gibbonApplicationFormID=" . $row["gibbonApplicationFormID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='Reject' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a>" ;
+								print "<a style='margin-left: 1px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_accept.php&gibbonApplicationFormID=" . $row["gibbonApplicationFormID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='" . _('Accept') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/></a>" ;
+								print "<a style='margin-left: 5px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_reject.php&gibbonApplicationFormID=" . $row["gibbonApplicationFormID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='" . _('Reject') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a>" ;
 								print "<br/>" ;
 							}
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_edit.php&gibbonApplicationFormID=" . $row["gibbonApplicationFormID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;

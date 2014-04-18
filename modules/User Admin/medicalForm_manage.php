@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_man
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Medical Forms</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Medical Forms') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -59,8 +59,8 @@ else {
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td> 
-					<b>Search For</b><br/>
-					<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
+					<b><? print _('Search For') ?></b><br/>
+					<span style="font-size: 90%"><i><? print _('Preferred, surname, username.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="search" id="search" maxlength=20 value="<? if (isset($_GET["search"])) { print $_GET["search"] ; }?>" type="text" style="width: 300px">
@@ -81,7 +81,7 @@ else {
 	<?
 	
 	print "<h2>" ;
-	print "View" ;
+	print _("View") ;
 	print "</h2>" ;
 	
 	$search=NULL ;
@@ -126,18 +126,18 @@ else {
 					print _("Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Blood Type" ;
+					print _("Blood Type") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Medication<br/>" ;
-					print "<span style='font-size: 80%'><i>Long Term</i></span>" ;
+					print _("Medication") . "<br/>" ;
+					print "<span style='font-size: 80%'><i>" . _('Long Term') . "</i></span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Tetanus<br/>" ;
-					print "<span style='font-size: 80%'><i>10 Years</i></span>" ;
+					print _("Tetanus") . "<br/>" ;
+					print "<span style='font-size: 80%'><i>" . _('10 Years') . "</i></span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Conditions" ;
+					print _("Conditions") ;
 				print "</th>" ;
 				print "<th style='width: 80px'>" ;
 					print _("Actions") ;
