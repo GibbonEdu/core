@@ -1,14 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.6
+-- version 4.1.8
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Feb 09, 2014 at 11:51 PM
--- Server version: 5.5.33
--- PHP Version: 5.5.3
+-- Host: localhost:8889
+-- Generation Time: Apr 18, 2014 at 03:23 PM
+-- Server version: 5.5.34
+-- PHP Version: 5.5.10
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone="+00:00";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -17,7 +17,7 @@ SET time_zone="+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `gibbon_tmp`
+-- Database: `gibbon_cuttingEdge`
 --
 
 -- --------------------------------------------------------
@@ -47,7 +47,7 @@ CREATE TABLE `gibbonAction` (
   `categoryPermissionOther` enum('Y','N') NOT NULL DEFAULT 'Y',
   PRIMARY KEY (`gibbonActionID`),
   KEY `gibbonModuleID` (`gibbonModuleID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=806 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=808 ;
 
 --
 -- Dumping data for table `gibbonAction`
@@ -83,7 +83,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000022, 0004, 'View Departments', 0, '', 'Allows uers to view all department details.', 'departments.php, department.php, department_course.php, department_course_class.php, department_course_class_full.php, department_course_unit_add.php, department_course_unit_edit.php, department_course_unit_delete.php, department_course_unit_duplicate.php, department_edit.php, department_course_edit.php', 'departments.php', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'),
 (0000065, 0002, 'Medical Form Updates ', 0, 'Data Updater', 'Allows admins to process data update requests for medical data', 'data_medical.php, data_medical_edit.php, data_medical_delete.php', 'data_medical.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000064, 0008, 'Update Medical Form_family', 0, '', 'Allows users to update medical information for themselves and their family members', 'data_medical.php', 'data_medical.php', 'Y', 'N', 'N', 'N', 'Y', 'N', 'Y', 'Y', 'Y', 'Y'),
-(0000034, 0007, 'Edit Markbook_singleClass', 0, '', 'Edit columns and grades for a single class at a time.', 'markbook_edit.php, markbook_edit_add.php, markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php', 'markbook_edit.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
+(0000034, 0007, 'Edit Markbook_singleClass', 0, '', 'Edit columns and grades for a single class at a time.', 'markbook_edit.php, markbook_edit_add.php, markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php', 'markbook_edit.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000033, 0007, 'View Markbook_allClassesAllData', 3, '', 'View all markbook information for all users', 'markbook_view.php, markbook_view_full.php', 'markbook_view.php', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y', 'Y'),
 (0000032, 0002, 'Manage Staff', 0, 'User Management', 'Edit staff within the system', 'staff_manage.php, staff_manage_add.php, staff_manage_edit.php, staff_manage_delete.php', 'staff_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000025, 0001, 'Manage Spaces', 0, 'Other', 'Allows users to create a list of spaces and rooms in the school', 'space_manage.php, space_manage_add.php, space_manage_edit.php, space_manage_delete.php', 'space_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -110,7 +110,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000007, 0001, 'Manage Roll Groups', 0, 'Groupings', '', 'rollGroup_manage.php,rollGroup_manage_edit.php,rollGroup_manage_add.php,rollGroup_manage_delete.php', 'rollGroup_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000005, 0003, 'System Settings', 0, '', 'Main system settings', 'systemSettings.php', 'systemSettings.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000006, 0001, 'Manage Year Groups', 0, 'Groupings', '', 'yearGroup_manage.php,yearGroup_manage_edit.php,yearGroup_manage_add.php,yearGroup_manage_delete.php', 'yearGroup_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000004, 0002, 'Student Enrolment', 0, 'Enrolment', 'Allows user to control student enrolment in the current year', 'studentEnrolment_manage.php,studentEnrolment_manage_add.php,studentEnrolment_manage_edit.php,studentEnrolment_manage_delete.php', 'studentEnrolment_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000004, 0002, 'Student Enrolment', 0, 'User Management', 'Allows user to control student enrolment in the current year', 'studentEnrolment_manage.php,studentEnrolment_manage_add.php,studentEnrolment_manage_edit.php,studentEnrolment_manage_delete.php', 'studentEnrolment_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000003, 0001, 'Manage School Years', 0, 'Years, Days & Times', 'Allows user to control the definition of academic years within the system', 'schoolYear_manage.php,schoolYear_manage_edit.php,schoolYear_manage_delete.php,schoolYear_manage_add.php', 'schoolYear_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000002, 0002, 'Manage Users', 0, 'User Management', 'Edit any user within the system', 'user_manage.php, user_manage_add.php, user_manage_edit.php, user_manage_delete.php, user_manage_password.php', 'user_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000060, 0006, 'Student History_myChildren', 0, 'Reports', 'Print a report of all attendance data in the current school yearfor my children', 'report_studentHistory.php', 'report_studentHistory.php', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
@@ -210,8 +210,8 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000742, 0001, 'Manage Students Settings', 0, 'People', 'Manage settings for the Student module', 'studentsSettings.php,studentsSettings_noteCategory_add.php,studentsSettings_noteCategory_edit.php,studentsSettings_noteCategory_delete.php', 'studentsSettings.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000756, 0001, 'Manage File Extensions', 0, 'Other', 'Manage file extensions allowed across the system', 'fileExtensions_manage.php,fileExtensions_manage_add.php,fileExtensions_manage_edit.php,fileExtensions_manage_delete.php', 'fileExtensions_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000757, 0005, 'Student ID Cards ', 1, 'Reports', 'A report for bulk creation of student ID cards.', 'report_students_IDCards.php', 'report_students_IDCards.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000758, 0007, 'Edit Markbook_multipleClassesInDepartment', 1, '', 'Edit columns and grades for a single class belonging to the user, or multiple classes within departments.', 'markbook_edit.php, markbook_edit_add.php,markbook_edit_addMulti.php,markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php', 'markbook_edit.php', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000759, 0007, 'Edit Markbook_multipleClassesAcrossSchool', 2, '', 'Edit columns and grades for a single class belonging to the user, or multiple classes across the whole school.', 'markbook_edit.php, markbook_edit_add.php,markbook_edit_addMulti.php, markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php', 'markbook_edit.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000758, 0007, 'Edit Markbook_multipleClassesInDepartment', 1, '', 'Edit columns and grades for a single class belonging to the user, or multiple classes within departments.', 'markbook_edit.php, markbook_edit_add.php,markbook_edit_addMulti.php,markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php', 'markbook_edit.php', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000759, 0007, 'Edit Markbook_multipleClassesAcrossSchool', 2, '', 'Edit columns and grades for a single class belonging to the user, or multiple classes across the whole school.', 'markbook_edit.php, markbook_edit_add.php,markbook_edit_addMulti.php,markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php', 'markbook_edit.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000760, 0014, 'View Available Spaces', 0, 'Reports', 'View unassigned rooms by timetable.', 'report_viewAvailableSpaces.php', 'report_viewAvailableSpaces.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000796, 0001, 'Manage External Assessments', 1, 'ARR', 'Add, edit and delete external assessments.', 'externalAssessments_manage.php,externalAssessments_manage_edit.php,externalAssessments_manage_edit_field_add.php,externalAssessments_manage_edit_field_edit.php,externalAssessments_manage_edit_field_delete.php, externalAssessments_manage_add.php, externalAssessments_manage_delete.php', 'externalAssessments_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000764, 0008, 'Update Family Data_any', 1, '', 'Create family data update request for any user', 'data_family.php', 'data_family.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -231,9 +231,11 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000779, 0136, 'View Staff Profile_brief', 1, 'Profiles', 'View brief profile of any staff member in the school.', 'staff_view.php,staff_view_details.php', 'staff_view.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000780, 0136, 'View Staff Profile_full', 2, 'Profiles', 'View full profile of any staff member in the school.', 'staff_view.php,staff_view_details.php', 'staff_view', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000781, 0137, 'View Roll Groups', 1, '', 'View a brief profile of roll groups in school.', 'rollGroups.php,rollGroups_details.php', 'rollGroups.php', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y', 'Y', 'Y'),
-(0000803, 0007, 'Edit Markbook_everything', 4, '', 'Allows editing of any column in any class.', 'markbook_edit.php, markbook_edit_add.php,markbook_edit_addMulti.php,markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php', 'markbook_edit.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000803, 0007, 'Edit Markbook_everything', 4, '', 'Allows editing of any column in any class.', 'markbook_edit.php, markbook_edit_add.php,markbook_edit_addMulti.php,markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php', 'markbook_edit.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000804, 0002, 'Manage Districts', 0, 'User Management', 'Manage a list of districts for address autocomplete.', 'district_manage.php, district_manage_add.php, district_manage_edit.php, district_manage_delete.php', 'district_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000805, 0005, 'Letters Home by Roll Group', 0, 'Reports', 'Show students in roll group, less those with an older sibling, so that letters can be carried home by oldest in family.', 'report_lettersHome_byRollGroup.php', 'report_lettersHome_byRollGroup.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
+(0000805, 0005, 'Letters Home by Roll Group', 0, 'Reports', 'Show students in roll group, less those with an older sibling, so that letters can be carried home by oldest in family.', 'report_lettersHome_byRollGroup.php', 'report_lettersHome_byRollGroup.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000806, 0003, 'Language Settings', 0, '', 'Allows administrators to control system-wide language and localisation settings.', 'i18n_manage.php', 'i18n_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000807, 0005, 'Privacy Choices by Student', 0, 'Reports', 'Shows privacy options selected, for those students with a selection made.', 'report_privacy_student.php', 'report_privacy_student.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
 
 -- --------------------------------------------------------
 
@@ -246,6 +248,7 @@ CREATE TABLE `gibbonActivity` (
   `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL DEFAULT '000',
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `name` varchar(40) NOT NULL DEFAULT '',
+  `provider` enum('School','External') NOT NULL DEFAULT 'School',
   `type` varchar(255) NOT NULL,
   `gibbonSchoolYearTermIDList` text NOT NULL,
   `listingStart` date DEFAULT NULL,
@@ -361,7 +364,7 @@ CREATE TABLE `gibbonApplicationForm` (
   `officialName` varchar(150) NOT NULL,
   `nameInCharacters` varchar(20) NOT NULL,
   `gender` enum('M','F') NOT NULL DEFAULT 'M',
-  `status` enum('Pending','Accepted','Rejected','Withdrawn') NOT NULL DEFAULT 'Pending',
+  `status` enum('Pending','Waiting List','Accepted','Rejected','Withdrawn') NOT NULL DEFAULT 'Pending',
   `dob` date DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
   `homeAddress` mediumtext,
@@ -876,6 +879,7 @@ CREATE TABLE `gibbonCourseClassPerson` (
   `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `role` enum('Student','Teacher','Assistant','Technician','Parent','Student - Left','Teacher - Left') NOT NULL,
+  `reportable` enum('Y','N') NOT NULL DEFAULT 'Y',
   PRIMARY KEY (`gibbonCourseClassPersonID`),
   KEY `gibbonCourseClassID` (`gibbonCourseClassID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -1002,7 +1006,7 @@ CREATE TABLE `gibbonDistrict` (
   `gibbonDistrictID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
   PRIMARY KEY (`gibbonDistrictID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1551,6 +1555,38 @@ CREATE TABLE `gibbonHouse` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `gibboni18n`
+--
+
+CREATE TABLE `gibboni18n` (
+  `gibboni18nID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `code` varchar(5) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `systemDefault` enum('Y','N') NOT NULL DEFAULT 'N',
+  `maintainerName` varchar(100) NOT NULL,
+  `maintainerWebsite` varchar(255) NOT NULL,
+  `dateFormat` varchar(20) NOT NULL,
+  `dateFormatRegEx` text NOT NULL,
+  `dateFormatPHP` varchar(20) NOT NULL,
+  `currencyCode` varchar(3) NOT NULL COMMENT '3-char',
+  `currencySymbol` varchar(1) NOT NULL,
+  PRIMARY KEY (`gibboni18nID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `gibboni18n`
+--
+
+INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `currencyCode`, `currencySymbol`) VALUES
+(0001, 'en_GB', 'English - United Kingdom', 'Y', 'Gibbon', 'http://gibbonedu.org', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'GBP', '£'),
+(0002, 'en_US', 'English - United States', 'N', 'Gibbon', 'http://gibbonedu.org', 'mm/dd/yyyy', '/(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20\\d\\d)/', 'm/d/Y', 'USD', '$'),
+(0003, 'es_ES', 'Español - España', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'EUR', '€'),
+(0004, 'zh_CN', '汉语 - 中国', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'yyyy-mm-dd', '/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/', 'Y-m-d', 'CNY', '¥'),
+(0005, 'zh_HK', '體字 - 香港', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'HKD', '$');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `gibbonIN`
 --
 
@@ -1731,12 +1767,12 @@ CREATE TABLE `gibbonMarkbookColumn` (
 CREATE TABLE `gibbonMarkbookEntry` (
   `gibbonMarkbookEntryID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `gibbonMarkbookColumnID` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonIDStudent` int(10) unsigned NOT NULL,
+  `gibbonPersonIDStudent` int(10) unsigned zerofill NOT NULL,
   `attainmentValue` varchar(10) NOT NULL,
-  `attainmentDescriptor` varchar(20) NOT NULL,
-  `attainmentConcern` enum('N','Y') NOT NULL,
+  `attainmentDescriptor` varchar(100) NOT NULL,
+  `attainmentConcern` enum('N','Y','P') NOT NULL COMMENT '''P'' denotes that student has exceed their personal target',
   `effortValue` varchar(10) NOT NULL,
-  `effortDescriptor` varchar(20) NOT NULL,
+  `effortDescriptor` varchar(100) NOT NULL,
   `effortConcern` enum('N','Y') NOT NULL,
   `comment` text NOT NULL,
   `response` varchar(255) DEFAULT NULL,
@@ -1744,6 +1780,21 @@ CREATE TABLE `gibbonMarkbookEntry` (
   PRIMARY KEY (`gibbonMarkbookEntryID`),
   KEY `gibbonPersonIDStudent` (`gibbonPersonIDStudent`),
   KEY `gibbonMarkbookColumnID` (`gibbonMarkbookColumnID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonMarkbookTarget`
+--
+
+CREATE TABLE `gibbonMarkbookTarget` (
+  `gibbonMarkbookTargetID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
+  `gibbonPersonIDStudent` int(10) unsigned zerofill NOT NULL,
+  `gibbonScaleGradeID` int(7) DEFAULT NULL,
+  PRIMARY KEY (`gibbonMarkbookTargetID`),
+  UNIQUE KEY `coursePerson` (`gibbonCourseClassID`,`gibbonPersonIDStudent`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1863,22 +1914,22 @@ INSERT INTO `gibbonModule` (`gibbonModuleID`, `name`, `description`, `entryURL`,
 (0003, 'System Admin', 'Allows administrators to configure system settings.', 'systemSettings.php', 'Core', 'Y', 'Admin', '', 'Ross Parker', 'http://rossparker.org'),
 (0005, 'Students', 'Allows users to view student data', 'student_view.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
 (0006, 'Attendance', 'School attendance taking', 'attendance_take_byRollGroup.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
-(0007, 'Markbook', 'A system for keeping track of marks', 'markbook_view.php', 'Core', 'Y', 'ARR', '', 'Ross Parker', 'http://rossparker.org'),
-(0004, 'Departments', 'View details within a department', 'departments.php', 'Core', 'Y', 'T&L', '', 'Ross Parker', 'http://rossparker.org'),
-(0009, 'Planner', 'Supports lesson planning and information sharing for staff, student and parents', 'planner.php', 'Core', 'Y', 'T&L', '', 'Ross Parker', 'http://rossparker.org'),
-(0011, 'Individual Needs', 'Individual Needs', 'in_view.php', 'Core', 'Y', 'T&L', '', 'Ross Parker', 'http://rossparker.org'),
-(0012, 'Crowd Assessment', 'Allows users to assess each other''s work', 'crowdAssess.php', 'Core', 'Y', 'ARR', '', 'Ross Parker', 'http://rossparker.org'),
+(0007, 'Markbook', 'A system for keeping track of marks', 'markbook_view.php', 'Core', 'Y', 'Assessment', '', 'Ross Parker', 'http://rossparker.org'),
+(0004, 'Departments', 'View details within a department', 'departments.php', 'Core', 'Y', 'Learning', '', 'Ross Parker', 'http://rossparker.org'),
+(0009, 'Planner', 'Supports lesson planning and information sharing for staff, student and parents', 'planner.php', 'Core', 'Y', 'Learning', '', 'Ross Parker', 'http://rossparker.org'),
+(0011, 'Individual Needs', 'Individual Needs', 'in_view.php', 'Core', 'Y', 'Learning', '', 'Ross Parker', 'http://rossparker.org'),
+(0012, 'Crowd Assessment', 'Allows users to assess each other''s work', 'crowdAssess.php', 'Core', 'Y', 'Assessment', '', 'Ross Parker', 'http://rossparker.org'),
 (0013, 'Timetable Admin', 'Timetable administration', 'tt.php', 'Core', 'Y', 'Admin', '', 'Ross Parker', 'http://rossparker.org'),
-(0014, 'Timetable', 'Allows users to view timetables', 'tt.php', 'Core', 'Y', 'T&L', '', 'Ross Parker', 'http://rossparker.org'),
-(0015, 'Activities', 'Run a school activities program', 'activities_view.php', 'Core', 'Y', 'T&L', '', 'Ross Parker', 'http://rossparker.org'),
+(0014, 'Timetable', 'Allows users to view timetables', 'tt.php', 'Core', 'Y', 'Learning', '', 'Ross Parker', 'http://rossparker.org'),
+(0015, 'Activities', 'Run a school activities program', 'activities_view.php', 'Core', 'Y', 'Learning', '', 'Ross Parker', 'http://rossparker.org'),
 (0008, 'Data Updater', 'Allow users to update their family''s data', 'data_personal.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
-(0016, 'External Assessment', 'Facilitates tracking of student performance in external examinations.', 'externalAssessment.php', 'Core', 'Y', 'ARR', '', 'Ross Parker', 'http://rossparker.org'),
+(0016, 'External Assessment', 'Facilitates tracking of student performance in external examinations.', 'externalAssessment.php', 'Core', 'Y', 'Assessment', '', 'Ross Parker', 'http://rossparker.org'),
 (0017, 'Application Form', 'Allows users, with or without an account, to apply for student places.', 'applicationForm.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
 (0119, 'Behaviour', 'Tracking Student Behaviour', 'behaviour_manage.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
-(0120, 'Resources', 'Collect and manage resources for teaching and learning', 'resources_view.php', 'Core', 'Y', 'T&L', '', 'Ross Parker', 'http://rossparker.org'),
+(0120, 'Resources', 'Collect and manage resources for teaching and learning', 'resources_view.php', 'Core', 'Y', 'Learning', '', 'Ross Parker', 'http://rossparker.org'),
 (0121, 'Messenger', 'Unified messenger for email, message wall and more.', 'messenger_manage.php', 'Core', 'Y', 'Other', '', 'Ross Parker', 'http://rossparker.org'),
-(0126, 'Rubrics', 'Allows users to create rubrics for assessment', 'rubrics.php', 'Core', 'Y', 'ARR', '', 'Ross Parker', 'http://rossparker.org'),
-(0130, 'Library', 'Allows the management of a catalog from which items can be borrowed.', 'library_manage_catalog.php', 'Core', 'Y', 'T&L', '', 'Ross Parker', 'http://rossparker.org'),
+(0126, 'Rubrics', 'Allows users to create rubrics for assessment', 'rubrics.php', 'Core', 'Y', 'Assessment', '', 'Ross Parker', 'http://rossparker.org'),
+(0130, 'Library', 'Allows the management of a catalog from which items can be borrowed.', 'library_manage_catalog.php', 'Core', 'Y', 'Learning', '', 'Ross Parker', 'http://rossparker.org'),
 (0135, 'Finance', 'Allows a school to issue invocies and track payments.', 'invoices_manage.php', 'Core', 'Y', 'Other', '', 'Ross Parker', 'http://rossparker.org'),
 (0136, 'Staff', 'Allows users to view staff information', 'staff_view.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
 (0137, 'Roll Groups', 'Allows users to view a listing of roll groups', 'rollGroups.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org');
@@ -1916,7 +1967,7 @@ CREATE TABLE `gibbonPermission` (
   PRIMARY KEY (`permissionID`),
   KEY `gibbonRoleID` (`gibbonRoleID`),
   KEY `gibbonActionID` (`gibbonActionID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=53857 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=53861 ;
 
 --
 -- Dumping data for table `gibbonPermission`
@@ -2205,7 +2256,11 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000053853, 004, 0000781),
 (0000053854, 001, 0000803),
 (0000053855, 001, 0000804),
-(0000053856, 001, 0000805);
+(0000053856, 001, 0000805),
+(0000053857, 001, 0000804),
+(0000053858, 001, 0000806),
+(0000053859, 001, 0000807),
+(0000053860, 002, 0000807);
 
 -- --------------------------------------------------------
 
@@ -2304,6 +2359,7 @@ CREATE TABLE `gibbonPerson` (
   `privacy` text,
   `dayType` varchar(255) DEFAULT NULL COMMENT 'Student day type, as specified in the application form.',
   `gibbonThemeIDPersonal` int(4) unsigned zerofill DEFAULT NULL,
+  `gibboni18nIDPersonal` int(4) unsigned zerofill DEFAULT NULL,
   PRIMARY KEY (`gibbonPersonID`),
   UNIQUE KEY `username` (`username`),
   KEY `username_2` (`username`,`email`)
@@ -2313,8 +2369,8 @@ CREATE TABLE `gibbonPerson` (
 -- Dumping data for table `gibbonPerson`
 --
 
-INSERT INTO `gibbonPerson` (`gibbonPersonID`, `title`, `surname`, `firstName`, `preferredName`, `officialName`, `nameInCharacters`, `gender`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`, `dob`, `email`, `emailAlternate`, `image_240`, `image_75`, `lastIPAddress`, `lastTimestamp`, `lastFailIPAddress`, `lastFailTimestamp`, `failCount`, `address1`, `address1District`, `address1Country`, `address2`, `address2District`, `address2Country`, `phone1Type`, `phone1CountryCode`, `phone1`, `phone3Type`, `phone3CountryCode`, `phone3`, `phone2Type`, `phone2CountryCode`, `phone2`, `phone4Type`, `phone4CountryCode`, `phone4`, `website`, `languageFirst`, `languageSecond`, `languageThird`, `countryOfBirth`, `ethnicity`, `citizenship1`, `citizenship1Passport`, `citizenship2`, `citizenship2Passport`, `religion`, `nationalIDCardNumber`, `residencyStatus`, `visaExpiryDate`, `profession`, `employer`, `jobTitle`, `emergency1Name`, `emergency1Number1`, `emergency1Number2`, `emergency1Relationship`, `emergency2Name`, `emergency2Number1`, `emergency2Number2`, `emergency2Relationship`, `gibbonHouseID`, `studentID`, `dateStart`, `dateEnd`, `gibbonSchoolYearIDClassOf`, `lastSchool`, `nextSchool`, `departureReason`, `transport`, `calendarFeedPersonal`, `viewCalendarSchool`, `viewCalendarPersonal`, `gibbonApplicationFormID`, `lockerNumber`, `vehicleRegistration`, `personalBackground`, `messengerLastBubble`, `privacy`, `dayType`, `gibbonThemeIDPersonal`) VALUES
-(0000000001, 'Mr. ', 'Administrator', 'System', 'System', 'System Administrator', '', 'M', 'admin', '76b9734ea08ecb8454c99f1c618d2553', '', '', 'Y', 'Full', 'Y', 001, '001,002', NULL, '', '', '', '', '', '0000-00-00 00:00:00', '::1', '2013-09-30 06:22:59', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', NULL, '', '', '', '', '', '', '', '', '', '', '', NULL, '', NULL, NULL, NULL, '', '', '', '', '', 'N', 'N', NULL, '', '123abc', '', '2013-09-30', '', NULL, 0001);
+INSERT INTO `gibbonPerson` (`gibbonPersonID`, `title`, `surname`, `firstName`, `preferredName`, `officialName`, `nameInCharacters`, `gender`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`, `dob`, `email`, `emailAlternate`, `image_240`, `image_75`, `lastIPAddress`, `lastTimestamp`, `lastFailIPAddress`, `lastFailTimestamp`, `failCount`, `address1`, `address1District`, `address1Country`, `address2`, `address2District`, `address2Country`, `phone1Type`, `phone1CountryCode`, `phone1`, `phone3Type`, `phone3CountryCode`, `phone3`, `phone2Type`, `phone2CountryCode`, `phone2`, `phone4Type`, `phone4CountryCode`, `phone4`, `website`, `languageFirst`, `languageSecond`, `languageThird`, `countryOfBirth`, `ethnicity`, `citizenship1`, `citizenship1Passport`, `citizenship2`, `citizenship2Passport`, `religion`, `nationalIDCardNumber`, `residencyStatus`, `visaExpiryDate`, `profession`, `employer`, `jobTitle`, `emergency1Name`, `emergency1Number1`, `emergency1Number2`, `emergency1Relationship`, `emergency2Name`, `emergency2Number1`, `emergency2Number2`, `emergency2Relationship`, `gibbonHouseID`, `studentID`, `dateStart`, `dateEnd`, `gibbonSchoolYearIDClassOf`, `lastSchool`, `nextSchool`, `departureReason`, `transport`, `calendarFeedPersonal`, `viewCalendarSchool`, `viewCalendarPersonal`, `gibbonApplicationFormID`, `lockerNumber`, `vehicleRegistration`, `personalBackground`, `messengerLastBubble`, `privacy`, `dayType`, `gibbonThemeIDPersonal`, `gibboni18nIDPersonal`) VALUES
+(0000000001, 'Mr. ', 'Administrator', 'System', 'System', 'System Administrator', '', 'M', 'admin', '76b9734ea08ecb8454c99f1c618d2553', '', '', 'Y', 'Full', 'Y', 001, '001,002', NULL, '', '', '', '', '', '0000-00-00 00:00:00', '::1', '2013-09-30 06:22:59', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', NULL, '', '', '', '', '', '', '', '', '', '', '', NULL, '', NULL, NULL, NULL, '', '', '', '', '', 'N', 'N', NULL, '', '123abc', '', '2013-09-30', '', NULL, 0001, NULL);
 
 -- --------------------------------------------------------
 
@@ -3270,7 +3326,7 @@ CREATE TABLE `gibbonSetting` (
   PRIMARY KEY (`gibbonSystemSettingsID`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `nameDisplay` (`nameDisplay`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=127 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=134 ;
 
 --
 -- Dumping data for table `gibbonSetting`
@@ -3391,7 +3447,14 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 (00123, 'User Admin', 'googleClientID', 'Google Developers Client ID', 'Client ID for Google Project In Developers Console.', ''),
 (00124, 'User Admin', 'googleClientSecret', 'Google Developers Client Secret', 'Client Secret for Google Project In Developers Console.', ''),
 (00125, 'User Admin', 'googleRedirectUri', 'Google Developers Redirect Url', 'Google Redirect on sucessful auth.', ''),
-(00126, 'User Admin', 'googleDeveloperKey', 'Google Developers Developer Key', 'Google project Developer Key.', '');
+(00126, 'User Admin', 'googleDeveloperKey', 'Google Developers Developer Key', 'Google project Developer Key.', ''),
+(00127, 'Markbook', 'personalisedWarnings', 'Personalised Warnings', 'Should markbook warnings be based on personal targets, if they are available?', 'Y'),
+(00128, 'Activities', 'disableExternalProviderSignup', 'Disable External Provider Signup', 'Should we turn off the option to sign up for activities provided by an outside agency?', 'N'),
+(00129, 'Activities', 'hideExternalProviderCost', 'Hide External Provider Cost', 'Should we hide the cost of activities provided by an outside agency from the Activities View?', 'N'),
+(00130, 'System', 'cuttingEdgeCode', 'Cutting Edge Code', 'Are you running cutting edge code, instead of stable versions?', 'Y'),
+(00131, 'System', 'cuttingEdgeCodeLine', 'Cutting Edge Code Line', 'What line of SQL code did the last cutting edge update hit?', '57'),
+(00132, 'System', 'gibboneduComOrganisationName', 'gibbonedu.com Organisation Name', 'Name of organisation, as registered with gibbonedu.com, for access to value-added services.', ''),
+(00133, 'System', 'gibboneduComOrganisationKey', 'gibbonedu.com Organisation Key', 'Organisation''s private key, as registered with gibbonedu.com, for access to value-added services.', '');
 
 -- --------------------------------------------------------
 
