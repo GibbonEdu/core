@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAsse
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View All Assessments</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('View All Assessments') . "</div>" ;
 	print "</div>" ;
 	
 	$sql=getLessons($guid, $connection2) ;
@@ -44,28 +44,28 @@ else {
 	}
 	
 	print "<p>" ;
-		print "The list below shows all lessons in which there is work that you can crowd assess." ;
+		print _("The list below shows all lessons in which there is work that you can crowd assess.") ;
 	print "</p>" ;
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print "There are currently no lessons to for you to crowd asess." ;
+		print _("There are currently no lessons to for you to crowd asess.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Class" ;
+					print _("Class") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Lesson/Unit" ;
+					print _("Lesson/Unit") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Date" ;
+					print _("Date") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Action" ;
+					print _("Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			

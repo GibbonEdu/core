@@ -94,18 +94,18 @@ function sidebarExtra($guid, $connection2) {
 	
 		
 	$output.="<h2>" ;
-	$output.="Recent Discussion" ;
+	$output.=_("Recent Discussion") ;
 	$output.="</h2>" ;
 		
 	if (count($myWork)>0 OR count($myReplies)>0) {
 		
 		$output.="<h5 style='margin-top: 2px'>" ;
-		$output.="Crowd Assessment" ;
+		$output.=_("Crowd Assessment") ;
 		$output.="</h5>" ;
 		
 		if (count($myWork)>0) {
 			$output.="<p>" ;
-			$output.="Comments on my work:" ;
+			$output.=_("Comments on my work:") ;
 			$output.="</p>" ;
 		
 			$output.="<ul>" ;
@@ -117,7 +117,7 @@ function sidebarExtra($guid, $connection2) {
 		
 		if (count($myReplies)>0) {
 			$output.="<p>" ;
-			$output.="Replies to me:" ;
+			$output.=_("Replies to me:") ;
 			$output.="</p>" ;
 		
 			$output.="<ul>" ;
@@ -128,7 +128,7 @@ function sidebarExtra($guid, $connection2) {
 		}
 	}
 	else {
-	$output.="<p><i>There has been no activity since your last login.</i></p>" ;
+	$output.="<p><i>" . _('There has been no activity since your last login.') . "</i></p>" ;
 	}
 			
 	return $output ;
@@ -418,7 +418,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
 
 	if ($level==0 AND $resultDiscuss->rowCount()==0) {
 		$output.="<div class='error'>" ;
-			$output.="This conversation has not yet begun!" ;
+			$output.=_("This conversation has not yet begun!") ;
 		$output.="</div>" ;
 	}
 	else {

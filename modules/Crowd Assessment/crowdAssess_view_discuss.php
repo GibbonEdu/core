@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAsse
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess.php'>View All Assessments</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess_view.php&gibbonPlannerEntryID=" . $_GET["gibbonPlannerEntryID"] . "'>View Assessment</a> > </div><div class='trailEnd'>Discuss</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess.php'>" . _('View All Assessments') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess_view.php&gibbonPlannerEntryID=" . $_GET["gibbonPlannerEntryID"] . "'>" . _('View Assessment') . "</a> > </div><div class='trailEnd'>" . _('Discuss') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -87,7 +87,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "You do not have permission to access the specified lesson for crowd assessment." ;
+				print _("The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -108,7 +108,7 @@ else {
 				
 				if ($resultList->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print "There is currently no work to assess." ;
+						print _("There is currently no work to assess.") ;
 					print "</div>" ;
 				}
 				else {
@@ -127,7 +127,7 @@ else {
 
 					if ($resultWork->rowCount()!=1) {
 						print "<div class='error'>" ;
-							print "There is currently no work to assess." ;
+							print _("There is currently no work to assess.") ;
 						print "</div>" ;
 					}
 					else {
@@ -141,10 +141,10 @@ else {
 								print "<td style='width: 34%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Version</span><br/>" ;
 									if ($rowWork["version"]=="Final") {
-										$linkText="Final" ;
+										$linkText=_("Final") ;
 									}
 									else {
-										$linkText="Draft" . $rowWork["count"] ;
+										$linkText=_("Draft") . $rowWork["count"] ;
 									}
 									
 									if ($rowWork["type"]=="File") {
@@ -176,7 +176,7 @@ else {
 						print "</div>" ;
 						
 						print "<div style='margin-bottom: 0px' class='success'>" ;
-							print "Items in <span style='color: #c00'>red</span> are new since your last login. Items in green are older." ;
+							print sprintf(_('Items in %1$sred%2$s are new since your last login. Items in green are older.')," <span style='color: #c00'>", "</span>") ;
 						print "</div>" ;
 						
 						//Get discussion

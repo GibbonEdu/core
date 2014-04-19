@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAsse
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess.php'>View All Assessments</a> > </div><div class='trailEnd'>View Assessment</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess.php'>" . _('View All Assessments') . "</a> > </div><div class='trailEnd'>" . _('View Assessment') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -68,7 +68,7 @@ else {
 	$gibbonPlannerEntryID=$_GET["gibbonPlannerEntryID"] ;
 	if ($gibbonPlannerEntryID=="") {
 		print "<div class='warning'>" ;
-			print "Lesson has not been specified ." ;
+			print _('You have not specified one or more required parameters.') ;
 		print "</div>" ;
 	}
 	//Check existence of and access to this class.
@@ -86,7 +86,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print "You do not have permission to access the specified lesson for crowd assessment." ;
+				print _("The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -95,21 +95,21 @@ else {
 			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Class</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Class') . "</span><br/>" ;
 						print $row["course"] . "." . $row["class"] ;
 					print "</td>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
 						print $row["name"] ;
 					print "</td>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Date</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Date') . "</span><br/>" ;
 						print dateConvertBack($guid, $row["date"]) ;
 					print "</td>" ;
 				print "</tr>" ;
 				print "<tr>" ;
 					print "<td style='padding-top: 15px; width: 34%; vertical-align: top' colspan=3>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Homework Details</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Homework Details') . "</span><br/>" ;
 						print $row["homeworkDetails"] ;
 					print "</td>" ;
 				print "</tr>" ;
@@ -138,16 +138,16 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print "Student" ;
+								print _("Student") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Read" ;
+								print _("Read") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Like" ;
+								print _("Star") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Discuss" ;
+								print _("Discuss") ;
 							print "</th>" ;
 						print "</tr>" ;
 						
@@ -224,7 +224,7 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									if ($rowWork["gibbonPlannerEntryHomeworkID"]!="" AND $rowWork["status"]!="Exemption") {
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=" . $rowWork["gibbonPlannerEntryHomeworkID"] . "&gibbonPersonID=" . $rowList["gibbonPersonID"] . "'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=" . $rowWork["gibbonPlannerEntryHomeworkID"] . "&gibbonPersonID=" . $rowList["gibbonPersonID"] . "'><img title='" . _('View Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 									}
 								print "</td>" ;
 							print "</tr>" ;
