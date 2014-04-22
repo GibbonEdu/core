@@ -30,11 +30,11 @@ if (isActionAccessible($guid, $connection2, "/modules/External Assessment/extern
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View All Assessments</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('View All Assessments') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print "Search" ;
+	print _("Search") ;
 	print "</h2>" ;
 	
 	$search=NULL ;
@@ -49,7 +49,7 @@ else {
 			<tr>
 				<td> 
 					<b><? print _('Search For') ?></b><br/>
-					<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
+					<span style="font-size: 90%"><i><? print _('Preferred, surname, username.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="search" id="search" maxlength=20 value="<? print $search ?>" type="text" style="width: 300px">
@@ -70,7 +70,7 @@ else {
 	<?
 	
 	print "<h2>" ;
-	print "Choose A Student" ;
+	print _("Choose A Student") ;
 	print "</h2>" ;
 	
 	//Set pagination variable

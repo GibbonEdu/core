@@ -32,7 +32,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print "The highest grouped action cannot be determined." ;
+		print _("The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -120,7 +120,7 @@ else {
 		
 		if ($proceed==FALSE) {
 			print "<div class='error'>" ;
-				print "You do not have access to this page." ;
+				print "Your request failed because you do not have access to this action." ;
 			print "</div>" ;
 		}
 		else {

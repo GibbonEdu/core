@@ -33,7 +33,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print "The highest grouped action cannot be determined." ;
+		print _("The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -1465,7 +1465,7 @@ else {
 					else if ($subpage=="Notes") {
 						if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details_notes_add.php")==FALSE) {
 							print "<div class='error'>" ;
-								print "You do not have access to this page." ;
+								print "Your request failed because you do not have access to this action." ;
 							print "</div>" ; 
 						}
 						else {
@@ -1979,7 +1979,7 @@ else {
 																	}
 																	else {
 																		if ($row["dateStart"]>$rowSub["date"]) {
-																			print "<span title='Student joined school after lesson was taught.' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>" ;
+																			print "<span title='" . _('Student joined school after assessment was given.') . "' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>" ;
 																		}
 																		else {
 																			if ($rowSub["homeworkSubmissionRequired"]=="Compulsory") {
@@ -2496,7 +2496,7 @@ else {
 																//After
 																else {
 																	if ($row["dateStart"]>$rowSub["date"]) {
-																		print "<span title='Student joined school after lesson was taught.' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>" ;
+																		print "<span title='" . _('Student joined school after assessment was given.') . "' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>" ;
 																	}
 																	else {
 																		if ($row["homeworkSubmissionRequired"]=="Compulsory") {

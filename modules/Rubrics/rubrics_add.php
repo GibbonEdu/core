@@ -33,7 +33,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print "The highest grouped action cannot be determined." ;
+		print _("The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -45,7 +45,7 @@ else {
 		else {
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php'>Manage Rubrics</a> > </div><div class='trailEnd'>Add Rubric</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php'>" . _('Manage Rubrics') . "</a> > </div><div class='trailEnd'>" . _('Add Rubric') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -61,12 +61,6 @@ else {
 				else if ($addReturn=="fail3") {
 					$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
-				else if ($addReturn=="fail4") {
-					$addReturnMessage="Your request failed because the selected person is already registered." ;	
-				}
-				else if ($addReturn=="fail5") {
-					$addReturnMessage="Add succeeded, but there were problems uploading one or more attachments." ;	
-				}
 				else if ($addReturn=="success0") {
 					$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
 					$class="success" ;
@@ -81,12 +75,12 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2>
-							<h3>Rubric Basics</h3>
+							<h3><? print _('Rubric Basics') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Scope *</b><br/>
+							<b><? print _('Scope') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -95,8 +89,8 @@ else {
 								?>
 								<select name="scope" id="scope" style="width: 302px">
 									<option value="Please select..."><? print _('Please select...') ?></option>
-									<option value="School">School</option>
-									<option value="Learning Area">Learning Area</option>
+									<option value="School"><? print _('School') ?></option>
+									<option value="Learning Area"><? print _('Learning Area') ?></option>
 								</select>
 								<script type="text/javascript">
 									var scope=new LiveValidation('scope');
@@ -138,7 +132,7 @@ else {
 					?>
 					<tr id='learningAreaRow'>
 						<td> 
-							<b>Learning Area *</b><br/>
+							<b><? print _('Learning Area') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -201,7 +195,7 @@ else {
 					
 					<tr>
 						<td> 
-							<b>Category</b><br/>
+							<b><? print _('Category') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="category" id="category" maxlength=100 value="" type="text" style="width: 300px">
@@ -237,7 +231,6 @@ else {
 					<tr>
 						<td> 
 							<b><? print _('Year Groups') ?></b><br/>
-							<span style="font-size: 90%"><i>Relevant student year groups<br/></i></span>
 						</td>
 						<td class="right">
 							<? 
@@ -258,8 +251,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Grading Scale</b><br/>
-							<span style="font-size: 90%"><i>Link columns to grades on a scale?</i></span>
+							<b><? print _('Grading Scale') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Link columns to grades on a scale?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="gibbonScaleID" id="gibbonScaleID" style="width: 302px">
@@ -289,13 +282,13 @@ else {
 								
 					<tr class='break'>
 						<td colspan=2>
-							<h3>Rubric Design</h3>
+							<h3><? print _('Rubric Design') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Initial Rows *</b><br/>
-							<span style="font-size: 90%"><i>Rows store assessment strands.</i></span>
+							<b><? print _('Initial Rows') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Rows store assessment strands.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="rows" id="rows" style="width: 302px">
@@ -309,8 +302,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Initial Columns *</b><br/>
-							<span style="font-size: 90%"><i>Columns store assessment levels.</i></span>
+							<b><? print _('Initial Columns') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('Columns store assessment levels.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="columns" id="columns" style="width: 302px">

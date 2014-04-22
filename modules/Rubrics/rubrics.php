@@ -30,13 +30,13 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print "The highest grouped action cannot be determined." ;
+		print _("The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Rubrics</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Rubrics') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -80,20 +80,20 @@ else {
 		}
 		
 		print "<h3>" ;
-		print "Filter" ;
+		print _("Filter") ;
 		print "</h3>" ;
 		print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "'>" ;
 			print"<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;	
 				?>
 				<tr>
 					<td> 
-						<b>Learning Areas</b><br/>
+						<b><? print _('Learning Areas') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
 						<?
 						print "<select name='filter2' id='filter2' style='width:302px'>" ;
-							print "<option value=''>All Learning Areas</option>" ;
+							print "<option value=''>" . _('All Learning Areas') . "</option>" ;
 							try {
 								$dataSelect=array(); 
 								$sqlSelect="SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name" ;
@@ -123,7 +123,7 @@ else {
 		print "</form>" ;
 		
 		print "<h3>" ;
-		print "Rubrics" ;
+		print _("Rubrics") ;
 		print "</h3>" ;
 		if ($highestAction=="Manage Rubrics_viewEditAll" OR $highestAction=="Manage Rubrics_viewAllEditLearningArea") {
 			print "<div class='linkTop'>" ;
@@ -132,7 +132,7 @@ else {
 		}
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print "There are no rubrics to display." ;
+			print _("There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -143,10 +143,10 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print "Scope" ;
+						print _("Scope") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Category" ;
+						print _("Category") ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Name") ;
@@ -250,7 +250,7 @@ else {
 								}
 							}
 							if ($row["description"]!="") {
-								print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
+								print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;

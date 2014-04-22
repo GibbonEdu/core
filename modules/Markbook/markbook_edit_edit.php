@@ -32,7 +32,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print "The highest grouped action cannot be determined." ;
+		print _("The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -88,12 +88,12 @@ else {
 					$row2=$result2->fetch() ;
 				
 					print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/markbook_view.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>View " . $row["course"] . "." . $row["class"] . " Markbook</a> > </div><div class='trailEnd'>Edit Column</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/markbook_view.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>" . _('View') . " " . $row["course"] . "." . $row["class"] . " " . _('Markbook') . "</a> > </div><div class='trailEnd'>" . _('Edit Column') . "</div>" ;
 					print "</div>" ;
 				
 					if ($row2["groupingID"]!="" AND $row2["gibbonPersonIDCreator"]!=$_SESSION[$guid]["gibbonPersonID"]) {
 						print "<div class='error'>" ;
-							print "This column is part of a set of columns, and so can not be individually edited." ;
+							print _("This column is part of a set of columns, and so can not be individually edited.") ;
 						print "</div>" ;
 					}
 					else {
@@ -120,7 +120,7 @@ else {
 								$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
 							}
 							else if ($updateReturn=="fail6") {
-								$updateReturnMessage="Your request failed because you already have one \"End of Year\" column for this class." ;	
+								$updateReturnMessage=_("Your request failed because you already have one \"End of Year\" column for this class.") ;	
 							}
 							else if ($updateReturn=="success0") {
 								$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -132,7 +132,7 @@ else {
 						} 
 				
 						print "<div class='linkTop'>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID'>Enter Data<img style='margin: 0 0 -4px 3px' title='Enter Data' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.gif'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID'>" . _('Enter Data') . "<img style='margin: 0 0 -4px 3px' title='Enter Data' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.gif'/></a> " ;
 						print "</div>" ;
 						?>
 						<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_editProcess.php?gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
@@ -148,7 +148,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Unit</b><br/>
+										<b><? print _('Unit') ?></b><br/>
 									</td>
 									<td class="right">
 										<select name="gibbonUnitID" id="gibbonUnitID" style="width: 302px">
@@ -221,7 +221,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Lesson</b><br/>
+										<b><? print _('Lesson') ?></b><br/>
 									</td>
 									<td class="right">
 										<select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" style="width: 302px">
@@ -313,8 +313,8 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b>Attainment Scale *</b><br/>
-										<span style="font-size: 90%"><i>How will attainment be graded?.</i></span>
+										<b><? print _('Attainment Scale') ?> *</b><br/>
+										<span style="font-size: 90%"><i><? print _('How will attainment be graded?') ?></i></span>
 									</td>
 									<td class="right">
 										<select name="gibbonScaleIDAttainment" id="gibbonScaleIDAttainment" style="width: 302px">
@@ -345,13 +345,13 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Attainment Rubric</b><br/>
-										<span style="font-size: 90%"><i>Choose predefined rubric, if desired.</i></span>
+										<b><? print _('Attainment Rubric') ?></b><br/>
+										<span style="font-size: 90%"><i><? print _('Choose predefined rubric, if desired.') ?></i></span>
 									</td>
 									<td class="right">
 										<select name="gibbonRubricIDAttainment" id="gibbonRubricIDAttainment" style="width: 302px">
 											<option><option>
-											<optgroup label='--School Rubrics --'>
+											<optgroup label='--<? print _('School Rubrics') ?>--'>
 											<?
 											try {
 												$dataSelect=array(); 
@@ -382,7 +382,7 @@ else {
 											}
 											if ($row["gibbonDepartmentID"]!="") {
 												?>
-												<optgroup label='--Learning Area Rubrics --'>
+												<optgroup label='--<? print _('Learning Area Rubrics') ?>--'>
 												<?
 												try {
 													$dataSelect=array("gibbonDepartmentID"=>$row["gibbonDepartmentID"]); 
@@ -422,8 +422,8 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Effort Scale *</b><br/>
-										<span style="font-size: 90%"><i>How will effort be graded?.</i></span>
+										<b><? print _('Effort Scale') ?> *</b><br/>
+										<span style="font-size: 90%"><i><? print _('How will effort be graded?') ?></i></span>
 									</td>
 									<td class="right">
 										<select name="gibbonScaleIDEffort" id="gibbonScaleIDEffort" style="width: 302px">
@@ -454,13 +454,13 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Effort Rubric</b><br/>
-										<span style="font-size: 90%"><i>Choose predefined rubric, if desired.</i></span>
+										<b><? print _('Effort Rubric') ?></b><br/>
+										<span style="font-size: 90%"><i><? print _('Choose predefined rubric, if desired.') ?></i></span>
 									</td>
 									<td class="right">
 										<select name="gibbonRubricIDEffort" id="gibbonRubricIDEffort" style="width: 302px">
 											<option><option>
-											<optgroup label='--School Rubrics --'>
+											<optgroup label='--<? print _('School Rubrics') ?>--'>
 											<?
 											try {
 												$dataSelect=array(); 
@@ -491,7 +491,7 @@ else {
 											}
 											if ($row["gibbonDepartmentID"]!="") {
 												?>
-												<optgroup label='--Learning Area Rubrics --'>
+												<optgroup label='--<? print _('Learning Area Rubrics') ?>--'>
 												<?
 												try {
 													$dataSelect=array("gibbonDepartmentID"=>$row["gibbonDepartmentID"]); 
@@ -531,32 +531,32 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Viewable to Students *</b><br/>
+										<b><? print _('Viewable to Students') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
 										<select name="viewableStudents" id="viewableStudents" style="width: 302px">
-											<option <? if ($row2["viewableStudents"]=="N") { print "selected ";} ?>value="N">N</option>
-											<option <? if ($row2["viewableStudents"]=="Y") { print "selected ";} ?>value="Y">Y</option>
+											<option <? if ($row2["viewableStudents"]=="N") { print "selected ";} ?>value="N"><? print _('No') ?></option>
+											<option <? if ($row2["viewableStudents"]=="Y") { print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
 										</select>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b>Viewable to Parents *</b><br/>
+										<b><? print _('Viewable to Parents') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
 										<select name="viewableParents" id="viewableParents" style="width: 302px">
-											<option <? if ($row2["viewableParents"]=="N") { print "selected ";} ?>value="N">N</option>
-											<option <? if ($row2["viewableParents"]=="Y") { print "selected ";} ?>value="Y">Y</option>
+											<option <? if ($row2["viewableParents"]=="N") { print "selected ";} ?>value="N"><? print _('No') ?></option>
+											<option <? if ($row2["viewableParents"]=="Y") { print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
 										</select>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b>Grading Completion Date</b><br/>
-										<span style="font-size: 90%"><i>1. Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/>2. Enter date after grading<br/>3. Column is hidden without date</i></span>
+										<b><? print _('Grading Completion Date') ?></b><br/>
+										<span style="font-size: 90%"><i><? print _('1. Format') ?> <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><? print _('2. Enter date after grading.') ?><br/><? print _('3. Column is hidden without date.') ?></i></span>
 									</td>
 									<td class="right">
 										<input name="completeDate" id="completeDate" maxlength=10 value="<? print dateConvertBack($guid, $row2["completeDate"]) ?>" type="text" style="width: 300px">
@@ -573,15 +573,15 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Attachment </b><br/>
+										<b><? print _('Attachment') ?></b><br/>
 										<? if ($row2["attachment"]!="") { ?>
-										<span style="font-size: 90%"><i>Will overwrite existing attachment</i></span>
+										<span style="font-size: 90%"><i><? print _('Will overwrite existing attachment.') ?></i></span>
 										<? } ?>
 									</td>
 									<td class="right">
 										<?
 										if ($row2["attachment"]!="") {
-											print "Current attachment: <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row2["attachment"] . "'>" . $row2["attachment"] . "</a><br/><br/>" ;
+											print _("Current attachment:") . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row2["attachment"] . "'>" . $row2["attachment"] . "</a><br/><br/>" ;
 										}
 										?>
 										<input type="file" name="file" id="file"><br/><br/>

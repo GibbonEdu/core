@@ -180,6 +180,12 @@ Timetable Admin: added new field "reportable" to gibbonCourseClassPerson to say 
 Default: added new icon run.png to default theme
 	New file /themes/Default/img/run.png, help.png
 
+Library: fixed bug stopping images from displaying
+	Edited file /modules/Library/moduleFunctions.php
+
+Students: fixed access check error in Left Students report
+	Edited file /modules/Students/report_students_left.php
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)

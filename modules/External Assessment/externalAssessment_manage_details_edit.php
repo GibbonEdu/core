@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/External Assessment/extern
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment.php'>View All Assessments</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment_details.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "'>Student Details</a> > </div><div class='trailEnd'>Edit Assessment</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment.php'>" . _('View All Assessments') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment_details.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "'>" . _('Student Details') . "</a> > </div><div class='trailEnd'>" . _('Edit Assessment') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -97,7 +97,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Assessment Type *</b><br/>
+							<b><? print _('Assessment Type') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right" colspan=2>
@@ -106,7 +106,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Date *</b><br/>
+							<b><? print _('Date') ?> *</b><br/>
 							<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 						</td>
 						<td class="right" colspan=2>
@@ -186,10 +186,10 @@ else {
 										print "<h3>" . substr($rowField["category"], (strpos($rowField["category"], "_")+1)) . "</h3>" ;
 									print "</td>" ;
 									print "<td class='right'>" ;
-										print "<span style='font-weight: bold'>Grade</span>" ;
+										print "<span style='font-weight: bold'>" . _('Grade') . "</span>" ;
 									print "</td>" ;
 									print "<td class='right'>" ;
-										print "<span style='font-weight: bold' title='Primary Assessment Scale Grade'>PAS Grade</span>" ;
+										print "<span style='font-weight: bold' title='" . _('Primary Assessment Scale Grade') . "'>" . _('PAS Grade') . "</span>" ;
 									print "</td>" ;
 								print "</tr>" ;
 							}

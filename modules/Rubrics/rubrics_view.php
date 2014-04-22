@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_view.php")
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Rubrics</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('View Rubrics') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -97,20 +97,20 @@ else {
 	}
 		
 	print "<h3>" ;
-	print "Filter" ;
+	print _("Filter") ;
 	print "</h3>" ;
 	print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "'>" ;
 		print"<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;	
 			?>
 			<tr>
 				<td> 
-					<b>Learning Areas</b><br/>
+					<b><? print _('Learning Areas') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<?
 					print "<select name='filter2' id='filter2' style='width:302px'>" ;
-						print "<option value=''>All Learning Areas</option>" ;
+						print "<option value=''>" . _('All Learning Areas') . "</option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name" ;
@@ -141,7 +141,7 @@ else {
 	
 	
 	print "<h3>" ;
-	print "Rubrics" ;
+	print _("Rubrics") ;
 	print "</h3>" ;
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
@@ -156,10 +156,10 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Scope" ;
+					print _("Scope") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Category" ;
+					print _("Category") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Name") ;
@@ -229,7 +229,7 @@ else {
 							print "});" ;
 						print "</script>" ;
 						
-						print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_view_full.php&gibbonRubricID=" . $row["gibbonRubricID"] . "&width=1100&height=550'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;	
+						print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_view_full.php&gibbonRubricID=" . $row["gibbonRubricID"] . "&width=1100&height=550'><img title='" . _('View Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;	
 					print "</td>" ;
 				print "</tr>" ;
 				if ($row["description"]!="") {

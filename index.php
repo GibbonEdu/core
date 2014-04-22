@@ -966,7 +966,7 @@ else {
 																				}
 																				else {
 																					if ($students[$i][6]>$rowSub["date"]) {
-																						print "<span title='" . _('Student joined school after lesson was taught.') . "' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>" . _("NA") . "</span>" ;
+																						print "<span title='" . _('Student joined school after assessment was given.') . "' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>" . _("NA") . "</span>" ;
 																					}
 																					else {
 																						if ($rowSub["homeworkSubmissionRequired"]=="Compulsory") {
@@ -1403,7 +1403,7 @@ else {
 																			print "});" ;
 																		print "</script>" ;
 																		if ($row["comment"]!="") {
-																			print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
+																			print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
 																		}
 																	print "</td>" ;
 																print "</tr>" ;

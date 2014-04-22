@@ -30,7 +30,7 @@ function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbo
 
 	if ($resultAssessments->rowCount()<1) {
 		print "<div class='error'>" ;
-		print "The specified student does not have any external assessments to display." ;
+		print _("There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -78,19 +78,19 @@ function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbo
 						print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th style='width:40%'>" ;
-								print "Item" ;
+								print _("Item") ;
 							print "</th>" ;
 							print "<th style='width:15%'>" ;
-								print "Result" ;
+								print _("Result") ;
 							print "</th>" ;
 							print "<th style='width:15%'>" ;
-								print "<span title='Primary assessment scale equivalent'>PAS Equivalent</span>" ;
+								print "<span title='" . _('Primary assessment scale equivalent') . "'>" . _('PAS Equivalent') . "</span>" ;
 							print "</th>" ;
 							print "<th style='width:15%'>" ;
-								print "<span title='Weighted average from subject-related markbook grades in the current year'>Markbook<br/>Average</span>" ;
+								print "<span title='" . _('Weighted average from subject-related markbook grades in the current year') . "'>" . _('Markbook<br/>Average') . "</span>" ;
 							print "</th>" ;
 							print "<th style='width:15%'>" ;
-								print "<span title='Plus/Minus Value Added'>+/-</span>" ;
+								print "<span title='" . _('Plus/Minus Value Added') . "'>" . _('+/-') . "</span>" ;
 							print "</th>" ;
 						print "</tr>" ;
 					}
@@ -170,7 +170,7 @@ function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbo
 								}
 								
 								if ($av==FALSE) {
-									print "<i>Insufficient data</i>" ;
+									print "<i>" . _('Insufficient data') . "</i>" ;
 								}
 								else {
 									print "<span title='" . $rowResults["usagePrimary"] . "'>" . $av . "</span>" ;

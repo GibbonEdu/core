@@ -33,28 +33,28 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 
 	if ($result->rowCount()>0) {
 		$output="<h2 class='sidebar'>" ;
-		$output.="My Classes" ;
+		$output.=_("My Classes") ;
 		$output.="</h2>" ;
 		
 		$output.="<table class='mini' cellspacing='0' style='width: 100%'>" ;
 			$output.="<tr class='head'>" ;
 					$output.="<th style='width: 40%'>" ;
-					$output.="Class" ;
+					$output.=_("Class") ;
 				$output.="</th>" ;
 				$output.="<th style='width: 20%; font-size: 75%; text-align: center'>" ;
-					$output.="View<br/>Markbook" ;
+					$output.=_("View<br/>Markbook") ;
 				$output.="</th>" ;
 				$output.="<th style='width: 20%; font-size: 75%; text-align: center'>" ;
-					$output.="Edit<br/>Markbook" ;
+					$output.=_("Edit<br/>Markbook") ;
 				$output.="</th>" ;
 				if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
 					$output.="<th style='width: 20%; font-size: 75%; text-align: center'>" ;
-						$output.="Planner" ;
+						$output.=_("Planner") ;
 					$output.="</th>" ;
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
 					$output.="<th style='width: 20%; font-size: 75%; text-align: center'>" ;
-						$output.="Homework" ;
+						$output.=_("Homework") ;
 					$output.="</th>" ;
 				}
 			$output.="</tr>" ;
@@ -77,19 +77,19 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 					$output.="</td>" ;
 					$output.="<td style='text-align: center'>" ;
 						if ($_GET["q"]=="/modules/Markbook/markbook_view.php" AND $row["gibbonCourseClassID"]==$gibbonCourseClassID) {
-							$output.="<a style='border-bottom: 2px solid #f00' href='index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='Participants' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
+							$output.="<a style='border-bottom: 2px solid #f00' href='index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='" . _('View Markbook') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
 						}
 						else {
-							$output.="<a href='index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='Participants' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
+							$output.="<a href='index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='" . _('View Markbook') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
 						}
 						
 					$output.="</td>" ;
 					$output.="<td style='text-align: center'>" ;
 						if ($_GET["q"]=="/modules/Markbook/markbook_edit.php" AND $row["gibbonCourseClassID"]==$gibbonCourseClassID) {
-							$output.="<a style='border-bottom: 2px solid #f00' href='index.php?q=/modules/Markbook/markbook_edit.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='Participants' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a>" ;
+							$output.="<a style='border-bottom: 2px solid #f00' href='index.php?q=/modules/Markbook/markbook_edit.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='" . _('Edit Markbook') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a>" ;
 						}
 						else {
-							$output.="<a href='index.php?q=/modules/Markbook/markbook_edit.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='Participants' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a>" ;
+							$output.="<a href='index.php?q=/modules/Markbook/markbook_edit.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='" . _('Edit Markbook') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a>" ;
 						}
 					$output.="</td>" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
@@ -99,7 +99,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 					}
 					if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
 						$output.="<td style='text-align: center'>" ;
-							$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter=" . $row["gibbonCourseClassID"] . "'><img style='margin-top: 3px' title='" . _('View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/homework.png'/></a> " ;
+							$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter=" . $row["gibbonCourseClassID"] . "'><img style='margin-top: 3px' title='" . _('View Homework') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/homework.png'/></a> " ;
 						$output.="</td>" ;
 					}
 				$output.="</tr>" ;
@@ -109,7 +109,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php", "View Markbook_allClassesAllData")) {
 		$output.="<h2>" ;
-		$output.="View Any Class" ;
+		$output.=_("View Any Class") ;
 		$output.="</h2>" ;
 		
 		$output.="<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
@@ -117,7 +117,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 				$output.="<tr>" ;
 					$output.="<td style='width: 190px'>" ; 
 						$output.="<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:160px; float: none'>" ;
-							$output.="<option value='Please select...'>Please select...</option>" ;
+							$output.="<option value='Please select...'>" . _('Please select...') . "</option>" ;
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 								$sqlSelect="SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class" ;
@@ -136,7 +136,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 					$output.="</td>" ;
 					$output.="<td class='right'>" ;
 						$output.="<input type='hidden' name='q' id='q' value='/modules/Markbook/markbook_view.php'>" ;
-						$output.="<input type='submit' value='Go'>" ;
+						$output.="<input type='submit' value='" . _('Go') . "'>" ;
 					$output.="</td>" ;
 				$output.="</tr>" ;
 			$output.="</table>" ;

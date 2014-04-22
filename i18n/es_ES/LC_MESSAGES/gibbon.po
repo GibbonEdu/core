@@ -73,7 +73,7 @@ msgstr ""
 #: modules/Library/library_manage_catalog_add_ajax.php:46
 #: modules/Resources/resources_add_ajax.php:71
 #: modules/Resources/resources_insert_ajax.php:81
-msgid "You do not have access to this page."
+msgid "Your request failed because you do not have access to this action."
 msgstr ""
 
 #: index_tt_ajax.php:80 index_tt_ajax.php:80

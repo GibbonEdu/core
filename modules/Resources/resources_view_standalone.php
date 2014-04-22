@@ -51,7 +51,7 @@ print "<link rel='stylesheet' type='text/css' href='" . $_SESSION[$guid]["absolu
 			if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_view_full.php")==FALSE) {
 				//Acess denied
 				print "<div class='error'>" ;
-					print "You do not have access to this page." ;
+					print "Your request failed because you do not have access to this action." ;
 				print "</div>" ;
 			}
 			else {	

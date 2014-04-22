@@ -225,7 +225,7 @@ else {
 								print "});" ;
 							print "</script>" ;
 							if ($row["description"]!="") {
-								print "<a title='" . _('View Description') . "' class='show_hide-$count-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Comment' onclick='return false;' /></a>" ;
+								print "<a title='" . _('View Description') . "' class='show_hide-$count-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;

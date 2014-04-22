@@ -25,7 +25,7 @@ include "./modules/Rubrics/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this page." ;
+		print _("Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -121,7 +121,7 @@ else {
 
 					if ($result4->rowCount()!=1) {
 						print "<div class='error'>" ;
-							print "The selected student does not exist or is not in this class." ;
+							print _("The selected record does not exist, or you do not have access to it.") ;
 						print "</div>" ;
 					}
 					else {

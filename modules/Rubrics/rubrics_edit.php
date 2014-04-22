@@ -34,7 +34,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print "The highest grouped action cannot be determined." ;
+		print _("The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -46,7 +46,7 @@ else {
 		else {
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php'>Manage Rubrics</a> > </div><div class='trailEnd'>Edit Rubric</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php'>" . _('Manage Rubrics') . "</a> > </div><div class='trailEnd'>" . _('Edit Rubric') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -104,7 +104,7 @@ else {
 					$columnDeleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($columnDeleteReturn=="success0") {
-					$columnDeleteReturnMessage="Your request was successful." ;	
+					$columnDeleteReturnMessage=_("Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -129,7 +129,7 @@ else {
 					$rowDeleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($rowDeleteReturn=="success0") {
-					$rowDeleteReturnMessage="Your request was successful." ;	
+					$rowDeleteReturnMessage=_("Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -142,22 +142,22 @@ else {
 			$class="error" ;
 			if (!($cellEditReturn=="")) {
 				if ($cellEditReturn=="fail0") {
-					$cellEditReturnMessage="Cell edit failed because you do not have access to this action." ;	
+					$cellEditReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($cellEditReturn=="fail1") {
-					$cellEditReturnMessage="Cell edit failed because a required parameter was not set." ;	
+					$cellEditReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($cellEditReturn=="fail2") {
-					$cellEditReturnMessage="Cell edit failed due to a database error." ;	
+					$cellEditReturnMessage=_("Your request failed due to a database error.") ;	
 				}
 				else if ($cellEditReturn=="fail3") {
-					$cellEditReturnMessage="Cell edit failed because your inputs were invalid." ;	
+					$cellEditReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($cellEditReturn=="fail5") {
-					$cellEditReturnMessage="Cell edit experienced partial failure." ;	
+					$cellEditReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
 				}
 				else if ($cellEditReturn=="success0") {
-					$cellEditReturnMessage="Cell edit was successful." ;	
+					$cellEditReturnMessage=_("Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -196,12 +196,12 @@ else {
 						<table class='smallIntBorder' cellspacing='0' style="width: 760px">	
 							<tr class='break'>
 								<td colspan=2>
-									<h3>Rubric Basics</h3>
+									<h3><? print _('Rubric Basics') ?></h3>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b>Scope *</b><br/>
+									<b><? print _('Scope') ?> *</b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
@@ -226,7 +226,7 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b>Learning Area *</b><br/>
+										<b><? print _('Learning Area') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
@@ -266,7 +266,7 @@ else {
 							
 							<tr>
 								<td> 
-									<b>Category</b><br/>
+									<b><? print _('Category') ?></b><br/>
 								</td>
 								<td class="right">
 									<input name="category" id="category" maxlength=100 value="<? print $row["category"] ?>" type="text" style="width: 300px">
@@ -302,7 +302,6 @@ else {
 							<tr>
 								<td> 
 									<b><? print _('Year Groups') ?></b><br/>
-									<span style="font-size: 90%"><i>Relevant student year groups<br/></i></span>
 								</td>
 								<td class="right">
 									<? 
@@ -326,7 +325,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Grading Scale</b><br/>
+									<b><? print _('Grading Scale') ?></b><br/>
 									<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 								</td>
 								<td class="right">
@@ -374,7 +373,7 @@ else {
 					<table class='smallIntBorder' cellspacing='0' style="width:100%">
 						<tr class='break'>
 							<td colspan=2>
-								<h3>Rubric Design</h3>
+								<h3><? print _('Rubric Design') ?></h3>
 							</td>
 						</tr>
 					</table>

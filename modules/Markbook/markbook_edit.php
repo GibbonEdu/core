@@ -25,14 +25,14 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "You do not have access to this page." ;
+		print _("Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print "The highest grouped action cannot be determined." ;
+		print _("The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -61,7 +61,7 @@ else {
 				print "Edit Markbook" ;
 			print "</h1>" ;
 			print "<div class='warning'>" ;
-				print "Use the class listing on the right to choose a Markbook to edit." ;
+				print _("Use the class listing on the right to choose a Markbook to edit.") ;
 			print "</div>" ;
 		}
 		//Check existence of and access to this class.
@@ -78,7 +78,7 @@ else {
 
 			if ($result->rowCount()!=1) {
 				print "<h1>" ;
-					print "Edit Markbook" ;
+					print _("Edit Markbook") ;
 				print "</h1>" ;
 				print "<div class='error'>" ;
 					print _("The selected record does not exist, or you do not have access to it.") ;
@@ -87,7 +87,7 @@ else {
 			else {
 				$row=$result->fetch() ;
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Edit " . $row["course"] . "." . $row["class"] . " Markbook</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Edit') . " " . $row["course"] . "." . $row["class"] . " " . _('Markbook') . "</div>" ;
 				print "</div>" ;
 			
 				//Add multiple columns
@@ -104,7 +104,7 @@ else {
 						catch(PDOException $e) { }
 						if ($resultRole->rowCount()>=1 OR $highestAction2=="Edit Markbook_multipleClassesAcrossSchool" OR $highestAction2=="Edit Markbook_everything") {
 							print "<div class='linkTop'>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-right: 3px' title='Add Multiple Columns' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.gif'/></a>" ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-right: 3px' title='" . _('Add Multiple Columns') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.gif'/></a>" ;
 							print "</div>" ;
 						}
 					}
@@ -123,7 +123,7 @@ else {
 				}
 				if ($result->rowCount()>0) {
 					print "<h3>" ;
-						print "Teachers" ;
+						print _("Teachers") ;
 					print "</h3>" ;	
 					print "<ul>" ;
 						while ($row=$result->fetch()) {
@@ -137,7 +137,7 @@ else {
 			
 				//Print mark
 				print "<h3>" ;
-					print "Markbook Columns" ;
+					print _("Markbook Columns") ;
 				print "</h3>" ;	
 			
 				//Set pagination variable
@@ -158,7 +158,7 @@ else {
 
 				if ($teaching) {
 					print "<div class='linkTop'>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'><img title='Add Column' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'><img title='" . _('Add Column') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 					print "</div>" ;
 				}
 			
@@ -171,19 +171,19 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print "Name/Unit" ;
+								print _("Name/Unit") ;
 							print "</th>" ;
 							print "<th>" ;
 								print _("Type") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Date<br/>Complete" ;
+								print _("Date<br/>Complete") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Viewable <br/>to Students" ;
+								print _("Viewable <br/>to Students") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Viewable <br/>to Parents" ;
+								print _("Viewable <br/>to Parents") ;
 							print "</th>" ;
 							print "<th>" ;
 								print _("Actions") ;
@@ -209,7 +209,7 @@ else {
 										print $unit[0] ;
 									}
 									if (isset($unit[1])) {
-										print "<br/><i>" . $unit[1] . " Unit</i>" ;
+										print "<br/><i>" . $unit[1] . " " . _('Unit') . "</i>" ;
 									}
 								print "</td>" ;
 								print "<td>" ;
@@ -229,7 +229,7 @@ else {
 								print "<td>" ;
 									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $row["gibbonMarkbookColumnID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $row["gibbonMarkbookColumnID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $row["gibbonMarkbookColumnID"] . "'><img title='Enter Data' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.gif'/></a> " ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $row["gibbonMarkbookColumnID"] . "'><img title='" . _('Enter Data') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.gif'/></a> " ;
 									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID=" . $row["gibbonMarkbookColumnID"] . "&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_edit.php'><img title='" . _('Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
 								print "</td>" ;
 							print "</tr>" ;

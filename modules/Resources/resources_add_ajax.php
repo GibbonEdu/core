@@ -68,7 +68,7 @@ if (isset($_GET["alpha"])) {
 if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_manage_add.php")==FALSE) {
 	//Acess denied
 	$output.="<div class='error'>" ;
-		$output.=_("You do not have access to this page.") ;
+		$output.=_("Your request failed because you do not have access to this action.") ;
 	$output.="</div>" ;
 }
 else {

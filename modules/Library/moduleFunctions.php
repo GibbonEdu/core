@@ -175,14 +175,9 @@ function getImage($guid, $type, $location, $border=true ) {
 	}
 	else {
 		if ($type=="Link") {
-			if (is_array(@getimagesize($location))) {
-				$output.="<div style='height: 240px; width: 240px; display:table-cell; vertical-align:middle; text-align:center $borderStyle'>" ;
-					$output.="<img class='user' style='max-height: 240px; max-width: 240px; opacity: 1.0; margin: auto' title='Library Item Image' src='" . $location . "'/><br/>" ;
-				$output.="</div>" ;
-			}
-			else {
-				$output.="<img style='height: 240px; width: 240px; opacity: 1.0' class='user' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_240_square.jpg'/><br/>" ;
-			}
+			$output.="<div style='height: 240px; width: 240px; display:table-cell; vertical-align:middle; text-align:center $borderStyle'>" ;
+				$output.="<img class='user' style='max-height: 240px; max-width: 240px; opacity: 1.0; margin: auto' title='Library Item Image' src='" . $location . "'/><br/>" ;
+			$output.="</div>" ;
 		}
 		if ($type=="File") {
 			if (is_file($_SESSION[$guid]["absoluteURL"] . "/" . $location)) {

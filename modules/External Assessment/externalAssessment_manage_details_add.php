@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/External Assessment/extern
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment.php'>View All Assessments</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment_details.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "'>Student Details</a> > </div><div class='trailEnd'>Add Assessment</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment.php'>" . _('View All Assessments') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment_details.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "'>" . _('Student Details') . "</a> > </div><div class='trailEnd'>" . _('Add Assessment') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -80,7 +80,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-			print "The specified student does not seem to exist." ;
+			print _("There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -94,15 +94,15 @@ else {
 			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
 						print formatName("", $row["preferredName"], $row["surname"], "Student") ;
 					print "</td>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Year Group</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
 						print $row["yearGroup"] ;
 					print "</td>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Roll Group</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;
 						print $row["rollGroup"] ;
 					print "</td>" ;
 				print "</tr>" ;
@@ -123,13 +123,13 @@ else {
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr class='break'>
 							<td colspan=2> 
-								<h3>Assessment Type</h3>
+								<h3><? print _('Assessment Type') ?></h3>
 							</td>
 						</tr>
 						
 						<tr>
 							<td> 
-								<b>Choose Assessment *</b><br/>
+								<b><? print _('Choose Assessment') ?> *</b><br/>
 							</td>
 							<td class="right">
 								<select style="width: 302px" name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID">
@@ -172,8 +172,8 @@ else {
 						</script>
 						<tr id="copyToGCSE">
 							<td> 
-								<b>Copy Target Grades? *</b><br/>
-								<span style="font-size: 90%"><i>These will come from the student's last CAT test.</i></span>
+								<b><? print _('Copy Target Grades?') ?> *</b><br/>
+								<span style="font-size: 90%"><i><? print _('These will come from the student\'s last CAT test.') ?></i></span>
 							</td>
 							<td class="right">
 								<input type="checkbox" name="copyToGCSECheck" id="copyToGCSECheck"><br/><br/>
@@ -197,14 +197,14 @@ else {
 						</script>
 						<tr id="copyToIB">
 							<td> 
-								<b>Create Target Grades? *</b><br/>
-								<span style="font-size: 90%"><i>These will be calculated from the student's GCSE grades.</i></span>
+								<b><? print _('Create Target Grades?') ?> *</b><br/>
+								<span style="font-size: 90%"><i><? print _('These will be calculated from the student\'s GCSE grades.') ?></i></span>
 							</td>
 							<td class="right">
 								<select name="copyToIBCheck" id="copyToIBCheck">
 									<option value=''></option>
-									<option value='Target'>From GCSE Target Grades</option>
-									<option value='Final'>From GCSE Final Grades</option>
+									<option value='Target'><? print _('From GCSE Target Grades') ?></option>
+									<option value='Final'>From <? print _('GCSE Final Grades') ?></option>
 								</select>
 							</td>
 						</tr>
@@ -457,7 +457,7 @@ else {
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
-									<b>Assessment Type *</b><br/>
+									<b><? print _('Assessment Type') ?> *</b><br/>
 									<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 								</td>
 								<td class="right" colspan=2>
@@ -466,7 +466,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Date *</b><br/>
+									<b><? print _('Date') ?> *</b><br/>
 									<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 								</td>
 								<td class="right" colspan=2>
@@ -516,10 +516,10 @@ else {
 												
 											print "</td>" ;
 											print "<td class='right'>" ;
-												print "<span style='font-weight: bold'>Grade</span>" ;
+												print "<span style='font-weight: bold'>" . _('Grade') . "</span>" ;
 											print "</td>" ;
 											print "<td class='right'>" ;
-												print "<span style='font-weight: bold' title='Primary Assessment Scale Grade'>PAS Grade</span>" ;
+												print "<span style='font-weight: bold' title='" . _('Primary Assessment Scale Grade') . "'>" . _('PAS Grade') . "</span>" ;
 											print "</td>" ;
 										print "</tr>" ;
 									}

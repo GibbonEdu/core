@@ -32,7 +32,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print "The highest grouped action cannot be determined." ;
+		print _("The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -70,7 +70,7 @@ else {
 				$row=$result->fetch() ;
 				
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/markbook_view.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>View " . $row["course"] . "." . $row["class"] . " Markbook</a> > </div><div class='trailEnd'>Set Personalised Attainment Targets</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/markbook_view.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>" . _('View') . " " . $row["course"] . "." . $row["class"] . " " . _('Markbook') . "</a> > </div><div class='trailEnd'>" . _('Set Personalised Attainment Targets') . "</div>" ;
 				print "</div>" ;
 			
 				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -87,7 +87,7 @@ else {
 						$updateReturnMessage=_("Your request failed due to a database error.") ;	
 					}
 					else if ($updateReturn=="fail3") {
-						$updateReturnMessage="Some updates failed due to a database error." ;	
+						$updateReturnMessage=_("Some updates failed due to a database error.") ;	
 					}
 					else if ($updateReturn=="success0") {
 						$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -103,10 +103,10 @@ else {
 					print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print "Student" ;
+								print _("Student") ;
 							print "</th>" ;
 							print "<th style='width:302px'>" ;
-								print "Attainment Target" ;
+								print _("Attainment Target") ;
 							print "</th>" ;
 						print "</tr>" ;
 					
@@ -125,7 +125,7 @@ else {
 						if ($resultStudents->rowCount()<1) {
 							print "<tr>" ;
 								print "<td colspan=2>" ;
-									print "<i>There are no records to display.</i>" ;
+									print "<i>" . _('There are no records to display.') . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;
 						}

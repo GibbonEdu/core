@@ -34,7 +34,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print "The highest grouped action cannot be determined." ;
+		print _("The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -46,7 +46,7 @@ else {
 		else {
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php'>Manage Rubrics</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics_edit.php&gibbonRubricID=" . $_GET["gibbonRubricID"] ."'>Edit Rubric</a> > </div><div class='trailEnd'>Edit Rubric Rows & Columns</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php'>" . _('Manage Rubrics') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics_edit.php&gibbonRubricID=" . $_GET["gibbonRubricID"] ."'>" . _('Edit Rubric') . "</a> > </div><div class='trailEnd'>" . _('Edit Rubric Rows & Columns') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -104,12 +104,12 @@ else {
 						<table class='smallIntBorder' cellspacing='0' style="width: 760px">	
 							<tr class='break'>
 								<td colspan=2>
-									<h3>Rubric Basics</h3>
+									<h3><? print _('Rubric Basics') ?></h3>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b>Scope *</b><br/>
+									<b><? print _('Scope') ?> *</b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
@@ -135,7 +135,7 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b>Learning Area *</b><br/>
+										<b><? print _('Learning Area') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
@@ -158,7 +158,7 @@ else {
 							<?//ROWS!?>
 							<tr class='break'>
 								<td colspan=2>
-									<h3>Rows</h3>
+									<h3><? print _('Rows') ?></h3>
 								</td>
 							</tr>
 							<?
@@ -183,7 +183,7 @@ else {
 									?>
 									<tr>
 										<td> 
-											<b>Row <?print $count+1 ?> Title</b><br/>
+											<b><? print sprintf(_('Row %1$s Title'), ($count+1)) ?></b><br/>
 											<span style="font-size: 90%"><i></i></span>
 										</td>
 										<td class="right">
@@ -221,11 +221,11 @@ else {
 													
 												});
 											</script>
-											<input <? if ($outcomeBased==FALSE) {print "checked";} ?> type="radio" name="type-<? print $count ?>" value="Standalone" class="type-<? print $count ?>" /> Standalone 
-											<input <? if ($outcomeBased==TRUE) {print "checked";} ?> type="radio" name="type-<? print $count ?>" value="Outcome Based" class="type-<? print $count ?>" /> Outcome Based<br/>
+											<input <? if ($outcomeBased==FALSE) {print "checked";} ?> type="radio" name="type-<? print $count ?>" value="Standalone" class="type-<? print $count ?>" /> <? print _('Standalone') ?> 
+											<input <? if ($outcomeBased==TRUE) {print "checked";} ?> type="radio" name="type-<? print $count ?>" value="Outcome Based" class="type-<? print $count ?>" /> <? print _('Outcome Based') ?><br/>
 											<select name='gibbonOutcomeID[]' id='gibbonOutcomeID-<? print $count ?>' style='width: 304px'>
 												<option><option>
-												<optgroup label='--School Outcomes --'>
+												<optgroup label='--<? print _('School Outcomes') ?>--'>
 													<?
 													try {
 														$dataSelect=array(); 
@@ -253,7 +253,7 @@ else {
 												<?
 												if ($row["scope"]=="Learning Area") {
 													?>
-													<optgroup label='--Learning Area Outcomes--'>
+													<optgroup label='--<? print _('Learning Area Outcomes') ?>--'>
 														<?
 														try {
 															$dataSelect=array("gibbonDepartmentID"=>$row["gibbonDepartmentID"]); 
@@ -295,7 +295,7 @@ else {
 							<?//COLUMNS!?>
 							<tr class='break'>
 								<td colspan=2>
-									<h3>Columns</h3>
+									<h3><? print _('Columns') ?></h3>
 								</td>
 							</tr>
 							<?
@@ -322,7 +322,7 @@ else {
 										?>
 										<tr>
 											<td> 
-												<b>Column <?print $count+1 ?> Title</b><br/>
+												<b><? print sprintf(_('Column %1$s Title'), ($count+1)) ?></b><br/>
 												<span style="font-size: 90%"><i></i></span>
 											</td>
 											<td class="right">
@@ -341,7 +341,7 @@ else {
 										?>
 										<tr>
 											<td> 
-												<b>Column <?print $count+1 ?> Grade</b><br/>
+												<b><? print sprintf(_('Column %1$s Grade'), ($count+1)) ?></b><br/>
 												<span style="font-size: 90%"><i></i></span>
 											</td>
 											<td class="right">

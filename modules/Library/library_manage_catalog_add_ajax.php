@@ -43,7 +43,7 @@ $id=$_GET["id"] ;
 if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_catalog_add.php")==FALSE) {
 	//Acess denied
 	$output.="<div class='error'>" ;
-		$output.=_("You do not have access to this page.") ;
+		$output.=_("Your request failed because you do not have access to this action.") ;
 	$output.="</div>" ;
 }
 else {
