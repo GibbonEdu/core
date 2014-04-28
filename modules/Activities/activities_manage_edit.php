@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_mana
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php'>Manage Activities</a> > </div><div class='trailEnd'>Edit Activity</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php'>" . _('Manage Activities') . "</a> > </div><div class='trailEnd'>" . _('Edit Activity') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -145,13 +145,13 @@ else {
 					
 					<tr>
 						<td> 
-							<b>Provider *</b><br/>
+							<b><? print _('Provider') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="provider" id="provider" style="width: 302px">
 								<option <? if ($row["provider"]=="School") {print "selected ";}?>value="School"><? print $_SESSION[$guid]["organisationNameShort"] ?></option>
-								<option <? if ($row["provider"]=="External") {print "selected ";}?>value="External">External</option>
+								<option <? if ($row["provider"]=="External") {print "selected ";}?>value="External"><? print _('External') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -174,7 +174,7 @@ else {
 							?>
 							<tr>
 								<td> 
-									<b>Type</b><br/>
+									<b><? print _('Type') ?></b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
@@ -202,8 +202,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="active" id="active" style="width: 302px">
-								<option <? if ($row["active"]=="Y") {print "selected ";}?>value="Y">Y</option>
-								<option <? if ($row["active"]=="N") {print "selected ";}?>value="N">N</option>
+								<option <? if ($row["active"]=="Y") {print "selected ";}?>value="Y"><? print _('Yes') ?></option>
+								<option <? if ($row["active"]=="N") {print "selected ";}?>value="N"><? print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -218,14 +218,14 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Terms</b><br/>
-								<span style="font-size: 90%"><i>Terms in which the activity will run.<br/></i></span>
+								<b><? print _('Terms') ?></b><br/>
+								<span style="font-size: 90%"><i><? print _('Terms in which the activity will run.') ?><br/></i></span>
 							</td>
 							<td class="right">
 								<? 
 								$terms=getTerms($connection2, $_SESSION[$guid]["gibbonSchoolYearID"]) ;
 								if ($terms=="") {
-									print "<i>No terms available.</i>" ;
+									print "<i>" . _('No terms available.') . "</i>" ;
 								}
 								else {
 									for ($i=0; $i<count($terms); $i=$i+2) {
@@ -245,8 +245,8 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Listing Start Date *</b><br/>
-								<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/>Default: 2 weeks before the end of the current term.</i></span>
+								<b><? print _('Listing Start Date') ?> *</b><br/>
+								<span style="font-size: 90%"><i><? print _('Format:') ?> <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><? print _('Default: 2 weeks before the end of the current term.') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="listingStart" id="listingStart" maxlength=10 value="<? print dateConvertBack($guid, $row["listingStart"]) ?>" type="text" style="width: 300px">
@@ -263,8 +263,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Listing End Date *</b><br/>
-								<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/>Default: 2 weeks after the start of next term.</i></span>
+								<b><? print _('Listing End Date') ?> *</b><br/>
+								<span style="font-size: 90%"><i><? print _('Format:') ?> <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><? print _('Default: 2 weeks after the start of next term.') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="listingEnd" id="listingEnd" maxlength=10 value="<? print dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" style="width: 300px">
@@ -281,8 +281,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Program Start Date *</b><br/>
-								<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/>Default: first day of next term.</i></span>
+								<b><? print _('Program Start Date') ?> *</b><br/>
+								<span style="font-size: 90%"><i><? print _('Format:') ?> <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><? print _('Default: first day of next term.') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="programStart" id="programStart" maxlength=10 value="<? print dateConvertBack($guid, $row["programStart"]) ?>" type="text" style="width: 300px">
@@ -299,8 +299,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Program End Date *</b><br/>
-								<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/>Default: last day of the next term.</i></span>
+								<b><? print _('Program End Date') ?> *</b><br/>
+								<span style="font-size: 90%"><i><? print _('Format:') ?> <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><? print _('Default: last day of the next term.') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="programEnd" id="programEnd" maxlength=10 value="<? print dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
@@ -324,7 +324,6 @@ else {
 					<tr>
 						<td> 
 							<b><? print _('Year Groups') ?></b><br/>
-							<span style="font-size: 90%"><i>Students year groups which may participate<br/></i></span>
 						</td>
 						<td class="right">
 							<? 
@@ -348,7 +347,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Max Participants *</b><br/>
+							<b><? print _('Max Participants') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="maxParticipants" id="maxParticipants" maxlength=4 value="<? print $row["maxParticipants"] ?>" type="text" style="width: 300px">
@@ -361,14 +360,14 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Cost *</b><br/>
-							<span style="font-size: 90%"><i>For entire programme<br/></i></span>
+							<b><? print _('Cost') ?> *</b><br/>
+							<span style="font-size: 90%"><i><? print _('For entire programme') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<?
 								if (getSettingByScope($connection2, "Activities", "payment")=="None" OR getSettingByScope($connection2, "Activities", "payment")=="Single") {
 									?>
-									<input readonly name="paymentNote" id="paymentNote" maxlength=100 value="Per Activty payment is switched off" type="text" style="width: 300px">
+									<input readonly name="paymentNote" id="paymentNote" maxlength=100 value="<? print _('Per Activty payment is switched off') ?>" type="text" style="width: 300px">
 									<?
 								}
 								else {
@@ -387,14 +386,14 @@ else {
 					</tr>
 					<tr>
 						<td colspan=2> 
-							<b>Description</b> 
+							<b><? print _('Description') ?></b> 
 							<? print getEditor($guid,  TRUE, "description", $row["description"], 10, TRUE ) ?>
 						</td>
 					</tr>
 					
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>Current Time Slots</h3>
+							<h3><? print _('Current Time Slots') ?></h3>
 						</td>
 					</tr>
 					<tr>
@@ -423,13 +422,13 @@ else {
 											print _("Name") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Time" ;
+											print _("Time") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Location</span>" ;
+											print _("Location") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Action" ;
+											print _("Actions") ;
 										print "</th>" ;
 									print "</tr>" ;
 									
@@ -486,7 +485,7 @@ else {
 					
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>New Time Slots</h3>
+							<h3><? print _('New Time Slots') ?></h3>
 						</td>
 					</tr>
 					
@@ -550,12 +549,12 @@ else {
 						?>
 						<tr id="slot<? print $i ?>Row">
 							<td colspan=2> 
-								<h4>Slot <? print $i ?></h4>
+								<h4><? print sprintf(_('Slot %1$s'), $i) ?></h4>
 							</td>
 						</tr>
 						<tr id="slot<? print $i ?>DayRow">
 							<td> 
-								<b>Slot <? print $i ?> Day</b><br/>
+								<b><? print sprintf(_('Slot %1$s Day'), $i) ?></b><br/>
 							</td>
 							<td class="right">
 								<select name="gibbonDaysOfWeekID<? print $i ?>" id="gibbonDaysOfWeekID<? print $i ?>" style="width: 302px">
@@ -578,8 +577,8 @@ else {
 						</tr>
 						<tr id="slot<? print $i ?>StartRow">
 							<td> 
-								<b>Slot <? print $i ?> Start Time</b><br/>
-								<span style="font-size: 90%"><i>Format: hh:mm</i></span>
+								<b><? print sprintf(_('Slot %1$s Start Time'), $i) ?></b><br/>
+								<span style="font-size: 90%"><i><? print _('Format: hh:mm') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="timeStart<? print $i ?>" id="timeStart<? print $i ?>" maxlength=5 value="" type="text" style="width: 300px">
@@ -606,8 +605,8 @@ else {
 						</tr>
 						<tr id="slot<? print $i ?>EndRow">
 							<td> 
-								<b>Slot <? print $i ?> End Time</b><br/>
-								<span style="font-size: 90%"><i>Format: hh:mm</i></span>
+								<b><? print sprintf(_('Slot %1$s End Time'), $i) ?></b><br/>
+								<span style="font-size: 90%"><i><? print _('Format: hh:mm') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="timeEnd<? print $i ?>" id="timeEnd<? print $i ?>" maxlength=5 value="" type="text" style="width: 300px">
@@ -634,7 +633,7 @@ else {
 						</tr>
 						<tr id="slot<? print $i ?>LocationRow">
 							<td> 
-								<b>Slot <? print $i ?> Location</b><br/>
+								<b><? print sprintf(_('Slot %1$s Location'), $i) ?></b><br/>
 							</td>
 							<td class="right">
 								<input type="radio" name="slot<? print $i ?>Location" value="Internal" class="slot<? print $i ?>Location" /> Internal
@@ -685,7 +684,7 @@ else {
 							
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>Current Staff</h3>
+							<h3><? print _('Current Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
@@ -713,10 +712,10 @@ else {
 											print _("Name") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Role" ;
+											print _("Role") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Action" ;
+											print _("Actions") ;
 										print "</th>" ;
 									print "</tr>" ;
 									
@@ -751,12 +750,12 @@ else {
 					</tr>
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>New Staff</h3>
+							<h3><? print _('New Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
 					<td> 
-						<b>Staff</b><br/>
+						<b><? print _('Staff') ?></b><br/>
 						<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 					</td>
 					<td class="right">
@@ -777,14 +776,14 @@ else {
 					</td>
 					<tr>
 						<td> 
-							<b>Role</b><br/>
+							<b><? print _('Role') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="role" id="role" style="width: 302px">
-								<option value="Organiser">Organiser</option>
-								<option value="Coach">Coach</option>
-								<option value="Assistant">Assistant</option>
-								<option value="Other">Other</option>
+								<option value="Organiser"><? print _('Organiser') ?></option>
+								<option value="Coach"><? print _('Coach') ?></option>
+								<option value="Assistant"><? print _('Assistant') ?></option>
+								<option value="Other"><? print _('Other') ?></option>
 							</select>
 						</td>
 					</tr>

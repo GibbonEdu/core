@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_mana
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php'>Manage Activities</a> > </div><div class='trailEnd'>Activity Enrolment</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php'>" . _('Manage Activities') . "</a> > </div><div class='trailEnd'>" . _('Activity Enrolment') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -127,7 +127,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Name</b><br/>
+							<b><? print _('Name') ?></b><br/>
 						</td>
 						<td class="right">
 							<input readonly name="name" id="name" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
@@ -138,7 +138,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Listing Dates</b><br/>
+								<b><? print _('Listing Dates') ?></b><br/>
 							</td>
 							<td class="right">
 								<input readonly name="name" id="name" maxlength=20 value="<? print dateConvertBack($guid, $row["listingStart"]) . "-" . dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" style="width: 300px">
@@ -146,7 +146,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Program Dates</b><br/>
+								<b><? print _('Program Dates') ?></b><br/>
 							</td>
 							<td class="right">
 								<input readonly name="name" id="name" maxlength=20 value="<? print dateConvertBack($guid, $row["programStart"]) . "-" . dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
@@ -158,7 +158,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Terms</b><br/>
+								<b><? print _('Terms') ?></b><br/>
 							</td>
 							<td class="right">
 								<?
@@ -213,7 +213,7 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print "Student" ;
+							print _("Student") ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Status") ;

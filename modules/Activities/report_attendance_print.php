@@ -57,9 +57,9 @@ else {
 		else {
 			$date=" (" . date("F", mktime(0, 0, 0, substr($row["programStart"],5,2))) . " " . substr($row["programStart"],0,4) . " - " . date("F", mktime(0, 0, 0, substr($row["programEnd"],5,2))) . " " . substr($row["programEnd"],0,4) . ")" ;
 		}
-		print "<h2>" ;
 		
-		print "Participants for " . $row["name"] . $date ;
+		print "<h2>" ;
+		print _("Participants for") . " " . $row["name"] . $date ;
 		print "</h2>" ;
 		
 		if ($result->rowCount()<1) {
@@ -77,10 +77,10 @@ else {
 			print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print "Student" ;
+						print _("Student") ;
 					print "</th>" ;
 					print "<th colspan=15>" ;
-						print "Attendance" ;
+						print _("Attendance") ;
 					print "</th>" ;
 				print "</tr>" ;
 				print "<tr style='height: 75px' class='odd'>" ;
@@ -149,8 +149,8 @@ else {
 				}
 				if ($count==0) {
 					print "<tr class=$rowNum>" ;
-						print "<td colspan=5>" ;
-							print "All students are present." ;
+						print "<td colspan=16>" ;
+							print _("There are no records to display.") ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

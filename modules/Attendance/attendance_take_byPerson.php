@@ -234,7 +234,7 @@ else {
 												$extraStyle="background-color: #eee;" ;
 												
 												print "<td style='" . $extraStyle . "height: 25px; width: 20%'>" ;
-												print "<i>NA</i>" ;
+												print "<i>" . _('NA') . "</i>" ;
 												print "</td>" ;
 											}
 											else {

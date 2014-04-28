@@ -31,11 +31,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Activities/report_attendan
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Attendance by Activity</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Attendance by Activity') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print "Choose Activity" ;
+	print _("Choose Activity") ;
 	print "</h2>" ;
 	
 	$gibbonActivityID=NULL ;
@@ -48,7 +48,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Activity</b><br/>
+					<b><? print _('Activity')  ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -128,10 +128,10 @@ else {
 			print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print "Student" ;
+						print _("Student") ;
 					print "</th>" ;
 					print "<th colspan=15>" ;
-						print "Attendance" ;
+						print _("Attendance") ;
 					print "</th>" ;
 				print "</tr>" ;
 				print "<tr style='height: 75px' class='odd'>" ;
@@ -191,8 +191,8 @@ else {
 				}
 				if ($count==0) {
 					print "<tr class=$rowNum>" ;
-						print "<td colspan=5>" ;
-							print "All students are present." ;
+						print "<td colspan=16>" ;
+							print _("There are no records to display.") ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

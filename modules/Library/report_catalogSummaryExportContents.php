@@ -199,7 +199,7 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					if ($row["purchaseDate"]=="") {
-						print "<i>Unknown</i>" ;
+						print "<i>" . _('Unknown') . "</i>" ;
 					}
 					else {
 						print dateConvertBack($guid, $row["purchaseDate"]) . " ; " ;

@@ -166,7 +166,7 @@ else {
 							}
 
 							if ($resultRollGroup->rowCount()<1) {
-								print "<i>Unknown</i>" ;
+								print "<i>" . _('Unknown') . "</i>" ;
 							}
 							else {
 								$rowRollGroup=$resultRollGroup->fetch() ;

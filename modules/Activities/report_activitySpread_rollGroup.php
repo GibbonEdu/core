@@ -31,14 +31,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activity
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Activity Spread by Roll Group</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Activity Spread by Roll Group') . "</div>" ;
 	print "</div>" ;
-	print "<p>" ;
-	print "This report shows the way student activity enrolments are spread over days and terms, with students grouped by roll group." ;
-	print "</p>" ;
 	
 	print "<h2>" ;
-	print "Choose Roll Group" ;
+	print _("Choose Roll Group") ;
 	print "</h2>" ;
 	
 	$gibbonRollGroupID=NULL ;
@@ -78,17 +75,17 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Status*</b><br/>
+					<b><? print _('Status') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="status">
 						<?
-						print "<option value='Accepted'>Accepted</option>" ;
+						print "<option value='Accepted'>" . _('Accepted') . "</option>" ;
 						$selected="" ;
 						if ($_GET["status"]=="Registered") {
 							$selected="selected" ;
 						}
-						print "<option $selected value='Registered'>Registered</option>" ;
+						print "<option $selected value='Registered'>" . _('Registered') . "</option>" ;
 						?>				
 					</select>
 				</td>
@@ -131,7 +128,7 @@ else {
 						print _("Roll Group") ;
 					print "</th>" ;
 					print "<th rowspan=2>" ;
-						print "Student" ;
+						print _("Student") ;
 					print "</th>" ;
 					//Get terms and days of week
 					$terms=getTerms($connection2, $_SESSION[$guid]["gibbonSchoolYearID"]) ;
@@ -240,14 +237,14 @@ else {
 									}
 								}
 								if ($title=="") {
-									$title="No activities registered" ;
+									$title=_("There are no records to display.") ;
 								}
 								else {
 									$title=substr($title,0,-2) ;
 								}
 								print "<span title='" . htmlPrep($title) . "'>" . $resultReg->rowCount() . "<span>" ;
 								if ($notAccepted==TRUE AND $_GET["status"]=="Registered") {
-									print "<span style='color: #cc0000' title='Some activities not accepted.'> *</span>" ;
+									print "<span style='color: #cc0000' title='" . _('Some activities not accepted.') . "'> *</span>" ;
 								}
 							print "</td>" ;
 						}

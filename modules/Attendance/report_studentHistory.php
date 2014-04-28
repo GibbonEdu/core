@@ -138,7 +138,7 @@ else {
 			}
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print "Access denied." ;
+				print _("Access denied.") ;
 				print "</div>" ;
 			}
 			else {
@@ -171,7 +171,7 @@ else {
 				
 				if ($count==0) {
 					print "<div class='error'>" ;
-					print "Access denied." ;
+					print _("Access denied.") ;
 					print "</div>" ;
 				}
 				else if ($count==1) {

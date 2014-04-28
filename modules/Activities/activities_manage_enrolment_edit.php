@@ -99,7 +99,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Activity *</b><br/>
+							<b><? print _('Activity') ?> *</b><br/>
 							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -117,25 +117,25 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Status *</b><br/>
+							<b><? print _('Status') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="status">
-								<option <? if ($row["status"]=="Accepted") { print "selected ";} ?>value="Accepted">Accepted</option>
+								<option <? if ($row["status"]=="Accepted") { print "selected ";} ?>value="Accepted"><? print _('Accepted') ?></option>
 								<?
 								$enrolment=getSettingByScope($connection2, "Activities", "enrolmentType") ;
 								if ($enrolment=="Competitive") {
 									?>
-									<option <? if ($row["status"]=="Waiting List") { print "selected ";} ?>value="Waiting List">Waiting List</option>
+									<option <? if ($row["status"]=="Waiting List") { print "selected ";} ?>value="Waiting List"><? print _('Waiting List') ?></option>
 									<?
 								}
 								else {
 									?>
-									<option <? if ($row["status"]=="Pending") { print "selected ";} ?>value="Pending">Pending</option>
+									<option <? if ($row["status"]=="Pending") { print "selected ";} ?>value="Pending"><? print _('Pending') ?></option>
 									<?
 								}
 								?>
-								<option <? if ($row["status"]=="Not Accepted") { print "selected ";} ?>value="Not Accepted">Not Accepted</option>
+								<option <? if ($row["status"]=="Not Accepted") { print "selected ";} ?>value="Not Accepted"><? print _('Not Accepted') ?></option>
 							</select>
 						</td>
 					</tr>

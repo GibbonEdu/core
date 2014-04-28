@@ -233,7 +233,7 @@ else {
 							print "Family + Company" ;
 						}
 						else {
-							print "<i>Unknown</i>" ;
+							print "<i>" . _('Unknown') . "</i>" ;
 						}
 					print "</td>" ;
 					print "<td>" ;

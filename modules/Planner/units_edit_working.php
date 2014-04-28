@@ -98,7 +98,7 @@ else {
 				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($addReturn=="fail6") {
-				$addReturnMessage="Add succeeded, but there were problems uploading one or more attachments." ;	
+				$addReturnMessage="Your request was successful, but some data was not properly saved." ;	
 			}
 			else if ($addReturn=="success0") {
 				$addReturnMessage=_("Your request was completed successfully.") ;	

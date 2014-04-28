@@ -619,7 +619,7 @@ else {
 										print "<table cellspacing='0' style='width: 100%'>" ;
 											print "<tr class='head'>" ;
 												print "<th>" ;
-													print "Activity" ;
+													print _("Activity") ;
 												print "</th>" ;
 												$options=getSettingByScope($connection2, "Activities", "activityTypes") ;
 												if ($options!="") {
@@ -698,11 +698,11 @@ else {
 															print $row["status"] ;
 														}
 														else {
-															print "<i>NA</i>" ;
+															print "<i>" . _('NA') . "</i>" ;
 														}
 													print "</td>" ;
 													print "<td>" ;
-														print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Activities/activities_my_full.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+														print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Activities/activities_my_full.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 													print "</td>" ;
 												print "</tr>" ;
 											}
@@ -949,7 +949,7 @@ else {
 													}
 												print "</td>" ;
 												print "<td>" ;
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 												print "</td>" ;
 											print "</tr>" ;
 										}

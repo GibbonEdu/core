@@ -182,7 +182,7 @@ else {
 												}
 												
 												if ($resultYear->rowCount()!=1) {
-													print "<i>Unknown</i>" ;
+													print "<i>" . _('Unknown') . "</i>" ;
 												}
 												else {
 													$rowYear=$resultYear->fetch() ;
@@ -375,7 +375,7 @@ else {
 															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 														}
 														if ($resultYear->rowCount()!=1) {
-															print "<i>Unknown</i>" ;
+															print "<i>" . _('Unknown') . "</i>" ;
 														}
 														else {
 															$rowYear=$resultYear->fetch() ;

@@ -18,24 +18,24 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@gibbonedu.org\n"
 "POT-Creation-Date: 2014-03-05 09:36+0800\n"
 "PO-Revision-Date:2014-03-05 09:36+0800\n"
-"Last-Translator: Nicolas Arriaga <narriaga@ichk.edu.hk>\n"
-"Language-Team: ICHK Spanish <narriaga@ichk.edu.hk>\n"
-"Language: es_ES\n"
+"Last-Translator: \n"
+"Language-Team: ICHK Languages Department <narriaga@ichk.edu.hk>\n"
+"Language: zh_HK\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: index.php:1077 index.php:1072 index.php:1074 index.php:1074
 msgid "Today's Lessons"
-msgstr "Lecciones de Hoy"
+msgstr ""
 
 #: index.php:1227 index.php:1222 index.php:1229 index.php:1229
 msgid "My Timetable"
-msgstr "Mi Horario"
+msgstr ""
 
 #: index.php:1262 index.php:1257 index.php:1267 index.php:1267
 msgid "My Roll Group"
-msgstr "Mi Rollo Grupo"
+msgstr ""
 
 #: error.php:22 error.php:22 modules/Rubrics/moduleFunctions.php:107
 #: modules/Rubrics/moduleFunctions.php:136

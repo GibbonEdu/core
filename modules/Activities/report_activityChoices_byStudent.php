@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activitySpread_rollGroup.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activityChoices_byStudent.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
 		print _("You do not have access to this action.") ;
@@ -31,14 +31,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activity
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Activity Choices By Student</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Activity Choices By Student') . "</div>" ;
 	print "</div>" ;
-	print "<p>" ;
-	print "This report shows the current and historical activities that a student has enrolled in." ;
-	print "</p>" ;
 	
 	print "<h2>" ;
-	print "Choose Student" ;
+	print _("Choose Student") ;
 	print "</h2>" ;
 	
 	$gibbonPersonID=NULL ;
@@ -56,7 +53,7 @@ else {
 				<td class="right">
 					<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
 						<option></option>
-						<optgroup label='--Students by Roll Group--'>
+						<optgroup label='--<? print _('Students by Roll Group') ?>--'>
 							<?
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -74,7 +71,7 @@ else {
 							}
 							?>
 						</optgroup>
-						<optgroup label='--Students by Name--'>
+						<optgroup label='--<? print _('Students by Name') ?>--'>
 							<?
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -119,7 +116,7 @@ else {
 
 		if ($resultYears->rowCount()<1) {
 			print "<div class='error'>" ;
-			print "The specified student has not been enrolled in any school years." ;
+			print _("There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -148,7 +145,7 @@ else {
 
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print "The selected student does not seem to exist." ;
+						print _("The specified record does not exist.") ;
 					print "</div>" ;
 				}
 				else {
@@ -176,7 +173,7 @@ else {
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
-									print "Activity" ;
+									print _("Activity") ;
 								print "</th>" ;
 								$options=getSettingByScope($connection2, "Activities", "activityTypes") ;
 								if ($options!="") {
@@ -186,10 +183,10 @@ else {
 								}
 								print "<th>" ;
 									if ($dateType!="Date") {
-										print "Term" ;
+										print  _("Term") ;
 									}
 									else {
-										print "Dates" ;
+										print  _("Dates") ;
 									}
 								print "</th>" ;
 								print "<th>" ;
@@ -252,11 +249,11 @@ else {
 											print $row["status"] ;
 										}
 										else {
-											print "<i>NA</i>" ;
+											print "<i>" . _('NA') . "</i>" ;
 										}
 									print "</td>" ;
 									print "<td>" ;
-										print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_my_full.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+										print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_my_full.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 									print "</td>" ;
 								print "</tr>" ;
 							}

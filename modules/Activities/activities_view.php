@@ -38,7 +38,7 @@ else {
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Activities</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('View Activities') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -46,11 +46,11 @@ else {
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="success0") {
-				$updateReturnMessage="Registration was successful." ;	
+				$updateReturnMessage=_("Registration was successful.") ;	
 				$class="success" ;
 			}
 			if ($updateReturn=="success1") {
-				$updateReturnMessage="Unregistration was successful." ;	
+				$updateReturnMessage=_("Unregistration was successful.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -67,20 +67,20 @@ else {
 		
 		if (!($access=="View" OR $access=="Register")) {
 			print "<div class='error'>" ;
-				print "Activity listing is currently closed." ;
+				print _("Activity listing is currently closed.") ;
 			print "</div>" ;
 		}
 		else {
 			if ($access=="View") {
 				print "<div class='warning'>" ;
-					print "Registration is currently closed, but you can still view activities." ;
+					print _("Registration is currently closed, but you can still view activities.") ;
 				print "</div>" ;
 			}
 			
 			$disableExternalProviderSignup=getSettingByScope( $connection2, "Activities", "disableExternalProviderSignup" ) ;
 			if ($disableExternalProviderSignup=="Y") {
 				print "<div class='warning'>" ;
-					print "Registration for activities offered by outside providers is disabled. Check activity details for instructions on how to register for such acitvities." ;
+					print _("Registration for activities offered by outside providers is disabled. Check activity details for instructions on how to register for such acitvities.") ;
 				print "</div>" ;
 			}
 			
@@ -107,7 +107,7 @@ else {
 	
 				if ($result->rowCount()<1) {
 					print "<div class='error'>" ;
-					print "Access denied." ;
+					print _("Access denied.") ;
 					print "</div>" ;
 				}
 				else {
@@ -146,14 +146,14 @@ else {
 					
 					if ($countChild==0) {
 						print "<div class='error'>" ;
-						print "You do not have any children linked to you, and so you cannot register." ;
+						print _("There are no records to display.") ;
 						print "</div>" ;
 					}
 				}
 			}
 			
 			print "<h2>" ;
-			print "Filter & Search" ;
+			print _("Filter & Search") ;
 			print "</h2>" ;
 			
 			$search=NULL ;
@@ -169,8 +169,8 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Child</b><br/>
-								<span style="font-size: 90%"><i>Choose the child you are registering for.</i></span>
+								<b><? print _('Child') ?></b><br/>
+								<span style="font-size: 90%"><i><? print _('Choose the child you are registering for.') ?></i></span>
 							</td>
 							<td class="right">
 								<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
@@ -189,8 +189,8 @@ else {
 					
 					<tr>
 						<td> 
-							<b>Search For Activity</b><br/>
-							<span style="font-size: 90%"><i>Activity name.</i></span>
+							<b><? print _('Search For Activity') ?></b><br/>
+							<span style="font-size: 90%"><i><? print _('Activity name.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="search" id="search" maxlength=20 value="<? print $search ?>" type="text" style="width: 300px">
@@ -211,7 +211,7 @@ else {
 			<?
 			
 			print "<h2>" ;
-			print "Activities" ;
+			print _("Activities") ;
 			print "</h2>" ;
 			
 			//Set pagination variable
@@ -283,7 +283,7 @@ else {
 			
 			if ($continue==FALSE) {
 				print "<div class='error'>" ;
-				print "Activities list cannot be displayed." ;
+				print _("Your request failed due to a database error.") ;
 				print "</div>" ;
 			}
 			else {
@@ -333,7 +333,7 @@ else {
 					
 					if ($dateType=="Term" AND $maxPerTerm>0 AND (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0))) {
 						print "<div class='warning'>" ;
-							print "Remember, each student can register for no more than $maxPerTerm activities per term. Your current registration count by term is:" ;
+							print _("Remember, each student can register for no more than $maxPerTerm activities per term. Your current registration count by term is:") ;
 							$terms=getTerms($connection2, $_SESSION[$guid]["gibbonSchoolYearID"]) ;
 							print "<ul>" ;
 								for ($i=0; $i<count($terms); $i=$i+2) {
@@ -362,31 +362,31 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print "Activity" ;
+								print _("Activity") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Provider" ;
+								print _("Provider") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Days" ;
+								print _("Days") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Years" ;
+								print _("Years") ;
 							print "</th>" ;
 							print "<th>" ;
 								if ($dateType!="Date") {
-									print "Term" ;
+									print _("Term") ;
 								}
 								else {
-									print "Dates" ;
+									print _("Dates") ;
 								}
 							print "</th>" ;
 							print "<th>" ;
-								print "Cost" ;
+								print _("Cost") ;
 							print "</th>" ;
 							if (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0)) {
 								print "<th>" ;
-									print "Enrolment" ;
+									print _("Enrolment") ;
 								print "</th>" ;
 							}
 							print "<th>" ;
@@ -457,7 +457,7 @@ else {
 										$count2++ ;
 									}
 									if ($count2==0) {
-										print "<i>None</i>" ;
+										print "<i>" . _('None') . "</i>" ;
 									}
 								print "</td>" ;
 								print "<td>" ;
@@ -490,11 +490,11 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									if ($hideExternalProviderCost=="Y" AND $row["provider"]=="External") {
-										print "<i>See activity details</i>" ;
+										print "<i>" . _('See activity details') . "</i>" ;
 									}
 									else {
 										if ($row["payment"]==0) {
-											print "<i>None</i>" ;
+											print "<i>" . _('None') . "</i>" ;
 										}
 										else {
 											print "$" . $row["payment"] ;
@@ -507,7 +507,7 @@ else {
 									print "</td>" ;
 								}
 								print "<td>" ;
-									print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_full.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+									print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_full.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 									$signup=TRUE ;
 									if ($row["provider"]=="External" AND $disableExternalProviderSignup=="Y") {
 										$signup=FALSE ;
@@ -515,10 +515,10 @@ else {
 									if ($signup) {
 										if (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0)) {
 											if ($resultEnrol->rowCount()<1) {
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $search . "&mode=register&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='Register' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a> " ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $search . "&mode=register&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='" . _('Register') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a> " ;
 											}
 											else {
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $search . "&mode=unregister&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='Unregister' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $search . "&mode=unregister&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='" . _('Unregister') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 											}
 										}
 									}

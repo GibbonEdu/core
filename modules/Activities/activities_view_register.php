@@ -38,7 +38,7 @@ else {
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_view.php'>View Activities</a> > </div><div class='trailEnd'>Activity Registration</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_view.php'>View Activities</a> > </div><div class='trailEnd'>" . _('Activity Registration') . "</div>" ;
 		print "</div>" ;
 		
 		if (isActionAccessible($guid, $connection2,"/modules/Activities/activities_view_register")==FALSE) {
@@ -58,7 +58,7 @@ else {
 			
 			if ($access!="Register") {
 				print "<div class='error'>" ;
-				print "Registration is closed, or you do not have permission to register." ;
+				print _("Registration is closed, or you do not have permission to register.") ;
 				print "</div>" ;
 			}
 			else {
@@ -115,7 +115,7 @@ else {
 			
 						if ($result->rowCount()<1) {
 							print "<div class='error'>" ;
-							print "Access denied." ;
+							print _("Access denied.") ;
 							print "</div>" ;
 						}
 						else {
@@ -149,7 +149,7 @@ else {
 					if ($mode=="register") {
 						if ($continue==FALSE) {
 							print "<div class='error'>" ;
-							print "You cannot register for the specified activity." ;
+							print _("Your request failed due to a database error.") ;
 							print "</div>" ;
 						}
 						else {
@@ -198,7 +198,7 @@ else {
 								
 								if ($resultReg->rowCount()>0) {
 									print "<div class='error'>" ;
-										print "You are already registered for this activity and so cannot register again." ;
+										print _("You are already registered for this activity and so cannot register again.") ;
 									print "</div>" ;
 								}
 								else {
@@ -207,19 +207,19 @@ else {
 									$class="error" ;
 									if (!($updateReturn=="")) {
 										if ($updateReturn=="fail0") {
-											$updateReturnMessage="Registration failed because you do not have access to this action." ;	
+											$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 										}
 										else if ($updateReturn=="fail2") {
-											$updateReturnMessage="Registration failed due to a database error." ;	
+											$updateReturnMessage=_("Your request failed due to a database error.") ;	
 										}
 										else if ($updateReturn=="fail3") {
-											$updateReturnMessage="Registration failed because your inputs were invalid." ;	
+											$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 										}
 										else if ($updateReturn=="fail4") {
-											$updateReturnMessage="Registration failed some values need to be unique but were not." ;	
+											$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 										}
 										else if ($updateReturn=="fail5") {
-											$updateReturnMessage="Registration failed because you are already registered in this activity." ;	
+											$updateReturnMessage=_("Registration failed because you are already registered in this activity.") ;	
 										}
 										print "<div class='$class'>" ;
 											print $updateReturnMessage;
@@ -249,7 +249,7 @@ else {
 									
 									if ($proceed==false) {
 										print "<div class='error'>" ;
-											print "You have subscribed for the maximum number of activities in a term, and so cannot register for this activity." ;
+											print _("You have subscribed for the maximum number of activities in a term, and so cannot register for this activity.") ;
 										print "</div>" ;
 									}
 									else {
@@ -257,10 +257,10 @@ else {
 										<p>
 											<?
 											if (getSettingByScope($connection2, "Activities", "enrolmentType")=="Selection") {
-												print "After you press the Register button below, your application will be considered by a member of staff who will decide whether or not there is space for you in this program." ;
+												print _("After you press the Register button below, your application will be considered by a member of staff who will decide whether or not there is space for you in this program.") ;
 											}
 											else {
-												print "If there is space on this program you will be accepted immediately upon pressing the Register button below. If there is not, then you will be placed on a waiting list." ;
+												print _("If there is space on this program you will be accepted immediately upon pressing the Register button below. If there is not, then you will be placed on a waiting list.") ;
 											}
 											?>
 										</p>
@@ -268,7 +268,7 @@ else {
 											<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 												<tr>
 													<td> 
-														<b>Activity</b><br/>
+														<b><? print _('Activity') ?></b><br/>
 													</td>
 													<td class="right">
 														<input readonly name="name" id="name" maxlength=40 value="<? print $row["name"] ?>" type="text" style="width: 300px">
@@ -279,7 +279,7 @@ else {
 													?>
 													<tr>
 														<td> 
-															<b>Terms</b><br/>
+															<b><? print _('Terms') ?></b><br/>
 														</td>
 														<td class="right">
 															<?
@@ -300,7 +300,7 @@ else {
 													?>
 													<tr>
 														<td> 
-															<b>Program Start Date</b><br/>
+															<b><? print _('Program Start Date') ?></b><br/>
 														</td>
 														<td class="right">
 															<input readonly name="programStart" id="programStart" maxlength=10 value="<? print dateConvertBack($guid, $row["programStart"]) ?>" type="text" style="width: 300px">
@@ -308,7 +308,7 @@ else {
 													</tr>
 													<tr>
 														<td> 
-															<b>Program End Date</b><br/>
+															<b><? print _('Program End Date') ?></b><br/>
 														</td>
 														<td class="right">
 															<input readonly name="programEnd" id="programEnd" maxlength=10 value="<? print dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
@@ -319,8 +319,8 @@ else {
 												?>
 												<tr>
 													<td> 
-														<b>Cost</b><br/>
-														<span style="font-size: 90%"><i>For entire programme<br/></i></span>
+														<b><? print _('Cost') ?></b><br/>
+														<span style="font-size: 90%"><i><? print _('For entire programme') ?><br/></i></span>
 													</td>
 													<td class="right">
 														<?
@@ -339,8 +339,8 @@ else {
 													?>
 													<tr>
 														<td> 
-															<b>Backup Choice * </b><br/>
-															<span style="font-size: 90%"><i>Incase <? print $row["name"] ?> is full.<br/></i></span>
+															<b><? print _('Backup Choice') ?> * </b><br/>
+															<span style="font-size: 90%"><i><? print sprintf(_('Incase %1$s is full.'), $row["name"]) ?><br/></i></span>
 														</td>
 														<td class="right">
 															<select name="gibbonActivityIDBackup" id="gibbonActivityIDBackup" style="width: 302px">
@@ -398,7 +398,7 @@ else {
 					else if ($mode="unregister") {
 						if ($continue==FALSE) {
 							print "<div class='error'>" ;
-							print "You cannot register for the specified activity." ;
+							print _("Your request failed due to a database error.") ;
 							print "</div>" ;
 						}
 						else {
@@ -444,7 +444,7 @@ else {
 								
 								if ($resultReg->rowCount()<1) {
 									print "<div class='error'>" ;
-										print "You are not currently registered for this activity and so cannot unregister." ;
+										print _("You are not currently registered for this activity and so cannot unregister.") ;
 									print "</div>" ;
 								}
 								else {
@@ -454,13 +454,13 @@ else {
 									$class="error" ;
 									if (!($updateReturn=="")) {
 										if ($updateReturn=="fail0") {
-											$updateReturnMessage="Unregistration failed because you do not have access to this action." ;	
+											$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 										}
 										else if ($updateReturn=="fail2") {
-											$updateReturnMessage="Unregistration failed due to a database error." ;	
+											$updateReturnMessage=_("Your request failed due to a database error.") ;	
 										}
 										else if ($updateReturn=="fail5") {
-											$updateReturnMessage="Unregistration failed because you are not already registered in this activity." ;	
+											$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 										}
 										print "<div class='$class'>" ;
 											print $updateReturnMessage;
@@ -472,7 +472,7 @@ else {
 										<table cellspacing='0' style="width: 100%">	
 											<tr>
 												<td> 
-													<b>Are you sure you want to unregister from activity "<? print $row["name"] ?>"? If you try to reregister later you may lose a space already assigned to you.</b><br/>
+													<b><? print sprintf(_('Are you sure you want to unregister from activity "%1$s"? If you try to reregister later you may lose a space already assigned to you.'), $row["name"]) ?></b><br/>
 												</td>
 											</tr>
 											<tr>

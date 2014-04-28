@@ -1587,6 +1587,8 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'System', 'gibboneduComOrganisationName', 'gibbonedu.com Organisation Name', 'Name of organisation, as registered with gibbonedu.com, for access to value-added services.', '');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (NULL, 'System', 'gibboneduComOrganisationKey', 'gibbonedu.com Organisation Key', 'Organisation\'s private key, as registered with gibbonedu.com, for access to value-added services.', '');end
 ALTER TABLE `gibbonCourseClassPerson` ADD `reportable` ENUM('Y','N') NOT NULL DEFAULT 'Y' ;end
+ALTER TABLE `gibboni18n` CHANGE `currencySymbol` `currencySymbol` VARCHAR(3) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+INSERT INTO `gibbon_dev_core`.`gibboni18n` (`gibboni18nID`, `code`, `name`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `currencyCode`, `currencySymbol`) VALUES (NULL, 'pl_PL', 'Język Polski - Polska', 'N', 'Arek Gladki', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\\d\\\\d$/i', 'd/m/Y', 'PLN', 'zł');end
 ";
 
 

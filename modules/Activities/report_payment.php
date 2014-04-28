@@ -31,11 +31,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Activities/report_payment.
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Payment</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Payment') . "</div>" ;
 	print "</div>" ;
-	print "<p>" ;
-	print "This report displays all payments required in the current school year" ;
-	print "</p>" ;
 	
 	try {
 		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -61,13 +58,13 @@ else {
 					print _("Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Student" ;
+					print _("Student") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Activity" ;
+					print _("Activity") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Cost" ;
+					print _("Cost") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -96,7 +93,7 @@ else {
 						}
 
 						if ($resultRollGroup->rowCount()<1) {
-							print "<i>Unknown</i>" ;
+							print "<i>" . _('Unknown') . "</i>" ;
 						}
 						else {
 							$rowRollGroup=$resultRollGroup->fetch() ;
@@ -131,8 +128,8 @@ else {
 			}
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;
-					print "<td colspan=5>" ;
-						print "All students are present." ;
+					print "<td colspan=4>" ;
+						print _("There are no records to display.") ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

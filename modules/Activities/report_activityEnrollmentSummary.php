@@ -31,12 +31,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activity
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Activity Enrollment Summary</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Activity Enrollment Summary') . "</div>" ;
 	print "</div>" ;
-	print "<p>" ;
-	print "This report displays a summary of enrollment in active activities the current year." ;
-	print "</p>" ;
-	
 	try {
 		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 		$sql="SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name" ;
@@ -58,17 +54,17 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Activity" ;
+					print _("Activity") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Accepted" ;
+					print _("Accepted") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Registered<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>Excludes \"Not Accepted\"<span>" ;
+					print _("Registered") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . _('Excludes "Not Accepted') . "<span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Max Participants" ;
+					print _("Max Participants") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -100,7 +96,7 @@ else {
 						}
 
 						if ($resultEnrollment->rowCount()<0) {
-							print "<i>Unknown</i>" ;
+							print "<i>" . _('Unknown') . "</i>" ;
 						}
 						else {
 							if ($resultEnrollment->rowCount()>$row["maxParticipants"]) {
@@ -124,7 +120,7 @@ else {
 						}
 
 						if ($resultEnrollment->rowCount()<0) {
-							print "<i>Unknown</i>" ;
+							print "<i>" . _('Unknown') . "</i>" ;
 						}
 						else {
 							print $resultEnrollment->rowCount() ;

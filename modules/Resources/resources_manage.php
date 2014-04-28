@@ -235,7 +235,7 @@ else {
 								}
 							}
 							else {
-								print "<i>None</i>" ;
+								print "<i>" . _('None') . "</i>" ;
 							}
 						print "</td>" ;
 						print "<td>" ;

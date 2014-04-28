@@ -636,7 +636,7 @@ else {
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Class Of</span><br/>" ;
 									if ($row["gibbonSchoolYearIDClassOf"]=="") {
-										print "<i>NA</i>" ;
+										print "<i>" . _('NA') . "</i>" ;
 									}
 									else {
 										try {
@@ -1018,7 +1018,7 @@ else {
 														print $rowRelationship["relationship"] ;
 													}
 													else {
-														print "<i>Unknown</i>" ;
+														print "<i>" . _('Unknown') . "</i>" ;
 													}
 											print "</td>" ;
 											print "<td style='width: 34%; vertical-align: top' colspan=2>" ;
@@ -1248,7 +1248,7 @@ else {
 												print $rowRelationship["relationship"] ;
 											}
 											else {
-												print "<i>Unknown</i>" ;
+												print "<i>" . _('Unknown') . "</i>" ;
 											}
 											
 										print "</td>" ;
@@ -1374,7 +1374,7 @@ else {
 									print "<td style='width: 33%; vertical-align: top'>" ;
 										print "<span style='font-size: 115%; font-weight: bold'>Long Term Medication?</span><br/>" ;
 										if ($row["emergency1Relationship"]=="") {
-											print "<i>Unknown</i>" ;
+											print "<i>" . _('Unknown') . "</i>" ;
 										}
 										else {
 											print $rowMedical["longTermMedication"] ;
@@ -1389,7 +1389,7 @@ else {
 									print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 										print "<span style='font-size: 115%; font-weight: bold'>Tetanus Last 10 Years?</span><br/>" ;
 										if ($rowMedical["tetanusWithin10Years"]=="") {
-											print "<i>Unknown</i>" ;
+											print "<i>" . _('Unknown') . "</i>" ;
 										}
 										else {
 											print $rowMedical["tetanusWithin10Years"] ;
@@ -2196,7 +2196,7 @@ else {
 										print "<table cellspacing='0' style='width: 100%'>" ;
 											print "<tr class='head'>" ;
 												print "<th>" ;
-													print "Activity" ;
+													print _("Activity") ;
 												print "</th>" ;
 												$options=getSettingByScope($connection2, "Activities", "activityTypes") ;
 												if ($options!="") {
@@ -2271,11 +2271,11 @@ else {
 															print $row["status"] ;
 														}
 														else {
-															print "<i>NA</i>" ;
+															print "<i>" . _('NA') . "</i>" ;
 														}
 													print "</td>" ;
 													print "<td>" ;
-														print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Activities/activities_my_full.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+														print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Activities/activities_my_full.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 													print "</td>" ;
 												print "</tr>" ;
 											}
@@ -2526,7 +2526,7 @@ else {
 													}
 												print "</td>" ;
 												print "<td>" ;
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&width=1000&height=550'><img title='View Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 												print "</td>" ;
 											print "</tr>" ;
 										}

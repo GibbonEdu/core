@@ -31,14 +31,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activity
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Activity Type by Roll Group</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Activity Type by Roll Group') . "</div>" ;
 	print "</div>" ;
-	print "<p>" ;
-	print "This report shows the number of activities each student in a roll group has enrol into, broken down by activity type." ;
-	print "</p>" ;
 	
 	print "<h2>" ;
-	print "Choose Roll Group" ;
+	print _("Choose Roll Group") ;
 	print "</h2>" ;
 	
 	$gibbonRollGroupID=NULL ;
@@ -78,17 +75,17 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Status*</b><br/>
+					<b><? print _('Status') ?>*</b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="status">
 						<?
-						print "<option value='Accepted'>Accepted</option>" ;
+						print "<option value='Accepted'>" . _('Accepted') . "</option>" ;
 						$selected="" ;
 						if ($_GET["status"]=="Registered") {
 							$selected="selected" ;
 						}
-						print "<option $selected value='Registered'>Registered</option>" ;
+						print "<option $selected value='Registered'>" . _('Registered') . "</option>" ;
 						?>				
 					</select>
 				</td>
@@ -131,10 +128,10 @@ else {
 						print _("Roll Group") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Student" ;
+						print _("Student") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "No Type" ;
+						print _("No Type") ;
 					print "</th>" ;
 					$options=getSettingByScope($connection2, "Activities", "activityTypes") ;
 					if ($options!="") {
@@ -149,7 +146,7 @@ else {
 						}
 					}
 					print "<th>" ;
-						print "Total" ;
+						print _("Total") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -254,7 +251,7 @@ else {
 				if ($count==0) {
 					print "<tr class=$rowNum>" ;
 						print "<td colspan=2>" ;
-							print "There are no results to display." ;
+							print _("There are no records to display.") ;
 						print "</td>" ;
 					print "</tr>" ;
 				}
