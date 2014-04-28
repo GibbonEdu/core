@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -86,15 +86,15 @@ else {
 					print "</div>" ;
 				} 
 				?>
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/ttDates_edit_addProcess.php" ?>">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/ttDates_edit_addProcess.php" ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
-								<b><? print _('Year') ?> *</b><br/>
-								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+								<b><?php print _('Year') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var courseName=new LiveValidation('courseName');
 									courseName.add(Validate.Presence);
@@ -103,12 +103,12 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><? print _('Date') ?> *</b><br/>
-								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+								<b><?php print _('Date') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
-								<input hidden name="dateStamp" id="dateStamp" maxlength=20 value="<? print $dateStamp ?>" type="text" style="width: 300px">
-								<input readonly name="date" id="date" maxlength=20 value="<? print date("d/m/Y l", $dateStamp) ?>" type="text" style="width: 300px">
+								<input hidden name="dateStamp" id="dateStamp" maxlength=20 value="<?php print $dateStamp ?>" type="text" style="width: 300px">
+								<input readonly name="date" id="date" maxlength=20 value="<?php print date("d/m/Y l", $dateStamp) ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var courseName=new LiveValidation('courseName');
 									courseName.add(Validate.Presence);
@@ -117,11 +117,11 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><? print _('Day') ?></b><br/>
+								<b><?php print _('Day') ?></b><br/>
 							</td>
 							<td class="right">
 								<select style="width: 302px" name="gibbonTTDayID">
-									<?
+									<?php
 									//Check which timetables are not already linked to this date
 									try {
 										$dataCheck=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
@@ -164,17 +164,17 @@ else {
 						</tr>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 							</td>
 							<td class="right">
-								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
-								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<? print _("Submit") ; ?>">
+								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
+								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+								<input type="submit" value="<?php print _("Submit") ; ?>">
 							</td>
 						</tr>
 					</table>
 				</form>
-				<?
+				<?php
 			}
 		}
 	}

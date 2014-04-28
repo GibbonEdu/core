@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -217,7 +217,7 @@ else {
 							$row=$result->fetch() ;
 							$gibbonDepartmentID=$row["gibbonDepartmentID"] ;
 							?>
-							<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_editProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
+							<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_editProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
 								<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 									<tr class='break'>
 										<td colspan=2> 
@@ -226,29 +226,29 @@ else {
 									</tr>
 									<tr>
 										<td> 
-											<b><? print _('School Year') ?> *</b><br/>
-											<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+											<b><?php print _('School Year') ?> *</b><br/>
+											<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 										</td>
 										<td class="right">
-											<input readonly name="yearName" id="yearName" maxlength=20 value="<? print $yearName ?>" type="text" style="width: 300px">
+											<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
 										</td>
 									</tr>
 									<tr>
 										<td> 
-											<b><? print _('Course') ?> *</b><br/>
-											<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+											<b><?php print _('Course') ?> *</b><br/>
+											<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 										</td>
 										<td class="right">
-											<input readonly name="courseName" id="courseName" maxlength=20 value="<? print $row["courseName"] ?>" type="text" style="width: 300px">
+											<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print $row["courseName"] ?>" type="text" style="width: 300px">
 										</td>
 									</tr>
 									<tr>
 										<td> 
-											<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+											<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 											<span style="font-size: 90%"><i></i></span>
 										</td>
 										<td class="right">
-											<input name="name" id="name" maxlength=40 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+											<input name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 											<script type="text/javascript">
 												var name=new LiveValidation('name');
 												name.add(Validate.Presence);
@@ -258,7 +258,7 @@ else {
 									<tr>
 										<td colspan=2> 
 											<b>Blurb *</b> 
-											<textarea name='description' id='description' rows=5 style='width: 300px'><? print $row["description"] ?></textarea>
+											<textarea name='description' id='description' rows=5 style='width: 300px'><?php print $row["description"] ?></textarea>
 											<script type="text/javascript">
 												var description=new LiveValidation('description');
 												description.add(Validate.Presence);
@@ -272,13 +272,13 @@ else {
 											<span style="font-size: 90%"><i>Can this unit be embedded in another website, and so shared publicly?</i></span>
 										</td>
 										<td class="right">
-											<input <? if ($row["embeddable"]=="Y") { print "checked" ; } ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="Y" /> Yes
-											<input <? if ($row["embeddable"]=="N") { print "checked" ; } ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="N" /> No
+											<input <?php if ($row["embeddable"]=="Y") { print "checked" ; } ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="Y" /> Yes
+											<input <?php if ($row["embeddable"]=="N") { print "checked" ; } ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="N" /> No
 										</td>
 									</tr>
 									<script type="text/javascript">
 										$(document).ready(function(){
-											<?
+											<?php
 											if ($row["embeddable"]=="Y") {
 												print "$(\"#embeddableRow\").slideDown(\"fast\", $(\"#embeddableRow\").css(\"display\",\"table-row\"));" ;
 											}
@@ -295,13 +295,13 @@ else {
 										});
 									</script>
 									
-									<tr id="embeddableRow" <? if ($row["embeddable"]=="N") { print "style='display: none'" ; } ?>>
+									<tr id="embeddableRow" <?php if ($row["embeddable"]=="N") { print "style='display: none'" ; } ?>>
 										<td> 
 											<b>Embed Code</b><br/>
 											<span style="font-size: 90%"><i>Copy and paste this HTML code into the target website.</i></span>
 										</td>
 										<td class="right">
-											<textarea readonly name='embedCode' id='embedCode' rows=5 style='width: 300px'><? print "<iframe style='border: none; width: 620px; height: 800px; overflow-x: hidden; overflow-y: scroll' src=\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/units_embed.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&themeName=" . $_SESSION[$guid]["gibbonThemeName"] . "&title=false\"></iframe>" ?></textarea>
+											<textarea readonly name='embedCode' id='embedCode' rows=5 style='width: 300px'><?php print "<iframe style='border: none; width: 620px; height: 800px; overflow-x: hidden; overflow-y: scroll' src=\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/units_embed.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&themeName=" . $_SESSION[$guid]["gibbonThemeName"] . "&title=false\"></iframe>" ?></textarea>
 										</td>
 									</tr>
 								
@@ -310,13 +310,13 @@ else {
 											<h3>Classes</h3>
 										</td>
 									</tr>
-									<?
+									<?php
 									if ($_SESSION[$guid]["gibbonSchoolYearIDCurrent"]==$gibbonSchoolYearID AND $_SESSION[$guid]["gibbonSchoolYearIDCurrent"]==$_SESSION[$guid]["gibbonSchoolYearID"]) {
 										?>
 										<tr>
 											<td colspan=2> 
 												<p>Select classes which will have access to this unit.</p>
-												<?
+												<?php
 												$classCount=0 ;
 												try {
 													$dataClass=array("gibbonCourseID"=>$gibbonCourseID); 
@@ -383,12 +383,12 @@ else {
 																print "</td>" ;
 																print "<td>" ;
 																	?>
-																	<input name="gibbonCourseClassID<? print $classCount?>" id="gibbonCourseClassID<? print $classCount?>" maxlength=10 value="<? print $rowClass["gibbonCourseClassID"] ?>" type="hidden" style="width: 300px">
-																	<select name="running<? print $classCount?>" id="running<? print $classCount?>" style="width:100%">
-																		<option <? if ($rowClassData["running"]=="N") { print "selected ";} ?>value="N">N</option>
-																		<option <? if ($rowClassData["running"]=="Y") { print "selected ";} ?>value="Y">Y</option>
+																	<input name="gibbonCourseClassID<?php print $classCount?>" id="gibbonCourseClassID<?php print $classCount?>" maxlength=10 value="<?php print $rowClass["gibbonCourseClassID"] ?>" type="hidden" style="width: 300px">
+																	<select name="running<?php print $classCount?>" id="running<?php print $classCount?>" style="width:100%">
+																		<option <?php if ($rowClassData["running"]=="N") { print "selected ";} ?>value="N">N</option>
+																		<option <?php if ($rowClassData["running"]=="Y") { print "selected ";} ?>value="Y">Y</option>
 																	</select>
-																	<?
+																	<?php
 																print "</td>" ;
 																print "<td>" ;
 																	try {
@@ -427,7 +427,7 @@ else {
 												?>
 											</td>
 										</tr>
-										<?
+										<?php
 									}
 									else {
 										print "<tr>" ;
@@ -451,25 +451,25 @@ else {
 									<tr>
 										<td colspan=2>
 											<p>The contents of this field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users.</p>
-											<? print getEditor($guid,  TRUE, "details", $row["details"], 40, true, false, false) ?>
+											<?php print getEditor($guid,  TRUE, "details", $row["details"], 40, true, false, false) ?>
 										</td>
 									</tr>
 									<tr>
 										<td> 
 											<b>Downloadable Unit Outline</b><br/>
 											<span style="font-size: 90%"><i>Available to most users.</i></span>
-											<? if ($row["attachment"]!="") { ?>
+											<?php if ($row["attachment"]!="") { ?>
 											<span style="font-size: 90%"><i>Will overwrite existing attachment</i></span>
-											<? } ?>
+											<?php } ?>
 										</td>
 										<td class="right">
-											<?
+											<?php
 											if ($row["attachment"]!="") {
 												print "Current attachment: <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["attachment"] . "'>" . $row["attachment"] . "</a><br/><br/>" ;
 											}
 											?>
 											<input type="file" name="file" id="file"><br/><br/>
-											<?
+											<?php
 											print getMaxUpload() ;
 										
 											//Get list of acceptable file extensions
@@ -488,7 +488,7 @@ else {
 										
 											<script type="text/javascript">
 												var file=new LiveValidation('file');
-												file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+												file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 											</script>
 										</td>
 									</tr>
@@ -522,7 +522,7 @@ else {
 										
 										
 											<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px'>
-												<? 
+												<?php 
 												try {
 													$dataBlocks=array("gibbonUnitID"=>$gibbonUnitID); 
 													$sqlBlocks="SELECT * FROM gibbonUnitBlock WHERE gibbonUnitID=:gibbonUnitID ORDER BY sequenceNumber" ;
@@ -545,11 +545,11 @@ else {
 														<tr>
 															<td style='width: 50%'>
 																<script type="text/javascript">
-																	var count=<? print ($resultBlocks->rowCount()+1) ?> ;
+																	var count=<?php print ($resultBlocks->rowCount()+1) ?> ;
 																	$(document).ready(function(){
 																		$("#new").click(function(){
-																			$("#sortable").append('<div id=\'blockOuter' + count + '\'><img style=\'margin: 10px 0 5px 0\' src=\'<? print $_SESSION[$guid]["absoluteURL"] ?>/themes/Default/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');
-																			$("#blockOuter" + count).load("<? print $_SESSION[$guid]["absoluteURL"] ?>/modules/Planner/units_add_blockAjax.php","id=" + count + "&mode=masterEdit") ;
+																			$("#sortable").append('<div id=\'blockOuter' + count + '\'><img style=\'margin: 10px 0 5px 0\' src=\'<?php print $_SESSION[$guid]["absoluteURL"] ?>/themes/Default/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');
+																			$("#blockOuter" + count).load("<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Planner/units_add_blockAjax.php","id=" + count + "&mode=masterEdit") ;
 																			count++ ;
 																		 });
 																	});
@@ -568,24 +568,24 @@ else {
 											<h3>Outcomes</h3>
 										</td>
 									</tr>
-									<? 
+									<?php 
 									$type="outcome" ; 
 									$allowOutcomeEditing=getSettingByScope($connection2, "Planner", "allowOutcomeEditing") ;
 									$categories=array() ;
 									$categoryCount=0 ;
 									?> 
 									<style>
-										#<? print $type ?> { list-style-type: none; margin: 0; padding: 0; width: 100%; }
-										#<? print $type ?> div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
+										#<?php print $type ?> { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+										#<?php print $type ?> div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
 										div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-										html>body #<? print $type ?> li { min-height: 58px; line-height: 1.2em; }
-										.<? print $type ?>-ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
-										.<? print $type ?>-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
+										html>body #<?php print $type ?> li { min-height: 58px; line-height: 1.2em; }
+										.<?php print $type ?>-ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
+										.<?php print $type ?>-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
 									</style>
 									<script>
 										$(function() {
-											$( "#<? print $type ?>" ).sortable({
-												placeholder: "<? print $type ?>-ui-state-highlight",
+											$( "#<?php print $type ?>" ).sortable({
+												placeholder: "<?php print $type ?>-ui-state-highlight",
 												axis: 'y'
 											});
 										});
@@ -594,7 +594,7 @@ else {
 										<td colspan=2> 
 											<p>Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.</p>
 											<div class="outcome" id="outcome" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
-												<?
+												<?php
 												try {
 													$dataBlocks=array("gibbonUnitID"=>$gibbonUnitID);  
 													$sqlBlocks="SELECT gibbonUnitOutcome.*, scope, name, category FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber" ;
@@ -626,7 +626,7 @@ else {
 														<tr>
 															<td style='width: 50%'>
 																<script type="text/javascript">
-																	<?
+																	<?php
 																	if ($i<1) {
 																		print "var outcomeCount=0;" ;
 																	}
@@ -637,7 +637,7 @@ else {
 																</script>
 																<select class='all' id='newOutcome' onChange='outcomeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
 																	<option class='all' value='0'>Choose an outcome to add it to this unit</option>
-																	<?
+																	<?php
 																	$currentCategory="" ;
 																	$lastCategory="" ;
 																	$switchContents="" ;
@@ -721,12 +721,12 @@ else {
 																
 																	?>
 																</select><br/>
-																<?
+																<?php
 																if (count($categories)>0) {
 																	?>
 																	<select id='outcomeFilter' style='float: none; margin-left: 3px; margin-top: 0px; width: 350px'>
 																		<option value='all'>View All</option>
-																		<?
+																		<?php
 																		$categories=array_unique($categories) ;
 																		$categories=msort($categories) ;
 																		foreach ($categories AS $category) {
@@ -737,20 +737,20 @@ else {
 																	<script type="text/javascript">
 																		$("#newOutcome").chainedTo("#outcomeFilter");
 																	</script>
-																	<?
+																	<?php
 																}
 																?>
 																<script type='text/javascript'>
-																	var <? print $type ?>Used=new Array(<? print substr($usedArrayFill,0,-1) ?>);
-																	var <? print $type ?>UsedCount=<? print $type ?>Used.length ;
+																	var <?php print $type ?>Used=new Array(<?php print substr($usedArrayFill,0,-1) ?>);
+																	var <?php print $type ?>UsedCount=<?php print $type ?>Used.length ;
 																	
 																	function outcomeDisplayElements(number) {
-																		$("#<? print $type ?>Outer0").css("display", "none") ;
-																		if (<? print $type ?>Used.indexOf(number)<0) {
-																			<? print $type ?>Used[<? print $type ?>UsedCount]=number ;
-																			<? print $type ?>UsedCount++ ;
+																		$("#<?php print $type ?>Outer0").css("display", "none") ;
+																		if (<?php print $type ?>Used.indexOf(number)<0) {
+																			<?php print $type ?>Used[<?php print $type ?>UsedCount]=number ;
+																			<?php print $type ?>UsedCount++ ;
 																			switch(number) {
-																				<? print $switchContents ?>
+																				<?php print $switchContents ?>
 																			}
 																		}
 																		else {
@@ -769,16 +769,16 @@ else {
 								
 									<tr>
 										<td>
-											<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+											<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 										</td>
 										<td class="right">
-											<input name="classCount" id="classCount" value="<? print $classCount ?>" type="hidden">
+											<input name="classCount" id="classCount" value="<?php print $classCount ?>" type="hidden">
 											<input id="submit" type="submit" value="Submit">
 										</td>
 									</tr>
 								</table>
 							</form>
-							<?
+							<?php
 						}
 					}
 				}
@@ -856,29 +856,29 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b><? print _('School Year') ?> *</b><br/>
-										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+										<b><?php print _('School Year') ?> *</b><br/>
+										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
-										<input readonly name="yearName" id="yearName" maxlength=20 value="<? print $yearName ?>" type="text" style="width: 300px">
+										<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b><? print _('Course') ?> *</b><br/>
-										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+										<b><?php print _('Course') ?> *</b><br/>
+										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
-										<input readonly name="courseName" id="courseName" maxlength=20 value="<? print $row["nameShort"] ?>" type="text" style="width: 300px">
+										<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+										<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
-										<input readonly name="name" id="name" maxlength=40 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+										<input readonly name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 									</td>
 								</tr>
 							
@@ -890,7 +890,7 @@ else {
 								</tr>
 								<tr>
 									<td colspan=2> 
-										<?
+										<?php
 										$classCount=0 ;
 										try {
 											$dataClass=array("unitIDField"=>$row[$hookOptions["unitIDField"]], "gibbonCourseID"=>$row[$hookOptions["unitCourseIDField"]]); 
@@ -978,7 +978,7 @@ else {
 									</td>
 								</tr>
 							</table>
-							<?
+							<?php
 						}
 					}
 				}

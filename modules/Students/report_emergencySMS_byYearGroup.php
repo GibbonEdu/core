@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -59,15 +59,15 @@ else {
 	}
 	?>
 	
-	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b><? print _('Year Group') ?> *</b><br/>
+					<b><?php print _('Year Group') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="gibbonYearGroupID">
-						<?
+						<?php
 						print "<option value=''></option>" ;
 						if ($gibbonYearGroupID=="*") {
 							print "<option selected value='*'>All</option>" ;
@@ -101,7 +101,7 @@ else {
 					<b>Prefix</b><br/>
 				</td>
 				<td class="right">
-					<input name='prefix' style='width: 302px' type='text' maxlength='30' value=<? print $prefix ?>>
+					<input name='prefix' style='width: 302px' type='text' maxlength='30' value=<?php print $prefix ?>>
 				</td>
 			</tr>
 			<tr>
@@ -109,7 +109,7 @@ else {
 					<b>Append</b><br/>
 				</td>
 				<td class="right">
-					<input name='append' style='width: 302px' type='text' maxlength='30' value=<? print $append ?>>
+					<input name='append' style='width: 302px' type='text' maxlength='30' value=<?php print $append ?>>
 				</td>
 			</tr>
 			<tr>
@@ -117,25 +117,25 @@ else {
 					<b>Hide student name?</b><br/>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					$checked="" ;
 					if ($hideName=="on") {
 						$checked="checked " ;
 					}
 					?>
-					<input <? print $checked ?> type='checkbox' name='hideName'>
+					<input <?php print $checked ?> type='checkbox' name='hideName'>
 				</td>
 			</tr>
 			
 			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/report_emergencySMS_byYearGroup.php">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_emergencySMS_byYearGroup.php">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 	
 	if ($gibbonYearGroupID!="") {
 		print "<h2>" ;

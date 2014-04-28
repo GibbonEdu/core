@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Departments/departments.ph
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View All</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('View All') . "</div>" ;
 	print "</div>" ;
 	
 	$departments=FALSE ;
@@ -48,7 +48,7 @@ else {
 	if ($resultLA->rowCount()>0) {
 		$departments=TRUE ;
 		print "<h2>" ;
-			print "Learning Areas" ;
+			print _("Learning Areas") ;
 		print "</h2>" ;
 		print "<table class='blank' cellspacing='0' style='width:100%; margin-top: 20px'>" ;
 		$count=0 ;
@@ -97,7 +97,7 @@ else {
 	if ($resultLA->rowCount()>0) {
 		$departments=TRUE ;
 		print "<h2>" ;
-			print "Administration" ;
+			print _("Administration") ;
 		print "</h2>" ;
 		print "<table class='blank' cellspacing='0' style='width:100%; margin-top: 20px'>" ;
 		$count=0 ;
@@ -156,7 +156,7 @@ else {
 	
 	if ($result->rowCount()>0) {
 		$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2 class='sidebar'>" ;
-		$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "My Classes" ;
+		$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . _("My Classes") ;
 		$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
 		
 		$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ul>" ;

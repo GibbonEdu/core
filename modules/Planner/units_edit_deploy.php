@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -660,12 +660,12 @@ else {
 												<span style="font-size: 90%"><i></i></span>
 											</td>
 											<td class="right">
-												<?
+												<?php
 												$sharingDefaultStudents=getSettingByScope( $connection2, "Planner", "sharingDefaultStudents" ) ;
 												?>
 												<select name="viewableStudents" id="viewableStudents" style="width: 302px">
-													<option <? if ($sharingDefaultStudents=="Y") { print "selected" ; } ?> value="Y">Y</option>
-													<option <? if ($sharingDefaultStudents=="N") { print "selected" ; } ?> value="N">N</option>
+													<option <?php if ($sharingDefaultStudents=="Y") { print "selected" ; } ?> value="Y">Y</option>
+													<option <?php if ($sharingDefaultStudents=="N") { print "selected" ; } ?> value="N">N</option>
 												</select>
 											</td>
 										</tr>
@@ -675,12 +675,12 @@ else {
 												<span style="font-size: 90%"><i></i></span>
 											</td>
 											<td class="right">
-												<?
+												<?php
 												$sharingDefaultParents=getSettingByScope( $connection2, "Planner", "sharingDefaultParents" ) ;
 												?>
 												<select name="viewableParents" id="viewableParents" style="width: 302px">
-													<option <? if ($sharingDefaultParents=="Y") { print "selected" ; } ?> value="Y">Y</option>
-													<option <? if ($sharingDefaultParents=="N") { print "selected" ; } ?> value="N">N</option>
+													<option <?php if ($sharingDefaultParents=="Y") { print "selected" ; } ?> value="Y">Y</option>
+													<option <?php if ($sharingDefaultParents=="N") { print "selected" ; } ?> value="N">N</option>
 												</select>
 											</td>
 										</tr>
@@ -689,7 +689,7 @@ else {
 									<table class='blank' style='width: 100%' cellspacing=0>
 										<tr>
 											<td>
-												<?
+												<?php
 												print "<div style='width: 100%; margin-bottom: 20px; text-align: right'>" ;
 													print "<input type='submit' value='Submit'>" ;
 												print "</div>" ;
@@ -697,7 +697,7 @@ else {
 											</td>
 										</tr>
 									</table>
-								<?
+								<?php
 								print "</div>" ;
 							print "</form>" ;
 							
@@ -715,16 +715,16 @@ else {
 									var receiveCount=0 ;
 									
 									//Create list of lesson sortables
-									<? for ($i=0; $i<$cells; $i++) { ?>
-										<? $sortableList.="#sortable$i, " ?>
-									<? } ?>
+									<?php for ($i=0; $i<$cells; $i++) { ?>
+										<?php $sortableList.="#sortable$i, " ?>
+									<?php } ?>
 									
 									//Create lesson sortables
-									<? for ($i=0; $i<$cells; $i++) { ?>
-										$( "#sortable<? print $i ?>" ).sortable({
+									<?php for ($i=0; $i<$cells; $i++) { ?>
+										$( "#sortable<?php print $i ?>" ).sortable({
 											revert: false,
 											tolerance: 15, 
-											connectWith: "<? print substr($sortableList,0, -2) ?>",
+											connectWith: "<?php print substr($sortableList,0, -2) ?>",
 											items: "div.blockOuter",
 											receive: function(event,ui) {
 												var sortid=$(newItem).attr("id", 'receive'+receiveCount) ;
@@ -741,19 +741,19 @@ else {
 											 newItem=ui.item;
 											}
 										});
-									<? } ?>
+									<?php } ?>
 									
 									//Draggables
-									<? for ($i=0; $i<$blockCount; $i++) { ?>
-										$( "#draggable<? print $i ?>" ).draggable({
-											connectToSortable: "<? print substr($sortableList, 0, -2) ?>",
+									<?php for ($i=0; $i<$blockCount; $i++) { ?>
+										$( "#draggable<?php print $i ?>" ).draggable({
+											connectToSortable: "<?php print substr($sortableList, 0, -2) ?>",
 											helper: "clone"
 										});
-									<? } ?>
+									<?php } ?>
 									
 								});
 							</script>
-							<?
+							<?php
 						}
 					}
 				}

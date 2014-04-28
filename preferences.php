@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -103,18 +103,18 @@ if ($result->rowCount()==1) {
 }
 ?>
 
-<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] ?>/preferencesPasswordProcess.php">
+<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] ?>/preferencesPasswordProcess.php">
 	<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 		<tr class='break'>
 			<td colspan=2>
 				<h3>
-					<? print _("Reset Password") ; ?>
+					<?php print _("Reset Password") ; ?>
 				</h3>
 			</td>
 		</tr>
 		<tr>
 			<td colspan=2>
-				<?
+				<?php
 				$policy=getPasswordPolicy($connection2) ;
 				if ($policy!=FALSE) {
 					print "<div class='warning'>" ;
@@ -126,7 +126,7 @@ if ($result->rowCount()==1) {
 		</tr>
 		<tr>
 			<td> 
-				<b><? print _("Current Password") ; ?> *</b><br/>
+				<b><?php print _("Current Password") ; ?> *</b><br/>
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
@@ -139,7 +139,7 @@ if ($result->rowCount()==1) {
 		</tr>
 		<tr>
 			<td> 
-				<b><? print _("New Password") ; ?> *</b><br/>
+				<b><?php print _("New Password") ; ?> *</b><br/>
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
@@ -147,7 +147,7 @@ if ($result->rowCount()==1) {
 				<script type="text/javascript">
 					var passwordNew=new LiveValidation('passwordNew');
 					passwordNew.add(Validate.Presence);
-					<?
+					<?php
 					$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
 					if ($alpha=="Y") {
 						print "passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"Does not meet password policy.\" } );" ;
@@ -170,7 +170,7 @@ if ($result->rowCount()==1) {
 		</tr>
 		<tr>
 			<td> 
-				<b><? print _("Confirm New Password") ; ?> *</b><br/>
+				<b><?php print _("Confirm New Password") ; ?> *</b><br/>
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
@@ -184,38 +184,38 @@ if ($result->rowCount()==1) {
 		</tr>
 		<tr>
 			<td>
-				<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+				<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 			</td>
 			<td class="right">
-				<?
+				<?php
 				if ($forceReset=="Y") {
 					print "<input type='hidden' name='forceReset' value='$forceReset'>" ;
 				}
 				?>
-				<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-				<input type="submit" value="<? print _("Submit") ; ?>">
+				<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+				<input type="submit" value="<?php print _("Submit") ; ?>">
 			</td>
 		</tr>
 	</table>
 </form>
 	
 	
-<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] ?>/preferencesProcess.php">
+<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] ?>/preferencesProcess.php">
 	<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 		<tr class='break'>
 			<td colspan=2>
 				<h3>
-					<? print _("Settings") ; ?>
+					<?php print _("Settings") ; ?>
 				</h3>
 			</td>
 		</tr>
 		<tr>
 			<td> 
-				<b><? print _("Personal Calendar Feed") ; ?></b><br/>
-				<span style="font-size: 90%"><i><? print _("XML feed for the your calendar (Google Calendar only)") ; ?></i></span>
+				<b><?php print _("Personal Calendar Feed") ; ?></b><br/>
+				<span style="font-size: 90%"><i><?php print _("XML feed for the your calendar (Google Calendar only)") ; ?></i></span>
 			</td>
 			<td class="right">
-				<input name="calendarFeedPersonal" id="calendarFeedPersonal" value="<? print $row["calendarFeedPersonal"] ?>" type="text" style="width: 300px">
+				<input name="calendarFeedPersonal" id="calendarFeedPersonal" value="<?php print $row["calendarFeedPersonal"] ?>" type="text" style="width: 300px">
 				<script type="text/javascript">
 					var calendarFeedPersonal=new LiveValidation('calendarFeedPersonal');
 					calendarFeedPersonal.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
@@ -223,35 +223,35 @@ if ($result->rowCount()==1) {
 			</td>
 		</tr>
 		
-		<?
+		<?php
 		$personalBackground=getSettingByScope($connection2, "User Admin", "personalBackground") ;
 		if ($personalBackground=="Y") {
 			?>
 			<tr>
 				<td> 
-					<b><? print _("Personal Background") ; ?></b><br/>
-					<span style="font-size: 90%"><i><? print _("Set your own custom background image.") . "<br/>" . _("Please provide URL to image.") ; ?></i></span>
+					<b><?php print _("Personal Background") ; ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _("Set your own custom background image.") . "<br/>" . _("Please provide URL to image.") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input name="personalBackground" id="personalBackground" value="<? print $row["personalBackground"] ?>" type="text" style="width: 300px">
+					<input name="personalBackground" id="personalBackground" value="<?php print $row["personalBackground"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var personalBackground=new LiveValidation('personalBackground');
 						personalBackground.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 					</script>	
 				</td>
 			</tr>
-			<?
+			<?php
 		}
 		?>
 		
 		<tr>
 			<td> 
-				<b><? print _("Personal Theme") ; ?></b><br/>
-				<span style="font-size: 90%"><i><? print _("Override the system theme.") ; ?></i></span>
+				<b><?php print _("Personal Theme") ; ?></b><br/>
+				<span style="font-size: 90%"><i><?php print _("Override the system theme.") ; ?></i></span>
 			</td>
 			<td class="right">
 				<select name="gibbonThemeIDPersonal" id="gibbonThemeIDPersonal" style="width: 302px">
-					<?
+					<?php
 					print "<option value=''></option>" ;
 					try {
 						$dataSelect=array(); 
@@ -278,12 +278,12 @@ if ($result->rowCount()==1) {
 		
 		<tr>
 			<td> 
-				<b><? print _("Personal Language") ; ?></b><br/>
-				<span style="font-size: 90%"><i><? print _("Override the system default language.") ; ?></i></span>
+				<b><?php print _("Personal Language") ; ?></b><br/>
+				<span style="font-size: 90%"><i><?php print _("Override the system default language.") ; ?></i></span>
 			</td>
 			<td class="right">
 				<select name="gibboni18nIDPersonal" id="gibboni18nIDPersonal" style="width: 302px">
-					<?
+					<?php
 					print "<option value=''></option>" ;
 					try {
 						$dataSelect=array(); 
@@ -311,11 +311,11 @@ if ($result->rowCount()==1) {
 		
 		<tr>
 			<td>
-				<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+				<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 			</td>
 			<td class='right'>
-				<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-				<input type="submit" value="<? print _("Submit") ; ?>">
+				<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+				<input type="submit" value="<?php print _("Submit") ; ?>">
 			</td>
 		</tr>
 	</table>

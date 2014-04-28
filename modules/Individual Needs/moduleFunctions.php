@@ -43,7 +43,7 @@ function printINStatusTable($connection2, $gibbonPersonID, $mode="") {
 	
 	if ($resultDescriptors->rowCount()<1 OR $resultSeverity->rowCount()<1) {
 		$output.="<div class='error'>" ;
-		$output.="Individual needs descriptors or severity levels have not been set." ;
+		$output.=_("Individual needs descriptors or severity levels have not been set.") ;
 		$output.="</div>" ;
 	}
 	else {
@@ -89,7 +89,7 @@ function printINStatusTable($connection2, $gibbonPersonID, $mode="") {
 		$output.="<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 			$output.="<tr class='head'>" ;
 				$output.="<th>" ;
-					$output.="Descriptor" ;
+					$output.=_("Descriptor") ;
 				$output.="<th>" ;
 				for ($i=0 ; $i<count($severity); $i++) {
 					$output.="<th>" ;

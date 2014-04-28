@@ -1,4 +1,4 @@
-<?
+<?php
 //USE ;end TO SEPERATE SQL STATEMENTS. DON'T USE ;end IN ANY OTHER PLACES!
 
 $sql=array() ;

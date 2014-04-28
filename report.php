@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -47,13 +47,13 @@ else {
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml">
 		<head>
-			<title><? print $_SESSION[$guid]["organisationNameShort"] . " - " . $_SESSION[$guid]["systemName"] ?></title>
+			<title><?php print $_SESSION[$guid]["organisationNameShort"] . " - " . $_SESSION[$guid]["systemName"] ?></title>
 			<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 			<meta http-equiv="content-language" content="en"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
 			<meta name="ROBOTS" content="none"/>
 			
-			<?
+			<?php
 			//Set up for i18n via gettext
 			if ($_SESSION[$guid]["i18n"]["code"]!=NULL) {
 				putenv("LC_ALL=" . $_SESSION[$guid]["i18n"]["code"]);
@@ -101,7 +101,7 @@ else {
 			<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 			<script type="text/javascript" src="./lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
 		
-			<?
+			<?php
 			if ($_SESSION[$guid]["analytics"]!="") {
 				print $_SESSION[$guid]["analytics"] ;
 			}
@@ -111,7 +111,7 @@ else {
 			<div id="wrap" style="width:750px">
 				<div id="header">
 					<div id="header-left" style="width:480px; font-size: 100%; height: 120px">
-						<?
+						<?php
 						print "<div style='padding-top: 30px'>" ;
 							print "<p>" ;
 								print sprintf(_('This printout contains information that is the property of %1$s. If you find this report, and do not have permission to read it, please return it to %2$s (%3$s). In the event that it cannot be returned, please destroy it.'), $_SESSION[$guid]["organisationName"], $_SESSION[$guid]["organisationAdministratorName"], $_SESSION[$guid]["organisationAdministratorEmail"]) ;
@@ -120,12 +120,12 @@ else {
 						?>
 					</div>
 					<div id="header-right" style="text-align: right">
-						<img height='107px' width='250px' style="margin-top: 10px" alt="Logo" src="<? print $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ; ?>"/>
+						<img height='107px' width='250px' style="margin-top: 10px" alt="Logo" src="<?php print $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ; ?>"/>
 					</div>
 				</div>
 				<div id="content-wrap-report" style="min-height: 500px">
 					
-					<?
+					<?php
 					$_SESSION[$guid]["address"]=$_GET["q"];
 					$_SESSION[$guid]["module"]=getModuleName($_SESSION[$guid]["address"]) ;
 					$_SESSION[$guid]["action"]=getActionName($_SESSION[$guid]["address"]) ;
@@ -146,11 +146,11 @@ else {
 					?>
 				</div>
 				<div id="footer" style="padding-top: 30px; background-color: #fff; color: #333">
-					<? print sprintf(_('Created by %1$s (%2$s) at %3$s on %4$s.'), $_SESSION[$guid]["username"], $_SESSION[$guid]["organisationNameShort"], date("H:i"), date("d/m/Y")) ; ?>
+					<?php print sprintf(_('Created by %1$s (%2$s) at %3$s on %4$s.'), $_SESSION[$guid]["username"], $_SESSION[$guid]["organisationNameShort"], date("H:i"), date("d/m/Y")) ; ?>
 				</div>
 			</div>
 		</body>
 	</html>
-	<?
+	<?php
 }
 ?>

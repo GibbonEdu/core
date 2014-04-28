@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -96,14 +96,14 @@ else {
 		print "</div>" ;
 				
 		?>
-		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/messenger_postProcess.php?address=" . $_GET["q"] ?>" enctype="multipart/form-data">
+		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/messenger_postProcess.php?address=" . $_GET["q"] ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr class='break'>
 					<td colspan=2> 
 						<h3>Delivery Mode</h3>
 					</td>
 				</tr>
-				<?
+				<?php
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byEmail")) {
 					?>
 					<script type="text/javascript">
@@ -136,7 +136,7 @@ else {
 							<b>Email From *</b><br/>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							print "<select style='float: none; width:302px' name='from' id='from'>" ;
 								print "<option value='" . $_SESSION[$guid]["email"] . "'>" . $_SESSION[$guid]["email"] . "</option>" ;
 								if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_fromSchool") AND $_SESSION[$guid]["organisationEmail"]!="") {
@@ -146,7 +146,7 @@ else {
 							?>
 						</td>
 					</tr>
-					<?
+					<?php
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_fromSchool")) { 
 						?>
 						<tr id="emailReplyToRow">
@@ -161,7 +161,7 @@ else {
 								 </script>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byMessageWall")) {
@@ -191,13 +191,13 @@ else {
 					<tr id="messageWallRow">
 						<td> 
 							<b>Publication Dates *</b><br/>
-							<span style="font-size: 90%"><i>Select up to three individual dates.</br>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>.<br/></i></span>
+							<span style="font-size: 90%"><i>Select up to three individual dates.</br>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>.<br/></i></span>
 						</td>
 						<td class="right">
 							<input name="date1" id="date1" maxlength=10 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var date1=new LiveValidation('date1');
-								date1.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+								date1.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 </script>
 							 <script type="text/javascript">
 								$(function() {
@@ -208,7 +208,7 @@ else {
 							<input name="date2" id="date2" maxlength=10 value="" type="text" style="width: 300px; margin-top: 3px">
 							<script type="text/javascript">
 								var date2=new LiveValidation('date2');
-								date2.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+								date2.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 </script>
 							 <script type="text/javascript">
 								$(function() {
@@ -219,7 +219,7 @@ else {
 							<input name="date3" id="date3" maxlength=10 value="" type="text" style="width: 300px; margin-top: 3px">
 							<script type="text/javascript">
 								var date3=new LiveValidation('date3');
-								date3.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+								date3.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 </script>
 							 <script type="text/javascript">
 								$(function() {
@@ -228,7 +228,7 @@ else {
 							</script>
 						</td>
 					</tr>
-					<?
+					<?php
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_bySMS")) {
 					$smsUsername=getSettingByScope( $connection2, "Messenger", "smsUsername" ) ;
@@ -265,7 +265,7 @@ else {
 								<div class='error' style='margin-top: 3px'>
 									SMS messages are sent to local and overseas numbers, but not all countries are supported. Please see the SMS Gateway provider's documentation or error log to see which countries are not supported. The subject does not get sent, and all HTML tags are removed. Each message, to each recipient, will incur a charge (dependent on your SMS gateway provider). Messages over 140 characters will get broken into smaller messages, and will cost more.<br/>
 									<br/>
-									<?
+									<?php
 									if ($smsURLCredit!="") {
 										$query="?apiusername=" . $smsUsername . "&apipassword=" . $smsPassword ;        
 										$result=@implode('', file($smsURLCredit . $query)) ;    
@@ -277,16 +277,16 @@ else {
 								</div>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 					else {
 						?>
 						<tr>
 							<td colspan=2> 
-								<div class='error' style='margin-top: 3px'>SMS NOT CONFIGURED. Please contact <a href='mailto:<? print $_SESSION[$guid]["organisationAdministratorEmail"] ?>'><? print $_SESSION[$guid]["organisationAdministratorName"] ?></a> for help.</div>
+								<div class='error' style='margin-top: 3px'>SMS NOT CONFIGURED. Please contact <a href='mailto:<?php print $_SESSION[$guid]["organisationAdministratorEmail"] ?>'><?php print $_SESSION[$guid]["organisationAdministratorName"] ?></a> for help.</div>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 				}
 				?>
@@ -312,7 +312,7 @@ else {
 				<tr>
 					<td colspan=2> 
 						<b>Body *</b>
-						<? print getEditor($guid,  TRUE, "body", "", 20, true, true, false, true ) ?>
+						<?php print getEditor($guid,  TRUE, "body", "", 20, true, true, false, true ) ?>
 					</td>
 				</tr>
 				
@@ -321,7 +321,7 @@ else {
 						<h3>Targets</h3>
 					</td>
 				</tr>
-				<?
+				<?php
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
 					?>
 					<script type="text/javascript">
@@ -350,11 +350,11 @@ else {
 					<tr id="roleRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Roles</b><br/>
-							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="roles[]" id="roles[]" multiple style="width: 302px; height: 100px">
-								<?
+								<?php
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonRole ORDER BY name" ;
@@ -369,7 +369,7 @@ else {
 							</select>
 						</td>
 					</tr>
-					<?
+					<?php
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {
 					?>
@@ -408,11 +408,11 @@ else {
 					<tr id="yearGroupRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Year Groups</b><br/>
-							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="yearGroups[]" id="yearGroups[]" multiple style="width: 302px; height: 100px">
-								<?
+								<?php
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber" ;
@@ -433,7 +433,7 @@ else {
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="yearGroupsStaff" id="yearGroupsStaff" style="width: 302px">
-								<?
+								<?php
 								print "<option value='Y'>Yes</option>" ;
 								print "<option value='N'>No</option>" ;
 								?>
@@ -446,14 +446,14 @@ else {
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="yearGroupsStudents" id="yearGroupsStudents" style="width: 302px">
-								<?
+								<?php
 								print "<option value='Y'>Yes</option>" ;
 								print "<option value='N'>No</option>" ;
 								?>
 							</select>
 						</td>
 					</tr>
-					<?
+					<?php
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_parents")) {
 						?>
 						<tr id="yearGroupRow2">
@@ -462,14 +462,14 @@ else {
 							</td>
 							<td style='background: none; background-color: #EDF7FF;' class="right">
 								<select name="yearGroupsParents" id="yearGroupsParents" style="width: 302px">
-									<?
+									<?php
 									print "<option value='Y'>Yes</option>" ;
 									print "<option selected value='N'>No</option>" ;
 									?>
 								</select>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_any")) {
@@ -509,11 +509,11 @@ else {
 					<tr id="rollGroupRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Roll Groups</b><br/>
-							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="rollGroups[]" id="rollGroups[]" multiple style="width: 302px; height: 100px">
-								<?
+								<?php
 								try {
 									if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_any")) {
 										$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -546,7 +546,7 @@ else {
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="rollGroupsStaff" id="rollGroupsStaff" style="width: 302px">
-								<?
+								<?php
 								print "<option value='Y'>Yes</option>" ;
 								print "<option value='N'>No</option>" ;
 								?>
@@ -559,14 +559,14 @@ else {
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="rollGroupsStudents" id="rollGroupsStudents" style="width: 302px">
-								<?
+								<?php
 								print "<option value='Y'>Yes</option>" ;
 								print "<option value='N'>No</option>" ;
 								?>
 							</select>
 						</td>
 					</tr>
-					<?
+					<?php
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_parents")) {
 						?>
 						<tr id="rollGroupRow2">
@@ -575,14 +575,14 @@ else {
 							</td>
 							<td style='background: none; background-color: #EDF7FF;' class="right">
 								<select name="rollGroupsParents" id="rollGroupsParents" style="width: 302px">
-									<?
+									<?php
 									print "<option value='Y'>Yes</option>" ;
 									print "<option selected value='N'>No</option>" ;
 									?>
 								</select>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
@@ -622,11 +622,11 @@ else {
 					<tr id="courseRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Courses</b><br/>
-							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="courses[]" id="courses[]" multiple style="width: 302px; height: 100px">
-								<?
+								<?php
 								try {
 									if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
 										$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -653,7 +653,7 @@ else {
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="coursesStaff" id="coursesStaff" style="width: 302px">
-								<?
+								<?php
 								print "<option value='Y'>Yes</option>" ;
 								print "<option value='N'>No</option>" ;
 								?>
@@ -666,14 +666,14 @@ else {
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="coursesStudents" id="coursesStudents" style="width: 302px">
-								<?
+								<?php
 								print "<option value='Y'>Yes</option>" ;
 								print "<option value='N'>No</option>" ;
 								?>
 							</select>
 						</td>
 					</tr>
-					<?
+					<?php
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_parents")) {
 						?>
 						<tr id="courseRow2">
@@ -682,14 +682,14 @@ else {
 							</td>
 							<td style='background: none; background-color: #EDF7FF;' class="right">
 								<select name="coursesParents" id="coursesParents" style="width: 302px">
-									<?
+									<?php
 									print "<option value='Y'>Yes</option>" ;
 									print "<option selected value='N'>No</option>" ;
 									?>
 								</select>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
@@ -729,11 +729,11 @@ else {
 					<tr id="classRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Classes</b><br/>
-							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="classes[]" id="classes[]" multiple style="width: 302px; height: 100px">
-								<?
+								<?php
 								try {
 									if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
 										$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -760,7 +760,7 @@ else {
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="classesStaff" id="classesStaff" style="width: 302px">
-								<?
+								<?php
 								print "<option value='Y'>Yes</option>" ;
 								print "<option value='N'>No</option>" ;
 								?>
@@ -773,14 +773,14 @@ else {
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="classesStudents" id="classesStudents" style="width: 302px">
-								<?
+								<?php
 								print "<option value='Y'>Yes</option>" ;
 								print "<option value='N'>No</option>" ;
 								?>
 							</select>
 						</td>
 					</tr>
-					<?
+					<?php
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_parents")) {
 						?>
 						<tr id="classRow2">
@@ -789,14 +789,14 @@ else {
 							</td>
 							<td style='background: none; background-color: #EDF7FF;' class="right">
 								<select name="classesParents" id="classesParents" style="width: 302px">
-									<?
+									<?php
 									print "<option value='Y'>Yes</option>" ;
 									print "<option selected value='N'>No</option>" ;
 									?>
 								</select>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_any")) {
@@ -836,11 +836,11 @@ else {
 					<tr id="activitiesRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Activities</b><br/>
-							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' activities="right">
 							<select name="activities[]" id="activities[]" multiple style="width: 302px; height: 100px">
-								<?
+								<?php
 								try {
 									if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_any")) {
 										$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -873,7 +873,7 @@ else {
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' activities="right">
 							<select name="activitiesStaff" id="activitiesStaff" style="width: 302px">
-								<?
+								<?php
 								print "<option value='Y'>Yes</option>" ;
 								print "<option value='N'>No</option>" ;
 								?>
@@ -886,14 +886,14 @@ else {
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' activities="right">
 							<select name="activitiesStudents" id="activitiesStudents" style="width: 302px">
-								<?
+								<?php
 								print "<option value='Y'>Yes</option>" ;
 								print "<option value='N'>No</option>" ;
 								?>
 							</select>
 						</td>
 					</tr>
-					<?
+					<?php
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_parents")) {
 						?>
 						<tr id="activitiesRow2">
@@ -902,14 +902,14 @@ else {
 							</td>
 							<td style='background: none; background-color: #EDF7FF;' activities="right">
 								<select name="activitiesParents" id="activitiesParents" style="width: 302px">
-									<?
+									<?php
 									print "<option value='Y'>Yes</option>" ;
 									print "<option selected value='N'>No</option>" ;
 									?>
 								</select>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_applicants")) {
@@ -940,11 +940,11 @@ else {
 					<tr id="applicantsRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Years</b><br/>
-							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="applicantList[]" id="applicantList[]" multiple style="width: 302px; height: 100px">
-								<?
+								<?php
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber DESC" ;
@@ -959,7 +959,7 @@ else {
 							</select>
 						</td>
 					</tr>
-					<?
+					<?php
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_all") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_my")) {
 					?>
@@ -989,11 +989,11 @@ else {
 					<tr id="housesRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Houses</b><br/>
-							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="houseList[]" id="houseList[]" multiple style="width: 302px; height: 100px">
-								<?
+								<?php
 								try {
 									if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_all")) {
 										$dataSelect=array(); 
@@ -1015,7 +1015,7 @@ else {
 							</select>
 						</td>
 					</tr>
-					<?
+					<?php
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
 					?>
@@ -1045,11 +1045,11 @@ else {
 					<tr id="individualsRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
 							<b>Select Individuals</b><br/>
-							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="individualList[]" id="individualList[]" multiple style="width: 302px; height: 100px">
-								<?
+								<?php
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT gibbonPersonID, preferredName, surname FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName" ;
@@ -1064,21 +1064,21 @@ else {
 							</select>
 						</td>
 					</tr>
-					<?
+					<?php
 				}
 				?>
 				
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 					</td>
 					<td class="right">
-						<input type="submit" value="<? print _("Submit") ; ?>">
+						<input type="submit" value="<?php print _("Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
 		</form>
-		<?
+		<?php
 	}
 }
 ?>

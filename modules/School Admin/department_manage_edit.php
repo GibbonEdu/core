@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -118,29 +118,29 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_manage_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_manage_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2>
-							<h3><? print _('General Information') ?></h3>
+							<h3><?php print _('General Information') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Type') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i><br/></span>
+							<b><?php print _('Type') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i><br/></span>
 						</td>
 						<td class="right">
-							<? $type=$row["type"] ; ?>
-							<input readonly name="type" id="type" value="<? print $type ?>" type="text" style="width: 300px">
+							<?php $type=$row["type"] ; ?>
+							<input readonly name="type" id="type" value="<?php print $type ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=40 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
@@ -149,10 +149,10 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+							<?php print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="<? print $row["nameShort"] ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=4 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -161,52 +161,52 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Subject Listing') ?></b><br/>
+							<b><?php print _('Subject Listing') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="subjectListing" id="subjectListing" maxlength=255 value="<? print $row["subjectListing"] ?>" type="text" style="width: 300px">
+							<input name="subjectListing" id="subjectListing" maxlength=255 value="<?php print $row["subjectListing"] ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td colspan=2> 
-							<b><? print _('Blurb') ?></b> 
-							<? print getEditor($guid,  TRUE, "blurb", $row["blurb"], 20 ) ?>
+							<b><?php print _('Blurb') ?></b> 
+							<?php print getEditor($guid,  TRUE, "blurb", $row["blurb"], 20 ) ?>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Logo') ?></b><br/>
+							<b><?php print _('Logo') ?></b><br/>
 							<span style="font-size: 90%"><i>125x125px jpg/png/gif</i><br/></span>
-							<? if ($row["logo"]!="") { ?>
-							<span style="font-size: 90%"><i><? print _('Will overwrite existing attachment') ?></i></span>
-							<? } ?>
+							<?php if ($row["logo"]!="") { ?>
+							<span style="font-size: 90%"><i><?php print _('Will overwrite existing attachment') ?></i></span>
+							<?php } ?>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							if ($row["logo"]!="") {
 								print _("Current attachment:") . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["logo"] . "'>" . $row["logo"] . "</a><br/><br/>" ;
 							}
 							?>
 							<input type="file" name="file" id="file"><br/><br/>
-							<?
+							<?php
 							print getMaxUpload() ;
 							$ext="'.png','.jpeg','.jpg','.gif'" ;
 							?>
 							
 							<script type="text/javascript">
 								var file=new LiveValidation('file');
-								file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "<? print _('Illegal file type!') ?>", partialMatch: true, caseSensitive: false } );
+								file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "<?php print _('Illegal file type!') ?>", partialMatch: true, caseSensitive: false } );
 							</script>
 						</td>
 					</tr>
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><? print _('Current Staff') ?></h3>
+							<h3><?php print _('Current Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td colspan=2> 
-							<?
+							<?php
 							try {
 								$data=array("gibbonDepartmentID"=>$gibbonDepartmentID); 
 								$sql="SELECT preferredName, surname, gibbonDepartmentStaff.* FROM gibbonDepartmentStaff JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonDepartmentID=:gibbonDepartmentID AND gibbonPerson.status='Full' ORDER BY surname, preferredName" ; 
@@ -268,17 +268,17 @@ else {
 					</tr>
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><? print _('New Staff') ?></h3>
+							<h3><?php print _('New Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
 					<td> 
 						<b>Staff</b><br/>
-						<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+						<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 					</td>
 					<td class="right">
 						<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
-							<?
+							<?php
 							try {
 								$dataSelect=array(); 
 								$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
@@ -291,37 +291,37 @@ else {
 							}
 							?>
 						</select>
-						<? print $row["type"] ; ?>
+						<?php print $row["type"] ; ?>
 					</td>
 					
 					<tr id='roleLARow'>
 						<td> 
-							<b><? print _('Role') ?></b><br/>
+							<b><?php print _('Role') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="role" id="role" style="width: 302px">
-								<?
+								<?php
 								if ($type=="Learning Area") {
 									?>
-									<option value="Coordinator"><? print _('Coordinator') ?></option>
-									<option value="Assistant Coordinator"><? print _('Assistant Coordinator') ?></option>
-									<option value="Teacher (Curriculum)"><? print _('Teacher (Curriculum)') ?></option>
-									<option value="Teacher"><? print _('Teacher') ?></option>
-									<option value="Other"><? print _('Other') ?></option>
-									<?
+									<option value="Coordinator"><?php print _('Coordinator') ?></option>
+									<option value="Assistant Coordinator"><?php print _('Assistant Coordinator') ?></option>
+									<option value="Teacher (Curriculum)"><?php print _('Teacher (Curriculum)') ?></option>
+									<option value="Teacher"><?php print _('Teacher') ?></option>
+									<option value="Other"><?php print _('Other') ?></option>
+									<?php
 								}
 								else if ($type=="Administration") {
 									?>
-									<option value="Director"><? print _('Director') ?></option>
-									<option value="Manager"><? print _('Manager') ?></option>
-									<option value="Administrator"><? print _('Administrator') ?></option>
-									<option value="Other"><? print _('Other') ?></option>
-									<?
+									<option value="Director"><?php print _('Director') ?></option>
+									<option value="Manager"><?php print _('Manager') ?></option>
+									<option value="Administrator"><?php print _('Administrator') ?></option>
+									<option value="Other"><?php print _('Other') ?></option>
+									<?php
 								}
 								else {
 									?>
-									<option value="Other"><? print _('Other') ?></option>
-									<?
+									<option value="Other"><?php print _('Other') ?></option>
+									<?php
 								}
 								?>
 							</select>
@@ -330,15 +330,15 @@ else {
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

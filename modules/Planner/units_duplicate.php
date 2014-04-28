@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -157,7 +157,7 @@ else {
 								print "Step 1" ;
 								print "</h2>" ;
 								?>
-								<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_duplicate.php&step=2&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID" ?>">
+								<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_duplicate.php&step=2&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID" ?>">
 									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 										<tr class='break'>
 											<td colspan=2> 
@@ -166,11 +166,11 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b><? print _('School Year') ?> *</b><br/>
-												<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+												<b><?php print _('School Year') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
-												<?
+												<?php
 												try {
 													$dataYear=array("gibbonSchoolYearID"=>$row["gibbonSchoolYearID"]); 
 													$sqlYear="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
@@ -193,20 +193,20 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b><? print _('Course') ?> *</b><br/>
-												<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+												<b><?php print _('Course') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
-												<? print "<input readonly value='" . $row["courseName"] . "' type='text' style='width: 300px'>" ; ?>
+												<?php print "<input readonly value='" . $row["courseName"] . "' type='text' style='width: 300px'>" ; ?>
 											</td>
 										</tr>
 										<tr>
 											<td> 
 												<b>Unit *</b><br/>
-												<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
-												<? print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
+												<?php print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
 											</td>
 										</tr>
 										
@@ -222,7 +222,7 @@ else {
 											</td>
 											<td class="right">
 												<select name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo" style="width: 302px">
-													<?
+													<?php
 													print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 													try {
 														$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -248,17 +248,17 @@ else {
 												</select>
 												<script type="text/javascript">
 													var gibbonSchoolYearIDCopyTo=new LiveValidation('gibbonSchoolYearIDCopyTo');
-													gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+													gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 												 </script>
 											</td>
 										</tr>
 										<tr>
 											<td> 
-												<b><? print _('Course') ?> *</b><br/>
+												<b><?php print _('Course') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<select name="gibbonCourseIDTarget" id="gibbonCourseIDTarget" style="width: 302px">
-													<?
+													<?php
 													try {
 														if ($highestAction=="Manage Units_all") {
 															$dataSelect=array(); 
@@ -288,25 +288,25 @@ else {
 										<tr>
 											<td> 
 												<b>Unit *</b><br/>
-												<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
-												<? print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
+												<?php print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
 											</td>
 										</tr>
 										
 										<tr>
 											<td>
-												<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+												<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 											</td>
 											<td class="right">
-												<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-												<input type="submit" value="<? print _("Submit") ; ?>">
+												<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+												<input type="submit" value="<?php print _("Submit") ; ?>">
 											</td>
 										</tr>
 									</table>
 								</form>
-								<?
+								<?php
 							}
 							else if ($step==2) {
 								print "<h2>" ;
@@ -327,7 +327,7 @@ else {
 									}
 									else {
 										?>
-										<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_duplicateProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=" . $_GET["q"] ?>">
+										<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_duplicateProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=" . $_GET["q"] ?>">
 											<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 												<script type="text/javascript">
 													/* Resource 1 Option Control */
@@ -360,11 +360,11 @@ else {
 												</tr>
 												<tr>
 													<td> 
-														<b><? print _('School Year') ?> *</b><br/>
-														<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+														<b><?php print _('School Year') ?> *</b><br/>
+														<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 													</td>
 													<td class="right">
-														<?
+														<?php
 														try {
 															$dataYear=array("gibbonSchoolYearID"=>$row["gibbonSchoolYearID"]); 
 															$sqlYear="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
@@ -386,20 +386,20 @@ else {
 												</tr>
 												<tr>
 													<td> 
-														<b><? print _('Course') ?> *</b><br/>
-														<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+														<b><?php print _('Course') ?> *</b><br/>
+														<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 													</td>
 													<td class="right">
-														<? print "<input readonly value='" . $row["courseName"] . "' type='text' style='width: 300px'>" ; ?>
+														<?php print "<input readonly value='" . $row["courseName"] . "' type='text' style='width: 300px'>" ; ?>
 													</td>
 												</tr>
 												<tr>
 													<td> 
 														<b>Unit *</b><br/>
-														<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+														<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 													</td>
 													<td class="right">
-														<? print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
+														<?php print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
 													</td>
 												</tr>
 												<tr id="sourceClass">
@@ -408,7 +408,7 @@ else {
 													</td>
 													<td class="right">
 														<select name="gibbonCourseClassIDSource" id="gibbonCourseClassIDSource" style="width: 302px">
-															<?
+															<?php
 															print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 															try {
 																$dataSelect=array("gibbonCourseID"=>$gibbonCourseID); 
@@ -425,7 +425,7 @@ else {
 													</td>
 												</tr>
 												
-												<?
+												<?php
 												try {
 													$dataSelect2=array("gibbonCourseID"=>$gibbonCourseIDTarget); 
 													$sqlSelect2="SELECT gibbonCourse.name AS course, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseID=:gibbonCourseID" ;
@@ -450,38 +450,38 @@ else {
 												<tr>
 													<td> 
 														<b>School Year*</b><br/>
-														<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+														<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 													</td>
 													<td class="right">
-														<? print "<input readonly value='$year' type='text' style='width: 300px'>" ; ?>
+														<?php print "<input readonly value='$year' type='text' style='width: 300px'>" ; ?>
 													</td>
 												</tr>
 												<tr>
 													<td> 
-														<b><? print _('Course') ?> *</b><br/>
-														<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+														<b><?php print _('Course') ?> *</b><br/>
+														<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 													</td>
 													<td class="right">
-														<? print "<input readonly value='$course' type='text' style='width: 300px'>" ; ?>
+														<?php print "<input readonly value='$course' type='text' style='width: 300px'>" ; ?>
 													</td>
 												</tr>
 												<tr>
 													<td> 
 														<b>Unit *</b><br/>
-														<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+														<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 													</td>
 													<td class="right">
-														<? print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
+														<?php print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
 													</td>
 												</tr>
 												<tr id="targetClass">
 													<td> 
 														<b>Classes *</b><br/>
-														<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+														<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 													</td>
 													<td class="right">
 														<select name="gibbonCourseClassIDTarget[]" id="gibbonCourseClassIDTarget[]" multiple style="width: 302px; height: 100px">
-															<?
+															<?php
 															try {
 																$dataSelect=array("gibbonCourseIDTarget"=>$gibbonCourseIDTarget); 
 																$sqlSelect="SELECT gibbonCourseClassID, gibbonCourseClass.nameShort AS class, gibbonCourse.nameShort AS course FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseIDTarget" ;
@@ -498,17 +498,17 @@ else {
 												</tr>
 												<tr>
 													<td>
-														<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+														<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 													</td>
 													<td class="right">
-														<input type="hidden" name="gibbonCourseIDTarget" value="<? print $gibbonCourseIDTarget ?>">
-														<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-														<input type="submit" value="<? print _("Submit") ; ?>">
+														<input type="hidden" name="gibbonCourseIDTarget" value="<?php print $gibbonCourseIDTarget ?>">
+														<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+														<input type="submit" value="<?php print _("Submit") ; ?>">
 													</td>
 												</tr>
 											</table>
 										</form>
-										<?
+										<?php
 									}
 								}
 							}

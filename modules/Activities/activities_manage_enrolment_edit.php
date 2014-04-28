@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -95,63 +95,63 @@ else {
 				print "</div>" ;
 			}
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_editProcess.php?gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_editProcess.php?gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Activity') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('Activity') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="yearName" id="yearName" maxlength=20 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
+							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Student') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('Student') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="courseName" id="courseName" maxlength=20 value="<? print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student") ?>" type="text" style="width: 300px">
+							<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student") ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Status') ?> *</b><br/>
+							<b><?php print _('Status') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="status">
-								<option <? if ($row["status"]=="Accepted") { print "selected ";} ?>value="Accepted"><? print _('Accepted') ?></option>
-								<?
+								<option <?php if ($row["status"]=="Accepted") { print "selected ";} ?>value="Accepted"><?php print _('Accepted') ?></option>
+								<?php
 								$enrolment=getSettingByScope($connection2, "Activities", "enrolmentType") ;
 								if ($enrolment=="Competitive") {
 									?>
-									<option <? if ($row["status"]=="Waiting List") { print "selected ";} ?>value="Waiting List"><? print _('Waiting List') ?></option>
-									<?
+									<option <?php if ($row["status"]=="Waiting List") { print "selected ";} ?>value="Waiting List"><?php print _('Waiting List') ?></option>
+									<?php
 								}
 								else {
 									?>
-									<option <? if ($row["status"]=="Pending") { print "selected ";} ?>value="Pending"><? print _('Pending') ?></option>
-									<?
+									<option <?php if ($row["status"]=="Pending") { print "selected ";} ?>value="Pending"><?php print _('Pending') ?></option>
+									<?php
 								}
 								?>
-								<option <? if ($row["status"]=="Not Accepted") { print "selected ";} ?>value="Not Accepted"><? print _('Not Accepted') ?></option>
+								<option <?php if ($row["status"]=="Not Accepted") { print "selected ";} ?>value="Not Accepted"><?php print _('Not Accepted') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input name="gibbonPersonID" id="gibbonPersonID" value="<? print $gibbonPersonID ?>" type="hidden">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input name="gibbonPersonID" id="gibbonPersonID" value="<?php print $gibbonPersonID ?>" type="hidden">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

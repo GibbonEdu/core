@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -255,7 +255,7 @@ else {
 									else {
 									?>
 										<p>
-											<?
+											<?php
 											if (getSettingByScope($connection2, "Activities", "enrolmentType")=="Selection") {
 												print _("After you press the Register button below, your application will be considered by a member of staff who will decide whether or not there is space for you in this program.") ;
 											}
@@ -264,25 +264,25 @@ else {
 											}
 											?>
 										</p>
-										<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_view_registerProcess.php?search=" . $_GET["search"] ?>">
+										<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_view_registerProcess.php?search=" . $_GET["search"] ?>">
 											<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 												<tr>
 													<td> 
-														<b><? print _('Activity') ?></b><br/>
+														<b><?php print _('Activity') ?></b><br/>
 													</td>
 													<td class="right">
-														<input readonly name="name" id="name" maxlength=40 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+														<input readonly name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 													</td>
 												</tr>
-												<?
+												<?php
 												if ($dateType!="Date") {
 													?>
 													<tr>
 														<td> 
-															<b><? print _('Terms') ?></b><br/>
+															<b><?php print _('Terms') ?></b><br/>
 														</td>
 														<td class="right">
-															<?
+															<?php
 															$terms=getTerms($connection2, $_SESSION[$guid]["gibbonSchoolYearID"]) ;
 															$termList="" ;
 															for ($i=0; $i<count($terms); $i=$i+2) {
@@ -291,60 +291,60 @@ else {
 																}
 															}
 															?>
-															<input readonly name="terms" id="terms" maxlength=10 value="<? print substr($termList, 0, -2) ?>" type="text" style="width: 300px">
+															<input readonly name="terms" id="terms" maxlength=10 value="<?php print substr($termList, 0, -2) ?>" type="text" style="width: 300px">
 														</td>
 													</tr>
-													<?
+													<?php
 												}
 												else {
 													?>
 													<tr>
 														<td> 
-															<b><? print _('Program Start Date') ?></b><br/>
+															<b><?php print _('Program Start Date') ?></b><br/>
 														</td>
 														<td class="right">
-															<input readonly name="programStart" id="programStart" maxlength=10 value="<? print dateConvertBack($guid, $row["programStart"]) ?>" type="text" style="width: 300px">
+															<input readonly name="programStart" id="programStart" maxlength=10 value="<?php print dateConvertBack($guid, $row["programStart"]) ?>" type="text" style="width: 300px">
 														</td>
 													</tr>
 													<tr>
 														<td> 
-															<b><? print _('Program End Date') ?></b><br/>
+															<b><?php print _('Program End Date') ?></b><br/>
 														</td>
 														<td class="right">
-															<input readonly name="programEnd" id="programEnd" maxlength=10 value="<? print dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
+															<input readonly name="programEnd" id="programEnd" maxlength=10 value="<?php print dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
 														</td>
 													</tr>
-													<?
+													<?php
 												}
 												?>
 												<tr>
 													<td> 
-														<b><? print _('Cost') ?></b><br/>
-														<span style="font-size: 90%"><i><? print _('For entire programme') ?><br/></i></span>
+														<b><?php print _('Cost') ?></b><br/>
+														<span style="font-size: 90%"><i><?php print _('For entire programme') ?><br/></i></span>
 													</td>
 													<td class="right">
-														<?
+														<?php
 															if (getSettingByScope($connection2, "Activities", "payment")!="None" AND getSettingByScope($connection2, "Activities", "payment")!="Single") {
 																?>
-																<input readonly name="payment" id="payment" maxlength=7 value="$<? print $row["payment"] ?>" type="text" style="width: 300px">
-																<?
+																<input readonly name="payment" id="payment" maxlength=7 value="$<?php print $row["payment"] ?>" type="text" style="width: 300px">
+																<?php
 															}
 														?>
 														
 													</td>
 												</tr>
 												
-												<?
+												<?php
 												if (getSettingByScope($connection2, "Activities", "backupChoice")=="Y") {
 													?>
 													<tr>
 														<td> 
-															<b><? print _('Backup Choice') ?> * </b><br/>
-															<span style="font-size: 90%"><i><? print sprintf(_('Incase %1$s is full.'), $row["name"]) ?><br/></i></span>
+															<b><?php print _('Backup Choice') ?> * </b><br/>
+															<span style="font-size: 90%"><i><?php print sprintf(_('Incase %1$s is full.'), $row["name"]) ?><br/></i></span>
 														</td>
 														<td class="right">
 															<select name="gibbonActivityIDBackup" id="gibbonActivityIDBackup" style="width: 302px">
-																<?
+																<?php
 																print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 																
 																try {
@@ -368,28 +368,28 @@ else {
 															</select>
 															<script type="text/javascript">
 																var gibbonActivityIDBackup=new LiveValidation('gibbonActivityIDBackup');
-																gibbonActivityIDBackup.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+																gibbonActivityIDBackup.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 															 </script>
 														</td>
 													</tr>
-													<?
+													<?php
 												}
 												?>
 												<tr>
 													<td>
-														<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+														<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 													</td>
 													<td class="right">
-														<input type="hidden" name="mode" value="<? print $mode ?>">
-														<input type="hidden" name="gibbonPersonID" value="<? print $gibbonPersonID ?>">
-														<input type="hidden" name="gibbonActivityID" value="<? print $gibbonActivityID ?>">
-														<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+														<input type="hidden" name="mode" value="<?php print $mode ?>">
+														<input type="hidden" name="gibbonPersonID" value="<?php print $gibbonPersonID ?>">
+														<input type="hidden" name="gibbonActivityID" value="<?php print $gibbonActivityID ?>">
+														<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 														<input style='width: 75px' type="submit" value="Register">
 													</td>
 												</tr>
 											</table>
 										</form>
-										<?
+										<?php
 									}
 								}
 							}
@@ -468,25 +468,25 @@ else {
 									} 
 									
 									?>
-									<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_view_registerProcess.php?search=" . $_GET["search"] ?>">
+									<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_view_registerProcess.php?search=" . $_GET["search"] ?>">
 										<table cellspacing='0' style="width: 100%">	
 											<tr>
 												<td> 
-													<b><? print sprintf(_('Are you sure you want to unregister from activity "%1$s"? If you try to reregister later you may lose a space already assigned to you.'), $row["name"]) ?></b><br/>
+													<b><?php print sprintf(_('Are you sure you want to unregister from activity "%1$s"? If you try to reregister later you may lose a space already assigned to you.'), $row["name"]) ?></b><br/>
 												</td>
 											</tr>
 											<tr>
 												<td class="right" colspan=2>
-													<input type="hidden" name="mode" value="<? print $mode ?>">
-													<input type="hidden" name="gibbonPersonID" value="<? print $gibbonPersonID ?>">
-													<input type="hidden" name="gibbonActivityID" value="<? print $gibbonActivityID ?>">
-													<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+													<input type="hidden" name="mode" value="<?php print $mode ?>">
+													<input type="hidden" name="gibbonPersonID" value="<?php print $gibbonPersonID ?>">
+													<input type="hidden" name="gibbonActivityID" value="<?php print $gibbonActivityID ?>">
+													<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 													<input style='width: 75px' type="submit" value="Unregister">
 												</td>
 											</tr>
 										</table>
 									</form>
-									<?
+									<?php
 								}
 							}
 						}

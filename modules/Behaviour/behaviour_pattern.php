@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -88,7 +88,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					try {
 						$sqlNegative="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'" ;
 						$resultNegative=$connection2->query($sqlNegative);   
@@ -107,8 +107,8 @@ else {
 						print "<option value=''></option>" ;
 						for ($i=0; $i<count($optionsNegative); $i++) {
 						?>
-							<option <? if ($descriptor==$optionsNegative[$i]) {print "selected ";}?>value="<? print trim($optionsNegative[$i]) ?>"><? print trim($optionsNegative[$i]) ?></option>
-						<?
+							<option <?php if ($descriptor==$optionsNegative[$i]) {print "selected ";}?>value="<?php print trim($optionsNegative[$i]) ?>"><?php print trim($optionsNegative[$i]) ?></option>
+						<?php
 						}
 					print "</select>" ;
 					?>
@@ -120,7 +120,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					$optionsLevels=getSettingByScope($connection2, "Behaviour", "levels") ;
 					if ($optionsLevels!="") {
 						$optionsLevels=explode(",", $optionsLevels) ;
@@ -130,8 +130,8 @@ else {
 						print "<option value=''></option>" ;
 						for ($i=0; $i<count($optionsLevels); $i++) {
 						?>
-							<option <? if ($level==$optionsLevels[$i]) {print "selected ";}?>value="<? print trim($optionsLevels[$i]) ?>"><? print trim($optionsLevels[$i]) ?></option>
-						<?
+							<option <?php if ($level==$optionsLevels[$i]) {print "selected ";}?>value="<?php print trim($optionsLevels[$i]) ?>"><?php print trim($optionsLevels[$i]) ?></option>
+						<?php
 						}
 					print "</select>" ;
 					?>
@@ -141,13 +141,13 @@ else {
 			<tr>
 				<td> 
 					<b>From Date</b><br/>
-					<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
-					<input name="fromDate" id="fromDate" maxlength=10 value="<? if ($fromDate!="") { print $fromDate ; } ?>" type="text" style="width: 300px">
+					<input name="fromDate" id="fromDate" maxlength=10 value="<?php if ($fromDate!="") { print $fromDate ; } ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var fromDate=new LiveValidation('fromDate');
-						fromDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						fromDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					 </script>
 					 <script type="text/javascript">
 						$(function() {
@@ -162,7 +162,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					try {
 						$dataPurpose=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 						$sqlPurpose="SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
@@ -190,7 +190,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					try {
 						$dataPurpose=array(); 
 						$sqlPurpose="SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber" ;
@@ -218,30 +218,30 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					print "<select name='minimumCount' id='minimumCount' style='width:302px'>" ;
 						for ($i=0; $i<51; $i++) {
 							if ($i==0 OR $i==1 OR $i==2 OR $i==3 OR $i==4 OR $i==5 OR $i==10 OR $i==25 OR $i==50) {
 								?>
-								<option <? if ($minimumCount==$i) {print "selected ";}?>value="<? print $i ?>"><? print $i ?></option>
-								<?
+								<option <?php if ($minimumCount==$i) {print "selected ";}?>value="<?php print $i ?>"><?php print $i ?></option>
+								<?php
 							}
 						}
 					print "</select>" ;
 					?>
 				</td>
 			</tr>
-			<?
+			<?php
 			print "<tr>" ;
 				print "<td class='right' colspan=2>" ;
 					print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_pattern.php'>Clear Filters</a> " ;
-					print "<input type='submit' value='Go'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_pattern.php'>" . _('Clear Filters') . "</a> " ;
+					print "<input type='submit' value='" . _('Go') . "'>" ;
 				print "</td>" ;
 			print "</tr>" ;
 			?>
 		</table>
-		<?
+		<?php
 	print "</form>" ;
 	
 	print "<h3>" ;

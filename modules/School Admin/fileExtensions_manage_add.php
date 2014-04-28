@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -57,12 +57,12 @@ else {
 	} 
 	
 	?>
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/fileExtensions_manage_addProcess.php" ?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/fileExtensions_manage_addProcess.php" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b><? print _('Extension') ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
+					<b><?php print _('Extension') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="extension" id="extension" maxlength=7 value="" type="text" style="width: 300px">
@@ -74,7 +74,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+					<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -87,37 +87,37 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Type') ?> *</b><br/>
+					<b><?php print _('Type') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<select name="type" id="type" style="width: 302px">
-						<option value="Please select..."><? print _('Please select...') ?></option>
-						<option value="Document"><? print _('Document') ?></option>
-						<option value="Spreadsheet"><? print _('Spreadsheet') ?></option>
-						<option value="Presentation"><? print _('Presentation') ?></option>
-						<option value="Graphics/Design"><? print _('Graphics/Design') ?></option>
-						<option value="Video"><? print _('Video') ?></option>
-						<option value="Audio"><? print _('Audio') ?></option>
-						<option value="Other"><? print _('Other') ?></option>
+						<option value="Please select..."><?php print _('Please select...') ?></option>
+						<option value="Document"><?php print _('Document') ?></option>
+						<option value="Spreadsheet"><?php print _('Spreadsheet') ?></option>
+						<option value="Presentation"><?php print _('Presentation') ?></option>
+						<option value="Graphics/Design"><?php print _('Graphics/Design') ?></option>
+						<option value="Video"><?php print _('Video') ?></option>
+						<option value="Audio"><?php print _('Audio') ?></option>
+						<option value="Other"><?php print _('Other') ?></option>
 					</select>
 					<script type="text/javascript">
 						var type=new LiveValidation('type');
-						type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+						type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 					 </script>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 }
 ?>

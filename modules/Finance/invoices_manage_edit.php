@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -106,20 +106,20 @@ else {
 			}
 			?>
 			
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><? print _('Basic Information') ?></h3>
+							<h3><?php print _('Basic Information') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('School Year') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('School Year') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							$yearName="" ;
 							try {
 								$dataYear=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
@@ -135,15 +135,15 @@ else {
 								$yearName=$rowYear["name"] ;
 							}
 							?>
-							<input readonly name="yearName" id="yearName" value="<? print $yearName ?>" type="text" style="width: 300px">
+							<input readonly name="yearName" id="yearName" value="<?php print $yearName ?>" type="text" style="width: 300px">
 					</tr>
 					<tr>
 						<td> 
 							<b>Invoicee *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							$personName="" ;
 							try {
 								$dataInvoicee=array("gibbonFinanceInvoiceeID"=>$row["gibbonFinanceInvoiceeID"]); 
@@ -159,29 +159,29 @@ else {
 								$personName=formatName("", htmlPrep($rowInvoicee["preferredName"]), htmlPrep($rowInvoicee["surname"]), "Student", true) ;
 							}
 							?>
-							<input readonly name="personName" id="personName" value="<? print $personName ?>" type="text" style="width: 300px">
+							<input readonly name="personName" id="personName" value="<?php print $personName ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
-					<? //BILLING TYPE CHOOSER ?>
+					<?php //BILLING TYPE CHOOSER ?>
 					<tr>
 						<td> 
 							<b>Scheduling *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="billingScheduleType" id="billingScheduleType" value="<? print $row["billingScheduleType"] ?>" type="text" style="width: 300px">
+							<input readonly name="billingScheduleType" id="billingScheduleType" value="<?php print $row["billingScheduleType"] ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
-					<?
+					<?php
 					if ($row["billingScheduleType"]=="Scheduled") {
 						?>
 						<tr>
 							<td> 
 								<b>Billing Schedule *</b><br/>
-								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
-								<?
+								<?php
 								$schedule="" ;
 								try {
 									$dataSchedule=array("gibbonFinanceBillingScheduleID"=>$row["gibbonFinanceBillingScheduleID"]); 
@@ -197,10 +197,10 @@ else {
 									$schedule=$rowSchedule["name"] ;
 								}
 								?>
-								<input readonly name="schedule" id="schedule" value="<? print $schedule ?>" type="text" style="width: 300px">
+								<input readonly name="schedule" id="schedule" value="<?php print $schedule ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 					else {
 						if ($row["status"]=="Pending" OR $row["status"]=="Issued") {
@@ -210,10 +210,10 @@ else {
 									<b>Invoice Due Date *</b><br/>
 								</td>
 								<td class="right">
-									<input name="invoiceDueDate" id="invoiceDueDate" value="<? print dateConvertBack($guid, $row["invoiceDueDate"]) ?>" type="text" style="width: 300px">
+									<input name="invoiceDueDate" id="invoiceDueDate" value="<?php print dateConvertBack($guid, $row["invoiceDueDate"]) ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var invoiceDueDate=new LiveValidation('invoiceDueDate');
-										invoiceDueDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+										invoiceDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 										invoiceDueDate.add(Validate.Presence);
 									 </script>
 									 <script type="text/javascript">
@@ -223,27 +223,27 @@ else {
 									</script>
 								</td>
 							</tr>
-							<?
+							<?php
 						}
 						else {
 							?>
 							<tr>
 								<td> 
 									<b>Invoice Due Date *</b><br/>
-									<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+									<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 								</td>
 								<td class="right">
-									<input readonly name="invoiceDueDate" id="invoiceDueDate" value="<? print dateConvertBack($guid, $row["invoiceDueDate"]) ?>" type="text" style="width: 300px">
+									<input readonly name="invoiceDueDate" id="invoiceDueDate" value="<?php print dateConvertBack($guid, $row["invoiceDueDate"]) ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
-							<?
+							<?php
 						}
 					}
 					?>
 					<tr>
 						<td> 
 							<b>Status *</b><br/>
-							<?
+							<?php
 							if ($row["status"]=="Pending") {
 								print "<span style=\"font-size: 90%\"><i>This value cannot be changed. Use the Issue function to change the status from \"Pending\" to \"Issued\".</i></span>" ;
 							}
@@ -253,7 +253,7 @@ else {
 							?>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							if ($row["status"]=="Pending" OR $row["status"]=="Cancelled" OR $row["status"]=="Refunded") {
 								print "<input readonly name=\"status\" id=\"status\" value=\"" . $row["status"] . "\" type=\"text\" style=\"width: 300px\">" ;
 							}
@@ -276,7 +276,7 @@ else {
 							?>
 						</td>
 					</tr>
-					<?
+					<?php
 					if ($row["status"]=="Issued") {
 						?>
 						<script type="text/javascript">
@@ -309,7 +309,7 @@ else {
 								<input name="paidDate" id="paidDate" maxlength=10 value="" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var paidDate=new LiveValidation('paidDate');
-									paidDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+									paidDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 									paidDate.add(Validate.Presence);
 								 </script>
 								 <script type="text/javascript">
@@ -323,7 +323,7 @@ else {
 							<td> 
 								<b>Amount Paid *</b><br/>
 								<span style="font-size: 90%"><i>Final amount paid.
-								<?
+								<?php
 								if ($_SESSION[$guid]["currency"]!="") {
 									print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 								}
@@ -331,7 +331,7 @@ else {
 								</i></span>
 							</td>
 							<td class="right">
-								<?
+								<?php
 								//Get default paidAmount
 								try {
 									$dataFees["gibbonFinanceInvoiceID"]=$row["gibbonFinanceInvoiceID"]; 
@@ -347,7 +347,7 @@ else {
 									$paidAmountDefault=$paidAmountDefault+$rowFees["fee"] ;
 								}
 								?>
-								<input name="paidAmount" id="paidAmount" maxlength=14 value="<? print number_format($paidAmountDefault,2,'.','') ?>" type="text" style="width: 300px">
+								<input name="paidAmount" id="paidAmount" maxlength=14 value="<?php print number_format($paidAmountDefault,2,'.','') ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var paidAmount=new LiveValidation('paidAmount');
 									paidAmount.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
@@ -355,7 +355,7 @@ else {
 								 </script>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 					else if ($row["status"]=="Paid" OR $row["status"]=="Refunded") {
 						?>
@@ -365,14 +365,14 @@ else {
 								<span style="font-size: 90%"><i>Date of payment, not entry to system.</i></span>
 							</td>
 							<td class="right">
-								<input readonly name="paidDate" id="paidDate" maxlength=10 value="<? print dateConvertBack($guid, $row["paidDate"]) ; ?>" type="text" style="width: 300px">
+								<input readonly name="paidDate" id="paidDate" maxlength=10 value="<?php print dateConvertBack($guid, $row["paidDate"]) ; ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 						<tr>
 							<td> 
 								<b>Amount Paid *</b><br/>
 								<span style="font-size: 90%"><i>Final amount paid.
-								<?
+								<?php
 								if ($_SESSION[$guid]["currency"]!="") {
 									print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 								}
@@ -380,16 +380,16 @@ else {
 								</i></span>
 							</td>
 							<td class="right">
-								<input readonly name="paidAmount" id="paidAmount" maxlength=14 value="<? print number_format($row["paidAmount"],2,'.','') ; ?> " type="text" style="width: 300px">
+								<input readonly name="paidAmount" id="paidAmount" maxlength=14 value="<?php print number_format($row["paidAmount"],2,'.','') ; ?> " type="text" style="width: 300px">
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 					?>
 					<tr>
 						<td colspan=2> 
 							<b>Notes</b> 
-							<textarea name='notes' id='notes' rows=5 style='width: 300px'><? print htmlPrep($row["notes"]) ?></textarea>
+							<textarea name='notes' id='notes' rows=5 style='width: 300px'><?php print htmlPrep($row["notes"]) ?></textarea>
 						</td>
 					</tr>
 					
@@ -398,22 +398,22 @@ else {
 							<h3>Fees</h3>
 						</td>
 					</tr>
-					<? 
+					<?php 
 					if ($row["status"]=="Pending") {
 						$type="fee" ; 
 						?> 
 						<style>
-							#<? print $type ?> { list-style-type: none; margin: 0; padding: 0; width: 100%; }
-							#<? print $type ?> div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
+							#<?php print $type ?> { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+							#<?php print $type ?> div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
 							div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-							html>body #<? print $type ?> li { min-height: 58px; line-height: 1.2em; }
-							.<? print $type ?>-ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
-							.<? print $type ?>-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
+							html>body #<?php print $type ?> li { min-height: 58px; line-height: 1.2em; }
+							.<?php print $type ?>-ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
+							.<?php print $type ?>-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
 						</style>
 						<tr>
 							<td colspan=2> 
 								<div class="fee" id="fee" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
-									<?
+									<?php
 									$feeCount=0 ;
 									try {
 										//Standard
@@ -442,11 +442,11 @@ else {
 											<tr>
 												<td style='width: 50%'>
 													<script type="text/javascript">
-														var feeCount=<? print $feeCount ?> ;
+														var feeCount=<?php print $feeCount ?> ;
 													</script>
 													<select id='newFee' onChange='feeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
 														<option class='all' value='0'>Choose a fee to add it</option>
-														<?
+														<?php
 														print "<option value='Ad Hoc'>Ad Hoc Fee</option>" ;
 														$switchContents.="case \"Ad Hoc\": " ;
 														$switchContents.="$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
@@ -492,9 +492,9 @@ else {
 													</select>
 													<script type='text/javascript'>
 														function feeDisplayElements(number) {
-															$("#<? print $type ?>Outer0").css("display", "none") ;
+															$("#<?php print $type ?>Outer0").css("display", "none") ;
 															switch(number) {
-																<? print $switchContents ?>
+																<?php print $switchContents ?>
 															}
 														}
 													</script>
@@ -505,7 +505,7 @@ else {
 								</div>
 							</td>
 						</tr>
-					<?
+					<?php
 					}
 					else {
 						print "<tr>" ;
@@ -616,7 +616,7 @@ else {
 								<input type='hidden' id='emailReceipt' name='emailReceipt' value='N'/>
 							</td>
 						</tr>
-						<?
+						<?php
 						$email=getSettingByScope($connection2, "Finance", "email" ) ;
 						if ($email=="") {
 							print "<tr class='emailReceipt'>" ;
@@ -635,15 +635,15 @@ else {
 									?>
 									<tr class='emailReceipt'>
 										<td> 
-											<b><?print $row["companyContact"] ?></b> (<? print $row["companyName"] ; ?>)
+											<b><?phpprint $row["companyContact"] ?></b> (<?php print $row["companyName"] ; ?>)
 											<span style="font-size: 90%"><i></i></span>
 										</td>
 										<td class="right">
-											<? print $row["companyEmail"] ; ?> <input checked type='checkbox' name='emails[]' value='<? print htmlPrep($row["companyEmail"]) ; ?>'/>
-											<input type='hidden' name='names[]' value='<? print htmlPrep($row["companyContact"]) ; ?>'/>
+											<?php print $row["companyEmail"] ; ?> <input checked type='checkbox' name='emails[]' value='<?php print htmlPrep($row["companyEmail"]) ; ?>'/>
+											<input type='hidden' name='names[]' value='<?php print htmlPrep($row["companyContact"]) ; ?>'/>
 										</td>
 									</tr>
-									<?
+									<?php
 									if ($row["companyCCFamily"]=="Y") {
 										try {
 											$dataParents=array("gibbonFinanceInvoiceeID"=>$row["gibbonFinanceInvoiceeID"]); 
@@ -663,15 +663,15 @@ else {
 													?>
 													<tr class='emailReceipt'>
 														<td> 
-															<b><? print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b> <i>(Family CC)</i>
+															<b><?php print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b> <i>(Family CC)</i>
 															<span style="font-size: 90%"><i></i></span>
 														</td>
 														<td class="right">
-															<? print $rowParents["email"] ; ?> <input checked type='checkbox' name='emails[]' value='<? print htmlPrep($rowParents["email"]) ; ?>'/>
-															<input type='hidden' name='names[]' value='<? print htmlPrep(formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false)) ; ?>'/>
+															<?php print $rowParents["email"] ; ?> <input checked type='checkbox' name='emails[]' value='<?php print htmlPrep($rowParents["email"]) ; ?>'/>
+															<input type='hidden' name='names[]' value='<?php print htmlPrep(formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false)) ; ?>'/>
 														</td>
 													</tr>
-													<?
+													<?php
 												}
 											}
 										}
@@ -700,15 +700,15 @@ else {
 											?>
 											<tr class='emailReceipt'>
 												<td> 
-													<b><? print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b>
+													<b><?php print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b>
 													<span style="font-size: 90%"><i></i></span>
 												</td>
 												<td class="right">
-													<? print $rowParents["email"] ; ?> <input checked type='checkbox' name='emails[]' value='<? print htmlPrep($rowParents["email"]) ; ?>'/>
-													<input type='hidden' name='names[]' value='<? print htmlPrep(formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false)) ; ?>'/>
+													<?php print $rowParents["email"] ; ?> <input checked type='checkbox' name='emails[]' value='<?php print htmlPrep($rowParents["email"]) ; ?>'/>
+													<input type='hidden' name='names[]' value='<?php print htmlPrep(formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false)) ; ?>'/>
 												</td>
 											</tr>
-											<?
+											<?php
 										}
 									}
 								}
@@ -718,15 +718,15 @@ else {
 								?>
 								<tr class='emailReceipt'>
 									<td> 
-										<b><? print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", false) ?></b>
+										<b><?php print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", false) ?></b>
 										<span style="font-size: 90%"><i>(CC Self?)</i></span>
 									</td>
 									<td class="right">
-										<? print $_SESSION[$guid]["email"] ; ?> <input type='checkbox' name='emails[]' value='<? print $_SESSION[$guid]["email"] ; ?>'/>
-										<input type='hidden' name='names[]' value='<? print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", FALSE) ; ?>'/>
+										<?php print $_SESSION[$guid]["email"] ; ?> <input type='checkbox' name='emails[]' value='<?php print $_SESSION[$guid]["email"] ; ?>'/>
+										<input type='hidden' name='names[]' value='<?php print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", FALSE) ; ?>'/>
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 						}
 					}
@@ -754,7 +754,7 @@ else {
 								<input type='hidden' id='emailReminder' name='emailReminder' value='Y'/>
 							</td>
 						</tr>
-						<?
+						<?php
 						$email=getSettingByScope($connection2, "Finance", "email" ) ;
 						if ($email=="") {
 							print "<tr class='emailReminder'>" ;
@@ -773,15 +773,15 @@ else {
 									?>
 									<tr class='emailReminder'>
 										<td> 
-											<b><?print $row["companyContact"] ?></b> (<? print $row["companyName"] ; ?>)
+											<b><?phpprint $row["companyContact"] ?></b> (<?php print $row["companyName"] ; ?>)
 											<span style="font-size: 90%"><i></i></span>
 										</td>
 										<td class="right">
-											<? print $row["companyEmail"] ; ?> <input checked type='checkbox' name='emails2[]' value='<? print htmlPrep($row["companyEmail"]) ; ?>'/>
-											<input type='hidden' name='names[]' value='<? print htmlPrep($row["companyContact"]) ; ?>'/>
+											<?php print $row["companyEmail"] ; ?> <input checked type='checkbox' name='emails2[]' value='<?php print htmlPrep($row["companyEmail"]) ; ?>'/>
+											<input type='hidden' name='names[]' value='<?php print htmlPrep($row["companyContact"]) ; ?>'/>
 										</td>
 									</tr>
-									<?
+									<?php
 									if ($row["companyCCFamily"]=="Y") {
 										try {
 											$dataParents=array("gibbonFinanceInvoiceeID"=>$row["gibbonFinanceInvoiceeID"]); 
@@ -801,15 +801,15 @@ else {
 													?>
 													<tr class='emailReminder'>
 														<td> 
-															<b><? print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b> <i>(Family CC)</i>
+															<b><?php print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b> <i>(Family CC)</i>
 															<span style="font-size: 90%"><i></i></span>
 														</td>
 														<td class="right">
-															<? print $rowParents["email"] ; ?> <input checked type='checkbox' name='emails2[]' value='<? print htmlPrep($rowParents["email"]) ; ?>'/>
-															<input type='hidden' name='names[]' value='<? print htmlPrep(formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false)) ; ?>'/>
+															<?php print $rowParents["email"] ; ?> <input checked type='checkbox' name='emails2[]' value='<?php print htmlPrep($rowParents["email"]) ; ?>'/>
+															<input type='hidden' name='names[]' value='<?php print htmlPrep(formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false)) ; ?>'/>
 														</td>
 													</tr>
-													<?
+													<?php
 												}
 											}
 										}
@@ -838,15 +838,15 @@ else {
 											?>
 											<tr class='emailReminder'>
 												<td> 
-													<b><? print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b>
+													<b><?php print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b>
 													<span style="font-size: 90%"><i></i></span>
 												</td>
 												<td class="right">
-													<? print $rowParents["email"] ; ?> <input checked type='checkbox' name='emails2[]' value='<? print htmlPrep($rowParents["email"]) ; ?>'/>
-													<input type='hidden' name='names[]' value='<? print htmlPrep(formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false)) ; ?>'/>
+													<?php print $rowParents["email"] ; ?> <input checked type='checkbox' name='emails2[]' value='<?php print htmlPrep($rowParents["email"]) ; ?>'/>
+													<input type='hidden' name='names[]' value='<?php print htmlPrep(formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false)) ; ?>'/>
 												</td>
 											</tr>
-											<?
+											<?php
 										}
 									}
 								}
@@ -856,32 +856,32 @@ else {
 								?>
 								<tr class='emailReminder'>
 									<td> 
-										<b><? print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", false) ?></b>
+										<b><?php print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", false) ?></b>
 										<span style="font-size: 90%"><i>(CC Self?)</i></span>
 									</td>
 									<td class="right">
-										<? print $_SESSION[$guid]["email"] ; ?> <input type='checkbox' name='emails[]' value='<? print $_SESSION[$guid]["email"] ; ?>'/>
-										<input type='hidden' name='names[]' value='<? print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", FALSE) ; ?>'/>
+										<?php print $_SESSION[$guid]["email"] ; ?> <input type='checkbox' name='emails[]' value='<?php print $_SESSION[$guid]["email"] ; ?>'/>
+										<input type='hidden' name='names[]' value='<?php print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", FALSE) ; ?>'/>
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 						}
 					}
 					?>			
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<? print $gibbonFinanceInvoiceID ?>" type="hidden">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<?php print $gibbonFinanceInvoiceID ?>" type="hidden">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

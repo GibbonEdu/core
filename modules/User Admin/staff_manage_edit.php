@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -93,30 +93,30 @@ else {
 					print "</div>" ;
 				}
 				?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_editProcess.php?gibbonStaffID=" . $row["gibbonStaffID"] . "&search=$search" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_editProcess.php?gibbonStaffID=" . $row["gibbonStaffID"] . "&search=$search" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><? print _('Basic Information') ?></h3>
+							<h3><?php print _('Basic Information') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Person') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('Person') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="person" id="person" maxlength=255 value="<? print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Staff", false, true) ?>" type="text" style="width: 300px">
+							<input readonly name="person" id="person" maxlength=255 value="<?php print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Staff", false, true) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Initials') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Must be unique if set.') ?></i></span>
+							<b><?php print _('Initials') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Must be unique if set.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="initials" id="initials" maxlength=4 value="<? print $row["initials"] ?>" type="text" style="width: 300px">
-							<?
+							<input name="initials" id="initials" maxlength=4 value="<?php print $row["initials"] ?>" type="text" style="width: 300px">
+							<?php
 							$idList="" ;
 							try {
 								$dataSelect=array("initials"=>$row["initials"]); 
@@ -131,39 +131,39 @@ else {
 							?>
 							<script type="text/javascript">
 								var initials=new LiveValidation('initials');
-								initials.add( Validate.Exclusion, { within: [<? print $idList ;?>], failureMessage: "Initials already in use!", partialMatch: false, caseSensitive: false } );
+								initials.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "Initials already in use!", partialMatch: false, caseSensitive: false } );
 							</script>
 						</td>
 					</tr>
 					
 					<tr>
 						<td> 
-							<b><? print _('Type') ?> *</b><br/>
+							<b><?php print _('Type') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="type" id="type" style="width: 302px">
-								<option value="Please select..."><? print _('Please select...') ?></option>
-								<option <? if ($row["type"]=="Teaching") { print "selected " ;} ?>value="Teaching">Teaching</option>
-								<option <? if ($row["type"]=="Support") { print "selected " ;}?>value="Support">Support</option>
+								<option value="Please select..."><?php print _('Please select...') ?></option>
+								<option <?php if ($row["type"]=="Teaching") { print "selected " ;} ?>value="Teaching">Teaching</option>
+								<option <?php if ($row["type"]=="Support") { print "selected " ;}?>value="Support">Support</option>
 							</select>
 							<script type="text/javascript">
 								var type=new LiveValidation('type');
-								type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+								type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Job Title') ?></b><br/>
+							<b><?php print _('Job Title') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="jobTitle" id="jobTitle" maxlength=100 value="<? print htmlPrep($row["jobTitle"]) ?>" type="text" style="width: 300px">
+							<input name="jobTitle" id="jobTitle" maxlength=100 value="<?php print htmlPrep($row["jobTitle"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><? print _('First Aid') ?></h3>
+							<h3><?php print _('First Aid') ?></h3>
 						</td>
 					</tr>
 					<!-- FIELDS & CONTROLS FOR TYPE -->
@@ -180,24 +180,24 @@ else {
 					</script>
 					<tr>
 						<td> 
-							<b><? print _('First Aid Qualified?') ?></b><br/>
+							<b><?php print _('First Aid Qualified?') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="firstAidQualified" id="firstAidQualified" class="firstAidQualified">
-								<option <? if ($row["firstAidQualified"]=="") { print "selected" ; } ?> value=""></option>
-								<option <? if ($row["firstAidQualified"]=="Y") { print "selected" ; } ?> value="Y"><? print _('Yes') ?></option>
-								<option <? if ($row["firstAidQualified"]=="N") { print "selected" ; } ?> value="N"><? print _('No') ?></option>
+								<option <?php if ($row["firstAidQualified"]=="") { print "selected" ; } ?> value=""></option>
+								<option <?php if ($row["firstAidQualified"]=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["firstAidQualified"]=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
-					<tr id='firstAidExpiryRow' <? if ($row["firstAidQualified"]!="Y") { print "style='display: none'" ; } ?>>
+					<tr id='firstAidExpiryRow' <?php if ($row["firstAidQualified"]!="Y") { print "style='display: none'" ; } ?>>
 						<td> 
-							<b><? print _('First Aid Expiry') ?></b><br/>
-							<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+							<b><?php print _('First Aid Expiry') ?></b><br/>
+							<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 						</td>
 						<td class="right">
-							<input name="firstAidExpiry" id="firstAidExpiry" maxlength=10 value="<? print dateConvertBack($guid, $row["firstAidExpiry"]) ?>" type="text" style="width: 300px">
+							<input name="firstAidExpiry" id="firstAidExpiry" maxlength=10 value="<?php print dateConvertBack($guid, $row["firstAidExpiry"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								$(function() {
 									$( "#firstAidExpiry" ).datepicker();
@@ -208,16 +208,16 @@ else {
 					
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><? print _('Biography') ?></h3>
+							<h3><?php print _('Biography') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Country Of Origin') ?></b><br/>
+							<b><?php print _('Country Of Origin') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="countryOfOrigin" id="countryOfOrigin" style="width: 302px">
-								<?
+								<?php
 								print "<option value=''></option>" ;
 								try {
 									$dataSelect=array(); 
@@ -239,28 +239,28 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Qualifications') ?></b><br/>
+							<b><?php print _('Qualifications') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="qualifications" id="qualifications" maxlength=100 value="<? print htmlPrep($row["qualifications"]) ?>" type="text" style="width: 300px">
+							<input name="qualifications" id="qualifications" maxlength=100 value="<?php print htmlPrep($row["qualifications"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Grouping') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Used for group staff when creating a staff directory.') ?></i></span>
+							<b><?php print _('Grouping') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Used for group staff when creating a staff directory.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="biographicalGrouping" id="biographicalGrouping" maxlength=100 value="<? print htmlPrep($row["biographicalGrouping"]) ?>" type="text" style="width: 300px">
+							<input name="biographicalGrouping" id="biographicalGrouping" maxlength=100 value="<?php print htmlPrep($row["biographicalGrouping"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Grouping Priority') ?></b><br/>
-							<span style="font-size: 90%"><? print _('<i>Higher numbers move teachers up the order within their grouping.') ?></i></span>
+							<b><?php print _('Grouping Priority') ?></b><br/>
+							<span style="font-size: 90%"><?php print _('<i>Higher numbers move teachers up the order within their grouping.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="biographicalGroupingPriority" id="biographicalGroupingPriority" maxlength=4 value="<? print htmlPrep($row["biographicalGroupingPriority"]) ?>" type="text" style="width: 300px">
+							<input name="biographicalGroupingPriority" id="biographicalGroupingPriority" maxlength=4 value="<?php print htmlPrep($row["biographicalGroupingPriority"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var biographicalGroupingPriority=new LiveValidation('biographicalGroupingPriority');
 								biographicalGroupingPriority.add(Validate.Numericality);
@@ -269,25 +269,25 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Biography') ?></b><br/>
+							<b><?php print _('Biography') ?></b><br/>
 						</td>
 						<td class="right">
-							<textarea name='biography' id='biography' rows=10 style='width: 300px'><? print htmlPrep($row["biography"]) ?></textarea>
+							<textarea name='biography' id='biography' rows=10 style='width: 300px'><?php print htmlPrep($row["biography"]) ?></textarea>
 						</td>
 					</tr>
 			
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -94,17 +94,17 @@ else {
 			if ($step==1) {
 				?>
 				<h2>
-					<? print _('Step 1 - Select CSV Files') ?>
+					<?php print _('Step 1 - Select CSV Files') ?>
 				</h2>
 				<p>
-					<? print _('This page allows you to import timetable data from a CSV file. The import includes all classes and their teachers. There is no support for importing students: these need to be entered manually into the relavent classes. The system will do its best to keep existing data in tact, whilst updating what is necessary (note: you will lose student exceptions from timetabled classes). Select the CSV files you wish to use for the synchronise operation.') ?><br/>
+					<?php print _('This page allows you to import timetable data from a CSV file. The import includes all classes and their teachers. There is no support for importing students: these need to be entered manually into the relavent classes. The system will do its best to keep existing data in tact, whilst updating what is necessary (note: you will lose student exceptions from timetabled classes). Select the CSV files you wish to use for the synchronise operation.') ?><br/>
 				</p>
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=2" ?>" enctype="multipart/form-data">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=2" ?>" enctype="multipart/form-data">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
-								<b><? print _('CSV File') ?> *</b><br/>
-								<span style="font-size: 90%"><i><? print _('See Notes below for specification.') ?></i></span>
+								<b><?php print _('CSV File') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('See Notes below for specification.') ?></i></span>
 							</td>
 							<td class="right">
 								<input type="file" name="file" id="file" size="chars">
@@ -116,7 +116,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><? print _('Field Delimiter') ?> *</b><br/>
+								<b><?php print _('Field Delimiter') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
@@ -129,7 +129,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><? print _('String Enclosure') ?> *</b><br/>
+								<b><?php print _('String Enclosure') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
@@ -142,12 +142,12 @@ else {
 						</tr>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 							</td>
 							<td class='right'>
-								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
-								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<? print _("Submit") ; ?>">
+								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
+								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+								<input type="submit" value="<?php print _("Submit") ; ?>">
 							</td>
 						</tr>
 					</table>
@@ -156,48 +156,48 @@ else {
 				
 				
 				<h4>
-					<? print _('Notes') ?>
+					<?php print _('Notes') ?>
 				</h4>
 				<ol>
-					<li><? print _('You may only submit CSV files.') ?></li>
-					<li><? print _('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-					<li><? print _('The import includes course, class, period, teacher and room information: the structure of the target timetable must already be in place.') ?></li>
-					<li><? print _('The import does not include student lists.') ?></li>
-					<li><? print _('The submitted file must have the following fields in the following order:') ?></li> 
+					<li><?php print _('You may only submit CSV files.') ?></li>
+					<li><?php print _('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+					<li><?php print _('The import includes course, class, period, teacher and room information: the structure of the target timetable must already be in place.') ?></li>
+					<li><?php print _('The import does not include student lists.') ?></li>
+					<li><?php print _('The submitted file must have the following fields in the following order:') ?></li> 
 						<ol>
-							<li><b><? print _('Course Short Name</b> - e.g. DR10 for Year 10 Drama') ?></li>
-							<li><b><? print _('Class Short Name</b> - e.g 1 for DR10.1') ?></li>
-							<li><b><? print _('Day Name</b> - as used in the target timetable') ?></li>
-							<li><b><? print _('Row Long Name</b> - as used in the target timetable') ?></li>
-							<li><b><? print _('Teacher Username</b> - comma-separated list of Gibbon usernames for teacher(s) of the lesson. Alternatively, give each teacher their own row.') ?></li>
-							<li><b><? print _('Space Name</b> - the Gibbon name for the room the lesson takes place in.') ?></li>
+							<li><b><?php print _('Course Short Name</b> - e.g. DR10 for Year 10 Drama') ?></li>
+							<li><b><?php print _('Class Short Name</b> - e.g 1 for DR10.1') ?></li>
+							<li><b><?php print _('Day Name</b> - as used in the target timetable') ?></li>
+							<li><b><?php print _('Row Long Name</b> - as used in the target timetable') ?></li>
+							<li><b><?php print _('Teacher Username</b> - comma-separated list of Gibbon usernames for teacher(s) of the lesson. Alternatively, give each teacher their own row.') ?></li>
+							<li><b><?php print _('Space Name</b> - the Gibbon name for the room the lesson takes place in.') ?></li>
 						</ol>
 					</li>
-					<li><? print _('Do not include a header row in the CSV files.') ?></li>
+					<li><?php print _('Do not include a header row in the CSV files.') ?></li>
 				</ol>
-			<?
+			<?php
 			}
 			else if ($step==2) {
 				?>
 				<h2>
-					<? print _('Step 2 - Data Check & Confirm') ?>
+					<?php print _('Step 2 - Data Check & Confirm') ?>
 				</h2>
-				<?
+				<?php
 				
 				//Check file type
 				if (($_FILES['file']['type']!="text/csv") AND ($_FILES['file']['type']!="text/comma-separated-values") AND ($_FILES['file']['type']!="text/x-comma-separated-values") AND ($_FILES['file']['type']!="application/vnd.ms-excel")) {
 					?>
 					<div class='error'>
-						<? print sprintf(_('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
+						<?php print sprintf(_('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
 					</div>
-					<?
+					<?php
 				}
 				else if (($_POST["fieldDelimiter"]=="") OR ($_POST["stringEnclosure"]=="")) {
 					?>
 					<div class='error'>
-						<? print _('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
+						<?php print _('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
 					</div>
-					<?
+					<?php
 				}
 				else {
 					$proceed=true ;
@@ -802,9 +802,9 @@ else {
 			else if ($step==3) {
 				?>
 				<h2>
-					<? print _('Step 3 - Import') ?>
+					<?php print _('Step 3 - Import') ?>
 				</h2>
-				<?	
+				<?php	
 				
 				$proceed=true ;
 					

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Individual Needs Summary</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Individual Needs Summary') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -71,11 +71,11 @@ else {
 			?>
 			<tr>
 				<td> 
-					<b>Descriptor</b><br/>
+					<b><?php print _('Descriptor') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					try {
 						$dataPurpose=array(); 
 						$sqlPurpose="SELECT * FROM gibbonINDescriptor ORDER BY sequenceNumber" ;
@@ -99,11 +99,11 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Alert Level</b><br/>
+					<b><?php print _('Alert Level') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					try {
 						$dataPurpose=array(); 
 						$sqlPurpose="SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber" ;
@@ -127,11 +127,11 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Roll Group</b><br/>
+					<b><?php print _('Roll Group') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					try {
 						$dataPurpose=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 						$sqlPurpose="SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
@@ -155,11 +155,11 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Year Group</b><br/>
+					<b><?php print _('Year Group') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					try {
 						$dataPurpose=array(); 
 						$sqlPurpose="SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber" ;
@@ -181,12 +181,12 @@ else {
 					?>
 				</td>
 			</tr>
-			<?
+			<?php
 			print "<tr>" ;
 				print "<td class='right' colspan=2>" ;
 					print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_summary.php'>Clear Filters</a> " ;
-					print "<input type='submit' value='Go'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_summary.php'>" . _('Clear Filters') . "</a> " ;
+					print "<input type='submit' value='" . _('Go') . "'>" ;
 				print "</td>" ;
 			print "</tr>" ;
 		print "</table>" ;
@@ -194,10 +194,10 @@ else {
 	
 	
 	print "<h3>" ;
-		print "Students With Records" ;
+		print _("Students With Records") ;
 	print "</h3>" ;
 	print "<p>" ;
-	print "Students only show up in this list if they have a IN record with descriptors set. If a student does not show up here, check in Individual Needs Records." ;
+	print _("Students only show up in this list if they have an Individual Needs record with descriptors set. If a student does not show up here, check in Individual Needs Records.") ;
 	print "</p>" ;
 	
 	//Set pagination variable

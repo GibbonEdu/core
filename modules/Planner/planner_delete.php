@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -162,12 +162,12 @@ else {
 					print "</div>" ;
 				} 
 				?>
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID" ?>">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID" ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
-								<b><? print _('Are you sure you want to delete this record?') ; ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><? print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
+								<b><?php print _('Are you sure you want to delete this record?') ; ?></b><br/>
+							<span style="font-size: 90%; color: #cc0000"><i><?php print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
 							</td>
 							<td class="right">
 								
@@ -175,12 +175,12 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<input name="viewBy" id="viewBy" value="<? print $viewBy ?>" type="hidden">
-								<input name="subView" id="subView" value="<? print $subView ?>" type="hidden">
-								<input name="date" id="date" value="<? print $date ?>" type="hidden">
-								<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<? print $gibbonCourseClassID ?>" type="hidden">
-								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<? print _('Yes') ; ?>">
+								<input name="viewBy" id="viewBy" value="<?php print $viewBy ?>" type="hidden">
+								<input name="subView" id="subView" value="<?php print $subView ?>" type="hidden">
+								<input name="date" id="date" value="<?php print $date ?>" type="hidden">
+								<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<?php print $gibbonCourseClassID ?>" type="hidden">
+								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+								<input type="submit" value="<?php print _('Yes') ; ?>">
 							</td>
 							<td class="right">
 								
@@ -188,7 +188,7 @@ else {
 						</tr>
 					</table>
 				</form>
-				<?
+				<?php
 			}
 		}
 		//Print sidebar

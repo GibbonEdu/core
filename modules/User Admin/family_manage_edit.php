@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -143,53 +143,53 @@ else {
 			}
 			?>
 			
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_editProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_editProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
 							<h3>
-								<? print _('General Information') ?>
+								<?php print _('General Information') ?>
 							</h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Family Name') ?> *</b><br/>
+							<b><?php print _('Family Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=100 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=100 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Status') ?></b><br/>
+							<b><?php print _('Status') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="status" id="status" style="width: 302px">
-								<option <? if ($row["status"]=="Married") { print "selected " ; } ?>value="Married"><? print _('Married') ?></option>
-								<option <? if ($row["status"]=="Separated") { print "selected " ; } ?>value="Separated"><? print _('Separated') ?></option>
-								<option <? if ($row["status"]=="Divorced") { print "selected " ; } ?>value="Divorced"><? print _('Divorced') ?></option>
-								<option <? if ($row["status"]=="De Facto") { print "selected " ; } ?>value="De Facto"><? print _('De Facto') ?></option>
-								<option <? if ($row["status"]=="Other") { print "selected " ; } ?>value="Other"><? print _('Other') ?></option>
+								<option <?php if ($row["status"]=="Married") { print "selected " ; } ?>value="Married"><?php print _('Married') ?></option>
+								<option <?php if ($row["status"]=="Separated") { print "selected " ; } ?>value="Separated"><?php print _('Separated') ?></option>
+								<option <?php if ($row["status"]=="Divorced") { print "selected " ; } ?>value="Divorced"><?php print _('Divorced') ?></option>
+								<option <?php if ($row["status"]=="De Facto") { print "selected " ; } ?>value="De Facto"><?php print _('De Facto') ?></option>
+								<option <?php if ($row["status"]=="Other") { print "selected " ; } ?>value="Other"><?php print _('Other') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Home Language') ?></b><br/>
+							<b><?php print _('Home Language') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="languageHome" id="languageHome" maxlength=100 value="<? print $row["languageHome"] ?>" type="text" style="width: 300px">
+							<input name="languageHome" id="languageHome" maxlength=100 value="<?php print $row["languageHome"] ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Address Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Formal name to address parents with.') ?></i></span>
+							<b><?php print _('Address Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Formal name to address parents with.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="nameAddress" id="nameAddress" maxlength=100 value="<? print $row["nameAddress"] ?>" type="text" style="width: 300px">
+							<input name="nameAddress" id="nameAddress" maxlength=100 value="<?php print $row["nameAddress"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var nameAddress=new LiveValidation('nameAddress');
 								nameAddress.add(Validate.Presence);
@@ -198,25 +198,25 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Home Address') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Unit, Building, Street') ?></i></span>
+							<b><?php print _('Home Address') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Unit, Building, Street') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="homeAddress" id="homeAddress" maxlength=255 value="<? print $row["homeAddress"] ?>" type="text" style="width: 300px">
+							<input name="homeAddress" id="homeAddress" maxlength=255 value="<?php print $row["homeAddress"] ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Home Address (District)') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('County, State, District') ?></i></span>
+							<b><?php print _('Home Address (District)') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('County, State, District') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<? print $row["homeAddressDistrict"] ?>" type="text" style="width: 300px">
+							<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<?php print $row["homeAddressDistrict"] ?>" type="text" style="width: 300px">
 						</td>
 						<script type="text/javascript">
 							$(function() {
 								var availableTags=[
-									<?
+									<?php
 									try {
 										$dataAuto=array(); 
 										$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
@@ -235,11 +235,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Home Address (Country)') ?></b><br/>
+							<b><?php print _('Home Address (Country)') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="homeAddressCountry" id="homeAddressCountry" style="width: 302px">
-								<?
+								<?php
 								print "<option value=''></option>" ;
 								try {
 									$dataSelect=array(); 
@@ -261,17 +261,17 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
 			
-			<?
+			<?php
 			//Get children and prep array
 			try {
 				$dataChildren=array("gibbonFamilyID"=>$gibbonFamilyID); 
@@ -379,33 +379,33 @@ else {
 									print "<td>" ;
 										?>
 										<select name="relationships[]" id="relationships[]" style="width: 100%">
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="") { print "selected" ; } ?> value=""></option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Mother") { print "selected" ; } ?> value="Mother"><? print _('Mother') ?></option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Father") { print "selected" ; } ?> value="Father"><? print _('Father') ?></option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Step-Mother") { print "selected" ; } ?> value="Step-Mother"><? print _('Step-Mother') ?></option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Step-Father") { print "selected" ; } ?> value="Step-Father"><? print _('Step-Father') ?></option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Adoptive Parent") { print "selected" ; } ?> value="Adoptive Parent"><? print _('Adoptive Parent') ?></option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Guardian") { print "selected" ; } ?> value="Guardian"><? print _('Guardian') ?></option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Grandmother") { print "selected" ; } ?> value="Grandmother"><? print _('Grandmother') ?></option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Grandfather") { print "selected" ; } ?> value="Grandfather"><? print _('Grandfather') ?></option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Aunt") { print "selected" ; } ?> value="Aunt"><? print _('Aunt') ?></option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Uncle") { print "selected" ; } ?> value="Uncle"><? print _('Uncle') ?></option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Nanny/Helper") { print "selected" ; } ?> value="Nanny/Helper"><? print _('Nanny/Helper') ?></option>
-											<option <? if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Other") { print "selected" ; } ?> value="Other"><? print _('Other') ?></option>
+											<option <?php if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="") { print "selected" ; } ?> value=""></option>
+											<option <?php if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Mother") { print "selected" ; } ?> value="Mother"><?php print _('Mother') ?></option>
+											<option <?php if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Father") { print "selected" ; } ?> value="Father"><?php print _('Father') ?></option>
+											<option <?php if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Step-Mother") { print "selected" ; } ?> value="Step-Mother"><?php print _('Step-Mother') ?></option>
+											<option <?php if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Step-Father") { print "selected" ; } ?> value="Step-Father"><?php print _('Step-Father') ?></option>
+											<option <?php if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Adoptive Parent") { print "selected" ; } ?> value="Adoptive Parent"><?php print _('Adoptive Parent') ?></option>
+											<option <?php if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Guardian") { print "selected" ; } ?> value="Guardian"><?php print _('Guardian') ?></option>
+											<option <?php if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Grandmother") { print "selected" ; } ?> value="Grandmother"><?php print _('Grandmother') ?></option>
+											<option <?php if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Grandfather") { print "selected" ; } ?> value="Grandfather"><?php print _('Grandfather') ?></option>
+											<option <?php if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Aunt") { print "selected" ; } ?> value="Aunt"><?php print _('Aunt') ?></option>
+											<option <?php if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Uncle") { print "selected" ; } ?> value="Uncle"><?php print _('Uncle') ?></option>
+											<option <?php if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Nanny/Helper") { print "selected" ; } ?> value="Nanny/Helper"><?php print _('Nanny/Helper') ?></option>
+											<option <?php if (@$relationships[$adult["gibbonPersonID"]][$child["gibbonPersonID"]]=="Other") { print "selected" ; } ?> value="Other"><?php print _('Other') ?></option>
 										</select>
-										<input type="hidden" name="gibbonPersonID1[]" value="<? print $adult["gibbonPersonID"] ?>">
-										<input type="hidden" name="gibbonPersonID2[]" value="<? print $child["gibbonPersonID"] ?>">
-										<?
+										<input type="hidden" name="gibbonPersonID1[]" value="<?php print $adult["gibbonPersonID"] ?>">
+										<input type="hidden" name="gibbonPersonID2[]" value="<?php print $child["gibbonPersonID"] ?>">
+										<?php
 									print "</td>" ;
 								}
 							print "</tr>" ;
 						}
 						?>
-						<tr><td colspan="<? print (count($children)+1) ?>" class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+						<tr><td colspan="<?php print (count($children)+1) ?>" class="right">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td></tr>
-						<?
+						<?php
 					print "</table>" ;
 				print "</form>" ;
 			}
@@ -494,27 +494,27 @@ else {
 			}
 			
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_addChildProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_addChildProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2>
 							<h3>
-							<? print _('Add Child') ?>
+							<?php print _('Add Child') ?>
 							</h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Child\'s Name') ?> *</b><br/>
+							<b><?php print _('Child\'s Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
-								<?
+								<?php
 								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								?>
-								<optgroup label='--<? print _('Enroled Students') ?>--'>
-								<?
+								<optgroup label='--<?php print _('Enroled Students') ?>--'>
+								<?php
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 									$sqlSelect="SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName" ;
@@ -527,8 +527,8 @@ else {
 								}
 								?>
 								</optgroup>
-								<optgroup label='--<? print _('All Users') ?>--'>
-								<?
+								<optgroup label='--<?php print _('All Users') ?>--'>
+								<?php
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName" ;
@@ -547,13 +547,13 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonPersonID=new LiveValidation('gibbonPersonID');
-								gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+								gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Comment') ?></b><br/>
+							<b><?php print _('Comment') ?></b><br/>
 						</td>
 						<td class="right">
 							<textarea name="comment" id="comment" rows=8 style="width: 300px"></textarea>
@@ -562,17 +562,17 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
 
-			<?	
+			<?php	
 			print "<h3>" ;
 			print _("View Adults") ;
 			print "</h3>" ;
@@ -671,23 +671,23 @@ else {
 			}
 			
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_addAdultProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_addAdultProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2>
 							<h3>
-							<? print _('Add Adult') ?>
+							<?php print _('Add Adult') ?>
 							</h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Adult\'s Name') ?> *</b><br/>
+							<b><?php print _('Adult\'s Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="gibbonPersonID2" id="gibbonPersonID2" style="width: 302px">
-								<?
+								<?php
 								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								try {
 									$dataSelect=array(); 
@@ -707,14 +707,14 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonPersonID2=new LiveValidation('gibbonPersonID2');
-								gibbonPersonID2.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+								gibbonPersonID2.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Comment') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Data displayed in full Student Profile') ?><br/></i></span>
+							<b><?php print _('Comment') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Data displayed in full Student Profile') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<textarea name="comment2" id="comment2" rows=8 style="width: 300px"></textarea>
@@ -726,31 +726,31 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Data Access?') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Access data on family\'s children?') ?></i></span>
+							<b><?php print _('Data Access?') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Access data on family\'s children?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="childDataAccess" id="childDataAccess" style="width: 302px">
-								<option value="Y"><? print _('Yes') ?></option>
-								<option value="N"><? print _('No') ?></option>
+								<option value="Y"><?php print _('Yes') ?></option>
+								<option value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Contact Priority') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('The order in which school should contact family members.') ?></i></span>
+							<b><?php print _('Contact Priority') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('The order in which school should contact family members.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactPriority" id="contactPriority" style="width: 302px">
-								<option value="1"><? print _('1') ?></option>
-								<option value="2"><? print _('2') ?></option>
-								<option value="3"><? print _('3') ?></option>
+								<option value="1"><?php print _('1') ?></option>
+								<option value="2"><?php print _('2') ?></option>
+								<option value="3"><?php print _('3') ?></option>
 							</select>
 							<script type="text/javascript">
 								/* Advanced Options Control */
 								$(document).ready(function(){
-									<? 
+									<?php 
 									print "$(\"#contactCall\").attr(\"disabled\", \"disabled\");" ;
 									print "$(\"#contactSMS\").attr(\"disabled\", \"disabled\");" ;
 									print "$(\"#contactEmail\").attr(\"disabled\", \"disabled\");" ;
@@ -781,65 +781,65 @@ else {
 					
 					<tr>
 						<td> 
-							<b><? print _('Call?') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Receive non-emergency phone calls from school?') ?></i></span>
+							<b><?php print _('Call?') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Receive non-emergency phone calls from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactCall" id="contactCall" style="width: 302px">
-								<option value="Y"><? print _('Yes') ?></option>
-								<option value="N"><? print _('No') ?></option>
+								<option value="Y"><?php print _('Yes') ?></option>
+								<option value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('SMS?') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Receive non-emergency SMS messages from school?') ?></i></span>
+							<b><?php print _('SMS?') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Receive non-emergency SMS messages from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactSMS" id="contactSMS" style="width: 302px">
-								<option value="Y"><? print _('Yes') ?></option>
-								<option value="N"><? print _('No') ?></option>
+								<option value="Y"><?php print _('Yes') ?></option>
+								<option value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Email?') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Receive non-emergency emails from school?') ?></i></span>
+							<b><?php print _('Email?') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Receive non-emergency emails from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactEmail" id="contactEmail" style="width: 302px">
-								<option value="Y"><? print _('Yes') ?></option>
-								<option value="N"><? print _('No') ?></option>
+								<option value="Y"><?php print _('Yes') ?></option>
+								<option value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Mail?') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Receive postage mail from school?') ?></i></span>
+							<b><?php print _('Mail?') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Receive postage mail from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactMail" id="contactMail" style="width: 302px">
-								<option value="Y"><? print _('Yes') ?></option>
-								<option value="N"><? print _('No') ?></option>
+								<option value="Y"><?php print _('Yes') ?></option>
+								<option value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

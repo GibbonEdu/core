@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -86,15 +86,15 @@ else {
 		else {
 			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/course_manage_class_addProcess.php" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/course_manage_class_addProcess.php" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('School Year') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('School Year') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="yearName" id="yearName" maxlength=20 value="<? print $row["yearName"] ?>" type="text" style="width: 300px">
+							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $row["yearName"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var yearName=new LiveValidation('yearName');
 								yearName.add(Validate.Presence);
@@ -103,11 +103,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Course') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('Course') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="courseName" id="courseName" maxlength=20 value="<? print $row["courseName"] ?>" type="text" style="width: 300px">
+							<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print $row["courseName"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var courseName=new LiveValidation('courseName');
 								courseName.add(Validate.Presence);
@@ -116,8 +116,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i><? print _('Must be unique for this course.') ?></i></span>
+							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<span style="font-size: 90%"><i><?php print _('Must be unique for this course.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=10 value="" type="text" style="width: 300px">
@@ -129,8 +129,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i><? print _('Must be unique for this course.') ?></i></span>
+							<?php print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+							<span style="font-size: 90%"><i><?php print _('Must be unique for this course.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="nameShort" id="nameShort" maxlength=5 value="" type="text" style="width: 300px">
@@ -142,30 +142,30 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Reportable?') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Should this class show in reports?') ?></i></span>
+							<b><?php print _('Reportable?') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Should this class show in reports?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="reportable" id="reportable" style="width: 302px">
-								<option value="Y"><? print _('Yes') ?></option>
-								<option value="N"><? print _('No') ?></option>
+								<option value="Y"><?php print _('Yes') ?></option>
+								<option value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input name="gibbonCourseID" id="gibbonCourseID" value="<? print $gibbonCourseID ?>" type="hidden">
-							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input name="gibbonCourseID" id="gibbonCourseID" value="<?php print $gibbonCourseID ?>" type="hidden">
+							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}	
 	}
 }

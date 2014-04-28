@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -57,15 +57,15 @@ else {
 	} 
 	?>
 	
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/plannerSettingsProcess.php" ?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/plannerSettingsProcess.php" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('Planner Templates') ?></h3>
+					<h3><?php print _('Planner Templates') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Planner' AND name='lessonDetailsTemplate'" ;
@@ -76,15 +76,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" type="text" style="width: 300px" rows=10><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=10><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Planner' AND name='teachersNotesTemplate'" ;
@@ -95,15 +95,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" type="text" style="width: 300px" rows=10><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=10><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Planner' AND name='unitOutlineTemplate'" ;
@@ -114,15 +114,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" type="text" style="width: 300px" rows=10><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=10><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Planner' AND name='smartBlockTemplate'" ;
@@ -133,11 +133,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" type="text" style="width: 300px" rows=10><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=10><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			
@@ -147,7 +147,7 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Planner' AND name='allowOutcomeEditing'" ;
@@ -160,18 +160,18 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
-						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N"><? print _('No') ?></option>
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
+						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print _('No') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Planner' AND name='sharingDefaultParents'" ;
@@ -184,18 +184,18 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
-						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N"><? print _('No') ?></option>
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
+						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print _('No') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Planner' AND name='sharingDefaultStudents'" ;
@@ -208,27 +208,27 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
-						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N"><? print _('No') ?></option>
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
+						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print _('No') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-<?
+<?php
 }
 ?>

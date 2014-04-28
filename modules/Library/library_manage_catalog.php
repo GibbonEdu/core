@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -115,7 +115,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					print "<input type='text' name='name' id='name' value='" . htmlPrep($name) . "' style='width:302px'/>" ;
 					?>
 				</td>
@@ -126,7 +126,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					try {
 						$dataType=array(); 
 						$sqlType="SELECT * FROM gibbonLibraryType WHERE active='Y' ORDER BY name" ;
@@ -151,11 +151,11 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Location') ?> *</b><br/>
+					<b><?php print _('Location') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					try {
 						$dataLocation=array(); 
 						$sqlLocation="SELECT * FROM gibbonSpace ORDER BY name" ;
@@ -184,7 +184,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					print "<select name='status' id='status' style='width:302px'>" ;
 						print "<option value=''></option>" ;
 						print "<option " ; if ($status=="Available") { print "selected " ; } print "value='Available'>Available</option>" ;
@@ -204,7 +204,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					print "<select name=\"gibbonPersonIDOwnership\" id=\"gibbonPersonIDOwnership\" style=\"width: 302px\">" ;
 						print "<option value=''></option>" ;
 						try {
@@ -231,17 +231,17 @@ else {
 					<span style="font-size: 90%"><i>For example, a computer's MAC address or a book's ISBN.</i></span>
 				</td>
 				<td class="right">
-					<?
+					<?php
 					print "<input type='text' name='typeSpecificFields' id='typeSpecificFields' value='" . htmlPrep($typeSpecificFields) . "' style='width:302px'/>" ;
 					?>
 				</td>
 			</tr>
-			<?
+			<?php
 			print "<tr>" ;
 				print "<td class='right' colspan=2>" ;
 					print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_manage_catalog.php'>Clear Filters</a> " ;
-					print "<input type='submit' value='Go'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_manage_catalog.php'>" . _('Clear Filters') . "</a> " ;
+					print "<input type='submit' value='" . _('Go') . "'>" ;
 				print "</td>" ;
 			print "</tr>" ;
 		print "</table>" ;

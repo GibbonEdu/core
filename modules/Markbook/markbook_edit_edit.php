@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -135,24 +135,24 @@ else {
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID'>" . _('Enter Data') . "<img style='margin: 0 0 -4px 3px' title='Enter Data' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.gif'/></a> " ;
 						print "</div>" ;
 						?>
-						<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_editProcess.php?gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
+						<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_editProcess.php?gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
 							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr>
 									<td> 
-										<b><? print _('Class') ?> *</b><br/>
-										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+										<b><?php print _('Class') ?> *</b><br/>
+										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
-										<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<? print htmlPrep($row["course"]) . "." . htmlPrep($row["class"]) ?>" type="text" style="width: 300px">
+										<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php print htmlPrep($row["course"]) . "." . htmlPrep($row["class"]) ?>" type="text" style="width: 300px">
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b><? print _('Unit') ?></b><br/>
+										<b><?php print _('Unit') ?></b><br/>
 									</td>
 									<td class="right">
 										<select name="gibbonUnitID" id="gibbonUnitID" style="width: 302px">
-											<?
+											<?php
 											try {
 												$dataSelect=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
 												$sqlSelect="SELECT * FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE running='Y' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY name" ;
@@ -221,11 +221,11 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b><? print _('Lesson') ?></b><br/>
+										<b><?php print _('Lesson') ?></b><br/>
 									</td>
 									<td class="right">
 										<select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" style="width: 302px">
-											<?
+											<?php
 											try {
 												$dataSelect=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"]); 
 												$sqlSelect="SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY name" ;
@@ -255,10 +255,10 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+										<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 									</td>
 									<td class="right">
-										<input name="name" id="name" maxlength=20 value="<? print htmlPrep($row2["name"]) ?>" type="text" style="width: 300px">
+										<input name="name" id="name" maxlength=20 value="<?php print htmlPrep($row2["name"]) ?>" type="text" style="width: 300px">
 										<script type="text/javascript">
 											var name=new LiveValidation('name');
 											name.add(Validate.Presence);
@@ -267,58 +267,58 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<? print "<b>" . _('Description') . " *</b><br/>" ; ?>
+										<?php print "<b>" . _('Description') . " *</b><br/>" ; ?>
 									</td>
 									<td class="right">
-										<input name="description" id="description" maxlength=255 value="<? print htmlPrep($row2["description"]) ?>" type="text" style="width: 300px">
+										<input name="description" id="description" maxlength=255 value="<?php print htmlPrep($row2["description"]) ?>" type="text" style="width: 300px">
 										<script type="text/javascript">
 											var description=new LiveValidation('description');
 											description.add(Validate.Presence);
 										 </script>
 									</td>
 								</tr>
-								<?
+								<?php
 								$types=getSettingByScope($connection2, "Markbook", "markbookType") ;
 								if ($types!=FALSE) {
 									$types=explode(",", $types) ;
 									?>
 									<tr>
 										<td> 
-											<b><? print _('Type') ?> *</b><br/>
+											<b><?php print _('Type') ?> *</b><br/>
 											<span style="font-size: 90%"><i></i></span>
 										</td>
 										<td class="right">
 											<select name="type" id="type" style="width: 302px">
-												<option value="Please select..."><? print _('Please select...') ?></option>
-												<?
+												<option value="Please select..."><?php print _('Please select...') ?></option>
+												<?php
 												for ($i=0; $i<count($types); $i++) {
 													$selected="" ;
 													if ($row2["type"]==$types[$i]) {
 														$selected="selected" ;
 													}
 													?>
-													<option <? print $selected ?> value="<? print trim($types[$i]) ?>"><? print trim($types[$i]) ?></option>
-												<?
+													<option <?php print $selected ?> value="<?php print trim($types[$i]) ?>"><?php print trim($types[$i]) ?></option>
+												<?php
 												}
 												?>
 											</select>
 											<script type="text/javascript">
 												var type=new LiveValidation('type');
-												type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+												type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 											 </script>
 										</td>
 									</tr>
-									<?
+									<?php
 								}
 								?>
 								<tr>
 									<td> 
-										<b><? print _('Attainment Scale') ?> *</b><br/>
-										<span style="font-size: 90%"><i><? print _('How will attainment be graded?') ?></i></span>
+										<b><?php print _('Attainment Scale') ?> *</b><br/>
+										<span style="font-size: 90%"><i><?php print _('How will attainment be graded?') ?></i></span>
 									</td>
 									<td class="right">
 										<select name="gibbonScaleIDAttainment" id="gibbonScaleIDAttainment" style="width: 302px">
-											<?
+											<?php
 											try {
 												$dataSelect=array(); 
 												$sqlSelect="SELECT * FROM gibbonScale WHERE (active='Y') ORDER BY name" ;
@@ -339,20 +339,20 @@ else {
 										</select>
 										<script type="text/javascript">
 											var gibbonScaleIDAttainment=new LiveValidation('gibbonScaleIDAttainment');
-											gibbonScaleIDAttainment.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+											gibbonScaleIDAttainment.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 										 </script>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b><? print _('Attainment Rubric') ?></b><br/>
-										<span style="font-size: 90%"><i><? print _('Choose predefined rubric, if desired.') ?></i></span>
+										<b><?php print _('Attainment Rubric') ?></b><br/>
+										<span style="font-size: 90%"><i><?php print _('Choose predefined rubric, if desired.') ?></i></span>
 									</td>
 									<td class="right">
 										<select name="gibbonRubricIDAttainment" id="gibbonRubricIDAttainment" style="width: 302px">
 											<option><option>
-											<optgroup label='--<? print _('School Rubrics') ?>--'>
-											<?
+											<optgroup label='--<?php print _('School Rubrics') ?>--'>
+											<?php
 											try {
 												$dataSelect=array(); 
 												$sqlSelectWhere="" ;
@@ -382,8 +382,8 @@ else {
 											}
 											if ($row["gibbonDepartmentID"]!="") {
 												?>
-												<optgroup label='--<? print _('Learning Area Rubrics') ?>--'>
-												<?
+												<optgroup label='--<?php print _('Learning Area Rubrics') ?>--'>
+												<?php
 												try {
 													$dataSelect=array("gibbonDepartmentID"=>$row["gibbonDepartmentID"]); 
 													$sqlSelectWhere="" ;
@@ -416,18 +416,18 @@ else {
 										</select>
 										<script type="text/javascript">
 											var gibbonScaleIDEffort=new LiveValidation('gibbonScaleIDEffort');
-											gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+											gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 										 </script>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b><? print _('Effort Scale') ?> *</b><br/>
-										<span style="font-size: 90%"><i><? print _('How will effort be graded?') ?></i></span>
+										<b><?php print _('Effort Scale') ?> *</b><br/>
+										<span style="font-size: 90%"><i><?php print _('How will effort be graded?') ?></i></span>
 									</td>
 									<td class="right">
 										<select name="gibbonScaleIDEffort" id="gibbonScaleIDEffort" style="width: 302px">
-											<?
+											<?php
 											try {
 												$dataSelect=array(); 
 												$sqlSelect="SELECT * FROM gibbonScale WHERE (active='Y') ORDER BY name" ;
@@ -448,20 +448,20 @@ else {
 										</select>
 										<script type="text/javascript">
 											var gibbonScaleIDEffort=new LiveValidation('gibbonScaleIDEffort');
-											gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+											gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 										 </script>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b><? print _('Effort Rubric') ?></b><br/>
-										<span style="font-size: 90%"><i><? print _('Choose predefined rubric, if desired.') ?></i></span>
+										<b><?php print _('Effort Rubric') ?></b><br/>
+										<span style="font-size: 90%"><i><?php print _('Choose predefined rubric, if desired.') ?></i></span>
 									</td>
 									<td class="right">
 										<select name="gibbonRubricIDEffort" id="gibbonRubricIDEffort" style="width: 302px">
 											<option><option>
-											<optgroup label='--<? print _('School Rubrics') ?>--'>
-											<?
+											<optgroup label='--<?php print _('School Rubrics') ?>--'>
+											<?php
 											try {
 												$dataSelect=array(); 
 												$sqlSelectWhere="" ;
@@ -491,8 +491,8 @@ else {
 											}
 											if ($row["gibbonDepartmentID"]!="") {
 												?>
-												<optgroup label='--<? print _('Learning Area Rubrics') ?>--'>
-												<?
+												<optgroup label='--<?php print _('Learning Area Rubrics') ?>--'>
+												<?php
 												try {
 													$dataSelect=array("gibbonDepartmentID"=>$row["gibbonDepartmentID"]); 
 													$sqlSelectWhere="" ;
@@ -525,44 +525,44 @@ else {
 										</select>
 										<script type="text/javascript">
 											var gibbonScaleIDEffort=new LiveValidation('gibbonScaleIDEffort');
-											gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+											gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 										 </script>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b><? print _('Viewable to Students') ?> *</b><br/>
+										<b><?php print _('Viewable to Students') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
 										<select name="viewableStudents" id="viewableStudents" style="width: 302px">
-											<option <? if ($row2["viewableStudents"]=="N") { print "selected ";} ?>value="N"><? print _('No') ?></option>
-											<option <? if ($row2["viewableStudents"]=="Y") { print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
+											<option <?php if ($row2["viewableStudents"]=="N") { print "selected ";} ?>value="N"><?php print _('No') ?></option>
+											<option <?php if ($row2["viewableStudents"]=="Y") { print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
 										</select>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b><? print _('Viewable to Parents') ?> *</b><br/>
+										<b><?php print _('Viewable to Parents') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
 										<select name="viewableParents" id="viewableParents" style="width: 302px">
-											<option <? if ($row2["viewableParents"]=="N") { print "selected ";} ?>value="N"><? print _('No') ?></option>
-											<option <? if ($row2["viewableParents"]=="Y") { print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
+											<option <?php if ($row2["viewableParents"]=="N") { print "selected ";} ?>value="N"><?php print _('No') ?></option>
+											<option <?php if ($row2["viewableParents"]=="Y") { print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
 										</select>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b><? print _('Grading Completion Date') ?></b><br/>
-										<span style="font-size: 90%"><i><? print _('1. Format') ?> <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><? print _('2. Enter date after grading.') ?><br/><? print _('3. Column is hidden without date.') ?></i></span>
+										<b><?php print _('Grading Completion Date') ?></b><br/>
+										<span style="font-size: 90%"><i><?php print _('1. Format') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print _('2. Enter date after grading.') ?><br/><?php print _('3. Column is hidden without date.') ?></i></span>
 									</td>
 									<td class="right">
-										<input name="completeDate" id="completeDate" maxlength=10 value="<? print dateConvertBack($guid, $row2["completeDate"]) ?>" type="text" style="width: 300px">
+										<input name="completeDate" id="completeDate" maxlength=10 value="<?php print dateConvertBack($guid, $row2["completeDate"]) ?>" type="text" style="width: 300px">
 										<script type="text/javascript">
 											var completeDate=new LiveValidation('completeDate');
-											completeDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+											completeDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 										 </script>
 										 <script type="text/javascript">
 											$(function() {
@@ -573,19 +573,19 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b><? print _('Attachment') ?></b><br/>
-										<? if ($row2["attachment"]!="") { ?>
-										<span style="font-size: 90%"><i><? print _('Will overwrite existing attachment.') ?></i></span>
-										<? } ?>
+										<b><?php print _('Attachment') ?></b><br/>
+										<?php if ($row2["attachment"]!="") { ?>
+										<span style="font-size: 90%"><i><?php print _('Will overwrite existing attachment.') ?></i></span>
+										<?php } ?>
 									</td>
 									<td class="right">
-										<?
+										<?php
 										if ($row2["attachment"]!="") {
 											print _("Current attachment:") . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row2["attachment"] . "'>" . $row2["attachment"] . "</a><br/><br/>" ;
 										}
 										?>
 										<input type="file" name="file" id="file"><br/><br/>
-										<?
+										<?php
 										print getMaxUpload() ;
 								
 										//Get list of acceptable file extensions
@@ -604,21 +604,21 @@ else {
 								
 										<script type="text/javascript">
 											var file=new LiveValidation('file');
-											file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+											file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 										</script>
 									</td>
 								</tr>
 								<tr>
 									<td>
-										<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+										<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 									</td>
 									<td class="right">
-										<input type="submit" value="<? print _("Submit") ; ?>">
+										<input type="submit" value="<?php print _("Submit") ; ?>">
 									</td>
 								</tr>
 							</table>
 						</form>
-						<?
+						<?php
 					}
 				}
 			}

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Library/report_viewOverdue
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Overdue Items</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('View Overdue Items') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
@@ -53,20 +53,20 @@ else {
 	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th>" ;
-				print "Borrowing User" ;
+				print _("Borrowing User") ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Email" ;
+				print _("Email") ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Item<br/>" ;
-				print "<span style='font-size: 85%; font-style: italic'>Author/Producer</span>" ;
+				print _("Item") . "<br/>" ;
+				print "<span style='font-size: 85%; font-style: italic'>" . _('Author/Producer') . "</span>" ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Due Date<br/>" ;
+				print _("Due Date") ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Days Overdue<br/>" ;
+				print _("Days Overdue") ;
 		print "</tr>" ;
 		
 		$count=0;

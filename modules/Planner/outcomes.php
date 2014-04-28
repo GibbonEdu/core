@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -100,7 +100,7 @@ else {
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
-						<?
+						<?php
 						print "<select name='filter2' id='filter2' style='width:302px'>" ;
 							print "<option value=''>All Learning Areas</option>" ;
 							try {
@@ -121,11 +121,11 @@ else {
 						?>
 					</td>
 				</tr>
-				<?
+				<?php
 				print "<tr>" ;
 					print "<td class='right' colspan=2>" ;
 						print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-						print "<input type='submit' value='Go'>" ;
+						print "<input type='submit' value='" . _('Go') . "'>" ;
 					print "</td>" ;
 				print "</tr>" ;
 			print"</table>" ;

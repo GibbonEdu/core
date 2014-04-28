@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -104,15 +104,15 @@ else {
 				print "</div>" ;
 			}
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/user_manage_passwordProcess.php?gibbonPersonID=" . $gibbonPersonID . "&search=" . $_GET["search"] ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/user_manage_passwordProcess.php?gibbonPersonID=" . $gibbonPersonID . "&search=" . $_GET["search"] ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Username') ?> *</b><br/>
+							<b><?php print _('Username') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="username" id="username" maxlength=20 value="<? print htmlPrep($row["username"]) ?>" type="text" style="width: 300px">
+							<input readonly name="username" id="username" maxlength=20 value="<?php print htmlPrep($row["username"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var username=new LiveValidation('username');
 								username.add(Validate.Presence);
@@ -121,7 +121,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Password') ?> *</b><br/>
+							<b><?php print _('Password') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -129,7 +129,7 @@ else {
 							<script type="text/javascript">
 								var passwordNew=new LiveValidation('passwordNew');
 								passwordNew.add(Validate.Presence);
-								<?
+								<?php
 								$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
 								if ($alpha=="Y") {
 									print "passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
@@ -152,7 +152,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Confirm Password') ?> *</b><br/>
+							<b><?php print _('Confirm Password') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -166,28 +166,28 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Force Reset Password?') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('User will be prompted on next login.') ?></i></span>
+							<b><?php print _('Force Reset Password?') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('User will be prompted on next login.') ?></i></span>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="passwordForceReset">
-								<option <? if ($row["passwordForceReset"]=="Y") {print "selected ";}?>value="Y"><? print _('Yes') ?></option>
-								<option <? if ($row["passwordForceReset"]=="N") {print "selected ";}?>value="N"><? print _('No') ?></option>
+								<option <?php if ($row["passwordForceReset"]=="Y") {print "selected ";}?>value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["passwordForceReset"]=="N") {print "selected ";}?>value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

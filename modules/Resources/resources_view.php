@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -90,13 +90,13 @@ else {
 					<script type="text/javascript">
 						$(document).ready(function() {
 							 $("#tag").tokenInput([
-								<? print substr($list,0,-1) ?>
+								<?php print substr($list,0,-1) ?>
 							], 
 								{theme: "facebook",
 								hintText: "Type a tag...",
 								allowCreation: false,
 								preventDuplicates: true,
-								<?
+								<?php
 								$tagString="" ;
 								if ($tags!="") {
 									$tagList=explode(",", $tags) ;
@@ -109,7 +109,7 @@ else {
 								tokenLimit: null});
 						});
 					</script>
-					<?
+					<?php
 				print "</td>" ;
 			print "</tr>" ;
 			print "<tr>" ;
@@ -212,8 +212,8 @@ else {
 			print "<tr>" ;
 				print "<td class='right' colspan=2>" ;
 					print "<input type='hidden' name='q' value='/modules/Resources/resources_view.php'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_view.php'>Clear Filters</a> " ;
-					print "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='Go'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_view.php'>" . _('Clear Filters') . "</a> " ;
+					print "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='" . _('Go') . "'>" ;
 				print "</td>" ;
 			print "</tr>" ;
 		print "</table>" ;

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -71,44 +71,44 @@ else {
 			} 
 			
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_addProcess.php" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_addProcess.php" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2>
-							<h3><? print _('Rubric Basics') ?></h3>
+							<h3><?php print _('Rubric Basics') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Scope') ?> *</b><br/>
+							<b><?php print _('Scope') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							if ($highestAction=="Manage Rubrics_viewEditAll") {
 								?>
 								<select name="scope" id="scope" style="width: 302px">
-									<option value="Please select..."><? print _('Please select...') ?></option>
-									<option value="School"><? print _('School') ?></option>
-									<option value="Learning Area"><? print _('Learning Area') ?></option>
+									<option value="Please select..."><?php print _('Please select...') ?></option>
+									<option value="School"><?php print _('School') ?></option>
+									<option value="Learning Area"><?php print _('Learning Area') ?></option>
 								</select>
 								<script type="text/javascript">
 									var scope=new LiveValidation('scope');
-									scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+									scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 								 </script>
-								 <?
+								 <?php
 							}
 							else if ($highestAction=="Manage Rubrics_viewAllEditLearningArea") {
 								?>
 								<input readonly name="scope" id="scope" value="Learning Area" type="text" style="width: 300px">
-								<?
+								<?php
 							}
 							?>
 						</td>
 					</tr>
 					
 					
-					<?
+					<?php
 					if ($highestAction=="Manage Rubrics_viewEditAll") {
 						?>
 						<script type="text/javascript">
@@ -127,18 +127,18 @@ else {
 								 });
 							});
 						</script>
-						<?
+						<?php
 					}
 					?>
 					<tr id='learningAreaRow'>
 						<td> 
-							<b><? print _('Learning Area') ?> *</b><br/>
+							<b><?php print _('Learning Area') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="gibbonDepartmentID" id="gibbonDepartmentID" style="width: 302px">
-								<option value="Please select..."><? print _('Please select...') ?></option>
-								<?
+								<option value="Please select..."><?php print _('Please select...') ?></option>
+								<?php
 								try {
 									if ($highestAction=="Manage Rubrics_viewEditAll") {
 										$dataSelect=array(); 
@@ -159,8 +159,8 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonDepartmentID=new LiveValidation('gibbonDepartmentID');
-								gibbonDepartmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
-								<?
+								gibbonDepartmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								<?php
 								if ($highestAction=="Manage Rubrics_viewEditAll") {
 									print "gibbonDepartmentID.disable();" ;
 								}
@@ -170,7 +170,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=50 value="" type="text" style="width: 300px">
@@ -182,27 +182,27 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Active') ?> *</b><br/>
+							<b><?php print _('Active') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="active" id="active" style="width: 302px">
-								<option value="Y"><? print _('Yes') ?></option>
-								<option value="N"><? print _('No') ?></option>
+								<option value="Y"><?php print _('Yes') ?></option>
+								<option value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					
 					<tr>
 						<td> 
-							<b><? print _('Category') ?></b><br/>
+							<b><?php print _('Category') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="category" id="category" maxlength=100 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								$(function() {
 									var availableTags=[
-										<?
+										<?php
 										try {
 											$dataAuto=array(); 
 											$sqlAuto="SELECT DISTINCT category FROM gibbonRubric ORDER BY category" ;
@@ -222,7 +222,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Description') ?></b><br/>
+							<b><?php print _('Description') ?></b><br/>
 						</td>
 						<td class="right">
 							<textarea name='description' id='description' rows=5 style='width: 300px'></textarea>
@@ -230,10 +230,10 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Year Groups') ?></b><br/>
+							<b><?php print _('Year Groups') ?></b><br/>
 						</td>
 						<td class="right">
-							<? 
+							<?php 
 							$yearGroups=getYearGroups($connection2) ;
 							if ($yearGroups=="") {
 								print "<i>" . _('No year groups available.') . "</i>" ;
@@ -246,17 +246,17 @@ else {
 								}
 							}
 							?>
-							<input type="hidden" name="count" value="<? print (count($yearGroups))/2 ?>">
+							<input type="hidden" name="count" value="<?php print (count($yearGroups))/2 ?>">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Grading Scale') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Link columns to grades on a scale?') ?></i></span>
+							<b><?php print _('Grading Scale') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Link columns to grades on a scale?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="gibbonScaleID" id="gibbonScaleID" style="width: 302px">
-								<?
+								<?php
 								print "<option value=''></option>" ;
 								try {
 									$dataSelect=array(); 
@@ -282,17 +282,17 @@ else {
 								
 					<tr class='break'>
 						<td colspan=2>
-							<h3><? print _('Rubric Design') ?></h3>
+							<h3><?php print _('Rubric Design') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Initial Rows') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Rows store assessment strands.') ?></i></span>
+							<b><?php print _('Initial Rows') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Rows store assessment strands.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="rows" id="rows" style="width: 302px">
-								<?
+								<?php
 								for ($i=1; $i<=10; $i++) {
 									print "<option value='$i'>$i</option>" ;
 								}
@@ -302,12 +302,12 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Initial Columns') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Columns store assessment levels.') ?></i></span>
+							<b><?php print _('Initial Columns') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Columns store assessment levels.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="columns" id="columns" style="width: 302px">
-								<?
+								<?php
 								for ($i=1; $i<=10; $i++) {
 									print "<option value='$i'>$i</option>" ;
 								}
@@ -318,16 +318,16 @@ else {
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

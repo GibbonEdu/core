@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -56,7 +56,7 @@ else {
 	}
 	?>
 	
-	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<!-- FIELDS & CONTROLS FOR TYPE -->
 			<script type="text/javascript">
@@ -74,27 +74,27 @@ else {
 			</script>
 			<tr>
 				<td> 
-					<b><? print _('Type') ?> *</b><br/>
+					<b><?php print _('Type') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="type" id="type" class="type">
-						<?
+						<?php
 						print "<option" ; if ($type=="Current School Year") { print " selected" ; } print " value='Current School Year'>Current School Year</option>" ;
 						print "<option" ; if ($type=="Date Range") { print " selected" ; } print " value='Date Range'>Date Range</option>" ;
 						?>
 					</select>
 				</td>
 			</tr>
-			<tr id='startDateFromRow' <? if ($type!="Date Range") { print "style='display: none'" ; } ?>>
+			<tr id='startDateFromRow' <?php if ($type!="Date Range") { print "style='display: none'" ; } ?>>
 				<td> 
 					<b>From Date</b><br/>
 					<span style="font-size: 90%"><i>Earlest student start date to include.<br/>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="startDateFrom" id="startDateFrom" maxlength=10 value="<? print $startDateFrom ?>" type="text" style="width: 300px">
+					<input name="startDateFrom" id="startDateFrom" maxlength=10 value="<?php print $startDateFrom ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var startDateFrom=new LiveValidation('startDateFrom');
-						startDateFrom.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						startDateFrom.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -103,16 +103,16 @@ else {
 					</script>
 				</td>
 			</tr>
-			<tr id='startDateToRow' <? if ($type!="Date Range") { print "style='display: none'" ; } ?>>
+			<tr id='startDateToRow' <?php if ($type!="Date Range") { print "style='display: none'" ; } ?>>
 				<td> 
 					<b>To Date</b><br/>
 					<span style="font-size: 90%"><i>Latest student start date to include.<br/>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="startDateTo" id="startDateTo" maxlength=10 value="<? print $startDateTo ?>" type="text" style="width: 300px">
+					<input name="startDateTo" id="startDateTo" maxlength=10 value="<?php print $startDateTo ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var startDateTo=new LiveValidation('startDateTo');
-						startDateTo.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						startDateTo.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -127,18 +127,18 @@ else {
 					<span style="font-size: 90%"><i>This is useful for picking up students who are set to Full, have a start date but are not yet enrolled.</span>
 				</td>
 				<td class="right">
-					<input <? if ($ignoreEnrolment=="on") { print "checked" ; } ?> name="ignoreEnrolment" id="ignoreEnrolment" type="checkbox">
+					<input <?php if ($ignoreEnrolment=="on") { print "checked" ; } ?> name="ignoreEnrolment" id="ignoreEnrolment" type="checkbox">
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/report_students_new.php">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_students_new.php">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 	
 	if ($type!="") {
 		print "<h2>" ;

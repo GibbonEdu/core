@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -95,7 +95,7 @@ else {
 	$today=date("Y-m-d");
 	?>
 	
-	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2>
@@ -111,7 +111,7 @@ else {
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="gibbonRollGroupID">
-						<?
+						<?php
 						print "<option value=''></option>" ;
 						try {
 							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -138,13 +138,13 @@ else {
 			<tr>
 				<td> 
 					<b>Date *</b><br/>
-					<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
-					<input name="currentDate" id="currentDate" maxlength=10 value="<? print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
+					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 						date.add(Validate.Presence);
 					 </script>
 					 <script type="text/javascript">
@@ -156,13 +156,13 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/attendance_take_byRollGroup.php">
+					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/attendance_take_byRollGroup.php">
 					<input type="submit" value="Search">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 	
 	if ($gibbonRollGroupID!="") {
 		if ($currentDate>$today) {
@@ -242,13 +242,13 @@ else {
 						print "<table class='smallIntBorder' cellspacing='0' style='width:100%'>" ;
 						?>
 						<tr class='break'>
-							<td colspan=<? print $columns ?>>
+							<td colspan=<?php print $columns ?>>
 								<h3>
 									Take Attendance
 								</h3>
 							</td>
 						</tr>
-						<?
+						<?php
 						while ($rowRollGroup=$resultRollGroup->fetch()) {
 							if ($count%$columns==0) {
 								print "<tr>" ;

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -100,7 +100,7 @@ else {
 		}
 		?>
 		
-		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
@@ -109,7 +109,7 @@ else {
 					</td>
 					<td class="right">
 						<select style="width: 302px" name="gibbonFinanceInvoiceeID">
-							<?
+							<?php
 							if ($highestAction=="Update Finance Data_any") {
 								try {
 									$dataSelect=array(); 
@@ -161,13 +161,13 @@ else {
 				</tr>
 				<tr>
 					<td colspan=2 class="right">
-						<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/data_finance.php">
-						<input type="submit" value="<? print _("Submit") ; ?>">
+						<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/data_finance.php">
+						<input type="submit" value="<?php print _("Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
 		</form>
-		<?
+		<?php
 		
 		if ($gibbonFinanceInvoiceeID!="") {
 			print "<h2>" ;
@@ -269,7 +269,7 @@ else {
 					//Let's go!
 					$row=$result->fetch() ;
 					?>
-					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_financeProcess.php?gibbonFinanceInvoiceeID=" . $gibbonFinanceInvoiceeID ?>">
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_financeProcess.php?gibbonFinanceInvoiceeID=" . $gibbonFinanceInvoiceeID ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr class='break'>
 								<td colspan=2> 
@@ -342,8 +342,8 @@ else {
 									<b>Send Invoices To</b><br/>
 								</td>
 								<td class="right">
-									<input <? if ($row["invoiceTo"]=="Family") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> Family
-									<input <? if ($row["invoiceTo"]=="Company") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> Company
+									<input <?php if ($row["invoiceTo"]=="Family") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> Family
+									<input <?php if ($row["invoiceTo"]=="Company") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> Company
 								</td>
 							</tr>
 							<tr id="companyNameRow">
@@ -351,7 +351,7 @@ else {
 									<b>Company Name</b><br/>
 								</td>
 								<td class="right">
-									<input name="companyName" id="companyName" maxlength=100 value="<? print $row["companyName"] ?>" type="text" style="width: 300px">
+									<input name="companyName" id="companyName" maxlength=100 value="<?php print $row["companyName"] ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
 							<tr id="companyContactRow">
@@ -359,7 +359,7 @@ else {
 									<b>Company Contact Person</b><br/>
 								</td>
 								<td class="right">
-									<input name="companyContact" id="companyContact" maxlength=100 value="<? print $row["companyContact"] ?>" type="text" style="width: 300px">
+									<input name="companyContact" id="companyContact" maxlength=100 value="<?php print $row["companyContact"] ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
 							<tr id="companyAddressRow">
@@ -367,7 +367,7 @@ else {
 									<b>Company Address</b><br/>
 								</td>
 								<td class="right">
-									<input name="companyAddress" id="companyAddress" maxlength=255 value="<? print $row["companyAddress"] ?>" type="text" style="width: 300px">
+									<input name="companyAddress" id="companyAddress" maxlength=255 value="<?php print $row["companyAddress"] ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
 							<tr id="companyEmailRow">
@@ -375,7 +375,7 @@ else {
 									<b>Company Email</b><br/>
 								</td>
 								<td class="right">
-									<input name="companyEmail" id="companyEmail" maxlength=255 value="<? print $row["companyEmail"] ?>" type="text" style="width: 300px">
+									<input name="companyEmail" id="companyEmail" maxlength=255 value="<?php print $row["companyEmail"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var companyEmail=new LiveValidation('companyEmail');
 										companyEmail.add(Validate.Email);
@@ -389,8 +389,8 @@ else {
 								</td>
 								<td class="right">
 									<select name="companyCCFamily" id="companyCCFamily" style="width: 302px">
-										<option <? if ($row["companyCCFamily"]=="N") { print "selected" ; } ?> value="N" /> No
-										<option <? if ($row["companyCCFamily"]=="Y") { print "selected" ; } ?> value="Y" /> Yes
+										<option <?php if ($row["companyCCFamily"]=="N") { print "selected" ; } ?> value="N" /> No
+										<option <?php if ($row["companyCCFamily"]=="Y") { print "selected" ; } ?> value="Y" /> Yes
 									</select>
 								</td>
 							</tr>
@@ -399,10 +399,10 @@ else {
 									<b>Company Phone</b><br/>
 								</td>
 								<td class="right">
-									<input name="companyPhone" id="companyPhone" maxlength=20 value="<? print $row["companyPhone"] ?>" type="text" style="width: 300px">
+									<input name="companyPhone" id="companyPhone" maxlength=20 value="<?php print $row["companyPhone"] ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
-							<?
+							<?php
 							try {
 								$dataCat=array(); 
 								$sqlCat="SELECT * FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name" ;
@@ -421,8 +421,8 @@ else {
 										<span style="font-size: 90%"><i>Should all items be billed to the specified company, or just some?</i></span>
 									</td>
 									<td class="right">
-										<input type="radio" name="companyAll" value="Y" class="companyAll" <? if ($row["companyAll"]=="Y" OR $row["companyAll"]=="") { print "checked" ; } ?> /> All
-										<input type="radio" name="companyAll" value="N" class="companyAll" <? if ($row["companyAll"]=="N") { print "checked" ; } ?> /> Selected
+										<input type="radio" name="companyAll" value="Y" class="companyAll" <?php if ($row["companyAll"]=="Y" OR $row["companyAll"]=="") { print "checked" ; } ?> /> All
+										<input type="radio" name="companyAll" value="N" class="companyAll" <?php if ($row["companyAll"]=="N") { print "checked" ; } ?> /> Selected
 									</td>
 								</tr>
 								<tr id="companyCategoriesRow">
@@ -431,7 +431,7 @@ else {
 										<span style="font-size: 90%"><i>If the specified company is not paying all fees, which categories are they paying?</i></span>
 									</td>
 									<td class="right">
-										<?
+										<?php
 										while ($rowCat=$resultCat->fetch()) {
 											$checked="" ;
 											if (strpos($row["gibbonFinanceFeeCategoryIDList"], $rowCat["gibbonFinanceFeeCategoryID"])!==FALSE) {
@@ -447,13 +447,13 @@ else {
 										?>
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 							?>							
 							
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 								</td>
 								<td class="right">
 									<?php
@@ -464,13 +464,13 @@ else {
 										print "<input type='hidden' name='existing' value='N'>" ;
 									}
 									?>
-									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<? print _("Submit") ; ?>">
+									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+									<input type="submit" value="<?php print _("Submit") ; ?>">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<?
+					<?php
 				}	
 			}
 		}

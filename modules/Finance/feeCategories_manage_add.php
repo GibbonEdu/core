@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -63,11 +63,11 @@ else {
 	} 
 	
 	?>
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/feeCategories_manage_addProcess.php" ?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/feeCategories_manage_addProcess.php" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+					<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=100 value="" type="text" style="width: 300px">
@@ -91,19 +91,19 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Active') ?> *</b><br/>
+					<b><?php print _('Active') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<select name="active" id="active" style="width: 302px">
-						<option value="Y"><? print _('Yes') ?></option>
-						<option value="N"><? print _('No') ?></option>
+						<option value="Y"><?php print _('Yes') ?></option>
+						<option value="N"><?php print _('No') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Description') ?></b><br/>
+					<b><?php print _('Description') ?></b><br/>
 				</td>
 				<td class="right">
 					<textarea name='description' id='description' rows=5 style='width: 300px'></textarea>
@@ -111,15 +111,15 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 }
 ?>

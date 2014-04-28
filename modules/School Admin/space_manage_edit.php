@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -99,15 +99,15 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/space_manage_editProcess.php?gibbonSpaceID=" . $gibbonSpaceID ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/space_manage_editProcess.php?gibbonSpaceID=" . $gibbonSpaceID ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i><? print _('Must be unique.') ; ?></i></span>
+							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<span style="font-size: 90%"><i><?php print _('Must be unique.') ; ?></i></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=30 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=30 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
@@ -116,31 +116,31 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Type') ?> *</b><br/>
+							<b><?php print _('Type') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="type" id="type" style="width: 302px">
-								<option <? if ($row["type"]=="Classroom") {print "selected ";} ?>value="Classroom"><? print _('Classroom') ?></option>
-								<option <? if ($row["type"]=="Performance") {print "selected ";} ?>value="Performance"><? print _('Performance') ?></option>
-								<option <? if ($row["type"]=="Hall") {print "selected ";} ?>value="Hall"><? print _('Hall') ?></option>
-								<option <? if ($row["type"]=="Outdoor") {print "selected ";} ?>value="Outdoor"><? print _('Outdoor') ?></option>
-								<option <? if ($row["type"]=="Undercover") {print "selected ";} ?>value="Undercover"><? print _('Undercover') ?></option>
-								<option <? if ($row["type"]=="Storage") {print "selected ";} ?>value="Storage"><? print _('Storage') ?></option>
-								<option <? if ($row["type"]=="Office") {print "selected ";} ?>value="Office"><? print _('Office') ?></option>
-								<option <? if ($row["type"]=="Staffroom") {print "selected ";} ?>value="Staffroom"><? print _('Staffroom') ?></option>
-								<option <? if ($row["type"]=="Study") {print "selected ";} ?>value="Study"><? print _('Study') ?></option>
-								<option <? if ($row["type"]=="Library") {print "selected ";} ?>value="Library"><? print _('Library') ?></option>
-								<option <? if ($row["type"]=="Other") {print "selected ";} ?>value="Other"><? print _('Other') ?></option>
+								<option <?php if ($row["type"]=="Classroom") {print "selected ";} ?>value="Classroom"><?php print _('Classroom') ?></option>
+								<option <?php if ($row["type"]=="Performance") {print "selected ";} ?>value="Performance"><?php print _('Performance') ?></option>
+								<option <?php if ($row["type"]=="Hall") {print "selected ";} ?>value="Hall"><?php print _('Hall') ?></option>
+								<option <?php if ($row["type"]=="Outdoor") {print "selected ";} ?>value="Outdoor"><?php print _('Outdoor') ?></option>
+								<option <?php if ($row["type"]=="Undercover") {print "selected ";} ?>value="Undercover"><?php print _('Undercover') ?></option>
+								<option <?php if ($row["type"]=="Storage") {print "selected ";} ?>value="Storage"><?php print _('Storage') ?></option>
+								<option <?php if ($row["type"]=="Office") {print "selected ";} ?>value="Office"><?php print _('Office') ?></option>
+								<option <?php if ($row["type"]=="Staffroom") {print "selected ";} ?>value="Staffroom"><?php print _('Staffroom') ?></option>
+								<option <?php if ($row["type"]=="Study") {print "selected ";} ?>value="Study"><?php print _('Study') ?></option>
+								<option <?php if ($row["type"]=="Library") {print "selected ";} ?>value="Library"><?php print _('Library') ?></option>
+								<option <?php if ($row["type"]=="Other") {print "selected ";} ?>value="Other"><?php print _('Other') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('User 1') ?></b>
+							<b><?php print _('User 1') ?></b>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="gibbonPersonID1">
-								<?
+								<?php
 								print "<option value=''></option>" ;
 								try {
 									$dataStaff=array(); 
@@ -158,11 +158,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('User 2') ?></b>
+							<b><?php print _('User 2') ?></b>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="gibbonPersonID2">
-								<?
+								<?php
 								print "<option value=''></option>" ;
 								try {
 									$dataStaff=array(); 
@@ -180,11 +180,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Capacity') ?></b><br/>
+							<b><?php print _('Capacity') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input name="capacity" id="capacity" maxlength=5 value="<? print htmlPrep($row["capacity"]) ?>" type="text" style="width: 300px">
+							<input name="capacity" id="capacity" maxlength=5 value="<?php print htmlPrep($row["capacity"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var capacity=new LiveValidation('capacity');
 								capacity.add(Validate.Numericality);
@@ -193,22 +193,22 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Teacher\'s Computer') ?> *</b><br/>
+							<b><?php print _('Teacher\'s Computer') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="computer" id="computer" style="width: 302px">
-								<option <? if ($row["computer"]=="N") {print "selected ";} ?>value="N">N</option>
-								<option <? if ($row["computer"]=="Y") {print "selected ";} ?>value="Y">Y</option>
+								<option <?php if ($row["computer"]=="N") {print "selected ";} ?>value="N">N</option>
+								<option <?php if ($row["computer"]=="Y") {print "selected ";} ?>value="Y">Y</option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Student Computers') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('How many are there?') ?></i></span>
+							<b><?php print _('Student Computers') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('How many are there?') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="computerStudent" id="computerStudent" maxlength=5 value="<? print htmlPrep($row["computerStudent"]) ?>" type="text" style="width: 300px">
+							<input name="computerStudent" id="computerStudent" maxlength=5 value="<?php print htmlPrep($row["computerStudent"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var computerStudent=new LiveValidation('computerStudent');
 								computerStudent.add(Validate.Numericality);
@@ -217,113 +217,113 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Projector') ?> *</b><br/>
+							<b><?php print _('Projector') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="projector" id="projector" style="width: 302px">
-								<option <? if ($row["projector"]=="N") {print "selected ";} ?>value="N">N</option>
-								<option <? if ($row["projector"]=="Y") {print "selected ";} ?>value="Y">Y</option>
+								<option <?php if ($row["projector"]=="N") {print "selected ";} ?>value="N">N</option>
+								<option <?php if ($row["projector"]=="Y") {print "selected ";} ?>value="Y">Y</option>
 							</select>
 						</td>
 					</tr>
 					
 					<tr>
 						<td> 
-							<b><? print _('TV') ?> *</b><br/>
+							<b><?php print _('TV') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="tv" id="tv" style="width: 302px">
-								<option <? if ($row["tv"]=="N") {print "selected ";} ?>value="N">N</option>
-								<option <? if ($row["tv"]=="Y") {print "selected ";} ?>value="Y">Y</option>
+								<option <?php if ($row["tv"]=="N") {print "selected ";} ?>value="N">N</option>
+								<option <?php if ($row["tv"]=="Y") {print "selected ";} ?>value="Y">Y</option>
 							</select>
 						</td>
 					</tr>
 					
 					<tr>
 						<td> 
-							<b><? print _('DVD Player') ?> *</b><br/>
+							<b><?php print _('DVD Player') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="dvd" id="dvd" style="width: 302px">
-								<option <? if ($row["dvd"]=="N") {print "selected ";} ?>value="N">N</option>
-								<option <? if ($row["dvd"]=="Y") {print "selected ";} ?>value="Y">Y</option>
+								<option <?php if ($row["dvd"]=="N") {print "selected ";} ?>value="N">N</option>
+								<option <?php if ($row["dvd"]=="Y") {print "selected ";} ?>value="Y">Y</option>
 							</select>
 						</td>
 					</tr>
 					
 					<tr>
 						<td> 
-							<b><? print _('HiFi') ?> *</b><br/>
+							<b><?php print _('HiFi') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="hifi" id="hifi" style="width: 302px">
-								<option <? if ($row["hifi"]=="N") {print "selected ";} ?>value="N">N</option>
-								<option <? if ($row["hifi"]=="Y") {print "selected ";} ?>value="Y">Y</option>
+								<option <?php if ($row["hifi"]=="N") {print "selected ";} ?>value="N">N</option>
+								<option <?php if ($row["hifi"]=="Y") {print "selected ";} ?>value="Y">Y</option>
 							</select>
 						</td>
 					</tr>
 					
 					<tr>
 						<td> 
-							<b><? print _('Speakers') ?> *</b><br/>
+							<b><?php print _('Speakers') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="speakers" id="speakers" style="width: 302px">
-								<option <? if ($row["speakers"]=="N") {print "selected ";} ?>value="N">N</option>
-								<option <? if ($row["speakers"]=="Y") {print "selected ";} ?>value="Y">Y</option>
+								<option <?php if ($row["speakers"]=="N") {print "selected ";} ?>value="N">N</option>
+								<option <?php if ($row["speakers"]=="Y") {print "selected ";} ?>value="Y">Y</option>
 							</select>
 						</td>
 					</tr>
 					
 					<tr>
 						<td> 
-							<b><? print _('Interactive White Board') ?> *</b><br/>
+							<b><?php print _('Interactive White Board') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="iwb" id="iwb" style="width: 302px">
-								<option <? if ($row["iwb"]=="N") {print "selected ";} ?>value="N">N</option>
-								<option <? if ($row["iwb"]=="Y") {print "selected ";} ?>value="Y">Y</option>
+								<option <?php if ($row["iwb"]=="N") {print "selected ";} ?>value="N">N</option>
+								<option <?php if ($row["iwb"]=="Y") {print "selected ";} ?>value="Y">Y</option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Extension') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Room\'s internal phone number.') ?></i></span>
+							<b><?php print _('Extension') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Room\'s internal phone number.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="phoneInternal" id="phoneInternal" maxlength=5 value="<? print htmlPrep($row["phoneInternal"]) ?>" type="text" style="width: 300px">
+							<input name="phoneInternal" id="phoneInternal" maxlength=5 value="<?php print htmlPrep($row["phoneInternal"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Phone Number') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Room\'s external phone number.') ?></i></span>
+							<b><?php print _('Phone Number') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Room\'s external phone number.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="phoneExternal" id="phoneExternal" maxlength=20 value="<? print htmlPrep($row["phoneExternal"]) ?>" type="text" style="width: 300px">
+							<input name="phoneExternal" id="phoneExternal" maxlength=20 value="<?php print htmlPrep($row["phoneExternal"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Comment') ?></b><br/>
+							<b><?php print _('Comment') ?></b><br/>
 						</td>
 						<td class="right">
-							<textarea name="comment" id="comment" rows=8 style="width: 300px"><? print $row["comment"] ?></textarea>
+							<textarea name="comment" id="comment" rows=8 style="width: 300px"><?php print $row["comment"] ?></textarea>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

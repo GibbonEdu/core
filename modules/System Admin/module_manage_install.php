@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -84,16 +84,16 @@ else {
 	}
 	
 	?>
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_installProcess.php?return=" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_installProcess.php?return=" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b><? print _('Module Manifest') ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print _('1. Unzip module in server /modules.<br/>2. Make local copy of manifest.php.<br/>3. Open manifest.php and check the module name.<br/>4. Rename the folder you unziped to the server to match the module name.<br/>5. Make sure you have a folder named uploads in the root of your Gibbon installation.<br/>6. Check that uploads is writable by _www.<br/>7. Select manifest.php.') ?></i></span>
+					<b><?php print _('Module Manifest') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('1. Unzip module in server /modules.<br/>2. Make local copy of manifest.php.<br/>3. Open manifest.php and check the module name.<br/>4. Rename the folder you unziped to the server to match the module name.<br/>5. Make sure you have a folder named uploads in the root of your Gibbon installation.<br/>6. Check that uploads is writable by _www.<br/>7. Select manifest.php.') ?></i></span>
 				</td>
 				<td class="right">
 					<input type="file" name="file" id="file"><br/><br/>
-					<?
+					<?php
 					print getMaxUpload() ;
 					?>
 					
@@ -105,14 +105,14 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 }
 ?>

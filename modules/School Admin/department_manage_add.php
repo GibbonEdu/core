@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -62,7 +62,7 @@ else {
 	} 
 	
 	?>
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_manage_addProcess.php?address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_manage_addProcess.php?address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<!-- FIELDS & CONTROLS FOR TYPE -->
 			<script type="text/javascript">
@@ -80,7 +80,7 @@ else {
 			</script>
 			<tr>
 				<td> 
-					<b><? print _('Type') ?> *</b><br/>
+					<b><?php print _('Type') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="type" id="type" class='type' style="width: 300px">
@@ -91,7 +91,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+					<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=40 value="" type="text" style="width: 300px">
@@ -103,7 +103,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+					<?php print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
 				</td>
 				<td class="right">
 					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">
@@ -115,7 +115,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Subject Listing') ?></b><br/>
+					<b><?php print _('Subject Listing') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="subjectListing" id="subjectListing" maxlength=255 value="" type="text" style="width: 300px">
@@ -123,36 +123,36 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2> 
-					<b><? print _('Blurb') ?></b> 
-					<? print getEditor($guid,  TRUE, "blurb", "", 20 ) ?>
+					<b><?php print _('Blurb') ?></b> 
+					<?php print getEditor($guid,  TRUE, "blurb", "", 20 ) ?>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Logo') ?></b><br/>
+					<b><?php print _('Logo') ?></b><br/>
 					<span style="font-size: 90%"><i>125x125px jpg/png/gif</i></span>
 				</td>
 				<td class="right">
 					<input type="file" name="file" id="file"><br/><br/>
-					<?
+					<?php
 					print getMaxUpload() ;
 					$ext="'.png','.jpeg','.jpg','.gif'" ;
 					?>
 					
 					<script type="text/javascript">
 						var file=new LiveValidation('file');
-						file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+						file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 					</script>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Staff') ?></b><br/>
-					<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+					<b><?php print _('Staff') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
-						<?
+						<?php
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
@@ -168,15 +168,15 @@ else {
 				</td>
 			<tr id='roleLARow'>
 				<td> 
-					<b><? print _('Role') ?></b><br/>
+					<b><?php print _('Role') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="roleLA" id="roleLA" style="width: 302px">
-						<option value="Coordinator"><? print _('Coordinator') ?></option>
-						<option value="Assistant Coordinator"><? print _('Assistant Coordinator') ?></option>
-						<option value="Teacher (Curriculum)"><? print _('Teacher (Curriculum)') ?></option>
-						<option value="Teacher"><? print _('Teacher') ?></option>
-						<option value="Other"><? print _('Other') ?></option>
+						<option value="Coordinator"><?php print _('Coordinator') ?></option>
+						<option value="Assistant Coordinator"><?php print _('Assistant Coordinator') ?></option>
+						<option value="Teacher (Curriculum)"><?php print _('Teacher (Curriculum)') ?></option>
+						<option value="Teacher"><?php print _('Teacher') ?></option>
+						<option value="Other"><?php print _('Other') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -186,23 +186,23 @@ else {
 				</td>
 				<td class="right">
 					<select name="roleAdmin" id="roleAdmin" style="width: 302px">
-						<option value="Director"><? print _('Director') ?></option>
-						<option value="Manager"><? print _('Manager') ?></option>
-						<option value="Administrator"><? print _('Administrator') ?></option>
-						<option value="Other"><? print _('Other') ?></option>
+						<option value="Director"><?php print _('Director') ?></option>
+						<option value="Manager"><?php print _('Manager') ?></option>
+						<option value="Administrator"><?php print _('Administrator') ?></option>
+						<option value="Other"><?php print _('Other') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 }
 ?>

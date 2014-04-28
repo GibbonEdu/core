@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -82,15 +82,15 @@ else {
 			$row=$result->fetch() ;
 			?>
 	
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage_addProcess.php" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage_addProcess.php" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('School Year') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('School Year') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+							<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var schoolYearName=new LiveValidation('schoolYearName');
 								schoolYearName.add(Validate.Presence);
@@ -99,7 +99,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Name') ?> *</b><br/>
+							<b><?php print _('Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i>Needs to be unique in school year.</i></span>
 						</td>
 						<td class="right">
@@ -112,7 +112,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+							<?php print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
 							<span style="font-size: 90%"><i>Needs to be unique in school year.</i></span>
 						</td>
 						<td class="right">
@@ -125,12 +125,12 @@ else {
 					</tr>
 					<tr>
 						<td rowspan=3> 
-							<b><? print _('Tutors') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Up to 3 per roll group. The first-listed will be marked as "Main Tutor".') ?></i></span>
+							<b><?php print _('Tutors') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Up to 3 per roll group. The first-listed will be marked as "Main Tutor".') ?></i></span>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="gibbonPersonIDTutor">
-								<?
+								<?php
 								print "<option value=''></option>" ;
 								try {
 									$data=array(); 
@@ -149,7 +149,7 @@ else {
 					<tr>
 						<td class="right">
 							<select style="width: 302px" name="gibbonPersonIDTutor2">
-								<?
+								<?php
 								print "<option value=''></option>" ;
 								try {
 									$data=array(); 
@@ -168,7 +168,7 @@ else {
 					<tr>
 						<td class="right">
 							<select style="width: 302px" name="gibbonPersonIDTutor3">
-								<?
+								<?php
 								print "<option value=''></option>" ;
 								try {
 									$data=array(); 
@@ -186,12 +186,12 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Location') ?> *</b><br/>
+							<b><?php print _('Location') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
-								<?
+								<?php
 								print "<option value=''></option>" ;
 								try {
 									$dataSelect=array(); 
@@ -213,11 +213,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Next Roll Group') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Sets student progression on rollover.') ?></i></span>
+							<b><?php print _('Next Roll Group') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Sets student progression on rollover.') ?></i></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							 $nextYear=getNextSchoolYearID($gibbonSchoolYearID, $connection2) ;
 							 
 							 if ($nextYear=="") {
@@ -245,17 +245,17 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

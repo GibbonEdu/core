@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -136,11 +136,11 @@ else {
 						print "</div>" ;
 					} 
 					?>
-					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_bumpProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID" ?>">
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_bumpProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID" ?>">
 						<table cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
-									Pressing "Yes" below will move this lesson, and all succeeding lessons in this class, forward to the next available time slot. <b>Are you sure you want to bump "<? print $row["name"] ?>" forward?</b><br/>
+									Pressing "Yes" below will move this lesson, and all succeeding lessons in this class, forward to the next available time slot. <b>Are you sure you want to bump "<?php print $row["name"] ?>" forward?</b><br/>
 								</td>
 								<td class="right">
 									
@@ -148,12 +148,12 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<input name="viewBy" id="viewBy" value="<? print $viewBy ?>" type="hidden">
-									<input name="subView" id="subView" value="<? print $subView ?>" type="hidden">
-									<input name="date" id="date" value="<? print $date ?>" type="hidden">
-									<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<? print $gibbonCourseClassID ?>" type="hidden">
-									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<? print _('Yes') ; ?>">
+									<input name="viewBy" id="viewBy" value="<?php print $viewBy ?>" type="hidden">
+									<input name="subView" id="subView" value="<?php print $subView ?>" type="hidden">
+									<input name="date" id="date" value="<?php print $date ?>" type="hidden">
+									<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<?php print $gibbonCourseClassID ?>" type="hidden">
+									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+									<input type="submit" value="<?php print _('Yes') ; ?>">
 								</td>
 								<td class="right">
 									
@@ -161,7 +161,7 @@ else {
 							</tr>
 						</table>
 					</form>
-					<?
+					<?php
 				}
 			}
 			//Print sidebar

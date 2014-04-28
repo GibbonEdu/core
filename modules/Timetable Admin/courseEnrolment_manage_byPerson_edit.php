@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -131,20 +131,20 @@ else {
 			print _("Add Classes") ;
 			print "</h2>" ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_addProcess.php?type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_addProcess.php?type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Classes') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<b><?php print _('Classes') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
-								<?
+								<?php
 								if ($row["type"]=="Student" ) {
 								?>
-									<optgroup label='--<? print _('Enrolable Classes') ?>--'>
-									<?
+									<optgroup label='--<?php print _('Enrolable Classes') ?>--'>
+									<?php
 									try {
 										$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonYearGroupIDList"=>"%" . $row["gibbonYearGroupID"] . "%"); 
 										$sqlSelect="SELECT gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonYearGroupIDList LIKE :gibbonYearGroupIDList ORDER BY course, class" ;
@@ -173,12 +173,12 @@ else {
 									}
 									?>
 									</optgroup>
-								<?
+								<?php
 								}
 								else {
 									?>
-									<optgroup label='--<? print _('All Classes') ?>--'>
-									<?
+									<optgroup label='--<?php print _('All Classes') ?>--'>
+									<?php
 									try {
 										$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
 										$sqlSelect="SELECT gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class" ;
@@ -191,7 +191,7 @@ else {
 									}
 									?>
 									</optgroup>
-									<?
+									<?php
 								}
 								?>
 							</select>
@@ -199,30 +199,30 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Role') ?> *</b><br/>
+							<b><?php print _('Role') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="role">
-								<option <? if ($type=="Student") { print "selected ";} ?>value="Student"><? print _('Student') ?></option>
-								<option <? if ($type=="Staff") { print "selected ";} ?>value="Teacher"><? print _('Teacher') ?></option>
-								<option value="Assistant"><? print _('Assistant') ?></option>
-								<option value="Technician"><? print _('Technician') ?></option>
+								<option <?php if ($type=="Student") { print "selected ";} ?>value="Student"><?php print _('Student') ?></option>
+								<option <?php if ($type=="Staff") { print "selected ";} ?>value="Teacher"><?php print _('Teacher') ?></option>
+								<option value="Assistant"><?php print _('Assistant') ?></option>
+								<option value="Technician"><?php print _('Technician') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
 
-			<?	
+			<?php	
 			print "<h2>" ;
 			print _("Current Enrolment") ;
 			print "</h2>" ;
@@ -247,17 +247,17 @@ else {
 					print "<fieldset style='border: none'>" ;
 					print "<div class='linkTop' style='height: 27px'>" ;
 						?>
-						<input style='margin-top: 0px; float: right' type='submit' value='Go'>
+						<input style='margin-top: 0px; float: right' type='submit' value='" . _('Go') . "'>
 						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-							<option value="Select action"><? print _('Select action') ?></option>
-							<option value="Mark as left"><? print _('Mark as left') ?></option>
-							<option value="Delete"><? print _('Delete') ?></option>
+							<option value="Select action"><?php print _('Select action') ?></option>
+							<option value="Mark as left"><?php print _('Mark as left') ?></option>
+							<option value="Delete"><?php print _('Delete') ?></option>
 						</select>
 						<script type="text/javascript">
 							var action=new LiveValidation('action');
-							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<? print _('Select something!') ?>"});
+							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php print _('Select something!') ?>"});
 						</script>
-						<?
+						<?php
 					print "</div>" ;
 					
 					print "<table cellspacing='0' style='width: 100%'>" ;
@@ -286,7 +286,7 @@ else {
 										});
 									});
 								</script>
-								<?
+								<?php
 								print "<input type='checkbox' class='checkall'>" ;
 							print "</th>" ;
 						print "</tr>" ;

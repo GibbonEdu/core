@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -160,29 +160,29 @@ else {
 			} 
 			?>
 	
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><? print _('Basic Information') ?></h3>
+							<h3><?php print _('Basic Information') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Class') ?> *</b><br/>
+							<b><?php print _('Class') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							if ($viewBy=="class") {
 								?>
-								<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<? print $row["course"] . "." . $row["class"] ?>" type="text" style="width: 300px">
-								<input name="gibbonCourseClassID" id="gibbonCourseClassID" maxlength=20 value="<? print $row["gibbonCourseClassID"] ?>" type="hidden" style="width: 300px">
-								<?
+								<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php print $row["course"] . "." . $row["class"] ?>" type="text" style="width: 300px">
+								<input name="gibbonCourseClassID" id="gibbonCourseClassID" maxlength=20 value="<?php print $row["gibbonCourseClassID"] ?>" type="hidden" style="width: 300px">
+								<?php
 							}
 							else {
 								?>
 								<select name="gibbonCourseClassID" id="gibbonCourseClassID" style="width: 302px">
-									<?
+									<?php
 									print "<option value='Please select...'></option>" ;
 									try {
 										if ($highestAction=="Lesson Planner_viewEditAllClasses" ) {
@@ -208,9 +208,9 @@ else {
 								</select>
 								<script type="text/javascript">
 									var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
-									gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+									gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 								 </script>
-								<?
+								<?php
 							}
 							?>
 						</td>
@@ -221,11 +221,11 @@ else {
 							<b>Unit</b><br/>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							if ($viewBy=="class") {
 								?>
 								<select name="gibbonUnitID" id="gibbonUnitID" style="width: 302px">
-									<?
+									<?php
 									//List gibbon units
 									try {
 										$dataSelect=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"]); 
@@ -280,12 +280,12 @@ else {
 									}
 									?>				
 								</select>
-								<?
+								<?php
 							}
 							else {
 								?>
 								<select name="gibbonUnitID" id="gibbonUnitID" style="width: 302px">
-									<?
+									<?php
 									//List basic and smart units
 									try {
 										$dataSelect=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"]); 
@@ -344,14 +344,14 @@ else {
 								<script type="text/javascript">
 									$("#gibbonUnitID").chainedTo("#gibbonCourseClassID");
 								</script>
-								<?
+								<?php
 							}
 							?>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=50 value="" type="text" style="width: 300px">
@@ -374,7 +374,7 @@ else {
 						</td>
 					</tr>
 					
-					<?
+					<?php
 					
 					//Try and find the next unplanned slot for this class.
 					if ($viewBy=="class") {
@@ -430,40 +430,40 @@ else {
 					<tr>
 						<td> 
 							<b>Date *</b><br/>
-							<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+							<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							if ($viewBy=="date") {
 								?>
-								<input readonly name="date" id="date" maxlength=10 value="<? print dateConvertBack($guid, $date) ?>" type="text" style="width: 300px">
-								<?
+								<input readonly name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, $date) ?>" type="text" style="width: 300px">
+								<?php
 							}
 							else {
 								?>
-								<input name="date" id="date" maxlength=10 value="<? print dateConvertBack($guid, $nextDate) ?>" type="text" style="width: 300px">
+								<input name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, $nextDate) ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var date=new LiveValidation('date');
 									date.add(Validate.Presence);
-									date.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+									date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 								 </script>
 								 <script type="text/javascript">
 									$(function() {
 										$( "#date" ).datepicker();
 									});
 								</script>
-								<?
+								<?php
 							}
 							?>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Start Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Format: hh:mm (24hr)') ?><br/></i></span>
+							<b><?php print _('Start Time') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input name="timeStart" id="timeStart" maxlength=5 value="<? if (isset($nextTimeStart)) { print substr($nextTimeStart,0,5) ; } ?>" type="text" style="width: 300px">
+							<input name="timeStart" id="timeStart" maxlength=5 value="<?php if (isset($nextTimeStart)) { print substr($nextTimeStart,0,5) ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var timeStart=new LiveValidation('timeStart');
 								timeStart.add(Validate.Presence);
@@ -472,7 +472,7 @@ else {
 							<script type="text/javascript">
 								$(function() {
 									var availableTags=[
-										<?
+										<?php
 										try {
 											$dataAuto=array(); 
 											$sqlAuto="SELECT DISTINCT timeStart FROM gibbonPlannerEntry ORDER BY timeStart" ;
@@ -492,11 +492,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('End Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Format: hh:mm (24hr)') ?><br/></i></span>
+							<b><?php print _('End Time') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input name="timeEnd" id="timeEnd" maxlength=5 value="<? if (isset($nextTimeEnd)) { print substr($nextTimeEnd,0,5) ; } ?>" type="text" style="width: 300px">
+							<input name="timeEnd" id="timeEnd" maxlength=5 value="<?php if (isset($nextTimeEnd)) { print substr($nextTimeEnd,0,5) ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var timeEnd=new LiveValidation('timeEnd');
 								timeEnd.add(Validate.Presence);
@@ -505,7 +505,7 @@ else {
 							<script type="text/javascript">
 								$(function() {
 									var availableTags=[
-										<?
+										<?php
 										try {
 											$dataAuto=array(); 
 											$sqlAuto="SELECT DISTINCT timeEnd FROM gibbonPlannerEntry ORDER BY timeEnd" ;
@@ -526,15 +526,15 @@ else {
 					<tr>
 						<td colspan=2> 
 							<b>Lesson Details</b>
-							<? $description=getSettingByScope($connection2, "Planner", "lessonDetailsTemplate" ) ?>
-							<? print getEditor($guid,  TRUE, "description", $description, 25, true, false, false) ?>
+							<?php $description=getSettingByScope($connection2, "Planner", "lessonDetailsTemplate" ) ?>
+							<?php print getEditor($guid,  TRUE, "description", $description, 25, true, false, false) ?>
 						</td>
 					</tr>
 					<tr id="teachersNotesRow">
 						<td colspan=2> 
 							<b>Teacher's Notes</b>
-							<? $teachersNotes=getSettingByScope($connection2, "Planner", "teachersNotesTemplate" ) ?>
-							<? print getEditor($guid,  TRUE, "teachersNotes", $teachersNotes, 25, true, false, false ) ?>
+							<?php $teachersNotes=getSettingByScope($connection2, "Planner", "teachersNotesTemplate" ) ?>
+							<?php print getEditor($guid,  TRUE, "teachersNotes", $teachersNotes, 25, true, false, false ) ?>
 						</td>
 					</tr>
 					
@@ -656,13 +656,13 @@ else {
 					<tr id="homeworkDueDateRow">
 						<td> 
 							<b>Homework Due Date *</b><br/>
-							<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+							<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var homeworkDueDate=new LiveValidation('homeworkDueDate');
-								homeworkDueDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+								homeworkDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 	homeworkDueDate.add(Validate.Presence);
 								homeworkDueDate.disable();
 							 </script>
@@ -676,7 +676,7 @@ else {
 					<tr id="homeworkDueDateTimeRow">
 						<td> 
 							<b>Homework Due Date Time</b><br/>
-							<span style="font-size: 90%"><i><? print _('Format: hh:mm (24hr)') ?><br/></i></span>
+							<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="" type="text" style="width: 300px">
@@ -687,7 +687,7 @@ else {
 							<script type="text/javascript">
 								$(function() {
 									var availableTags=[
-										<?
+										<?php
 										try {
 											$dataAuto=array(); 
 											$sqlAuto="SELECT DISTINCT SUBSTRING(homeworkDueDateTime,12,5) AS homeworkDueTime FROM gibbonPlannerEntry ORDER BY homeworkDueDateTime" ;
@@ -708,7 +708,7 @@ else {
 					<tr id="homeworkDetailsRow">
 						<td colspan=2> 
 							<b>Homework Details *</b> 
-							<? print getEditor($guid,  TRUE, "homeworkDetails", "", 25, true, true, true ) ?>
+							<?php print getEditor($guid,  TRUE, "homeworkDetails", "", 25, true, true, true ) ?>
 						</td>
 					</tr>
 					<tr id="homeworkSubmissionRow">
@@ -724,13 +724,13 @@ else {
 					<tr id="homeworkSubmissionDateOpenRow">
 						<td> 
 							<b>Submission Open Date</b><br/>
-							<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+							<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="homeworkSubmissionDateOpen" id="homeworkSubmissionDateOpen" maxlength=10 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var homeworkSubmissionDateOpen=new LiveValidation('homeworkSubmissionDateOpen');
-								homeworkSubmissionDateOpen.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+								homeworkSubmissionDateOpen.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 </script>
 							 <script type="text/javascript">
 								$(function() {
@@ -778,7 +778,7 @@ else {
 							</select>
 						</td>
 					</tr>
-					<? if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess.php")) { ?>
+					<?php if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess.php")) { ?>
 						<tr id="homeworkCrowdAssessRow">
 							<td> 
 								<b>Crowd Assessment? *</b><br/>
@@ -795,7 +795,7 @@ else {
 								<span style="font-size: 90%"><i>Decide who can do what</i></span>
 							</td>
 							<td class="right">
-								<?
+								<?php
 								print "<table cellspacing='0' style='width: 308px' align=right>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
@@ -873,10 +873,10 @@ else {
 								?>
 							</td>
 						</tr>
-					<? } ?>
+					<?php } ?>
 					
 					
-					<?
+					<?php
 					//OUTCOMES
 					if ($viewBy=="date") {
 						?>
@@ -892,7 +892,7 @@ else {
 								</div>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 					else {
 						?>
@@ -906,24 +906,24 @@ else {
 								<p>Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.</p>
 							</td>
 						</tr>
-						<?
+						<?php
 						$type="outcome" ; 
 						$allowOutcomeEditing=getSettingByScope($connection2, "Planner", "allowOutcomeEditing") ;
 						$categories=array() ;
 						$categoryCount=0 ;
 						?> 
 						<style>
-							#<? print $type ?> { list-style-type: none; margin: 0; padding: 0; width: 100%; }
-							#<? print $type ?> div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
+							#<?php print $type ?> { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+							#<?php print $type ?> div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
 							div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-							html>body #<? print $type ?> li { min-height: 58px; line-height: 1.2em; }
-							.<? print $type ?>-ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
-							.<? print $type ?>-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
+							html>body #<?php print $type ?> li { min-height: 58px; line-height: 1.2em; }
+							.<?php print $type ?>-ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
+							.<?php print $type ?>-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
 						</style>
 						<script>
 							$(function() {
-								$( "#<? print $type ?>" ).sortable({
-									placeholder: "<? print $type ?>-ui-state-highlight";
+								$( "#<?php print $type ?>" ).sortable({
+									placeholder: "<?php print $type ?>-ui-state-highlight";
 									axis: 'y'
 								});
 							});
@@ -951,7 +951,7 @@ else {
 													</script>
 													<select id='newOutcome' onChange='outcomeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
 														<option class='all' value='0'>Choose an outcome to add it to this lesson</option>
-														<?
+														<?php
 														$currentCategory="" ;
 														$lastCategory="" ;
 														$switchContents="" ;
@@ -1037,12 +1037,12 @@ else {
 														}
 														?>
 													</select><br/>
-													<?
+													<?php
 													if (count($categories)>0) {
 														?>
 														<select id='outcomeFilter' style='float: none; margin-left: 3px; margin-top: 0px; width: 350px'>
 															<option value='all'>View All</option>
-															<?
+															<?php
 															$categories=array_unique($categories) ;
 															$categories=msort($categories) ;
 															foreach ($categories AS $category) {
@@ -1053,20 +1053,20 @@ else {
 														<script type="text/javascript">
 															$("#newOutcome").chainedTo("#outcomeFilter");
 														</script>
-														<?
+														<?php
 													}
 													?>
 													<script type='text/javascript'>
-														var <? print $type ?>Used=new Array();
-														var <? print $type ?>UsedCount=0 ;
+														var <?php print $type ?>Used=new Array();
+														var <?php print $type ?>UsedCount=0 ;
 														
 														function outcomeDisplayElements(number) {
-															$("#<? print $type ?>Outer0").css("display", "none") ;
-															if (<? print $type ?>Used.indexOf(number)<0) {
-																<? print $type ?>Used[<? print $type ?>UsedCount]=number ;
-																<? print $type ?>UsedCount++ ;
+															$("#<?php print $type ?>Outer0").css("display", "none") ;
+															if (<?php print $type ?>Used.indexOf(number)<0) {
+																<?php print $type ?>Used[<?php print $type ?>UsedCount]=number ;
+																<?php print $type ?>UsedCount++ ;
 																switch(number) {
-																	<? print $switchContents ?>
+																	<?php print $switchContents ?>
 																}
 															}
 															else {
@@ -1082,7 +1082,7 @@ else {
 								</div>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 					?>
 					
@@ -1149,7 +1149,7 @@ else {
 					<tr>
 						<td></td>
 						<td class="right">
-							<?
+							<?php
 							print "<input type='checkbox' name='advanced' class='advanced' id='advanced' value='Yes' />" ;
 							print "<span style='font-size: 85%; font-weight: normal; font-style: italic'> Show Advanced Options</span>" ;
 							?>
@@ -1167,12 +1167,12 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							$sharingDefaultStudents=getSettingByScope( $connection2, "Planner", "sharingDefaultStudents" ) ;
 							?>
 							<select name="viewableStudents" id="viewableStudents" style="width: 302px">
-								<option <? if ($sharingDefaultStudents=="Y") { print "selected" ; } ?> value="Y">Y</option>
-								<option <? if ($sharingDefaultStudents=="N") { print "selected" ; } ?> value="N">N</option>
+								<option <?php if ($sharingDefaultStudents=="Y") { print "selected" ; } ?> value="Y">Y</option>
+								<option <?php if ($sharingDefaultStudents=="N") { print "selected" ; } ?> value="N">N</option>
 							</select>
 						</td>
 					</tr>
@@ -1182,12 +1182,12 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							$sharingDefaultParents=getSettingByScope( $connection2, "Planner", "sharingDefaultParents" ) ;
 							?>
 							<select name="viewableParents" id="viewableParents" style="width: 302px">
-								<option <? if ($sharingDefaultParents=="Y") { print "selected" ; } ?> value="Y">Y</option>
-								<option <? if ($sharingDefaultParents=="N") { print "selected" ; } ?> value="N">N</option>
+								<option <?php if ($sharingDefaultParents=="Y") { print "selected" ; } ?> value="Y">Y</option>
+								<option <?php if ($sharingDefaultParents=="N") { print "selected" ; } ?> value="N">N</option>
 							</select>
 						</td>
 					</tr>
@@ -1200,11 +1200,11 @@ else {
 					<tr id="guestListRow">
 						<td> 
 							<b>Guest List</b><br/>
-							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="guests[]" id="guests[]" multiple style="width: 302px; height: 150px">
-								<?
+								<?php
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT title, surname, preferredName, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Full' ORDER BY surname, preferredName" ;
@@ -1252,15 +1252,15 @@ else {
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 		
 		//Print sidebar

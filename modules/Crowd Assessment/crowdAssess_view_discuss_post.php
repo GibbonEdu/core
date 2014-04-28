@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -118,22 +118,22 @@ else {
 					$rowList=$resultList->fetch() ;
 					
 					?>
-					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss_postProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&address=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&replyTo=$replyTo" ?>">
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss_postProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&address=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&replyTo=$replyTo" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td colspan=2> 
-									<b><? print _('Write your comment below:') ?></b> 
-									<? print getEditor($guid,  TRUE, "comment" ) ?>
+									<b><?php print _('Write your comment below:') ?></b> 
+									<?php print getEditor($guid,  TRUE, "comment" ) ?>
 								</td>
 							</tr>
 							<tr>
 								<td class="right" colspan=2>
-									<input type="submit" value="<? print _("Submit") ; ?>">
+									<input type="submit" value="<?php print _("Submit") ; ?>">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<?
+					<?php
 				}
 			}
 		}

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -195,15 +195,15 @@ else {
 							else {
 								$rowSubmission=$resultSubmission->fetch()
 								?>
-								<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submit_editProcess.php" ?>">
+								<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submit_editProcess.php" ?>">
 									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 										<tr>
 											<td> 
-												<b><? print _('Student') ?> *</b><br/>
-												<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+												<b><?php print _('Student') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
-												<input readonly name="courseName" id="courseName" maxlength=20 value="<? print formatName("", htmlPrep($rowSubmission["preferredName"]), htmlPrep($rowSubmission["surname"]), "Student") ?>" type="text" style="width: 300px">
+												<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print formatName("", htmlPrep($rowSubmission["preferredName"]), htmlPrep($rowSubmission["surname"]), "Student") ?>" type="text" style="width: 300px">
 											</td>
 										</tr>
 										<tr>
@@ -212,14 +212,14 @@ else {
 											</td>
 											<td class="right">
 												<select style="width: 302px" name="status">
-													<option <? if ($rowSubmission["status"]=="On Time") { print "selected ";} ?>value="On Time">On Time</option>
-													<option <? if ($rowSubmission["status"]=="Late") { print "selected ";} ?>value="Late">Late</option>
+													<option <?php if ($rowSubmission["status"]=="On Time") { print "selected ";} ?>value="On Time">On Time</option>
+													<option <?php if ($rowSubmission["status"]=="Late") { print "selected ";} ?>value="Late">Late</option>
 												</select>
 											</td>
 										</tr>
 										<tr>
 											<td class="right" colspan=2>
-												<?
+												<?php
 												print "<input type='hidden' name='search' value='" . $_GET["search"] . "'>" ;
 												print "<input type='hidden' name='params' value='$params'>" ;
 												print "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>" ;
@@ -228,12 +228,12 @@ else {
 												print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
 												?>
 												
-												<input type="submit" value="<? print _("Submit") ; ?>">
+												<input type="submit" value="<?php print _("Submit") ; ?>">
 											</td>
 										</tr>
 									</table>
 								</form>
-							<?
+							<?php
 							}
 						}
 						else {
@@ -260,41 +260,41 @@ else {
 								$rowSubmission=$resultSubmission->fetch()
 							
 								?>
-								<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submit_editProcess.php" ?>" enctype="multipart/form-data">
+								<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submit_editProcess.php" ?>" enctype="multipart/form-data">
 									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 										<tr>
 											<td> 
-												<b><? print _('Student') ?> *</b><br/>
-												<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+												<b><?php print _('Student') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
-												<input readonly name="courseName" id="courseName" maxlength=20 value="<? print formatName("", htmlPrep($rowSubmission["preferredName"]), htmlPrep($rowSubmission["surname"]), "Student") ?>" type="text" style="width: 300px">
+												<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print formatName("", htmlPrep($rowSubmission["preferredName"]), htmlPrep($rowSubmission["surname"]), "Student") ?>" type="text" style="width: 300px">
 											</td>
 										</tr>
 										<tr>
 											<td> 
-												<b><? print _('Type') ?> *</b><br/>
+												<b><?php print _('Type') ?> *</b><br/>
 											</td>
 											<td class="right">
-												<?
+												<?php
 												if ($row["homeworkSubmissionType"]=="Link") {
 													?>
 													<input checked type="radio" id="type" name="type" class="type" value="Link" /> Link
 													<input type="radio" id="type" name="type" class="type" value="None" /> None
-													<?
+													<?php
 												}
 												else if ($row["homeworkSubmissionType"]=="File") {
 													?>
 													<input checked type="radio" id="type" name="type" class="type" value="File" /> File
 													<input type="radio" id="type" name="type" class="type" value="None" /> None
-													<?
+													<?php
 												}
 												else {
 													?>
 													<input type="radio" id="type" name="type" class="type" value="Link" /> Link
 													<input type="radio" id="type" name="type" class="type" value="File" /> File
 													<input checked type="radio" id="type" name="type" class="type" value="None" /> None
-													<?
+													<?php
 												}
 												?>
 											</td>
@@ -304,7 +304,7 @@ else {
 												<b>Version *</b><br/>
 											</td>
 											<td class="right">
-												<?
+												<?php
 												print "<select style='float: none; width: 302px' name='version'>" ;
 													if ($row["homeworkSubmissionDrafts"]>0 AND $status!="Late" AND $resultVersion->rowCount()<$row["homeworkSubmissionDrafts"]) {
 														print "<option value='Draft'>Draft</option>" ;
@@ -318,22 +318,22 @@ else {
 										<script type="text/javascript">
 											/* Subbmission type control */
 											$(document).ready(function(){
-												<?
+												<?php
 												if ($row["homeworkSubmissionType"]=="Link") {
 													?>
 													$("#fileRow").css("display","none");
-													<?
+													<?php
 												}
 												else if ($row["homeworkSubmissionType"]=="File") {
 													?>
 													$("#linkRow").css("display","none");
-													<?
+													<?php
 												}
 												else {
 													?>
 													$("#fileRow").css("display","none");
 													$("#linkRow").css("display","none");
-													<?
+													<?php
 												}
 												?>
 											
@@ -358,7 +358,7 @@ else {
 											</td>
 											<td class="right">
 												<input type="file" name="file" id="file"><br/><br/>
-												<?
+												<?php
 												print getMaxUpload() ;
 											
 												//Get list of acceptable file extensions
@@ -377,7 +377,7 @@ else {
 											
 												<script type="text/javascript">
 													var file=new LiveValidation('file');
-													file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+													file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 												</script>
 											</td>
 										</tr>
@@ -410,7 +410,7 @@ else {
 									
 										<tr>
 											<td class="right" colspan=2>
-												<?
+												<?php
 												$params="" ;
 												if ($_GET["date"]!="") {
 													$params=$params."&date=" . $_GET["date"] ;
@@ -448,12 +448,12 @@ else {
 												print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
 												?>
 											
-												<input type="submit" value="<? print _("Submit") ; ?>">
+												<input type="submit" value="<?php print _("Submit") ; ?>">
 											</td>
 										</tr>
 									</table>
 								</form>
-								<?
+								<?php
 							}
 						}
 					}

@@ -88,7 +88,7 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 							print "Teacher" ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Action" ;
+							print _("Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					

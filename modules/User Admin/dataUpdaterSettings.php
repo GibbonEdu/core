@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -57,10 +57,10 @@ else {
 	} 
 	?>
 	
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/dataUpdaterSettingsProcess.php" ?>">
-		<h2><? print _('Required Fields for Personal Updates') ?></h2>
-		<p><? print _('These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).') ?></p>
-		<?
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/dataUpdaterSettingsProcess.php" ?>">
+		<h2><?php print _('Required Fields for Personal Updates') ?></h2>
+		<p><?php print _('These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).') ?></p>
+		<?php
 		
 		//Get setting and unserialize
 		$required=unserialize(getSettingByScope( $connection2, "User Admin", "personalDataUpdaterRequiredFields")) ;
@@ -635,6 +635,6 @@ else {
 		print "</table>" ;
 		?>
 	</form>
-<?
+<?php
 }
 ?>

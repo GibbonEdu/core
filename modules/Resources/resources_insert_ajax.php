@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -250,7 +250,7 @@ else {
 								$output.="</select>" ;
 							$output.="</td>" ;
 							$output.="<td style='padding: 0px 0px 0px 2px'>" ;
-								$output.="<input type='submit' value='Go'>" ;
+								$output.="<input type='submit' value='" . _('Go') . "'>" ;
 							$output.="</td>" ;
 						$output.="</tr>" ;
 					$output.="</table>" ;

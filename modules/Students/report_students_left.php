@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -52,7 +52,7 @@ else {
 	}
 	?>
 	
-	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
@@ -60,11 +60,11 @@ else {
 					<span style="font-size: 90%"><i>Earlest student end date to include.<br/>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="endDateFrom" id="endDateFrom" maxlength=10 value="<? print $endDateFrom ?>" type="text" style="width: 300px">
+					<input name="endDateFrom" id="endDateFrom" maxlength=10 value="<?php print $endDateFrom ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var endDateFrom=new LiveValidation('endDateFrom');
 						endDateFrom.add(Validate.Presence);
-						endDateFrom.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						endDateFrom.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -79,11 +79,11 @@ else {
 					<span style="font-size: 90%"><i>Latest student end date to include.<br/>dd/mm/yyyy</i></span>
 				</td>
 				<td class="right">
-					<input name="endDateTo" id="endDateTo" maxlength=10 value="<? print $endDateTo ?>" type="text" style="width: 300px">
+					<input name="endDateTo" id="endDateTo" maxlength=10 value="<?php print $endDateTo ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var endDateTo=new LiveValidation('endDateTo');
 						endDateTo.add(Validate.Presence);
-						endDateTo.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						endDateTo.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -98,18 +98,18 @@ else {
 					<span style="font-size: 90%"><i>This is useful for picking up students who have not yet left, but have an End Date set.</span>
 				</td>
 				<td class="right">
-					<input <? if ($ignoreStatus=="on") { print "checked" ; } ?> name="ignoreStatus" id="ignoreStatus" type="checkbox">
+					<input <?php if ($ignoreStatus=="on") { print "checked" ; } ?> name="ignoreStatus" id="ignoreStatus" type="checkbox">
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/report_students_left.php">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_students_left.php">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 	
 	if ($endDateFrom!="" AND $endDateTo!="") {
 		print "<h2>" ;

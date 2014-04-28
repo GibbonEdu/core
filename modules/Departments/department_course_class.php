@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -101,14 +101,16 @@ else {
 			}
 			print "<div class='trail'>" ;
 			if ($gibbonDepartmentID!="") {
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/departments.php'>View All</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department.php&gibbonDepartmentID=" . $_GET["gibbonDepartmentID"] . "'>" . $row["department"] . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_course.php&gibbonDepartmentID=" . $_GET["gibbonDepartmentID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . $row["courseLong"] . "$extra</a> ></div><div class='trailEnd'>" . $row["course"] . "." . $row["class"] . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/departments.php'>" . _('View All') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department.php&gibbonDepartmentID=" . $_GET["gibbonDepartmentID"] . "'>" . $row["department"] . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_course.php&gibbonDepartmentID=" . $_GET["gibbonDepartmentID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . $row["courseLong"] . "$extra</a> ></div><div class='trailEnd'>" . $row["course"] . "." . $row["class"] . "</div>" ;
 			}
 			else {
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/departments.php'>View All</a> > Class ></div><div class='trailEnd'>" . $row["course"] . "." . $row["class"] . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/departments.php'>" . _('View All') . "</a> > Class ></div><div class='trailEnd'>" . $row["course"] . "." . $row["class"] . "</div>" ;
 			}
 			print "</div>" ;
 			
 			$subpage=NULL ;
+			_('Study Plan') ;
+			_('Participants') ;
 			if (isset($_GET["subpage"])) {
 				$subpage=$_GET["subpage"] ;
 			}
@@ -117,7 +119,7 @@ else {
 			}
 			
 			print "<h2>" ;
-				print $subpage ;
+				print _($subpage) ;
 			print "</h2>" ;
 			
 			if ($subpage=="Study Plan") {
@@ -126,7 +128,7 @@ else {
 					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID=$gibbonCourseClassID&viewBy=class'><img style='margin-top: 3px' title='" . _('View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.gif'/></a> " ;
 				}
 				if (getHighestGroupedAction($guid, "/modules/Markbook/markbook_view.php", $connection2)=="View Markbook_allClassesAllData") {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-top: 3px' " . _('View Markbook') . " src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.gif'/></a> " ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-top: 3px' title='" . _('View Markbook') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.gif'/></a> " ;
 				}
 				print "</div>" ;
 				
@@ -178,22 +180,22 @@ else {
 							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr class='head'>" ;
 									print "<th>" ;
-										print "Lesson" ;
+										print _("Lesson") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Date" ;
+										print _("Date") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Time" ;
+										print _("Time") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Summary" ;
+										print _("Summary") ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Homework<br/><span style='font-size: 80%'>Is set?</span>" ;
+										print _("Homework") . "<br/><span style='font-size: 80%'>" . _('Is set?') . "</span>" ;
 									print "</th>" ;
 									print "<th>" ;
-										print "Action" ;
+										print _("Actions") ;
 									print "</th>" ;
 								print "</tr>" ;
 								
@@ -223,7 +225,7 @@ else {
 											print $rowLessons["summary"] ;
 										print "</td>" ;
 										print "<td>" ;
-											if ($row["homework"]=="Y") {
+											if ($rowLessons["homework"]=="Y") {
 												print _("Yes") ;
 											}
 											else {
@@ -299,22 +301,22 @@ else {
 								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
-											print "Lesson" ;
+											print _("Lesson") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Date" ;
+											print _("Date") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Time" ;
+											print _("Time") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Summary" ;
+											print _("Summary") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Homework<br/><span style='font-size: 80%'>Is set?</span>" ;
+											print _("Homework") . "<br/><span style='font-size: 80%'>" . _('Is set?') . "</span>" ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Action" ;
+											print _("Actions") ;
 										print "</th>" ;
 									print "</tr>" ;
 									
@@ -381,29 +383,29 @@ else {
 				}
 				//Only show add if user has edit rights
 				if ($resultLessons->rowCount()>0) {
-					print "<h4 $style>" ;
-					print "Other Lessons" ;
+					print "<h4 style='margin-top: 30px'>" ;
+					print _("Other Lessons") ;
 					print "</h4>" ;
 				
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print "Lesson" ;
+								print _("Lesson") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Date" ;
+								print _("Date") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Time" ;
+								print _("Time") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Summary" ;
+								print _("Summary") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Homework<br/><span style='font-size: 80%'>Is set?</span>" ;
+								print _("Homework") . "<br/><span style='font-size: 80%'>" . _('Is set?') . "</span>" ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Action" ;
+								print _("Actions") ;
 							print "</th>" ;
 						print "</tr>" ;
 						
@@ -433,7 +435,7 @@ else {
 									print $rowLessons["summary"] ;
 								print "</td>" ;
 								print "<td>" ;
-									if ($row["homework"]=="Y") {
+									if ($rowLessons["homework"]=="Y") {
 										print _("Yes") ;
 									}
 									else {
@@ -484,19 +486,19 @@ else {
 			$_SESSION[$guid]["sidebarExtra"]="" ;
 			
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . $row["course"] . "." . $row["class"] . " Information" ;
+			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . $row["course"] . "." . $row["class"] . " " . _('Information') ;
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ul>" ;
 			$style="" ;
 			if ($subpage=="Study Plan") {
 				$style="style='font-weight: bold'" ;
 			}
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=$gibbonCourseClassID&subpage=Study Plan'>Study Plan</a></li>" ;
+			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=$gibbonCourseClassID&subpage=Study Plan'>" . _('Study Plan') . "</a></li>" ;
 			$style="" ;
 			if ($subpage=="Participants") {
 				$style="style='font-weight: bold'" ;
 			}
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=$gibbonCourseClassID&subpage=Participants'>Participants</a></li>" ;
+			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=$gibbonCourseClassID&subpage=Participants'>" . _('Participants') . "</a></li>" ;
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</ul>" ;
 			
 			//Print related class list
@@ -512,7 +514,7 @@ else {
 			
 			if ($resultCourse->rowCount()>0) {
 				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
-				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "Related Classes" ;
+				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . _("Related Classes") ;
 				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
 			
 				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ul>" ;
@@ -524,7 +526,7 @@ else {
 			
 			//Print list of all classes
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "Current Classes" ;
+			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . _("Current Classes") ;
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
 				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
@@ -555,7 +557,7 @@ else {
 						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</td>" ;
 						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<td class='right'>" ;
 							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<input type='hidden' name='q' value='/modules/" . $_SESSION[$guid]["module"] . "/department_course_class.php'>" ;
-							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<input type='submit' value='Go'>" ;
+							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<input type='submit' value='" . _('Go') . "'>" ;
 						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</td>" ;
 					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</tr>" ;
 				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</table>" ;

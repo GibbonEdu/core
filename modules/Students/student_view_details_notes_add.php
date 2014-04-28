@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -89,9 +89,9 @@ else {
 			}
 
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_addProcess.php?gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_addProcess.php?gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
-					<?
+					<?php
 					try {
 						$dataCategories=array(); 
 						$sqlCategories="SELECT * FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name" ;
@@ -108,8 +108,8 @@ else {
 							</td>
 							<td class="right">
 								<select name="gibbonStudentNoteCategoryID" id="gibbonStudentNoteCategoryID" style="width: 302px">
-									<option value="Please select..."><? print _('Please select...') ?></option>
-									<?
+									<option value="Please select..."><?php print _('Please select...') ?></option>
+									<?php
 									while ($rowCategories=$resultCategories->fetch()) {
 										print "<option value='" . $rowCategories["gibbonStudentNoteCategoryID"] . "'>" . $rowCategories["name"] . "</option>" ;
 									}
@@ -117,12 +117,12 @@ else {
 								</select>
 								<script type="text/javascript">
 									var gibbonStudentNoteCategoryID=new LiveValidation('gibbonStudentNoteCategoryID');
-									gibbonStudentNoteCategoryID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+									gibbonStudentNoteCategoryID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 								 </script>
 								 <script type="text/javascript">
 								 	$("#gibbonStudentNoteCategoryID").change(function() {
 										if ($("#gibbonStudentNoteCategoryID").val()!="Please select...") {
-											$.get('<? print $_SESSION[$guid]["absoluteURL"] . "/modules/Students/student_view_details_notes_addAjax.php?gibbonStudentNoteCategoryID=" ?>' + $("#gibbonStudentNoteCategoryID").val(), function(data){
+											$.get('<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/Students/student_view_details_notes_addAjax.php?gibbonStudentNoteCategoryID=" ?>' + $("#gibbonStudentNoteCategoryID").val(), function(data){
 												if (tinyMCE.activeEditor==null) {
 													if ($("textarea#note").val()=="") {
 														$("textarea#note").val(data) ;
@@ -140,27 +140,27 @@ else {
 								 </script>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 					?>
 					<tr>
 						<td colspan=2 style='padding-top: 15px;'> 
 							<b>Note *</b><br/>
-							<? print getEditor($guid,  TRUE, "note", "", 25, true, true, false) ?>
+							<?php print getEditor($guid,  TRUE, "note", "", 25, true, true, false) ?>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

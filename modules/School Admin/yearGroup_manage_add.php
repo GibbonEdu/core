@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -57,12 +57,12 @@ else {
 	} 
 	
 	?>
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/yearGroup_manage_addProcess.php" ?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/yearGroup_manage_addProcess.php" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b><? print _('Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
+					<b><?php print _('Name') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" value="" type="text" style="width: 300px">
@@ -74,8 +74,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-					<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
+					<?php print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+					<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="nameShort" id="nameShort" value="" type="text" style="width: 300px">
@@ -87,8 +87,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Sequence Number') ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print _('Must be unique. Controls chronological ordering.') ?></i></span>
+					<b><?php print _('Sequence Number') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('Must be unique. Controls chronological ordering.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="sequenceNumber" ID="sequenceNumber" value="" type="text" style="width: 300px">
@@ -101,15 +101,15 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 }
 ?>

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -77,7 +77,7 @@ else {
 			} 
 			
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/outcomes_addProcess.php" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/outcomes_addProcess.php" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
@@ -85,31 +85,31 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							if ($highestAction=="Manage Outcomes_viewEditAll") {
 								?>
 								<select name="scope" id="scope" style="width: 302px">
-									<option value="Please select..."><? print _('Please select...') ?></option>
+									<option value="Please select..."><?php print _('Please select...') ?></option>
 									<option value="School">School</option>
 									<option value="Learning Area">Learning Area</option>
 								</select>
 								<script type="text/javascript">
 									var scope=new LiveValidation('scope');
-									scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+									scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 								 </script>
-								 <?
+								 <?php
 							}
 							else if ($highestAction=="Manage Outcomes_viewAllEditLearningArea") {
 								?>
 								<input readonly name="scope" id="scope" value="Learning Area" type="text" style="width: 300px">
-								<?
+								<?php
 							}
 							?>
 						</td>
 					</tr>
 					
 					
-					<?
+					<?php
 					if ($highestAction=="Manage Outcomes_viewEditAll") {
 						?>
 						<script type="text/javascript">
@@ -128,7 +128,7 @@ else {
 								 });
 							});
 						</script>
-						<?
+						<?php
 					}
 					?>
 					<tr id='learningAreaRow'>
@@ -137,7 +137,7 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							try {
 								if ($highestAction=="Manage Outcomes_viewEditAll") {
 									$dataSelect=array(); 
@@ -153,8 +153,8 @@ else {
 							catch(PDOException $e) { }
 							?>
 							<select name="gibbonDepartmentID" id="gibbonDepartmentID" style="width: 302px">
-								<option value="Please select..."><? print _('Please select...') ?></option>
-								<?
+								<option value="Please select..."><?php print _('Please select...') ?></option>
+								<?php
 								while ($rowSelect=$resultSelect->fetch()) {
 									print "<option value='" . $rowSelect["gibbonDepartmentID"] . "'>" . $rowSelect["name"] . "</option>" ;
 								}
@@ -162,8 +162,8 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonDepartmentID=new LiveValidation('gibbonDepartmentID');
-								gibbonDepartmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
-								<?
+								gibbonDepartmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								<?php
 								if ($highestAction=="Manage Outcomes_viewEditAll") {
 									print "gibbonDepartmentID.disable();" ;
 								}
@@ -173,7 +173,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=100 value="" type="text" style="width: 300px">
@@ -197,13 +197,13 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Active') ?> *</b><br/>
+							<b><?php print _('Active') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="active" id="active" style="width: 302px">
-								<option value="Y"><? print _('Yes') ?></option>
-								<option value="N"><? print _('No') ?></option>
+								<option value="Y"><?php print _('Yes') ?></option>
+								<option value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -217,7 +217,7 @@ else {
 							<script type="text/javascript">
 								$(function() {
 									var availableTags=[
-										<?
+										<?php
 										try {
 											$dataAuto=array(); 
 											$sqlAuto="SELECT DISTINCT category FROM gibbonOutcome ORDER BY category" ;
@@ -237,7 +237,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Description') ?></b><br/>
+							<b><?php print _('Description') ?></b><br/>
 						</td>
 						<td class="right">
 							<textarea name='description' id='description' rows=5 style='width: 300px'></textarea>
@@ -245,11 +245,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Year Groups') ?></b><br/>
+							<b><?php print _('Year Groups') ?></b><br/>
 							<span style="font-size: 90%"><i>Relevant student year groups<br/></i></span>
 						</td>
 						<td class="right">
-							<? 
+							<?php 
 							$yearGroups=getYearGroups($connection2) ;
 							if ($yearGroups=="") {
 								print "<i>" . _('No year groups available.') . "</i>" ;
@@ -262,21 +262,21 @@ else {
 								}
 							}
 							?>
-							<input type="hidden" name="count" value="<? print (count($yearGroups))/2 ?>">
+							<input type="hidden" name="count" value="<?php print (count($yearGroups))/2 ?>">
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

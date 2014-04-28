@@ -26,61 +26,61 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 	?>
 		<script type="text/javascript">
 			$(document).ready(function(){
-				$("#blockInner<? print $i ?>").css("display","none");
-				$("#block<? print $i ?>").css("height","72px")
+				$("#blockInner<?php print $i ?>").css("display","none");
+				$("#block<?php print $i ?>").css("height","72px")
 				
 				//Block contents control
-				$('#show<? print $i ?>').unbind('click').click(function() {
-					if ($("#blockInner<? print $i ?>").is(":visible")) {
-						$("#blockInner<? print $i ?>").css("display","none");
-						$("#block<? print $i ?>").css("height","72px")
-						$('#show<? print $i ?>').css("background-image", "<? print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)"); 
+				$('#show<?php print $i ?>').unbind('click').click(function() {
+					if ($("#blockInner<?php print $i ?>").is(":visible")) {
+						$("#blockInner<?php print $i ?>").css("display","none");
+						$("#block<?php print $i ?>").css("height","72px")
+						$('#show<?php print $i ?>').css("background-image", "<?php print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)"); 
 					} else {
-						$("#blockInner<? print $i ?>").slideDown("fast", $("#blockInner<? print $i ?>").css("display","table-row")); 
-						$("#block<? print $i ?>").css("height","auto")
-						$('#show<? print $i ?>').css("background-image", "<? print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/minus.png\'"?>)"); 
+						$("#blockInner<?php print $i ?>").slideDown("fast", $("#blockInner<?php print $i ?>").css("display","table-row")); 
+						$("#block<?php print $i ?>").css("height","auto")
+						$('#show<?php print $i ?>').css("background-image", "<?php print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/minus.png\'"?>)"); 
 					}
 				});
 				
-				<? if ($mode=="add" AND $feeType=="Ad Hoc") { ?>
-					var nameClick<? print $i ?>=false ;
-					$('#name<? print $i ?>').focus(function() {
-						if (nameClick<? print $i ?>==false) {
-							$('#name<? print $i ?>').css("color", "#000") ;
-							$('#name<? print $i ?>').val("") ;
-							nameClick<? print $i ?>=true ;
+				<?php if ($mode=="add" AND $feeType=="Ad Hoc") { ?>
+					var nameClick<?php print $i ?>=false ;
+					$('#name<?php print $i ?>').focus(function() {
+						if (nameClick<?php print $i ?>==false) {
+							$('#name<?php print $i ?>').css("color", "#000") ;
+							$('#name<?php print $i ?>').val("") ;
+							nameClick<?php print $i ?>=true ;
 						}
 					});
 					
-					var feeClick<? print $i ?>=false ;
-					$('#fee<? print $i ?>').focus(function() {
-						if (feeClick<? print $i ?>==false) {
-							$('#fee<? print $i ?>').css("color", "#000") ;
-							$('#fee<? print $i ?>').val("") ;
-							feeClick<? print $i ?>=true ;
+					var feeClick<?php print $i ?>=false ;
+					$('#fee<?php print $i ?>').focus(function() {
+						if (feeClick<?php print $i ?>==false) {
+							$('#fee<?php print $i ?>').css("color", "#000") ;
+							$('#fee<?php print $i ?>').val("") ;
+							feeClick<?php print $i ?>=true ;
 						}
 					});
-				<? } ?>
+				<?php } ?>
 				
-				$('#delete<? print $i ?>').unbind('click').click(function() {
+				$('#delete<?php print $i ?>').unbind('click').click(function() {
 					if (confirm("Are you sure you want to delete this record?")) {
-						$('#blockOuter<? print $i ?>').fadeOut(600, function(){ $('#block<? print $i ?>').remove(); });
-						fee<? print $i ?>.destroy() ;
+						$('#blockOuter<?php print $i ?>').fadeOut(600, function(){ $('#block<?php print $i ?>').remove(); });
+						fee<?php print $i ?>.destroy() ;
 					}
 				});
 			});
 		</script>
-		<div style='background-color: #EDF7FF; border: 1px solid #d8dcdf; margin: 0 0 5px' id="block<? print $i ?>" style='padding: 0px'>
+		<div style='background-color: #EDF7FF; border: 1px solid #d8dcdf; margin: 0 0 5px' id="block<?php print $i ?>" style='padding: 0px'>
 			<table class='blank' cellspacing='0' style='width: 100%'>
 				<tr>
 					<td style='width: 70%'>
-						<input name='order[]' type='hidden' value='<? print $i ?>'>
-						<input <? if ($feeType=="Standard") { print "readonly" ; }?> maxlength=100 id='name<? print $i ?>' name='name<? print $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <? if ($mode=="add" AND $feeType=="Ad Hoc") { print "color: #999;" ;} ?> margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<? if ($mode=="add" AND $feeType=="Ad Hoc") { print "Fee Name $i" ;} else { print htmlPrep($name) ;} ?>'><br/>
-						<?
+						<input name='order[]' type='hidden' value='<?php print $i ?>'>
+						<input <?php if ($feeType=="Standard") { print "readonly" ; }?> maxlength=100 id='name<?php print $i ?>' name='name<?php print $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="add" AND $feeType=="Ad Hoc") { print "color: #999;" ;} ?> margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php if ($mode=="add" AND $feeType=="Ad Hoc") { print "Fee Name $i" ;} else { print htmlPrep($name) ;} ?>'><br/>
+						<?php
 						if ($mode=="add" AND $feeType=="Ad Hoc") {
 							?>
-							<select name="gibbonFinanceFeeCategoryID<? print $i ?>" id="gibbonFinanceFeeCategoryID<? print $i ?>" style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px'>
-								<?
+							<select name="gibbonFinanceFeeCategoryID<?php print $i ?>" id="gibbonFinanceFeeCategoryID<?php print $i ?>" style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px'>
+								<?php
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name" ;
@@ -94,41 +94,41 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 								print "<option selected value='1'>Other</option>" ;
 								?>				
 							</select>
-							<? 
+							<?php 
 						}
 						else {
 							?>
-							<input <? if ($feeType=="Standard") { print "readonly" ; }?> maxlength=100 id='category<? print $i ?>' name='category<? print $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<? print htmlPrep($category) ?>'>
-							<input type='hidden' id='gibbonFinanceFeeCategoryID<? print $i ?>' name='gibbonFinanceFeeCategoryID<? print $i ?>' value='<? print htmlPrep($gibbonFinanceFeeCategoryID) ?>'>
-							<?
+							<input <?php if ($feeType=="Standard") { print "readonly" ; }?> maxlength=100 id='category<?php print $i ?>' name='category<?php print $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<?php print htmlPrep($category) ?>'>
+							<input type='hidden' id='gibbonFinanceFeeCategoryID<?php print $i ?>' name='gibbonFinanceFeeCategoryID<?php print $i ?>' value='<?php print htmlPrep($gibbonFinanceFeeCategoryID) ?>'>
+							<?php
 						}
 						?>
-						<input <? if ($feeType=="Standard") { print "readonly" ; }?> maxlength=13 id='fee<? print $i ?>' name='fee<? print $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <? if ($mode=="add" AND $feeType=="Ad Hoc") { print "color: #999;" ;} ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<? if ($mode=="add" AND $feeType=="Ad Hoc") { print "value" ; if ($_SESSION[$guid]["currency"]!="") { print " (" . $_SESSION[$guid]["currency"] . ")" ;}} else { print htmlPrep($fee) ;} ?>'>
+						<input <?php if ($feeType=="Standard") { print "readonly" ; }?> maxlength=13 id='fee<?php print $i ?>' name='fee<?php print $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="add" AND $feeType=="Ad Hoc") { print "color: #999;" ;} ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if ($mode=="add" AND $feeType=="Ad Hoc") { print "value" ; if ($_SESSION[$guid]["currency"]!="") { print " (" . $_SESSION[$guid]["currency"] . ")" ;}} else { print htmlPrep($fee) ;} ?>'>
 						<script type="text/javascript">
-							var fee<? print $i ?>=new LiveValidation('fee<? print $i ?>');
-							fee<? print $i ?>.add(Validate.Presence);
-							fee<? print $i ?>.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
+							var fee<?php print $i ?>=new LiveValidation('fee<?php print $i ?>');
+							fee<?php print $i ?>.add(Validate.Presence);
+							fee<?php print $i ?>.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
 						</script>
 					</td>
 					<td style='text-align: right; width: 30%'>
 						<div style='margin-bottom: 5px'>
-							<?
+							<?php
 							print "<img id='delete$i' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
 							print "<div id='show$i' style='margin-top: -1px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\")'></div></br>" ;
 							?>
 						</div>
-						<?
+						<?php
 						if ($mode=="plannerEdit") {
 							print "</br>" ;
 						}
 						?>
-						<input type='hidden' name='feeType<? print $i ?>' value='<? print $feeType ?>'>
-						<input type='hidden' name='gibbonFinanceFeeID<? print $i ?>' value='<? print $gibbonFinanceFeeID ?>'>
+						<input type='hidden' name='feeType<?php print $i ?>' value='<?php print $feeType ?>'>
+						<input type='hidden' name='gibbonFinanceFeeID<?php print $i ?>' value='<?php print $gibbonFinanceFeeID ?>'>
 					</td>
 				</tr>
-				<tr id="blockInner<? print $i ?>">
+				<tr id="blockInner<?php print $i ?>">
 					<td colspan=2 style='vertical-align: top'>
-						<? 
+						<?php 
 						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>Description</div>" ;
 						if ($gibbonFinanceFeeID==NULL) {
 							print "<textarea style='width: 100%;' name='" . $type . "description" . $i . "'>" . htmlPrep($description) . "</textarea>" ;
@@ -142,7 +142,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 				</tr>
 			</table>
 		</div>
-	<?
+	<?php
 	if ($outerBlock) {
 		print "</div>" ;
 	}

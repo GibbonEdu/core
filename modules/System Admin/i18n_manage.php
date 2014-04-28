@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -126,9 +126,9 @@ else {
 				print "<tr>" ;
 					print "<td colspan=6 class='right'>" ;
 						?>
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
-						<?
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
+						<?php
 					print "</td>" ;
 				print "</tr>" ;
 			print "</table>" ;

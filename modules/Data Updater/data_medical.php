@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -97,7 +97,7 @@ else {
 		}
 		?>
 		
-		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
@@ -105,7 +105,7 @@ else {
 					</td>
 					<td class="right">
 						<select style="width: 302px" name="gibbonPersonID">
-							<?
+							<?php
 							if ($highestAction=="Update Medical Data_any") {
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -157,13 +157,13 @@ else {
 				</tr>
 				<tr>
 					<td colspan=2 class="right">
-						<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/data_medical.php">
-						<input type="submit" value="<? print _("Submit") ; ?>">
+						<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/data_medical.php">
+						<input type="submit" value="<?php print _("Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
 		</form>
-		<?
+		<?php
 		
 		if ($gibbonPersonID!="") {
 			print "<h2>" ;
@@ -274,7 +274,7 @@ else {
 					if ($proceed==TRUE) {
 						$rowForm=$resultForm->fetch() ;
 						?>
-						<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_medicalProcess.php?gibbonPersonID=" . $gibbonPersonID ?>">
+						<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_medicalProcess.php?gibbonPersonID=" . $gibbonPersonID ?>">
 							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr>
 									<td> 
@@ -283,15 +283,15 @@ else {
 									</td>
 									<td class="right">
 										<select style="width: 302px" name="bloodType">
-											<option <? if ($rowForm["bloodType"]=="") {print "selected ";}?>value=""></option>
-											<option <? if ($rowForm["bloodType"]=="O+") {print "selected ";}?>value="O+">O+</option>
-											<option <? if ($rowForm["bloodType"]=="A+") {print "selected ";}?>value="A+">A+</option>
-											<option <? if ($rowForm["bloodType"]=="B+") {print "selected ";}?>value="B+">B+</option>
-											<option <? if ($rowForm["bloodType"]=="AB+") {print "selected ";}?>value="AB+">AB+</option>
-											<option <? if ($rowForm["bloodType"]=="O-") {print "selected ";}?>value="O-">O-</option>
-											<option <? if ($rowForm["bloodType"]=="A-") {print "selected ";}?>value="A-">A-</option>
-											<option <? if ($rowForm["bloodType"]=="B-") {print "selected ";}?>value="B-">B-</option>
-											<option <? if ($rowForm["bloodType"]=="AB-") {print "selected ";}?>value="AB-">AB-</option>
+											<option <?php if ($rowForm["bloodType"]=="") {print "selected ";}?>value=""></option>
+											<option <?php if ($rowForm["bloodType"]=="O+") {print "selected ";}?>value="O+">O+</option>
+											<option <?php if ($rowForm["bloodType"]=="A+") {print "selected ";}?>value="A+">A+</option>
+											<option <?php if ($rowForm["bloodType"]=="B+") {print "selected ";}?>value="B+">B+</option>
+											<option <?php if ($rowForm["bloodType"]=="AB+") {print "selected ";}?>value="AB+">AB+</option>
+											<option <?php if ($rowForm["bloodType"]=="O-") {print "selected ";}?>value="O-">O-</option>
+											<option <?php if ($rowForm["bloodType"]=="A-") {print "selected ";}?>value="A-">A-</option>
+											<option <?php if ($rowForm["bloodType"]=="B-") {print "selected ";}?>value="B-">B-</option>
+											<option <?php if ($rowForm["bloodType"]=="AB-") {print "selected ";}?>value="AB-">AB-</option>
 										</select>
 									</td>
 								</tr>
@@ -302,9 +302,9 @@ else {
 									</td>
 									<td class="right">
 										<select style="width: 302px" name="longTermMedication">
-											<option <? if ($rowForm["longTermMedication"]=="") {print "selected ";}?>value=""></option>
-											<option <? if ($rowForm["longTermMedication"]=="Y") {print "selected ";}?>value="Y">Y</option>
-											<option <? if ($rowForm["longTermMedication"]=="N") {print "selected ";}?>value="N">N</option>
+											<option <?php if ($rowForm["longTermMedication"]=="") {print "selected ";}?>value=""></option>
+											<option <?php if ($rowForm["longTermMedication"]=="Y") {print "selected ";}?>value="Y">Y</option>
+											<option <?php if ($rowForm["longTermMedication"]=="N") {print "selected ";}?>value="N">N</option>
 										</select>
 									</td>
 								</tr>
@@ -314,7 +314,7 @@ else {
 										<span style="font-size: 90%"><i>1000 character limit</i></span>
 									</td>
 									<td class="right">
-										<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rowForms=8 style="width: 300px"><? print $rowForm["longTermMedicationDetails"] ?></textarea>
+										<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rowForms=8 style="width: 300px"><?php print $rowForm["longTermMedicationDetails"] ?></textarea>
 										<script type="text/javascript">
 											var longTermMedicationDetails=new LiveValidation('longTermMedicationDetails');
 											longTermMedicationDetails.add( Validate.Length, { maximum: 1000 } );
@@ -328,16 +328,16 @@ else {
 									</td>
 									<td class="right">
 										<select style="width: 302px" name="tetanusWithin10Years">
-											<option <? if ($rowForm["tetanusWithin10Years"]=="") {print "selected ";}?>value=""></option>
-											<option <? if ($rowForm["tetanusWithin10Years"]=="Y") {print "selected ";}?>value="Y">Y</option>
-											<option <? if ($rowForm["tetanusWithin10Years"]=="N") {print "selected ";}?>value="N">N</option>
+											<option <?php if ($rowForm["tetanusWithin10Years"]=="") {print "selected ";}?>value=""></option>
+											<option <?php if ($rowForm["tetanusWithin10Years"]=="Y") {print "selected ";}?>value="Y">Y</option>
+											<option <?php if ($rowForm["tetanusWithin10Years"]=="N") {print "selected ";}?>value="N">N</option>
 										</select>
 									</td>
 								</tr>
 								
-								<input name="gibbonPersonMedicalID" id="gibbonPersonMedicalID" value="<? print htmlPrep($rowForm["gibbonPersonMedicalID"]) ?>" type="hidden">
+								<input name="gibbonPersonMedicalID" id="gibbonPersonMedicalID" value="<?php print htmlPrep($rowForm["gibbonPersonMedicalID"]) ?>" type="hidden">
 								
-								<?
+								<?php
 								$count=0 ;
 								if ($rowForm["gibbonPersonMedicalID"]!="" OR $existing==true) {
 									try {
@@ -360,7 +360,7 @@ else {
 										?>
 										<tr class='break'>
 											<td colspan=2> 
-												<h3>Medical Condition <? print ($count+1) ?></h3>
+												<h3>Medical Condition <?php print ($count+1) ?></h3>
 											</td>
 										</tr>
 										<!--<tr>
@@ -369,7 +369,7 @@ else {
 												<span style="font-size: 90%"><i>Check box to delete</i></span>
 											</td>
 											<td class="right">
-												<input type='checkbox' name='delete<? print $count ?>'>
+												<input type='checkbox' name='delete<?php print $count ?>'>
 											</td>
 										</tr>-->		
 										<tr>
@@ -377,8 +377,8 @@ else {
 												<b>Condition Name *</b><br/>
 											</td>
 											<td class="right">
-												<select style="width: 302px" name="name<? print $count ?>" id="name<? print $count ?>">
-													<?
+												<select style="width: 302px" name="name<?php print $count ?>" id="name<?php print $count ?>">
+													<?php
 													try {
 														$dataSelect=array(); 
 														$sqlSelect="SELECT * FROM gibbonMedicalCondition ORDER BY name" ;
@@ -398,8 +398,8 @@ else {
 													?>				
 												</select>
 												<script type="text/javascript">
-													var name<? print $count ?>=new LiveValidation('name<? print $count ?>');
-													name<? print $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+													var name<?php print $count ?>=new LiveValidation('name<?php print $count ?>');
+													name<?php print $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 												 </script>	
 											</td>
 										</tr>
@@ -408,9 +408,9 @@ else {
 												<b>Risk *</b><br/>
 											</td>
 											<td class="right">
-												<select name="gibbonAlertLevelID<? print $count ?>" id="gibbonAlertLevelID<? print $count ?>" style="width: 302px">
+												<select name="gibbonAlertLevelID<?php print $count ?>" id="gibbonAlertLevelID<?php print $count ?>" style="width: 302px">
 													<option value='Please select...'>Please select...</option>
-													<?
+													<?php
 													try {
 														$dataSelect=array(); 
 														$sqlSelect="SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber" ;
@@ -429,8 +429,8 @@ else {
 													?>
 												</select>
 												<script type="text/javascript">
-													var gibbonAlertLevelID<? print $count ?>=new LiveValidation('gibbonAlertLevelID<? print $count ?>');
-													gibbonAlertLevelID<? print $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+													var gibbonAlertLevelID<?php print $count ?>=new LiveValidation('gibbonAlertLevelID<?php print $count ?>');
+													gibbonAlertLevelID<?php print $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 												 </script>	
 											</td>
 										</tr>
@@ -439,7 +439,7 @@ else {
 												<b>Triggers</b><br/>
 											</td>
 											<td class="right">
-												<input name="triggers<? print $count ?>" id="triggers<? print $count ?>" maxlength=255 value="<? print htmlPrep($rowCond["triggers"]) ?>" type="text" style="width: 300px">
+												<input name="triggers<?php print $count ?>" id="triggers<?php print $count ?>" maxlength=255 value="<?php print htmlPrep($rowCond["triggers"]) ?>" type="text" style="width: 300px">
 											</td>
 										</tr>
 										<tr>
@@ -447,7 +447,7 @@ else {
 												<b>Reaction</b><br/>
 											</td>
 											<td class="right">
-												<input name="reaction<? print $count ?>" id="reaction<? print $count ?>" maxlength=255 value="<? print htmlPrep($rowCond["reaction"]) ?>" type="text" style="width: 300px">
+												<input name="reaction<?php print $count ?>" id="reaction<?php print $count ?>" maxlength=255 value="<?php print htmlPrep($rowCond["reaction"]) ?>" type="text" style="width: 300px">
 											</td>
 										</tr>
 										<tr>
@@ -455,7 +455,7 @@ else {
 												<b>Response</b><br/>
 											</td>
 											<td class="right">
-												<input name="response<? print $count ?>" id="response<? print $count ?>" maxlength=255 value="<? print htmlPrep($rowCond["response"]) ?>" type="text" style="width: 300px">
+												<input name="response<?php print $count ?>" id="response<?php print $count ?>" maxlength=255 value="<?php print htmlPrep($rowCond["response"]) ?>" type="text" style="width: 300px">
 											</td>
 										</tr>
 										<tr>
@@ -463,23 +463,23 @@ else {
 												<b>Medication</b><br/>
 											</td>
 											<td class="right">
-												<input name="medication<? print $count ?>" id="medication<? print $count ?>" maxlength=255 value="<? print htmlPrep($rowCond["medication"]) ?>" type="text" style="width: 300px">
+												<input name="medication<?php print $count ?>" id="medication<?php print $count ?>" maxlength=255 value="<?php print htmlPrep($rowCond["medication"]) ?>" type="text" style="width: 300px">
 											</td>
 										</tr>
 										<tr>
 											<td> 
 												<b>Last Episode Date</b><br/>
-												<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+												<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 											</td>
 											<td class="right">
-												<input name="lastEpisode<? print $count ?>" id="lastEpisode<? print $count ?>" maxlength=10 value="<? print dateConvertBack($guid, $rowCond["lastEpisode"]) ?>" type="text" style="width: 300px">
+												<input name="lastEpisode<?php print $count ?>" id="lastEpisode<?php print $count ?>" maxlength=10 value="<?php print dateConvertBack($guid, $rowCond["lastEpisode"]) ?>" type="text" style="width: 300px">
 												<script type="text/javascript">
-													var lastEpisode<? print $count ?>=new LiveValidation('lastEpisode<? print $count ?>');
-													lastEpisode<? print $count ?>.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+													var lastEpisode<?php print $count ?>=new LiveValidation('lastEpisode<?php print $count ?>');
+													lastEpisode<?php print $count ?>.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 												 </script>
 												 <script type="text/javascript">
 													$(function() {
-														$( "#lastEpisode<? print $count ?>" ).datepicker();
+														$( "#lastEpisode<?php print $count ?>" ).datepicker();
 													});
 												</script>
 											</td>
@@ -489,7 +489,7 @@ else {
 												<b>Last Episode Treatment</b><br/>
 											</td>
 											<td class="right">
-												<input name="lastEpisodeTreatment<? print $count ?>" id="lastEpisodeTreatment<? print $count ?>" maxlength=255 value="<? print htmlPrep($rowCond["lastEpisodeTreatment"]) ?>" type="text" style="width: 300px">
+												<input name="lastEpisodeTreatment<?php print $count ?>" id="lastEpisodeTreatment<?php print $count ?>" maxlength=255 value="<?php print htmlPrep($rowCond["lastEpisodeTreatment"]) ?>" type="text" style="width: 300px">
 											</td>
 										</tr>
 										<tr>
@@ -498,16 +498,16 @@ else {
 												<span style="font-size: 90%"><i>1000 character limit</i></span>
 											</td>
 											<td class="right">
-												<textarea name="comment<? print $count ?>" id="comment<? print $count ?>" rows=8 style="width: 300px"><? print $rowCond["comment"] ?></textarea>
+												<textarea name="comment<?php print $count ?>" id="comment<?php print $count ?>" rows=8 style="width: 300px"><?php print $rowCond["comment"] ?></textarea>
 												<script type="text/javascript">
-													var comment<? print $count ?>=new LiveValidation('comment<? print $count ?>');
-													comment<? print $count ?>.add( Validate.Length, { maximum: 1000 } );
+													var comment<?php print $count ?>=new LiveValidation('comment<?php print $count ?>');
+													comment<?php print $count ?>.add( Validate.Length, { maximum: 1000 } );
 												 </script>
 											</td>
 										</tr>
-										<input name="gibbonPersonMedicalConditionID<? print $count ?>" id="gibbonPersonMedicalConditionID<? print $count ?>" value="<? print htmlPrep($rowCond["gibbonPersonMedicalConditionID"]) ?>" type="hidden">
-										<input name="gibbonPersonMedicalConditionUpdateID<? print $count ?>" id="gibbonPersonMedicalConditionUpdateID<? print $count ?>" value="<? print htmlPrep($rowCond["gibbonPersonMedicalConditionUpdateID"]) ?>" type="hidden">
-										<?
+										<input name="gibbonPersonMedicalConditionID<?php print $count ?>" id="gibbonPersonMedicalConditionID<?php print $count ?>" value="<?php print htmlPrep($rowCond["gibbonPersonMedicalConditionID"]) ?>" type="hidden">
+										<input name="gibbonPersonMedicalConditionUpdateID<?php print $count ?>" id="gibbonPersonMedicalConditionUpdateID<?php print $count ?>" value="<?php print htmlPrep($rowCond["gibbonPersonMedicalConditionUpdateID"]) ?>" type="hidden">
+										<?php
 										$count++ ;
 									}
 									
@@ -525,7 +525,7 @@ else {
 									</td>
 									<td class="right">
 										<select style="width: 302px" name="name" id="name">
-											<?
+											<?php
 											try {
 												$dataSelect=array(); 
 												$sqlSelect="SELECT * FROM gibbonMedicalCondition ORDER BY name" ;
@@ -553,7 +553,7 @@ else {
 									<td class="right">
 										<select name="gibbonAlertLevelID" id="gibbonAlertLevelID" style="width: 302px">
 										<option value='Please select...'>Please select...</option>
-										<?
+										<?php
 										try {
 											$dataSelect=array(); 
 											$sqlSelect="SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber" ;
@@ -574,7 +574,7 @@ else {
 										<b>Triggers</b><br/>
 									</td>
 									<td class="right">
-										<input name="triggers" id="triggers" maxlength=255 value="<? print htmlPrep($rowCond["triggers"]) ?>" type="text" style="width: 300px">
+										<input name="triggers" id="triggers" maxlength=255 value="<?php print htmlPrep($rowCond["triggers"]) ?>" type="text" style="width: 300px">
 									</td>
 								</tr>
 								<tr>
@@ -582,7 +582,7 @@ else {
 										<b>Reaction</b><br/>
 									</td>
 									<td class="right">
-										<input name="reaction" id="reaction" maxlength=255 value="<? print htmlPrep($rowCond["reaction"]) ?>" type="text" style="width: 300px">
+										<input name="reaction" id="reaction" maxlength=255 value="<?php print htmlPrep($rowCond["reaction"]) ?>" type="text" style="width: 300px">
 									</td>
 								</tr>
 								<tr>
@@ -590,7 +590,7 @@ else {
 										<b>Response</b><br/>
 									</td>
 									<td class="right">
-										<input name="response" id="response" maxlength=255 value="<? print htmlPrep($rowCond["response"]) ?>" type="text" style="width: 300px">
+										<input name="response" id="response" maxlength=255 value="<?php print htmlPrep($rowCond["response"]) ?>" type="text" style="width: 300px">
 									</td>
 								</tr>
 								<tr>
@@ -598,19 +598,19 @@ else {
 										<b>Medication</b><br/>
 									</td>
 									<td class="right">
-										<input name="medication" id="medication" maxlength=255 value="<? print htmlPrep($rowCond["medication"]) ?>" type="text" style="width: 300px">
+										<input name="medication" id="medication" maxlength=255 value="<?php print htmlPrep($rowCond["medication"]) ?>" type="text" style="width: 300px">
 									</td>
 								</tr>
 								<tr>
 									<td> 
 										<b>Last Episode Date</b><br/>
-										<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+										<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 									</td>
 									<td class="right">
-										<input name="lastEpisode" id="lastEpisode" maxlength=10 value="<? print dateConvertBack($guid, $rowCond["lastEpisode"]) ?>" type="text" style="width: 300px">
+										<input name="lastEpisode" id="lastEpisode" maxlength=10 value="<?php print dateConvertBack($guid, $rowCond["lastEpisode"]) ?>" type="text" style="width: 300px">
 										<script type="text/javascript">
 											var lastEpisode=new LiveValidation('lastEpisode');
-											lastEpisode.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+											lastEpisode.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 										 </script>
 										 <script type="text/javascript">
 											$(function() {
@@ -624,7 +624,7 @@ else {
 										<b>Last Episode Treatment</b><br/>
 									</td>
 									<td class="right">
-										<input name="lastEpisodeTreatment" id="lastEpisodeTreatment" maxlength=255 value="<? print htmlPrep($rowCond["lastEpisodeTreatment"]) ?>" type="text" style="width: 300px">
+										<input name="lastEpisodeTreatment" id="lastEpisodeTreatment" maxlength=255 value="<?php print htmlPrep($rowCond["lastEpisodeTreatment"]) ?>" type="text" style="width: 300px">
 									</td>
 								</tr>
 								<tr>
@@ -633,7 +633,7 @@ else {
 										<span style="font-size: 90%"><i>1000 character limit</i></span>
 									</td>
 									<td class="right">
-										<textarea name="comment" id="comment" rows=8 style="width: 300px"><? print $rowCond["comment"] ?></textarea>
+										<textarea name="comment" id="comment" rows=8 style="width: 300px"><?php print $rowCond["comment"] ?></textarea>
 										<script type="text/javascript">
 											var commentNew=new LiveValidation('commentNew');
 											commentNew.add( Validate.Length, { maximum: 1000 } );
@@ -642,7 +642,7 @@ else {
 								</tr>
 								<tr>
 									<td>
-										<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+										<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 									</td>
 									<td class="right">
 										<?php
@@ -653,13 +653,13 @@ else {
 											print "<input type='hidden' name='existing' value='N'>" ;
 										}
 										?>
-										<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-										<input type="submit" value="<? print _("Submit") ; ?>">
+										<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+										<input type="submit" value="<?php print _("Submit") ; ?>">
 									</td>
 								</tr>
 							</table>
 						</form>
-						<?
+						<?php
 					}
 				}
 			}

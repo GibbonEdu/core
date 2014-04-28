@@ -845,18 +845,18 @@ function sidebar($connection2, $guid) {
 				});
 			</script>
 			<div id="siteloader"></div>
-			<? 
+			<?php 
 			} //End Check for Google Auth
 			if ((isset($_SESSION[$guid]["username"])==FALSE)){ // If Google Auth set to No make sure login screen not visible when logged in
 			?>
 			<h2>
-				<? print _("Login") ; ?>
+				<?php print _("Login") ; ?>
 			</h2>
-			<form name="loginForm" method="post" action="./login.php?<? if (isset($_GET["q"])) { print "q=" . $_GET["q"] ; } ?>">
+			<form name="loginForm" method="post" action="./login.php?<?php if (isset($_GET["q"])) { print "q=" . $_GET["q"] ; } ?>">
 				<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">	
 					<tr>
 						<td> 
-							<b><? print _("Username") ; ?></b>
+							<b><?php print _("Username") ; ?></b>
 						</td>
 						<td class="right">
 							<input name="username" id="username" maxlength=20 type="text" style="width:120px">
@@ -868,7 +868,7 @@ function sidebar($connection2, $guid) {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _("Password") ; ?></b>
+							<b><?php print _("Password") ; ?></b>
 						</td>
 						<td class="right">
 							<input name="password" id="password" maxlength=20 type="password" style="width:120px">
@@ -880,11 +880,11 @@ function sidebar($connection2, $guid) {
 					</tr>
 					<tr class='schoolYear' id='schoolYear'>
 						<td> 
-							<b><? print _("School Year") ; ?></b>
+							<b><?php print _("School Year") ; ?></b>
 						</td>
 						<td class="right">
 							<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width: 120px">
-								<?
+								<?php
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber" ;
@@ -907,11 +907,11 @@ function sidebar($connection2, $guid) {
 					</tr>
 					<tr class='language' id='language'>
 						<td> 
-							<b><? print _("Language") ; ?></b>
+							<b><?php print _("Language") ; ?></b>
 						</td>
 						<td class="right">
 							<select name="gibboni18nID" id="gibboni18nID" style="width: 120px">
-								<?
+								<?php
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibboni18n ORDER BY name" ;
@@ -936,7 +936,7 @@ function sidebar($connection2, $guid) {
 						<td> 
 						</td>
 						<td class="right">
-							<?
+							<?php
 							print "<script type='text/javascript'>" ;	
 								print "$(document).ready(function(){" ;
 									print "\$(\".schoolYear\").hide();" ;
@@ -949,18 +949,18 @@ function sidebar($connection2, $guid) {
 								print "});" ;
 							print "</script>" ;
 							?>
-							<span style='font-size: 10px'><a class='show_hide' onclick='false' href='#'><? print _("Options") ; ?></a> . <a href="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php?q=passwordReset.php"><? print _("Forgot Password?") ; ?></a></span>
+							<span style='font-size: 10px'><a class='show_hide' onclick='false' href='#'><?php print _("Options") ; ?></a> . <a href="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php?q=passwordReset.php"><?php print _("Forgot Password?") ; ?></a></span>
 						</td>
 					</tr>
 					<tr>
 						<td class="right" colspan=2>
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 							<input type="submit" value="Login">
 						</td>
 					</tr>
 				</table>
 			</form>
-		<?
+		<?php
 		}
 	}
 
@@ -1417,7 +1417,7 @@ function sidebar($connection2, $guid) {
 						}
 						if (getHighestGroupedAction($guid, "/modules/Markbook/markbook_view.php", $connection2)=="View Markbook_allClassesAllData") {
 							print "<td style='text-align: center'>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img style='margin-top: 3px' " . _('View Markbook') . " src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.gif'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img style='margin-top: 3px' title='" . _('View Markbook') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.gif'/></a> " ;
 							print "</td>" ;
 						}
 						print "<td style='text-align: center'>" ;
@@ -1878,27 +1878,27 @@ function printRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, 
 		$(document).ready(function(){
 			$(".confidential").click(function(){
 				if ($('input[name=confidential]:checked').val()=="Yes" ) {
-					<?
+					<?php
 					for ($i=0; $i<$count; $i++) {
 						?>
-						$("#confidential<? print $i ?>").slideDown("fast", $("#confidential<? print $i ?>").css("{'display' : 'table-row', 'border' : 'right'}")); 
-						<?
+						$("#confidential<?php print $i ?>").slideDown("fast", $("#confidential<?php print $i ?>").css("{'display' : 'table-row', 'border' : 'right'}")); 
+						<?php
 					}
 					?>
 				} 
 				else {
-					<?
+					<?php
 					for ($i=0; $i<$count; $i++) {
 						?>
-						$("#confidential<? print $i ?>").slideUp("fast"); 
-						<?
+						$("#confidential<?php print $i ?>").slideUp("fast"); 
+						<?php
 					}
 					?>
 				}
 			 });
 		});
 	</script>
-	<?
+	<?php
 }
 
 //Gets Members of a roll group and prints them as a table.

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -117,9 +117,9 @@ else {
 						print "</div>" ;
 					}
 					?>
-					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_editProcess.php?gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&gibbonStudentNoteID=$gibbonStudentNoteID" ?>">
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_editProcess.php?gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&gibbonStudentNoteID=$gibbonStudentNoteID" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
-							<?
+							<?php
 							try {
 								$dataCategories=array(); 
 								$sqlCategories="SELECT * FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name" ;
@@ -136,8 +136,8 @@ else {
 									</td>
 									<td class="right">
 										<select name="gibbonStudentNoteCategoryID" id="gibbonStudentNoteCategoryID" style="width: 302px">
-											<option value="Please select..."><? print _('Please select...') ?></option>
-											<?
+											<option value="Please select..."><?php print _('Please select...') ?></option>
+											<?php
 											while ($rowCategories=$resultCategories->fetch()) {
 												$selected="" ;
 												if ($rowCategories["gibbonStudentNoteCategoryID"]==$row["gibbonStudentNoteCategoryID"]) {
@@ -149,31 +149,31 @@ else {
 										</select>
 										<script type="text/javascript">
 											var gibbonStudentNoteCategoryID=new LiveValidation('gibbonStudentNoteCategoryID');
-											gibbonStudentNoteCategoryID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+											gibbonStudentNoteCategoryID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 										 </script>
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 							?>
 							<tr>
 								<td colspan=2 style='padding-top: 15px;'> 
 									<b>Note *</b><br/>
-									<? print getEditor($guid,  TRUE, "note", $row["note"], 25, true, true, false) ?>
+									<?php print getEditor($guid,  TRUE, "note", $row["note"], 25, true, true, false) ?>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 								</td>
 								<td class="right">
-									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<? print _("Submit") ; ?>">
+									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+									<input type="submit" value="<?php print _("Submit") ; ?>">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<?
+					<?php
 				}
 			}
 		}

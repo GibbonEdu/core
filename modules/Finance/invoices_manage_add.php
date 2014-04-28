@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -91,20 +91,20 @@ else {
 			print "</div>" ;
 		}
 		?>
-		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID" ?>">
+		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID" ?>">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><? print _('Basic Information') ?></h3>
+						<h3><?php print _('Basic Information') ?></h3>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('School Year') ?> *</b><br/>
-						<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+						<b><?php print _('School Year') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 					</td>
 					<td class="right">
-						<?
+						<?php
 						$yearName="" ;
 						try {
 							$dataYear=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
@@ -120,7 +120,7 @@ else {
 							$yearName=$rowYear["name"] ;
 						}
 						?>
-						<input readonly name="yearName" id="yearName" maxlength=20 value="<? print $yearName ?>" type="text" style="width: 300px">
+						<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var yearName=new LiveValidation('yearName');
 							yearName.add(Validate.Presence);
@@ -130,12 +130,12 @@ else {
 				<tr>
 					<td> 
 						<b>Invoicees *</b><br/>
-						<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?> If a student is missing from this list, visit <a href='<? print $_SESSION[$guid]["absoluteURL"] ?>/index.php?q=/modules/Finance/invoicees_manage.php'>Manage Invoicees</a> to automatically generate them.</i></span>
+						<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?> If a student is missing from this list, visit <a href='<?php print $_SESSION[$guid]["absoluteURL"] ?>/index.php?q=/modules/Finance/invoicees_manage.php'>Manage Invoicees</a> to automatically generate them.</i></span>
 					</td>
 					<td class="right">
 						<select name="gibbonFinanceInvoiceeIDs[]" id="gibbonFinanceInvoiceeIDs[]" multiple style="width: 302px; height: 150px">
 							<optgroup label='--All Enrolled Students by Roll Group--'>
-							<?
+							<?php
 							$students=array() ;
 							$count=0 ;
 							try {
@@ -155,7 +155,7 @@ else {
 							}
 							?>
 							</optgroup>
-							<?
+							<?php
 							$dayTypeOptions=getSettingByScope($connection2, 'User Admin', 'dayTypeOptions') ;
 							if ($dayTypeOptions!="") {
 								$dayTypes=explode(",", $dayTypeOptions) ;
@@ -171,7 +171,7 @@ else {
 							}
 							?>
 							<optgroup label='--All Enrolled Students by Alphabet--'>
-							<?
+							<?php
 							$students=array() ;
 							$count=0 ;
 							try {
@@ -190,7 +190,7 @@ else {
 						</select>
 					</td>
 				</tr>
-				<? //BILLING TYPE CHOOSER ?>
+				<?php //BILLING TYPE CHOOSER ?>
 				<tr>
 					<td> 
 						<b>Scheduling *</b><br/>
@@ -229,7 +229,7 @@ else {
 					</td>
 					<td class="right">
 						<select name="gibbonFinanceBillingScheduleID" id="gibbonFinanceBillingScheduleID" style="width: 302px">
-							<?
+							<?php
 							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 							try {
 								$dataSelect=array(); 
@@ -245,7 +245,7 @@ else {
 						</select>
 						<script type="text/javascript">
 							var gibbonFinanceBillingScheduleID=new LiveValidation('gibbonFinanceBillingScheduleID');
-							gibbonFinanceBillingScheduleID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+							gibbonFinanceBillingScheduleID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 						 </script>
 					</td>
 				</tr>
@@ -258,7 +258,7 @@ else {
 						<input name="invoiceDueDate" id="invoiceDueDate" maxlength=10 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 							var invoiceDueDate=new LiveValidation('invoiceDueDate');
-							invoiceDueDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+							invoiceDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							invoiceDueDate.add(Validate.Presence);
 						 </script>
 						 <script type="text/javascript">
@@ -280,16 +280,16 @@ else {
 						<h3>Fees</h3>
 					</td>
 				</tr>
-				<? 
+				<?php 
 				$type="fee" ; 
 				?> 
 				<style>
-					#<? print $type ?> { list-style-type: none; margin: 0; padding: 0; width: 100%; }
-					#<? print $type ?> div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
+					#<?php print $type ?> { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+					#<?php print $type ?> div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
 					div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-					html>body #<? print $type ?> li { min-height: 58px; line-height: 1.2em; }
-					.<? print $type ?>-ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
-					.<? print $type ?>-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
+					html>body #<?php print $type ?> li { min-height: 58px; line-height: 1.2em; }
+					.<?php print $type ?>-ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
+					.<?php print $type ?>-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
 				</style>
 				<tr>
 					<td colspan=2> 
@@ -308,7 +308,7 @@ else {
 											</script>
 											<select id='newFee' onChange='feeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
 												<option class='all' value='0'>Choose a fee to add it</option>
-												<?
+												<?php
 												print "<option value='Ad Hoc'>Ad Hoc Fee</option>" ;
 												$switchContents.="case \"Ad Hoc\": " ;
 												$switchContents.="$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
@@ -354,9 +354,9 @@ else {
 											</select>
 											<script type='text/javascript'>
 												function feeDisplayElements(number) {
-													$("#<? print $type ?>Outer0").css("display", "none") ;
+													$("#<?php print $type ?>Outer0").css("display", "none") ;
 													switch(number) {
-														<? print $switchContents ?>
+														<?php print $switchContents ?>
 													}
 												}
 											</script>
@@ -370,17 +370,17 @@ else {
 				
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 					</td>
 					<td class="right">
-						<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<? print $gibbonFinanceInvoiceID ?>" type="hidden">
-						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<? print _("Submit") ; ?>">
+						<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<?php print $gibbonFinanceInvoiceID ?>" type="hidden">
+						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+						<input type="submit" value="<?php print _("Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
 		</form>
-		<?
+		<?php
 	}
 }
 ?>

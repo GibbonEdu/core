@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -132,7 +132,7 @@ else {
 						print "</p>" ;
 						
 						?>
-						<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_edit_copyForwardProcess.php?gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
+						<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_edit_copyForwardProcess.php?gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
 							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr>
 									<td colspan=2> 
@@ -141,31 +141,31 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b><? print _('School Year') ?> *</b><br/>
-										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+										<b><?php print _('School Year') ?> *</b><br/>
+										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
-										<?
+										<?php
 										print "<input readonly value='" . $year . "' type='text' style='width: 300px'>" ;
 										?>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b><? print _('Class') ?> *</b><br/>
-										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+										<b><?php print _('Class') ?> *</b><br/>
+										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
-										<? print "<input readonly value='" . $course . "." . $class . "' type='text' style='width: 300px'>" ; ?>
+										<?php print "<input readonly value='" . $course . "." . $class . "' type='text' style='width: 300px'>" ; ?>
 									</td>
 								</tr>
 								<tr>
 									<td> 
 										<b>Unit *</b><br/>
-										<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
-										<? print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
+										<?php print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
 									</td>
 								</tr>
 								
@@ -181,7 +181,7 @@ else {
 									</td>
 									<td class="right">
 										<select name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo" style="width: 302px">
-											<?
+											<?php
 											print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 											try {
 												$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -207,17 +207,17 @@ else {
 										</select>
 										<script type="text/javascript">
 											var gibbonSchoolYearIDCopyTo=new LiveValidation('gibbonSchoolYearIDCopyTo');
-											gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+											gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 										 </script>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b><? print _('Course') ?> *</b><br/>
+										<b><?php print _('Course') ?> *</b><br/>
 									</td>
 									<td class="right">
 										<select name="gibbonCourseIDTarget" id="gibbonCourseIDTarget" style="width: 302px">
-											<?
+											<?php
 											try {
 												if ($highestAction=="Manage Units_all") {
 													$dataSelect=array(); 
@@ -247,7 +247,7 @@ else {
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
-										<? print "<input name='nameTarget' id='nameTarget' value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
+										<?php print "<input name='nameTarget' id='nameTarget' value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
 										<script type="text/javascript">
 											var nameTarget=new LiveValidation('nameTarget');
 											nameTarget.add(Validate.Presence);
@@ -257,20 +257,20 @@ else {
 								
 								<tr>
 									<td>
-										<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+										<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 									</td>
 									<td class="right">
-										<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<? print $gibbonCourseClassID ?>" type="hidden">
-										<input name="gibbonCourseID" id="gibbonCourseID" value="<? print $gibbonCourseID ?>" type="hidden">
-										<input name="gibbonUnitID" id="gibbonUnitID" value="<? print $gibbonUnitID ?>" type="hidden">
-										<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
-										<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-										<input type="submit" value="<? print _("Submit") ; ?>">
+										<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<?php print $gibbonCourseClassID ?>" type="hidden">
+										<input name="gibbonCourseID" id="gibbonCourseID" value="<?php print $gibbonCourseID ?>" type="hidden">
+										<input name="gibbonUnitID" id="gibbonUnitID" value="<?php print $gibbonUnitID ?>" type="hidden">
+										<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
+										<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+										<input type="submit" value="<?php print _("Submit") ; ?>">
 									</td>
 								</tr>
 							</table>
 						</form>
-						<?
+						<?php
 					}
 				}
 			}

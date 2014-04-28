@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -88,15 +88,15 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/course_manage_class_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/course_manage_class_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('School Year') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('School Year') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="yearName" id="yearName" maxlength=20 value="<? print htmlPrep($row["yearName"]) ?>" type="text" style="width: 300px">
+							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print htmlPrep($row["yearName"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var yearName=new LiveValidation('yearName');
 								yearName.add(Validate.Presence);
@@ -105,11 +105,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Course') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('Course') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="courseName" id="courseName" maxlength=20 value="<? print htmlPrep($row["courseName"]) ?>" type="text" style="width: 300px">
+							<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print htmlPrep($row["courseName"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var courseName=new LiveValidation('courseName');
 								courseName.add(Validate.Presence);
@@ -118,11 +118,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i><? print _('Must be unique for this course.') ?></i></span>
+							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<span style="font-size: 90%"><i><?php print _('Must be unique for this course.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=10 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=10 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
@@ -131,11 +131,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i><? print _('Must be unique for this course.') ?></i></span>
+							<?php print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+							<span style="font-size: 90%"><i><?php print _('Must be unique for this course.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=5 value="<? print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=5 value="<?php print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -144,30 +144,30 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Reportable?') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Should this class show in reports?') ?></i></span>
+							<b><?php print _('Reportable?') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Should this class show in reports?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="reportable" id="reportable" style="width: 302px">
-								<option <? if ($row["reportable"]=="Y") {print "selected ";}?>value="Y"><? print _('Yes') ?></option>
-								<option <? if ($row["reportable"]=="N") {print "selected ";}?>value="N"><? print _('No') ?></option>
+								<option <?php if ($row["reportable"]=="Y") {print "selected ";}?>value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["reportable"]=="N") {print "selected ";}?>value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input name="gibbonCourseID" id="gibbonCourseID" value="<? print $gibbonCourseID ?>" type="hidden">
-							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input name="gibbonCourseID" id="gibbonCourseID" value="<?php print $gibbonCourseID ?>" type="hidden">
+							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

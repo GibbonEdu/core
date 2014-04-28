@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -93,28 +93,28 @@ else {
 				print "</div>" ;
 			}
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_editProcess.php?search=$search" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_editProcess.php?search=$search" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Assessment Type') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('Assessment Type') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right" colspan=2>
-							<input readonly name="name" id="name" maxlength=20 value="<? print $row["assessment"] ?>" type="text" style="width: 300px; text-align: right">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print $row["assessment"] ?>" type="text" style="width: 300px; text-align: right">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Date') ?> *</b><br/>
-							<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+							<b><?php print _('Date') ?> *</b><br/>
+							<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 						</td>
 						<td class="right" colspan=2>
-							<input name="date" id="date" maxlength=10 value="<? if ($row["date"]!="") { print dateConvertBack($guid, $row["date"]) ; } ?>" type="text" style="width: 300px">
+							<input name="date" id="date" maxlength=10 value="<?php if ($row["date"]!="") { print dateConvertBack($guid, $row["date"]) ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var date=new LiveValidation('date');
 								date.add(Validate.Presence);
-								date.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+								date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 </script>
 							 <script type="text/javascript">
 								$(function() {
@@ -124,7 +124,7 @@ else {
 						</td>
 					</tr>
 				
-					<?
+					<?php
 					//Check for all fields
 					try {
 						$dataCheck=array("gibbonExternalAssessmentID"=>$row["gibbonExternalAssessmentID"]); 
@@ -196,12 +196,12 @@ else {
 							?>
 							<tr>
 								<td> 
-									<span style='font-weight: bold' title='<? print $rowField["usage"] ?>'><? print $rowField["name"] ?></span><br/>
+									<span style='font-weight: bold' title='<?php print $rowField["usage"] ?>'><?php print $rowField["name"] ?></span><br/>
 								</td>
 								<td class="right">
-									<input name="<? print $count?>-gibbonExternalAssessmentStudentEntryID" id="<? print $count?>-gibbonExternalAssessmentStudentEntryID" value="<? print $rowField["gibbonExternalAssessmentStudentEntryID"] ?>" type="hidden">
-									<select name="<? print $count?>-gibbonScaleGradeID" id="<? print $count?>-gibbonScaleGradeID" style="width:160px">
-										<?
+									<input name="<?php print $count?>-gibbonExternalAssessmentStudentEntryID" id="<?php print $count?>-gibbonExternalAssessmentStudentEntryID" value="<?php print $rowField["gibbonExternalAssessmentStudentEntryID"] ?>" type="hidden">
+									<select name="<?php print $count?>-gibbonScaleGradeID" id="<?php print $count?>-gibbonScaleGradeID" style="width:160px">
+										<?php
 										try {
 											$dataSelect=array("gibbonScaleID"=>$rowField["gibbonScaleID"]); 
 											$sqlSelect="SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND NOT value='Incomplete' ORDER BY sequenceNumber" ;
@@ -227,8 +227,8 @@ else {
 									</select>
 								</td>
 								<td class="right">
-									<select name="<? print $count?>-gibbonScaleGradeIDPAS" id="<? print $count?>-gibbonScaleGradeIDPAS" style="width:160px">
-										<?
+									<select name="<?php print $count?>-gibbonScaleGradeIDPAS" id="<?php print $count?>-gibbonScaleGradeIDPAS" style="width:160px">
+										<?php
 										try {
 											$dataSelect=array("gibbonScaleID"=>$_SESSION[$guid]["primaryAssessmentScale"]); 
 											$sqlSelect="SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND NOT value='Incomplete' ORDER BY sequenceNumber" ;
@@ -254,7 +254,7 @@ else {
 									</select>
 								</td>
 							</tr>
-							<?
+							<?php
 							
 							$lastCategory=$rowField["category"] ;
 							$count++ ;
@@ -263,20 +263,20 @@ else {
 					?>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right" colspan=2>
-							<input name="count" id="count" value="<? print $count ?>" type="hidden">
-							<input name="gibbonPersonID" id="gibbonPersonID" value="<? print $gibbonPersonID ?>" type="hidden">
-							<input name="gibbonExternalAssessmentStudentID" id="gibbonExternalAssessmentStudentID" value="<? print $gibbonExternalAssessmentStudentID ?>" type="hidden">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input name="count" id="count" value="<?php print $count ?>" type="hidden">
+							<input name="gibbonPersonID" id="gibbonPersonID" value="<?php print $gibbonPersonID ?>" type="hidden">
+							<input name="gibbonExternalAssessmentStudentID" id="gibbonExternalAssessmentStudentID" value="<?php print $gibbonExternalAssessmentStudentID ?>" type="hidden">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
 			
-			<?			
+			<?php			
 		}
 	}
 }

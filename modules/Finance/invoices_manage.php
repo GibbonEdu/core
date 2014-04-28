@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -181,7 +181,7 @@ else {
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
-						<?
+						<?php
 						print "<select name='status' id='status' style='width:302px'>" ;
 							$selected="" ;
 							if ($status=="%") {
@@ -233,7 +233,7 @@ else {
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
-						<?
+						<?php
 						try {
 							$dataPurpose=array(); 
 							$sqlPurpose="SELECT surname, preferredName, gibbonFinanceInvoiceeID FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) ORDER BY surname, preferredName" ;
@@ -261,7 +261,7 @@ else {
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
-						<?
+						<?php
 						print "<select name='monthOfIssue' id='monthOfIssue' style='width:302px'>" ;
 							print "<option value=''></option>" ;
 							for ($i=1; $i<=12; $i++) {
@@ -281,7 +281,7 @@ else {
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
-						<?
+						<?php
 						try {
 							$dataPurpose=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
 							$sqlPurpose="SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
@@ -308,13 +308,13 @@ else {
 						?>
 					</td>
 				</tr>
-				<?
+				<?php
 				
 				print "<tr>" ;
 					print "<td class='right' colspan=2>" ;
 						print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php'>Clear Filters</a> " ;
-						print "<input type='submit' value='Go'>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php'>" . _('Clear Filters') . "</a> " ;
+						print "<input type='submit' value='" . _('Go') . "'>" ;
 					print "</td>" ;
 				print "</tr>" ;
 			print "</table>" ;
@@ -473,10 +473,10 @@ else {
 							print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='New Fees & Invoices' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.gif'/></a><br/>" ;
 						print "</div>" ;
 						?>
-						<input style='margin-top: 0px; float: right' type='submit' value='Go'>
+						<input style='margin-top: 0px; float: right' type='submit' value='" . _('Go') . "'>
 						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-							<option value="Select action"><? print _('Select action') ?></option>
-							<?
+							<option value="Select action"><?php print _('Select action') ?></option>
+							<?php
 							if ($status=="Pending") {
 								print "<option value=\"delete\">Delete</option>" ;
 								print "<option value=\"issue\">Issue</option>" ;
@@ -489,9 +489,9 @@ else {
 						</select>
 						<script type="text/javascript">
 							var action=new LiveValidation('action');
-							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<? print _('Select something!') ?>"});
+							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php print _('Select something!') ?>"});
 						</script>
-						<?
+						<?php
 					print "</div>" ;	
 					
 					print "<table cellspacing='0' style='width: 100%'>" ;
@@ -528,7 +528,7 @@ else {
 										});
 									});
 								</script>
-								<?
+								<?php
 								print "<input type='checkbox' class='checkall'>" ;
 							print "</th>" ;
 						print "</tr>" ;

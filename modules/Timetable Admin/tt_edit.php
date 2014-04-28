@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -102,15 +102,15 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_editProcess.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_editProcess.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('School Year') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('School Year') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="gibbonSchoolYearID" id="gibbonSchoolYearID" maxlength=20 value="<? print $row["yearName"] ?>" type="text" style="width: 300px">
+							<input readonly name="gibbonSchoolYearID" id="gibbonSchoolYearID" maxlength=20 value="<?php print $row["yearName"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var schoolYearName=new LiveValidation('schoolYearName');
 								schoolYearName.add(Validate.Presence);
@@ -119,11 +119,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i><? print _('Must be unique for this school year.') ?></i></span>
+							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<span style="font-size: 90%"><i><?php print _('Must be unique for this school year.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=30 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=30 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
@@ -132,11 +132,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+							<?php print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=12 value="<? print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=12 value="<?php print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -145,12 +145,12 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Active') ?></b><br/>
+							<b><?php print _('Active') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="active">
-								<?
+								<?php
 								print "<option " ; if ($row["active"]=="Y") { print "selected "; } ; print "value='Y'>" . _('Yes') . "</option>" ;
 								print "<option " ; if ($row["active"]=="N") { print "selected "; } ; print " value='N'>" . _('No') . "</option>" ;
 								?>				
@@ -159,11 +159,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Year Groups') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Groups not in an active TT this year.') ?></i></span>
+							<b><?php print _('Year Groups') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Groups not in an active TT this year.') ?></i></span>
 						</td>
 						<td class="right">
-							<? 
+							<?php 
 							$yearGroups=getNonTTYearGroups($connection2, $_GET["gibbonSchoolYearID"], $gibbonTTID) ;
 							if ($yearGroups=="") {
 								print "<i>" . _('No year groups available.') . "</i>" ;
@@ -179,23 +179,23 @@ else {
 								}
 							}
 							?>
-							<input type="hidden" name="count" value="<? print (count($yearGroups))/2 ?>">
+							<input type="hidden" name="count" value="<?php print (count($yearGroups))/2 ?>">
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input name="gibbonTTID" id="gibbonTTID" value="<? print $_GET["gibbonTTID"] ?>" type="hidden">
-							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $_GET["gibbonSchoolYearID"] ?>" type="hidden">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input name="gibbonTTID" id="gibbonTTID" value="<?php print $_GET["gibbonTTID"] ?>" type="hidden">
+							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $_GET["gibbonSchoolYearID"] ?>" type="hidden">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 			
 			print "<h2>" ;
 			print _("Edit Timetable Days") ;

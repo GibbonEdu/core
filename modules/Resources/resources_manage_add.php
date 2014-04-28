@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -79,7 +79,7 @@ else {
 		}
 		
 		?>
-		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_addProcess.php?search=" . $_GET["search"] ?>" enctype="multipart/form-data">
+		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_addProcess.php?search=" . $_GET["search"] ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr class='break'>
 					<td colspan=2> 
@@ -128,18 +128,18 @@ else {
 				</script>
 				<tr>
 					<td> 
-						<b><? print _('Type') ?> *</b><br/>
+						<b><?php print _('Type') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<select name="type" id="type" class='type' style="width: 302px">
-							<option value="Please select..."><? print _('Please select...') ?></option>
+							<option value="Please select..."><?php print _('Please select...') ?></option>
 							<option id='type' name="type" value="File" /> File
 							<option id='type' name="type" value="HTML" /> HMTL
 							<option id='type' name="type" value="Link" /> Link
 						</select>
 						<script type="text/javascript">
 							var type=new LiveValidation('type');
-							type.add(Validate.Inclusion, { within: ['File','HTML','Link'], failureMessage: "<? print _('Select something!') ?>"});
+							type.add(Validate.Inclusion, { within: ['File','HTML','Link'], failureMessage: "<?php print _('Select something!') ?>"});
 						</script>
 					</td>
 				</tr>
@@ -150,7 +150,7 @@ else {
 					<td class="right">
 						<input type="file" name="file" id="file"><br/><br/>
 						<script type="text/javascript">
-							<?
+							<?php
 							//Get list of acceptable file extensions
 							try {
 								$dataExt=array(); 
@@ -165,11 +165,11 @@ else {
 							}
 							?>
 							var file=new LiveValidation('file');
-							file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+							file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 							file.add(Validate.Presence);
 							file.disable();
 						</script>	
-						<?
+						<?php
 						print getMaxUpload() ;
 						?>
 					</td>
@@ -177,7 +177,7 @@ else {
 				<tr id="resourceHTML">
 					<td colspan=2> 
 						<b>HTML *</b>
-						<? print getEditor($guid,  TRUE, "html", "", 20, false, false, false, false ) ?>
+						<?php print getEditor($guid,  TRUE, "html", "", 20, false, false, false, false ) ?>
 					</td>
 				</tr>
 				<tr id="resourceLink">
@@ -203,7 +203,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+						<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -214,7 +214,7 @@ else {
 						 </script>
 					</td>
 				</tr>
-				<?
+				<?php
 				try {
 					$dataCategory=array(); 
 					$sqlCategory="SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='categories'" ;
@@ -238,22 +238,22 @@ else {
 							</td>
 							<td class="right">
 								<select name="category" id="category" style="width: 302px">
-									<option value="Please select..."><? print _('Please select...') ?></option>
-									<?
+									<option value="Please select..."><?php print _('Please select...') ?></option>
+									<?php
 									for ($i=0; $i<count($options); $i++) {
 									?>
-										<option value="<? print trim($options[$i]) ?>"><? print trim($options[$i]) ?></option>
-									<?
+										<option value="<?php print trim($options[$i]) ?>"><?php print trim($options[$i]) ?></option>
+									<?php
 									}
 									?>
 								</select>
 								<script type="text/javascript">
 									var category=new LiveValidation('category');
-									category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+									category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 								 </script>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 				}
 				
@@ -288,17 +288,17 @@ else {
 							<td class="right">
 								<select name="purpose" id="purpose" style="width: 302px">
 									<option value=""></option>
-									<?
+									<?php
 									for ($i=0; $i<count($options); $i++) {
 									?>
-										<option value="<? print trim($options[$i]) ?>"><? print trim($options[$i]) ?></option>
-									<?
+										<option value="<?php print trim($options[$i]) ?>"><?php print trim($options[$i]) ?></option>
+									<?php
 									}
 									?>
 								</select>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 				}
 				?>
@@ -308,7 +308,7 @@ else {
 						<span style="font-size: 90%"><i>Use lots of tags!</i></span>
 					</td>
 					<td class="right">
-						<?
+						<?php
 						//Get tag list
 						try {
 							$dataList=array(); 
@@ -332,7 +332,7 @@ else {
 						<script type="text/javascript">
 							$(document).ready(function() {
 								 $("#tags").tokenInput([
-									<? print substr($list,0,-1) ?>
+									<?php print substr($list,0,-1) ?>
 								], 
 									{theme: "facebook",
 									hintText: "Start typing a tag...",
@@ -348,11 +348,11 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('Year Groups') ?></b><br/>
+						<b><?php print _('Year Groups') ?></b><br/>
 						<span style="font-size: 90%"><i>Students year groups which may participate<br/></i></span>
 					</td>
 					<td class="right">
-						<? 
+						<?php 
 						print "<fieldset style='border: none'>" ;
 						?>
 						<script type="text/javascript">
@@ -362,7 +362,7 @@ else {
 								});
 							});
 						</script>
-						<?
+						<?php
 						print "All / None <input type='checkbox' class='checkall' checked><br/>" ;
 						$yearGroups=getYearGroups($connection2) ;
 						if ($yearGroups=="") {
@@ -377,12 +377,12 @@ else {
 						}
 						print "</fieldset>" ;
 						?>
-						<input type="hidden" name="count" value="<? print (count($yearGroups))/2 ?>">
+						<input type="hidden" name="count" value="<?php print (count($yearGroups))/2 ?>">
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('Description') ?></b><br/>
+						<b><?php print _('Description') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -392,17 +392,17 @@ else {
 				
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 					</td>
 					<td class="right">
-						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<? print _("Submit") ; ?>">
+						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+						<input type="submit" value="<?php print _("Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
 		</form>
 		
-		<?
+		<?php
 	}
 }
 ?>

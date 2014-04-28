@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -100,24 +100,24 @@ else {
 					//Let's go!
 					$row=$result->fetch() ;
 					?>
-					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_editRowsColumnsProcess.php?gibbonRubricID=$gibbonRubricID" ?>">
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_editRowsColumnsProcess.php?gibbonRubricID=$gibbonRubricID" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 760px">	
 							<tr class='break'>
 								<td colspan=2>
-									<h3><? print _('Rubric Basics') ?></h3>
+									<h3><?php print _('Rubric Basics') ?></h3>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b><? print _('Scope') ?> *</b><br/>
+									<b><?php print _('Scope') ?> *</b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
-									<input readonly name="scope" id="scope" value="<? print $row["scope"] ?>" type="text" style="width: 300px">
+									<input readonly name="scope" id="scope" value="<?php print $row["scope"] ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
 							
-							<?
+							<?php
 							if ($row["scope"]=="Learning Area") {
 								try {
 									$dataLearningArea=array("gibbonDepartmentID"=>$row["gibbonDepartmentID"]); 
@@ -135,33 +135,33 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b><? print _('Learning Area') ?> *</b><br/>
+										<b><?php print _('Learning Area') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
-										<input readonly name="department" id="department" value="<? print $rowLearningAreas["name"] ?>" type="text" style="width: 300px" maxlength=20>
-										<input name="gibbonDepartmentID" id="gibbonDepartmentID" value="<? print $row["gibbonDepartmentID"] ?>" type="hidden" style="width: 300px">
+										<input readonly name="department" id="department" value="<?php print $rowLearningAreas["name"] ?>" type="text" style="width: 300px" maxlength=20>
+										<input name="gibbonDepartmentID" id="gibbonDepartmentID" value="<?php print $row["gibbonDepartmentID"] ?>" type="hidden" style="width: 300px">
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 							?>
 							<tr>
 								<td> 
-									<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+									<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 								</td>
 								<td class="right">
-									<input readonly name="name" id="name" maxlength=50 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+									<input readonly name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
 							
-							<?//ROWS!?>
+							<?php//ROWS!?>
 							<tr class='break'>
 								<td colspan=2>
-									<h3><? print _('Rows') ?></h3>
+									<h3><?php print _('Rows') ?></h3>
 								</td>
 							</tr>
-							<?
+							<?php
 							try {
 								$dataRows=array("gibbonRubricID"=>$gibbonRubricID); 
 								$sqlRows="SELECT * FROM gibbonRubricRow WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber" ;
@@ -183,11 +183,11 @@ else {
 									?>
 									<tr>
 										<td> 
-											<b><? print sprintf(_('Row %1$s Title'), ($count+1)) ?></b><br/>
+											<b><?php print sprintf(_('Row %1$s Title'), ($count+1)) ?></b><br/>
 											<span style="font-size: 90%"><i></i></span>
 										</td>
 										<td class="right">
-											<?
+											<?php
 											$outcomeBased=FALSE ;
 											if ($rowRows["gibbonOutcomeID"]!="") {
 												$outcomeBased=TRUE ;
@@ -195,38 +195,38 @@ else {
 											?>
 											<script type="text/javascript">
 												$(document).ready(function(){
-													<?
+													<?php
 													if ($outcomeBased==FALSE) {
 														?>
-														$("#gibbonOutcomeID-<? print $count ?>").css("display","none");
-														<?
+														$("#gibbonOutcomeID-<?php print $count ?>").css("display","none");
+														<?php
 													}
 													else {
 														?>
-														$("#rowTitle-<? print $count ?>").css("display","none");
-														<?
+														$("#rowTitle-<?php print $count ?>").css("display","none");
+														<?php
 													}
 													?>
 													
-													$(".type-<? print $count ?>").click(function(){
-														if ($('input[name=type-<? print $count ?>]:checked').val()=="Standalone" ) {
-															$("#gibbonOutcomeID-<? print $count ?>").css("display","none");
-															$("#rowTitle-<? print $count ?>").css("display","block"); 
+													$(".type-<?php print $count ?>").click(function(){
+														if ($('input[name=type-<?php print $count ?>]:checked').val()=="Standalone" ) {
+															$("#gibbonOutcomeID-<?php print $count ?>").css("display","none");
+															$("#rowTitle-<?php print $count ?>").css("display","block"); 
 														}
-														else if ($('input[name=type-<? print $count ?>]:checked').val()=="Outcome Based" ) {
-															$("#rowTitle-<? print $count ?>").css("display","none");
-															$("#gibbonOutcomeID-<? print $count ?>").css("display","block"); 
+														else if ($('input[name=type-<?php print $count ?>]:checked').val()=="Outcome Based" ) {
+															$("#rowTitle-<?php print $count ?>").css("display","none");
+															$("#gibbonOutcomeID-<?php print $count ?>").css("display","block"); 
 														}
 													});
 													
 												});
 											</script>
-											<input <? if ($outcomeBased==FALSE) {print "checked";} ?> type="radio" name="type-<? print $count ?>" value="Standalone" class="type-<? print $count ?>" /> <? print _('Standalone') ?> 
-											<input <? if ($outcomeBased==TRUE) {print "checked";} ?> type="radio" name="type-<? print $count ?>" value="Outcome Based" class="type-<? print $count ?>" /> <? print _('Outcome Based') ?><br/>
-											<select name='gibbonOutcomeID[]' id='gibbonOutcomeID-<? print $count ?>' style='width: 304px'>
+											<input <?php if ($outcomeBased==FALSE) {print "checked";} ?> type="radio" name="type-<?php print $count ?>" value="Standalone" class="type-<?php print $count ?>" /> <?php print _('Standalone') ?> 
+											<input <?php if ($outcomeBased==TRUE) {print "checked";} ?> type="radio" name="type-<?php print $count ?>" value="Outcome Based" class="type-<?php print $count ?>" /> <?php print _('Outcome Based') ?><br/>
+											<select name='gibbonOutcomeID[]' id='gibbonOutcomeID-<?php print $count ?>' style='width: 304px'>
 												<option><option>
-												<optgroup label='--<? print _('School Outcomes') ?>--'>
-													<?
+												<optgroup label='--<?php print _('School Outcomes') ?>--'>
+													<?php
 													try {
 														$dataSelect=array(); 
 														$sqlSelect="SELECT * FROM gibbonOutcome WHERE scope='School' AND active='Y' ORDER BY category, name" ;
@@ -250,11 +250,11 @@ else {
 													}
 													?>
 												</optgroup>
-												<?
+												<?php
 												if ($row["scope"]=="Learning Area") {
 													?>
-													<optgroup label='--<? print _('Learning Area Outcomes') ?>--'>
-														<?
+													<optgroup label='--<?php print _('Learning Area Outcomes') ?>--'>
+														<?php
 														try {
 															$dataSelect=array("gibbonDepartmentID"=>$row["gibbonDepartmentID"]); 
 															$sqlSelect="SELECT * FROM gibbonOutcome WHERE scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID AND active='Y' ORDER BY category, name" ;
@@ -278,27 +278,27 @@ else {
 														}
 														?>
 													</optgroup>
-													<?
+													<?php
 												}
 												?>
 											</select>
-											<input name="rowTitle[]" id="rowTitle-<? print $count ?>" value="<? print $rowRows["title"] ?>" type="text" style="width: 300px" maxlength=40>
-											<input name="gibbonRubricRowID[]" id="gibbonRubricRowID[]" value="<? print $rowRows["gibbonRubricRowID"] ?>" type="hidden">
+											<input name="rowTitle[]" id="rowTitle-<?php print $count ?>" value="<?php print $rowRows["title"] ?>" type="text" style="width: 300px" maxlength=40>
+											<input name="gibbonRubricRowID[]" id="gibbonRubricRowID[]" value="<?php print $rowRows["gibbonRubricRowID"] ?>" type="hidden">
 										</td>
 									</tr>
-									<?
+									<?php
 									$count++ ;
 								}
 							}
 							?>
 							
-							<?//COLUMNS!?>
+							<?php//COLUMNS!?>
 							<tr class='break'>
 								<td colspan=2>
-									<h3><? print _('Columns') ?></h3>
+									<h3><?php print _('Columns') ?></h3>
 								</td>
 							</tr>
-							<?
+							<?php
 							try {
 								$dataColumns=array("gibbonRubricID"=>$gibbonRubricID); 
 								$sqlColumns="SELECT * FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber" ;
@@ -322,15 +322,15 @@ else {
 										?>
 										<tr>
 											<td> 
-												<b><? print sprintf(_('Column %1$s Title'), ($count+1)) ?></b><br/>
+												<b><?php print sprintf(_('Column %1$s Title'), ($count+1)) ?></b><br/>
 												<span style="font-size: 90%"><i></i></span>
 											</td>
 											<td class="right">
-												<input name="columnTitle[]" id="columnTitle[]" value="<? print $rowColumns["title"] ?>" type="text" style="width: 300px" maxlength=20>
-												<input name="gibbonRubricColumnID[]" id="gibbonRubricColumnID[]" value="<? print $rowColumns["gibbonRubricColumnID"] ?>" type="hidden">
+												<input name="columnTitle[]" id="columnTitle[]" value="<?php print $rowColumns["title"] ?>" type="text" style="width: 300px" maxlength=20>
+												<input name="gibbonRubricColumnID[]" id="gibbonRubricColumnID[]" value="<?php print $rowColumns["gibbonRubricColumnID"] ?>" type="hidden">
 											</td>
 										</tr>
-										<?
+										<?php
 										$count++ ;
 									}
 								}
@@ -341,11 +341,11 @@ else {
 										?>
 										<tr>
 											<td> 
-												<b><? print sprintf(_('Column %1$s Grade'), ($count+1)) ?></b><br/>
+												<b><?php print sprintf(_('Column %1$s Grade'), ($count+1)) ?></b><br/>
 												<span style="font-size: 90%"><i></i></span>
 											</td>
 											<td class="right">
-												<?
+												<?php
 												print "<select name='gibbonScaleGradeID[]' id='gibbonScaleGradeID[]' style='width:304px'>" ;
 													try {
 														$dataSelect=array("gibbonScaleID"=>$row["gibbonScaleID"]); 
@@ -364,10 +364,10 @@ else {
 													}
 												print "</select>" ;
 												?>
-												<input name="gibbonRubricColumnID[]" id="gibbonRubricColumnID[]" value="<? print $rowColumns["gibbonRubricColumnID"] ?>" type="hidden">
+												<input name="gibbonRubricColumnID[]" id="gibbonRubricColumnID[]" value="<?php print $rowColumns["gibbonRubricColumnID"] ?>" type="hidden">
 											</td>
 										</tr>
-										<?
+										<?php
 										$count++ ;
 									}
 								}
@@ -377,16 +377,16 @@ else {
 							
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 								</td>
 								<td class="right">
-									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<? print _("Submit") ; ?>">
+									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+									<input type="submit" value="<?php print _("Submit") ; ?>">
 								</td>
 							</tr>
 						</table>
 					</form>
-				<?
+				<?php
 				}
 			}
 		}

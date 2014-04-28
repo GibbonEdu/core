@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -78,7 +78,7 @@ else {
 	
 	?>
 	
-	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2>
@@ -94,7 +94,7 @@ else {
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="gibbonPersonID">
-						<?
+						<?php
 						print "<option value=''></option>" ;
 						try {
 							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -121,13 +121,13 @@ else {
 			<tr>
 				<td> 
 					<b>Date *</b><br/>
-					<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
-					<input name="currentDate" id="currentDate" maxlength=10 value="<? print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
+					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 						date.add(Validate.Presence);
 					 </script>
 					 <script type="text/javascript">
@@ -139,13 +139,13 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/attendance_take_byPerson.php">
+					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/attendance_take_byPerson.php">
 					<input type="submit" value="Search">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 	
 	if ($gibbonPersonID!="") {
 		if ($currentDate>$today) {
@@ -210,7 +210,7 @@ else {
 				
 				//Show student form
 				?>
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr class='break'>
 							<td colspan=2>
@@ -225,7 +225,7 @@ else {
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
-								<?
+								<?php
 								print "<table cellspacing='0' style='float: right; width:134px; margin: 0px 0px 0px 8px; height: 35px' >" ;
 									print "<tr>" ;
 										for ($i=4; $i>=0; $i--) {
@@ -285,11 +285,11 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><? print _('Type') ?> *</b><br/>
+								<b><?php print _('Type') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
-								<?
+								<?php
 								print "<select style='float: none; width: 302px; margin-bottom: 3px' name='type'>" ;
 									print "<option " ; if ($lastType=="Present") { print "selected " ; } ; print "value='Present'>Present</option>" ;
 									print "<option " ; if ($lastType=="Present - Late") { print "selected " ; } ; print "value='Present - Late'>Present - Late</option>" ;
@@ -307,7 +307,7 @@ else {
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
-								<?
+								<?php
 								print "<select style='float: none; width: 302px; margin-bottom: 10px' name='reason'>" ;
 									print "<option " ; if ($lastReason=="") { print "selected " ; } ; print "value=''></option>" ;
 									print "<option " ; if ($lastReason=="Pending") { print "selected " ; } ; print "value='Pending'>Pending</option>" ;
@@ -325,7 +325,7 @@ else {
 								<span style="font-size: 90%"><i>255 character limit</i></span>
 							</td>
 							<td class="right">
-								<?
+								<?php
 								print "<textarea name='comment' id='comment' rows=3 style='width: 300px'>$lastComment</textarea>" ;
 								?>
 								<script type="text/javascript">
@@ -336,17 +336,17 @@ else {
 						</tr>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 							</td>
 							<td class="right">
-								<? print "<input type='hidden' name='currentDate' value='$currentDate'>" ; ?>
-								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<? print _("Submit") ; ?>">
+								<?php print "<input type='hidden' name='currentDate' value='$currentDate'>" ; ?>
+								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+								<input type="submit" value="<?php print _("Submit") ; ?>">
 							</td>
 						</tr>
 					</table>
 				</form>
-				<?
+				<?php
 			}
 		}
 	}

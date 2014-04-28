@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -33,11 +33,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Library/report_studentBorr
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Student Borrowing Record</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Student Borrowing Record') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print "Choose Student" ;
+	print _("Choose Student") ;
 	print "</h2>" ;
 	
 	$gibbonPersonID=NULL ;
@@ -46,16 +46,16 @@ else {
 	}
 	?>
 	
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentBorrowingRecord.php"?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentBorrowingRecord.php"?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Students *</b><br/>
+					<b><?php print _('Students') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
 						<option value=''></value>
-						<?
+						<?php
 						try {
 							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 							$sqlSelect="SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName" ;
@@ -76,12 +76,12 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 	
 	if ($gibbonPersonID!="") {
 		print "<h2>" ;
@@ -91,7 +91,7 @@ else {
 		$output=getBorrowingRecord($guid, $connection2, $gibbonPersonID) ;
 		if ($output==FALSE) {
 			print "<div class='error'>" ;
-				print "The student borrowing record could not be created." ;
+				print _("There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {

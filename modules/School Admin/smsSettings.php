@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -58,12 +58,12 @@ else {
 	?>
 	
 	<div class='warning'>
-		<? print sprintf(_('Gibbon is designed to use the %1$sOne Way SMS%2$s gateway to send out SMS messages. This is a paid service, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module. It is possible that completing the fields below with details from other gateways may work.'), "<a href='http://onewaysms.com' target='_blank'>", "</a>") ?>
+		<?php print sprintf(_('Gibbon is designed to use the %1$sOne Way SMS%2$s gateway to send out SMS messages. This is a paid service, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module. It is possible that completing the fields below with details from other gateways may work.'), "<a href='http://onewaysms.com' target='_blank'>", "</a>") ?>
 	</div>
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/smsSettingsProcess.php" ?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/smsSettingsProcess.php" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Messenger' AND name='smsUsername'" ;
@@ -74,16 +74,16 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 				</td>
 			</tr>
 			
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Messenger' AND name='smsPassword'" ;
@@ -94,16 +94,16 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="password" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="password" style="width: 300px">
 				</td>
 			</tr>
 			
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Messenger' AND name='smsURL'" ;
@@ -114,16 +114,16 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 				</td>
 			</tr>
 			
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Messenger' AND name='smsURLCredit'" ;
@@ -134,25 +134,25 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 				</td>
 			</tr>
 			
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-<?
+<?php
 }
 ?>

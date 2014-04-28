@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -123,45 +123,45 @@ else {
 				print "</div>" ;
 			}
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_editProcess.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&search=" . $_GET["search"] ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_editProcess.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&search=" . $_GET["search"] ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Name') ?></b><br/>
+							<b><?php print _('Name') ?></b><br/>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
-					<?
+					<?php
 					if ($dateType=="Date") {
 						?>
 						<tr>
 							<td> 
-								<b><? print _('Listing Dates') ?></b><br/>
+								<b><?php print _('Listing Dates') ?></b><br/>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<? print dateConvertBack($guid, $row["listingStart"]) . "-" . dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<?php print dateConvertBack($guid, $row["listingStart"]) . "-" . dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b><? print _('Program Dates') ?></b><br/>
+								<b><?php print _('Program Dates') ?></b><br/>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<? print dateConvertBack($guid, $row["programStart"]) . "-" . dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<?php print dateConvertBack($guid, $row["programStart"]) . "-" . dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 					else {
 						?>
 						<tr>
 							<td> 
-								<b><? print _('Terms') ?></b><br/>
+								<b><?php print _('Terms') ?></b><br/>
 							</td>
 							<td class="right">
-								<?
+								<?php
 								$terms=getTerms($connection2, $_SESSION[$guid]["gibbonSchoolYearID"], true) ;
 								$termList="" ;
 								for ($i=0; $i<count($terms); $i=$i+2) {
@@ -173,16 +173,16 @@ else {
 									$termList="-, " ;
 								}
 								?>
-								<input readonly name="name" id="name" maxlength=20 value="<? print substr($termList,0,-2) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<?php print substr($termList,0,-2) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 					?>
 				</table>
 			</form>
 			
-			<?
+			<?php
 			$enrolment=getSettingByScope($connection2, "Activities", "enrolmentType") ;
 			try {
 				if ($enrolment=="Competitive") {

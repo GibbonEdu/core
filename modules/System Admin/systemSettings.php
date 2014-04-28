@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -72,15 +72,15 @@ else {
 	} 
 	?>
 	
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/systemSettingsProcess.php" ?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/systemSettingsProcess.php" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('System Settings') ?></h3>
+					<h3><?php print _('System Settings') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='absoluteURL'" ;
@@ -93,20 +93,20 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td stclass="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Presence);
-						<? print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
+						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='absolutePath'" ;
@@ -119,19 +119,19 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td stclass="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='systemName'" ;
@@ -144,19 +144,19 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='indexText'" ;
@@ -169,19 +169,19 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=8 style="width: 300px"><? print htmlPrep($row["value"]) ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print htmlPrep($row["value"]) ?></textarea>
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='installType'" ;
@@ -194,12 +194,12 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<?
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
 						$selected="" ;
 						if ($row["value"]=="Production" ) { $selected="selected" ; }
 						print "<option $selected value='Production'>Production</option>" ;
@@ -214,7 +214,7 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='cuttingEdgeCode'" ;
@@ -227,12 +227,12 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<?
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
 						print "<option $selected value='Y'>Y</option>" ;
@@ -244,7 +244,7 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='statsCollection'" ;
@@ -257,12 +257,12 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<?
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
 						print "<option $selected value='Y'>Y</option>" ;
@@ -276,11 +276,11 @@ else {
 		
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('Organisation Settings') ?></h3>
+					<h3><?php print _('Organisation Settings') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationName'" ;
@@ -293,19 +293,19 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationNameShort'" ;
@@ -318,19 +318,19 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationEmail'" ;
@@ -343,19 +343,19 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Email);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Email);
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationLogo'" ;
@@ -368,19 +368,19 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdministratorName'" ;
@@ -393,19 +393,19 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdministratorEmail'" ;
@@ -418,20 +418,20 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Email);
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Email);
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationDBAName'" ;
@@ -444,19 +444,19 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationDBAEmail'" ;
@@ -469,20 +469,20 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Email);
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Email);
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsName'" ;
@@ -495,19 +495,19 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsEmail'" ;
@@ -520,31 +520,31 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Email);
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Email);
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
 			</tr>
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('Security Settings') ?></h3>
+					<h3><?php print _('Security Settings') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2> 
-					<h4><? print _('Password Policy') ?></h4>
+					<h4><?php print _('Password Policy') ?></h4>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='passwordPolicyMinLength'" ;
@@ -557,12 +557,12 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<?
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
 						for ($i=4; $i<13; $i++ ) { 
 							$selected="" ;
 							if ($row["value"]==$i ) { $selected="selected" ; }
@@ -573,7 +573,7 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='passwordPolicyAlpha'" ;
@@ -586,12 +586,12 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<?
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
 						print "<option $selected value='Y'>Y</option>" ;
@@ -603,7 +603,7 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='passwordPolicyNumeric'" ;
@@ -616,12 +616,12 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<?
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
 						print "<option $selected value='Y'>Y</option>" ;
@@ -633,7 +633,7 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='passwordPolicyNonAlphaNumeric'" ;
@@ -646,12 +646,12 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<?
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
 						print "<option $selected value='Y'>Y</option>" ;
@@ -664,11 +664,11 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2> 
-					<h4><? print _('Miscellaneous') ?></h4>
+					<h4><?php print _('Miscellaneous') ?></h4>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='allowableHTML'" ;
@@ -681,21 +681,21 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=8 style="width: 300px"><? print htmlPrep($row["value"]) ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print htmlPrep($row["value"]) ?></textarea>
 				</td>
 			</tr>
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('Calendar, Web & Email') ?></h3>
+					<h3><?php print _('Calendar, Web & Email') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='calendarFeed'" ;
@@ -708,19 +708,19 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 					</script>	
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='emailLink'" ;
@@ -733,19 +733,19 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 					</script>	
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='webLink'" ;
@@ -758,25 +758,25 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
 					</script>	
 				</td>
 			</tr>
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('gibbonedu.com Value-Added Services') ?></h3>
+					<h3><?php print _('gibbonedu.com Value-Added Services') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='gibboneduComOrganisationName'" ;
@@ -789,15 +789,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='gibboneduComOrganisationKey'" ;
@@ -810,22 +810,22 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
 				</td>
 			</tr>
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('PayPal Payment Gateway') ?></h3>
+					<h3><?php print _('PayPal Payment Gateway') ?></h3>
 				</td>
 			</tr>
 			
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='currency'" ;
@@ -838,39 +838,39 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="AUD $") { print "selected" ; } ?> value='AUD $'>Australian Dollar (A$)</option>
-						<option <? if ($row["value"]=="BRL R$") { print "selected" ; } ?> value='BRL R$'>Brazilian Real</option>
-						<option <? if ($row["value"]=="GBP £") { print "selected" ; } ?> value='GBP £'>British Pound (£)</option>
-						<option <? if ($row["value"]=="CAD $") { print "selected" ; } ?> value='CAD $'>Canadian Dollar (C$)</option>
-						<option <? if ($row["value"]=="CZK Kč") { print "selected" ; } ?> value='CZK Kč'>Czech Koruna</option>
-						<option <? if ($row["value"]=="DKK kr") { print "selected" ; } ?> value='DKK kr'>Danish Krone</option>
-						<option <? if ($row["value"]=="EUR €") { print "selected" ; } ?> value='EUR €'>Euro (€)</option>
-						<option <? if ($row["value"]=="HKD $") { print "selected" ; } ?> value='HKD $'>Hong Kong Dollar ($)</option>
-						<option <? if ($row["value"]=="HUF Ft") { print "selected" ; } ?> value='HUF Ft'>Hungarian Forint</option>
-						<option <? if ($row["value"]=="ILS ₪") { print "selected" ; } ?> value='ILS ₪'>Israeli New Shekel</option>
-						<option <? if ($row["value"]=="JPY ¥") { print "selected" ; } ?> value='JPY ¥'>Japanese Yen (¥)</option>
-						<option <? if ($row["value"]=="MYR RM") { print "selected" ; } ?> value='MYR RM'>Malaysian Ringgit</option>
-						<option <? if ($row["value"]=="MXN $") { print "selected" ; } ?> value='MXN $'>Mexican Peso</option>
-						<option <? if ($row["value"]=="TWD $") { print "selected" ; } ?> value='TWD $'>New Taiwan Dollar</option>
-						<option <? if ($row["value"]=="NZD $") { print "selected" ; } ?> value='NZD $'>New Zealand Dollar ($)</option>
-						<option <? if ($row["value"]=="NOK kr") { print "selected" ; } ?> value='NOK kr'>Norwegian Krone</option>
-						<option <? if ($row["value"]=="PHP ₱") { print "selected" ; } ?> value='PHP ₱'>Philippine Peso</option>
-						<option <? if ($row["value"]=="PLN zł") { print "selected" ; } ?> value='PLN zł'>Polish Zloty</option>
-						<option <? if ($row["value"]=="SGD $") { print "selected" ; } ?> value='SGD $'>Singapore Dollar ($)</option>
-						<option <? if ($row["value"]=="CHF") { print "selected" ; } ?> value='CHF'>Swiss Franc</option>
-						<option <? if ($row["value"]=="THB ฿") { print "selected" ; } ?> value='THB ฿'>Thai Baht</option>
-						<option <? if ($row["value"]=="TRY") { print "selected" ; } ?> value='TRY'>Turkish Lira</option>
-						<option <? if ($row["value"]=="USD $") { print "selected" ; } ?> value='USD $'>U.S. Dollar ($)</option>
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="AUD $") { print "selected" ; } ?> value='AUD $'>Australian Dollar (A$)</option>
+						<option <?php if ($row["value"]=="BRL R$") { print "selected" ; } ?> value='BRL R$'>Brazilian Real</option>
+						<option <?php if ($row["value"]=="GBP £") { print "selected" ; } ?> value='GBP £'>British Pound (£)</option>
+						<option <?php if ($row["value"]=="CAD $") { print "selected" ; } ?> value='CAD $'>Canadian Dollar (C$)</option>
+						<option <?php if ($row["value"]=="CZK Kč") { print "selected" ; } ?> value='CZK Kč'>Czech Koruna</option>
+						<option <?php if ($row["value"]=="DKK kr") { print "selected" ; } ?> value='DKK kr'>Danish Krone</option>
+						<option <?php if ($row["value"]=="EUR €") { print "selected" ; } ?> value='EUR €'>Euro (€)</option>
+						<option <?php if ($row["value"]=="HKD $") { print "selected" ; } ?> value='HKD $'>Hong Kong Dollar ($)</option>
+						<option <?php if ($row["value"]=="HUF Ft") { print "selected" ; } ?> value='HUF Ft'>Hungarian Forint</option>
+						<option <?php if ($row["value"]=="ILS ₪") { print "selected" ; } ?> value='ILS ₪'>Israeli New Shekel</option>
+						<option <?php if ($row["value"]=="JPY ¥") { print "selected" ; } ?> value='JPY ¥'>Japanese Yen (¥)</option>
+						<option <?php if ($row["value"]=="MYR RM") { print "selected" ; } ?> value='MYR RM'>Malaysian Ringgit</option>
+						<option <?php if ($row["value"]=="MXN $") { print "selected" ; } ?> value='MXN $'>Mexican Peso</option>
+						<option <?php if ($row["value"]=="TWD $") { print "selected" ; } ?> value='TWD $'>New Taiwan Dollar</option>
+						<option <?php if ($row["value"]=="NZD $") { print "selected" ; } ?> value='NZD $'>New Zealand Dollar ($)</option>
+						<option <?php if ($row["value"]=="NOK kr") { print "selected" ; } ?> value='NOK kr'>Norwegian Krone</option>
+						<option <?php if ($row["value"]=="PHP ₱") { print "selected" ; } ?> value='PHP ₱'>Philippine Peso</option>
+						<option <?php if ($row["value"]=="PLN zł") { print "selected" ; } ?> value='PLN zł'>Polish Zloty</option>
+						<option <?php if ($row["value"]=="SGD $") { print "selected" ; } ?> value='SGD $'>Singapore Dollar ($)</option>
+						<option <?php if ($row["value"]=="CHF") { print "selected" ; } ?> value='CHF'>Swiss Franc</option>
+						<option <?php if ($row["value"]=="THB ฿") { print "selected" ; } ?> value='THB ฿'>Thai Baht</option>
+						<option <?php if ($row["value"]=="TRY") { print "selected" ; } ?> value='TRY'>Turkish Lira</option>
+						<option <?php if ($row["value"]=="USD $") { print "selected" ; } ?> value='USD $'>U.S. Dollar ($)</option>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='enablePayments'" ;
@@ -883,12 +883,12 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<?
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
 						print "<option $selected value='Y'>Y</option>" ;
@@ -900,7 +900,7 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='paypalAPIUsername'" ;
@@ -913,15 +913,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='paypalAPIPassword'" ;
@@ -934,15 +934,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='paypalAPISignature'" ;
@@ -955,21 +955,21 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=255 value="<? print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
 				</td>
 			</tr>
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('Miscellaneous') ?></h3>
+					<h3><?php print _('Miscellaneous') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='pagination'" ;
@@ -982,20 +982,20 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Numericality);
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Numericality);
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='country'" ;
@@ -1008,12 +1008,12 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<?
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
 						print "<option value=''></option>" ;
 						try {
 							$dataSelect=array(); 
@@ -1036,7 +1036,7 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='timezone'" ;
@@ -1049,19 +1049,19 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" maxlength=50 value="<? print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='analytics'" ;
@@ -1074,15 +1074,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=8 style="width: 300px"><? print htmlPrep($row["value"]) ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print htmlPrep($row["value"]) ?></textarea>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale'" ;
@@ -1095,12 +1095,12 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<?
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
 						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 						try {
 							$dataSelect=array(); 
@@ -1122,23 +1122,23 @@ else {
 						?>			
 					</select>
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 					 </script>
 				</td>
 			</tr>
 			
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-<?
+<?php
 }
 ?>

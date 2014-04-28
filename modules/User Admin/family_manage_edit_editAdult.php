@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -94,53 +94,53 @@ else {
 				print "</div>" ;
 			}
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_editAdultProcess.php?gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=$gibbonPersonID&search=$search" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_editAdultProcess.php?gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=$gibbonPersonID&search=$search" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Adult\'s Name') ?> *</b><br/>
+							<b><?php print _('Adult\'s Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="child" id="child" maxlength=200 value="<? print formatName(htmlPrep($row["title"]), htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Parent") ?>" type="text" style="width: 300px">
+							<input readonly name="child" id="child" maxlength=200 value="<?php print formatName(htmlPrep($row["title"]), htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Parent") ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Comment') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Data displayed in full Student Profile') ?><br/></i></span>
+							<b><?php print _('Comment') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Data displayed in full Student Profile') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<textarea name="comment" id="comment" rows=8 style="width: 300px"><? print $row["comment"] ?></textarea>
+							<textarea name="comment" id="comment" rows=8 style="width: 300px"><?php print $row["comment"] ?></textarea>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Data Access?') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Access data on family\'s children?') ?></i></span>
+							<b><?php print _('Data Access?') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Access data on family\'s children?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="childDataAccess" id="childDataAccess" style="width: 302px">
-								<option <? if ($row["childDataAccess"]=="Y") { print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
-								<option <? if ($row["childDataAccess"]=="N") { print "selected ";} ?>value="N"><? print _('No') ?></option>
+								<option <?php if ($row["childDataAccess"]=="Y") { print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["childDataAccess"]=="N") { print "selected ";} ?>value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Contact Priority') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('The order in which school should contact family members.') ?></i></span>
+							<b><?php print _('Contact Priority') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('The order in which school should contact family members.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactPriority" id="contactPriority" style="width: 302px">
-								<option <? if ($row["contactPriority"]=="1") { print "selected ";} ?>value="1"><? print _('1') ?></option>
-								<option <? if ($row["contactPriority"]=="2") { print "selected ";} ?>value="2"><? print _('2') ?></option>
-								<option <? if ($row["contactPriority"]=="3") { print "selected ";} ?>value="3"><? print _('3') ?></option>
+								<option <?php if ($row["contactPriority"]=="1") { print "selected ";} ?>value="1"><?php print _('1') ?></option>
+								<option <?php if ($row["contactPriority"]=="2") { print "selected ";} ?>value="2"><?php print _('2') ?></option>
+								<option <?php if ($row["contactPriority"]=="3") { print "selected ";} ?>value="3"><?php print _('3') ?></option>
 							</select>
 							<script type="text/javascript">
 								/* Advanced Options Control */
 								$(document).ready(function(){
-									<? 
+									<?php 
 									if ($row["contactPriority"]=="1") {
 										print "$(\"#contactCall\").attr(\"disabled\", \"disabled\");" ;
 										print "$(\"#contactSMS\").attr(\"disabled\", \"disabled\");" ;
@@ -172,64 +172,64 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Call?') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Receive non-emergency phone calls from school?') ?></i></span>
+							<b><?php print _('Call?') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Receive non-emergency phone calls from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactCall" id="contactCall" style="width: 302px">
-								<option <? if ($row["contactCall"]=="Y") { print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
-								<option <? if ($row["contactCall"]=="N") { print "selected ";} ?>value="N"><? print _('No') ?></option>
+								<option <?php if ($row["contactCall"]=="Y") { print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["contactCall"]=="N") { print "selected ";} ?>value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('SMS?') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Receive non-emergency SMS messages from school?') ?></i></span>
+							<b><?php print _('SMS?') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Receive non-emergency SMS messages from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactSMS" id="contactSMS" style="width: 302px">
-								<option <? if ($row["contactSMS"]=="Y") { print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
-								<option <? if ($row["contactSMS"]=="N") { print "selected ";} ?>value="N"><? print _('No') ?></option>
+								<option <?php if ($row["contactSMS"]=="Y") { print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["contactSMS"]=="N") { print "selected ";} ?>value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Email?') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Receive non-emergency emails from school?') ?></i></span>
+							<b><?php print _('Email?') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Receive non-emergency emails from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactEmail" id="contactEmail" style="width: 302px">
-								<option <? if ($row["contactEmail"]=="Y") { print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
-								<option <? if ($row["contactEmail"]=="N") { print "selected ";} ?>value="N"><? print _('No') ?></option>
+								<option <?php if ($row["contactEmail"]=="Y") { print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["contactEmail"]=="N") { print "selected ";} ?>value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Mail?') ?></b><br/>
-							<span style="font-size: 90%"><i><? print _('Receive postage mail from school?') ?></i></span>
+							<b><?php print _('Mail?') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Receive postage mail from school?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="contactMail" id="contactMail" style="width: 302px">
-								<option <? if ($row["contactMail"]=="Y") { print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
-								<option <? if ($row["contactMail"]=="N") { print "selected ";} ?>value="N"><? print _('No') ?></option>
+								<option <?php if ($row["contactMail"]=="Y") { print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["contactMail"]=="N") { print "selected ";} ?>value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

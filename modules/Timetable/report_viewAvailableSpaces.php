@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -60,7 +60,7 @@ else {
 
 	?>
 	
-	<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
@@ -70,7 +70,7 @@ else {
 				<td class="right">
 					<select name="gibbonTTID" id="gibbonTTID" style="width: 302px">
 						<option value='Please select...'>Please select...</option>
-						<?
+						<?php
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT * FROM gibbonTT WHERE gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . " ORDER BY name" ;
@@ -90,7 +90,7 @@ else {
 					</select>
 					<script type="text/javascript">
 						var gibbonTTID=new LiveValidation('gibbonTTID');
-						gibbonTTID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+						gibbonTTID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 					 </script>	
 				</td>
 			</tr>
@@ -101,18 +101,18 @@ else {
 				</td>
 				<td class="right">
 					<select name="spaceType" id="spaceType" style="width: 302px">
-						<option <? if ($spaceType=="") { print "selected" ; } ?> value=''>All</option>
-						<option <? if ($spaceType=="Classroom") { print "selected" ; } ?> value='Classroom'>Classroom</option>
-						<option <? if ($spaceType=="Performance") { print "selected" ; } ?> value='Performance'>Performance</option>
-						<option <? if ($spaceType=="Hall") { print "selected" ; } ?> value='Hall'>Hall</option>
-						<option <? if ($spaceType=="Outdoor") { print "selected" ; } ?> value='Outdoor'>Outdoor</option>
-						<option <? if ($spaceType=="Undercover") { print "selected" ; } ?> value='Undercover'>Undercover</option>
-						<option <? if ($spaceType=="Storage") { print "selected" ; } ?> value='Storage'>Storage</option>
-						<option <? if ($spaceType=="Office") { print "selected" ; } ?> value='Office'>Office</option>
-						<option <? if ($spaceType=="Staffroom") { print "selected" ; } ?> value='Staffroom'>Staffroom</option>
-						<option <? if ($spaceType=="Study") { print "selected" ; } ?> value='Study'>Study</option>
-						<option <? if ($spaceType=="Library") { print "selected" ; } ?> value='Library'>Library</option>
-						<option <? if ($spaceType=="Other") { print "selected" ; } ?> value='Other'>Other</option>
+						<option <?php if ($spaceType=="") { print "selected" ; } ?> value=''>All</option>
+						<option <?php if ($spaceType=="Classroom") { print "selected" ; } ?> value='Classroom'>Classroom</option>
+						<option <?php if ($spaceType=="Performance") { print "selected" ; } ?> value='Performance'>Performance</option>
+						<option <?php if ($spaceType=="Hall") { print "selected" ; } ?> value='Hall'>Hall</option>
+						<option <?php if ($spaceType=="Outdoor") { print "selected" ; } ?> value='Outdoor'>Outdoor</option>
+						<option <?php if ($spaceType=="Undercover") { print "selected" ; } ?> value='Undercover'>Undercover</option>
+						<option <?php if ($spaceType=="Storage") { print "selected" ; } ?> value='Storage'>Storage</option>
+						<option <?php if ($spaceType=="Office") { print "selected" ; } ?> value='Office'>Office</option>
+						<option <?php if ($spaceType=="Staffroom") { print "selected" ; } ?> value='Staffroom'>Staffroom</option>
+						<option <?php if ($spaceType=="Study") { print "selected" ; } ?> value='Study'>Study</option>
+						<option <?php if ($spaceType=="Library") { print "selected" ; } ?> value='Library'>Library</option>
+						<option <?php if ($spaceType=="Other") { print "selected" ; } ?> value='Other'>Other</option>
 					</select>
 				</td>
 			</tr>
@@ -122,11 +122,11 @@ else {
 					<span style="font-size: 90%"><i>Choose a timetable to view</span>
 				</td>
 				<td class="right">
-					<input name="ttDate" id="ttDate" maxlength=10 value="<? print $ttDate ?>" type="text" style="width: 300px">
+					<input name="ttDate" id="ttDate" maxlength=10 value="<?php print $ttDate ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var ttDate=new LiveValidation('ttDate');
 						ttDate.add(Validate.Presence);
-						ttDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						ttDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					 </script>
 					 <script type="text/javascript">
 						$(function() {
@@ -138,13 +138,13 @@ else {
 			
 			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/report_viewAvailableSpaces.php">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_viewAvailableSpaces.php">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 	
 	if ($gibbonTTID!="") {
 		print "<h2>" ;

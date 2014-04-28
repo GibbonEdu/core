@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -66,18 +66,18 @@ else {
 		print "</div>" ;
 	}
 	?>
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_addProcess.php?search=$search" ?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_addProcess.php?search=$search" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2>
 					<h3>
-						<? print _('General Information') ?>
+						<?php print _('General Information') ?>
 					</h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Name') ?> *</b><br/>
+					<b><?php print _('Name') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -90,21 +90,21 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Status') ?> *</b><br/>
+					<b><?php print _('Status') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="status" id="status" style="width: 302px">
-						<option value="Married"><? print _('Married') ?></option>
-						<option value="Separated"><? print _('Separated') ?></option>
-						<option value="Divorced"><? print _('Divorced') ?></option>
-						<option value="De Facto"><? print _('De Facto') ?></option>
-						<option value="Other"><? print _('Other') ?></option>	
+						<option value="Married"><?php print _('Married') ?></option>
+						<option value="Separated"><?php print _('Separated') ?></option>
+						<option value="Divorced"><?php print _('Divorced') ?></option>
+						<option value="De Facto"><?php print _('De Facto') ?></option>
+						<option value="Other"><?php print _('Other') ?></option>	
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Home Language') ?></b><br/>
+					<b><?php print _('Home Language') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="languageHome" id="languageHome" maxlength=100 value="" type="text" style="width: 300px">
@@ -112,8 +112,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Address Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print _('Formal name to address parents with.') ?></i></span>
+					<b><?php print _('Address Name') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('Formal name to address parents with.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="nameAddress" id="nameAddress" maxlength=100 value="" type="text" style="width: 300px">
@@ -125,8 +125,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Home Address') ?></b><br/>
-					<span style="font-size: 90%"><i><? print _('Unit, Building, Street') ?></i></span>
+					<b><?php print _('Home Address') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Unit, Building, Street') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="homeAddress" id="homeAddress" maxlength=255 value="" type="text" style="width: 300px">
@@ -134,8 +134,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Home Address (District)') ?></b><br/>
-					<span style="font-size: 90%"><i><? print _('County, State, District') ?></i></span>
+					<b><?php print _('Home Address (District)') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('County, State, District') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="" type="text" style="width: 300px">
@@ -143,7 +143,7 @@ else {
 				<script type="text/javascript">
 					$(function() {
 						var availableTags=[
-							<?
+							<?php
 							try {
 								$dataAuto=array(); 
 								$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
@@ -162,11 +162,11 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Home Address (Country)') ?></b><br/>
+					<b><?php print _('Home Address (Country)') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="homeAddressCountry" id="homeAddressCountry" style="width: 302px">
-						<?
+						<?php
 						print "<option value=''></option>" ;
 						try {
 							$dataSelect=array(); 
@@ -184,15 +184,15 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 }
 ?>

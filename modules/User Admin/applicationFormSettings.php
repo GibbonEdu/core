@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -57,15 +57,15 @@ else {
 	} 
 	?>
 	
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/applicationFormSettingsProcess.php" ?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/applicationFormSettingsProcess.php" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('General Options') ?></h3>
+					<h3><?php print _('General Options') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='introduction'" ;
@@ -78,15 +78,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=12 style="width: 300px"><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=12 style="width: 300px"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='postscript'" ;
@@ -99,15 +99,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=12 style="width: 300px"><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=12 style="width: 300px"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='scholarships'" ;
@@ -120,15 +120,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=8 style="width: 300px"><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='agreement'" ;
@@ -141,15 +141,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=8 style="width: 300px"><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='applicationFee'" ;
@@ -162,9 +162,9 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
 					<span style="font-size: 90%"><i>
-						<? 
+						<?php 
 							print $row["description"] ;
 							$currency=getSettingByScope($connection2, "System", "currency") ;
 							if ($currency!=FALSE AND $currency!="") {
@@ -174,17 +174,17 @@ else {
 					</i></span>
 				</td>
 				<td class="right">
-					<input type='text' name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 300px" value='<? print htmlPrep($row["value"]) ?>'>
+					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>
 					<script type="text/javascript">
-						var <? print $row["name"] ?>=new LiveValidation('<? print $row["name"] ?>');
-						<? print $row["name"] ?>.add(Validate.Numericality, { minimum: 0 });
-						<? print $row["name"] ?>.add(Validate.Presence);
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Numericality, { minimum: 0 });
+						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>
 			
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='publicApplications'" ;
@@ -197,18 +197,18 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N"><? print _('No') ?></option>
-						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><? print _('Yes') ?></option>
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print _('No') ?></option>
+						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='milestones'" ;
@@ -219,15 +219,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=4 type="text" style="width: 300px"><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='howDidYouHear'" ;
@@ -238,21 +238,21 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=4 type="text" style="width: 300px"><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('Notification Options') ?></h3>
+					<h3><?php print _('Notification Options') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationStudentMessage'" ;
@@ -265,15 +265,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=8 style="width: 300px"><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationStudentDefault'" ;
@@ -286,18 +286,18 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="On") {print "selected ";} ?>value="On"><? print _('On') ?></option>
-						<option <? if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><? print _('Off') ?></option>
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="On") {print "selected ";} ?>value="On"><?php print _('On') ?></option>
+						<option <?php if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><?php print _('Off') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationParentsMessage'" ;
@@ -310,15 +310,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=8 style="width: 300px"><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationParentsDefault'" ;
@@ -331,13 +331,13 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="On") {print "selected ";} ?>value="On"><? print _('On') ?></option>
-						<option <? if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><? print _('Off') ?></option>
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="On") {print "selected ";} ?>value="On"><?php print _('On') ?></option>
+						<option <?php if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><?php print _('Off') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -345,11 +345,11 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('Required Documents Options') ?></h3>
+					<h3><?php print _('Required Documents Options') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='requiredDocuments'" ;
@@ -360,15 +360,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=4 type="text" style="width: 300px"><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='requiredDocumentsText'" ;
@@ -379,15 +379,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=4 type="text" style="width: 300px"><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='requiredDocumentsCompulsory'" ;
@@ -400,13 +400,13 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="N") {print "selected ";} ?>value="N">No</option>
-						<option <? if ($row["value"]=="Y") {print "selected ";} ?>value="Y">Yes</option>
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N">No</option>
+						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y">Yes</option>
 					</select>
 				</td>
 			</tr>
@@ -414,16 +414,16 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('Language Learning Options') ?></h3>
+					<h3><?php print _('Language Learning Options') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2> 
-					<p><? print _('Set values for applicants to specify which language they wish to learn.') ?></p>
+					<p><?php print _('Set values for applicants to specify which language they wish to learn.') ?></p>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='languageOptionsActive'" ;
@@ -436,18 +436,18 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" style="width: 302px">
-						<option <? if ($row["value"]=="On") {print "selected ";} ?>value="On"><? print _('On') ?></option>
-						<option <? if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><? print _('Off') ?></option>
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="On") {print "selected ";} ?>value="On"><?php print _('On') ?></option>
+						<option <?php if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><?php print _('Off') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='languageOptionsBlurb'" ;
@@ -458,15 +458,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=4 type="text" style="width: 300px"><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
-				<?
+				<?php
 				try {
 					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='languageOptionsLanguageList'" ;
@@ -477,25 +477,25 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><? print $row["nameDisplay"] ?></b><br/>
-					<span style="font-size: 90%"><i><? print $row["description"] ?></i></span>
+					<b><?php print $row["nameDisplay"] ?></b><br/>
+					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>
 				<td class="right">
-					<textarea name="<? print $row["name"] ?>" id="<? print $row["name"] ?>" rows=4 type="text" style="width: 300px"><? print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-<?
+<?php
 }
 ?>

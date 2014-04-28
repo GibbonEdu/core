@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -100,19 +100,19 @@ else {
 				print sprintf(_('It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v%1$s to v%2$s. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $versionCode) . "</b>" ;
 			print "</p>" ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/updateProcess.php?type=regularRelease" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/updateProcess.php?type=regularRelease" ?>">
 				<table cellspacing='0' style="width: 100%">	
 					<tr>
 						<td class="right"> 
-							<input type="hidden" name="versionDB" value="<? print $versionDB ?>">
-							<input type="hidden" name="versionCode" value="<? print $versionCode ?>">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="versionDB" value="<?php print $versionDB ?>">
+							<input type="hidden" name="versionCode" value="<?php print $versionCode ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 	else {
@@ -168,19 +168,19 @@ else {
 				print sprintf(_('It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v%1$s line %2$s to v%3$s line %4$s. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $cuttingEdgeCodeLine, $versionCode, $versionMaxLinesMax) . "</b>" ;
 			print "</p>" ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/updateProcess.php?type=cuttingEdge" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/updateProcess.php?type=cuttingEdge" ?>">
 				<table cellspacing='0' style="width: 100%">	
 					<tr>
 						<td class="right"> 
-							<input type="hidden" name="versionDB" value="<? print $versionDB ?>">
-							<input type="hidden" name="versionCode" value="<? print $versionCode ?>">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="versionDB" value="<?php print $versionDB ?>">
+							<input type="hidden" name="versionCode" value="<?php print $versionCode ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -69,7 +69,7 @@ else {
 	}
 	
 	?>
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_addProcess.php?name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ?>" enctype="multipart/form-data">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_addProcess.php?name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ?>" enctype="multipart/form-data">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2>
@@ -101,19 +101,19 @@ else {
 							$("#commentRow").slideDown("fast", $("#commentRow").css("display","table-row"));
 							$("#entryDisplayTitleRow").slideDown("fast", $("#entryDisplayTitleRow").css("display","table-row"));
 							$("#entryDisplayRow").slideDown("fast", $("#entryDisplayRow").css("display","table-row"));
-							$("#details").load("<? print $_SESSION[$guid]["absoluteURL"] ?>/modules/Library/library_manage_catalog_add_ajax.php","id=" + $("#type").val());
+							$("#details").load("<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Library/library_manage_catalog_add_ajax.php","id=" + $("#type").val());
 						}
 					})
 				});
 			</script>
 			<tr>
 				<td> 
-					<b><? print _('Type') ?> *</b><br/>
+					<b><?php print _('Type') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="type" id="type" class='type' style="width: 302px">
-						<option value="Please select..."><? print _('Please select...') ?></option>
-						<?
+						<option value="Please select..."><?php print _('Please select...') ?></option>
+						<?php
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT * FROM gibbonLibraryType WHERE active='Y' ORDER BY name" ;
@@ -129,7 +129,7 @@ else {
 					</select>
 					<script type="text/javascript">
 						var type=new LiveValidation('type');
-						type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+						type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 					</script>
 				</td>
 			</tr>
@@ -141,7 +141,7 @@ else {
 			</tr>
 			<tr id='nameRow' style='display: none'>
 				<td> 
-					<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+					<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 					<span style="font-size: 90%"><i>Volume or product name.</i></span>
 				</td>
 				<td class="right">
@@ -159,7 +159,7 @@ else {
 				</td>
 				<td class="right">
 					<input name="id" id="id" maxlength=255 value="" type="text" style="width: 300px">
-					<?
+					<?php
 					//Get list of all ids already in use
 					$idList="" ;
 					try {
@@ -175,7 +175,7 @@ else {
 					?>
 					<script type="text/javascript">
 						var id=new LiveValidation('id');
-						id.add( Validate.Exclusion, { within: [<? print $idList ;?>], failureMessage: "ID already in use!", partialMatch: false, caseSensitive: false } );
+						id.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "ID already in use!", partialMatch: false, caseSensitive: false } );
 						id.add(Validate.Presence);
 					 </script>
 				</td>
@@ -211,7 +211,7 @@ else {
 					<input name="purchaseDate" id="purchaseDate" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var purchaseDate=new LiveValidation('purchaseDate');
-						purchaseDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						purchaseDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					 </script>
 					 <script type="text/javascript">
 						$(function() {
@@ -278,7 +278,7 @@ else {
 						imageFile.add( Validate.Inclusion, { within: ['.jpg','.jpeg','.png','.gif'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 						imageFile.disable();
 					</script>	
-					<?
+					<?php
 					print getMaxUpload() ;
 					?>
 				</td>
@@ -300,12 +300,12 @@ else {
 			
 			<tr id="locationRow" style='display: none'>
 				<td> 
-					<b><? print _('Location') ?> *</b><br/>
+					<b><?php print _('Location') ?> *</b><br/>
 					<span style="font-size: 90%"><i>Item's main location.</i></span>
 				</td>
 				<td class="right">
 					<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
-						<?
+						<?php
 						print "<option value=''></option>" ;
 						try {
 							$dataSelect=array(); 
@@ -362,7 +362,7 @@ else {
 					</select>
 				</td>
 			</tr>
-			<?
+			<?php
 				$selectContents="<option value=''></option>" ;
 				$selectContents.="<optgroup label='--Students By Roll Group--'>" ;
 				try {
@@ -376,7 +376,7 @@ else {
 					$selectContents.="<option value='" . $rowSelect["gibbonPersonID"] . "'>" . htmlPrep($rowSelect["name"]) . " - " . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
 				}
 				$selectContents.="</optgroup>" ;
-				$selectContents.="<optgroup label='--<? print _('All Users') ?>--'>" ;
+				$selectContents.="<optgroup label='--<?php print _('All Users') ?>--'>" ;
 				try {
 					$dataSelect=array(); 
 					$sqlSelect="SELECT gibbonPersonID, surname, preferredName, status FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName" ;
@@ -400,7 +400,7 @@ else {
 				</td>
 				<td class="right">
 					<select name="gibbonPersonIDOwnershipSchool" id="gibbonPersonIDOwnershipSchool" style="width: 302px">
-						<? print $selectContents ?>
+						<?php print $selectContents ?>
 					</select>
 				</td>
 			</tr>
@@ -410,7 +410,7 @@ else {
 				</td>
 				<td class="right">
 					<select name="gibbonPersonIDOwnershipIndividual" id="gibbonPersonIDOwnershipIndividual" style="width: 302px">
-						<? print $selectContents ?>
+						<?php print $selectContents ?>
 					</select>
 				</td>
 			</tr>
@@ -421,7 +421,7 @@ else {
 				</td>
 				<td class="right">
 					<select name="gibbonDepartmentID" id="gibbonDepartmentID" style="width: 302px">
-						<?
+						<?php
 						print "<option value=''></option>" ;
 						try {
 							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -482,21 +482,21 @@ else {
 			<tr id='entryDisplayRow' style='display: none'>
 				<td colspan=2 style='text-align: center'>
 					<div id='details' name='details' style='min-height: 100px; text-align: center'>
-						<img style='margin: 10px 0 5px 0' src='<? print $_SESSION[$guid]["absoluteURL"] ?>/themes/Default/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading
+						<img style='margin: 10px 0 5px 0' src='<?php print $_SESSION[$guid]["absoluteURL"] ?>/themes/Default/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 }
 ?>

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -98,24 +98,24 @@ else {
 		print _("Filters") ;
 		print "</h3>" ;
 		?>
-		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
-						<b><? print _('Search For') ?></b><br/>
-						<span style="font-size: 90%"><i><? print _('Preferred, surname, username.') ?></i></span>
+						<b><?php print _('Search For') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print _('Preferred, surname, username.') ?></i></span>
 					</td>
 					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<? print $search ?>" type="text" style="width: 300px">
+						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('All Users') ?></b><br/>
-						<span style="font-size: 90%"><i><? print _('Include non-staff, non-student users.') ?></i></span>
+						<b><?php print _('All Users') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print _('Include non-staff, non-student users.') ?></i></span>
 					</td>
 					<td class="right">
-						<?
+						<?php
 						$checked="" ;
 						if ($allUsers=="on") {
 							$checked="checked" ;
@@ -126,18 +126,18 @@ else {
 				</tr>
 				<tr>
 					<td colspan=2 class="right">
-						<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/courseEnrolment_manage_byPerson.php">
-						<input type="hidden" name="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>">
-						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<?
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson.php'>Clear Filters</a>" ;
+						<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/courseEnrolment_manage_byPerson.php">
+						<input type="hidden" name="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>">
+						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+						<?php
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson.php'>" . _('Clear Filters') . "</a>" ;
 						?>
-						<input type="submit" value="<? print _("Submit") ; ?>">
+						<input type="submit" value="<?php print _("Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
 		</form>
-		<?
+		<?php
 		
 		print "<h3>" ;
 		print _("View") ;

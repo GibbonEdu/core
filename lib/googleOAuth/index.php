@@ -263,7 +263,7 @@ if(isset($authUrl)) {
 	echo "<a class='logout' href='index.php?logout'>Logout</a>";
 }
 if(isset($_SESSION['gplusuer'])){ ?>
-<?
+<?php
 
 try {
 		$data=array("email"=>$email); 

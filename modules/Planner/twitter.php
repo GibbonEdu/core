@@ -3,10 +3,10 @@
 											new TWTR.Widget({
 											 version: 2,
 											 type: 'search',
-											 search: '<? print str_replace("^", "#", $_GET["twitter"]) ?>',
+											 search: '<?php print str_replace("^", "#", $_GET["twitter"]) ?>',
 											 interval: 20000,
 											 title: '',
-											 subject: 'Tweets <? print str_replace("^", "#", $_GET["twitter"]) ?>',
+											 subject: 'Tweets <?php print str_replace("^", "#", $_GET["twitter"]) ?>',
 											 width: 'auto',
 											 height: 300,
 											 theme: {

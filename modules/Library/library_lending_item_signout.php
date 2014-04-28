@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -124,7 +124,7 @@ else {
 			}
 								
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item_signoutProcess.php?name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item_signoutProcess.php?name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2>
@@ -134,28 +134,28 @@ else {
 					<tr>
 						<td> 
 							<b>ID *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="id" value="<? print $row["id"] ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="id" value="<?php print $row["id"] ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" value="<? print $row["name"] ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
 							<b>Current Status *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="statusCurrent" id="statusCurrent" value="<? print $row["status"] ?>" type="text" style="width: 300px">
+							<input readonly name="statusCurrent" id="statusCurrent" value="<?php print $row["status"] ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr class='break'>
@@ -185,7 +185,7 @@ else {
 							<span style="font-size: 90%"><i>Who is responsible for this new status?</i></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							print "<select name='gibbonPersonIDStatusResponsible' id='gibbonPersonIDStatusResponsible' style='width: 300px'>" ;
 								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								print "<optgroup label='--Students By Roll Group--'>" ;
@@ -200,7 +200,7 @@ else {
 									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . htmlPrep($rowSelect["name"]) . " - " . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
 								}
 								print "</optgroup>" ;
-								print "<optgroup label='--<? print _('All Users') ?>--'>" ;
+								print "<optgroup label='--<?php print _('All Users') ?>--'>" ;
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT gibbonPersonID, surname, preferredName, status FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName" ;
@@ -220,12 +220,12 @@ else {
 							?>
 							<script type="text/javascript">
 								var gibbonPersonIDStatusResponsible=new LiveValidation('gibbonPersonIDStatusResponsible');
-								gibbonPersonIDStatusResponsible.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+								gibbonPersonIDStatusResponsible.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>
 					<tr>
-						<?
+						<?php
 						$loanLength=getSettingByScope($connection2, "Library", "defaultLoanLength") ;
 						if (is_numeric($loanLength)==FALSE OR $loanLength<1) {
 							$loanLength=7 ;
@@ -233,13 +233,13 @@ else {
 						?>
 						<td> 
 							<b>Expected Return Date</b><br/>
-							<span style="font-size: 90%"><i>Default loan length is <? print $loanLength . " day"; if ($loanLength>1) { print "s" ; } ?>.</i></span>
+							<span style="font-size: 90%"><i>Default loan length is <?php print $loanLength . " day"; if ($loanLength>1) { print "s" ; } ?>.</i></span>
 						</td>
 						<td class="right">
-							<input name="returnExpected" id="returnExpected" maxlength=10 value="<? print dateConvertBack($guid, date("Y-m-d", (time()+(24*60*60*$loanLength)))) ?>" type="text" style="width: 300px">
+							<input name="returnExpected" id="returnExpected" maxlength=10 value="<?php print dateConvertBack($guid, date("Y-m-d", (time()+(24*60*60*$loanLength)))) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var returnExpected=new LiveValidation('returnExpected');
-								returnExpected.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+								returnExpected.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 </script>
 							 <script type="text/javascript">
 								$(function() {
@@ -273,7 +273,7 @@ else {
 							<span style="font-size: 90%"><i>Who will be responsible for the future status?</i></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							print "<select name='gibbonPersonIDReturnAction' id='gibbonPersonIDReturnAction' style='width: 300px'>" ;
 								print "<option value=''></option>" ;
 								print "<optgroup label='--Students By Roll Group--'>" ;
@@ -288,7 +288,7 @@ else {
 									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . htmlPrep($rowSelect["name"]) . " - " . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
 								}
 								print "</optgroup>" ;
-								print "<optgroup label='--<? print _('All Users') ?>--'>" ;
+								print "<optgroup label='--<?php print _('All Users') ?>--'>" ;
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT gibbonPersonID, surname, preferredName, status FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName" ;
@@ -306,17 +306,17 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input name="gibbonLibraryItemID" id="gibbonLibraryItemID" value="<? print $gibbonLibraryItemID ?>" type="hidden">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+							<input name="gibbonLibraryItemID" id="gibbonLibraryItemID" value="<?php print $gibbonLibraryItemID ?>" type="hidden">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 							<input type="submit" value="Sign Out">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}	
 	}
 }

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -106,15 +106,15 @@ else {
 				print "</div>" ;
 			}
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_editProcess.php?gibbonPersonMedicalID=" . $gibbonPersonMedicalID . "&search=$search" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_editProcess.php?gibbonPersonMedicalID=" . $gibbonPersonMedicalID . "&search=$search" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Person') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('Person') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							try {
 								$dataSelect=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
 								$sqlSelect="SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
@@ -124,74 +124,74 @@ else {
 							catch(PDOException $e) { }
 							$rowSelect=$resultSelect->fetch() ;
 							?>	
-							<input readonly name="name" id="name" maxlength=255 value="<? print formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student") ; ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" maxlength=255 value="<?php print formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student") ; ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Blood Type') ?></b><br/>
+							<b><?php print _('Blood Type') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="bloodType">
-								<option <? if ($row["bloodType"]=="") {print "selected ";}?>value=""></option>
-								<option <? if ($row["bloodType"]=="O+") {print "selected ";}?>value="O+">O+</option>
-								<option <? if ($row["bloodType"]=="A+") {print "selected ";}?>value="A+">A+</option>
-								<option <? if ($row["bloodType"]=="B+") {print "selected ";}?>value="B+">B+</option>
-								<option <? if ($row["bloodType"]=="AB+") {print "selected ";}?>value="AB+">AB+</option>
-								<option <? if ($row["bloodType"]=="O-") {print "selected ";}?>value="O-">O-</option>
-								<option <? if ($row["bloodType"]=="A-") {print "selected ";}?>value="A-">A-</option>
-								<option <? if ($row["bloodType"]=="B-") {print "selected ";}?>value="B-">B-</option>
-								<option <? if ($row["bloodType"]=="AB-") {print "selected ";}?>value="AB-">AB-</option>
+								<option <?php if ($row["bloodType"]=="") {print "selected ";}?>value=""></option>
+								<option <?php if ($row["bloodType"]=="O+") {print "selected ";}?>value="O+">O+</option>
+								<option <?php if ($row["bloodType"]=="A+") {print "selected ";}?>value="A+">A+</option>
+								<option <?php if ($row["bloodType"]=="B+") {print "selected ";}?>value="B+">B+</option>
+								<option <?php if ($row["bloodType"]=="AB+") {print "selected ";}?>value="AB+">AB+</option>
+								<option <?php if ($row["bloodType"]=="O-") {print "selected ";}?>value="O-">O-</option>
+								<option <?php if ($row["bloodType"]=="A-") {print "selected ";}?>value="A-">A-</option>
+								<option <?php if ($row["bloodType"]=="B-") {print "selected ";}?>value="B-">B-</option>
+								<option <?php if ($row["bloodType"]=="AB-") {print "selected ";}?>value="AB-">AB-</option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Long-Term Medication?') ?></b><br/>
+							<b><?php print _('Long-Term Medication?') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="longTermMedication">
-								<option <? if ($row["longTermMedication"]=="") {print "selected ";}?>value=""></option>
-								<option <? if ($row["longTermMedication"]=="Y") {print "selected ";}?>value="Y">Y</option>
-								<option <? if ($row["longTermMedication"]=="N") {print "selected ";}?>value="N">N</option>
+								<option <?php if ($row["longTermMedication"]=="") {print "selected ";}?>value=""></option>
+								<option <?php if ($row["longTermMedication"]=="Y") {print "selected ";}?>value="Y">Y</option>
+								<option <?php if ($row["longTermMedication"]=="N") {print "selected ";}?>value="N">N</option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Medication Details') ?></b><br/>
+							<b><?php print _('Medication Details') ?></b><br/>
 						</td>
 						<td class="right">
-							<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rows=8 style="width: 300px"><? print $row["longTermMedicationDetails"] ?></textarea>
+							<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rows=8 style="width: 300px"><?php print $row["longTermMedicationDetails"] ?></textarea>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Tetanus Within Last 10 Years?') ?></b><br/>
+							<b><?php print _('Tetanus Within Last 10 Years?') ?></b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="tetanusWithin10Years">
-								<option <? if ($row["tetanusWithin10Years"]=="") {print "selected ";}?>value=""></option>
-								<option <? if ($row["tetanusWithin10Years"]=="Y") {print "selected ";}?>value="Y"><? print _('Yes') ?></option>
-								<option <? if ($row["tetanusWithin10Years"]=="N") {print "selected ";}?>value="N"><? print _('No') ?></option>
+								<option <?php if ($row["tetanusWithin10Years"]=="") {print "selected ";}?>value=""></option>
+								<option <?php if ($row["tetanusWithin10Years"]=="Y") {print "selected ";}?>value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["tetanusWithin10Years"]=="N") {print "selected ";}?>value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>						
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="gibbonPersonMedicalID" value="<? print $row["gibbonPersonMedicalID"] ?>">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="gibbonPersonMedicalID" value="<?php print $row["gibbonPersonMedicalID"] ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 			
 			print "<h2>" ;
 			print _("Medical Conditions") ;

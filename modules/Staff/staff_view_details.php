@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -813,7 +813,7 @@ else {
 													 print"</select>" ;
 												print"</td>" ;
 												print"<td class='right'>" ;
-													print"<input type='submit' value='Go' style='margin-right: 0px'>" ;
+													print"<input type='submit' value='" . _('Go') . "' style='margin-right: 0px'>" ;
 													print"<input type='hidden' name='q' value='/modules/Students/student_view_details.php'>" ;
 													print"<input type='hidden' name='subpage' value='Homework'>" ;
 													print"<input type='hidden' name='gibbonPersonID' value='$gibbonPersonID'>" ;
@@ -840,7 +840,7 @@ else {
 											print "Online</br>Submission" ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Action" ;
+											print _("Actions") ;
 										print "</th>" ;
 									print "</tr>" ;
 									

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -104,50 +104,50 @@ else {
 				<h2>
 					Step 1 - Quantity
 				</h2> 
-				<?
+				<?php
 				if ($_GET["name"]!="" OR $_GET["gibbonLibraryTypeID"]!="" OR $_GET["gibbonSpaceID"]!="" OR $_GET["status"]!="" OR $_GET["gibbonPersonIDOwnership"]!="" OR $_GET["typeSpecificFields"]!="") {
 					print "<div class='linkTop'>" ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_manage_catalog.php&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] . "'>" . _('Back to Search Results') . "</a>" ;
 					print "</div>" ;
 				}
 				?>
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicate.php&step=2&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ?>">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicate.php&step=2&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
-								<b><? print _('Type') ?> *</b><br/>
-								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+								<b><?php print _('Type') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
-								<input readonly style='width: 300px' type='text' value='<? print $row["type"] ?>' />
-								<input type='hidden' name='gibbonLibraryTypeID' value='<? print $row["gibbonLibraryTypeID"] ?>'>
+								<input readonly style='width: 300px' type='text' value='<?php print $row["type"] ?>' />
+								<input type='hidden' name='gibbonLibraryTypeID' value='<?php print $row["gibbonLibraryTypeID"] ?>'>
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+								<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=255 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=255 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 						<tr>
 							<td> 
 								<b>ID *</b><br/>
-								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
-								<input readonly name="id" id="id" maxlength=255 value="<? print $row["id"] ?>" type="text" style="width: 300px">
+								<input readonly name="id" id="id" maxlength=255 value="<?php print $row["id"] ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 						<tr>
 							<td> 
 								<b>Author/Brand *</b><br/>
-								<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
-								<input readonly name="producer" id="producer" maxlength=255 value="<? print $row["producer"] ?>" type="text" style="width: 300px">
+								<input readonly name="producer" id="producer" maxlength=255 value="<?php print $row["producer"] ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 						
@@ -158,7 +158,7 @@ else {
 							</td>
 							<td class="right">
 								<select name='number' id='number' style='width: 304px'>
-									<?
+									<?php
 										for ($i=1; $i<21; $i++) {
 											print "<option value='$i'>$i</option>" ;
 										}
@@ -169,16 +169,16 @@ else {
 						
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 							</td>
 							<td class="right">
-								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 								<input type="submit" value="Next">
 							</td>
 						</tr>
 					</table>
 				</form>
-				<?
+				<?php
 			}
 			//Step 1
 			else if ($step==2) {
@@ -186,16 +186,16 @@ else {
 				<h2>
 					Step 2 - Details
 				</h2> 
-				<?
+				<?php
 				if ($_GET["name"]!="" OR $_GET["gibbonLibraryTypeID"]!="" OR $_GET["gibbonSpaceID"]!="" OR $_GET["status"]!="" OR $_GET["gibbonPersonIDOwnership"]!="" OR $_GET["typeSpecificFields"]!="") {
 					print "<div class='linkTop'>" ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_manage_catalog.php&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] . "'>" . _('Back to Search Results') . "</a>" ;
 					print "</div>" ;
 				}
 				?>
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicateProcess.php?gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ?>">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicateProcess.php?gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
-						<?
+						<?php
 						$number=$_POST["number"] ;
 						for ($i=1; $i<=$number; $i++) {
 							print "<tr class='break'>" ;
@@ -209,14 +209,14 @@ else {
 							?>
 							<tr>
 								<td> 
-									<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+									<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 									<span style="font-size: 90%"><i>Volume or product name.</i></span>
 								</td>
 								<td class="right">
-									<input name="name<? print $i ?>" id="name<? print $i ?>" maxlength=255 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+									<input name="name<?php print $i ?>" id="name<?php print $i ?>" maxlength=255 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
-										var name<? print $i ?>=new LiveValidation('name<? print $i ?>');
-										name<? print $i ?>.add(Validate.Presence);
+										var name<?php print $i ?>=new LiveValidation('name<?php print $i ?>');
+										name<?php print $i ?>.add(Validate.Presence);
 									 </script>
 								</td>
 							</tr>
@@ -226,8 +226,8 @@ else {
 									<span style="font-size: 90%"><i>School-unique ID or barcode.</i></span>
 								</td>
 								<td class="right">
-									<input name="id<? print $i ?>" id="id<? print $i ?>" maxlength=255 value="<? print $row["id"] ?>" type="text" style="width: 300px">
-									<?
+									<input name="id<?php print $i ?>" id="id<?php print $i ?>" maxlength=255 value="<?php print $row["id"] ?>" type="text" style="width: 300px">
+									<?php
 									//Get list of all ids already in use
 									$idList="" ;
 									try {
@@ -242,9 +242,9 @@ else {
 									}
 									?>
 									<script type="text/javascript">
-										var id<? print $i ?>=new LiveValidation('id<? print $i ?>');
-										id<? print $i ?>.add( Validate.Exclusion, { within: [<? print $idList ;?>], failureMessage: "ID already in use!", partialMatch: false, caseSensitive: false } );
-										id<? print $i ?>.add(Validate.Presence);
+										var id<?php print $i ?>=new LiveValidation('id<?php print $i ?>');
+										id<?php print $i ?>.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "ID already in use!", partialMatch: false, caseSensitive: false } );
+										id<?php print $i ?>.add(Validate.Presence);
 									 </script>
 								</td>
 							</tr>
@@ -254,10 +254,10 @@ else {
 									<span style="font-size: 90%"><i>Who created the item?</i></span>
 								</td>
 								<td class="right">
-									<input name="producer<? print $i ?>" id="producer<? print $i ?>" maxlength=255 value="<? print $row["producer"] ?>" type="text" style="width: 300px">
+									<input name="producer<?php print $i ?>" id="producer<?php print $i ?>" maxlength=255 value="<?php print $row["producer"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
-										var producer<? print $i ?>=new LiveValidation('producer<? print $i ?>');
-										producer<? print $i ?>.add(Validate.Presence);
+										var producer<?php print $i ?>=new LiveValidation('producer<?php print $i ?>');
+										producer<?php print $i ?>.add(Validate.Presence);
 									 </script>
 								</td>
 							</tr>
@@ -267,7 +267,7 @@ else {
 									<span style="font-size: 90%"><i>Who supplied the item?</i></span>
 								</td>
 								<td class="right">
-									<input name="vendor<? print $i ?>" id="vendor<? print $i ?>" maxlength=100 value="<? print $row["vendor"] ?>" type="text" style="width: 300px">
+									<input name="vendor<?php print $i ?>" id="vendor<?php print $i ?>" maxlength=100 value="<?php print $row["vendor"] ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
 							<tr>
@@ -276,10 +276,10 @@ else {
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
-									<input name="purchaseDate<? print $i ?>" id="purchaseDate<? print $i ?>" maxlength=10 value="<? print dateConvertBack($guid, $row["purchaseDate"]) ?>" type="text" style="width: 300px">
+									<input name="purchaseDate<?php print $i ?>" id="purchaseDate<?php print $i ?>" maxlength=10 value="<?php print dateConvertBack($guid, $row["purchaseDate"]) ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var purchaseDate=new LiveValidation('purchaseDate');
-										purchaseDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+										purchaseDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 									 </script>
 									 <script type="text/javascript">
 										$(function() {
@@ -294,17 +294,17 @@ else {
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
-									<input name="invoiceNumber<? print $i ?>" id="invoiceNumber<? print $i ?>" maxlength=50 value="<? print $row["invoiceNumber"] ?>" type="text" style="width: 300px">
+									<input name="invoiceNumber<?php print $i ?>" id="invoiceNumber<?php print $i ?>" maxlength=50 value="<?php print $row["invoiceNumber"] ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
 							<tr id="locationRow">
 								<td> 
-									<b><? print _('Location') ?> *</b><br/>
+									<b><?php print _('Location') ?> *</b><br/>
 									<span style="font-size: 90%"><i>Item's main location.</i></span>
 								</td>
 								<td class="right">
-									<select name="gibbonSpaceID<? print $i ?>" id="gibbonSpaceID<? print $i ?>" style="width: 302px">
-										<?
+									<select name="gibbonSpaceID<?php print $i ?>" id="gibbonSpaceID<?php print $i ?>" style="width: 302px">
+										<?php
 										print "<option value=''></option>" ;
 										try {
 											$dataSelect=array(); 
@@ -330,42 +330,42 @@ else {
 									<span style="font-size: 90%"><i>Shelf, cabinet, sector, etc</i></span>
 								</td>
 								<td class="right">
-									<input name="locationDetail<? print $i ?>" id="locationDetail<? print $i ?>" maxlength=255 value="<? print $row["locationDetail"] ?>" type="text" style="width: 300px">
+									<input name="locationDetail<?php print $i ?>" id="locationDetail<?php print $i ?>" maxlength=255 value="<?php print $row["locationDetail"] ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
 							
 							<!-- FIELDS & CONTROLS FOR OWNERSHIP -->
 							<script type="text/javascript">
 								$(document).ready(function(){
-									$("#ownershipType<? print $i ?>").change(function(){
-										if ($('select.ownershipType<? print $i ?> option:selected').val()=="School" ) {
-											$("#ownershipTypeIndividualRow<? print $i ?>").css("display","none");
-											$("#ownershipTypeSchoolRow<? print $i ?>").slideDown("fast", $("#ownershipTypeSchoolRow<? print $i ?>").css("display","table-row")); 
-										} else if ($('select.ownershipType<? print $i ?> option:selected').val()=="Individual" ) {
-											$("#ownershipTypeSchoolRow<? print $i ?>").css("display","none");
-											$("#ownershipTypeIndividualRow<? print $i ?>").slideDown("fast", $("#ownershipTypeIndividualRow<? print $i ?>).css("display","table-row")); 
+									$("#ownershipType<?php print $i ?>").change(function(){
+										if ($('select.ownershipType<?php print $i ?> option:selected').val()=="School" ) {
+											$("#ownershipTypeIndividualRow<?php print $i ?>").css("display","none");
+											$("#ownershipTypeSchoolRow<?php print $i ?>").slideDown("fast", $("#ownershipTypeSchoolRow<?php print $i ?>").css("display","table-row")); 
+										} else if ($('select.ownershipType<?php print $i ?> option:selected').val()=="Individual" ) {
+											$("#ownershipTypeSchoolRow<?php print $i ?>").css("display","none");
+											$("#ownershipTypeIndividualRow<?php print $i ?>").slideDown("fast", $("#ownershipTypeIndividualRow<?php print $i ?>).css("display","table-row")); 
 										} 
 										else {
-											$("#ownershipTypeIndividualRow<? print $i ?>").css("display","none");
-											$("#ownershipTypeSchoolRow<? print $i ?>").css("display","none");
+											$("#ownershipTypeIndividualRow<?php print $i ?>").css("display","none");
+											$("#ownershipTypeSchoolRow<?php print $i ?>").css("display","none");
 										}
 									 });
 								});
 							</script>
-							<tr id='ownershipTypeRow<? print $i ?>'>
+							<tr id='ownershipTypeRow<?php print $i ?>'>
 								<td> 
 									<b>Ownership Type</b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
-									<select name="ownershipType<? print $i ?>" id="ownershipType<? print $i ?>" class='ownershipType<? print $i ?>' style="width: 302px">
+									<select name="ownershipType<?php print $i ?>" id="ownershipType<?php print $i ?>" class='ownershipType<?php print $i ?>' style="width: 302px">
 										<option value=""></option>
-										<option <? if ($row["ownershipType"]=="School") { print "selected" ; } ?> value="School" /> School
-										<option <? if ($row["ownershipType"]=="Individual") { print "selected" ; } ?> value="Individual" /> Individual
+										<option <?php if ($row["ownershipType"]=="School") { print "selected" ; } ?> value="School" /> School
+										<option <?php if ($row["ownershipType"]=="Individual") { print "selected" ; } ?> value="Individual" /> Individual
 									</select>
 								</td>
 							</tr>
-							<?
+							<?php
 							$selectContents="<option value=''></option>" ;
 							$selectContents.="<optgroup label='--Students By Roll Group--'>" ;
 							try {
@@ -379,7 +379,7 @@ else {
 								$selectContents.="<option value='" . $rowSelect["gibbonPersonID"] . "'>" . htmlPrep($rowSelect["name"]) . " - " . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
 							}
 							$selectContents.="</optgroup>" ;
-							$selectContents.="<optgroup label='--<? print _('All Users') ?>--'>" ;
+							$selectContents.="<optgroup label='--<?php print _('All Users') ?>--'>" ;
 							try {
 								$dataSelect=array(); 
 								$sqlSelect="SELECT gibbonPersonID, surname, preferredName, status FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName" ;
@@ -400,24 +400,24 @@ else {
 							}
 							$selectContents.="</optgroup>" ;
 							?>
-							<tr id="ownershipTypeSchoolRow<? print $i ?>" <? if ($row["ownershipType"]!="School") { print "style='display: none'" ; }?>>
+							<tr id="ownershipTypeSchoolRow<?php print $i ?>" <?php if ($row["ownershipType"]!="School") { print "style='display: none'" ; }?>>
 								<td> 
 									<b>Main User</b><br/>
 									<span style="font-size: 90%"><i>Person the device is assigned to.</i></span>
 								</td>
 								<td class="right">
-									<select name="gibbonPersonIDOwnershipSchool<? print $i ?>" id="gibbonPersonIDOwnershipSchool<? print $i ?>" style="width: 302px">
-										<? print $selectContents ?>
+									<select name="gibbonPersonIDOwnershipSchool<?php print $i ?>" id="gibbonPersonIDOwnershipSchool<?php print $i ?>" style="width: 302px">
+										<?php print $selectContents ?>
 									</select>
 								</td>
 							</tr>
-							<tr id="ownershipTypeIndividualRow<? print $i ?>" <? if ($row["ownershipType"]!="Individual") { print "style='display: none'" ; }?>>
+							<tr id="ownershipTypeIndividualRow<?php print $i ?>" <?php if ($row["ownershipType"]!="Individual") { print "style='display: none'" ; }?>>
 								<td> 
 									<b>Owner</b><br/>
 								</td>
 								<td class="right">
-									<select name="gibbonPersonIDOwnershipIndividual<? print $i ?>" id="gibbonPersonIDOwnershipIndividual<? print $i ?>" style="width: 302px">
-										<? print $selectContents ?>
+									<select name="gibbonPersonIDOwnershipIndividual<?php print $i ?>" id="gibbonPersonIDOwnershipIndividual<?php print $i ?>" style="width: 302px">
+										<?php print $selectContents ?>
 									</select>
 								</td>
 							</tr>
@@ -427,8 +427,8 @@ else {
 									<span style="font-size: 90%"><i>Which department is responsible for the item?</i></span>
 								</td>
 								<td class="right">
-									<select name="gibbonDepartmentID<? print $i ?>" id="gibbonDepartmentID<? print $i ?>" style="width: 302px">
-										<?
+									<select name="gibbonDepartmentID<?php print $i ?>" id="gibbonDepartmentID<?php print $i ?>" style="width: 302px">
+										<?php
 										print "<option value=''></option>" ;
 										try {
 											$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -454,9 +454,9 @@ else {
 									<span style="font-size: 90%"><i>Is item available for loan?</i></span>
 								</td>
 								<td class="right">
-									<select name="borrowable<? print $i ?>" id="borrowable<? print $i ?>" style="width: 302px">
-										<option <? if ($row["borrowable"]=="Y") { print "selected" ; } ?> value="Y" /> Yes
-										<option <? if ($row["borrowable"]=="N") { print "selected" ; } ?> value="N" /> No
+									<select name="borrowable<?php print $i ?>" id="borrowable<?php print $i ?>" style="width: 302px">
+										<option <?php if ($row["borrowable"]=="Y") { print "selected" ; } ?> value="Y" /> Yes
+										<option <?php if ($row["borrowable"]=="N") { print "selected" ; } ?> value="N" /> No
 									</select>
 								</td>
 							</tr>
@@ -466,16 +466,16 @@ else {
 									<span style="font-size: 90%"><i>This value cannot be changed here.</i></span>
 								</td>
 								<td class="right">
-									<input readonly style='width: 300px' type='text' value='<? print $row["status"] ?>' />
+									<input readonly style='width: 300px' type='text' value='<?php print $row["status"] ?>' />
 								</td>
 							</tr>
 							<tr>
 								<td colspan=2> 
 									<b>Comments/Notes</b> 
-									<textarea name='comment<? print $i ?>' id='comment<? print $i ?>' rows=10 style='width: 300px'><? print htmlPreP($row["comment"]) ?></textarea>
+									<textarea name='comment<?php print $i ?>' id='comment<?php print $i ?>' rows=10 style='width: 300px'><?php print htmlPreP($row["comment"]) ?></textarea>
 								</td>
 							</tr>
-							<?
+							<?php
 							//TYPE SPECIFIC FIELDS
 							if ($i==1) {
 								try {
@@ -580,19 +580,19 @@ else {
 						?>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 							</td>
 							<td class="right">
-								<input type="hidden" name="count" value="<? print $number ?>">
-								<input type='hidden' name='gibbonLibraryTypeID' value='<? print $_POST["gibbonLibraryTypeID"] ?>'>
-								<input type="hidden" name="gibbonLibraryItemID" value="<? print $row["gibbonLibraryItemID"] ?>">
-								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<? print _("Submit") ; ?>">
+								<input type="hidden" name="count" value="<?php print $number ?>">
+								<input type='hidden' name='gibbonLibraryTypeID' value='<?php print $_POST["gibbonLibraryTypeID"] ?>'>
+								<input type="hidden" name="gibbonLibraryItemID" value="<?php print $row["gibbonLibraryItemID"] ?>">
+								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+								<input type="submit" value="<?php print _("Submit") ; ?>">
 							</td>
 						</tr>
 					</table>
 				</form>
-				<?
+				<?php
 			}
 		}
 	}

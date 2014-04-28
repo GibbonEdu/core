@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -86,15 +86,15 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/yearGroup_manage_editProcess.php?gibbonYearGroupID=$gibbonYearGroupID" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/yearGroup_manage_editProcess.php?gibbonYearGroupID=$gibbonYearGroupID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
+							<b><?php print _('Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" value="<? print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
@@ -103,11 +103,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
+							<?php print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" value="<? print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" value="<?php print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -116,11 +116,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Sequence Number') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Must be unique. Controls chronological ordering.') ?></i></span>
+							<b><?php print _('Sequence Number') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Must be unique. Controls chronological ordering.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="sequenceNumber" ID="sequenceNumber" value="<? print $row["sequenceNumber"] ?>" type="text" style="width: 300px">
+							<input name="sequenceNumber" ID="sequenceNumber" value="<?php print $row["sequenceNumber"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var sequenceNumber=new LiveValidation('sequenceNumber');
 								sequenceNumber.add(Validate.Numericality);
@@ -130,16 +130,16 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

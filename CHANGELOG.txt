@@ -185,6 +185,10 @@ Library: fixed bug stopping images from displaying
 
 Students: fixed access check error in Left Students report
 	Edited file /modules/Students/report_students_left.php
+	
+General: replaced all PHP short tags (<?) with full tags (<?php)
+	Edited every file in the system
+
 
 v7.1.02
 -------

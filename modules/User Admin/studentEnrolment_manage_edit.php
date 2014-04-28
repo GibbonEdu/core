@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -95,15 +95,15 @@ else {
 			}
 			?>
 			
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('School Year') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('School Year') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							$yearName="" ;
 							try {
 								$dataYear=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
@@ -119,7 +119,7 @@ else {
 								$yearName=$rowYear["name"] ;
 							}
 							?>
-							<input readonly name="yearName" id="yearName" maxlength=20 value="<? print htmlPrep($yearName) ?>" type="text" style="width: 300px">
+							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print htmlPrep($yearName) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var yearName=new LiveValidation('yearName');
 								yearName.add(Validate.Presence);
@@ -128,11 +128,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Student') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('Student') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="participant" id="participant" maxlength=200 value="<? print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student") ?>" type="text" style="width: 300px">
+							<input readonly name="participant" id="participant" maxlength=200 value="<?php print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student") ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var participant=new LiveValidation('participant');
 								participant.add(Validate.Presence);
@@ -141,12 +141,12 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Year Group') ?> *</b><br/>
+							<b><?php print _('Year Group') ?> *</b><br/>
 							<span style="font-size: 90%"></span>
 						</td>
 						<td class="right">
 							<select name="gibbonYearGroupID" id="gibbonYearGroupID" style="width: 302px">
-								<?
+								<?php
 								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								try {
 									$dataSelect=array(); 
@@ -168,18 +168,18 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonYearGroupID=new LiveValidation('gibbonYearGroupID');
-								gibbonYearGroupID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+								gibbonYearGroupID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Roll Group') ?> *</b><br/>
+							<b><?php print _('Roll Group') ?> *</b><br/>
 							<span style="font-size: 90%"></span>
 						</td>
 						<td class="right">
 							<select name="gibbonRollGroupID" id="gibbonRollGroupID" style="width: 302px">
-								<?
+								<?php
 								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
@@ -201,17 +201,17 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonRollGroupID=new LiveValidation('gibbonRollGroupID');
-								gibbonRollGroupID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+								gibbonRollGroupID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('School History') ?></b><br/>
+							<b><?php print _('School History') ?></b><br/>
 							<span style="font-size: 90%"></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							if ($row["dateStart"]!="") {
 								print "<u>" . _('Start Date') . "</u>: " . dateConvertBack($guid, $row["dateStart"]) . "</br>" ;
 							}
@@ -235,17 +235,17 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input name="gibbonStudentEnrolmentID" id="gibbonStudentEnrolmentID" value="<? print $gibbonStudentEnrolmentID ?>" type="hidden">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input name="gibbonStudentEnrolmentID" id="gibbonStudentEnrolmentID" value="<?php print $gibbonStudentEnrolmentID ?>" type="hidden">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

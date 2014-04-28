@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -528,7 +528,7 @@ else {
 														}) ;
 													}) ;
 												</script>
-												<?
+												<?php
 												print "<div id='smartEdit'>" ;
 													print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_smartProcess.php'>" ;
 														?>
@@ -549,7 +549,7 @@ else {
 														</script>
 												
 														<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px; border-top: 1px dotted #666; border-bottom: 1px dotted #666'>
-															<? 
+															<?php 
 															$i=1 ;
 															$minSeq=0 ;
 															while ($rowBlocks=$resultBlocks->fetch()) {
@@ -566,7 +566,7 @@ else {
 															}
 															?>
 														</div>
-														<?
+														<?php
 														print "<div style='text-align: right; margin-top: 3px'>" ;
 															print "<input type='hidden' name='minSeq' value='$minSeq'>" ;
 															print "<input type='hidden' name='mode' value='edit'>" ;
@@ -725,7 +725,7 @@ else {
 																	View<br/>
 																</td>
 															</tr>
-															<?
+															<?php
 															while ($rowVersion=$resultVersion->fetch()) {
 																if ($count%2==0) {
 																	$rowNum="even" ;
@@ -739,19 +739,19 @@ else {
 																?>
 															
 																	<td> 
-																		<? print $rowVersion["count"] ?><br/>
+																		<?php print $rowVersion["count"] ?><br/>
 																	</td>
 																	<td>
-																		<? print $rowVersion["version"] ?><br/>
+																		<?php print $rowVersion["version"] ?><br/>
 																	</td>
 																	<td>
-																		<? print $rowVersion["status"] ?><br/>
+																		<?php print $rowVersion["status"] ?><br/>
 																	</td>
 																	<td>
-																		<? print substr($rowVersion["timestamp"],11,5) . " " . dateConvertBack($guid, substr($rowVersion["timestamp"],0,10)) ?><br/>
+																		<?php print substr($rowVersion["timestamp"],11,5) . " " . dateConvertBack($guid, substr($rowVersion["timestamp"],0,10)) ?><br/>
 																	</td>
 																	<td>
-																		<? 
+																		<?php 
 																		if ($rowVersion["type"]=="File") {
 																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowVersion["location"] ."'>" . $rowVersion["location"] . "</a>" ;
 																		}
@@ -762,12 +762,12 @@ else {
 																		?>
 																	</td>
 																</tr>
-																<?
+																<?php
 																$latestVersion=$rowVersion["version"] ;
 															}
 															?>
 														</table>
-														<?
+														<?php
 													}
 												
 													if ($latestVersion!="Final") {
@@ -778,14 +778,14 @@ else {
 														}
 													
 														?>
-														<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submitProcess.php?address=" . $_GET["q"] . $params . "&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] ?>" enctype="multipart/form-data">
+														<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submitProcess.php?address=" . $_GET["q"] . $params . "&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] ?>" enctype="multipart/form-data">
 															<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 																<tr>
 																	<td> 
-																		<b><? print _('Type') ?> *</b><br/>
+																		<b><?php print _('Type') ?> *</b><br/>
 																	</td>
 																	<td class="right">
-																		<?
+																		<?php
 																		if ($row["homeworkSubmissionType"]=="Link") {
 																			print "<input readonly id='type' name='type' type='text' value='Link' style='width: 302px'>" ;
 																		}
@@ -796,7 +796,7 @@ else {
 																			?>
 																			<input checked type="radio" id="type" name="type" class="type" value="Link" /> Link
 																			<input type="radio" id="type" name="type" class="type" value="File" /> File
-																			<?
+																			<?php
 																		}
 																		?>
 																	</td>
@@ -806,7 +806,7 @@ else {
 																		<b>Version *</b><br/>
 																	</td>
 																	<td class="right">
-																		<?
+																		<?php
 																		print "<select style='float: none; width: 302px' name='version'>" ;
 																			if ($row["homeworkSubmissionDrafts"]>0 AND $status!="Late" AND $resultVersion->rowCount()<$row["homeworkSubmissionDrafts"]) {
 																				print "<option value='Draft'>Draft</option>" ;
@@ -820,22 +820,22 @@ else {
 																<script type="text/javascript">
 																	/* Subbmission type control */
 																	$(document).ready(function(){
-																		<?
+																		<?php
 																		if ($row["homeworkSubmissionType"]=="Link") {
 																			?>
 																			$("#fileRow").css("display","none");
-																			<?
+																			<?php
 																		}
 																		else if ($row["homeworkSubmissionType"]=="File") {
 																			?>
 																			$("#linkRow").css("display","none");
-																			<?
+																			<?php
 																		}
 																		else {
 																			?>
 																			$("#fileRow").css("display","none");
 																			$("#linkRow").slideDown("fast", $("#linkRow").css("display","table-row")); 
-																			<?
+																			<?php
 																		}
 																		?>
 																	
@@ -857,7 +857,7 @@ else {
 																	</td>
 																	<td class="right">
 																		<input type="file" name="file" id="file"><br/><br/>
-																		<?
+																		<?php
 																		print getMaxUpload() ;
 																	
 																		//Get list of acceptable file extensions
@@ -876,7 +876,7 @@ else {
 																	
 																		<script type="text/javascript">
 																			var file=new LiveValidation('file');
-																			file.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+																			file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 																		</script>
 																	</td>
 																</tr>
@@ -894,19 +894,19 @@ else {
 																</tr>
 																<tr>
 																	<td class="right" colspan=2>
-																		<?									
+																		<?php									
 																		print "<input type='hidden' name='lesson' value='" . $row["name"] . "'>" ;
 																		print "<input type='hidden' name='count' value='$count'>" ;
 																		print "<input type='hidden' name='status' value='$status'>" ;
 																		print "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>" ;
 																		print "<input type='hidden' name='currentDate' value='" . $row["date"] . "'>" ;
 																		?>
-																		<input type="submit" value="<? print _("Submit") ; ?>">
+																		<input type="submit" value="<?php print _("Submit") ; ?>">
 																	</td>
 																</tr>
 															</table>
 														</form>
-														<?
+														<?php
 													}
 												}
 											}
@@ -955,7 +955,7 @@ else {
 																	View<br/>
 																</td>
 															</tr>
-															<?
+															<?php
 															while ($rowVersion=$resultVersion->fetch()) {
 																if ($count%2==0) {
 																	$rowNum="even" ;
@@ -969,19 +969,19 @@ else {
 																?>
 															
 																	<td> 
-																		<? print $rowVersion["count"] ?><br/>
+																		<?php print $rowVersion["count"] ?><br/>
 																	</td>
 																	<td>
-																		<? print $rowVersion["version"] ?><br/>
+																		<?php print $rowVersion["version"] ?><br/>
 																	</td>
 																	<td>
-																		<? print $rowVersion["status"] ?><br/>
+																		<?php print $rowVersion["status"] ?><br/>
 																	</td>
 																	<td>
-																		<? print substr($rowVersion["timestamp"],11,5) . " " . dateConvertBack($guid, substr($rowVersion["timestamp"],0,10)) ?><br/>
+																		<?php print substr($rowVersion["timestamp"],11,5) . " " . dateConvertBack($guid, substr($rowVersion["timestamp"],0,10)) ?><br/>
 																	</td>
 																	<td>
-																		<? 
+																		<?php 
 																		if ($rowVersion["type"]=="File") {
 																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowVersion["location"] ."'>" . $rowVersion["location"] . "</a>" ;
 																		}
@@ -992,12 +992,12 @@ else {
 																		?>
 																	</td>
 																</tr>
-																<?
+																<?php
 																$latestVersion=$rowVersion["version"] ;
 															}
 															?>
 														</table>
-														<?
+														<?php
 													}
 												}
 											}
@@ -1041,7 +1041,7 @@ else {
 																	Action<br/>
 																</th>
 															</tr>
-															<?
+															<?php
 															while ($rowClass=$resultClass->fetch()) {
 																if ($count%2==0) {
 																	$rowNum="even" ;
@@ -1055,10 +1055,10 @@ else {
 																?>
 																
 																	<td> 
-																		<? print "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowClass["gibbonPersonID"] . "'>" . formatName("", $rowClass["preferredName"], $rowClass["surname"], "Student", true) . "</a>" ?><br/>
+																		<?php print "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowClass["gibbonPersonID"] . "'>" . formatName("", $rowClass["preferredName"], $rowClass["surname"], "Student", true) . "</a>" ?><br/>
 																	</td>
 																
-																	<?
+																	<?php
 																
 																	try {
 																		$dataVersion=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"], "gibbonPersonID"=>$rowClass["gibbonPersonID"]); 
@@ -1072,7 +1072,7 @@ else {
 																	if ($resultVersion->rowCount()<1) {
 																		?>
 																		<td colspan=4> 
-																			<?
+																			<?php
 																			//Before deadline
 																			if (date("Y-m-d H:i:s")<$row["homeworkDueDateTime"]) {
 																				print "Pending" ;
@@ -1094,17 +1094,17 @@ else {
 																			?>
 																		</td>
 																		<td>
-																			<? 
+																			<?php 
 																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $gibbonPersonID . "&gibbonPersonID=" . $rowClass["gibbonPersonID"] . "&submission=false'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;						
 																			?>
 																		</td>
-																		<?
+																		<?php
 																	}
 																	else {
 																		$rowVersion=$resultVersion->fetch() ;
 																		?>
 																		<td>
-																			<? 
+																			<?php 
 																			if ($rowVersion["status"]=="On Time" OR $rowVersion["status"]=="Exemption") {
 																				print $rowVersion["status"] ;
 																			} 
@@ -1114,7 +1114,7 @@ else {
 																			?>
 																		</td>
 																		<td>
-																			<? 
+																			<?php 
 																			print $rowVersion["version"] ;
 																			if ($rowVersion["version"]=="Draft") {
 																				print " " . $rowVersion["count"] ;
@@ -1122,10 +1122,10 @@ else {
 																			?>
 																		</td>
 																		<td>
-																			<? print substr($rowVersion["timestamp"],11,5) . " " . dateConvertBack($guid, substr($rowVersion["timestamp"],0,10)) ?><br/>
+																			<?php print substr($rowVersion["timestamp"],11,5) . " " . dateConvertBack($guid, substr($rowVersion["timestamp"],0,10)) ?><br/>
 																		</td>
 																		<td>
-																			<?
+																			<?php
 																			$locationPrint=$rowVersion["location"] ;
 																			if (strlen($locationPrint)>15) {
 																				$locationPrint=substr($locationPrint,0,15) . "..." ;
@@ -1140,20 +1140,20 @@ else {
 																			?>
 																		</td>
 																		<td>
-																			<? 
+																			<?php 
 																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=" . $gibbonPersonID . "&gibbonPlannerEntryHomeworkID=" . $rowVersion["gibbonPlannerEntryHomeworkID"] . "&submission=true'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;						
 																			print "<a onclick='return confirm(\"Are you sure you wish to delete this submission?\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_submit_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$gibbonPersonID&gibbonPlannerEntryHomeworkID=" . $rowVersion["gibbonPlannerEntryHomeworkID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 																			?>
 																		</td>
-																		<?
+																		<?php
 																	}
 																	?>
 																</tr>
-																<?
+																<?php
 															}
 															?>
 														</table>
-														<?
+														<?php
 													}
 												}
 											}
@@ -1280,8 +1280,8 @@ else {
 									print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
 										print "<h2>Twitter</h2><br/>" ;
 										?>
-										<iframe style='margin-left: -10px; margin-top: -10px; border: none; width: 640px; overflow: none; height: 400px' src="<? print $_SESSION[$guid]["absoluteURL"] ?>/modules/Planner/twitter.php?twitter=<? print str_replace("#", "^", $row["twitterSearch"]) ?>"></iframe>
-										<?
+										<iframe style='margin-left: -10px; margin-top: -10px; border: none; width: 640px; overflow: none; height: 400px' src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Planner/twitter.php?twitter=<?php print str_replace("#", "^", $row["twitterSearch"]) ?>"></iframe>
+										<?php
 									print "</td>" ;
 								print "</tr>" ;
 							}
@@ -1721,11 +1721,11 @@ else {
 							$(document).ready(function(){
 								$("#teachersNotes").slideUp("fast");
 								$(".teachersNotes").slideUp("fast");
-								<?
+								<?php
 								for ($i=0; $i<$count; $i++) {
 									?>
-									$("#confidentialPlan<? print $i ?>").css("display","none");
-									<?
+									$("#confidentialPlan<?php print $i ?>").css("display","none");
+									<?php
 								}
 								?>
 							
@@ -1733,29 +1733,29 @@ else {
 									if ($('input[name=confidentialPlan]:checked').val()=="Yes" ) {
 										$("#teachersNotes").slideDown("fast", $(".teachersNotes").css("{'display' : 'table-row', 'border' : 'right'}")); 
 										$(".teachersNotes").slideDown("fast", $("#teachersNotes").css("{'display' : 'table-row', 'border' : 'right'}")); 
-										<?
+										<?php
 										for ($i=0; $i<$count; $i++) {
 											?>
-											$("#confidentialPlan<? print $i ?>").slideDown("fast", $("#confidentialPlan<? print $i ?>").css("{'display' : 'table-row', 'border' : 'right'}")); 
-											<?
+											$("#confidentialPlan<?php print $i ?>").slideDown("fast", $("#confidentialPlan<?php print $i ?>").css("{'display' : 'table-row', 'border' : 'right'}")); 
+											<?php
 										}
 										?>
 									} 
 									else {
 										$("#teachersNotes").slideUp("fast"); 
 										$(".teachersNotes").slideUp("fast"); 
-										<?
+										<?php
 										for ($i=0; $i<$count; $i++) {
 											?>
-											$("#confidentialPlan<? print $i ?>").slideUp("fast"); 
-											<?
+											$("#confidentialPlan<?php print $i ?>").slideUp("fast"); 
+											<?php
 										}
 										?>
 									}
 								 });
 							});
 						</script>
-						<?
+						<?php
 					}
 				}
 			}

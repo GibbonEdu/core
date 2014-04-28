@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -94,15 +94,15 @@ else {
 				print "</div>" ;
 			}
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_condition_editProcess.php?gibbonPersonMedicalID=$gibbonPersonMedicalID&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID&search=$search" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_condition_editProcess.php?gibbonPersonMedicalID=$gibbonPersonMedicalID&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID&search=$search" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Person') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('Person') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							try {
 								$dataSelect=array("gibbonPersonMedicalID"=>$row["gibbonPersonMedicalID"]); 
 								$sqlSelect="SELECT surname, preferredName FROM gibbonPerson JOIN gibbonPersonMedical ON (gibbonPerson.gibbonPersonID=gibbonPersonMedical.gibbonPersonID) WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID" ;
@@ -112,16 +112,16 @@ else {
 							catch(PDOException $e) { }
 							$rowSelect=$resultSelect->fetch() ;
 							?>	
-							<input readonly name="personName" id="personName" maxlength=255 value="<? print formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Student") ?>" type="text" style="width: 300px">
+							<input readonly name="personName" id="personName" maxlength=255 value="<?php print formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Student") ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Condition Name') ?> *</b><br/>
+							<b><?php print _('Condition Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="name" id="name">
-								<?
+								<?php
 								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								try {
 									$dataSelect=array(); 
@@ -142,18 +142,18 @@ else {
 							</select>
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
-								name.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+								name.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 							 </script>	
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Risk') ?> *</b><br/>
+							<b><?php print _('Risk') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="gibbonAlertLevelID" id="gibbonAlertLevelID" style="width: 302px">
 								<option value='Please select...'>Please select...</option>
-								<?
+								<?php
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber" ;
@@ -173,52 +173,52 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonAlertLevelID=new LiveValidation('gibbonAlertLevelID');
-								gibbonAlertLevelID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+								gibbonAlertLevelID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 							 </script>	
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Triggers') ?></b><br/>
+							<b><?php print _('Triggers') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="triggers" id="triggers" maxlength=255 value="<? print htmlPrep($row["triggers"]) ?>" type="text" style="width: 300px">
+							<input name="triggers" id="triggers" maxlength=255 value="<?php print htmlPrep($row["triggers"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Reaction') ?></b><br/>
+							<b><?php print _('Reaction') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="reaction" id="reaction" maxlength=255 value="<? print htmlPrep($row["reaction"]) ?>" type="text" style="width: 300px">
+							<input name="reaction" id="reaction" maxlength=255 value="<?php print htmlPrep($row["reaction"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Response') ?></b><br/>
+							<b><?php print _('Response') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="response" id="response" maxlength=255 value="<? print htmlPrep($row["response"]) ?>" type="text" style="width: 300px">
+							<input name="response" id="response" maxlength=255 value="<?php print htmlPrep($row["response"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Medication') ?></b><br/>
+							<b><?php print _('Medication') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="medication" id="medication" maxlength=255 value="<? print htmlPrep($row["medication"]) ?>" type="text" style="width: 300px">
+							<input name="medication" id="medication" maxlength=255 value="<?php print htmlPrep($row["medication"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Last Episode Date') ?></b><br/>
-							<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+							<b><?php print _('Last Episode Date') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 						</td>
 						<td class="right">
-							<input name="lastEpisode" id="lastEpisode" maxlength=10 value="<? print dateConvertBack($guid, $row["lastEpisode"]) ?>" type="text" style="width: 300px">
+							<input name="lastEpisode" id="lastEpisode" maxlength=10 value="<?php print dateConvertBack($guid, $row["lastEpisode"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var lastEpisode=new LiveValidation('lastEpisode');
-								lastEpisode.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+								lastEpisode.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							 </script>
 							 <script type="text/javascript">
 								$(function() {
@@ -229,33 +229,33 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Last Episode Treatment') ?></b><br/>
+							<b><?php print _('Last Episode Treatment') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="lastEpisodeTreatment" id="lastEpisodeTreatment" maxlength=255 value="<? print htmlPrep($row["lastEpisodeTreatment"]) ?>" type="text" style="width: 300px">
+							<input name="lastEpisodeTreatment" id="lastEpisodeTreatment" maxlength=255 value="<?php print htmlPrep($row["lastEpisodeTreatment"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Comment') ?></b><br/>
+							<b><?php print _('Comment') ?></b><br/>
 						</td>
 						<td class="right">
-							<textarea name="comment" id="comment" rows=8 style="width: 300px"><? print $row["comment"] ?></textarea>
+							<textarea name="comment" id="comment" rows=8 style="width: 300px"><?php print $row["comment"] ?></textarea>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input name="gibbonPersonMedicalID" id="gibbonPersonMedicalID" value="<? print $gibbonPersonMedicalID ?>" type="hidden">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input name="gibbonPersonMedicalID" id="gibbonPersonMedicalID" value="<?php print $gibbonPersonMedicalID ?>" type="hidden">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -86,15 +86,15 @@ else {
 				print "</div>" ;
 			} 
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/ttColumn_edit_row_editProcess.php?gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTColumnID=$gibbonTTColumnID" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/ttColumn_edit_row_editProcess.php?gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTColumnID=$gibbonTTColumnID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Column') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('Column') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="columnName" id="columnName" maxlength=20 value="<? print $row["columnName"] ?>" type="text" style="width: 300px">
+							<input readonly name="columnName" id="columnName" maxlength=20 value="<?php print $row["columnName"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var courseName=new LiveValidation('courseName');
 								courseName.add(Validate.Presence);
@@ -103,11 +103,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i><? print _('Must be unique for this column.') ?></i></span>
+							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<span style="font-size: 90%"><i><?php print _('Must be unique for this column.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=12 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=12 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
@@ -116,11 +116,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i><? print _('Must be unique for this column.') ?></i></span>
+							<?php print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+							<span style="font-size: 90%"><i><?php print _('Must be unique for this column.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="<? print $row["nameShort"] ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=4 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -129,11 +129,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Start Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Format: hh:mm (24hr)') ?><br/></i></span>
+							<b><?php print _('Start Time') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input name="timeStart" id="timeStart" maxlength=5 value="<? print substr($row["timeStart"],0,5) ?>" type="text" style="width: 300px">
+							<input name="timeStart" id="timeStart" maxlength=5 value="<?php print substr($row["timeStart"],0,5) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var timeStart=new LiveValidation('timeStart');
 								timeStart.add(Validate.Presence);
@@ -142,7 +142,7 @@ else {
 							<script type="text/javascript">
 								$(function() {
 									var availableTags=[
-										<?
+										<?php
 										try {
 											$dataAuto=array(); 
 											$sqlAuto="SELECT DISTINCT timeStart FROM gibbonTTColumnRow ORDER BY timeStart" ;
@@ -162,11 +162,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('End Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Format: hh:mm (24hr)') ?><br/></i></span>
+							<b><?php print _('End Time') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input name="timeEnd" id="timeEnd" maxlength=5 value="<? print substr($row["timeEnd"],0,5) ?>" type="text" style="width: 300px">
+							<input name="timeEnd" id="timeEnd" maxlength=5 value="<?php print substr($row["timeEnd"],0,5) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var timeEnd=new LiveValidation('timeEnd');
 								timeEnd.add(Validate.Presence);
@@ -175,7 +175,7 @@ else {
 							<script type="text/javascript">
 								$(function() {
 									var availableTags=[
-										<?
+										<?php
 										try {
 											$dataAuto=array(); 
 											$sqlAuto="SELECT DISTINCT timeEnd FROM gibbonTTColumnRow ORDER BY timeEnd" ;
@@ -195,11 +195,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Type') ?></b><br/>
+							<b><?php print _('Type') ?></b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="type">
-								<?
+								<?php
 								print "<option " ; if ($row["type"]=="Lesson") { print "selected "; } ; print " value='Lesson'>" . _('Lesson') . "</option>" ;
 								print "<option " ; if ($row["type"]=="Pastoral") { print "selected "; } ; print " value='Pastoral'>" . _('Pastoral') . "</option>" ;
 								print "<option " ; if ($row["type"]=="Sport") { print "selected "; } ; print " value='Sport'>" . _('Sport') . "</option>" ;
@@ -212,17 +212,17 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input name="gibbonTTColumnID" id="gibbonTTColumnID" value="<? print $gibbonTTColumnID ?>" type="hidden">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input name="gibbonTTColumnID" id="gibbonTTColumnID" value="<?php print $gibbonTTColumnID ?>" type="hidden">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

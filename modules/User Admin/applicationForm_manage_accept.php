@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -107,38 +107,38 @@ else {
 					}
 				print "</div>" ;
 				?>
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_accept.php&step=2&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ?>">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_accept.php&step=2&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
-								<b><? print sprintf(_('Are you sure you want to accept the application for %1$s?'), formatName("", $row["preferredName"], $row["surname"], "Student")) ?></b><br/>
+								<b><?php print sprintf(_('Are you sure you want to accept the application for %1$s?'), formatName("", $row["preferredName"], $row["surname"], "Student")) ?></b><br/>
 								<br/>
-								<?
+								<?php
 								$checkedStudent="" ;
 								if (getSettingByScope( $connection2, "Application Form", "notificationStudentDefault")=="On") {
 									$checkedStudent="checked" ;
 								}
 								?>
-								<input <? print $checkedStudent ?> type='checkbox' name='informStudent'/> <? print _('Automatically inform <u>student</u> of their Gibbon login details by email?') ?><br/>
-								<?
+								<input <?php print $checkedStudent ?> type='checkbox' name='informStudent'/> <?php print _('Automatically inform <u>student</u> of their Gibbon login details by email?') ?><br/>
+								<?php
 								$checkedParents="" ;
 								if (getSettingByScope( $connection2, "Application Form", "notificationParentsDefault")=="On") {
 									$checkedParents="checked" ;
 								}
 								?>
-								<input <? print $checkedParents ?> type='checkbox' name='informParents'/> <? print _('Automatically inform <u>parents</u> of their Gibbon login details by email?') ?><br/>
+								<input <?php print $checkedParents ?> type='checkbox' name='informParents'/> <?php print _('Automatically inform <u>parents</u> of their Gibbon login details by email?') ?><br/>
 								
 								<br/>
-								<i><u><? print _('The system will perform the following actions:') ?></u></i><br/>
+								<i><u><?php print _('The system will perform the following actions:') ?></u></i><br/>
 								<ol>
-									<li><? print _('Create a Gibbon user account for the student.') ?></li>
-									<?
+									<li><?php print _('Create a Gibbon user account for the student.') ?></li>
+									<?php
 									if ($row["gibbonRollGroupID"]!="") {
 										print "<li>" . _('Enrol the student in the selected school year (as the student has been assigned to a roll group).') . "</li>" ;
 									}
 									?>
-									<li><? print _('Save the student\'s payment preferences.') ?></li>
-									<?
+									<li><?php print _('Save the student\'s payment preferences.') ?></li>
+									<?php
 									if ($row["gibbonFamilyID"]!="") {
 										print "<li>" . _('Link the student to their family (who are already in Gibbon).') . "</li>" ;
 									}
@@ -148,34 +148,34 @@ else {
 										print "<li>" . _('Link student and parents to the family.') . "</li>" ;
 									}
 									?>
-									<li><? print _('Set the status of the application to "Accepted".') ?></li>
+									<li><?php print _('Set the status of the application to "Accepted".') ?></li>
 								</ol>
 								<br/>
-								<i><u><? print _('But you may wish to manually do the following:') ?></u></i><br/>
+								<i><u><?php print _('But you may wish to manually do the following:') ?></u></i><br/>
 								<ol>
-									<?
+									<?php
 									if ($row["gibbonRollGroupID"]=="") {
 										print "<li>" . _('Enrol the student in the relevant academic year (this will not be done automatically, as the student has not been assigned to a roll group).') . "</li>" ;
 									}
 									?>
-									<li><? print _('Create a medical record for the student.') ?></li>
-									<li><? print _('Create an individual needs record for the student.') ?></li>
-									<li><? print _('Create a note of the student\'s scholarship information outside of Gibbon.') ?></li>
-									<li><? print _('Create a timetable for the student.') ?></li>
+									<li><?php print _('Create a medical record for the student.') ?></li>
+									<li><?php print _('Create an individual needs record for the student.') ?></li>
+									<li><?php print _('Create a note of the student\'s scholarship information outside of Gibbon.') ?></li>
+									<li><?php print _('Create a timetable for the student.') ?></li>
 								</ol>
 							</td>
 						</tr>
 						<tr>
 							<td class='right'> 
-								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
-								<input name="gibbonApplicationFormID" id="gibbonApplicationFormID" value="<? print $gibbonApplicationFormID ?>" type="hidden">
-								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
+								<input name="gibbonApplicationFormID" id="gibbonApplicationFormID" value="<?php print $gibbonApplicationFormID ?>" type="hidden">
+								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 								<input type="submit" value="Accept">
 							</td>
 						</tr>
 					</table>
 				</form>				
-				<?
+				<?php
 			}
 			else if ($step==2) {
 				print "<h3>" ;

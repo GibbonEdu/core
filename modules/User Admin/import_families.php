@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -46,17 +46,17 @@ else {
 	if ($step==1) {
 		?>
 		<h2>
-			<? print _('Step 1 - Select CSV Files') ?>
+			<?php print _('Step 1 - Select CSV Files') ?>
 		</h2>
 		<p>
-			<? print _('This page allows you to import student enrolment data from a CSV file. The import includes all current students, giving their school year and roll group. The system will remove all enrolments in the current year, and add those provided in the import file. Select the CSV file you wish to use for the synchronise operation.') ?><br/>
+			<?php print _('This page allows you to import student enrolment data from a CSV file. The import includes all current students, giving their school year and roll group. The system will remove all enrolments in the current year, and add those provided in the import file. Select the CSV file you wish to use for the synchronise operation.') ?><br/>
 		</p>
-		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/import_families.php&step=2" ?>" enctype="multipart/form-data">
+		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/import_families.php&step=2" ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
-						<b><? print _('Family CSV File') ?> *</b><br/>
-						<span style="font-size: 90%"><i><? print _('See Notes below for specification.') ?></i></span>
+						<b><?php print _('Family CSV File') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('See Notes below for specification.') ?></i></span>
 					</td>
 					<td class="right">
 						<input type="file" name="fileFamily" id="fileFamily" size="chars">
@@ -68,8 +68,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('Parent CSV File') ?> *</b><br/>
-						<span style="font-size: 90%"><i><? print _('See Notes below for specification.') ?></i></span>
+						<b><?php print _('Parent CSV File') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('See Notes below for specification.') ?></i></span>
 					</td>
 					<td class="right">
 						<input type="file" name="fileParent" id="fileParent" size="chars">
@@ -81,8 +81,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('Child CSV File') ?> *</b><br/>
-						<span style="font-size: 90%"><i><? print _('See Notes below for specification.') ?></i></span>
+						<b><?php print _('Child CSV File') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('See Notes below for specification.') ?></i></span>
 					</td>
 					<td class="right">
 						<input type="file" name="fileChild" id="fileChild" size="chars">
@@ -95,7 +95,7 @@ else {
 				
 				<tr>
 					<td> 
-						<b><? print _('Field Delimiter') ?> *</b><br/>
+						<b><?php print _('Field Delimiter') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<input type="text" style="width: 300px" name="fieldDelimiter" value="," maxlength=1>
@@ -107,7 +107,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('String Enclosure') ?> *</b><br/>
+						<b><?php print _('String Enclosure') ?> *</b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -120,90 +120,90 @@ else {
 				</tr>
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 					</td>
 					<td class="right">
-						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<? print $gibbonSchoolYearID ?>" type="hidden">
-						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<? print _("Submit") ; ?>">
+						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
+						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+						<input type="submit" value="<?php print _("Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
 		</form>
 		
 		<h4>
-			<? print _('Notes') ?>
+			<?php print _('Notes') ?>
 		</h4>
 		<ol>
-			<li style='color: #c00; font-weight: bold'><? print _('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
-			<li><? print _('You may only submit CSV files.') ?></li>
-			<li><? print _('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-			<li><? print _('Your import should only include all current students.') ?></li>
-			<li><? print _('The submitted <b><u>family file</u></b> must have the following fields in the following order (* denotes required field)') ?>: 
+			<li style='color: #c00; font-weight: bold'><?php print _('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+			<li><?php print _('You may only submit CSV files.') ?></li>
+			<li><?php print _('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+			<li><?php print _('Your import should only include all current students.') ?></li>
+			<li><?php print _('The submitted <b><u>family file</u></b> must have the following fields in the following order (* denotes required field)') ?>: 
 				<ol>
-					<li><b><? print _('Family Sync Key') ?> *</b> - <? print _('Unique ID for family, according to source system.') ?></li>
-					<li><b><? print _('Name') ?> *</b> - <? print _('Name by which family is known.') ?></li>
-					<li><b><? print _('Address Name') ?></b> - <? print _('Name to appear on written communication to family.') ?></li>
-					<li><b><? print _('Home Address') ?></b> - <? print _('Unit, Building, Street') ?></li>
-					<li><b><? print _('Home Address (District)') ?></b> - <? print _('County, State, District') ?></li>
-					<li><b><? print _('Home Address (Country)') ?></b></li>
-					<li><b><? print _('Marital Status') ?></b> - <? print _('Married, Separated, Divorced, De Facto or Other') ?></li>
-					<li><b><? print _('Home Language') ?></b></li>
+					<li><b><?php print _('Family Sync Key') ?> *</b> - <?php print _('Unique ID for family, according to source system.') ?></li>
+					<li><b><?php print _('Name') ?> *</b> - <?php print _('Name by which family is known.') ?></li>
+					<li><b><?php print _('Address Name') ?></b> - <?php print _('Name to appear on written communication to family.') ?></li>
+					<li><b><?php print _('Home Address') ?></b> - <?php print _('Unit, Building, Street') ?></li>
+					<li><b><?php print _('Home Address (District)') ?></b> - <?php print _('County, State, District') ?></li>
+					<li><b><?php print _('Home Address (Country)') ?></b></li>
+					<li><b><?php print _('Marital Status') ?></b> - <?php print _('Married, Separated, Divorced, De Facto or Other') ?></li>
+					<li><b><?php print _('Home Language') ?></b></li>
 				</ol>
 			</li>
-			<li><? print _('The submitted <b><u>parent file</u></b> must have the following fields in the following order (* denotes required field):') ?> 
+			<li><?php print _('The submitted <b><u>parent file</u></b> must have the following fields in the following order (* denotes required field):') ?> 
 				<ol>
-					<li><b><? print _('Family Sync Key') ?> *</b> - <? print _('Unique ID for family, according to source system.') ?></li>
-					<li><b><? print _('Username') ?> *</b> - <? print _('Parent username') ?>.</li>
-					<li><b><? print _('Contact Priority') ?> *</b> - <? print _('1, 2 or 3 (each family needs one and only one 1).') ?></li>
+					<li><b><?php print _('Family Sync Key') ?> *</b> - <?php print _('Unique ID for family, according to source system.') ?></li>
+					<li><b><?php print _('Username') ?> *</b> - <?php print _('Parent username') ?>.</li>
+					<li><b><?php print _('Contact Priority') ?> *</b> - <?php print _('1, 2 or 3 (each family needs one and only one 1).') ?></li>
 				</ol>
 			</li>
-			<li><? print _('The submitted <b><u>child file</u></b> must have the following fields in the following order (* denotes required field):') ?> 
+			<li><?php print _('The submitted <b><u>child file</u></b> must have the following fields in the following order (* denotes required field):') ?> 
 				<ol>
-					<li><b><? print _('Family Sync Key') ?> *</b> - <? print _('Unique ID for family, according to source system.') ?></li>
-					<li><b><? print _('Username') ?> *</b> - <? print _('Child username.') ?></li>
+					<li><b><?php print _('Family Sync Key') ?> *</b> - <?php print _('Unique ID for family, according to source system.') ?></li>
+					<li><b><?php print _('Username') ?> *</b> - <?php print _('Child username.') ?></li>
 				</ol>
 			</li>
-			<li><? print _('Do not include a header row in the CSV files.') ?></li>
+			<li><?php print _('Do not include a header row in the CSV files.') ?></li>
 		</ol>
-	<?
+	<?php
 	}
 	else if ($step==2) {
 		?>
 		<h2>
-			<? print _('Step 2 - Data Check & Confirm') ?>
+			<?php print _('Step 2 - Data Check & Confirm') ?>
 		</h2>
-		<?
+		<?php
 		
 		//DEAL WITH FAMILIES
 		//Check file type
 		if (($_FILES['fileFamily']['type']!="text/csv") AND ($_FILES['fileFamily']['type']!="text/comma-separated-values") AND ($_FILES['fileFamily']['type']!="text/x-comma-separated-values") AND ($_FILES['fileFamily']['type']!="application/vnd.ms-excel")) {
 			?>
 			<div class='error'>
-				<? print sprintf(_('Import cannot proceed, as the submitted family file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileFamily']['type']) ?><br/>
+				<?php print sprintf(_('Import cannot proceed, as the submitted family file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileFamily']['type']) ?><br/>
 			</div>
-			<?
+			<?php
 		}
 		else if (($_FILES['fileParent']['type']!="text/csv") AND ($_FILES['fileParent']['type']!="text/comma-separated-values") AND ($_FILES['fileParent']['type']!="text/x-comma-separated-values") AND ($_FILES['fileParent']['type']!="application/vnd.ms-excel")) {
 			?>
 			<div class='error'>
-				<? print sprintf(_('Import cannot proceed, as the submitted parent file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileParent']['type']) ?><br/>
+				<?php print sprintf(_('Import cannot proceed, as the submitted parent file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileParent']['type']) ?><br/>
 			</div>
-			<?
+			<?php
 		}
 		else if (($_FILES['fileChild']['type']!="text/csv") AND ($_FILES['fileChild']['type']!="text/comma-separated-values") AND ($_FILES['fileChild']['type']!="text/x-comma-separated-values") AND ($_FILES['fileChild']['type']!="application/vnd.ms-excel")) {
 			?>
 			<div class='error'>
-				<? print sprintf(_('Import cannot proceed, as the submitted parent file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileChild']['type']) ?><br/>
+				<?php print sprintf(_('Import cannot proceed, as the submitted parent file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileChild']['type']) ?><br/>
 			</div>
-			<?
+			<?php
 		}
 		else if (($_POST["fieldDelimiter"]=="") OR ($_POST["stringEnclosure"]=="")) {
 			?>
 			<div class='error'>
-				<? print _('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
+				<?php print _('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
 			</div>
-			<?
+			<?php
 		}
 		else {
 			$proceed=true ;

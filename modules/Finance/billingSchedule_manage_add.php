@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -77,15 +77,15 @@ else {
 			print "</div>" ;
 		}
 		?>
-		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/billingSchedule_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ?>">
+		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/billingSchedule_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ?>">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
-						<b><? print _('School Year') ?> *</b><br/>
-						<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+						<b><?php print _('School Year') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 					</td>
 					<td class="right">
-						<?
+						<?php
 						$yearName="" ;
 						try {
 							$dataYear=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
@@ -101,7 +101,7 @@ else {
 							$yearName=$rowYear["name"] ;
 						}
 						?>
-						<input readonly name="yearName" id="yearName" maxlength=20 value="<? print $yearName ?>" type="text" style="width: 300px">
+						<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var yearName=new LiveValidation('yearName');
 							yearName.add(Validate.Presence);
@@ -110,7 +110,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+						<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 					</td>
 					<td class="right">
 						<input name="name" id="name" maxlength=100 value="" type="text" style="width: 300px">
@@ -122,19 +122,19 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('Active') ?> *</b><br/>
+						<b><?php print _('Active') ?> *</b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
 						<select name="active" id="active" style="width: 302px">
-							<option value="Y"><? print _('Yes') ?></option>
-							<option value="N"><? print _('No') ?></option>
+							<option value="Y"><?php print _('Yes') ?></option>
+							<option value="N"><?php print _('No') ?></option>
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('Description') ?></b><br/>
+						<b><?php print _('Description') ?></b><br/>
 					</td>
 					<td class="right">
 						<textarea name='description' id='description' rows=5 style='width: 300px'></textarea>
@@ -150,7 +150,7 @@ else {
 						<input name="invoiceIssueDate" id="invoiceIssueDate" maxlength=10 value="" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var invoiceIssueDate=new LiveValidation('invoiceIssueDate');
-							invoiceIssueDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+							invoiceIssueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							invoiceIssueDate.add(Validate.Presence);
 						 </script>
 						 <script type="text/javascript">
@@ -170,7 +170,7 @@ else {
 						<input name="invoiceDueDate" id="invoiceDueDate" maxlength=10 value="" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var invoiceDueDate=new LiveValidation('invoiceDueDate');
-							invoiceDueDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+							invoiceDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 							invoiceDueDate.add(Validate.Presence);
 						 </script>
 						 <script type="text/javascript">
@@ -183,17 +183,17 @@ else {
 				
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 					</td>
 					<td class="right">
-						<input name="gibbonFinanceBillingScheduleID" id="gibbonFinanceBillingScheduleID" value="<? print $gibbonFinanceBillingScheduleID ?>" type="hidden">
-						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<? print _("Submit") ; ?>">
+						<input name="gibbonFinanceBillingScheduleID" id="gibbonFinanceBillingScheduleID" value="<?php print $gibbonFinanceBillingScheduleID ?>" type="hidden">
+						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+						<input type="submit" value="<?php print _("Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
 		</form>
-		<?
+		<?php
 	}
 }
 ?>

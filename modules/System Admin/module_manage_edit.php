@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -86,15 +86,15 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_editProcess.php?gibbonModuleID=$gibbonModuleID" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_editProcess.php?gibbonModuleID=$gibbonModuleID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
@@ -103,11 +103,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Description') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<?php print "<b>" . _('Description') . " *</b><br/>" ; ?>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="description" id="description" maxlength=100 value="<? print htmlPrep($row["description"]) ?>" type="text" style="width: 300px">
+							<input readonly name="description" id="description" maxlength=100 value="<?php print htmlPrep($row["description"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var description=new LiveValidation('description');
 								description.add(Validate.Presence);
@@ -116,11 +116,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Category') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Determines menu structure') ?></i></span>
+							<b><?php print _('Category') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Determines menu structure') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="category" id="category" maxlength=10 value="<? print htmlPrep($row["category"]) ?>" type="text" style="width: 300px">
+							<input name="category" id="category" maxlength=10 value="<?php print htmlPrep($row["category"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var category=new LiveValidation('category');
 								category.add(Validate.Presence);
@@ -129,28 +129,28 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Active') ?> *</b><br/>
+							<b><?php print _('Active') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="active" id="active" style="width: 302px">
-								<option <? if ($row["active"]=="Y") {print "selected ";}?>value="Y"><? print _('Yes') ?></option>
-								<option <? if ($row["active"]=="N") {print "selected ";}?>value="N"><? print _('No') ?></option>
+								<option <?php if ($row["active"]=="Y") {print "selected ";}?>value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["active"]=="N") {print "selected ";}?>value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -97,45 +97,45 @@ else {
 				print "</div>" ;
 			}
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_addProcess.php?gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_addProcess.php?gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Name') ?></b><br/>
+							<b><?php print _('Name') ?></b><br/>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
-					<?
+					<?php
 					if ($dateType=="Date") {
 						?>
 						<tr>
 							<td> 
-								<b><? print _('Listing Dates') ?></b><br/>
+								<b><?php print _('Listing Dates') ?></b><br/>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<? print dateConvertBack($guid, $row["listingStart"]) . "-" . dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<?php print dateConvertBack($guid, $row["listingStart"]) . "-" . dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b><? print _('Program Dates') ?></b><br/>
+								<b><?php print _('Program Dates') ?></b><br/>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<? print dateConvertBack($guid, $row["programStart"]) . "-" . dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<?php print dateConvertBack($guid, $row["programStart"]) . "-" . dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 					else {
 						?>
 						<tr>
 							<td> 
-								<b><? print _('Terms') ?></b><br/>
+								<b><?php print _('Terms') ?></b><br/>
 							</td>
 							<td class="right">
-								<?
+								<?php
 								$terms=getTerms($connection2, $_SESSION[$guid]["gibbonSchoolYearID"], true) ;
 								$termList="" ;
 								for ($i=0; $i<count($terms); $i=$i+2) {
@@ -147,21 +147,21 @@ else {
 									$termList="-, " ;
 								}
 								?>
-								<input readonly name="name" id="name" maxlength=20 value="<? print substr($termList,0,-2) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<?php print substr($termList,0,-2) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 					?>
 					<tr>
 						<td> 
-							<b><? print _('Students') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<b><?php print _('Students') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
-								<optgroup label='--<? print _('Enrolable Students') ?>--'>
-								<?
+								<optgroup label='--<?php print _('Enrolable Students') ?>--'>
+								<?php
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 									$sqlSelectWhere="" ;
@@ -196,8 +196,8 @@ else {
 								}
 								?>
 								</optgroup>
-								<optgroup label='--<? print _('All Users') ?>--'>
-								<?
+								<optgroup label='--<?php print _('All Users') ?>--'>
+								<?php
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT gibbonPersonID, surname, preferredName, status FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName" ;
@@ -219,12 +219,12 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Status') ?> *</b><br/>
+							<b><?php print _('Status') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="status" id="status" style="width: 302px">
-								<option value="Accepted"><? print _('Accepted') ?></option>
-								<?
+								<option value="Accepted"><?php print _('Accepted') ?></option>
+								<?php
 								$enrolment=getSettingByScope($connection2, "Activities", "enrolmentType") ;
 								if ($enrolment=="Competitive") {
 									print "<option value='Waiting List'>" . _('Waiting List') . "</option>" ;
@@ -238,16 +238,16 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}	
 	}
 }

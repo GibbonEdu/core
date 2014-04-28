@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -22,9 +22,9 @@ print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>
 print "</div>" ;
 ?>
 <p>
-	<? print sprintf(_('Enter your %1$s username, or the email address you have listed in the system, and press submit: your password will be reset and emailed to you.'), $_SESSION[$guid]["systemName"]) ; ?>
+	<?php print sprintf(_('Enter your %1$s username, or the email address you have listed in the system, and press submit: your password will be reset and emailed to you.'), $_SESSION[$guid]["systemName"]) ; ?>
 </p>
-<?
+<?php
 if (isset($_GET["editReturn"])) { $editReturn=$_GET["editReturn"] ; } else { $editReturn="" ; }
 $editReturnMessage="" ;
 $class="error" ;
@@ -51,7 +51,7 @@ if (!($editReturn=="")) {
 } 
 ?>
 
-<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] ?>/passwordResetProcess.php">
+<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] ?>/passwordResetProcess.php">
 	<table cellspacing='0' style="width: 100%">	
 		<tr>
 			<td class="right">
@@ -60,8 +60,8 @@ if (!($editReturn=="")) {
 		</tr>
 		<tr>
 			<td class="right">
-				<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-				<input type="submit" value="<? print _("Submit") ; ?>">
+				<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+				<input type="submit" value="<?php print _("Submit") ; ?>">
 			</td>
 		</tr>
 	</table>

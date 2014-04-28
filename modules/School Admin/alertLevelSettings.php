@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -71,99 +71,99 @@ else {
 
 	//Let's go!
 	?>
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/alertLevelSettingsProcess.php"?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/alertLevelSettingsProcess.php"?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
-			<?
+			<?php
 			$count=0 ;
 			while($row=$result->fetch()) {
 				?>
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><? print $row["name"] ?></h3>
+						<h3><?php print $row["name"] ?></h3>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('Name') ?> *</b>
+						<b><?php print _('Name') ?> *</b>
 					</td>
 					<td class="right">
-						<input type='hidden' name="<? print "gibbonAlertLevelID" .$count ?>" id="<? print "gibbonAlertLevelID" .$count ?>" value="<? print $row["gibbonAlertLevelID"] ?>">
-						<input type='text' name="<? print "name" .$count ?>" id="<? print "name" .$count ?>" maxlength=50 value="<? print $row["name"] ?>" style="width: 300px">
+						<input type='hidden' name="<?php print "gibbonAlertLevelID" .$count ?>" id="<?php print "gibbonAlertLevelID" .$count ?>" value="<?php print $row["gibbonAlertLevelID"] ?>">
+						<input type='text' name="<?php print "name" .$count ?>" id="<?php print "name" .$count ?>" maxlength=50 value="<?php print $row["name"] ?>" style="width: 300px">
 						<script type="text/javascript">
-							var <? print "name" .$count ?>=new LiveValidation('<? print "name" .$count ?>');
-							<? print "name" .$count ?>.add(Validate.Presence);
+							var <?php print "name" .$count ?>=new LiveValidation('<?php print "name" .$count ?>');
+							<?php print "name" .$count ?>.add(Validate.Presence);
 						</script>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('Short Name') ?> *</b>
+						<b><?php print _('Short Name') ?> *</b>
 					</td>
 					<td class="right">
-						<input type='text' name="<? print "nameShort" .$count ?>" id="<? print "nameShort" .$count ?>" maxlength=4 value="<? print $row["nameShort"] ?>" style="width: 300px">
+						<input type='text' name="<?php print "nameShort" .$count ?>" id="<?php print "nameShort" .$count ?>" maxlength=4 value="<?php print $row["nameShort"] ?>" style="width: 300px">
 						<script type="text/javascript">
-							var <? print "nameShort" .$count ?>=new LiveValidation('<? print "nameShort" .$count ?>');
-							<? print "nameShort" .$count ?>.add(Validate.Presence);
+							var <?php print "nameShort" .$count ?>=new LiveValidation('<?php print "nameShort" .$count ?>');
+							<?php print "nameShort" .$count ?>.add(Validate.Presence);
 						</script>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('Font/Border Color') ?> *</b><br/>
+						<b><?php print _('Font/Border Color') ?> *</b><br/>
 						<span style="font-size: 90%"><i>RGB Hex value, without leading #.</i></span>
 					</td>
 					<td class="right">
-						<input type='text' name="<? print "color" .$count ?>" id="<? print "color" .$count ?>" maxlength=6 value="<? print $row["color"] ?>" style="width: 300px">
+						<input type='text' name="<?php print "color" .$count ?>" id="<?php print "color" .$count ?>" maxlength=6 value="<?php print $row["color"] ?>" style="width: 300px">
 						<script type="text/javascript">
-							var <? print "color" .$count ?>=new LiveValidation('<? print "color" .$count ?>');
-							<? print "color" .$count ?>.add(Validate.Presence);
+							var <?php print "color" .$count ?>=new LiveValidation('<?php print "color" .$count ?>');
+							<?php print "color" .$count ?>.add(Validate.Presence);
 						</script>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('Background Color') ?> *</b><br/>
+						<b><?php print _('Background Color') ?> *</b><br/>
 						<span style="font-size: 90%"><i>RGB Hex value, without leading #.</i></span>
 					</td>
 					<td class="right">
-						<input type='text' name="<? print "colorBG" .$count ?>" id="<? print "colorBG" .$count ?>" maxlength=6 value="<? print $row["colorBG"] ?>" style="width: 300px">
+						<input type='text' name="<?php print "colorBG" .$count ?>" id="<?php print "colorBG" .$count ?>" maxlength=6 value="<?php print $row["colorBG"] ?>" style="width: 300px">
 						<script type="text/javascript">
-							var <? print "colorBG" .$count ?>=new LiveValidation('<? print "colorBG" .$count ?>');
-							<? print "colorBG" .$count ?>.add(Validate.Presence);
+							var <?php print "colorBG" .$count ?>=new LiveValidation('<?php print "colorBG" .$count ?>');
+							<?php print "colorBG" .$count ?>.add(Validate.Presence);
 						</script>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('Sequence Number') ?> *</b><br/>
-						<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+						<b><?php print _('Sequence Number') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 					</td>
 					<td class="right">
-						<input readonly type='text' name="<? print "sequenceNumber" .$count ?>" id="<? print "sequenceNumber" .$count ?>" maxlength=4 value="<? print $row["sequenceNumber"] ?>" style="width: 300px">
+						<input readonly type='text' name="<?php print "sequenceNumber" .$count ?>" id="<?php print "sequenceNumber" .$count ?>" maxlength=4 value="<?php print $row["sequenceNumber"] ?>" style="width: 300px">
 					</td>
 				</tr>
 				<tr>
 					<td colspan=2> 
 						<b>Description </b> 
-						<textarea name='<? print "description" .$count ?>' id='<? print "description" .$count ?>' rows=5 style='width: 300px'><? print $row["description"] ?></textarea>
+						<textarea name='<?php print "description" .$count ?>' id='<?php print "description" .$count ?>' rows=5 style='width: 300px'><?php print $row["description"] ?></textarea>
 					</td>
 				</tr>
-				<?
+				<?php
 				$count++ ;
 			}
 			?>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="count" value="<? print $count ?>">
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="count" value="<?php print $count ?>">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 }
 ?>

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -48,13 +48,13 @@ else {
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml">
 		<head>
-			<title><? print $_SESSION[$guid]["organisationNameShort"] . " - " . $_SESSION[$guid]["systemName"] ?></title>
+			<title><?php print $_SESSION[$guid]["organisationNameShort"] . " - " . $_SESSION[$guid]["systemName"] ?></title>
 			<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 			<meta http-equiv="content-language" content="en"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
 			<meta name="ROBOTS" content="none"/>
 			
-			<?
+			<?php
 			//Set up for i18n via gettext
 			if ($_SESSION[$guid]["i18n"]["code"]!=NULL) {
 				putenv("LC_ALL=" . $_SESSION[$guid]["i18n"]["code"]);
@@ -108,23 +108,23 @@ else {
 			<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 			<script type="text/javascript" src="./lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
 			
-			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery/jquery.js"></script>
-			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/js/jquery-ui.min.js"></script>
-			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/i18n/jquery.ui.datepicker-en-GB.js"></script>
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery/jquery.js"></script>
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/js/jquery-ui.min.js"></script>
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/i18n/jquery.ui.datepicker-en-GB.js"></script>
 			<script type="text/javascript">
 				$.datepicker.setDefaults($.datepicker.regional['en-GB']);
 			</script>
-			<link rel="stylesheet" href="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/css/blitzer/jquery-ui.css" type="text/css" media="screen" />
-			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/chained/jquery.chained.mini.js"></script>
+			<link rel="stylesheet" href="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/css/blitzer/jquery-ui.css" type="text/css" media="screen" />
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/chained/jquery.chained.mini.js"></script>
 			
-			<?
+			<?php
 			if ($_SESSION[$guid]["analytics"]!="") {
 				print $_SESSION[$guid]["analytics"] ;
 			}
 			?>
 		</head>
 		<body style='background-image: none'>
-			<?
+			<?php
 			$_SESSION[$guid]["address"]=$_GET["q"];
 			$_SESSION[$guid]["module"]=getModuleName($_SESSION[$guid]["address"]) ;
 			$_SESSION[$guid]["action"]=getActionName($_SESSION[$guid]["address"]) ;
@@ -151,6 +151,6 @@ else {
 			?>
 		</body>
 	</html>
-	<?
+	<?php
 }
 ?>

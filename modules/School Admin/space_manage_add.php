@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -57,12 +57,12 @@ else {
 	} 
 	
 	?>
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/space_manage_addProcess.php" ?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/space_manage_addProcess.php" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
-					<span style="font-size: 90%"><i><? print _('Must be unique.') ; ?></i></span>
+					<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+					<span style="font-size: 90%"><i><?php print _('Must be unique.') ; ?></i></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=30 value="" type="text" style="width: 300px">
@@ -74,31 +74,31 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Type') ?> *</b><br/>
+					<b><?php print _('Type') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="type" id="type" style="width: 302px">
-						<option value="Classroom"><? print _('Classroom') ?></option>
-						<option value="Performance"><? print _('Performance') ?></option>
-						<option value="Hall"><? print _('Hall') ?></option>
-						<option value="Outdoor"><? print _('Outdoor') ?></option>
-						<option value="Undercover"><? print _('Undercover') ?></option>
-						<option value="Storage"><? print _('Storage') ?></option>
-						<option value="Office"><? print _('Office') ?></option>
-						<option value="Staffroom"><? print _('Staffroom') ?></option>
-						<option value="Study"><? print _('Study') ?></option>
-						<option value="Library"><? print _('Library') ?></option>
-						<option value="Other"><? print _('Other') ?></option>
+						<option value="Classroom"><?php print _('Classroom') ?></option>
+						<option value="Performance"><?php print _('Performance') ?></option>
+						<option value="Hall"><?php print _('Hall') ?></option>
+						<option value="Outdoor"><?php print _('Outdoor') ?></option>
+						<option value="Undercover"><?php print _('Undercover') ?></option>
+						<option value="Storage"><?php print _('Storage') ?></option>
+						<option value="Office"><?php print _('Office') ?></option>
+						<option value="Staffroom"><?php print _('Staffroom') ?></option>
+						<option value="Study"><?php print _('Study') ?></option>
+						<option value="Library"><?php print _('Library') ?></option>
+						<option value="Other"><?php print _('Other') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('User 1') ?></b>
+					<b><?php print _('User 1') ?></b>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="gibbonPersonID1">
-						<?
+						<?php
 						print "<option value=''></option>" ;
 						try {
 							$data=array(); 
@@ -118,11 +118,11 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('User 2') ?></b>
+					<b><?php print _('User 2') ?></b>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="gibbonPersonID2">
-						<?
+						<?php
 						print "<option value=''></option>" ;
 						try {
 							$data=array(); 
@@ -142,7 +142,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Capacity') ?></b><br/>
+					<b><?php print _('Capacity') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -155,19 +155,19 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Teacher\'s Computer') ?> *</b><br/>
+					<b><?php print _('Teacher\'s Computer') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="computer" id="computer" style="width: 302px">
-						<option value="N"><? print _('No') ?></option>
-						<option value="Y"><? print _('Yes') ?></option>
+						<option value="N"><?php print _('No') ?></option>
+						<option value="Y"><?php print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Student Computers') ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print _('How many are there') ?></i></span>
+					<b><?php print _('Student Computers') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('How many are there') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="computerStudent" id="computerStudent" maxlength=5 value="0" type="text" style="width: 300px">
@@ -179,112 +179,112 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Projector') ?> *</b><br/>
+					<b><?php print _('Projector') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="projector" id="projector" style="width: 302px">
-						<option value="N"><? print _('No') ?></option>
-						<option value="Y"><? print _('Yes') ?></option>
+						<option value="N"><?php print _('No') ?></option>
+						<option value="Y"><?php print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>
 			
 			<tr>
 				<td> 
-					<b><? print _('TV') ?> *</b><br/>
+					<b><?php print _('TV') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="tv" id="tv" style="width: 302px">
-						<option value="N"><? print _('No') ?></option>
-						<option value="Y"><? print _('Yes') ?></option>
+						<option value="N"><?php print _('No') ?></option>
+						<option value="Y"><?php print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>
 			
 			<tr>
 				<td> 
-					<b><? print _('DVD Player') ?> *</b><br/>
+					<b><?php print _('DVD Player') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="dvd" id="dvd" style="width: 302px">
-						<option value="N"><? print _('No') ?></option>
-						<option value="Y"><? print _('Yes') ?></option>
+						<option value="N"><?php print _('No') ?></option>
+						<option value="Y"><?php print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>
 			
 			<tr>
 				<td> 
-					<b><? print _('HiFi') ?> *</b><br/>
+					<b><?php print _('HiFi') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="hifi" id="hifi" style="width: 302px">
-						<option value="N"><? print _('No') ?></option>
-						<option value="Y"><? print _('Yes') ?></option>
+						<option value="N"><?php print _('No') ?></option>
+						<option value="Y"><?php print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>
 			
 			<tr>
 				<td> 
-					<b><? print _('Speakers') ?> *</b><br/>
+					<b><?php print _('Speakers') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="speakers" id="speakers" style="width: 302px">
-						<option value="N"><? print _('No') ?></option>
-						<option value="Y"><? print _('Yes') ?></option>
+						<option value="N"><?php print _('No') ?></option>
+						<option value="Y"><?php print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>
 			
 			<tr>
 				<td> 
-					<b><? print _('Interactive White Board') ?> *</b><br/>
+					<b><?php print _('Interactive White Board') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="iwb" id="iwb" style="width: 302px">
-						<option value="N"><? print _('No') ?></option>
-						<option value="Y"><? print _('Yes') ?></option>
+						<option value="N"><?php print _('No') ?></option>
+						<option value="Y"><?php print _('Yes') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Extension') ?></b><br/>
-					<span style="font-size: 90%"><i><? print _('Room\'s internal phone number.') ?></i></span>
+					<b><?php print _('Extension') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Room\'s internal phone number.') ?></i></span>
 				</td>
 				<td class="right">
-					<input name="phoneInternal" id="phoneInternal" maxlength=5 value="<? print $row["phoneInternal"] ?>" type="text" style="width: 300px">
+					<input name="phoneInternal" id="phoneInternal" maxlength=5 value="<?php print $row["phoneInternal"] ?>" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Phone Number') ?></b><br/>
-					<span style="font-size: 90%"><i><? print _('Room\'s external phone number.') ?></i></span>
+					<b><?php print _('Phone Number') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Room\'s external phone number.') ?></i></span>
 				</td>
 				<td class="right">
-					<input name="phoneExternal" id="phoneExternal" maxlength=20 value="<? print $row["phoneExternal"] ?>" type="text" style="width: 300px">
+					<input name="phoneExternal" id="phoneExternal" maxlength=20 value="<?php print $row["phoneExternal"] ?>" type="text" style="width: 300px">
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Comment') ?></b><br/>
+					<b><?php print _('Comment') ?></b><br/>
 				</td>
 				<td class="right">
-					<textarea name="comment" id="comment" rows=8 style="width: 300px"><? print $row["comment"] ?></textarea>
+					<textarea name="comment" id="comment" rows=8 style="width: 300px"><?php print $row["comment"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 }
 ?>

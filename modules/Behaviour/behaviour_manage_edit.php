@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -144,15 +144,15 @@ else {
 				//Let's go!
 				$row=$result->fetch() ;
 				?>
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_editProcess.php?gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ?>">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_editProcess.php?gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
-								<b><? print _('Student') ?> *</b><br/>
+								<b><?php print _('Student') ?> *</b><br/>
 								<span style="font-size: 90%"><i>This value cannot be changed</i></span>
 							</td>
 							<td class="right">
-								<?
+								<?php
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$row["gibbonPersonID"]); 
 									$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName" ;
@@ -165,33 +165,33 @@ else {
 								}
 								
 								?>
-								<input type="hidden" name="gibbonPersonID" value="<? print $row["gibbonPersonID"] ?>">
-								<input readonly name="name" id="name" value="<? print formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Student") ?>" type="text" style="width: 300px">
+								<input type="hidden" name="gibbonPersonID" value="<?php print $row["gibbonPersonID"] ?>">
+								<input readonly name="name" id="name" value="<?php print formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Student") ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 						<tr>
 							<td> 
 								<b>Date *</b><br/>
-								<span style="font-size: 90%"><i>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+								<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 							</td>
 							<td class="right">
-								<input readonly name="date" id="date" maxlength=10 value="<? print dateConvertBack($guid, $row["date"]) ?>" type="text" style="width: 300px">
+								<input readonly name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, $row["date"]) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 					
 						<tr>
 							<td> 
-								<b><? print _('Type') ?> *</b><br/>
+								<b><?php print _('Type') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
 								<select name="type" id="type" style="width: 302px">
-									<option <? if ($row["type"]=="Positive") { print "selected" ; } ?> value="Positive">Positive</option>
-									<option <? if ($row["type"]=="Negative") { print "selected" ; } ?> value="Negative">Negative</option>
+									<option <?php if ($row["type"]=="Positive") { print "selected" ; } ?> value="Positive">Positive</option>
+									<option <?php if ($row["type"]=="Negative") { print "selected" ; } ?> value="Negative">Negative</option>
 								</select>
 							</td>
 						</tr>
-						<?
+						<?php
 						try {
 							$sqlPositive="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='positiveDescriptors'" ;
 							$resultPositive=$connection2->query($sqlPositive);   
@@ -218,8 +218,8 @@ else {
 									</td>
 									<td class="right">
 										<select name="descriptor" id="descriptor" style="width: 302px">
-											<option value="Please select..."><? print _('Please select...') ?></option>
-											<?
+											<option value="Please select..."><?php print _('Please select...') ?></option>
+											<?php
 											if ($row["descriptor"]=="Quick Star") {
 												print "<option class='Positive' value='Quick Star'>Quick Star</option>" ;
 											}
@@ -229,37 +229,37 @@ else {
 													$selected="selected" ;
 												}
 												?>
-												<option <? print $selected ?> class='Positive' <? if ($row["descriptor"]==$optionsPositive[$i]) {print "selected ";}?>value="<? print trim($optionsPositive[$i]) ?>"><? print trim($optionsPositive[$i]) ?></option>
-											<?
+												<option <?php print $selected ?> class='Positive' <?php if ($row["descriptor"]==$optionsPositive[$i]) {print "selected ";}?>value="<?php print trim($optionsPositive[$i]) ?>"><?php print trim($optionsPositive[$i]) ?></option>
+											<?php
 											}
 											?>
-											<?
+											<?php
 											for ($i=0; $i<count($optionsNegative); $i++) {
 												$selected="" ;
 												if ($row["descriptor"]==$optionsNegative[$i]) {
 													$selected="selected" ;
 												}
 												?>
-												<option <? print $selected ?> class='Negative' <? if ($row["descriptor"]==$optionsNegative[$i]) {print "selected ";}?>value="<? print trim($optionsNegative[$i]) ?>"><? print trim($optionsNegative[$i]) ?></option>
-											<?
+												<option <?php print $selected ?> class='Negative' <?php if ($row["descriptor"]==$optionsNegative[$i]) {print "selected ";}?>value="<?php print trim($optionsNegative[$i]) ?>"><?php print trim($optionsNegative[$i]) ?></option>
+											<?php
 											}
 											?>
 										</select>
 										<script type="text/javascript">
 											var descriptor=new LiveValidation('descriptor');
-											descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+											descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 										 </script>
 										 <script type="text/javascript">
 											$("#descriptor").chainedTo("#type");
 										</script>
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 						}
 						?>
 						
-						<?
+						<?php
 						try {
 							$dataLevels=array(); 
 							$sqlLevels="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='Levels'" ;
@@ -281,26 +281,26 @@ else {
 									</td>
 									<td class="right">
 										<select name="level" id="level" style="width: 302px">
-											<option value="Please select..."><? print _('Please select...') ?></option>
-											<?
+											<option value="Please select..."><?php print _('Please select...') ?></option>
+											<?php
 											for ($i=0; $i<count($optionsLevels); $i++) {
 												$selected="" ;
 												if ($row["level"]==$optionsLevels[$i]) {
 													$selected="selected" ;
 												}
 												?>
-												<option <? print $selected ?> value="<? print trim($optionsLevels[$i]) ?>"><? print trim($optionsLevels[$i]) ?></option>
-											<?
+												<option <?php print $selected ?> value="<?php print trim($optionsLevels[$i]) ?>"><?php print trim($optionsLevels[$i]) ?></option>
+											<?php
 											}
 											?>
 										</select>
 										<script type="text/javascript">
 											var level=new LiveValidation('level');
-											level.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+											level.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 										 </script>
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 						}
 						?>
@@ -310,7 +310,7 @@ else {
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
-								<textarea name="comment" id="comment" rows=8 style="width: 300px"><? print htmlPrep($row["comment"]) ?></textarea>
+								<textarea name="comment" id="comment" rows=8 style="width: 300px"><?php print htmlPrep($row["comment"]) ?></textarea>
 							</td>
 						</tr>
 						<tr>
@@ -321,7 +321,7 @@ else {
 							<td class="right">
 								<select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" style="width: 302px">
 									<option value=""></option>
-									<?
+									<?php
 									$minDate=date("Y-m-d", (strtotime($row["date"])-(24*60*60*30))) ;
 									
 									try {
@@ -370,16 +370,16 @@ else {
 						
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 							</td>
 							<td class="right">
-								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<? print _("Submit") ; ?>">
+								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+								<input type="submit" value="<?php print _("Submit") ; ?>">
 							</td>
 						</tr>
 					</table>
 				</form>
-				<?
+				<?php
 			}
 		}
 	}

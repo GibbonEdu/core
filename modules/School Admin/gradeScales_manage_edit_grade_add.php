@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -85,21 +85,21 @@ else {
 				print "</div>" ;
 			} 
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/gradeScales_manage_edit_grade_addProcess.php" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/gradeScales_manage_edit_grade_addProcess.php" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Grade Scale') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('Grade Scale') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Value') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Must be unique for this grade scale.') ?></i></span>
+							<b><?php print _('Value') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Must be unique for this grade scale.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="value" id="value" maxlength=10 value="" type="text" style="width: 300px">
@@ -111,7 +111,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Descriptor') ?> *</b><br/>
+							<b><?php print _('Descriptor') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -124,8 +124,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Sequence Number') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Must be unique for this grade scale.') ?><br/></i></span>
+							<b><?php print _('Sequence Number') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Must be unique for this grade scale.') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="" type="text" style="width: 300px">
@@ -137,17 +137,17 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input name="gibbonScaleID" id="gibbonScaleID" value="<? print $gibbonScaleID ?>" type="hidden">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input name="gibbonScaleID" id="gibbonScaleID" value="<?php print $gibbonScaleID ?>" type="hidden">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}	
 	}
 }

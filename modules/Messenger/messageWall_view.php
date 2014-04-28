@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -53,13 +53,13 @@ else {
 				print "<input name='date' maxlength=10 value='" . date("d/m/Y", (dateConvertToTimestamp(dateConvert($guid, $date))-(24*60*60))) . "' type='hidden' style='width:100px; float: none; margin-right: 4px;'>" ;
 				?>
 				<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Previous Day'>
-				<?	
+				<?php	
 			print "</form>" ;
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messageWall_view.php'>" ;
 				print "<input name='date' maxlength=10 value='" . date("d/m/Y", (dateConvertToTimestamp(dateConvert($guid, $date))+(24*60*60))) . "' type='hidden' style='width:100px; float: none; margin-right: 4px;'>" ;
 				?>
 				<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Next Day'>
-				<?	
+				<?php	
 			print "</form>" ;
 		print "</div>" ;
 		print "<div style='width: 40%; float: right'>" ;
@@ -68,7 +68,7 @@ else {
 				?>
 				<script type="text/javascript">
 					var date=new LiveValidation('date');
-					date.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+					date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					date.add(Validate.Presence);
 				 </script>
 				 <script type="text/javascript">
@@ -76,8 +76,8 @@ else {
 						$( "#date" ).datepicker();
 					});
 				</script>
-				<input style='min-width: 30px; margin-top: 0px; float: right' type='submit' value='Go'>
-				<?	
+				<input style='min-width: 30px; margin-top: 0px; float: right' type='submit' value='" . _('Go') . "'>
+				<?php	
 			print "</form>" ;
 		print "</div>" ;
 	print "</div>" ;

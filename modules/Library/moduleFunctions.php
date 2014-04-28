@@ -29,7 +29,7 @@ function getBorrowingRecord($guid, $connection2, $gibbonPersonID) {
 	catch(PDOException $e) { $output.="<div class='error'>" . $e->getMessage() . "</div>" ; }
 	if ($result->rowCount()<1) {
 		$output.="<div class='error'>" ;
-			$output.="The selected student has not borrowed any items." ;
+			$output.=_("There are no records to display.") ;
 		$output.="</div>" ;
 	}
 	else {
@@ -39,21 +39,21 @@ function getBorrowingRecord($guid, $connection2, $gibbonPersonID) {
 						
 				$output.="</th>" ;
 				$output.="<th>" ;
-					$output.="Name<br/>" ;
-					$output.="<span style='font-size: 85%; font-style: italic'>Author/Producer</span>" ;
+					$output.=_("Name") . "<br/>" ;
+					$output.="<span style='font-size: 85%; font-style: italic'>" . _('Author/Producer') . "</span>" ;
 				$output.="</th>" ;
 				$output.="<th>" ;
-					$output.="ID<br/>" ;
+					$output.=_("ID") ;
 				$output.="</th>" ;
 				$output.="<th>" ;
-					$output.="Location" ;
+					$output.=_("Location") ;
 				$output.="</th>" ;
 				$output.="<th>" ;
-					$output.="Borrow Date<br/>" ;
-					$output.="<span style='font-size: 85%; font-style: italic'>Return Date</span>" ;
+					$output.=_("Borrow Date") . "<br/>" ;
+					$output.="<span style='font-size: 85%; font-style: italic'>" . _('Return Date') ."</span>" ;
 				$output.="</th>" ;
 				$output.="<th>" ;
-					$output.="Action" ;
+					$output.=_("Actions") ;
 				$output.="</th>" ;
 			$output.="</tr>" ;
 			
@@ -176,7 +176,7 @@ function getImage($guid, $type, $location, $border=true ) {
 	else {
 		if ($type=="Link") {
 			$output.="<div style='height: 240px; width: 240px; display:table-cell; vertical-align:middle; text-align:center $borderStyle'>" ;
-				$output.="<img class='user' style='max-height: 240px; max-width: 240px; opacity: 1.0; margin: auto' title='Library Item Image' src='" . $location . "'/><br/>" ;
+				$output.="<img class='user' style='max-height: 240px; max-width: 240px; opacity: 1.0; margin: auto' src='" . $location . "'/><br/>" ;
 			$output.="</div>" ;
 		}
 		if ($type=="File") {

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -113,7 +113,7 @@ else {
 							print "Item</span>" ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Action" ;
+							print _("Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 				
@@ -121,17 +121,17 @@ else {
 					$rowNum="even" ;
 					
 					?>
-					<tr class='<? print $rowNum ?>'>
+					<tr class='<?php print $rowNum ?>'>
 						<td> 
 							<b>Invoice</b><br/>
 						</td>
 						<td class="right">
-							<?
+							<?php
 							print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_print_print.php&type=invoice&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 							?>
 						</td>
 					</tr>
-					<?
+					<?php
 					$count++ ;
 					if ($count%2==0) {
 						$rowNum="even" ;
@@ -140,21 +140,21 @@ else {
 						$rowNum="odd" ;
 					}
 					?>
-					<?
+					<?php
 					if ($row["status"]=="Issued") {
 						if ($row["reminderCount"]>=0) {
 							?>
-							<tr class='<? print $rowNum ?>'>
+							<tr class='<?php print $rowNum ?>'>
 								<td> 
 									<b>Reminder 1</b><br/>
 								</td>
 								<td class="right">
-									<?
+									<?php
 									print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_print_print.php&type=reminder1&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 									?>
 								</td>
 							</tr>
-							<?
+							<?php
 						}
 						$count++ ;
 						if ($count%2==0) {
@@ -165,17 +165,17 @@ else {
 						}
 						if ($row["reminderCount"]>=1) {
 							?>
-							<tr class='<? print $rowNum ?>'>
+							<tr class='<?php print $rowNum ?>'>
 								<td> 
 									<b>Reminder 2</b><br/>
 								</td>
 								<td class="right">
-									<?
+									<?php
 									print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_print_print.php&type=reminder2&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 									?>
 								</td>
 							</tr>
-							<?
+							<?php
 						}
 						$count++ ;
 						if ($count%2==0) {
@@ -186,32 +186,32 @@ else {
 						}
 						if ($row["reminderCount"]>=2) {
 							?>
-							<tr class='<? print $rowNum ?>'>
+							<tr class='<?php print $rowNum ?>'>
 								<td> 
 									<b>Reminder 3</b><br/>
 								</td>
 								<td class="right">
-									<?
+									<?php
 									print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_print_print.php&type=reminder3&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 									?>
 								</td>
 							</tr>
-							<?
+							<?php
 						}
 					}
 					if ($row["status"]=="Paid") {
 						?>
-						<tr class='<? print $rowNum ?>'>
+						<tr class='<?php print $rowNum ?>'>
 							<td> 
 								<b>Receipt</b><br/>
 							</td>
 							<td class="right">
-								<?
+								<?php
 								print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 								?>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 				print "</table>" ;
 			}

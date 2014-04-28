@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -104,14 +104,14 @@ else {
 					<b><u>Note</u></b>: Changes made here do not apply to emails and SMS messages (which have already been sent), but only to message wall messages.
 				</div>
 				
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_editProcess.php?gibbonMessengerID=$gibbonMessengerID&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_editProcess.php?gibbonMessengerID=$gibbonMessengerID&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr class='break'>
 							<td colspan=2> 
 								<h3>Delivery Mode</h3>
 							</td>
 						</tr>
-						<?
+						<?php
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byEmail")) {
 							?>
 							<tr>
@@ -120,7 +120,7 @@ else {
 									<span style="font-size: 90%"><i>Deliver this message to user's email account?<br/></i></span>
 								</td>
 								<td class="right">
-									<? 
+									<?php 
 									if ($row["email"]=="Y") {
 										print "<img title='Sent by email.' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 									}
@@ -130,7 +130,7 @@ else {
 									?>
 								</td>
 							</tr>
-							<?
+							<?php
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byMessageWall")) {
 							?>
@@ -151,20 +151,20 @@ else {
 									<span style="font-size: 90%"><i>Place this message on user's message wall?<br/></i></span>
 								</td>
 								<td class="right">
-									<input <? if ($row["messageWall"]=="Y") { print "checked" ; } ?> type="radio" name="messageWall" class="messageWall" value="Y"/> Yes
-									<input <? if ($row["messageWall"]=="N") { print "checked" ; } ?> type="radio" name="messageWall" class="messageWall" value="N"/> No
+									<input <?php if ($row["messageWall"]=="Y") { print "checked" ; } ?> type="radio" name="messageWall" class="messageWall" value="Y"/> Yes
+									<input <?php if ($row["messageWall"]=="N") { print "checked" ; } ?> type="radio" name="messageWall" class="messageWall" value="N"/> No
 								</td>
 							</tr>
-							<tr id="messageWallRow" <? if ($row["messageWall"]=="N") { print "style='display: none'" ; } ?>>
+							<tr id="messageWallRow" <?php if ($row["messageWall"]=="N") { print "style='display: none'" ; } ?>>
 								<td> 
 									<b>Publication Dates *</b><br/>
-									<span style="font-size: 90%"><i>Select up to three individual dates.</br>Format <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>.<br/></i></span>
+									<span style="font-size: 90%"><i>Select up to three individual dates.</br>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>.<br/></i></span>
 								</td>
 								<td class="right">
-									<input name="date1" id="date1" maxlength=10 value="<? print dateConvertBack($guid, $row["messageWall_date1"]) ?>" type="text" style="width: 300px">
+									<input name="date1" id="date1" maxlength=10 value="<?php print dateConvertBack($guid, $row["messageWall_date1"]) ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var date1=new LiveValidation('date1');
-										date1.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+										date1.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 									 </script>
 									 <script type="text/javascript">
 										$(function() {
@@ -172,10 +172,10 @@ else {
 										});
 									</script>
 									<br/>
-									<input name="date2" id="date2" maxlength=10 value="<? print dateConvertBack($guid, $row["messageWall_date2"]) ?>" type="text" style="width: 300px; margin-top: 3px">
+									<input name="date2" id="date2" maxlength=10 value="<?php print dateConvertBack($guid, $row["messageWall_date2"]) ?>" type="text" style="width: 300px; margin-top: 3px">
 									<script type="text/javascript">
 										var date2=new LiveValidation('date2');
-										date2.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+										date2.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 									 </script>
 									 <script type="text/javascript">
 										$(function() {
@@ -183,10 +183,10 @@ else {
 										});
 									</script>
 									<br/>
-									<input name="date3" id="date3" maxlength=10 value="<? print dateConvertBack($guid, $row["messageWall_date3"]) ?>" type="text" style="width: 300px; margin-top: 3px">
+									<input name="date3" id="date3" maxlength=10 value="<?php print dateConvertBack($guid, $row["messageWall_date3"]) ?>" type="text" style="width: 300px; margin-top: 3px">
 									<script type="text/javascript">
 										var date3=new LiveValidation('date3');
-										date3.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+										date3.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 									 </script>
 									 <script type="text/javascript">
 										$(function() {
@@ -195,7 +195,7 @@ else {
 									</script>
 								</td>
 							</tr>
-							<?
+							<?php
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_bySMS")) {
 							?>
@@ -205,7 +205,7 @@ else {
 									<span style="font-size: 90%"><i>Deliver this message to user's mobile phone?<br/></i></span>
 								</td>
 								<td class="right">
-									<?
+									<?php
 									if ($row["sms"]=="Y") {
 										print "<img title='Sent by sms.' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 									}
@@ -215,7 +215,7 @@ else {
 									?>
 								</td>
 							</tr>
-							<?
+							<?php
 						}
 						?>
 						
@@ -231,7 +231,7 @@ else {
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
-								<input name="subject" id="subject" maxlength=30 value="<? print htmlPrep($row["subject"]) ?>" type="text" style="width: 300px">
+								<input name="subject" id="subject" maxlength=30 value="<?php print htmlPrep($row["subject"]) ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var subject=new LiveValidation('subject');
 									subject.add(Validate.Presence);
@@ -241,7 +241,7 @@ else {
 						<tr>
 							<td colspan=2> 
 								<b>Body *</b>
-								<? print getEditor($guid,  TRUE, "body", $row["body"], 20, true, true, false, true, "purpose=Mass%20Mailer%20Attachment" ) ?>
+								<?php print getEditor($guid,  TRUE, "body", $row["body"], 20, true, true, false, true, "purpose=Mass%20Mailer%20Attachment" ) ?>
 							</td>
 						</tr>
 						
@@ -250,7 +250,7 @@ else {
 								<h3>Targets</h3>
 							</td>
 						</tr>
-						<?
+						<?php
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
 							try {
 								$dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID); 
@@ -265,9 +265,9 @@ else {
 							<script type="text/javascript">
 								/* Role Control */
 								$(document).ready(function(){
-									<? if ($resultTarget->rowCount()<=0) { ?>
+									<?php if ($resultTarget->rowCount()<=0) { ?>
 										$("#roleRow").css("display","none");
-									<? } ?>
+									<?php } ?>
 									$(".role").click(function(){
 										if ($('input[name=role]:checked').val()=="Y" ) {
 											$("#roleRow").slideDown("fast", $("#roleRow").css("display","table-row")); 
@@ -283,11 +283,11 @@ else {
 									<span style="font-size: 90%"><i>Users of a certain type<br/></i></span>
 								</td>
 								<td class="right">
-									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="role" class="role" value="Y"/> Yes
-									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="role" class="role" value="N"/> No
+									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="role" class="role" value="Y"/> Yes
+									<input <?php if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="role" class="role" value="N"/> No
 								</td>
 							</tr>
-							<?
+							<?php
 							$selectedAll="" ;
 							while ($rowTarget=$resultTarget->fetch()) {
 								$selectedAll.=str_pad($rowTarget['id'], 3, "0", STR_PAD_LEFT) . "," ;
@@ -297,11 +297,11 @@ else {
 							<tr id="roleRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Roles</b><br/>
-									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="roles[]" id="roles[]" multiple style="width: 302px; height: 100px">
-										<?
+										<?php
 										try {
 											$dataSelect=array(); 
 											$sqlSelect="SELECT * FROM gibbonRole ORDER BY name" ;
@@ -320,7 +320,7 @@ else {
 									</select>
 								</td>
 							</tr>
-							<?
+							<?php
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {
 							try {
@@ -337,12 +337,12 @@ else {
 							<script type="text/javascript">
 								/* yearGroup Control */
 								$(document).ready(function(){
-									<? if ($resultTarget->rowCount()<=0) { ?>
+									<?php if ($resultTarget->rowCount()<=0) { ?>
 										$("#yearGroupRow").css("display","none");
 										$("#yearGroupRow2").css("display","none");
 										$("#yearGroupRow3").css("display","none");
 										$("#yearGroupRow4").css("display","none");
-									<? } ?>
+									<?php } ?>
 									$(".yearGroup").click(function(){
 										if ($('input[name=yearGroup]:checked').val()=="Y" ) {
 											$("#yearGroupRow").slideDown("fast", $("#yearGroupRow").css("display","table-row")); 
@@ -364,11 +364,11 @@ else {
 									<span style="font-size: 90%"><i>Students in year; all staff<br/></i></span>
 								</td>
 								<td class="right">
-									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="yearGroup" class="yearGroup" value="Y"/> Yes
-									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="yearGroup" class="yearGroup" value="N"/> No
+									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="yearGroup" class="yearGroup" value="Y"/> Yes
+									<input <?php if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="yearGroup" class="yearGroup" value="N"/> No
 								</td>
 							</tr>
-							<?
+							<?php
 							$selectedAll="" ;
 							$staff=TRUE ;
 							$students=TRUE ;
@@ -390,11 +390,11 @@ else {
 							<tr id="yearGroupRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Year Groups</b><br/>
-									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="yearGroups[]" id="yearGroups[]" multiple style="width: 302px; height: 100px">
-										<?
+										<?php
 										try {
 											$dataSelect=array(); 
 											$sqlSelect="SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber" ;
@@ -419,7 +419,7 @@ else {
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="yearGroupsStaff" id="yearGroupsStaff" style="width: 302px">
-										<?
+										<?php
 										$selected="" ;
 										if ($staff==FALSE) {
 											$selected="selected" ; ;
@@ -436,7 +436,7 @@ else {
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="yearGroupsStudents" id="yearGroupsStudents" style="width: 302px">
-										<?
+										<?php
 										$selected="" ;
 										if ($students==FALSE) {
 											$selected="selected" ; ;
@@ -447,7 +447,7 @@ else {
 									</select>
 								</td>
 							</tr>
-							<?
+							<?php
 							if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_parents")) {
 								?>
 								<tr id="yearGroupRow2">
@@ -456,7 +456,7 @@ else {
 									</td>
 									<td style='background: none; background-color: #EDF7FF;' class="right">
 										<select name="yearGroupsParents" id="yearGroupsParents" style="width: 302px">
-											<?
+											<?php
 											$selected="" ;
 											if ($parents==FALSE) {
 												$selected="selected" ; ;
@@ -467,7 +467,7 @@ else {
 										</select>
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_any")) {
@@ -484,12 +484,12 @@ else {
 							<script type="text/javascript">
 								/* rollGroup Control */
 								$(document).ready(function(){
-									<? if ($resultTarget->rowCount()<=0) { ?>
+									<?php if ($resultTarget->rowCount()<=0) { ?>
 										$("#rollGroupRow").css("display","none");
 										$("#rollGroupRow2").css("display","none");
 										$("#rollGroupRow3").css("display","none");
 										$("#rollGroupRow4").css("display","none");
-									<? } ?>
+									<?php } ?>
 									$(".rollGroup").click(function(){
 										if ($('input[name=rollGroup]:checked').val()=="Y" ) {
 											$("#rollGroupRow").slideDown("fast", $("#rollGroupRow").css("display","table-row")); 
@@ -511,11 +511,11 @@ else {
 									<span style="font-size: 90%"><i>Tutees and tutors<br/></i></span>
 								</td>
 								<td class="right">
-									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="rollGroup" class="rollGroup" value="Y"/> Yes
-									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="rollGroup" class="rollGroup" value="N"/> No
+									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="rollGroup" class="rollGroup" value="Y"/> Yes
+									<input <?php if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="rollGroup" class="rollGroup" value="N"/> No
 								</td>
 							</tr>
-							<?
+							<?php
 							$selectedAll="" ;
 							$staff=TRUE ;
 							$students=TRUE ;
@@ -537,11 +537,11 @@ else {
 							<tr id="rollGroupRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Roll Groups</b><br/>
-									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="rollGroups[]" id="rollGroups[]" multiple style="width: 302px; height: 100px">
-										<?
+										<?php
 										try {
 											if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_any")) {
 												$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -578,7 +578,7 @@ else {
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="rollGroupsStaff" id="rollGroupsStaff" style="width: 302px">
-										<?
+										<?php
 										$selected="" ;
 										if ($staff==FALSE) {
 											$selected="selected" ; ;
@@ -595,7 +595,7 @@ else {
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="rollGroupsStudents" id="rollGroupsStudents" style="width: 302px">
-										<?
+										<?php
 										$selected="" ;
 										if ($students==FALSE) {
 											$selected="selected" ; ;
@@ -606,7 +606,7 @@ else {
 									</select>
 								</td>
 							</tr>
-							<?
+							<?php
 							if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_parents")) {
 								?>
 								<tr id="rollGroupRow2">
@@ -615,7 +615,7 @@ else {
 									</td>
 									<td style='background: none; background-color: #EDF7FF;' class="right">
 										<select name="rollGroupsParents" id="rollGroupsParents" style="width: 302px">
-											<?
+											<?php
 											$selected="" ;
 											if ($parents==FALSE) {
 												$selected="selected" ; ;
@@ -626,7 +626,7 @@ else {
 										</select>
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
@@ -643,12 +643,12 @@ else {
 							<script type="text/javascript">
 								/* course Control */
 								$(document).ready(function(){
-									<? if ($resultTarget->rowCount()<=0) { ?>
+									<?php if ($resultTarget->rowCount()<=0) { ?>
 										$("#courseRow").css("display","none");
 										$("#courseRow2").css("display","none");
 										$("#courseRow3").css("display","none");
 										$("#courseRow4").css("display","none");
-									<? } ?>
+									<?php } ?>
 									$(".course").click(function(){
 										if ($('input[name=course]:checked').val()=="Y" ) {
 											$("#courseRow").slideDown("fast", $("#courseRow").css("display","table-row")); 
@@ -670,11 +670,11 @@ else {
 									<span style="font-size: 90%"><i>Members of a course<br/></i></span>
 								</td>
 								<td class="right">
-									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="course" class="course" value="Y"/> Yes
-									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="course" class="course" value="N"/> No
+									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="course" class="course" value="Y"/> Yes
+									<input <?php if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="course" class="course" value="N"/> No
 								</td>
 							</tr>
-							<?
+							<?php
 							$selectedAll="" ;
 							$staff=TRUE ;
 							$students=TRUE ;
@@ -696,11 +696,11 @@ else {
 							<tr id="courseRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Courses</b><br/>
-									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="courses[]" id="courses[]" multiple style="width: 302px; height: 100px">
-										<?
+										<?php
 										try {
 											if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
 												$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -731,7 +731,7 @@ else {
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="coursesStaff" id="coursesStaff" style="width: 302px">
-										<?
+										<?php
 										$selected="" ;
 										if ($staff==TRUE) {
 											$selected="selected" ; ;
@@ -748,7 +748,7 @@ else {
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="coursesStudents" id="coursesStudents" style="width: 302px">
-										<?
+										<?php
 										$selected="" ;
 										if ($students==TRUE) {
 											$selected="selected" ; ;
@@ -759,7 +759,7 @@ else {
 									</select>
 								</td>
 							</tr>
-							<?
+							<?php
 							if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_parents")) {
 								?>
 								<tr id="courseRow2">
@@ -768,7 +768,7 @@ else {
 									</td>
 									<td style='background: none; background-color: #EDF7FF;' class="right">
 										<select name="coursesParents" id="coursesParents" style="width: 302px">
-											<?
+											<?php
 											$selected="" ;
 											if ($parents==TRUE) {
 												$selected="selected" ; ;
@@ -779,7 +779,7 @@ else {
 										</select>
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
@@ -796,12 +796,12 @@ else {
 							<script type="text/javascript">
 								/* class Control */
 								$(document).ready(function(){
-									<? if ($resultTarget->rowCount()<=0) { ?>
+									<?php if ($resultTarget->rowCount()<=0) { ?>
 										$("#classRow").css("display","none");
 										$("#classRow2").css("display","none");
 										$("#classRow3").css("display","none");
 										$("#classRow4").css("display","none");
-									<? } ?>
+									<?php } ?>
 									$(".class").click(function(){
 										if ($('input[name=class]:checked').val()=="Y" ) {
 											$("#classRow").slideDown("fast", $("#classRow").css("display","table-row")); 
@@ -823,11 +823,11 @@ else {
 									<span style="font-size: 90%"><i>Members of a class<br/></i></span>
 								</td>
 								<td class="right">
-									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="class" class="class" value="Y"/> Yes
-									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="class" class="class" value="N"/> No
+									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="class" class="class" value="Y"/> Yes
+									<input <?php if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="class" class="class" value="N"/> No
 								</td>
 							</tr>
-							<?
+							<?php
 							$selectedAll="" ;
 							$staff=TRUE ;
 							$students=TRUE ;
@@ -849,11 +849,11 @@ else {
 							<tr id="classRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Classes</b><br/>
-									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="classes[]" id="classes[]" multiple style="width: 302px; height: 100px">
-										<?
+										<?php
 										try {
 											if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
 												$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -884,7 +884,7 @@ else {
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="classesStaff" id="classesStaff" style="width: 302px">
-										<?
+										<?php
 										$selected="" ;
 										if ($staff==FALSE) {
 											$selected="selected" ; ;
@@ -901,7 +901,7 @@ else {
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="classesStudents" id="classesStudents" style="width: 302px">
-										<?
+										<?php
 										$selected="" ;
 										if ($students==FALSE) {
 											$selected="selected" ; ;
@@ -912,7 +912,7 @@ else {
 									</select>
 								</td>
 							</tr>
-							<?
+							<?php
 							if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_parents")) {
 								?>
 								<tr id="classRow2">
@@ -921,7 +921,7 @@ else {
 									</td>
 									<td style='background: none; background-color: #EDF7FF;' class="right">
 										<select name="classesParents" id="classesParents" style="width: 302px">
-											<?
+											<?php
 											$selected="" ;
 											if ($parents==FALSE) {
 												$selected="selected" ; ;
@@ -932,7 +932,7 @@ else {
 										</select>
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_any")) {
@@ -949,12 +949,12 @@ else {
 							<script type="text/javascript">
 								/* activity Control */
 								$(document).ready(function(){
-									<? if ($resultTarget->rowCount()<=0) { ?>
+									<?php if ($resultTarget->rowCount()<=0) { ?>
 										$("#activitiesRow").css("display","none");
 										$("#activitiesRow2").css("display","none");
 										$("#activitiesRow3").css("display","none");
 										$("#activitiesRow4").css("display","none");
-									<? } ?>
+									<?php } ?>
 									$(".activity").click(function(){
 										if ($('input[name=activity]:checked').val()=="Y" ) {
 											$("#activitiesRow").slideDown("fast", $("#activitiesRow").css("display","table-row")); 
@@ -976,11 +976,11 @@ else {
 									<span style="font-size: 90%"><i>Members of an activity<br/></i></span>
 								</td>
 								<td class="right">
-									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="activity" class="activity" value="Y"/> Yes
-									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="activity" class="activity" value="N"/> No
+									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="activity" class="activity" value="Y"/> Yes
+									<input <?php if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="activity" class="activity" value="N"/> No
 								</td>
 							</tr>
-							<?
+							<?php
 							$selectedAll="" ;
 							$staff=TRUE ;
 							$students=TRUE ;
@@ -1002,11 +1002,11 @@ else {
 							<tr id="activitiesRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Activities</b><br/>
-									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' activities="right">
 									<select name="activities[]" id="activities[]" multiple style="width: 302px; height: 100px">
-										<?
+										<?php
 										try {
 											if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_any")) {
 												$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -1043,7 +1043,7 @@ else {
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' activities="right">
 									<select name="activitiesStaff" id="activitiesStaff" style="width: 302px">
-										<?
+										<?php
 										$selected="" ;
 										if ($staff==FALSE) {
 											$selected="selected" ; ;
@@ -1060,7 +1060,7 @@ else {
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' activities="right">
 									<select name="activitiesStudents" id="activitiesStudents" style="width: 302px">
-										<?
+										<?php
 										$selected="" ;
 										if ($students==FALSE) {
 											$selected="selected" ; ;
@@ -1071,7 +1071,7 @@ else {
 									</select>
 								</td>
 							</tr>
-							<?
+							<?php
 							if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_parents")) {
 								?>
 								<tr id="activitiesRow2">
@@ -1080,7 +1080,7 @@ else {
 									</td>
 									<td style='background: none; background-color: #EDF7FF;' activities="right">
 										<select name="activitiesParents" id="activitiesParents" style="width: 302px">
-											<?
+											<?php
 											$selected="" ;
 											if ($parents==FALSE) {
 												$selected="selected" ; ;
@@ -1091,7 +1091,7 @@ else {
 										</select>
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_applicants")) {
@@ -1108,9 +1108,9 @@ else {
 							<script type="text/javascript">
 								/* Role Control */
 								$(document).ready(function(){
-									<? if ($resultTarget->rowCount()<=0) { ?>
+									<?php if ($resultTarget->rowCount()<=0) { ?>
 										$("#applicantsRow").css("display","none");
-									<? } ?>
+									<?php } ?>
 									$(".applicants").click(function(){
 										if ($('input[name=applicants]:checked').val()=="Y" ) {
 											$("#applicantsRow").slideDown("fast", $("#applicantsRow").css("display","table-row")); 
@@ -1126,11 +1126,11 @@ else {
 									<span style="font-size: 90%"><i>Applicants from a given year.<br/>Does not apply to the message wall.</i></span>
 								</td>
 								<td class="right">
-									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="applicants" class="applicants" value="Y"/> Yes
-									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="applicants" class="applicants" value="N"/> No
+									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="applicants" class="applicants" value="Y"/> Yes
+									<input <?php if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="applicants" class="applicants" value="N"/> No
 								</td>
 							</tr>
-							<?
+							<?php
 							$selectedAll="" ;
 							while ($rowTarget=$resultTarget->fetch()) {
 								$selectedAll.=str_pad($rowTarget['id'], 3, "0", STR_PAD_LEFT) . "," ;
@@ -1140,11 +1140,11 @@ else {
 							<tr id="applicantsRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Years</b><br/>
-									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="applicantList[]" id="applicantList[]" multiple style="width: 302px; height: 100px">
-										<?
+										<?php
 										try {
 											$dataSelect=array(); 
 											$sqlSelect="SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber DESC" ;
@@ -1163,7 +1163,7 @@ else {
 									</select>
 								</td>
 							</tr>
-							<?
+							<?php
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_all") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_my")) {
 							try {
@@ -1179,9 +1179,9 @@ else {
 							<script type="text/javascript">
 								/* Role Control */
 								$(document).ready(function(){
-									<? if ($resultTarget->rowCount()<=0) { ?>
+									<?php if ($resultTarget->rowCount()<=0) { ?>
 										$("#housesRow").css("display","none");
-									<? } ?>
+									<?php } ?>
 									$(".houses").click(function(){
 										if ($('input[name=houses]:checked').val()=="Y" ) {
 											$("#housesRow").slideDown("fast", $("#housesRow").css("display","table-row")); 
@@ -1197,11 +1197,11 @@ else {
 									<span style="font-size: 90%"><i>Houses for competitions, etc.<br/></i></span>
 								</td>
 								<td class="right">
-									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="houses" class="houses" value="Y"/> Yes
-									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="houses" class="houses" value="N"/> No
+									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="houses" class="houses" value="Y"/> Yes
+									<input <?php if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="houses" class="houses" value="N"/> No
 								</td>
 							</tr>
-							<?
+							<?php
 							$selectedAll="" ;
 							while ($rowTarget=$resultTarget->fetch()) {
 								$selectedAll.=str_pad($rowTarget['id'], 3, "0", STR_PAD_LEFT) . "," ;
@@ -1211,11 +1211,11 @@ else {
 							<tr id="housesRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Houses</b><br/>
-									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="houseList[]" id="houseList[]" multiple style="width: 302px; height: 100px">
-										<?
+										<?php
 										try {
 											if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_all")) {
 												$dataSelect=array(); 
@@ -1241,7 +1241,7 @@ else {
 									</select>
 								</td>
 							</tr>
-							<?
+							<?php
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
 							try {
@@ -1257,9 +1257,9 @@ else {
 							<script type="text/javascript">
 								/* Role Control */
 								$(document).ready(function(){
-									<? if ($resultTarget->rowCount()<=0) { ?>
+									<?php if ($resultTarget->rowCount()<=0) { ?>
 										$("#individualsRow").css("display","none");
-									<? } ?>
+									<?php } ?>
 									$(".individuals").click(function(){
 										if ($('input[name=individuals]:checked').val()=="Y" ) {
 											$("#individualsRow").slideDown("fast", $("#individualsRow").css("display","table-row")); 
@@ -1275,11 +1275,11 @@ else {
 									<span style="font-size: 90%"><i>Individuals from the whole school<br/></i></span>
 								</td>
 								<td class="right">
-									<input <? if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="individuals" class="individuals" value="Y"/> Yes
-									<input <? if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="individuals" class="individuals" value="N"/> No
+									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="individuals" class="individuals" value="Y"/> Yes
+									<input <?php if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="individuals" class="individuals" value="N"/> No
 								</td>
 							</tr>
-							<?
+							<?php
 							$selectedAll="" ;
 							while ($rowTarget=$resultTarget->fetch()) {
 								$selectedAll.=str_pad($rowTarget['id'], 10, "0", STR_PAD_LEFT) . "," ;
@@ -1289,11 +1289,11 @@ else {
 							<tr id="individualsRow">
 								<td style='background: none; background-color: #EDF7FF;'> 
 									<b>Select Individuals</b><br/>
-									<span style="font-size: 90%"><i><? print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 								</td>
 								<td style='background: none; background-color: #EDF7FF;' class="right">
 									<select name="individualList[]" id="individualList[]" multiple style="width: 302px; height: 100px">
-										<?
+										<?php
 										try {
 											$dataSelect=array(); 
 											$sqlSelect="SELECT gibbonPersonID, preferredName, surname FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName" ;
@@ -1312,22 +1312,22 @@ else {
 									</select>
 								</td>
 							</tr>
-							<?
+							<?php
 						}
 						?>
 
 						
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 							</td>
 							<td class="right">
-								<input type="submit" value="<? print _("Submit") ; ?>">
+								<input type="submit" value="<?php print _("Submit") ; ?>">
 							</td>
 						</tr>
 					</table>
 				</form>
-				<?
+				<?php
 			}
 		}
 	}

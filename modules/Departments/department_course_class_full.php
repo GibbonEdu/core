@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Departments/department_course_class_full.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "Your request failed because you do not have access to this action." ;
+		print _("Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -42,7 +42,7 @@ else {
 		$gibbonPlannerEntryID=$_GET["gibbonPlannerEntryID"] ;
 		if ($gibbonPlannerEntryID=="") {
 			print "<div class='warning'>" ;
-				print "Lesson has not been specified ." ;
+				print _("Your request failed because your inputs were invalid.") ;
 			print "</div>" ;
 		}
 		//Check existence of and access to this class.
@@ -120,21 +120,21 @@ else {
 				print "<table class='blank' cellspacing='0' style='width: 550px; float: left;'>" ;
 					print "<tr>" ;
 						print "<td style='width: 33%; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>Class</span><br/>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>" . _('Class') . "</span><br/>" ;
 							print $row["course"] . "." . $row["class"] ;
 						print "</td>" ;
 						print "<td style='width: 33%; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>Date</span><br/>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>" . _('Date') ."</span><br/>" ;
 							print dateConvertBack($guid, $row["date"]) ;
 						print "</td>" ;
 						print "<td style='width: 33%; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>Time</span><br/>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>" . _('Time') . "</span><br/>" ;
 							print substr($row["timeStart"],0,5) . "-" . substr($row["timeEnd"],0,5) ;
 						print "</td>" ;
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td style='padding-top: 15px; width: 33%; vertical-align: top' colspan=3>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>Summary</span><br/>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>" . _('Summary') . "</span><br/>" ;
 							print $row["summary"] ;
 						print "</td>" ;
 					print "</tr>" ;
@@ -144,7 +144,7 @@ else {
 					if ($row["description"]!="") {
 						print "<tr>" ;
 							print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
-								print "<h2>Lesson Details</h2>" ;
+								print "<h2>" . _('Lesson Details') . "</h2>" ;
 								print $row["description"] ;
 							print "</td>" ;
 						print "</tr>" ;
@@ -169,7 +169,7 @@ else {
 
 					print "<tr>" ;
 						print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
-							print "<h2>Lesson Details</h2>" ;
+							print "<h2>" . _('Lesson Details') . "</h2>" ;
 							if ($resultBlocks->rowCount()>0) {
 								print "<div id='smartView'>" ;
 									print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_smartProcess.php'>" ;
@@ -197,7 +197,7 @@ else {
 																	}
 																}
 																if ($rowBlocksView["length"]!="") {
-																	print $rowBlocksView["length"] . " min" ;
+																	print $rowBlocksView["length"] . " " . _('min') ;
 																}
 															print "</div>" ;
 														}
@@ -245,9 +245,9 @@ else {
 						if ($resultResources->rowCount()>0) {
 							$rowResources=$resultResources->fetch() ;
 							if ($rowResources["attachment"]!="") {
-								print "<span style='font-size: 115%; font-weight: bold'>Unit Resources</span><br/>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>" . _('Unit Resources') . "</span><br/>" ;
 								print "<ul>" ;
-									print "<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowResources["attachment"] . "'>Unit Outline</a></li>" ;
+									print "<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowResources["attachment"] . "'>" . _('Unit Outline') . "</a></li>" ;
 								print "</ul>" ;
 							}
 						}

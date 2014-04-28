@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -41,13 +41,13 @@ else {
 		
 		print "<div class='trail'>" ;
 			if ($highestAction=="Individual Needs Records_view") {
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/in_view.php'>All Student Records</a> > </div><div class='trailEnd'>View Record</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/in_view.php'>" . _('All Student Records') . "</a> > </div><div class='trailEnd'>" . _('View Record') . "</div>" ;
 			}
 			else if ($highestAction=="Individual Needs Records_viewContribute") {
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/in_view.php'>All Student Records</a> > </div><div class='trailEnd'>View & Contribute To Record</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/in_view.php'>" . _('All Student Records') . "</a> > </div><div class='trailEnd'>" . _('View & Contribute To Record') . "</div>" ;
 			}
 			else if ($highestAction=="Individual Needs Records_viewEdit") {
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/in_view.php'>All Student Records</a> > </div><div class='trailEnd'>Edit Record</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/in_view.php'>" . _('All Student Records') . "</a> > </div><div class='trailEnd'>" . _('Edit Record') . "</div>" ;
 			}
 		print "</div>" ;
 		
@@ -94,7 +94,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-			print "The specified student does not seem to exist." ;
+			print _("The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -140,15 +140,15 @@ else {
 			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
 						print formatName("", $row["preferredName"], $row["surname"], "Student") ;
 					print "</td>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Year Group</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
 						print "<i>" . $row["yearGroup"] . "</i>" ;
 					print "</td>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Roll Group</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;
 						print "<i>" . $row["rollGroup"] . "</i>" ;
 					print "</td>" ;
 				print "</tr>" ;
@@ -156,7 +156,7 @@ else {
 			
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>" ;
 				print "<h3>" ;
-					print "Individual Needs Status" ;
+					print _("Individual Needs Status") ;
 				print "</h3>" ;
 				if ($highestAction=="Individual Needs Records_view" OR $highestAction=="Individual Needs Records_viewContribute") {
 					$statusTable=printINStatusTable($connection2, $gibbonPersonID, "disabled") ;
@@ -168,7 +168,7 @@ else {
 				
 				if ($statusTable==FALSE) {
 					print "<div class='error'>" ;
-					print "The status table could not be created." ;
+					print _("Your request failed due to a database error.") ;
 					print "</div>" ;
 				}
 				else {
@@ -177,7 +177,7 @@ else {
 				
 				
 				print "<h3>" ;
-					print "Individual Education Plan" ;
+					print _("Individual Education Plan") ;
 				print "</h3>" ;
 								
 				try {
@@ -191,7 +191,7 @@ else {
 				}
 				if ($resultIEP->rowCount()>1) {
 					print "<div class='error'>" ;
-					print "Individual needs cannot be displayed due to a database error." ;
+					print _("Your request failed due to a database error.") ;
 					print "</div>" ;
 				}
 				else {
@@ -200,8 +200,8 @@ else {
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td colspan=2> 
-								<span style='font-weight: bold; font-size: 135%'>Teaching Strategies</span><br/>
-								<?
+								<span style='font-weight: bold; font-size: 135%'><?php print _('Teaching Strategies') ?></span><br/>
+								<?php
 								if ($highestAction=="Individual Needs Records_viewEdit" OR $highestAction=="Individual Needs Records_viewContribute") {
 									print getEditor($guid,  TRUE, "strategies", $rowIEP["strategies"], 20, true ) ;
 								}
@@ -213,55 +213,45 @@ else {
 						</tr>
 						<tr>
 							<td colspan=2 style='padding-top: 25px'> 
-								<span style='font-weight: bold; font-size: 135%'>Targets</span><br/>
-								<?
+								<span style='font-weight: bold; font-size: 135%'><?php print _('Targets') ?></span><br/>
+								<?php
 								if ($highestAction=="Individual Needs Records_viewEdit") {
 									print getEditor($guid,  TRUE, "targets", $rowIEP["targets"], 20, true ) ;
 								}
 								else {
-									if ($rowIEP["targets"]!="") {
-										print "<p>" . $rowIEP["targets"] . "</p>" ;
-									}
-									else {
-										print "<i>No data available.</i>" ;
-									}
+									print "<p>" . $rowIEP["targets"] . "</p>" ;
 								}
 								?>
 							</td>
 						</tr>
 						<tr>
 							<td colspan=2 style='padding-top: 25px'> 
-								<span style='font-weight: bold; font-size: 135%'>Notes</span><br/>
-								<?
+								<span style='font-weight: bold; font-size: 135%'><?php print _('Notes') ?></span><br/>
+								<?php
 								if ($highestAction=="Individual Needs Records_viewEdit") {
 									print getEditor($guid,  TRUE, "notes", $rowIEP["notes"], 20, true ) ;
 								}
 								else {
-									if ($rowIEP["notes"]!="") {
-										print "<p>" . $rowIEP["notes"] . "</p>" ;
-									}
-									else {
-										print "<i>No data available.</i>" ;
-									}
+									print "<p>" . $rowIEP["notes"] . "</p>" ;
 								}
 								?>
 							</td>
 						</tr>
-						<?
+						<?php
 						if ($highestAction=="Individual Needs Records_viewEdit" OR $highestAction=="Individual Needs Records_viewContribute") {
 							?>
 							<tr>
 								<td class="right" colspan=2>
-									<input type="hidden" name="gibbonPersonID" value="<? print $gibbonPersonID ?>">
-									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<? print _("Submit") ; ?>">
+									<input type="hidden" name="gibbonPersonID" value="<?php print $gibbonPersonID ?>">
+									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+									<input type="submit" value="<?php print _("Submit") ; ?>">
 								</td>
 							</tr>
-							<?
+							<?php
 						}
 						?>
 					</table>
-					<?
+					<?php
 				}
 			print "</form>" ;
 		}

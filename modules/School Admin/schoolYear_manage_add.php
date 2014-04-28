@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -57,12 +57,12 @@ else {
 	} 
 	
 	?>
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/schoolYear_manage_addProcess.php" ?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/schoolYear_manage_addProcess.php" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b><? print _('Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
+					<b><?php print _('Name') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=9 value="" type="text" style="width: 300px">
@@ -74,20 +74,20 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Status') ?> *</b>
+					<b><?php print _('Status') ?> *</b>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="status">
-						<option value="Past"><? print _('Past') ?></option>
-						<option value="Current"><? print _('Current') ?></option>
-						<option value="Upcoming" selected><? print _('Upcoming') ?></option>
+						<option value="Past"><?php print _('Past') ?></option>
+						<option value="Current"><?php print _('Current') ?></option>
+						<option value="Upcoming" selected><?php print _('Upcoming') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Sequence Number') ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print _('Must be unique. Controls chronological ordering.') ?></i></span>
+					<b><?php print _('Sequence Number') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('Must be unique. Controls chronological ordering.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="sequenceNumber" id="sequenceNumber" maxlength=3 value="" type="text" style="width: 300px">
@@ -100,15 +100,15 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('First Day') ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<b><?php print _('First Day') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
 					<input name="firstDay" id="firstDay" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var firstDay=new LiveValidation('firstDay');
 						firstDay.add(Validate.Presence);
-						firstDay.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						firstDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					 </script>
 					 <script type="text/javascript">
 						$(function() {
@@ -119,15 +119,15 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Last Day') ?> *</b><br/>
-					<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<b><?php print _('Last Day') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
 					<input name="lastDay" id="lastDay" maxlength=10 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var lastDay=new LiveValidation('lastDay');
 						lastDay.add(Validate.Presence);
-						lastDay.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						lastDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					 </script>
 					 <script type="text/javascript">
 						$(function() {
@@ -138,15 +138,15 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<?
+	<?php
 }
 ?>

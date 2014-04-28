@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -515,10 +515,10 @@ else {
 													print "<input style='margin-top: 5px' type='file' name='response$count' id='response$count'>" ;														
 													?>
 													<script type="text/javascript">
-														var <? print "response$count" ?>=new LiveValidation('<? print "response$count" ?>');
-														<? print "response$count" ?>.add( Validate.Inclusion, { within: [<? print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+														var <?php print "response$count" ?>=new LiveValidation('<?php print "response$count" ?>');
+														<?php print "response$count" ?>.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 													</script>
-													<?
+													<?php
 												}
 											
 												print "<input name='$count-gibbonPersonID' id='$count-gibbonPersonID' value='" . $rowStudents["gibbonPersonID"] . "' type='hidden'>" ;
@@ -529,7 +529,7 @@ else {
 							}
 							?>
 							<tr class='break'>
-								<?
+								<?php
 								if ($submission==FALSE) {
 									$span=5 ;
 									if (isset($row2["gibbonRubricID"])) {
@@ -548,17 +548,17 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<?
+								<?php
 								print "<td colspan=" . ($span-1) . ">" ;
 								?>
-									<b><? print _('Grading Completion Date') ?></b><br/>
-									<span style="font-size: 90%"><i><? print _('1. Format') ?> <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><? print _('2. Enter date after grading.') ?><br/><? print _('3. Column is hidden without date.') ?></i></span>
+									<b><?php print _('Grading Completion Date') ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('1. Format') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print _('2. Enter date after grading.') ?><br/><?php print _('3. Column is hidden without date.') ?></i></span>
 								</td>
 								<td class="right">
-									<input name="completeDate" id="completeDate" maxlength=10 value="<? print dateConvertBack($guid, $row2["completeDate"]) ?>" type="text" style="width: 300px">
+									<input name="completeDate" id="completeDate" maxlength=10 value="<?php print dateConvertBack($guid, $row2["completeDate"]) ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var completeDate=new LiveValidation('completeDate');
-										completeDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+										completeDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 									 </script>
 									 <script type="text/javascript">
 										$(function() {
@@ -568,18 +568,18 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<?
+								<?php
 								print "<td style='text-align: left' colspan='2'>" ;
 									print getMaxUpload(TRUE) ;
 								print "</td>" ;
 								print "<td class='right' colspan=" . ($span-2) . ">" ;
 								?>
-									<input name="count" id="count" value="<? print $count ?>" type="hidden">
-									<input type="submit" value="<? print _("Submit") ; ?>">
+									<input name="count" id="count" value="<?php print $count ?>" type="hidden">
+									<input type="submit" value="<?php print _("Submit") ; ?>">
 								
 								</td>
 							</tr>
-							<?
+							<?php
 						print "</table>" ;
 					print "</form>" ;
 				}

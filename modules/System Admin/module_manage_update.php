@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -129,19 +129,19 @@ else {
 					print sprintf(_('It seems that you have updated your %1$s module code to a new version, and are ready to update your databse from v%2$s to v%3$s. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), htmlPrep($row["name"]), $versionDB, $versionCode) . "</b>" ;
 				print "</p>" ;
 				?>
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_updateProcess.php?&gibbonModuleID=$gibbonModuleID" ?>">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_updateProcess.php?&gibbonModuleID=$gibbonModuleID" ?>">
 					<table cellspacing='0' style="width: 100%">	
 						<tr>
 							<td class="right"> 
-								<input type="hidden" name="versionDB" value="<? print $versionDB ?>">
-								<input type="hidden" name="versionCode" value="<? print $versionCode ?>">
-								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<? print _("Submit") ; ?>">
+								<input type="hidden" name="versionDB" value="<?php print $versionDB ?>">
+								<input type="hidden" name="versionCode" value="<?php print $versionCode ?>">
+								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+								<input type="submit" value="<?php print _("Submit") ; ?>">
 							</td>
 						</tr>
 					</table>
 				</form>
-				<?
+				<?php
 			}
 		}
 	}

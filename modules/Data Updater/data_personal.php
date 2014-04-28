@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -100,7 +100,7 @@ else {
 		}
 		?>
 		
-		<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
@@ -108,7 +108,7 @@ else {
 					</td>
 					<td class="right">
 						<select style="width: 302px" name="gibbonPersonID">
-							<?
+							<?php
 							$self=FALSE ;
 							if ($highestAction=="Update Personal Data_any") {
 								try {
@@ -175,13 +175,13 @@ else {
 				</tr>
 				<tr>
 					<td colspan=2 class="right">
-						<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/data_personal.php">
-						<input type="submit" value="<? print _("Submit") ; ?>">
+						<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/data_personal.php">
+						<input type="submit" value="<?php print _("Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
 		</form>
-		<?
+		<?php
 		
 		if ($gibbonPersonID!="") {
 			print "<h2>" ;
@@ -339,27 +339,27 @@ else {
 					//Let's go!
 					$row=$result->fetch() ;
 					?>
-					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_personalProcess.php?gibbonPersonID=" . $gibbonPersonID ?>">
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_personalProcess.php?gibbonPersonID=" . $gibbonPersonID ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr class='break'>
 								<td colspan=2> 
-									<h3><? print _('Basic Information') ?></h3>
+									<h3><?php print _('Basic Information') ?></h3>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b>Title<? if (isset($required["title"])) { if ($required["title"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>Title<?php if (isset($required["title"])) { if ($required["title"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select style="width: 302px" name="title" id="title">
-										<? if ($required["title"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
-										<option <? if ($row["title"]=="Ms. ") {print "selected ";}?>value="Ms. ">Ms.</option>
-										<option <? if ($row["title"]=="Miss ") {print "selected ";}?>value="Miss ">Miss.</option>
-										<option <? if ($row["title"]=="Mr. ") {print "selected ";}?>value="Mr. ">Mr.</option>
-										<option <? if ($row["title"]=="Mrs. ") {print "selected ";}?>value="Mrs. ">Mrs.</option>
-										<option <? if ($row["title"]=="Dr. ") {print "selected ";}?>value="Dr. ">Dr.</option>
+										<?php if ($required["title"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
+										<option <?php if ($row["title"]=="Ms. ") {print "selected ";}?>value="Ms. ">Ms.</option>
+										<option <?php if ($row["title"]=="Miss ") {print "selected ";}?>value="Miss ">Miss.</option>
+										<option <?php if ($row["title"]=="Mr. ") {print "selected ";}?>value="Mr. ">Mr.</option>
+										<option <?php if ($row["title"]=="Mrs. ") {print "selected ";}?>value="Mrs. ">Mrs.</option>
+										<option <?php if ($row["title"]=="Dr. ") {print "selected ";}?>value="Dr. ">Dr.</option>
 									</select>
-									<?
+									<?php
 									$fieldName="title" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -372,12 +372,12 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Surname<? if (isset($required["surname"])) { if ($required["surname"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i><? print _('Family name as shown in ID documents.') ?></i></span>
+									<b>Surname<?php if (isset($required["surname"])) { if ($required["surname"]=="Y") { print " *" ; } } ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('Family name as shown in ID documents.') ?></i></span>
 								</td>
 								<td class="right">
-									<input name="surname" id="surname" maxlength=30 value="<? print htmlPrep($row["surname"]) ?>" type="text" style="width: 300px">
-									<?
+									<input name="surname" id="surname" maxlength=30 value="<?php print htmlPrep($row["surname"]) ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="surname" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -390,12 +390,12 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>First Name<? if (isset($required["firstName"])) { if ($required["firstName"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i><? print _('First name as shown in ID documents.') ?></i></span>
+									<b>First Name<?php if (isset($required["firstName"])) { if ($required["firstName"]=="Y") { print " *" ; } } ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('First name as shown in ID documents.') ?></i></span>
 								</td>
 								<td class="right">
-									<input name="firstName" id="firstName" maxlength=30 value="<? print htmlPrep($row["firstName"]) ?>" type="text" style="width: 300px">
-									<?
+									<input name="firstName" id="firstName" maxlength=30 value="<?php print htmlPrep($row["firstName"]) ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="firstName" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -408,12 +408,12 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Preferred Name<? if (isset($required["preferredName"])) { if ($required["preferredName"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i><? print _('Most common name, alias, nickname, etc.') ?></i></span>
+									<b>Preferred Name<?php if (isset($required["preferredName"])) { if ($required["preferredName"]=="Y") { print " *" ; } } ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('Most common name, alias, nickname, etc.') ?></i></span>
 								</td>
 								<td class="right">
-									<input name="preferredName" id="preferredName" maxlength=30 value="<? print htmlPrep($row["preferredName"]) ?>" type="text" style="width: 300px">
-									<?
+									<input name="preferredName" id="preferredName" maxlength=30 value="<?php print htmlPrep($row["preferredName"]) ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="preferredName" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -426,12 +426,12 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Official Name<? if (isset($required["officialName"])) { if ($required["officialName"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i><? print _('Full name as shown in ID documents.') ?></i></span>
+									<b>Official Name<?php if (isset($required["officialName"])) { if ($required["officialName"]=="Y") { print " *" ; } } ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('Full name as shown in ID documents.') ?></i></span>
 								</td>
 								<td class="right">
-									<input name="officialName" id="officialName" maxlength=150 value="<? print htmlPrep($row["officialName"]) ?>" type="text" style="width: 300px">
-									<?
+									<input name="officialName" id="officialName" maxlength=150 value="<?php print htmlPrep($row["officialName"]) ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="officialName" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -444,12 +444,12 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Name In Characters<? if (isset($required["nameInCharacters"])) { if ($required["nameInCharacters"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i><? print _('Chinese or other character-based name.') ?></i></span>
+									<b>Name In Characters<?php if (isset($required["nameInCharacters"])) { if ($required["nameInCharacters"]=="Y") { print " *" ; } } ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('Chinese or other character-based name.') ?></i></span>
 								</td>
 								<td class="right">
-									<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="<? print htmlPrep($row["nameInCharacters"]) ?>" type="text" style="width: 300px">
-									<?
+									<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="<?php print htmlPrep($row["nameInCharacters"]) ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="nameInCharacters" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -462,12 +462,12 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Date of Birth<? if (isset($required["dob"])) { if ($required["dob"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+									<b>Date of Birth<?php if (isset($required["dob"])) { if ($required["dob"]=="Y") { print " *" ; } } ?></b><br/>
+									<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 								</td>
 								<td class="right">
-									<input name="dob" id="dob" maxlength=10 value="<? print dateConvertBack($guid, $row["dob"]) ?>" type="text" style="width: 300px">
-									<?
+									<input name="dob" id="dob" maxlength=10 value="<?php print dateConvertBack($guid, $row["dob"]) ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="dob" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -491,7 +491,7 @@ else {
 								</td>
 							</tr>
 							
-							<?
+							<?php
 							if ($student OR $staff) {
 								?> 
 								<tr class='break'>
@@ -506,11 +506,11 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 1 Name<? if (isset($required["emergency1Name"])) { if ($required["emergency1Name"]=="Y") { print " *" ; } } ?></b><br/>
+										<b>Contact 1 Name<?php if (isset($required["emergency1Name"])) { if ($required["emergency1Name"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="emergency1Name" id="emergency1Name" maxlength=30 value="<? print htmlPrep($row["emergency1Name"]) ?>" type="text" style="width: 300px">
-										<?
+										<input name="emergency1Name" id="emergency1Name" maxlength=30 value="<?php print htmlPrep($row["emergency1Name"]) ?>" type="text" style="width: 300px">
+										<?php
 										$fieldName="emergency1Name" ; 
 										if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
@@ -523,20 +523,20 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 1 Relationship<? if (isset($required["emergency1Relationship"])) { if ($required["emergency1Relationship"]=="Y") { print " *" ; } } ?></b><br/>
+										<b>Contact 1 Relationship<?php if (isset($required["emergency1Relationship"])) { if ($required["emergency1Relationship"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
 										<select name="emergency1Relationship" id="emergency1Relationship" style="width: 302px">
-											<? if ($required["emergency1Relationship"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
-											<option <? if ($row["emergency1Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
-											<option <? if ($row["emergency1Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
-											<option <? if ($row["emergency1Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
-											<option <? if ($row["emergency1Relationship"]=="Friend") {print "selected ";}?>value="Friend">Friend</option>
-											<option <? if ($row["emergency1Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation">Other Relation</option>
-											<option <? if ($row["emergency1Relationship"]=="Doctor") {print "selected ";}?>value="Doctor">Doctor</option>
-											<option <? if ($row["emergency1Relationship"]=="Other") {print "selected ";}?>value="Other">Other</option>
+											<?php if ($required["emergency1Relationship"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
+											<option <?php if ($row["emergency1Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
+											<option <?php if ($row["emergency1Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
+											<option <?php if ($row["emergency1Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
+											<option <?php if ($row["emergency1Relationship"]=="Friend") {print "selected ";}?>value="Friend">Friend</option>
+											<option <?php if ($row["emergency1Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation">Other Relation</option>
+											<option <?php if ($row["emergency1Relationship"]=="Doctor") {print "selected ";}?>value="Doctor">Doctor</option>
+											<option <?php if ($row["emergency1Relationship"]=="Other") {print "selected ";}?>value="Other">Other</option>
 										</select>
-										<?
+										<?php
 										$fieldName="emergency1Relationship" ; 
 										if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
@@ -549,11 +549,11 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 1 Number 1<? if (isset($required["emergency1Number1"])) { if ($required["emergency1Number1"]=="Y") { print " *" ; } } ?></b><br/>
+										<b>Contact 1 Number 1<?php if (isset($required["emergency1Number1"])) { if ($required["emergency1Number1"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="emergency1Number1" id="emergency1Number1" maxlength=30 value="<? print htmlPrep($row["emergency1Number1"]) ?>" type="text" style="width: 300px">
-										<?
+										<input name="emergency1Number1" id="emergency1Number1" maxlength=30 value="<?php print htmlPrep($row["emergency1Number1"]) ?>" type="text" style="width: 300px">
+										<?php
 										$fieldName="emergency1Number1" ; 
 										if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
@@ -566,11 +566,11 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 1 Number 2<? if (isset($required["emergency1Number2"])) { if ($required["emergency1Number2"]=="Y") { print " *" ; } } ?></b><br/>
+										<b>Contact 1 Number 2<?php if (isset($required["emergency1Number2"])) { if ($required["emergency1Number2"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="emergency1Number2" id="emergency1Number2" maxlength=30 value="<? print htmlPrep($row["emergency1Number2"]) ?>" type="text" style="width: 300px">
-										<?
+										<input name="emergency1Number2" id="emergency1Number2" maxlength=30 value="<?php print htmlPrep($row["emergency1Number2"]) ?>" type="text" style="width: 300px">
+										<?php
 										$fieldName="emergency1Number2" ; 
 										if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
@@ -583,11 +583,11 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 2 Name<? if (isset($required["emergency2Name"])) { if ($required["emergency2Name"]=="Y") { print " *" ; } } ?></b><br/>
+										<b>Contact 2 Name<?php if (isset($required["emergency2Name"])) { if ($required["emergency2Name"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="emergency2Name" id="emergency2Name" maxlength=30 value="<? print htmlPrep($row["emergency2Name"]) ?>" type="text" style="width: 300px">
-										<?
+										<input name="emergency2Name" id="emergency2Name" maxlength=30 value="<?php print htmlPrep($row["emergency2Name"]) ?>" type="text" style="width: 300px">
+										<?php
 										$fieldName="emergency2Name" ; 
 										if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
@@ -600,20 +600,20 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 2 Relationship<? if (isset($required["emergency2Relationship"])) { if ($required["emergency2Relationship"]=="Y") { print " *" ; } } ?></b><br/>
+										<b>Contact 2 Relationship<?php if (isset($required["emergency2Relationship"])) { if ($required["emergency2Relationship"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
 										<select name="emergency2Relationship" id="emergency2Relationship" style="width: 302px">
-											<? if ($required["emergency2Relationship"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
-											<option <? if ($row["emergency2Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
-											<option <? if ($row["emergency2Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
-											<option <? if ($row["emergency2Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
-											<option <? if ($row["emergency2Relationship"]=="Friend") {print "selected ";}?>value="Friend">Friend</option>
-											<option <? if ($row["emergency2Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation">Other Relation</option>
-											<option <? if ($row["emergency2Relationship"]=="Doctor") {print "selected ";}?>value="Doctor">Doctor</option>
-											<option <? if ($row["emergency2Relationship"]=="Other") {print "selected ";}?>value="Other">Other</option>
+											<?php if ($required["emergency2Relationship"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
+											<option <?php if ($row["emergency2Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
+											<option <?php if ($row["emergency2Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
+											<option <?php if ($row["emergency2Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
+											<option <?php if ($row["emergency2Relationship"]=="Friend") {print "selected ";}?>value="Friend">Friend</option>
+											<option <?php if ($row["emergency2Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation">Other Relation</option>
+											<option <?php if ($row["emergency2Relationship"]=="Doctor") {print "selected ";}?>value="Doctor">Doctor</option>
+											<option <?php if ($row["emergency2Relationship"]=="Other") {print "selected ";}?>value="Other">Other</option>
 										</select>
-										<?
+										<?php
 										$fieldName="emergency2Relationship" ; 
 										if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
@@ -626,11 +626,11 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 2 Number 1<? if (isset($required["emergency2Number1"])) { if ($required["emergency2Number1"]=="Y") { print " *" ; } } ?></b><br/>
+										<b>Contact 2 Number 1<?php if (isset($required["emergency2Number1"])) { if ($required["emergency2Number1"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="emergency2Number1" id="emergency2Number1" maxlength=30 value="<? print htmlPrep($row["emergency2Number1"]) ?>" type="text" style="width: 300px">
-										<?
+										<input name="emergency2Number1" id="emergency2Number1" maxlength=30 value="<?php print htmlPrep($row["emergency2Number1"]) ?>" type="text" style="width: 300px">
+										<?php
 										$fieldName="emergency2Number1" ; 
 										if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
@@ -643,11 +643,11 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 2 Number 2<? if (isset($required["emergency2Number2"])) { if ($required["emergency2Number2"]=="Y") { print " *" ; } } ?></b><br/>
+										<b>Contact 2 Number 2<?php if (isset($required["emergency2Number2"])) { if ($required["emergency2Number2"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="<? print htmlPrep($row["emergency2Number2"]) ?>" type="text" style="width: 300px">
-										<?
+										<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="<?php print htmlPrep($row["emergency2Number2"]) ?>" type="text" style="width: 300px">
+										<?php
 										$fieldName="emergency2Number2" ; 
 										if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
@@ -658,7 +658,7 @@ else {
 										?>									
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 							?>
 							
@@ -669,11 +669,11 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Email<? if (isset($required["email"])) { if ($required["email"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>Email<?php if (isset($required["email"])) { if ($required["email"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
-									<input name="email" id="email" maxlength=50 value="<? print htmlPrep($row["email"]) ?>" type="text" style="width: 300px">
-									<?
+									<input name="email" id="email" maxlength=50 value="<?php print htmlPrep($row["email"]) ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="email" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -693,12 +693,12 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Alternate Email<? if (isset($required["emailAlternate"])) { if ($required["emailAlternate"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>Alternate Email<?php if (isset($required["emailAlternate"])) { if ($required["emailAlternate"]=="Y") { print " *" ; } } ?></b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
-									<input name="emailAlternate" id="emailAlternate" maxlength=50 value="<? print htmlPrep($row["emailAlternate"]) ?>" type="text" style="width: 300px">
-									<?
+									<input name="emailAlternate" id="emailAlternate" maxlength=50 value="<?php print htmlPrep($row["emailAlternate"]) ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="email" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -723,13 +723,13 @@ else {
 										Address information for an individual only needs to be set under the following conditions:
 										<ol>
 											<li>If the user is not in a family.</li>
-											<li>If the user's family does not have a home address set (see <a href='<? print $_SESSION[$guid]["absoluteURL"] ; ?>/index.php?q=/modules/Data Updater/data_family.php'>Update Family Data</a> to change the family address).</li>
+											<li>If the user's family does not have a home address set (see <a href='<?php print $_SESSION[$guid]["absoluteURL"] ; ?>/index.php?q=/modules/Data Updater/data_family.php'>Update Family Data</a> to change the family address).</li>
 											<li>If the user needs an address in addition to their family's home address.</li>
 										</ol>
 									</div>
 								</td>
 							</tr>
-							<?
+							<?php
 							//Controls to hide address fields unless they are present, or box is checked
 							$addressSet=FALSE ;
 							if ($row["address1"]!="" OR $row["address1District"]!="" OR $row["address1Country"]!="" OR $row["address2"]!="" OR $row["address2District"]!="" OR $row["address2Country"]!="") {
@@ -744,7 +744,7 @@ else {
 									<script type="text/javascript">
 										/* Advanced Options Control */
 										$(document).ready(function(){
-											<?
+											<?php
 											if ($addressSet==FALSE) {
 												print "$(\".address\").slideUp(\"fast\"); " ;
 											}
@@ -766,18 +766,18 @@ else {
 											 });
 										});
 									</script>
-									<input <? if ($addressSet) { print "checked" ; } ?> id='showAddresses' name='showAddresses' type='checkbox' value='Yes'/>
+									<input <?php if ($addressSet) { print "checked" ; } ?> id='showAddresses' name='showAddresses' type='checkbox' value='Yes'/>
 								</td>
 							</tr>
 							
 							<tr class='address'>
 								<td> 
-									<b>Address 1<? if (isset($required["address1"])) { if ($required["address1"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i><span style="font-size: 90%"><i><? print _('Unit, Building, Street') ?></i></span></i></span>
+									<b>Address 1<?php if (isset($required["address1"])) { if ($required["address1"]=="Y") { print " *" ; } } ?></b><br/>
+									<span style="font-size: 90%"><i><span style="font-size: 90%"><i><?php print _('Unit, Building, Street') ?></i></span></i></span>
 								</td>
 								<td class="right">
-									<input name="address1" id="address1" maxlength=255 value="<? print htmlPrep($row["address1"]) ?>" type="text" style="width: 300px">
-									<?
+									<input name="address1" id="address1" maxlength=255 value="<?php print htmlPrep($row["address1"]) ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="address1" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -790,12 +790,12 @@ else {
 							</tr>
 							<tr class='address'>
 								<td> 
-									<b>Address 1 District<? if (isset($required["address1District"])) { if ($required["address1District"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i><? print _('County, State, District') ?></i></span>
+									<b>Address 1 District<?php if (isset($required["address1District"])) { if ($required["address1District"]=="Y") { print " *" ; } } ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('County, State, District') ?></i></span>
 								</td>
 								<td class="right">
-									<input name="address1District" id="address1District" maxlength=30 value="<? print $row["address1District"] ?>" type="text" style="width: 300px">
-									<?
+									<input name="address1District" id="address1District" maxlength=30 value="<?php print $row["address1District"] ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="address1District" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -808,7 +808,7 @@ else {
 								<script type="text/javascript">
 									$(function() {
 										var availableTags=[
-											<?
+											<?php
 											try {
 												$dataAuto=array(); 
 												$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
@@ -827,11 +827,11 @@ else {
 							</tr>
 							<tr class='address'>
 								<td> 
-									<b>Address 1 Country<? if (isset($required["address1Country"])) { if ($required["address1Country"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>Address 1 Country<?php if (isset($required["address1Country"])) { if ($required["address1Country"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="address1Country" id="address1Country" style="width: 302px">
-										<?
+										<?php
 										try {
 											$dataSelect=array(); 
 											$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
@@ -849,7 +849,7 @@ else {
 										}
 										?>				
 									</select>
-									<?
+									<?php
 									$fieldName="address1Country" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -861,7 +861,7 @@ else {
 								</td>
 							</tr>
 							
-							<?
+							<?php
 							//Check for matching addresses
 							if ($row["address1"]!="") {
 								$addressMatch="%" . strtolower(preg_replace("/ /", "%", preg_replace("/,/", "%", $row["address1"]))) . "%" ;
@@ -906,12 +906,12 @@ else {
 					
 							<tr class='address'>
 								<td> 
-									<b>Address 2<? if (isset($required["address2"])) { if ($required["address2"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i><span style="font-size: 90%"><i><? print _('Unit, Building, Street') ?></i></span></i></span>
+									<b>Address 2<?php if (isset($required["address2"])) { if ($required["address2"]=="Y") { print " *" ; } } ?></b><br/>
+									<span style="font-size: 90%"><i><span style="font-size: 90%"><i><?php print _('Unit, Building, Street') ?></i></span></i></span>
 								</td>
 								<td class="right">
-									<input name="address2" id="address2" maxlength=255 value="<? print htmlPrep($row["address2"]) ?>" type="text" style="width: 300px">
-									<?
+									<input name="address2" id="address2" maxlength=255 value="<?php print htmlPrep($row["address2"]) ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="address2" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -924,12 +924,12 @@ else {
 							</tr>
 							<tr class='address'>
 								<td> 
-									<b>Address 2 District<? if (isset($required["address2District"])) { if ($required["address2District"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i><? print _('County, State, District') ?></i></span>
+									<b>Address 2 District<?php if (isset($required["address2District"])) { if ($required["address2District"]=="Y") { print " *" ; } } ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('County, State, District') ?></i></span>
 								</td>
 								<td class="right">
-									<input name="address2District" id="address2District" maxlength=30 value="<? print $row["address2District"] ?>" type="text" style="width: 300px">
-									<?
+									<input name="address2District" id="address2District" maxlength=30 value="<?php print $row["address2District"] ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="address2District" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -942,7 +942,7 @@ else {
 								<script type="text/javascript">
 									$(function() {
 										var availableTags=[
-											<?
+											<?php
 											try {
 												$dataAuto=array(); 
 												$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
@@ -961,11 +961,11 @@ else {
 							</tr>
 							<tr class='address'>
 								<td> 
-									<b>Address 2 Country<? if (isset($required["address2Country"])) { if ($required["address2Country"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>Address 2 Country<?php if (isset($required["address2Country"])) { if ($required["address2Country"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="address2Country" id="address2Country" style="width: 302px">
-										<?
+										<?php
 										try {
 											$dataSelect=array(); 
 											$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
@@ -983,7 +983,7 @@ else {
 										}
 										?>				
 									</select>
-									<?
+									<?php
 									$fieldName="address2Country" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -994,17 +994,17 @@ else {
 									?>
 								</td>
 							</tr>
-							<?
+							<?php
 								for ($i=1; $i<5; $i++) {
 									?>
 									<tr>
 										<td> 
-											<b>Phone <? print $i ?><? if (isset($required["phone" . $i])) { if ($required["phone" . $i]=="Y") { print " *" ; } } ?></b><br/>
-											<span style="font-size: 90%"><i><? print _('Type, country code, number.') ?></i></span>
+											<b>Phone <?php print $i ?><?php if (isset($required["phone" . $i])) { if ($required["phone" . $i]=="Y") { print " *" ; } } ?></b><br/>
+											<span style="font-size: 90%"><i><?php print _('Type, country code, number.') ?></i></span>
 										</td>
 										<td class="right">
-											<input name="phone<? print $i ?>" id="phone<? print $i ?>" maxlength=20 value="<? print $row["phone" . $i] ?>" type="text" style="width: 160px">
-											<?
+											<input name="phone<?php print $i ?>" id="phone<?php print $i ?>" maxlength=20 value="<?php print $row["phone" . $i] ?>" type="text" style="width: 160px">
+											<?php
 											$fieldName="phone" . $i ; 
 											if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 												print "<script type=\"text/javascript\">" ;
@@ -1013,8 +1013,8 @@ else {
 												 print "</script>" ;
 											} }
 											?>									
-											<select name="phone<? print $i ?>CountryCode" id="phone<? print $i ?>CountryCode" style="width: 60px">
-												<?
+											<select name="phone<?php print $i ?>CountryCode" id="phone<?php print $i ?>CountryCode" style="width: 60px">
+												<?php
 												if ($required["phone" . $i]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; }
 												try {
 													$dataSelect=array(); 
@@ -1032,7 +1032,7 @@ else {
 												}
 												?>				
 											</select>
-											<?
+											<?php
 											$fieldName="phone" . $i . "CountryCode" ; 
 											
 											if (isset($required["phone" . $i])) { if ($required["phone" . $i]=="Y") {
@@ -1042,16 +1042,16 @@ else {
 												 print "</script>" ;
 											} }
 											?>
-											<select style="width: 70px" name="phone<? print $i ?>Type" id="phone<? print $i ?>Type">
-												<? if ($required["phone" . $i]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
-												<option <? if ($row["phone" . $i . "Type"]=="Mobile") { print "selected" ; }?> value="Mobile">Mobile</option>
-												<option <? if ($row["phone" . $i . "Type"]=="Home") { print "selected" ; }?> value="Home">Home</option>
-												<option <? if ($row["phone" . $i . "Type"]=="Work") { print "selected" ; }?> value="Work">Work</option>
-												<option <? if ($row["phone" . $i . "Type"]=="Fax") { print "selected" ; }?> value="Fax">Fax</option>
-												<option <? if ($row["phone" . $i . "Type"]=="Pager") { print "selected" ; }?> value="Pager">Pager</option>
-												<option <? if ($row["phone" . $i . "Type"]=="Other") { print "selected" ; }?> value="Other">Other</option>
+											<select style="width: 70px" name="phone<?php print $i ?>Type" id="phone<?php print $i ?>Type">
+												<?php if ($required["phone" . $i]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
+												<option <?php if ($row["phone" . $i . "Type"]=="Mobile") { print "selected" ; }?> value="Mobile">Mobile</option>
+												<option <?php if ($row["phone" . $i . "Type"]=="Home") { print "selected" ; }?> value="Home">Home</option>
+												<option <?php if ($row["phone" . $i . "Type"]=="Work") { print "selected" ; }?> value="Work">Work</option>
+												<option <?php if ($row["phone" . $i . "Type"]=="Fax") { print "selected" ; }?> value="Fax">Fax</option>
+												<option <?php if ($row["phone" . $i . "Type"]=="Pager") { print "selected" ; }?> value="Pager">Pager</option>
+												<option <?php if ($row["phone" . $i . "Type"]=="Other") { print "selected" ; }?> value="Other">Other</option>
 											</select>
-											<?
+											<?php
 											$fieldName="phone" . $i . "Type" ; 
 											if (isset($required["phone" . $i])) { if ($required["phone" . $i]=="Y") {
 												print "<script type=\"text/javascript\">" ;
@@ -1062,7 +1062,7 @@ else {
 											?>
 										</td>
 									</tr>
-									<?
+									<?php
 								}
 								?>
 							<tr class='break'>
@@ -1072,12 +1072,12 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>First Language<? if (isset($required["languageFirst"])) { if ($required["languageFirst"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>First Language<?php if (isset($required["languageFirst"])) { if ($required["languageFirst"]=="Y") { print " *" ; } } ?></b><br/>
 									<span style="font-size: 90%"><i>Student's native/first/mother language. </i></span>
 								</td>
 								<td class="right">
-									<input name="languageFirst" id="languageFirst" maxlength=30 value="<? print $row["languageFirst"] ?>" type="text" style="width: 300px">
-									<?
+									<input name="languageFirst" id="languageFirst" maxlength=30 value="<?php print $row["languageFirst"] ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="languageFirst" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -1090,7 +1090,7 @@ else {
 								<script type="text/javascript">
 									$(function() {
 										var availableTags=[
-											<?
+											<?php
 											try {
 												$dataAuto=array(); 
 												$sqlAuto="SELECT DISTINCT languageFirst FROM gibbonApplicationForm ORDER BY languageFirst" ;
@@ -1109,11 +1109,11 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Second Language<? if (isset($required["languageSecond"])) { if ($required["languageSecond"]=="Y") { print " *" ; } }?></b><br/>
+									<b>Second Language<?php if (isset($required["languageSecond"])) { if ($required["languageSecond"]=="Y") { print " *" ; } }?></b><br/>
 								</td>
 								<td class="right">
-									<input name="languageSecond" id="languageSecond" maxlength=30 value="<? print $row["languageSecond"] ?>" type="text" style="width: 300px">
-									<?
+									<input name="languageSecond" id="languageSecond" maxlength=30 value="<?php print $row["languageSecond"] ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="languageSecond" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -1126,7 +1126,7 @@ else {
 								<script type="text/javascript">
 									$(function() {
 										var availableTags=[
-											<?
+											<?php
 											try {
 												$dataAuto=array(); 
 												$sqlAuto="SELECT DISTINCT languageSecond FROM gibbonApplicationForm ORDER BY languageSecond" ;
@@ -1145,11 +1145,11 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Third Language<? if (isset($required["languageThird"])) { if ($required["languageThird"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>Third Language<?php if (isset($required["languageThird"])) { if ($required["languageThird"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
-									<input name="languageThird" id="languageThird" maxlength=30 value="<? print $row["languageThird"] ?>" type="text" style="width: 300px">
-									<?
+									<input name="languageThird" id="languageThird" maxlength=30 value="<?php print $row["languageThird"] ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="languageThird" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -1162,7 +1162,7 @@ else {
 								<script type="text/javascript">
 									$(function() {
 										var availableTags=[
-											<?
+											<?php
 											try {
 												$dataAuto=array(); 
 												$sqlAuto="SELECT DISTINCT languageThird FROM gibbonApplicationForm ORDER BY languageThird" ;
@@ -1181,11 +1181,11 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Country of Birth<? if (isset($required["countryOfBirth"])) { if ($required["countryOfBirth"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>Country of Birth<?php if (isset($required["countryOfBirth"])) { if ($required["countryOfBirth"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="countryOfBirth" id="countryOfBirth" style="width: 302px">
-										<?
+										<?php
 										try {
 											$dataSelect=array(); 
 											$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
@@ -1203,7 +1203,7 @@ else {
 										}
 										?>				
 									</select>
-									<?
+									<?php
 									$fieldName="countryOfBirth" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -1216,12 +1216,12 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Ethnicity<? if (isset($required["ethnicity"])) { if ($required["ethnicity"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>Ethnicity<?php if (isset($required["ethnicity"])) { if ($required["ethnicity"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="ethnicity" id="ethnicity" style="width: 302px">
-										<? if ($required["ethnicity"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
-										<?
+										<?php if ($required["ethnicity"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
+										<?php
 										$ethnicities=explode(",", getSettingByScope($connection2, "User Admin", "ethnicity")) ;
 										foreach ($ethnicities as $ethnicity) {
 											$selected="" ;
@@ -1232,7 +1232,7 @@ else {
 										}
 										?>
 									</select>
-									<?
+									<?php
 									$fieldName="ethnicity" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -1245,20 +1245,20 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Religion<? if (isset($required["religion"])) { if ($required["religion"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>Religion<?php if (isset($required["religion"])) { if ($required["religion"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="religion" id="religion" style="width: 302px">
-										<? if ($required["religion"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
-										<option <? if ($row["religion"]=="Nonreligious/Agnostic/Atheist") {print "selected ";}?>value="Nonreligious/Agnostic/Atheist">Nonreligious/Agnostic/Atheist</option>
-										<option <? if ($row["religion"]=="Buddhism") {print "selected ";}?>value="Buddhism">Buddhism</option>
-										<option <? if ($row["religion"]=="Christianity") {print "selected ";}?>value="Christianity">Christianity</option>
-										<option <? if ($row["religion"]=="Hinduism") {print "selected ";}?>value="Hinduism">Hinduism</option>
-										<option <? if ($row["religion"]=="Islam") {print "selected ";}?>value="Islam">Islam</option>
-										<option <? if ($row["religion"]=="Judaism") {print "selected ";}?>value="">Judaism</option>
-										<option <? if ($row["religion"]=="Other") {print "selected ";}?>value="Other">Other</option>	
+										<?php if ($required["religion"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
+										<option <?php if ($row["religion"]=="Nonreligious/Agnostic/Atheist") {print "selected ";}?>value="Nonreligious/Agnostic/Atheist">Nonreligious/Agnostic/Atheist</option>
+										<option <?php if ($row["religion"]=="Buddhism") {print "selected ";}?>value="Buddhism">Buddhism</option>
+										<option <?php if ($row["religion"]=="Christianity") {print "selected ";}?>value="Christianity">Christianity</option>
+										<option <?php if ($row["religion"]=="Hinduism") {print "selected ";}?>value="Hinduism">Hinduism</option>
+										<option <?php if ($row["religion"]=="Islam") {print "selected ";}?>value="Islam">Islam</option>
+										<option <?php if ($row["religion"]=="Judaism") {print "selected ";}?>value="">Judaism</option>
+										<option <?php if ($row["religion"]=="Other") {print "selected ";}?>value="Other">Other</option>	
 									</select>
-									<?
+									<?php
 									$fieldName="religion" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -1271,11 +1271,11 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Citizenship 1<? if (isset($required["citizenship1"])) { if ($required["citizenship1"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>Citizenship 1<?php if (isset($required["citizenship1"])) { if ($required["citizenship1"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="citizenship1" id="citizenship1" style="width: 302px">
-										<?
+										<?php
 										if ($required["citizenship1"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; }
 										$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;
 										if ($nationalityList=="") {
@@ -1302,7 +1302,7 @@ else {
 										}
 										?>					
 									</select>
-									<?
+									<?php
 									$fieldName="citizenship1" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -1315,11 +1315,11 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Citizenship 1 Passport Number<? if (isset($required["citizenship1Passport"])) { if ($required["citizenship1Passport"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>Citizenship 1 Passport Number<?php if (isset($required["citizenship1Passport"])) { if ($required["citizenship1Passport"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
-									<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="<? print htmlPrep($row["citizenship1Passport"]) ?>" type="text" style="width: 300px">
-									<?
+									<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="<?php print htmlPrep($row["citizenship1Passport"]) ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="citizenship1Passport" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -1332,11 +1332,11 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Citizenship 2<? if (isset($required["citizenshipr"])) { if ($required["citizenship2"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>Citizenship 2<?php if (isset($required["citizenshipr"])) { if ($required["citizenship2"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="citizenship2" id="citizenship2" style="width: 302px">
-										<?
+										<?php
 										if ($required["citizenship2"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; }
 										$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;
 										if ($nationalityList=="") {
@@ -1363,7 +1363,7 @@ else {
 										}
 										?>					
 									</select>
-									<?
+									<?php
 									$fieldName="citizenship2" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -1376,11 +1376,11 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Citizenship 2 Passport Number<? if (isset($required["citizenship2Passport"])) { if ($required["citizenship2Passport"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>Citizenship 2 Passport Number<?php if (isset($required["citizenship2Passport"])) { if ($required["citizenship2Passport"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
-									<input name="citizenship2Passport" id="citizenship2Passport" maxlength=30 value="<? print htmlPrep($row["citizenship2Passport"]) ?>" type="text" style="width: 300px">
-									<?
+									<input name="citizenship2Passport" id="citizenship2Passport" maxlength=30 value="<?php print htmlPrep($row["citizenship2Passport"]) ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="citizenship2Passport" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -1393,7 +1393,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<?
+									<?php
 									$star="" ;
 									if (isset($required["nationalIDCardNumber"])) { if ($required["nationalIDCardNumber"]=="Y") { 
 										$star=" *" ; 
@@ -1407,8 +1407,8 @@ else {
 									?>
 								</td>
 								<td class="right">
-									<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="<? print htmlPrep($row["nationalIDCardNumber"]) ?>" type="text" style="width: 300px">
-									<?
+									<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="<?php print htmlPrep($row["nationalIDCardNumber"]) ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="nationalIDCardNumber" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -1421,7 +1421,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<?
+									<?php
 									$star="" ;
 									if (isset($required["residencyStatus"])) { if ($required["residencyStatus"]=="Y") { 
 										$star=" *" ; 
@@ -1435,7 +1435,7 @@ else {
 									?>
 								</td>
 								<td class="right">
-									<?
+									<?php
 									$residencyStatusList=getSettingByScope($connection2, "User Admin", "residencyStatus") ;
 									if ($residencyStatusList=="") {
 										print "<input name='residencyStatus' id='residencyStatus' maxlength=30 value='" . $row["residencyStatus"] . "' type='text' style='width: 300px'>" ;
@@ -1472,7 +1472,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<?
+									<?php
 									$star="" ;
 									if (isset($required["visaExpiryDate"])) { if ($required["visaExpiryDate"]=="Y") { 
 										$star=" *" ; 
@@ -1487,11 +1487,11 @@ else {
 									?>
 								</td>
 								<td class="right">
-									<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<? print dateConvertBack($guid, $row["visaExpiryDate"]) ?>" type="text" style="width: 300px">
+									<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<?php print dateConvertBack($guid, $row["visaExpiryDate"]) ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var visaExpiryDate=new LiveValidation('visaExpiryDate');
-										visaExpiryDate.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-									 	<?
+										visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+									 	<?php
 									 	if ($required["visaExpiryDate"]=="Y") {
 											print "visaExpiryDate.add(Validate.Presence);" ;
 										}
@@ -1505,7 +1505,7 @@ else {
 								</td>
 							</tr>
 					
-							<?
+							<?php
 							if ($parent) {
 								?> 
 								<tr class='break'>
@@ -1515,11 +1515,11 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Profession<? if (isset($required["profession"])) { if ($required["profession"]=="Y") { print " *" ; } } ?></b><br/>
+										<b>Profession<?php if (isset($required["profession"])) { if ($required["profession"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="profession" id="profession" maxlength=30 value="<? print htmlPrep($row["profession"]) ?>" type="text" style="width: 300px">
-										<?
+										<input name="profession" id="profession" maxlength=30 value="<?php print htmlPrep($row["profession"]) ?>" type="text" style="width: 300px">
+										<?php
 										$fieldName="profession" ; 
 										if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
@@ -1532,11 +1532,11 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Employer<? if (isset($required["employer"])) { if ($required["employer"]=="Y") { print " *" ; } } ?></b><br/>
+										<b>Employer<?php if (isset($required["employer"])) { if ($required["employer"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="employer" id="employer" maxlength=30 value="<? print htmlPrep($row["employer"]) ?>" type="text" style="width: 300px">
-										<?
+										<input name="employer" id="employer" maxlength=30 value="<?php print htmlPrep($row["employer"]) ?>" type="text" style="width: 300px">
+										<?php
 										$fieldName="employer" ; 
 										if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
@@ -1549,11 +1549,11 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Job Title<? if (isset($required["jobTitle"])) { if ($required["jobTitle"]=="Y") { print " *" ; } } ?></b><br/>
+										<b>Job Title<?php if (isset($required["jobTitle"])) { if ($required["jobTitle"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="jobTitle" id="jobTitle" maxlength=30 value="<? print htmlPrep($row["jobTitle"]) ?>" type="text" style="width: 300px">
-										<?
+										<input name="jobTitle" id="jobTitle" maxlength=30 value="<?php print htmlPrep($row["jobTitle"]) ?>" type="text" style="width: 300px">
+										<?php
 										$fieldName="jobTitle" ; 
 										if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 											print "<script type=\"text/javascript\">" ;
@@ -1564,7 +1564,7 @@ else {
 										?>									
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 							?>
 							
@@ -1575,11 +1575,11 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Vehicle Registration<? if (isset($required["vehicleRegistration"])) { if ($required["vehicleRegistration"]=="Y") { print " *" ; } } ?></b><br/>
+									<b>Vehicle Registration<?php if (isset($required["vehicleRegistration"])) { if ($required["vehicleRegistration"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
-									<input name="vehicleRegistration" id="vehicleRegistration" maxlength=30 value="<? print htmlPrep($row["vehicleRegistration"]) ?>" type="text" style="width: 300px">
-									<?
+									<input name="vehicleRegistration" id="vehicleRegistration" maxlength=30 value="<?php print htmlPrep($row["vehicleRegistration"]) ?>" type="text" style="width: 300px">
+									<?php
 									$fieldName="vehicleRegistration" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
@@ -1590,7 +1590,7 @@ else {
 									?>									
 								</td>
 							</tr>
-							<?
+							<?php
 							//Check if any roles are "Student"
 							$privacySet=false ;
 							if ($student) {
@@ -1602,11 +1602,11 @@ else {
 									<tr>
 										<td> 
 											<b>Privacy</b><br/>
-											<span style="font-size: 90%"><i><? print htmlPrep($privacyBlurb) ?><br/>
+											<span style="font-size: 90%"><i><?php print htmlPrep($privacyBlurb) ?><br/>
 											</i></span>
 										</td>
 										<td class="right">
-											<?
+											<?php
 											$options=explode(",",$privacyOptions) ;
 											$privacyChecks=explode(",",$row["privacy"]) ;
 											foreach ($options AS $option) {
@@ -1622,7 +1622,7 @@ else {
 					
 										</td>
 									</tr>
-									<?
+									<?php
 								}
 							}
 							?>
@@ -1630,7 +1630,7 @@ else {
 							
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 								</td>
 								<td class="right">
 									<?php
@@ -1641,13 +1641,13 @@ else {
 										print "<input type='hidden' name='existing' value='N'>" ;
 									}
 									?>
-									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<? print _("Submit") ; ?>">
+									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+									<input type="submit" value="<?php print _("Submit") ; ?>">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<?
+					<?php
 				}	
 			}
 		}

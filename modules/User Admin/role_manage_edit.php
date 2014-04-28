@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -86,33 +86,33 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/role_manage_editProcess.php?gibbonRoleID=$gibbonRoleID" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/role_manage_editProcess.php?gibbonRoleID=$gibbonRoleID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Category') ?> *</b><br/>
+							<b><?php print _('Category') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="category" id="category" style="width: 302px">
-								<option value="Please select..."><? print _('Please select...') ?></option>
-								<option <? if ($row["category"]=="Staff") { print "selected " ; } ?>value="Staff"><? print _('Staff') ?></option>
-								<option <? if ($row["category"]=="Student") { print "selected " ; } ?>value="Student"><? print _('Student') ?></option>
-								<option <? if ($row["category"]=="Parent") { print "selected " ; } ?>value="Parent"><? print _('Parent') ?></option>
-								<option <? if ($row["category"]=="Other") { print "selected " ; } ?>value="Other"><? print _('Other') ?></option>
+								<option value="Please select..."><?php print _('Please select...') ?></option>
+								<option <?php if ($row["category"]=="Staff") { print "selected " ; } ?>value="Staff"><?php print _('Staff') ?></option>
+								<option <?php if ($row["category"]=="Student") { print "selected " ; } ?>value="Student"><?php print _('Student') ?></option>
+								<option <?php if ($row["category"]=="Parent") { print "selected " ; } ?>value="Parent"><?php print _('Parent') ?></option>
+								<option <?php if ($row["category"]=="Other") { print "selected " ; } ?>value="Other"><?php print _('Other') ?></option>
 							</select>
 							<script type="text/javascript">
 								var category=new LiveValidation('category');
-								category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<? print _('Select something!') ?>"});
+								category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 							 </script>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
+							<b><?php print _('Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=20 value="<? print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=20 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
@@ -121,11 +121,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
+							<?php print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="<? print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=4 value="<?php print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -134,11 +134,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Description') . " *</b><br/>" ; ?>
+							<?php print "<b>" . _('Description') . " *</b><br/>" ; ?>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input name="description" id="description" maxlength=60 value="<? print htmlPrep($row["description"]) ?>" type="text" style="width: 300px">
+							<input name="description" id="description" maxlength=60 value="<?php print htmlPrep($row["description"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var description=new LiveValidation('description');
 								description.add(Validate.Presence);
@@ -147,8 +147,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Type') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+							<b><?php print _('Type') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="type" id="type" readonly="readonly" maxlength=20 value="Additional" type="text" style="width: 300px">
@@ -156,16 +156,16 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -192,24 +192,24 @@ else {
 					//Let's go!
 					$row=$result->fetch() ;
 					?>
-					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_editProcess.php?gibbonRubricID=$gibbonRubricID" ?>">
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_editProcess.php?gibbonRubricID=$gibbonRubricID" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 760px">	
 							<tr class='break'>
 								<td colspan=2>
-									<h3><? print _('Rubric Basics') ?></h3>
+									<h3><?php print _('Rubric Basics') ?></h3>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b><? print _('Scope') ?> *</b><br/>
+									<b><?php print _('Scope') ?> *</b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
-									<input readonly name="scope" id="scope" value="<? print $row["scope"] ?>" type="text" style="width: 300px">
+									<input readonly name="scope" id="scope" value="<?php print $row["scope"] ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
 							
-							<?
+							<?php
 							if ($row["scope"]=="Learning Area") {
 								try {
 									$dataLearningArea=array("gibbonDepartmentID"=>$row["gibbonDepartmentID"]); 
@@ -226,25 +226,25 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b><? print _('Learning Area') ?> *</b><br/>
+										<b><?php print _('Learning Area') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
-										<input readonly name="department" id="department" value="<? print $rowLearningAreas["name"] ?>" type="text" style="width: 300px">
-										<input name="gibbonDepartmentID" id="gibbonDepartmentID" value="<? print $row["gibbonDepartmentID"] ?>" type="hidden" style="width: 300px">
+										<input readonly name="department" id="department" value="<?php print $rowLearningAreas["name"] ?>" type="text" style="width: 300px">
+										<input name="gibbonDepartmentID" id="gibbonDepartmentID" value="<?php print $row["gibbonDepartmentID"] ?>" type="hidden" style="width: 300px">
 									</td>
 								</tr>
-								<?
+								<?php
 							}
 							?>
 							
 							
 							<tr>
 								<td> 
-									<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+									<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 								</td>
 								<td class="right">
-									<input name="name" id="name" maxlength=50 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+									<input name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var name=new LiveValidation('name');
 										name.add(Validate.Presence);
@@ -253,27 +253,27 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><? print _('Active') ?> *</b><br/>
+									<b><?php print _('Active') ?> *</b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
 									<select name="active" id="active" style="width: 302px">
-										<option <? if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><? print _('Yes') ?></option>
-										<option <? if ($row["active"]=="N") { print "selected" ; } ?> value="N"><? print _('No') ?></option>
+										<option <?php if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
+										<option <?php if ($row["active"]=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
 									</select>
 								</td>
 							</tr>
 							
 							<tr>
 								<td> 
-									<b><? print _('Category') ?></b><br/>
+									<b><?php print _('Category') ?></b><br/>
 								</td>
 								<td class="right">
-									<input name="category" id="category" maxlength=100 value="<? print $row["category"] ?>" type="text" style="width: 300px">
+									<input name="category" id="category" maxlength=100 value="<?php print $row["category"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										$(function() {
 											var availableTags=[
-												<?
+												<?php
 												try {
 													$dataAuto=array(); 
 													$sqlAuto="SELECT DISTINCT category FROM gibbonRubric ORDER BY category" ;
@@ -293,18 +293,18 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><? print _('Description') ?></b><br/>
+									<b><?php print _('Description') ?></b><br/>
 								</td>
 								<td class="right">
-									<textarea name='description' id='description' rows=5 style='width: 300px'><? print $row["description"] ?></textarea>
+									<textarea name='description' id='description' rows=5 style='width: 300px'><?php print $row["description"] ?></textarea>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b><? print _('Year Groups') ?></b><br/>
+									<b><?php print _('Year Groups') ?></b><br/>
 								</td>
 								<td class="right">
-									<? 
+									<?php 
 									$yearGroups=getYearGroups($connection2) ;
 									if ($yearGroups=="") {
 										print "<i>" . _('No year groups available.') . "</i>" ;
@@ -320,16 +320,16 @@ else {
 										}
 									}
 									?>
-									<input type="hidden" name="count" value="<? print (count($yearGroups))/2 ?>">
+									<input type="hidden" name="count" value="<?php print (count($yearGroups))/2 ?>">
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b><? print _('Grading Scale') ?></b><br/>
-									<span style="font-size: 90%"><i><? print _('This value cannot be changed.') ?></i></span>
+									<b><?php print _('Grading Scale') ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 								</td>
 								<td class="right">
-									<?
+									<?php
 									if ($row["gibbonScaleID"]!="") { 
 										try {
 											$dataSelect=array("gibbonScaleID"=>$row["gibbonScaleID"]); 
@@ -347,24 +347,24 @@ else {
 									if (isset($rowSelect["name"])==FALSE) {
 										?>
 										<input readonly name="scale" id="scale" value="None" type="text" style="width: 300px">
-										<?
+										<?php
 									}
 									else {
 										?>
-										<input readonly name="scale" id="scale" value="<? print $rowSelect["name"] ?>" type="text" style="width: 300px">
-										<input name="gibbonScaleID" id="gibbonScaleID" value="<? print $rowSelect["gibbonScaleID"] ?>" type="hidden" style="width: 300px">
-										<?
+										<input readonly name="scale" id="scale" value="<?php print $rowSelect["name"] ?>" type="text" style="width: 300px">
+										<input name="gibbonScaleID" id="gibbonScaleID" value="<?php print $rowSelect["gibbonScaleID"] ?>" type="hidden" style="width: 300px">
+										<?php
 									}
 									?>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 								</td>
 								<td class="right">
-									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<? print _("Submit") ; ?>">
+									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+									<input type="submit" value="<?php print _("Submit") ; ?>">
 								</td>
 							</tr>
 						</table>
@@ -373,11 +373,11 @@ else {
 					<table class='smallIntBorder' cellspacing='0' style="width:100%">
 						<tr class='break'>
 							<td colspan=2>
-								<h3><? print _('Rubric Design') ?></h3>
+								<h3><?php print _('Rubric Design') ?></h3>
 							</td>
 						</tr>
 					</table>
-					<?
+					<?php
 					$scaleName="" ;
 					if (isset($rowSelect["name"])) {
 						$scaleName=$rowSelect["name"] ;

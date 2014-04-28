@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -19,10 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 ?>
 
 <h1>
-	<? print _("Error") ; ?><br/>
+	<?php print _("Error") ; ?><br/>
 </h1>
 <p>
-	<? print _("An error has occurred. This could mean a number of different things, but generally indicates that you have a misspelt an address, or are trying to access a page that you are not permitted to access.") ?><br/>
+	<?php print _("An error has occurred. This could mean a number of different things, but generally indicates that you have a misspelt an address, or are trying to access a page that you are not permitted to access.") ?><br/>
 	<br/>
-	<? print _("If you cannot solve this problem by retyping the address, or through other means, please contact your system administrator.") ?><br/>
+	<?php print _("If you cannot solve this problem by retyping the address, or through other means, please contact your system administrator.") ?><br/>
 </p>

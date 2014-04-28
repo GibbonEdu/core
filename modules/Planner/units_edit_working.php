@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -384,7 +384,7 @@ else {
 								<table class='blank' style='width: 100%' cellspacing=0>
 									<tr>
 										<td class='right'>
-											<?
+											<?php
 											print "<script type='text/javascript'>" ;
 												print "var count=$blockCount2 ;" ;
 											print "</script>" ;
@@ -393,7 +393,7 @@ else {
 										</td>
 									</tr>
 								</table>
-							<?
+							<?php
 							print "</div>" ;
 						print "</form>" ;
 						
@@ -411,16 +411,16 @@ else {
 								var receiveCount=0 ;
 								
 								//Create list of lesson sortables
-								<? for ($i=0; $i<$cells; $i++) { ?>
-									<? $sortableList.="#sortable$i, " ?>
-								<? } ?>
+								<?php for ($i=0; $i<$cells; $i++) { ?>
+									<?php $sortableList.="#sortable$i, " ?>
+								<?php } ?>
 								
 								//Create lesson sortables
-								<? for ($i=0; $i<$cells; $i++) { ?>
-									$( "#sortable<? print $i ?>" ).sortable({
+								<?php for ($i=0; $i<$cells; $i++) { ?>
+									$( "#sortable<?php print $i ?>" ).sortable({
 										revert: false,
 										tolerance: 15, 
-										connectWith: "<? print substr($sortableList,0, -2) ?>",
+										connectWith: "<?php print substr($sortableList,0, -2) ?>",
 										items: "div.blockOuter",
 										receive: function(event,ui) {
 											var sortid=$(newItem).attr("id", 'receive'+receiveCount) ;
@@ -446,38 +446,38 @@ else {
 										 newItem=ui.item;
 										}
 									});
-									<? for ($j=$blockCount; $j<$blockCount2; $j++) { ?>
-										$("#draggable<? print $j ?> .delete").show() ;
-										$("#draggable<? print $j ?> .delete").click(function() {
-											$("#draggable<? print $j ?>").fadeOut(600, function(){ 
-												$("#draggable<? print $j ?>").remove(); 
+									<?php for ($j=$blockCount; $j<$blockCount2; $j++) { ?>
+										$("#draggable<?php print $j ?> .delete").show() ;
+										$("#draggable<?php print $j ?> .delete").click(function() {
+											$("#draggable<?php print $j ?>").fadeOut(600, function(){ 
+												$("#draggable<?php print $j ?>").remove(); 
 											});
 										});
-										$("#draggable<? print $j ?> .completeDiv").show() ;
-										$("#draggable<? print $j ?> .complete").show() ;
-										$("#draggable<? print $j ?> .complete").click(function() {
-												if ($("#draggable<? print $j ?> .complete").is(':checked')==true) {
-													$("#draggable<? print $j ?> .completeHide").val('on') ;
+										$("#draggable<?php print $j ?> .completeDiv").show() ;
+										$("#draggable<?php print $j ?> .complete").show() ;
+										$("#draggable<?php print $j ?> .complete").click(function() {
+												if ($("#draggable<?php print $j ?> .complete").is(':checked')==true) {
+													$("#draggable<?php print $j ?> .completeHide").val('on') ;
 												} else {
-													$("#draggable<? print $j ?> .completeHide").val('off') ;
+													$("#draggable<?php print $j ?> .completeHide").val('off') ;
 												}
 											});
-									<? } ?>
+									<?php } ?>
 									
 									
-								<? } ?>
+								<?php } ?>
 								
 								//Draggables
-								<? for ($i=0; $i<$blockCount; $i++) { ?>
-									$( "#draggable<? print $i ?>" ).draggable({
-										connectToSortable: "<? print substr($sortableList, 0, -2) ?>",
+								<?php for ($i=0; $i<$blockCount; $i++) { ?>
+									$( "#draggable<?php print $i ?>" ).draggable({
+										connectToSortable: "<?php print substr($sortableList, 0, -2) ?>",
 										helper: "clone"
 									});
-								<? } ?>
+								<?php } ?>
 								
 							});
 						</script>
-						<?
+						<?php
 					}
 				}
 			}

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Library/library_browse.php
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Browse The Library</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Browse The Library') . "</div>" ;
 	print "</div>" ;
 	
 	//Get display settings
@@ -53,7 +53,7 @@ else {
 				print "<tr>" ;
 					print "<td style='width: 10px'></td>" ;
 					print "<td style='width: 33%; padding-top: 5px; text-align: center; vertical-align: top'>" ;
-						print "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>All Time Top 5</div>" ; 
+						print "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>" . _('All Time Top 5') . "</div>" ; 
 						try {
 							$dataTop=array(); 
 							$sqlTop="SELECT gibbonLibraryItem.name, producer, COUNT( * ) AS count FROM gibbonLibraryItem JOIN gibbonLibraryItemEvent ON (gibbonLibraryItemEvent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE gibbonLibraryItem.borrowable='Y' AND gibbonLibraryItemEvent.type='Loan' AND gibbonLibraryType.name='Print Publication' GROUP BY producer, name ORDER BY count DESC LIMIT 0, 5" ;
@@ -64,7 +64,9 @@ else {
 							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
 						if ($resultTop->rowCount()<1) {
-							print "<div class='warning'>There is no data to display</div>" ; 
+							print "<div class='warning'>" ;
+								print _("There are no records to display.") ;
+							print "</div>" ; 
 						}
 						else {
 							$count=0 ;
@@ -90,7 +92,7 @@ else {
 						}
 					print "</td>" ;
 					print "<td style='width: 33%; padding-top: 5px; text-align: center; vertical-align: top'>" ;
-						print "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>Monthly Top 5</div>" ; 
+						print "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>" . _('Monthly Top 5') . "</div>" ; 
 						try {
 							$dataTop=array("timestampOut"=>date("Y-m-d H:i:s", (time()-(60*60*24*30)))); 
 							$sqlTop="SELECT gibbonLibraryItem.name, producer, COUNT( * ) AS count FROM gibbonLibraryItem JOIN gibbonLibraryItemEvent ON (gibbonLibraryItemEvent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE timestampOut>=:timestampOut AND gibbonLibraryItem.borrowable='Y' AND gibbonLibraryItemEvent.type='Loan' AND gibbonLibraryType.name='Print Publication' GROUP BY producer, name ORDER BY count DESC LIMIT 0, 5" ;
@@ -101,7 +103,9 @@ else {
 							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
 						if ($resultTop->rowCount()<1) {
-							print "<div class='warning'>There is no data to display</div>" ; 
+							print "<div class='warning'>" ;
+								print _("There are no records to display.") ;
+							print "</div>" ; 
 						}
 						else {
 							$count=0 ;
@@ -127,7 +131,7 @@ else {
 						}
 					print "</td>" ;
 					print "<td style='width: 33%; padding-top: 5px; text-align: center; vertical-align: top'>" ;
-						print "<div style='color: #CC0000; margin-bottom: -5px; font-weight: bold; font-size: 135%'>New Titles</div>" ;  
+						print "<div style='color: #CC0000; margin-bottom: -5px; font-weight: bold; font-size: 135%'>" . _('New Titles') . "</div>" ;  
 						try {
 							$dataTop=array(); 
 							$sqlTop="SELECT gibbonLibraryItem.name, producer FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE gibbonLibraryItem.borrowable='Y' AND gibbonLibraryType.name='Print Publication'  ORDER BY timestampCreator DESC LIMIT 0, 5" ;
@@ -138,7 +142,9 @@ else {
 							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
 						if ($resultTop->rowCount()<1) {
-							print "<div class='warning'>There is no data to display</div>" ; 
+							print "<div class='warning'>" ;
+								print _("There are no records to display.") ;
+							print "</div>" ; 
 						}
 						else {
 							$count=0 ;
@@ -211,16 +217,16 @@ else {
 					print "<tr>" ;
 						print "<td style='width: 10px'></td>" ;
 						print "<td style='padding-top: 10px'>" ;
-							print "<b>Title</b>" ;
+							print "<b>" . _('Title') . "</b>" ;
 						print "</td>" ;
 						print "<td style='padding-top: 10px'>" ;
-							print "<b>Author/Producer</b>" ;
+							print "<b>" . _('Author/Producer') . "</b>" ;
 						print "</td>" ;
 						print "<td style='padding-top: 10px'>" ;
-							print "<b>Category</b>" ;
+							print "<b>" . _('Category') . "</b>" ;
 						print "</td>" ;
 						print "<td style='padding-top: 10px'>" ;
-							print "<b>Collection</b>" ;
+							print "<b>" . _('Collection') . "</b>" ;
 						print "</td>" ;
 					print "</tr>" ;
 					print "<tr>" ;
@@ -283,8 +289,8 @@ else {
 					print "<tr>" ;
 						print "<td style='padding: 0px 2px 10px 0px; text-align: right' colspan=6>" ;
 							print "<input type='hidden' name='q' value='/modules/Library/library_lending.php'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_browse.php'>Clear Filters</a> " ;
-							print "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='Go'>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_browse.php'>" . _('Clear Filters') . "</a> " ;
+							print "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='" . _('Go') . "'>" ;
 						print "</td>" ;
 					print "</tr>" ;
 				print "</table>" ;
@@ -348,15 +354,15 @@ else {
 						
 						print "</th>" ;
 						print "<th>" ;
-							print "Name<br/>" ;
-							print "<span style='font-size: 85%; font-style: italic'>Author/Producer</span>" ;
+							print _("Name") . "<br/>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . _('Author/Producer') . "</span>" ;
 						print "</th>" ;
 						print "<th>" ;
-							print "ID<br/>" ;
-							print "<span style='font-size: 85%; font-style: italic'>Status</span>" ;
+							print _("ID") . "<br/>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . _('Status') . "</span>" ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Location" ;
+							print _("Location") ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Actions") ;
@@ -437,7 +443,7 @@ else {
 										foreach ($typeFields as $typeField) {
 											if($fields[$typeField["name"]]!="") {
 												print "<tr>" ;
-													print "<td style='vertical-align: top'>" ;
+													print "<td style='vertical-align: top; width: 200px'>" ;
 														print "<b>" . $typeField["name"] . "</b>" ;
 													print "</td>" ;
 													print "<td style='vertical-align: top'>" ;

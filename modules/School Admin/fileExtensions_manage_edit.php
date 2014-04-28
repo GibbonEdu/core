@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -86,15 +86,15 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/fileExtensions_manage_editProcess.php?gibbonFileExtensionID=$gibbonFileExtensionID" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/fileExtensions_manage_editProcess.php?gibbonFileExtensionID=$gibbonFileExtensionID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><? print _('Extension') ?> *</b><br/>
-							<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
+							<b><?php print _('Extension') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="extension" id="extension" maxlength=7 value="<? print $row["extension"] ?>" type="text" style="width: 300px">
+							<input name="extension" id="extension" maxlength=7 value="<?php print $row["extension"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var extension=new LiveValidation('extension');
 								extension.add(Validate.Presence);
@@ -103,11 +103,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<? print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=50 value="<? print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
@@ -116,34 +116,34 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><? print _('Type') ?> *</b><br/>
+							<b><?php print _('Type') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="type" id="type" style="width: 302px">
-								<option value="Please select..."><? print _('Please select...') ?></option>
-								<option <? if ($row["type"]=="Document") { print "selected" ; } ?> value="Document"><? print _('Document') ?></option>
-								<option <? if ($row["type"]=="Spreadsheet") { print "selected" ; } ?> value="Spreadsheet"><? print _('Spreadsheet') ?></option>
-								<option <? if ($row["type"]=="Presentation") { print "selected" ; } ?> value="Presentation"><? print _('Presentation') ?></option>
-								<option <? if ($row["type"]=="Graphics/Design") { print "selected" ; } ?> value="Graphics/Design"><? print _('Graphics/Design') ?></option>
-								<option <? if ($row["type"]=="Video") { print "selected" ; } ?> value="Video"><? print _('Video') ?></option>
-								<option <? if ($row["type"]=="Audio") { print "selected" ; } ?> value="Audio"><? print _('Audio') ?></option>
-								<option <? if ($row["type"]=="Other") { print "selected" ; } ?> value="Other"><? print _('Other') ?></option>
+								<option value="Please select..."><?php print _('Please select...') ?></option>
+								<option <?php if ($row["type"]=="Document") { print "selected" ; } ?> value="Document"><?php print _('Document') ?></option>
+								<option <?php if ($row["type"]=="Spreadsheet") { print "selected" ; } ?> value="Spreadsheet"><?php print _('Spreadsheet') ?></option>
+								<option <?php if ($row["type"]=="Presentation") { print "selected" ; } ?> value="Presentation"><?php print _('Presentation') ?></option>
+								<option <?php if ($row["type"]=="Graphics/Design") { print "selected" ; } ?> value="Graphics/Design"><?php print _('Graphics/Design') ?></option>
+								<option <?php if ($row["type"]=="Video") { print "selected" ; } ?> value="Video"><?php print _('Video') ?></option>
+								<option <?php if ($row["type"]=="Audio") { print "selected" ; } ?> value="Audio"><?php print _('Audio') ?></option>
+								<option <?php if ($row["type"]=="Other") { print "selected" ; } ?> value="Other"><?php print _('Other') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<? print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

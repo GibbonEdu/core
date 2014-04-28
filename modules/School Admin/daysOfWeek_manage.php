@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -77,24 +77,24 @@ else {
 	else {
 		//Let's go!
 		?>
-		<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/daysOfWeek_manageProcess.php"?>">
+		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/daysOfWeek_manageProcess.php"?>">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
-			<?
+			<?php
 			while($row=$result->fetch()) {
 				?>
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><? print $row["name"] . " (" . $row["nameShort"] . ")" ?></h3>
+						<h3><?php print $row["name"] . " (" . $row["nameShort"] . ")" ?></h3>
 					</td>
 				</tr>
-				<input name="<?print $row["name"]?>sequenceNumber" id="<?print $row["name"]?>sequenceNumber" maxlength=2 value="<? print $row["sequenceNumber"] ?>" type="hidden" style="width: 300px">
+				<input name="<?phpprint $row["name"]?>sequenceNumber" id="<?phpprint $row["name"]?>sequenceNumber" maxlength=2 value="<?php print $row["sequenceNumber"] ?>" type="hidden" style="width: 300px">
 				<tr>
 					<td> 
-						<b><? print _('School Day') ?> *</b>
+						<b><?php print _('School Day') ?> *</b>
 					</td>
 					<td class="right">
-						<select style="width: 302px" name="<?print $row["name"]?>schoolDay" id="<?print $row["name"]?>schoolDay">
-							<?
+						<select style="width: 302px" name="<?phpprint $row["name"]?>schoolDay" id="<?phpprint $row["name"]?>schoolDay">
+							<?php
 							if ($row["schoolDay"]=="Y") {
 								print "<option selected value='Y'>Yes</option>" ;
 								print "<option value='N'>No</option>" ;
@@ -109,11 +109,11 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('School Opens') ?></b>
+						<b><?php print _('School Opens') ?></b>
 					</td>
 					<td class="right">
-						<select style="width:100px" name="<?print $row["name"]?>schoolOpenM" id="<?print $row["name"]?>schoolOpenM">
-							<?
+						<select style="width:100px" name="<?phpprint $row["name"]?>schoolOpenM" id="<?phpprint $row["name"]?>schoolOpenM">
+							<?php
 							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
 							for ($i=0;$i<60;$i++) {
 								$iPrint=$i;
@@ -130,8 +130,8 @@ else {
 							}
 							?>				
 						</select>
-						<select style="width:100px" name="<?print $row["name"]?>schoolOpenH" id="<?print $row["name"]?>schoolOpenH">
-							<?
+						<select style="width:100px" name="<?phpprint $row["name"]?>schoolOpenH" id="<?phpprint $row["name"]?>schoolOpenH">
+							<?php
 							print "<option value='Hours'>" . _('Hours') . "</option>" ;
 							for ($i=0;$i<24;$i++) {
 								$iPrint=$i;
@@ -152,11 +152,11 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('School Starts') ?></b>
+						<b><?php print _('School Starts') ?></b>
 					</td>
 					<td class="right">
-						<select style="width:100px" name="<?print $row["name"]?>schoolStartM" id="<?print $row["name"]?>schoolStartM">
-							<?
+						<select style="width:100px" name="<?phpprint $row["name"]?>schoolStartM" id="<?phpprint $row["name"]?>schoolStartM">
+							<?php
 							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
 							for ($i=0;$i<60;$i++) {
 								$iPrint=$i;
@@ -173,8 +173,8 @@ else {
 							}
 							?>				
 						</select>
-						<select style="width:100px" name="<?print $row["name"]?>schoolStartH" id="<?print $row["name"]?>schoolStartH">
-							<?
+						<select style="width:100px" name="<?phpprint $row["name"]?>schoolStartH" id="<?phpprint $row["name"]?>schoolStartH">
+							<?php
 							print "<option value='Hours'>" . _('Hours') . "</option>" ;
 							for ($i=0;$i<24;$i++) {
 								$iPrint=$i;
@@ -195,11 +195,11 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('School Ends') ?></b>
+						<b><?php print _('School Ends') ?></b>
 					</td>
 					<td class="right">
-						<select style="width:100px" name="<?print $row["name"]?>schoolEndM" id="<?print $row["name"]?>schoolEndM">
-							<?
+						<select style="width:100px" name="<?phpprint $row["name"]?>schoolEndM" id="<?phpprint $row["name"]?>schoolEndM">
+							<?php
 							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
 							for ($i=0;$i<60;$i++) {
 								$iPrint=$i;
@@ -216,8 +216,8 @@ else {
 							}
 							?>				
 						</select>
-						<select style="width:100px" name="<?print $row["name"]?>schoolEndH" id="<?print $row["name"]?>schoolEndH">
-							<?
+						<select style="width:100px" name="<?phpprint $row["name"]?>schoolEndH" id="<?phpprint $row["name"]?>schoolEndH">
+							<?php
 							print "<option value='Hours'>" . _('Hours') . "</option>" ;
 							for ($i=0;$i<24;$i++) {
 								$iPrint=$i;
@@ -238,11 +238,11 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('School Closes') ?></b>
+						<b><?php print _('School Closes') ?></b>
 					</td>
 					<td class="right">
-						<select style="width:100px" name="<?print $row["name"]?>schoolCloseM" id="<?print $row["name"]?>schoolCloseM">
-							<?
+						<select style="width:100px" name="<?phpprint $row["name"]?>schoolCloseM" id="<?phpprint $row["name"]?>schoolCloseM">
+							<?php
 							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
 							for ($i=0;$i<60;$i++) {
 								$iPrint=$i;
@@ -259,8 +259,8 @@ else {
 							}
 							?>				
 						</select>
-						<select style="width:100px" name="<?print $row["name"]?>schoolCloseH" id="<?print $row["name"]?>schoolCloseH">
-							<?
+						<select style="width:100px" name="<?phpprint $row["name"]?>schoolCloseH" id="<?phpprint $row["name"]?>schoolCloseH">
+							<?php
 							print "<option value='Hours'>" . _('Hours') . "</option>" ;
 							for ($i=0;$i<24;$i++) {
 								$iPrint=$i;
@@ -280,21 +280,21 @@ else {
 					</td>
 				</tr>
 			
-				<?
+				<?php
 			}
 			?>
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 					</td>
 					<td class="right">
-						<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<? print _("Submit") ; ?>">
+						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+						<input type="submit" value="<?php print _("Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
 		</form>
-		<?
+		<?php
 	}
 }
 ?>

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -165,31 +165,31 @@ else {
 					print "Choose" ;
 					print "</h2>" ;
 					?>
-					<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+					<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 						<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 							<tr><td style="width: 30%"></td><td></td></tr>
 							<tr>
 								<td> 
-									<b><? print _('Search For') ?></b><br/>
+									<b><?php print _('Search For') ?></b><br/>
 									<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
 								</td>
 								<td class="right">
 									<select name="search" id="search" style="width: 302px">
 										<option value=""></value>
-										<? print $options ; ?> 
+										<?php print $options ; ?> 
 									</select>
 								</td>
 							</tr>
 							<tr>
 								<td colspan=2 class="right">
-									<input type="hidden" name="q" value="/modules/<? print $_SESSION[$guid]["module"] ?>/planner.php">
-									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<? print _("Submit") ; ?>">
+									<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/planner.php">
+									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+									<input type="submit" value="<?php print _("Submit") ; ?>">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<?
+					<?php
 				}
 				
 				$gibbonPersonID=$search ;
@@ -286,7 +286,7 @@ else {
 												print "Like" ;
 											print "</th>" ;
 											print "<th style='min-width: 140px'>" ;
-												print "Action" ;
+												print _("Actions") ;
 											print "</th>" ;
 										print "</tr>" ;
 										
@@ -458,7 +458,7 @@ else {
 													print "Like" ;
 												print "</th>" ;
 												print "<th style='min-width: 140px'>" ;
-													print "Action" ;
+													print _("Actions") ;
 												print "</th>" ;
 											print "</tr>" ;
 											
@@ -674,7 +674,7 @@ else {
 									print "Like" ;
 								print "</th>" ;
 								print "<th style='min-width: 115px'>" ;
-									print "Action" ;
+									print _("Actions") ;
 								print "</th>" ;
 							print "</tr>" ;
 							
@@ -963,7 +963,7 @@ else {
 											print "Like" ;
 										print "</th>" ;
 										print "<th style='min-width: 140px'>" ;
-											print "Action" ;
+											print _("Actions") ;
 										print "</th>" ;
 									print "</tr>" ;
 									

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -39,7 +39,7 @@ print "<link rel='stylesheet' type='text/css' href='" . $_SESSION[$guid]["absolu
 <div id="wrap">
 	<div id="header">
 		<div id="header-left">
-			<a href='<? print $_SESSION[$guid]["absoluteURL"] ?>'><img height='107px' width='250px' class="logo" alt="Logo" title="Logo" src="<? print $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ; ?>"/></a>
+			<a href='<?php print $_SESSION[$guid]["absoluteURL"] ?>'><img height='107px' width='250px' class="logo" alt="Logo" title="Logo" src="<?php print $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ; ?>"/></a>
 		</div>
 		<div id="header-right">
 		
@@ -97,6 +97,6 @@ print "<link rel='stylesheet' type='text/css' href='" . $_SESSION[$guid]["absolu
 		</div>
 	</div>
 	<div id="footer">
-		<a href="http://gibbonedu.org">Gibbon</a> v<? print $version ?> | &#169; 2011, <a href="http://rossparker.org">Ross Parker</a> at <a href="http://www.ichk.edu.hk">International College Hong Kong</a> | Created under the <a href="http://www.gnu.org/licenses/gpl.html">GNU General Public License</a>
+		<a href="http://gibbonedu.org">Gibbon</a> v<?php print $version ?> | &#169; 2011, <a href="http://rossparker.org">Ross Parker</a> at <a href="http://www.ichk.edu.hk">International College Hong Kong</a> | Created under the <a href="http://www.gnu.org/licenses/gpl.html">GNU General Public License</a>
 	</div>
 </div>

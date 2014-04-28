@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -115,7 +115,7 @@ else {
 	<html xmlns="http://www.w3.org/1999/xhtml">
 		<head>
 			<title>
-				<? 
+				<?php 
 				print $_SESSION[$guid]["organisationNameShort"] . " - " . $_SESSION[$guid]["systemName"] ;
 				if ($_SESSION[$guid]["address"]!="") {
 					if (strstr($_SESSION[$guid]["address"],"..")==FALSE) {
@@ -134,9 +134,9 @@ else {
 			<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 			<script type="text/javascript" src="./lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
 
-			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery/jquery.js"></script>
-			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/js/jquery-ui.min.js"></script>
-			<? 
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery/jquery.js"></script>
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/js/jquery-ui.min.js"></script>
+			<?php 
 			if (is_file($_SESSION[$guid]["absolutePath"] . "/lib/jquery-ui/i18n/jquery.ui.datepicker-" . substr($_SESSION[$guid]["i18n"]["code"],0,2) . ".js")) {
 				print "<script type='text/javascript' src='" . $_SESSION[$guid]["absoluteURL"] . "/lib/jquery-ui/i18n/jquery.ui.datepicker-" .  substr($_SESSION[$guid]["i18n"]["code"],0,2) . ".js'></script>" ;
 				print "<script type='text/javascript'>$.datepicker.setDefaults($.datepicker.regional['" .  substr($_SESSION[$guid]["i18n"]["code"],0,2) . "']);</script>" ;
@@ -148,16 +148,16 @@ else {
 			
 			?>
 			<script type="text/javascript">$(function() { $( document ).tooltip({  show: 800, hide: false, content: function () { return $(this).prop('title')}, position: { my: "center bottom-20", at: "center top", using: function( position, feedback ) { $( this ).css( position ); $( "<div>" ).addClass( "arrow" ).addClass( feedback.vertical ).addClass( feedback.horizontal ).appendTo( this ); } } }); });</script>
-			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-jslatex/jquery.jslatex.js"></script>
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-jslatex/jquery.jslatex.js"></script>
 			<script type="text/javascript">$(function () { $(".latex").latex();});</script>
-			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-form/jquery.form.js"></script>
-			<link rel="stylesheet" href="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/css/blitzer/jquery-ui.css" type="text/css" media="screen" />
-			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/chained/jquery.chained.mini.js"></script>
-			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/thickbox-compressed.js"></script>
-			<script type="text/javascript"> var tb_pathToImage="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/loadingAnimation.gif"</script>
-			<link rel="stylesheet" href="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/thickbox.css" type="text/css" media="screen" />
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-form/jquery.form.js"></script>
+			<link rel="stylesheet" href="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/css/blitzer/jquery-ui.css" type="text/css" media="screen" />
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/chained/jquery.chained.mini.js"></script>
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/thickbox-compressed.js"></script>
+			<script type="text/javascript"> var tb_pathToImage="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/loadingAnimation.gif"</script>
+			<link rel="stylesheet" href="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/thickbox.css" type="text/css" media="screen" />
 		
-			<?
+			<?php
 			//Set up for i18n via gettext
 			if ($_SESSION[$guid]["i18n"]["code"]!=NULL) {
 				putenv("LC_ALL=" . $_SESSION[$guid]["i18n"]["code"]);
@@ -290,17 +290,17 @@ else {
 			}
 			$mce_options=rtrim( trim($mce_options), '\n\r,' );
 			?>
-			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/tinymce/tiny_mce.js"></script>
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/tinymce/tiny_mce.js"></script>
 			<script type="text/javascript">
 				tinymce.init({
-					<? print $mce_options; ?>
+					<?php print $mce_options; ?>
 				});
 			</script>	
 			
-			<script type="text/javascript" src="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-tokeninput/src/jquery.tokeninput.js"></script>
-			<link rel="stylesheet" href="<? print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-tokeninput/styles/token-input-facebook.css" type="text/css" />
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-tokeninput/src/jquery.tokeninput.js"></script>
+			<link rel="stylesheet" href="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-tokeninput/styles/token-input-facebook.css" type="text/css" />
 			
-			<?
+			<?php
 			//Analytics setting
 			if ($_SESSION[$guid]["analytics"]!="") {
 				print $_SESSION[$guid]["analytics"] ;
@@ -309,7 +309,7 @@ else {
 			?>
 		</head>
 		<body>
-			<?
+			<?php
 			//Show warning if not in the current school year
 			if (isset($_SESSION[$guid]["username"])) {
 				if ($_SESSION[$guid]["gibbonSchoolYearID"]!=$_SESSION[$guid]["gibbonSchoolYearIDCurrent"]) {
@@ -324,10 +324,10 @@ else {
 				<div id="wrap">
 					<div id="header">
 						<div id="header-left">
-							<a href='<? print $_SESSION[$guid]["absoluteURL"] ?>'><img height='107px' width='250px' class="logo" alt="Logo" src="<? print $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ; ?>"/></a>
+							<a href='<?php print $_SESSION[$guid]["absoluteURL"] ?>'><img height='107px' width='250px' class="logo" alt="Logo" src="<?php print $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ; ?>"/></a>
 						</div>
 						<div id="header-right">
-							<? 
+							<?php 
 								if (isset($_SESSION[$guid]["username"]) && $_SESSION[$guid]["username"]!="") {
 									print "<div class='minorLinks'>" ;
 										print $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"] . " . " ;
@@ -458,8 +458,8 @@ else {
 														<div id='messageBubbleArrow' style="left: 650px; top: 21px" class='arrow top'></div>
 														<div id='messageBubble' style="left: 420px; top: 37px; width: 300px; min-width: 300px; max-width: 300px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip"">
 															<div class="ui-tooltip-content">
-																<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'><? print _('New Messages') ?></div>
-																<?
+																<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'><?php print _('New Messages') ?></div>
+																<?php
 																$test=count($output) ;
 																if ($test>3) {
 																	$test=3 ;
@@ -477,7 +477,7 @@ else {
 																	print "<i>" . $output[$i]["author"] . "</i><br/><br/>" ;
 																}
 																?>
-																<?
+																<?php
 																if (count($output)>3) {
 																	print "<i>" . _('Plus more') . "...</i>" ;
 																}
@@ -485,8 +485,8 @@ else {
 														
 															</div>
 															<div style='text-align: right; margin-top: 20px; color: #666'>
-																<a onclick='$("#messageBubble").hide("fade", {}, 1); $("#messageBubbleArrow").hide("fade", {}, 1)' style='text-decoration: none; color: #666' class='thickbox' href='<? print $URL ?>'><? print _('Read All') ?></a> . 
-																<a style='text-decoration: none; color: #666' onclick='$("#messageBubble").hide("fade", {}, 1000); $("#messageBubbleArrow").hide("fade", {}, 1000)' href='#'><? print _('Dismiss') ?></a>
+																<a onclick='$("#messageBubble").hide("fade", {}, 1); $("#messageBubbleArrow").hide("fade", {}, 1)' style='text-decoration: none; color: #666' class='thickbox' href='<?php print $URL ?>'><?php print _('Read All') ?></a> . 
+																<a style='text-decoration: none; color: #666' onclick='$("#messageBubble").hide("fade", {}, 1000); $("#messageBubbleArrow").hide("fade", {}, 1000)' href='#'><?php print _('Dismiss') ?></a>
 															</div>
 														</div>
 												
@@ -502,7 +502,7 @@ else {
 																}, 10000);
 															});
 														</script>
-														<?
+														<?php
 													
 														try {
 															$data=array("messengerLastBubble"=>date("Y-m-d"), "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"] ); 
@@ -528,7 +528,7 @@ else {
 						</div>
 					</div>
 					<div id="content-wrap">
-						<?
+						<?php
 						//Allow for wide pages (no sidebar)
 						if ($sidebar=="false") {
 							print "<div id='content-wide'>" ;
@@ -1214,10 +1214,10 @@ else {
 											?>
 											<script type="text/javascript">
 												$(document).ready(function(){
-													$("#tt").load("<? print $_SESSION[$guid]["absoluteURL"] ?>/index_tt_ajax.php",{"ttDate": "<? print @$_POST["ttDate"] ?>", "fromTT": "<? print @$_POST["fromTT"] ?>", "personalCalendar": "<? print @$_POST["personalCalendar"] ?>", "schoolCalendar": "<? print @$_POST["schoolCalendar"] ?>"});
+													$("#tt").load("<?php print $_SESSION[$guid]["absoluteURL"] ?>/index_tt_ajax.php",{"ttDate": "<?php print @$_POST["ttDate"] ?>", "fromTT": "<?php print @$_POST["fromTT"] ?>", "personalCalendar": "<?php print @$_POST["personalCalendar"] ?>", "schoolCalendar": "<?php print @$_POST["schoolCalendar"] ?>"});
 												});
 											</script>
-											<?
+											<?php
 											try {
 												$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
 												$sql="SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' " ;
@@ -1241,7 +1241,7 @@ else {
 													ajaxOptions: {
 														error: function( xhr, status, index, anchor ) {
 															$( anchor.hash ).html(
-																"<?
+																"<?php
 																print _("Couldn't load this tab.") ; 
 																?>"
 															);
@@ -1251,7 +1251,7 @@ else {
 											});
 										</script>
 	
-										<?
+										<?php
 										try {
 											$data=array("gibbonPersonIDTutor"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDTutor2"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDTutor3"=>$_SESSION[$guid]["gibbonPersonID"],"gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 											$sql="SELECT * FROM gibbonRollGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
@@ -1274,11 +1274,11 @@ else {
 											?>
 											<div id="tabs" style='margin: 10px 0 20px 0'>
 												<ul>
-													<li><a href="#tabs-1"><? print _('Students') ?></a></li>
-													<li><a href="#tabs-2"><? print _('Behaviour') ?></a></li>
+													<li><a href="#tabs-1"><?php print _('Students') ?></a></li>
+													<li><a href="#tabs-2"><?php print _('Behaviour') ?></a></li>
 												</ul>
 												<div id="tabs-1">
-													<?
+													<?php
 													//Students
 													$sqlWhere="" ;
 													while ($row=$result->fetch()) {
@@ -1299,7 +1299,7 @@ else {
 													?>
 												</div>
 												<div id="tabs-2">
-													<?
+													<?php
 													$plural="s" ;
 													if ($result->rowCount()==1) {
 														$plural="" ;
@@ -1428,7 +1428,7 @@ else {
 													?>
 												</div>
 											</div>
-											<?
+											<?php
 										}
 									}
 								}
@@ -1451,26 +1451,26 @@ else {
 							}
 							?>
 						</div>
-						<?
+						<?php
 						if ($sidebar!="false") {
 							?>
 							<div id="sidebar">
-								<? sidebar($connection2, $guid) ; ?>
+								<?php sidebar($connection2, $guid) ; ?>
 							</div>
 							<br style="clear: both">
-							<?
+							<?php
 						}
 						?>
 					</div>
 					<div id="footer">
-						<? print _("Powered by") ?> <a href="http://gibbonedu.org">Gibbon</a> v<? print $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<? print date("Y") ?><br/>
-						<span style='font-size: 90%; '><? print _("Created under the") ?> <a href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a></span><br/>
+						<?php print _("Powered by") ?> <a href="http://gibbonedu.org">Gibbon</a> v<?php print $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
+						<span style='font-size: 90%; '><?php print _("Created under the") ?> <a href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a></span><br/>
 						<img style='z-index: 100; margin-bottom: -57px; margin-right: -50px' alt='Logo Small' src='./themes/Default/img/logoFooter.png'/>
 					</div>
 				</div>
 			</div>
 		</body>
 	</html>
-	<?
+	<?php
 }
 ?>

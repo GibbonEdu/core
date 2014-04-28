@@ -32,97 +32,97 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 				});
 			
 				$( "#sortable" ).bind( "sortstart", function(event, ui) { 
-					$("#blockInner<? print $i ?>").css("display","none") ;
-					$("#block<? print $i ?>").css("height","72px") ;
-					$('#show<? print $i ?>').css("background-image", "<? print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)"); 
-					tinyMCE.execCommand('mceRemoveControl', false, 'contents<? print $i ?>') ;
-					tinyMCE.execCommand('mceRemoveControl', false, 'teachersNotes<? print $i ?>') ;
+					$("#blockInner<?php print $i ?>").css("display","none") ;
+					$("#block<?php print $i ?>").css("height","72px") ;
+					$('#show<?php print $i ?>').css("background-image", "<?php print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)"); 
+					tinyMCE.execCommand('mceRemoveControl', false, 'contents<?php print $i ?>') ;
+					tinyMCE.execCommand('mceRemoveControl', false, 'teachersNotes<?php print $i ?>') ;
 					$("#sortable").sortable( "refreshPositions" ) ;
 				});
 			
 				$( "#sortable" ).bind( "sortstop", function(event, ui) {
 					//These two lines have been removed to improve performance with long lists
-					//tinyMCE.execCommand('mceAddControl', false, 'contents<? print $i ?>') ;
-					//tinyMCE.execCommand('mceAddControl', false, 'teachersNotes<? print $i ?>') ;
-					$("#block<? print $i ?>").css("height","72px") ;
+					//tinyMCE.execCommand('mceAddControl', false, 'contents<?php print $i ?>') ;
+					//tinyMCE.execCommand('mceAddControl', false, 'teachersNotes<?php print $i ?>') ;
+					$("#block<?php print $i ?>").css("height","72px") ;
 				});
 			});
 		</script>
 		<script type="text/javascript">
 			$(document).ready(function(){
-				$("#blockInner<? print $i ?>").css("display","none");
-				$("#block<? print $i ?>").css("height","72px")
+				$("#blockInner<?php print $i ?>").css("display","none");
+				$("#block<?php print $i ?>").css("height","72px")
 			
 				//Block contents control
-				$('#show<? print $i ?>').unbind('click').click(function() {
-					if ($("#blockInner<? print $i ?>").is(":visible")) {
-						$("#blockInner<? print $i ?>").css("display","none");
-						$("#block<? print $i ?>").css("height","72px")
-						$('#show<? print $i ?>').css("background-image", "<? print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)"); 
-						tinyMCE.execCommand('mceRemoveControl', false, 'contents<? print $i ?>') ;
-						tinyMCE.execCommand('mceRemoveControl', false, 'teachersNotes<? print $i ?>') ;
+				$('#show<?php print $i ?>').unbind('click').click(function() {
+					if ($("#blockInner<?php print $i ?>").is(":visible")) {
+						$("#blockInner<?php print $i ?>").css("display","none");
+						$("#block<?php print $i ?>").css("height","72px")
+						$('#show<?php print $i ?>').css("background-image", "<?php print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)"); 
+						tinyMCE.execCommand('mceRemoveControl', false, 'contents<?php print $i ?>') ;
+						tinyMCE.execCommand('mceRemoveControl', false, 'teachersNotes<?php print $i ?>') ;
 					} else {
-						$("#blockInner<? print $i ?>").slideDown("fast", $("#blockInner<? print $i ?>").css("display","table-row")); 
-						$("#block<? print $i ?>").css("height","auto")
-						$('#show<? print $i ?>').css("background-image", "<? print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/minus.png\'"?>)"); 
-						tinyMCE.execCommand('mceRemoveControl', false, 'contents<? print $i ?>') ;	
-						tinyMCE.execCommand('mceAddControl', false, 'contents<? print $i ?>') ;
-						tinyMCE.execCommand('mceRemoveControl', false, 'teachersNotes<? print $i ?>') ;	
-						tinyMCE.execCommand('mceAddControl', false, 'teachersNotes<? print $i ?>') ;
+						$("#blockInner<?php print $i ?>").slideDown("fast", $("#blockInner<?php print $i ?>").css("display","table-row")); 
+						$("#block<?php print $i ?>").css("height","auto")
+						$('#show<?php print $i ?>').css("background-image", "<?php print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/minus.png\'"?>)"); 
+						tinyMCE.execCommand('mceRemoveControl', false, 'contents<?php print $i ?>') ;	
+						tinyMCE.execCommand('mceAddControl', false, 'contents<?php print $i ?>') ;
+						tinyMCE.execCommand('mceRemoveControl', false, 'teachersNotes<?php print $i ?>') ;	
+						tinyMCE.execCommand('mceAddControl', false, 'teachersNotes<?php print $i ?>') ;
 					}
 				});
 			
-				<? if ($mode=="masterAdd") { ?>
-					var titleClick<? print $i ?>=false ;
-					$('#title<? print $i ?>').focus(function() {
-						if (titleClick<? print $i ?>==false) {
-							$('#title<? print $i ?>').css("color", "#000") ;
-							$('#title<? print $i ?>').val("") ;
-							titleClick<? print $i ?>=true ;
+				<?php if ($mode=="masterAdd") { ?>
+					var titleClick<?php print $i ?>=false ;
+					$('#title<?php print $i ?>').focus(function() {
+						if (titleClick<?php print $i ?>==false) {
+							$('#title<?php print $i ?>').css("color", "#000") ;
+							$('#title<?php print $i ?>').val("") ;
+							titleClick<?php print $i ?>=true ;
 						}
 					});
 				
-					var typeClick<? print $i ?>=false ;
-					$('#type<? print $i ?>').focus(function() {
-						if (typeClick<? print $i ?>==false) {
-							$('#type<? print $i ?>').css("color", "#000") ;
-							$('#type<? print $i ?>').val("") ;
-							typeClick<? print $i ?>=true ;
+					var typeClick<?php print $i ?>=false ;
+					$('#type<?php print $i ?>').focus(function() {
+						if (typeClick<?php print $i ?>==false) {
+							$('#type<?php print $i ?>').css("color", "#000") ;
+							$('#type<?php print $i ?>').val("") ;
+							typeClick<?php print $i ?>=true ;
 						}
 					});
 				
-					var lengthClick<? print $i ?>=false ;
-					$('#length<? print $i ?>').focus(function() {
-						if (lengthClick<? print $i ?>==false) {
-							$('#length<? print $i ?>').css("color", "#000") ;
-							$('#length<? print $i ?>').val("") ;
-							lengthClick<? print $i ?>=true ;
+					var lengthClick<?php print $i ?>=false ;
+					$('#length<?php print $i ?>').focus(function() {
+						if (lengthClick<?php print $i ?>==false) {
+							$('#length<?php print $i ?>').css("color", "#000") ;
+							$('#length<?php print $i ?>').val("") ;
+							lengthClick<?php print $i ?>=true ;
 						}
 					});
-				<? } ?>
+				<?php } ?>
 			
-				$('#delete<? print $i ?>').unbind('click').click(function() {
+				$('#delete<?php print $i ?>').unbind('click').click(function() {
 					if (confirm("Are you sure you want to delete this record?")) {
-						$('#blockOuter<? print $i ?>').fadeOut(600, function(){ $('#block<? print $i ?>').remove(); });
+						$('#blockOuter<?php print $i ?>').fadeOut(600, function(){ $('#block<?php print $i ?>').remove(); });
 					}
 				});
 			});
 		</script>
-		<?
+		<?php
 	}
 	?>
-	<div style='background-color: #EDF7FF; border: 1px solid #d8dcdf; margin: 0 0 5px' id="block<? print $i ?>" style='padding: 0px'>
+	<div style='background-color: #EDF7FF; border: 1px solid #d8dcdf; margin: 0 0 5px' id="block<?php print $i ?>" style='padding: 0px'>
 		<table class='blank' cellspacing='0' style='width: 100%'>
 			<tr>
 				<td style='width: 50%'>
-					<input name='order[]' type='hidden' value='<? print $i ?>'>
-					<input <? if ($mode=="embed") { print "readonly" ; } ?> maxlength=100 id='title<? print $i ?>' name='title<? print $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <? if ($mode=="masterAdd") { print "color: #999;" ;} ?> margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<? if ($mode=="masterAdd") { print "Block $i" ;} else { print htmlPrep($title) ;} ?>'><br/>
-					<input <? if ($mode=="embed") { print "readonly" ; } ?> maxlength=50 id='type<? print $i ?>' name='type<? print $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <? if ($mode=="masterAdd") { print "color: #999;" ;} ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<? if ($mode=="masterAdd") { print "type (e.g. discussion, outcome)" ;} else { print htmlPrep($type) ;} ?>'>
-					<input <? if ($mode=="embed") { print "readonly" ; } ?> maxlength=3 id='length<? print $i ?>' name='length<? print $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <? if ($mode=="masterAdd") { print "color: #999;" ;} ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<? if ($mode=="masterAdd") { print "length (min)" ;} else { print htmlPrep($length) ;} ?>'>
+					<input name='order[]' type='hidden' value='<?php print $i ?>'>
+					<input <?php if ($mode=="embed") { print "readonly" ; } ?> maxlength=100 id='title<?php print $i ?>' name='title<?php print $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="masterAdd") { print "color: #999;" ;} ?> margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php if ($mode=="masterAdd") { print "Block $i" ;} else { print htmlPrep($title) ;} ?>'><br/>
+					<input <?php if ($mode=="embed") { print "readonly" ; } ?> maxlength=50 id='type<?php print $i ?>' name='type<?php print $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="masterAdd") { print "color: #999;" ;} ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<?php if ($mode=="masterAdd") { print "type (e.g. discussion, outcome)" ;} else { print htmlPrep($type) ;} ?>'>
+					<input <?php if ($mode=="embed") { print "readonly" ; } ?> maxlength=3 id='length<?php print $i ?>' name='length<?php print $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="masterAdd") { print "color: #999;" ;} ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if ($mode=="masterAdd") { print "length (min)" ;} else { print htmlPrep($length) ;} ?>'>
 				</td>
 				<td style='text-align: right; width: 50%'>
 					<div style='margin-bottom: 5px'>
-						<?
+						<?php
 						if ($mode!="plannerEdit" AND $mode!="embed") {
 							print "<img id='delete$i' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
 						}
@@ -146,23 +146,23 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 						}
 						?>
 					</div>
-					<?
+					<?php
 					if ($mode=="plannerEdit") {
 						print "</br>" ;
 					}
 					if ($mode!="embed") {
 						?>
-						<div style='margin-right: 5px'>Complete? <input id='complete<? print $i ?>' name='complete<? print $i ?>' style='margin-right: 2px' type="checkbox" <? if ($mode=="masterAdd" OR $mode=="masterEdit") { print "disabled" ; } else { if ($complete=="Y") { print "checked" ; }}?>></div>
-						<?
+						<div style='margin-right: 5px'>Complete? <input id='complete<?php print $i ?>' name='complete<?php print $i ?>' style='margin-right: 2px' type="checkbox" <?php if ($mode=="masterAdd" OR $mode=="masterEdit") { print "disabled" ; } else { if ($complete=="Y") { print "checked" ; }}?>></div>
+						<?php
 					}
 					?>
-					<input type='hidden' name='gibbonUnitBlockID<? print $i ?>' value='<? print $gibbonUnitBlockID ?>'>
-					<input type='hidden' name='gibbonUnitClassBlockID<? print $i ?>' value='<? print $gibbonUnitClassBlockID ?>'>
+					<input type='hidden' name='gibbonUnitBlockID<?php print $i ?>' value='<?php print $gibbonUnitBlockID ?>'>
+					<input type='hidden' name='gibbonUnitClassBlockID<?php print $i ?>' value='<?php print $gibbonUnitClassBlockID ?>'>
 				</td>
 			</tr>
-			<tr id="blockInner<? print $i ?>">
+			<tr id="blockInner<?php print $i ?>">
 				<td colspan=2 style='vertical-align: top'>
-					<? 
+					<?php 
 					if ($mode=="masterAdd") { 
 						$contents=getSettingByScope($connection2, "Planner", "smartBlockTemplate" ) ; 
 					}
@@ -186,7 +186,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 			</tr>
 		</table>
 	</div>
-	<?
+	<?php
 	if ($outerBlock) {
 		print "</div>" ;
 	}
@@ -444,7 +444,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 						$output.="</script>" ;
 					$output.="</td>" ;
 					$output.="<td class='right'>" ;
-						$output.="<input type='submit' value='Go'>" ;
+						$output.="<input type='submit' value='" . _('Go') . "'>" ;
 					$output.="</td>" ;
 				$output.="</tr>" ;
 			$output.="</table>" ;
@@ -510,7 +510,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 						 $output.="</select>" ;
 					$output.="</td>" ;
 					$output.="<td class='right'>" ;
-						$output.="<input type='submit' value='Go'>" ;
+						$output.="<input type='submit' value='" . _('Go') . "'>" ;
 					$output.="</td>" ;
 				$output.="</tr>" ;
 			$output.="</table>" ;
@@ -624,7 +624,7 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
 						 $output.="</select>" ;
 					$output.="</td>" ;
 					$output.="<td class='right'>" ;
-						$output.="<input type='submit' value='Go'>" ;
+						$output.="<input type='submit' value='" . _('Go') . "'>" ;
 					$output.="</td>" ;
 				$output.="</tr>" ;
 			$output.="</table>" ;
@@ -643,83 +643,83 @@ function makeBlockOutcome($guid,  $i, $type="", $gibbonOutcomeID="", $title="", 
 	?>
 		<script>
 			$(function() {
-				$( "#<? print $type ?>" ).sortable({
-					placeholder: "<? print $type ?>-ui-state-highlight"
+				$( "#<?php print $type ?>" ).sortable({
+					placeholder: "<?php print $type ?>-ui-state-highlight"
 				});
 				
-				$( "#<? print $type ?>" ).bind( "sortstart", function(event, ui) { 
-					$("#<? print $type ?>BlockInner<? print $i ?>").css("display","none");
-					$("#<? print $type ?>Block<? print $i ?>").css("height","72px") ;
-					$('#<? print $type ?>show<? print $i ?>').css("background-image", "<? print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)");  
-					tinyMCE.execCommand('mceRemoveControl', false, '<? print $type ?>contents<? print $i ?>') ;
-					$("#<? print $type ?>").sortable( "refreshPositions" ) ;
+				$( "#<?php print $type ?>" ).bind( "sortstart", function(event, ui) { 
+					$("#<?php print $type ?>BlockInner<?php print $i ?>").css("display","none");
+					$("#<?php print $type ?>Block<?php print $i ?>").css("height","72px") ;
+					$('#<?php print $type ?>show<?php print $i ?>').css("background-image", "<?php print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)");  
+					tinyMCE.execCommand('mceRemoveControl', false, '<?php print $type ?>contents<?php print $i ?>') ;
+					$("#<?php print $type ?>").sortable( "refreshPositions" ) ;
 				});
 				
-				$( "#<? print $type ?>" ).bind( "sortstop", function(event, ui) {
+				$( "#<?php print $type ?>" ).bind( "sortstop", function(event, ui) {
 					//This line has been removed to improve performance with long lists
-					//tinyMCE.execCommand('mceAddControl', false, '<? print $type ?>contents<? print $i ?>') ;
-					$("#<? print $type ?>Block<? print $i ?>").css("height","72px") ;
+					//tinyMCE.execCommand('mceAddControl', false, '<?php print $type ?>contents<?php print $i ?>') ;
+					$("#<?php print $type ?>Block<?php print $i ?>").css("height","72px") ;
 				});
 			});
 		</script>
 		<script type="text/javascript">
 			$(document).ready(function(){
-				$("#<? print $type ?>BlockInner<? print $i ?>").css("display","none");
-				$("#<? print $type ?>Block<? print $i ?>").css("height","72px") ;
+				$("#<?php print $type ?>BlockInner<?php print $i ?>").css("display","none");
+				$("#<?php print $type ?>Block<?php print $i ?>").css("height","72px") ;
 				
 				//Block contents control
-				$('#<? print $type ?>show<? print $i ?>').unbind('click').click(function() {
-					if ($("#<? print $type ?>BlockInner<? print $i ?>").is(":visible")) {
-						$("#<? print $type ?>BlockInner<? print $i ?>").css("display","none");
-						$("#<? print $type ?>Block<? print $i ?>").css("height","72px") ;
-						$('#<? print $type ?>show<? print $i ?>').css("background-image", "<? print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)");  
-						tinyMCE.execCommand('mceRemoveControl', false, '<? print $type ?>contents<? print $i ?>') ;
+				$('#<?php print $type ?>show<?php print $i ?>').unbind('click').click(function() {
+					if ($("#<?php print $type ?>BlockInner<?php print $i ?>").is(":visible")) {
+						$("#<?php print $type ?>BlockInner<?php print $i ?>").css("display","none");
+						$("#<?php print $type ?>Block<?php print $i ?>").css("height","72px") ;
+						$('#<?php print $type ?>show<?php print $i ?>').css("background-image", "<?php print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)");  
+						tinyMCE.execCommand('mceRemoveControl', false, '<?php print $type ?>contents<?php print $i ?>') ;
 					} else {
-						$("#<? print $type ?>BlockInner<? print $i ?>").slideDown("fast", $("#<? print $type ?>BlockInner<? print $i ?>").css("display","table-row")); 
-						$("#<? print $type ?>Block<? print $i ?>").css("height","auto")
-						$('#<? print $type ?>show<? print $i ?>').css("background-image", "<? print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/minus.png\'"?>)");  
-						tinyMCE.execCommand('mceRemoveControl', false, '<? print $type ?>contents<? print $i ?>') ;	
-						tinyMCE.execCommand('mceAddControl', false, '<? print $type ?>contents<? print $i ?>') ;
+						$("#<?php print $type ?>BlockInner<?php print $i ?>").slideDown("fast", $("#<?php print $type ?>BlockInner<?php print $i ?>").css("display","table-row")); 
+						$("#<?php print $type ?>Block<?php print $i ?>").css("height","auto")
+						$('#<?php print $type ?>show<?php print $i ?>').css("background-image", "<?php print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/minus.png\'"?>)");  
+						tinyMCE.execCommand('mceRemoveControl', false, '<?php print $type ?>contents<?php print $i ?>') ;	
+						tinyMCE.execCommand('mceAddControl', false, '<?php print $type ?>contents<?php print $i ?>') ;
 					}
 				});
 				
-				$('#<? print $type ?>delete<? print $i ?>').unbind('click').click(function() {
+				$('#<?php print $type ?>delete<?php print $i ?>').unbind('click').click(function() {
 					if (confirm("Are you sure you want to delete this record?")) {
-						$('#<? print $type ?>blockOuter<? print $i ?>').fadeOut(600, function(){ $('#<? print $type ?><? print $i ?>'); });
-						$('#<? print $type ?>blockOuter<? print $i ?>').remove();
-						<? print $type ?>Used[<? print $type ?>Used.indexOf("<? print $gibbonOutcomeID ?>")]="x" ;
+						$('#<?php print $type ?>blockOuter<?php print $i ?>').fadeOut(600, function(){ $('#<?php print $type ?><?php print $i ?>'); });
+						$('#<?php print $type ?>blockOuter<?php print $i ?>').remove();
+						<?php print $type ?>Used[<?php print $type ?>Used.indexOf("<?php print $gibbonOutcomeID ?>")]="x" ;
 					}
 				});
 				
 			});
 		</script>
-		<div style='background-color: #EDF7FF; border: 1px solid #d8dcdf; margin: 0 0 5px' id="<? print $type ?>Block<? print $i ?>" style='padding: 0px'>
+		<div style='background-color: #EDF7FF; border: 1px solid #d8dcdf; margin: 0 0 5px' id="<?php print $type ?>Block<?php print $i ?>" style='padding: 0px'>
 			<table class='blank' cellspacing='0' style='width: 100%'>
 				<tr>
 					<td style='width: 50%'>
-						<input name='<? print $type ?>order[]' type='hidden' value='<? print $i ?>'>
-						<input name='<? print $type ?>gibbonOutcomeID<? print $i ?>' type='hidden' value='<? print $gibbonOutcomeID ?>'>
-						<input readonly maxlength=100 id='<? print $type ?>title<? print $i ?>' name='<? print $type ?>title<? print $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<? print $title ; ?>'><br/>
-						<input readonly maxlength=100 id='<? print $type ?>category<? print $i ?>' name='<? print $type ?>category<? print $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<? print $category ; ?>'>
+						<input name='<?php print $type ?>order[]' type='hidden' value='<?php print $i ?>'>
+						<input name='<?php print $type ?>gibbonOutcomeID<?php print $i ?>' type='hidden' value='<?php print $gibbonOutcomeID ?>'>
+						<input readonly maxlength=100 id='<?php print $type ?>title<?php print $i ?>' name='<?php print $type ?>title<?php print $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php print $title ; ?>'><br/>
+						<input readonly maxlength=100 id='<?php print $type ?>category<?php print $i ?>' name='<?php print $type ?>category<?php print $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<?php print $category ; ?>'>
 						<script type="text/javascript">
-							if($('#<? print $type ?>category<? print $i ?>').val()=="") {
-								$('#<? print $type ?>category<? print $i ?>').css("border","none") ;
+							if($('#<?php print $type ?>category<?php print $i ?>').val()=="") {
+								$('#<?php print $type ?>category<?php print $i ?>').css("border","none") ;
 							}
 						</script>
 					</td>
 					<td style='text-align: right; width: 50%'>
 						<div style='margin-bottom: 25px'>
-							<?
+							<?php
 							print "<img id='" . $type  . "delete$i' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
 							print "<div id='" . $type . "show$i' style='margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\")'></div>" ;
 							?>
 						</div>
-						<input type='hidden' name='id<? print $i ?>' value='<? print $id ?>'>
+						<input type='hidden' name='id<?php print $i ?>' value='<?php print $id ?>'>
 					</td>
 				</tr>
-				<tr id="<? print $type ?>BlockInner<? print $i ?>">
+				<tr id="<?php print $type ?>BlockInner<?php print $i ?>">
 					<td colspan=2 style='vertical-align: top'>
-						<? 
+						<?php 
 							if ($allowOutcomeEditing=="Y") {
 								print getEditor($guid, FALSE, $type . "contents" . $i, $contents, 20, false, false, false, true) ;
 							}
@@ -732,7 +732,7 @@ function makeBlockOutcome($guid,  $i, $type="", $gibbonOutcomeID="", $title="", 
 				</tr>
 			</table>
 		</div>
-	<?
+	<?php
 	if ($outerBlock) {
 		print "</div>" ;
 	}

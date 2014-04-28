@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -73,13 +73,13 @@ else {
 	//Let's go!
 	?>
 	<h2>
-		<? print _('Primary External Assessement') ; ?>
+		<?php print _('Primary External Assessement') ; ?>
 	</h2>
 	<p>
-		<? print _('These settings allow a particular type of external assessment to be associated with each year group. The selected assessment wil be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). In addition, a particular field category can be chosen from which to draw data (if no category is chosen, the system will try to pick the best data automatically).') ; ?>
+		<?php print _('These settings allow a particular type of external assessment to be associated with each year group. The selected assessment wil be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). In addition, a particular field category can be chosen from which to draw data (if no category is chosen, the system will try to pick the best data automatically).') ; ?>
 	</p>
-	<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessmentSettingsProcess.php"?>">
-		<?
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessmentSettingsProcess.php"?>">
+		<?php
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
@@ -148,9 +148,9 @@ else {
 						print "</select>" ;
 						?>
 						<script type="text/javascript">
-							$("#category<? print $count ?>").chainedTo("#gibbonExternalAssessmentID<? print $count ?>");
+							$("#category<?php print $count ?>").chainedTo("#gibbonExternalAssessmentID<?php print $count ?>");
 						</script>
-						<?
+						<?php
 					print "</td>" ;
 				print "</tr>" ;
 				
@@ -159,14 +159,14 @@ else {
 			?>
 			<tr>
 				<td class="right" colspan=3>
-					<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<? print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
-			<?
+			<?php
 		print "</table>" ;
 		?>
 	</form>
-	<?
+	<?php
 }
 ?>

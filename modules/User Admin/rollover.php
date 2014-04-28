@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -99,23 +99,23 @@ else {
 			}
 			else {
 				?>
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollover.php&step=2" ?>">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollover.php&step=2" ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td colspan=2 style='text-align: justify'> 
-								<?
+								<?php
 								print sprintf(_('By clicking the "Proceed" button below you will initiate the rollover from %1$s to %2$s. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), "<b>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</b>", "<b>" . $nameNext. "</b>", "<span style=\"color: #cc0000\"><i>", "</i></span>") ;
 								?>
 							</td>
 						</tr>
 						<tr>
 							<td class="right" colspan=2>
-								<input type="hidden" name="nextYear" value="<? print $nextYear ?>">
+								<input type="hidden" name="nextYear" value="<?php print $nextYear ?>">
 								<input type="submit" value="Proceed">
 							</td>
 						</tr>
 					</table>
-				<?
+				<?php
 			}
 		}
 	}
@@ -195,8 +195,8 @@ else {
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
-									<b><? print _('School Year Name') ?> *</b><br/>
-									<span style="font-size: 90%"><i><? print _('Must be unique.') ?></i></span>
+									<b><?php print _('School Year Name') ?> *</b><br/>
+									<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="nextname" id="nextname" maxlength=9 value="" type="text" style="width: 300px">
@@ -208,7 +208,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><? print _('Status') ?> *</b>
+									<b><?php print _('Status') ?> *</b>
 								</td>
 								<td class="right">
 									<input readonly name="next-status" id="next-status" value="Upcoming" type="text" style="width: 300px">
@@ -216,24 +216,24 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><? print _('Sequence Number') ?> *</b><br/>
-									<span style="font-size: 90%"><i><? print _('Must be unique. Controls chronological ordering.') ?></i></span>
+									<b><?php print _('Sequence Number') ?> *</b><br/>
+									<span style="font-size: 90%"><i><?php print _('Must be unique. Controls chronological ordering.') ?></i></span>
 								</td>
 								<td class="right">
-									<input readonly name="next-sequenceNumber" id="next-sequenceNumber" maxlength=3 value="<? print ($sequenceNext+1) ?>" type="text" style="width: 300px">
+									<input readonly name="next-sequenceNumber" id="next-sequenceNumber" maxlength=3 value="<?php print ($sequenceNext+1) ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b><? print _('First Day') ?> *</b><br/>
-									<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+									<b><?php print _('First Day') ?> *</b><br/>
+									<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 								</td>
 								<td class="right">
 									<input name="nextfirstDay" id="nextfirstDay" maxlength=10 value="" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var nextfirstDay=new LiveValidation('nextfirstDay');
 										nextfirstDay.add(Validate.Presence);
-										nextfirstDay.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+										nextfirstDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 									 </script>
 									 <script type="text/javascript">
 										$(function() {
@@ -244,15 +244,15 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><? print _('Last Day') ?> *</b><br/>
-									<span style="font-size: 90%"><i><? print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+									<b><?php print _('Last Day') ?> *</b><br/>
+									<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 								</td>
 								<td class="right">
 									<input name="nextlastDay" id="nextlastDay" maxlength=10 value="" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var nextlastDay=new LiveValidation('nextlastDay');
 										nextlastDay.add(Validate.Presence);
-										nextlastDay.add( Validate.Format, {pattern: <? if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <? if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+										nextlastDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 									 </script>
 									 <script type="text/javascript">
 										$(function() {
@@ -262,7 +262,7 @@ else {
 								</td>
 							</tr>
 						</table>
-						<?
+						<?php
 					}
 					
 					

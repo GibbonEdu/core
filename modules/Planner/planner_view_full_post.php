@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -203,17 +203,17 @@ else {
 					print "</h2>" ;
 
 					?>
-					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_postProcess.php" ?>">
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_postProcess.php" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td colspan=2> 
 									<b>Write your comment below:</b> 
-									<? print getEditor($guid,  TRUE, "comment", "", 20 ) ?>
+									<?php print getEditor($guid,  TRUE, "comment", "", 20 ) ?>
 								</td>
 							</tr>
 							<tr>
 								<td class="right" colspan=2>
-									<?
+									<?php
 									print "<input type='hidden' name='search' value='" . $_GET["search"] . "'>" ;
 									print "<input type='hidden' name='replyTo' value='" . $replyTo . "'>" ;
 									print "<input type='hidden' name='params' value='$params'>" ;
@@ -221,12 +221,12 @@ else {
 									print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
 									?>
 									
-									<input type="submit" value="<? print _("Submit") ; ?>">
+									<input type="submit" value="<?php print _("Submit") ; ?>">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<?
+					<?php
 				}
 			}
 		}
