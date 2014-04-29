@@ -1589,6 +1589,7 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 ALTER TABLE `gibbonCourseClassPerson` ADD `reportable` ENUM('Y','N') NOT NULL DEFAULT 'Y' ;end
 ALTER TABLE `gibboni18n` CHANGE `currencySymbol` `currencySymbol` VARCHAR(3) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `currencyCode`, `currencySymbol`) VALUES (NULL, 'pl_PL', 'Język Polski - Polska', 'N', 'Arek Gladki', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\\d\\\\d$/i', 'd/m/Y', 'PLN', 'zł');end
+UPDATE gibboni18n SET name='Język polski - Polska' WHERE code='pl_PL';end
 ";
 
 
