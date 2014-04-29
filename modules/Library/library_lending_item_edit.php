@@ -55,7 +55,7 @@ else {
 			$row=$result->fetch() ;
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending.php'>Lending & Activity Log</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID'>View Item</a> > </div><div class='trailEnd'>Edit Item</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending.php'>" . _('Lending & Activity Log') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID'>" . _('View Item') . "</a> > </div><div class='trailEnd'>" ._('Edit Item') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -78,7 +78,7 @@ else {
 					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage="Sign out was successful." ;	
+					$updateReturnMessage=_("Your request was successful.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -96,12 +96,12 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2>
-							<h3>Item Details</h3>
+							<h3><?php print _('Item Details') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>ID *</b><br/>
+							<b><?php print _('ID') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -119,7 +119,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Current Status *</b><br/>
+							<b><?php print _('Current Status') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -129,28 +129,28 @@ else {
 					
 					<tr class='break'>
 						<td colspan=2>
-							<h3>This Event</h3>
+							<h3><?php print _('This Event') ?></h3>
 						</td>
 					</tr>
 					
 					<tr>
 						<td> 
-							<b>New Status *</b><br/>
+							<b><?php print _('New Status') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="status" id="status" style="width: 302px">
-								<option <?php if ($row["status"]=="On Loan") { print "selected" ; } ?> value="On Loan" /> On Loan
-								<option <?php if ($row["status"]=="Reserved") { print "selected" ; } ?> value="Reserved" /> Reserved
-								<option <?php if ($row["status"]=="Decommissioned") { print "selected" ; } ?> value="Decommissioned" /> Decommissioned
-								<option <?php if ($row["status"]=="Lost") { print "selected" ; } ?> value="Lost" /> Lost
-								<option <?php if ($row["status"]=="Repair") { print "selected" ; } ?> value="Repair" /> Repair
+								<option <?php if ($row["status"]=="On Loan") { print "selected" ; } ?> value="On Loan" /> <?php print _('On Loan') ?>
+								<option <?php if ($row["status"]=="Reserved") { print "selected" ; } ?> value="Reserved" /> <?php print _('Reserved') ?>
+								<option <?php if ($row["status"]=="Decommissioned") { print "selected" ; } ?> value="Decommissioned" /> <?php print _('Decommissioned') ?>
+								<option <?php if ($row["status"]=="Lost") { print "selected" ; } ?> value="Lost" /> <?php print _('Lost') ?>
+								<option <?php if ($row["status"]=="Repair") { print "selected" ; } ?> value="Repair" /> <?php print _('Repair') ?>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Responsible User *</b><br/>
+							<b><?php print _('Responsible User') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -178,8 +178,10 @@ else {
 						}
 						?>
 						<td> 
-							<b>Expected Return Date</b><br/>
-							<span style="font-size: 90%"><i>Default loan length is <?php print $loanLength . " day"; if ($loanLength>1) { print "s" ; } ?>.</i></span>
+							<b><?php print _('Expected Return Date') ?></b><br/>
+							<span style="font-size: 90%"><i>
+								<?php print sprintf(_('Default loan length is %1$s day(s).'), $loanLength) ; ?>
+							</i></span>
 						</td>
 						<td class="right">
 							<input name="returnExpected" id="returnExpected" maxlength=10 value="<?php print dateConvertBack($guid, $row["returnExpected"]) ?>" type="text" style="width: 300px">
@@ -196,33 +198,33 @@ else {
 					</tr>
 					<tr class='break'>
 						<td colspan=2>
-							<h3>On Return</h3>
+							<h3><?php print _('On Return') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Action</b><br/>
-							<span style="font-size: 90%"><i>What to do when item is next returned.<br/></i></span>
+							<b><?php print _('Action') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('What to do when item is next returned.') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<select name="returnAction" id="returnAction" style="width: 302px">
 								<option <?php if ($row["status"]=="") { print "selected" ; } ?> value="" />
-								<option <?php if ($row["returnAction"]=="Reserve") { print "selected" ; } ?> value="Reserve" /> Reserve
-								<option <?php if ($row["returnAction"]=="Decommission") { print "selected" ; } ?> value="Decommission" /> Decommission
-								<option <?php if ($row["returnAction"]=="Repair") { print "selected" ; } ?> value="Repair" /> Repair
+								<option <?php if ($row["returnAction"]=="Reserve") { print "selected" ; } ?> value="Reserve" /> <?php print _('Reserve') ?>
+								<option <?php if ($row["returnAction"]=="Decommission") { print "selected" ; } ?> value="Decommission" /> <?php print _('Decommission') ?>
+								<option <?php if ($row["returnAction"]=="Repair") { print "selected" ; } ?> value="Repair" /> <?php print _('Repair') ?>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Responsible User *</b><br/>
-							<span style="font-size: 90%"><i>Who will be responsible for the future status?</i></span>
+							<b><?php print _('Responsible User') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Who will be responsible for the future status?') ?></i></span>
 						</td>
 						<td class="right">
 							<?php
 							print "<select name='gibbonPersonIDReturnAction' id='gibbonPersonIDReturnAction' style='width: 300px'>" ;
 								print "<option value=''></option>" ;
-								print "<optgroup label='--Students By Roll Group--'>" ;
+								print "<optgroup label='--" . _('Students By Roll Group') . "--'>" ;
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 									$sqlSelect="SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName" ;
@@ -234,7 +236,7 @@ else {
 									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . htmlPrep($rowSelect["name"]) . " - " . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
 								}
 								print "</optgroup>" ;
-								print "<optgroup label='--<?php print _('All Users') ?>--'>" ;
+								print "<optgroup label='--" . _('All Users') . "--'>" ;
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT gibbonPersonID, surname, preferredName, status FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName" ;

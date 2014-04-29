@@ -55,7 +55,7 @@ else {
 			$row=$result->fetch() ;
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending.php'>Lending & Activity Log</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID'>View Item</a> > </div><div class='trailEnd'>Renew Item</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending.php'>" . _('Lending & Activity Log') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID'>" . _('View Item') . "</a> > </div><div class='trailEnd'>" . _('Renew Item') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -63,22 +63,22 @@ else {
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage="Renewal failed because you do not have access to this action." ;	
+					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage="Renewal failed because a required parameter was not set." ;	
+					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage="Renewal failed due to a database error." ;	
+					$updateReturnMessage=_("Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage="Renewal failed because your inputs were invalid." ;	
+					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail4") {
-					$updateReturnMessage="Renewal failed some values need to be unique but were not." ;	
+					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage="Renewal was successful." ;	
+					$updateReturnMessage=_("Your request was successful.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -97,7 +97,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>ID *</b><br/>
+							<b><?php print _('ID') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -115,7 +115,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Status *</b><br/>
+							<b><?php print _('Status') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -124,7 +124,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Responsible User *</b><br/>
+							<b><?php print _('Responsible User') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -152,8 +152,8 @@ else {
 						}
 						?>
 						<td> 
-							<b>Expected Return Date *</b><br/>
-							<span style="font-size: 90%"><i>Default renew length is today plus <?php print $loanLength . " day"; if ($loanLength>1) { print "s" ; } ?>.</i></span>
+							<b><?php print _('Expected Return Date') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print sprintf(_('Default renew length is today plus %1$s day(s)'), $loanLength) ?>.</i></span>
 						</td>
 						<td class="right">
 							<input name="returnExpected" id="returnExpected" maxlength=10 value="<?php print date("d/m/Y", time()+($loanLength*60*60*24)) ?>" type="text" style="width: 300px">

@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_cat
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_manage_catalog.php'>Manage Catalog</a> > </div><div class='trailEnd'>Edit Item</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_manage_catalog.php'>" . _('Manage Catalog') . "</a> > </div><div class='trailEnd'>" . _('Edit Item') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -52,7 +52,7 @@ else {
 			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage="Your request failed because the selected ID is already in use." ;	
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="success0") {
 			$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -100,7 +100,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2>
-							<h3>Catalog Type</h3>
+							<h3><?php print _('Catalog Type') ?></h3>
 						</td>
 					</tr>
 					<tr>
@@ -116,13 +116,13 @@ else {
 					
 					<tr class='break' id='generalDetailsRow'>
 						<td colspan=2>
-							<h3>General Details</h3>
+							<h3><?php print _('General Details') ?></h3>
 						</td>
 					</tr>
 					<tr id='nameRow'>
 						<td> 
 							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
-							<span style="font-size: 90%"><i>Volume or product name.</i></span>
+							<span style="font-size: 90%"><i><?php print _('Volume or product name.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=255 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
@@ -134,8 +134,8 @@ else {
 					</tr>
 					<tr id='idRow'>
 						<td> 
-							<b>ID *</b><br/>
-							<span style="font-size: 90%"><i>School-unique ID or barcode.</i></span>
+							<b><?php print _('ID') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('School-unique ID or barcode.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="id" id="id" maxlength=255 value="<?php print $row["id"] ?>" type="text" style="width: 300px">
@@ -162,8 +162,8 @@ else {
 					</tr>
 					<tr id='producerRow'>
 						<td> 
-							<b>Author/Brand *</b><br/>
-							<span style="font-size: 90%"><i>Who created the item?</i></span>
+							<b><?php print _('Author/Brand') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Who created the item?') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="producer" id="producer" maxlength=255 value="<?php print $row["producer"] ?>" type="text" style="width: 300px">
@@ -175,8 +175,8 @@ else {
 					</tr>
 					<tr id='vendorRow'>
 						<td> 
-							<b>Vendor</b><br/>
-							<span style="font-size: 90%"><i>Who supplied the item?</i></span>
+							<b><?php print _('Vendor') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Who supplied the item?') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="vendor" id="vendor" maxlength=100 value="<?php print $row["vendor"] ?>" type="text" style="width: 300px">
@@ -184,7 +184,7 @@ else {
 					</tr>
 					<tr id='purchaseDateRow'>
 						<td> 
-							<b>Purchase Date</b><br/>
+							<b><?php print _('Purchase Date') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -202,7 +202,7 @@ else {
 					</tr>
 					<tr id='invoiceNumberRow'>
 						<td> 
-							<b>Invoice Number</b><br/>
+							<b><?php print _('Invoice Number') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -236,25 +236,25 @@ else {
 					</script>
 					<tr id='imageTypeRow'>
 						<td> 
-							<b>Image Type</b><br/>
-							<span style="font-size: 90%"><i>240px x 240ox or smaller.</i></span>
+							<b><?php print _('Image Type') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('240px x 240px or smaller.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="imageType" id="imageType" class='imageType' style="width: 302px">
 								<option value=""></option>
-								<option <?php if ($row["imageType"]=="File") { print "selected" ; } ?> value="File" /> File
-								<option <?php if ($row["imageType"]=="Link") { print "selected" ; } ?> value="Link" /> Link
+								<option <?php if ($row["imageType"]=="File") { print "selected" ; } ?> value="File" /> <?php print _('File') ?>
+								<option <?php if ($row["imageType"]=="Link") { print "selected" ; } ?> value="Link" /> <?php print _('Link') ?>
 							</select>
 						</td>
 					</tr>
 					<tr id="imageFileRow" <?php if ($row["imageType"]!="File") { print "style='display: none'" ; }?>>
 						<td> 
-							<b>Image File</b><br/>
+							<b><?php print _('Image File') ?></b><br/>
 						</td>
 						<td class="right">
 							<?php
 							if ($row["imageType"]=="File" AND $row["imageLocation"]!="") {
-								print "Current attachment: <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["imageLocation"] . "'>" . $row["imageLocation"] . "</a><br/><br/>" ;
+								print _("Current attachment:") . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["imageLocation"] . "'>" . $row["imageLocation"] . "</a><br/><br/>" ;
 							}
 							?>
 							<input type="file" name="imageFile" id="imageFile"><br/><br/>
@@ -270,7 +270,7 @@ else {
 					</tr>
 					<tr id="imageLinkRow" <?php if ($row["imageType"]!="Link") { print "style='display: none'" ; }?>>
 						<td> 
-							<b>Image Link *</b><br/>
+							<b><?php print _('Image Link') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="imageLink" id="imageLink" maxlength=255 value="<?php if ($row["imageType"]=="Link") { print $row["imageLocation"] ; } ?>" type="text" style="width: 300px">
@@ -287,7 +287,7 @@ else {
 					<tr id="locationRow">
 						<td> 
 							<b><?php print _('Location') ?> *</b><br/>
-							<span style="font-size: 90%"><i>Item's main location.</i></span>
+							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
@@ -313,8 +313,8 @@ else {
 					</tr>
 					<tr id='locationDetailRow'>
 						<td> 
-							<b>Location Detail</b><br/>
-							<span style="font-size: 90%"><i>Shelf, cabinet, sector, etc</i></span>
+							<b><?php print _('Location Detail') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Shelf, cabinet, sector, etc') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="locationDetail" id="locationDetail" maxlength=255 value="<?php print $row["locationDetail"] ?>" type="text" style="width: 300px">
@@ -341,20 +341,20 @@ else {
 					</script>
 					<tr id='ownershipTypeRow'>
 						<td> 
-							<b>Ownership Type</b><br/>
+							<b><?php print _('Ownership Type') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="ownershipType" id="ownershipType" class='ownershipType' style="width: 302px">
 								<option value=""></option>
-								<option <?php if ($row["ownershipType"]=="School") { print "selected" ; } ?> value="School" /> School
-								<option <?php if ($row["ownershipType"]=="Individual") { print "selected" ; } ?> value="Individual" /> Individual
+								<option <?php if ($row["ownershipType"]=="School") { print "selected" ; } ?> value="School" /> <?php print _('School') ?>
+								<option <?php if ($row["ownershipType"]=="Individual") { print "selected" ; } ?> value="Individual" /> <?php print _('Individual') ?>
 							</select>
 						</td>
 					</tr>
 					<?php
 					$selectContents="<option value=''></option>" ;
-					$selectContents.="<optgroup label='--Students By Roll Group--'>" ;
+					$selectContents.="<optgroup label='--" . _('Students By Roll Group') . "--'>" ;
 					try {
 						$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 						$sqlSelect="SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName" ;
@@ -377,7 +377,7 @@ else {
 					while ($rowSelect=$resultSelect->fetch()) {
 						$expected="" ;
 						if ($rowSelect["status"]=="Expected") {
-							$expected=" (Expected)" ;
+							$expected=" " . _("(Expected)") ;
 						}
 						$selected="" ;
 						if ($row["gibbonPersonIDOwnership"]==$rowSelect["gibbonPersonID"]) {
@@ -389,8 +389,8 @@ else {
 					?>
 					<tr id="ownershipTypeSchoolRow" <?php if ($row["ownershipType"]!="School") { print "style='display: none'" ; }?>>
 						<td> 
-							<b>Main User</b><br/>
-							<span style="font-size: 90%"><i>Person the device is assigned to.</i></span>
+							<b><?php print _('Main User') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Person the device is assigned to.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="gibbonPersonIDOwnershipSchool" id="gibbonPersonIDOwnershipSchool" style="width: 302px">
@@ -400,7 +400,7 @@ else {
 					</tr>
 					<tr id="ownershipTypeIndividualRow" <?php if ($row["ownershipType"]!="Individual") { print "style='display: none'" ; }?>>
 						<td> 
-							<b>Owner</b><br/>
+							<b><?php print _('Owner') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="gibbonPersonIDOwnershipIndividual" id="gibbonPersonIDOwnershipIndividual" style="width: 302px">
@@ -410,8 +410,8 @@ else {
 					</tr>
 					<tr id="gibbonDepartmentIDRow">
 						<td> 
-							<b>Department</b><br/>
-							<span style="font-size: 90%"><i>Which department is responsible for the item?</i></span>
+							<b><?php print _('Department') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Which department is responsible for the item?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="gibbonDepartmentID" id="gibbonDepartmentID" style="width: 302px">
@@ -437,13 +437,13 @@ else {
 					</tr>
 					<tr id='borrowableRow'>
 						<td> 
-							<b>Borrowable? *</b><br/>
-							<span style="font-size: 90%"><i>Is item available for loan?</i></span>
+							<b><?php print _('Borrowable?') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Is item available for loan?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="borrowable" id="borrowable" class="borrowable" style="width: 302px">
-								<option <?php if ($row["borrowable"]=="Y") { print "selected" ; } ?> value="Y" /> Yes
-								<option <?php if ($row["borrowable"]=="N") { print "selected" ; } ?> value="N" /> No
+								<option <?php if ($row["borrowable"]=="Y") { print "selected" ; } ?> value="Y" /> <?php print _('Yes') ?>
+								<option <?php if ($row["borrowable"]=="N") { print "selected" ; } ?> value="N" /> <?php print _('No') ?>
 							</select>
 						</td>
 					</tr>
@@ -464,8 +464,8 @@ else {
 					</script>
 					<tr id='statusRowBorrowable' <?php if ($row["borrowable"]=="N") { print "style='display: none'" ; } ?>>
 						<td> 
-							<b>Status? *</b><br/>
-							<span style="font-size: 90%"><i>This value cannot be changed here.</i></span>
+							<b><?php print _('Status') ?>? *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name='statusBorrowable' style='width: 300px' type='text' value='<?php print $row["status"] ?>' />
@@ -477,12 +477,12 @@ else {
 						</td>
 						<td class="right">
 							<select name="statusNotBorrowable" id="status" style="width: 302px">
-								<option <?php if ($row["status"]=="Available") { print "selected" ; } ?> value="Available" /> Available
-								<option <?php if ($row["status"]=="In Use") { print "selected" ; } ?> value="In Use" /> In Use
-								<option <?php if ($row["status"]=="Reserved") { print "selected" ; } ?> value="Reserved" /> Reserved
-								<option <?php if ($row["status"]=="Decommissioned") { print "selected" ; } ?> value="Decommissioned" /> Decommissioned
-								<option <?php if ($row["status"]=="Lost") { print "selected" ; } ?> value="Lost" /> Lost
-								<option <?php if ($row["status"]=="Repair") { print "selected" ; } ?> value="Repair" /> Repair
+								<option <?php if ($row["status"]=="Available") { print "selected" ; } ?> value="Available" /> <?php print _('Available') ?>
+								<option <?php if ($row["status"]=="In Use") { print "selected" ; } ?> value="In Use" /> <?php print _('In Use') ?>
+								<option <?php if ($row["status"]=="Reserved") { print "selected" ; } ?> value="Reserved" /> <?php print _('Reserved') ?>
+								<option <?php if ($row["status"]=="Decommissioned") { print "selected" ; } ?> value="Decommissioned" /> <?php print _('Decommissioned') ?>
+								<option <?php if ($row["status"]=="Lost") { print "selected" ; } ?> value="Lost" /> <?php print _('Lost') ?>
+								<option <?php if ($row["status"]=="Repair") { print "selected" ; } ?> value="Repair" /> <?php print _('Repair') ?>
 							</select>
 						</td>
 					</tr>
@@ -490,7 +490,7 @@ else {
 					
 					<tr id='commentRow'>
 						<td colspan=2> 
-							<b>Comments/Notes</b> 
+							<b><?php print _('Comments/Notes') ?></b> 
 							<textarea name='comment' id='comment' rows=10 style='width: 300px'><?php print htmlPreP($row["comment"]) ?></textarea>
 						</td>
 					</tr>
@@ -498,7 +498,7 @@ else {
 					
 					<tr class='break' id='entryDisplayTitleRow'>
 						<td colspan=2>
-							<h3>Type-Specific Details</h3>
+							<h3><?php print _('Type-Specific Details') ?></h3>
 						</td>
 					</tr>
 					

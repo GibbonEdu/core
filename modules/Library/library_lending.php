@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_cat
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Lending & Activity Log</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Lending & Activity Log') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -45,7 +45,7 @@ else {
 	} 
 	
 	print "<h3>" ;
-		print "Search & Filter" ;
+		print _("Search & Filter") ;
 	print "</h3>" ;
 	
 	//Get current filter values
@@ -92,7 +92,7 @@ else {
 			?>
 			<tr>
 				<td> 
-					<b>ID/Name/Producer</b><br/>
+					<b><?php print _('ID/Name/Producer') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -103,7 +103,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Type</b><br/>
+					<b><?php print _('Type') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -168,10 +168,10 @@ else {
 					<?php
 					print "<select name='status' id='status' style='width:302px'>" ;
 						print "<option value=''></option>" ;
-						print "<option " ; if ($status=="Available") { print "selected " ; } print "value='Available'>Available</option>" ;
-						print "<option " ; if ($status=="On Loan") { print "selected " ; } print "value='On Loan'>On Loan</option>" ;
-						print "<option " ; if ($status=="Repair") { print "selected " ; } print "value='Repair'>Repair</option>" ;
-						print "<option " ; if ($status=="Reserved") { print "selected " ; } print "value='Reserved'>Reserved</option>" ;
+						print "<option " ; if ($status=="Available") { print "selected " ; } print "value='Available'>" . _('Available') . "</option>" ;
+						print "<option " ; if ($status=="On Loan") { print "selected " ; } print "value='On Loan'>" . _('On Loan') . "</option>" ;
+						print "<option " ; if ($status=="Repair") { print "selected " ; } print "value='Repair'>" . _('Repair') . "</option>" ;
+						print "<option " ; if ($status=="Reserved") { print "selected " ; } print "value='Reserved'>" . _('Reserved') . "</option>" ;
 					print "</select>" ;
 					?>
 				</td>
@@ -194,7 +194,7 @@ else {
 	}
 	
 	print "<h3>" ;
-		print "View" ;
+		print _("View") ;
 	print "</h3>" ;
 	
 	//Search with filters applied
@@ -249,21 +249,21 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "School ID" ;
+					print _("School ID") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Name<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>Producer</span>" ;
+					print _("Name") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . _('Producer') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Type") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Location" ;
+					print _("Location") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Status<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>Return Date</span>" ;
+					print _("Status") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . _('Return Date') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Actions") ;

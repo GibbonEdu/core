@@ -46,7 +46,7 @@ else {
 		else {
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/outcomes.php'>Manage Outcomes</a> > </div><div class='trailEnd'>Edit Outcome</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/outcomes.php'>" . _('Manage Outcomes') . "</a> > </div><div class='trailEnd'>" . _('Edit Outcome') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -117,7 +117,7 @@ else {
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
-									<b>Scope *</b><br/>
+									<b><?php print _('Scope') ?> *</b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
@@ -142,7 +142,7 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b>Learning Area *</b><br/>
+										<b><?php print _('Learning Area') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
@@ -169,7 +169,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Name Short *</b><br/>
+									<b><?php print _('Name Short') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<input name="nameShort" id="nameShort" maxlength=14 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
@@ -194,7 +194,7 @@ else {
 							
 							<tr>
 								<td> 
-									<b>Category</b><br/>
+									<b><?php print _('Category') ?></b><br/>
 								</td>
 								<td class="right">
 									<input name="category" id="category" maxlength=100 value="<?php print $row["category"] ?>" type="text" style="width: 300px">

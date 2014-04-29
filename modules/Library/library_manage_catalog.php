@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_cat
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Catalog</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Catalog') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -45,7 +45,7 @@ else {
 	} 
 	
 	print "<h3>" ;
-		print "Search & Filter" ;
+		print _("Search & Filter") ;
 	print "</h3>" ;
 	
 	//Get current filter values
@@ -111,7 +111,7 @@ else {
 			?>
 			<tr>
 				<td> 
-					<b>ID/Name/Producer</b><br/>
+					<b><?php print _('ID/Name/Producer') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -122,7 +122,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Type</b><br/>
+					<b><?php print _('Type') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -180,27 +180,27 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Status</b><br/>
+					<b><?php print _('Status') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<?php
 					print "<select name='status' id='status' style='width:302px'>" ;
 						print "<option value=''></option>" ;
-						print "<option " ; if ($status=="Available") { print "selected " ; } print "value='Available'>Available</option>" ;
-						print "<option " ; if ($status=="Decommissioned") { print "selected " ; } print "value='Decommissioned'>Decommissioned</option>" ;
-						print "<option " ; if ($status=="In Use") { print "selected " ; } print "value='In Use'>In Use</option>" ;
-						print "<option " ; if ($status=="Lost") { print "selected " ; } print "value='Lost'>Lost</option>" ;
-						print "<option " ; if ($status=="On Loan") { print "selected " ; } print "value='On Loan'>On Loan</option>" ;
-						print "<option " ; if ($status=="Repair") { print "selected " ; } print "value='Repair'>Repair</option>" ;
-						print "<option " ; if ($status=="Reserved") { print "selected " ; } print "value='Reserved'>Reserved</option>" ;
+						print "<option " ; if ($status=="Available") { print "selected " ; } print "value='Available'>" . _('Available') . "</option>" ;
+						print "<option " ; if ($status=="Decommissioned") { print "selected " ; } print "value='Decommissioned'>" . _('Decommissioned') . "</option>" ;
+						print "<option " ; if ($status=="In Use") { print "selected " ; } print "value='In Use'>" . _('In Use') . "</option>" ;
+						print "<option " ; if ($status=="Lost") { print "selected " ; } print "value='Lost'>" . _('Lost') . "</option>" ;
+						print "<option " ; if ($status=="On Loan") { print "selected " ; } print "value='On Loan'>" . _('On Loan') . "</option>" ;
+						print "<option " ; if ($status=="Repair") { print "selected " ; } print "value='Repair'>" . _('Repair') . "</option>" ;
+						print "<option " ; if ($status=="Reserved") { print "selected " ; } print "value='Reserved'>" . _('Reserved') . "</option>" ;
 					print "</select>" ;
 					?>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Owner/User</b><br/>
+					<b><?php print _('Owner/User') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -227,8 +227,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Type-Specific Fields</b><br/>
-					<span style="font-size: 90%"><i>For example, a computer's MAC address or a book's ISBN.</i></span>
+					<b><?php print _('Type-Specific Fields') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('For example, a computer\'s MAC address or a book\'s ISBN.') ?></i></span>
 				</td>
 				<td class="right">
 					<?php
@@ -254,7 +254,7 @@ else {
 	}
 	
 	print "<h3>" ;
-		print "View" ;
+		print _("View") ;
 	print "</h3>" ;
 	
 	//Search with filters applied
@@ -320,23 +320,23 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th style='width: 80px'>" ;
-					print "School ID<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>Type</span>" ;
+					print _("School ID") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . _('Type') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Name<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>Producer</span>" ;
+					print _("Name") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . _('Producer') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Location" ;
+					print _("Location") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Ownership<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>User/Owner</span>" ;
+					print _("Ownership") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . _('User/Owner') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Status<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>Borrowable</span>" ;
+					print _("Status") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . _('Borrowable') . "</span>" ;
 				print "</th>" ;
 				print "<th style='width: 100px'>" ;
 					print _("Actions") ;
@@ -431,9 +431,9 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_edit.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><img title='Lending' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><img title='" . _('Lending') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a> " ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_delete.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicate.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><img title='Duplicate' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicate.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><img title='" . _('Duplicate') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a>" ;
 					print "</td>" ;
 				print "</tr>" ;
 				

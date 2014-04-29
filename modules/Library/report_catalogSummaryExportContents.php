@@ -45,7 +45,7 @@ else {
 	$status=trim($_GET["status"]) ;
 	
 	print "<h1>" ;
-	print "Catalog Summary" ;
+	print _("Catalog Summary") ;
 	print "</h1>" ;
 	
 	try {
@@ -84,32 +84,32 @@ else {
 	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th>" ;
-				print "School ID" ;
+				print _("School ID") ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Name<br/>" ;
-				print "<span style='font-size: 85%; font-style: italic'>Producer</span>" ;
+				print _("Name") . "<br/>" ;
+				print "<span style='font-size: 85%; font-style: italic'>" . _('Producer') . "</span>" ;
 			print "</th>" ;
 			print "<th>" ;
 				print _("Type") ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Location" ;
+				print _("Location") ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Ownership<br/>" ;
-				print "<span style='font-size: 85%; font-style: italic'>User/Owner</span>" ;
+				print _("Ownership") . "<br/>" ;
+				print "<span style='font-size: 85%; font-style: italic'>" . _('User/Owner') . "</span>" ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Status<br/>" ;
-				print "<span style='font-size: 85%; font-style: italic'>Borrowable</span>" ;
+				print _("Status") . "<br/>" ;
+				print "<span style='font-size: 85%; font-style: italic'>" . _('Borrowable') . "</span>" ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Purchase Date<br/>" ;
-				print "<span style='font-size: 85%; font-style: italic'>Vendor</span>" ;
+				print _("Purchase Date") . "<br/>" ;
+				print "<span style='font-size: 85%; font-style: italic'>" . _('Vendor') . "</span>" ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Details<br/>" ;
+				print _("Details") . "<br/>" ;
 			print "</th>" ;
 		print "</tr>" ;
 		
@@ -212,9 +212,13 @@ else {
 					$typeFields=unserialize($row["typeFields"]) ;
 					$fields=unserialize($row["fields"]) ;
 					foreach ($typeFields as $typeField) {
-						if ($fields[$typeField["name"]]!="") {
-							print "<b>" . $typeField["name"] . ": </b>" ;
-							print $fields[$typeField["name"]] . " ; " ;
+						if (isset($fields[$typeField["name"]])) {
+							if ($fields[$typeField["name"]]!="") {
+								print "<b>" . $typeField["name"] . ": </b>" ;
+								if (isset($fields[$typeField["name"]])) {
+									print $fields[$typeField["name"]] . " ; " ;
+								}
+							}
 						}
 					}
 				print "</td>" ;

@@ -268,7 +268,7 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b><?phpprint $row["companyContact"] ?></b> (<?php print $row["companyName"] ; ?>)
+										<b><?php print $row["companyContact"] ?></b> (<?php print $row["companyName"] ; ?>)
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">

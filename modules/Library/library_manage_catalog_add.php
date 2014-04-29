@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_cat
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_manage_catalog.php'>Manage Catalog</a> > </div><div class='trailEnd'>Add Item</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_manage_catalog.php'>" . _('Manage Catalog') . "</a> > </div><div class='trailEnd'>" . _('Add Item') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -48,10 +48,10 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage="Your request failed because the selected ID is already in use." ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage="Your request was successful, but some data was not properly saved." ;	
+			$addReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
 		}
 		else if ($addReturn=="success0") {
 			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
@@ -73,7 +73,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2>
-					<h3>Catalog Type</h3>
+					<h3><?php print _('Catalog Type') ?></h3>
 				</td>
 			</tr>
 			<script type="text/javascript">
@@ -136,13 +136,13 @@ else {
 			
 			<tr class='break' id='generalDetailsRow' style='display: none'>
 				<td colspan=2>
-					<h3>General Details</h3>
+					<h3><?php print _('General Details') ?></h3>
 				</td>
 			</tr>
 			<tr id='nameRow' style='display: none'>
 				<td> 
 					<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
-					<span style="font-size: 90%"><i>Volume or product name.</i></span>
+					<span style="font-size: 90%"><i><?php print _('Volume or product name.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=255 value="" type="text" style="width: 300px">
@@ -154,8 +154,8 @@ else {
 			</tr>
 			<tr id='idRow' style='display: none'>
 				<td> 
-					<b>ID *</b><br/>
-					<span style="font-size: 90%"><i>School-unique ID or barcode.</i></span>
+					<b><?php print _('ID') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="id" id="id" maxlength=255 value="" type="text" style="width: 300px">
@@ -182,8 +182,8 @@ else {
 			</tr>
 			<tr id='producerRow' style='display: none'>
 				<td> 
-					<b>Author/Brand *</b><br/>
-					<span style="font-size: 90%"><i>Who created the item?</i></span>
+					<b><?php print _('Author/Brand') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('Who created the item?') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="producer" id="producer" maxlength=255 value="" type="text" style="width: 300px">
@@ -195,8 +195,8 @@ else {
 			</tr>
 			<tr id='vendorRow' style='display: none'>
 				<td> 
-					<b>Vendor</b><br/>
-					<span style="font-size: 90%"><i>Who supplied the item?</i></span>
+					<b><?php print _('Vendor') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Who supplied the item?') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="vendor" id="vendor" maxlength=100 value="" type="text" style="width: 300px">
@@ -204,7 +204,7 @@ else {
 			</tr>
 			<tr id='purchaseDateRow' style='display: none'>
 				<td> 
-					<b>Purchase Date</b><br/>
+					<b><?php print _('Purchase Date') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -222,7 +222,7 @@ else {
 			</tr>
 			<tr id='invoiceNumberRow' style='display: none'>
 				<td> 
-					<b>Invoice Number</b><br/>
+					<b><?php print _('Invoice Number') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -256,20 +256,20 @@ else {
 			</script>
 			<tr id='imageTypeRow' style='display: none'>
 				<td> 
-					<b>Image Type</b><br/>
-					<span style="font-size: 90%"><i>240px x 240ox or smaller.</i></span>
+					<b><?php print _('Image Type') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('240px x 240px or smaller.') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="imageType" id="imageType" class='imageType' style="width: 302px">
 						<option value=""></option>
-						<option value="File" /> File
-						<option value="Link" /> Link
+						<option value="File" /> <?php print _('File') ?>
+						<option value="Link" /> <?php print _('Link') ?>
 					</select>
 				</td>
 			</tr>
 			<tr id="imageFileRow" style='display: none'>
 				<td> 
-					<b>Image File</b><br/>
+					<b><?php print _('Image File') ?></b><br/>
 				</td>
 				<td class="right">
 					<input type="file" name="imageFile" id="imageFile"><br/><br/>
@@ -285,7 +285,7 @@ else {
 			</tr>
 			<tr id="imageLinkRow" style='display: none'>
 				<td> 
-					<b>Image Link *</b><br/>
+					<b><?php print _('Image Link') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="imageLink" id="imageLink" maxlength=255 value="" type="text" style="width: 300px">
@@ -301,7 +301,6 @@ else {
 			<tr id="locationRow" style='display: none'>
 				<td> 
 					<b><?php print _('Location') ?> *</b><br/>
-					<span style="font-size: 90%"><i>Item's main location.</i></span>
 				</td>
 				<td class="right">
 					<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
@@ -323,8 +322,8 @@ else {
 			</tr>
 			<tr id='locationDetailRow' style='display: none'>
 				<td> 
-					<b>Location Detail</b><br/>
-					<span style="font-size: 90%"><i>Shelf, cabinet, sector, etc</i></span>
+					<b><?php print _('Location Detail') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Shelf, cabinet, sector, etc') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="locationDetail" id="locationDetail" maxlength=255 value="" type="text" style="width: 300px">
@@ -351,20 +350,20 @@ else {
 			</script>
 			<tr id='ownershipTypeRow' style='display: none'>
 				<td> 
-					<b>Ownership Type</b><br/>
+					<b><?php print _('Ownership Type') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<select name="ownershipType" id="ownershipType" class='ownershipType' style="width: 302px">
 						<option value=""></option>
-						<option value="School" /> School
-						<option value="Individual" /> Individual
+						<option value="School" /> <?php print _('School') ?>
+						<option value="Individual" /> <?php print _('Individual') ?>
 					</select>
 				</td>
 			</tr>
 			<?php
 				$selectContents="<option value=''></option>" ;
-				$selectContents.="<optgroup label='--Students By Roll Group--'>" ;
+				$selectContents.="<optgroup label='--" . _('Students By Roll Group') . "--'>" ;
 				try {
 					$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 					$sqlSelect="SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName" ;
@@ -387,7 +386,7 @@ else {
 				while ($rowSelect=$resultSelect->fetch()) {
 					$expected="" ;
 					if ($rowSelect["status"]=="Expected") {
-						$expected=" (Expected)" ;
+						$expected=" (" . _('Expected') . ")" ;
 					}
 					$selectContents.="<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "$expected</option>" ;
 				}
@@ -395,8 +394,8 @@ else {
 			?>
 			<tr id="ownershipTypeSchoolRow" style='display: none'>
 				<td> 
-					<b>Main User</b><br/>
-					<span style="font-size: 90%"><i>Person the device is assigned to.</i></span>
+					<b><?php print _('Main User') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Person the device is assigned to.') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="gibbonPersonIDOwnershipSchool" id="gibbonPersonIDOwnershipSchool" style="width: 302px">
@@ -406,7 +405,7 @@ else {
 			</tr>
 			<tr id="ownershipTypeIndividualRow" style='display: none'>
 				<td> 
-					<b>Owner</b><br/>
+					<b><?php print _('Owner') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="gibbonPersonIDOwnershipIndividual" id="gibbonPersonIDOwnershipIndividual" style="width: 302px">
@@ -416,8 +415,8 @@ else {
 			</tr>
 			<tr id="gibbonDepartmentIDRow" style='display: none'>
 				<td> 
-					<b>Department</b><br/>
-					<span style="font-size: 90%"><i>Which department is responsible for the item?</i></span>
+					<b><?php print _('Department') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Which department is responsible for the item?') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="gibbonDepartmentID" id="gibbonDepartmentID" style="width: 302px">
@@ -439,36 +438,36 @@ else {
 			</tr>
 			<tr id='borrowableRow' style='display: none'>
 				<td> 
-					<b>Borrowable? *</b><br/>
-					<span style="font-size: 90%"><i>Is item available for loan?</i></span>
+					<b><?php print _('Borrowable?') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('Is item available for loan?') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="borrowable" id="borrowable" style="width: 302px">
-						<option value="Y" /> Yes
-						<option value="N" /> No
+						<option value="Y" /> <?php print _('Yes') ?>
+						<option value="N" /> <?php print _('No') ?>
 					</select>
 				</td>
 			</tr>
 			<tr id='statusRow' style='display: none'>
 				<td> 
-					<b>Status? *</b><br/>
-					<span style="font-size: 90%"><i>Initial availability.</i></span>
+					<b><?php print _('Status?') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('Initial availability.') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="status" id="status" style="width: 302px">
-						<option value="Available" /> Available
-						<option value="In Use" /> In Use
-						<option value="Reserved" /> Reserved
-						<option value="Decommissioned" /> Decommissioned
-						<option value="Lost" /> Lost
-						<option value="Repair" /> Repair
+						<option value="Available" /> <?php print _('Available') ?>
+						<option value="In Use" /> <?php print _('In Use') ?>
+						<option value="Reserved" /> <?php print _('Reserved') ?>
+						<option value="Decommissioned" /> <?php print _('Decommissioned') ?>
+						<option value="Lost" /> <?php print _('Lost') ?>
+						<option value="Repair" /> <?php print _('Repair') ?>
 					</select>
 				</td>
 			</tr>
 			
 			<tr id='commentRow' style='display: none'>
 				<td colspan=2> 
-					<b>Comments/Notes</b> 
+					<b><?php print _('Comments/Notes') ?></b> 
 					<textarea name='comment' id='comment' rows=10 style='width: 300px'></textarea>
 				</td>
 			</tr>
@@ -476,7 +475,7 @@ else {
 			
 			<tr class='break' id='entryDisplayTitleRow' style='display: none'>
 				<td colspan=2>
-					<h3>Type-Specific Details</h3>
+					<h3><?php print _('Type-Specific Details') ?></h3>
 				</td>
 			</tr>
 			<tr id='entryDisplayRow' style='display: none'>

@@ -1250,7 +1250,7 @@ function sidebar($connection2, $guid) {
 		$highestAction=getHighestGroupedAction($guid, "/modules/Planner/planner.php", $connection2) ;
 		if ($highestAction=="Lesson Planner_viewMyClasses" OR $highestAction=="Lesson Planner_viewAllEditMyClasses" OR $highestAction=="Lesson Planner_viewEditAllClasses") {
 			print "<h2>" ;
-			print "Homework + Deadlines" ;
+			print _("Homework & Deadlines") ;
 			print "</h2>" ;
 			
 			try {

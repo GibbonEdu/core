@@ -31,14 +31,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Planner/report_workSummary
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Work Completion by Roll Group</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Work Summary by Roll Group') . "</div>" ;
 	print "</div>" ;
 	print "<p>" ;
-	print "This report draws data from the Markbook, Planner and Behaviour modules to give an overview of student performance and work completion. It only counts Online Submission data when submission is set to compulsory." ;
+	print _("This report draws data from the Markbook, Planner and Behaviour modules to give an overview of student performance and work completion. It only counts Online Submission data when submission is set to compulsory.") ;
 	print "</p>" ;
 	
 	print "<h2>" ;
-	print "Choose Roll Group" ;
+	print _("Choose Roll Group") ;
 	print "</h2>" ;
 	
 	$gibbonRollGroupID=NULL ;
@@ -104,19 +104,19 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Student" ;
+					print _("Student") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Satisfactory" ;
+					print _("Satisfactory") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Unsatisfactory" ;
+					print _("Unsatisfactory") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Late" ;
+					print _("Late") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Incomplete" ;
+					print _("Incomplete") ;
 				print "</th>" ;
 			print "</tr>" ;
 			

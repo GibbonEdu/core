@@ -130,13 +130,13 @@ else {
 								print "}" ;
 							print "});" ;
 						print "} else {" ;
-							print "alert('Please enter an ISBN13 or ISBN10 value before trying to get data from Google Books.') ;" ;
+							print "alert('" . _('Please enter an ISBN13 or ISBN10 value before trying to get data from Google Books.') . "') ;" ;
 						print "}" ;
 					print "});" ;
 				print "});" ;
 			print "</script>" ;
 			print "<div style='text-align: right'>" ;
-				print "<a class='gbooks' onclick='return false' href='#'>Get Book Data From Google</a>" ;
+				print "<a class='gbooks' onclick='return false' href='#'>" . _('Get Book Data From Google') . "</a>" ;
 			print "</div>" ;
 		}
 		

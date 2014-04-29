@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Planner/report_goldStars_s
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Staff Gold Stars</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Staff Gold Stars') . "</div>" ;
 	print "</div>" ;
 	
 	try {
@@ -47,13 +47,13 @@ else {
 	print "<table cellspacing=\"0\"style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th>" ;
-				print "Position" ;
+				print _("Position") ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Teacher" ;
+				print _("Teacher") ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Stars/Lesson" ;
+				print _("Stars/Lesson") ;
 			print "</th>" ;
 			print "</th>" ;
 		print "</tr>" ;

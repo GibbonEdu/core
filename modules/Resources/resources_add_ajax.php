@@ -75,7 +75,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, "/modules/Resources/resources_manage.php", $connection2) ;
 	if ($highestAction==FALSE) {
 		$output.="<div class='error'>" ;
-		$output.="The highest grouped action cannot be determined." ;
+		$output.=_("The highest grouped action cannot be determined.") ;
 		$output.="</div>" ;
 	}
 	else {

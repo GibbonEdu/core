@@ -798,8 +798,8 @@ else {
 								<span style="font-size: 90%"><i>If not previously set, this will default to the start of the next lesson.</i></span>
 							</td>
 							<td class="right">
-								<input <?phpprint $checkedYes ?> type="radio" name="homework" value="Yes" class="homework" /> Yes
-								<input <?phpprint $checkedNo ?> type="radio" name="homework" value="No" class="homework" /> No
+								<input <?php print $checkedYes ?> type="radio" name="homework" value="Yes" class="homework" /> Yes
+								<input <?php print $checkedNo ?> type="radio" name="homework" value="No" class="homework" /> No
 							</td>
 						</tr>
 						<tr id="homeworkDueDateRow">
@@ -876,8 +876,8 @@ else {
 								<span style="font-size: 90%"><i>Allow online homework submission?</i></span>
 							</td>
 							<td class="right">
-								<input <?phpprint $submissionYes ?> type="radio" name="homeworkSubmission" value="Yes" class="homeworkSubmission" /> Yes
-								<input <?phpprint $submissionNo ?> type="radio" name="homeworkSubmission" value="No" class="homeworkSubmission" /> No
+								<input <?php print $submissionYes ?> type="radio" name="homeworkSubmission" value="Yes" class="homeworkSubmission" /> Yes
+								<input <?php print $submissionNo ?> type="radio" name="homeworkSubmission" value="No" class="homeworkSubmission" /> No
 							</td>
 						</tr>
 						<tr id="homeworkSubmissionDateOpenRow">
@@ -944,8 +944,8 @@ else {
 									<span style="font-size: 90%"><i>Allow crowd assessment of homework?</i></span>
 								</td>
 								<td class="right">
-									<input <?phpprint $crowdYes ?> type="radio" name="homeworkCrowdAssess" value="Yes" class="homeworkCrowdAssess" /> Yes
-									<input <?phpprint $crowdNo ?> type="radio" name="homeworkCrowdAssess" value="No" class="homeworkCrowdAssess" /> No
+									<input <?php print $crowdYes ?> type="radio" name="homeworkCrowdAssess" value="Yes" class="homeworkCrowdAssess" /> Yes
+									<input <?php print $crowdNo ?> type="radio" name="homeworkCrowdAssess" value="No" class="homeworkCrowdAssess" /> No
 								</td>
 							</tr>
 							<tr id="homeworkCrowdAssessControlRow">

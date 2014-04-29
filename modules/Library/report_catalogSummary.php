@@ -33,11 +33,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Library/report_catalogSumm
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Catalog Summary</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Catalog Summary') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h3>" ;
-		print "Search & Filter" ;
+		print _("Search & Filter") ;
 	print "</h3>" ;
 	
 	//Get current filter values
@@ -84,22 +84,22 @@ else {
 			?>
 			<tr>
 				<td> 
-					<b>Ownership Type</b><br/>
+					<b><?php print _('Ownership Type') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<?php
 					print "<select name='ownershipType' id='ownershipType' style='width:302px'>" ;
 						print "<option " ; if ($ownershipType=="") { print "selected " ; } print "value=''></option>" ;
-						print "<option " ; if ($ownershipType=="School") { print "selected " ; } print "value='School'>School</option>" ;
-						print "<option " ; if ($ownershipType=="Individual") { print "selected " ; } print "value='Individual'>Individual</option>" ;
+						print "<option " ; if ($ownershipType=="School") { print "selected " ; } print "value='School'>" . _('School') . "</option>" ;
+						print "<option " ; if ($ownershipType=="Individual") { print "selected " ; } print "value='Individual'>" . _('Individual') . "</option>" ;
 					print "</select>" ;
 					?>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Type</b><br/>
+					<b><?php print _('Type') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -157,20 +157,20 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Status</b><br/>
+					<b><?php print _('Status') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<?php
 					print "<select name='status' id='status' style='width:302px'>" ;
 						print "<option value=''></option>" ;
-						print "<option " ; if ($status=="Available") { print "selected " ; } print "value='Available'>Available</option>" ;
-						print "<option " ; if ($status=="Decommissioned") { print "selected " ; } print "value='Decommissioned'>Decommissioned</option>" ;
-						print "<option " ; if ($status=="In Use") { print "selected " ; } print "value='In Use'>In Use</option>" ;
-						print "<option " ; if ($status=="Lost") { print "selected " ; } print "value='Lost'>Lost</option>" ;
-						print "<option " ; if ($status=="On Loan") { print "selected " ; } print "value='On Loan'>On Loan</option>" ;
-						print "<option " ; if ($status=="Repair") { print "selected " ; } print "value='Repair'>Repair</option>" ;
-						print "<option " ; if ($status=="Reserved") { print "selected " ; } print "value='Reserved'>Reserved</option>" ;
+						print "<option " ; if ($status=="Available") { print "selected " ; } print "value='Available'>" . _('Available') . "</option>" ;
+						print "<option " ; if ($status=="Decommissioned") { print "selected " ; } print "value='Decommissioned'>" . _('Decommissioned') . "</option>" ;
+						print "<option " ; if ($status=="In Use") { print "selected " ; } print "value='In Use'>" . _('In Use') . "</option>" ;
+						print "<option " ; if ($status=="Lost") { print "selected " ; } print "value='Lost'>" . _('Lost') . "</option>" ;
+						print "<option " ; if ($status=="On Loan") { print "selected " ; } print "value='On Loan'>" . _('On Loan') . "</option>" ;
+						print "<option " ; if ($status=="Repair") { print "selected " ; } print "value='Repair'>" . _('Repair') . "</option>" ;
+						print "<option " ; if ($status=="Reserved") { print "selected " ; } print "value='Reserved'>" . _('Reserved') . "</option>" ;
 					print "</select>" ;
 					?>
 				</td>
@@ -237,27 +237,27 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "School ID<br/>" ;
-					print "<span style='font-style: italic; font-size: 85%'>Type</span>" ;
+					print _("School ID") . "<br/>" ;
+					print "<span style='font-style: italic; font-size: 85%'>" . _('Type') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Name<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>Producer</span>" ;
+					print _("Name") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . _('Producer') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Location" ;
+					print _("Location") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Ownership<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>User/Owner</span>" ;
+					print _("Ownership") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . _('User/Owner') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Status<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>Borrowable</span>" ;
+					print _("Status") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . _('Borrowable') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Purchase Date<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>Vendor</span>" ;
+					print _("Purchase Date") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . _('Vendor') . "</span>" ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -344,7 +344,7 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						if ($row["purchaseDate"]=="") {
-							print "<i>Unknown</i><br/>" ;
+							print "<i>" . _('Unknown') . "</i><br/>" ;
 						}
 						else {
 							print dateConvertBack($guid, $row["purchaseDate"]) . "<br/>" ;

@@ -45,7 +45,7 @@ else {
 		else {
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/outcomes.php'>Manage Outcomes</a> > </div><div class='trailEnd'>Add Outcome</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/outcomes.php'>" . _('Manage Outcomes') . "</a> > </div><div class='trailEnd'>" . _('Add Outcome') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -62,10 +62,10 @@ else {
 					$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($addReturn=="fail4") {
-					$addReturnMessage="Your request failed because the selected person is already registered." ;	
+					$addReturnMessage=_("Your request failed because your inputs were invalid.") ;		
 				}
 				else if ($addReturn=="fail5") {
-					$addReturnMessage="Your request was successful, but some data was not properly saved." ;	
+					$addReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
 				}
 				else if ($addReturn=="success0") {
 					$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
@@ -81,7 +81,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Scope *</b><br/>
+							<b><?php print _('Scope') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -90,8 +90,8 @@ else {
 								?>
 								<select name="scope" id="scope" style="width: 302px">
 									<option value="Please select..."><?php print _('Please select...') ?></option>
-									<option value="School">School</option>
-									<option value="Learning Area">Learning Area</option>
+									<option value="School"><?php print _('School') ?></option>
+									<option value="Learning Area"><?php print _('Learning Area') ?></option>
 								</select>
 								<script type="text/javascript">
 									var scope=new LiveValidation('scope');
@@ -133,7 +133,7 @@ else {
 					?>
 					<tr id='learningAreaRow'>
 						<td> 
-							<b>Learning Area *</b><br/>
+							<b><?php print _('Learning Area') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -185,7 +185,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Name Short *</b><br/>
+							<b><?php print _('Name Short') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="nameShort" id="nameShort" maxlength=14 value="" type="text" style="width: 300px">
@@ -210,7 +210,7 @@ else {
 					
 					<tr>
 						<td> 
-							<b>Category</b><br/>
+							<b><?php print _('Category') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="category" id="category" maxlength=100 value="" type="text" style="width: 300px">

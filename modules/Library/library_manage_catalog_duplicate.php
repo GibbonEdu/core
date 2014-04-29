@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_cat
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_manage_catalog.php'>Manage Catalog</a> > </div><div class='trailEnd'>Duplicate Item</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_manage_catalog.php'>" . _('Manage Catalog') . "</a> > </div><div class='trailEnd'>" . _('Duplicate Item') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["duplicateReturn"])) { $duplicateReturn=$_GET["duplicateReturn"] ; } else { $duplicateReturn="" ; }
@@ -40,22 +40,23 @@ else {
 	$class="error" ;
 	if (!($duplicateReturn=="")) {
 		if ($duplicateReturn=="fail0") {
-			$duplicateReturnMessage="Duplicate failed because you do not have access to this action." ;	
+			$duplicateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($duplicateReturn=="fail1") {
-			$duplicateReturnMessage="Duplicate failed because a required parameter was not set." ;	
+			$duplicateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($duplicateReturn=="fail2") {
-			$duplicateReturnMessage="Duplicate failed due to a database error." ;	
+			$duplicateReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($duplicateReturn=="fail3") {
-			$duplicateReturnMessage="Duplicate failed because your inputs were invalid." ;	
+			$duplicateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($duplicateReturn=="fail3") {
-			$duplicateReturnMessage="Some aspects of the duplicate failed." ;	
+			$duplicateReturnMessage="Your request was successful, but some data was not properly saved." ;	
+			$class="success" ;
 		}
 		else if ($duplicateReturn=="success0") {
-			$duplicateReturnMessage="Duplicate was successful." ;	
+			$duplicateReturnMessage=_("Your request was successful.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -102,7 +103,7 @@ else {
 			if ($step==1) {
 				?>
 				<h2>
-					Step 1 - Quantity
+					<?php print _('Step 1 - Quantity') ?>
 				</h2> 
 				<?php
 				if ($_GET["name"]!="" OR $_GET["gibbonLibraryTypeID"]!="" OR $_GET["gibbonSpaceID"]!="" OR $_GET["status"]!="" OR $_GET["gibbonPersonIDOwnership"]!="" OR $_GET["typeSpecificFields"]!="") {
@@ -134,7 +135,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>ID *</b><br/>
+								<b><?php print _('ID') ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
@@ -143,7 +144,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Author/Brand *</b><br/>
+								<b><?php print _('Author/Brand') ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
@@ -153,8 +154,8 @@ else {
 						
 						<tr>
 							<td> 
-								<b>Number of Copies *</b><br/>
-								<span style="font-size: 90%"><i>How many copies do you want?</i></span>
+								<b><?php print _('Number of Copies') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('How many copies do you want to make of this item?') ?></i></span>
 							</td>
 							<td class="right">
 								<select name='number' id='number' style='width: 304px'>
@@ -184,7 +185,7 @@ else {
 			else if ($step==2) {
 				?>
 				<h2>
-					Step 2 - Details
+					<?php print _('Step 2 - Details' ) ?>
 				</h2> 
 				<?php
 				if ($_GET["name"]!="" OR $_GET["gibbonLibraryTypeID"]!="" OR $_GET["gibbonSpaceID"]!="" OR $_GET["status"]!="" OR $_GET["gibbonPersonIDOwnership"]!="" OR $_GET["typeSpecificFields"]!="") {
@@ -222,8 +223,8 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>ID *</b><br/>
-									<span style="font-size: 90%"><i>School-unique ID or barcode.</i></span>
+									<b><?php print _('ID') ?> *</b><br/>
+									<span style="font-size: 90%"><i><?php print _('School-unique ID or barcode.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="id<?php print $i ?>" id="id<?php print $i ?>" maxlength=255 value="<?php print $row["id"] ?>" type="text" style="width: 300px">
@@ -250,8 +251,8 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Author/Brand *</b><br/>
-									<span style="font-size: 90%"><i>Who created the item?</i></span>
+									<b><?php print _('Author/Brand') ?> *</b><br/>
+									<span style="font-size: 90%"><i><?php print _('Who created the item?') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="producer<?php print $i ?>" id="producer<?php print $i ?>" maxlength=255 value="<?php print $row["producer"] ?>" type="text" style="width: 300px">
@@ -263,8 +264,8 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Vendor</b><br/>
-									<span style="font-size: 90%"><i>Who supplied the item?</i></span>
+									<b><?php print _('Vendor') ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('Who supplied the item?') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="vendor<?php print $i ?>" id="vendor<?php print $i ?>" maxlength=100 value="<?php print $row["vendor"] ?>" type="text" style="width: 300px">
@@ -272,7 +273,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Purchase Date</b><br/>
+									<b><?php print _('Purchase Date') ?></b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
@@ -290,7 +291,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Invoice Number</b><br/>
+									<b><?php print _('Invoice Number') ?></b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
@@ -300,7 +301,6 @@ else {
 							<tr id="locationRow">
 								<td> 
 									<b><?php print _('Location') ?> *</b><br/>
-									<span style="font-size: 90%"><i>Item's main location.</i></span>
 								</td>
 								<td class="right">
 									<select name="gibbonSpaceID<?php print $i ?>" id="gibbonSpaceID<?php print $i ?>" style="width: 302px">
@@ -326,8 +326,8 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Location Detail</b><br/>
-									<span style="font-size: 90%"><i>Shelf, cabinet, sector, etc</i></span>
+									<b><?php print _('Location Detail') ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('Shelf, cabinet, sector, etc') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="locationDetail<?php print $i ?>" id="locationDetail<?php print $i ?>" maxlength=255 value="<?php print $row["locationDetail"] ?>" type="text" style="width: 300px">
@@ -354,20 +354,20 @@ else {
 							</script>
 							<tr id='ownershipTypeRow<?php print $i ?>'>
 								<td> 
-									<b>Ownership Type</b><br/>
+									<b><?php print _('Ownership Type') ?></b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
 									<select name="ownershipType<?php print $i ?>" id="ownershipType<?php print $i ?>" class='ownershipType<?php print $i ?>' style="width: 302px">
 										<option value=""></option>
-										<option <?php if ($row["ownershipType"]=="School") { print "selected" ; } ?> value="School" /> School
-										<option <?php if ($row["ownershipType"]=="Individual") { print "selected" ; } ?> value="Individual" /> Individual
+										<option <?php if ($row["ownershipType"]=="School") { print "selected" ; } ?> value="School" /> <?php print _('School') ?>
+										<option <?php if ($row["ownershipType"]=="Individual") { print "selected" ; } ?> value="Individual" /> <?php print _('Individual') ?>
 									</select>
 								</td>
 							</tr>
 							<?php
 							$selectContents="<option value=''></option>" ;
-							$selectContents.="<optgroup label='--Students By Roll Group--'>" ;
+							$selectContents.="<optgroup label='--" . _('Students By Roll Group') . "--'>" ;
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 								$sqlSelect="SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName" ;
@@ -379,7 +379,7 @@ else {
 								$selectContents.="<option value='" . $rowSelect["gibbonPersonID"] . "'>" . htmlPrep($rowSelect["name"]) . " - " . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
 							}
 							$selectContents.="</optgroup>" ;
-							$selectContents.="<optgroup label='--<?php print _('All Users') ?>--'>" ;
+							$selectContents.="<optgroup label='--" . _('All Users') . "--'>" ;
 							try {
 								$dataSelect=array(); 
 								$sqlSelect="SELECT gibbonPersonID, surname, preferredName, status FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName" ;
@@ -402,8 +402,8 @@ else {
 							?>
 							<tr id="ownershipTypeSchoolRow<?php print $i ?>" <?php if ($row["ownershipType"]!="School") { print "style='display: none'" ; }?>>
 								<td> 
-									<b>Main User</b><br/>
-									<span style="font-size: 90%"><i>Person the device is assigned to.</i></span>
+									<b><?php print _('Main User') ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('Person the device is assigned to.') ?></i></span>
 								</td>
 								<td class="right">
 									<select name="gibbonPersonIDOwnershipSchool<?php print $i ?>" id="gibbonPersonIDOwnershipSchool<?php print $i ?>" style="width: 302px">
@@ -413,7 +413,7 @@ else {
 							</tr>
 							<tr id="ownershipTypeIndividualRow<?php print $i ?>" <?php if ($row["ownershipType"]!="Individual") { print "style='display: none'" ; }?>>
 								<td> 
-									<b>Owner</b><br/>
+									<b><?php print _('Owner') ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="gibbonPersonIDOwnershipIndividual<?php print $i ?>" id="gibbonPersonIDOwnershipIndividual<?php print $i ?>" style="width: 302px">
@@ -423,8 +423,8 @@ else {
 							</tr>
 							<tr id="gibbonDepartmentIDRow">
 								<td> 
-									<b>Department</b><br/>
-									<span style="font-size: 90%"><i>Which department is responsible for the item?</i></span>
+									<b><?php print _('Department') ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('Which department is responsible for the item?') ?></i></span>
 								</td>
 								<td class="right">
 									<select name="gibbonDepartmentID<?php print $i ?>" id="gibbonDepartmentID<?php print $i ?>" style="width: 302px">
@@ -450,28 +450,28 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Borrowable? *</b><br/>
-									<span style="font-size: 90%"><i>Is item available for loan?</i></span>
+									<b><?php print _('Borrowable?') ?> *</b><br/>
+									<span style="font-size: 90%"><i><?php print _('Is item available for loan?') ?></i></span>
 								</td>
 								<td class="right">
 									<select name="borrowable<?php print $i ?>" id="borrowable<?php print $i ?>" style="width: 302px">
-										<option <?php if ($row["borrowable"]=="Y") { print "selected" ; } ?> value="Y" /> Yes
-										<option <?php if ($row["borrowable"]=="N") { print "selected" ; } ?> value="N" /> No
+										<option <?php if ($row["borrowable"]=="Y") { print "selected" ; } ?> value="Y" /> <?php print _('Yes') ?>
+										<option <?php if ($row["borrowable"]=="N") { print "selected" ; } ?> value="N" /> <?php print _('No') ?>
 									</select>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b>Status? *</b><br/>
-									<span style="font-size: 90%"><i>This value cannot be changed here.</i></span>
+									<b><?php print _('Status?') ?> *</b><br/>
+									<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 								</td>
 								<td class="right">
-									<input readonly style='width: 300px' type='text' value='<?php print $row["status"] ?>' />
+									<input readonly style='width: 300px' type='text' value='Available' />
 								</td>
 							</tr>
 							<tr>
 								<td colspan=2> 
-									<b>Comments/Notes</b> 
+									<b><?php print _('Comments/Notes') ?></b> 
 									<textarea name='comment<?php print $i ?>' id='comment<?php print $i ?>' rows=10 style='width: 300px'><?php print htmlPreP($row["comment"]) ?></textarea>
 								</td>
 							</tr>
@@ -498,7 +498,7 @@ else {
 								print "<tr>" ;
 									print "<td colspan='2'> " ;
 										print "<div class='error'>" ;
-											print "Type fields cannot be displayed." ;
+											print _("Your request failed due to a database error.") ;
 										print "</div>" ;
 									print "</td> " ;
 								print "</tr> " ;

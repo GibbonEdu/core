@@ -769,7 +769,7 @@ else {
 							}
 							catch(PDOException $e) { }
 							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["surname"]), htmlPrep($rowSelect["preferredName"]), "Staff", true, true) . "</option>" ;
+								print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) . "</option>" ;
 							}
 							?>
 						</select>
