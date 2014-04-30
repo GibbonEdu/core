@@ -1590,6 +1590,10 @@ ALTER TABLE `gibbonCourseClassPerson` ADD `reportable` ENUM('Y','N') NOT NULL DE
 ALTER TABLE `gibboni18n` CHANGE `currencySymbol` `currencySymbol` VARCHAR(3) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `currencyCode`, `currencySymbol`) VALUES (NULL, 'pl_PL', 'Język Polski - Polska', 'N', 'Arek Gladki', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\\d\\\\d$/i', 'd/m/Y', 'PLN', 'zł');end
 UPDATE gibboni18n SET name='Język polski - Polska' WHERE code='pl_PL';end
+CREATE TABLE `gibbonPayment` (  `gibbonPaymentID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,  `foreignTable` varchar(50) NOT NULL,  `foreignTableID` int(14) unsigned zerofill NOT NULL,  `gateway` enum('Paypal') NOT NULL,  `paymentToken` varchar(50) NOT NULL,  `paymentPayerID` varchar(50) NOT NULL,  `paymentTransactionID` varchar(50) NOT NULL,  `paymentReceiptID` varchar(50) NOT NULL,  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,  PRIMARY KEY (`gibbonPaymentID`)) DEFAULT CHARSET=utf8 ;end
+ALTER TABLE `gibbonApplicationForm`  DROP `paypalPaymentToken`,  DROP `paypalPaymentPayerID`,  DROP `paypalPaymentTransactionID`,  DROP `paypalPaymentReceiptID`;end
+ALTER TABLE `gibbonApplicationForm` ADD `gibbonPaymentID` INT(14) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `paymentMade`;end
+ALTER TABLE `gibbonPayment` ADD `status` ENUM('Success','Failure') NOT NULL DEFAULT 'Success' AFTER `gateway`;end
 ";
 
 

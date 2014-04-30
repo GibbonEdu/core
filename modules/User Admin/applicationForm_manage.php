@@ -131,7 +131,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print _('Search For') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('Application ID, preferred, surname, PayPal transaction ID') ?></i></span>
+						<span style="font-size: 90%"><i><?php print _('Application ID, preferred, surname, payment transaction ID') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
@@ -162,7 +162,7 @@ else {
 			$sql="SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonYearGroup ON (gibbonApplicationForm.gibbonYearGroupIDEntry=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonSchoolYearIDEntry=:gibbonSchoolYearID ORDER BY status, priority DESC, timestamp DESC" ; 
 			if ($search!="") {
 				$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%", "search4"=>"%$search%"); 
-				$sql="SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonYearGroup ON (gibbonApplicationForm.gibbonYearGroupIDEntry=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonSchoolYearIDEntry=:gibbonSchoolYearID AND (preferredName LIKE :search1 OR surname LIKE :search2 OR gibbonApplicationFormID LIKE :search3 OR paypalPaymentTransactionID LIKE :search4) ORDER BY status, priority DESC, timestamp DESC" ; 
+				$sql="SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonYearGroup ON (gibbonApplicationForm.gibbonYearGroupIDEntry=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonSchoolYearIDEntry=:gibbonSchoolYearID AND (preferredName LIKE :search1 OR surname LIKE :search2 OR gibbonApplicationFormID LIKE :search3 OR paymentTransactionID LIKE :search4) ORDER BY gibbonApplicationForm.status, priority DESC, gibbonApplicationForm.timestamp DESC" ; 
 			}
 			$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
 			$result=$connection2->prepare($sql);

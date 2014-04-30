@@ -192,6 +192,12 @@ General: replaced all PHP short tags (<?) with full tags (<?php)
 Activities: fixed ordering of Staff in edit screen
 	Edited file /modules/Activities/activities_manage_edit.php
 
+General: moved CC payment storage from application form to general system wide table
+	New table gibbonPayment
+	Edited table gibbonApplicationForm
+	Edited files /modules/User Admin/applicationForm_manage*.php
+	Edited files /modules/Application Form/applicationForm*.php
+
 
 v7.1.02
 -------

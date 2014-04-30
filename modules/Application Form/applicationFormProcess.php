@@ -672,13 +672,13 @@ else {
 		if ($_GET["addReturn"]=="success1") {
 			$paymentMade='Y' ;
 		}
-		$paypalPaymentToken=NULL ;
+		$paymentToken=NULL ;
 		if (isset($_GET["token"])) {
-			$paypalPaymentToken=$_GET["token"] ;
+			$paymentToken=$_GET["token"] ;
 		}
-		$paypalPaymentPayerID=NULL ;
+		$paymentPayerID=NULL ;
 		if (isset($_GET["PayerID"])) {
-			$paypalPaymentPayerID=$_GET["PayerID"] ;
+			$paymentPayerID=$_GET["PayerID"] ;
 		}
 		$gibbonApplicationFormID=NULL ;
 		if (isset($_GET["id"])) {
@@ -690,7 +690,7 @@ else {
 		}
 		
 		//Check return values to see if we can proceed
-		if ($paypalPaymentToken=="" OR $paypalPaymentPayerID=="" OR $gibbonApplicationFormID=="" OR $applicationFee=="") {
+		if ($paymentToken=="" OR $paymentPayerID=="" OR $gibbonApplicationFormID=="" OR $applicationFee=="") {
 			//Success 2
 			$URL=$URL . "&addReturn=success2&id=" . $_GET["id"] ;
 			header("Location: {$URL}");
@@ -700,25 +700,50 @@ else {
 			require "../../lib/paypal/paypalfunctions.php" ;
 		
 			//Ask paypal to finalise the payment
-			$confirmPayment=confirmPayment($guid, $applicationFee, $paypalPaymentToken, $paypalPaymentPayerID) ;
+			$confirmPayment=confirmPayment($guid, $applicationFee, $paymentToken, $paymentPayerID) ;
 	
 			$ACK=$confirmPayment["ACK"] ;
-			$paypalPaymentTransactionID=$confirmPayment["PAYMENTINFO_0_TRANSACTIONID"] ;
-			$paypalPaymentReceiptID=$confirmPayment["PAYMENTINFO_0_RECEIPTID"] ;
+			$paymentTransactionID=$confirmPayment["PAYMENTINFO_0_TRANSACTIONID"] ;
+			$paymentReceiptID=$confirmPayment["PAYMENTINFO_0_RECEIPTID"] ;
 			
 			//Payment was successful. Yeah!
 			if ($ACK="Success") {
+				$updateFail=false ;
+				
+				//Save payment details to gibbonPayment
 				try {
-					$data=array("paymentMade"=>$paymentMade, "paypalPaymentToken"=>$paypalPaymentToken, "paypalPaymentPayerID"=>$paypalPaymentPayerID, "paypalPaymentTransactionID"=>$paypalPaymentTransactionID, "paypalPaymentReceiptID"=>$paypalPaymentReceiptID, "gibbonApplicationFormID"=>$gibbonApplicationFormID); 
-					$sql="UPDATE gibbonApplicationForm SET paymentMade=:paymentMade, paypalPaymentToken=:paypalPaymentToken, paypalPaymentPayerID=:paypalPaymentPayerID, paypalPaymentTransactionID=:paypalPaymentTransactionID, paypalPaymentReceiptID=:paypalPaymentReceiptID WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
+					$data=array("status"=>"Success", "paymentToken"=>$paymentToken, "paymentPayerID"=>$paymentPayerID, "paymentTransactionID"=>$paymentTransactionID, "paymentReceiptID"=>$paymentReceiptID, "foreignTable"=>"gibbonApplicationForm", "foreignTableID"=>$gibbonApplicationFormID); 
+					$sql="INSERT INTO gibbonPayment SET status=:status, paymentToken=:paymentToken, paymentPayerID=:paymentPayerID, paymentTransactionID=:paymentTransactionID, paymentReceiptID=:paymentReceiptID, foreignTable=:foreignTable, foreignTableID=:foreignTableID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
+					$updateFail=true ;
+				}
+				
+				$gibbonPaymentID=$connection2->lastInsertID() ;
+				
+				//Link gibbonPayment record to gibbonApplicationForm, and make note that payment made
+				if ($gibbonPaymentID!="") {
+					try {
+						$data=array("paymentMade"=>$paymentMade, "gibbonPaymentID"=>$gibbonPaymentID, "gibbonApplicationFormID"=>$gibbonApplicationFormID); 
+						$sql="UPDATE gibbonApplicationForm SET paymentMade=:paymentMade, gibbonPaymentID=:gibbonPaymentID WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
+					}
+					catch(PDOException $e) { 
+						$updateFail=true ;
+					}
+				}
+				else {
+					$updateFail=true ;
+				}
+				
+				if ($updateFail==true) {
 					//Success 3
 					$URL=$URL . "&addReturn=success3&id=" . $_GET["id"] ;
 					header("Location: {$URL}");
-					break ;
+					exit ;
 				}
 				
 				//Success 1
@@ -726,19 +751,44 @@ else {
 				header("Location: {$URL}");
 			}
 			else {
+				$updateFail=false ;
+				
+				//Save payment details to gibbonPayment
 				try {
-					$data=array("paymentMade"=>$paymentMade, "paypalPaymentToken"=>$paypalPaymentToken, "paypalPaymentPayerID"=>$paypalPaymentPayerID, "gibbonApplicationFormID"=>$gibbonApplicationFormID); 
-					$sql="UPDATE gibbonApplicationForm SET paymentMade=:paymentMade, paypalPaymentToken=:paypalPaymentToken, paypalPaymentPayerID=:paypalPaymentPayerID WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
+					$data=array("status"=>"Failure", "paymentToken"=>$paymentToken, "paymentPayerID"=>$paymentPayerID, "paymentTransactionID"=>$paymentTransactionID, "paymentReceiptID"=>$paymentReceiptID, "foreignTable"=>"gibbonApplicationForm", "foreignTableID"=>$gibbonApplicationFormID); 
+					$sql="INSERT INTO gibbonPayment SET status=:status, paymentToken=:paymentToken, paymentPayerID=:paymentPayerID, paymentTransactionID=:paymentTransactionID, paymentReceiptID=:paymentReceiptID, foreignTable=:foreignTable, foreignTableID=:foreignTableID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Success 3
+					$updateFail=true ;
+				}
+				
+				$gibbonPaymentID=$connection2->lastInsertID() ;
+				
+				//Link gibbonPayment record to gibbonApplicationForm, and make note that payment made
+				if ($gibbonPaymentID!="") {
+					try {
+						$data=array("paymentMade"=>$paymentMade, "gibbonPaymentID"=>$gibbonPaymentID, "gibbonApplicationFormID"=>$gibbonApplicationFormID); 
+						$sql="UPDATE gibbonApplicationForm SET paymentMade=:paymentMade, gibbonPaymentID=:gibbonPaymentID WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
+					}
+					catch(PDOException $e) { 
+						$updateFail=true ;
+					}
+				}
+				else {
+					$updateFail=true ;
+				}
+				
+				if ($updateFail==true) {
+					//Success 2
 					$URL=$URL . "&addReturn=success2&id=" . $_GET["id"] ;
 					header("Location: {$URL}");
-					break ;
+					exit ;
 				}
-			
+				
 				//Success 2
 				$URL=$URL . "&addReturn=success2&id=" . $_GET["id"] ;
 				header("Location: {$URL}");

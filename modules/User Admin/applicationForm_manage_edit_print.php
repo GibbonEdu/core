@@ -48,7 +48,7 @@ else {
 		//Proceed!
 		try {
 			$data=array("gibbonApplicationFormID"=>$gibbonApplicationFormID); 
-			$sql="SELECT * FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
+			$sql="SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -66,25 +66,25 @@ else {
 			print "<h4>" . _('For Office Use') . "</h4>" ;
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
-					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+					print "<td style='width: 25%; padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Application ID') . "</span><br/>" ;
 						print "<i>" . htmlPrep($row["gibbonApplicationFormID"]) . "</i>" ;
 					print "</td>" ;
-					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+					print "<td style='width: 25%; padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Priority') . "</span><br/>" ;
 						print "<i>" . htmlPrep($row["priority"]) . "</i>" ;
 					print "</td>" ;
-					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+					print "<td style='width: 50%; padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Status') . "</span><br/>" ;
 						print "<i>" . htmlPrep($row["status"]) . "</i>" ;
 					print "</td>" ;
 				print "</tr>" ;
 				print "<tr>" ;
-					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+					print "<td style='padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Start Date') . "</span><br/>" ;
 						print "<i>" . dateConvertBack($guid, $row["dateStart"]). "</i>" ;
 					print "</td>" ;
-					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+					print "<td style='padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Year of Entry') . "</span><br/>" ;
 						try {
 							$dataSelect=array("gibbonSchoolYearIDEntry"=>$row["gibbonSchoolYearIDEntry"]); 
@@ -100,7 +100,7 @@ else {
 							print "<i>" . $rowSelect["name"] . "</i>" ;
 						}
 					print "</td>" ;
-					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+					print "<td style='padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group at Entry') . "</span><br/>" ;
 						try {
 							$dataSelect=array("gibbonYearGroupIDEntry"=>$row["gibbonYearGroupIDEntry"]); 
@@ -123,7 +123,7 @@ else {
 					print "</td>" ;
 				print "</tr>" ;
 				print "<tr>" ;
-					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+					print "<td style='padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group at Entry') . "</span><br/>" ;
 						try {
 							$dataSelect=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
@@ -139,22 +139,28 @@ else {
 							print "<i>" . $rowSelect["name"] . "</i>" ;
 						}
 					print "</td>" ;
-					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+					print "<td style='padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Milestones') . "</span><br/>" ;
 						print "<i>" . htmlPrep($row["milestones"]) . "</i>" ;
 					print "</td>" ;
-					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+					print "<td style='padding-top: 15px; vertical-align: top'>" ;
 						$currency=getSettingByScope($connection2, "System", "currency") ;
 						$applicationFee=getSettingByScope($connection2, "Application Form", "applicationFee") ;
 						if ($applicationFee>0 AND is_numeric($applicationFee)) {		
 							print "<span style='font-size: 115%; font-weight: bold'>Payment</span><br/>" ;
-							print "<i>" . htmlPrep($row["paymentMade"]) . "</i>" ;
-							if ($row["paypalPaymentToken"]!="" OR $row["paypalPaymentPayerID"]!="") {
-								if ($row["paypalPaymentToken"]!="") {
-									print "<i>PayPal Payment Token: " . $row["paypalPaymentToken"] . "</i><br/>" ;
+							print "<i>" . htmlPrep($row["paymentMade"]) . "</i><br/>" ;
+							if ($row["paymentToken"]!="" OR $row["paymentPayerID"]!="" OR $row["paymentTransactionID"]!="" OR $row["paymentReceiptID"]!="") {
+								if ($row["paymentToken"]!="") {
+									print _("Payment Token:") . " " . $row["paymentToken"] . "<br/>" ;
 								}
-								if ($row["paypalPaymentPayerID"]!="") {
-									print "<i>PayPal Payment PayerID: " . $row["paypalPaymentPayerID"] . "</i>" ;
+								if ($row["paymentPayerID"]!="") {
+									print _("Payment Payer ID:") . " " . $row["paymentPayerID"] . "<br/>" ;
+								}
+								if ($row["paymentTransactionID"]!="") {
+									print _("Payment Transaction ID:") . " " . $row["paymentTransactionID"] . "<br/>" ;
+								}
+								if ($row["paymentReceiptID"]!="") {
+									print _("Payment Receipt ID:") . " " . $row["paymentReceiptID"] . "<br/>" ;
 								}
 							}
 						}
@@ -162,7 +168,7 @@ else {
 				print "</tr>" ;
 				if ($row["notes"]!="") {
 					print "<tr>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
+						print "<td style='padding-top: 15px; vertical-align: top' colspan=3>" ;
 							print "<span style='font-size: 115%; font-weight: bold'>" . _('Notes') . "</span><br/>" ;
 							print "<i>" . $row["notes"] . "</i>" ;
 						print "</td>" ;

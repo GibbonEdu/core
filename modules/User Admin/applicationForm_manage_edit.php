@@ -47,7 +47,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonApplicationFormID"=>$gibbonApplicationFormID); 
-			$sql="SELECT * FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
+			$sql="SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -374,23 +374,23 @@ else {
 							</td>
 						</tr>
 						<?php
-						if ($row["paypalPaymentToken"]!="" OR $row["paypalPaymentPayerID"]!="" OR $row["paypalPaymentTransactionID"]!="" OR $row["paypalPaymentReceiptID"]!="") {
+						if ($row["paymentToken"]!="" OR $row["paymentPayerID"]!="" OR $row["paymentTransactionID"]!="" OR $row["paymentReceiptID"]!="") {
 							?>
 							<tr>
 								<td style='text-align: right' colspan=2> 
 									<span style="font-size: 90%"><i>
 										<?php
-											if ($row["paypalPaymentToken"]!="") {
-												print _("PayPal Payment Token:") . " " . $row["paypalPaymentToken"] . "<br/>" ;
+											if ($row["paymentToken"]!="") {
+												print _("Payment Token:") . " " . $row["paymentToken"] . "<br/>" ;
 											}
-											if ($row["paypalPaymentPayerID"]!="") {
-												print _("PayPal Payment Payer ID:") . " " . $row["paypalPaymentPayerID"] . "<br/>" ;
+											if ($row["paymentPayerID"]!="") {
+												print _("Payment Payer ID:") . " " . $row["paymentPayerID"] . "<br/>" ;
 											}
-											if ($row["paypalPaymentTransactionID"]!="") {
-												print _("PayPal Payment Transaction ID:") . " " . $row["paypalPaymentTransactionID"] . "<br/>" ;
+											if ($row["paymentTransactionID"]!="") {
+												print _("Payment Transaction ID:") . " " . $row["paymentTransactionID"] . "<br/>" ;
 											}
-											if ($row["paypalPaymentReceiptID"]!="") {
-												print _("PayPal Payment Receipt ID:") . " " . $row["paypalPaymentReceiptID"] . "<br/>" ;
+											if ($row["paymentReceiptID"]!="") {
+												print _("Payment Receipt ID:") . " " . $row["paymentReceiptID"] . "<br/>" ;
 											}
 										?>
 									</i></span>

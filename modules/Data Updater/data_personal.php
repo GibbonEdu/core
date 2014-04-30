@@ -1093,7 +1093,7 @@ else {
 											<?php
 											try {
 												$dataAuto=array(); 
-												$sqlAuto="SELECT DISTINCT languageFirst FROM gibbonApplicationForm ORDER BY languageFirst" ;
+												$sqlAuto="SELECT DISTINCT languageFirst FROM gibbonPerson ORDER BY languageFirst" ;
 												$resultAuto=$connection2->prepare($sqlAuto);
 												$resultAuto->execute($dataAuto);
 											}
