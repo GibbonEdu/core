@@ -76,7 +76,7 @@ else {
 						$( "#date" ).datepicker();
 					});
 				</script>
-				<input style='min-width: 30px; margin-top: 0px; float: right' type='submit' value='" . _('Go') . "'>
+				<input style='min-width: 30px; margin-top: 0px; float: right' type='submit' value='<?php print _('Go') ?>'>
 				<?php	
 			print "</form>" ;
 		print "</div>" ;

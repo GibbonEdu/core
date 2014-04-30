@@ -222,7 +222,7 @@ else {
 					print "<fieldset style='border: none'>" ;
 					print "<div class='linkTop' style='height: 27px'>" ;
 						?>
-						<input style='margin-top: 0px; float: right' type='submit' value='" . _('Go') . "'>
+						<input style='margin-top: 0px; float: right' type='submit' value='<?php print _('Go') ?>'>
 						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
 							<option value="Select action"><?php print _('Select action') ?></option>
 							<option value="Mark as left"><?php print _('Mark as left') ?></option>

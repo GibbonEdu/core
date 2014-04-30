@@ -97,7 +97,7 @@ else {
 				print _("Datebase Update") ;
 			print "</h3>" ;
 			print "<p>" ;
-				print sprintf(_('It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v%1$s to v%2$s. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $versionCode) . "</b>" ;
+				print sprintf(_('It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v%1$s to v%2$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $versionCode) . "</b>" ;
 			print "</p>" ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/updateProcess.php?type=regularRelease" ?>">
@@ -165,7 +165,7 @@ else {
 				print _("Datebase Update") ;
 			print "</h3>" ;
 			print "<p>" ;
-				print sprintf(_('It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v%1$s line %2$s to v%3$s line %4$s. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $cuttingEdgeCodeLine, $versionCode, $versionMaxLinesMax) . "</b>" ;
+				print sprintf(_('It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v%1$s line %2$s to v%3$s line %4$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $cuttingEdgeCodeLine, $versionCode, $versionMaxLinesMax) . "</b>" ;
 			print "</p>" ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/updateProcess.php?type=cuttingEdge" ?>">

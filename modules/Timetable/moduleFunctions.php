@@ -216,7 +216,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 								$("#ttDate").datepicker();
 							});
 						</script>
-						<input style='margin-top: 0px; margin-right: -2px' type='submit' value='" . _('Go') . "'>
+						<input style='margin-top: 0px; margin-right: -2px' type='submit' value='<?php print _('Go') ?>'>
 						<?php
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
@@ -1276,7 +1276,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 								$("#ttDate").datepicker();
 							});
 						</script>
-						<input style='margin-top: 0px; margin-right: -2px' type='submit' value='" . _('Go') . "'>
+						<input style='margin-top: 0px; margin-right: -2px' type='submit' value='<?php print _('Go') ?>'>
 						<?php
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
