@@ -1132,7 +1132,7 @@ function sidebar($connection2, $guid) {
 			while ($row=$result->fetch()) {
 				try {
 					$dataWork=array("timestamp"=>$_SESSION[$guid]["lastTimestamp"], "gibbonCourseClassID"=>$row["gibbonCourseClassID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-					$sqlWork="SELECT DISTINCT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonPlannerEntry.name FROM gibbonPlannerEntry JOIN gibbonPlannerEntryDiscuss ON (gibbonPlannerEntry.gibbonPlannerEntryID=gibbonPlannerEntryDiscuss.gibbonPlannerEntryID) WHERE gibbonPlannerEntryDiscuss.timestamp>=:timestamp AND gibbonCourseClassID=:gibbonCourseClassID AND NOT gibbonPlannerEntryDiscuss.gibbonPersonID=:gibbonPersonID" ;
+					$sqlWork="SELECT DISTINCT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonPlannerEntry.name, gibbonPlannerEntryHomeworkID FROM gibbonPlannerEntry JOIN gibbonPlannerEntryDiscuss ON (gibbonPlannerEntry.gibbonPlannerEntryID=gibbonPlannerEntryDiscuss.gibbonPlannerEntryID) WHERE gibbonPlannerEntryDiscuss.timestamp>=:timestamp AND gibbonCourseClassID=:gibbonCourseClassID AND NOT gibbonPlannerEntryDiscuss.gibbonPersonID=:gibbonPersonID" ;
 					$resultWork=$connection2->prepare($sqlWork);
 					$resultWork->execute($dataWork); 
 				}

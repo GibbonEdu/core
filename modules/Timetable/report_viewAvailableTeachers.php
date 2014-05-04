@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/Timetable/report_viewAvailableSpaces.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/Timetable/report_viewAvailableTeachers.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
 		print _("You do not have access to this action.") ;
@@ -30,26 +30,21 @@ if (isActionAccessible($guid, $connection2, "/modules/Timetable/report_viewAvail
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Available Spaces</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('View Available Spaces') . "</div>" ;
 	print "</div>" ;
 	
 	print "<p>" ;
-	print "This report shows all available spaces in a given time, in a given timetable. Please note that whilst school closures are shown, timing changes are not. For cells which contain too many free spaces, hover your mouse over the cell to see all entries." ;
+	print _("This report shows all available teachers in a given time, in a given timetable. Please note that whilst school closures are shown, timing changes are not. For cells which contain too many free spaces, hover your mouse over the cell to see all entries.") ;
 	print "</p>" ;		
 			
 	print "<h2>" ;
-	print "Choose Options" ;
+	print _("Choose Options") ;
 	print "</h2>" ;
 	
 	$gibbonTTID=NULL ;
 	if (isset($_GET["gibbonTTID"])) {
 		$gibbonTTID=$_GET["gibbonTTID"] ;
 	}
-	$spaceType=NULL ;
-	if (isset($_GET["spaceType"])) {
-		$spaceType=$_GET["spaceType"] ;
-	}
-	
 	$ttDate=NULL ;
 	if (isset($_GET["ttDate"])) {
 		$ttDate=$_GET["ttDate"] ;
@@ -96,28 +91,6 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Space Type</b><br/>
-					<span style="font-size: 90%"><i>Restrict search to particular space types</span>
-				</td>
-				<td class="right">
-					<select name="spaceType" id="spaceType" style="width: 302px">
-						<option <?php if ($spaceType=="") { print "selected" ; } ?> value=''>All</option>
-						<option <?php if ($spaceType=="Classroom") { print "selected" ; } ?> value='Classroom'>Classroom</option>
-						<option <?php if ($spaceType=="Performance") { print "selected" ; } ?> value='Performance'>Performance</option>
-						<option <?php if ($spaceType=="Hall") { print "selected" ; } ?> value='Hall'>Hall</option>
-						<option <?php if ($spaceType=="Outdoor") { print "selected" ; } ?> value='Outdoor'>Outdoor</option>
-						<option <?php if ($spaceType=="Undercover") { print "selected" ; } ?> value='Undercover'>Undercover</option>
-						<option <?php if ($spaceType=="Storage") { print "selected" ; } ?> value='Storage'>Storage</option>
-						<option <?php if ($spaceType=="Office") { print "selected" ; } ?> value='Office'>Office</option>
-						<option <?php if ($spaceType=="Staffroom") { print "selected" ; } ?> value='Staffroom'>Staffroom</option>
-						<option <?php if ($spaceType=="Study") { print "selected" ; } ?> value='Study'>Study</option>
-						<option <?php if ($spaceType=="Library") { print "selected" ; } ?> value='Library'>Library</option>
-						<option <?php if ($spaceType=="Other") { print "selected" ; } ?> value='Other'>Other</option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
 					<b>Date</b><br/>
 					<span style="font-size: 90%"><i>Choose a timetable to view</span>
 				</td>
@@ -138,7 +111,7 @@ else {
 			
 			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_viewAvailableSpaces.php">
+					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_viewAvailableTeachers.php">
 					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>
 			</tr>
@@ -548,32 +521,30 @@ else {
 													if ($rowPeriods["type"]=="Lesson") {
 														$vacancies="" ;
 														try {
-															if ($spaceType=="") {
-																$dataSelect=array(); 
-																$sqlSelect="SELECT * FROM gibbonSpace ORDER BY name" ;
-															}
-															else {
-																$dataSelect=array("type"=>$spaceType); 
-																$sqlSelect="SELECT * FROM gibbonSpace WHERE type=:type ORDER BY name" ;
-															}
+															$sqlSelect="SELECT gibbonPerson.gibbonPersonID, initials, username FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' and type='Teaching' ORDER BY preferredName, surname, initials" ;
 															$resultSelect=$connection2->prepare($sqlSelect);
 															$resultSelect->execute($dataSelect);
 														}
 														catch(PDOException $e) { }
 														while ($rowSelect=$resultSelect->fetch()) {
 															try {
-																$dataUnique=array("gibbonTTDayID"=>$rowDay["gibbonTTDayID"], "gibbonTTColumnRowID"=>$rowPeriods["gibbonTTColumnRowID"], "gibbonSpaceID"=>$rowSelect["gibbonSpaceID"]); 
-																$sqlUnique="SELECT * FROM gibbonTTDayRowClass WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonSpaceID=:gibbonSpaceID" ;
+																$dataUnique=array("gibbonTTDayID"=>$rowDay["gibbonTTDayID"], "gibbonTTColumnRowID"=>$rowPeriods["gibbonTTColumnRowID"], "gibbonPersonID"=>$rowSelect["gibbonPersonID"]); 
+																$sqlUnique="SELECT * FROM gibbonTTDayRowClass JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonTTDayRowClassExceptionID IS NULL" ;
 																$resultUnique=$connection2->prepare($sqlUnique);
 																$resultUnique->execute($dataUnique);
 															}
 															catch(PDOException $e) { }
 															if ($resultUnique->rowCount()<1) {
-																$vacancies.=$rowSelect["name"] . ", " ;
+																if (isset($rowSelect["initials"])) {
+																	$vacancies.=$rowSelect["initials"] . ", " ;
+																}
+																else {
+																	$vacancies.=$rowSelect["username"] . ", " ;
+																}
 															}
 														}
 														$vacancies=substr($vacancies,0,-2) ;
-														$day=$day . "<div title='" . htmlPrep($vacancies) . "' style='color: black; font-weight: normal; line-height: 0.9'>" ;
+														$day=$day . "<div title='" . htmlPrep($vacancies) . "' style='color: black; font-weight: normal;line-height: 0.9'>" ;
 															if (strlen($vacancies)<=50) {
 																$day.=$vacancies ;
 															}

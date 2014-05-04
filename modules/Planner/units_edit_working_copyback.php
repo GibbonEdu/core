@@ -39,7 +39,7 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>Edit Unit</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit_working.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&gibbonUnitClassID=" . $_GET["gibbonUnitClassID"] . "'>Edit Working Copy</a> > </div><div class='trailEnd'>Copy Back Block</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . _('Manage Units') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>" . _('Edit Unit') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit_working.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&gibbonUnitClassID=" . $_GET["gibbonUnitClassID"] . "'>" . _('Edit Working Copy') . "</a> > </div><div class='trailEnd'>" . _('Copy Back Block') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["copyReturn"])) { $copyReturn=$_GET["copyReturn"] ; } else { $copyReturn="" ; }
@@ -62,7 +62,8 @@ else {
 				$copyReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($copyReturn=="fail5") {
-				$copyReturnMessage="Your request failed due to an attachment error." ;	
+				$copyReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
+				$class="success" ;	
 			}
 			else if ($copyReturn=="success0") {
 				$copyReturnMessage=_("Your request was completed successfully.") ;	
@@ -143,21 +144,21 @@ else {
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>School Year</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('School Year') . "</span><br/>" ;
 									print "<i>" . $year . "</i>" ;
 									print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Class</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('Class') . "</span><br/>" ;
 									print "<i>" . $course . "." . $class . "</i>" ;
 								print "</td>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Unit</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('Unit') . "</span><br/>" ;
 									print "<i>" . $row["name"] . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;
 							print "<tr>" ;
 								print "<td style='padding-top: 15px; width: 34%; vertical-align: top' colspan=3>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Block Title</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('Block Title') . "</span><br/>" ;
 									print "<i>" . $row["block"] . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;
@@ -165,10 +166,10 @@ else {
 						
 						
 						print "<h3>" ;
-						print "Options" ;
+						print _("Options") ;
 						print "</h3>" ;
 						print "<p>" ;
-						print "This action will use the selected block to replace the equivalent block in the master unit. The option below also lets you replace the equivalent block in all other working units within the unit." ;
+						print _("This action will use the selected block to replace the equivalent block in the master unit. The option below also lets you replace the equivalent block in all other working units within the unit.") ;
 						print "</p>" ;
 						
 						?>
@@ -176,14 +177,14 @@ else {
 							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr>
 									<td> 
-										<b>Include Working Units? *</b><br/>
+										<b><?php print _('Include Working Units?') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
 										<select style="width: 302px" name="working">
 											<?php
-											print "<option value='N'>N</option>" ;
-											print "<option value='Y'>Y</option>" ;
+											print "<option value='N'>" . _('No') . "</option>" ;
+											print "<option value='Y'>" . _('Yes') . "</option>" ;
 											?>				
 										</select>
 									</td>

@@ -1594,6 +1594,9 @@ CREATE TABLE `gibbonPayment` (  `gibbonPaymentID` int(14) unsigned zerofill NOT 
 ALTER TABLE `gibbonApplicationForm`  DROP `paypalPaymentToken`,  DROP `paypalPaymentPayerID`,  DROP `paypalPaymentTransactionID`,  DROP `paypalPaymentReceiptID`;end
 ALTER TABLE `gibbonApplicationForm` ADD `gibbonPaymentID` INT(14) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `paymentMade`;end
 ALTER TABLE `gibbonPayment` ADD `status` ENUM('Success','Failure') NOT NULL DEFAULT 'Success' AFTER `gateway`;end
+INSERT INTO `gibbonAction` (`gibbonModuleID` ,`name` ,`precedence` ,`category` ,`description` ,`URLList` ,`entryURL` ,`defaultPermissionAdmin` ,`defaultPermissionTeacher` ,`defaultPermissionStudent` ,`defaultPermissionParent` ,`defaultPermissionSupport` ,`categoryPermissionStaff` ,`categoryPermissionStudent` ,`categoryPermissionParent` ,`categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable'), 'View Available Teachers', 0, 'Reports', 'View unassigned teachers by timetable.', 'report_viewAvailableTeachers.php', 'report_viewAvailableTeachers.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y');end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Timetable' AND gibbonAction.name='View Available Teachers'));end
+
 ";
 
 

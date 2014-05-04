@@ -39,7 +39,7 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>Edit Unit</a> > </div><div class='trailEnd'>Copy Unit Back</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . _('Manage Units') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>" . _('Edit Unit') . "</a> > </div><div class='trailEnd'>" . _('Copy Unit Back') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["copyForwardReturn"])) { $copyForwardReturn=$_GET["copyForwardReturn"] ; } else { $copyForwardReturn="" ; }
@@ -47,16 +47,16 @@ else {
 		$class="error" ;
 		if (!($copyForwardReturn=="")) {
 			if ($copyForwardReturn=="fail0") {
-				$copyForwardReturnMessage="Copy failed because you do not have access to this action." ;	
+				$copyForwardReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($copyForwardReturn=="fail2") {
-				$copyForwardReturnMessage="Copy failed due to a database error." ;	
+				$copyForwardReturnMessage=_("Your request failed due to a database error.") ;	
 			}
 			else if ($copyForwardReturn=="fail3") {
-				$copyForwardReturnMessage="Copy failed because your inputs were invalid." ;	
+				$copyForwardReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($copyForwardReturn=="fail6") {
-				$copyForwardReturnMessage="Copy succeeded, but there were problems uploading one or more attachments." ;	
+				$copyForwardReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
 			}
 			print "<div class='$class'>" ;
 				print $copyForwardReturnMessage;
@@ -128,15 +128,15 @@ else {
 						$row=$result->fetch() ;
 						
 						print "<p>" ;
-						print "This function allows you to take the selected working unit (" . $row["name"] . " in $course.$class) and use its blocks, and the master unit details, to create a new unit. In this way you can use your refined and improved unit as a new master unit whilst leaving your existing master unit untouched." ;
+						print sprintf(_('This function allows you to take the selected working unit (%1$s in %2$s) and use its blocks, and the master unit details, to create a new unit. In this way you can use your refined and improved unit as a new master unit whilst leaving your existing master unit untouched.'), $row["name"], "$course.$class") ;
 						print "</p>" ;
 						
 						?>
 						<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_edit_copyForwardProcess.php?gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
 							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
-								<tr>
+								<tr class='break'>
 									<td colspan=2> 
-										<h3>Source</h3>
+										<h3><?php print _('Source') ?></h3>
 									</td>
 								</tr>
 								<tr>
@@ -161,7 +161,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Unit *</b><br/>
+										<b><?php print _('Unit') ?> *</b><br/>
 										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
@@ -169,15 +169,15 @@ else {
 									</td>
 								</tr>
 								
-								<tr>
+								<tr class='break'>
 									<td colspan=2> 
-										<h3>Target</h3>
+										<h3><?php print _('Target') ?></h3>
 									</td>
 								</tr>
 										
 								<tr>
 									<td> 
-										<b>Year*</b><br/>
+										<b><?php print _('Year') ?> *</b><br/>
 									</td>
 									<td class="right">
 										<select name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo" style="width: 302px">
@@ -243,7 +243,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>New Unit Name*</b><br/>
+										<b><?php print _('New Unit Name') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">

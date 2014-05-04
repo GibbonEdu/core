@@ -227,7 +227,7 @@ else {
 					
 					if ($proceed==FALSE) {
 						print "<div class='error'>" ;
-							print "Your request failed because you do not have access to this action." ;
+							print _("Your request failed because you do not have access to this action.") ;
 						print "</div>" ;
 					}
 					else {
@@ -530,7 +530,7 @@ else {
 		
 		if ($proceed==FALSE) {
 			print "<div class='error'>" ;
-				print "Your request failed because you do not have access to this action." ;
+				print _("Your request failed because you do not have access to this action.") ;
 			print "</div>" ;
 		}
 		else {

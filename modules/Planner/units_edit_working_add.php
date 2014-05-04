@@ -50,7 +50,7 @@ else {
 		
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>Edit Unit</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit_working.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>Edit Working Copy</a> > </div><div class='trailEnd'>Add Lessons</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . _('Manage Units') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>" . _('Edit Unit') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit_working.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>" . _('Edit Working Copy') . "</a> > </div><div class='trailEnd'>" . _('Add Lessons') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -176,15 +176,15 @@ else {
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>School Year</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('School Year') . "</span><br/>" ;
 									print "<i>" . $year . "</i>" ;
 									print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Class</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('Class') . "</span><br/>" ;
 									print "<i>" . $course . "." . $class . "</i>" ;
 								print "</td>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Unit</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('Unit') . "</span><br/>" ;
 									print "<i>" . $row["name"] . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;
@@ -192,10 +192,10 @@ else {
 						
 						
 						print "<h3>" ;
-						print "Choose Lessons" ;
+						print _("Choose Lessons") ;
 						print "</h3>" ;
 						print "<p>" ;
-						print "Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment." ;
+						print _("Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.") ;
 						print "</p>" ;
 						
 						//Find all unplanned slots for this class.
@@ -288,10 +288,10 @@ else {
 							}
 							while ($rowTerms=$resultTerms->fetch()) {
 								$terms[$termCount][0]=$rowTerms["firstDay"] ;
-								$terms[$termCount][1]="Start of " . $rowTerms["nameShort"] ;
+								$terms[$termCount][1]=_("Start of") . " " . $rowTerms["nameShort"] ;
 								$termCount++ ;
 								$terms[$termCount][0]=$rowTerms["lastDay"] ;
-								$terms[$termCount][1]="End of " . $rowTerms["nameShort"] ;
+								$terms[$termCount][1]=_("End of") . " " . $rowTerms["nameShort"] ;
 								$termCount++ ;
 							}
 							//Get school closure special days
@@ -341,25 +341,25 @@ else {
 								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
-											print "Lesson<br/>Number" ;
+											print sprintf(_('Lesson%1$sNumber'), "<br/>") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Date" ;
+											print _("Date") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Day" ;
+											print _("Day") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Month" ;
+											print _("Month") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "TT Period/<br/>Time" ;
+											print sprintf(_('TT Period%1$Time'), "<br/>") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Planned<br/>Lesson" ;
+											print sprintf(_('Planned%1$Lesson'), "<br/>") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Include?" ;
+											print _("Include?") ;
 										print "</th>" ;
 									print "</tr>" ;
 									

@@ -25,7 +25,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messageWall_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "Your request failed because you do not have access to this action." ;
+		print _("Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {

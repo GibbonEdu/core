@@ -1465,7 +1465,7 @@ else {
 					else if ($subpage=="Notes") {
 						if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details_notes_add.php")==FALSE) {
 							print "<div class='error'>" ;
-								print "Your request failed because you do not have access to this action." ;
+								print _("Your request failed because you do not have access to this action.") ;
 							print "</div>" ; 
 						}
 						else {

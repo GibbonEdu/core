@@ -50,7 +50,7 @@ else {
 		
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>Edit Unit</a> > </div><div class='trailEnd'>Deploy Working Copy</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . _('Manage Units') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>" . _('Edit Unit') . "</a> > </div><div class='trailEnd'>" . _('Deploy Working Copy') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -183,15 +183,15 @@ else {
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>School Year</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('School Year') . "</span><br/>" ;
 									print "<i>" . $year . "</i>" ;
 									print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Class</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('Class') . "</span><br/>" ;
 									print "<i>" . $course . "." . $class . "</i>" ;
 								print "</td>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Unit</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('Unit') . "</span><br/>" ;
 									print "<i>" . $row["name"] . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;
@@ -200,10 +200,10 @@ else {
 						//Step 1
 						if ($step==1) {
 							print "<h3>" ;
-							print "Step 1 - Select Lessons" ;
+							print _("Step 1 - Select Lessons") ;
 							print "</h3>" ;
 							print "<p>" ;
-							print "Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment." ;
+							print _("Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.") ;
 							print "</p>" ;
 							
 							//Find all unplanned slots for this class.
@@ -352,25 +352,25 @@ else {
 									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
-												print "Lesson<br/>Number" ;
+												print sprintf(_('Lesson%1$sNumber'), "<br/>") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Date" ;
+												print _("Date") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Day" ;
+												print _("Day") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Month" ;
+												print _("Month") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "TT Period/<br/>Time" ;
+												print _("TT Period") . "/<br/>" . _('Time') ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Planned<br/>Lesson" ;
+												print sprintf(_('Planned%1$Lesson'), "<br/>") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Include?" ;
+												print _("Include?") ;
 											print "</th>" ;
 										print "</tr>" ;
 										
@@ -510,10 +510,10 @@ else {
 						//Step 2
 						if ($step==2) {
 							print "<h3>" ;
-							print "Step 2 - Distribute Blocks" ;
+							print _("Step 2 - Distribute Blocks") ;
 							print "</h3>" ;
 							print "<p>" ;
-							print "You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another." ;
+							print _("You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.") ;
 							print "</p>" ;
 							
 							//Store blocks in array
@@ -603,7 +603,7 @@ else {
 															print "<input type='hidden' name='timeStart$i' value='" . $lessons[$i][1] . "' >" ;
 															print "<input type='hidden' name='timeEnd$i' value='" . $lessons[$i][2] . "' >" ;
 															print "<div style='text-align: right; float: right; margin-top: -17px; margin-right: 3px'>" ;
-																print "<span style='font-size: 80%'><i>Add Block:</i></span><br/>" ; 
+																print "<span style='font-size: 80%'><i>" . _('Add Block:') . "</i></span><br/>" ; 
 																print "<script type='text/javascript'>" ;
 																	print "$(document).ready(function(){" ;
 																		print "$(\"#blockAdd$i\").change(function(){" ;
@@ -652,11 +652,11 @@ else {
 									}
 									
 									?>
-									<b>Access</b><br/>
+									<b><?php print _('Access') ?></b><br/>
 									<table cellspacing='0' style="width: 100%">	
 										<tr id="accessRowStudents">
 											<td> 
-												<b>Viewable to Students *</b><br/>
+												<b><?php print _('Viewable to Students') ?> *</b><br/>
 												<span style="font-size: 90%"><i></i></span>
 											</td>
 											<td class="right">
@@ -664,14 +664,14 @@ else {
 												$sharingDefaultStudents=getSettingByScope( $connection2, "Planner", "sharingDefaultStudents" ) ;
 												?>
 												<select name="viewableStudents" id="viewableStudents" style="width: 302px">
-													<option <?php if ($sharingDefaultStudents=="Y") { print "selected" ; } ?> value="Y">Y</option>
-													<option <?php if ($sharingDefaultStudents=="N") { print "selected" ; } ?> value="N">N</option>
+													<option <?php if ($sharingDefaultStudents=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
+													<option <?php if ($sharingDefaultStudents=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
 												</select>
 											</td>
 										</tr>
 										<tr id="accessRowParents">
 											<td> 
-												<b>Viewable to Parents *</b><br/>
+												<b><?php print _('Viewable to Parents') ?> *</b><br/>
 												<span style="font-size: 90%"><i></i></span>
 											</td>
 											<td class="right">
@@ -679,8 +679,8 @@ else {
 												$sharingDefaultParents=getSettingByScope( $connection2, "Planner", "sharingDefaultParents" ) ;
 												?>
 												<select name="viewableParents" id="viewableParents" style="width: 302px">
-													<option <?php if ($sharingDefaultParents=="Y") { print "selected" ; } ?> value="Y">Y</option>
-													<option <?php if ($sharingDefaultParents=="N") { print "selected" ; } ?> value="N">N</option>
+													<option <?php if ($sharingDefaultParents=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
+													<option <?php if ($sharingDefaultParents=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
 												</select>
 											</td>
 										</tr>

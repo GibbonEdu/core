@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print "Your request failed because you do not have access to this action." ;
+		print _("Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -38,7 +38,7 @@ else {
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Units</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Units') . "</div>" ;
 		print "</div>" ;
 		
 		//Get Smart Workflow help message
@@ -164,7 +164,7 @@ else {
 				
 				if ($result->rowCount()<1) {
 					print "<div class='error'>" ;
-					print "The specified course does not seem to exist." ;
+					print _("The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 				else {
@@ -201,7 +201,7 @@ else {
 									print _("Name") ;
 								print "</th>" ;
 								print "<th style='width: 450px'>" ;
-									print "Description" ;
+									print _("Description") ;
 								print "</th>" ;
 								print "<th style='width: 120px'>" ;
 									print _("Actions") ;
@@ -230,7 +230,7 @@ else {
 										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit.php&gibbonUnitID=" . $row["gibbonUnitID"] . "&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_delete.php&gibbonUnitID=" . $row["gibbonUnitID"] . "&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_duplicate.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=" . $row["gibbonUnitID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Duplicate') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a> " ;
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_dump.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=" . $row["gibbonUnitID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='Export' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_dump.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=" . $row["gibbonUnitID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Export') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
 									print "</td>" ;
 								print "</tr>" ;
 								

@@ -39,7 +39,7 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>Edit Unit</a> > </div><div class='trailEnd'>Copy Unit Back</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . _('Manage Units') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>" . _('Edit Unit') . "</a> > </div><div class='trailEnd'>" . _('Copy Unit Back') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["copyReturn"])) { $copyReturn=$_GET["copyReturn"] ; } else { $copyReturn="" ; }
@@ -47,16 +47,16 @@ else {
 		$class="error" ;
 		if (!($copyReturn=="")) {
 			if ($copyReturn=="fail0") {
-				$copyReturnMessage="Copy failed because you do not have access to this action." ;	
+				$copyReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($copyReturn=="fail2") {
-				$copyReturnMessage="Copy failed due to a database error." ;	
+				$copyReturnMessage=_("Your request failed due to a database error.") ;	
 			}
 			else if ($copyReturn=="fail3") {
-				$copyReturnMessage="Copy failed because your inputs were invalid." ;	
+				$copyReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($copyReturn=="fail6") {
-				$copyReturnMessage="Copy succeeded, but there were problems uploading one or more attachments." ;	
+				$copyReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
 			}
 			print "<div class='$class'>" ;
 				print $copyReturnMessage;
@@ -130,23 +130,23 @@ else {
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>School Year</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('School Year') . "</span><br/>" ;
 									print "<i>" . $year . "</i>" ;
 									print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Class</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('Class') . "</span><br/>" ;
 									print "<i>" . $course . "." . $class . "</i>" ;
 								print "</td>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Unit</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('Unit') . "</span><br/>" ;
 									print "<i>" . $row["name"] . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;
 						print "</table>" ;
 						
 						
-						print "<p>" ;
-						print "This function allows you to take all of the blocks from the selected working unit (" . $row["name"] . " in $course.$class) and use them to replace the blocks in the master unit. In this way you can use your refined and improved unit as your master next time you deploy." ;
+						print "<p style='margin-top: 20px'>" ;
+						print sprintf(_('This function allows you to take all of the blocks from the selected working unit (%1$s in %2$s) and use them to replace the blocks in the master unit. In this way you can use your refined and improved unit as your master next time you deploy.'), $row["name"], "$course.$class") ;
 						print "</p>" ;
 						
 						?>
@@ -154,8 +154,8 @@ else {
 							<table cellspacing='0' style="width: 100%">	
 								<tr>
 									<td> 
-										<b>Are you sure you want to proceed with the unit copy back?</b><br/>
-										<span style="font-size: 90%; color: #cc0000"><i>This operation cannot be undone. PROCEED WITH CAUTION!</i></span>
+										<b><?php print _('Are you sure you want to proceed with this request?') ; ?></b><br/>
+										<span style="font-size: 90%; color: #cc0000"><i><?php print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
 									</td>
 									<td class="right">
 										

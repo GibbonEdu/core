@@ -198,6 +198,10 @@ General: moved CC payment storage from application form to general system wide t
 	Edited files /modules/User Admin/applicationForm_manage*.php
 	Edited files /modules/Application Form/applicationForm*.php
 
+Timetable: added new report to show available teachers
+	New values in tables gibbonAction, gibbonPermission
+	New file /modules/Timetable/report_viewAvailableTeachers.php
+
 
 v7.1.02
 -------

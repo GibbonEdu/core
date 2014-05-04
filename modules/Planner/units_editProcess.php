@@ -287,22 +287,24 @@ else {
 						}
 						//Insert outcomes
 						$count=0 ;
-						if (count($_POST["outcomeorder"])>0) {
-							foreach ($_POST["outcomeorder"] AS $outcome) {
-								if ($_POST["outcomegibbonOutcomeID$outcome"]!="") {
-									try {
-										$dataInsert=array("gibbonUnitID"=>$gibbonUnitID, "gibbonOutcomeID"=>$_POST["outcomegibbonOutcomeID$outcome"], "content"=>$_POST["outcomecontents$outcome"], "count"=>$count);  
-										$sqlInsert="INSERT INTO gibbonUnitOutcome SET gibbonUnitID=:gibbonUnitID, gibbonOutcomeID=:gibbonOutcomeID, content=:content, sequenceNumber=:count" ;
-										$resultInsert=$connection2->prepare($sqlInsert);
-										$resultInsert->execute($dataInsert);
+						if (isset($_POST["outcomeorder"])) {
+							if (count($_POST["outcomeorder"])>0) {
+								foreach ($_POST["outcomeorder"] AS $outcome) {
+									if ($_POST["outcomegibbonOutcomeID$outcome"]!="") {
+										try {
+											$dataInsert=array("gibbonUnitID"=>$gibbonUnitID, "gibbonOutcomeID"=>$_POST["outcomegibbonOutcomeID$outcome"], "content"=>$_POST["outcomecontents$outcome"], "count"=>$count);  
+											$sqlInsert="INSERT INTO gibbonUnitOutcome SET gibbonUnitID=:gibbonUnitID, gibbonOutcomeID=:gibbonOutcomeID, content=:content, sequenceNumber=:count" ;
+											$resultInsert=$connection2->prepare($sqlInsert);
+											$resultInsert->execute($dataInsert);
+										}
+										catch(PDOException $e) {
+											print $e ;
+											$partialFail=true ;
+										}
 									}
-									catch(PDOException $e) {
-										print $e ;
-										$partialFail=true ;
-									}
-								}
-								$count++ ;
-							}	
+									$count++ ;
+								}	
+							}
 						}
 					
 						//Write to database

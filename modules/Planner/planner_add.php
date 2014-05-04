@@ -120,7 +120,7 @@ else {
 		
 		if ($proceed==FALSE) {
 			print "<div class='error'>" ;
-				print "Your request failed because you do not have access to this action." ;
+				print _("Your request failed because you do not have access to this action.") ;
 			print "</div>" ;
 		}
 		else {
@@ -1016,7 +1016,7 @@ else {
 																$currentCategory=$rowSelect["category"] ;
 																$currentLA=$rowSelect["learningArea"] ;
 																if (($currentLA!=$lastLA) AND $currentLA!="") {
-																	print "<optgroup label='--" . strToUpper($currentLA) . " OUTCOMES--'>" ;
+																	print "<optgroup label='--" . strToUpper($currentLA) . " " . _('OUTCOMES') . "--'>" ;
 																}
 																if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 																	print "<optgroup label='--" . $currentCategory . "--'>" ;

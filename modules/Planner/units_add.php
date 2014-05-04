@@ -39,7 +39,7 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > </div><div class='trailEnd'>Add Unit</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . _('Manage Units') . "</a> > </div><div class='trailEnd'>" . _('Add Unit') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -124,7 +124,7 @@ else {
 
 					if ($resultCourse->rowCount()!=1) {
 						print "<div class='error'>" ;
-							print "You have do not have access to the specified course." ;
+							print "The selected record does not exist, or you do not have access to it." ;
 						print "</div>" ;
 					}
 					else{
@@ -135,7 +135,7 @@ else {
 							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr class='break'>
 									<td colspan=2> 
-										<h3>Unit Basics</h3>
+										<h3><?php print _('Unit Basics') ?></h3>
 									</td>
 								</tr>
 								<tr>
@@ -171,7 +171,7 @@ else {
 								</tr>
 								<tr>
 									<td colspan=2> 
-										<b>Blurb *</b> 
+										<b><?php print _('Blurb') ?> *</b> 
 										<textarea name='description' id='description' rows=5 style='width: 300px'></textarea>
 										<script type="text/javascript">
 											var description=new LiveValidation('description');
@@ -182,12 +182,12 @@ else {
 								
 								<tr class='break' id="datesHeaderRow">
 									<td colspan=2> 
-										<h3>Classes</h3>
+										<h3><?php print _('Classes') ?></h3>
 									</td>
 								</tr>
 								<tr id="datesRow">
 									<td colspan=2> 
-										<p>Select classes which will have access to this unit.</p>
+										<p><?php print _('Select classes which will have access to this unit.') ?></p>
 										<?php
 										$classCount=0 ;
 										try {
@@ -209,10 +209,10 @@ else {
 											print "<table cellspacing='0' style='width: 100%'>" ;
 												print "<tr class='head'>" ;
 													print "<th>" ;
-														print "Class" ;
+														print _("Class") ;
 													print "</th>" ;
 													print "<th>" ;
-														print "Running<br/><span style='font-size: 80%'>Is class doing unit?</span>" ;
+														print _("Running") . "<br/><span style='font-size: 80%'>" . _('Is class studying this unit?') . "</span>" ;
 													print "</th>" ;
 												print "</tr>" ;
 												
@@ -252,20 +252,20 @@ else {
 								
 								<tr class='break'>
 									<td colspan=2> 
-										<h3>Unit Outline</h3>
+										<h3><?php print _('Unit Outline') ?></h3>
 									</td>
 								</tr>
 								<tr>
 									<td colspan=2> 
 										<?php $unitOutline=getSettingByScope($connection2, "Planner", "unitOutlineTemplate" ) ?>
-											<p>The contents of this field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users.</p>
+										<p><?php print _('The contents of this field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users (usually parents).') ?></p>
 										<?php print getEditor($guid,  TRUE, "details", $unitOutline, 40, true, false, false) ?>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b>Downloadable Unit Outline</b><br/>
-										<span style="font-size: 90%"><i>Available to most users.</i></span>
+										<b><?php print _('Downloadable Unit Outline') ?></b><br/>
+										<span style="font-size: 90%"><i><?php print _('Available to most users.') ?></i></span>
 									</td>
 									<td class="right">
 										<input type="file" name="file" id="file"><br/><br/>
@@ -298,13 +298,13 @@ else {
 								
 								<tr class='break'>
 									<td colspan=2> 
-										<h3>Smart Blocks</h3>
+										<h3><?php print _('Smart Blocks') ?></h3>
 									</td>
 								</tr>
 								<tr>
 									<td colspan=2> 
 										<p>
-											Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.
+											<?php print _('Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.') ?>
 										</p>
 										<style>
 											#sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
@@ -346,7 +346,7 @@ else {
 																	 });
 																});
 															</script>
-															<div id='new' style='cursor: default; float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; color: #999; margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px'>Click to create a new block</div><br/>
+															<div id='new' style='cursor: default; float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; color: #999; margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px'><?php print _('Click to create a new block') ?></div><br/>
 														</td>
 													</tr>
 												</table>
@@ -357,7 +357,7 @@ else {
 								
 								<tr class='break'>
 									<td colspan=2> 
-										<h3>Outcomes</h3>	
+										<h3><?php print _('Outcomes') ?></h3>	
 									</td>
 								</tr>
 								<?php 
@@ -384,10 +384,10 @@ else {
 								</script>
 								<tr>
 									<td colspan=2> 
-										<p>Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.</p>
+										<p><?php print _('Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.') ?></p>
 										<div class="outcome" id="outcome" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
 											<div id="outcomeOuter0">
-												<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'>Key outcomes listed here...</div>
+												<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'><?php print _('Key outcomes listed here...') ?></div>
 											</div>
 										</div>
 										<div style='width: 100%; padding: 0px 0px 0px 0px;'>
@@ -405,7 +405,7 @@ else {
 																});
 															</script>
 															<select id='newOutcome' onChange='outcomeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
-																<option class='all' value='0'>Choose an outcome to add it to this unit</option>
+																<option class='all' value='0'><?php print _('Choose an outcome to add it to this unit') ?></option>
 																<?php
 																$currentCategory="" ;
 																$lastCategory="" ;
@@ -426,12 +426,12 @@ else {
 																catch(PDOException $e) { 
 																	print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 																}
-																print "<optgroup label='--SCHOOL OUTCOMES--'>" ;
+																print "<optgroup label='--" . _('SCHOOL OUTCOMES') . "--'>" ;
 																while ($rowSelect=$resultSelect->fetch()) {
 																	$currentCategory=$rowSelect["category"] ;
 																	if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 																		print "<optgroup label='--" . $currentCategory . "--'>" ;
-																		print "<option class='$currentCategory' value='0'>Choose an outcome to add it to this unit</option>" ;
+																		print "<option class='$currentCategory' value='0'>" . _('Choose an outcome to add it to this unit') . "</option>" ;
 																		$categories[$categoryCount]=$currentCategory ;
 																		$categoryCount++ ;
 																	}
@@ -470,7 +470,7 @@ else {
 																		$currentCategory=$rowSelect["category"] ;
 																		$currentLA=$rowSelect["learningArea"] ;
 																		if (($currentLA!=$lastLA) AND $currentLA!="") {
-																			print "<optgroup label='--" . strToUpper($currentLA) . " OUTCOMES--'>" ;
+																			print "<optgroup label='--" . strToUpper($currentLA) . " " . _('OUTCOMES') . "--'>" ;
 																		}
 																		if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 																			print "<optgroup label='--" . $currentCategory . "--'>" ;
@@ -495,7 +495,7 @@ else {
 															if (count($categories)>0) {
 																?>
 																<select id='outcomeFilter' style='float: none; margin-left: 3px; margin-top: 0px; width: 350px'>
-																	<option value='all'>View All</option>
+																	<option value='all'><?php print _('View All') ?></option>
 																	<?php
 																	$categories=array_unique($categories) ;
 																	$categories=msort($categories) ;
@@ -524,7 +524,7 @@ else {
 																		}
 																	}
 																	else {
-																		alert("This element has already been selected!") ;
+																		alert("<?php print _('This element has already been selected!') ?>") ;
 																		$('#newOutcome').val('0');
 																	}
 																}

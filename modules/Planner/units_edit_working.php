@@ -50,7 +50,7 @@ else {
 		
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>Manage Units</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>Edit Unit</a> > </div><div class='trailEnd'>Edit Working Copy</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . _('Manage Units') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>" . _('Edit Unit') . "</a> > </div><div class='trailEnd'>" . _('Edit Working Copy') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -98,7 +98,8 @@ else {
 				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($addReturn=="fail6") {
-				$addReturnMessage="Your request was successful, but some data was not properly saved." ;	
+				$addReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
+				$class="success" ;
 			}
 			else if ($addReturn=="success0") {
 				$addReturnMessage=_("Your request was completed successfully.") ;	
@@ -201,15 +202,15 @@ else {
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>School Year</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('School Year') . "</span><br/>" ;
 									print "<i>" . $year . "</i>" ;
 									print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Class</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('Class') . "</span><br/>" ;
 									print "<i>" . $course . "." . $class . "</i>" ;
 								print "</td>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Unit</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('Unit') . "</span><br/>" ;
 									print "<i>" . $row["name"] . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;
@@ -217,10 +218,10 @@ else {
 						
 						
 						print "<h3>" ;
-						print "Lessons & Blocks" ;
+						print _("Lessons & Blocks") ;
 						print "</h3>" ;
 						print "<p>" ;
-						print "You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another." ;
+						print _("You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.") ;
 						print "</p>" ;
 						
 						//Store blocks in array
@@ -267,7 +268,6 @@ else {
 						print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_edit_workingProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&address=" . $_GET["q"] . "&gibbonUnitClassID=$gibbonUnitClassID'>" ;
 							//LESSONS (SORTABLES)
 							print "<div style='width: 100%; height: auto'>" ;
-								print "<b>Lessons & Working Blocks</b>" ;
 								print "<a style='margin-top: -8px; float: right' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working_add.php&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 								print "<br/>" ;
 								try {
@@ -293,7 +293,7 @@ else {
 											print "<div id='sortable$i' style='min-height: 60px; font-size: 120%; font-style: italic'>" ;
 												print "<div id='head$i' class='head' style='height: 54px; font-size: 85%; padding: 3px'>" ;
 													
-													print "<a onclick='return confirm(\"Are you sure you want to jump to this lesson? Any unsaved changes will be lost.\")' style='font-weight: bold; font-style: normal; color: #333' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $rowLessons["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "'>" . ($i+1) . ". " . $rowLessons["name"] . "</a> <a onclick='return confirm(\"Are you sure you want to delete this record? Any unsaved changes will be lost.\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working_lessonDelete.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID&address=" . $_GET["q"] . "&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/ style='position: absolute; margin: -1px 0px 2px 10px'></a><br/>" ;
+													print "<a onclick='return confirm(\"Are you sure you want to jump to this lesson? Any unsaved changes will be lost.\")' style='font-weight: bold; font-style: normal; color: #333' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $rowLessons["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "'>" . ($i+1) . ". " . $rowLessons["name"] . "</a> <a onclick='return confirm(\"" . _('Are you sure you want to delete this record? Any unsaved changes will be lost.') . "\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working_lessonDelete.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID&address=" . $_GET["q"] . "&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/ style='position: absolute; margin: -1px 0px 2px 10px'></a><br/>" ;
 													
 													try {
 														$dataTT=array("date"=>$rowLessons["date"], "timeStart"=>$rowLessons["timeStart"], "timeEnd"=>$rowLessons["timeEnd"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
@@ -327,7 +327,7 @@ else {
 													print "<input type='hidden' name='timeEnd$i' value='" . $rowLessons["timeEnd"] . "' >" ;
 													print "<input type='hidden' name='gibbonPlannerEntryID$i' value='" . $rowLessons["gibbonPlannerEntryID"] . "' >" ;
 													print "<div style='text-align: right; float: right; margin-top: -33px; margin-right: 3px'>" ;
-														print "<span style='font-size: 80%'><i>Add Block:</i></span><br/>" ; 
+														print "<span style='font-size: 80%'><i>" . _('Add Block:') . "</i></span><br/>" ; 
 														print "<script type='text/javascript'>" ;
 															print "$(document).ready(function(){" ;
 																print "$(\"#blockAdd$i\").change(function(){" ;
