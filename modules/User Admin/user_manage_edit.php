@@ -1393,7 +1393,7 @@ else {
 							<b>Medium Portrait</b><br/>
 							<span style="font-size: 90%"><i><?php print _('240px by 320px') ?><br/>
 							<?php if ($row["image_240"]!="") {
-							print "<?php print _('Will overwrite existing attachment') ?>" ;
+							print "<?php print _('Will overwrite existing attachment.') ?>" ;
 							} ?>
 							</i></span>
 						</td>
@@ -1416,7 +1416,7 @@ else {
 							<b><?php print _('Small Portrait') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('75px by 100px') ?><br/>
 							<?php if ($row["image_75"]!="") {
-							print _("Will overwrite existing attachment") ;
+							print _("Will overwrite existing attachment.") ;
 							} ?>
 							</i></span>
 						</td>

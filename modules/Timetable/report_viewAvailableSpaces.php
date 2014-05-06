@@ -30,15 +30,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Timetable/report_viewAvail
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Available Spaces</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('View Available Spaces') . "</div>" ;
 	print "</div>" ;
 	
-	print "<p>" ;
-	print "This report shows all available spaces in a given time, in a given timetable. Please note that whilst school closures are shown, timing changes are not. For cells which contain too many free spaces, hover your mouse over the cell to see all entries." ;
-	print "</p>" ;		
-			
 	print "<h2>" ;
-	print "Choose Options" ;
+	print _("Choose Options") ;
 	print "</h2>" ;
 	
 	$gibbonTTID=NULL ;
@@ -64,12 +60,11 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Timetable</b><br/>
-					<span style="font-size: 90%"><i>Choose a timetable to view</span>
+					<b><?php print _('Timetable') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="gibbonTTID" id="gibbonTTID" style="width: 302px">
-						<option value='Please select...'>Please select...</option>
+						<option value='Please select...'><?php print _('Please select...') ?></option>
 						<?php
 						try {
 							$dataSelect=array(); 
@@ -96,30 +91,29 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Space Type</b><br/>
-					<span style="font-size: 90%"><i>Restrict search to particular space types</span>
+					<b><?php print _('Space Type') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Restrict search to particular space types') ?></span>
 				</td>
 				<td class="right">
 					<select name="spaceType" id="spaceType" style="width: 302px">
-						<option <?php if ($spaceType=="") { print "selected" ; } ?> value=''>All</option>
-						<option <?php if ($spaceType=="Classroom") { print "selected" ; } ?> value='Classroom'>Classroom</option>
-						<option <?php if ($spaceType=="Performance") { print "selected" ; } ?> value='Performance'>Performance</option>
-						<option <?php if ($spaceType=="Hall") { print "selected" ; } ?> value='Hall'>Hall</option>
-						<option <?php if ($spaceType=="Outdoor") { print "selected" ; } ?> value='Outdoor'>Outdoor</option>
-						<option <?php if ($spaceType=="Undercover") { print "selected" ; } ?> value='Undercover'>Undercover</option>
-						<option <?php if ($spaceType=="Storage") { print "selected" ; } ?> value='Storage'>Storage</option>
-						<option <?php if ($spaceType=="Office") { print "selected" ; } ?> value='Office'>Office</option>
-						<option <?php if ($spaceType=="Staffroom") { print "selected" ; } ?> value='Staffroom'>Staffroom</option>
-						<option <?php if ($spaceType=="Study") { print "selected" ; } ?> value='Study'>Study</option>
-						<option <?php if ($spaceType=="Library") { print "selected" ; } ?> value='Library'>Library</option>
-						<option <?php if ($spaceType=="Other") { print "selected" ; } ?> value='Other'>Other</option>
+						<option <?php if ($spaceType=="") { print "selected" ; } ?> value=''><?php print _('All') ?></option>
+						<option <?php if ($spaceType=="Classroom") { print "selected" ; } ?> value='Classroom'><?php print _('Classroom') ?></option>
+						<option <?php if ($spaceType=="Performance") { print "selected" ; } ?> value='Performance'><?php print _('Performance') ?></option>
+						<option <?php if ($spaceType=="Hall") { print "selected" ; } ?> value='Hall'><?php print _('Hall') ?></option>
+						<option <?php if ($spaceType=="Outdoor") { print "selected" ; } ?> value='Outdoor'><?php print _('Outdoor') ?></option>
+						<option <?php if ($spaceType=="Undercover") { print "selected" ; } ?> value='Undercover'><?php print _('Undercover') ?></option>
+						<option <?php if ($spaceType=="Storage") { print "selected" ; } ?> value='Storage'><?php print _('Storage') ?></option>
+						<option <?php if ($spaceType=="Office") { print "selected" ; } ?> value='Office'><?php print _('Office') ?></option>
+						<option <?php if ($spaceType=="Staffroom") { print "selected" ; } ?> value='Staffroom'><?php print _('Staffroom') ?></option>
+						<option <?php if ($spaceType=="Study") { print "selected" ; } ?> value='Study'><?php print _('Study') ?></option>
+						<option <?php if ($spaceType=="Library") { print "selected" ; } ?> value='Library'><?php print _('Library') ?></option>
+						<option <?php if ($spaceType=="Other") { print "selected" ; } ?> value='Other'><?php print _('Other') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Date</b><br/>
-					<span style="font-size: 90%"><i>Choose a timetable to view</span>
+					<b><?php print _('Date') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="ttDate" id="ttDate" maxlength=10 value="<?php print $ttDate ?>" type="text" style="width: 300px">
@@ -148,7 +142,7 @@ else {
 	
 	if ($gibbonTTID!="") {
 		print "<h2>" ;
-		print "Results" ;
+		print _("Report Data") ;
 		print "<h2>" ;
 		
 		try {
@@ -163,7 +157,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-			print "The specified timetable does not seem to exist." ;
+			print _("The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -290,49 +284,49 @@ else {
 						//Calculate week number
 						$week=getWeekNumber ($startDayStamp, $connection2, $guid) ;
 						if ($week!=false) {
-							print "Week " . $week ."<br/>" ;
+							print _("Week") . " " . $week ."<br/>" ;
 						}
-						print "<span style='font-weight: normal; font-style: italic;'>Time<span>" ;
+						print "<span style='font-weight: normal; font-style: italic;'>" . _('Time') . "<span>" ;
 					print "</th>" ;
 					if ($days["Mon"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print "Mo<br/>" ;
+							print _("Mo") . "<br/>" ;
 							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*0))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Tue"]=="Y") {	
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print "Tu<br/>" ;
+							print _("Tu") . "<br/>" ;
 							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*1))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Wed"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print "We<br/>" ;
+							print _("We") . "<br/>" ;
 							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*2))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Thu"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print "Th<br/>" ;
+							print _("Th") . "<br/>" ;
 							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*3))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Fri"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print "Fr<br/>" ;
+							print _("Fr") . "<br/>" ;
 							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*4))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Sat"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print "Sa<br/>" ;
+							print _("Sa") . "<br/>" ;
 							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*5))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Sun"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print "Su<br/>" ;
+							print _("Su") . "<br/>" ;
 							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*6))) . "</span><br/>" ;
 						print "</th>" ;
 					}
@@ -597,7 +591,7 @@ else {
 									$day=$day . "<div style='position: relative'>" ;
 										$day=$day . "<div style='z-index: $zCount; position: absolute; top: 0; width: $width ; border: 1px solid rgba(136,136,136,$ttAlpha); height: " . ceil($diffTime/60) . "px; margin: 0px; padding: 0px; background-color: rgba(255,196,202,$ttAlpha)'>" ;
 											$day=$day . "<div style='position: relative; top: 50%'>" ;
-												$day=$day . "<span style='color: rgba(255,0,0,$ttAlpha);'>School Closed</span>" ;
+												$day=$day . "<span style='color: rgba(255,0,0,$ttAlpha);'>" . _('School Closed') . "</span>" ;
 											$day=$day . "</div>" ;
 										$day=$day . "</div>" ;
 									$day=$day . "</div>" ;

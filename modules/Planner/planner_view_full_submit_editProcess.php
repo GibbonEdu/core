@@ -59,7 +59,7 @@ else {
 		//Check if planner specified
 		if ($gibbonPlannerEntryID=="") {
 			//Fail1
-			$URL=$URL . "&updateReturn=fail1" ;
+			$URL=$URL . "&updateReturn=fail1a" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -84,7 +84,7 @@ else {
 			else {
 				if ($_POST["submission"]!="true" AND $_POST["submission"]!="false") {
 					//Fail1
-					$URL=$URL . "&updateReturn=fail1" ;
+					$URL=$URL . "&updateReturn=fail1b" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -96,17 +96,39 @@ else {
 						$submission=false ;
 						$gibbonPersonID=$_POST["gibbonPersonID"] ;
 					}
-					$type=$_POST["type"] ;
-					$version=$_POST["version"] ;
-					$link=$_POST["link"] ;
-					$status=$_POST["status"] ;
-					$gibbonPlannerEntryID=$_POST["gibbonPlannerEntryID"] ;
-					$count=$_POST["count"] ;
-					$lesson=$_POST["lesson"] ;
+					
+					$type=NULL ;
+					if (isset($_POST["type"])) {
+						$type=$_POST["type"] ;
+					}
+					$version=NULL ;
+					if (isset($_POST["version"])) {
+						$version=$_POST["version"] ;
+					}
+					$link=NULL ;
+					if (isset($_POST["link"])) {
+						$link=$_POST["link"] ;
+					}
+					$status=NULL ;
+					if (isset($_POST["status"])) {
+						$status=$_POST["status"] ;
+					}
+					$gibbonPlannerEntryID=NULL ;
+					if (isset($_POST["gibbonPlannerEntryID"])) {
+						$gibbonPlannerEntryID=$_POST["gibbonPlannerEntryID"] ;
+					}
+					$count=NULL ;
+					if (isset($_POST["count"])) {
+						$count=$_POST["count"] ;
+					}
+					$lesson=NULL ;
+					if (isset($_POST["lesson"])) {
+						$lesson=$_POST["lesson"] ;
+					}
 					
 					if (($submission==true AND $gibbonPlannerEntryHomeworkID=="") OR ($submission==false AND ($gibbonPersonID=="" OR $type=="" OR $version=="" OR ($type=="File" AND $_FILES['file']["name"]=="") OR ($type=="Link" AND $link=="") OR $status=="" OR $lesson=="" OR $count==""))) {
 						//Fail1
-						$URL=$URL . "&updateReturn=fail1" ;
+						$URL=$URL . "&updateReturn=fail1c" ;
 						header("Location: {$URL}");
 					}
 					else {

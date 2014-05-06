@@ -38,11 +38,11 @@ else {
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Timetable by Space</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('View Timetable by Space') . "</div>" ;
 		print "</div>" ;
 		
 		print "<h2>" ;
-		print "Search" ;
+		print _("Search") ;
 		print "</h2>" ;
 		
 		$gibbonPersonID=NULL ;
@@ -61,7 +61,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print _('Search For') ?></b><br/>
-						<span style="font-size: 90%"><i>Space name.</i></span>
+						<span style="font-size: 90%"><i><?php print _('Space name.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
@@ -82,7 +82,7 @@ else {
 		<?php
 		
 		print "<h2>" ;
-		print "Choose A Space" ;
+		print _("Choose A Space") ;
 		print "</h2>" ;
 		
 		//Set pagination variable

@@ -178,7 +178,7 @@ else {
 							<b><?php print _('Logo') ?></b><br/>
 							<span style="font-size: 90%"><i>125x125px jpg/png/gif</i><br/></span>
 							<?php if ($row["logo"]!="") { ?>
-							<span style="font-size: 90%"><i><?php print _('Will overwrite existing attachment') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('Will overwrite existing attachment.') ?></i></span>
 							<?php } ?>
 						</td>
 						<td class="right">

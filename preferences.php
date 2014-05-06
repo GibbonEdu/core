@@ -287,7 +287,7 @@ if ($result->rowCount()==1) {
 					print "<option value=''></option>" ;
 					try {
 						$dataSelect=array(); 
-						$sqlSelect="SELECT * FROM gibboni18n ORDER BY name" ;
+						$sqlSelect="SELECT * FROM gibboni18n WHERE active='Y' ORDER BY name" ;
 						$resultSelect=$connection2->prepare($sqlSelect);
 						$resultSelect->execute($dataSelect);
 					}

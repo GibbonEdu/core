@@ -63,6 +63,10 @@ else {
 		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 	}
 	
+	print "<p>" ;
+		print _("Inactive languages are not yet ready for use within the system as they are still under development. They cannot be set to default, not selected by users.") ;
+	print "</p>" ;
+	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
 		print _("There are no records to display.") ;
@@ -77,6 +81,9 @@ else {
 					print "</th>" ;
 					print "<th>" ;
 						print _("Code") ;
+					print "</th>" ;
+					print "<th>" ;
+						print _("Active") ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Maintainer") ;
@@ -97,6 +104,10 @@ else {
 					}
 					$count++ ;
 					
+					if ($row["active"]=="N") {
+						$rowNum="error" ;
+					}
+					
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
@@ -104,6 +115,9 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							print $row["code"] ;
+						print "</td>" ;
+						print "<td>" ;
+							print $row["active"] ;
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["maintainerWebsite"]!="") {
@@ -114,11 +128,13 @@ else {
 							}
 						print "</td>" ;
 						print "<td>" ;
-							if ($row["systemDefault"]=="Y") {
-								print "<input checked type='radio' name='gibboni18nID' value='" . $row["gibboni18nID"] . "'>" ;
-							}
-							else {
-								print "<input type='radio' name='gibboni18nID' value='" . $row["gibboni18nID"] . "'>" ;
+							if ($row["active"]=="Y") {
+								if ($row["systemDefault"]=="Y") {
+									print "<input checked type='radio' name='gibboni18nID' value='" . $row["gibboni18nID"] . "'>" ;
+								}
+								else {
+									print "<input type='radio' name='gibboni18nID' value='" . $row["gibboni18nID"] . "'>" ;
+								}
 							}
 						print "</td>" ;
 					print "</tr>" ;

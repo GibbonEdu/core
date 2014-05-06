@@ -914,7 +914,7 @@ function sidebar($connection2, $guid) {
 								<?php
 								try {
 									$dataSelect=array(); 
-									$sqlSelect="SELECT * FROM gibboni18n ORDER BY name" ;
+									$sqlSelect="SELECT * FROM gibboni18n WHERE active='Y' ORDER BY name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
 								}
@@ -1551,12 +1551,12 @@ function mainMenu($connection2, $guid) {
 				if ($count>0) {
 					$output.="</ul></li>";
 				}
-				$output.="<li><a href='#'>$currentCategory</a>" ;
+				$output.="<li><a href='#'>" . _($currentCategory) . "</a>" ;
 				$output.="<ul>" ;
-				$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . $row["name"] . "</a></li>" ;
+				$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . _($row["name"]) . "</a></li>" ;
 			}
 			else {
-				$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . $row["name"] . "</a></li>" ;
+				$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . _($row["name"]) . "</a></li>" ;
 			}
 			$lastCategory=$currentCategory ;
 			$count++ ;

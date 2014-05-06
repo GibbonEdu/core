@@ -96,7 +96,7 @@ function getTagCloud($guid, $connection2, $tagCount=50) {
 function sidebarExtra($guid, $connection2) {
 	$output="" ;
 	$output.="<h2>" ;
-		$output.="Resource Tags" ;
+		$output.=_("Resource Tags") ;
 	$output.="</h2>" ;
 	$output.=getTagCloud($guid, $connection2) ;
 	return $output ;

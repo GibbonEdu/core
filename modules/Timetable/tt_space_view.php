@@ -39,6 +39,11 @@ else {
 	else {
 		$gibbonSpaceID=$_GET["gibbonSpaceID"] ;
 		
+		$search=NULL ;
+		if (isset($_GET["search"])) {	
+			$search=$_GET["search"] ;
+		}
+		
 		try {
 			$data=array("gibbonSpaceID"=>$gibbonSpaceID); 
 			$sql="SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID" ; 
@@ -61,9 +66,9 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_space.php'>View Timetable by Space</a> > </div><div class='trailEnd'>" . $row["name"] . "</div>" ;
 			print "</div>" ;
 			
-			if ($_GET["search"]!="") {
+			if ($search!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt_space.php&search=" . $_GET["search"] . "'>" . _('Back to Search Results') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt_space.php&search=$seearch'>" . _('Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 		
@@ -91,14 +96,14 @@ else {
 				}
 			}
 			
-			$tt=renderTTSpace($guid, $connection2, $gibbonSpaceID, NULL, FALSE, $ttDate, "/modules/Timetable/tt_space_view.php", "&gibbonSpaceID=$gibbonSpaceID") ;
+			$tt=renderTTSpace($guid, $connection2, $gibbonSpaceID, NULL, FALSE, $ttDate, "/modules/Timetable/tt_space_view.php", "&gibbonSpaceID=$gibbonSpaceID&search=$search") ;
 			
 			if ($tt!=FALSE) {
 				print $tt ;
 			}
 			else {
 				print "<div class='error'>" ;
-					print "There is no timetable information in the current academic year for the date specified." ;
+					print _("There are no records to display.") ;
 				print "</div>" ;
 			}
 		}

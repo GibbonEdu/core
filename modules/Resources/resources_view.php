@@ -30,11 +30,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_view.p
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Resources</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('View Resources') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h3>" ;
-		print "Filters" ;
+		print _("Filters") ;
 	print "</h3>" ;
 	
 	//Get current filter values
@@ -63,7 +63,7 @@ else {
 		print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
 			print "<tr>" ;
 				print "<td>" ;
-					print "<b>Tags</b>" ;
+					print "<b>" . _('Tags') . "</b>" ;
 				print "</td>" ;
 				print "<td style='padding: 0px 2px 0px 0px'>" ;
 					//Tag selector
@@ -114,7 +114,7 @@ else {
 			print "</tr>" ;
 			print "<tr>" ;
 				print "<td>" ;
-					print "<b>Category</b>" ;
+					print "<b>" . _('Category') . "</b>" ;
 				print "</td>" ;
 				print "<td style='padding: 0px 2px 0px 0px'>" ;
 					try {
@@ -148,7 +148,7 @@ else {
 			print "</tr>" ;
 			print "<tr>" ;
 				print "<td>" ;
-					print "<b>Purpose</b>" ;
+					print "<b>" . _('Purpose') . "</b>" ;
 				print "</td>" ;
 				print "<td style='padding: 0px 2px 0px 0px'>" ;
 					try {
@@ -185,7 +185,7 @@ else {
 			print "</tr>" ;
 			print "<tr>" ;
 				print "<td>" ;
-					print "<b>Year Group</b>" ;
+					print "<b>" . _('Year Group') . "</b>" ;
 				print "</td>" ;
 				print "<td style='padding: 0px 2px 0px 0px'>" ;
 					try {
@@ -289,16 +289,18 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Name &<br/>Contributor" ;
+					print _("Name") . "<br/>";
+					print "<span style='font-size: 85%; font-style: italic'>" . _('Contributor') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Type") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Category &<br/>Purpose" ;
+					print _("Category") . "<br/>";
+					print "<span style='font-size: 85%; font-style: italic'>" . _('Purpose') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Tags" ;
+					print _("Tags") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Year Groups") ;
@@ -327,14 +329,14 @@ else {
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
 						print getResourceLink($guid, $row["gibbonResourceID"], $row["type"], $row["name"], $row["content"]) ;
-						print formatName($row["title"], $row["preferredName"], $row["surname"], "Staff") . "<br/>" ;
+						print "<span style='font-size: 85%; font-style: italic'>" . formatName($row["title"], $row["preferredName"], $row["surname"], "Staff") . "</span>" ;
 					print "</td>" ;
 					print "<td>" ;
 						print $row["type"] ;
 					print "</td>" ;
 					print "<td>" ;
 						print "<b>" . $row["category"] . "</b><br/>" ;
-						print $row["purpose"] ;
+						print "<span style='font-size: 85%; font-style: italic'>" . $row["purpose"] . "</span>" ;
 					print "</td>" ;
 					print "<td>" ;
 						$output="" ;

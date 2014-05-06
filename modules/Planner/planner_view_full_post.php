@@ -79,7 +79,7 @@ else {
 		
 		if ($gibbonPlannerEntryID=="") {
 			print "<div class='warning'>" ;
-				print "Lesson has not been specified ." ;
+				print _("You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		//Check existence of and access to this class.
@@ -87,7 +87,7 @@ else {
 			if ($highestAction=="Lesson Planner_viewMyChildrensClasses") {
 				if ($_GET["search"]=="") {
 					print "<div class='warning'>" ;
-						print "Lesson cannot be displayed due to a system error." ;
+						print _("You have not specified one or more required parameters.") ;
 					print "</div>" ;
 				}
 				else {
@@ -103,7 +103,7 @@ else {
 					}
 					if ($resultChild->rowCount()!=1) {
 						print "<div class='error'>" ;
-						print "You do not have access to the specified student." ;
+						print _("The selected record does not exist, or you do not have access to it.") ;
 						print "</div>" ;
 					}
 					else {
@@ -158,7 +158,7 @@ else {
 									
 									
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>Planner $extra</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID'>View Lesson Plan</a> > </div><div class='trailEnd'>Add Comment</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . _('Planner') . " $extra</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID'>" . _('View Lesson Plan') . "</a> > </div><div class='trailEnd'>" . _('Add Comment') . "</div>" ;
 				print "</div>" ;
 				
 				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -199,7 +199,7 @@ else {
 				}
 				else {						
 					print "<h2>" ;
-					print "Planner Discussion Post" ;
+					print _("Planner Discussion Post") ;
 					print "</h2>" ;
 
 					?>
@@ -207,7 +207,7 @@ else {
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td colspan=2> 
-									<b>Write your comment below:</b> 
+									<b><?php print _('Write your comment below:') ?></b> 
 									<?php print getEditor($guid,  TRUE, "comment", "", 20 ) ?>
 								</td>
 							</tr>

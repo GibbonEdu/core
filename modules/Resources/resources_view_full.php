@@ -34,7 +34,7 @@ else {
 	$gibbonResourceID=$_GET["gibbonResourceID"] ;
 	if ($gibbonResourceID=="") {
 		print "<div class='warning'>" ;
-			print "Resource has not been specified ." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	//Check existence of and access to this class.

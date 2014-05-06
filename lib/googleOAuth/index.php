@@ -345,7 +345,7 @@ try {
 					if (!is_null($_SESSION[$guid]["gibboni18nIDPersonal"])) {
 						try {
 							$dataLanguage=array("gibboni18nID"=>$_SESSION[$guid]["gibboni18nIDPersonal"]); 
-							$sqlLanguage="SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID" ; 
+							$sqlLanguage="SELECT * FROM gibboni18n WHERE active='Y' AND gibboni18nID=:gibboni18nID" ; 
 							$resultLanguage=$connection2->prepare($sqlLanguage);
 							$resultLanguage->execute($dataLanguage);
 						}

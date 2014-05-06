@@ -111,7 +111,7 @@ else {
 					$extra=$row["course"] . "." . $row["class"] ;
 					
 					print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>Planner $extra</a> > </div><div class='trailEnd'>Bump Forward Lesson Plan</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . _('Planner') . " $extra</a> > </div><div class='trailEnd'>" . _('Bump Forward Lesson Plan') . "</div>" ;
 					print "</div>" ;
 					
 					//Proceed!
@@ -140,7 +140,7 @@ else {
 						<table cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
-									Pressing "Yes" below will move this lesson, and all succeeding lessons in this class, forward to the next available time slot. <b>Are you sure you want to bump "<?php print $row["name"] ?>" forward?</b><br/>
+									<?php print sprintf(_('Pressing "Yes" below will move this lesson, and all succeeding lessons in this class, forward to the next available time slot. <b>Are you sure you want to bump %1$s forward?'), $row["name"]) ?></b><br/>
 								</td>
 								<td class="right">
 									

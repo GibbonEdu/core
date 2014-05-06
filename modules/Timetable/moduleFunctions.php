@@ -141,7 +141,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 	//link to other TTs
 	if ($result->rowcount()>1 AND $title!=FALSE) {
 		$output.="<p>" ;
-			$output.="<span style='font-size: 115%; font-weight: bold'>Timetable Chooser</span><br/>" ;
+			$output.="<span style='font-size: 115%; font-weight: bold'>" . _('Timetable Chooser') . "</span><br/>" ;
 			$count=1 ;
 			while ($row=$result->fetch()) {
 				$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID=$gibbonPersonID&gibbonTTID=" . $row["gibbonTTID"] . "'>" . $row["name"] . "</a>" ;
@@ -189,7 +189,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;
 						?>
-						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Last Week'>
+						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='<?php print _('Last Week') ?>'>
 						<?php	
 					print "</form>" ;
 					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
@@ -198,7 +198,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;
 						?>
-						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Next Week'>
+						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='<?php print _('Next Week') ?>'>
 						<?php	
 					print "</form>" ;
 				print"</td>" ; 
@@ -509,11 +509,11 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 					if ($week!=false) {
 						$output.="Week " . $week ."<br/>" ;
 					}
-					$output.="<span style='font-weight: normal; font-style: italic;'>Time<span>" ;
+					$output.="<span style='font-weight: normal; font-style: italic;'>" . _('Time') . "<span>" ;
 				$output.="</th>" ;
 				if ($days["Mon"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.="Mo<br/>" ;
+						$output.=_("Mo") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*0))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*0)))); 
@@ -532,7 +532,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				}
 				if ($days["Tue"]=="Y") {	
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.="Tu<br/>" ;
+						$output.=_("Tu") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*1))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*1)))); 
@@ -551,7 +551,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				}
 				if ($days["Wed"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.="We<br/>" ;
+						$output.=_("We") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*2))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*2)))); 
@@ -570,7 +570,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				}
 				if ($days["Thu"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.="Th<br/>" ;
+						$output.=_("Th") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*3))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*3)))); 
@@ -589,7 +589,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				}
 				if ($days["Fri"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.="Fr<br/>" ;
+						$output.=_("Fr") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*4))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*4)))); 
@@ -608,7 +608,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				}
 				if ($days["Sat"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.="Sa<br/>" ;
+						$output.=_("Sa") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*5))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*5)))); 
@@ -627,7 +627,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				}
 				if ($days["Sun"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.="Su<br/>" ;
+						$output.=_("Su") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*6))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*6)))); 
@@ -990,14 +990,14 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 						$top=(ceil((strtotime($effectiveStart)-strtotime($dayTimeStart))/60+($startPad/60))) . "px" ;
 						$title="title='" ;
 						if ($height<45) {
-							$title=$title . "Timeslot: " . $rowPeriods["name"] . " " ;
+							$title=$title . _("Timeslot:") . " " . $rowPeriods["name"] . " " ;
 						}
 						if ($rowPeriods["roomName"]!="") {
 							if ($height<60) {
-								$title=$title . "Room: " . $rowPeriods["roomName"] . " " ;
+								$title=$title . _("Room:") . " " . $rowPeriods["roomName"] . " " ;
 							}
 							if ($rowPeriods["phoneInternal"]!="") {
-								$title=$title . " Phone: " . $rowPeriods["phoneInternal"] . " " ;
+								$title=$title . _("Phone:") ." " . $rowPeriods["phoneInternal"] . " " ;
 							}
 						}
 						$title=$title . "'" ;
@@ -1172,6 +1172,8 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 	if ($startDayStamp=="") {
 		$startDayStamp=time() ;
 	}
+	$zCount=0 ;
+	$top=0 ;
 	
 	//Find out which timetables I am involved in this year
 	try {
@@ -1200,7 +1202,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 	//link to other TTs
 	if ($result->rowCount()>1 AND $title!=FALSE) {
 		$output.="<p>" ;
-			$output.="<span style='font-size: 115%; font-weight: bold'>Timetable Chooser</span><br/>" ;
+			$output.="<span style='font-size: 115%; font-weight: bold'>" . _('Timetable Chooser') ."</span><br/>" ;
 			$count=1 ;
 			while ($row=$result->fetch()) {
 				$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID=$gibbonSpaceID&gibbonTTID=" . $row["gibbonTTID"] . "'>" . $row["name"] . "</a>" ;
@@ -1249,7 +1251,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;
 						?>
-						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Last Week'>
+						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='<?php print _('Last Week') ?>'>
 						<?php	
 					print "</form>" ;
 					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
@@ -1258,7 +1260,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;
 						?>
-						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Next Week'>
+						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='<?php print _('Next Week') ?>'>
 						<?php	
 					print "</form>" ;
 				print"</td>" ; 
@@ -1427,11 +1429,11 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 					if ($week!=false) {
 						$output.="Week " . $week ."<br/>" ;
 					}
-					$output.="<span style='font-weight: normal; font-style: italic;'>Time<span>" ;
+					$output.="<span style='font-weight: normal; font-style: italic;'>" . _('Time') ."<span>" ;
 				$output.="</th>" ;
 				if ($days["Mon"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.="Mo<br/>" ;
+						$output.=_("Mo") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*0))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*0)))); 
@@ -1450,7 +1452,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				}
 				if ($days["Tue"]=="Y") {	
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.="Tu<br/>" ;
+						$output.=_("Tu") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*1))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*1)))); 
@@ -1469,7 +1471,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				}
 				if ($days["Wed"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.="We<br/>" ;
+						$output.=_("We") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*2))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*2)))); 
@@ -1488,7 +1490,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				}
 				if ($days["Thu"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.="Th<br/>" ;
+						$output.=_("Th") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*3))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*3)))); 
@@ -1507,7 +1509,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				}
 				if ($days["Fri"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.="Fr<br/>" ;
+						$output.=_("Fr") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*4))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*4)))); 
@@ -1526,7 +1528,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				}
 				if ($days["Sat"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.="Sa<br/>" ;
+						$output.=_("Sa") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*5))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*5)))); 
@@ -1545,7 +1547,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				}
 				if ($days["Sun"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.="Su<br/>" ;
+						$output.=_("Su") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*6))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*6)))); 
@@ -1872,14 +1874,14 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 					$top=(ceil((strtotime($effectiveStart)-strtotime($dayTimeStart))/60+($startPad/60))) . "px" ;
 					$title="title='" ;
 					if ($height<45) {
-						$title=$title . "Timeslot: " . $rowPeriods["name"] . " " ;
+						$title=$title . _("Timeslot:") . " " . $rowPeriods["name"] . " " ;
 					}
 					if ($rowPeriods["roomName"]!="") {
 						if ($height<60) {
-							$title=$title . "Room: " . $rowPeriods["roomName"] . " " ;
+							$title=$title . _("Room:") . " " . $rowPeriods["roomName"] . " " ;
 						}
 						if ($rowPeriods["phoneInternal"]!="") {
-							$title=$title . " Phone: " . $rowPeriods["phoneInternal"] . " " ;
+							$title=$title . _("Phone:") ." " . $rowPeriods["phoneInternal"] . " " ;
 						}
 					}
 					$title=$title . "'" ;

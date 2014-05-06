@@ -197,7 +197,7 @@ else {
 				}
 				
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>Planner $extra</a> > </div><div class='trailEnd'>Edit Lesson Plan</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . _('Planner') . " $extra</a> > </div><div class='trailEnd'>" . _('Edit Lesson Plan') . "</div>" ;
 				print "</div>" ;
 				
 				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -239,7 +239,7 @@ else {
 				$class="error" ;
 				if (!($duplicateReturn=="")) {
 					if ($duplicateReturn=="success0") {
-						$duplicateReturnMessage="Duplication was successful. You can now edit more details of your newly duplicated entry." ;	
+						$duplicateReturnMessage=_("Your request was completed successfully.") . _('You can now edit more details of your newly duplicated entry.') ;	
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;
@@ -280,7 +280,7 @@ else {
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr class='break'>
 							<td colspan=2> 
-								<h3 style='margin-top: 0px'>Basic Information</h3>
+								<h3 style='margin-top: 0px'><?php print _('Basic Information') ?></h3>
 							</td>
 						</tr>
 						<tr>
@@ -290,7 +290,7 @@ else {
 							<td class="right">
 								<select name="gibbonCourseClassID" id="gibbonCourseClassID" style="width: 302px">
 									<?php
-									print "<option value='Please select...'></option>" ;
+									print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 									try {
 										if ($highestAction=="Lesson Planner_viewEditAllClasses" ) {
 											$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -322,13 +322,13 @@ else {
 					
 						<tr>
 							<td> 
-								<b>Unit</b><br/>
+								<b><?php print _('Unit') ?></b><br/>
 							</td>
 							<td class="right">
 								<select name="gibbonUnitID" id="gibbonUnitID" style="width: 302px">
 									<?php
 									print "<option value=''></option>" ;
-									print "<optgroup label='--Gibbon Units--'>" ;
+									print "<optgroup label='--" . _('Gibbon Units') . "--'>" ;
 									try {
 										$dataSelect=array(); 
 										$sqlSelect="SELECT * FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE running='Y' ORDER BY name" ;
@@ -402,7 +402,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Summary *</b><br/>
+								<b><?php print _('Summary') ?> *</b><br/>
 							</td>
 							<td class="right">
 								<input name="summary" id="summary" maxlength=255 value="<?php print htmlPrep($row["summary"]) ?>" type="text" style="width: 300px">
@@ -414,7 +414,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Date *</b><br/>
+								<b><?php print _('Date') ?> *</b><br/>
 								<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 							</td>
 							<td class="right">
@@ -500,14 +500,14 @@ else {
 						
 						<tr class='break'>
 							<td colspan=2> 
-								<h3>Lesson Content</h3>
+								<h3><?php print _('Lesson Content') ?></h3>
 							</td>
 						</tr>
 						<?php
 						print "<tr>" ;
 							?>
 							<td colspan=2> 
-								<b>Lesson Details</b> 
+								<b><?php print _('Lesson Details') ?></b> 
 								<?php print getEditor($guid,  TRUE, "description", $row["description"], 25, true, false, false) ?>
 							</td>
 							<?php
@@ -532,23 +532,23 @@ else {
 							}
 							print "<tr class='break'>" ;
 								print "<td colspan=3>" ;
-									print "<h3>Smart Blocks</h3>" ;
+									print "<h3>" . _('Smart Blocks') . "</h3>" ;
 								print "</td>" ;
 							print "</tr>" ;
 							print "<tr>" ;
 								print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
 									print "<div style='padding: 5px; margin-top: 0px; text-align: right;'>" ;
 										if ($hooked==FALSE) {
-											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonUnitID=" . $row["gibbonUnitID"] . "&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&gibbonUnitClassID=$gibbonUnitClassID'>Edit Unit</a> " ;
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonUnitID=" . $row["gibbonUnitID"] . "&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&gibbonUnitClassID=$gibbonUnitClassID'>" . _('Edit Unit') . "</a> " ;
 										}
 										else {
-											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonUnitID=" . $gibbonUnitIDToken . "-" . $gibbonHookIDToken . "&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&gibbonUnitClassID=$gibbonUnitClassID'>Edit Unit</a> " ;
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonUnitID=" . $gibbonUnitIDToken . "-" . $gibbonHookIDToken . "&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&gibbonUnitClassID=$gibbonUnitClassID'>" . _('Edit Unit') . "</a> " ;
 										}
 									print "</div>" ;
 								
 									if ($resultBlocks->rowCount()<1) {
 										print "<div class='error'>" ;
-											print "This lesson has not had any Smart Blocks content assigned to it." ;
+											print _("This lesson has not had any Smart Blocks content assigned to it.") ;
 										print "</div>" ;
 									}
 									else {
@@ -606,7 +606,7 @@ else {
 						
 						<tr class='break'>
 							<td colspan=3>
-								<h3>Teacher's Notes</h3>
+								<h3><?php print _('Teacher\'s Notes') ?></h3>
 							</td>
 						</tr>
 						<tr>
@@ -789,23 +789,23 @@ else {
 							
 						<tr class='break'>
 							<td colspan=2> 
-								<h3>Homework</h3>
+								<h3><?php print _('Homework') ?></h3>
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b>Homework? *</b><br/>
-								<span style="font-size: 90%"><i>If not previously set, this will default to the start of the next lesson.</i></span>
+								<b><?php print _('Homework?') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('If not previously set, this will default to the start of the next lesson.') ?></i></span>
 							</td>
 							<td class="right">
-								<input <?php print $checkedYes ?> type="radio" name="homework" value="Yes" class="homework" /> Yes
-								<input <?php print $checkedNo ?> type="radio" name="homework" value="No" class="homework" /> No
+								<input <?php print $checkedYes ?> type="radio" name="homework" value="Yes" class="homework" /> <?php print _('Yes') ?>
+								<input <?php print $checkedNo ?> type="radio" name="homework" value="No" class="homework" /> <?php print _('No') ?>
 							</td>
 						</tr>
 						<tr id="homeworkDueDateRow">
 							<td> 
-								<b>Homework Due Date *</b><br/>
-								<span style="font-size: 90%"><i>Format: dd/mm/yyy<br/></i></span>
+								<b><?php print _('Homework Due Date') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 							</td>
 							<td class="right">
 								<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="<?php if ($row["homework"]=="Y") { print dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) ; } else if ($homeworkDueDate!="") { print dateConvertBack($guid, $homeworkDueDate) ; } ?>" type="text" style="width: 300px">
@@ -828,7 +828,7 @@ else {
 						</tr>
 						<tr id="homeworkDueDateTimeRow">
 							<td> 
-								<b>Homework Due Date Time</b><br/>
+								<b><?php print _('Homework Due Date Time') ?></b><br/>
 								<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
 							</td>
 							<td class="right">
@@ -860,7 +860,7 @@ else {
 						</tr>
 						<tr id="homeworkDetailsRow">
 							<td colspan=2> 
-								<b>Homework Details *</b> 
+								<b><?php print _('Homework Details') ?> *</b> 
 								<?php
 								$initiallyHidden=true ;
 								if ($row["homework"]=="Y") {
@@ -872,17 +872,16 @@ else {
 						</tr>
 						<tr id="homeworkSubmissionRow">
 							<td> 
-								<b>Online Submission? *</b><br/>
-								<span style="font-size: 90%"><i>Allow online homework submission?</i></span>
+								<b><?php print _('Online Submission?') ?> *</b><br/>
 							</td>
 							<td class="right">
-								<input <?php print $submissionYes ?> type="radio" name="homeworkSubmission" value="Yes" class="homeworkSubmission" /> Yes
-								<input <?php print $submissionNo ?> type="radio" name="homeworkSubmission" value="No" class="homeworkSubmission" /> No
+								<input <?php print $submissionYes ?> type="radio" name="homeworkSubmission" value="Yes" class="homeworkSubmission" /> <?php print _('Yes') ?>
+								<input <?php print $submissionNo ?> type="radio" name="homeworkSubmission" value="No" class="homeworkSubmission" /> <?php print _('No') ?>
 							</td>
 						</tr>
 						<tr id="homeworkSubmissionDateOpenRow">
 							<td> 
-								<b>Sumbission Open Date</b><br/>
+								<b><?php print _('Sumbission Open Date') ?></b><br/>
 								<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 							</td>
 							<td class="right">
@@ -900,12 +899,12 @@ else {
 						</tr>
 						<tr id="homeworkSubmissionDraftsRow">
 							<td> 
-								<b>Drafts *</b><br/>
+								<b><?php print _('Drafts') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
 								<select name="homeworkSubmissionDrafts" id="homeworkSubmissionDrafts" style="width: 302px">
-									<option <?php if ($row["homeworkSubmissionDrafts"]=="0") { print "selected " ;} ?>value="0">None</option>
+									<option <?php if ($row["homeworkSubmissionDrafts"]=="0") { print "selected " ;} ?>value="0"><?php print _('None') ?></option>
 									<option <?php if ($row["homeworkSubmissionDrafts"]=="1") { print "selected " ;} ?>value="1">1</option>
 									<option <?php if ($row["homeworkSubmissionDrafts"]=="2") { print "selected " ;} ?>value="2">2</option>
 									<option <?php if ($row["homeworkSubmissionDrafts"]=="3") { print "selected " ;} ?>value="3">3</option>
@@ -914,59 +913,59 @@ else {
 						</tr>
 						<tr id="homeworkSubmissionTypeRow">
 							<td> 
-								<b>Submission Type *</b><br/>
+								<b><?php print _('Submission Type') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
 								<select name="homeworkSubmissionType" id="homeworkSubmissionType" style="width: 302px">
-									<option <?php if ($row["homeworkSubmissionType"]=="Link") { print "selected " ;} ?>value="Link">Link</option>
-									<option <?php if ($row["homeworkSubmissionType"]=="File") { print "selected " ;} ?>value="File">File</option>
-									<option <?php if ($row["homeworkSubmissionType"]=="Link/File") { print "selected " ;} ?>value="Link/File">Link/File</option>
+									<option <?php if ($row["homeworkSubmissionType"]=="Link") { print "selected " ;} ?>value="Link"><?php print _('Link') ?></option>
+									<option <?php if ($row["homeworkSubmissionType"]=="File") { print "selected " ;} ?>value="File"><?php print _('File') ?></option>
+									<option <?php if ($row["homeworkSubmissionType"]=="Link/File") { print "selected " ;} ?>value="Link/File"><?php print _('Link/File') ?></option>
 								</select>
 							</td>
 						</tr>
 						<tr id="homeworkSubmissionRequiredRow">
 							<td> 
-								<b>Submission Required *</b><br/>
+								<b><?php print _('Submission Required') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
 								<select name="homeworkSubmissionRequired" id="homeworkSubmissionRequired" style="width: 302px">
-									<option <?php if ($row["homeworkSubmissionRequired"]=="Optional") { print "selected " ;} ?>value="Optional">Optional</option>
-									<option <?php if ($row["homeworkSubmissionRequired"]=="Compulsory") { print "selected " ;} ?>value="Compulsory">Compulsory</option>
+									<option <?php if ($row["homeworkSubmissionRequired"]=="Optional") { print "selected " ;} ?>value="Optional"><?php print _('Optional') ?></option>
+									<option <?php if ($row["homeworkSubmissionRequired"]=="Compulsory") { print "selected " ;} ?>value="Compulsory"><?php print _('Compulsory') ?></option>
 								</select>
 							</td>
 						</tr>
 						<?php if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess.php")) { ?>
 							<tr id="homeworkCrowdAssessRow">
 								<td> 
-									<b>Crowd Assessment? *</b><br/>
-									<span style="font-size: 90%"><i>Allow crowd assessment of homework?</i></span>
+									<b><?php print _('Crowd Assessment?') ?> *</b><br/>
+									<span style="font-size: 90%"><i><?php print _('Allow crowd assessment of homework?') ?></i></span>
 								</td>
 								<td class="right">
-									<input <?php print $crowdYes ?> type="radio" name="homeworkCrowdAssess" value="Yes" class="homeworkCrowdAssess" /> Yes
-									<input <?php print $crowdNo ?> type="radio" name="homeworkCrowdAssess" value="No" class="homeworkCrowdAssess" /> No
+									<input <?php print $crowdYes ?> type="radio" name="homeworkCrowdAssess" value="Yes" class="homeworkCrowdAssess" /> <?php print _('Yes') ?>
+									<input <?php print $crowdNo ?> type="radio" name="homeworkCrowdAssess" value="No" class="homeworkCrowdAssess" /> <?php print _('No') ?>
 								</td>
 							</tr>
 							<tr id="homeworkCrowdAssessControlRow">
 								<td> 
-									<b>Access Controls?</b><br/>
-									<span style="font-size: 90%"><i>Decide who can crowd assess</i></span>
+									<b><?php print _('Access Controls?') ?></b><br/>
+								<span style="font-size: 90%"><i><?php print _('Decide who can see this homework.') ?></i></span>
 								</td>
 								<td class="right">
 									<?php
 									print "<table cellspacing='0' style='width: 308px' align=right>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
-												print "Role" ;
+												print _("Role") ;
 											print "</th>" ;
 											print "<th style='text-align: center'>" ;
-												print "Allow" ;
+												print ("Access") ;
 											print "</th>" ;
 										print "</tr>" ;
 										print "<tr class='even'>" ;
 											print "<td style='text-align: left'>" ;
-												print "Class Teachers" ;
+												print _("Class Teachers") ;
 											print "</td>" ;
 											print "<td style='text-align: center'>" ;
 												print "<input checked disabled='disabled' type='checkbox' />" ;
@@ -974,7 +973,7 @@ else {
 										print "</tr>" ;
 										print "<tr class='even'>" ;
 											print "<td style='text-align: left'>" ;
-												print "Submitter" ;
+												print _("Submitter") ;
 											print "</td>" ;
 											print "<td style='text-align: center'>" ;
 												print "<input checked disabled='disabled' type='checkbox' />" ;
@@ -982,7 +981,7 @@ else {
 										print "</tr>" ;
 										print "<tr class='odd'>" ;
 											print "<td style='text-align: left'>" ;
-												print "Classmates" ;
+												print _("Classmates") ;
 											print "</td>" ;
 											print "<td style='text-align: center'>" ;
 												print "<input " ;
@@ -992,7 +991,7 @@ else {
 										print "</tr>" ;
 										print "<tr class='even'>" ;
 											print "<td style='text-align: left'>" ;
-												print "Other Students" ;
+												print _("Other Students") ;
 											print "</td>" ;
 											print "<td style='text-align: center'>" ;
 												print "<input " ;
@@ -1002,7 +1001,7 @@ else {
 										print "</tr>" ;
 										print "<tr class='odd'>" ;
 											print "<td style='text-align: left'>" ;
-												print "Other Teachers" ;
+												print _("Other Teachers") ;
 											print "</td>" ;
 											print "<td style='text-align: center'>" ;
 												print "<input " ;
@@ -1012,7 +1011,7 @@ else {
 										print "</tr>" ;
 										print "<tr class='even'>" ;
 											print "<td style='text-align: left'>" ;
-												print "Submitter's Parents" ;
+												print _("Submitter's Parents") ;
 											print "</td>" ;
 											print "<td style='text-align: center'>" ;
 												print "<input " ;
@@ -1022,7 +1021,7 @@ else {
 										print "</tr>" ;
 										print "<tr class='odd'>" ;
 											print "<td style='text-align: left'>" ;
-												print "Classmates's Parents" ;
+												print _("Classmates's Parents") ;
 											print "</td>" ;
 											print "<td style='text-align: center'>" ;
 												print "<input " ;
@@ -1032,7 +1031,7 @@ else {
 										print "</tr>" ;
 										print "<tr class='even'>" ;
 											print "<td style='text-align: left'>" ;
-												print "Other Parents" ;
+												print _("Other Parents") ;
 											print "</td>" ;
 											print "<td style='text-align: center'>" ;
 												print "<input " ;
@@ -1052,13 +1051,13 @@ else {
 							?>
 							<tr class='break'>
 								<td colspan=2> 
-									<h3>Outcomes</h3>
+									<h3><?php print _('Outcomes') ?></h3>
 								</td>
 							</tr>
 							<tr>
 								<td colspan=2> 
 									<div class='warning'>
-										Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.
+										<?php print _('Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.') ?>
 									</div>
 								</td>
 							</tr>
@@ -1068,12 +1067,12 @@ else {
 							?>
 							<tr class='break'>
 								<td colspan=2> 
-									<h3>Outcomes</h3>
+									<h3><?php print _('Outcomes') ?></h3>
 								</td>
 							</tr>
 							<tr>
 								<td colspan=2> 
-									<p>Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.</p>
+									<p><?php print _('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.') ?></p>
 								</td>
 							</tr>
 							<?php 
@@ -1143,7 +1142,7 @@ else {
 															?>
 														</script>
 														<select id='newOutcome' onChange='outcomeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
-															<option class='all' value='0'>Choose an outcome to add it to this lesson</option>
+															<option class='all' value='0'><?php print _('Choose an outcome to add it to this lesson.') ?></option>
 															<?php
 															$currentCategory="" ;
 															$lastCategory="" ;
@@ -1164,7 +1163,7 @@ else {
 															catch(PDOException $e) { 
 																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 															}
-															print "<optgroup label='--SCHOOL OUTCOMES--'>" ;
+															print "<optgroup label='--" . _('SCHOOL OUTCOMES') . "--'>" ;
 															while ($rowSelect=$resultSelect->fetch()) {
 																$currentCategory=$rowSelect["category"] ;
 																if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
@@ -1232,7 +1231,7 @@ else {
 														if (count($categories)>0) {
 															?>
 															<select id='outcomeFilter' style='float: none; margin-left: 3px; margin-top: 0px; width: 350px'>
-																<option value='all'>View All</option>
+																<option value='all'><?php print _('View All') ?></option>
 																<?php
 																$categories=array_unique($categories) ;
 																$categories=msort($categories) ;
@@ -1280,18 +1279,18 @@ else {
 						
 						<tr class='break'>
 							<td colspan=2> 
-								<h3>Access</h3>
+								<h3><?php print _('Access') ?></h3>
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b>Viewable to Students *</b><br/>
+								<b><?php print _('Viewable to Students') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
 								<select name="viewableStudents" id="viewableStudents" style="width: 302px">
-									<option <?php if ($row["viewableStudents"]=="N") { print "selected " ; } ?>value="N">N</option>
-									<option <?php if ($row["viewableStudents"]=="Y") { print "selected " ; } ?>value="Y">Y</option>
+									<option <?php if ($row["viewableStudents"]=="N") { print "selected " ; } ?>value="N"><?php print _('No') ?></option>
+									<option <?php if ($row["viewableStudents"]=="Y") { print "selected " ; } ?>value="Y"><?php print _('Yes') ?></option>
 								</select>
 							</td>
 						</tr>
@@ -1302,15 +1301,15 @@ else {
 							</td>
 							<td class="right">
 								<select name="viewableParents" id="viewableParents" style="width: 302px">
-									<option <?php if ($row["viewableParents"]=="N") { print "selected " ; } ?>value="N">N</option>
-									<option <?php if ($row["viewableParents"]=="Y") { print "selected " ; } ?>value="Y">Y</option>
+									<option <?php if ($row["viewableParents"]=="N") { print "selected " ; } ?>value="N"><?php print _('No') ?></option>
+									<option <?php if ($row["viewableParents"]=="Y") { print "selected " ; } ?>value="Y"><?php print _('Yes') ?></option>
 								</select>
 							</td>
 						</tr>
 						
 						<tr class='break'>
 							<td colspan=2> 
-								<h3>Current Guests</h3>
+								<h3><?php print _('Current Guests') ?></h3>
 							</td>
 						</tr>
 						<tr>
@@ -1339,7 +1338,7 @@ else {
 												print _("Name") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Role" ;
+												print _("Role") ;
 											print "</th>" ;
 											print "<th>" ;
 												print _("Actions") ;
@@ -1377,12 +1376,12 @@ else {
 						</tr>
 						<tr class='break'>
 							<td colspan=2> 
-								<h3>New Guests</h3>
+								<h3><?php print _('New Guests') ?></h3>
 							</td>
 						</tr>
 						<tr>
 						<td> 
-							<b>Guest List</b><br/>
+							<b><?php print _('Guest List') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td class="right">
@@ -1403,29 +1402,29 @@ else {
 						</td>
 						<tr>
 							<td> 
-								<b>Role</b><br/>
+								<b><?php print _('Role') ?></b><br/>
 							</td>
 							<td class="right">
 								<select name="role" id="role" style="width: 302px">
-									<option value="Guest Student">Guest Student</option>
-									<option value="Guest Teacher">Guest Teacher</option>
-									<option value="Guest Assistant">Guest Assistant</option>
-									<option value="Guest Technician">Guest Technician</option>
-									<option value="Guest Parent">Guest Parent</option>
-									<option value="Other Guest">Other Guest</option>
+									<option value="Guest Student"><?php print _('Guest Student') ?></option>
+									<option value="Guest Teacher"><?php print _('Guest Teacher') ?></option>
+									<option value="Guest Assistant"><?php print _('Guest Assistant') ?></option>
+									<option value="Guest Technician"><?php print _('Guest Technician') ?></option>
+									<option value="Guest Parent"><?php print _('Guest Parent') ?></option>
+									<option value="Other Guest"><?php print _('Other Guest') ?></option>
 								</select>
 							</td>
 						</tr>
 						
 						<tr class='break'>
 							<td colspan=2> 
-								<h3>Twitter</h3>
+								<h3><?php print _('Twitter') ?></h3>
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b>Integreate Twitter Content</b><br/>
-								<span style="font-size: 90%"><i>Returned tweets will display results in your lesson. TAKE CARE! <a href='https://support.twitter.com/articles/71577#'>Need help?</a></i></span>
+								<b><?php print _('Integreate Twitter Content') ?></b><br/>
+								<span style="font-size: 90%"><i><?php print _('Returned tweets will display in your lesson. TAKE CARE!') ?> <a href='https://support.twitter.com/articles/71577#'><?php print _('Need help?') ?></a></i></span>
 							</td>
 							<td class="right">
 								<input name="twitterSearch" id="twitterSearch" maxlength=255 value="<?php print $row["twitterSearch"] ?>" type="text" style="width: 300px">

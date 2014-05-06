@@ -87,7 +87,7 @@ else {
 				$search=$_GET["search"] ;
 			}
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>My Children's Classes</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('My Children\'s Classes') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -162,7 +162,7 @@ else {
 				}
 				else {
 					print "<h2>" ;
-					print "Choose" ;
+					print _("Choose") ;
 					print "</h2>" ;
 					?>
 					<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -171,7 +171,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print _('Search For') ?></b><br/>
-									<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
+									<span style="font-size: 90%"><i><?php print _('Preferred, surname, username.') ?></i></span>
 								</td>
 								<td class="right">
 									<select name="search" id="search" style="width: 302px">
@@ -209,7 +209,7 @@ else {
 				
 					if ($resultChild->rowCount()<1) {
 						print "<div class='error'>" ;
-						print "You do not have access to the specified student." ;
+						print _("The selected record does not exist, or you do not have access to it.") ;
 						print "</div>" ;
 					}
 					else {
@@ -217,7 +217,7 @@ else {
 						
 						if ($count>1) {
 							print "<h2>" ;
-							print "Lessons" ;
+							print _("Lessons") ;
 							print "</h2>" ;
 						}
 						
@@ -225,7 +225,7 @@ else {
 						if ($viewBy=="date") {
 							if (isSchoolOpen($guid, date("Y-m-d", $dateStamp), $connection2)==FALSE) {
 								print "<div class='warning'>" ;
-									print "School is closed on the specified day." ;
+									print _("School is closed on the specified day.") ;
 								print "</div>" ;
 							}
 							else {
@@ -268,22 +268,22 @@ else {
 									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
-												print "Class" ;
+												print _("Class") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Lesson/Unit" ;
+												print _("Lesson/Unit") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Time" ;
+												print _("Time") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Homework<br/><span style='font-size: 80%'>Is set?</span>" ;
+												print _("Homework") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "View<br/><span style='font-size: 80%'>Who has access?</span>" ;
+												print _("Access") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Like" ;
+												print _("Like") ;
 											print "</th>" ;
 											print "<th style='min-width: 140px'>" ;
 												print _("Actions") ;
@@ -317,7 +317,7 @@ else {
 														$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
 														print $unit[0] ;
 														if ($unit[1]!="") {
-															print "<br/><i>" . $unit[1] . " Unit</i>" ;
+															print "<br/><i>" . $unit[1] . " " . _('Unit') . "</i>" ;
 														}
 													print "</td>" ;
 													print "<td>" ;
@@ -339,13 +339,13 @@ else {
 													print "</td>" ;
 													print "<td>" ;
 														if ($row["viewableStudents"]=="Y") {
-															print "Students" ;
+															print _("Students") ;
 														}
 														if ($row["viewableStudents"]=="Y" AND $row["viewableParents"]=="Y") {
 															print ", " ;
 														}
 														if ($row["viewableParents"]=="Y") {
-															print "Parents" ;
+															print _("Parents") ;
 														}
 													print "</td>" ;
 													print "<td>" ;
@@ -394,7 +394,7 @@ else {
 
 								if ($result->rowCount()!=1) {
 									print "<div class='error'>" ;
-										print "You do not have permission to access the specified class." ;
+										print _("The selected record does not exist, or you do not have access to it.") ;
 									print "</div>" ;
 								
 								}
@@ -440,22 +440,22 @@ else {
 										print "<table cellspacing='0' style='width: 100%'>" ;
 											print "<tr class='head'>" ;
 												print "<th>" ;
-													print "Date" ;
+													print _("Date") ;
 												print "</th>" ;
 												print "<th>" ;
-													print "Lesson/Unit" ;
+													print _("Lesson/Unit") ;
 												print "</th>" ;
 												print "<th>" ;
-													print "Time" ;
+													print _("Time") ;
 												print "</th>" ;
 												print "<th>" ;
-													print "Homework<br/><span style='font-size: 80%'>Is set?</span>" ;
+												print _("Homework") ;
 												print "</th>" ;
 												print "<th>" ;
-													print "View<br/><span style='font-size: 80%'>Who has access?</span>" ;
+													print _("Access") ;
 												print "</th>" ;
 												print "<th>" ;
-													print "Like" ;
+													print _("Like") ;
 												print "</th>" ;
 												print "<th style='min-width: 140px'>" ;
 													print _("Actions") ;
@@ -493,7 +493,7 @@ else {
 																$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
 																print $unit[0] ;
 																if ($unit[1]!="") {
-																	print "<br/><i>" . $unit[1] . " Unit</i>" ;
+																	print "<br/><i>" . $unit[1] . " " . _('Unit') . "</i>" ;
 																}
 															}
 														print "</td>" ;
@@ -518,13 +518,13 @@ else {
 														print "</td>" ;
 														print "<td>" ;
 															if ($row["viewableStudents"]=="Y") {
-																print "Students" ;
+																print _("Students") ;
 															}
 															if ($row["viewableStudents"]=="Y" AND $row["viewableParents"]=="Y") {
 																print ", " ;
 															}
 															if ($row["viewableParents"]=="Y") {
-																print "Parents" ;
+																print _("Parents") ;
 															}
 														print "</td>" ;
 														print "<td>" ;
@@ -565,7 +565,7 @@ else {
 			
 			if ($viewBy=="date") {
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Planner " . dateConvertBack($guid, $date) . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Planner') . " " . dateConvertBack($guid, $date) . "</div>" ;
 				print "</div>" ;
 				
 				//Get Smart Workflow help message
@@ -601,7 +601,7 @@ else {
 				
 				if (isSchoolOpen($guid, date("Y-m-d", $dateStamp), $connection2)==FALSE) {
 					print "<div class='warning'>" ;
-						print "School is closed on the specified day." ;
+						print _("School is closed on the specified day.") ;
 					print "</div>" ;
 				}
 				else {
@@ -656,22 +656,22 @@ else {
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
-									print "Class" ;
+									print _("Class") ;
 								print "</th>" ;
 								print "<th>" ;
-									print "Lesson/Unit" ;
+									print _("Lesson/Unit") ;
 								print "</th>" ;
 								print "<th>" ;
-									print "Time" ;
+									print _("Time") ;
 								print "</th>" ;
 								print "<th>" ;
-									print "Homework<br/><span style='font-size: 80%'>Is set?</span>" ;
+									print _("Homework") ;
 								print "</th>" ;
 								print "<th>" ;
-									print "View<br/><span style='font-size: 80%'>Who has access?</span>" ;
+									print _("Access") ;
 								print "</th>" ;
 								print "<th>" ;
-									print "Like" ;
+									print _("Like") ;
 								print "</th>" ;
 								print "<th style='min-width: 115px'>" ;
 									print _("Actions") ;
@@ -710,7 +710,7 @@ else {
 											if (isset($unit[0])) {
 												print $unit[0] ;
 												if ($unit[1]!="") {
-													print "<br/><i>" . $unit[1] . " Unit</i>" ;
+													print "<br/><i>" . $unit[1] . " " . _('Unit') . "</i>" ;
 												}
 											}
 										print "</td>" ;
@@ -733,13 +733,13 @@ else {
 										print "</td>" ;
 										print "<td>" ;
 											if ($row["viewableStudents"]=="Y") {
-												print "Students" ;
+												print _("Students") ;
 											}
 											if ($row["viewableStudents"]=="Y" AND $row["viewableParents"]=="Y") {
 												print ", " ;
 											}
 											if ($row["viewableParents"]=="Y") {
-												print "Parents" ;
+												print _("Parents") ;
 											}
 										print "</td>" ;
 										print "<td>" ;
@@ -830,7 +830,7 @@ else {
 					
 					if ($result->rowCount()!=1) {
 						print "<div class='error'>" ;
-							print "You do not have permission to access the specified class." ;
+							print _("The selected record does not exist, or you do not have access to it.") ;
 						print "</div>" ;
 					
 					}
@@ -838,7 +838,7 @@ else {
 						$row=$result->fetch() ;
 						
 						print "<div class='trail'>" ;
-						print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Planner " . $row["course"] . "." . $row["class"] . "</div>" ;
+						print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Planner') . " " . $row["course"] . "." . $row["class"] . "</div>" ;
 						print "</div>" ;
 						
 						//Get Smart Workflow help message
@@ -890,7 +890,7 @@ else {
 						$class="error" ;
 						if (!($bumpReturn=="")) {
 							if ($bumpReturn=="success0") {
-								$bumpReturnMessage="Bump was successful. It is possible that some lessons have not been moved forward (if there was no space for them), but a reasonable effort has been made." ;	
+								$bumpReturnMessage=_("Bump was successful. It is possible that some lessons have not been moved forward (if there was no space for them), but a reasonable effort has been made.") ;	
 								$class="success" ;
 							}
 							print "<div class='$class'>" ;
@@ -926,10 +926,10 @@ else {
 							print "<div class='linkTop'>" ;
 							$style="" ;
 							if ($subView=="lesson" OR $subView=="") { $style="style='font-weight: bold'" ; }
-							print "<a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=lesson'>Lesson View</a> | " ;
+							print "<a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=lesson'>" . _('Lesson View') . "</a> | " ;
 							$style="" ;
 							if ($subView=="year") { $style="style='font-weight: bold'" ; }
-							print "<a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=year'>Year Overview</a> | " ;
+							print "<a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=year'>" . _('Year Overview') . "</a> | " ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img style='margin-bottom: -4px' title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 							print "</div>" ;
 						}
@@ -945,22 +945,22 @@ else {
 								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
-											print "Date" ;
+											print _("Date") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Lesson/Unit" ;
+											print _("Lesson/Unit") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Time" ;
+											print _("Time") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Homework<br/><span style='font-size: 80%'>Is set?</span>" ;
+											print _("Homework") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "View<br/><span style='font-size: 80%'>Who has access?</span>" ;
+											print _("Access") ;
 										print "</th>" ;
 										print "<th>" ;
-											print "Like" ;
+											print _("Like") ;
 										print "</th>" ;
 										print "<th style='min-width: 140px'>" ;
 											print _("Actions") ;
@@ -1011,7 +1011,7 @@ else {
 														print $unit[0] ;
 														if (isset($unit[1])) {
 															if ($unit[1]!="") {
-																print "<br/><i>" . $unit[1] . " Unit</i>" ;
+																print "<br/><i>" . $unit[1] . " " . _('Unit') . "</i>" ;
 															}
 														}
 													}
@@ -1037,13 +1037,13 @@ else {
 												print "</td>" ;
 												print "<td>" ;
 													if ($row["viewableStudents"]=="Y") {
-														print "Students" ;
+														print _("Students") ;
 													}
 													if ($row["viewableStudents"]=="Y" AND $row["viewableParents"]=="Y") {
 														print ", " ;
 													}
 													if ($row["viewableParents"]=="Y") {
-														print "Parents" ;
+														print _("Parents") ;
 													}
 												print "</td>" ;
 												print "<td>" ;
@@ -1079,7 +1079,7 @@ else {
 													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 													if ((($highestAction=="Lesson Planner_viewAllEditMyClasses" AND $teacher==TRUE) OR $highestAction=="Lesson Planner_viewEditAllClasses")) {
 														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_edit.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_bump.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='Bump Forward' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_right.png'/></a>" ;
+														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_bump.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='" . _('Bump Forward') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_right.png'/></a>" ;
 														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_delete.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_duplicate.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img title='" . _('Duplicate') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a>" ;
 													}
@@ -1179,10 +1179,10 @@ else {
 									
 									while ($rowTerms=$resultTerms->fetch()) {
 										$terms[$termCount][0]=$rowTerms["firstDay"] ;
-										$terms[$termCount][1]="Start of " . $rowTerms["nameShort"] ;
+										$terms[$termCount][1]=_("Start of") . " " . $rowTerms["nameShort"] ;
 										$termCount++ ;
 										$terms[$termCount][0]=$rowTerms["lastDay"] ;
-										$terms[$termCount][1]="End of " . $rowTerms["nameShort"] ;
+										$terms[$termCount][1]=_("End of") . " " . $rowTerms["nameShort"] ;
 										$termCount++ ;
 									}
 									//Get school closure special days
@@ -1234,19 +1234,21 @@ else {
 									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
-												print "Lesson<br/>Number" ;
+												print _("Lesson<br/>Number") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Date" ;
+												print _("Date") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "TT Period/<br/>Time" ;
+												print _("TT Period") . "<br/>" ;
+												print "<span style='font-size: 85%; font-style: italic'>Time</span>" ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Planned<br/>Lesson" ;
+												print _("Planned Lesson") . "<br/>" ;
+												print "<span style='font-size: 85%; font-style: italic'>Unit</span>" ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Include?" ;
+												print _("Actions") ;
 											print "</th>" ;
 										print "</tr>" ;
 										
@@ -1323,19 +1325,21 @@ else {
 													print "</td>" ;
 													print "<td $style>" ;
 														print $lesson["4"] . "<br/>" ;
-														print substr($lesson["2"],0,5) . " - " . substr($lesson["3"],0,5) ;
+														print "<span style='font-size: 85%; font-style: italic'>" . substr($lesson["2"],0,5) . " - " . substr($lesson["3"],0,5) . "</span>" ;
 													print "</td>" ;
 													print "<td $style>" ;
 														if ($lesson["0"]=="Planned") {
 															print "<b>" . $lesson["5"] . "</b><br/>" ;
 															$unit=getUnit($connection2, $lesson[11], $lesson[13], $lesson[14]) ;
 															if (isset($unit[0])) {
-																print $unit[0] ;
-																if (isset($unit[1])) {
-																	if ($unit[1]!="") {
-																		print "<br/><i>" . $unit[1] . " Unit</i>" ;
+																print "<span style='font-size: 85%; font-style: italic'>" ; 
+																	print $unit[0] ;
+																	if (isset($unit[1])) {
+																		if ($unit[1]!="") {
+																			print "<br/><i>" . $unit[1] . " Unit</i>" ;
+																		}
 																	}
-																}
+																print "</span>" ;
 															}
 														}
 													print "</td>" ;
@@ -1347,7 +1351,7 @@ else {
 															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&gibbonPlannerEntryID=" . $lesson[12] . "&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550&subView=$subView'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 															if ((($highestAction=="Lesson Planner_viewAllEditMyClasses" AND $teacher==TRUE) OR $highestAction=="Lesson Planner_viewEditAllClasses")) {
 																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_edit.php&gibbonPlannerEntryID=" . $lesson[12] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_bump.php&gibbonPlannerEntryID=" . $lesson[12] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='Bump Forward' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_right.png'/></a>" ;
+																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_bump.php&gibbonPlannerEntryID=" . $lesson[12] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='" . _('Bump Forward') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_right.png'/></a>" ;
 																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_delete.php&gibbonPlannerEntryID=" . $lesson[12] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_duplicate.php&gibbonPlannerEntryID=" . $lesson[12] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&subView=$subView'><img title='" . _('Duplicate') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a>" ;
 															}

@@ -40,7 +40,7 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/resources_manage.php'>Manage Resources</a> > </div><div class='trailEnd'>Edit Resource</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/resources_manage.php'>" . _('Manage Resources') . "</a> > </div><div class='trailEnd'>" . _('Edit Resource') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -119,7 +119,7 @@ else {
 						<input type="hidden" name="type" value="<?php print $row["type"] ?>">
 						<tr class='break'>
 							<td colspan=2> 
-								<h3>Resource Contents</h3>
+								<h3><?php print _('Resource Contents') ?></h3>
 							</td>
 						</tr>
 						<?php
@@ -127,15 +127,15 @@ else {
 							?>
 							<tr id="resourceFile">
 								<td> 
-									<b>File</b><br/>
+									<b><?php print _('File') ?></b><br/>
 									<?php if ($row["content"]!="") { ?>
-									<span style="font-size: 90%"><i>Will overwrite existing attachment</i></span>
+									<span style="font-size: 90%"><i><?php print _('Will overwrite existing attachment.') ?></i></span>
 									<?php } ?>
 								</td>
 								<td class="right">
 									<?php
 									if ($row["content"]!="") {
-										print "Current attachment: <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["content"] . "'>" . $row["content"] . "</a><br/><br/>" ;
+										print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["content"] . "'>" . $row["content"] . "</a><br/><br/>" ;
 									}
 									?>
 									<input type="file" name="file" id="file"><br/><br/>
@@ -168,7 +168,7 @@ else {
 							?>
 							<tr id="resourceHTML">
 								<td colspan=2> 
-									<b>HTML *</b>
+									<b><?php print _('HTML') ?> *</b>
 									<?php print getEditor($guid,  TRUE, "html", $row["content"], 20, true, true, false, false ) ?>
 								</td>
 							</tr>
@@ -178,7 +178,7 @@ else {
 							?>
 							<tr id="resourceLink">
 								<td> 
-									<b>Link *</b><br/>
+									<b><?php print _('Link') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<input name="link" id="link" maxlength=255 value="<?php print $row["content"] ?>" type="text" style="width: 300px">
@@ -195,7 +195,7 @@ else {
 						
 						<tr class='break'>
 							<td colspan=2> 
-								<h3>Resource Details</h3>
+								<h3><?php print _('Resource Details') ?></h3>
 							</td>
 						</tr>
 						<tr>
@@ -231,7 +231,7 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b>Category *</b><br/>
+										<b><?php print _('Category') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
@@ -284,7 +284,7 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b>Purpose</b><br/>
+										<b><?php print _('Purpose') ?></b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
@@ -310,8 +310,8 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Tags *</b><br/>
-								<span style="font-size: 90%"><i>Use lots of tags!</i></span>
+								<b><?php print _('Tags') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('Use lots of tags!') ?></i></span>
 							</td>
 							<td class="right">
 								<?php
@@ -365,7 +365,6 @@ else {
 						<tr>
 							<td> 
 								<b><?php print _('Year Groups') ?></b><br/>
-								<span style="font-size: 90%"><i>Students year groups which may participate<br/></i></span>
 							</td>
 							<td class="right">
 								<?php
@@ -379,7 +378,7 @@ else {
 									});
 								</script>
 								<?php
-								print _("All") .  " / " . _("None") . " <input type='checkbox' class='checkall'><br/>" ;
+								print _("All/None") . " <input type='checkbox' class='checkall'><br/>" ;
 								$yearGroups=getYearGroups($connection2) ;
 								if ($yearGroups=="") {
 									print "<i>" . _('No year groups available.') . "</i>" ;

@@ -66,7 +66,7 @@ else {
 		
 		if ($gibbonPlannerEntryID=="") {
 			print "<div class='warning'>" ;
-				print "Lesson has not been specified ." ;
+				print _("The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		//Check existence of and access to this class.
@@ -117,7 +117,7 @@ else {
 												
 												
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>Planner $extra</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID'>View Lesson Plan</a> > </div><div class='trailEnd'>Add Comment</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . _('Planner') . " $extra</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID'>'" . _('View Lesson Plan') . "</a> > </div><div class='trailEnd'>" . _('Add Comment') . "</div>" ;
 				print "</div>" ;
 				
 				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -153,7 +153,7 @@ else {
 		
 				if ($_GET["submission"]!="true" AND $_GET["submission"]!="false") {
 					print "<div class='warning'>" ;
-						print "Your request is malformed." ;
+						print _("You have not specified one or more required parameters.") ;
 					print "</div>" ;
 				}
 				else {
@@ -168,13 +168,13 @@ else {
 					
 					if (($submission==true AND $gibbonPlannerEntryHomeworkID=="") OR ($submission==false AND $gibbonPersonID=="")) {
 						print "<div class='warning'>" ;
-							print "Your request is malformed." ;
+							print _("You have not specified one or more required parameters.") ;
 						print "</div>" ;
 					}
 					else {
 						if ($submission==true) {
 							print "<h2>" ;
-							print "Update Submission" ;
+							print _("Update Submission") ;
 							print "</h2>" ;
 							
 							try {
@@ -189,7 +189,7 @@ else {
 							
 							if ($resultSubmission->rowCount()!=1) {
 								print "<div class='warning'>" ;
-									print "The specified submission could not be found." ;
+									print _("The selected record does not exist, or you do not have access to it.") ;
 								print "</div>" ;
 							}
 							else {
@@ -208,12 +208,12 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b>Status *</b><br/>
+												<b><?php print _('Status') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<select style="width: 302px" name="status">
-													<option <?php if ($rowSubmission["status"]=="On Time") { print "selected ";} ?>value="On Time">On Time</option>
-													<option <?php if ($rowSubmission["status"]=="Late") { print "selected ";} ?>value="Late">Late</option>
+													<option <?php if ($rowSubmission["status"]=="On Time") { print "selected ";} ?>value="On Time"><?php print _('On Time') ?></option>
+													<option <?php if ($rowSubmission["status"]=="Late") { print "selected ";} ?>value="Late"><?php print _('Late') ?></option>
 												</select>
 											</td>
 										</tr>
@@ -238,7 +238,7 @@ else {
 						}
 						else {
 							print "<h2>" ;
-							print "Add Submission" ;
+							print _("Add Submission") ;
 							print "</h2>" ;
 							
 							try {
@@ -253,7 +253,7 @@ else {
 							
 							if ($resultSubmission->rowCount()!=1) {
 								print "<div class='warning'>" ;
-									print "The specified student could not be found." ;
+									print ("There are no records to display.") ;
 								print "</div>" ;
 							}
 							else {
@@ -279,21 +279,21 @@ else {
 												<?php
 												if ($row["homeworkSubmissionType"]=="Link") {
 													?>
-													<input checked type="radio" id="type" name="type" class="type" value="Link" /> Link
-													<input type="radio" id="type" name="type" class="type" value="None" /> None
+													<input checked type="radio" id="type" name="type" class="type" value="Link" /> <?php print _('Link') ?>
+													<input type="radio" id="type" name="type" class="type" value="None" /> <?php print _('None') ?>
 													<?php
 												}
 												else if ($row["homeworkSubmissionType"]=="File") {
 													?>
-													<input checked type="radio" id="type" name="type" class="type" value="File" /> File
-													<input type="radio" id="type" name="type" class="type" value="None" /> None
+													<input checked type="radio" id="type" name="type" class="type" value="File" /> <?php print _('File') ?>
+													<input type="radio" id="type" name="type" class="type" value="None" /> <?php print _('None') ?>
 													<?php
 												}
 												else {
 													?>
-													<input type="radio" id="type" name="type" class="type" value="Link" /> Link
-													<input type="radio" id="type" name="type" class="type" value="File" /> File
-													<input checked type="radio" id="type" name="type" class="type" value="None" /> None
+													<input type="radio" id="type" name="type" class="type" value="Link" /> <?php print _('Link') ?>
+													<input type="radio" id="type" name="type" class="type" value="File" /> <?php print _('File') ?>
+													<input checked type="radio" id="type" name="type" class="type" value="None" /> <?php print _('None') ?>
 													<?php
 												}
 												?>
@@ -301,15 +301,15 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b>Version *</b><br/>
+												<b><?php print _('Version') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<?php
 												print "<select style='float: none; width: 302px' name='version'>" ;
 													if ($row["homeworkSubmissionDrafts"]>0 AND $status!="Late" AND $resultVersion->rowCount()<$row["homeworkSubmissionDrafts"]) {
-														print "<option value='Draft'>Draft</option>" ;
+														print "<option value='Draft'>" . _('Draft') . "</option>" ;
 													}
-													print "<option value='Final'>Final</option>" ;
+													print "<option value='Final'>" . _('Final') . "</option>" ;
 												print "</select>" ;
 												?>
 											</td>
@@ -354,7 +354,7 @@ else {
 									
 										<tr id="fileRow">
 											<td> 
-												<b>Submit File *</b><br/>
+												<b><?php print _('Submit File') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<input type="file" name="file" id="file"><br/><br/>
@@ -383,7 +383,7 @@ else {
 										</tr>
 										<tr id="linkRow">
 											<td> 
-												<b>Submit Link *</b><br/>
+												<b><?php print _('Submit Link') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<input name="link" id="link" maxlength=255 value="" type="text" style="width: 300px">
@@ -397,13 +397,13 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b>Status *</b><br/>
+												<b><?php print _('Status') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<select style="width: 302px" name="status">
-													<option value="On Time">On Time</option>
-													<option value="Late">Late</option>
-													<option value="Exemption">Exemption</option>
+													<option value="On Time"><?php print _('On Time') ?></option>
+													<option value="Late"><?php print _('Late') ?></option>
+													<option value="Exemption"><?php print _('Exemption') ?></option>
 												</select>
 											</td>
 										</tr>

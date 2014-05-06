@@ -46,7 +46,7 @@ $comment="" ;
 $gibbonPlannerEntryID=$_POST["gibbonPlannerEntryID"] ; 
 	
 if ($gibbonPersonID=="" OR $date=="" OR $type=="" OR $descriptor=="" OR $gibbonPlannerEntryID=="") {
-	print "Error" ;
+	print _("Error") ;
 }
 else {
 	//Write to database

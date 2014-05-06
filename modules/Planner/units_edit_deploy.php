@@ -367,7 +367,7 @@ else {
 												print _("TT Period") . "/<br/>" . _('Time') ;
 											print "</th>" ;
 											print "<th>" ;
-												print sprintf(_('Planned%1$Lesson'), "<br/>") ;
+												print sprintf(_('Planned%1$sLesson'), "<br/>") ;
 											print "</th>" ;
 											print "<th>" ;
 												print _("Include?") ;

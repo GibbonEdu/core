@@ -105,14 +105,14 @@ else {
 		$output.="<tr><td style='width: 30%; height: 1px; padding-top: 0px; padding-bottom: 0px'></td><td style='padding-top: 0px; padding-bottom: 0px'></td></tr>" ;
 		$output.="<tr id='" . $id . "resourceInsert'>" ;
 			$output.="<td colspan=2 style='padding-top: 0px'>" ; 
-				$output.="<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formResetSearch(); \$(\"." .$id . "resourceSlider\").slideUp();'><img title='Close' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a></div>" ;
+				$output.="<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formResetSearch(); \$(\"." .$id . "resourceSlider\").slideUp();'><img title='" . _('Close') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a></div>" ;
 				$output.="<h3 style='margin-top: 0px; font-size: 140%'>Insert A Resource</h3>" ;
-				$output.="<p>The table below shows shared resources drawn from the <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_view.php'>Resources</a> section of Gibbon. You will see the 50 most recent resources that match the filters you have used.</p>" ;
+				$output.="<p>" . sprintf(_('The table below shows shared resources drawn from the %1$sResources%2$s section of Gibbon. You will see the 50 most recent resources that match the filters you have used.'), "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_view.php'>", "</a>") . "</p>" ;
 				$output.="<form id='" . $id . "ajaxFormSearch' name='" . $id . "ajaxFormSearch'>" ;
 					$output.="<table cellspacing='0' style='width: 200px'>" ;
 						$output.="<tr>" ;
 							$output.="<td colspan=4>" ;
-								$output.="<b>Tags</b>" ;
+								$output.="<b>" . _('Tags') . "</b>" ;
 							$output.="</td>" ;
 						$output.="</tr>" ;
 						$output.="<tr>" ;
@@ -129,7 +129,7 @@ else {
 								while ($rowList=$resultList->fetch()) {
 									$list=$list . "{id: \"" . $rowList["tag"] . "\", name: \"" . $rowList["tag"] . " <i>(" . $rowList["count"] . ")</i>\"}," ;
 								}
-								$output.="<style>ul.token-input-list-facebook { margin-left: 2px; width: 735px; height: 25px!important; float: none }</style>" ;
+								$output.="<style>ul.token-input-list-facebook { margin-left: 2px; width: 700px; height: 25px!important; float: none }</style>" ;
 								$output.="<input type='text' id='tagSearch" . $id . "' name='tag" . $id . "' />" ;
 								$output.="<script type='text/javascript'>" ;
 									$output.="$(document).ready(function() {" ;
@@ -157,13 +157,13 @@ else {
 						
 						$output.="<tr>" ;
 							$output.="<td>" ;
-								$output.="<b>Category</b>" ;
+								$output.="<b>" . _('Category') . "</b>" ;
 							$output.="</td>" ;
 							$output.="<td>" ;
-								$output.="<b>Purpose</b>" ;
+								$output.="<b>" . _('Purpose') . "</b>" ;
 							$output.="</td>" ;
 							$output.="<td>" ;
-								$output.="<b>Year Group</b>" ;
+								$output.="<b>" . _('Year Group') . "</b>" ;
 							$output.="</td>" ;
 							$output.="<td>" ;
 								
@@ -178,7 +178,7 @@ else {
 									$resultCategory->execute($dataCategory);
 								}
 								catch(PDOException $e) { }
-								$output.="<select name='category" . $id . "' id='category" . $id . "' style='width:230px; height: 27px; margin-left: 0px'>" ;
+								$output.="<select name='category" . $id . "' id='category" . $id . "' style='width:200px; height: 27px; margin-left: 0px'>" ;
 									$output.="<option value=''></option>" ;
 									if ($resultCategory->rowCount()==1) {
 										$rowCategory=$resultCategory->fetch() ;
@@ -216,7 +216,7 @@ else {
 										$options=explode(",", $options) ;
 									}
 								}
-								$output.="<select name='purpose" . $id . "' id='purpose" . $id . "' style='width:220px; height: 27px; margin-left: 0px'>" ;
+								$output.="<select name='purpose" . $id . "' id='purpose" . $id . "' style='width:200px; height: 27px; margin-left: 0px'>" ;
 									$output.="<option value=''></option>" ;
 									for ($i=0; $i<count($options); $i++) {
 										$selected="" ;
@@ -304,29 +304,31 @@ else {
 				
 				if ($result->rowCount()<1) {
 					$output.="<div class='error'>" ;
-					$output.="There are no records to display." ;
+					$output.=_("There are no records to display.") ;
 					$output.="</div>" ;
 				}
 				else {
 					$output.="<table cellspacing='0' style='width: 100%'>" ;
 						$output.="<tr class='head'>" ;
 							$output.="<th>" ;
-								$output.="Name &<br/>Contributor" ;
+								$output.=_("Name") . "<br/>";
+								$output.="<span style='font-size: 85%; font-style: italic'>" . _('Contributor') . "</span>" ;
 							$output.="</th>" ;
 							$output.="<th>" ;
-								$output.="Type" ;
+								$output.=_("Type") ;
 							$output.="</th>" ;
 							$output.="<th>" ;
-								$output.="Category &<br/>Purpose" ;
+								$output.=_("Category") . "<br/>";
+								$output.="<span style='font-size: 85%; font-style: italic'>" . _('Purpose') . "</span>" ;
 							$output.="</th>" ;
 							$output.="<th>" ;
-								$output.="Tags" ;
+								$output.=_("Tags") ;
 							$output.="</th>" ;
 							$output.="<th>" ;
-								$output.="Year Groups" ;
+								$output.=_("Year Groups") ;
 							$output.="</th>" ;
 							$output.="<th>" ;
-								$output.="Insert" ;
+								$output.=_("Insert") ;
 							$output.="</th>" ;
 						$output.="</tr>" ;
 						
@@ -353,15 +355,14 @@ else {
 									else if ($row["type"]=="HTML") {
 										$output.="<a target='_blank' style='font-weight: bold' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Resources/resources_view_standalone.php?gibbonResourceID=" . $row["gibbonResourceID"] . "'>" . $row["name"] . "</a><br/>" ;
 									}
-										
-									$output.=formatName($row["title"], $row["preferredName"], $row["surname"], "Staff") . "<br/>" ;
+									$output.="<span style='font-size: 85%; font-style: italic'>" . formatName($row["title"], $row["preferredName"], $row["surname"], "Staff") . "</span>" ;
 								$output.="</td>" ;
 								$output.="<td>" ;
 									$output.=$row["type"] ;
 								$output.="</td>" ;
 								$output.="<td>" ;
 									$output.="<b>" . $row["category"] . "</b><br/>" ;
-									$output.=$row["purpose"] ;
+									$output.="<span style='font-size: 85%; font-style: italic'>" . $row["purpose"] . "</span>" ;
 								$output.="</td>" ;
 								$output.="<td>" ;
 									$tagoutput="" ;
@@ -407,7 +408,7 @@ else {
 										}
 									}
 									else {
-										$output.="<i>None</i>" ;
+										$output.="<i>" . _('None') . "</i>" ;
 									}
 								$output.="</td>" ;
 								$output.="<td>" ;
@@ -434,7 +435,7 @@ else {
 									else if ($row["type"]=="HTML") {
 										$html=$row["content"] ;
 									}
-									$output.="<a href='javascript:void(0)' onclick='tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, \"" . htmlPrep(addslashes($html)) ."\"); formResetSearch(); \$(\"." .$id . "resourceSlider\").slideUp();'><img title='Insert' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
+									$output.="<a href='javascript:void(0)' onclick='tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, \"" . htmlPrep(addslashes($html)) ."\"); formResetSearch(); \$(\"." .$id . "resourceSlider\").slideUp();'><img title='" . _('Insert') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
 								$output.="</td>" ;
 							$output.="</tr>" ;
 						}

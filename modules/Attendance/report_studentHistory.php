@@ -228,7 +228,7 @@ else {
 					
 					if ($resultChild->rowCount()<1) {
 						print "<div class='error'>" ;
-						print "You do not have access to the specified student." ;
+						print _("The selected record does not exist, or you do not have access to it.") ;
 						print "</div>" ;
 					}
 					else {

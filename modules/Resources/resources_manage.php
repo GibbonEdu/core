@@ -38,7 +38,7 @@ else {
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Resources</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Resources') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -75,7 +75,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print _('Search For') ?></b><br/>
-						<span style="font-size: 90%"><i>Resource name.</i></span>
+						<span style="font-size: 90%"><i><?php print _('Resource name.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
@@ -96,7 +96,7 @@ else {
 		<?php
 		
 		print "<h2>" ;
-		print "View" ;
+		print _("View") ;
 		print "</h2>" ;
 		
 		
@@ -142,16 +142,18 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print "Name &<br/>Contributor" ;
+						print _("Name") . "<br/>";
+						print "<span style='font-size: 85%; font-style: italic'>" . _('Contributor') . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Type") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Category &<br/>Purpose" ;
+						print _("Category") . "<br/>";
+						print "<span style='font-size: 85%; font-style: italic'>" . _('Purpose') . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Tags" ;
+						print _("Tags") ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Year Groups") ;
@@ -183,14 +185,15 @@ else {
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
 							print getResourceLink($guid, $row["gibbonResourceID"], $row["type"], $row["name"], $row["content"]) ;
-							print formatName($row["title"], $row["preferredName"], $row["surname"], "Staff") . "<br/>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . formatName($row["title"], $row["preferredName"], $row["surname"], "Staff") . "</span>" ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["type"] ;
 						print "</td>" ;
 						print "<td>" ;
 							print "<b>" . $row["category"] . "</b><br/>" ;
-							print $row["purpose"] ;
+							print "<span style='font-size: 85%; font-style: italic'>" . $row["purpose"] . "</span>" ;
+						print "</td>" ;
 						print "</td>" ;
 						print "<td>" ;
 							$output="" ;

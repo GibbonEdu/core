@@ -353,10 +353,10 @@ else {
 											print _("Month") ;
 										print "</th>" ;
 										print "<th>" ;
-											print sprintf(_('TT Period%1$Time'), "<br/>") ;
+											print sprintf(_('TT Period%1$sTime'), "<br/>") ;
 										print "</th>" ;
 										print "<th>" ;
-											print sprintf(_('Planned%1$Lesson'), "<br/>") ;
+											print sprintf(_('Planned%1$sLesson'), "<br/>") ;
 										print "</th>" ;
 										print "<th>" ;
 											print _("Include?") ;

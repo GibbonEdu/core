@@ -38,11 +38,11 @@ else {
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Timetable by Person</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('View Timetable by Person') . "</div>" ;
 		print "</div>" ;
 		
 		print "<h2>" ;
-		print "Filters" ;
+		print _("Filters") ;
 		print "</h2>" ;
 		
 		$gibbonPersonID=NULL ;
@@ -73,8 +73,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>All Users</b><br/>
-						<span style="font-size: 90%"><i>Include non-staff, non-student users.</i></span>
+						<b><?php print _('All Users') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print _('Include non-staff, non-student users.') ?></i></span>
 					</td>
 					<td class="right">
 						<?php
@@ -101,7 +101,7 @@ else {
 		<?php
 		
 		print "<h2>" ;
-		print "Choose A Person" ;
+		print _("Choose A Person") ;
 		print "</h2>" ;
 		
 		//Set pagination variable
@@ -196,7 +196,7 @@ else {
 							print $row["rollGroup"] ;
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_view.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&allUsers=$allUsers&search=$search'><img title='View Timetable' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_view.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&allUsers=$allUsers&search=$search'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

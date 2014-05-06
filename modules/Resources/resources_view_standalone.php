@@ -63,7 +63,7 @@ print "<link rel='stylesheet' type='text/css' href='" . $_SESSION[$guid]["absolu
 						print "Resource has not been specified ." ;
 					print "</div>" ;
 				}
-				//Check existence of and access to this class.
+				//Check existence of and access to this resource.
 				else {
 					try {
 						$data=array("gibbonResourceID"=>$gibbonResourceID); 

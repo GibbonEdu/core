@@ -135,7 +135,7 @@ else {
 				}
 				
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>Planner $extra</a> > </div><div class='trailEnd'>Duplicate Lesson Plan</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . _('Planner') . " $extra</a> > </div><div class='trailEnd'>" . _('Duplicate Lesson Plan') . "</div>" ;
 				print "</div>" ;
 				
 				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -143,22 +143,22 @@ else {
 				$class="error" ;
 				if (!($updateReturn=="")) {
 					if ($updateReturn=="fail0") {
-						$updateReturnMessage="Duplicate failed because you do not have access to this action." ;	
+						$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 					}
 					else if ($updateReturn=="fail1") {
-						$updateReturnMessage="Duplicate failed because a required parameter was not set." ;	
+						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail2") {
-						$updateReturnMessage="Duplicate failed due to a database error." ;	
+						$updateReturnMessage=_("Your request failed due to a database error.") ;	
 					}
 					else if ($updateReturn=="fail3") {
-						$updateReturnMessage="Duplicate failed because your inputs were invalid." ;	
+						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail4") {
-						$updateReturnMessage="Duplicate failed some values need to be unique but were not." ;	
+						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail5") {
-						$updateReturnMessage="Duplicate failed because your attachment could not be uploaded." ;	
+						$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
 					}
 					print "<div class='$class'>" ;
 						print $updateReturnMessage;
@@ -176,18 +176,18 @@ else {
 				if ($step==1) {
 					?>
 					<p>
-					This process will duplicate all aspects of the selected lesson, with the exception of Smart Blocks content, which belongs to the unit, not the lesson. 
+					<?php print _('This process will duplicate all aspects of the selected lesson, with the exception of Smart Blocks content, which belongs to the unit, not the lesson.') ?>
 					</p>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_duplicate.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&step=2" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
-									<b><?php print _('Class') ?> *</b><br/>
+									<b><?php print _('Target Class') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<select name="gibbonCourseClassID" id="gibbonCourseClassID" style="width: 302px">
 										<?php
-										print "<option value='Please select...'></option>" ;
+										print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 										try {
 											if ($highestAction=="Lesson Planner_viewEditAllClasses" ) {
 												$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -232,8 +232,8 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b>Duplicate Markbook Columns?</b><br/>
-										<span style="font-size: 90%"><i>Will duplicate any columns linked to this lesson.<br/></i></span>
+										<b><?php print _('Duplicate Markbook Columns?') ?></b><br/>
+										<span style="font-size: 90%"><i><?php print _('Will duplicate any columns linked to this lesson.') ?><br/></i></span>
 									</td>
 									<td class="right">
 										<select name="duplicate" id="duplicate" style="width: 302px">
@@ -254,7 +254,7 @@ else {
 									<input name="viewBy" id="viewBy" value="<?php print $viewBy ?>" type="hidden">
 									<input name="subView" id="subView" value="<?php print $subView ?>" type="hidden">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="Next">
+									<input type="submit" value="<?php print _('Next') ?>">
 								</td>
 							</tr>
 						</table>
@@ -279,11 +279,10 @@ else {
 								<tr>
 									<td> 
 										<b><?php print _('Class') ?> *</b><br/>
-										<span style="font-size: 90%"><i>This value cannot be changed<br/></i></span>
+										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<?php
-										print "<option value='Please select...'></option>" ;
 										try {
 											if ($highestAction=="Lesson Planner_viewEditAllClasses" ) {
 												$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -327,13 +326,13 @@ else {
 										?>
 										<tr>
 											<td> 
-												<b>Keep lesson in original unit?</b><br/>
-												<span style="font-size: 90%"><i>Only available if source and target classes are in the same course.<br/></i></span>
+												<b><?php print _('Keep lesson in original unit?') ?></b><br/>
+												<span style="font-size: 90%"><i><?php print _('Only available if source and target classes are in the same course.') ?><br/></i></span>
 											</td>
 											<td class="right">
 												<select name="keepUnit" id="keepUnit" style="width: 302px">
-													<option value='Y'>Y</option>	
-													<option value='N'>N</option>
+													<option value='Y'><?php print _('Yes') ?></option>	
+													<option value='N'><?php print _('No') ?></option>
 												</select>
 											</td>
 										</tr>
@@ -385,8 +384,8 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b>Date *</b><br/>
-										<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+										<b><?php print _('Date') ?> *</b><br/>
+										<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 									</td>
 									<td class="right">
 										<input name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, $nextDate) ?>" type="text" style="width: 300px">
