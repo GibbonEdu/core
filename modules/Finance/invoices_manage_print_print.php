@@ -76,7 +76,7 @@ else {
 				print "</h2>" ;
 				if ($preview) {
 					print "<p style='font-weight: bold; color: #c00; font-size: 100%; letter-spacing: -0.5px'>" ;
-						print "THIS INVOICE IS A PREVIEW: IT HAS NOT YET BEEN ISSUED AND IS FOR TESTING PURPOSES ONLY!" ;
+						print _("THIS INVOICE IS A PREVIEW: IT HAS NOT YET BEEN ISSUED AND IS FOR TESTING PURPOSES ONLY!") ;
 					print "</p>" ;
 				}
 				
@@ -130,7 +130,7 @@ else {
 				}
 				
 				print "<h2>" ;
-					print "Invoice" ;
+					print _("Invoice") ;
 				print "</h2>" ;
 				$invoiceContents=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) ;
 				if ($invoiceContents==FALSE) {
@@ -146,7 +146,7 @@ else {
 			}
 			else if ($type="Receipt") {
 				print "<h2>" ;
-					print "Receipt" ;
+					print _("Receipt") ;
 				print "</h2>" ;
 				
 				$receiptContents=receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) ;

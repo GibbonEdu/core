@@ -28,11 +28,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/billingSchedule_ma
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Billing Schedule</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Billing Schedule') . "</div>" ;
 	print "</div>" ;
 	
 	print "<p>" ;
-	print "The billing schedule allows you to layout your overall timing for issueing invoices, making it easier to specific due dates in bulk. Invoices can be issued outside of the billing schedule, should ad hoc invoices be required." ;
+	print _("The billing schedule allows you to layout your overall timing for issueing invoices, making it easier to specific due dates in bulk. Invoices can be issued outside of the billing schedule, should ad hoc invoices be required.") ;
 	print "</p>" ;
 	
 	$gibbonSchoolYearID="" ;
@@ -89,7 +89,7 @@ else {
 		print "</div>" ;
 	
 		print "<h3>" ;
-		print "Search" ;
+		print _("Search") ;
 		print "</h3>" ;
 		?>
 		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -98,7 +98,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print _('Search For') ?></b><br/>
-						<span style="font-size: 90%"><i>Billing schedule name.</i></span>
+						<span style="font-size: 90%"><i><?php print _('Billing schedule name.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET["search"])) { print $_GET["search"] ; } ?>" type="text" style="width: 300px">
@@ -119,7 +119,7 @@ else {
 		<?php
 		
 		print "<h3>" ;
-		print "View" ;
+		print _("View") ;
 		print "</h3>" ;
 		//Set pagination variable
 		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
@@ -166,10 +166,12 @@ else {
 						print _("Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Invoice Issue Date<br/><span style='font-style: italic; font-size: 85%'>Intended Date</span>" ;
+						print _("Invoice Issue Date") . "<br/>" ;
+						print "<span style='font-style: italic; font-size: 85%'>" . _('Intended Date') . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Invoice Due Date<br/><span style='font-style: italic; font-size: 85%'>Final Payment Date</span>" ;
+						print _("Invoice Due Date") . "<br/>" ;
+						print "<span style='font-style: italic; font-size: 85%'>" . _('Final Payment Date') . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Actions") ;

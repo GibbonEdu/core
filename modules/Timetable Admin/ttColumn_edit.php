@@ -106,7 +106,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<b><?php print _('Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=30 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
@@ -118,7 +118,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<?php print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+							<b><?php print _('Short Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">

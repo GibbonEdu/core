@@ -31,13 +31,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 else {
 	if ($_SESSION[$guid]["email"]=="") {
 		print "<div class='error'>" ;
-			print "You do not have an email address set in Gibbon, and so cannot send out emails." ;
+			print _("You do not have an email address set in Gibbon, and so cannot send out emails.") ;
 		print "</div>" ;
 	}
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>New Message</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('New Message') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -54,34 +54,18 @@ else {
 				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($addReturn=="fail4") {
-				$addReturnMessage="Add succeeded, but some or all messages could not be delivered." ;	
+				$addReturnMessage=_("Your request was completed successfully, but some or all messages could not be delivered.") ;	
 			}
 			else if ($addReturn=="fail5") {
 				$addReturnMessage=_("Your request failed due to an attachment error.") ;	
 			}
 			else if ($addReturn=="success0") {
-				$addReturnMessage="Add was successful: not all messages may arrive at their destination, but an attempt has been made to get them all out." ;
+				$addReturnMessage=_("Your rquest was completed successfully: not all messages may arrive at their destination, but an attempt has been made to get them all out.") ;
 				if (is_numeric($_GET["emailCount"])) {
-					if ($_GET["emailCount"]==1) {
-						$addReturnMessage.=" " . $_GET["emailCount"] . " email was dispatched." ;	
-					}
-					else {
-						$addReturnMessage.=" " . $_GET["emailCount"] . " emails were dispatched." ;	
-					}
+					$addReturnMessage.=" " . sprintf(_('%1$s email(s) were dispatched.'), $_GET["emailCount"]) ;	
 				}
 				if (is_numeric($_GET["smsCount"]) AND is_numeric($_GET["smsBatchCount"])) {
-					if ($_GET["smsCount"]==1) {
-						$addReturnMessage.=" " . $_GET["smsCount"] . " SMS was dispatched " ;
-					}
-					else {
-						$addReturnMessage.=" " . $_GET["smsCount"] . " SMSs were dispatched " ;	
-					}
-					if ($_GET["smsBatchCount"]==1) {
-						$addReturnMessage.="in " . $_GET["smsBatchCount"] . " batch." ;
-					}
-					else {
-						$addReturnMessage.="in " . $_GET["smsBatchCount"] . " batches." ;
-					}	
+					$addReturnMessage.=" " . sprintf(_('%1$s SMS(es) were dispatched in %2$s batch(es).'), $_GET["smsCount"], $_GET["smsBatchCount"]) ;	
 				}
 				
 				$class="success" ;
@@ -92,7 +76,7 @@ else {
 		} 
 		
 		print "<div class='warning'>" ;
-			print "Each family in Gibbon must have one parent who is contact priority 1, and who must be enabled to receive email and SMS messages from " . $_SESSION[$guid]["organisationNameShort"] . ". As a result, when targetting parents, you can be fairly certain that messages should get through to each family." ;
+			print _("Each family in Gibbon must have one parent who is contact priority 1, and who must be enabled to receive email and SMS messages from " . $_SESSION[$guid]["organisationNameShort"] . ". As a result, when targetting parents, you can be fairly certain that messages should get through to each family.") ;
 		print "</div>" ;
 				
 		?>
@@ -100,7 +84,7 @@ else {
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr class='break'>
 					<td colspan=2> 
-						<h3>Delivery Mode</h3>
+						<h3><?php print _('Delivery Mode') ?></h3>
 					</td>
 				</tr>
 				<?php
@@ -123,17 +107,17 @@ else {
 					</script>
 					<tr>
 						<td> 
-							<b>Email *</b><br/>
-							<span style="font-size: 90%"><i>Deliver this message to user's email account?<br/></i></span>
+							<b><?php print _('Email') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Deliver this message to user\'s primaryemail account?') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input type="radio" name="email" class="email" value="Y"/> Yes
-							<input checked type="radio" name="email" class="email" value="N"/> No
+							<input type="radio" name="email" class="email" value="Y"/> <?php print _('Yes') ?>
+							<input checked type="radio" name="email" class="email" value="N"/> <?php print _('No') ?>
 						</td>
 					</tr>
 					<tr id="emailRow">
 						<td> 
-							<b>Email From *</b><br/>
+							<b><?php print _('Email From') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<?php
@@ -151,7 +135,7 @@ else {
 						?>
 						<tr id="emailReplyToRow">
 							<td> 
-								<b>Reply To </b><br/>
+								<b><?php print _('Reply To') ?> </b><br/>
 							</td>
 							<td class="right">
 								<input name="emailReplyTo" id="emailReplyTo" maxlength=255 value="" type="text" style="width: 300px">
@@ -180,18 +164,18 @@ else {
 					</script>
 					<tr>
 						<td> 
-							<b>Message Wall *</b><br/>
-							<span style="font-size: 90%"><i>Place this message on user's message wall?<br/></i></span>
+							<b><?php print _('Message Wall') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Place this message on user\'s message wall?') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input type="radio" name="messageWall" class="messageWall" value="Y"/> Yes
-							<input checked type="radio" name="messageWall" class="messageWall" value="N"/> No
+							<input type="radio" name="messageWall" class="messageWall" value="Y"/> <?php print _('Yes') ?>
+							<input checked type="radio" name="messageWall" class="messageWall" value="N"/> <?php print _('No') ?>
 						</td>
 					</tr>
 					<tr id="messageWallRow">
 						<td> 
-							<b>Publication Dates *</b><br/>
-							<span style="font-size: 90%"><i>Select up to three individual dates.</br>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>.<br/></i></span>
+							<b><?php print _('Publication Dates') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Select up to three individual dates.') ?></br>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>.<br/></i></span>
 						</td>
 						<td class="right">
 							<input name="date1" id="date1" maxlength=10 value="" type="text" style="width: 300px">
@@ -251,26 +235,26 @@ else {
 						</script>
 						<tr>
 							<td> 
-								<b>SMS *</b><br/>
-								<span style="font-size: 90%"><i>Deliver this message to user's mobile phone?<br/></i></span>
+								<b><?php print _('SMS') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('Deliver this message to user\'s mobile phone?') ?><br/></i></span>
 							</td>
 							<td class="right">
-								<input type="radio" id="sms" name="sms" class="sms" value="Y"/> Yes
-								<input checked type="radio" id="sms" name="sms" class="sms" value="N"/> No
+								<input type="radio" id="sms" name="sms" class="sms" value="Y"/> <?php print _('Yes') ?>
+								<input checked type="radio" id="sms" name="sms" class="sms" value="N"/> <?php print _('No') ?>
 							</td>
 						</tr>
 						<tr>
 						<tr id="smsRow">
 							<td colspan=2> 
 								<div class='error' style='margin-top: 3px'>
-									SMS messages are sent to local and overseas numbers, but not all countries are supported. Please see the SMS Gateway provider's documentation or error log to see which countries are not supported. The subject does not get sent, and all HTML tags are removed. Each message, to each recipient, will incur a charge (dependent on your SMS gateway provider). Messages over 140 characters will get broken into smaller messages, and will cost more.<br/>
+									<?php print _('SMS messages are sent to local and overseas numbers, but not all countries are supported. Please see the SMS Gateway provider\'s documentation or error log to see which countries are not supported. The subject does not get sent, and all HTML tags are removed. Each message, to each recipient, will incur a charge (dependent on your SMS gateway provider). Messages over 140 characters will get broken into smaller messages, and will cost more.') ?><br/>
 									<br/>
 									<?php
 									if ($smsURLCredit!="") {
 										$query="?apiusername=" . $smsUsername . "&apipassword=" . $smsPassword ;        
 										$result=@implode('', file($smsURLCredit . $query)) ;    
 										if ($result>=0) {
-											print "<b>Current balance: <u>$result credits</u></b>" ;
+											print "<b>" . sprintf(_('Current balance: %1$s credits.'), $result) . "</u></b>" ;
 										} 
 									}
 									?>
@@ -283,7 +267,7 @@ else {
 						?>
 						<tr>
 							<td colspan=2> 
-								<div class='error' style='margin-top: 3px'>SMS NOT CONFIGURED. Please contact <a href='mailto:<?php print $_SESSION[$guid]["organisationAdministratorEmail"] ?>'><?php print $_SESSION[$guid]["organisationAdministratorName"] ?></a> for help.</div>
+								<div class='error' style='margin-top: 3px'><?php print sprintf(_('SMS NOT CONFIGURED. Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>") ?></div>
 							</td>
 						</tr>
 						<?php
@@ -293,12 +277,12 @@ else {
 				
 				<tr class='break'>
 					<td colspan=2> 
-						<h3>Message Details</h3>
+						<h3><?php print _('Message Details') ?></h3>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b>Subject *</b><br/>
+						<b><?php print _('Subject') ?> *</b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -311,14 +295,14 @@ else {
 				</tr>
 				<tr>
 					<td colspan=2> 
-						<b>Body *</b>
+						<b><?php print _('Body') ?> *</b>
 						<?php print getEditor($guid,  TRUE, "body", "", 20, true, true, false, true ) ?>
 					</td>
 				</tr>
 				
 				<tr class='break'>
 					<td colspan=2> 
-						<h3>Targets</h3>
+						<h3><?php print _('Targets') ?></h3>
 					</td>
 				</tr>
 				<?php
@@ -339,17 +323,17 @@ else {
 					</script>
 					<tr>
 						<td> 
-							<b>Role</b><br/>
-							<span style="font-size: 90%"><i>Users of a certain type<br/></i></span>
+							<b><?php print _('Role') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Users of a certain type.') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input type="radio" name="role" class="role" value="Y"/> Yes
-							<input checked type="radio" name="role" class="role" value="N"/> No
+							<input type="radio" name="role" class="role" value="Y"/> <?php print _('Yes') ?>
+							<input checked type="radio" name="role" class="role" value="N"/> <?php print _('No') ?>
 						</td>
 					</tr>
 					<tr id="roleRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Select Roles</b><br/>
+							<b><?php print _('Select Roles') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
@@ -397,17 +381,17 @@ else {
 					</script>
 					<tr>
 						<td> 
-							<b>Year Group</b><br/>
-							<span style="font-size: 90%"><i>Students in year; all staff<br/></i></span>
+							<b><?php print _('Year Group') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Students in year; all staff.') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input type="radio" name="yearGroup" class="yearGroup" value="Y"/> Yes
-							<input checked type="radio" name="yearGroup" class="yearGroup" value="N"/> No
+							<input type="radio" name="yearGroup" class="yearGroup" value="Y"/> <?php print _('Yes') ?>
+							<input checked type="radio" name="yearGroup" class="yearGroup" value="N"/> <?php print _('No') ?>
 						</td>
 					</tr>
 					<tr id="yearGroupRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Select Year Groups</b><br/>
+							<b><?php print _('Select Year Groups') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
@@ -429,26 +413,26 @@ else {
 					</tr>
 					<tr id="yearGroupRow3">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Include staff?</b><br/>
+							<b><?php print _('Include staff?') ?></b><br/>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="yearGroupsStaff" id="yearGroupsStaff" style="width: 302px">
 								<?php
-								print "<option value='Y'>Yes</option>" ;
-								print "<option value='N'>No</option>" ;
+								print "<option value='Y'>" . _('Yes') . "</option>" ;
+								print "<option value='N'>" . _('No') . "</option>" ;
 								?>
 							</select>
 						</td>
 					</tr>
 					<tr id="yearGroupRow4">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Include students?</b><br/>
+							<b><?php print _('Include students?') ?></b><br/>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="yearGroupsStudents" id="yearGroupsStudents" style="width: 302px">
 								<?php
-								print "<option value='Y'>Yes</option>" ;
-								print "<option value='N'>No</option>" ;
+								print "<option value='Y'>" . _('Yes') . "</option>" ;
+								print "<option value='N'>" . _('No') . "</option>" ;
 								?>
 							</select>
 						</td>
@@ -458,12 +442,12 @@ else {
 						?>
 						<tr id="yearGroupRow2">
 							<td style='background: none; background-color: #EDF7FF;'> 
-								<b>Include parents?</b><br/>
+								<b><?php print _('Include parents?') ?></b><br/>
 							</td>
 							<td style='background: none; background-color: #EDF7FF;' class="right">
 								<select name="yearGroupsParents" id="yearGroupsParents" style="width: 302px">
 									<?php
-									print "<option value='Y'>Yes</option>" ;
+									print "<option value='Y'>" . _('Yes') . "</option>" ;
 									print "<option selected value='N'>No</option>" ;
 									?>
 								</select>
@@ -498,17 +482,17 @@ else {
 					</script>
 					<tr>
 						<td> 
-							<b>Roll Group</b><br/>
-							<span style="font-size: 90%"><i>Tutees and tutors<br/></i></span>
+							<b><?php print _('Roll Group') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Tutees and tutors.') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input type="radio" name="rollGroup" class="rollGroup" value="Y"/> Yes
-							<input checked type="radio" name="rollGroup" class="rollGroup" value="N"/> No
+							<input type="radio" name="rollGroup" class="rollGroup" value="Y"/> <?php print _('Yes') ?>
+							<input checked type="radio" name="rollGroup" class="rollGroup" value="N"/> <?php print _('No') ?>
 						</td>
 					</tr>
 					<tr id="rollGroupRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Select Roll Groups</b><br/>
+							<b><?php print _('Select Roll Groups') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
@@ -542,26 +526,26 @@ else {
 					</tr>
 					<tr id="rollGroupRow3">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Include staff?</b><br/>
+							<b><?php print _('Include staff?') ?></b><br/>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="rollGroupsStaff" id="rollGroupsStaff" style="width: 302px">
 								<?php
-								print "<option value='Y'>Yes</option>" ;
-								print "<option value='N'>No</option>" ;
+								print "<option value='Y'>" . _('Yes') . "</option>" ;
+								print "<option value='N'>" . _('No') . "</option>" ;
 								?>
 							</select>
 						</td>
 					</tr>
 					<tr id="rollGroupRow4">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Include student?</b><br/>
+							<b><?php print _('Include student?') ?></b><br/>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="rollGroupsStudents" id="rollGroupsStudents" style="width: 302px">
 								<?php
-								print "<option value='Y'>Yes</option>" ;
-								print "<option value='N'>No</option>" ;
+								print "<option value='Y'>" . _('Yes') . "</option>" ;
+								print "<option value='N'>" . _('No') . "</option>" ;
 								?>
 							</select>
 						</td>
@@ -571,12 +555,12 @@ else {
 						?>
 						<tr id="rollGroupRow2">
 							<td style='background: none; background-color: #EDF7FF;'> 
-								<b>Include parents?</b><br/>
+								<b><?php print _('Include parents?') ?></b><br/>
 							</td>
 							<td style='background: none; background-color: #EDF7FF;' class="right">
 								<select name="rollGroupsParents" id="rollGroupsParents" style="width: 302px">
 									<?php
-									print "<option value='Y'>Yes</option>" ;
+									print "<option value='Y'>" . _('Yes') . "</option>" ;
 									print "<option selected value='N'>No</option>" ;
 									?>
 								</select>
@@ -611,17 +595,17 @@ else {
 					</script>
 					<tr>
 						<td> 
-							<b>Course</b><br/>
-							<span style="font-size: 90%"><i>Members of a course<br/></i></span>
+							<b><?php print _('Course') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Members of a course of study.') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input type="radio" name="course" class="course" value="Y"/> Yes
-							<input checked type="radio" name="course" class="course" value="N"/> No
+							<input type="radio" name="course" class="course" value="Y"/> <?php print _('Yes') ?>
+							<input checked type="radio" name="course" class="course" value="N"/> <?php print _('No') ?>
 						</td>
 					</tr>
 					<tr id="courseRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Select Courses</b><br/>
+							<b><?php print _('Select Courses') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
@@ -649,26 +633,26 @@ else {
 					</tr>
 					<tr id="courseRow3">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Include staff?</b><br/>
+							<b><?php print _('Include staff?') ?></b><br/>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="coursesStaff" id="coursesStaff" style="width: 302px">
 								<?php
-								print "<option value='Y'>Yes</option>" ;
-								print "<option value='N'>No</option>" ;
+								print "<option value='Y'>" . _('Yes') . "</option>" ;
+								print "<option value='N'>" . _('No') . "</option>" ;
 								?>
 							</select>
 						</td>
 					</tr>
 					<tr id="courseRow4">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Include students?</b><br/>
+							<b><?php print _('Include students?') ?></b><br/>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="coursesStudents" id="coursesStudents" style="width: 302px">
 								<?php
-								print "<option value='Y'>Yes</option>" ;
-								print "<option value='N'>No</option>" ;
+								print "<option value='Y'>" . _('Yes') . "</option>" ;
+								print "<option value='N'>" . _('No') . "</option>" ;
 								?>
 							</select>
 						</td>
@@ -678,12 +662,12 @@ else {
 						?>
 						<tr id="courseRow2">
 							<td style='background: none; background-color: #EDF7FF;'> 
-								<b>Include parents?</b><br/>
+								<b><?php print _('Include parents?') ?></b><br/>
 							</td>
 							<td style='background: none; background-color: #EDF7FF;' class="right">
 								<select name="coursesParents" id="coursesParents" style="width: 302px">
 									<?php
-									print "<option value='Y'>Yes</option>" ;
+									print "<option value='Y'>" . _('Yes') . "</option>" ;
 									print "<option selected value='N'>No</option>" ;
 									?>
 								</select>
@@ -718,17 +702,17 @@ else {
 					</script>
 					<tr>
 						<td> 
-							<b>Class</b><br/>
-							<span style="font-size: 90%"><i>Members of a class<br/></i></span>
+							<b><?php print _('Class') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Members of a class within a course.') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input type="radio" name="class" class="class" value="Y"/> Yes
-							<input checked type="radio" name="class" class="class" value="N"/> No
+							<input type="radio" name="class" class="class" value="Y"/> <?php print _('Yes') ?>
+							<input checked type="radio" name="class" class="class" value="N"/> <?php print _('No') ?>
 						</td>
 					</tr>
 					<tr id="classRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Select Classes</b><br/>
+							<b><?php print _('Select Classes') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
@@ -756,26 +740,26 @@ else {
 					</tr>
 					<tr id="classRow3">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Include staff?</b><br/>
+							<b><?php print _('Include staff?') ?></b><br/>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="classesStaff" id="classesStaff" style="width: 302px">
 								<?php
-								print "<option value='Y'>Yes</option>" ;
-								print "<option value='N'>No</option>" ;
+								print "<option value='Y'>" . _('Yes') . "</option>" ;
+								print "<option value='N'>" . _('No') . "</option>" ;
 								?>
 							</select>
 						</td>
 					</tr>
 					<tr id="classRow4">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Include students?</b><br/>
+							<b><?php print _('Include students?') ?></b><br/>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
 							<select name="classesStudents" id="classesStudents" style="width: 302px">
 								<?php
-								print "<option value='Y'>Yes</option>" ;
-								print "<option value='N'>No</option>" ;
+								print "<option value='Y'>" . _('Yes') . "</option>" ;
+								print "<option value='N'>" . _('No') . "</option>" ;
 								?>
 							</select>
 						</td>
@@ -785,12 +769,12 @@ else {
 						?>
 						<tr id="classRow2">
 							<td style='background: none; background-color: #EDF7FF;'> 
-								<b>Include parents?</b><br/>
+								<b><?php print _('Include parents?') ?></b><br/>
 							</td>
 							<td style='background: none; background-color: #EDF7FF;' class="right">
 								<select name="classesParents" id="classesParents" style="width: 302px">
 									<?php
-									print "<option value='Y'>Yes</option>" ;
+									print "<option value='Y'>" . _('Yes') . "</option>" ;
 									print "<option selected value='N'>No</option>" ;
 									?>
 								</select>
@@ -825,17 +809,17 @@ else {
 					</script>
 					<tr>
 						<td> 
-							<b>Activity</b><br/>
-							<span style="font-size: 90%"><i>Members of an activity<br/></i></span>
+							<b><?php print _('Activity') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Members of an activity.') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input type="radio" name="activity" class="activity" value="Y"/> Yes
-							<input checked type="radio" name="activity" class="activity" value="N"/> No
+							<input type="radio" name="activity" class="activity" value="Y"/> <?php print _('Yes') ?>
+							<input checked type="radio" name="activity" class="activity" value="N"/> <?php print _('No') ?>
 						</td>
 					</tr>
 					<tr id="activitiesRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Select Activities</b><br/>
+							<b><?php print _('Select Activities') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' activities="right">
@@ -869,26 +853,26 @@ else {
 					</tr>
 					<tr id="activitiesRow3">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Include staff?</b><br/>
+							<b><?php print _('Include staff?') ?></b><br/>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' activities="right">
 							<select name="activitiesStaff" id="activitiesStaff" style="width: 302px">
 								<?php
-								print "<option value='Y'>Yes</option>" ;
-								print "<option value='N'>No</option>" ;
+								print "<option value='Y'>" . _('Yes') . "</option>" ;
+								print "<option value='N'>" . _('No') . "</option>" ;
 								?>
 							</select>
 						</td>
 					</tr>
 					<tr id="activitiesRow4">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Include students?</b><br/>
+							<b><?php print _('Include students?') ?></b><br/>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' activities="right">
 							<select name="activitiesStudents" id="activitiesStudents" style="width: 302px">
 								<?php
-								print "<option value='Y'>Yes</option>" ;
-								print "<option value='N'>No</option>" ;
+								print "<option value='Y'>" . _('Yes') . "</option>" ;
+								print "<option value='N'>" . _('No') . "</option>" ;
 								?>
 							</select>
 						</td>
@@ -898,12 +882,12 @@ else {
 						?>
 						<tr id="activitiesRow2">
 							<td style='background: none; background-color: #EDF7FF;'> 
-								<b>Include parents?</b><br/>
+								<b><?php print _('Include parents?') ?></b><br/>
 							</td>
 							<td style='background: none; background-color: #EDF7FF;' activities="right">
 								<select name="activitiesParents" id="activitiesParents" style="width: 302px">
 									<?php
-									print "<option value='Y'>Yes</option>" ;
+									print "<option value='Y'>" . _('Yes') . "</option>" ;
 									print "<option selected value='N'>No</option>" ;
 									?>
 								</select>
@@ -929,17 +913,17 @@ else {
 					</script>
 					<tr>
 						<td> 
-							<b>Applicants</b><br/>
-							<span style="font-size: 90%"><i>Applicants from a given year.<br/>Does not apply to the message wall.</i></span>
+							<b><?php print _('Applicants') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Applicants from a given year.') . "<br/>" . _('Does not apply to the message wall.') ?></i></span>
 						</td>
 						<td class="right">
-							<input type="radio" name="applicants" class="applicants" value="Y"/> Yes
-							<input checked type="radio" name="applicants" class="applicants" value="N"/> No
+							<input type="radio" name="applicants" class="applicants" value="Y"/> <?php print _('Yes') ?>
+							<input checked type="radio" name="applicants" class="applicants" value="N"/> <?php print _('No') ?>
 						</td>
 					</tr>
 					<tr id="applicantsRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Select Years</b><br/>
+							<b><?php print _('Select Years') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
@@ -978,17 +962,17 @@ else {
 					</script>
 					<tr>
 						<td> 
-							<b>Houses</b><br/>
-							<span style="font-size: 90%"><i>Houses for competitions, etc.<br/></i></span>
+							<b><?php print _('Houses') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Houses for competitions, etc.') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input type="radio" name="houses" class="houses" value="Y"/> Yes
-							<input checked type="radio" name="houses" class="houses" value="N"/> No
+							<input type="radio" name="houses" class="houses" value="Y"/> <?php print _('Yes') ?>
+							<input checked type="radio" name="houses" class="houses" value="N"/> <?php print _('No') ?>
 						</td>
 					</tr>
 					<tr id="housesRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Select Houses</b><br/>
+							<b><?php print _('Select Houses') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">
@@ -1034,17 +1018,17 @@ else {
 					</script>
 					<tr>
 						<td> 
-							<b>Indviduals</b><br/>
-							<span style="font-size: 90%"><i>Individuals from the whole school<br/></i></span>
+							<b><?php print _('Indviduals') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Individuals from the whole school.') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input type="radio" name="individuals" class="individuals" value="Y"/> Yes
-							<input checked type="radio" name="individuals" class="individuals" value="N"/> No
+							<input type="radio" name="individuals" class="individuals" value="Y"/> <?php print _('Yes') ?>
+							<input checked type="radio" name="individuals" class="individuals" value="N"/> <?php print _('No') ?>
 						</td>
 					</tr>
 					<tr id="individualsRow">
 						<td style='background: none; background-color: #EDF7FF;'> 
-							<b>Select Individuals</b><br/>
+							<b><?php print _('Select Individuals') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td style='background: none; background-color: #EDF7FF;' class="right">

@@ -75,7 +75,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 				<tr>
 					<td style='width: 70%'>
 						<input name='order[]' type='hidden' value='<?php print $i ?>'>
-						<input <?php if ($feeType=="Standard") { print "readonly" ; }?> maxlength=100 id='name<?php print $i ?>' name='name<?php print $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="add" AND $feeType=="Ad Hoc") { print "color: #999;" ;} ?> margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php if ($mode=="add" AND $feeType=="Ad Hoc") { print "Fee Name $i" ;} else { print htmlPrep($name) ;} ?>'><br/>
+						<input <?php if ($feeType=="Standard") { print "readonly" ; }?> maxlength=100 id='name<?php print $i ?>' name='name<?php print $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="add" AND $feeType=="Ad Hoc") { print "color: #999;" ;} ?> margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php if ($mode=="add" AND $feeType=="Ad Hoc") { print _("Fee Name") . " $i" ;} else { print htmlPrep($name) ;} ?>'><br/>
 						<?php
 						if ($mode=="add" AND $feeType=="Ad Hoc") {
 							?>
@@ -91,7 +91,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 								while ($rowSelect=$resultSelect->fetch()) {
 									print "<option value='" . $rowSelect["gibbonFinanceFeeCategoryID"] . "'>" . $rowSelect["name"] . "</option>" ;
 								}
-								print "<option selected value='1'>Other</option>" ;
+								print "<option selected value='1'>" . _('Other') . "</option>" ;
 								?>				
 							</select>
 							<?php 
@@ -103,7 +103,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 							<?php
 						}
 						?>
-						<input <?php if ($feeType=="Standard") { print "readonly" ; }?> maxlength=13 id='fee<?php print $i ?>' name='fee<?php print $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="add" AND $feeType=="Ad Hoc") { print "color: #999;" ;} ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if ($mode=="add" AND $feeType=="Ad Hoc") { print "value" ; if ($_SESSION[$guid]["currency"]!="") { print " (" . $_SESSION[$guid]["currency"] . ")" ;}} else { print htmlPrep($fee) ;} ?>'>
+						<input <?php if ($feeType=="Standard") { print "readonly" ; }?> maxlength=13 id='fee<?php print $i ?>' name='fee<?php print $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="add" AND $feeType=="Ad Hoc") { print "color: #999;" ;} ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if ($mode=="add" AND $feeType=="Ad Hoc") { print _("Value") ; if ($_SESSION[$guid]["currency"]!="") { print " (" . $_SESSION[$guid]["currency"] . ")" ;}} else { print htmlPrep($fee) ;} ?>'>
 						<script type="text/javascript">
 							var fee<?php print $i ?>=new LiveValidation('fee<?php print $i ?>');
 							fee<?php print $i ?>.add(Validate.Presence);
@@ -114,7 +114,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 						<div style='margin-bottom: 5px'>
 							<?php
 							print "<img id='delete$i' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
-							print "<div id='show$i' style='margin-top: -1px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\")'></div></br>" ;
+							print "<div id='show$i'  title='" . _('Show/Hide') . "' style='margin-top: -1px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\")'></div></br>" ;
 							?>
 						</div>
 						<?php
@@ -131,11 +131,11 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 						<?php 
 						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>Description</div>" ;
 						if ($gibbonFinanceFeeID==NULL) {
-							print "<textarea style='width: 100%;' name='" . $type . "description" . $i . "'>" . htmlPrep($description) . "</textarea>" ;
+							print "<textarea style='width: 100%;' name='description" . $i . "'>" . htmlPrep($description) . "</textarea>" ;
 						}
 						else {
 							print "<div style='width: 100%;'>" . htmlPrep($description) . "</div>" ;
-							print "<input type='hidden' name='" . $type . "description" . $i . "' value='" . htmlPrep($description) . "'>" ;
+							print "<input type='hidden' name='description" . $i . "' value='" . htmlPrep($description) . "'>" ;
 						}
 						?>
 					</td>
@@ -193,7 +193,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 		$return.="<table cellspacing='0' style='width: 100%'>" ;
 			$return.="<tr>" ;
 				$return.="<td style='padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style3' colspan=3>" ;
-					$return.="<span style='font-size: 115%; font-weight: bold'>Invoice To (" .$row["invoiceTo"] . ")</span><br/>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Invoice To') . " (" .$row["invoiceTo"] . ")</span><br/>" ;
 					if ($row["invoiceTo"]=="Company") {
 						$invoiceTo="" ;
 						if ($row["companyContact"]!="") {
@@ -218,7 +218,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 							$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
 						if ($resultParents->rowCount()<1) {
-							$return.="<div class='warning'>There are no family members available to send this receipt to.</div>" ; 
+							$return.="<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
 						}
 						else {
 							$return.="<ul style='margin-top: 3px; margin-bottom: 3px'>" ;
@@ -254,17 +254,17 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 			$return.="</tr>" ;
 			$return.="<tr>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style4'>" ;
-					$return.="<span style='font-size: 115%; font-weight: bold'>Fees For</span><br/>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Fees For') . "</span><br/>" ;
 					$return.=formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) . "<br/>" ;
 				$return.="</td>" ;
 					$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>" ;
-					$return.="<span style='font-size: 115%; font-weight: bold'>Status</span><br/>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Status') . "</span><br/>" ;
 					$return.=$row["status"] ;
 				$return.="</td>" ;
 					$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>" ;
-					$return.="<span style='font-size: 115%; font-weight: bold'>Schedule</span><br/>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Schedule') . "</span><br/>" ;
 					if ($row["billingScheduleType"]=="Ad Hoc") {
-						$return.="Ad Hoc" ;
+						$return.=_("Ad Hoc") ;
 					}
 					else {
 						try {
@@ -285,15 +285,15 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 			$return.="</tr>" ;
 			$return.="<tr>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style2 $style3'>" ;
-					$return.="<span style='font-size: 115%; font-weight: bold'>Invoice Issue Date</span><br/>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Invoice Issue Date') . "</span><br/>" ;
 					$return.=dateConvertBack($guid, $row["invoiceIssueDate"]) ;
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style2 $style3'>" ;
-					$return.="<span style='font-size: 115%; font-weight: bold'>Due Date</span><br/>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Due Date') . "</span><br/>" ;
 					$return.=dateConvertBack($guid, $row["invoiceDueDate"]) ;
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style2 $style3'>" ;
-					$return.="<span style='font-size: 115%; font-weight: bold'>Invoice Number</span><br/>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Invoice Number') . "</span><br/>" ;
 					$invoiceNumber=getSettingByScope( $connection2, "Finance", "invoiceNumber" ) ;
 					if ($invoiceNumber=="Person ID + Invoice ID") {
 						$return.=ltrim($row["gibbonPersonID"],"0") . "-" . ltrim($gibbonFinanceInvoiceID, "0") ;
@@ -310,7 +310,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 
 		//Fee table
 		$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
-			$return.="Fee Table" ;
+			$return.=_("Fee Table") ;
 		$return.="</h3>" ;
 		$feeTotal=0 ;
 		try {
@@ -336,23 +336,23 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 		}
 		if ($resultFees->rowCount()<1) {
 			$return.="<div class='error'>" ;
-				$return.="There are no records to display" ;
+				$return.=_("There are no records to display") ;
 			$return.="</div>" ;
 		}
 		else {
 			$return.="<table cellspacing='0' style='width: 100%; $style4'>" ;
 				$return.="<tr class='head'>" ;
 					$return.="<th style='text-align: left; padding-left: 10px'>" ;
-						$return.="Name" ;
+						$return.=_("Name") ;
 					$return.="</th>" ;
 					$return.="<th style='text-align: left'>" ;
-						$return.="Category" ;
+						$return.=_("Category") ;
 					$return.="</th>" ;
 					$return.="<th style='text-align: left'>" ;
-						$return.="Description" ;
+						$return.=_("Description") ;
 					$return.="</th>" ;
 					$return.="<th style='text-align: left'>" ;
-						$return.="Fee<br/>" ;
+						$return.=_("Fee") . "<br/>" ;
 						if ($currency!="") {
 							$return.="<span style='font-style: italic; font-size: 85%'>" . $currency . "</span>" ;
 						}
@@ -391,7 +391,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 				}
 				$return.="<tr style='height: 35px' class='current'>" ;
 					$return.="<td colspan=3 style='text-align: right; $style2'>" ;
-						$return.="<b>Invoice Total : </b>";
+						$return.="<b>" . _("Invoice Total:") . "</b>";
 					$return.="</td>" ;
 					$return.="<td style='$style2'>" ;
 						if (substr($currency,4)!="") {
@@ -407,7 +407,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 		$invoiceNotes=getSettingByScope( $connection2, "Finance", "invoiceNotes" ) ;
 		if ($invoiceNotes!="") {
 			$return.="<h3 style='margin-top: 40px'>" ;
-				$return.="Notes" ;
+				$return.=_("Notes") ;
 			$return.="</h3>" ;
 			$return.="<p>" ;
 				$return.=$invoiceNotes ;
@@ -463,7 +463,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 		$return.="<table cellspacing='0' style='width: 100%'>" ;
 			$return.="<tr>" ;
 				$return.="<td style='padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style3' colspan=3>" ;
-					$return.="<span style='font-size: 115%; font-weight: bold'>Receipt To (" .$row["invoiceTo"] . ")</span><br/>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Receipt To') . " (" .$row["invoiceTo"] . ")</span><br/>" ;
 					if ($row["invoiceTo"]=="Company") {
 						$invoiceTo="" ;
 						if ($row["companyContact"]!="") {
@@ -488,7 +488,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 							$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
 						if ($resultParents->rowCount()<1) {
-							$return.="<div class='warning'>There are no family members available to send this receipt to.</div>" ; 
+							$return.="<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
 						}
 						else {
 							$return.="<ul style='margin-top: 3px; margin-bottom: 3px'>" ;
@@ -524,17 +524,17 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 			$return.="</tr>" ;
 			$return.="<tr>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style4'>" ;
-					$return.="<span style='font-size: 115%; font-weight: bold'>Fees For</span><br/>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Fees For') . "</span><br/>" ;
 					$return.=formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) . "<br/>" ;
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>" ;
-					$return.="<span style='font-size: 115%; font-weight: bold'>Status</span><br/>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Status') . "</span><br/>" ;
 					$return.=$row["status"] ;
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>" ;
-					$return.="<span style='font-size: 115%; font-weight: bold'>Schedule</span><br/>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Schedule') . "</span><br/>" ;
 					if ($row["billingScheduleType"]=="Ad Hoc") {
-						$return.="Ad Hoc" ;
+						$return.=_("Ad Hoc") ;
 					}
 					else {
 						try {
@@ -555,15 +555,15 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 			$return.="</tr>" ;
 			$return.="<tr>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style2 $style3'>" ;
-					$return.="<span style='font-size: 115%; font-weight: bold'>Due Date</span><br/>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Due Date') . "</span><br/>" ;
 					$return.=dateConvertBack($guid, $row["invoiceDueDate"]) ;
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style2 $style3'>" ;
-					$return.="<span style='font-size: 115%; font-weight: bold'>Date Paid</span><br/>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Date Paid') . "</span><br/>" ;
 					$return.=dateConvertBack($guid, $row["paidDate"]) ;
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style2 $style3'>" ;
-					$return.="<span style='font-size: 115%; font-weight: bold'>Invoice Number</span><br/>" ;
+					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Invoice Number') . "</span><br/>" ;
 					$invoiceNumber=getSettingByScope( $connection2, "Finance", "invoiceNumber" ) ;
 					if ($invoiceNumber=="Person ID + Invoice ID") {
 						$return.=ltrim($row["gibbonPersonID"],"0") . "-" . ltrim($gibbonFinanceInvoiceID, "0") ;
@@ -580,7 +580,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 
 		//Fee table
 		$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
-			$return.="Fee Table" ;
+			$return.=_("Fee Table") ;
 		$return.="</h3>" ;
 		$feeTotal=0 ;
 		try {
@@ -594,23 +594,23 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 		}
 		if ($resultFees->rowCount()<1) {
 			$return.="<div class='error'>" ;
-				$return.="There are no records to display" ;
+				$return.=_("There are no records to display") ;
 			$return.="</div>" ;
 		}
 		else {
 			$return.="<table cellspacing='0' style='width: 100%; $style4'>" ;
 				$return.="<tr class='head'>" ;
 					$return.="<th style='text-align: left; padding-left: 10px'>" ;
-						$return.="Name" ;
+						$return.=_("Name") ;
 					$return.="</th>" ;
 					$return.="<th style='text-align: left'>" ;
-						$return.="Category" ;
+						$return.=_("Category") ;
 					$return.="</th>" ;
 					$return.="<th style='text-align: left'>" ;
-						$return.="Description" ;
+						$return.=_("Description") ;
 					$return.="</th>" ;
 					$return.="<th style='text-align: left'>" ;
-						$return.="Fee<br/>" ;
+						$return.=_("Fee") . "<br/>" ;
 						if ($currency!="") {
 							$return.="<span style='font-style: italic; font-size: 85%'>" . $currency . "</span>" ;
 						}
@@ -649,7 +649,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 				}
 				$return.="<tr style='height: 35px'>" ;
 					$return.="<td colspan=3 style='text-align: right'>" ;
-						$return.="<b>Invoice Total : </b>";
+						$return.="<b>" . _('Invoice Total:') . "</b>";
 					$return.="</td>" ;
 					$return.="<td>" ;
 						if (substr($currency,4)!="") {
@@ -660,7 +660,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 				$return.="</tr>" ;
 				$return.="<tr style='height: 35px' class='current'>" ;
 						$return.="<td colspan=3 style='text-align: right; $style2'>" ;
-						$return.="<b>Amount Paid : </b>";
+						$return.="<b>" . _('Amount Paid:') . "</b>";
 					$return.="</td>" ;
 					$return.="<td style='$style2'>" ;
 						if (substr($currency,4)!="") {
@@ -676,7 +676,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 		$receiptNotes=getSettingByScope( $connection2, "Finance", "receiptNotes" ) ;
 		if ($receiptNotes!="") {
 			$return.="<h3 style='margin-top: 40px'>" ;
-				$return.="Notes" ;
+				$return.=_("Notes") ;
 			$return.="</h3>" ;
 			$return.="<p>" ;
 				$return.=$receiptNotes ;

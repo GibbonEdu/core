@@ -103,7 +103,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<?php print "<b>" . _('Description') . " *</b><br/>" ; ?>
+							<b><?php print _('Description') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">

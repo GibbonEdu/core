@@ -126,7 +126,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+								<b><?php print _('Name') ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
@@ -210,7 +210,7 @@ else {
 							?>
 							<tr>
 								<td> 
-									<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+									<b><?php print _('Name') ?> *</b><br/>
 									<span style="font-size: 90%"><i>Volume or product name.</i></span>
 								</td>
 								<td class="right">

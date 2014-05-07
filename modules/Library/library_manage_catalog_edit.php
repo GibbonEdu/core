@@ -121,7 +121,7 @@ else {
 					</tr>
 					<tr id='nameRow'>
 						<td> 
-							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<b><?php print _('Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('Volume or product name.') ?></i></span>
 						</td>
 						<td class="right">

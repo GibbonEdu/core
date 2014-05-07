@@ -51,7 +51,7 @@ else {
 	}
 	
 	print "<h2>" ;
-	print "Search" ;
+	print _("Search") ;
 	print "</h2>" ;
 	?>
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">

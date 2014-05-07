@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/fees_manage_edit.p
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/fees_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Fees</a> > </div><div class='trailEnd'>Edit Fee</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/fees_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Fees') . "</a> > </div><div class='trailEnd'>" . _('Edit Fee') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -128,7 +128,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<b><?php print _('Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=100 value="<?php print htmlPrep($row["name"])?>" type="text" style="width: 300px">
@@ -140,7 +140,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Name Short *</b><br/>
+							<b><?php print _('Short Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="nameShort" id="nameShort" maxlength=6 value="<?php print htmlPrep($row["nameShort"])?>" type="text" style="width: 300px">
@@ -172,7 +172,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Category *</b><br/>
+							<b><?php print _('Category') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -208,15 +208,15 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Fee *</b><br/>
+							<b><?php print _('Fee') ?> *</b><br/>
 							<span style="font-size: 90%">
-								<i>Numeric value of the fee
+								<i>
 								<?php
 								if ($_SESSION[$guid]["currency"]!="") {
-									print " in " . $_SESSION[$guid]["currency"] ."." ;
+									print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
 								}
 								else {
-									print "." ;
+									print _("Numeric value of the fee.") ;
 								}
 								?>
 								</i>

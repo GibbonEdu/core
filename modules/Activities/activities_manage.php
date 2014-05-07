@@ -48,7 +48,7 @@ else {
 	} 
 	
 	print "<h2>" ;
-	print "Search" ;
+	print _("Search") ;
 	print "</h2>" ;
 	
 	$search=NULL ;

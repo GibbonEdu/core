@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/invoicees_manage_e
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/invoicees_manage.php'>Manage Invoicees</a> > </div><div class='trailEnd'>Edit Invoicee</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/invoicees_manage.php'>" . _('Manage Invoicees') . "</a> > </div><div class='trailEnd'>" . _('Edit Invoicee') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -102,11 +102,11 @@ else {
 			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
 						print formatName("", $row["preferredName"], $row["surname"], "Student") ;
 					print "</td>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Status</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Status') . "</span><br/>" ;
 						print "<i>" . $row["status"] . "</i>" ;
 					print "</td>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
@@ -173,21 +173,21 @@ else {
 					</script>
 					<tr id="familyRow">
 						<td colspan=2'>
-							<p>If you choose family, future invoices will be sent according to family contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.</p>
+							<p><?php print _('If you choose family, future invoices will be sent according to family contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.') ?></p>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b>Send Invoices To</b><br/>
+							<b><?php print _('Send Invoices To') ?></b><br/>
 						</td>
 						<td class="right">
-							<input <?php if ($row["invoiceTo"]=="Family") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> Family
-							<input <?php if ($row["invoiceTo"]=="Company") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> Company
+							<input <?php if ($row["invoiceTo"]=="Family") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> <?php print _('Family') ?>
+							<input <?php if ($row["invoiceTo"]=="Company") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> <?php print _('Company') ?>
 						</td>
 					</tr>
 					<tr id="companyNameRow">
 						<td> 
-							<b>Company Name</b><br/>
+							<b><?php print _('Company Name') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="companyName" id="companyName" maxlength=100 value="<?php print $row["companyName"] ?>" type="text" style="width: 300px">
@@ -195,7 +195,7 @@ else {
 					</tr>
 					<tr id="companyContactRow">
 						<td> 
-							<b>Company Contact Person</b><br/>
+							<b><?php print _('Company Contact Person') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="companyContact" id="companyContact" maxlength=100 value="<?php print $row["companyContact"] ?>" type="text" style="width: 300px">
@@ -203,7 +203,7 @@ else {
 					</tr>
 					<tr id="companyAddressRow">
 						<td> 
-							<b>Company Address</b><br/>
+							<b><?php print _('Company Address') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="companyAddress" id="companyAddress" maxlength=255 value="<?php print $row["companyAddress"] ?>" type="text" style="width: 300px">
@@ -211,7 +211,7 @@ else {
 					</tr>
 					<tr id="companyEmailRow">
 						<td> 
-							<b>Company Email</b><br/>
+							<b><?php print _('Company Email') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="companyEmail" id="companyEmail" maxlength=255 value="<?php print $row["companyEmail"] ?>" type="text" style="width: 300px">
@@ -223,19 +223,19 @@ else {
 					</tr>
 					<tr id="companyCCFamilyRow">
 						<td> 
-							<b>CC Family?</b><br/>
-							<span style="font-size: 90%"><i>Should the family be sent a copy of billing emails?</i></span>
+							<b><?php print _('CC Family?') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Should the family be sent a copy of billing emails?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="companyCCFamily" id="companyCCFamily" style="width: 302px">
-								<option <?php if ($row["companyCCFamily"]=="N") { print "selected" ; } ?> value="N" /> No
-								<option <?php if ($row["companyCCFamily"]=="Y") { print "selected" ; } ?> value="Y" /> Yes
+								<option <?php if ($row["companyCCFamily"]=="N") { print "selected" ; } ?> value="N" /> <?php print _('No') ?>
+								<option <?php if ($row["companyCCFamily"]=="Y") { print "selected" ; } ?> value="Y" /> <?php print _('Yes') ?>
 							</select>
 						</td>
 					</tr>
 					<tr id="companyPhoneRow">
 						<td> 
-							<b>Company Phone</b><br/>
+							<b><?php print _('Company Phone') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="companyPhone" id="companyPhone" maxlength=20 value="<?php print $row["companyPhone"] ?>" type="text" style="width: 300px">
@@ -256,18 +256,18 @@ else {
 						?>
 						<tr id="companyAllRow">
 							<td> 
-								<b>Company All?</b><br/>
-								<span style="font-size: 90%"><i>Should all items be billed to the specified company, or just some?</i></span>
+								<b><?php print _('Company All?') ?></b><br/>
+								<span style="font-size: 90%"><i><?php print _('Should all items be billed to the specified company, or just some?') ?></i></span>
 							</td>
 							<td class="right">
-								<input type="radio" name="companyAll" value="Y" class="companyAll" <?php if ($row["companyAll"]=="Y" OR $row["companyAll"]=="") { print "checked" ; } ?> /> All
-								<input type="radio" name="companyAll" value="N" class="companyAll" <?php if ($row["companyAll"]=="N") { print "checked" ; } ?> /> Selected
+								<input type="radio" name="companyAll" value="Y" class="companyAll" <?php if ($row["companyAll"]=="Y" OR $row["companyAll"]=="") { print "checked" ; } ?> /> <?php print _('All') ?>
+								<input type="radio" name="companyAll" value="N" class="companyAll" <?php if ($row["companyAll"]=="N") { print "checked" ; } ?> /> <?php print _('Selected') ?>
 							</td>
 						</tr>
 						<tr id="companyCategoriesRow">
 							<td> 
-								<b>Company Fee Categories</b><br/>
-								<span style="font-size: 90%"><i>If the specified company is not paying all fees, which categories are they paying?</i></span>
+								<b><?php print _('Company Fee Categories') ?></b><br/>
+								<span style="font-size: 90%"><i><?php print _('If the specified company is not paying all fees, which categories are they paying?') ?></i></span>
 							</td>
 							<td class="right">
 								<?php

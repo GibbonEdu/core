@@ -229,6 +229,9 @@ i18n: added file for storing database strings for translation and tested it with
 	New file /i18n/dbStringsForTranslation.php
 	Edited file /functions.php
 
+General: added .htaccess to hide certain file types, including .sql files 
+	New file /.htaccess
+
 
 v7.1.02
 -------

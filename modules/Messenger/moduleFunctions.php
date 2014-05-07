@@ -312,12 +312,7 @@ function getMessages($guid, $connection2, $mode="", $date="") {
 		catch(PDOException $e) { }	
 		if ($resultPosts->rowCount()<1) {
 			$return=$return. "<div class='warning'>" ;
-				if ($date==date("Y-m-d")) {
-					$return=$return. "There are no messages for you today." ;
-				}
-				else {
-					$return=$return. "There are no messages for you on the specified date." ;
-				}
+				$return=$return. _("There are no records to display.") ;
 			$return=$return. "</div>" ;
 		}
 		else {

@@ -39,7 +39,7 @@ else {
 	
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>Manage Invoices</a> > </div><div class='trailEnd'>Edit Invoice</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" . _('Manage Invoices') . "</a> > </div><div class='trailEnd'>" . _('Edit Invoice') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -66,7 +66,7 @@ else {
 			$class="success" ;
 		}
 		if ($updateReturn=="success1") {
-			$updateReturnMessage="Your request was completed successfully., but one or more requested emails could not be sent." ;	
+			$updateReturnMessage=_("Your request was completed successfully., but one or more requested emails could not be sent.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -139,7 +139,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Invoicee *</b><br/>
+							<b><?php print _('Invoicee') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -165,7 +165,7 @@ else {
 					<?php //BILLING TYPE CHOOSER ?>
 					<tr>
 						<td> 
-							<b>Scheduling *</b><br/>
+							<b><?php print _('Scheduling') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -177,7 +177,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Billing Schedule *</b><br/>
+								<b><?php print _('Billing Schedule') ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
@@ -207,7 +207,7 @@ else {
 							?>
 							<tr>
 								<td> 
-									<b>Invoice Due Date *</b><br/>
+									<b><?php print _('Invoice Due Date') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<input name="invoiceDueDate" id="invoiceDueDate" value="<?php print dateConvertBack($guid, $row["invoiceDueDate"]) ?>" type="text" style="width: 300px">
@@ -229,7 +229,7 @@ else {
 							?>
 							<tr>
 								<td> 
-									<b>Invoice Due Date *</b><br/>
+									<b><?php print _('Invoice Due Date') ?> *</b><br/>
 									<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 								</td>
 								<td class="right">
@@ -242,13 +242,13 @@ else {
 					?>
 					<tr>
 						<td> 
-							<b>Status *</b><br/>
+							<b><?php print _('Status') ?> *</b><br/>
 							<?php
 							if ($row["status"]=="Pending") {
-								print "<span style=\"font-size: 90%\"><i>This value cannot be changed. Use the Issue function to change the status from \"Pending\" to \"Issued\".</i></span>" ;
+								print "<span style=\"font-size: 90%\"><i>" . _('This value cannot be changed. Use the Issue function to change the status from "Pending" to "Issued".') . "</i></span>" ;
 							}
 							else {
-								print "<span style=\"font-size: 90%\"><i>Available options are limited according to current status.</i></span>" ;
+								print "<span style=\"font-size: 90%\"><i>" . _('Available options are limited according to current status.') . "</i></span>" ;
 							}
 							?>
 						</td>
@@ -259,19 +259,16 @@ else {
 							}
 							else if ($row["status"]=="Issued") {
 								print "<select name='status' id='status' style='width:302px'>" ;
-									print "<option selected value='Issued'>Issued</option>" ;
-									print "<option value='Paid'>Paid</option>" ;
-									print "<option value='Cancelled'>Cancelled</option>" ;
+									print "<option selected value='Issued'>" . _('Issued') . "</option>" ;
+									print "<option value='Paid'>" . _('Paid') . "</option>" ;
+									print "<option value='Cancelled'>" . _('Cancelled') . "</option>" ;
 								print "</select>" ;
 							}
 							else if ($row["status"]=="Paid") {
 								print "<select name='status' id='status' style='width:302px'>" ;
-									print "<option selected value='Paid'>Paid</option>" ;
-									print "<option value='Refunded'>Refunded</option>" ;
+									print "<option selected value='Paid'>" . _('Paid') . "</option>" ;
+									print "<option value='Refunded'>" . _('Refunded') . "</option>" ;
 								print "</select>" ;
-							}
-							else {
-								
 							}
 							?>
 						</td>
@@ -302,8 +299,8 @@ else {
 						</script>
 						<tr id="paidDateRow">
 							<td> 
-								<b>Date Paid *</b><br/>
-								<span style="font-size: 90%"><i>Date of payment, not entry to system.</i></span>
+								<b><?php print _('Date Paid') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('Date of payment, not entry to system.') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="paidDate" id="paidDate" maxlength=10 value="" type="text" style="width: 300px">
@@ -321,8 +318,8 @@ else {
 						</tr>
 						<tr id="paidAmountRow">
 							<td> 
-								<b>Amount Paid *</b><br/>
-								<span style="font-size: 90%"><i>Final amount paid.
+								<b><?php print _('Amount Paid') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('Final amount paid.') ?>
 								<?php
 								if ($_SESSION[$guid]["currency"]!="") {
 									print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
@@ -361,8 +358,8 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Date Paid *</b><br/>
-								<span style="font-size: 90%"><i>Date of payment, not entry to system.</i></span>
+								<b><?php print _('Date Paid') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('Date of payment, not entry to system.') ?></i></span>
 							</td>
 							<td class="right">
 								<input readonly name="paidDate" id="paidDate" maxlength=10 value="<?php print dateConvertBack($guid, $row["paidDate"]) ; ?>" type="text" style="width: 300px">
@@ -370,8 +367,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Amount Paid *</b><br/>
-								<span style="font-size: 90%"><i>Final amount paid.
+								<b><?php print _('Amount Paid') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('Final amount paid.') ?>
 								<?php
 								if ($_SESSION[$guid]["currency"]!="") {
 									print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
@@ -388,14 +385,14 @@ else {
 					?>
 					<tr>
 						<td colspan=2> 
-							<b>Notes</b> 
+							<b><?php print _('Notes') ?></b> 
 							<textarea name='notes' id='notes' rows=5 style='width: 300px'><?php print htmlPrep($row["notes"]) ?></textarea>
 						</td>
 					</tr>
 					
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>Fees</h3>
+							<h3><?php print _('Fees') ?></h3>
 						</td>
 					</tr>
 					<?php 
@@ -445,7 +442,7 @@ else {
 														var feeCount=<?php print $feeCount ?> ;
 													</script>
 													<select id='newFee' onChange='feeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
-														<option class='all' value='0'>Choose a fee to add it</option>
+														<option class='all' value='0'><?php print _('Choose a fee to add it') ?></option>
 														<?php
 														print "<option value='Ad Hoc'>Ad Hoc Fee</option>" ;
 														$switchContents.="case \"Ad Hoc\": " ;
@@ -532,13 +529,13 @@ else {
 												print _("Name") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Category" ;
+												print _("Category") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Description" ;
+												print _("Description") ;
 											print "</th>" ;
 											print "<th>" ;
-												print "Fee<br/>" ;
+												print _("Fee") . "<br/>" ;
 												if ($_SESSION[$guid]["currency"]!="") {
 													print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 												}
@@ -577,7 +574,7 @@ else {
 										}
 										print "<tr style='height: 35px' class='current'>" ;
 											print "<td colspan=3 style='text-align: right'>" ;
-												print "<b>Invoice Total  : </b>";
+												print "<b>" . _('Invoice Total:') . "</b>";
 											print "</td>" ;
 											print "<td>" ;
 												if (substr($_SESSION[$guid]["currency"],4)!="") {
@@ -612,7 +609,7 @@ else {
 						</script>
 						<tr class='break emailReceipt'>
 							<td colspan=2> 
-								<h3>Email Receipt</h3>
+								<h3><?php print _('Email Receipt') ?></h3>
 								<input type='hidden' id='emailReceipt' name='emailReceipt' value='N'/>
 							</td>
 						</tr>
@@ -622,7 +619,7 @@ else {
 							print "<tr class='emailReceipt'>" ;
 								print "<td colspan=2>" ; 
 									print "<div class='error'>" ;
-										print "An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent." ;
+										print _("An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.") ;
 									print "</div>" ;
 									print "<input type='hidden' name='email' value='$email'/>" ;
 								print "<td>" ; 
@@ -655,7 +652,7 @@ else {
 											$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
 										if ($resultParents->rowCount()<1) {
-											$return.="<div class='warning'>There are no family members available to send this receipt to.</div>" ; 
+											$return.="<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
 										}
 										else {
 											while ($rowParents=$resultParents->fetch()) {
@@ -663,7 +660,7 @@ else {
 													?>
 													<tr class='emailReceipt'>
 														<td> 
-															<b><?php print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b> <i>(Family CC)</i>
+															<b><?php print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b> <i><?php print _('(Family CC)') ?></i>
 															<span style="font-size: 90%"><i></i></span>
 														</td>
 														<td class="right">
@@ -678,7 +675,7 @@ else {
 									}
 								}
 								else {
-									$return.="<div class='warning'>There is no company contact available to send this invoice to.</div>" ; 
+									$return.="<div class='warning'>" . _('There is no company contact available to send this invoice to.') . "</div>" ; 
 								}
 							}
 							else {
@@ -692,7 +689,7 @@ else {
 									$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
 								}
 								if ($resultParents->rowCount()<1) {
-									$return.="<div class='warning'>There are no family members available to send this receipt to.</div>" ; 
+									$return.="<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
 								}
 								else {
 									while ($rowParents=$resultParents->fetch()) {
@@ -719,7 +716,7 @@ else {
 								<tr class='emailReceipt'>
 									<td> 
 										<b><?php print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", false) ?></b>
-										<span style="font-size: 90%"><i>(CC Self?)</i></span>
+										<span style="font-size: 90%"><i><?php print _('(CC Self?)') ?></i></span>
 									</td>
 									<td class="right">
 										<?php print $_SESSION[$guid]["email"] ; ?> <input type='checkbox' name='emails[]' value='<?php print $_SESSION[$guid]["email"] ; ?>'/>
@@ -750,7 +747,7 @@ else {
 						</script>
 						<tr class='break emailReminder'>
 							<td colspan=2> 
-								<h3>Email Reminder</h3>
+								<h3><?php print _('Email Reminder') ?></h3>
 								<input type='hidden' id='emailReminder' name='emailReminder' value='Y'/>
 							</td>
 						</tr>
@@ -760,7 +757,7 @@ else {
 							print "<tr class='emailReminder'>" ;
 								print "<td colspan=2>" ; 
 									print "<div class='error'>" ;
-										print "An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent." ;
+										print _("An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.") ;
 									print "</div>" ;
 									print "<input type='hidden' name='email' value='$email'/>" ;
 								print "<td>" ; 
@@ -793,7 +790,7 @@ else {
 											$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
 										if ($resultParents->rowCount()<1) {
-											$return.="<div class='warning'>There are no family members available to send this receipt to.</div>" ; 
+											$return.="<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
 										}
 										else {
 											while ($rowParents=$resultParents->fetch()) {
@@ -801,7 +798,7 @@ else {
 													?>
 													<tr class='emailReminder'>
 														<td> 
-															<b><?php print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b> <i>(Family CC)</i>
+															<b><?php print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b> <i><?php print _('(Family CC)') ?></i>
 															<span style="font-size: 90%"><i></i></span>
 														</td>
 														<td class="right">
@@ -816,7 +813,7 @@ else {
 									}
 								}
 								else {
-									$return.="<div class='warning'>There is no company contact available to send this invoice to.</div>" ; 
+									$return.="<div class='warning'>" . _('There is no company contact available to send this invoice to.') . "</div>" ; 
 								}
 							}
 							else {
@@ -830,7 +827,7 @@ else {
 									$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
 								}
 								if ($resultParents->rowCount()<1) {
-									$return.="<div class='warning'>There are no family members available to send this receipt to.</div>" ; 
+									$return.="<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
 								}
 								else {
 									while ($rowParents=$resultParents->fetch()) {
@@ -857,7 +854,7 @@ else {
 								<tr class='emailReminder'>
 									<td> 
 										<b><?php print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", false) ?></b>
-										<span style="font-size: 90%"><i>(CC Self?)</i></span>
+										<span style="font-size: 90%"><i><?php print _('(CC Self?)') ?></i></span>
 									</td>
 									<td class="right">
 										<?php print $_SESSION[$guid]["email"] ; ?> <input type='checkbox' name='emails[]' value='<?php print $_SESSION[$guid]["email"] ; ?>'/>

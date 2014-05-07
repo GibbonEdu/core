@@ -229,7 +229,7 @@ else {
 	}
 		
 	print "<h3>" ;
-		print "View" ;
+		print _("View") ;
 	print "</h3>" ;
 	
 	//Search with filters applied

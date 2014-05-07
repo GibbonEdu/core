@@ -28,11 +28,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/invoicees_manage.p
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Invoicees</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Invoicees') . "</div>" ;
 	print "</div>" ;
 	
 	print "<p>" ;
-	print "The table below shows all student invoicees within the school. A red row in the table below indicates that an invoicee's status is not \"Full\" or that their start or end dates are greater or less than than the current date." ;
+	print _('The table below shows all student invoicees within the school. A red row in the table below indicates that an invoicee\'s status is not "Full" or that their start or end dates are greater or less than than the current date.') ;
 	print "</p>" ;
 	
 	//Check for missing students from studentEnrolment and add a gibbonFinanceInvoicee record for them.
@@ -66,17 +66,12 @@ else {
 		if ($addCount>0) {
 			if ($addFail==TRUE) {
 				print "<div class='error'>" ;
-					print "It was detected that some students did not have invoicee records. The system tried to create these, but some of more creations failed." ;
+					print _("It was detected that some students did not have invoicee records. The system tried to create these, but some of more creations failed.") ;
 				print "</div>" ;
 			}
 			else {
 				print "<div class='success'>" ;
-					if ($addCount==1) {
-						print "It was detected that some students did not have invoicee records. The system has successfully created $addCount record for you." ;
-					}
-					else {
-						print "It was detected that some students did not have invoicee records. The system has successfully created $addCount records for you." ;
-					}
+					print sprintf(_('It was detected that some students did not have invoicee records. The system has successfully created %1$s record(s) for you.'), $addCount) ;
 				print "</div>" ;
 			}
 		}
@@ -84,7 +79,7 @@ else {
 	
 	
 	print "<h2>" ;
-	print "Filters" ;
+	print _("Filters") ;
 	print "</h2>" ;
 	
 	$search=NULL ;
@@ -102,7 +97,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print _('Search For') ?></b><br/>
-					<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
+					<span style="font-size: 90%"><i><?php print _('Preferred, surname, username.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
@@ -110,8 +105,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>All Students</b><br/>
-					<span style="font-size: 90%"><i>Include students whose status is not "Full".</i></span>
+					<b><?php print _('All Students') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Include students whose status is not "Full".') ?></i></span>
 				</td>
 				<td class="right">
 					<?php
@@ -138,7 +133,7 @@ else {
 	<?php
 	
 	print "<h2>" ;
-	print "Choose A Person" ;
+	print _("View") ;
 	print "</h2>" ;
 	
 	//Set pagination variable
@@ -185,7 +180,7 @@ else {
 					print _("Status") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Invoice To" ;
+					print _("Invoice To") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Actions") ;
@@ -224,13 +219,13 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						if ($row["invoiceTo"]=="Family") {
-							print "Family" ;
+							print _("Family") ;
 						}
 						else if ($row["invoiceTo"]=="Company" AND $row["companyAll"]=="Y" ) {
-							print "Company" ;
+							print _("Company") ;
 						}
 						else if ($row["invoiceTo"]=="Company" AND $row["companyAll"]=="N" ) {
-							print "Family + Company" ;
+							print _("Family + Company") ;
 						}
 						else {
 							print "<i>" . _('Unknown') . "</i>" ;

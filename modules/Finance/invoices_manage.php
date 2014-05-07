@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage.ph
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Invoices</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Invoices') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["issueReturn"])) { $issueReturn=$_GET["issueReturn"] ; } else { $issueReturn="" ; }
@@ -36,11 +36,11 @@ else {
 	$class="error" ;
 	if (!($issueReturn=="")) {
 		if ($issueReturn=="success0") {
-			$issueReturnMessage="Issue was successful." ;	
+			$issueReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		if ($issueReturn=="success1") {
-			$issueReturnMessage="Issue was successful, but one or more requested emails could not be sent." ;	
+			$issueReturnMessage=_("Your request was completed successfully., but one or more requested emails could not be sent.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -75,14 +75,14 @@ else {
 			$bulkReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($bulkReturn=="fail5") {
-			$bulkReturnMessage="Some elements of your bulk process failed, but others were successful." ;	
+			$bulkReturnMessage=_("Some elements of your request failed, but others were successful.") ;	
 		}
 		else if ($bulkReturn=="success0") {
-			$bulkReturnMessage="Bulk process was successful." ;	
+			$bulkReturnMessage=_("Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		if ($bulkReturn=="success1") {
-			$bulkReturnMessage="Bulk process was successful, but one or more requested emails could not be sent." ;	
+			$issueReturnMessage=_("Your request was completed successfully., but one or more requested emails could not be sent.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -91,9 +91,9 @@ else {
 	}
 	
 	print "<p>" ;
-		print "This section allows you to generate, view, edit and delete invoices, either for an individual or in bulk. You can use the filters below to pick up certain invoices types (e.g. those that are overdue) or view all invoices types for a particular user. Invoices, reminders and receipts can be send out using the Email function, shown in the right-hand side menu.<br/>" ;
+		print _("This section allows you to generate, view, edit and delete invoices, either for an individual or in bulk. You can use the filters below to pick up certain invoices types (e.g. those that are overdue) or view all invoices types for a particular user. Invoices, reminders and receipts can be send out using the Email function, shown in the right-hand side menu.") . "<br/>" ;
 		print "<br/>" ;
-		print "When you create invoices using the billing schedule or pre-defined fee features, the invoice will remain linked to these areas whilst pending. Thus, changes made to the billing schedule and pre-defined fees will be reflected in any pending invoices. Once invoices are issued, this link is removed, and the values are fixed at the levels when the invoice was issued." ;
+		print _("When you create invoices using the billing schedule or pre-defined fee features, the invoice will remain linked to these areas whilst pending. Thus, changes made to the billing schedule and pre-defined fees will be reflected in any pending invoices. Once invoices are issued, this link is removed, and the values are fixed at the levels when the invoice was issued.") ;
 	print "</p>" ;
 	
 	$gibbonSchoolYearID="" ;
@@ -170,14 +170,14 @@ else {
 		}
 		
 		print "<h3>" ;
-			print "Filters" ;
+			print _("Filters") ;
 		print "</h3>" ;
 		print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php'>" ;
 			print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
 				?>
 				<tr>
 					<td> 
-						<b>Status</b><br/>
+						<b><?php print _('Status') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -187,49 +187,49 @@ else {
 							if ($status=="%") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='%'>All</option>" ;
+							print "<option $selected value='%'>" . _('All') . "</option>" ;
 							$selected="" ;
 							if ($status=="Pending") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Pending'>Pending</option>" ;
+							print "<option $selected value='Pending'>" . _('Pending') . "</option>" ;
 							$selected="" ;
 							if ($status=="Issued") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Issued'>Issued</option>" ;
+							print "<option $selected value='Issued'>" . _('Issued') . "</option>" ;
 							$selected="" ;
 							if ($status=="Issued - Overdue") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Issued - Overdue'>Issued - Overdue</option>" ;
+							print "<option $selected value='Issued - Overdue'>" . _('Issued - Overdue') . "</option>" ;
 							$selected="" ;
 							if ($status=="Paid") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Paid'>Paid</option>" ;
+							print "<option $selected value='Paid'>" . _('Paid') . "</option>" ;
 							$selected="" ;
 							if ($status=="Paid - Late") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Paid - Late'>Paid - Late</option>" ;
+							print "<option $selected value='Paid - Late'>" . _('Paid - Late') . "</option>" ;
 							$selected="" ;
 							if ($status=="Cancelled") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Cancelled'>Cancelled</option>" ;
+							print "<option $selected value='Cancelled'>" . _('Cancelled') . "</option>" ;
 							$selected="" ;
 							if ($status=="Refunded") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Refunded'>Refunded</option>" ;
+							print "<option $selected value='Refunded'>" . _('Refunded') . "</option>" ;
 						print "</select>" ;
 						?>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b>Student</b><br/>
+						<b><?php print _('Student') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -257,7 +257,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Month of Issue</b><br/>
+						<b><?php print _('Month of Issue') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -277,7 +277,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Billing Schedule</b><br/>
+						<b><?php print _('Billing Schedule') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -303,7 +303,7 @@ else {
 							if ($gibbonFinanceBillingScheduleID=="Ad Hoc") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Ad Hoc'>Ad Hoc</option>" ;
+							print "<option $selected value='Ad Hoc'>" . _('Ad Hoc') . "</option>" ;
 						print "</select>" ;
 						?>
 					</td>
@@ -444,11 +444,11 @@ else {
 		
 		if ($result->rowCount()<1) {
 			print "<h3>" ;
-			print "View" ;
+			print _("View") ;
 			print "</h3>" ;
 			
 			print "<div class='linkTop' style='text-align: right'>" ;
-				print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='New Fees & Invoices' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.gif'/></a><br/>" ;
+				print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='" . _('Ad New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.gif'/></a><br/>" ;
 			print "</div>" ;
 			
 			print "<div class='error'>" ;
@@ -457,16 +457,11 @@ else {
 		}
 		else {
 			print "<h3>" ;
-			print "View" ;
-			if ($result->rowCount()==1) {
-				print "<span style='font-weight: normal; font-style: italic; font-size: 55%'> . " . $result->rowCount() . " invoice in current view</span>" ;
-			}
-			if ($result->rowCount()>1) {
-				print "<span style='font-weight: normal; font-style: italic; font-size: 55%'> . " . $result->rowCount() . " invoices in current view</span>" ;
-			}
+			print _("View") ;
+			print "<span style='font-weight: normal; font-style: italic; font-size: 55%'> " . sprintf(_('%1$s invoice(s) in current view'), $result->rowCount()) . "</span>" ;
 			print "</h3>" ;
 
-			print "<form onsubmit='return confirm(\"Are you sure you wish to process this action? It cannot be undone.\")' method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_processBulk.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" ;
+			print "<form onsubmit='return confirm(\"" ._('Are you sure you wish to process this action? It cannot be undone.') . "\")' method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_processBulk.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" ;
 				print "<fieldset style='border: none'>" ;
 					print "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>" ;
 						print "<div style='margin: 0 0 3px 0'>" ;
@@ -478,13 +473,13 @@ else {
 							<option value="Select action"><?php print _('Select action') ?></option>
 							<?php
 							if ($status=="Pending") {
-								print "<option value=\"delete\">Delete</option>" ;
-								print "<option value=\"issue\">Issue</option>" ;
+								print "<option value=\"delete\">" . _('Delete') . "</option>" ;
+								print "<option value=\"issue\">" . _('Issue') . "</option>" ;
 							}
 							if ($status=="Issued - Overdue") {
-								print "<option value=\"reminders\">Issue Reminders</option>" ;
+								print "<option value=\"reminders\">" . _('Issue Reminders') . "</option>" ;
 							}
-							print "<option value=\"export\">Export</option>" ;
+							print "<option value=\"export\">" . _('Export') . "</option>" ;
 							?>
 						</select>
 						<script type="text/javascript">
@@ -497,24 +492,25 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th style='width: 110px'>" ;
-								print "Student<br/><span style='font-style: italic; font-size: 85%'>Invoice To</span>" ;
+								print _("Student") . "<br/>" ;
+								print "<span style='font-style: italic; font-size: 85%'>" . _('Invoice To') . "</span>" ;
 							print "</th>" ;
 							print "<th style='width: 110px'>" ;
-								print "Roll Group</span>" ;
+								print _("Roll Group") ;
 							print "</th>" ;
 							print "<th style='width: 100px'>" ;
 								print _("Status") ;
 							print "</th>" ;
 							print "<th style='width: 90px'>" ;
-								print "Schedule" ;
+								print _("Schedule") ;
 							print "</th>" ;
 							print "<th style='width: 120px'>" ;
-								print "Total <span style='font-style: italic; font-size: 75%'>(" . $_SESSION[$guid]["currency"] . ")</span><br/>" ;
-								print "<span style='font-style: italic; font-size: 75%'>Paid (" . $_SESSION[$guid]["currency"] . ")</span>" ;
+								print _("Total") . " <span style='font-style: italic; font-size: 75%'>(" . $_SESSION[$guid]["currency"] . ")</span><br/>" ;
+								print "<span style='font-style: italic; font-size: 75%'>" . _('Paid') . " (" . $_SESSION[$guid]["currency"] . ")</span>" ;
 							print "</th>" ;
 							print "<th style='width: 80px'>" ;
-								print "Issue Date<br/>" ;
-								print "<span style='font-style: italic; font-size: 75%'>Due Date</span>" ;
+								print _("Issue Date") . "<br/>" ;
+								print "<span style='font-style: italic; font-size: 75%'>" . _('Due Date') . "</span>" ;
 							print "</th>" ;
 							print "<th style='width: 140px'>" ;
 								print _("Actions") ;

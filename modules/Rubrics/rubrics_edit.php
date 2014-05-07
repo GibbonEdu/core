@@ -241,7 +241,7 @@ else {
 							
 							<tr>
 								<td> 
-									<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+									<b><?php print _('Name') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<input name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" style="width: 300px">

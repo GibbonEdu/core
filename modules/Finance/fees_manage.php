@@ -28,11 +28,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/fees_manage.php")=
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Fees</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Fees') . "</div>" ;
 	print "</div>" ;
 	
 	print "<p>" ;
-	print "In this area you can create the various fee options which apply to students. Fees are specific to a school year, cannot be deleted and must be linked to a category. When you come to create invoices later on, you will be able to use these fees, as well as ad hoc charges." ;
+	print _("In this area you can create the various fee options which apply to students. Fees are specific to a school year, cannot be deleted and must be linked to a category. When you come to create invoices later on, you will be able to use these fees, as well as ad hoc charges.") ;
 	print "</p>" ;
 	
 	$gibbonSchoolYearID="" ;
@@ -89,7 +89,7 @@ else {
 		print "</div>" ;
 	
 		print "<h3>" ;
-		print "Search" ;
+		print _("Search") ;
 		print "</h3>" ;
 		?>
 		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -98,7 +98,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print _('Search For') ?></b><br/>
-						<span style="font-size: 90%"><i>Fee name, category name.</i></span>
+						<span style="font-size: 90%"><i><?php print _('Fee name, category name.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET["search"])) { print $_GET["search"] ; } ?>" type="text" style="width: 300px">
@@ -119,7 +119,7 @@ else {
 		<?php
 		
 		print "<h3>" ;
-		print "View" ;
+		print _("View") ;
 		print "</h3>" ;
 		//Set pagination variable
 		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
@@ -163,13 +163,15 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print "Name<br/><span style='font-style: italic; font-size: 85%'>Short Name</span>" ;
+						print _("Name") . "<br/>" ;
+						print "<span style='font-style: italic; font-size: 85%'>" . _('Short Name') . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Category" ;
+						print _("Category") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Fee<br/><span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
+						print _("Fee") . "<br/>" ; 
+						print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Actions") ;

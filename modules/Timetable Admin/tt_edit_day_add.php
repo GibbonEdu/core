@@ -115,7 +115,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<b><?php print _('Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('Must be unique for this timetable.') ?></i></span>
 						</td>
 						<td class="right">
@@ -128,7 +128,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<?php print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+							<b><?php print _('Short Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('Must be unique for this timetable.') ?></i></span>
 						</td>
 						<td class="right">

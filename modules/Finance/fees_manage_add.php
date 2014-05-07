@@ -48,10 +48,10 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage="Your request failed because your passwords did not match." ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail6") {
-			$addReturnMessage="Your request failed because the student is already registered." ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="success0") {
 			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
@@ -110,7 +110,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+						<b><?php print _('Name') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<input name="name" id="name" maxlength=100 value="" type="text" style="width: 300px">
@@ -122,7 +122,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Name Short *</b><br/>
+						<b><?php print _('Short Name') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<input name="nameShort" id="nameShort" maxlength=6 value="" type="text" style="width: 300px">
@@ -154,7 +154,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Category *</b><br/>
+						<b><?php print _('Category') ?> *</b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -182,15 +182,15 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Fee *</b><br/>
+						<b><?php print _('Fee') ?> *</b><br/>
 						<span style="font-size: 90%">
-							<i>Numeric value of the fee
+							<i>
 							<?php
 							if ($_SESSION[$guid]["currency"]!="") {
-								print " in " . $_SESSION[$guid]["currency"] ."." ;
+								print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
 							}
 							else {
-								print "." ;
+								print _("Numeric value of the fee.") ;
 							}
 							?>
 							</i>

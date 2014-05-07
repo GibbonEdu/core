@@ -38,10 +38,10 @@ else {
 	
 	$extra="" ;
 	if ($date==date("d/m/Y")) {
-		$extra="Today's Messages (" . $date . ")" ;
+		$extra=_("Today's Messages") . " (" . $date . ")" ;
 	}
 	else {
-		$extra="View Messages (" . $date . ")" ;
+		$extra=_("View Messages") . " (" . $date . ")" ;
 	}
 	print "<div class='trail'>" ;
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>$extra</div>" ;

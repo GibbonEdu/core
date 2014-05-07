@@ -96,12 +96,12 @@ else {
 						<select style="width: 302px" name="<?php print $row["name"]?>schoolDay" id="<?php print $row["name"]?>schoolDay">
 							<?php
 							if ($row["schoolDay"]=="Y") {
-								print "<option selected value='Y'>Yes</option>" ;
-								print "<option value='N'>No</option>" ;
+								print "<option selected value='Y'>" . _('Yes') . "</option>" ;
+								print "<option value='N'>" . _('No') . "</option>" ;
 							}
 							else {
-								print "<option value='Y'>Yes</option>" ;
-								print "<option selected value='N'>No</option>" ;
+								print "<option value='Y'>" . _('Yes') . "</option>" ;
+								print "<option selected value='N'>" . _('No') . "</option>" ;
 							}
 							?>				
 						</select>

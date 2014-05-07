@@ -39,7 +39,7 @@ else {
 	
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>Manage Invoices</a> > </div><div class='trailEnd'>Print Invoices, Receipts & Reminders</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" . _('Manage Invoices') . "</a> > </div><div class='trailEnd'>" . _('Print Invoices, Receipts & Reminders') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -103,16 +103,16 @@ else {
 			
 			if ($row["status"]=="Pending") {
 				print "<div class='error'>" ;
-					print "There is nothing to print, as the invoice has yet to be issued." ;
+					print _("There is nothing to print, as the invoice has yet to be issued.") ;
 				print "</div>" ;
 			}
 			else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
-						print "<th style='width: 120px'>" ;
-							print "Item</span>" ;
-						print "</th>" ;
 						print "<th>" ;
+							print _("Item") ;
+						print "</th>" ;
+						print "<th style='width: 120px'>" ;
 							print _("Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
@@ -123,9 +123,9 @@ else {
 					?>
 					<tr class='<?php print $rowNum ?>'>
 						<td> 
-							<b>Invoice</b><br/>
+							<b><?php print _('Invoice') ?></b><br/>
 						</td>
-						<td class="right">
+						<td class="left">
 							<?php
 							print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_print_print.php&type=invoice&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 							?>
@@ -146,9 +146,9 @@ else {
 							?>
 							<tr class='<?php print $rowNum ?>'>
 								<td> 
-									<b>Reminder 1</b><br/>
+									<b><?php print _('Reminder 1') ?></b><br/>
 								</td>
-								<td class="right">
+								<td class="left">
 									<?php
 									print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_print_print.php&type=reminder1&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 									?>
@@ -167,9 +167,9 @@ else {
 							?>
 							<tr class='<?php print $rowNum ?>'>
 								<td> 
-									<b>Reminder 2</b><br/>
+									<b><?php print _('Reminder 2') ?></b><br/>
 								</td>
-								<td class="right">
+								<td class="left">
 									<?php
 									print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_print_print.php&type=reminder2&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 									?>
@@ -188,9 +188,9 @@ else {
 							?>
 							<tr class='<?php print $rowNum ?>'>
 								<td> 
-									<b>Reminder 3</b><br/>
+									<b><?php print _('Reminder 3') ?></b><br/>
 								</td>
-								<td class="right">
+								<td class="left">
 									<?php
 									print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_print_print.php&type=reminder3&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 									?>
@@ -203,9 +203,9 @@ else {
 						?>
 						<tr class='<?php print $rowNum ?>'>
 							<td> 
-								<b>Receipt</b><br/>
+								<b><?php print _('Receipt') ?></b><br/>
 							</td>
-							<td class="right">
+							<td class="left">
 								<?php
 								print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 								?>

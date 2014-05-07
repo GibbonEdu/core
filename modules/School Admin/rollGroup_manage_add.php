@@ -112,7 +112,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<?php print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+							<b><?php print _('Short Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i>Needs to be unique in school year.</i></span>
 						</td>
 						<td class="right">

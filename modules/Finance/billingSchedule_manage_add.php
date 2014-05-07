@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/billingSchedule_ma
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/billingSchedule_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Billing Schedule</a> > </div><div class='trailEnd'>Add Entry</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/billingSchedule_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Billing Schedule') . "</a> > </div><div class='trailEnd'>" . _('Add Entry') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -48,13 +48,13 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage="Your request failed because your passwords did not match." ;	
+			$addReturnMessage=_("Your request failed because your passwords did not match.") ;	
 		}
 		else if ($addReturn=="fail6") {
-			$addReturnMessage="Your request failed because the student is already registered in the specified year." ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
+			$addReturnMessage=_("Your request was successful. You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -110,7 +110,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+						<b><?php print _('Name') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<input name="name" id="name" maxlength=100 value="" type="text" style="width: 300px">
@@ -143,8 +143,8 @@ else {
 				
 				<tr>
 					<td> 
-						<b>Invoice Issue Date *</b><br/>
-						<span style="font-size: 90%"><i>Intended date. dd/mm/yyyy</i></span>
+						<b><?php print _('Invoice Issue Date') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('Intended issue date.') ."<br/>" . _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 					</td>
 					<td class="right">
 						<input name="invoiceIssueDate" id="invoiceIssueDate" maxlength=10 value="" type="text" style="width: 300px">
@@ -164,7 +164,7 @@ else {
 				<tr>
 					<td> 
 						<b>Invoice Due Date *</b><br/>
-						<span style="font-size: 90%"><i>Final Payment Date. dd/mm/yyyy</i></span>
+						<span style="font-size: 90%"><i><?php print _('Final Payment Date.') . "<br/>" . _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 					</td>
 					<td class="right">
 						<input name="invoiceDueDate" id="invoiceDueDate" maxlength=10 value="" type="text" style="width: 300px">

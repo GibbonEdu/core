@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/invoiceReceiptSett
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Invoice & Receipt Settings</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Invoice & Receipt Settings') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -61,7 +61,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>General Settings</h3>
+					<h3><?php print _('General Settings') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -91,7 +91,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Invoices</h3>
+					<h3><?php print _('Invoices') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -168,7 +168,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Receipts</h3>
+					<h3><?php print _('Receipts') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -212,7 +212,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Reminders</h3>
+					<h3><?php print _('Reminders') ?></h3>
 				</td>
 			</tr>
 			<tr>

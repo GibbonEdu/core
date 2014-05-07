@@ -44,12 +44,12 @@ else {
 	
 	if ($gibbonFinanceInvoiceIDs=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-		print "List of invoices or school year have not been specified, and so this export cannot be completed." ;
+		print _("List of invoices or school year have not been specified, and so this export cannot be completed.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<h1>" ;
-		print "Invoice Export" ;
+		print _("Invoice Export") ;
 		print "</h1>" ;
 	
 		try {
@@ -84,43 +84,43 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th style='width: 120px'>" ;
-					print "Invoice Number" ;
+					print _("Invoice Number") ;
 				print "</th>" ;
 				print "<th style='width: 120px'>" ;
-					print "Student" ;
+					print _("Student") ;
 				print "</th>" ;
 				print "<th style='width: 120px'>" ;
 					print _("Roll Group") ;
 				print "</th>" ;
 				print "<th style='width: 120px'>" ;
-					print "Invoice To</span>" ;
+					print _("Invoice To") ;
 				print "</th>" ;
 				print "<th style='width: 120px'>" ;
-					print "DOB" ;
+					print _("DOB") ;
 				print "</th>" ;
 				print "<th style='width: 120px'>" ;
-					print "Gender" ;
+					print _("Gender") ;
 				print "</th>" ;
 				print "<th style='width: 100px'>" ;
 					print _("Status") ;
 				print "</th>" ;
 				print "<th style='width: 90px'>" ;
-					print "Schedule" ;
+					print _("Schedule") ;
 				print "</th>" ;
 				print "<th style='width: 100px'>" ;
-					print "Total Value <span style='font-style: italic; font-size: 85%'>(" . $_SESSION[$guid]["currency"] . ")</span>" ;
+					print _("Total Value") . " <span style='font-style: italic; font-size: 85%'>(" . $_SESSION[$guid]["currency"] . ")</span>" ;
 				print "</th>" ;
 				print "<th style='width: 80px'>" ;
-					print "Issue Date" ;
+					print _("Issue Date") ;
 				print "</th>" ;
 				print "<th style='width: 80px'>" ;
-					print "Due Date" ;
+					print _("Due Date") ;
 				print "</th>" ;
 				print "<th style='width: 80px'>" ;
-					print "Date Paid" ;
+					print _("Date Paid") ;
 				print "</th>" ;
 				print "<th style='width: 100px'>" ;
-					print "Amount Paid <span style='font-style: italic; font-size: 85%'>(" . $_SESSION[$guid]["currency"] . ")</span>" ;
+					print _("Amount Paid") . " <span style='font-style: italic; font-size: 85%'>(" . $_SESSION[$guid]["currency"] . ")</span>" ;
 				print "</th>" ;
 				
 			print "</tr>" ;

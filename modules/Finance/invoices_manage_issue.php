@@ -39,11 +39,11 @@ else {
 	$gibbonFinanceBillingScheduleID=$_GET["gibbonFinanceBillingScheduleID"] ;
 	
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>Manage Invoices</a> > </div><div class='trailEnd'>Issue Invoice</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" . _('Manage Invoices') . "</a> > </div><div class='trailEnd'>" . _('Issue Invoice') . "</div>" ;
 	print "</div>" ;
 	
 	print "<p>" ;
-	print "Issuing an invoice confirms it in the system, meaning the financial details within the invoice can no longer be edited. On issue, you also have the choice to email the invoice to the appropriate family and company recipients." ;
+	print _("Issuing an invoice confirms it in the system, meaning the financial details within the invoice can no longer be edited. On issue, you also have the choice to email the invoice to the appropriate family and company recipients.") ;
 	print "</p>" ;
 	
 	if (isset($_GET["issueReturn"])) { $issueReturn=$_GET["issueReturn"] ; } else { $issueReturn="" ; }
@@ -51,19 +51,19 @@ else {
 	$class="error" ;
 	if (!($issueReturn=="")) {
 		if ($issueReturn=="fail0") {
-			$issueReturnMessage="Issue failed because you do not have access to this action." ;	
+			$issueReturnMessage=_("Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($issueReturn=="fail1") {
-			$issueReturnMessage="Issue failed because a required parameter was not set." ;	
+			$issueReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($issueReturn=="fail2") {
-			$issueReturnMessage="Issue failed due to a database error." ;	
+			$issueReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($issueReturn=="fail3") {
-			$issueReturnMessage="Issue failed because your inputs were invalid." ;	
+			$issueReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($issueReturn=="fail4") {
-			$issueReturnMessage="Some aspects of your issue failed, but others were successful. Because of the errors, the system did not attempt to send any requested emails." ;	
+			$issueReturnMessage=_("Some aspects of your request failed, but others were successful. Because of the errors, the system did not attempt to send any requested emails.") ;	
 		}
 		print "<div class='$class'>" ;
 			print $issueReturnMessage;
@@ -135,7 +135,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Invoicee *</b><br/>
+							<b><?php print _('Invoicee') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -161,7 +161,7 @@ else {
 					<?php //BILLING TYPE CHOOSER ?>
 					<tr>
 						<td> 
-							<b>Scheduling *</b><br/>
+							<b><?php print _('Scheduling') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
@@ -173,7 +173,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Billing Schedule *</b><br/>
+								<b><?php print _('Billing Schedule') ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
@@ -204,7 +204,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Invoice Due Date *</b><br/>
+								<b><?php print _('Invoice Due Date') ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
@@ -216,13 +216,13 @@ else {
 					?>
 					<tr>
 						<td> 
-							<b>Status *</b><br/>
+							<b><?php print _('Status') ?> *</b><br/>
 							<?php
 							if ($row["status"]=="Pending") {
-								print "<span style=\"font-size: 90%\"><i>This value cannot be changed. Use the Issue function to change the status from \"Pending\" to \"Issued\".</i></span>" ;
+								print "<span style=\"font-size: 90%\"><i>" . _('This value cannot be changed. Use the Issue function to change the status from "Pending" to "Issued".') . "</i></span>" ;
 							}
 							else {
-								print "<span style=\"font-size: 90%\"><i>Available options are limited according to current status.</i></span>" ;
+								print "<span style=\"font-size: 90%\"><i>" .  _('Available options are limited according to current status.') . "</i></span>" ;
 							}
 							?>
 						</td>
@@ -239,14 +239,14 @@ else {
 					</tr>
 					<tr>
 						<td colspan=2> 
-							<b>Notes</b> 
+							<b><?php print _('Notes') ?></b> 
 							<textarea name='notes' id='notes' rows=5 style='width: 300px'><?php print htmlPrep($row["notes"]) ?></textarea>
 						</td>
 					</tr>
 					
 					<tr>
 						<td colspan=2> 
-							<h3>Email Invoice</h3>
+							<h3><?php print _('Email Invoice') ?></h3>
 						</td>
 					</tr>
 					<?php
@@ -354,7 +354,7 @@ else {
 						<tr>
 							<td> 
 								<b><?php print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", false) ?></b>
-								<span style="font-size: 90%"><i>(CC Self?)</i></span>
+								<span style="font-size: 90%"><i><?php print _('(CC Self?)') ?></i></span>
 							</td>
 							<td class="right">
 								<?php print $_SESSION[$guid]["email"] ; ?> <input type='checkbox' name='emails[]' value='<?php print $_SESSION[$guid]["email"] ; ?>'/>

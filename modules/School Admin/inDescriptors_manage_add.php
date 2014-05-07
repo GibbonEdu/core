@@ -64,7 +64,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+					<b><?php print _('Name') ?> *</b><br/>
 					<span style="font-size: 90%"><i><?php print _('Must be unique.') ; ?></i></span>
 				</td>
 				<td class="right">
@@ -77,7 +77,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<?php print "<b>" . _('Short Name') . " *</b><br/>" ; ?>
+					<b><?php print _('Short Name') ?> *</b><br/>
 					<span style="font-size: 90%"><i><?php print _('Must be unique.') ; ?></i></span>
 				</td>
 				<td class="right">

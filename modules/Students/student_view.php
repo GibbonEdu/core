@@ -139,7 +139,7 @@ else {
 			print "</div>" ;
 			
 			print "<h2>" ;
-			print "Search" ;
+			print _("Search") ;
 			print "</h2>" ;
 			
 			$gibbonPersonID=NULL;

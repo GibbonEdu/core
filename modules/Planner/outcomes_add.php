@@ -173,7 +173,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+							<b><?php print _('Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=100 value="" type="text" style="width: 300px">
@@ -185,7 +185,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Name Short') ?> *</b><br/>
+							<b><?php print _('Short Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="nameShort" id="nameShort" maxlength=14 value="" type="text" style="width: 300px">

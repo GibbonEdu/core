@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/feeCategories_mana
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Fee Categories</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Fee Categories') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -62,7 +62,7 @@ else {
 	}
 	
 	print "<p>" ;
-	print "Categories are used to group fees together into related sets. Some examples might be Tuition Fees, Learning Support Fees or Transport Fees. Categories enable you to control who receives invoices for different kinds of fees." ;
+	print _("Categories are used to group fees together into related sets. Some examples might be Tuition Fees, Learning Support Fees or Transport Fees. Categories enable you to control who receives invoices for different kinds of fees.") ;
 	print "</p>" ;
 
 	print "<div class='linkTop'>" ;
@@ -88,7 +88,7 @@ else {
 					print _("Short Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Description" ;
+					print _("Description") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Active") ;
@@ -136,7 +136,7 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						if ($row["gibbonFinanceFeeCategoryID"]==1) {
-							print "<i>This category cannot<br/>be edited or deleted.</i>" ;
+							print "<i>" . sprintf(_('This category cannot%1$sbe edited or deleted.'), "<br/>") . "</i>" ;
 						}
 						else {
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/feeCategories_manage_edit.php&gibbonFinanceFeeCategoryID=" . $row["gibbonFinanceFeeCategoryID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;

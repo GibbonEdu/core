@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/feeCategories_mana
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/feeCategories_manage.php'>Manage Fee Categories</a> > </div><div class='trailEnd'>Add Category</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/feeCategories_manage.php'>" . _('Manage Fee Categories') . "</a> > </div><div class='trailEnd'>" . _('Add Category') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -48,7 +48,7 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage="Your request failed because the selected person is already registered." ;	
+			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;		
 		}
 		else if ($addReturn=="fail5") {
 			$addReturnMessage="Your request was successful, but some data was not properly saved." ;	
@@ -67,7 +67,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+					<b><?php print _('Name') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=100 value="" type="text" style="width: 300px">
@@ -79,7 +79,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Name Short *</b><br/>
+					<b><?php print _('Short Name') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="nameShort" id="nameShort" maxlength=14 value="" type="text" style="width: 300px">

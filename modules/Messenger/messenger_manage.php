@@ -36,7 +36,7 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Messages</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Messages') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -95,23 +95,23 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print "Subject<br/>" ;
-						print "<span style='font-size: 75%; font-style: italic'>Date Sent</span>" ;
+						print _("Subject") . "<br/>" ;
+						print "<span style='font-size: 75%; font-style: italic'>" . _('Date Sent') . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Author" ;
+						print _("Author") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Recipients" ;
+						print _("Recipients") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Email" ;
+						print _("Email") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Wall" ;
+						print _("Wall") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "SMS" ;
+						print _("SMS") ;
 					print "</th>" ;
 					print "<th style='width: 80px'>" ;
 						print _("Actions") ;
@@ -297,26 +297,26 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["email"]=="Y") {
-								print "<img title='Sent by email.' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								print "<img title='" . _('Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 							}
 							else {
-								print "<img title='Not sent by email.' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								print "<img title='" . _('Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 							}
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["messageWall"]=="Y") {
-								print "<img title='Sent by message wall.' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								print "<img title='" . _('Sent by message wall.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 							}
 							else {
-								print "<img title='Not sent by message wall.' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								print "<img title='" . _('Not sent by message wall.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 							}
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["sms"]=="Y") {
-								print "<img title='Sent by sms.' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								print "<img title='" . _('Sent by sms.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 							}
 							else {
-								print "<img title='Not sent by sms.' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								print "<img title='" . _('Not sent by sms.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 							}
 						print "</td>" ;
 						print "<td>" ;
@@ -332,7 +332,7 @@ else {
 								print "});" ;
 							print "</script>" ;
 							if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
-								print "<a title='View Send Report' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
+								print "<a title='" . _('View Send Report') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;

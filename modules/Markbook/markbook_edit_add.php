@@ -225,7 +225,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<?php print "<b>" . _('Name') . " *</b><br/>" ; ?>
+								<b><?php print _('Name') ?> *</b><br/>
 							</td>
 							<td class="right">
 								<input name="name" id="name" maxlength=20 value="" type="text" style="width: 300px">
@@ -237,7 +237,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<?php print "<b>" . _('Description') . " *</b><br/>" ; ?>
+								<b><?php print _('Description') ?> *</b><br/>
 							</td>
 							<td class="right">
 								<input name="description" id="description" maxlength=255 value="" type="text" style="width: 300px">

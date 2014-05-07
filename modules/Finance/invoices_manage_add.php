@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage_ad
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Invoices</a> > </div><div class='trailEnd'>Add Fees & Invoices</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Invoices') . "</a> > </div><div class='trailEnd'>" . _('Add Fees & Invoices') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -48,17 +48,17 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage="Some aspects of your update failed, effecting the following areas:<ul>" ;	
+			$addReturnMessage=_("Some aspects of your update failed, effecting the following areas:") . "<ul>" ;	
 			if ($_GET["studentFailCount"]) {
-				$addReturnMessage.="<li>" . $_GET["studentFailCount"] . " students encountered problems.</li>" ;
+				$addReturnMessage.="<li>" . $_GET["studentFailCount"] . " " . _('students encountered problems.') . "</li>" ;
 			}
 			if ($_GET["invoiceFailCount"]) {
-				$addReturnMessage.="<li>" . $_GET["invoiceFailCount"] . " invoices encountered problems.</li>" ;
+				$addReturnMessage.="<li>" . $_GET["invoiceFailCount"] . " " . _('invoices encountered problems.') . "</li>" ;
 			}
 			if ($_GET["invoiceFeeFailCount"]) {
-				$addReturnMessage.="<li>" . $_GET["invoiceFeeFailCount"] . " fee entires encountered problems.</li>" ;
+				$addReturnMessage.="<li>" . $_GET["invoiceFeeFailCount"] . " " . _('fee entires encountered problems.') . "</li>" ;
 			}
-			$addReturnMessage.="</ul>It is recommended that you remove all pending invoices and try to recreate them." ;
+			$addReturnMessage.="</ul>" . _('It is recommended that you remove all pending invoices and try to recreate them.') ;
 		}
 		else if ($addReturn=="success0") {
 			$addReturnMessage=_("Your request was completed successfully.") ;	
@@ -70,7 +70,7 @@ else {
 	}
 	
 	print "<p>" ;
-		print "Here you can add fees to one or more students. These fees will be added to an existing invoice or used to form a new invoice, depending on the specified billing schedule and other details." ;
+		print _("Here you can add fees to one or more students. These fees will be added to an existing invoice or used to form a new invoice, depending on the specified billing schedule and other details.") ;
 	print "</p>" ; 
 	
 	//Check if school year specified
@@ -129,12 +129,12 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Invoicees *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?> If a student is missing from this list, visit <a href='<?php print $_SESSION[$guid]["absoluteURL"] ?>/index.php?q=/modules/Finance/invoicees_manage.php'>Manage Invoicees</a> to automatically generate them.</i></span>
+						<b><?php print _('Invoicees') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?><br/><?php print sprintf(_('Visit %1$sManage Invoicees%2$s to automatically generate missing students.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoicees_manage.php'>", "</a>") ?></i></span>
 					</td>
 					<td class="right">
 						<select name="gibbonFinanceInvoiceeIDs[]" id="gibbonFinanceInvoiceeIDs[]" multiple style="width: 302px; height: 150px">
-							<optgroup label='--All Enrolled Students by Roll Group--'>
+							<optgroup label='--<?php print _('All Enrolled Students by Roll Group') ?>--'>
 							<?php
 							$students=array() ;
 							$count=0 ;
@@ -160,7 +160,7 @@ else {
 							if ($dayTypeOptions!="") {
 								$dayTypes=explode(",", $dayTypeOptions) ;
 								foreach ($dayTypes as $dayType) {
-									print "<optgroup label='--$dayType Students by Roll Groups--'>" ; 
+									print "<optgroup label='--$dayType " . _('Students by Roll Groups') . "--'>" ; 
 									foreach ($students AS $student) {
 										if ($student["dayType"]==$dayType) {
 											print "<option value='" . $student["gibbonFinanceInvoiceeID"] . "'>" . $student["rollGroup"] . " - " . $student["student"] . "</option>" ;
@@ -170,7 +170,7 @@ else {
 								}
 							}
 							?>
-							<optgroup label='--All Enrolled Students by Alphabet--'>
+							<optgroup label='--<?php print _('All Enrolled Students by Alphabet') ?>--'>
 							<?php
 							$students=array() ;
 							$count=0 ;
@@ -193,8 +193,8 @@ else {
 				<?php //BILLING TYPE CHOOSER ?>
 				<tr>
 					<td> 
-						<b>Scheduling *</b><br/>
-						<span style="font-size: 90%"><i>When using scheduled, invoice due date is linked to and determined by the schedule.</i></span>
+						<b><?php print _('Scheduling') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('When using scheduled, invoice due date is linked to and determined by the schedule.') ?></i></span>
 					</td>
 					<td class="right">
 						<input checked type="radio" name="scheduling" class="scheduling" value="Scheduled" /> Scheduled
@@ -225,7 +225,7 @@ else {
 				
 				<tr id="schedulingRow">
 					<td> 
-						<b>Billing Schedule *</b><br/>
+						<b><?php print _('Billing Schedule') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<select name="gibbonFinanceBillingScheduleID" id="gibbonFinanceBillingScheduleID" style="width: 302px">
@@ -251,8 +251,8 @@ else {
 				</tr>
 				<tr id="adHocRow">
 					<td> 
-						<b>Invoice Due Date *</b><br/>
-						<span style="font-size: 90%"><i>For fees added to existing invoice, specified date will override existing due date.</i></span>
+						<b><?php print _('Invoice Due Date') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('For fees added to existing invoice, specified date will override existing due date.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="invoiceDueDate" id="invoiceDueDate" maxlength=10 value="" type="text" style="width: 300px">
@@ -270,14 +270,14 @@ else {
 				</tr>
 				<tr>
 					<td colspan=2> 
-						<b>Notes</b> 
+						<b><?php print _('Notes') ?></b> 
 						<textarea name='notes' id='notes' rows=5 style='width: 300px'></textarea>
 					</td>
 				</tr>
 				
 				<tr class='break'>
 					<td colspan=2> 
-						<h3>Fees</h3>
+						<h3><?php print _('Fees') ?></h3>
 					</td>
 				</tr>
 				<?php 
@@ -295,7 +295,7 @@ else {
 					<td colspan=2> 
 						<div class="fee" id="fee" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
 							<div id="feeOuter0">
-								<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'>Fees will be listed here...</div>
+								<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'><?php print _('Fees will be listed here...') ?></div>
 							</div>
 						</div>
 						<div style='width: 100%; padding: 0px 0px 0px 0px'>
@@ -307,7 +307,7 @@ else {
 												var feeCount=1 ;
 											</script>
 											<select id='newFee' onChange='feeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
-												<option class='all' value='0'>Choose a fee to add it</option>
+												<option class='all' value='0'><?php print _('Choose a fee to add it') ?></option>
 												<?php
 												print "<option value='Ad Hoc'>Ad Hoc Fee</option>" ;
 												$switchContents.="case \"Ad Hoc\": " ;
