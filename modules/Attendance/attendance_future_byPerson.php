@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_futu
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Ser Future Absence</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Set Future Absence') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -48,10 +48,10 @@ else {
 			$updateReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage="Your request failed because the specified date is not in the future, or is not a school day." ;	
+			$updateReturnMessage=_("Your request failed because the specified date is not in the future, or is not a school day.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage="Your request failed because specified date already has a record associated with it." ;	
+			$updateReturnMessage=_("Your request failed because specified date already has a record associated with it.") ;	
 		}
 		else if ($updateReturn=="success0") {
 			$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -73,13 +73,13 @@ else {
 			<tr class='break'>
 				<td colspan=2> 
 					<h3>
-						Choose Student
+						<?php print _('Choose Student') ?>
 					</h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b>Student</b><br/>
+					<b><?php print _('Student') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -134,10 +134,10 @@ else {
 		
 		if ($resultLog->rowCount()>0) {
 			print "<div class='success'>" ;
-				print "The following future absences have been set for the selected student. To edit these, please contact <a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>.";
+				print sprintf(_('The following future absences have been set for the selected student. To edit these, please contact %1$s.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>") ;
 				print "<ul>" ;
 				while ($rowLog=$resultLog->fetch()) {
-					print "<li><b>" . dateConvertBack($guid, substr($rowLog["date"],0,10)) . "</b> | Recorded at " . substr($rowLog["timestampTaken"],11) . " on " . dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)) . " by " . formatName($rowLog["title"], $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true) ."</li>" ;
+					print "<li><b>" . dateConvertBack($guid, substr($rowLog["date"],0,10)) . "</b> | " . sprintf(_('Recorded at %1$s on %2$s by %3$s'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName($rowLog["title"], $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) ."</li>" ;
 				}
 				print "</ul>" ;
 			print "</div>" ;
@@ -150,7 +150,7 @@ else {
 				<tr class='break'>
 					<td colspan=2> 
 						<h3>
-							Take Attendance
+							<?php print _('Take Attendance') ?>
 						</h3>
 					</td>
 				</tr>
@@ -165,7 +165,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Absence Date *</b><br/>
+						<b><?php print _('Absence') ?> Date *</b><br/>
 						<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 					</td>
 					<td class="right">
@@ -184,26 +184,26 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Reason</b><br/>
+						<b><?php print _('Reason') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
 						<?php
 						print "<select style='float: none; width: 302px; margin-bottom: 10px' name='reason'>" ;
 							print "<option value=''></option>" ;
-							print "<option value='Pending'>Pending</option>" ;
-							print "<option value='Education'>Education</option>" ;
-							print "<option value='Family'>Family</option>" ;
-							print "<option value='Medical'>Medical</option>" ;
-							print "<option value='Other'>Other</option>" ;
+							print "<option value='Pending'>" . _('Pending') . "</option>" ;
+							print "<option value='Education'>" . _('Education') . "</option>" ;
+							print "<option value='Family'>" . _('Family') . "</option>" ;
+							print "<option value='Medical'>" . _('Medical') . "</option>" ;
+							print "<option value='Other'>" . _('Other') . "</option>" ;
 						print "</select>" ;
 						?>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b>Comment</b><br/>
-						<span style="font-size: 90%"><i>255 character limit</i></span>
+						<b><?php print _('Comment') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print _('255 character limit') ?></i></span>
 					</td>
 					<td class="right">
 						<?php

@@ -39,17 +39,17 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Update Personal Data</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Update Personal Data') . "</div>" ;
 		print "</div>" ;
 	
 		if ($highestAction=="Update Personal Data_any") {
 			print "<p>" ;
-			print "This page allows a user to request selected personal data updates for any user." ;
+			print _("This page allows a user to request selected personal data updates for any user.") ;
 			print "</p>" ;
 		}
 		else {
 			print "<p>" ;
-			print "This page allows any adult with data access permission to request selected personal data updates for any member of their family." ;
+			print _("This page allows any adult with data access permission to request selected personal data updates for any member of their family.") ;
 			print "</p>" ;
 		}
 		
@@ -75,13 +75,13 @@ else {
 			else if ($updateReturn=="fail5") {
 				$updateReturnMessage=_("Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>") ; 
 				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$updateReturnMessage=$updateReturnMessage . " Please contact <a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a> if you have any questions." ;	
+					$updateReturnMessage.=" " . sprintf(_('Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
 				}
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage="Your request was completed successfully. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>" ; 
+				$updateReturnMessage=_("Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.") ; 
 				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$updateReturnMessage=$updateReturnMessage . " Please contact <a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a> if you have any questions." ;	
+					$updateReturnMessage.=" " . sprintf(_('Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
 				}
 				$class="success" ;
 			}
@@ -91,7 +91,7 @@ else {
 		} 
 		
 		print "<h2>" ;
-		print "Choose User" ;
+		print _("Choose User") ;
 		print "</h2>" ;
 		
 		$gibbonPersonID=NULL ;
@@ -104,7 +104,7 @@ else {
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
-						<b>Person *</b><br/>
+						<b><?php print _('Person') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<select style="width: 302px" name="gibbonPersonID">
@@ -185,7 +185,7 @@ else {
 		
 		if ($gibbonPersonID!="") {
 			print "<h2>" ;
-			print "Update Data" ;
+			print _("Update Data") ;
 			print "</h2>" ;
 			
 			//Check access to person
@@ -236,7 +236,7 @@ else {
 			
 			if ($checkCount<1) {
 				print "<div class='error'>" ;
-					print "You do not have access to the specified person." ;
+					print _("The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -285,7 +285,7 @@ else {
 				
 				if ($result->rowCount()>1) {
 					print "<div class='error'>" ;
-						print "This report cannot be displayed due to a database error." ;
+						print _("Your request failed due to a database error.") ;
 					print "</div>" ;
 				}
 				else if ($result->rowCount()==1) {
@@ -293,7 +293,7 @@ else {
 					$proceed=FALSE;
 					if ($addReturn=="") {
 						print "<div class='warning'>" ;
-							print "You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved." ;
+							print _("You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.") ;
 						print "</div>" ;
 					}
 					if ($highestAction!="Update Personal Data_any") {
@@ -348,16 +348,16 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Title<?php if (isset($required["title"])) { if ($required["title"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Title') ?><?php if (isset($required["title"])) { if ($required["title"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select style="width: 302px" name="title" id="title">
 										<?php if ($required["title"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
-										<option <?php if ($row["title"]=="Ms. ") {print "selected ";}?>value="Ms. ">Ms.</option>
-										<option <?php if ($row["title"]=="Miss ") {print "selected ";}?>value="Miss ">Miss.</option>
-										<option <?php if ($row["title"]=="Mr. ") {print "selected ";}?>value="Mr. ">Mr.</option>
-										<option <?php if ($row["title"]=="Mrs. ") {print "selected ";}?>value="Mrs. ">Mrs.</option>
-										<option <?php if ($row["title"]=="Dr. ") {print "selected ";}?>value="Dr. ">Dr.</option>
+										<option <?php if ($row["title"]=="Ms. ") {print "selected ";}?>value="Ms. "><?php print _('Ms.') ?></option>
+										<option <?php if ($row["title"]=="Miss ") {print "selected ";}?>value="Miss "><?php print _('Miss.') ?></option>
+										<option <?php if ($row["title"]=="Mr. ") {print "selected ";}?>value="Mr. "><?php print _('Mr.') ?></option>
+										<option <?php if ($row["title"]=="Mrs. ") {print "selected ";}?>value="Mrs. "><?php print _('Mrs.') ?></option>
+										<option <?php if ($row["title"]=="Dr. ") {print "selected ";}?>value="Dr. "><?php print _('Dr.') ?></option>
 									</select>
 									<?php
 									$fieldName="title" ; 
@@ -372,7 +372,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Surname<?php if (isset($required["surname"])) { if ($required["surname"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Surname') ?><?php if (isset($required["surname"])) { if ($required["surname"]=="Y") { print " *" ; } } ?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('Family name as shown in ID documents.') ?></i></span>
 								</td>
 								<td class="right">
@@ -390,7 +390,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>First Name<?php if (isset($required["firstName"])) { if ($required["firstName"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('First Name') ?><?php if (isset($required["firstName"])) { if ($required["firstName"]=="Y") { print " *" ; } } ?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('First name as shown in ID documents.') ?></i></span>
 								</td>
 								<td class="right">
@@ -408,7 +408,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Preferred Name<?php if (isset($required["preferredName"])) { if ($required["preferredName"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Preferred Name') ?><?php if (isset($required["preferredName"])) { if ($required["preferredName"]=="Y") { print " *" ; } } ?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('Most common name, alias, nickname, etc.') ?></i></span>
 								</td>
 								<td class="right">
@@ -426,7 +426,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Official Name<?php if (isset($required["officialName"])) { if ($required["officialName"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Official Name') ?><?php if (isset($required["officialName"])) { if ($required["officialName"]=="Y") { print " *" ; } } ?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('Full name as shown in ID documents.') ?></i></span>
 								</td>
 								<td class="right">
@@ -444,7 +444,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Name In Characters<?php if (isset($required["nameInCharacters"])) { if ($required["nameInCharacters"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Name In Characters') ?><?php if (isset($required["nameInCharacters"])) { if ($required["nameInCharacters"]=="Y") { print " *" ; } } ?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('Chinese or other character-based name.') ?></i></span>
 								</td>
 								<td class="right">
@@ -462,7 +462,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Date of Birth<?php if (isset($required["dob"])) { if ($required["dob"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Date of Birth') ?><?php if (isset($required["dob"])) { if ($required["dob"]=="Y") { print " *" ; } } ?></b><br/>
 									<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 								</td>
 								<td class="right">
@@ -496,17 +496,17 @@ else {
 								?> 
 								<tr class='break'>
 									<td colspan=2> 
-										<h3>Emergency Contacts</h3>
+										<h3><?php print _('Emergency Contacts') ?></h3>
 									</td>
 								</tr>
 								<tr>
 									<td colspan=2> 
-										These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. <u>Please try to avoid listing immediate family members</u>. 
+										<?php print _('These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.') ?> 
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 1 Name<?php if (isset($required["emergency1Name"])) { if ($required["emergency1Name"]=="Y") { print " *" ; } } ?></b><br/>
+										<b><?php print _('Contact 1 Name') ?><?php if (isset($required["emergency1Name"])) { if ($required["emergency1Name"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
 										<input name="emergency1Name" id="emergency1Name" maxlength=30 value="<?php print htmlPrep($row["emergency1Name"]) ?>" type="text" style="width: 300px">
@@ -523,18 +523,18 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 1 Relationship<?php if (isset($required["emergency1Relationship"])) { if ($required["emergency1Relationship"]=="Y") { print " *" ; } } ?></b><br/>
+										<b><?php print _('Contact 1 Relationship') ?><?php if (isset($required["emergency1Relationship"])) { if ($required["emergency1Relationship"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
 										<select name="emergency1Relationship" id="emergency1Relationship" style="width: 302px">
 											<?php if ($required["emergency1Relationship"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
-											<option <?php if ($row["emergency1Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
-											<option <?php if ($row["emergency1Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
-											<option <?php if ($row["emergency1Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
-											<option <?php if ($row["emergency1Relationship"]=="Friend") {print "selected ";}?>value="Friend">Friend</option>
-											<option <?php if ($row["emergency1Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation">Other Relation</option>
-											<option <?php if ($row["emergency1Relationship"]=="Doctor") {print "selected ";}?>value="Doctor">Doctor</option>
-											<option <?php if ($row["emergency1Relationship"]=="Other") {print "selected ";}?>value="Other">Other</option>
+											<option <?php if ($row["emergency1Relationship"]=="Parent") {print "selected ";}?>value="Parent"><?php print _('Parent') ?></option>
+											<option <?php if ($row["emergency1Relationship"]=="Spouse") {print "selected ";}?>value="Spouse"><?php print _('Spouse') ?></option>
+											<option <?php if ($row["emergency1Relationship"]=="Offspring") {print "selected ";}?>value="Offspring"><?php print _('Offspring') ?></option>
+											<option <?php if ($row["emergency1Relationship"]=="Friend") {print "selected ";}?>value="Friend"><?php print _('Friend') ?></option>
+											<option <?php if ($row["emergency1Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation"><?php print _('Other Relation') ?></option>
+											<option <?php if ($row["emergency1Relationship"]=="Doctor") {print "selected ";}?>value="Doctor"><?php print _('Doctor') ?></option>
+											<option <?php if ($row["emergency1Relationship"]=="Other") {print "selected ";}?>value="Other"><?php print _('Other') ?></option>
 										</select>
 										<?php
 										$fieldName="emergency1Relationship" ; 
@@ -549,7 +549,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 1 Number 1<?php if (isset($required["emergency1Number1"])) { if ($required["emergency1Number1"]=="Y") { print " *" ; } } ?></b><br/>
+										<b><?php print _('Contact 1 Number 1') ?><?php if (isset($required["emergency1Number1"])) { if ($required["emergency1Number1"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
 										<input name="emergency1Number1" id="emergency1Number1" maxlength=30 value="<?php print htmlPrep($row["emergency1Number1"]) ?>" type="text" style="width: 300px">
@@ -566,7 +566,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 1 Number 2<?php if (isset($required["emergency1Number2"])) { if ($required["emergency1Number2"]=="Y") { print " *" ; } } ?></b><br/>
+										<b><?php print _('Contact 1 Number 2') ?><?php if (isset($required["emergency1Number2"])) { if ($required["emergency1Number2"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
 										<input name="emergency1Number2" id="emergency1Number2" maxlength=30 value="<?php print htmlPrep($row["emergency1Number2"]) ?>" type="text" style="width: 300px">
@@ -583,7 +583,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 2 Name<?php if (isset($required["emergency2Name"])) { if ($required["emergency2Name"]=="Y") { print " *" ; } } ?></b><br/>
+										<b><?php print _('Contact 2 Name') ?><?php if (isset($required["emergency2Name"])) { if ($required["emergency2Name"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
 										<input name="emergency2Name" id="emergency2Name" maxlength=30 value="<?php print htmlPrep($row["emergency2Name"]) ?>" type="text" style="width: 300px">
@@ -600,18 +600,18 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 2 Relationship<?php if (isset($required["emergency2Relationship"])) { if ($required["emergency2Relationship"]=="Y") { print " *" ; } } ?></b><br/>
+										<b><?php print _('Contact 2 Relationship') ?><?php if (isset($required["emergency2Relationship"])) { if ($required["emergency2Relationship"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
 										<select name="emergency2Relationship" id="emergency2Relationship" style="width: 302px">
 											<?php if ($required["emergency2Relationship"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
-											<option <?php if ($row["emergency2Relationship"]=="Parent") {print "selected ";}?>value="Parent">Parent</option>
-											<option <?php if ($row["emergency2Relationship"]=="Spouse") {print "selected ";}?>value="Spouse">Spouse</option>
-											<option <?php if ($row["emergency2Relationship"]=="Offspring") {print "selected ";}?>value="Offspring">Offspring</option>
-											<option <?php if ($row["emergency2Relationship"]=="Friend") {print "selected ";}?>value="Friend">Friend</option>
-											<option <?php if ($row["emergency2Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation">Other Relation</option>
-											<option <?php if ($row["emergency2Relationship"]=="Doctor") {print "selected ";}?>value="Doctor">Doctor</option>
-											<option <?php if ($row["emergency2Relationship"]=="Other") {print "selected ";}?>value="Other">Other</option>
+											<option <?php if ($row["emergency2Relationship"]=="Parent") {print "selected ";}?>value="Parent"><?php print _('Parent') ?></option>
+											<option <?php if ($row["emergency2Relationship"]=="Spouse") {print "selected ";}?>value="Spouse"><?php print _('Spouse') ?></option>
+											<option <?php if ($row["emergency2Relationship"]=="Offspring") {print "selected ";}?>value="Offspring"><?php print _('Offspring') ?></option>
+											<option <?php if ($row["emergency2Relationship"]=="Friend") {print "selected ";}?>value="Friend"><?php print _('Friend') ?></option>
+											<option <?php if ($row["emergency2Relationship"]=="Other Relation") {print "selected ";}?>value="Other Relation"><?php print _('Other Relation') ?></option>
+											<option <?php if ($row["emergency2Relationship"]=="Doctor") {print "selected ";}?>value="Doctor"><?php print _('Doctor') ?></option>
+											<option <?php if ($row["emergency2Relationship"]=="Other") {print "selected ";}?>value="Other"><?php print _('Other') ?></option>
 										</select>
 										<?php
 										$fieldName="emergency2Relationship" ; 
@@ -626,7 +626,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 2 Number 1<?php if (isset($required["emergency2Number1"])) { if ($required["emergency2Number1"]=="Y") { print " *" ; } } ?></b><br/>
+										<b><?php print _('Contact 2 Number 1') ?><?php if (isset($required["emergency2Number1"])) { if ($required["emergency2Number1"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
 										<input name="emergency2Number1" id="emergency2Number1" maxlength=30 value="<?php print htmlPrep($row["emergency2Number1"]) ?>" type="text" style="width: 300px">
@@ -643,7 +643,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Contact 2 Number 2<?php if (isset($required["emergency2Number2"])) { if ($required["emergency2Number2"]=="Y") { print " *" ; } } ?></b><br/>
+										<b><?php print _('Contact 2 Number 2') ?><?php if (isset($required["emergency2Number2"])) { if ($required["emergency2Number2"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
 										<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="<?php print htmlPrep($row["emergency2Number2"]) ?>" type="text" style="width: 300px">
@@ -664,12 +664,12 @@ else {
 							
 							<tr class='break'>
 								<td colspan=2> 
-									<h3>Contact Information</h3>
+									<h3><?php print _('Contact Information') ?></h3>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b>Email<?php if (isset($required["email"])) { if ($required["email"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Email') ?><?php if (isset($required["email"])) { if ($required["email"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<input name="email" id="email" maxlength=50 value="<?php print htmlPrep($row["email"]) ?>" type="text" style="width: 300px">
@@ -693,7 +693,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Alternate Email<?php if (isset($required["emailAlternate"])) { if ($required["emailAlternate"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Alternate Email') ?><?php if (isset($required["emailAlternate"])) { if ($required["emailAlternate"]=="Y") { print " *" ; } } ?></b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
@@ -720,11 +720,11 @@ else {
 							<tr>
 								<td colspan=2> 
 									<div class='warning'>
-										Address information for an individual only needs to be set under the following conditions:
+										<?php print _('Address information for an individual only needs to be set under the following conditions:') ?>
 										<ol>
-											<li>If the user is not in a family.</li>
-											<li>If the user's family does not have a home address set (see <a href='<?php print $_SESSION[$guid]["absoluteURL"] ; ?>/index.php?q=/modules/Data Updater/data_family.php'>Update Family Data</a> to change the family address).</li>
-											<li>If the user needs an address in addition to their family's home address.</li>
+											<li><?php print _('If the user is not in a family.') ?></li>
+											<li><?php print _('If the user\'s family does not have a home address set.') ?></li>
+											<li><?php print _('If the user needs an address in addition to their family\'s home address.') ?></li>
 										</ol>
 									</div>
 								</td>
@@ -738,7 +738,7 @@ else {
 							?>
 							<tr>
 								<td> 
-									<b>Enter Personal Address?</b><br/>
+									<b><?php print _('Enter Personal Address?') ?></b><br/>
 								</td>
 								<td class='right' colspan=2> 
 									<script type="text/javascript">
@@ -772,7 +772,7 @@ else {
 							
 							<tr class='address'>
 								<td> 
-									<b>Address 1<?php if (isset($required["address1"])) { if ($required["address1"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Address 1') ?><?php if (isset($required["address1"])) { if ($required["address1"]=="Y") { print " *" ; } } ?></b><br/>
 									<span style="font-size: 90%"><i><span style="font-size: 90%"><i><?php print _('Unit, Building, Street') ?></i></span></i></span>
 								</td>
 								<td class="right">
@@ -790,7 +790,7 @@ else {
 							</tr>
 							<tr class='address'>
 								<td> 
-									<b>Address 1 District<?php if (isset($required["address1District"])) { if ($required["address1District"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Address 1 District') ?><?php if (isset($required["address1District"])) { if ($required["address1District"]=="Y") { print " *" ; } } ?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('County, State, District') ?></i></span>
 								</td>
 								<td class="right">
@@ -827,7 +827,7 @@ else {
 							</tr>
 							<tr class='address'>
 								<td> 
-									<b>Address 1 Country<?php if (isset($required["address1Country"])) { if ($required["address1Country"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Address 1 Country') ?><?php if (isset($required["address1Country"])) { if ($required["address1Country"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="address1Country" id="address1Country" style="width: 302px">
@@ -880,8 +880,8 @@ else {
 									$addressCount=0 ;
 									print "<tr class='address'>" ;
 										print "<td style='border-top: 1px dashed #c00; border-bottom: 1px dashed #c00; background-color: #F6CECB'> " ;
-											print "<b>Matching Address 1</b><br/>" ;
-											print "<span style='font-size: 90%'><i>These users have similar Address 1. Do you want to change them too?</i></span>" ;
+											print "<b>" . _('Matching Address 1') . "</b><br/>" ;
+											print "<span style='font-size: 90%'><i>" . _('These users have similar Address 1. Do you want to change them too?') . "</i></span>" ;
 										print "</td>" ;
 										print "<td style='text-align: right; border-top: 1px dashed #c00; border-bottom: 1px dashed #c00; background-color: #F6CECB'> " ;
 											print "<table cellspacing='0' style='width:306px; float: right; padding: 0px; margin: 0px'>" ;
@@ -906,7 +906,7 @@ else {
 					
 							<tr class='address'>
 								<td> 
-									<b>Address 2<?php if (isset($required["address2"])) { if ($required["address2"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Address 2') ?><?php if (isset($required["address2"])) { if ($required["address2"]=="Y") { print " *" ; } } ?></b><br/>
 									<span style="font-size: 90%"><i><span style="font-size: 90%"><i><?php print _('Unit, Building, Street') ?></i></span></i></span>
 								</td>
 								<td class="right">
@@ -924,7 +924,7 @@ else {
 							</tr>
 							<tr class='address'>
 								<td> 
-									<b>Address 2 District<?php if (isset($required["address2District"])) { if ($required["address2District"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Address 2 District') ?><?php if (isset($required["address2District"])) { if ($required["address2District"]=="Y") { print " *" ; } } ?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('County, State, District') ?></i></span>
 								</td>
 								<td class="right">
@@ -961,7 +961,7 @@ else {
 							</tr>
 							<tr class='address'>
 								<td> 
-									<b>Address 2 Country<?php if (isset($required["address2Country"])) { if ($required["address2Country"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Address 2 Country') ?><?php if (isset($required["address2Country"])) { if ($required["address2Country"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="address2Country" id="address2Country" style="width: 302px">
@@ -999,7 +999,7 @@ else {
 									?>
 									<tr>
 										<td> 
-											<b>Phone <?php print $i ?><?php if (isset($required["phone" . $i])) { if ($required["phone" . $i]=="Y") { print " *" ; } } ?></b><br/>
+											<b><?php print _('Phone') ?> <?php print $i ?><?php if (isset($required["phone" . $i])) { if ($required["phone" . $i]=="Y") { print " *" ; } } ?></b><br/>
 											<span style="font-size: 90%"><i><?php print _('Type, country code, number.') ?></i></span>
 										</td>
 										<td class="right">
@@ -1044,12 +1044,12 @@ else {
 											?>
 											<select style="width: 70px" name="phone<?php print $i ?>Type" id="phone<?php print $i ?>Type">
 												<?php if ($required["phone" . $i]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
-												<option <?php if ($row["phone" . $i . "Type"]=="Mobile") { print "selected" ; }?> value="Mobile">Mobile</option>
-												<option <?php if ($row["phone" . $i . "Type"]=="Home") { print "selected" ; }?> value="Home">Home</option>
-												<option <?php if ($row["phone" . $i . "Type"]=="Work") { print "selected" ; }?> value="Work">Work</option>
-												<option <?php if ($row["phone" . $i . "Type"]=="Fax") { print "selected" ; }?> value="Fax">Fax</option>
-												<option <?php if ($row["phone" . $i . "Type"]=="Pager") { print "selected" ; }?> value="Pager">Pager</option>
-												<option <?php if ($row["phone" . $i . "Type"]=="Other") { print "selected" ; }?> value="Other">Other</option>
+												<option <?php if ($row["phone" . $i . "Type"]=="Mobile") { print "selected" ; }?> value="Mobile"><?php print _('Mobile') ?></option>
+												<option <?php if ($row["phone" . $i . "Type"]=="Home") { print "selected" ; }?> value="Home"><?php print _('Home') ?></option>
+												<option <?php if ($row["phone" . $i . "Type"]=="Work") { print "selected" ; }?> value="Work"><?php print _('Work') ?></option>
+												<option <?php if ($row["phone" . $i . "Type"]=="Fax") { print "selected" ; }?> value="Fax"><?php print _('Fax') ?></option>
+												<option <?php if ($row["phone" . $i . "Type"]=="Pager") { print "selected" ; }?> value="Pager"><?php print _('Pager') ?></option>
+												<option <?php if ($row["phone" . $i . "Type"]=="Other") { print "selected" ; }?> value="Other"><?php print _('Other') ?></option>
 											</select>
 											<?php
 											$fieldName="phone" . $i . "Type" ; 
@@ -1067,13 +1067,13 @@ else {
 								?>
 							<tr class='break'>
 								<td colspan=2> 
-									<h3>Background Information</h3>
+									<h3><?php print _('Background Information') ?></h3>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b>First Language<?php if (isset($required["languageFirst"])) { if ($required["languageFirst"]=="Y") { print " *" ; } } ?></b><br/>
-									<span style="font-size: 90%"><i>Student's native/first/mother language. </i></span>
+									<b><?php print _('First Language') ?><?php if (isset($required["languageFirst"])) { if ($required["languageFirst"]=="Y") { print " *" ; } } ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('Student\'s native/first/mother language.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="languageFirst" id="languageFirst" maxlength=30 value="<?php print $row["languageFirst"] ?>" type="text" style="width: 300px">
@@ -1109,7 +1109,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Second Language<?php if (isset($required["languageSecond"])) { if ($required["languageSecond"]=="Y") { print " *" ; } }?></b><br/>
+									<b><?php print _('Second Language') ?><?php if (isset($required["languageSecond"])) { if ($required["languageSecond"]=="Y") { print " *" ; } }?></b><br/>
 								</td>
 								<td class="right">
 									<input name="languageSecond" id="languageSecond" maxlength=30 value="<?php print $row["languageSecond"] ?>" type="text" style="width: 300px">
@@ -1145,7 +1145,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Third Language<?php if (isset($required["languageThird"])) { if ($required["languageThird"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Third Language') ?><?php if (isset($required["languageThird"])) { if ($required["languageThird"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<input name="languageThird" id="languageThird" maxlength=30 value="<?php print $row["languageThird"] ?>" type="text" style="width: 300px">
@@ -1181,7 +1181,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Country of Birth<?php if (isset($required["countryOfBirth"])) { if ($required["countryOfBirth"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Country of Birth') ?><?php if (isset($required["countryOfBirth"])) { if ($required["countryOfBirth"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="countryOfBirth" id="countryOfBirth" style="width: 302px">
@@ -1216,7 +1216,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Ethnicity<?php if (isset($required["ethnicity"])) { if ($required["ethnicity"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Ethnicity') ?><?php if (isset($required["ethnicity"])) { if ($required["ethnicity"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="ethnicity" id="ethnicity" style="width: 302px">
@@ -1245,18 +1245,18 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Religion<?php if (isset($required["religion"])) { if ($required["religion"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Religion') ?><?php if (isset($required["religion"])) { if ($required["religion"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="religion" id="religion" style="width: 302px">
 										<?php if ($required["religion"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
-										<option <?php if ($row["religion"]=="Nonreligious/Agnostic/Atheist") {print "selected ";}?>value="Nonreligious/Agnostic/Atheist">Nonreligious/Agnostic/Atheist</option>
-										<option <?php if ($row["religion"]=="Buddhism") {print "selected ";}?>value="Buddhism">Buddhism</option>
-										<option <?php if ($row["religion"]=="Christianity") {print "selected ";}?>value="Christianity">Christianity</option>
-										<option <?php if ($row["religion"]=="Hinduism") {print "selected ";}?>value="Hinduism">Hinduism</option>
-										<option <?php if ($row["religion"]=="Islam") {print "selected ";}?>value="Islam">Islam</option>
-										<option <?php if ($row["religion"]=="Judaism") {print "selected ";}?>value="">Judaism</option>
-										<option <?php if ($row["religion"]=="Other") {print "selected ";}?>value="Other">Other</option>	
+										<option <?php if ($row["religion"]=="Nonreligious/Agnostic/Atheist") {print "selected ";}?>value="Nonreligious/Agnostic/Atheist"><?php print _('Nonreligious/Agnostic/Atheist') ?></option>
+										<option <?php if ($row["religion"]=="Buddhism") {print "selected ";}?>value="Buddhism"><?php print _('Buddhism') ?></option>
+										<option <?php if ($row["religion"]=="Christianity") {print "selected ";}?>value="Christianity"><?php print _('Christianity') ?></option>
+										<option <?php if ($row["religion"]=="Hinduism") {print "selected ";}?>value="Hinduism"><?php print _('Hinduism') ?></option>
+										<option <?php if ($row["religion"]=="Islam") {print "selected ";}?>value="Islam"><?php print _('Islam') ?></option>
+										<option <?php if ($row["religion"]=="Judaism") {print "selected ";}?>value=""><?php print _('Judaism') ?></option>
+										<option <?php if ($row["religion"]=="Other") {print "selected ";}?>value="Other"><?php print _('Other') ?></option>	
 									</select>
 									<?php
 									$fieldName="religion" ; 
@@ -1271,7 +1271,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Citizenship 1<?php if (isset($required["citizenship1"])) { if ($required["citizenship1"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Citizenship 1') ?><?php if (isset($required["citizenship1"])) { if ($required["citizenship1"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="citizenship1" id="citizenship1" style="width: 302px">
@@ -1315,7 +1315,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Citizenship 1 Passport Number<?php if (isset($required["citizenship1Passport"])) { if ($required["citizenship1Passport"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Citizenship 1 Passport Number') ?><?php if (isset($required["citizenship1Passport"])) { if ($required["citizenship1Passport"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="<?php print htmlPrep($row["citizenship1Passport"]) ?>" type="text" style="width: 300px">
@@ -1332,7 +1332,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Citizenship 2<?php if (isset($required["citizenshipr"])) { if ($required["citizenship2"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Citizenship 2') ?><?php if (isset($required["citizenshipr"])) { if ($required["citizenship2"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="citizenship2" id="citizenship2" style="width: 302px">
@@ -1376,7 +1376,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Citizenship 2 Passport Number<?php if (isset($required["citizenship2Passport"])) { if ($required["citizenship2Passport"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Citizenship 2 Passport Number') ?><?php if (isset($required["citizenship2Passport"])) { if ($required["citizenship2Passport"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<input name="citizenship2Passport" id="citizenship2Passport" maxlength=30 value="<?php print htmlPrep($row["citizenship2Passport"]) ?>" type="text" style="width: 300px">
@@ -1399,10 +1399,10 @@ else {
 										$star=" *" ; 
 									} }
 									if ($_SESSION[$guid]["country"]=="") {
-										print "<b>National ID Card Number" . $star . "</b><br/>" ;
+										print "<b>" . _('National ID Card Number') . $star . "</b><br/>" ;
 									}
 									else {
-										print "<b>" . $_SESSION[$guid]["country"] . " ID Card Number" . $star . "</b><br/>" ;
+										print "<b>" . $_SESSION[$guid]["country"] . " " . _('ID Card Number') . $star . "</b><br/>" ;
 									}
 									?>
 								</td>
@@ -1427,10 +1427,10 @@ else {
 										$star=" *" ; 
 									} }
 									if ($_SESSION[$guid]["country"]=="") {
-										print "<b>Residency/Visa Type" . $star . "</b><br/>" ;
+										print "<b>" . _('Residency/Visa Type') . $star . "</b><br/>" ;
 									}
 									else {
-										print "<b>" . $_SESSION[$guid]["country"] . " Residency/Visa Type" . $star . "</b><br/>" ;
+										print "<b>" . $_SESSION[$guid]["country"] . " " . _('Residency/Visa Type') . $star . "</b><br/>" ;
 									}
 									?>
 								</td>
@@ -1478,12 +1478,12 @@ else {
 										$star=" *" ; 
 									} }
 									if ($_SESSION[$guid]["country"]=="") {
-										print "<b>Visa Expiry Date" . $star . "</b><br/>" ;
+										print "<b>" . _('Visa Expiry Date') . $star . "</b><br/>" ;
 									}
 									else {
-										print "<b>" . $_SESSION[$guid]["country"] . " Visa Expiry Date" . $star . "</b><br/>" ;
+										print "<b>" . $_SESSION[$guid]["country"] . " " . _('Visa Expiry Date') . $star . "</b><br/>" ;
 									}
-									print "<span style='font-size: 90%'><i>Format " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . _('If relevant.') . "</i></span>" ;
+									print "<span style='font-size: 90%'><i>Format: " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . _('If relevant.') . "</i></span>" ;
 									?>
 								</td>
 								<td class="right">
@@ -1510,12 +1510,12 @@ else {
 								?> 
 								<tr class='break'>
 									<td colspan=2> 
-										<h3>Employment</h3>
+										<h3><?php print _('Employment') ?></h3>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b>Profession<?php if (isset($required["profession"])) { if ($required["profession"]=="Y") { print " *" ; } } ?></b><br/>
+										<b><?php print _('Profession') ?><?php if (isset($required["profession"])) { if ($required["profession"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
 										<input name="profession" id="profession" maxlength=30 value="<?php print htmlPrep($row["profession"]) ?>" type="text" style="width: 300px">
@@ -1532,7 +1532,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Employer<?php if (isset($required["employer"])) { if ($required["employer"]=="Y") { print " *" ; } } ?></b><br/>
+										<b><?php print _('Employer') ?><?php if (isset($required["employer"])) { if ($required["employer"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
 										<input name="employer" id="employer" maxlength=30 value="<?php print htmlPrep($row["employer"]) ?>" type="text" style="width: 300px">
@@ -1549,7 +1549,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Job Title<?php if (isset($required["jobTitle"])) { if ($required["jobTitle"]=="Y") { print " *" ; } } ?></b><br/>
+										<b><?php print _('Job Title') ?><?php if (isset($required["jobTitle"])) { if ($required["jobTitle"]=="Y") { print " *" ; } } ?></b><br/>
 									</td>
 									<td class="right">
 										<input name="jobTitle" id="jobTitle" maxlength=30 value="<?php print htmlPrep($row["jobTitle"]) ?>" type="text" style="width: 300px">
@@ -1570,12 +1570,12 @@ else {
 							
 							<tr class='break'>
 								<td colspan=2> 
-									<h3>Miscellaneous</h3>
+									<h3><?php print _('Miscellaneous') ?></h3>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b>Vehicle Registration<?php if (isset($required["vehicleRegistration"])) { if ($required["vehicleRegistration"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Vehicle Registration') ?><?php if (isset($required["vehicleRegistration"])) { if ($required["vehicleRegistration"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
 									<input name="vehicleRegistration" id="vehicleRegistration" maxlength=30 value="<?php print htmlPrep($row["vehicleRegistration"]) ?>" type="text" style="width: 300px">
@@ -1601,7 +1601,7 @@ else {
 									?>
 									<tr>
 										<td> 
-											<b>Privacy</b><br/>
+											<b><?php print _('Privacy') ?></b><br/>
 											<span style="font-size: 90%"><i><?php print htmlPrep($privacyBlurb) ?><br/>
 											</i></span>
 										</td>
@@ -1626,7 +1626,6 @@ else {
 								}
 							}
 							?>
-							
 							
 							<tr>
 								<td>

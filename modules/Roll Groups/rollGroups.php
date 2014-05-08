@@ -28,11 +28,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Roll Groups/rollGroups.php
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Roll Groups</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('View Roll Groups') . "</div>" ;
 	print "</div>" ;
 	
 	print "<p>" ;
-		print "This page shows all roll groups in the current school year." ;
+		print _("This page shows all roll groups in the current school year.") ;
 	print "</p>" ;
 		
 	try {
@@ -57,10 +57,10 @@ else {
 					print _("Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Form Tutors" ;
+					print _("Form Tutors") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Room" ;
+					print _("Room") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Actions") ;
@@ -95,7 +95,7 @@ else {
 						while ($rowTutor=$resultTutor->fetch()) {
 							print formatName("", $rowTutor["preferredName"], $rowTutor["surname"], "Staff", false, true) ;
 							if ($rowTutor["gibbonPersonID"]==$row["gibbonPersonIDTutor"] AND $resultTutor->rowCount()>1) {
-								print " (Main Tutor)" ;
+								print " (" . _('Main Tutor') . ")" ;
 							}
 							print "<br/>" ;
 						}

@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Take Attendance by Person</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Take Attendance by Person') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -48,10 +48,10 @@ else {
 			$updateReturnMessage=_("Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage="Your request failed because the specified date is not in the future, or is not a school day." ;	
+			$updateReturnMessage=_("Your request failed because the specified date is not in the future, or is not a school day.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage="Your request failed because the specified date is not in the future, or is not a school day." ;	
+			$updateReturnMessage=_("Your request failed because the specified date is not in the future, or is not a school day.") ;	
 		}
 		else if ($updateReturn=="success0") {
 			$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -83,13 +83,13 @@ else {
 			<tr class='break'>
 				<td colspan=2>
 					<h3>
-						Choose Student
+						<?php print _('Choose Student') ?>
 					</h3>
 				</td
 			</tr>
 			<tr>
 				<td> 
-					<b>Student</b><br/>
+					<b><?php print _('Student') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -120,8 +120,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Date *</b><br/>
-					<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<b><?php print _('Date') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _("Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
 					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
@@ -150,7 +150,7 @@ else {
 	if ($gibbonPersonID!="") {
 		if ($currentDate>$today) {
 			print "<div class='error'>" ;
-				print "The specified date is in the future: it must be today or earlier.";
+				print _("The specified date is in the future: it must be today or earlier.");
 			print "</div>" ;
 		}
 		else {
@@ -191,15 +191,15 @@ else {
 				}
 				if ($resultLog->rowCount()<1) {
 					print "<div class='error'>" ;
-						print "There is currently no attendance data today for the selected student.";
+						print _("There is currently no attendance data today for the selected student.") ;
 					print "</div>" ;
 				}
 				else {
 					print "<div class='success'>" ;
-						print "The following attendance log has been recorded for the selected student today:";
+						print _("The following attendance log has been recorded for the selected student today:") ;
 						print "<ul>" ;
 						while ($rowLog=$resultLog->fetch()) {
-							print "<li><b>" . $rowLog["direction"] . "</b> (" . $rowLog["type"] . ") | Recorded at " . substr($rowLog["timestampTaken"],11) . " on " . dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)) . " by " . formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true) ."</li>" ;
+							print "<li><b>" . $rowLog["direction"] . "</b> (" . $rowLog["type"] . ") | " . sprintf(_('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) ."</li>" ;
 							$lastType=$rowLog["type"] ;
 							$lastReason=$rowLog["reason"] ;
 							$lastComment=$rowLog["comment"] ;
@@ -215,13 +215,13 @@ else {
 						<tr class='break'>
 							<td colspan=2>
 								<h3>
-									Take Attendance
+									<?php print _('Take Attendance') ?>
 								</h3>
 							</td
 						</tr>
 						<tr>
 							<td> 
-								<b>Recent Attendance Summary</b><br/>
+								<b><?php print _('Recent Attendance Summary') ?></b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
@@ -291,38 +291,38 @@ else {
 							<td class="right">
 								<?php
 								print "<select style='float: none; width: 302px; margin-bottom: 3px' name='type'>" ;
-									print "<option " ; if ($lastType=="Present") { print "selected " ; } ; print "value='Present'>Present</option>" ;
-									print "<option " ; if ($lastType=="Present - Late") { print "selected " ; } ; print "value='Present - Late'>Present - Late</option>" ;
-									print "<option " ; if ($lastType=="Present - Offsite") { print "selected " ; } ; print "value='Present - Offsite'>Present - Offsite</option>" ;
-									print "<option " ; if ($lastType=="Absent") { print "selected " ; } ; print "value='Absent'>Absent</option>" ;
-									print "<option " ; if ($lastType=="Left") { print "selected " ; } ; print "value='Left'>Left</option>" ;
-									print "<option " ; if ($lastType=="Left - Early") { print "selected " ; } ; print "value='Left - Early'>Left - Early</option>" ;
+									print "<option " ; if ($lastType=="Present") { print "selected " ; } ; print "value='Present'>" . _('Present') . "</option>" ;
+									print "<option " ; if ($lastType=="Present - Late") { print "selected " ; } ; print "value='Present - Late'>" . _('Present - Late') . "</option>" ;
+									print "<option " ; if ($lastType=="Present - Offsite") { print "selected " ; } ; print "value='Present - Offsite'>" . _('Present - Offsite') . "</option>" ;
+									print "<option " ; if ($lastType=="Absent") { print "selected " ; } ; print "value='Absent'>" . _('Absent') . "</option>" ;
+									print "<option " ; if ($lastType=="Left") { print "selected " ; } ; print "value='Left'>" . _('Left') . "</option>" ;
+									print "<option " ; if ($lastType=="Left - Early") { print "selected " ; } ; print "value='Left - Early'>" . _('Left - Early') . "</option>" ;
 								print "</select>" ;
 								?>
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b>Reason</b><br/>
+								<b><?php print _('Reason') ?></b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
 								<?php
 								print "<select style='float: none; width: 302px; margin-bottom: 10px' name='reason'>" ;
 									print "<option " ; if ($lastReason=="") { print "selected " ; } ; print "value=''></option>" ;
-									print "<option " ; if ($lastReason=="Pending") { print "selected " ; } ; print "value='Pending'>Pending</option>" ;
-									print "<option " ; if ($lastReason=="Education") { print "selected " ; } ; print "value='Education'>Education</option>" ;
-									print "<option " ; if ($lastReason=="Family") { print "selected " ; } ; print "value='Family'>Family</option>" ;
-									print "<option " ; if ($lastReason=="Medical") { print "selected " ; } ; print "value='Medical'>Medical</option>" ;
-									print "<option " ; if ($lastReason=="Other") { print "selected " ; } ; print "value='Other'>Other</option>" ;
+									print "<option " ; if ($lastReason=="Pending") { print "selected " ; } ; print "value='Pending'>" . _('Pending') . "</option>" ;
+									print "<option " ; if ($lastReason=="Education") { print "selected " ; } ; print "value='Education'>" . _('Education') . "</option>" ;
+									print "<option " ; if ($lastReason=="Family") { print "selected " ; } ; print "value='Family'>" . _('Family') . "</option>" ;
+									print "<option " ; if ($lastReason=="Medical") { print "selected " ; } ; print "value='Medical'>" . _('Medical') . "</option>" ;
+									print "<option " ; if ($lastReason=="Other") { print "selected " ; } ; print "value='Other'>" . _('Other') . "</option>" ;
 								print "</select>" ;
 								?>
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b>Comment</b><br/>
-								<span style="font-size: 90%"><i>255 character limit</i></span>
+								<b><?php print _('Comment') ?></b><br/>
+								<span style="font-size: 90%"><i><?php print _('255 character limit') ?></i></span>
 							</td>
 							<td class="right">
 								<?php

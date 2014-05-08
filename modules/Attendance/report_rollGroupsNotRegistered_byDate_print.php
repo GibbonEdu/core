@@ -38,7 +38,7 @@ else {
 	
 	//Proceed!
 	print "<h2>" ;
-	print "Roll Groups Not Registered, " . dateConvertBack($guid, $currentDate) ;
+	print _("Roll Groups Not Registered") . ", " . dateConvertBack($guid, $currentDate) ;
 	print "</h2>" ;
 	
 	//Produce array of attendance data
@@ -69,7 +69,7 @@ else {
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-			print "There is no data to display." ;
+			print _("There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -83,7 +83,7 @@ else {
 					print _("Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Tutor" ;
+					print _("Tutor") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -131,7 +131,7 @@ else {
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;
 					print "<td colspan=2>" ;
-						print "All roll groups have been registered." ;
+						print _("All roll groups have been registered.") ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

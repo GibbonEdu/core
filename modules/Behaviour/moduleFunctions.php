@@ -30,14 +30,14 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 
 	if ($resultYears->rowCount()<1) {
 		print "<div class='error'>" ;
-		print "The specified student has not been enrolled in any school years." ;
+		print _("There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<div class='linkTop'>" ;
 			$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
 			if ($policyLink!="") {
-				print "<a href='$policyLink'>View Behaviour Policy</a>" ;
+				print "<a href='$policyLink'>" . _('View Behaviour Policy') . "</a>" ;
 			}
 		print "</div>" ;
 		
@@ -66,26 +66,26 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 			
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print "The specified student does not have any behaviour records." ;
+				print _("There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print "Date" ;
+							print _("Date") ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Type") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Descriptor" ;
+							print _("Descriptor") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Level" ;
+							print _("Level") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Teacher" ;
+							print _("Teacher") ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Actions") ;
@@ -107,8 +107,8 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 						print "<tr class=$rowNum>" ;
 							print "<td>" ;
 								if (substr($row["timestamp"],0,10)>$row["date"]) {
-									print "Updated: " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
-									print "Incident: " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
+									print _("Updated:") . " " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
+									print _("Incident:") . " " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
 								}
 								else {
 									print dateConvertBack($guid, $row["date"]) . "<br/>" ;
@@ -116,10 +116,10 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 							print "</td>" ;
 							print "<td style='text-align: center'>" ;
 								if ($row["type"]=="Negative") {
-									print "<img title='At Risk' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+									print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 								}
 								else if ($row["type"]=="Positive") {
-									print "<img title='Excellence' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+									print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 								}
 							print "</td>" ;
 							print "<td>" ;

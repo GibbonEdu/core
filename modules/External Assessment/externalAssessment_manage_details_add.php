@@ -247,7 +247,7 @@ else {
 				
 				if ($resultSelect->rowCount()!=1) {
 					print "<div class='error'>" ;
-					print "The specified student does not seem to exist." ;
+					print _("The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 				else {

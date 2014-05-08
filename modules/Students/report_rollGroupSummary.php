@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/report_rollGroupS
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Roll Group Summary</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Roll Group Summary') . "</div>" ;
 	print "</div>" ;
 	
 	$today=time() ;
@@ -65,7 +65,7 @@ else {
 	
 	if ($result->rowCount()==0) {
 		print "<div class='error'>" ;
-			print "There is no data to display." ;
+			print _("There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -75,16 +75,16 @@ else {
 					print _("Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Mean Age" ;
+					print _("Mean Age") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Male" ;
+					print _("Male") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Feale" ;
+					print _("Female") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Total" ;
+					print _("Total") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -154,7 +154,7 @@ else {
 			}
 			print "<tr style='background-color: #FFD2A9'>" ;
 				print "<td>" ;
-					print "<b>All Roll Groups</b>" ;
+					print "<b>" . _('All Roll Groups') . "</b>" ;
 				print "</td>" ;
 				print "<td>" ;
 						$cellCount=0 ;

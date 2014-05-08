@@ -31,10 +31,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_rollGrou
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Roll Groups Not Registered</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Roll Groups Not Registered') . "</div>" ;
 	print "</div>" ;
 	print "<h2>" ;
-	print "Choose Date" ;
+	print _("Choose Date") ;
 	print "</h2>" ;
 	
 	
@@ -50,8 +50,8 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Date *</b><br/>
-					<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<b><?php print _('Date') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('Format:') . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
 					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
@@ -110,7 +110,7 @@ else {
 		
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-				print "There is no data to display." ;
+				print _("There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -124,7 +124,7 @@ else {
 						print _("Roll Group") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Tutor" ;
+						print _("Tutor") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -171,7 +171,7 @@ else {
 				if ($count==0) {
 					print "<tr class=$rowNum>" ;
 						print "<td colspan=2>" ;
-							print "All roll groups have been registered." ;
+							print _("All roll groups have been registered.") ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

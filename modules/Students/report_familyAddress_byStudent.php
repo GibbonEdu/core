@@ -36,11 +36,11 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Family Address by Student</div>" ;
 	print "</div>" ;
 	print "<p>" ;
-	print "This report attempts prints the family address(es) based on parents who are labelled as Contract Priority 1." ;
+	print _("This report attempts prints the family address(es) based on parents who are labelled as Contract Priority 1.") ;
 	print "</p>" ;
 	
 	print "<h2>" ;
-	print "Choose Students" ;
+	print _("Choose Students") ;
 	print "</h2>" ;
 	
 	?>
@@ -49,11 +49,11 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Students *</b><br/>
+					<b><?php print _('Students') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
-						<optgroup label='--Students by Roll Group--'>
+						<optgroup label='--<?php print _('Students by Roll Group') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -67,7 +67,7 @@ else {
 							}
 							?>
 						</optgroup>
-						<optgroup label='--Students by Name--'>
+						<optgroup label='--<?php print _('Students by Name') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -138,13 +138,13 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Family" ;
+					print _("Family") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Selected Students" ;
+					print _("Selected Students") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Home Address" ;
+					print _("Home Address") ;
 				print "</th>" ;
 			print "</tr>" ;
 			

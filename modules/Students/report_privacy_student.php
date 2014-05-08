@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/report_privacy_st
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Privacy Choices by Student</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Privacy Choices by Student') . "</div>" ;
 	print "</div>" ;
 	
 	try {
@@ -44,28 +44,28 @@ else {
 		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 	}
 	
-	$privacy=explode(",", getSettingByScope( $connection2, "User Admin", "privacy" )) ;
+	$privacy=getSettingByScope( $connection2, "User Admin", "privacy") ;
 	$privacyOptions=explode(",", getSettingByScope( $connection2, "User Admin", "privacyOptions" )) ;
 	
 	if (count($privacyOptions)<1 OR $privacy=="N") {
 		print "<div class='error'>" ;
-			print "There are no privacy options in place." ;
+			print _("There are no privacy options in place.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th rowspan=2>" ;
-					print "#" ;
+					print _("Count") ;
 				print "</th>" ;
 				print "<th rowspan=2>" ;
 					print _("Roll Group") ;
 				print "</th>" ;
 				print "<th rowspan=2>" ;
-					print "Student" ;
+					print _("Student") ;
 				print "</th>" ;
 				print "<th colspan=" . count($privacyOptions) . ">" ;
-					print "Privacy" ;
+					print _("Privacy") ;
 				print "</th>" ;
 			print "</tr>" ;
 		
@@ -104,7 +104,7 @@ else {
 						print "<td>" ;
 							foreach ($studentPrivacyOptions AS $studentOption) {
 								if (trim($studentOption)==trim($option)) {
-									print "Y" ;
+									print _("Yes") ;
 								}
 							}
 						print "</td>" ;

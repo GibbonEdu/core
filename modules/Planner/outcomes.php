@@ -89,7 +89,7 @@ else {
 		}
 	
 		print "<h3>" ;
-		print "Filter" ;
+		print _("Filter") ;
 		print "</h3>" ;
 		print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "'>" ;
 			print"<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;	

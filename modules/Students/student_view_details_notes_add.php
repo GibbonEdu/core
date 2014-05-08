@@ -45,7 +45,7 @@ else {
 		}
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-			print "The specified student does not seem to exist." ;
+			print _("The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -53,7 +53,7 @@ else {
 			
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/student_view.php'>View Student Profiles</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/student_view_details.php&gibbonPersonID=$gibbonPersonID&subpage=$subpage'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</a> > </div><div class='trailEnd'>Add Student Note</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/student_view.php'>" . _('View Student Profiles') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/student_view_details.php&gibbonPersonID=$gibbonPersonID&subpage=$subpage'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</a> > </div><div class='trailEnd'>" . _('Add Student Note') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -103,7 +103,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Category *</b><br/>
+								<b><?php print _('Category') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
@@ -145,7 +145,7 @@ else {
 					?>
 					<tr>
 						<td colspan=2 style='padding-top: 15px;'> 
-							<b>Note *</b><br/>
+							<b><?php print _('Note') ?> *</b><br/>
 							<?php print getEditor($guid,  TRUE, "note", "", 25, true, true, false) ?>
 						</td>
 					</tr>

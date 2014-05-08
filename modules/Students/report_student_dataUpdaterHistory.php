@@ -31,14 +31,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/report_student_da
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Student Data Updater History</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Student Data Updater History') . "</div>" ;
 	print "</div>" ;
 	print "<p>" ;
-	print "This report allows a user to select a range of students and check whether or not they have had their personal and meidcal data updated after a specified date." ;
+	print _("This report allows a user to select a range of students and check whether or not they have had their personal and meidcal data updated after a specified date.") ;
 	print "</p>" ;
 	
 	print "<h2>" ;
-	print "Choose Students" ;
+	print _("Choose Students") ;
 	print "</h2>" ;
 	
 	$nonCompliant=NULL ;
@@ -55,11 +55,11 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Students *</b><br/>
+					<b><?php print _('Students') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
-						<optgroup label='--Students by Roll Group--'>
+						<optgroup label='--<?php print _('Students by Roll Group') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -73,7 +73,7 @@ else {
 							}
 							?>
 						</optgroup>
-						<optgroup label='--Students by Name--'>
+						<optgroup label='--<?php print _('Students by Name') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -92,8 +92,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Date *</b><br/>
-					<span style="font-size: 90%"><i>Earliest acceptable update</i></span>
+					<b><?php print _('Date') ?> *</b><br/>
+					<span style="font-size: 85%"><i><?php print _('Earliest acceptable update') ?><br/><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 				</td>
 				<td class="right">
 					<input name="date" id="date" maxlength=10 value="<?php if ($date!="") { print $date ; } else { print date("d/m/Y", (time()-(604800*26))) ; } ?>" type="text" style="width: 300px">
@@ -111,8 +111,8 @@ else {
 			</tr>
 			<tr>
 			<td> 
-				<b>Show Only Non-Compliant?</b><br/>
-				<span style="font-size: 90%"><i>If not checked, show all. If checked, show only non-compliant students.</i><br/>
+				<b><?php print _('Show Only Non-Compliant?') ?></b><br/>
+				<span style="font-size: 85%"><i><?php print _('If not checked, show all. If checked, show only non-compliant students.') ?></i><br/>
 				</i></span>
 			</td>
 			<td class="right">
@@ -162,19 +162,19 @@ else {
 					
 				print "</th>" ;
 				print "<th>" ;
-					print "Student" ;
+					print _("Student") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Personal<br/>Data" ;
+					print _("Personal Data") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Medical<br/>Data" ;
+					print _("Medical Data") ;
 				print "</th>" ;
 					print "<th>" ;
-						print "Parent Emails" ;
+						print _("Parent Emails") ;
 					print "</th>" ;
 			print "</tr>" ;
 			

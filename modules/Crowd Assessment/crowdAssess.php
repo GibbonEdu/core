@@ -59,7 +59,8 @@ else {
 					print _("Class") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Lesson/Unit") ;
+					print _("Lesson") . "</br>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . _('Unit') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Date") ;
@@ -87,19 +88,21 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						print "<b>" . $row["name"] . "</b><br/>" ;
-						if ($row["gibbonUnitID"]!="") {
-							try {
-								$dataUnit=array("gibbonUnitID"=>$row["gibbonUnitID"]); 
-								$sqlUnit="SELECT * FROM gibbonUnit WHERE gibbonUnitID=:gibbonUnitID" ;
-								$resultUnit=$connection2->prepare($sqlUnit);
-								$resultUnit->execute($dataUnit);
+						print "<span style='font-size: 85%; font-style: italic'>" ;
+							if ($row["gibbonUnitID"]!="") {
+								try {
+									$dataUnit=array("gibbonUnitID"=>$row["gibbonUnitID"]); 
+									$sqlUnit="SELECT * FROM gibbonUnit WHERE gibbonUnitID=:gibbonUnitID" ;
+									$resultUnit=$connection2->prepare($sqlUnit);
+									$resultUnit->execute($dataUnit);
+								}
+								catch(PDOException $e) { }
+								if ($resultUnit->rowCount()==1) {
+									$rowUnit=$resultUnit->fetch() ;
+									print $rowUnit["name"] ;
+								}
 							}
-							catch(PDOException $e) { }
-							if ($resultUnit->rowCount()==1) {
-								$rowUnit=$resultUnit->fetch() ;
-								print $rowUnit["name"] ;
-							}
-						}
+						print "</span>" ;
 					print "</td>" ;
 					print "<td>" ;
 						print dateConvertBack($guid, $row["date"]) ;

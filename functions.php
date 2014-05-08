@@ -259,21 +259,21 @@ function getStudentFastFinder($connection2, $guid) {
 		else {
 			$output.=_("Find Staff") . "<br/>" ;
 		}
-		if (getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2)=="Staff") {
-			$output.="<span style='font-size: 50%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em' >" . _('Total Student Enrollment:') . " " . $resultList->rowCount() . "</span>" ;
-		}
 		$output.="</h2>" ;
 		
-		
+		$studentCount=0 ;
 		$list="" ;
 		while ($rowList=$resultList->fetch()) {
 			$list.="{id: \"" . substr($rowList["role"],0,3) . "-" . $rowList["gibbonPersonID"] . "\", name: \"" . formatName("", htmlPrep($rowList["preferredName"]), htmlPrep($rowList["surname"]), "Student", true) ; if ($rowList["role"]=="Student") { $list.=" (" . htmlPrep($rowList["name"]) . ")\"}," ; } else { $list.=" (" . _("Staff") . ")\"}," ; }
+			if ($rowList["role"]=="Student") {
+				$studentCount++ ;
+			}
 		}
 		$output.="<style>" ;
 			$output.="ul.token-input-list-facebook { width: 157px; float: left; height: 25px!important; }" ;
 			$output.="div.token-input-dropdown-facebook { width: 157px }" ;
 		$output.="</style>" ;
-		$output.="<div style='padding-bottom: 15px; height: 40px; margin-top: 0px'>" ;
+		$output.="<div style='padding-bottom: 7px; height: 40px; margin-top: 0px'>" ;
 			$output.="<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/indexFindRedirect.php'>" ;
 				$output.="<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
 					$output.="<tr>" ;
@@ -303,6 +303,10 @@ function getStudentFastFinder($connection2, $guid) {
 				$output.="</table>" ;
 			$output.="</form>" ;
 		$output.="</div>" ;
+	}
+	
+	if (getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2)=="Staff") {
+		$output.="<div style='padding-bottom: 15px; font-size: 70%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: right; color: #888;' >" . _('Total Student Enrollment:') . " " . $studentCount . "</div>" ;
 	}
 	
 	return $output ;

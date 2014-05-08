@@ -38,7 +38,7 @@ else {
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php'>Manage Behaviour Records</a> > </div><div class='trailEnd'>Add Record</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php'>" . _('Manage Behaviour Records') . "</a> > </div><div class='trailEnd'>" . _('Add Record') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -58,7 +58,7 @@ else {
 				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($addReturn=="fail5") {
-				$addReturnMessage="Your request was successful, but some data was not properly saved." ;	
+				$addReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
 			}
 			else if ($addReturn=="success0") {
 				$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
@@ -82,7 +82,7 @@ else {
 			print "<div class='linkTop'>" ;
 				$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
 				if ($policyLink!="") {
-					print "<a target='_blank' href='$policyLink'>View Behaviour Policy</a>" ;
+					print "<a target='_blank' href='$policyLink'>" . _('View Behaviour Policy') . "</a>" ;
 				}
 				if ($_GET["gibbonPersonID"]!="" OR $_GET["gibbonRollGroupID"]!="" OR $_GET["gibbonYearGroupID"]!="" OR $_GET["type"]!="") {
 					if ($policyLink!="") {
@@ -91,15 +91,13 @@ else {
 					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] . "'>" . _('Back to Search Results') . "</a>" ;
 				}
 			print "</div>" ;
-		
-			
 			?>
 		
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_add.php&step=2&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
-							<h3>Step 1</h3>
+							<h3><?php print _('Step 1') ?></h3>
 						</td>
 					</tr>
 					<tr>
@@ -139,8 +137,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b>Date *</b><br/>
-							<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+							<b><?php print _('Date') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 						</td>
 						<td class="right">
 							<input name="date" id="date" maxlength=10 value="<?php print date("d/m/Y") ?>" type="text" style="width: 300px">
@@ -162,8 +160,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="type" id="type" style="width: 302px">
-								<option value="Positive">Positive</option>
-								<option value="Negative">Negative</option>
+								<option value="Positive"><?php print _('Positive') ?></option>
+								<option value="Negative"><?php print _('Negative') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -189,7 +187,7 @@ else {
 							?>
 							<tr>
 								<td> 
-									<b>Descriptor *</b><br/>
+									<b><?php print _('Descriptor') ?> *</b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
@@ -229,7 +227,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Level *</b><br/>
+								<b><?php print _('Level') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
@@ -254,7 +252,7 @@ else {
 					?>
 					<tr>
 						<td> 
-							<b>Comment</b><br/>
+							<b><?php print _('Comment') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -278,7 +276,7 @@ else {
 			print "<div class='linkTop'>" ;
 				$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
 				if ($policyLink!="") {
-					print "<a target='_blank' href='$policyLink'>View Behaviour Policy</a>" ;
+					print "<a target='_blank' href='$policyLink'>" . _('View Behaviour Policy') . "</a>" ;
 				}
 				if ($_GET["gibbonPersonID"]!="" OR $_GET["gibbonRollGroupID"]!="" OR $_GET["gibbonYearGroupID"]!="" OR $_GET["type"]!="") {
 					if ($policyLink!="") {
@@ -307,13 +305,13 @@ else {
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr class='break'>
 							<td colspan=2> 
-								<h3>Step 2</h3>
+								<h3><?php print _('Step 2') ?></h3>
 							</td>
 						</tr>
 						<tr>
 							<td> 
 								<b><?php print _('Student') ?> *</b><br/>
-								<span style="font-size: 90%"><i>This value cannot be changed</i></span>
+								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
 								<?php
@@ -337,8 +335,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Date *</b><br/>
-								<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+								<b><?php print _('Date') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 							</td>
 							<td class="right">
 								<input readonly name="date" id="date" maxlength=10 value="<?php print $date ?>" type="text" style="width: 300px">
@@ -346,8 +344,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Link To Lesson?</b><br/>
-								<span style="font-size: 90%"><i>From last 30 days</i></span>
+								<b><?php print _('Link To Lesson?') ?></b><br/>
+								<span style="font-size: 90%"><i><?php print _('From last 30 days') ?></i></span>
 							</td>
 							<td class="right">
 								<select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" style="width: 302px">

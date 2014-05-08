@@ -33,7 +33,7 @@ else {
 	
 	if (count($choices)>0) {
 		print "<h2>" ;
-		print "Student Medical Data Summary" ;
+		print _("Student Medical Data Summary") ;
 		print "</h2>" ;
 		
 		try {
@@ -60,20 +60,20 @@ else {
 		print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Student" ;
+					print _("Student") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Medical<br/>Form?" ;
+					print _("Medical Form?") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Blood<br/>Type" ;
+					print _("Blood Type") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Tetanus<br/>" ;
-					print "<span style='font-size: 80%'><i>10 Years</i></span>" ;
+					print _("Tetanus") . "<br/>" ;
+					print "<span style='font-size: 80%'><i>" . _('10 Years') . "</i></span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Last<br/>Update" ;
+					print _("Last Update") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -105,7 +105,7 @@ else {
 							print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
 						print "</td>" ;
 						print "<td>" ;
-							print "Yes" ;
+							print _("Yes") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $rowForm["bloodType"] ;
@@ -136,7 +136,7 @@ else {
 								}
 							}
 							else {
-								print "<span style='color: #ff0000; font-weight: bold'>NA</span>" ;
+								print "<span style='color: #ff0000; font-weight: bold'>" . _('NA') . "</span>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;
@@ -146,8 +146,8 @@ else {
 						print "<tr class=$rowNum>" ;
 							print "<td></td>" ;
 							print "<td colspan=4 style='border-top: 1px solid #aaa'>" ;
-								print "<b><i>Long Term Medication</i></b>: " . $rowForm["longTermMedication"] . "<br/>" ;
-								print "<u><i>Details</i></u>: " . $rowForm["longTermMedicationDetails"] . "<br/>" ;
+								print "<b><i>" . _('Long Term Medication') . "</i></b>: " . $rowForm["longTermMedication"] . "<br/>" ;
+								print "<u><i>" . _('Details') . "</i></u>: " . $rowForm["longTermMedicationDetails"] . "<br/>" ;
 							print "</td>" ;
 						print "</tr>" ;
 					}
@@ -171,22 +171,22 @@ else {
 							print "<tr class=$rowNum>" ;
 								print "<td></td>" ;
 								print "<td colspan=4 $conditionStyle>" ;
-									print "<b><i>Condition $condCount</i></b>: " . $rowConditions["name"] . "<br/>" ;
-									print "<u><i>Risk</i></u>: <span style='color: #" . $alert["color"] . "; font-weight: bold'>" . $alert["name"] . "</span><br/>" ;
+									print "<b><i>" . _('Condition') . " $condCount</i></b>: " . $rowConditions["name"] . "<br/>" ;
+									print "<u><i>" . _('Risk') . "</i></u>: <span style='color: #" . $alert["color"] . "; font-weight: bold'>" . $alert["name"] . "</span><br/>" ;
 									if ($rowConditions["triggers"]!="") {
-										print "<u><i>Triggers</i></u>: " . $rowConditions["triggers"] . "<br/>" ;
+										print "<u><i>" . _('Triggers') . "</i></u>: " . $rowConditions["triggers"] . "<br/>" ;
 									}
 									if ($rowConditions["reaction"]!="") {
-										print "<u><i>Reaction</i></u>: " . $rowConditions["reaction"] . "<br/>" ;
+										print "<u><i>" . _('Reaction') . "</i></u>: " . $rowConditions["reaction"] . "<br/>" ;
 									}
 									if ($rowConditions["response"]!="") {
-										print "<u><i>Response</i></u>: " . $rowConditions["response"] . "<br/>" ;
+										print "<u><i>" . _('Response') . "</i></u>: " . $rowConditions["response"] . "<br/>" ;
 									}
 									if ($rowConditions["medication"]!="") {
-										print "<u><i>Medication</i></u>: " . $rowConditions["medication"] . "<br/>" ;
+										print "<u><i>" . _('Medication') . "</i></u>: " . $rowConditions["medication"] . "<br/>" ;
 									}
 									if ($rowConditions["lastEpisode"]!="" OR $rowConditions["lastEpisodeTreatment"]!="") {
-											print "<u><i>Last Episode</i></u>: " ;
+											print "<u><i>" . _('Last Episode') . "</i></u>: " ;
 										if ($rowConditions["lastEpisode"]!="") {
 											 print dateConvertBack($guid, $rowConditions["lastEpisode"]) ;
 										}
@@ -200,7 +200,7 @@ else {
 									}
 									
 									if ($rowConditions["comment"]!="") {
-										print "<u><i>Comment</i></u>: " . $rowConditions["comment"] . "<br/>" ;
+										print "<u><i>" . _('Comment') . "</i></u>: " . $rowConditions["comment"] . "<br/>" ;
 									}
 								print "</td>" ;
 							print "</tr>" ;
@@ -214,7 +214,7 @@ else {
 							print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
 						print "</td>" ;
 						print "<td colspan=4>" ;
-							print "<span style='color: #ff0000; font-weight: bold'>No</span>" ;
+							print "<span style='color: #ff0000; font-weight: bold'>" . _('No') . "</span>" ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

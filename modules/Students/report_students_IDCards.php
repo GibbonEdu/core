@@ -31,10 +31,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/report_student_da
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Student ID Cards</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Student ID Cards') . "</div>" ;
 	print "</div>" ;
 	print "<p>" ;
-	print "This report allows a user to select a range of students and create ID cards for those students." ;
+	print _("This report allows a user to select a range of students and create ID cards for those students.") ;
 	print "</p>" ;
 	
 	print "<h2>" ;
@@ -47,11 +47,11 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b>Students *</b><br/>
+					<b><?php print _('Students') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
-						<optgroup label='--Students by Roll Group--'>
+						<optgroup label='--<?php print _('Students by Roll Group') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -65,7 +65,7 @@ else {
 							}
 							?>
 						</optgroup>
-						<optgroup label='--Students by Name--'>
+						<optgroup label='--<?php print _('Students by Name') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -84,8 +84,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Card Background</b><br/>
-					<span style="font-size: 90%"><i>.png or .jpg file, 448 x 268px.</i></span>
+					<b><?php print _('Card Background') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('.png or .jpg file, 448 x 268px.') ?></i></span>
 				</td>
 				<td class="right">
 					<input type="file" name="file" id="file"><br/><br/>
@@ -152,7 +152,7 @@ else {
 		}
 		else {
 			print "<p>" ;
-			print "These cards are designed to be printed to credit-card size, however, they will look bigger on screen. To print in high quality (144dpi) and at true size, save the cards as an image, and print to 50% scale." ;
+			print _("These cards are designed to be printed to credit-card size, however, they will look bigger on screen. To print in high quality (144dpi) and at true size, save the cards as an image, and print to 50% scale.") ;
 			print "</p>" ;
 			
 			//Get background image
@@ -202,10 +202,10 @@ else {
 								print "<td style='padding: 15px 0 0 0 ; text-align: left; width: 280px; vertical-align: top; font-size: 22px'>" ;
 									print "<div style='padding: 5px; background-color: rgba(255,255,255,0.3); min-height: 200px'>" ;
 										print "<div style='font-weight: bold; font-size: 30px'>" .$row["officialName"] . "</div><br/>" ;
-										print "<b>DOB</b>: <span style='float: right'><i>" . dateConvertBack($guid, $row["dob"]) . "</i></span><br/>" ;
-										print "<b>" . $_SESSION[$guid]["organisationNameShort"] . " ID</b>: <span style='float: right'><i>" . $row["studentID"] . "</i></span><br/>" ;
-										print "<b>Year/Roll</b>: <span style='float: right'><i>" . $row["year"] . " / " . $row["roll"] . "</i></span><br/>" ;
-										print "<b>School Year</b>: <span style='float: right'><i>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</i></span><br/>" ;
+										print "<b>" . _('DOB') . "</b>: <span style='float: right'><i>" . dateConvertBack($guid, $row["dob"]) . "</i></span><br/>" ;
+										print "<b>" . $_SESSION[$guid]["organisationNameShort"] . " " . _('ID') . "</b>: <span style='float: right'><i>" . $row["studentID"] . "</i></span><br/>" ;
+										print "<b>" . _('Year/Roll') . "</b>: <span style='float: right'><i>" . $row["year"] . " / " . $row["roll"] . "</i></span><br/>" ;
+										print "<b>" . _('School Year') . "</b>: <span style='float: right'><i>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</i></span><br/>" ;
 									print "</div>" ;
 								print "</td>" ;
 							print "</tr>" ;

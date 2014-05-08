@@ -334,10 +334,12 @@ else {
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
-									print _("Class/Date") ;
+									print _("Class") . "</br>" ;
+									print "<span style='font-size: 85%; font-style: italic'>" . _('Date') . "</span>" ;
 								print "</th>" ;
 								print "<th>" ;
-									print _("Lesson/Unit") ;
+									print _("Lesson") . "</br>" ;
+									print "<span style='font-size: 85%; font-style: italic'>" . _('Unit') . "</span>" ;
 								print "</th>" ;
 								print "<th style='min-width: 25%'>" ;
 									print _("Details") ;
@@ -374,17 +376,19 @@ else {
 									print "<tr class=$rowNum>" ;
 										print "<td>" ;
 											print "<b>" . $row["course"] . "." . $row["class"] . "</b></br>" ;
-											print dateConvertBack($guid, $row["date"]) ;
+											print "<span style='font-size: 85%; font-style: italic'>" . dateConvertBack($guid, $row["date"]) . "</span>" ;
 										print "</td>" ;
 										print "<td>" ;
 											print "<b>" . $row["name"] . "</b><br/>" ;
-											$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
-											if (isset($unit[0])) {
-												print $unit[0] ;
-												if ($unit[1]!="") {
-													print "<br/><i>" . $unit[1] . " Unit</i>" ;
+											print "<span style='font-size: 85%; font-style: italic'>" ;
+												$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
+												if (isset($unit[0])) {
+													print $unit[0] ;
+													if ($unit[1]!="") {
+														print "<br/><i>" . $unit[1] . " Unit</i>" ;
+													}
 												}
-											}
+											print "</span>" ;
 										print "</td>" ;
 										print "<td>" ;
 											if ($row["homeworkDetails"]!="") {
@@ -701,10 +705,12 @@ else {
 				print "<table cellspacing='0' style='width: 100%; margin-top: 60px'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print _("Class/Date") ;
+							print _("Class") . "</br>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . _('Date') . "</span>" ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Lesson/Unit") ;
+							print _("Lesson") . "</br>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . _('Unit') . "</span>" ;
 						print "</th>" ;
 						print "<th style='min-width: 25%'>" ;
 							print _("Details") ;
@@ -820,17 +826,19 @@ else {
 							print "<tr class=$rowNum>" ;
 								print "<td>" ;
 									print "<b>" . $row["course"] . "." . $row["class"] . "</b></br>" ;
-									print dateConvertBack($guid, $row["date"]) ;
+									print "<span style='font-size: 85%; font-style: italic'>" . dateConvertBack($guid, $row["date"]) . "</span>" ;
 								print "</td>" ;
 								print "<td>" ;
 									print "<b>" . $row["name"] . "</b><br/>" ;
-									$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
-									if (isset($unit[0])) {
-										print $unit[0] ;
-										if ($unit[1]!="") {
-											print "<br/><i>" . $unit[1] . " Unit</i>" ;
+									print "<span style='font-size: 85%; font-style: italic'>" ;
+										$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
+										if (isset($unit[0])) {
+											print $unit[0] ;
+											if ($unit[1]!="") {
+												print "<br/><i>" . $unit[1] . " Unit</i>" ;
+											}
 										}
-									}
+									print "</span>" ;
 								print "</td>" ;
 								print "<td>" ;
 									if ($row["homeworkDetails"]!="") {

@@ -88,7 +88,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 	
 	if ($result->rowCount()<1) {
 		$output.="<div class='error'>" ;
-			$output.="There are no records to display." ;
+			$output.=_("There are no records to display.") ;
 		$output.="</div>" ;
 	}
 	else {
@@ -191,39 +191,39 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 				for ($w=0; $w<$weeks; $w++) {
 					if ($days["Mon"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.="Mon" ;
+							$output.=_("Mo") ;
 						$output.="</th>" ;
 					}
 					if ($days["Tue"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.="Tue" ;
+							$output.=_("Tu") ;
 						$output.="</th>" ;
 				
 					}
 					if ($days["Wed"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.="Wed" ;
+							$output.=_("We") ;
 						$output.="</th>" ;
 				
 					}
 					if ($days["Thu"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.="Thu" ;
+							$output.=_("Th") ;
 						$output.="</th>" ;
 					}
 					if ($days["Fri"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.="Fri" ;
+							$output.=_("Fr") ;
 						$output.="</th>" ;
 					}
 					if ($days["Sat"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.="Sat" ;
+							$output.=_("Sa") ;
 						$output.="</th>" ;
 					}
 					if ($days["Sun"]=="Y") {
 						$output.="<th style='width: 15px'>" ;
-							$output.="Sun" ;
+							$output.=_("Su") ;
 						$output.="</th>" ;
 					}
 				}
@@ -255,7 +255,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 					else if ($dateEnd!="" AND date("Y-m-d", $i)>$dateEnd) {
 						$output.="<td style='border: 1px solid #D65602; color: #D65602; background-color: #FFD2A9!important; text-align: center; font-size: 10px'>" ;
 						$output.=date("d/m/Y",$i) . "<br/>" ;
-						$output.="After End Date" ;
+						$output.=_("After End Date") ;
 						$output.="</td>" ;
 						$count++ ;
 					}
@@ -368,23 +368,23 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 		print "<tr>" ;
 			print "<td style='vertical-align: top'>" ;
 				print "<h3>" ;
-					print "Summary" ;
+					print _("Summary") ;
 				print "</h2>" ;
 				print "<p>" ;
 					if ($countSchoolDays!=($countPresent+$countAbsent)) {
-						print "<i>It appears that this student is missing attendance data for some school days:</i><br/>" ;
+						print "<i>" . _('It appears that this student is missing attendance data for some school days:') . "</i><br/>" ;
 						print "<br/>" ;
 					}
-					print "<b>Total number of school days to date: $countSchoolDays</b><br/>" ;
-					print "Total number of school days attended: $countPresent<br/>" ;
-					print "Total number of school days absent: $countAbsent<br/>" ;
+					print "<b>" . _('Total number of school days to date:') . " $countSchoolDays</b><br/>" ;
+					print _("Total number of school days attended:") . " $countPresent<br/>" ;
+					print _("Total number of school days absent:") . " $countAbsent<br/>" ;
 				print "</p>" ;
 			print "</td>" ;
 			print "<td style='width: 10px'>" ;
 			print "</td>" ;
 			print "<td style='vertical-align: top'>" ;
 				print "<h3>" ;
-					print "Key" ;
+					print _("Key") ;
 				print "</h2>" ;
 				print "<p>" ;
 					print "<img style='border: 1px solid #eee' alt='Data Key' src='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Attendance/img/dataKey.png'>" ;

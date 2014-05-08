@@ -39,7 +39,7 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php'>Manage Behaviour Records</a> > </div><div class='trailEnd'>Edit Record</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php'>" . _('Manage Behaviour Records') . "</a> > </div><div class='trailEnd'>" . _('Edit Record') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -131,7 +131,7 @@ else {
 				print "<div class='linkTop'>" ;
 					$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
 					if ($policyLink!="") {
-						print "<a target='_blank' href='$policyLink'>View Behaviour Policy</a>" ;
+						print "<a target='_blank' href='$policyLink'>" . _('View Behaviour Policy') . "</a>" ;
 					}
 					if ($_GET["gibbonPersonID"]!="" OR $_GET["gibbonRollGroupID"]!="" OR $_GET["gibbonYearGroupID"]!="" OR $_GET["type"]!="") {
 						if ($policyLink!="") {
@@ -149,7 +149,7 @@ else {
 						<tr>
 							<td> 
 								<b><?php print _('Student') ?> *</b><br/>
-								<span style="font-size: 90%"><i>This value cannot be changed</i></span>
+								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
 								<?php
@@ -171,8 +171,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Date *</b><br/>
-								<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+								<b><?php print _('Date') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 							</td>
 							<td class="right">
 								<input readonly name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, $row["date"]) ?>" type="text" style="width: 300px">
@@ -186,8 +186,8 @@ else {
 							</td>
 							<td class="right">
 								<select name="type" id="type" style="width: 302px">
-									<option <?php if ($row["type"]=="Positive") { print "selected" ; } ?> value="Positive">Positive</option>
-									<option <?php if ($row["type"]=="Negative") { print "selected" ; } ?> value="Negative">Negative</option>
+									<option <?php if ($row["type"]=="Positive") { print "selected" ; } ?> value="Positive"><?php print _('Positive') ?></option>
+									<option <?php if ($row["type"]=="Negative") { print "selected" ; } ?> value="Negative"><?php print _('Negative') ?></option>
 								</select>
 							</td>
 						</tr>
@@ -213,7 +213,7 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b>Descriptor *</b><br/>
+										<b><?php print _('Descriptor') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
@@ -221,7 +221,7 @@ else {
 											<option value="Please select..."><?php print _('Please select...') ?></option>
 											<?php
 											if ($row["descriptor"]=="Quick Star") {
-												print "<option class='Positive' value='Quick Star'>Quick Star</option>" ;
+												print "<option class='Positive' value='Quick Star'>" . _('Quick Star') . "</option>" ;
 											}
 											for ($i=0; $i<count($optionsPositive); $i++) {
 												$selected="" ;
@@ -276,7 +276,7 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b>Level *</b><br/>
+										<b><?php print _('Level') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
@@ -306,7 +306,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b>Comment</b><br/>
+								<b><?php print _('Comment') ?></b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
@@ -315,8 +315,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Link To Lesson?</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<b><?php print _('Link To Lesson?') ?></b><br/>
+								<span style="font-size: 90%"><i><?php print _('From last 30 days') ?></i></span>
 							</td>
 							<td class="right">
 								<select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" style="width: 302px">

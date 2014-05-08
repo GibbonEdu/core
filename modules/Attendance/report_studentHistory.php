@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentH
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Student History</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Student History') . "</div>" ;
 	print "</div>" ;
 	
 	//Get action with highest precendence
@@ -44,7 +44,7 @@ else {
 	else {
 		if ($highestAction=="Student History_all") {
 			print "<h2>" ;
-			print "Choose Student" ;
+			print _("Choose Student") ;
 			print "</h2>" ;
 			
 			$gibbonPersonID=NULL ;
@@ -57,7 +57,7 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b>Student</b><br/>
+							<b><?php print _('Student') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -179,7 +179,7 @@ else {
 				}
 				else {
 					print "<h2>" ;
-					print "Choose" ;
+					print _("Choose") ;
 					print "</h2>" ;
 					
 					?>
@@ -189,7 +189,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print _('Search For') ?></b><br/>
-									<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
+									<span style="font-size: 90%"><i><?php print _('Preferred, surname, username.') ?></i></span>
 								</td>
 								<td class="right">
 									<select name="search" id="search" style="width: 302px">

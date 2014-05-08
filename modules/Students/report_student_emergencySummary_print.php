@@ -33,10 +33,10 @@ else {
 	
 	if (count($choices)>0) {
 		print "<h2>" ;
-		print "Student Emergency Data Summary" ;
+		print _("Student Emergency Data Summary") ;
 		print "</h2>" ;
 		print "<p>" ;
-		print "This report prints a summary of emergency data for the selected students. In case of emergency, please try to contact parents first, and if they cannot be reached then contact the listed emergency contacts." ;
+		print _("This report prints a summary of emergency data for the selected students. In case of emergency, please try to contact parents first, and if they cannot be reached then contact the listed emergency contacts.") ;
 		print "</p>" ;
 		
 		try {
@@ -63,10 +63,10 @@ else {
 		print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Student" ;
+					print _("Student") ;
 				print "</th>" ;
 				print "<th colspan=3>" ;
-					print "Last<br/>Update" ;
+					print _("Last Update") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -107,7 +107,7 @@ else {
 							}
 						}
 						else {
-							print "<span style='color: #ff0000; font-weight: bold'>NA</span>" ;
+							print "<span style='color: #ff0000; font-weight: bold'>" . _('NA') . "</span>" ;
 						}
 					print "</td>" ;
 				print "</tr>" ;
@@ -115,7 +115,7 @@ else {
 				print "<tr class=$rowNum>" ;
 					print "<td></td>" ;
 					print "<td style='border-top: 1px solid #aaa; vertical-align: top'>" ;
-						print "<b><i>Parents</i></b><br/>" ;
+						print "<b><i>" . _('Parents') . "</i></b><br/>" ;
 						try {
 							$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
 							$sqlFamily="SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID" ;
@@ -151,31 +151,31 @@ else {
 									}
 								}
 								if ($numbers==0) {
-									print "<span style='font-size: 85%; font-style: italic'>No number available.</span><br/>" ;
+									print "<span style='font-size: 85%; font-style: italic'>" . _('No number available.') . "</span><br/>" ;
 								}
 							}
 						}
 					print "</td>" ;
 					print "<td style='border-top: 1px solid #aaa; vertical-align: top'>" ;
-						print "<b><i>Emergency Contact 1</i></b><br/>" ;
-						print "<u><i>Name</i></u>: " . $row["emergency1Name"] . "<br/>" ;
-						print "<u><i>Number</i></u>: " . $row["emergency1Number1"] . "<br/>" ;
+						print "<b><i>" . _('Emergency Contact 1') . "</i></b><br/>" ;
+						print "<u><i>" . _('Name') . "</i></u>: " . $row["emergency1Name"] . "<br/>" ;
+						print "<u><i>" . _('Number') . "</i></u>: " . $row["emergency1Number1"] . "<br/>" ;
 						if ($row["emergency1Number2"]!=="") {
-							print "<u><i>Number 2</i></u>: " . $row["emergency1Number2"] . "<br/>" ;
+							print "<u><i>" . _('Number 2') . "</i></u>: " . $row["emergency1Number2"] . "<br/>" ;
 						}
 						if ($row["emergency1Relationship"]!=="") {
-							print "<u><i>Relationship</i></u>: " . $row["emergency1Relationship"] . "<br/>" ;
+							print "<u><i>" . _('Relationship') . "</i></u>: " . $row["emergency1Relationship"] . "<br/>" ;
 						}
 					print "</td>" ;
 					print "<td style='border-top: 1px solid #aaa; vertical-align: top'>" ;
-						print "<b><i>Emergency Contact 2</i></b><br/>" ;
-						print "<u><i>Name</i></u>: " . $row["emergency2Name"] . "<br/>" ;
-						print "<u><i>Number</i></u>: " . $row["emergency2Number1"] . "<br/>" ;
+						print "<b><i>" . _('Emergency Contact 2') . "</i></b><br/>" ;
+						print "<u><i>" . _('Name') . "</i></u>: " . $row["emergency2Name"] . "<br/>" ;
+						print "<u><i>" . _('Number') . "</i></u>: " . $row["emergency2Number1"] . "<br/>" ;
 						if ($row["emergency2Number2"]!=="") {
-							print "<u><i>Number 2</i></u>: " . $row["emergency2Number2"] . "<br/>" ;
+							print "<u><i>" . _('Number 2') . "</i></u>: " . $row["emergency2Number2"] . "<br/>" ;
 						}
 						if ($row["emergency2Relationship"]!=="") {
-							print "<u><i>Relationship</i></u>: " . $row["emergency2Relationship"] . "<br/>" ;
+							print "<u><i>" . _('Relationship') . "</i></u>: " . $row["emergency2Relationship"] . "<br/>" ;
 						}
 					print "</td>" ;
 				print "</tr>" ;

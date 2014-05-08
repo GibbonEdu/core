@@ -64,7 +64,7 @@ else {
 	}
 	
 	print "<h3>" ;
-		print "Filter" ;
+		print _("Filter") ;
 	print "</h3>" ;
 	print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_summary.php'>" ;
 		print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;

@@ -38,7 +38,7 @@ else {
 	
 	//Proceed!
 	print "<h2>" ;
-	print "Students Not Onsite, " . dateConvertBack($guid, $currentDate) ;
+	print _("Students Not Onsite") . ", " . dateConvertBack($guid, $currentDate) ;
 	print "</h2>" ;
 	
 	
@@ -55,7 +55,7 @@ else {
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-			print "There is no data to display." ;
+			print _("There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -104,10 +104,10 @@ else {
 						print _("Status") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Reason" ;
+						print _("Reason") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Comment" ;
+						print _("Comment") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -180,7 +180,7 @@ else {
 				if ($count==0) {
 					print "<tr class=$rowNum>" ;
 						print "<td colspan=5>" ;
-							print "All students are present." ;
+							print _("All students are present.") ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

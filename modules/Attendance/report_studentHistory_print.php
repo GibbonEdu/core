@@ -33,7 +33,7 @@ else {
 	
 	try {
 		$data=array("gibbonPersonID"=>$gibbonPersonID); 
-		$sql="SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+		$sql="SELECT surname, preferredName, dateStart, dateEnd FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -46,10 +46,10 @@ else {
 	if ($gibbonPersonID!="") {
 		$output="" ;
 		print "<h2>" ;
-		print "Attendance History for " . formatName("", $row["preferredName"], $row["surname"], "Student") ;
+			print _("Attendance History for") . " " . formatName("", $row["preferredName"], $row["surname"], "Student") ;
 		print "</h2>" ;
 		
-		report_studentHistory($guid, $gibbonPersonID, FALSE, $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2) ;
+		report_studentHistory($guid, $gibbonPersonID, FALSE, $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row["dateStart"], $row["dateEnd"]) ;
 	}
 }
 ?>

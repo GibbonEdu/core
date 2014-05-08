@@ -38,7 +38,7 @@ else {
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Manage Behaviour Records</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Behaviour Records') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -72,14 +72,14 @@ else {
 		}
 		
 		print "<h3>" ;
-			print "Filter" ;
+			print _("Filter") ;
 		print "</h3>" ;
 		print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php'>" ;
 			print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
 				?>
 				<tr>
 					<td> 
-						<b>Student</b><br/>
+						<b><?php print _('Student') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -107,7 +107,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Roll Group</b><br/>
+						<b><?php print _('Roll Group') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -135,7 +135,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Year Group</b><br/>
+						<b><?php print _('Year Group') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -163,7 +163,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b>Type</b><br/>
+						<b><?php print _('Type') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -174,12 +174,12 @@ else {
 							if ($type=="Positive") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Positive'>Positive</option>" ;
+							print "<option $selected value='Positive'>" . _('Positive') . "</option>" ;
 							$selected="" ;
 							if ($type=="Negative") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Negative'>Negative</option>" ;
+							print "<option $selected value='Negative'>" . _('Negative') . "</option>" ;
 						print "</select>" ;
 						?>
 					</td>
@@ -198,7 +198,7 @@ else {
 		
 		
 		print "<h3>" ;
-			print "Behaviour Records" ;
+			print _("Behaviour Records") ;
 		print "</h3>" ;
 		//Set pagination variable
 		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
@@ -255,7 +255,7 @@ else {
 			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_add.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type'><img style='margin: 0 0 -4px 3px' title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
 			$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
 			if ($policyLink!="") {
-				print " | <a target='_blank' href='$policyLink'>View Behaviour Policy</a>" ;
+				print " | <a target='_blank' href='$policyLink'>" . _('View Behaviour Policy') . "</a>" ;
 			}
 		print "</div>" ;
 		
@@ -272,19 +272,19 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print "Student & Date" ;
+						print _("Student & Date") ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Type") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Descriptor" ;
+						print _("Descriptor") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Level" ;
+						print _("Level") ;
 					print "</th>" ;
 					print "<th>" ;
-						print "Teacher" ;
+						print _("Teacher") ;
 					print "</th>" ;
 					print "<th style='min-width: 70px'>" ;
 						print _("Actions") ;
@@ -319,8 +319,8 @@ else {
 						}
 							print "<b>" . formatName("", $row["preferredNameStudent"], $row["surnameStudent"], "Student", true) . "</b><br/>" ;
 							if (substr($row["timestamp"],0,10)>$row["date"]) {
-								print "Updated: " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
-								print "Incident: " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
+								print _("Updated:") . " " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
+								print _("Incident:") . " " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
 							}
 							else {
 								print dateConvertBack($guid, $row["date"]) . "<br/>" ;
@@ -328,10 +328,10 @@ else {
 						print "</td>" ;
 						print "<td style='text-align: center'>" ;
 							if ($row["type"]=="Negative") {
-								print "<img title='At Risk' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 							}
 							else if ($row["type"]=="Positive") {
-								print "<img title='Excellence' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 							}
 						print "</td>" ;
 						print "<td>" ;

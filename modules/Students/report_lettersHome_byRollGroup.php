@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/report_students_n
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Letters Home by Roll Group</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Letters Home by Roll Group') . "</div>" ;
 	print "</div>" ;
 	
 	try {
@@ -68,16 +68,16 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print "Total Count" ;
+							print _("Total Count") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Form Count" ;
+							print _("Form Count") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Student" ;
+							print _("Student") ;
 						print "</th>" ;
 						print "<th>" ;
-							print "Sibling Count" ;
+							print _("Sibling Count") ;
 						print "</th>" ;
 					print "</tr>" ;
 			}

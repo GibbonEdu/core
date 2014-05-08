@@ -39,17 +39,17 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Update Family Data</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Update Family Data') . "</div>" ;
 		print "</div>" ;
 	
 		if ($highestAction=="Update Personal Data_any") {
 			print "<p>" ;
-			print "This page allows a user to request selected family data updates for any family." ;
+			print _("This page allows a user to request selected family data updates for any family.") ;
 			print "</p>" ;
 		}
 		else {
 			print "<p>" ;
-			print "This page allows any adult with data access permission to request selected family data updates for their family." ;
+			print _("This page allows any adult with data access permission to request selected family data updates for their family.") ;
 			print "</p>" ;
 		}
 		
@@ -75,13 +75,13 @@ else {
 			else if ($updateReturn=="fail5") {
 				$updateReturnMessage=_("Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>") ; 
 				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$updateReturnMessage=$updateReturnMessage . " Please contact <a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a> if you have any questions." ;	
+					$updateReturnMessage.=" " . sprintf(_('Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
 				}
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage="Your request was completed successfully. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>" ; 
+				$updateReturnMessage=_("Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.") ; 
 				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$updateReturnMessage=$updateReturnMessage . " Please contact <a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a> if you have any questions." ;	
+					$updateReturnMessage.=" " . sprintf(_('Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
 				}
 				$class="success" ;
 			}
@@ -91,7 +91,7 @@ else {
 		} 
 		
 		print "<h2>" ;
-		print "Choose Family" ;
+		print _("Choose Family") ;
 		print "</h2>" ;
 		
 		$gibbonFamilyID=NULL ;
@@ -104,7 +104,7 @@ else {
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
-						<b>Family *</b><br/>
+						<b><?php print _('Family') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<select style="width: 302px" name="gibbonFamilyID">
@@ -161,7 +161,7 @@ else {
 		
 		if ($gibbonFamilyID!="") {
 			print "<h2>" ;
-			print "Update Data" ;
+			print _("Update Data") ;
 			print "</h2>" ;
 			
 			//Check access to person
@@ -186,7 +186,7 @@ else {
 			
 			if ($resultCheck->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print "You do not have access to the specified person." ;
+					print _("The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -205,7 +205,7 @@ else {
 				
 				if ($result->rowCount()>1) {
 					print "<div class='error'>" ;
-						print "This report cannot be displayed due to a database error." ;
+						print _("Your request failed due to a database error.") ;
 					print "</div>" ;
 				}
 				else if ($result->rowCount()==1) {
@@ -213,7 +213,7 @@ else {
 					$proceed=FALSE;
 					if ($addReturn=="") {
 						print "<div class='warning'>" ;
-							print "You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved." ;
+							print _("You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.") ;
 						print "</div>" ;
 					}
 					if ($highestAction!="Update Personal Data_any") {
@@ -255,8 +255,8 @@ else {
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
-									<b>Address Name *</b><br/>
-									<span style="font-size: 90%"><i>Formal name to address parents with.</i></span>
+									<b><?php print _('Address Name') ?> *</b><br/>
+									<span style="font-size: 90%"><i><?php print _('Formal name to address parents with.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="nameAddress" id="nameAddress" maxlength=100 value="<?php print htmlPrep($row["nameAddress"]) ?>" type="text" style="width: 300px">								
@@ -268,7 +268,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Home Address *</b><br/>
+									<b><?php print _('Home Address') ?> *</b><br/>
 									<span style="font-size: 90%"><i><?php print _('Unit, Building, Street') ?></i></span>
 								</td>
 								<td class="right">
@@ -281,7 +281,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Home Address (District) *</b><br/>
+									<b><?php print _('Home Address (District)') ?> *</b><br/>
 									<span style="font-size: 90%"><i><?php print _('County, State, District') ?></i></span>
 								</td>
 								<td class="right">
@@ -313,7 +313,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b>Home Address (Country)</b><br/>
+									<b><?php print _('Home Address (Country)') ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="homeAddressCountry" id="homeAddressCountry" style="width: 302px">

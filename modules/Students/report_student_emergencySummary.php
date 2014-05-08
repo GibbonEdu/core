@@ -33,14 +33,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/report_student_em
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Student Emergency Data Summary</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Student Emergency Data Summary') . "</div>" ;
 	print "</div>" ;
 	print "<p>" ;
-	print "This report prints a summary of emergency data for the selected students. In case of emergency, please try to contact parents first, and if they cannot be reached then contact the listed emergency contacts." ;
+	print _("This report prints a summary of emergency data for the selected students. In case of emergency, please try to contact parents first, and if they cannot be reached then contact the listed emergency contacts.") ;
 	print "</p>" ;
 	
 	print "<h2>" ;
-	print "Choose Students" ;
+	print _("Choose Students") ;
 	print "</h2>" ;
 	
 	?>
@@ -53,7 +53,7 @@ else {
 				</td>
 				<td class="right">
 					<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
-						<optgroup label='--Students by Roll Group--'>
+						<optgroup label='--<?php print _('Students by Roll Group') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -67,7 +67,7 @@ else {
 							}
 							?>
 						</optgroup>
-						<optgroup label='--Students by Name--'>
+						<optgroup label='--<?php print _('Students by Name') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -129,10 +129,10 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print "Student" ;
+					print _("Student") ;
 				print "</th>" ;
 				print "<th colspan=3>" ;
-					print "Last<br/>Update" ;
+					print _("Last Update") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -173,7 +173,7 @@ else {
 							}
 						}
 						else {
-							print "<span style='color: #ff0000; font-weight: bold'>NA</span>" ;
+							print "<span style='color: #ff0000; font-weight: bold'>" . _('NA') . "</span>" ;
 						}
 					print "</td>" ;
 				print "</tr>" ;
@@ -181,7 +181,7 @@ else {
 				print "<tr class=$rowNum>" ;
 					print "<td></td>" ;
 					print "<td style='border-top: 1px solid #aaa; vertical-align: top'>" ;
-						print "<b><i>Parents</i></b><br/>" ;
+						print "<b><i>" . _('Parents') . "</i></b><br/>" ;
 						try {
 							$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
 							$sqlFamily="SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID" ;
@@ -217,31 +217,31 @@ else {
 									}
 								}
 								if ($numbers==0) {
-									print "<span style='font-size: 85%; font-style: italic'>No number available.</span><br/>" ;
+									print "<span style='font-size: 85%; font-style: italic'>" . _('No number available.') . "</span><br/>" ;
 								}
 							}
 						}
 					print "</td>" ;
 					print "<td style='border-top: 1px solid #aaa; vertical-align: top'>" ;
-						print "<b><i>Emergency Contact 1</i></b><br/>" ;
-						print "<u><i>Name</i></u>: " . $row["emergency1Name"] . "<br/>" ;
-						print "<u><i>Number</i></u>: " . $row["emergency1Number1"] . "<br/>" ;
+						print "<b><i>" . _('Emergency Contact 1') . "</i></b><br/>" ;
+						print "<u><i>" . _('Name') . "</i></u>: " . $row["emergency1Name"] . "<br/>" ;
+						print "<u><i>" . _('Number') . "</i></u>: " . $row["emergency1Number1"] . "<br/>" ;
 						if ($row["emergency1Number2"]!=="") {
-							print "<u><i>Number 2</i></u>: " . $row["emergency1Number2"] . "<br/>" ;
+							print "<u><i>" . _('Number 2') . "</i></u>: " . $row["emergency1Number2"] . "<br/>" ;
 						}
 						if ($row["emergency1Relationship"]!=="") {
-							print "<u><i>Relationship</i></u>: " . $row["emergency1Relationship"] . "<br/>" ;
+							print "<u><i>" . _('Relationship') . "</i></u>: " . $row["emergency1Relationship"] . "<br/>" ;
 						}
 					print "</td>" ;
 					print "<td style='border-top: 1px solid #aaa; vertical-align: top'>" ;
-						print "<b><i>Emergency Contact 2</i></b><br/>" ;
-						print "<u><i>Name</i></u>: " . $row["emergency2Name"] . "<br/>" ;
-						print "<u><i>Number</i></u>: " . $row["emergency2Number1"] . "<br/>" ;
+						print "<b><i>" . _('Emergency Contact 2') . "</i></b><br/>" ;
+						print "<u><i>" . _('Name') . "</i></u>: " . $row["emergency2Name"] . "<br/>" ;
+						print "<u><i>" . _('Number') . "</i></u>: " . $row["emergency2Number1"] . "<br/>" ;
 						if ($row["emergency2Number2"]!=="") {
-							print "<u><i>Number 2</i></u>: " . $row["emergency2Number2"] . "<br/>" ;
+							print "<u><i>" . _('Number 2') . "</i></u>: " . $row["emergency2Number2"] . "<br/>" ;
 						}
 						if ($row["emergency2Relationship"]!=="") {
-							print "<u><i>Relationship</i></u>: " . $row["emergency2Relationship"] . "<br/>" ;
+							print "<u><i>" . _('Relationship') . "</i></u>: " . $row["emergency2Relationship"] . "<br/>" ;
 						}
 					print "</td>" ;
 				print "</tr>" ;

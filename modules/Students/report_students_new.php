@@ -31,11 +31,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/report_students_n
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>New Students</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('New Students') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print "Choose Options" ;
+	print _("Choose Options") ;
 	print "</h2>" ;
 	
 	$type=NULL ;
@@ -79,16 +79,16 @@ else {
 				<td class="right">
 					<select style="width: 302px" name="type" id="type" class="type">
 						<?php
-						print "<option" ; if ($type=="Current School Year") { print " selected" ; } print " value='Current School Year'>Current School Year</option>" ;
-						print "<option" ; if ($type=="Date Range") { print " selected" ; } print " value='Date Range'>Date Range</option>" ;
+						print "<option" ; if ($type=="Current School Year") { print " selected" ; } print " value='Current School Year'>" . _('Current School Year') . "</option>" ;
+						print "<option" ; if ($type=="Date Range") { print " selected" ; } print " value='Date Range'>" . _('Date Range') . "</option>" ;
 						?>
 					</select>
 				</td>
 			</tr>
 			<tr id='startDateFromRow' <?php if ($type!="Date Range") { print "style='display: none'" ; } ?>>
 				<td> 
-					<b>From Date</b><br/>
-					<span style="font-size: 90%"><i>Earlest student start date to include.<br/>dd/mm/yyyy</i></span>
+					<b><?php print _('From Date') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Earliest student start date to include.') ?><br/><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 				</td>
 				<td class="right">
 					<input name="startDateFrom" id="startDateFrom" maxlength=10 value="<?php print $startDateFrom ?>" type="text" style="width: 300px">
@@ -105,8 +105,8 @@ else {
 			</tr>
 			<tr id='startDateToRow' <?php if ($type!="Date Range") { print "style='display: none'" ; } ?>>
 				<td> 
-					<b>To Date</b><br/>
-					<span style="font-size: 90%"><i>Latest student start date to include.<br/>dd/mm/yyyy</i></span>
+					<b><?php print _('To Date') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Latest student start date to include.') ?><br/><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 				</td>
 				<td class="right">
 					<input name="startDateTo" id="startDateTo" maxlength=10 value="<?php print $startDateTo ?>" type="text" style="width: 300px">
@@ -123,8 +123,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b>Ignore Enrolment</b><br/>
-					<span style="font-size: 90%"><i>This is useful for picking up students who are set to Full, have a start date but are not yet enrolled.</span>
+					<b><?php print _('Ignore Enrolment') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('This is useful for picking up students who are set to Full, have a start date but are not yet enrolled.') ?></span>
 				</td>
 				<td class="right">
 					<input <?php if ($ignoreEnrolment=="on") { print "checked" ; } ?> name="ignoreEnrolment" id="ignoreEnrolment" type="checkbox">
@@ -142,13 +142,13 @@ else {
 	
 	if ($type!="") {
 		print "<h2>" ;
-		print "Results" ;
+		print _("Report Data") ;
 		print "</h2>" ;
 		
 		$proceed=TRUE ;
 		if ($type=="Date Range") {
 			print "<p>" ;
-				print "This report shows all students whose Start Date is on or between the indicated dates." ;
+				print _("This report shows all students whose Start Date is on or between the indicated dates.") ;
 			print "</p>" ;
 			
 			if ($startDateFrom=="" OR $startDateTo=="") {
@@ -157,14 +157,14 @@ else {
 		}
 		else if ($type=="Current School Year") {
 			print "<p>" ;
-				print "This report shows all students who are newly arrived in the school during the current academic year (e.g. they were not enroled in the previous academic year)." ;
+				print _("This report shows all students who are newly arrived in the school during the current academic year (e.g. they were not enroled in the previous academic year).") ;
 			print "</p>" ;
 		}
 	
 		
 		if ($proceed==FALSE) {
 			print "<div class='error'>" ;
-				print "This report cannot be generated due to a problem with the options you have selected" ;
+				print _("Your request failed because your inputs were invalid.") ;
 			print "</div>" ;
 		}
 		else {
@@ -192,7 +192,7 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print "Count" ;
+								print _("Count") ;
 							print "</th>" ;
 							print "<th>" ;
 								print _("Name") ;
@@ -204,10 +204,10 @@ else {
 								print _("Username") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Start Date" ;
+								print _("Start Date") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Last School" ;
+								print _("Last School") ;
 							print "</th>" ;
 						print "</tr>" ;
 	
@@ -248,6 +248,56 @@ else {
 									print "<td>" ;
 										print $row["lastSchool"] ;
 									print "</td>" ;
+									print "<td>" ;
+										try {
+											$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+											$sqlFamily="SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID" ;
+											$resultFamily=$connection2->prepare($sqlFamily);
+											$resultFamily->execute($dataFamily);
+										}
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										while ($rowFamily=$resultFamily->fetch()) {
+											try {
+												$dataFamily2=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
+												$sqlFamily2="SELECT gibbonPerson.* FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName" ;
+												$resultFamily2=$connection2->prepare($sqlFamily2);
+												$resultFamily2->execute($dataFamily2);
+											}
+											catch(PDOException $e) { 
+												print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+											}
+											while ($rowFamily2=$resultFamily2->fetch()) {
+												print "<u>" . formatName($rowFamily2["title"], $rowFamily2["preferredName"], $rowFamily2["surname"], "Parent") . "</u><br/>" ;
+												$numbers=0 ;
+												for ($i=1; $i<5; $i++) {
+													if ($rowFamily2["phone" . $i]!="") {
+														if ($rowFamily2["phone" . $i . "Type"]!="") {
+															print "<i>" . $rowFamily2["phone" . $i . "Type"] . ":</i> " ;
+														}
+														if ($rowFamily2["phone" . $i . "CountryCode"]!="") {
+															print "+" . $rowFamily2["phone" . $i . "CountryCode"] . " " ;
+														}
+														print $rowFamily2["phone" . $i] . "<br/>" ;
+														$numbers++ ;
+													}
+												}
+												if ($rowFamily2["citizenship1"]!="" OR $rowFamily2["citizenship1Passport"]!="") {
+													print "<i>Passport</i>: " . $rowFamily2["citizenship1"] . " " . $rowFamily2["citizenship1Passport"] . "<br/>" ;
+												}
+												if ($rowFamily2["nationalIDCardNumber"]!="") {
+													if ($_SESSION[$guid]["country"]=="") {
+														print "<i>National ID Card</i>: " ;
+													}
+													else {
+														print "<i>" . $_SESSION[$guid]["country"] . " ID Card</i>: " ;
+													}
+													print $rowFamily2["nationalIDCardNumber"] . "<br/>" ;
+												}
+											}
+										}
+									print "</td>" ;
 								print "</tr>" ;
 							}
 						}
@@ -269,10 +319,10 @@ else {
 								print "Start Date" ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Last School" ;
+								print _("Last School") ;
 							print "</th>" ;
 							print "<th>" ;
-								print "Parents" ;
+								print _("Parents") ;
 							print "</th>" ;
 						print "</tr>" ;
 

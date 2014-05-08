@@ -32,7 +32,7 @@ else {
 	$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
 	if ($gibbonRollGroupID=="") {
 		print "<div class='error'>" ;
-			print "No roll group has been specified." ;
+			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -48,7 +48,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-			print "The specified roll group does not seem to exist." ;
+			print _("The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 			print "</div>" ;
 		}
@@ -56,21 +56,21 @@ else {
 			$row=$result->fetch() ;
 		
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rollGroups.php'>View Roll Groups</a> > </div><div class='trailEnd'>" . $row["name"] . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rollGroups.php'>" . _('View Roll Groups') . "</a> > </div><div class='trailEnd'>" . $row["name"] . "</div>" ;
 			print "</div>" ;
 		
 			print "<h3>" ;
-				print "Basic Information" ;
+				print _("Basic Information") ;
 			print "</h3>" ;
 			
 			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
 						print "<i>" . $row["name"] . "</i>" ;
 					print "</td>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Tutors</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Tutors') . "</span><br/>" ;
 						try {
 							$dataTutor=array("gibbonPersonID1"=>$row["gibbonPersonIDTutor"], "gibbonPersonID2"=>$row["gibbonPersonIDTutor2"], "gibbonPersonID3"=>$row["gibbonPersonIDTutor3"] ); 
 							$sqlTutor="SELECT gibbonPersonID, surname, preferredName, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3" ;
@@ -88,21 +88,21 @@ else {
 								print "<i>" . formatName("", $rowTutor["preferredName"], $rowTutor["surname"], "Staff", false, true) ;
 							}
 							if ($rowTutor["gibbonPersonID"]==$row["gibbonPersonIDTutor"] AND $resultTutor->rowCount()>1) {
-								print " (Main Tutor)" ;
+								print " (" . _('Main Tutor') . ")" ;
 								$primaryTutor240=$rowTutor["image_240"] ;
 							}
 							print "</i><br/>" ;
 						}
 					print "</td>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>Location</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Location') . "</span><br/>" ;
 						print "<i>" . $row["space"] . "</i>" ;
 					print "</td>" ;
 				print "</tr>" ;
 			print "</table>" ;
 			
 			print "<h3>" ;
-				print "Students" ;
+				print _("Students") ;
 			print "</h3>" ;
 			printRollGroupTable($guid, $gibbonRollGroupID, 5, $connection2, FALSE) ;
 		

@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_view.p
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>View Behaviour Records</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('View Behaviour Records') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
@@ -46,7 +46,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print _('Search For') ?></b><br/>
-					<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
+					<span style="font-size: 90%"><i><?php print _('Preferred, surname, username.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
@@ -67,7 +67,7 @@ else {
 	<?php
 	
 	print "<h2>" ;
-	print "Choose A Student" ;
+	print _("Choose A Student") ;
 	print "</h2>" ;
 	
 	//Set pagination variable
@@ -147,7 +147,7 @@ else {
 						print $row["rollGroup"] ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=$search'><img title='View User Details' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=$search'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

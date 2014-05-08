@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/report_students_a
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Age & Gender Summary</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Age & Gender Summary') . "</div>" ;
 	print "</div>" ;
 	
 	//Work out ages in school
@@ -64,17 +64,17 @@ else {
 	
 	if (count($ages)<1 OR count($years)<1) {
 		print "<div class='error'>" ;
-			print "There is no data to display." ;
+			print _("There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
 		
 		
-		print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
+		print "<table class='mini' cellspacing='0' style='max-width: 100%'>" ;
 			print "<tr class='head'>" ;
-				print "<th rowspan=2>" ;
-					print "Age<br/>" ;
-					print "<span style='font-size: 75%; font-style: italic'>As of today</span>" ;
+				print "<th style='width: 100%' rowspan=2>" ;
+					print _("Age") . "<br/>" ;
+					print "<span style='font-size: 75%; font-style: italic'>" . _('As of today') . "</span>" ;
 				print "</th>" ;
 				for ($i=1; $i<count($years); $i=$i+2) {
 					print "<th colspan=2 style='text-align: center'>" ;
@@ -82,24 +82,32 @@ else {
 					print "</th>" ;
 				}
 				print "<th colspan=2 style='text-align: center'>" ;
-					print "All Years" ;
+					print _("All Years") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
 			print "<tr class='head'>" ;
 				for ($i=1; $i<count($years); $i=$i+2) {
-					print "<th style='text-align: center'>" ;
-						print "M" ;
+					print "<th style='text-align: center; height: 70px; max-width:30px!important'>" ;
+						print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>" ;
+							print _("Male") ;
+						print "</div>" ;
 					print "</th>" ;
-					print "<th style='text-align: center'>" ;
-						print "F" ;
+					print "<th style='text-align: center; height: 70px; max-width:30px!important'>" ;
+						print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>" ;
+							print _("Female") ;
+						print "</div>" ;
 					print "</th>" ;
 				}
-				print "<th style='text-align: center'>" ;
-					print "M" ;
+				print "<th style='text-align: center; height: 70px; max-width:30px!important'>" ;
+					print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>" ;
+						print _("Male") ;
+					print "</div>" ;
 				print "</th>" ;
-				print "<th style='text-align: center'>" ;
-					print "F" ;
+				print "<th style='text-align: center; height: 70px; max-width:30px!important'>" ;
+					print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>" ;
+						print _("Female") ;
+					print "</div>" ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -169,7 +177,7 @@ else {
 			}
 			print "<tr style='background-color: #FFD2A9'>" ;
 				print "<td rowspan=2>" ;
-					print "<b>All Ages</b>" ;
+					print "<b>" . _('All Ages') . "</b>" ;
 				print "</td>" ;
 				for ($i=1; $i<count($years); $i=$i+2) {
 					print "<td style='text-align: center; font-weight: bold'>" ;

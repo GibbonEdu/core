@@ -1106,7 +1106,8 @@ else {
 															print _("Class") . "<br/>" ;
 														print "</th>" ;
 														print "<th>" ;
-															print _("Lesson/Unit") ;
+															print _("Lesson") . "</br>" ;
+															print "<span style='font-size: 85%; font-style: italic'>" . _('Unit') . "</span>" ;
 														print "</th>" ;
 														print "<th>" ;
 															print _("Homework") ;
@@ -1147,13 +1148,15 @@ else {
 																print "</td>" ;
 																print "<td>" ;
 																	print "<b>" . $row["name"] . "</b><br/>" ;
-																	$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
-																	if (isset($unit[0])) {
-																		print $unit[0] ;
-																		if ($unit[1]!="") {
-																			print "<br/><i>" . $unit[1] . " " . _('Unit') . "</i>" ;
+																	print "<span style='font-size: 85%; font-style: italic'>" ;
+																		$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
+																		if (isset($unit[0])) {
+																			print $unit[0] ;
+																			if ($unit[1]!="") {
+																				print "<br/><i>" . $unit[1] . " " . _('Unit') . "</i>" ;
+																			}
 																		}
-																	}
+																	print "</span>" ;
 																print "</td>" ;
 																print "<td>" ;
 																	if ($row["homework"]=="Y") {

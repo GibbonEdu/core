@@ -35,7 +35,7 @@ else {
 	$gibbonPersonID=$_GET["gibbonPersonID"] ;
 	
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_view.php'>View Behaviour Records</a> > </div><div class='trailEnd'>View Student Record</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_view.php'>" . _('View Behaviour Records') . "</a> > </div><div class='trailEnd'>" . _('View Student Record') . "</div>" ;
 	print "</div>" ;
 	
 	try {
@@ -50,7 +50,7 @@ else {
 
 	if ($result->rowCount()!=1) {
 		print "<div class='error'>" ;
-		print "The specified student does not seem to exist." ;
+		print _("The selected record does not exist, or you do not have access to it.") ;
 		print "</div>" ;
 	}
 	else {
@@ -65,11 +65,11 @@ else {
 		print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 			print "<tr>" ;
 				print "<td style='width: 34%; vertical-align: top'>" ;
-					print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
+					print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
 					print formatName("", $row["preferredName"], $row["surname"], "Student") ;
 				print "</td>" ;
 				print "<td style='width: 33%; vertical-align: top'>" ;
-					print "<span style='font-size: 115%; font-weight: bold'>Year Group</span><br/>" ;
+					print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
 					try {
 						$dataDetail=array("gibbonYearGroupID"=>$row["gibbonYearGroupID"]); 
 						$sqlDetail="SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID" ;
@@ -85,7 +85,7 @@ else {
 					}
 				print "</td>" ;
 				print "<td style='width: 34%; vertical-align: top'>" ;
-					print "<span style='font-size: 115%; font-weight: bold'>Roll Group</span><br/>" ;
+					print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;
 					try {
 						$dataDetail=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
 						$sqlDetail="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;

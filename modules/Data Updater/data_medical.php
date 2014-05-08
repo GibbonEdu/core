@@ -39,17 +39,17 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Update Medical Data</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Update Medical Data') . "</div>" ;
 		print "</div>" ;
 		
 		if ($highestAction=="Update Medical Data_any") {
 			print "<p>" ;
-			print "This page allows a user to request selected medical data updates for any student." ;
+			print _("This page allows a user to request selected medical data updates for any student.") ;
 			print "</p>" ;
 		}
 		else {
 			print "<p>" ;
-			print "This page allows any adult with data access permission to request medical data updates for any member of their family." ;
+			print _("This page allows any adult with data access permission to request medical data updates for any member of their family.") ;
 			print "</p>" ;
 		}
 		
@@ -73,12 +73,12 @@ else {
 				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail5") {
-				$updateReturnMessage="Update succeeded, although some fields were not recorded." ;	
+				$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage="Your request was completed successfully. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>" ; 
+				$updateReturnMessage=_("Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.") ; 
 				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$updateReturnMessage=$updateReturnMessage . " Please contact <a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a> if you have any questions." ;	
+					$updateReturnMessage.=" " . sprintf(_('Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
 				}
 				$class="success" ;
 			}
@@ -101,7 +101,7 @@ else {
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
-						<b>Person *</b><br/>
+						<b><?php print _('Person') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<select style="width: 302px" name="gibbonPersonID">
@@ -167,7 +167,7 @@ else {
 		
 		if ($gibbonPersonID!="") {
 			print "<h2>" ;
-			print "Update Data" ;
+			print _("Update Data") ;
 			print "</h2>" ;
 			
 			//Check access to person
@@ -207,7 +207,7 @@ else {
 			}
 			if ($checkCount<1) {
 				print "<div class='error'>" ;
-					print "You do not have access to the specified person." ;
+					print _("The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -242,7 +242,7 @@ else {
 					}
 					if ($resultForm->rowCount()>1) {
 						print "<div class='error'>" ;
-							print "This report cannot be displayed due to a database error." ;
+							print _("Your request failed due to a database error.") ;
 						print "</div>" ;
 					}
 					else if ($resultForm->rowCount()==1) {
@@ -250,7 +250,7 @@ else {
 						$proceed=TRUE;
 						if ($addReturn=="") {
 							print "<div class='warning'>" ;
-								print "You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved." ;
+								print _("You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.") ;
 							print "</div>" ;
 						}
 					}
@@ -278,7 +278,7 @@ else {
 							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr>
 									<td> 
-										<b>Blood Type</b><br/>
+										<b><?php print _('Blood Type') ?></b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
@@ -297,40 +297,35 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Long-Term Medication?</b><br/>
+										<b><?php print _('Long-Term Medication?') ?></b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
 										<select style="width: 302px" name="longTermMedication">
 											<option <?php if ($rowForm["longTermMedication"]=="") {print "selected ";}?>value=""></option>
-											<option <?php if ($rowForm["longTermMedication"]=="Y") {print "selected ";}?>value="Y">Y</option>
-											<option <?php if ($rowForm["longTermMedication"]=="N") {print "selected ";}?>value="N">N</option>
+											<option <?php if ($rowForm["longTermMedication"]=="Y") {print "selected ";}?>value="Y"><?php print _('Yes') ?></option>
+											<option <?php if ($rowForm["longTermMedication"]=="N") {print "selected ";}?>value="N"><?php print _('No') ?></option>
 										</select>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b>Medication Details</b><br/>
-										<span style="font-size: 90%"><i>1000 character limit</i></span>
+										<b><?php print _('Medication Details') ?></b><br/>
 									</td>
 									<td class="right">
 										<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rowForms=8 style="width: 300px"><?php print $rowForm["longTermMedicationDetails"] ?></textarea>
-										<script type="text/javascript">
-											var longTermMedicationDetails=new LiveValidation('longTermMedicationDetails');
-											longTermMedicationDetails.add( Validate.Length, { maximum: 1000 } );
-										 </script>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b>Tetanus Within Last 10 Years?</b><br/>
+										<b><?php print _('Tetanus Within Last 10 Years?') ?></b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
 										<select style="width: 302px" name="tetanusWithin10Years">
 											<option <?php if ($rowForm["tetanusWithin10Years"]=="") {print "selected ";}?>value=""></option>
-											<option <?php if ($rowForm["tetanusWithin10Years"]=="Y") {print "selected ";}?>value="Y">Y</option>
-											<option <?php if ($rowForm["tetanusWithin10Years"]=="N") {print "selected ";}?>value="N">N</option>
+											<option <?php if ($rowForm["tetanusWithin10Years"]=="Y") {print "selected ";}?>value="Y"><?php print _('Yes') ?></option>
+											<option <?php if ($rowForm["tetanusWithin10Years"]=="N") {print "selected ";}?>value="N"><?php print _('No') ?></option>
 										</select>
 									</td>
 								</tr>
@@ -360,21 +355,12 @@ else {
 										?>
 										<tr class='break'>
 											<td colspan=2> 
-												<h3>Medical Condition <?php print ($count+1) ?></h3>
+												<h3><?php print _('Medical Condition') ?> <?php print ($count+1) ?></h3>
 											</td>
 										</tr>
-										<!--<tr>
-											<td> 
-												<b>Delete</b><br/>
-												<span style="font-size: 90%"><i>Check box to delete</i></span>
-											</td>
-											<td class="right">
-												<input type='checkbox' name='delete<?php print $count ?>'>
-											</td>
-										</tr>-->		
 										<tr>
 											<td> 
-												<b>Condition Name *</b><br/>
+												<b><?php print _('Condition Name') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<select style="width: 302px" name="name<?php print $count ?>" id="name<?php print $count ?>">
@@ -405,11 +391,11 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b>Risk *</b><br/>
+												<b><?php print _('Risk') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<select name="gibbonAlertLevelID<?php print $count ?>" id="gibbonAlertLevelID<?php print $count ?>" style="width: 302px">
-													<option value='Please select...'>Please select...</option>
+													<option value='Please select...'><?php print _('Please select...') ?></option>
 													<?php
 													try {
 														$dataSelect=array(); 
@@ -436,7 +422,7 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b>Triggers</b><br/>
+												<b><?php print _('Triggers') ?></b><br/>
 											</td>
 											<td class="right">
 												<input name="triggers<?php print $count ?>" id="triggers<?php print $count ?>" maxlength=255 value="<?php print htmlPrep($rowCond["triggers"]) ?>" type="text" style="width: 300px">
@@ -444,7 +430,7 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b>Reaction</b><br/>
+												<b><?php print _('Reaction') ?></b><br/>
 											</td>
 											<td class="right">
 												<input name="reaction<?php print $count ?>" id="reaction<?php print $count ?>" maxlength=255 value="<?php print htmlPrep($rowCond["reaction"]) ?>" type="text" style="width: 300px">
@@ -452,7 +438,7 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b>Response</b><br/>
+												<b><?php print _('Response') ?></b><br/>
 											</td>
 											<td class="right">
 												<input name="response<?php print $count ?>" id="response<?php print $count ?>" maxlength=255 value="<?php print htmlPrep($rowCond["response"]) ?>" type="text" style="width: 300px">
@@ -460,7 +446,7 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b>Medication</b><br/>
+												<b><?php print _('Medication') ?></b><br/>
 											</td>
 											<td class="right">
 												<input name="medication<?php print $count ?>" id="medication<?php print $count ?>" maxlength=255 value="<?php print htmlPrep($rowCond["medication"]) ?>" type="text" style="width: 300px">
@@ -468,8 +454,8 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b>Last Episode Date</b><br/>
-												<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+												<b><?php print _('Last Episode Date') ?></b><br/>
+												<span style="font-size: 90%"><i><?php print _('Format:') . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 											</td>
 											<td class="right">
 												<input name="lastEpisode<?php print $count ?>" id="lastEpisode<?php print $count ?>" maxlength=10 value="<?php print dateConvertBack($guid, $rowCond["lastEpisode"]) ?>" type="text" style="width: 300px">
@@ -486,7 +472,7 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b>Last Episode Treatment</b><br/>
+												<b><?php print _('Last Episode Treatment') ?></b><br/>
 											</td>
 											<td class="right">
 												<input name="lastEpisodeTreatment<?php print $count ?>" id="lastEpisodeTreatment<?php print $count ?>" maxlength=255 value="<?php print htmlPrep($rowCond["lastEpisodeTreatment"]) ?>" type="text" style="width: 300px">
@@ -494,15 +480,10 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b>Comment</b><br/>
-												<span style="font-size: 90%"><i>1000 character limit</i></span>
+												<b><?php print _('Comment') ?></b><br/>
 											</td>
 											<td class="right">
 												<textarea name="comment<?php print $count ?>" id="comment<?php print $count ?>" rows=8 style="width: 300px"><?php print $rowCond["comment"] ?></textarea>
-												<script type="text/javascript">
-													var comment<?php print $count ?>=new LiveValidation('comment<?php print $count ?>');
-													comment<?php print $count ?>.add( Validate.Length, { maximum: 1000 } );
-												 </script>
 											</td>
 										</tr>
 										<input name="gibbonPersonMedicalConditionID<?php print $count ?>" id="gibbonPersonMedicalConditionID<?php print $count ?>" value="<?php print htmlPrep($rowCond["gibbonPersonMedicalConditionID"]) ?>" type="hidden">
@@ -516,12 +497,12 @@ else {
 								?>
 								<tr class='break'>
 									<td colspan=2> 
-										<h3>Add Medical Condition</h3>
+										<h3><?php print _('Add Medical Condition') ?></h3>
 									</td>
 								</tr>
 								<tr>
 									<td> 
-										<b>Condition Name *</b><br/>
+										<b><?php print _('Condition Name') ?> *</b><br/>
 									</td>
 									<td class="right">
 										<select style="width: 302px" name="name" id="name">
@@ -548,11 +529,11 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Risk *</b><br/>
+										<b><?php print _('Risk') ?> *</b><br/>
 									</td>
 									<td class="right">
 										<select name="gibbonAlertLevelID" id="gibbonAlertLevelID" style="width: 302px">
-										<option value='Please select...'>Please select...</option>
+										<option value='Please select...'><?php print _('Please select...') ?></option>
 										<?php
 										try {
 											$dataSelect=array(); 
@@ -571,7 +552,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Triggers</b><br/>
+										<b><?php print _('Triggers') ?></b><br/>
 									</td>
 									<td class="right">
 										<input name="triggers" id="triggers" maxlength=255 value="<?php print htmlPrep($rowCond["triggers"]) ?>" type="text" style="width: 300px">
@@ -579,7 +560,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Reaction</b><br/>
+										<b><?php print _('Reaction') ?></b><br/>
 									</td>
 									<td class="right">
 										<input name="reaction" id="reaction" maxlength=255 value="<?php print htmlPrep($rowCond["reaction"]) ?>" type="text" style="width: 300px">
@@ -587,7 +568,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Response</b><br/>
+										<b><?php print _('Response') ?></b><br/>
 									</td>
 									<td class="right">
 										<input name="response" id="response" maxlength=255 value="<?php print htmlPrep($rowCond["response"]) ?>" type="text" style="width: 300px">
@@ -595,7 +576,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Medication</b><br/>
+										<b><?php print _('Medication') ?></b><br/>
 									</td>
 									<td class="right">
 										<input name="medication" id="medication" maxlength=255 value="<?php print htmlPrep($rowCond["medication"]) ?>" type="text" style="width: 300px">
@@ -603,8 +584,8 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Last Episode Date</b><br/>
-										<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+										<b><?php print _('Last Episode Date') ?></b><br/>
+										<span style="font-size: 90%"><i><?php print _('Format:') . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 									</td>
 									<td class="right">
 										<input name="lastEpisode" id="lastEpisode" maxlength=10 value="<?php print dateConvertBack($guid, $rowCond["lastEpisode"]) ?>" type="text" style="width: 300px">
@@ -621,7 +602,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Last Episode Treatment</b><br/>
+										<b><?php print _('Last Episode Treatment') ?></b><br/>
 									</td>
 									<td class="right">
 										<input name="lastEpisodeTreatment" id="lastEpisodeTreatment" maxlength=255 value="<?php print htmlPrep($rowCond["lastEpisodeTreatment"]) ?>" type="text" style="width: 300px">
@@ -629,15 +610,10 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>Comment</b><br/>
-										<span style="font-size: 90%"><i>1000 character limit</i></span>
+										<b><?php print _('Comment') ?></b><br/>
 									</td>
 									<td class="right">
 										<textarea name="comment" id="comment" rows=8 style="width: 300px"><?php print $rowCond["comment"] ?></textarea>
-										<script type="text/javascript">
-											var commentNew=new LiveValidation('commentNew');
-											commentNew.add( Validate.Length, { maximum: 1000 } );
-										 </script>
 									</td>
 								</tr>
 								<tr>

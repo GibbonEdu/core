@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/report_transport_
 else {
 	//Proceed!
 	print "<h1>" ;
-	print "Student Transport" ;
+	print _("Student Transport") ;
 	print "</h1>" ;
 	
 	try {
@@ -56,19 +56,16 @@ else {
 	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th>" ;
-				print "Transport" ;
+				print _("Transport") ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Student Surname" ;
+				print _("Student") ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Student PreferredName" ;
+				print _("Address") ;
 			print "</th>" ;
 			print "<th>" ;
-				print "Address" ;
-			print "</th>" ;
-			print "<th>" ;
-				print "Parents" ;
+				print _("Parents") ;
 			print "</th>" ;
 			print "<th>" ;
 				print _("Roll Group") ;
@@ -92,10 +89,7 @@ else {
 					print $row["transport"] ;
 				print "</td>" ;
 				print "<td>" ;
-					print $row["surname"] ;
-				print "</td>" ;
-				print "<td>" ;
-					print $row["preferredName"] ;
+					print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
 				print "</td>" ;
 				print "<td>" ;
 					try {

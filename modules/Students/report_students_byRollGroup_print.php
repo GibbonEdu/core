@@ -33,7 +33,7 @@ else {
 	
 	//Proceed!
 	print "<h2>" ;
-	print "Students by Roll Group" ;
+	print _("Students by Roll Group") ;
 	print "</h2>" ;
 	
 	if ($gibbonRollGroupID!="") {
@@ -50,7 +50,7 @@ else {
 			
 			if ($result->rowCount()==1) {
 				$row=$result->fetch() ;
-				print "<p style='margin-bottom: 0px'><b>Roll Group</b>: " . $row["name"] . "</p>" ;
+				print "<p style='margin-bottom: 0px'><b>" . _('Roll Group') . "</b>: " . $row["name"] . "</p>" ;
 				
 				//Show Tutors
 				try {
@@ -64,7 +64,7 @@ else {
 				}
 				if ($resultDetail->rowCount()>0) {
 					$tutorCount=0 ;
-					print "<p style=''><b>Tutors</b>: " ;
+					print "<p style=''><b>" . _('Tutors') . "</b>: " ;
 					while ($rowDetail=$resultDetail->fetch()) {
 						print formatName($rowDetail["title"], $rowDetail["preferredName"], $rowDetail["surname"], "Staff") ;
 						$tutorCount++ ;
@@ -104,29 +104,29 @@ else {
 					print _("Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Student" ;
+					print _("Student") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Gender" ;
+					print _("Gender") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Age<br/>" ;
-					print "<span style='font-style: italic; font-size: 85%'>DOB</span>" ;
+					print _("Age") . "<br/>" ;
+					print "<span style='font-style: italic; font-size: 85%'>" . _('DOB') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Nationality<br/>" ;
+					print _("Nationality") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Transport<br/>" ;
+					print _("Transport") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "House<br/>" ;
+					print _("House") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Locker<br/>" ;
+					print _("Locker") ;
 				print "</th>" ;
 				print "<th>" ;
-					print "Medical<br/>" ;
+					print _("Medical") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -203,7 +203,7 @@ else {
 						if ($resultForm->rowCount()==1) {
 							$rowForm=$resultForm->fetch() ;
 							if ($rowForm["longTermMedication"]=='Y') {
-								print "<b><i>Long Term Medication</i></b>: " . $rowForm["longTermMedicationDetails"] . "<br/>" ;
+								print "<b><i>" . _('Long Term Medication') . "</i></b>: " . $rowForm["longTermMedicationDetails"] . "<br/>" ;
 							}
 							$condCount=1 ;
 							try {
@@ -217,12 +217,12 @@ else {
 							}
 	
 							while ($rowConditions=$resultConditions->fetch()) {
-								print "<b><i>Condition $condCount</i></b> " ;
+								print "<b><i>" . _('Condition') . " $condCount</i></b> " ;
 								print ": " . $rowConditions["name"] ;
 								
 								$alert=getAlert($connection2, $rowConditions["gibbonAlertLevelID"]) ;
 								if ($alert!=FALSE) {
-									print " <span style='color: #" . $alert["color"] . "; font-weight: bold'>(" . $alert["name"] . " Risk)</span>" ;
+									print " <span style='color: #" . $alert["color"] . "; font-weight: bold'>(" . $alert["name"] . " " . _('Risk') . ")</span>" ;
 									print "<br/>" ;									
 									$condCount++ ;
 								}
