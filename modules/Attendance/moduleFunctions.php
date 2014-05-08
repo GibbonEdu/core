@@ -191,39 +191,39 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 				for ($w=0; $w<$weeks; $w++) {
 					if ($days["Mon"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.=_("Mo") ;
+							$output.=_("Mon") ;
 						$output.="</th>" ;
 					}
 					if ($days["Tue"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.=_("Tu") ;
+							$output.=_("Tue") ;
 						$output.="</th>" ;
 				
 					}
 					if ($days["Wed"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.=_("We") ;
+							$output.=_("Wed") ;
 						$output.="</th>" ;
 				
 					}
 					if ($days["Thu"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.=_("Th") ;
+							$output.=_("Thu") ;
 						$output.="</th>" ;
 					}
 					if ($days["Fri"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.=_("Fr") ;
+							$output.=_("Fri") ;
 						$output.="</th>" ;
 					}
 					if ($days["Sat"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.=_("Sa") ;
+							$output.=_("Sat") ;
 						$output.="</th>" ;
 					}
 					if ($days["Sun"]=="Y") {
 						$output.="<th style='width: 15px'>" ;
-							$output.=_("Su") ;
+							$output.=_("Sun") ;
 						$output.="</th>" ;
 					}
 				}

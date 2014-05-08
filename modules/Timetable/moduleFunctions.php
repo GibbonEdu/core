@@ -513,7 +513,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				$output.="</th>" ;
 				if ($days["Mon"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.=_("Mo") . "<br/>" ;
+						$output.=_("Mon") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*0))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*0)))); 
@@ -532,7 +532,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				}
 				if ($days["Tue"]=="Y") {	
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.=_("Tu") . "<br/>" ;
+						$output.=_("Tue") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*1))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*1)))); 
@@ -551,7 +551,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				}
 				if ($days["Wed"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.=_("We") . "<br/>" ;
+						$output.=_("Wed") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*2))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*2)))); 
@@ -570,7 +570,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				}
 				if ($days["Thu"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.=_("Th") . "<br/>" ;
+						$output.=_("Thu") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*3))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*3)))); 
@@ -589,7 +589,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				}
 				if ($days["Fri"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.=_("Fr") . "<br/>" ;
+						$output.=_("Fri") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*4))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*4)))); 
@@ -608,7 +608,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				}
 				if ($days["Sat"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.=_("Sa") . "<br/>" ;
+						$output.=_("Sat") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*5))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*5)))); 
@@ -627,7 +627,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				}
 				if ($days["Sun"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.=_("Su") . "<br/>" ;
+						$output.=_("Sun") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*6))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*6)))); 
@@ -1433,7 +1433,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				$output.="</th>" ;
 				if ($days["Mon"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.=_("Mo") . "<br/>" ;
+						$output.=_("Mon") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*0))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*0)))); 
@@ -1452,7 +1452,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				}
 				if ($days["Tue"]=="Y") {	
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.=_("Tu") . "<br/>" ;
+						$output.=_("Tue") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*1))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*1)))); 
@@ -1471,7 +1471,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				}
 				if ($days["Wed"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.=_("We") . "<br/>" ;
+						$output.=_("Wed") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*2))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*2)))); 
@@ -1490,7 +1490,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				}
 				if ($days["Thu"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.=_("Th") . "<br/>" ;
+						$output.=_("Thu") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*3))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*3)))); 
@@ -1509,7 +1509,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				}
 				if ($days["Fri"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.=_("Fr") . "<br/>" ;
+						$output.=_("Fri") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*4))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*4)))); 
@@ -1528,7 +1528,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				}
 				if ($days["Sat"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.=_("Sa") . "<br/>" ;
+						$output.=_("Sat") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*5))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*5)))); 
@@ -1547,7 +1547,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				}
 				if ($days["Sun"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-						$output.=_("Su") . "<br/>" ;
+						$output.=_("Sun") . "<br/>" ;
 						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*6))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*6)))); 

@@ -290,43 +290,43 @@ else {
 					print "</th>" ;
 					if ($days["Mon"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print _("Mo") . "<br/>" ;
+							print _("Mon") . "<br/>" ;
 							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*0))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Tue"]=="Y") {	
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print _("Tu") . "<br/>" ;
+							print _("Tue") . "<br/>" ;
 							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*1))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Wed"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print _("We") . "<br/>" ;
+							print _("Wed") . "<br/>" ;
 							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*2))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Thu"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print _("Th") . "<br/>" ;
+							print _("Thu") . "<br/>" ;
 							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*3))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Fri"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print _("Fr") . "<br/>" ;
+							print _("Fri") . "<br/>" ;
 							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*4))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Sat"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print _("Sa") . "<br/>" ;
+							print _("Sat") . "<br/>" ;
 							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*5))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Sun"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print _("Su") . "<br/>" ;
+							print _("Sun") . "<br/>" ;
 							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*6))) . "</span><br/>" ;
 						print "</th>" ;
 					}

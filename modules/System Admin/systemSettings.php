@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/systemSetting
 	print "</div>" ;
 }
 else {
-	//Submit stats if that is what the system calls for
+	//Prepare and submit stats if that is what the system calls for
 	if ($_SESSION[$guid]["statsCollection"]=="Y") {
 		$absolutePathProtocol="" ;
 		$absolutePath="" ;
@@ -38,7 +38,23 @@ else {
 			$absolutePathProtocol="https" ;
 			$absolutePath=substr($_SESSION[$guid]["absoluteURL"],8) ;
 		}
-		print "<iframe style='display: none; height: 10px; width: 10px' src='http://gibbonedu.org/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($_SESSION[$guid]['organisationName']) . "&type=" . urlencode($_SESSION[$guid]['installType']) . "&version=" . urlencode($version) . "'></iframe>" ;
+		try {
+			$data=array(); 
+			$sql="SELECT * FROM gibbonPerson" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { }
+		$usersTotal=$result->rowCount() ;
+		try {
+			$data=array(); 
+			$sql="SELECT * FROM gibbonPerson WHERE status='Full'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { }
+		$usersFull=$result->rowCount() ;
+		print "<iframe style='display: none; height: 10px; width: 10px' src='http://gibbonedu.org/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($_SESSION[$guid]['organisationName']) . "&type=" . urlencode($_SESSION[$guid]['installType']) . "&version=" . urlencode($version) . "&usersTotal=$usersTotal&usersFull=$usersFull'></iframe>" ;
 	}
 
 	//Proceed!

@@ -232,7 +232,6 @@ i18n: added file for storing database strings for translation and tested it with
 General: added .htaccess to hide certain file types, including .sql files 
 	New file /.htaccess
 
-
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)
