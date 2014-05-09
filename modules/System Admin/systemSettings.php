@@ -54,7 +54,7 @@ else {
 		}
 		catch(PDOException $e) { }
 		$usersFull=$result->rowCount() ;
-		print "<iframe style='display: none; height: 10px; width: 10px' src='http://gibbonedu.org/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($_SESSION[$guid]['organisationName']) . "&type=" . urlencode($_SESSION[$guid]['installType']) . "&version=" . urlencode($version) . "&usersTotal=$usersTotal&usersFull=$usersFull'></iframe>" ;
+		print "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($_SESSION[$guid]['organisationName']) . "&type=" . urlencode($_SESSION[$guid]['installType']) . "&version=" . urlencode($version) . "&usersTotal=$usersTotal&usersFull=$usersFull'></iframe>" ;
 	}
 
 	//Proceed!
