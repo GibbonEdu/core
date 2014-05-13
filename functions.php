@@ -325,11 +325,11 @@ function getAlert($connection2, $gibbonAlertLevelID) {
 	if ($resultAlert->rowCount()==1) {
 		$rowAlert=$resultAlert->fetch() ;
 		$output=array() ;
-		$output["name"]=$rowAlert["name"] ;
+		$output["name"]=_($rowAlert["name"]) ;
 		$output["nameShort"]=$rowAlert["nameShort"] ;
 		$output["color"]=$rowAlert["color"] ;
 		$output["colorBG"]=$rowAlert["colorBG"] ;
-		$output["description"]=$rowAlert["description"] ;
+		$output["description"]=_($rowAlert["description"]) ;
 		$output["sequenceNumber"]=$rowAlert["sequenceNumber"] ;
 	}
 	
@@ -1022,12 +1022,12 @@ function sidebar($connection2, $guid) {
 							if ($count>0) {
 								$output.="</ul></li>";
 							}
-							$output.="<li><b>$currentCategory</b>" ;
+							$output.="<li><b>" . _($currentCategory) . "</b>" ;
 							$output.="<ul>" ;
-							$output.="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>$currentName</a></li>" ;
+							$output.="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . _($currentName) . "</a></li>" ;
 						}
 						else {
-							$output.="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>$currentName</a></li>" ;
+							$output.="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . _($currentName) . "</a></li>" ;
 						}
 						$links++ ;
 					}
@@ -1641,7 +1641,7 @@ function getHighestMedicalRisk( $gibbonPersonID, $connection2 ) {
 		$rowAlert=$resultAlert->fetch() ;
 		$output=array() ;
 		$output[0]=$rowAlert["gibbonAlertLevelID"] ;
-		$output[1]=$rowAlert["name"] ;
+		$output[1]=_($rowAlert["name"]) ;
 		$output[2]=$rowAlert["nameShort"] ;
 		$output[3]=$rowAlert["color"] ;
 		$output[4]=$rowAlert["colorBG"] ;
@@ -1991,7 +1991,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy="", $divExtr
 		catch(PDOException $e) { }
 		if ($resultAlert->rowCount()>0) {
 			$rowAlert=$resultAlert->fetch() ;
-			$highestLevel=$rowAlert["name"] ;
+			$highestLevel=_($rowAlert["name"]) ;
 			$highestColour=$rowAlert["color"] ;
 			$highestColourBG=$rowAlert["colorBG"] ;
 			if ($resultAlert->rowCount()==1) {
@@ -2026,7 +2026,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy="", $divExtr
 		if ($gibbonAlertLevelID!="") {
 			$alert=getAlert($connection2, $gibbonAlertLevelID) ;
 			if ($alert!=FALSE) {
-				$title=sprintf(_('Student has a %1$s alert for academic concern in the current academic year.'), $alert["name"]) ;
+				$title=sprintf(_('Student has a %1$s alert for academic concern in the current academic year.'), _($alert["name"])) ;
 				$output.="<a style='color: #" . $alert["color"] . "; text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $gibbonPersonID . "&subpage=Markbook&filter=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: 14px; height: 14px; width: 14px; border-top: 2px solid #" . $alert["color"] . "; margin-right: 2px; background-color: #" . $alert["colorBG"] . "'>" . _('A') . "</div></a>" ; 
 			}
 		}
@@ -2054,7 +2054,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy="", $divExtr
 		if ($gibbonAlertLevelID!="") {
 			$alert=getAlert($connection2, $gibbonAlertLevelID) ;
 			if ($alert!=FALSE) {
-				$title=sprintf(_('Student has a %1$s alert for behaviour over the past 60 days.'), $alert["name"]) ;
+				$title=sprintf(_('Student has a %1$s alert for behaviour over the past 60 days.'), _($alert["name"])) ;
 				$output.="<a style='color: #" . $alert["color"] . "; text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $gibbonPersonID . "&subpage=Behaviour Record'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: 14px; height: 14px; width: 14px; border-top: 2px solid #" . $alert["color"] . "; margin-right: 2px; background-color: #" . $alert["colorBG"] . "'>" . _('B') . "</div></a>" ; 
 			}
 		}

@@ -453,7 +453,7 @@ else {
 										if ($count2>0) {
 											print ", " ;
 										}
-										print $rowSlots["nameShort"] ;
+										print _($rowSlots["nameShort"]) ;
 										$count2++ ;
 									}
 									if ($count2==0) {

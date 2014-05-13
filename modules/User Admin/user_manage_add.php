@@ -469,7 +469,7 @@ else {
 						}
 						catch(PDOException $e) { }
 						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 						}
 						?>				
 					</select>
@@ -528,7 +528,7 @@ else {
 						}
 						catch(PDOException $e) { }
 						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 						}
 						?>				
 					</select>
@@ -555,7 +555,7 @@ else {
 							}
 							catch(PDOException $e) { }
 							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+								print "<option value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 							}
 							?>				
 						</select>
@@ -791,7 +791,7 @@ else {
 						}
 						catch(PDOException $e) { }
 						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 						}
 						?>				
 					</select>
@@ -848,7 +848,7 @@ else {
 							}
 							catch(PDOException $e) { }
 							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 							}
 						}
 						else {
@@ -887,7 +887,7 @@ else {
 							}
 							catch(PDOException $e) { }
 							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 							}
 						}
 						else {

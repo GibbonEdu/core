@@ -222,7 +222,7 @@ else {
 								
 								$alert=getAlert($connection2, $rowConditions["gibbonAlertLevelID"]) ;
 								if ($alert!=FALSE) {
-									print " <span style='color: #" . $alert["color"] . "; font-weight: bold'>(" . $alert["name"] . " " . _('Risk') . ")</span>" ;
+									print " <span style='color: #" . $alert["color"] . "; font-weight: bold'>(" . _($alert["name"]) . " " . _('Risk') . ")</span>" ;
 									print "<br/>" ;									
 									$condCount++ ;
 								}

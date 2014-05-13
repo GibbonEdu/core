@@ -332,7 +332,7 @@ else {
 							$highestColour=$alert[3] ;
 							$highestColourBG=$alert[4] ;
 							print "<div class='error' style='background-color: #" . $highestColourBG . "; border: 1px solid #" . $highestColour . "; color: #" . $highestColour . "'>" ;
-							print "<b>" . sprintf(_('This student has one or more %1$s risk medical conditions.'), strToLower($highestLevel)) . "</b>." ;
+							print "<b>" . sprintf(_('This student has one or more %1$s risk medical conditions.'), strToLower(_($highestLevel))) . "</b>." ;
 							print "</div>" ;
 						}
 						
@@ -1414,7 +1414,7 @@ else {
 								print "<h4>" ;
 								$alert=getAlert($connection2, $rowCondition["gibbonAlertLevelID"]) ;
 								if ($alert!=FALSE) {
-									print $rowCondition["name"] . " <span style='color: #" . $alert["color"] . "'>(" . $alert["name"] . " " . _('Risk') . ")</span>" ;
+									print $rowCondition["name"] . " <span style='color: #" . $alert["color"] . "'>(" . _($alert["name"]) . " " . _('Risk') . ")</span>" ;
 								}
 								print "</h4>" ;
 								

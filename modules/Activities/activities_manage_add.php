@@ -448,7 +448,7 @@ else {
 							catch(PDOException $e) { }
 							
 							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["gibbonDaysOfWeekID"] . "'>" . $rowSelect["name"] . "</option>" ; 
+								print "<option value='" . $rowSelect["gibbonDaysOfWeekID"] . "'>" . _($rowSelect["name"]) . "</option>" ; 
 							}
 							?>
 						</select>

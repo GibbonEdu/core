@@ -231,7 +231,7 @@ else {
 									if ($rowSelect["printable_name"]==$row["countryOfOrigin"]) {
 										$selected="selected" ;
 									}
-									print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+									print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 								}
 								?>				
 							</select>

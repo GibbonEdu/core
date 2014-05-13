@@ -61,9 +61,9 @@ function printINStatusTable($connection2, $gibbonPersonID, $mode="") {
 		$count=0 ;
 		while ($rowSeverity=$resultSeverity->fetch()) {
 			$severity[$count][0]=$rowSeverity["gibbonAlertLevelID"] ;
-			$severity[$count][1]=$rowSeverity["name"] ;
+			$severity[$count][1]=_($rowSeverity["name"]) ;
 			$severity[$count][2]=$rowSeverity["nameShort"] ;
-			$severity[$count][3]=$rowSeverity["description"] ;
+			$severity[$count][3]=_($rowSeverity["description"]) ;
 			$severity[$count][4]=$rowSeverity["color"] ;
 			$count++ ;
 		}

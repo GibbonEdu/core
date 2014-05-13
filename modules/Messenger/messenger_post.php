@@ -252,9 +252,12 @@ else {
 									<?php
 									if ($smsURLCredit!="") {
 										$query="?apiusername=" . $smsUsername . "&apipassword=" . $smsPassword ;        
-										$result=@implode('', file($smsURLCredit . $query)) ;    
+										$result=@implode('', file($smsURLCredit . $query)) ;   
+										if (is_numeric($result)==FALSE) {
+											$result=0 ;
+										} 
 										if ($result>=0) {
-											print "<b>" . sprintf(_('Current balance: %1$s credits.'), $result) . "</u></b>" ;
+											print "<b>" . sprintf(_('Current balance: %1$s credit(s).'), $result) . "</u></b>" ;
 										} 
 									}
 									?>

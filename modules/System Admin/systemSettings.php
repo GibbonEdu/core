@@ -54,7 +54,7 @@ else {
 		}
 		catch(PDOException $e) { }
 		$usersFull=$result->rowCount() ;
-		print "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($_SESSION[$guid]['organisationName']) . "&type=" . urlencode($_SESSION[$guid]['installType']) . "&version=" . urlencode($version) . "&usersTotal=$usersTotal&usersFull=$usersFull'></iframe>" ;
+		print "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($_SESSION[$guid]['organisationName']) . "&type=" . urlencode($_SESSION[$guid]['installType']) . "&version=" . urlencode($version) . "&country=" . $_SESSION[$guid]['country'] . "&usersTotal=$usersTotal&usersFull=$usersFull'></iframe>" ;
 	}
 
 	//Proceed!
@@ -1045,7 +1045,7 @@ else {
 							if ($row["value"]==$rowSelect["printable_name"]) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+							print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 						}
 						?>
 					</select>

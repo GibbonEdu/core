@@ -321,7 +321,7 @@ else {
 											$style="style='color: #ff0000'" ;
 										}
 										print "<span $style>" ;
-										print $alert["name"] ;
+										print _($alert["name"]) ;
 									}
 								print "</td>" ;
 								print "<td>" ;
@@ -538,7 +538,7 @@ else {
 											$style="style='color: #ff0000'" ;
 										}
 										print "<span $style>" ;
-										print $alert["name"] ;
+										print _($alert["name"]) ;
 									}
 								print "</td>" ;
 								print "<td>" ;

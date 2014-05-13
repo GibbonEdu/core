@@ -186,7 +186,7 @@ else {
 
 					$count=0 ;
 					while ($rowSlots=$resultSlots->fetch()) {
-						print "<h4>" . $rowSlots["name"] . "</h4>" ;
+						print "<h4>" . _($rowSlots["name"]) . "</h4>" ;
 						print "<p>" ;
 							print "<i>" . _('Time') . "</i>: " . substr($rowSlots["timeStart"], 0, 5) . " - " . substr($rowSlots["timeEnd"], 0, 5) . "<br/>" ;
 							if ($rowSlots["gibbonSpaceID"]!="") {

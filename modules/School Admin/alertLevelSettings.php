@@ -88,7 +88,7 @@ else {
 					</td>
 					<td class="right">
 						<input type='hidden' name="<?php print "gibbonAlertLevelID" .$count ?>" id="<?php print "gibbonAlertLevelID" .$count ?>" value="<?php print $row["gibbonAlertLevelID"] ?>">
-						<input type='text' name="<?php print "name" .$count ?>" id="<?php print "name" .$count ?>" maxlength=50 value="<?php print $row["name"] ?>" style="width: 300px">
+						<input type='text' name="<?php print "name" .$count ?>" id="<?php print "name" .$count ?>" maxlength=50 value="<?php print _($row["name"]) ?>" style="width: 300px">
 						<script type="text/javascript">
 							var <?php print "name" .$count ?>=new LiveValidation('<?php print "name" .$count ?>');
 							<?php print "name" .$count ?>.add(Validate.Presence);
@@ -145,7 +145,7 @@ else {
 				<tr>
 					<td colspan=2> 
 						<b>Description </b> 
-						<textarea name='<?php print "description" .$count ?>' id='<?php print "description" .$count ?>' rows=5 style='width: 300px'><?php print $row["description"] ?></textarea>
+						<textarea name='<?php print "description" .$count ?>' id='<?php print "description" .$count ?>' rows=5 style='width: 300px'><?php print _($row["description"]) ?></textarea>
 					</td>
 				</tr>
 				<?php

@@ -235,6 +235,16 @@ General: added .htaccess to hide certain file types, including .sql files
 General: changed links to http://gibbonedu.org/ to https://gibbonedu.org/ (secure)
 	Edited various files
 
+User Admin: changed user edit so that status changes no longer reset start and end dates, but instead just issue a reminder
+	Edited file /modules/User Admin/user_manage_edit.php
+
+Messenger: improved output when 0 sms credits remain:
+	Edited file /modules/Messenger/messenger_post.php
+	
+Activities: added action to copy all activities, slots and staff from the current school year to a specified school year.
+	New valies in tables gibbonAction, gibbonPermissions
+	New files /modules/Activities/activities_copy.php
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)

@@ -84,7 +84,7 @@ else {
 				?>
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><?php print $row["name"] . " (" . $row["nameShort"] . ")" ?></h3>
+						<h3><?php print _($row["name"]) . " (" . _($row["nameShort"]) . ")" ?></h3>
 					</td>
 				</tr>
 				<input name="<?php print $row["name"]?>sequenceNumber" id="<?php print $row["name"]?>sequenceNumber" maxlength=2 value="<?php print $row["sequenceNumber"] ?>" type="hidden" style="width: 300px">

@@ -166,7 +166,7 @@ else {
 					for ($i=0; $i<count($terms); $i=$i+2) {
 						for ($j=0; $j<count($days); $j=$j+2) {
 							print "<th>" ;
-								print $days[($j+1)] ;
+								print _($days[($j+1)]) ;
 								$columns[$columnCount][0]=$terms[$i] ;
 								$columns[$columnCount][1]=$days[$j] ;
 								$columnCount++ ;

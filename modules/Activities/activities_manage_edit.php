@@ -446,7 +446,7 @@ else {
 										//COLOR ROW BY STATUS!
 										print "<tr class=$rowNum>" ;
 											print "<td>" ;
-												print $row["name"] ;
+												print _($row["name"]) ;
 											print "</td>" ;
 											print "<td>" ;
 												print substr($row["timeStart"],0,5) . " - " . substr($row["timeEnd"],0,5) ;
@@ -569,7 +569,7 @@ else {
 									catch(PDOException $e) { }
 									
 									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option value='" . $rowSelect["gibbonDaysOfWeekID"] . "'>" . $rowSelect["name"] . "</option>" ; 
+										print "<option value='" . $rowSelect["gibbonDaysOfWeekID"] . "'>" . _($rowSelect["name"]) . "</option>" ; 
 									}
 									?>
 								</select>

@@ -119,7 +119,7 @@ else {
 							if ($rowPurpose["gibbonAlertLevelID"]==$gibbonAlertLevelID) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowPurpose["gibbonAlertLevelID"] . "'>" . $rowPurpose["name"] . "</option>" ;
+							print "<option $selected value='" . $rowPurpose["gibbonAlertLevelID"] . "'>" . _($rowPurpose["name"]) . "</option>" ;
 						}
 					print "</select>" ;
 					?>

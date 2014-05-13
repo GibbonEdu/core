@@ -116,7 +116,7 @@ else {
 			while ($rowModules=$resultModules->fetch()) {
 				print "<tr class='break'>" ;
 					print "<td colspan=" . ($resultRoles->rowCount()+1) . ">" ;
-						print "<h3>" . $rowModules["name"] . "</h3>";
+						print "<h3>" . _($rowModules["name"]) . "</h3>";
 					print "</td>" ;
 				print "</tr>" ;
 				
@@ -134,7 +134,7 @@ else {
 					print "<tr class='head'>" ;
 						print "<th class='width: 60px!important'>Action</td>";
 						for ($i=0;$i<count($roleArray);$i++) {
-								print "<th style='padding: 0!important'><span title='" . htmlPrep($roleArray[$i][3]) . "'>" . $roleArray[$i][1] . "</span></th>";
+							print "<th style='padding: 0!important'><span title='" . htmlPrep(_($roleArray[$i][3])) . "'>" . _($roleArray[$i][1]) . "</span></th>";
 						}
 					print "</tr>" ;
 					while ($rowActions=$resultActions->fetch()) {

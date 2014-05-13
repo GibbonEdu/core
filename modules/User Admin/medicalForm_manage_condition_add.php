@@ -151,7 +151,7 @@ else {
 								catch(PDOException $e) { }
 								
 								while ($rowSelect=$resultSelect->fetch()) {
-									print "<option value='" . $rowSelect["gibbonAlertLevelID"] . "'>" . $rowSelect["name"] . "</option>" ; 
+									print "<option value='" . $rowSelect["gibbonAlertLevelID"] . "'>" . _($rowSelect["name"]) . "</option>" ; 
 								}
 								?>
 							</select>

@@ -256,7 +256,7 @@ else {
 								print $row["name"] ;
 							print "</td>" ;
 							print "<td>" ;
-								print $row["risk"] ;
+								print _($row["risk"]) ;
 							print "</td>" ;
 							print "<td>" ;
 								if ($row["triggers"]!="") {

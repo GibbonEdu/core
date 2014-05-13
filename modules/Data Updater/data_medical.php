@@ -410,7 +410,7 @@ else {
 														if ($rowCond["gibbonAlertLevelID"]==$rowSelect["gibbonAlertLevelID"]) {
 															$selected="selected" ;
 														}	
-														print "<option $selected value='" . $rowSelect["gibbonAlertLevelID"] . "'>" . $rowSelect["name"] . "</option>" ; 
+														print "<option $selected value='" . $rowSelect["gibbonAlertLevelID"] . "'>" . _($rowSelect["name"]) . "</option>" ; 
 													}
 													?>
 												</select>
@@ -544,7 +544,7 @@ else {
 										catch(PDOException $e) { }
 										
 										while ($rowSelect=$resultSelect->fetch()) {
-											print "<option value='" . $rowSelect["gibbonAlertLevelID"] . "'>" . $rowSelect["name"] . "</option>" ; 
+											print "<option value='" . $rowSelect["gibbonAlertLevelID"] . "'>" . _($rowSelect["name"]) . "</option>" ; 
 										}
 										?>
 									</select>

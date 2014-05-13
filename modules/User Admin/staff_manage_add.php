@@ -220,7 +220,7 @@ else {
 						}
 						catch(PDOException $e) { }
 						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 						}
 						?>				
 					</select>

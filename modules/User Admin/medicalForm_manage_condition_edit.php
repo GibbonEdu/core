@@ -167,7 +167,7 @@ else {
 									if ($row["gibbonAlertLevelID"]==$rowSelect["gibbonAlertLevelID"]) {
 										$selected="selected" ;
 									}	
-									print "<option $selected value='" . $rowSelect["gibbonAlertLevelID"] . "'>" . $rowSelect["name"] . "</option>" ; 
+									print "<option $selected value='" . $rowSelect["gibbonAlertLevelID"] . "'>" . _($rowSelect["name"]) . "</option>" ; 
 								}
 								?>
 							</select>

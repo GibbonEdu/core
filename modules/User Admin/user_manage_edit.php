@@ -346,22 +346,13 @@ else {
 						$(document).ready(function(){
 							$("#status").change(function(){
 								if ($('#status option:selected').val()=="Left" ) {
-									if ($('#dateEnd').val()=="") {
-										alert("<?php print _('The End Date field has been automatically set to today\'s date. Please change it if necessary.') ?>") ;									
-										$('#dateEnd').val('<?php print date("d/m/Y") ?>') ;
-									}
+									alert("As you have marked this person as left, please consider setting the End Date field.") ;									
 								}
 								else if ($('#status option:selected').val()=="Full" ) {
-									alert("<?php print _('The Start and End Date fields have been automatically updated. Please change them if necessary.') ?>") ;
-									if ($('#dateStart').val()=="") {
-										$('#dateStart').val('<?php print date("d/m/Y") ?>') ;
-									}
-									$('#dateEnd').val('') ;
+									alert("As you have marked this person as full, please consider setting the Start Date field.") ;									
 								}
 								else if ($('#status option:selected').val()=="Expected" ) {
-									alert("<?php print _('The Start and End Date fields have been automatically emptied. Please change them if necessary.') ?>") ;
-									$('#dateStart').val('') ;
-									$('#dateEnd').val('') ;
+									alert("As you have marked this person as expected, please consider setting the Start Date field.") ;									
 								}
 							 });
 						});
@@ -545,7 +536,7 @@ else {
 									if ($rowSelect["printable_name"]==$row["address1Country"]) {
 										$selected=" selected" ;
 									}
-									print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+									print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 								}
 								?>				
 							</select>
@@ -651,7 +642,7 @@ else {
 									if ($rowSelect["printable_name"]==$row["address2Country"]) {
 										$selected=" selected" ;
 									}
-									print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+									print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 								}
 								?>						
 							</select>
@@ -682,7 +673,7 @@ else {
 										if ($row["phone" . $i . "CountryCode"]!="" AND $row["phone" . $i . "CountryCode"]==$rowSelect["iddCountryCode"]) {
 											$selected="selected" ;
 										}
-										print "<option $selected value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+										print "<option $selected value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 									}
 									?>				
 								</select>
@@ -1043,7 +1034,7 @@ else {
 									if ($rowSelect["printable_name"]==$row["countryOfBirth"]) {
 										$selected=" selected" ;
 									}
-									print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+									print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 								}
 								?>				
 							</select>
@@ -1104,7 +1095,7 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+										print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 									}
 								}
 								else {
@@ -1147,7 +1138,7 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep($rowSelect["printable_name"]) . "</option>" ;
+										print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 									}
 								}
 								else {
