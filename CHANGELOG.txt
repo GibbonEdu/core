@@ -249,6 +249,10 @@ Markbook: removed full screen view for teachers, and added older/newer links to 
 	Edited file /modules/Markbook/markbook_view.php
 	Removed file /modules/Markbook/markbook_view_full.php
 
+General: adjusted main menu style
+	Edited file /index.php
+	Edited file /themes/Default/css/main.css
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)

@@ -218,7 +218,7 @@ else {
 	
 							while ($rowConditions=$resultConditions->fetch()) {
 								print "<b><i>" . _('Condition') . " $condCount</i></b> " ;
-								print ": " . $rowConditions["name"] ;
+								print ": " . _($rowConditions["name"]) ;
 								
 								$alert=getAlert($connection2, $rowConditions["gibbonAlertLevelID"]) ;
 								if ($alert!=FALSE) {

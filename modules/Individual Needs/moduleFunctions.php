@@ -107,7 +107,7 @@ function printINStatusTable($connection2, $gibbonPersonID, $mode="") {
 			
 				$output.="<tr class=$rowNum>" ;
 					$output.="<td>" ;
-						$output.="<span title='" . $descriptors[$n][3] . "'>" . $descriptors[$n][1] . "</span>" ;
+						$output.="<span title='" . _($descriptors[$n][3]) . "'>" . _($descriptors[$n][1]) . "</span>" ;
 					$output.="<td>" ;
 					for ($i=0 ; $i<count($severity); $i++) {
 						$output.="<td>" ;

@@ -171,7 +171,7 @@ else {
 							print "<tr class=$rowNum>" ;
 								print "<td></td>" ;
 								print "<td colspan=4 $conditionStyle>" ;
-									print "<b><i>" . _('Condition') . " $condCount</i></b>: " . $rowConditions["name"] . "<br/>" ;
+									print "<b><i>" . _('Condition') . " $condCount</i></b>: " . _($rowConditions["name"]) . "<br/>" ;
 									print "<u><i>" . _('Risk') . "</i></u>: <span style='color: #" . $alert["color"] . "; font-weight: bold'>" . _($alert["name"]) . "</span><br/>" ;
 									if ($rowConditions["triggers"]!="") {
 										print "<u><i>" . _('Triggers') . "</i></u>: " . $rowConditions["triggers"] . "<br/>" ;

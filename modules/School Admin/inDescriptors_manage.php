@@ -95,14 +95,14 @@ else {
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
-						print $row["sequenceNumber"] . "<br/>" ;
+						print _($row["sequenceNumber"]) . "<br/>" ;
 					print "</td>" ;
 					print "<td>" ;
 						print $row["name"] . "<br/>" ;
-						print "<span style='font-size: 85%; font-style: italic'>" . $row["nameShort"] . "</span>" ;
+						print "<span style='font-size: 85%; font-style: italic'>" . _($row["nameShort"]) . "</span>" ;
 					print "</td>" ;
 					print "<td>" ;
-						print $row["description"] . "<br/>" ;
+						print _($row["description"]) . "<br/>" ;
 					print "</td>" ;
 					print "<td>" ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/inDescriptors_manage_edit.php&gibbonINDescriptorID=" . $row["gibbonINDescriptorID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;

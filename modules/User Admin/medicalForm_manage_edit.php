@@ -253,7 +253,7 @@ else {
 						//COLOR ROW BY STATUS!
 						print "<tr class=$rowNum>" ;
 							print "<td>" ;
-								print $row["name"] ;
+								print _($row["name"]) ;
 							print "</td>" ;
 							print "<td>" ;
 								print _($row["risk"]) ;

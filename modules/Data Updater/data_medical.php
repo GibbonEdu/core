@@ -375,10 +375,10 @@ else {
 													print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 													while ($rowSelect=$resultSelect->fetch()) {
 														 if ($rowCond["name"]==$rowSelect["name"]) {
-															print "<option selected value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+															print "<option selected value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 														}
 														 else {
-															print "<option value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+															print "<option value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 														}
 													}
 													?>				
@@ -517,10 +517,10 @@ else {
 											print "<option value=''>Please select...</option>" ;
 											while ($rowSelect=$resultSelect->fetch()) {
 												 if ($rowCond["name"]==$rowSelect["name"]) {
-													print "<option selected value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+													print "<option selected value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 												}
 												 else {
-													print "<option value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+													print "<option value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 												}
 											}
 											?>				

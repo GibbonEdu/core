@@ -107,7 +107,7 @@ else {
 							<span style="font-size: 90%"><i><?php print _('Must be unique.') ; ?></i></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=50 value="<?php print _($row["name"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -120,7 +120,7 @@ else {
 							<span style="font-size: 90%"><i><?php print _('Must be unique.') ; ?></i></span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=5 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=5 value="<?php print _($row["nameShort"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -145,7 +145,7 @@ else {
 							<b><?php print _('Description') ?></b><br/>
 						</td>
 						<td class="right">
-							<textarea name="description" id="description" rows=8 style="width: 300px"><?php print $row["description"] ?></textarea>
+							<textarea name="description" id="description" rows=8 style="width: 300px"><?php print _($row["description"]) ?></textarea>
 						</td>
 					</tr>
 					<tr>

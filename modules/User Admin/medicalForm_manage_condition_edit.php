@@ -132,10 +132,10 @@ else {
 								catch(PDOException $e) { }
 								while ($rowSelect=$resultSelect->fetch()) {
 									 if ($row["name"]==$rowSelect["name"]) {
-										print "<option selected value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+										print "<option selected value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 									}
 									 else {
-										print "<option value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+										print "<option value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 									}
 								}
 								?>				

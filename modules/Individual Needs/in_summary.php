@@ -91,7 +91,7 @@ else {
 							if ($rowPurpose["gibbonINDescriptorID"]==$gibbonINDescriptorID) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowPurpose["gibbonINDescriptorID"] . "'>" . $rowPurpose["name"] . "</option>" ;
+							print "<option $selected value='" . $rowPurpose["gibbonINDescriptorID"] . "'>" . _($rowPurpose["name"]) . "</option>" ;
 						}
 					print "</select>" ;
 					?>

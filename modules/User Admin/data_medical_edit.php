@@ -295,7 +295,7 @@ else {
 									print _("Name") ;
 								print "</td>" ;
 								print "<td>" ;
-									print $rowCond2["name"] ;
+									print _($rowCond2["name"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									$style="" ;
@@ -303,7 +303,7 @@ else {
 										$style="style='color: #ff0000'" ;
 									}
 									print "<span $style>" ;
-									print $rowCond["name"] ;
+									print _($rowCond["name"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									if ($rowCond2["name"]!=$rowCond["name"]) { print "<input checked type='checkbox' name='nameOn$count'><input name='name$count' type='hidden' value='" . htmlprep($rowCond["name"]) . "'>" ; }
@@ -509,7 +509,7 @@ else {
 									print _("Name") ;
 								print "</td>" ;
 								print "<td>" ;
-									print $rowCond2["name"] ;
+									print _($rowCond2["name"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									$style="" ;
@@ -517,7 +517,7 @@ else {
 										$style="style='color: #ff0000'" ;
 									}
 									print "<span $style>" ;
-									print $rowCond["name"] ;
+									print _($rowCond["name"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									if ($rowCond2["name"]!=$rowCond["name"]) { print "<input checked type='checkbox' name='nameOn" . ($count+$count2) . "'><input name='name" . ($count+$count2) . "' type='hidden' value='" . htmlprep($rowCond["name"]) . "'>" ; }

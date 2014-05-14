@@ -188,10 +188,18 @@ div.minorLinks {
 	text-align: right; 
 	padding-right: 20px; 
 	padding-top: 0px;
-	margin-top: -5px; 
+	margin-top: 25px; 
 	color: #000; 
-	font-size: 75%; 
-	font-weight: normal
+	font-size: 70%; 
+	font-weight: normal; 
+	color: #777;
+}
+
+div.minorLinks a {
+	color: #777;
+}
+div.minorLinks a:hover {
+	color: #c00;
 }
 	
 /* NAV */
@@ -204,7 +212,7 @@ div.minorLinks {
 	font-weight:bold;
 	height:40px;
 	font: bold 110% arial;
-	margin: 40px 15px 0 20px;
+	margin: -5px 15px 0 20px;
 	text-shadow: 2px 2px 2px rgba(50,50,50,0.2);
 	float: right;
 }

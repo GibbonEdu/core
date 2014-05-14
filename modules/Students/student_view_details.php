@@ -1414,7 +1414,7 @@ else {
 								print "<h4>" ;
 								$alert=getAlert($connection2, $rowCondition["gibbonAlertLevelID"]) ;
 								if ($alert!=FALSE) {
-									print $rowCondition["name"] . " <span style='color: #" . $alert["color"] . "'>(" . _($alert["name"]) . " " . _('Risk') . ")</span>" ;
+									print _($rowCondition["name"]) . " <span style='color: #" . $alert["color"] . "'>(" . _($alert["name"]) . " " . _('Risk') . ")</span>" ;
 								}
 								print "</h4>" ;
 								
