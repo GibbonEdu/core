@@ -143,7 +143,7 @@ else {
 									catch(PDOException $e) { }
 									print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option id='gibbonExternalAssessmentID' value='" . $rowSelect["gibbonExternalAssessmentID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+										print "<option id='gibbonExternalAssessmentID' value='" . $rowSelect["gibbonExternalAssessmentID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 									}
 									?>				
 								</select>
@@ -508,7 +508,7 @@ else {
 									if ($rowField["category"]!=$lastCategory) {
 										print "<tr class='break'>" ;
 											print "<td colspan=3> " ;
-												print "<h3>" . substr($rowField["category"], (strpos($rowField["category"], "_")+1)) . "</h3>" ;
+												print "<h3>" . _(substr($rowField["category"], (strpos($rowField["category"], "_")+1))) . "</h3>" ;
 											print "</td>" ;
 										print "</tr>" ;
 										print "<tr>" ;
@@ -526,7 +526,7 @@ else {
 									?>
 									<tr>
 										<td> 
-											<span style='font-weight: bold' title='<?php print $rowField["usage"] ?>'><?php print $rowField["name"] ?></span><br/>
+											<span style='font-weight: bold' title='<?php print $rowField["usage"] ?>'><?php print _($rowField["name"]) ?></span><br/>
 										</td>
 										<td class="right">
 											<input name="<?php print $count?>-gibbonExternalAssessmentFieldID" id="<?php print $count?>-gibbonExternalAssessmentFieldID" value="<?php print $rowField["gibbonExternalAssessmentFieldID"] ?>" type="hidden">

@@ -245,6 +245,10 @@ Activities: added action to copy all activities, slots and staff from the curren
 	New valies in tables gibbonAction, gibbonPermissions
 	New files /modules/Activities/activities_copy.php
 
+Markbook: removed full screen view for teachers, and added older/newer links to regular view
+	Edited file /modules/Markbook/markbook_view.php
+	Removed file /modules/Markbook/markbook_view_full.php
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)

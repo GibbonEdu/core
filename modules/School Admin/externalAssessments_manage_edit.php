@@ -110,7 +110,7 @@ else {
 						<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 					</td>
 					<td class="right">
-						<input name="name" id="name" maxlength=50 value="<?php if (isset($row["name"])) { print htmlPrep($row["name"]) ; } ?>" type="text" style="width: 300px">
+						<input name="name" id="name" maxlength=50 value="<?php if (isset($row["name"])) { print htmlPrep(_($row["name"])) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var name=new LiveValidation('name');
 							name.add(Validate.Presence);
@@ -123,7 +123,7 @@ else {
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
-						<input name="nameShort" id="nameShort" maxlength=10 value="<?php if (isset($row["nameShort"])) { print htmlPrep($row["nameShort"]) ; } ?>" type="text" style="width: 300px">
+						<input name="nameShort" id="nameShort" maxlength=10 value="<?php if (isset($row["nameShort"])) { print htmlPrep(_($row["nameShort"])) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var nameShort=new LiveValidation('nameShort');
 							nameShort.add(Validate.Presence);
@@ -136,7 +136,7 @@ else {
 						<span style="font-size: 90%"><i><?php print _('Brief description of how scale is used.') ?></i></span>
 					</td>
 					<td class="right">
-						<input name="description" id="description" maxlength=50 value="<?php if (isset($row["description"])) { print $row["description"] ; } ?>" type="text" style="width: 300px">
+						<input name="description" id="description" maxlength=50 value="<?php if (isset($row["description"])) { print _($row["description"]) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var description=new LiveValidation('description');
 							description.add(Validate.Presence);
@@ -221,7 +221,7 @@ else {
 						//COLOR ROW BY STATUS!
 						print "<tr class=$rowNum>" ;
 							print "<td>" ;
-								print $row["name"] ;
+								print _($row["name"]) ;
 							print "</td>" ;
 							print "<td>" ;
 								print $row["category"] ;

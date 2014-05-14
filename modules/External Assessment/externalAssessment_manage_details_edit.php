@@ -101,7 +101,7 @@ else {
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right" colspan=2>
-							<input readonly name="name" id="name" maxlength=20 value="<?php print $row["assessment"] ?>" type="text" style="width: 300px; text-align: right">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print _($row["assessment"]) ?>" type="text" style="width: 300px; text-align: right">
 						</td>
 					</tr>
 					<tr>
@@ -183,7 +183,7 @@ else {
 							if ($rowField["category"]!=$lastCategory) {
 								print "<tr class='break' >" ;
 									print "<td> " ;
-										print "<h3>" . substr($rowField["category"], (strpos($rowField["category"], "_")+1)) . "</h3>" ;
+										print "<h3>" . _(substr($rowField["category"], (strpos($rowField["category"], "_")+1))) . "</h3>" ;
 									print "</td>" ;
 									print "<td class='right'>" ;
 										print "<span style='font-weight: bold'>" . _('Grade') . "</span>" ;
@@ -196,7 +196,7 @@ else {
 							?>
 							<tr>
 								<td> 
-									<span style='font-weight: bold' title='<?php print $rowField["usage"] ?>'><?php print $rowField["name"] ?></span><br/>
+									<span style='font-weight: bold' title='<?php print $rowField["usage"] ?>'><?php print _($rowField["name"]) ?></span><br/>
 								</td>
 								<td class="right">
 									<input name="<?php print $count?>-gibbonExternalAssessmentStudentEntryID" id="<?php print $count?>-gibbonExternalAssessmentStudentEntryID" value="<?php print $rowField["gibbonExternalAssessmentStudentEntryID"] ?>" type="hidden">

@@ -126,10 +126,10 @@ else {
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
-						print "<b>" . $row["name"] . "</b><br/>" ;
+						print "<b>" . _($row["name"]) . "</b><br/>" ;
 					print "</td>" ;
 					print "<td>" ;
-						print $row["description"] ;
+						print _($row["description"]) ;
 					print "</td>" ;
 					print "<td>" ;
 						print $row["active"] ;

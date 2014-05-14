@@ -124,7 +124,7 @@ else {
 								if ($rowSelect["gibbonExternalAssessmentID"]==substr($primaryExternalAssessmentByYearGroup[$row["gibbonYearGroupID"]],0,strpos($primaryExternalAssessmentByYearGroup[$row["gibbonYearGroupID"]],"-"))) {
 									$selected="selected" ;
 								}
-								print "<option $selected value='" . $rowSelect["gibbonExternalAssessmentID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+								print "<option $selected value='" . $rowSelect["gibbonExternalAssessmentID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 							}			
 						print "</select>" ;
 					print "</td>" ;
@@ -143,7 +143,7 @@ else {
 								if ($rowSelect["gibbonExternalAssessmentID"]==substr($primaryExternalAssessmentByYearGroup[$row["gibbonYearGroupID"]],0,strpos($primaryExternalAssessmentByYearGroup[$row["gibbonYearGroupID"]],"-")) AND $rowSelect["category"]==substr($primaryExternalAssessmentByYearGroup[$row["gibbonYearGroupID"]],(strpos($primaryExternalAssessmentByYearGroup[$row["gibbonYearGroupID"]],"-")+1))) {
 									$selected="selected" ;
 								}
-								print "<option $selected class='" . $rowSelect["gibbonExternalAssessmentID"] . "' value='" . $rowSelect["category"] . "'>" . htmlPrep(substr($rowSelect["category"], (strpos($rowSelect["category"],"_")+1))) . "</option>" ;
+								print "<option $selected class='" . $rowSelect["gibbonExternalAssessmentID"] . "' value='" . $rowSelect["category"] . "'>" . htmlPrep(_(substr($rowSelect["category"], (strpos($rowSelect["category"],"_")+1)))) . "</option>" ;
 							}			
 						print "</select>" ;
 						?>

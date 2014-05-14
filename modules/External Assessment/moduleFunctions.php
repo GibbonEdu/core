@@ -36,14 +36,14 @@ function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbo
 	else {
 		while ($rowAssessments=$resultAssessments->fetch()) {
 			print "<h2>" ;
-			print $rowAssessments["name"] . " <span style='font-size: 75%; font-style: italic'>(" . substr($rowAssessments["date"], 0, 4) . ")</span>" ;
+			print _($rowAssessments["name"]) . " <span style='font-size: 75%; font-style: italic'>(" . substr($rowAssessments["date"], 0, 4) . ")</span>" ;
 			if ($manage==TRUE) {
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=" . $rowAssessments["gibbonExternalAssessmentStudentID"] . "&search=$search'><img style='margin-left: 5px' title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_delete.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=" . $rowAssessments["gibbonExternalAssessmentStudentID"] . "&search=$search'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 			}
 			print "</h2>" ;
 			print "<p>" ;
-			print $rowAssessments["description"] ;
+			print _($rowAssessments["description"]) ;
 			print "</p>" ;
 			
 			//Get results
@@ -105,7 +105,7 @@ function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbo
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
-							print $rowResults["name"] ;
+							print _($rowResults["name"]) ;
 						print "</td>" ;
 						print "<td>" ;
 							$style="" ;

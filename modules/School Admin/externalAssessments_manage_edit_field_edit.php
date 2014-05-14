@@ -103,7 +103,7 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=50 value="<?php if (isset($row["name"])) { print $row["name"] ; } ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=50 value="<?php if (isset($row["name"])) { print _($row["name"]) ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
