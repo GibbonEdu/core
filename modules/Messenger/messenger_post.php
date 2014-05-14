@@ -106,7 +106,7 @@ else {
 						});
 					</script>
 					<tr>
-						<td> 
+						<td style='width: 275px'> 
 							<b><?php print _('Email') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('Deliver this message to user\'s primaryemail account?') ?><br/></i></span>
 						</td>

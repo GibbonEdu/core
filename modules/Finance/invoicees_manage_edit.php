@@ -177,7 +177,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td style='width: 275px'> 
 							<b><?php print _('Send Invoices To') ?></b><br/>
 						</td>
 						<td class="right">

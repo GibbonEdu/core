@@ -89,7 +89,7 @@ else {
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/ttDates_edit_addProcess.php" ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
-							<td> 
+							<td style='width: 275px'> 
 								<b><?php print _('Year') ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
@@ -97,7 +97,7 @@ else {
 								<input readonly name="name" id="name" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var courseName=new LiveValidation('courseName');
-									courseName.add(Validate.Presence);
+									coursename2.add(Validate.Presence);
 								</script>
 							</td>
 						</tr>
@@ -111,7 +111,7 @@ else {
 								<input readonly name="date" id="date" maxlength=20 value="<?php print date("d/m/Y l", $dateStamp) ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var courseName=new LiveValidation('courseName');
-									courseName.add(Validate.Presence);
+									coursename2.add(Validate.Presence);
 								</script>
 							</td>
 						</tr>

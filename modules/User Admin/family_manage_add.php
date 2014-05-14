@@ -76,15 +76,15 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td style='width: 275px'> 
 					<b><?php print _('Name') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=100 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var name=new LiveValidation('name');
-						name.add(Validate.Presence);
+						var name2=new LiveValidation('name');
+						name2.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>

@@ -60,7 +60,7 @@ else {
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_installProcess.php?return=" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
-				<td> 
+				<td style='width: 275px'> 
 					<b><?php print _('Theme Manifest') ?> *</b><br/>
 					<span style="font-size: 90%"><i><?php print _('1. Unzip theme in server /themes.<br/>2. Make local copy of manifest.php.<br/>3. Select manifest.php') ?></i></span>
 				</td>

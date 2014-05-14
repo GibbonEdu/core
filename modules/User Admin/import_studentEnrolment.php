@@ -54,7 +54,7 @@ else {
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/import_studentEnrolment.php&step=2" ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
-					<td> 
+					<td style='width: 275px'> 
 						<b><?php print _('CSV File') ?> *</b><br/>
 						<span style="font-size: 90%"><i><?php print _('See Notes below for specification.') ?></i></span>
 					</td>

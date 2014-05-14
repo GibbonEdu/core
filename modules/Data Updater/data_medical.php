@@ -100,7 +100,7 @@ else {
 		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
-					<td> 
+					<td style='width: 275px'> 
 						<b><?php print _('Person') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -277,7 +277,7 @@ else {
 						<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_medicalProcess.php?gibbonPersonID=" . $gibbonPersonID ?>">
 							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr>
-									<td> 
+									<td style='width: 275px'> 
 										<b><?php print _('Blood Type') ?></b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>

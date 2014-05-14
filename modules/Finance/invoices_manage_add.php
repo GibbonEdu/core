@@ -99,7 +99,7 @@ else {
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td style='width: 275px'> 
 						<b><?php print _('School Year') ?> *</b><br/>
 						<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 					</td>
@@ -123,7 +123,7 @@ else {
 						<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var yearName=new LiveValidation('yearName');
-							yearName.add(Validate.Presence);
+							yearname2.add(Validate.Presence);
 						</script>
 					</td>
 				</tr>

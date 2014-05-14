@@ -216,7 +216,7 @@ else {
 									$output.="<input name='" . $id . "name' id='" . $id . "name' maxlength=60 value='' type='text' style='width: 300px'>" ;
 									$output.="<script type='text/javascript'>" ;
 										$output.="var " . $id . "name=new LiveValidation('" . $id . "name');" ;
-										$output.=$id . "name.add(Validate.Presence);" ;
+										$output.=$id . "name2.add(Validate.Presence);" ;
 									 $output.="</script>" ;
 								$output.="</td>" ;
 							$output.="</tr>" ;

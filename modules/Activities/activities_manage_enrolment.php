@@ -126,7 +126,7 @@ else {
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_editProcess.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&search=" . $_GET["search"] ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
-						<td> 
+						<td style='width: 275px'> 
 							<b><?php print _('Name') ?></b><br/>
 						</td>
 						<td class="right">

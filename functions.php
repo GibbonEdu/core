@@ -866,7 +866,7 @@ function sidebar($connection2, $guid) {
 							<input name="username" id="username" maxlength=20 type="text" style="width:120px">
 							<script type="text/javascript">
 								var username=new LiveValidation('username', {onlyOnSubmit: true });
-								username.add(Validate.Presence);
+								username2.add(Validate.Presence);
 							 </script> 
 						</td>
 					</tr>

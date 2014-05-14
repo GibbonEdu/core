@@ -176,7 +176,7 @@ else {
 						<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/units_edit_working_copybackProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=$gibbonUnitID&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=$gibbonUnitClassID" ; ?>">
 							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr>
-									<td> 
+									<td style='width: 275px'> 
 										<b><?php print _('Include Working Units?') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>

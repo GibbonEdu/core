@@ -89,7 +89,7 @@ else {
 				</tr>
 				<input name="<?php print $row["name"]?>sequenceNumber" id="<?php print $row["name"]?>sequenceNumber" maxlength=2 value="<?php print $row["sequenceNumber"] ?>" type="hidden" style="width: 300px">
 				<tr>
-					<td> 
+					<td style='width: 275px'> 
 						<b><?php print _('School Day') ?> *</b>
 					</td>
 					<td class="right">

@@ -47,7 +47,7 @@ else {
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
-				<td> 
+				<td style='width: 275px'> 
 					<b><?php print _('Activity')  ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>

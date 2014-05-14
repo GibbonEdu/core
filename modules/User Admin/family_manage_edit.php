@@ -153,7 +153,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td style='width: 275px'> 
 							<b><?php print _('Family Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
@@ -504,7 +504,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td style='width: 275px'> 
 							<b><?php print _('Child\'s Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
@@ -681,7 +681,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td style='width: 275px'> 
 							<b><?php print _('Adult\'s Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>

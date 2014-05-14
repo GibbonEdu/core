@@ -73,7 +73,7 @@ else {
 				});
 			</script>
 			<tr>
-				<td> 
+				<td style='width: 275px'> 
 					<b><?php print _('Type') ?> *</b><br/>
 				</td>
 				<td class="right">

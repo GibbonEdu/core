@@ -103,10 +103,10 @@ else {
 						print $row["extension"] ;
 					print "</td>" ;
 					print "<td>" ;
-						print $row["name"] ;
+						print _($row["name"]) ;
 					print "</td>" ;
 					print "<td>" ;
-						print $row["type"] ;
+						print _($row["type"]) ;
 					print "</td>" ;
 					print "<td>" ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/fileExtensions_manage_edit.php&gibbonFileExtensionID=" . $row["gibbonFileExtensionID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;

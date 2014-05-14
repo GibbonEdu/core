@@ -226,7 +226,7 @@ else {
 										</td>
 									</tr>
 									<tr>
-										<td> 
+										<td style='width: 275px'> 
 											<b><?php print _('School Year') ?> *</b><br/>
 											<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 										</td>
@@ -251,8 +251,8 @@ else {
 										<td class="right">
 											<input name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 											<script type="text/javascript">
-												var name=new LiveValidation('name');
-												name.add(Validate.Presence);
+												var name2=new LiveValidation('name');
+												name2.add(Validate.Presence);
 											 </script>
 										</td>
 									</tr>

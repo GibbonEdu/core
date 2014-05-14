@@ -105,15 +105,15 @@ else {
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/gradeScales_manage_editProcess.php?gibbonScaleID=$gibbonScaleID" ?>">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
-					<td> 
+					<td style='width: 275px'> 
 						<b><?php print _('Name') ?> *</b><br/>
 						<span style="font-size: 90%"><i><?php print _('Must be unique for this school year.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="name" id="name" maxlength=40 value="<?php if (isset($row["name"])) { print htmlPrep($row["name"]) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var name=new LiveValidation('name');
-							name.add(Validate.Presence);
+							var name2=new LiveValidation('name');
+							name2.add(Validate.Presence);
 						 </script>
 					</td>
 				</tr>

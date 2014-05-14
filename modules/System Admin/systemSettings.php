@@ -108,7 +108,7 @@ else {
 				}
 				$row=$result->fetch() ;
 				?>
-				<td> 
+				<td style='width: 275px'> 
 					<b><?php print $row["nameDisplay"] ?> *</b><br/>
 					<span style="font-size: 90%"><i><?php print $row["description"] ?></i></span>
 				</td>

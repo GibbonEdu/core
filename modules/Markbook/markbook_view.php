@@ -152,7 +152,7 @@ else {
 					}
 
 					if ($result->rowCount()>0) {
-						print "<h3>" ;
+						print "<h3 style='margin-top: 0px'>" ;
 							print _("Teachers") ;
 						print "</h3>" ;	
 						print "<ul>" ;

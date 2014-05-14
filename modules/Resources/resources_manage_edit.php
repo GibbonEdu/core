@@ -126,7 +126,7 @@ else {
 						if ($row["type"]=="File") {
 							?>
 							<tr id="resourceFile">
-								<td> 
+								<td style='width: 275px'> 
 									<b><?php print _('File') ?></b><br/>
 									<?php if ($row["content"]!="") { ?>
 									<span style="font-size: 90%"><i><?php print _('Will overwrite existing attachment.') ?></i></span>
@@ -206,8 +206,8 @@ else {
 							<td class="right">
 								<input name="name" id="name" maxlength=30 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var name=new LiveValidation('name');
-									name.add(Validate.Presence);
+									var name2=new LiveValidation('name');
+									name2.add(Validate.Presence);
 								 </script>
 							</td>
 						</tr>

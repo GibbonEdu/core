@@ -88,7 +88,7 @@ else {
 				</td
 			</tr>
 			<tr>
-				<td> 
+				<td style='width: 275px'> 
 					<b><?php print _('Student') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
@@ -220,7 +220,7 @@ else {
 							</td
 						</tr>
 						<tr>
-							<td> 
+							<td style='width: 275px'> 
 								<b><?php print _('Recent Attendance Summary') ?></b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>

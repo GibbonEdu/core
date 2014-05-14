@@ -115,7 +115,7 @@ else {
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byEmail")) {
 							?>
 							<tr>
-								<td> 
+								<td style='width: 275px'> 
 									<b><?php print _('Email') ?> *</b><br/>
 									<span style="font-size: 90%"><i><?php print _('Deliver this message to user\'s primary email account?') ?><br/></i></span>
 								</td>

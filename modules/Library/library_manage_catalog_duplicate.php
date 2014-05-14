@@ -115,7 +115,7 @@ else {
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicate.php&step=2&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
-							<td> 
+							<td style='width: 275px'> 
 								<b><?php print _('Type') ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
@@ -209,7 +209,7 @@ else {
 							//GENERAL FIELDS
 							?>
 							<tr>
-								<td> 
+								<td style='width: 275px'> 
 									<b><?php print _('Name') ?> *</b><br/>
 									<span style="font-size: 90%"><i>Volume or product name.</i></span>
 								</td>

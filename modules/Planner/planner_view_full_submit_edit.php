@@ -198,7 +198,7 @@ else {
 								<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submit_editProcess.php" ?>">
 									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 										<tr>
-											<td> 
+											<td style='width: 275px'> 
 												<b><?php print _('Student') ?> *</b><br/>
 												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 											</td>
@@ -263,7 +263,7 @@ else {
 								<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submit_editProcess.php" ?>" enctype="multipart/form-data">
 									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 										<tr>
-											<td> 
+											<td style='width: 275px'> 
 												<b><?php print _('Student') ?> *</b><br/>
 												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 											</td>

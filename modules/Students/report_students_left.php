@@ -55,7 +55,7 @@ else {
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
-				<td> 
+				<td style='width: 275px'> 
 					<b><?php print _('From Date') ?></b><br/>
 					<span style="font-size: 90%"><i><?php print _('Earliest student end date to include.') ?><br/><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 				</td>

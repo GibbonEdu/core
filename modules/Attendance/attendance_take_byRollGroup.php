@@ -105,7 +105,7 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td style='width: 275px'> 
 					<b><?php print _('Roll Group') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>

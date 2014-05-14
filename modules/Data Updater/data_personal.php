@@ -103,7 +103,7 @@ else {
 		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
-					<td> 
+					<td style='width: 275px'> 
 						<b><?php print _('Person') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -347,7 +347,7 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td style='width: 275px'> 
 									<b><?php print _('Title') ?><?php if (isset($required["title"])) { if ($required["title"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">

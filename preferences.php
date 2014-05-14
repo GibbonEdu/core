@@ -138,7 +138,7 @@ if ($result->rowCount()==1) {
 			</td>
 		</tr>
 		<tr>
-			<td> 
+			<td style='width: 275px'> 
 				<b><?php print _("New Password") ; ?> *</b><br/>
 				<span style="font-size: 90%"><i></i></span>
 			</td>

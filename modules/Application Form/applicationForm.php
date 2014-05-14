@@ -151,7 +151,7 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td style='width: 275px'> 
 					<b><?php print _('Surname') ?> *</b><br/>
 					<span style="font-size: 90%"><i><?php print _('Family name as shown in ID documents.') ?></i></span>
 				</td>
@@ -159,7 +159,7 @@ else {
 					<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var surname=new LiveValidation('surname');
-						surname.add(Validate.Presence);
+						surname2.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>
@@ -172,7 +172,7 @@ else {
 					<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var firstName=new LiveValidation('firstName');
-						firstName.add(Validate.Presence);
+						firstname2.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>
@@ -185,7 +185,7 @@ else {
 					<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var preferredName=new LiveValidation('preferredName');
-						preferredName.add(Validate.Presence);
+						preferredname2.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>
@@ -198,7 +198,7 @@ else {
 					<input title='Please enter full name as shown in ID documents' name="officialName" id="officialName" maxlength=150 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var officialName=new LiveValidation('officialName');
-						officialName.add(Validate.Presence);
+						officialname2.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>
@@ -1079,7 +1079,7 @@ else {
 							<input name="<?php print "parent$i" ?>surname" id="<?php print "parent$i" ?>surname" maxlength=30 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>surname=new LiveValidation('<?php print "parent$i" ?>surname');
-								<?php print "parent$i" ?>surname.add(Validate.Presence);
+								<?php print "parent$i" ?>surname2.add(Validate.Presence);
 							 </script>
 						</td>
 					</tr>
@@ -1092,7 +1092,7 @@ else {
 							<input name="<?php print "parent$i" ?>firstName" id="<?php print "parent$i" ?>firstName" maxlength=30 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>firstName=new LiveValidation('<?php print "parent$i" ?>firstName');
-								<?php print "parent$i" ?>firstName.add(Validate.Presence);
+								<?php print "parent$i" ?>firstname2.add(Validate.Presence);
 							 </script>
 						</td>
 					</tr>
@@ -1105,7 +1105,7 @@ else {
 							<input name="<?php print "parent$i" ?>preferredName" id="<?php print "parent$i" ?>preferredName" maxlength=30 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>preferredName=new LiveValidation('<?php print "parent$i" ?>preferredName');
-								<?php print "parent$i" ?>preferredName.add(Validate.Presence);
+								<?php print "parent$i" ?>preferredname2.add(Validate.Presence);
 							 </script>
 						</td>
 					</tr>
@@ -1118,7 +1118,7 @@ else {
 							<input title='Please enter full name as shown in ID documents' name="<?php print "parent$i" ?>officialName" id="<?php print "parent$i" ?>officialName" maxlength=150 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>officialName=new LiveValidation('<?php print "parent$i" ?>officialName');
-								<?php print "parent$i" ?>officialName.add(Validate.Presence);
+								<?php print "parent$i" ?>officialname2.add(Validate.Presence);
 							 </script>
 						</td>
 					</tr>

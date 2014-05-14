@@ -194,7 +194,7 @@ else {
 						?>
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
-								<td> 
+								<td style='width: 275px'> 
 									<b><?php print _('School Year Name') ?> *</b><br/>
 									<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 								</td>
@@ -202,7 +202,7 @@ else {
 									<input name="nextname" id="nextname" maxlength=9 value="" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var nextname=new LiveValidation('nextname');
-										nextname.add(Validate.Presence);
+										nextname2.add(Validate.Presence);
 									 </script>
 								</td>
 							</tr>

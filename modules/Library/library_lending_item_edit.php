@@ -100,7 +100,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td style='width: 275px'> 
 							<b><?php print _('ID') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>

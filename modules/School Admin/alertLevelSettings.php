@@ -83,7 +83,7 @@ else {
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td style='width: 275px'> 
 						<b><?php print _('Name') ?> *</b>
 					</td>
 					<td class="right">

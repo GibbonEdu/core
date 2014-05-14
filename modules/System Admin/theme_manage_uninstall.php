@@ -82,7 +82,7 @@ else {
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstallProcess.php?gibbonThemeID=$gibbonThemeID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
-						<td> 
+						<td style='width: 275px'> 
 							<b><?php print _('Are you sure you want to delete this record?') ; ?></b><br/>
 							<span style="font-size: 90%; color: #cc0000"><i><?php print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
 						</td>

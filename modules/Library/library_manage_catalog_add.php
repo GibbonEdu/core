@@ -107,7 +107,7 @@ else {
 				});
 			</script>
 			<tr>
-				<td> 
+				<td style='width: 275px'> 
 					<b><?php print _('Type') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -147,8 +147,8 @@ else {
 				<td class="right">
 					<input name="name" id="name" maxlength=255 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var name=new LiveValidation('name');
-						name.add(Validate.Presence);
+						var name2=new LiveValidation('name');
+						name2.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>

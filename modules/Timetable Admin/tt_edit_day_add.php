@@ -88,7 +88,7 @@ else {
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_addProcess.php" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
-						<td> 
+						<td style='width: 275px'> 
 							<b><?php print _('School Year') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
@@ -96,7 +96,7 @@ else {
 							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $row["yearName"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var yearName=new LiveValidation('yearName');
-								yearName.add(Validate.Presence);
+								yearname2.add(Validate.Presence);
 							</script>
 						</td>
 					</tr>
@@ -109,7 +109,7 @@ else {
 							<input readonly name="ttName" id="ttName" maxlength=20 value="<?php print $row["ttName"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var courseName=new LiveValidation('courseName');
-								courseName.add(Validate.Presence);
+								coursename2.add(Validate.Presence);
 							</script>
 						</td>
 					</tr>
@@ -121,8 +121,8 @@ else {
 						<td class="right">
 							<input name="name" id="name" maxlength=12 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var name=new LiveValidation('name');
-								name.add(Validate.Presence);
+								var name2=new LiveValidation('name');
+								name2.add(Validate.Presence);
 							 </script>
 						</td>
 					</tr>

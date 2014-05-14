@@ -79,7 +79,7 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td style='width: 275px'> 
 					<b><?php print _('Title') ?></b><br/>
 				</td>
 				<td class="right">
@@ -102,7 +102,7 @@ else {
 					<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var surname=new LiveValidation('surname');
-						surname.add(Validate.Presence);
+						surname2.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>
@@ -115,7 +115,7 @@ else {
 					<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var firstName=new LiveValidation('firstName');
-						firstName.add(Validate.Presence);
+						firstname2.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>
@@ -128,7 +128,7 @@ else {
 					<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var preferredName=new LiveValidation('preferredName');
-						preferredName.add(Validate.Presence);
+						preferredname2.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>
@@ -141,7 +141,7 @@ else {
 					<input name="officialName" id="officialName" maxlength=150 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var officialName=new LiveValidation('officialName');
-						officialName.add(Validate.Presence);
+						officialname2.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>
@@ -243,7 +243,7 @@ else {
 					<script type="text/javascript">
 						var username=new LiveValidation('username');
 						username.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "Username already in use!", partialMatch: false, caseSensitive: false } );
-						username.add(Validate.Presence);
+						username2.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>

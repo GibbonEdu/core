@@ -130,7 +130,7 @@ else {
 							if ($resultCategories->rowCount()>0) {
 								?>
 								<tr>
-									<td> 
+									<td style='width: 275px'> 
 										<b><?php print _('Category') ?> *</b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
