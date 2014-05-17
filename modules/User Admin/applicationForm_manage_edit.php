@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/applicationForm_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Application Forms') . "</a> > </div><div class='trailEnd'>" . _('Edit Form') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . _(getModuleName($_GET["q"])) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/applicationForm_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Application Forms') . "</a> > </div><div class='trailEnd'>" . _('Edit Form') . "</div>" ;
 	print "</div>" ;
 	
 	//Check if school year specified
@@ -428,7 +428,7 @@ else {
 							<input name="surname" id="surname" maxlength=30 value="<?php print $row["surname"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var surname=new LiveValidation('surname');
-								surname2.add(Validate.Presence);
+								surname.add(Validate.Presence);
 							 </script>
 						</td>
 					</tr>
@@ -441,7 +441,7 @@ else {
 							<input name="firstName" id="firstName" maxlength=30 value="<?php print $row["firstName"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var firstName=new LiveValidation('firstName');
-								firstname2.add(Validate.Presence);
+								firstName.add(Validate.Presence);
 							 </script>
 						</td>
 					</tr>
@@ -454,7 +454,7 @@ else {
 							<input name="preferredName" id="preferredName" maxlength=30 value="<?php print $row["preferredName"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var preferredName=new LiveValidation('preferredName');
-								preferredname2.add(Validate.Presence);
+								preferredName.add(Validate.Presence);
 							 </script>
 						</td>
 					</tr>
@@ -467,7 +467,7 @@ else {
 							<input name="officialName" id="officialName" maxlength=150 value="<?php print $row["officialName"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var officialName=new LiveValidation('officialName');
-								officialname2.add(Validate.Presence);
+								officialName.add(Validate.Presence);
 							 </script>
 						</td>
 					</tr>
@@ -1192,7 +1192,7 @@ else {
 										?>
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>surname=new LiveValidation('<?php print "parent$i" ?>surname');
-											<?php print "parent$i" ?>surname2.add(Validate.Presence);
+											<?php print "parent$i" ?>surname.add(Validate.Presence);
 										 </script>
 										 <?php
 									}
@@ -1211,7 +1211,7 @@ else {
 										?>
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>firstName=new LiveValidation('<?php print "parent$i" ?>firstName');
-											<?php print "parent$i" ?>firstname2.add(Validate.Presence);
+											<?php print "parent$i" ?>firstName.add(Validate.Presence);
 										 </script>
 										 <?php
 									}
@@ -1230,7 +1230,7 @@ else {
 										?>
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>preferredName=new LiveValidation('<?php print "parent$i" ?>preferredName');
-											<?php print "parent$i" ?>preferredname2.add(Validate.Presence);
+											<?php print "parent$i" ?>preferredName.add(Validate.Presence);
 										 </script>
 										 <?php
 									}
@@ -1249,7 +1249,7 @@ else {
 										?>
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>officialName=new LiveValidation('<?php print "parent$i" ?>officialName');
-											<?php print "parent$i" ?>officialname2.add(Validate.Presence);
+											<?php print "parent$i" ?>officialName.add(Validate.Presence);
 										 </script>
 										 <?php
 									}

@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_add
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php'>" . _('Manage Users') . "</a> > </div><div class='trailEnd'>" . _('Add User') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . _(getModuleName($_GET["q"])) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php'>" . _('Manage Users') . "</a> > </div><div class='trailEnd'>" . _('Add User') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -102,7 +102,7 @@ else {
 					<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var surname=new LiveValidation('surname');
-						surname2.add(Validate.Presence);
+						surname.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>
@@ -115,7 +115,7 @@ else {
 					<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var firstName=new LiveValidation('firstName');
-						firstname2.add(Validate.Presence);
+						firstName.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>
@@ -128,7 +128,7 @@ else {
 					<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var preferredName=new LiveValidation('preferredName');
-						preferredname2.add(Validate.Presence);
+						preferredName.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>
@@ -141,7 +141,7 @@ else {
 					<input name="officialName" id="officialName" maxlength=150 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var officialName=new LiveValidation('officialName');
-						officialname2.add(Validate.Presence);
+						officialName.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>
@@ -210,7 +210,7 @@ else {
 						}
 						catch(PDOException $e) { }
 						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["gibbonRoleID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+							print "<option value='" . $rowSelect["gibbonRoleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 						}
 						?>				
 					</select>

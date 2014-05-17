@@ -36,7 +36,7 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Messages') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . _(getModuleName($_GET["q"])) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Manage Messages') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -169,7 +169,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . $rowTargets["type"] . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Class") {
@@ -184,7 +184,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . $rowTargets["type"] . "</b> - " . $rowTarget["course"] . "." . $rowTarget["class"] . "<br/>" ;
+										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["course"] . "." . $rowTarget["class"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Course") {
@@ -199,7 +199,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . $rowTargets["type"] . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Role") {
@@ -214,7 +214,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . $rowTargets["type"] . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . _($rowTarget["name"]) . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Roll Group") {
@@ -229,7 +229,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . $rowTargets["type"] . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Year Group") {
@@ -244,7 +244,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . $rowTargets["type"] . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Applicants") {
@@ -259,7 +259,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . $rowTargets["type"] . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Houses") {
@@ -274,7 +274,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . $rowTargets["type"] . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Individuals") {
@@ -289,7 +289,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . $rowTargets["type"] . "</b> - " . formatName("", $rowTarget["preferredName"], $rowTarget["surname"], "Student", true) . "<br/>" ;
+										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . formatName("", $rowTarget["preferredName"], $rowTarget["surname"], "Student", true) . "<br/>" ;
 									}
 								}
 							}

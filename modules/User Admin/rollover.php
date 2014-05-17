@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/rollover.php")=
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Rollover') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . _(getModuleName($_GET["q"])) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Rollover') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -325,7 +325,7 @@ else {
 										print formatName("", $rowExpect["preferredName"], $rowExpect["surname"], "Student", true) ;
 									print "</td>" ;
 									print "<td>" ;
-										print $rowExpect["name"] ;
+										print _($rowExpect["name"]) ;
 									print "</td>" ;
 									print "<td>" ;
 										print "Expected" ;
@@ -409,7 +409,7 @@ else {
 											print formatName("", $rowEnrol["preferredName"], $rowEnrol["surname"], "Student", true) ;
 										print "</td>" ;
 										print "<td>" ;
-											print $rowEnrol["name"] ;
+											print _($rowEnrol["name"]) ;
 										print "</td>" ;
 										print "<td>" ;
 											print "<input checked type='checkbox' name='$count-enrol-enrol' value='Y'>" ;
@@ -524,7 +524,7 @@ else {
 											print formatName("", $student[2], $student[1], "Student", true) ;
 										print "</td>" ;
 										print "<td>" ;
-											print $student[3] ;
+											print _($student[3]) ;
 										print "</td>" ;
 										print "<td>" ;
 											print "<input checked type='checkbox' name='$count-enrolFull-enrol' value='Y'>" ;
@@ -661,7 +661,7 @@ else {
 											print formatName("", $rowReenrol["preferredName"], $rowReenrol["surname"], "Student", true) ;
 										print "</td>" ;
 										print "<td>" ;
-											print $rowReenrol["name"] ;
+											print _($rowReenrol["name"]) ;
 										print "</td>" ;
 										print "<td>" ;
 											print "<input checked type='checkbox' name='$count-reenrol-enrol' value='Y'>" ;
@@ -771,7 +771,7 @@ else {
 										print formatName("", $rowFinal["preferredName"], $rowFinal["surname"], "Student", true) ;
 									print "</td>" ;
 									print "<td>" ;
-										print $rowFinal["name"] ;
+										print _($rowFinal["name"]) ;
 									print "</td>" ;
 									print "<td>" ;
 										print "Full" ;
@@ -851,7 +851,7 @@ else {
 										print formatName("", $rowRegister["preferredName"], $rowRegister["surname"], "Student", true) ;
 									print "</td>" ;
 									print "<td>" ;
-										print $rowRegister["name"] ;
+										print _($rowRegister["name"]) ;
 									print "</td>" ;
 									print "<td>" ;
 										print "<input checked type='checkbox' name='$count-register-enrol' value='Y'>" ;

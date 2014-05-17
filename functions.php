@@ -306,7 +306,7 @@ function getStudentFastFinder($connection2, $guid) {
 	}
 	
 	if (getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2)=="Staff") {
-		$output.="<div style='padding-bottom: 15px; font-size: 70%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: right; color: #888;' >" . _('Total Student Enrollment:') . " " . $studentCount . "</div>" ;
+		$output.="<div style='padding-bottom: 15px; font-size: 70%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: right; color: #888;' >" . _('Total Student Enrolment:') . " " . $studentCount . "</div>" ;
 	}
 	
 	return $output ;
@@ -1011,10 +1011,10 @@ function sidebar($connection2, $guid) {
 					
 					$currentCategory=$row["category"] ;
 					if (strpos($row["name"],"_")>0) {
-						$currentName=substr($row["name"],0,strpos($row["name"],"_")) ;
+						$currentName=_(substr($row["name"],0,strpos($row["name"],"_"))) ;
 					}
 					else {
-						$currentName=$row["name"] ;
+						$currentName=_($row["name"]) ;
 					}
 							
 					if ($currentName!=$lastName) {
@@ -1488,10 +1488,10 @@ function sidebar($connection2, $guid) {
 			print "<ul>" ;
 			for ($i=0; $i<count($_SESSION[$guid]["gibbonRoleIDAll"]); $i++) {
 				if ($_SESSION[$guid]["gibbonRoleIDAll"][$i][0]==$_SESSION[$guid]["gibbonRoleIDCurrent"]) {
-					print "<li><a href='roleSwitcherProcess.php?gibbonRoleID=" . $_SESSION[$guid]["gibbonRoleIDAll"][$i][0] . "'>" . $_SESSION[$guid]["gibbonRoleIDAll"][$i][1] . "</a> <i>" . _('(Active)') . "</i></li>" ;
+					print "<li><a href='roleSwitcherProcess.php?gibbonRoleID=" . $_SESSION[$guid]["gibbonRoleIDAll"][$i][0] . "'>" . _($_SESSION[$guid]["gibbonRoleIDAll"][$i][1]) . "</a> <i>" . _('(Active)') . "</i></li>" ;
 				}
 				else {
-					print "<li><a href='roleSwitcherProcess.php?gibbonRoleID=" . $_SESSION[$guid]["gibbonRoleIDAll"][$i][0] . "'>" . $_SESSION[$guid]["gibbonRoleIDAll"][$i][1] . "</a></li>" ;
+					print "<li><a href='roleSwitcherProcess.php?gibbonRoleID=" . $_SESSION[$guid]["gibbonRoleIDAll"][$i][0] . "'>" . _($_SESSION[$guid]["gibbonRoleIDAll"][$i][1]) . "</a></li>" ;
 				}
 			}
 			print "</ul>" ;
@@ -2311,7 +2311,7 @@ function printPagination($guid, $total, $page, $pagination, $position, $get="") 
 }
 
 //Get list of user roles from database, and convert to array
-function getRoleList( $gibbonRoleIDAll, $connection2 ) {
+function getRoleList($gibbonRoleIDAll, $connection2) {
 	@session_start() ;
 	
 	$output=array() ;
@@ -2332,7 +2332,7 @@ function getRoleList( $gibbonRoleIDAll, $connection2 ) {
 		if ($result->rowCount()==1) {
 			$row=$result->fetch() ;
 			$output[$count][0]=$row["gibbonRoleID"] ;
-			$output[$count][1]=$row["name"] ;
+			$output[$count][1]=_($row["name"]) ;
 			$count++ ;
 		}
 	}
@@ -2388,7 +2388,7 @@ function getModuleCategory($address, $connection2 ) {
 	catch(PDOException $e) { }
 	if ($result->rowCount()==1) {
 		$row=$result->fetch() ;
-		$output=$row["category"] ;
+		$output=_($row["category"]) ;
 	}
 		
 	return $output ;

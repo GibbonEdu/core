@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_edi
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php'>" . _('Manage Users') . "</a> > </div><div class='trailEnd'>" . _('') . "Edit User</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . _(getModuleName($_GET["q"])) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php'>" . _('Manage Users') . "</a> > </div><div class='trailEnd'>" . _('') . "Edit User</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -165,7 +165,7 @@ else {
 							<input name="surname" id="surname" maxlength=30 value="<?php print htmlPrep($row["surname"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var surname=new LiveValidation('surname');
-								surname2.add(Validate.Presence);
+								surname.add(Validate.Presence);
 							 </script>
 						</td>
 					</tr>
@@ -178,7 +178,7 @@ else {
 							<input name="firstName" id="firstName" maxlength=30 value="<?php print htmlPrep($row["firstName"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var firstName=new LiveValidation('firstName');
-								firstname2.add(Validate.Presence);
+								firstName.add(Validate.Presence);
 							 </script>
 						</td>
 					</tr>
@@ -191,7 +191,7 @@ else {
 							<input name="preferredName" id="preferredName" maxlength=30 value="<?php print htmlPrep($row["preferredName"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var preferredName=new LiveValidation('preferredName');
-								preferredname2.add(Validate.Presence);
+								preferredName.add(Validate.Presence);
 							 </script>
 						</td>
 					</tr>
@@ -204,7 +204,7 @@ else {
 							<input name="officialName" id="officialName" maxlength=150 value="<?php print htmlPrep($row["officialName"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var officialName=new LiveValidation('officialName');
-								officialname2.add(Validate.Presence);
+								officialName.add(Validate.Presence);
 							 </script>
 						</td>
 					</tr>
@@ -281,7 +281,7 @@ else {
 										$selected="selected" ;
 									}
 									
-									print "<option $selected value='" . $rowSelect["gibbonRoleID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+									print "<option $selected value='" . $rowSelect["gibbonRoleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 								}
 								?>			
 							</select>
@@ -317,7 +317,7 @@ else {
 										}
 									}
 									
-									print "<option $selected value='" . $rowSelect["gibbonRoleID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+									print "<option $selected value='" . $rowSelect["gibbonRoleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 								}
 								?>			
 							</select>
