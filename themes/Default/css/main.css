@@ -236,7 +236,7 @@ div.minorLinks a:hover {
 	color:rgba(103, 153, 207, 1.0);
 }
 #nav li ul {
-	border: 1px solid #000;
+	border: 1px dotted #000;
 	background-color: rgba(103, 153, 207, 0.95);
 	font-size:80%;
 	margin: 0px 0px 0px -20px;
@@ -245,9 +245,7 @@ div.minorLinks a:hover {
 	font-weight:normal;
 	left: -999em; 
 	text-shadow: none;
-	width: 180px;
-	border-radius:5px 0px 5px 0px ;
-	width: 185px ;
+	width: 160px ;
 }
 #nav li:hover ul, #nav li.sfhover ul {
 	left: 0;
@@ -261,7 +259,9 @@ div.minorLinks a:hover {
 	border: 1px solid #999;
 	border:1px none #fff;
 	padding-left:0; 
-	text-align: left
+	text-align: left; 
+	margin: 4px 0 ;
+	font-size: 95%;
 }
 #nav li li.last {
 	border-bottom:none
@@ -269,11 +269,11 @@ div.minorLinks a:hover {
 #nav li li a, #nav li li a:link, #nav li li a:visited, #nav li li a:hover {
 	color:#fff;
 	padding: 3px 10px 2px;
-	min-width: 140px;
+	min-width: 60px;
 }
 #nav li li a:hover {
 	color:#333;
-	background:#fff
+	background-color: rgba(255,255,255,0.7) ;
 }
 
 #nav li.active {
@@ -348,7 +348,7 @@ h1, h2, h3, h4, h5, h6 {
 	font-family:Arial, Helvetica, sans-serif;
 	margin: 40px 0 0 0;
 	color:#3B73AF;
-	border-bottom: 1px solid #3B73AF;
+	border-bottom: 1px dotted #3B73AF;
 	background-color: none ;
 	padding: 0 0 0 0px;
 	line-height: 85%;
@@ -733,7 +733,7 @@ div.error {
 	border: 1px solid #CC0000;
 	color: #CC0000; 
 	background-color: #F6CECB;
-	font-size: 12px;
+	font-size: 11.5px;
 	padding: 5px;
 	margin: 10px 0px 5px 0px;
 	box-shadow: 2px 2px 2px rgba(50,50,50,0.4);
@@ -742,7 +742,7 @@ div.warning {
 	border: 1px solid #D65602;
 	color: #D65602; 
 	background-color: #FFD2A9;
-	font-size: 12px;
+	font-size: 11.5px;
 	padding: 5px;
 	margin: 10px 0px 5px 0px;
 	box-shadow: 2px 2px 2px rgba(50,50,50,0.4);
@@ -751,7 +751,7 @@ div.success {
 	border: 1px solid #390;
 	color: #390; 
 	background-color: #D4F6DC;
-	font-size: 12px;
+	font-size: 11.5px;
 	padding: 5px;
 	margin: 10px 0px 5px 0px;
 	box-shadow: 2px 2px 2px rgba(50,50,50,0.4);

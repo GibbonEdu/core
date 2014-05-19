@@ -249,7 +249,7 @@ function getStudentFastFinder($connection2, $guid) {
 		}
 		catch(PDOException $e) { $output.=$e->getMessage() ; }
 
-		$output.="<h2>" ;
+		$output.="<h2 style='margin-bottom: 10px'>" ;
 		if ($studentHighestAction=="View Student Profile_full" AND $staffIsAccessible==TRUE) {
 			$output.=_("Find Staff & Students") . "<br/>" ;
 		}
@@ -1369,7 +1369,7 @@ function sidebar($connection2, $guid) {
 		catch(PDOException $e) { }
 		
 		if ($result->rowCount()>0) {
-			print "<h2 class='sidebar'>" ;
+			print "<h2 style='margin-bottom: 10px'  class='sidebar'>" ;
 			print _("My Classes") ;
 			print "</h2>" ;
 			
@@ -1453,7 +1453,7 @@ function sidebar($connection2, $guid) {
 	//Show role switcher if user has more than one role
 	if (isset($_SESSION[$guid]["username"])) {
 		if (count($_SESSION[$guid]["gibbonRoleIDAll"])>1 AND $_SESSION[$guid]["address"]=="") {
-			print "<h2 class='sidebar'>" ;
+			print "<h2 style='margin-bottom: 10px' class='sidebar'>" ;
 			print _("Role Switcher") ;
 			print "</h2>" ;
 		
