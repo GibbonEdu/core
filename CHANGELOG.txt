@@ -265,6 +265,8 @@ System Admin: added inbuilt version checking against gibbonedu.org. One step clo
 Application Form: added payment error emailing to admissions officer
 	Edited file /modules/Application Form/applicationFormProcess.php
 
+Messenger: updated message manage listing to show both SMS and Email reports, if both exist
+	Edited file /modules/Messenger/messenger_manage.php
 
 
 v7.1.02

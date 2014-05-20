@@ -348,7 +348,7 @@ else {
 										print $email . "<br/>" ;
 									}
 								}
-								else if ($row["smsReport"]!="") {
+								if ($row["smsReport"]!="") {
 									print "<b><u>SMS Report</u></b><br/>" ;
 									$smss=explode(",",$row["smsReport"]) ;
 									$smss=array_unique($smss) ;
