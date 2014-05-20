@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
+//Module includes
+include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/systemSettings.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -54,13 +57,16 @@ else {
 		}
 		catch(PDOException $e) { }
 		$usersFull=$result->rowCount() ;
-		print "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($_SESSION[$guid]['organisationName']) . "&type=" . urlencode($_SESSION[$guid]['installType']) . "&version=" . urlencode($version) . "&country=" . $_SESSION[$guid]['country'] . "&usersTotal=$usersTotal&usersFull=$usersFull'></iframe>" ;
+		print "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($_SESSION[$guid]['organisationName']) . "&type=" . urlencode($_SESSION[$guid]['installType']) . "&version=" . urlencode($version) . "&country=" . $_SESSION[$guid]['country'] . "&usersTotal=$usersTotal&usersFull=$usersFull'></iframe>" ;
 	}
 
 	//Proceed!
 	print "<div class='trail'>" ;
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . _(getModuleName($_GET["q"])) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('System Settings') . "</div>" ;
 	print "</div>" ;
+	
+	//Check for new version of Gibbon
+	print getCurrentVersion($guid, $connection2, $version) ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage="" ;

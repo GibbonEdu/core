@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
+//Module includes
+include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/update.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -67,6 +70,10 @@ else {
 	
 	$cuttingEdgeCode=getSettingByScope( $connection2, "System", "cuttingEdgeCode" ) ;
 	if ($cuttingEdgeCode!="Y") {
+		//Check for new version of Gibbon
+		print getCurrentVersion($guid, $connection2, $version) ;
+	
+	
 		if ($updateReturn=="success0") {
 			print "<p>" ;
 				print "<b>" . _('You seem to be all up to date, good work buddy!') . "</b>" ;
@@ -79,7 +86,7 @@ else {
 			print "</h3>" ;
 			print "<ol>" ;
 				print "<li>" . sprintf(_('You are currently using Gibbon v%1$s.'), $versionCode) . "</i></li>" ;
-				print "<li>" . sprintf(_('Check %1$s for a newer version of Gibbon.'), "<a target='_blank' href='http://www.gibbonedu.org'>gibbonedu.org</a>") . "</li>" ;
+				print "<li>" . sprintf(_('Check %1$s for a newer version of Gibbon.'), "<a target='_blank' href='https://gibbonedu.org/download'>the Gibbon download page</a>") . "</li>" ;
 				print "<li>" . _('Download the latest version, and unzip it on your computer.') . "</li>" ;
 				print "<li>" . _('Use an FTP client to upload the new files to your server, making sure not to overwrite the uploads folder and the config.php file.') . "</li>" ;
 				print "<li>" . _('Reload this page and follow the instructions to update your database to the latest version.') . "</li>" ;

@@ -259,6 +259,9 @@ General: tweaked appearance of warning, error and success messages:
 Timetable: tweaked school timetable colour to match other system colours
 	Edited file /modules/Timetable/moduleFunctions.php
 
+System Admin: added inbuilt version checking against gibbonedu.org. One step closer to automatic updates!
+	Edited files /modules/System Admin/updates.php, systemSettings.php
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)
