@@ -262,6 +262,11 @@ Timetable: tweaked school timetable colour to match other system colours
 System Admin: added inbuilt version checking against gibbonedu.org. One step closer to automatic updates!
 	Edited files /modules/System Admin/updates.php, systemSettings.php
 
+Application Form: added payment error emailing to admissions officer
+	Edited file /modules/Application Form/applicationFormProcess.php
+
+
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)
