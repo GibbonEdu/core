@@ -253,6 +253,12 @@ General: adjusted main menu style
 	Edited file /index.php
 	Edited file /themes/Default/css/main.css
 
+General: tweaked appearance of warning, error and success messages:
+	Edited file /themes/Default/css/main.css
+
+Timetable: tweaked school timetable colour to match other system colours
+	Edited file /modules/Timetable/moduleFunctions.php
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)

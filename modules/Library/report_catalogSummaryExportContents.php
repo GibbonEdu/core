@@ -147,7 +147,7 @@ else {
 					}
 					if ($resultType->rowCount()==1) {
 						$rowType=$resultType->fetch() ;
-						print $rowType["name"] ;
+						print _($rowType["name"]) ;
 					}
 				print "</td>" ;
 				print "<td>" ;
@@ -214,7 +214,7 @@ else {
 					foreach ($typeFields as $typeField) {
 						if (isset($fields[$typeField["name"]])) {
 							if ($fields[$typeField["name"]]!="") {
-								print "<b>" . $typeField["name"] . ": </b>" ;
+								print "<b>" . _($typeField["name"]) . ": </b>" ;
 								if (isset($fields[$typeField["name"]])) {
 									print $fields[$typeField["name"]] . " ; " ;
 								}

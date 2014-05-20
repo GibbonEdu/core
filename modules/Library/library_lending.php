@@ -124,7 +124,7 @@ else {
 							if ($rowType["gibbonLibraryTypeID"]==$gibbonLibraryTypeID) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowType["gibbonLibraryTypeID"] . "'>" . $rowType["name"] . "</option>" ;
+							print "<option $selected value='" . $rowType["gibbonLibraryTypeID"] . "'>" . _($rowType["name"]) . "</option>" ;
 						}
 					print "</select>" ;
 					?>
@@ -312,7 +312,7 @@ else {
 						}
 						if ($resultType->rowCount()==1) {
 							$rowType=$resultType->fetch() ;
-							print $rowType["name"] . "<br/>" ;
+							print _($rowType["name"]) . "<br/>" ;
 						}
 					print "</td>" ;
 					print "<td>" ;

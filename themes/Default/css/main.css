@@ -730,31 +730,31 @@ div.message a:hover {
 }
 
 div.error {
-	border: 1px solid #CC0000;
+	border-left: 6px solid #CC0000;
 	color: #CC0000; 
 	background-color: #F6CECB;
 	font-size: 11.5px;
 	padding: 5px;
-	margin: 10px 0px 5px 0px;
-	box-shadow: 2px 2px 2px rgba(50,50,50,0.4);
+	margin: 10px 0px 15px 0px;
+	box-shadow: 2px 2px 2px rgba(50,50,50,0.3);
 }
 div.warning {
-	border: 1px solid #D65602;
+	border-left: 6px solid #D65602;
 	color: #D65602; 
 	background-color: #FFD2A9;
 	font-size: 11.5px;
 	padding: 5px;
-	margin: 10px 0px 5px 0px;
-	box-shadow: 2px 2px 2px rgba(50,50,50,0.4);
+	margin: 10px 0px 15px 0px;
+	box-shadow: 2px 2px 2px rgba(50,50,50,0.3);
 }
 div.success {
-	border: 1px solid #390;
+	border-left: 6px solid #390;
 	color: #390; 
 	background-color: #D4F6DC;
 	font-size: 11.5px;
 	padding: 5px;
-	margin: 10px 0px 5px 0px;
-	box-shadow: 2px 2px 2px rgba(50,50,50,0.4);
+	margin: 10px 0px 15px 0px;
+	box-shadow: 2px 2px 2px rgba(50,50,50,0.3);
 }
 div.paginationTop {
 	text-align: right;

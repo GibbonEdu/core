@@ -147,7 +147,7 @@ else {
 				$fieldName=preg_replace("/ /", "", $field["name"]) ;
 				$output.="<tr>" ;
 					$output.="<td> " ;
-						$output.="<b>" . $field["name"] . "</b>" ;
+						$output.="<b>" . _($field["name"]) . "</b>" ;
 						if ($field["required"]=="Y") {
 							$output.=" *" ;
 						}

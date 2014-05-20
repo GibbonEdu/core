@@ -481,7 +481,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 								if ($_SESSION[$guid]["viewCalendarSchool"]=="Y") {
 									$checked="checked" ;
 								}
-								$output.="<span style='color: #fff; font-weight: bold; margin: 0px -2px 0px 5px; background-color: rgba(119,161,61,0.90); padding: 5px 7px; border: 1px solid #555'>School Calendar " ;
+								$output.="<span style='color: #fff; font-weight: bold; margin: 0px -2px 0px 5px; background-color: rgba(51,153,0,0.9); padding: 5px 7px; border: 1px solid #555'>School Calendar " ;
 								$output.="<input $checked style='margin-left: 3px' type='checkbox' name='schoolCalendar' onclick='submit();'/>" ;
 								$output.="</span>" ;
 							}
@@ -1083,7 +1083,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 			if ($eventsSchool!=FALSE) {
 				$height=0 ;
 				$top=0 ;
-				$bg="rgba(119,161,61,$schoolCalendarAlpha)" ;
+				$bg="rgba(51,153,0,$schoolCalendarAlpha)" ;
 				foreach ($eventsSchool AS $event) {
 					if (date("Y-m-d",$event[2])==date("Y-m-d", ($startDayStamp+(86400*$count)))) {
 						if ($event[1]=="All Day") {

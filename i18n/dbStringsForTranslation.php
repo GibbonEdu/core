@@ -935,10 +935,15 @@ _('Visual Arts SL') ;
 
 //gibbonExternalAssessmentField - category
 _('Target Grade') ;
+_('0_Target Grade') ;
 _('Final Grade') ;
+_('1_Final Grade') ;
 _('Scores') ;
+_('1_Scores') ;
 _('KS3 Target Grades') ;
+_('2_KS3 Target Grades') ;
 _('GCSE Target Grades') ;
+_('3_GCSE Target Grades') ;
 
 //gibbonFileExtension - type
 _('Document') ;
@@ -1011,6 +1016,53 @@ _('Computer') ;
 _('Electronics') ;
 _('Other') ;
 _('Print Publication') ;
+
+//gibbonLibraryType - fields
+_('Form Factor') ;
+_('Operating System') ;
+_('Serial Number') ;
+_('Model Name') ;
+_('Model ID') ;
+_('CPU Type') ;
+_('CPU Speed') ;
+_('Memory') ;
+_('Storage') ;
+_('Wireless MAC Address') ;
+_('Wired MAC Address') ;
+_('Accessories') ;
+_('Warranty Number') ;
+_('Warranty Expiry') ;
+_('Last Reinstall Date') ;
+_('Repair Log/Notes') ;
+_('Type') ;
+_('Format') ;
+_('Publisher') ;
+_('Publication Date') ;
+_('Country of Publication') ;
+_('Edition') ;
+_('ISBN10') ;
+_('ISBN13') ;
+_('Description') ;
+_('Subjects') ;
+_('Collection') ;
+_('Control Number') ;
+_('Cataloging Authority') ;
+_('Reader Age (Youngest)') ;
+_('Reader Age (Oldest)') ;
+_('Page Count') ;
+_('Height') ;
+_('Width') ;
+_('Thickness') ;
+_('Language') ;
+_('Link') ;
+_('Type') ;
+_('Serial Number') ;
+_('Model Name') ;
+_('Model ID') ;
+_('Accessories') ;
+_('Warranty Number') ;
+_('Warranty Expiry') ;
+_('Repair Log/Notes') ;
 
 //gibbonMedicalCondition - name
 _('Allergy - Animal') ;
@@ -2011,5 +2063,4 @@ _('Y10') ;
 _('Y11') ;
 _('Y12') ;
 _('Y13') ;
-
 ?>

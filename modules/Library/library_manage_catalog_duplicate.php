@@ -120,7 +120,7 @@ else {
 								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
-								<input readonly style='width: 300px' type='text' value='<?php print $row["type"] ?>' />
+								<input readonly style='width: 300px' type='text' value='<?php print _($row["type"]) ?>' />
 								<input type='hidden' name='gibbonLibraryTypeID' value='<?php print $row["gibbonLibraryTypeID"] ?>'>
 							</td>
 						</tr>
@@ -509,7 +509,7 @@ else {
 									$fieldName=preg_replace("/ /", "", $field["name"]) ;
 									print "<tr>" ;
 										print "<td> " ;
-											print "<b>" . $field["name"] . "</b>" ;
+											print "<b>" . _($field["name"]) . "</b>" ;
 											if ($field["required"]=="Y") {
 												print " *" ;
 											}

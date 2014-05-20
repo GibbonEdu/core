@@ -256,7 +256,7 @@ else {
 									if ($rowSelect["gibbonLibraryTypeID"]==$category) {
 										$selected="selected" ;
 									}
-									print "<option $selected value='" . $rowSelect["gibbonLibraryTypeID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+									print "<option $selected value='" . $rowSelect["gibbonLibraryTypeID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 									$fields=unserialize($rowSelect["fields"]) ;
 										foreach ($fields as $field) {
 										if ($field["name"]=="Collection" AND $field["type"]=="Select") {
@@ -444,7 +444,7 @@ else {
 											if($fields[$typeField["name"]]!="") {
 												print "<tr>" ;
 													print "<td style='vertical-align: top; width: 200px'>" ;
-														print "<b>" . $typeField["name"] . "</b>" ;
+														print "<b>" . ($typeField["name"]) . "</b>" ;
 													print "</td>" ;
 													print "<td style='vertical-align: top'>" ;
 														if ($typeField["type"]=="URL") {

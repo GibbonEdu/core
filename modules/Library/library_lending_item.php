@@ -127,7 +127,7 @@ else {
 				print "<tr>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Type') . "</span><br/>" ;
-						print "<i>" . $row["type"] . "</i>" ;
+						print "<i>" . _($row["type"]) . "</i>" ;
 					print "</td>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('ID') . "</span><br/>" ;
