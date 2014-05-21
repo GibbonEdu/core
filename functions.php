@@ -1420,16 +1420,16 @@ function sidebar($connection2, $guid) {
 						print "</td>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
 							print "<td style='text-align: center'>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&viewBy=class'><img style='margin-top: 3px' title='" . _('View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.gif'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&viewBy=class'><img style='margin-top: 3px' title='" . _('View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.png'/></a> " ;
 							print "</td>" ;
 						}
 						if (getHighestGroupedAction($guid, "/modules/Markbook/markbook_view.php", $connection2)=="View Markbook_allClassesAllData") {
 							print "<td style='text-align: center'>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img style='margin-top: 3px' title='" . _('View Markbook') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.gif'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img style='margin-top: 3px' title='" . _('View Markbook') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.png'/></a> " ;
 							print "</td>" ;
 						}
 						print "<td style='text-align: center'>" ;
-							print "<a href='index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&subpage=Participants'><img title='" . _('Participants') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a>" ;
+							print "<a href='index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&subpage=Participants'><img title='" . _('Participants') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
 						print "</td>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
 							print "<td style='text-align: center'>" ;
@@ -2136,6 +2136,8 @@ function setLanguageSession($guid, $row) {
 	$_SESSION[$guid]["i18n"]["dateFormatPHP"]=$row["dateFormatPHP"] ;
 	$_SESSION[$guid]["i18n"]["currencyCode"]=$row["currencyCode"] ;
 	$_SESSION[$guid]["i18n"]["currencySymbol"]=$row["currencySymbol"] ;
+	$_SESSION[$guid]["i18n"]["maintainerName"]=$row["maintainerName"] ;
+	$_SESSION[$guid]["i18n"]["maintainerWebsite"]=$row["maintainerWebsite"] ;
 }
 
 //Gets the desired setting, specified by name and scope.

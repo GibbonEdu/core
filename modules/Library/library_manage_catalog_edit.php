@@ -277,7 +277,7 @@ else {
 							<script type="text/javascript">
 								var imageLink=new LiveValidation('imageLink');
 								imageLink.add(Validate.Presence);
-								imageLink.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
+								imageLink.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
 								<?php if ($row["imageType"]!="Link") { print "imageLink.disable();" ; } ?>
 							</script>	
 						</td>

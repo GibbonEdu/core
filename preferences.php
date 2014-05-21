@@ -218,7 +218,7 @@ if ($result->rowCount()==1) {
 				<input name="calendarFeedPersonal" id="calendarFeedPersonal" value="<?php print $row["calendarFeedPersonal"] ?>" type="text" style="width: 300px">
 				<script type="text/javascript">
 					var calendarFeedPersonal=new LiveValidation('calendarFeedPersonal');
-					calendarFeedPersonal.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
+					calendarFeedPersonal.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
 				</script>	
 			</td>
 		</tr>
@@ -236,7 +236,7 @@ if ($result->rowCount()==1) {
 					<input name="personalBackground" id="personalBackground" value="<?php print $row["personalBackground"] ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var personalBackground=new LiveValidation('personalBackground');
-						personalBackground.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
+						personalBackground.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
 					</script>	
 				</td>
 			</tr>

@@ -18,8 +18,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
+if (file_exists("./config.php")) {
+	include "./config.php" ;
+}
+else { //no config, so go to installer
+	$URL="./installer/install.php" ;
+	header("Location: {$URL}");
+}
 include "./functions.php" ;
-include "./config.php" ;
 include "./version.php" ;
 
 //New PDO DB connection
@@ -1292,7 +1298,7 @@ else {
 															print "</h4>" ;
 														}
 														print "<div class='linkTop' style='margin-top: 0px'>" ;
-														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'><img title='" . _('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.gif'/></a> " ;
+														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'><img title='" . _('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a> " ;
 														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/indexExport.php?gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'><img title='" . _('Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
 														print "</div>" ;
 														
@@ -1319,7 +1325,7 @@ else {
 													
 													if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_add.php")) {
 														print "<div class='linkTop'>" ;
-															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='><img style='margin: 0 0 -4px 3px' title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='><img style='margin: 0 0 -4px 3px' title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 															$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
 															if ($policyLink!="") {
 																print " | <a target='_blank' href='$policyLink'>" . _('View Behaviour Policy') . "</a>" ;
@@ -1467,7 +1473,19 @@ else {
 					</div>
 					<div id="footer">
 						<?php print _("Powered by") ?> <a href="http://gibbonedu.org">Gibbon</a> v<?php print $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
-						<span style='font-size: 90%; '><?php print _("Created under the") ?> <a href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a></span><br/>
+						<span style='font-size: 90%; '>
+							<?php print _("Created under the") ?> <a href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a>
+							<?php
+								if ($_SESSION[$guid]["i18n"]["maintainerName"]!="" AND $_SESSION[$guid]["i18n"]["maintainerName"]!="Gibbon") {
+									if ($_SESSION[$guid]["i18n"]["maintainerWebsite"]!="") {
+										print " . " . _("Translation led by") . " <a href='" . $_SESSION[$guid]["i18n"]["maintainerWebsite"] . "'>" . $_SESSION[$guid]["i18n"]["maintainerName"] . "</a>" ;
+									}
+									else {
+										print " . " . _("Translation led by") . " " . $_SESSION[$guid]["i18n"]["maintainerName"] ;
+									}
+								}
+							?>
+						</span><br/>
 						<img style='z-index: 100; margin-bottom: -57px; margin-right: -50px' alt='Logo Small' src='./themes/Default/img/logoFooter.png'/>
 					</div>
 				</div>

@@ -1327,7 +1327,7 @@ else {
 						if ($resultMedical->rowCount()!=1) {
 							if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_manage_add.php")==TRUE) {
 								print "<div class='linkTop'>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_add.php'>Add Medical Form<img style='margin: 0 0 -4px 3px' title='Add Medical Form' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_add.php'>Add Medical Form<img style='margin: 0 0 -4px 3px' title='Add Medical Form' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> " ;
 								print "</div>" ;
 							}
 							
@@ -1494,7 +1494,7 @@ else {
 							}
 							
 							print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=$search&subpage=Notes'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=$search&subpage=Notes'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 							print "</div>" ;
 							
 							if ($result->rowCount()<1) {

@@ -94,7 +94,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 					$output.="</td>" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
 						$output.="<td style='text-align: center'>" ;
-							$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&viewBy=class'><img style='margin-top: 3px' title='" . _('View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.gif'/></a> " ;
+							$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&viewBy=class'><img style='margin-top: 3px' title='" . _('View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.png'/></a> " ;
 						$output.="</td>" ;
 					}
 					if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {

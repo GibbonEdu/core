@@ -334,7 +334,7 @@ else {
 								<input name="url1" id="url1" maxlength=255 value="" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var url1=new LiveValidation('url1');
-									url1.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
+									url1.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
 								</script>	
 							</td>
 						</tr>
@@ -402,7 +402,7 @@ else {
 								<input name="url2" id="url2" maxlength=255 value="" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var url2=new LiveValidation('url2');
-									url2.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
+									url2.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
 								</script>	
 							</td>
 						</tr>
@@ -457,7 +457,7 @@ else {
 								<input name="url3" id="url3" maxlength=255 value="" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var url3=new LiveValidation('url3');
-									url3.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
+									url3.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
 								</script>	
 							</td>
 						</tr>

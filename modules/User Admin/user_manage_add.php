@@ -583,7 +583,7 @@ else {
 					<input name="website" id="website" maxlength=255 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var text=new LiveValidation('text');
-						text.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
+						text.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
 					</script>	
 				</td>
 			</tr>

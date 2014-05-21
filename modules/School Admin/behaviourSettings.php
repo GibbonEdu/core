@@ -147,7 +147,7 @@ else {
 					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>"style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http://" } );
+						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
 					</script>	
 				</td>
 			</tr>

@@ -426,7 +426,7 @@ else {
 										}
 										if ($resultMarkbook->rowCount()==1) {
 											$rowMarkbook=$resultMarkbook->fetch() ;
-											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $rowMarkbook["gibbonMarkbookColumnID"] . "'><img style='margin: 0 0 -4px 3px' title='" . _('Linked Markbook') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.gif'/></a> | " ;
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $rowMarkbook["gibbonMarkbookColumnID"] . "'><img style='margin: 0 0 -4px 3px' title='" . _('Linked Markbook') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.png'/></a> | " ;
 										}
 										print "<input type='checkbox' name='confidentialPlan' class='confidentialPlan' value='Yes' />" ;
 										print "<span title='" . _('Includes student data & teacher\'s notes') . "' style='font-size: 85%; font-weight: normal; font-style: italic'> " . _('Show Confidential Data') . "</span>" ;
@@ -1292,7 +1292,7 @@ else {
 								print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top; max-width: 752px!important' colspan=3>" ;
 								
 									print "<div style='margin: 0px' class='linkTop'>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params'><img title='" . _('Refresh') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/refresh.png'/></a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $gibbonPersonID . "'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a> " ;						
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params'><img title='" . _('Refresh') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/refresh.png'/></a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $gibbonPersonID . "'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> " ;						
 									print "</div>" ;
 							
 									print "<div style='margin-bottom: 0px' class='success'>" ;
