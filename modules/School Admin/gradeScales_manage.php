@@ -133,13 +133,13 @@ else {
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
 						print "<b>" . $row["name"] . "</b><br/>" ;
-						print $row["nameShort"] ;
+						print _($row["nameShort"]) ;
 					print "</td>" ;
 					print "<td>" ;
-						print $row["usage"] ;
+						print _($row["usage"]) ;
 					print "</td>" ;
 					print "<td>" ;
-						print $row["active"] ;
+						print _($row["active"]) ;
 					print "</td>" ;
 					print "<td>" ;
 						print $row["numeric"] ;

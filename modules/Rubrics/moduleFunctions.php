@@ -108,8 +108,8 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="") {
 								}
 								else {
 									$rowOutcome=$resultOutcome->fetch() ;
-									$output.="<b>" . $rowOutcome["descriptor"] . " (" . $rowOutcome["value"] . ")</b><br/>" ;
-									$output.="<span style='font-size: 85%'><i>" . $scaleName . " Scale</i></span><br/>" ;
+									$output.="<b>" . _($rowOutcome["descriptor"]) . " (" . _($rowOutcome["value"]) . ")</b><br/>" ;
+									$output.="<span style='font-size: 85%'><i>" . _($scaleName) . " Scale</i></span><br/>" ;
 								}
 							}
 							else {
@@ -336,7 +336,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 									}
 									else {
 										$rowOutcome=$resultOutcome->fetch() ;
-										$output.="<b>" . $rowOutcome["descriptor"] . " (" . $rowOutcome["value"] . ")</b><br/>" ;
+										$output.="<b>" . _($rowOutcome["descriptor"]) . " (" . _($rowOutcome["value"]) . ")</b><br/>" ;
 										//Try to get scale name
 										if ($row["gibbonScaleID"]!="") { 
 											try {
@@ -354,7 +354,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 											}
 										}
 										if ($rowScale["name"]!="") {
-											$output.="<span style='font-size: 85%'><i>" . $rowScale["name"] . " Scale</i></span><br/>" ;
+											$output.="<span style='font-size: 85%'><i>" . _($rowScale["name"]) . " Scale</i></span><br/>" ;
 										}
 									}
 								}

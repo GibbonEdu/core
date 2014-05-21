@@ -695,7 +695,7 @@ else {
 		$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
 				
 		//Check return values to see if we can proceed
-		if ($paymentToken=="" OR $paymentPayerID=="" OR $gibbonApplicationFormID=="" OR $applicationFee=="") {
+		if ($paymentToken=="" OR $gibbonApplicationFormID=="" OR $applicationFee=="") {
 			$body=_('Payment via PayPal may or may not have been successful, but has not been recorded either way due to a system error. Please check your PayPal account for details. The following may be useful:') . "\n\nPayment Token: $paymentToken\n\nPayer ID: $paymentPayerID\n\nApplication Form ID: $gibbonApplicationFormID\n\nApplication Fee: $applicationFee\n\n" . $_SESSION[$guid]["systemName"] . " " . _('Administrator');
 			mail($to, $subject, $body, $headers) ;
 			

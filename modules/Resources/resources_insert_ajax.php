@@ -245,7 +245,7 @@ else {
 										if ($rowPurpose["gibbonYearGroupID"]==$gibbonYearGroupID) {
 											$selected="selected" ;
 										}
-										$output.="<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . $rowPurpose["name"] . "</option>" ;
+										$output.="<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . _($rowPurpose["name"]) . "</option>" ;
 									}
 								$output.="</select>" ;
 							$output.="</td>" ;

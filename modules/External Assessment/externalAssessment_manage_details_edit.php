@@ -215,13 +215,13 @@ else {
 										while ($rowSelect=$resultSelect->fetch()) {
 											$descriptor="" ;
 											if ($rowSelect["value"]!=$rowSelect["descriptor"]) {
-												$descriptor=" - " . htmlPrep($rowSelect["descriptor"]) ;
+												$descriptor=" - " . htmlPrep(_($rowSelect["descriptor"])) ;
 											}
 											$selected="" ;
 											if ($rowSelect["gibbonScaleGradeID"]==$rowField["gibbonScaleGradeID"]) {
 												$selected="selected" ;
 											}
-											print "<option $selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep($rowSelect["value"]) . $descriptor . "</option>" ;
+											print "<option $selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(_($rowSelect["value"])) . $descriptor . "</option>" ;
 										}
 										?>				
 									</select>
@@ -242,13 +242,13 @@ else {
 										while ($rowSelect=$resultSelect->fetch()) {
 											$descriptor="" ;
 											if ($rowSelect["value"]!=$rowSelect["descriptor"]) {
-												$descriptor=" - " . htmlPrep($rowSelect["descriptor"]) ;
+												$descriptor=" - " . htmlPrep(_($rowSelect["descriptor"])) ;
 											}
 											$selected="" ;
 											if ($rowSelect["gibbonScaleGradeID"]==$rowField["gibbonScaleGradeIDPrimaryAssessmentScale"]) {
 												$selected="selected" ;
 											}
-											print "<option $selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep($rowSelect["value"]) . $descriptor . "</option>" ;
+											print "<option $selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(_($rowSelect["value"])) . $descriptor . "</option>" ;
 										}
 										?>				
 									</select>

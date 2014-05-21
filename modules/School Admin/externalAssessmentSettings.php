@@ -106,7 +106,7 @@ else {
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
-						print $row["name"] ;
+						print _($row["name"]) ;
 						print "<input type='hidden' name='gibbonYearGroupID[]' value='" . $row["gibbonYearGroupID"] . "'>" ;
 					print "</td>" ;
 					print "<td>" ;

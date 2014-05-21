@@ -357,7 +357,7 @@ else {
 											}
 											if ($resultEntry->rowCount()>=1) {
 												$rowEntry=$resultEntry->fetch() ;
-												print $rowEntry["value"] ;
+												print _($rowEntry["value"]) ;
 											}	
 										print "</td>" ;
 									
@@ -463,10 +463,10 @@ else {
 													$descriptor="" ;
 													while ($rowSelect=$resultSelect->fetch()) {
 														if ($rowEntry["attainmentValue"]==$rowSelect["value"]) {
-															print "<option selected value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep($rowSelect["value"]) . "</option>" ;
+															print "<option selected value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
 														}
 														else {
-															print "<option value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep($rowSelect["value"]) . "</option>" ;
+															print "<option value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
 														}
 													}			
 												print "</select>" ;
@@ -490,10 +490,10 @@ else {
 													$descriptor="" ;
 													while ($rowSelect=$resultSelect->fetch()) {
 														if ($rowEntry["effortValue"]==$rowSelect["value"]) {
-															print "<option selected value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep($rowSelect["value"]) . "</option>" ;
+															print "<option selected value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
 														}
 														else {
-															print "<option value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep($rowSelect["value"]) . "</option>" ;
+															print "<option value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
 														}
 													}
 												print "</select>" ;

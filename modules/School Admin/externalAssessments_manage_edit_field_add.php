@@ -151,7 +151,7 @@ else {
 								catch(PDOException $e) { }
 								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								while ($rowSelect=$resultSelect->fetch()) {
-									print "<option value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+									print "<option value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 								}
 								?>				
 							</select>
@@ -185,7 +185,7 @@ else {
 							}
 							else {
 								for ($i=0; $i<count($yearGroups); $i=$i+2) {
-									print $yearGroups[($i+1)] . " <input type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
+									print _($yearGroups[($i+1)]) . " <input type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
 									print "<input type='hidden' name='gibbonYearGroupID" . ($i)/2 . "' value='" . $yearGroups[$i] . "'>" ;
 								}
 							}

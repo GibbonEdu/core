@@ -103,7 +103,7 @@ else {
 								}
 								if ($resultDetail->rowCount()==1) {
 									$rowDetail=$resultDetail->fetch() ;
-									print $rowDetail["name"] ;
+									print _($rowDetail["name"]) ;
 								}
 							print "</td>" ;
 							print "<td style='width: 34%; vertical-align: top'>" ;
@@ -365,7 +365,7 @@ else {
 									}
 									if ($resultDetail->rowCount()==1) {
 										$rowDetail=$resultDetail->fetch() ;
-										print $rowDetail["name"] ;
+										print _($rowDetail["name"]) ;
 										$dayTypeOptions=getSettingByScope($connection2, 'User Admin', 'dayTypeOptions') ;
 										if ($dayTypeOptions!="") {
 											print " (" . $row["dayType"] . ")" ;
@@ -791,7 +791,7 @@ else {
 									}
 									if ($resultDetail->rowCount()==1) {
 										$rowDetail=$resultDetail->fetch() ;
-										print $rowDetail["name"] ;
+										print _($rowDetail["name"]) ;
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
@@ -1844,7 +1844,7 @@ else {
 														}
 														if ($resultAttainment->rowCount()==1) {
 															$rowAttainment=$resultAttainment->fetch() ;
-															$attainmentExtra="<br/>" . $rowAttainment["usage"] ;
+															$attainmentExtra="<br/>" . _($rowAttainment["usage"]) ;
 														}
 														$styleAttainment="style='font-weight: bold'" ;
 														if ($rowEntry["attainmentConcern"]=="Y" AND $showParentAttainmentWarning=="Y") {
@@ -1859,7 +1859,7 @@ else {
 															}
 														print "</div>" ;
 														if ($rowEntry["attainmentValue"]!="") {
-															print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep($rowEntry["attainmentDescriptor"]) . "</b>" . $attainmentExtra . "</div>" ;
+															print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowEntry["attainmentDescriptor"])) . "</b>" . _($attainmentExtra) . "</div>" ;
 														}
 													print "</td>" ;
 													print "<td style='text-align: center'>" ;
@@ -1876,7 +1876,7 @@ else {
 	
 														if ($resultEffort->rowCount()==1) {
 															$rowEffort=$resultEffort->fetch() ;
-															$effortExtra="<br/>" . $rowEffort["usage"] ;
+															$effortExtra="<br/>" . _($rowEffort["usage"]) ;
 														}
 														$styleEffort="style='font-weight: bold'" ;
 														if ($rowEntry["effortConcern"]=="Y" AND $showParentEffortWarning=="Y") {
@@ -1888,7 +1888,7 @@ else {
 															}
 														print "</div>" ;
 														if ($rowEntry["effortValue"]!="") {
-															print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep($rowEntry["effortDescriptor"]) . "</b>" . $effortExtra . "</div>" ;
+															print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowEntry["effortDescriptor"])) . "</b>" . _($effortExtra) . "</div>" ;
 														}
 													print "</td>" ;
 													print "<td>" ;

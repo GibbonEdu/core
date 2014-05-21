@@ -279,7 +279,7 @@ else {
 									if ($row["gibbonYearGroupIDEntry"]==$rowSelect["gibbonYearGroupID"]) {
 										$selected="selected" ;
 									}
-									print "<option $selected value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+									print "<option $selected value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 								}
 								?>				
 							</select>

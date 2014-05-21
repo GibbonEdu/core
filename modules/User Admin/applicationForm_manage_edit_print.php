@@ -113,7 +113,7 @@ else {
 						}
 						if ($resultSelect->rowCount()==1) {
 							$rowSelect=$resultSelect->fetch() ;
-							print "<i>" . $rowSelect["name"] ;
+							print "<i>" . _($rowSelect["name"]) ;
 							$dayTypeOptions=getSettingByScope($connection2, 'User Admin', 'dayTypeOptions') ;
 							if ($dayTypeOptions!="") {
 								print " (" . $row["dayType"] . ")" ;

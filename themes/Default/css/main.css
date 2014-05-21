@@ -733,8 +733,8 @@ div.error {
 	border-left: 6px solid #CC0000;
 	color: #CC0000; 
 	background-color: #F6CECB;
-	font-size: 11.5px;
-	padding: 5px;
+	font-size: 12px;
+	padding: 10px;
 	margin: 10px 0px 15px 0px;
 	box-shadow: 2px 2px 2px rgba(50,50,50,0.3);
 }
@@ -742,8 +742,8 @@ div.warning {
 	border-left: 6px solid #D65602;
 	color: #D65602; 
 	background-color: #FFD2A9;
-	font-size: 11.5px;
-	padding: 5px;
+	font-size: 12px;
+	padding: 10px;
 	margin: 10px 0px 15px 0px;
 	box-shadow: 2px 2px 2px rgba(50,50,50,0.3);
 }

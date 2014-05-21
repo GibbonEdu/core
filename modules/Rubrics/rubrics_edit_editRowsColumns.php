@@ -155,7 +155,7 @@ else {
 								</td>
 							</tr>
 							
-							<?php//ROWS!?>
+							<?php //ROWS!?>
 							<tr class='break'>
 								<td colspan=2>
 									<h3><?php print _('Rows') ?></h3>
@@ -292,7 +292,7 @@ else {
 							}
 							?>
 							
-							<?php//COLUMNS!?>
+							<?php //COLUMNS!?>
 							<tr class='break'>
 								<td colspan=2>
 									<h3><?php print _('Columns') ?></h3>
@@ -356,10 +356,10 @@ else {
 													catch(PDOException $e) { }
 													while ($rowSelect=$resultSelect->fetch()) {
 														if ($rowColumns["gibbonScaleGradeID"]==$rowSelect["gibbonScaleGradeID"]) {
-															print "<option selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep($rowSelect["value"]) . " - " . htmlPrep($rowSelect["descriptor"]) . "</option>" ;
+															print "<option selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(_($rowSelect["value"])) . " - " . htmlPrep(_($rowSelect["descriptor"])) . "</option>" ;
 														}
 														else {
-															print "<option value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep($rowSelect["value"]) . " - " . htmlPrep($rowSelect["descriptor"]) . "</option>" ;
+															print "<option value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(_($rowSelect["value"])) . " - " . htmlPrep(_($rowSelect["descriptor"])) . "</option>" ;
 														}
 													}
 												print "</select>" ;

@@ -329,10 +329,10 @@ else {
 											print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 											while ($rowSelect=$resultSelect->fetch()) {
 												if ($row2["gibbonScaleIDAttainment"]==$rowSelect["gibbonScaleID"]) {
-													print "<option selected value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+													print "<option selected value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 												}
 												else {
-													print "<option value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+													print "<option value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 												}
 											}
 											?>				
@@ -438,10 +438,10 @@ else {
 											print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 											while ($rowSelect=$resultSelect->fetch()) {
 												if ($row2["gibbonScaleIDEffort"]==$rowSelect["gibbonScaleID"]) {
-													print "<option selected value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+													print "<option selected value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 												}
 												else {
-													print "<option value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+													print "<option value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 												}
 											}
 											?>				

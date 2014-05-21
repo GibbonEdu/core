@@ -94,7 +94,7 @@ else {
 							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" value="<?php print _($row["name"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -107,7 +107,7 @@ else {
 							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" value="<?php print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" value="<?php print htmlPrep(_($row["nameShort"])) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);

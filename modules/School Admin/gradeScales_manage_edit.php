@@ -110,7 +110,7 @@ else {
 						<span style="font-size: 90%"><i><?php print _('Must be unique for this school year.') ?></i></span>
 					</td>
 					<td class="right">
-						<input name="name" id="name" maxlength=40 value="<?php if (isset($row["name"])) { print htmlPrep($row["name"]) ; } ?>" type="text" style="width: 300px">
+						<input name="name" id="name" maxlength=40 value="<?php if (isset($row["name"])) { print htmlPrep(_($row["name"])) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var name2=new LiveValidation('name');
 							name2.add(Validate.Presence);
@@ -123,7 +123,7 @@ else {
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
-						<input name="nameShort" id="nameShort" maxlength=4 value="<?php if (isset($row["nameShort"])) { print htmlPrep($row["nameShort"]) ; } ?>" type="text" style="width: 300px">
+						<input name="nameShort" id="nameShort" maxlength=4 value="<?php if (isset($row["nameShort"])) { print htmlPrep(_($row["nameShort"])) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var nameShort=new LiveValidation('nameShort');
 							nameShort.add(Validate.Presence);
@@ -136,7 +136,7 @@ else {
 						<span style="font-size: 90%"><i><?php print _('Brief description of how scale is used.') ?></i></span>
 					</td>
 					<td class="right">
-						<input name="usage" id="usage" maxlength=50 value="<?php if (isset($row["usage"])) { print $row["usage"] ; } ?>" type="text" style="width: 300px">
+						<input name="usage" id="usage" maxlength=50 value="<?php if (isset($row["usage"])) { print htmlPrep(_($row["usage"])) ; } ?>" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var usage=new LiveValidation('usage');
 							usage.add(Validate.Presence);
@@ -261,10 +261,10 @@ else {
 						//COLOR ROW BY STATUS!
 						print "<tr class=$rowNum>" ;
 							print "<td>" ;
-								print $row["value"] ;
+								print _($row["value"]) ;
 							print "</td>" ;
 							print "<td>" ;
-								print $row["descriptor"] ;
+								print _($row["descriptor"]) ;
 							print "</td>" ;
 							print "<td>" ;
 								print $row["sequenceNumber"] ;

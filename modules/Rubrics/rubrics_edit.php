@@ -315,7 +315,7 @@ else {
 											if (is_numeric(strpos($row["gibbonYearGroupIDList"], $yearGroups[$i]))) {
 												$checked="checked " ;
 											}
-											print $yearGroups[($i+1)] . " <input $checked type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
+											print _($yearGroups[($i+1)]) . " <input $checked type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
 											print "<input type='hidden' name='gibbonYearGroupID" . ($i)/2 . "' value='" . $yearGroups[$i] . "'>" ;
 										}
 									}
@@ -325,7 +325,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><?php print _('Grading Scale') ?></b><br/>
+									<b><?php print _('Grade Scale') ?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 								</td>
 								<td class="right">
@@ -351,7 +351,7 @@ else {
 									}
 									else {
 										?>
-										<input readonly name="scale" id="scale" value="<?php print $rowSelect["name"] ?>" type="text" style="width: 300px">
+										<input readonly name="scale" id="scale" value="<?php print _($rowSelect["name"]) ?>" type="text" style="width: 300px">
 										<input name="gibbonScaleID" id="gibbonScaleID" value="<?php print $rowSelect["gibbonScaleID"] ?>" type="hidden" style="width: 300px">
 										<?php
 									}

@@ -204,7 +204,7 @@ else {
 										print "<div style='font-weight: bold; font-size: 30px'>" .$row["officialName"] . "</div><br/>" ;
 										print "<b>" . _('DOB') . "</b>: <span style='float: right'><i>" . dateConvertBack($guid, $row["dob"]) . "</i></span><br/>" ;
 										print "<b>" . $_SESSION[$guid]["organisationNameShort"] . " " . _('ID') . "</b>: <span style='float: right'><i>" . $row["studentID"] . "</i></span><br/>" ;
-										print "<b>" . _('Year/Roll') . "</b>: <span style='float: right'><i>" . $row["year"] . " / " . $row["roll"] . "</i></span><br/>" ;
+										print "<b>" . _('Year/Roll') . "</b>: <span style='float: right'><i>" . _($row["year"]) . " / " . $row["roll"] . "</i></span><br/>" ;
 										print "<b>" . _('School Year') . "</b>: <span style='float: right'><i>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</i></span><br/>" ;
 									print "</div>" ;
 								print "</td>" ;

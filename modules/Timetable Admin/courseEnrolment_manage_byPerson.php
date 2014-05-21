@@ -241,7 +241,7 @@ else {
 							}
 						print "</td>" ;
 						print "<td>" ;
-							print $row["yearGroup"] ;
+							print _($row["yearGroup"]) ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["rollGroup"] ;

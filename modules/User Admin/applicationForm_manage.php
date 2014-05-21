@@ -247,7 +247,7 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							print substr($row["dob"],0,4) . "<br/>" ;
-							print "<span style='font-style: italic; font-size: 85%'>" . $row["name"] . "</span>" ;
+							print "<span style='font-style: italic; font-size: 85%'>" . _($row["name"]) . "</span>" ;
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["gibbonFamilyID"]!="") {

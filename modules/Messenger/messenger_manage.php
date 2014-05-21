@@ -244,7 +244,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . _($rowTarget["name"]) . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Applicants") {

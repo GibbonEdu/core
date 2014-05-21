@@ -81,7 +81,7 @@ else {
 					}
 					if ($resultDetail->rowCount()==1) {
 						$rowDetail=$resultDetail->fetch() ;
-						print "<i>" . $rowDetail["name"] . "</i>" ;
+						print "<i>" . _($rowDetail["name"]) . "</i>" ;
 					}
 				print "</td>" ;
 				print "<td style='width: 34%; vertical-align: top'>" ;

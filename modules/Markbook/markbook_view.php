@@ -550,7 +550,7 @@ else {
 												}
 												if ($resultEntry->rowCount()>=1) {
 													$rowEntry=$resultEntry->fetch() ;
-													print "<a title='" . $rowEntry["descriptor"] . " | " . _('Test taken on') . " " . dateConvertBack($guid, $rowEntry["date"]) . "' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&subpage=External Assessment'>" . $rowEntry["value"] . "</a>" ;
+													print "<a title='" . _($rowEntry["descriptor"]) . " | " . _('Test taken on') . " " . dateConvertBack($guid, $rowEntry["date"]) . "' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&subpage=External Assessment'>" . _($rowEntry["value"]) . "</a>" ;
 												}	
 											print "</td>" ;
 										}
@@ -567,7 +567,7 @@ else {
 											}
 											if ($resultEntry->rowCount()>=1) {
 												$rowEntry=$resultEntry->fetch() ;
-												print $rowEntry["value"] ;
+												print _($rowEntry["value"]) ;
 											}	
 										print "</td>" ;
 									
@@ -592,7 +592,7 @@ else {
 														$styleAttainment="style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'" ;
 													}
 													print "<td style='border-left: 2px solid #666; text-align: center'>" ;
-														$attainment=$rowEntry["attainmentValue"] ;
+														$attainment=_($rowEntry["attainmentValue"]) ;
 														if ($rowEntry["attainmentValue"]=="Complete") {
 															$attainment=_("Com") ;
 														}
@@ -609,7 +609,7 @@ else {
 													if ($rowEntry["effortConcern"]=="Y") {
 														$styleEffort="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
 													}
-													$effort=$rowEntry["effortValue"] ;
+													$effort=_($rowEntry["effortValue"]) ;
 													if ($rowEntry["effortValue"]=="Complete") {
 														$effort=_("Com") ;
 													}
@@ -814,7 +814,7 @@ else {
 									if ($rowSelect["gibbonSchoolYearID"]==$filter) {
 										$selected="selected" ;
 									}
-									print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . $rowSelect["year"] . " (" . $rowSelect["yearGroup"] . ")</option>" ;
+									print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . $rowSelect["year"] . " (" . _($rowSelect["yearGroup"]) . ")</option>" ;
 								}
 							print "</select>" ;
 							?>
@@ -957,7 +957,7 @@ else {
 									}
 									if ($resultAttainment->rowCount()==1) {
 										$rowAttainment=$resultAttainment->fetch() ;
-										$attainmentExtra="<br/>" . $rowAttainment["usage"] ;
+										$attainmentExtra="<br/>" . _($rowAttainment["usage"]) ;
 									}
 									$styleAttainment="style='font-weight: bold'" ;
 									if ($rowEntry["attainmentConcern"]=="Y" AND $showStudentAttainmentWarning=="Y") {
@@ -972,7 +972,7 @@ else {
 										}
 									print "</div>" ;
 									if ($rowEntry["attainmentValue"]!="") {
-										print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep($rowEntry["attainmentDescriptor"]) . "</b>" . $attainmentExtra . "</div>" ;
+										print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowEntry["attainmentDescriptor"])) . "</b>" . _($attainmentExtra) . "</div>" ;
 									}
 								print "</td>" ;
 								print "<td style='text-align: center'>" ;
@@ -988,7 +988,7 @@ else {
 									}
 									if ($resultEffort->rowCount()==1) {
 										$rowEffort=$resultEffort->fetch() ;
-										$effortExtra="<br/>" . $rowEffort["usage"] ;
+										$effortExtra="<br/>" . _($rowEffort["usage"]) ;
 									}
 									$styleEffort="style='font-weight: bold'" ;
 									if ($rowEntry["effortConcern"]=="Y" AND $showStudentEffortWarning=="Y") {
@@ -1000,7 +1000,7 @@ else {
 										}
 									print "</div>" ;
 									if ($rowEntry["effortValue"]!="") {
-										print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep($rowEntry["effortDescriptor"]) . "</b>" . $effortExtra . "</div>" ;
+										print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowEntry["effortDescriptor"])) . "</b>" . _($effortExtra) . "</div>" ;
 									}
 								print "</td>" ;
 								print "<td>" ;
@@ -1304,7 +1304,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b>School Year</b><br/>
+										<b><?php print _('School Year') ?></b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
@@ -1325,7 +1325,7 @@ else {
 												if ($rowSelect["gibbonSchoolYearID"]==$filter) {
 													$selected="selected" ;
 												}
-												print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . $rowSelect["year"] . " (" . $rowSelect["yearGroup"] . ")</option>" ;
+												print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . $rowSelect["year"] . " (" . _($rowSelect["yearGroup"]) . ")</option>" ;
 											}
 										print "</select>" ;
 										?>
@@ -1466,7 +1466,7 @@ else {
 												}
 												if ($resultAttainment->rowCount()==1) {
 													$rowAttainment=$resultAttainment->fetch() ;
-													$attainmentExtra="<br/>" . $rowAttainment["usage"] ;
+													$attainmentExtra="<br/>" . _($rowAttainment["usage"]) ;
 												}
 												$styleAttainment="style='font-weight: bold'" ;
 												if ($rowEntry["attainmentConcern"]=="Y" AND $showParentAttainmentWarning=="Y") {
@@ -1481,7 +1481,7 @@ else {
 													}
 												print "</div>" ;
 												if ($rowEntry["attainmentValue"]!="") {
-													print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep($rowEntry["attainmentDescriptor"]) . "</b>" . $attainmentExtra . "</div>" ;
+													print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowEntry["attainmentDescriptor"])) . "</b>" . _($attainmentExtra) . "</div>" ;
 												}
 											print "</td>" ;
 											print "<td style='text-align: center'>" ;
@@ -1497,7 +1497,7 @@ else {
 												}
 												if ($resultEffort->rowCount()==1) {
 													$rowEffort=$resultEffort->fetch() ;
-													$effortExtra="<br/>" . $rowEffort["usage"] ;
+													$effortExtra="<br/>" . _($rowEffort["usage"]) ;
 												}
 												$styleEffort="style='font-weight: bold'" ;
 												if ($rowEntry["effortConcern"]=="Y" AND $showParentEffortWarning=="Y") {
@@ -1509,7 +1509,7 @@ else {
 													}
 												print "</div>" ;
 												if ($rowEntry["effortValue"]!="") {
-													print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep($rowEntry["effortDescriptor"]) . "</b>" . $effortExtra . "</div>" ;
+													print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowEntry["effortDescriptor"])) . "</b>" . _($effortExtra) . "</div>" ;
 												}
 											print "</td>" ;
 											print "<td>" ;

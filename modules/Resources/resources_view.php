@@ -204,7 +204,7 @@ else {
 							if ($rowPurpose["gibbonYearGroupID"]==$gibbonYearGroupID) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . $rowPurpose["name"] . "</option>" ;
+							print "<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . _($rowPurpose["name"]) . "</option>" ;
 						}
 					print "</select>" ;
 				print "</td>" ;
@@ -360,7 +360,7 @@ else {
 						$years=explode(",", $row["gibbonYearGroupIDList"]) ;
 						if (count($years)>0 AND $years[0]!="") {
 							if (count($years)==$resultYears->rowCount()) {
-								print "<i>All Years</i>" ;
+								print "<i>" . _('All Years') . "</i>" ;
 							}
 							else {
 								$count3=0 ;
@@ -371,7 +371,7 @@ else {
 											if ($count3>0 AND $count4>0) {
 												print ", " ;
 											}
-											print $rowYears["nameShort"] ;
+											print _($rowYears["nameShort"]) ;
 											$count4++ ;
 										}
 									}

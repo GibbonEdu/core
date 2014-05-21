@@ -241,7 +241,7 @@ else {
 							else {
 								for ($i=0; $i<count($yearGroups); $i=$i+2) {
 									$checked="checked " ;
-									print $yearGroups[($i+1)] . " <input $checked type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
+									print _($yearGroups[($i+1)]) . " <input $checked type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
 									print "<input type='hidden' name='gibbonYearGroupID" . ($i)/2 . "' value='" . $yearGroups[$i] . "'>" ;
 								}
 							}
@@ -251,7 +251,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Grading Scale') ?></b><br/>
+							<b><?php print _('Grade Scale') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Link columns to grades on a scale?') ?></i></span>
 						</td>
 						<td class="right">
@@ -269,10 +269,10 @@ else {
 								}
 								while ($rowSelect=$resultSelect->fetch()) {
 									if ($row["gibbonScaleID"]==$rowSelect["gibbonScaleID"]) {
-										print "<option selected value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+										print "<option selected value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 									}
 									else {
-										print "<option value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+										print "<option value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 									}
 								}
 								?>				

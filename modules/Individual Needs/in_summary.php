@@ -175,7 +175,7 @@ else {
 							if ($rowPurpose["gibbonYearGroupID"]==$gibbonYearGroupID) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . $rowPurpose["name"] . "</option>" ;
+							print "<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . _($rowPurpose["name"]) . "</option>" ;
 						}
 					print "</select>" ;
 					?>
@@ -295,7 +295,7 @@ else {
 						print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
 					print "</td>" ;
 					print "<td>" ;
-						print $row["yearGroup"] ;
+						print _($row["yearGroup"]) ;
 					print "</td>" ;
 					print "<td>" ;
 						print $row["rollGroup"] ;

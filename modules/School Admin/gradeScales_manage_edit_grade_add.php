@@ -93,7 +93,7 @@ else {
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print _($row["name"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>

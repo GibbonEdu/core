@@ -116,7 +116,7 @@ else {
 									print formatName("", $students[$i][1], $students[$i][0], "Student", true) ;
 								print "</td>" ;
 								print "<td>" ;
-									print $students[$i][2] ;
+									print _($students[$i][2]) ;
 								print "</td>" ;
 								print "<td>" ;
 									print $students[$i][3] ;
@@ -255,7 +255,7 @@ else {
 								print formatName("", $row["preferredName"],$row["surname"], "Student", true) ;
 							print "</td>" ;
 							print "<td>" ;
-								print $row["yearGroup"] ;
+								print _($row["yearGroup"]) ;
 							print "</td>" ;
 							print "<td>" ;
 								print $row["rollGroup"] ;

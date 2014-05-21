@@ -1110,14 +1110,15 @@ else {
 										catch(PDOException $e) { 
 											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
+										$i=1 ;
+										$usedArrayFill="" ;
 										if ($resultBlocks->rowCount()<1) {
 											print "<div id='outcomeOuter0'>" ;
 												print "<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'>Outcomes listed here...</div>" ;
 											print "</div>" ;
+											
 										}
 										else {
-											$usedArrayFill="" ;
-											$i=1 ;
 											while ($rowBlocks=$resultBlocks->fetch()) {
 												makeBlockOutcome($guid, $i, "outcome", $rowBlocks["gibbonOutcomeID"],  $rowBlocks["name"],  $rowBlocks["category"], $rowBlocks["content"], "", TRUE, $allowOutcomeEditing) ;
 												$usedArrayFill.="\"" . $rowBlocks["gibbonOutcomeID"] . "\"," ;

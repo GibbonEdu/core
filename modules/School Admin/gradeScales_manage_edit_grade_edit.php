@@ -94,7 +94,7 @@ else {
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print _($row["name"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
@@ -103,7 +103,7 @@ else {
 							<span style="font-size: 90%"><i><?php print _('Must be unique for this grade scale.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="value" id="value" maxlength=10 value="<?php if (isset($row["value"])) { print $row["value"] ; } ?>" type="text" style="width: 300px">
+							<input name="value" id="value" maxlength=10 value="<?php if (isset($row["value"])) { print _($row["value"]) ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var value=new LiveValidation('value');
 								value.add(Validate.Presence);
@@ -116,7 +116,7 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input name="descriptor" id="descriptor" maxlength=50 value="<?php if (isset($row["descriptor"])) { print $row["descriptor"] ; } ?>" type="text" style="width: 300px">
+							<input name="descriptor" id="descriptor" maxlength=50 value="<?php if (isset($row["descriptor"])) { print htmlPrep(_($row["descriptor"])) ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var descriptor=new LiveValidation('descriptor');
 								descriptor.add(Validate.Presence);

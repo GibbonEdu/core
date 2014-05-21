@@ -407,7 +407,7 @@ else {
 											if (is_numeric(strpos($selectedAll,str_pad($rowSelect['gibbonYearGroupID'], 3, "0", STR_PAD_LEFT)))) {
 												$selected="selected" ;
 											}
-											print "<option $selected value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+											print "<option $selected value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 										}
 										?>
 									</select>

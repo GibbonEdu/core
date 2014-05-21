@@ -112,7 +112,7 @@ function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbo
 							if ($rowResults["lowestAcceptable"]!="" AND $rowResults["sequenceNumber"]>$rowResults["lowestAcceptable"]) {
 								$style="style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'" ;
 							}
-							print "<span $style title='" . $rowResults["usage"] . "'>" . $rowResults["value"] . "</span>" ;
+							print "<span $style title='" . _($rowResults["usage"]) . "'>" . _($rowResults["value"]) . "</span>" ;
 						print "</td>" ;
 						print "<td>" ;
 							if (!is_null($rowResults["gibbonScaleGradeIDPrimaryAssessmentScale"]) AND !is_null($_SESSION[$guid]["primaryAssessmentScale"])) {
@@ -120,7 +120,7 @@ function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbo
 								if ($rowResults["lowestAcceptablePrimary"]!="" AND $rowResults["sequenceNumberPrimary"]>$rowResults["lowestAcceptablePrimary"]) {
 									$style="style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'" ;
 								}
-								print "<span $style title='" . $rowResults["usagePrimary"] . "'>" . $rowResults["valuePrimary"] . "</span>" ;
+								print "<span $style title='" . _($rowResults["usagePrimary"]) . "'>" . _($rowResults["valuePrimary"]) . "</span>" ;
 							}
 						print "</td>" ;
 						print "<td>" ;

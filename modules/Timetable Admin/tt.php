@@ -215,7 +215,7 @@ else {
 										if ($count>0) {
 											print ", " ;
 										}
-										print $rowYears["nameShort"] ;
+										print _($rowYears["nameShort"]) ;
 										$count++ ;
 									}
 								}

@@ -97,10 +97,10 @@ else {
 						print $row["sequenceNumber"] ;
 					print "</td>" ;
 					print "<td>" ;
-						print $row["name"] ;
+						print _($row["name"]) ;
 					print "</td>" ;
 					print "<td>" ;
-						print $row["nameShort"] ;
+						print _($row["nameShort"]) ;
 					print "</td>" ;
 					print "<td>" ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/yearGroup_manage_edit.php&gibbonYearGroupID=" . $row["gibbonYearGroupID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;

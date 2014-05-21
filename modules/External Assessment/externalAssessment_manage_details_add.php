@@ -99,7 +99,7 @@ else {
 					print "</td>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
-						print $row["yearGroup"] ;
+						print _($row["yearGroup"]) ;
 					print "</td>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;
@@ -543,7 +543,7 @@ else {
 												while ($rowSelect=$resultSelect->fetch()) {
 													$descriptor="" ;
 													if ($rowSelect["value"]!=$rowSelect["descriptor"]) {
-														$descriptor=" - " . htmlPrep($rowSelect["descriptor"]) ;
+														$descriptor=" - " . htmlPrep(_($rowSelect["descriptor"])) ;
 													}
 													$selected="" ;
 													if ($copyToGCSECheck=="on" AND $rowField["category"]=="0_Target Grade") {
@@ -577,7 +577,7 @@ else {
 															}
 														}
 													}
-													print "<option $selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep($rowSelect["value"]) . $descriptor . "</option>" ;
+													print "<option $selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(_($rowSelect["value"])) . $descriptor . "</option>" ;
 												}
 												?>				
 											</select>
@@ -596,7 +596,7 @@ else {
 												while ($rowSelect=$resultSelect->fetch()) {
 													$descriptor="" ;
 													if ($rowSelect["value"]!=$rowSelect["descriptor"]) {
-														$descriptor=" - " . htmlPrep($rowSelect["descriptor"]) ;
+														$descriptor=" - " . htmlPrep(_($rowSelect["descriptor"])) ;
 													}
 													$selected="" ;
 													if ($copyToGCSECheck=="on" AND $rowField["category"]=="0_Target Grade") {
@@ -604,7 +604,7 @@ else {
 															$selected="selected" ;
 														}
 													}
-													print "<option $selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep($rowSelect["value"]) . $descriptor . "</option>" ;
+													print "<option $selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(_($rowSelect["value"])) . $descriptor . "</option>" ;
 												}
 												?>				
 											</select>

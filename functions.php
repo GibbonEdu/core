@@ -679,10 +679,9 @@ function getYearGroups( $connection2 ) {
 	return $output ;
 }
 
-function getYearGroupsFromIDList ( $connection2, $ids, $vertical=false ) {
+function getYearGroupsFromIDList ( $connection2, $ids, $vertical=false, $translated=true ) {
 	$output=FALSE ;
 	
-	//SELECT NORMAL
 	try {
 		$sqlYears="SELECT DISTINCT nameShort, sequenceNumber FROM gibbonYearGroup ORDER BY sequenceNumber" ;
 		$resultYears=$connection2->query($sqlYears);  
@@ -723,7 +722,12 @@ function getYearGroupsFromIDList ( $connection2, $ids, $vertical=false ) {
 							$output.="<br/>" ;
 						}
 					}
-					$output.=$rowYears["nameShort"] ;
+					if ($translated==TRUE) {
+						$output.=_($rowYears["nameShort"]) ;
+					}
+					else {
+						$output.=$rowYears["nameShort"] ;
+					}
 					$count3++ ;
 				}
 			}

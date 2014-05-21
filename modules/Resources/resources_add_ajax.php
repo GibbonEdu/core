@@ -361,7 +361,7 @@ else {
 									else {
 										for ($i=0; $i<count($yearGroups); $i=$i+2) {
 											$checked="checked " ;
-											$output.=$yearGroups[($i+1)] . " <input $checked type='checkbox' name='" . $id . "gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
+											$output.=_($yearGroups[($i+1)]) . " <input $checked type='checkbox' name='" . $id . "gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
 											$output.="<input type='hidden' name='" . $id . "gibbonYearGroupID" . ($i)/2 . "' value='" . $yearGroups[$i] . "'>" ;
 										}
 									}

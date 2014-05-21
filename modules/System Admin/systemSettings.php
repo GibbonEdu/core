@@ -1139,7 +1139,7 @@ else {
 								$selected="selected" ;
 							}
 							
-							print "<option $selected value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+							print "<option $selected value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 						}
 						?>			
 					</select>

@@ -78,7 +78,7 @@ else {
 				print "</th>" ;
 				for ($i=1; $i<count($years); $i=$i+2) {
 					print "<th colspan=2 style='text-align: center'>" ;
-						print $years[$i] ;
+						print _($years[$i]) ;
 					print "</th>" ;
 				}
 				print "<th colspan=2 style='text-align: center'>" ;

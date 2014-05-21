@@ -1620,6 +1620,8 @@ ALTER TABLE `gibboni18n` ADD `active` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `
 UPDATE gibboni18n SET active='N' WHERE NOT code='en_GB';end
 INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES (NULL, (SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities'), 'Copy Activities', 0, 'Actions', 'This action copies all current activities, slots and staff into a specified year.', 'activities_copy.php', 'activities_copy.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Activities' AND gibbonAction.name='Copy Activities'));end
+ALTER TABLE `gibbonPayment` CHANGE `paymentPayerID` `paymentPayerID` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;end
+UPDATE gibbonAction SET category='Assessment' WHERE category='ARR';end
 ";
 
 

@@ -845,7 +845,7 @@ else {
 																	catch(PDOException $e) { }
 																	if ($resultAttainment->rowCount()==1) {
 																		$rowAttainment=$resultAttainment->fetch() ;
-																		$attainmentExtra="<br/>" . $rowAttainment["usage"] ;
+																		$attainmentExtra="<br/>" . _($rowAttainment["usage"]) ;
 																	}
 																	$styleAttainment="style='font-weight: bold'" ;
 																	if ($rowEntry["attainmentConcern"]=="Y" AND $showParentAttainmentWarning=="Y") {
@@ -860,7 +860,7 @@ else {
 																		}
 																	print "</div>" ;
 																	if ($rowEntry["attainmentValue"]!="") {
-																		print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep($rowEntry["attainmentDescriptor"]) . "</b>" . $attainmentExtra . "</div>" ;
+																		print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowEntry["attainmentDescriptor"])) . "</b>" . _($attainmentExtra) . "</div>" ;
 																	}
 																print "</td>" ;
 																print "<td style='text-align: center'>" ;
@@ -874,7 +874,7 @@ else {
 																	catch(PDOException $e) { }
 																	if ($resultEffort->rowCount()==1) {
 																		$rowEffort=$resultEffort->fetch() ;
-																		$effortExtra="<br/>" . $rowEffort["usage"] ;
+																		$effortExtra="<br/>" . _($rowEffort["usage"]) ;
 																	}
 																	$styleEffort="style='font-weight: bold'" ;
 																	if ($rowEntry["effortConcern"]=="Y" AND $showParentEffortWarning=="Y") {
@@ -886,7 +886,7 @@ else {
 																		}
 																	print "</div>" ;
 																	if ($rowEntry["effortValue"]!="") {
-																		print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep($rowEntry["effortDescriptor"]) . "</b>" . $effortExtra . "</div>" ;
+																		print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowEntry["effortDescriptor"])) . "</b>" . _($effortExtra) . "</div>" ;
 																	}
 																print "</td>" ;
 																print "<td>" ;

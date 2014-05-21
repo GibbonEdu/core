@@ -659,7 +659,7 @@ else {
 							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
 						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+							print "<option value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 						}
 						?>				
 					</select>
