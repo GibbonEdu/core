@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 _('Actions') ;
 _('Admin') ;
 _('Admissions') ;
-_('ARR') ;
+_('Assessment') ;
 _('Billing') ;
 _('Catalog') ;
 _('Courses & Classes') ;

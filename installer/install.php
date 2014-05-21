@@ -1095,6 +1095,8 @@ include "../version.php" ;
 										if ($settingsFail==TRUE) {
 											print "<div class='error'>" ;
 												print "Some settings did not save. The system may work, but you may need to remove evyerhting and start again. Try and <a href='$absoluteURL'>go to your Gibbon homepage</a> and login as user <u>admin</u> with password <u>gibbon</u>." ;
+												print "<br/><br/>" ; 
+												print "It is also advisable to follow the <a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>Post-Install and Server Config instructions</a>." ;
 											print "</div>" ;
 										}
 										else {
@@ -1103,6 +1105,8 @@ include "../version.php" ;
 												if ($cuttingEdgeCode=="Y") {
 													print " <b>As you are running cutting edge code, it is recommended that after logging in, you go to Admin > System Admin > Update, and run any updates.</b>" ;
 												}
+												print "<br/><br/>" ; 
+												print "It is also advisable to follow the <a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>Post-Install and Server Config instructions</a>." ;
 											print "</div>" ;
 										}
 									}
