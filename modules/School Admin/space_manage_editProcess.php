@@ -91,7 +91,7 @@ else {
 			$speakers=$_POST["speakers"] ;
 			$iwb=$_POST["iwb"] ;
 			$phoneInternal=$_POST["phoneInternal"] ;
-			$phoneExternal=$_POST["phoneExternal"] ;
+			$phoneExternal=preg_replace('/[^0-9+]/', '', $_POST["phoneExternal"]) ;
 			$comment=$_POST["comment"] ;
 			
 			//Validate Inputs

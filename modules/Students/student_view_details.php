@@ -225,7 +225,7 @@ else {
 															if ($rowMember["phone" . $i . "CountryCode"]!="") {
 																print "+" . $rowMember["phone" . $i . "CountryCode"] . " " ;
 															}
-															print $rowMember["phone" . $i] . "<br/>" ;
+															print formatPhone($rowMember["phone" . $i]) . "<br/>" ;
 														}
 													}
 												}
@@ -563,7 +563,7 @@ else {
 												if ($row["phone" . $i . "CountryCode"]!="") {
 													print "+" . $row["phone" . $i . "CountryCode"] . " " ;
 												}
-												print $row["phone" . $i] . "<br/>" ;
+												print formatPhone($row["phone" . $i]) . "<br/>" ;
 											print "</td>" ;
 										}
 										else {
@@ -1054,7 +1054,7 @@ else {
 															if ($rowMember["phone" . $i . "CountryCode"]!="") {
 																print "+" . $rowMember["phone" . $i . "CountryCode"] . " " ;
 															}
-															print $rowMember["phone" . $i] . "<br/>" ;
+															print formatPhone($rowMember["phone" . $i]) . "<br/>" ;
 														}
 													}
 												}
@@ -1073,7 +1073,7 @@ else {
 															if ($rowMember["phone" . $i . "CountryCode"]!="") {
 																print "+" . $rowMember["phone" . $i . "CountryCode"] . " " ;
 															}
-															print $rowMember["phone" . $i] . "<br/>" ;
+															print formatPhone($rowMember["phone" . $i]) . "<br/>" ;
 														}
 													}
 												}
@@ -1259,7 +1259,7 @@ else {
 													if ($rowMember["phone" . $i . "CountryCode"]!="") {
 														print "+" . $rowMember["phone" . $i . "CountryCode"] . " " ;
 													}
-													print $rowMember["phone" . $i] . "<br/>" ;
+													print _($rowMember["phone" . $i]) . "<br/>" ;
 												}
 											}
 										print "</td>" ;

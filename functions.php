@@ -2602,8 +2602,18 @@ class ExportToExcel
 		$this->setHeader($excel_file_name);
 		$_SESSION[$guid]["exportToExcelParams"]=$params ;
 		require_once "$php_page";
-	}
-	
-	
+	}	
+}
+
+function formatPhone($num) { //Function by Zeromatik on StackOverflow
+    $num = preg_replace('/[^0-9]/', '', $num);
+    $len = strlen($num);
+
+    if($len == 7) $num = preg_replace('/([0-9]{2})([0-9]{2})([0-9]{3})/', '$1 $2 $3', $num);
+    elseif($len == 8) $num = preg_replace('/([0-9]{4})([0-9]{4})/', '$1 $2', $num);
+    elseif($len == 9) $num = preg_replace('/([0-9]{3})([0-9]{2})([0-9]{2})([0-9]{2})/', '$1 - $2 $3 $4', $num);
+    elseif($len == 10) $num = preg_replace('/([0-9]{3})([0-9]{2})([0-9]{2})([0-9]{3})/', '$1 - $2 $3 $4', $num);
+
+    return $num;
 }
 ?>

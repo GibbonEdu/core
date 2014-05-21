@@ -304,7 +304,7 @@ else {
 						if ($row["phone1CountryCode"]!="") {
 							print htmlPrep($row["phone1CountryCode"]) . " " ;
 						}
-						print htmlPrep($row["phone1"]) . " " ;
+						print htmlPrep(formatPhone($row["phone1"])) . " " ;
 						print "</i>" ;
 					print "</td>" ;
 					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
@@ -400,7 +400,7 @@ else {
 												if ($rowMember["phone" . $i . "CountryCode"]!="") {
 													print "+" . $rowMember["phone" . $i . "CountryCode"] . " " ;
 												}
-												print $rowMember["phone" . $i] . "<br/>" ;
+												print formatPhone($rowMember["phone" . $i]) . "<br/>" ;
 											}
 										}
 									}
@@ -472,7 +472,7 @@ else {
 											if ($row["parent" . $i . "phone" . $n . "CountryCode"]!="") {
 												print "+" . $row["parent" . $i . "phone" . $n . "CountryCode"] . " " ;
 											}
-											print $row["parent" . $i . "phone" . $n] . "<br/>" ;
+											print formatPhone($row["parent" . $i . "phone" . $n]) . "<br/>" ;
 										}
 									}
 								}
@@ -605,7 +605,7 @@ else {
 													if ($rowMember["phone" . $i . "CountryCode"]!="") {
 														print "+" . $rowMember["phone" . $i . "CountryCode"] . " " ;
 													}
-													print $rowMember["phone" . $i] . "<br/>" ;
+													print formatPhone($rowMember["phone" . $i]) . "<br/>" ;
 												}
 											}
 										}

@@ -300,14 +300,12 @@ else {
 												if ($row["phone" . $i . "CountryCode"]!="") {
 													print "+" . $row["phone" . $i . "CountryCode"] . " " ;
 												}
-												print $row["phone" . $i] . "<br/>" ;
+												print formatPhone($row["phone" . $i]) . "<br/>" ;
 											print "</td>" ;
 										}
-										else {
-											print "<td width: 33%; style='vertical-align: top'>" ;
-											
-											print "</td>" ;
-										}
+									}
+									for ($i=($numberCount+1); $i<5; $i++) {
+											print "<td width: 33%; style='vertical-align: top'></td>" ;
 									}
 								print "</tr>" ;
 							}
@@ -457,7 +455,7 @@ else {
 													if ($rowMember["phone" . $i . "CountryCode"]!="") {
 														print "+" . $rowMember["phone" . $i . "CountryCode"] . " " ;
 													}
-													print $rowMember["phone" . $i] . "<br/>" ;
+													print formatPhone($rowMember["phone" . $i]) . "<br/>" ;
 												}
 											}
 										print "</td>" ;
@@ -485,7 +483,7 @@ else {
 								print "</td>" ;
 								print "<td style=width: 34%; 'vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>" . _('Number 2') . "</span><br/>" ;
-									if ($row["website"]!="") {
+									if ($row["emergency1Number2"]!="") {
 										print $row["emergency1Number2"] ;
 									}
 								print "</td>" ;
@@ -504,7 +502,7 @@ else {
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>" . _('Number 2') . "</span><br/>" ;
-									if ($row["website"]!="") {
+									if ($row["emergency2Number2"]!="") {
 										print $row["emergency2Number2"] ;
 									}
 								print "</td>" ;

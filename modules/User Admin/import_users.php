@@ -264,16 +264,16 @@ else {
 							$users[$userSuccessCount]["address2Country"]="" ; if (isset($data[18])) { $users[$userSuccessCount]["address2Country"]=$data[18] ; }
 							$users[$userSuccessCount]["phone1Type"]="" ; if (isset($data[19])) { $users[$userSuccessCount]["phone1Type"]=$data[19] ; }
 							$users[$userSuccessCount]["phone1CountryCode"]="" ; if (isset($data[20])) { $users[$userSuccessCount]["phone1CountryCode"]=$data[20] ; }
-							$users[$userSuccessCount]["phone1"]="" ; if (isset($data[21])) { $users[$userSuccessCount]["phone1"]=$data[21] ; }
+							$users[$userSuccessCount]["phone1"]="" ; if (isset($data[21])) { $users[$userSuccessCount]["phone1"]=preg_replace('/[^0-9+]/', '', $data[21]) ; }
 							$users[$userSuccessCount]["phone2Type"]="" ; if (isset($data[22])) { $users[$userSuccessCount]["phone2Type"]=$data[22] ; }
 							$users[$userSuccessCount]["phone2CountryCode"]="" ; if (isset($data[23])) { $users[$userSuccessCount]["phone2CountryCode"]=$data[23] ; }
-							$users[$userSuccessCount]["phone2"]="" ; if (isset($data[24])) { $users[$userSuccessCount]["phone2"]=$data[24] ; }
+							$users[$userSuccessCount]["phone2"]="" ; if (isset($data[24])) { $users[$userSuccessCount]["phone2"]=preg_replace('/[^0-9+]/', '', $data[24]) ; }
 							$users[$userSuccessCount]["phone3Type"]="" ; if (isset($data[25])) { $users[$userSuccessCount]["phone3Type"]=$data[25] ; }
 							$users[$userSuccessCount]["phone3CountryCode"]="" ; if (isset($data[26])) { $users[$userSuccessCount]["phone3CountryCode"]=$data[26] ; }
-							$users[$userSuccessCount]["phone3"]="" ; if (isset($data[27])) { $users[$userSuccessCount]["phone3"]=$data[27] ; }
+							$users[$userSuccessCount]["phone3"]="" ; if (isset($data[27])) { $users[$userSuccessCount]["phone3"]=preg_replace('/[^0-9+]/', '', $data[27]) ; }
 							$users[$userSuccessCount]["phone4Type"]="" ; if (isset($data[28])) { $users[$userSuccessCount]["phone4Type"]=$data[28] ; }
 							$users[$userSuccessCount]["phone4CountryCode"]="" ; if (isset($data[29])) { $users[$userSuccessCount]["phone4CountryCode"]=$data[29] ; }
-							$users[$userSuccessCount]["phone4"]="" ; if (isset($data[30])) { $users[$userSuccessCount]["phone4"]=$data[30] ; }
+							$users[$userSuccessCount]["phone4"]="" ; if (isset($data[30])) { $users[$userSuccessCount]["phone4"]=preg_replace('/[^0-9+]/', '', $data[30]) ; }
 							$users[$userSuccessCount]["website"]="" ; if (isset($data[31])) { $users[$userSuccessCount]["website"]=$data[31] ; }
 							$users[$userSuccessCount]["languageFirst"]="" ; if (isset($data[32])) { $users[$userSuccessCount]["languageFirst"]=$data[32] ; }
 							$users[$userSuccessCount]["languageSecond"]="" ; if (isset($data[33])) { $users[$userSuccessCount]["languageSecond"]=$data[33] ; }

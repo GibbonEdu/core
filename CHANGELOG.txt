@@ -271,6 +271,10 @@ Messenger: updated message manage listing to show both SMS and Email reports, if
 General: fixed sidebar module menu incorrect highlighting
 	Edited file /functions.php
 
+General: added striping of non-numerics to phone numbers across the system (not include some old-style ones which have area code in number field), as well as number formatting for nicer display
+	Edited various files
+
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)

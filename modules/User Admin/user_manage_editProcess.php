@@ -122,25 +122,25 @@ else {
 				$phone1Type="Other" ;
 			} 
 			$phone1CountryCode=$_POST["phone1CountryCode"] ; 
-			$phone1=$_POST["phone1"] ; 
+			$phone1=preg_replace('/[^0-9+]/', '', $_POST["phone1"]) ; 
 			$phone2Type=$_POST["phone2Type"] ;  
 			if ($_POST["phone2"]!="" AND $phone2Type=="") {
 				$phone2Type="Other" ;
 			} 
 			$phone2CountryCode=$_POST["phone2CountryCode"] ; 
-			$phone2=$_POST["phone2"] ; 
+			$phone2=preg_replace('/[^0-9+]/', '', $_POST["phone2"]) ; 
 			$phone3Type=$_POST["phone3Type"] ;  
 			if ($_POST["phone3"]!="" AND $phone3Type=="") {
 				$phone3Type="Other" ;
 			} 
 			$phone3CountryCode=$_POST["phone3CountryCode"] ; 
-			$phone3=$_POST["phone3"] ; 
+			$phone3=preg_replace('/[^0-9+]/', '', $_POST["phone3"]) ; 
 			$phone4Type=$_POST["phone4Type"] ; 
 			if ($_POST["phone4"]!="" AND $phone4Type=="") {
 				$phone4Type="Other" ;
 			}  
 			$phone4CountryCode=$_POST["phone4CountryCode"] ; 
-			$phone4=$_POST["phone4"] ; 
+			$phone4=preg_replace('/[^0-9+]/', '', $_POST["phone4"]) ; 
 			$website=$_POST["website"] ;
 			$languageFirst=$_POST["languageFirst"] ;
 			$languageSecond=$_POST["languageSecond"] ;

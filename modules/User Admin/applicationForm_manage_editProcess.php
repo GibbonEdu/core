@@ -133,10 +133,10 @@ else {
 			$email=$_POST["email"] ;
 			$phone1Type=$_POST["phone1Type"] ; 
 			$phone1CountryCode=$_POST["phone1CountryCode"] ; 
-			$phone1=$_POST["phone1"] ; 
+			$phone1=preg_replace('/[^0-9+]/', '', $_POST["phone1"]) ; 
 			$phone2Type=$_POST["phone2Type"] ; 
 			$phone2CountryCode=$_POST["phone2CountryCode"] ; 
-			$phone2=$_POST["phone2"] ; 
+			$phone2=preg_replace('/[^0-9+]/', '', $_POST["phone2"]) ; 
 			$medicalInformation=$_POST["medicalInformation"] ;
 			$developmentInformation=$_POST["developmentInformation"] ;
 			$gibbonSchoolYearIDEntry=$_POST["gibbonSchoolYearIDEntry"] ;
