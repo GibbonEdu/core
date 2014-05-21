@@ -11,7 +11,7 @@ Installation & Support
 ======================
 For installation instructions, visit https://gibbonedu.org/support/administrators/installing-gibbon.
 
-For support visit https://gibbonedu.org/support or email support@gibbonedu.org.
+For support visit https://gibbonedu.org/support.
 
 
 Cutting Edge?
@@ -24,4 +24,4 @@ For installation instructions, visit https://gibbonedu.org/support/administrator
 
 As of the latest commit on 26/03/2014 you no longer need to manually update database changes when running Cutting Edge code. Simply go to Admin > System Admin > System Settings and enable Cutting Edge Code. When you want to update, get the latest commit from GitHub, upload it to your server and go to Admin > System Admin > Update to run the new lines. 
 
-Please report any bugs to support@gibbonedu.org.
+For support visit https://gibbonedu.org/support.

@@ -56,7 +56,7 @@ include "../version.php" ;
 							if (isset($_GET["step"])) {
 								$step=$_GET["step"] ;
 							}
-							print "<h2>Installation - Step $step</h2>" ;
+							print "<h2>" . sprintf(_('Installation - Step %1$s'), $step) . "</h2>" ;
 							
 							//Get and set database variables (not set until step 1)
 							$databaseServer="" ;
@@ -79,18 +79,18 @@ include "../version.php" ;
 							if ($step==1) {
 								if (file_exists("../config.php")) { //Make sure system is not already installed
 									print "<div class='error'>" ;
-										print "../config.php already exists, which suggests this system is already installed. The installer cannot proceed." ;
+										print _("../config.php already exists, which suggests this system is already installed. The installer cannot proceed.") ;
 									print "</div>" ;
 								}
 								else { //No config, so continue installer
 									if (is_writable("../")==FALSE) { //Ensure that home directory is writable
 										print "<div class='error'>" ;
-											print "The directory containing the Gibbon files is not currently writable, so the installer cannot proceed." ;
+											print _("The directory containing the Gibbon files is not currently writable, so the installer cannot proceed.") ;
 										print "</div>" ;
 									}
 									else {
 										print "<div class='success'>" ;
-											print "The directory containing the Gibbon files is writable, so the installation may proceed." ;
+											print _("The directory containing the Gibbon files is writable, so the installation may proceed.") ;
 										print "</div>" ;
 								
 										//Set options
@@ -180,7 +180,7 @@ include "../version.php" ;
 								//Check for db values
 								if ($databaseServer=="" OR $databaseName=="" OR $databaseUsername=="" OR $databasePassword=="") {
 									print "<div class='error'>" ;
-										print "A database connection could not be establish. Please <a href='./install.php'>try again</a>." ;
+										print sprintf(_('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
 									print "</div>" ;
 								}
 								
@@ -194,13 +194,13 @@ include "../version.php" ;
 								catch(PDOException $e) {
 									$connected=FALSE ;
 									print "<div class='error'>" ;
-										print "A database connection could not be establish. Please <a href='./install.php'>try again</a>." ;
+										print sprintf(_('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
 									print "</div>" ;
 								}
 								
 								if ($connected) {
 									print "<div class='success'>" ;
-										print "Your database connection was successful, so the installation may proceed." ;
+										print _("Your database connection was successful, so the installation may proceed.") ;
 									print "</div>" ;
 								}
 								
@@ -257,14 +257,14 @@ include "../version.php" ;
 								
 								if (file_exists("../config.php")==FALSE) { //Something went wrong, config.php could not be created.
 									print "<div class='error'>" ;
-										print "config.php could not be created, and so the installer cannot proceed." ;
+										print _("../config.php could not be created, and so the installer cannot proceed.") ;
 									print "</div>" ;
 								}
 								else { //Config, exists, let's press on
 									//Let's populate the database
 									if (file_exists("../gibbon.sql")==FALSE) {
 										print "<div class='error'>" ;
-											print "../gibbon.sql does not exist, and so the installer cannot proceed." ;
+											print _("../gibbon.sql does not exist, and so the installer cannot proceed.") ;
 										print "</div>" ;
 									}
 									else {
@@ -289,7 +289,7 @@ include "../version.php" ;
 										
 										if ($partialFail==TRUE) {
 											print "<div class='error'>" ;
-												print "Errors occurred in populating the database; empty your database, remove ../config.php and try again." ;
+												print _("Errors occurred in populating the database; empty your database, remove ../config.php and try again.") ;
 											print "</div>" ;
 										}
 										else {
@@ -858,7 +858,7 @@ include "../version.php" ;
 								catch(PDOException $e) {
 									$connected=FALSE ;
 									print "<div class='error'>" ;
-										print "A database connection could not be establish. Please <a href='./install.php'>try again</a>." ;
+										print sprintf(_('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
 									print "</div>" ;
 								}
 								
@@ -885,7 +885,7 @@ include "../version.php" ;
 								
 									if ($absoluteURL=="" OR $absolutePath=="" OR $systemName=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $timezone=="" OR $country=="" OR $primaryAssessmentScale=="" OR $installType=="" OR $statsCollection=="" OR $cuttingEdgeCode=="") {
 										print "<div class='error'>" ;
-											print "Some required fields have not been set, and so installation cannot proceed." ;
+											print _("Some required fields have not been set, and so installation cannot proceed.") ;
 										print "</div>" ;
 									}
 									else {
@@ -1069,6 +1069,20 @@ include "../version.php" ;
 										catch(PDOException $e) { 
 											$settingsFail=TRUE ;
 										}
+										
+										if ($_SESSION[$guid]["statsCollection"]=="Y") {
+											$absolutePathProtocol="" ;
+											$absolutePath="" ;
+											if (substr($absoluteURL,0,7)=="http://") {
+												$absolutePathProtocol="http" ;
+												$absolutePath=substr($absoluteURL,7) ;
+											}
+											else if (substr($absoluteURL,0,8)=="https://") {
+												$absolutePathProtocol="https" ;
+												$absolutePath=substr($absoluteURL,8) ;
+											}
+											print "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($organisationName) . "&type=" . urlencode($installType) . "&version=" . urlencode($version) . "&country=" . $country . "&usersTotal=1&usersFull=1'></iframe>" ;
+										}
 									
 										try {
 											$data=array("cuttingEdgeCode"=>$cuttingEdgeCode); 
@@ -1094,19 +1108,19 @@ include "../version.php" ;
 	
 										if ($settingsFail==TRUE) {
 											print "<div class='error'>" ;
-												print "Some settings did not save. The system may work, but you may need to remove evyerhting and start again. Try and <a href='$absoluteURL'>go to your Gibbon homepage</a> and login as user <u>admin</u> with password <u>gibbon</u>." ;
+												print sprintf(_('Some settings did not save. The system may work, but you may need to remove evyerhting and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", "</a>") ;
 												print "<br/><br/>" ; 
-												print "It is also advisable to follow the <a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>Post-Install and Server Config instructions</a>." ;
+												print sprintf(_('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", "</a>") ;
 											print "</div>" ;
 										}
 										else {
 											print "<div class='success'>" ;
-												print "Congratulations, your installation is complete. Feel free to <a href='$absoluteURL'>go to your Gibbon homepage</a> and login as user <u>admin</u> with password <u>gibbon</u>." ;
+												print sprintf(_('Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", "</a>") ;
 												if ($cuttingEdgeCode=="Y") {
-													print " <b>As you are running cutting edge code, it is recommended that after logging in, you go to Admin > System Admin > Update, and run any updates.</b>" ;
+													print " <b>" . _('As you are running cutting edge code, it is recommended that after logging in, you go to Admin > System Admin > Update, and run any updates.') . "</b>" ;
 												}
 												print "<br/><br/>" ; 
-												print "It is also advisable to follow the <a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>Post-Install and Server Config instructions</a>." ;
+												print sprintf(_('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", "</a>") ;
 											print "</div>" ;
 										}
 									}
@@ -1116,13 +1130,13 @@ include "../version.php" ;
 						?>
 					</div>		
 					<div id="sidebar">
-						<h2>Welcome To Gibbon</h2>
-						<p>
-						Created by teachers, Gibbon is the school platform which solves real problems faced by educators every day.<br/>
+						<h2><?php print _('Welcome To Gibbon') ?></h2>
+						<p style='padding-top: 7px'>
+						<?php print _('Created by teachers, Gibbon is the school platform which solves real problems faced by educators every day.') ?><br/>
 						<br/>
-						Free, open source and flexible, Gibbon can morph to meet the needs of a huge range of schools.<br/>
+						<?php print _('Free, open source and flexible, Gibbon can morph to meet the needs of a huge range of schools.') ?><br/>
 						<br/>
-						For support, please visit <a target='_blank' href='https://gibbonedu.org/support'>gibbonedu.org</a>.
+						<?php print sprintf(_('For support, please visit %1$sgibbonedu.org%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support'>", "</a>") ?>
 						</p>
 					</div>
 					<br style="clear: both">
