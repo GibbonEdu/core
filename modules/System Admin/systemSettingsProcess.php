@@ -67,7 +67,6 @@ else {
 	$calendarFeed=$_POST["calendarFeed"] ;
 	$primaryAssessmentScale=$_POST["primaryAssessmentScale"] ;
 	$installType=$_POST["installType"] ;
-	$cuttingEdgeCode=$_POST["cuttingEdgeCode"] ;
 	$statsCollection=$_POST["statsCollection"] ;
 	$passwordPolicyMinLength=$_POST["passwordPolicyMinLength"] ;
 	$passwordPolicyAlpha=$_POST["passwordPolicyAlpha"] ;
@@ -83,7 +82,7 @@ else {
 	$gibboneduComOrganisationKey=$_POST["gibboneduComOrganisationKey"] ;
 	
 	//Validate Inputs
-	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $cuttingEdgeCode=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $currency=="" OR $enablePayments=="") {
+	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $currency=="" OR $enablePayments=="") {
 		//Fail 3
 		$URL=$URL . "&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -407,16 +406,6 @@ else {
 		try {
 			$data=array("installType"=>$installType); 
 			$sql="UPDATE gibbonSetting SET value=:installType WHERE scope='System' AND name='installType'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("cuttingEdgeCode"=>$cuttingEdgeCode); 
-			$sql="UPDATE gibbonSetting SET value=:cuttingEdgeCode WHERE scope='System' AND name='cuttingEdgeCode'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

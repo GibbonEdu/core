@@ -268,6 +268,8 @@ Application Form: added payment error emailing to admissions officer
 Messenger: updated message manage listing to show both SMS and Email reports, if both exist
 	Edited file /modules/Messenger/messenger_manage.php
 
+General: fixed sidebar module menu incorrect highlighting
+	Edited file /functions.php
 
 v7.1.02
 -------

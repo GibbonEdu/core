@@ -1009,7 +1009,7 @@ function sidebar($connection2, $guid) {
 					
 					//Set active link class
 					$style="" ;
-					if (is_numeric(strpos($row["URLList"],getActionName($_SESSION[$guid]["address"])))) {
+					if (strpos($row["URLList"],getActionName($_SESSION[$guid]["address"]))===0) {
 						$style="class='active'" ;
 					}
 					
