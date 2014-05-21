@@ -225,6 +225,7 @@ else {
 									$mail->AddBCC($address);
 								}
 								$mail->CharSet="UTF-8"; 
+								$mail->Encoding="base64" ;
 								$mail->IsHTML(true);                            
 								$mail->Subject="Receipt From " . $_SESSION[$guid]["organisationNameShort"] . " via " . $_SESSION[$guid]["systemName"] ;
 								$mail->Body=$body ;
@@ -289,6 +290,7 @@ else {
 									$mail->AddBCC($address);
 								}
 								$mail->CharSet="UTF-8"; 
+								$mail->Encoding="base64" ;
 								$mail->IsHTML(true);                            
 								$mail->Subject="Reminder From " . $_SESSION[$guid]["organisationNameShort"] . " via " . $_SESSION[$guid]["systemName"] ;
 								$mail->Body=$body ;

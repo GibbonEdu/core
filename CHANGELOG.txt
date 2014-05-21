@@ -274,6 +274,10 @@ General: fixed sidebar module menu incorrect highlighting
 General: added striping of non-numerics to phone numbers across the system (not include some old-style ones which have area code in number field), as well as number formatting for nicer display
 	Edited various files
 
+General: fixed random white spaces in outgoing emails (encoding!)
+	Edited files /modules/Finance/invoices_manage*.php
+	Edited file /modules/Messenger/messenger_postProcess.php
+	
 
 v7.1.02
 -------

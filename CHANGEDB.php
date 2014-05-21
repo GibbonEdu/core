@@ -1622,6 +1622,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Activities' AND gibbonAction.name='Copy Activities'));end
 ALTER TABLE `gibbonPayment` CHANGE `paymentPayerID` `paymentPayerID` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;end
 UPDATE gibbonAction SET category='Assessment' WHERE category='ARR';end
+ALTER TABLE `gibbonPayment` CHANGE `paymentToken` `paymentToken` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL, CHANGE `paymentTransactionID` `paymentTransactionID` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL, CHANGE `paymentReceiptID` `paymentReceiptID` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;end
 ";
 
 

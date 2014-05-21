@@ -352,6 +352,7 @@ else {
 								$mail->AddBCC($address);
 							}
 							$mail->CharSet="UTF-8"; 
+							$mail->Encoding="base64" ;
 							$mail->IsHTML(true);                            
 							$mail->Subject="Invoice From " . $_SESSION[$guid]["organisationNameShort"] . " via " . $_SESSION[$guid]["systemName"] ;
 							$mail->Body=$body ;
@@ -511,7 +512,8 @@ else {
 						foreach ($emails AS $address) {
 							$mail->AddBCC($address);
 						}
-						$mail->CharSet="UTF-8"; 
+						$mail->CharSet="UTF-8";
+						$mail->Encoding="base64" ; 
 						$mail->IsHTML(true);                            
 						$mail->Subject="Reminder From " . $_SESSION[$guid]["organisationNameShort"] . " via " . $_SESSION[$guid]["systemName"] ;
 						$mail->Body=$body ;
