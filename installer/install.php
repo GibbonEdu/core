@@ -1070,7 +1070,7 @@ include "../version.php" ;
 											$settingsFail=TRUE ;
 										}
 										
-										if ($_SESSION[$guid]["statsCollection"]=="Y") {
+										if ($statsCollection=="Y") {
 											$absolutePathProtocol="" ;
 											$absolutePath="" ;
 											if (substr($absoluteURL,0,7)=="http://") {
