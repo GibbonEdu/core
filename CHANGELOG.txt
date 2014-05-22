@@ -288,6 +288,15 @@ General: created installer for easy setup of Gibbon...woohoo!
 	Edited file /index.php
 	New folder /installer
 
+General: fixed Stars hover count bug
+	Edited file /index.php
+
+Planner: fixed Twitter integration typo
+	Edited files /modules/Planner/planner_edit.php, planner_add.php
+
+Resources: fixed resource insert-by-ajax tag field error
+	Edited file /modules/Resources/resources_add_ajax.php
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)

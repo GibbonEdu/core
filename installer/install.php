@@ -193,657 +193,660 @@ include "../version.php" ;
 								}
 								catch(PDOException $e) {
 									$connected=FALSE ;
+								}
+								
+								if ($connected==FALSE) {
 									print "<div class='error'>" ;
 										print sprintf(_('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
 									print "</div>" ;
 								}
-								
-								if ($connected) {
+								else {
 									print "<div class='success'>" ;
 										print _("Your database connection was successful, so the installation may proceed.") ;
 									print "</div>" ;
-								}
-								
-								//Set up GUID
-								$charList="abcdefghijkmnopqrstuvwxyz023456789";
-								$guid="" ;
-								for ($i=0;$i<36;$i++) {
-									if ($i==9 OR $i==14 OR $i==19 OR $i==24) {
-										$guid.="-" ;
+									
+									//Set up GUID
+									$charList="abcdefghijkmnopqrstuvwxyz023456789";
+									$guid="" ;
+									for ($i=0;$i<36;$i++) {
+										if ($i==9 OR $i==14 OR $i==19 OR $i==24) {
+											$guid.="-" ;
+										}
+										else {
+											$guid.=substr($charList, rand(1,strlen($charList)),1);
+										}
 									}
-									else {
-										$guid.=substr($charList, rand(1,strlen($charList)),1);
-									}
-								}
 								
-								//Set up config
-								$config="" ;
-								$config.="<?php\n" ;
-								$config.="/*\n" ;
-								$config.="Gibbon, Flexible & Open School System\n" ;
-								$config.="Copyright (C) 2010, Ross Parker\n" ;
-								$config.="\n" ;
-								$config.="This program is free software: you can redistribute it and/or modify\n" ;
-								$config.="it under the terms of the GNU General Public License as published by\n" ;
-								$config.="the Free Software Foundation, either version 3 of the License, or\n" ;
-								$config.="(at your option) any later version.\n" ;
-								$config.="\n" ;
-								$config.="This program is distributed in the hope that it will be useful,\n" ;
-								$config.="but WITHOUT ANY WARRANTY; without even the implied warranty of\n" ;
-								$config.="MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n" ;
-								$config.="GNU General Public License for more details.\n" ;
-								$config.="\n" ;
-								$config.="You should have received a copy of the GNU General Public License\n" ;
-								$config.="along with this program.  If not, see <http://www.gnu.org/licenses/>.\n" ;
-								$config.="*/\n" ;
-								$config.="\n" ;
-								$config.="//Sets database connection information\n" ;
-								$config.="\$databaseServer=\"" . $databaseServer . "\" ;\n" ; 
-								$config.="\$databaseUsername=\"" . $databaseUsername . "\" ;\n" ;
-								$config.="\$databasePassword=\"" . $databasePassword . "\" ;\n" ;
-								$config.="\$databaseName=\"" . $databaseName . "\" ;\n" ; 
-								$config.="\n" ;
-								$config.="//Sets globally unique id, to allow multiple installs on the server server.\n" ;
-								$config.="\$guid=\"" . $guid . "\" ;\n" ; 
-								$config.="\n" ;
-								$config.="//Sets system-wide caching factor, used to baalance performance and freshness. Value represents number of page loads between cache refresh. Must be posititve integer. 1 means no caching.\n" ;
-								$config.="\$caching=10 ;\n" ; 
-								$config.="?>\n" ;
+									//Set up config
+									$config="" ;
+									$config.="<?php\n" ;
+									$config.="/*\n" ;
+									$config.="Gibbon, Flexible & Open School System\n" ;
+									$config.="Copyright (C) 2010, Ross Parker\n" ;
+									$config.="\n" ;
+									$config.="This program is free software: you can redistribute it and/or modify\n" ;
+									$config.="it under the terms of the GNU General Public License as published by\n" ;
+									$config.="the Free Software Foundation, either version 3 of the License, or\n" ;
+									$config.="(at your option) any later version.\n" ;
+									$config.="\n" ;
+									$config.="This program is distributed in the hope that it will be useful,\n" ;
+									$config.="but WITHOUT ANY WARRANTY; without even the implied warranty of\n" ;
+									$config.="MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n" ;
+									$config.="GNU General Public License for more details.\n" ;
+									$config.="\n" ;
+									$config.="You should have received a copy of the GNU General Public License\n" ;
+									$config.="along with this program.  If not, see <http://www.gnu.org/licenses/>.\n" ;
+									$config.="*/\n" ;
+									$config.="\n" ;
+									$config.="//Sets database connection information\n" ;
+									$config.="\$databaseServer=\"" . $databaseServer . "\" ;\n" ; 
+									$config.="\$databaseUsername=\"" . $databaseUsername . "\" ;\n" ;
+									$config.="\$databasePassword=\"" . $databasePassword . "\" ;\n" ;
+									$config.="\$databaseName=\"" . $databaseName . "\" ;\n" ; 
+									$config.="\n" ;
+									$config.="//Sets globally unique id, to allow multiple installs on the server server.\n" ;
+									$config.="\$guid=\"" . $guid . "\" ;\n" ; 
+									$config.="\n" ;
+									$config.="//Sets system-wide caching factor, used to baalance performance and freshness. Value represents number of page loads between cache refresh. Must be posititve integer. 1 means no caching.\n" ;
+									$config.="\$caching=10 ;\n" ; 
+									$config.="?>\n" ;
 								
-								//Write config
-								$fp = fopen("../config.php","wb");
-								fwrite($fp,$config);
-								fclose($fp);
+									//Write config
+									$fp = fopen("../config.php","wb");
+									fwrite($fp,$config);
+									fclose($fp);
 								
-								if (file_exists("../config.php")==FALSE) { //Something went wrong, config.php could not be created.
-									print "<div class='error'>" ;
-										print _("../config.php could not be created, and so the installer cannot proceed.") ;
-									print "</div>" ;
-								}
-								else { //Config, exists, let's press on
-									//Let's populate the database
-									if (file_exists("../gibbon.sql")==FALSE) {
+									if (file_exists("../config.php")==FALSE) { //Something went wrong, config.php could not be created.
 										print "<div class='error'>" ;
-											print _("../gibbon.sql does not exist, and so the installer cannot proceed.") ;
+											print _("../config.php could not be created, and so the installer cannot proceed.") ;
 										print "</div>" ;
 									}
-									else {
-										include "./installerFunctions.php" ;
-										
-										$query=@fread(@fopen("../gibbon.sql", 'r'), @filesize("../gibbon.sql")) or die('Encountered a problem.');
-										$query=remove_remarks($query);
-										$query=split_sql_file($query, ';');
-
-										
-										$i=1;
-										$partialFail=FALSE ;
-										foreach($query as $sql){
-											$i++;
-											try {
-												$connection2->query($sql) ;
-											}
-											catch(PDOException $e) {
-												$partialFail=TRUE ;
-											}
-										}
-										
-										if ($partialFail==TRUE) {
+									else { //Config, exists, let's press on
+										//Let's populate the database
+										if (file_exists("../gibbon.sql")==FALSE) {
 											print "<div class='error'>" ;
-												print _("Errors occurred in populating the database; empty your database, remove ../config.php and try again.") ;
+												print _("../gibbon.sql does not exist, and so the installer cannot proceed.") ;
 											print "</div>" ;
 										}
 										else {
-											//Let's gather some more information
-											?>
-											<form method="post" action="./install.php?step=3">
-												<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
-													<tr class='break'>
-														<td colspan=2> 
-															<h3><?php print _('System Settings') ?></h3>
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='absoluteURL'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td style='width: 275px'> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td stclass="right">
-															<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
-															<script type="text/javascript">
-																var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																<?php print $row["name"] ?>.add(Validate.Presence);
-																<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-															 </script> 
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='absolutePath'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td stclass="right">
-															<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
-															<script type="text/javascript">
-																var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																<?php print $row["name"] ?>.add(Validate.Presence);
-															 </script> 
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='systemName'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="Gibbon" type="text" style="width: 300px">
-															<script type="text/javascript">
-																var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																<?php print $row["name"] ?>.add(Validate.Presence);
-															 </script> 
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='installType'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-																<?php
-																print "<option value='Production'>Production</option>" ;
-																print "<option value='Testing'>Testing</option>" ;
-																print "<option value='Development'>Development</option>" ;
-																?>			
-															</select>
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='cuttingEdgeCode'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?>. <?php print "<b>" . _('Not recommended for non-experts!.') . "<b>" ?></i></span>
-														</td>
-														<td class="right">
-															<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-																<?php
-																print "<option selected value='N'>N</option>" ;
-																print "<option value='Y'>Y</option>" ;
-																?>			
-															</select>
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='statsCollection'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-																<?php
-																print "<option value='Y'>Y</option>" ;
-																print "<option value='N'>N</option>" ;
-																?>			
-															</select>
-														</td>
-													</tr>
+											include "./installerFunctions.php" ;
+										
+											$query=@fread(@fopen("../gibbon.sql", 'r'), @filesize("../gibbon.sql")) or die('Encountered a problem.');
+											$query=remove_remarks($query);
+											$query=split_sql_file($query, ';');
+
+										
+											$i=1;
+											$partialFail=FALSE ;
+											foreach($query as $sql){
+												$i++;
+												try {
+													$connection2->query($sql) ;
+												}
+												catch(PDOException $e) {
+													$partialFail=TRUE ;
+												}
+											}
+										
+											if ($partialFail==TRUE) {
+												print "<div class='error'>" ;
+													print _("Errors occurred in populating the database; empty your database, remove ../config.php and try again.") ;
+												print "</div>" ;
+											}
+											else {
+												//Let's gather some more information
+												?>
+												<form method="post" action="./install.php?step=3">
+													<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+														<tr class='break'>
+															<td colspan=2> 
+																<h3><?php print _('System Settings') ?></h3>
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='absoluteURL'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td style='width: 275px'> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td stclass="right">
+																<?php $pageURL = (@$_SERVER["HTTPS"] == "on") ? "https://" : "http://"; ?>
+																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print substr(($pageURL.$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]),0,-29) ?>" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+																	<?php print $row["name"] ?>.add(Validate.Presence);
+																	<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
+																 </script> 
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='absolutePath'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td stclass="right">
+																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print substr(__FILE__,0,-22) ?>" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+																	<?php print $row["name"] ?>.add(Validate.Presence);
+																 </script> 
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='systemName'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="Gibbon" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+																	<?php print $row["name"] ?>.add(Validate.Presence);
+																 </script> 
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='installType'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+																	<?php
+																	print "<option selected value='Testing'>Testing</option>" ;
+																	print "<option value='Production'>Production</option>" ;
+																	print "<option value='Development'>Development</option>" ;
+																	?>			
+																</select>
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='cuttingEdgeCode'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?>. <?php print "<b>" . _('Not recommended for non-experts!.') . "<b>" ?></i></span>
+															</td>
+															<td class="right">
+																<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+																	<?php
+																	print "<option selected value='N'>N</option>" ;
+																	print "<option value='Y'>Y</option>" ;
+																	?>			
+																</select>
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='statsCollection'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+																	<?php
+																	print "<option value='Y'>Y</option>" ;
+																	print "<option value='N'>N</option>" ;
+																	?>			
+																</select>
+															</td>
+														</tr>
 		
-													<tr class='break'>
-														<td colspan=2> 
-															<h3><?php print _('Organisation Settings') ?></h3>
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationName'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
-															<script type="text/javascript">
-																var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																<?php print $row["name"] ?>.add(Validate.Presence);
-															 </script> 
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationNameShort'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
-															<script type="text/javascript">
-																var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																<?php print $row["name"] ?>.add(Validate.Presence);
-															 </script> 
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdministratorName'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
-															<script type="text/javascript">
-																var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																<?php print $row["name"] ?>.add(Validate.Presence);
-															 </script> 
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdministratorEmail'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
-															<script type="text/javascript">
-																var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																<?php print $row["name"] ?>.add(Validate.Email);
-																<?php print $row["name"] ?>.add(Validate.Presence);
-															 </script> 
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationDBAName'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
-															<script type="text/javascript">
-																var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																<?php print $row["name"] ?>.add(Validate.Presence);
-															 </script> 
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationDBAEmail'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
-															<script type="text/javascript">
-																var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																<?php print $row["name"] ?>.add(Validate.Email);
-																<?php print $row["name"] ?>.add(Validate.Presence);
-															 </script> 
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsName'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
-															<script type="text/javascript">
-																var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																<?php print $row["name"] ?>.add(Validate.Presence);
-															 </script> 
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsEmail'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
-															<script type="text/javascript">
-																var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																<?php print $row["name"] ?>.add(Validate.Email);
-																<?php print $row["name"] ?>.add(Validate.Presence);
-															 </script> 
-														</td>
-													</tr>
+														<tr class='break'>
+															<td colspan=2> 
+																<h3><?php print _('Organisation Settings') ?></h3>
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationName'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+																	<?php print $row["name"] ?>.add(Validate.Presence);
+																 </script> 
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationNameShort'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+																	<?php print $row["name"] ?>.add(Validate.Presence);
+																 </script> 
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdministratorName'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+																	<?php print $row["name"] ?>.add(Validate.Presence);
+																 </script> 
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdministratorEmail'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+																	<?php print $row["name"] ?>.add(Validate.Email);
+																	<?php print $row["name"] ?>.add(Validate.Presence);
+																 </script> 
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationDBAName'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+																	<?php print $row["name"] ?>.add(Validate.Presence);
+																 </script> 
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationDBAEmail'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+																	<?php print $row["name"] ?>.add(Validate.Email);
+																	<?php print $row["name"] ?>.add(Validate.Presence);
+																 </script> 
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsName'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+																	<?php print $row["name"] ?>.add(Validate.Presence);
+																 </script> 
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsEmail'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+																	<?php print $row["name"] ?>.add(Validate.Email);
+																	<?php print $row["name"] ?>.add(Validate.Presence);
+																 </script> 
+															</td>
+														</tr>
 			
-													<tr class='break'>
-														<td colspan=2> 
-															<h3><?php print _('gibbonedu.com Value-Added Services') ?></h3>
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='gibboneduComOrganisationName'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?></b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='gibboneduComOrganisationKey'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?></b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
-														</td>
-													</tr>
+														<tr class='break'>
+															<td colspan=2> 
+																<h3><?php print _('gibbonedu.com Value-Added Services') ?></h3>
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='gibboneduComOrganisationName'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?></b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='gibboneduComOrganisationKey'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?></b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
+															</td>
+														</tr>
 			
-													<tr class='break'>
-														<td colspan=2> 
-															<h3><?php print _('Miscellaneous') ?></h3>
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='country'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-																<?php
-																print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
-																try {
-																	$dataSelect=array(); 
-																	$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
-																	$resultSelect=$connection2->prepare($sqlSelect);
-																	$resultSelect->execute($dataSelect);
-																}
-																catch(PDOException $e) { 
-																	print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-																}
-																while ($rowSelect=$resultSelect->fetch()) {
-																	print "<option value='" . $rowSelect["printable_name"] . "'>" . _($rowSelect["printable_name"]) . "</option>" ;
-																}
-																?>
-															</select>
-															<script type="text/javascript">
-																var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-															 </script>
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='timezone'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="Asia/Hong_Kong" type="text" style="width: 300px">
-															<script type="text/javascript">
-																var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																<?php print $row["name"] ?>.add(Validate.Presence);
-															 </script> 
-														</td>
-													</tr>
-													<tr>
-														<?php
-														try {
-															$data=array(); 
-															$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale'" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														$row=$result->fetch() ;
-														?>
-														<td> 
-															<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-															<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
-														</td>
-														<td class="right">
-															<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-																<?php
-																print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
-																try {
-																	$dataSelect=array(); 
-																	$sqlSelect="SELECT * FROM gibbonScale WHERE active='Y' ORDER BY name" ;
-																	$resultSelect=$connection2->prepare($sqlSelect);
-																	$resultSelect->execute($dataSelect);
-																}
-																catch(PDOException $e) { 
-																	print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-																}
-																while ($rowSelect=$resultSelect->fetch()) {
-																	print "<option value='" . $rowSelect["gibbonScaleID"] . "'>" . _($rowSelect["name"]) . "</option>" ;
-																}
-																?>			
-															</select>
-															<script type="text/javascript">
-																var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-															 </script>
-														</td>
-													</tr>
+														<tr class='break'>
+															<td colspan=2> 
+																<h3><?php print _('Miscellaneous') ?></h3>
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='country'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+																	<?php
+																	print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+																	try {
+																		$dataSelect=array(); 
+																		$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
+																		$resultSelect=$connection2->prepare($sqlSelect);
+																		$resultSelect->execute($dataSelect);
+																	}
+																	catch(PDOException $e) { 
+																		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+																	}
+																	while ($rowSelect=$resultSelect->fetch()) {
+																		print "<option value='" . $rowSelect["printable_name"] . "'>" . _($rowSelect["printable_name"]) . "</option>" ;
+																	}
+																	?>
+																</select>
+																<script type="text/javascript">
+																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+																	<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+																 </script>
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='timezone'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="Asia/Hong_Kong" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+																	<?php print $row["name"] ?>.add(Validate.Presence);
+																 </script> 
+															</td>
+														</tr>
+														<tr>
+															<?php
+															try {
+																$data=array(); 
+																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale'" ;
+																$result=$connection2->prepare($sql);
+																$result->execute($data);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$row=$result->fetch() ;
+															?>
+															<td> 
+																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+															</td>
+															<td class="right">
+																<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+																	<?php
+																	print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+																	try {
+																		$dataSelect=array(); 
+																		$sqlSelect="SELECT * FROM gibbonScale WHERE active='Y' ORDER BY name" ;
+																		$resultSelect=$connection2->prepare($sqlSelect);
+																		$resultSelect->execute($dataSelect);
+																	}
+																	catch(PDOException $e) { 
+																		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+																	}
+																	while ($rowSelect=$resultSelect->fetch()) {
+																		print "<option value='" . $rowSelect["gibbonScaleID"] . "'>" . _($rowSelect["name"]) . "</option>" ;
+																	}
+																	?>			
+																</select>
+																<script type="text/javascript">
+																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+																	<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+																 </script>
+															</td>
+														</tr>
 			
-													<tr>
-														<td>
-															<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
-														</td>
-														<td class="right">
-															<input type="hidden" name="databaseServer" value="<?php print $databaseServer ?>">
-															<input type="hidden" name="databaseName" value="<?php print $databaseName ?>">
-															<input type="hidden" name="databaseUsername" value="<?php print $databaseUsername ?>">
-															<input type="hidden" name="databasePassword" value="<?php print $databasePassword ?>">
-															<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-															<input type="submit" value="<?php print _("Submit") ; ?>">
-														</td>
-													</tr>
-												</table>
-											</form>
-											<?
+														<tr>
+															<td>
+																<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+															</td>
+															<td class="right">
+																<input type="hidden" name="databaseServer" value="<?php print $databaseServer ?>">
+																<input type="hidden" name="databaseName" value="<?php print $databaseName ?>">
+																<input type="hidden" name="databaseUsername" value="<?php print $databaseUsername ?>">
+																<input type="hidden" name="databasePassword" value="<?php print $databasePassword ?>">
+																<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+																<input type="submit" value="<?php print _("Submit") ; ?>">
+															</td>
+														</tr>
+													</table>
+												</form>
+												<?
+											}
 										}
 									}
 								}

@@ -1240,7 +1240,7 @@ else {
 					</tr>
 					<tr id="twitterRowDetails">
 						<td> 
-							<b><?php print _('Integreate Twitter Content') ?></b><br/>
+							<b><?php print _('Integrate Twitter Content') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Returned tweets will display in your lesson. TAKE CARE!') ?> <a href='https://support.twitter.com/articles/71577#'><?php print _('Need help?') ?></a></i></span>
 						</td>
 						<td class="right">

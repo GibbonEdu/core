@@ -360,7 +360,7 @@ else {
 												$resultLike->execute($dataLike); 
 												if ($resultLike->rowCount()>0) {
 													$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-													$_SESSION[$guid]["likeCountTitle"].=_('Crowd Assessment') . ": " . count($resultLike) . ", " ;
+													$_SESSION[$guid]["likeCountTitle"].=_('Crowd Assessment') . ": " . $resultLike->rowCount() . ", " ;
 												}
 											}
 											catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
@@ -373,7 +373,7 @@ else {
 												$resultLike->execute($dataLike); 
 												if ($resultLike->rowCount()>0) {
 													$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-													$_SESSION[$guid]["likeCountTitle"].=_('Planner') . ": " . count($resultLike) . ", " ;
+													$_SESSION[$guid]["likeCountTitle"].=_('Planner') . ": " . $resultLike->rowCount() . ", " ;
 												}
 											}
 											catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
@@ -386,7 +386,7 @@ else {
 												$resultLike->execute($dataLike); 
 												if ($resultLike->rowCount()>0) {
 													$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-													$_SESSION[$guid]["likeCountTitle"].=_('Behaviour') . ": " . count($resultLike) . ", " ;
+													$_SESSION[$guid]["likeCountTitle"].=_('Behaviour') . ": " . $resultLike->rowCount() . ", " ;
 												}
 											}
 											catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
