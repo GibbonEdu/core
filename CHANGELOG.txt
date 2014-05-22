@@ -297,6 +297,9 @@ Planner: fixed Twitter integration typo
 Resources: fixed resource insert-by-ajax tag field error
 	Edited file /modules/Resources/resources_add_ajax.php
 
+Activities: fixed slot location saving issue
+	Edited file /modules/Activities/activities_manage_addProcess.php, activities_manage_editProcess.php
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)

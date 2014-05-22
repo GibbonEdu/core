@@ -121,7 +121,7 @@ else {
 				$timeEnd=$_POST["timeEnd$i"] ;
 				$type="Internal" ;
 				if (isset($_POST["slot" . $i . "Location"])) {
-					$_POST["slot" . $i . "Location"] ;
+					$type=$_POST["slot" . $i . "Location"] ;
 				}
 				$gibbonSpaceID=NULL ;
 				if ($type=="Internal") {
