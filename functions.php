@@ -17,6 +17,27 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//Expands Y and N to Yes and No, with and without translation
+function ynExpander($yn, $translation=true) {
+	$output="" ;
+	
+	if ($yn=="Y" OR $yn=="y") {
+		$output="Yes" ;
+	}
+	else if ($yn=="N" OR $yn=="n") {
+		$output="No" ;
+	}
+	else {
+		$output="NA" ;
+	}
+	
+	if ($translation==true) {
+		$output=_($output) ;
+	}
+	
+	return $output ;
+}
+
 //Accepts birthday in mysql date (YYYY-MM-DD) ;
 function daysUntilNextBirthday($birthday) {
 	$today=date("Y-m-d") ;

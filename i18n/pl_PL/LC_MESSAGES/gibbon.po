@@ -917,8 +917,9 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:732
 #: modules/Markbook/markbook_view.php:1130 functions.php:1524
 #: functions.php:1530 functions.php:1535 Admin/systemSettings.php:65
-#: Admin/update.php:34 index.php:551 index.php:585 functions.php:1524
-#: functions.php:1530 functions.php:1535 index.php:551 index.php:585
+#: Admin/update.php:34 index.php:551 index.php:585 functions.php:1545
+#: functions.php:1551 functions.php:1556 functions.php:1545 functions.php:1551
+#: functions.php:1556 index.php:551 index.php:585
 #: modules/Activities/activities_copy.php:34
 #: modules/Activities/activities_manage.php:34
 #: modules/Activities/activities_manage_add.php:33
@@ -1508,8 +1509,8 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:1216 Admin/systemSettings.php:1159
 #: Admin/update.php:117 Admin/update.php:185 installer/install.php:170
 #: installer/install.php:841 Admin/systemSettings.php:1150
-#: installer/install.php:170 installer/install.php:843
-#: modules/Activities/activities_copy.php:110
+#: installer/install.php:843 installer/install.php:170
+#: installer/install.php:843 modules/Activities/activities_copy.php:110
 #: modules/Activities/activities_manage.php:79
 #: modules/Activities/activities_manage_add.php:611
 #: modules/Activities/activities_manage_edit.php:797
@@ -1898,8 +1899,8 @@ msgstr ""
 #: modules/Messenger/messenger_post.php:1060 Admin/user_manage_edit.php:1580
 #: Admin/systemSettings.php:1155 installer/install.php:166
 #: installer/install.php:833 Admin/systemSettings.php:1146
-#: installer/install.php:166 installer/install.php:835
-#: modules/Activities/activities_copy.php:106
+#: installer/install.php:835 installer/install.php:166
+#: installer/install.php:835 modules/Activities/activities_copy.php:106
 #: modules/Activities/activities_manage_add.php:606
 #: modules/Activities/activities_manage_edit.php:793
 #: modules/Activities/activities_manage_enrolment_add.php:241
@@ -2748,8 +2749,8 @@ msgstr ""
 #: modules/Planner/planner.php:739 modules/Planner/planner.php:1046
 #: i18n/dbStringsForTranslation.php:1044 i18n/dbStringsForTranslation.php:1049
 #: i18n/dbStringsForTranslation.php:1101 functions.php:1196 index.php:363
-#: index.php:1177 functions.php:1196 i18n/dbStringsForTranslation.php:1101
-#: index.php:363 index.php:1177
+#: index.php:1177 functions.php:1217 functions.php:1217
+#: i18n/dbStringsForTranslation.php:1101 index.php:363 index.php:1177
 #: modules/Crowd Assessment/moduleFunctions.php:103
 #: modules/Departments/department_course_class.php:237
 #: modules/Departments/department_course_class.php:358
@@ -2773,8 +2774,8 @@ msgstr ""
 #: modules/Planner/planner_view_full_submit_edit.php:120
 #: i18n/dbStringsForTranslation.php:1053 i18n/dbStringsForTranslation.php:1058
 #: i18n/dbStringsForTranslation.php:1110 functions.php:1226 functions.php:1387
-#: index.php:376 functions.php:1226 functions.php:1387
-#: i18n/dbStringsForTranslation.php:1110 index.php:376
+#: index.php:376 functions.php:1247 functions.php:1408 functions.php:1247
+#: functions.php:1408 i18n/dbStringsForTranslation.php:1110 index.php:376
 #: modules/Markbook/moduleFunctions.php:52 modules/Planner/planner.php:574
 #: modules/Planner/planner.php:850 modules/Planner/planner_add.php:128
 #: modules/Planner/planner_bump.php:114
@@ -2973,8 +2974,8 @@ msgstr ""
 #: modules/Planner/units_edit.php:970
 #: modules/Departments/department_course_class.php:128 functions.php:1419
 #: modules/Planner/units_edit.php:418 modules/Planner/units_edit.php:971
-#: functions.php:1423 index.php:660 index.php:1106 functions.php:1423
-#: index.php:660 index.php:1106
+#: functions.php:1423 index.php:660 index.php:1106 functions.php:1444
+#: functions.php:1444 index.php:660 index.php:1106
 #: modules/Departments/department_course_class.php:128
 #: modules/Markbook/moduleFunctions.php:97 modules/Planner/units_edit.php:418
 #: modules/Planner/units_edit.php:971
@@ -4232,8 +4233,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2028
 #: modules/Students/student_view_details.php:2080 functions.php:819
 #: functions.php:2417 functions.php:2419 index.php:673 index.php:1094
-#: functions.php:819 functions.php:2419 index.php:673 index.php:1094
-#: modules/Activities/activities_copy.php:49
+#: functions.php:840 functions.php:2440 functions.php:840 functions.php:2440
+#: index.php:673 index.php:1094 modules/Activities/activities_copy.php:49
 #: modules/Activities/activities_manage.php:125
 #: modules/Activities/activities_manage.php:183
 #: modules/Activities/activities_manage_add.php:44
@@ -4898,8 +4899,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2404
 #: modules/Messenger/messenger_post.php:708
 #: modules/Students/student_view_details.php:2402 functions.php:1383
-#: index.php:701 index.php:1112 functions.php:1383 index.php:701
-#: index.php:1112 modules/Crowd Assessment/crowdAssess.php:59
+#: index.php:701 index.php:1112 functions.php:1404 functions.php:1404
+#: index.php:701 index.php:1112 modules/Crowd Assessment/crowdAssess.php:59
 #: modules/Crowd Assessment/crowdAssess_view.php:98
 #: modules/Departments/department_course_class_full.php:123
 #: modules/Markbook/markbook_edit_add.php:121
@@ -4942,8 +4943,9 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:678
 #: modules/Students/student_view_details.php:2713
 #: modules/Students/student_view_details.php:2711 functions.php:1400
-#: index.php:707 index.php:1119 functions.php:1400 index.php:707
-#: index.php:1119 modules/Departments/department_course_class.php:195
+#: index.php:707 index.php:1119 functions.php:1421 functions.php:1421
+#: index.php:707 index.php:1119
+#: modules/Departments/department_course_class.php:195
 #: modules/Departments/department_course_class.php:316
 #: modules/Departments/department_course_class.php:405
 #: modules/Markbook/moduleFunctions.php:57 modules/Planner/planner.php:281
@@ -5554,7 +5556,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:215 i18n/dbStringsForTranslation.php:216
 #: i18n/dbStringsForTranslation.php:384 i18n/dbStringsForTranslation.php:386
 #: modules/Markbook/markbook_view.php:732 functions.php:1428 index.php:789
-#: functions.php:1428 i18n/dbStringsForTranslation.php:384
+#: functions.php:1449 functions.php:1449 i18n/dbStringsForTranslation.php:384
 #: i18n/dbStringsForTranslation.php:386 index.php:789
 #: modules/Departments/department_course_class.php:131
 #: modules/Markbook/markbook_view.php:67 modules/Markbook/markbook_view.php:86
@@ -5776,15 +5778,15 @@ msgstr ""
 msgid "Uploaded Response"
 msgstr ""
 
-#: functions.php:53 functions.php:53
+#: functions.php:53 functions.php:74 functions.php:74
 msgid "Smart Workflow"
 msgstr ""
 
-#: functions.php:53 functions.php:53
+#: functions.php:53 functions.php:74 functions.php:74
 msgid "Getting Started"
 msgstr "Hola!"
 
-#: functions.php:54 functions.php:54
+#: functions.php:54 functions.php:75 functions.php:75
 msgid ""
 "Designed and built by teachers, Gibbon's Smart Workflow takes care of the "
 "boring stuff, so you can get on with teaching."
@@ -6735,9 +6737,10 @@ msgstr ""
 #: index.php:1231 functions.php:628 functions.php:629 functions.php:636
 #: functions.php:637 functions.php:646 functions.php:647 functions.php:632
 #: functions.php:633 functions.php:640 functions.php:641 functions.php:650
-#: functions.php:651 index.php:1234 index.php:1240 functions.php:632
-#: functions.php:633 functions.php:640 functions.php:641 functions.php:650
-#: functions.php:651 index.php:1240
+#: functions.php:651 index.php:1234 index.php:1240 functions.php:653
+#: functions.php:654 functions.php:661 functions.php:662 functions.php:671
+#: functions.php:672 functions.php:653 functions.php:654 functions.php:661
+#: functions.php:662 functions.php:671 functions.php:672 index.php:1240
 msgid "Loading"
 msgstr ""
 
@@ -7123,12 +7126,12 @@ msgid "Position"
 msgstr ""
 
 #: index.php:1466 index.php:1469 index.php:1475 installer/install.php:1127
-#: index.php:1475 installer/install.php:1148
+#: installer/install.php:1148 index.php:1475 installer/install.php:1148
 msgid "Powered by"
 msgstr ""
 
 #: index.php:1467 index.php:1470 index.php:1477 installer/install.php:1129
-#: index.php:1477 installer/install.php:1150
+#: installer/install.php:1150 index.php:1477 installer/install.php:1150
 msgid "Created under the"
 msgstr ""
 
@@ -7447,56 +7450,65 @@ msgstr ""
 msgid "Delete Record"
 msgstr ""
 
-#: functions.php:60 functions.php:66 functions.php:60 functions.php:66
+#: functions.php:60 functions.php:66 functions.php:81 functions.php:87
+#: functions.php:81 functions.php:87
 msgid "One"
 msgstr ""
 
-#: functions.php:61 functions.php:67 functions.php:61 functions.php:67
+#: functions.php:61 functions.php:67 functions.php:82 functions.php:88
+#: functions.php:82 functions.php:88
 #, php-format
 msgid "Create %1$s Outcomes"
 msgstr ""
 
-#: functions.php:72 functions.php:78 functions.php:72 functions.php:78
+#: functions.php:72 functions.php:78 functions.php:93 functions.php:99
+#: functions.php:93 functions.php:99
 msgid "Two"
 msgstr ""
 
-#: functions.php:73 functions.php:79 functions.php:73 functions.php:79
+#: functions.php:73 functions.php:79 functions.php:94 functions.php:100
+#: functions.php:94 functions.php:100
 #, php-format
 msgid "Plan & Deploy %1$s Smart Units"
 msgstr ""
 
-#: functions.php:84 functions.php:90 functions.php:84 functions.php:90
+#: functions.php:84 functions.php:90 functions.php:105 functions.php:111
+#: functions.php:105 functions.php:111
 msgid "Three"
 msgstr ""
 
-#: functions.php:85 functions.php:91 functions.php:85 functions.php:91
+#: functions.php:85 functions.php:91 functions.php:106 functions.php:112
+#: functions.php:106 functions.php:112
 #, php-format
 msgid "Share, Teach %1$s & Interact"
 msgstr ""
 
-#: functions.php:96 functions.php:96
+#: functions.php:96 functions.php:117 functions.php:117
 msgid "Four<"
 msgstr ""
 
-#: functions.php:97 functions.php:103 functions.php:97 functions.php:103
+#: functions.php:97 functions.php:103 functions.php:118 functions.php:124
+#: functions.php:118 functions.php:124
 #, php-format
 msgid "Assign & Collect %1$s Work"
 msgstr ""
 
-#: functions.php:102 functions.php:102
+#: functions.php:102 functions.php:123 functions.php:123
 msgid "Four"
 msgstr ""
 
-#: functions.php:108 functions.php:114 functions.php:108 functions.php:114
+#: functions.php:108 functions.php:114 functions.php:129 functions.php:135
+#: functions.php:129 functions.php:135
 msgid "Five"
 msgstr ""
 
-#: functions.php:109 functions.php:115 functions.php:109 functions.php:115
+#: functions.php:109 functions.php:115 functions.php:130 functions.php:136
+#: functions.php:130 functions.php:136
 #, php-format
 msgid "Assess & Give %1$s Feedback"
 msgstr ""
 
-#: functions.php:123 functions.php:123
+#: functions.php:123 functions.php:144 functions.php:144
 msgid ""
 "<b>Outcomes</b> provide a way to plan and track what is being taught in "
 "school, and so are a great place to get started.<br/><br/>Click on the \"Add"
@@ -7504,20 +7516,22 @@ msgid ""
 "either be school-wide, or attached to a particular department."
 msgstr ""
 
-#: functions.php:124 functions.php:128 functions.php:124 functions.php:128
+#: functions.php:124 functions.php:128 functions.php:145 functions.php:149
+#: functions.php:145 functions.php:149
 msgid ""
 "<b>Note</b>: You need to be in a department, with the correct permissions, "
 "in order to be able to do this."
 msgstr ""
 
 #: functions.php:124 functions.php:128 functions.php:132 functions.php:136
-#: functions.php:140 functions.php:124 functions.php:128 functions.php:132
-#: functions.php:136 functions.php:140
+#: functions.php:140 functions.php:145 functions.php:149 functions.php:153
+#: functions.php:157 functions.php:161 functions.php:145 functions.php:149
+#: functions.php:153 functions.php:157 functions.php:161
 #, php-format
 msgid "Please contact %1$s for help."
 msgstr ""
 
-#: functions.php:127 functions.php:127
+#: functions.php:127 functions.php:148 functions.php:148
 msgid ""
 "<b>Smart Units</b> support you in the design of course content, and can be "
 "quickly turned into individual lesson plans using intuitive drag and drop. "
@@ -7528,7 +7542,7 @@ msgid ""
 "class to create your lesson plans."
 msgstr ""
 
-#: functions.php:131 functions.php:131
+#: functions.php:131 functions.php:152 functions.php:152
 #, php-format
 msgid ""
 "<b>Planner</b> supports online lesson plans which can be shared with "
@@ -7540,14 +7554,15 @@ msgid ""
 "right) to add a new unit."
 msgstr ""
 
-#: functions.php:132 functions.php:136 functions.php:140 functions.php:132
-#: functions.php:136 functions.php:140
+#: functions.php:132 functions.php:136 functions.php:140 functions.php:153
+#: functions.php:157 functions.php:161 functions.php:153 functions.php:157
+#: functions.php:161
 msgid ""
 "<b>Note</b>: You need to have classes assigned to you, with the correct "
 "permissions, in order to be able to do this."
 msgstr ""
 
-#: functions.php:135 functions.php:135
+#: functions.php:135 functions.php:156 functions.php:156
 #, php-format
 msgid ""
 "<b>Homework + Deadlines</b> allows teachers and students to see upcoming "
@@ -7557,7 +7572,7 @@ msgid ""
 "teachers to view all submitted work, and records late and incomplete work."
 msgstr ""
 
-#: functions.php:139 functions.php:139
+#: functions.php:139 functions.php:160 functions.php:160
 #, php-format
 msgid ""
 "<b>Markbook</b> provides an organised way to assess, record and report on "
@@ -7568,51 +7583,51 @@ msgid ""
 "on the right) to create a new markbook column."
 msgstr ""
 
-#: functions.php:147 functions.php:147
+#: functions.php:147 functions.php:168 functions.php:168
 msgid "Dismiss Smart Workflow Help"
 msgstr ""
 
 #: functions.php:204 modules/Finance/invoices_manage_print_print.php:86
 #: modules/Finance/invoices_manage_print_print.php:138
-#: modules/Finance/invoices_manage_print_print.php:155 functions.php:204
-#: modules/Finance/invoices_manage_print_print.php:86
+#: modules/Finance/invoices_manage_print_print.php:155 functions.php:225
+#: functions.php:225 modules/Finance/invoices_manage_print_print.php:86
 #: modules/Finance/invoices_manage_print_print.php:138
 #: modules/Finance/invoices_manage_print_print.php:155
 msgid "An error occurred."
 msgstr ""
 
-#: functions.php:207 functions.php:207
+#: functions.php:207 functions.php:228 functions.php:228
 msgid "The password policy stipulates that passwords must:"
 msgstr ""
 
-#: functions.php:210 functions.php:210
+#: functions.php:210 functions.php:231 functions.php:231
 msgid "Contain at least one lowercase letter, and one uppercase letter."
 msgstr ""
 
-#: functions.php:213 functions.php:213
+#: functions.php:213 functions.php:234 functions.php:234
 msgid "Contain at least one number."
 msgstr ""
 
-#: functions.php:216 functions.php:216
+#: functions.php:216 functions.php:237 functions.php:237
 msgid ""
 "Contain at least one non-alphanumeric character (e.g. a punctuation mark or "
 "space)."
 msgstr ""
 
-#: functions.php:219 functions.php:219
+#: functions.php:219 functions.php:240 functions.php:240
 #, php-format
 msgid "Must be at least %1$s characters in length."
 msgstr ""
 
-#: functions.php:254 functions.php:254
+#: functions.php:254 functions.php:275 functions.php:275
 msgid "Find Staff & Students"
 msgstr ""
 
-#: functions.php:257 functions.php:257
+#: functions.php:257 functions.php:278 functions.php:278
 msgid "Find Students"
 msgstr ""
 
-#: functions.php:260 functions.php:260
+#: functions.php:260 functions.php:281 functions.php:281
 msgid "Find Staff"
 msgstr ""
 
@@ -7633,7 +7648,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1058 i18n/dbStringsForTranslation.php:1099
 #: i18n/dbStringsForTranslation.php:1063 i18n/dbStringsForTranslation.php:1104
 #: i18n/dbStringsForTranslation.php:1115 i18n/dbStringsForTranslation.php:1156
-#: functions.php:267 i18n/dbStringsForTranslation.php:1115
+#: functions.php:288 functions.php:288 i18n/dbStringsForTranslation.php:1115
 #: i18n/dbStringsForTranslation.php:1156
 #: modules/Activities/activities_manage_add.php:566
 #: modules/Activities/activities_manage_add.php:571
@@ -7684,8 +7699,8 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:844
 #: modules/Markbook/markbook_view.php:1355
 #: modules/Students/student_view_details.php:1724
-#: modules/Students/student_view_details.php:2390 functions.php:300
-#: modules/Behaviour/behaviour_manage.php:193
+#: modules/Students/student_view_details.php:2390 functions.php:321
+#: functions.php:321 modules/Behaviour/behaviour_manage.php:193
 #: modules/Behaviour/behaviour_pattern.php:239
 #: modules/Departments/department.php:219
 #: modules/Departments/department_course_class.php:560
@@ -7717,63 +7732,71 @@ msgstr ""
 msgid "Go"
 msgstr ""
 
-#: functions.php:532 functions.php:536 functions.php:536
+#: functions.php:532 functions.php:536 functions.php:557 functions.php:557
 msgid "Visual"
 msgstr ""
 
-#: functions.php:564 functions.php:568 functions.php:568
+#: functions.php:564 functions.php:568 functions.php:589 functions.php:589
 msgid "Shared Resources"
 msgstr ""
 
-#: functions.php:565 functions.php:569 functions.php:569
+#: functions.php:565 functions.php:569 functions.php:590 functions.php:590
 msgid "Insert Existing Resource"
 msgstr ""
 
-#: functions.php:567 functions.php:571 functions.php:571
+#: functions.php:567 functions.php:571 functions.php:592 functions.php:592
 msgid "Create & Insert New Resource"
 msgstr ""
 
 #: functions.php:569 functions.php:570 functions.php:573 functions.php:574
-#: functions.php:573 functions.php:574
+#: functions.php:594 functions.php:595 functions.php:594 functions.php:595
 msgid "Quick Add"
 msgstr ""
 
-#: functions.php:802 functions.php:806 functions.php:810 functions.php:810
+#: functions.php:802 functions.php:806 functions.php:810 functions.php:831
+#: functions.php:831
 msgid "Username or password not set."
 msgstr ""
 
-#: functions.php:805 functions.php:809 functions.php:813 functions.php:813
+#: functions.php:805 functions.php:809 functions.php:813 functions.php:834
+#: functions.php:834
 msgid "Incorrect username and password."
 msgstr ""
 
-#: functions.php:808 functions.php:812 functions.php:816 functions.php:816
+#: functions.php:808 functions.php:812 functions.php:816 functions.php:837
+#: functions.php:837
 msgid "You do not have sufficient privileges to login."
 msgstr ""
 
-#: functions.php:814 functions.php:818 functions.php:822 functions.php:822
+#: functions.php:814 functions.php:818 functions.php:822 functions.php:843
+#: functions.php:843
 #, php-format
 msgid "Too many failed logins: please %1$sreset password%2$s."
 msgstr ""
 
-#: functions.php:817 functions.php:821 functions.php:825 functions.php:825
+#: functions.php:817 functions.php:821 functions.php:825 functions.php:846
+#: functions.php:846
 #, php-format
 msgid ""
 "Error with Google Authentication. Please contact %1$s if you have any "
 "questions."
 msgstr ""
 
-#: functions.php:820 functions.php:824 functions.php:828 functions.php:828
+#: functions.php:820 functions.php:824 functions.php:828 functions.php:849
+#: functions.php:849
 #, php-format
 msgid ""
 "Gmail account does not match the email stored in %1$s. If you have logged in "
 "with your school Gmail account please contact %2$s if you have any questions."
 msgstr ""
 
-#: functions.php:838 functions.php:842 functions.php:846 functions.php:846
+#: functions.php:838 functions.php:842 functions.php:846 functions.php:867
+#: functions.php:867
 msgid "Login with Google"
 msgstr ""
 
-#: functions.php:853 functions.php:857 functions.php:861 functions.php:861
+#: functions.php:853 functions.php:857 functions.php:861 functions.php:882
+#: functions.php:882
 msgid "Login"
 msgstr ""
 
@@ -7791,7 +7814,8 @@ msgstr ""
 #: modules/Students/report_students_new.php:316
 #: modules/Students/student_view_details.php:425
 #: modules/Students/student_view_details.php:878 functions.php:867
-#: functions.php:867 modules/Application Form/applicationForm.php:903
+#: functions.php:888 functions.php:888
+#: modules/Application Form/applicationForm.php:903
 #: modules/Staff/staff_view_details.php:207
 #: modules/Students/report_students_left.php:142
 #: modules/Students/report_students_new.php:204
@@ -7816,7 +7840,8 @@ msgstr ""
 #: Admin/applicationForm_manage_accept.php:857
 #: Admin/applicationForm_manage_accept.php:1020 Admin/user_manage_add.php:264
 #: Admin/user_manage_password.php:124 functions.php:875 functions.php:879
-#: functions.php:879 modules/User Admin/applicationForm_manage_accept.php:321
+#: functions.php:900 functions.php:900
+#: modules/User Admin/applicationForm_manage_accept.php:321
 #: modules/User Admin/applicationForm_manage_accept.php:857
 #: modules/User Admin/applicationForm_manage_accept.php:1020
 #: modules/User Admin/user_manage_add.php:264
@@ -7858,7 +7883,7 @@ msgstr ""
 #: modules/Planner/units_edit_working_copyback.php:147
 #: modules/Students/report_students_IDCards.php:208
 #: modules/Markbook/markbook_view.php:796 functions.php:891
-#: modules/Markbook/markbook_view.php:1307 functions.php:891
+#: modules/Markbook/markbook_view.php:1307 functions.php:912 functions.php:912
 #: modules/Finance/billingSchedule_manage_add.php:84
 #: modules/Finance/billingSchedule_manage_edit.php:102
 #: modules/Finance/fees_manage_add.php:84
@@ -7901,61 +7926,69 @@ msgid "School Year"
 msgstr ""
 
 #: functions.php:910 functions.php:914 i18n/dbStringsForTranslation.php:1056
-#: functions.php:918 functions.php:918 i18n/dbStringsForTranslation.php:1056
+#: functions.php:918 functions.php:939 functions.php:939
+#: i18n/dbStringsForTranslation.php:1056
 msgid "Language"
 msgstr ""
 
 #: functions.php:952 functions.php:956
 #: modules/Planner/units_edit_working_copyback.php:169 functions.php:960
-#: functions.php:960 modules/Planner/units_edit_working_copyback.php:169
+#: functions.php:981 functions.php:981
+#: modules/Planner/units_edit_working_copyback.php:169
 msgid "Options"
 msgstr ""
 
-#: functions.php:952 functions.php:956 functions.php:960 functions.php:960
+#: functions.php:952 functions.php:956 functions.php:960 functions.php:981
+#: functions.php:981
 msgid "Forgot Password?"
 msgstr ""
 
-#: functions.php:987 functions.php:991 functions.php:995 functions.php:995
+#: functions.php:987 functions.php:991 functions.php:995 functions.php:1016
+#: functions.php:1016
 msgid "Module Menu"
 msgstr ""
 
 #: functions.php:1183 modules/Crowd Assessment/moduleFunctions.php:97
-#: functions.php:1187 functions.php:1191 functions.php:1191
+#: functions.php:1187 functions.php:1191 functions.php:1212 functions.php:1212
 #: modules/Crowd Assessment/moduleFunctions.php:97
 msgid "Recent Discussion"
 msgstr ""
 
 #: functions.php:1193 modules/Crowd Assessment/moduleFunctions.php:108
-#: functions.php:1197 functions.php:1201 functions.php:1201
+#: functions.php:1197 functions.php:1201 functions.php:1222 functions.php:1222
 #: modules/Crowd Assessment/moduleFunctions.php:108
 msgid "Comments on my work:"
 msgstr ""
 
 #: functions.php:1205 functions.php:1235 modules/Crowd
 #: Assessment/moduleFunctions.php:120 functions.php:1209 functions.php:1239
-#: functions.php:1213 functions.php:1243 functions.php:1213 functions.php:1243
+#: functions.php:1213 functions.php:1243 functions.php:1234 functions.php:1264
+#: functions.php:1234 functions.php:1264
 #: modules/Crowd Assessment/moduleFunctions.php:120
 msgid "Replies to me:"
 msgstr ""
 
-#: functions.php:1223 functions.php:1227 functions.php:1231 functions.php:1231
+#: functions.php:1223 functions.php:1227 functions.php:1231 functions.php:1252
+#: functions.php:1252
 msgid "Comments on my lessons:"
 msgstr ""
 
-#: functions.php:1265 functions.php:1269 functions.php:1273 functions.php:1273
+#: functions.php:1265 functions.php:1269 functions.php:1273 functions.php:1294
+#: functions.php:1294
 msgid "No upcoming deadlines. Yay!"
 msgstr ""
 
 #: functions.php:1321 functions.php:1428
 #: modules/Markbook/moduleFunctions.php:102 functions.php:1325
-#: functions.php:1432 functions.php:1329 functions.php:1436 functions.php:1329
-#: functions.php:1436 modules/Markbook/moduleFunctions.php:102
+#: functions.php:1432 functions.php:1329 functions.php:1436 functions.php:1350
+#: functions.php:1457 functions.php:1350 functions.php:1457
+#: modules/Markbook/moduleFunctions.php:102
 msgid "View Homework"
 msgstr ""
 
 #: functions.php:1340 modules/Markbook/markbook_view.php:1582
 #: functions.php:1344 modules/Markbook/markbook_view.php:1639
-#: functions.php:1348 functions.php:1348
+#: functions.php:1348 functions.php:1369 functions.php:1369
 #: modules/Markbook/markbook_view.php:1639
 msgid "Recent Marks"
 msgstr ""
@@ -7963,7 +7996,7 @@ msgstr ""
 #: functions.php:1369 modules/Markbook/moduleFunctions.php:36
 #: modules/Departments/departments.php:159
 #: modules/Planner/moduleFunctions.php:478 functions.php:1373
-#: functions.php:1377 functions.php:1377
+#: functions.php:1377 functions.php:1398 functions.php:1398
 #: modules/Departments/departments.php:159
 #: modules/Markbook/moduleFunctions.php:36
 #: modules/Planner/moduleFunctions.php:478
@@ -7983,7 +8016,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:248 i18n/dbStringsForTranslation.php:1051
 #: i18n/dbStringsForTranslation.php:1056 i18n/dbStringsForTranslation.php:1108
 #: modules/Students/student_view_details.php:2683 functions.php:1392
-#: functions.php:1392 i18n/dbStringsForTranslation.php:248
+#: functions.php:1413 functions.php:1413 i18n/dbStringsForTranslation.php:248
 #: i18n/dbStringsForTranslation.php:1108 modules/Markbook/markbook_edit.php:90
 #: modules/Markbook/markbook_edit_add.php:69
 #: modules/Markbook/markbook_edit_addMulti.php:66
@@ -8002,7 +8035,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:34 i18n/dbStringsForTranslation.php:1096
 #: i18n/dbStringsForTranslation.php:1101 i18n/dbStringsForTranslation.php:1153
 #: modules/Students/student_view_details.php:2739 functions.php:1396
-#: functions.php:1396 i18n/dbStringsForTranslation.php:34
+#: functions.php:1417 functions.php:1417 i18n/dbStringsForTranslation.php:34
 #: i18n/dbStringsForTranslation.php:1153
 #: modules/Students/student_view_details.php:2739
 msgid "People"
@@ -8016,7 +8049,7 @@ msgstr ""
 #: modules/Activities/activities_view_full.php:242
 #: modules/Departments/department_course_class.php:113
 #: modules/Departments/department_course_class.php:501 functions.php:1428
-#: functions.php:1432 functions.php:1432
+#: functions.php:1432 functions.php:1453 functions.php:1453
 #: modules/Activities/activities_my_full.php:221
 #: modules/Activities/activities_view_full.php:242
 #: modules/Departments/department_course_class.php:113
@@ -8030,111 +8063,132 @@ msgstr ""
 
 #: functions.php:1441 functions.php:1445
 #: modules/Resources/moduleFunctions.php:99 functions.php:1449
-#: functions.php:1449 modules/Resources/moduleFunctions.php:99
+#: functions.php:1470 functions.php:1470
+#: modules/Resources/moduleFunctions.php:99
 msgid "Resource Tags"
 msgstr ""
 
 #: functions.php:1445 functions.php:1449 i18n/dbStringsForTranslation.php:219
 #: modules/Resources/resources_view.php:33
 #: i18n/dbStringsForTranslation.php:392 i18n/dbStringsForTranslation.php:393
-#: functions.php:1453 functions.php:1453 i18n/dbStringsForTranslation.php:392
-#: i18n/dbStringsForTranslation.php:393
+#: functions.php:1453 functions.php:1474 functions.php:1474
+#: i18n/dbStringsForTranslation.php:392 i18n/dbStringsForTranslation.php:393
 #: modules/Resources/resources_view.php:33
 msgid "View Resources"
 msgstr ""
 
-#: functions.php:1453 functions.php:1457 functions.php:1461 functions.php:1461
+#: functions.php:1453 functions.php:1457 functions.php:1461 functions.php:1482
+#: functions.php:1482
 msgid "Role Switcher"
 msgstr ""
 
-#: functions.php:1466 functions.php:1470 functions.php:1474 functions.php:1474
+#: functions.php:1466 functions.php:1470 functions.php:1474 functions.php:1495
+#: functions.php:1495
 msgid "Role ID not specified."
 msgstr ""
 
-#: functions.php:1469 functions.php:1473 functions.php:1477 functions.php:1477
+#: functions.php:1469 functions.php:1473 functions.php:1477 functions.php:1498
+#: functions.php:1498
 msgid "You do not have access to the specified role."
 msgstr ""
 
-#: functions.php:1472 functions.php:1476 functions.php:1480 functions.php:1480
+#: functions.php:1472 functions.php:1476 functions.php:1480 functions.php:1501
+#: functions.php:1501
 msgid "Role switched successfully."
 msgstr ""
 
-#: functions.php:1481 functions.php:1485 functions.php:1489 functions.php:1489
+#: functions.php:1481 functions.php:1485 functions.php:1489 functions.php:1510
+#: functions.php:1510
 msgid ""
 "You have multiple roles within the system. Use the list below to switch role:"
 msgstr ""
 
-#: functions.php:1487 functions.php:1491 functions.php:1495 functions.php:1495
+#: functions.php:1487 functions.php:1491 functions.php:1495 functions.php:1516
+#: functions.php:1516
 msgid "(Active)"
 msgstr ""
 
 #: functions.php:1598 functions.php:1601 functions.php:1602 functions.php:1605
-#: functions.php:1606 functions.php:1609 functions.php:1606 functions.php:1609
+#: functions.php:1606 functions.php:1609 functions.php:1627 functions.php:1630
+#: functions.php:1627 functions.php:1630
 #, php-format
 msgid "Maximum size for all files: %1$sMB"
 msgstr ""
 
 #: functions.php:1606 functions.php:1609 functions.php:1610 functions.php:1613
-#: functions.php:1614 functions.php:1617 functions.php:1614 functions.php:1617
+#: functions.php:1614 functions.php:1617 functions.php:1635 functions.php:1638
+#: functions.php:1635 functions.php:1638
 #, php-format
 msgid "Maximum file size: %1$sMB"
 msgstr ""
 
-#: functions.php:1656 functions.php:1660 functions.php:1664 functions.php:1664
+#: functions.php:1656 functions.php:1660 functions.php:1664 functions.php:1685
+#: functions.php:1685
 msgid "y"
 msgstr ""
 
-#: functions.php:1656 functions.php:1660 functions.php:1664 functions.php:1664
+#: functions.php:1656 functions.php:1660 functions.php:1664 functions.php:1685
+#: functions.php:1685
 msgid "m"
 msgstr ""
 
-#: functions.php:1659 functions.php:1663 functions.php:1667 functions.php:1667
+#: functions.php:1659 functions.php:1663 functions.php:1667 functions.php:1688
+#: functions.php:1688
 msgid "years"
 msgstr ""
 
-#: functions.php:1659 functions.php:1663 functions.php:1667 functions.php:1667
+#: functions.php:1659 functions.php:1663 functions.php:1667 functions.php:1688
+#: functions.php:1688
 msgid "months"
 msgstr ""
 
 #: functions.php:1821 functions.php:1825
 #: modules/Planner/planner_view_full.php:432 functions.php:1829
-#: functions.php:1829 modules/Planner/planner_view_full.php:432
+#: functions.php:1850 functions.php:1850
+#: modules/Planner/planner_view_full.php:432
 msgid "Show Confidential Data"
 msgstr ""
 
 #: functions.php:1843 functions.php:1931 functions.php:1847 functions.php:1935
-#: functions.php:1851 functions.php:1939 functions.php:1851 functions.php:1939
+#: functions.php:1851 functions.php:1939 functions.php:1872 functions.php:1960
+#: functions.php:1872 functions.php:1960
 #, php-format
 msgid "%1$s  birthday today!"
 msgstr ""
 
 #: functions.php:1848 functions.php:1936 functions.php:1852 functions.php:1940
-#: functions.php:1856 functions.php:1944 functions.php:1856 functions.php:1944
+#: functions.php:1856 functions.php:1944 functions.php:1877 functions.php:1965
+#: functions.php:1877 functions.php:1965
 #, php-format
 msgid "days until %1$s birthday!"
 msgstr ""
 
 #: functions.php:1851 functions.php:1939 functions.php:1855 functions.php:1943
-#: functions.php:1859 functions.php:1947 functions.php:1859 functions.php:1947
+#: functions.php:1859 functions.php:1947 functions.php:1880 functions.php:1968
+#: functions.php:1880 functions.php:1968
 #, php-format
 msgid "day until %1$s birthday!"
 msgstr ""
 
-#: functions.php:1994 functions.php:1998 functions.php:2002 functions.php:2002
+#: functions.php:1994 functions.php:1998 functions.php:2002 functions.php:2023
+#: functions.php:2023
 #, php-format
 msgid "Individual Needs alert is set, with an alert level of %1$s."
 msgstr ""
 
-#: functions.php:1997 functions.php:2001 functions.php:2005 functions.php:2005
+#: functions.php:1997 functions.php:2001 functions.php:2005 functions.php:2026
+#: functions.php:2026
 #, php-format
 msgid "Individual Needs alerts are set, up to a maximum alert level of %1$s."
 msgstr ""
 
-#: functions.php:1999 functions.php:2003 functions.php:2007 functions.php:2007
+#: functions.php:1999 functions.php:2003 functions.php:2007 functions.php:2028
+#: functions.php:2028
 msgid "IN"
 msgstr ""
 
-#: functions.php:2025 functions.php:2029 functions.php:2033 functions.php:2033
+#: functions.php:2025 functions.php:2029 functions.php:2033 functions.php:2054
+#: functions.php:2054
 #, php-format
 msgid ""
 "Student has a %1$s alert for academic concern in the current academic year."
@@ -8144,12 +8198,14 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1349 i18n/dbStringsForTranslation.php:1433
 #: i18n/dbStringsForTranslation.php:1710 i18n/dbStringsForTranslation.php:1438
 #: i18n/dbStringsForTranslation.php:1715 i18n/dbStringsForTranslation.php:1490
-#: i18n/dbStringsForTranslation.php:1767 functions.php:2034 functions.php:2034
-#: i18n/dbStringsForTranslation.php:1490 i18n/dbStringsForTranslation.php:1767
+#: i18n/dbStringsForTranslation.php:1767 functions.php:2034 functions.php:2055
+#: functions.php:2055 i18n/dbStringsForTranslation.php:1490
+#: i18n/dbStringsForTranslation.php:1767
 msgid "A"
 msgstr ""
 
-#: functions.php:2053 functions.php:2057 functions.php:2061 functions.php:2061
+#: functions.php:2053 functions.php:2057 functions.php:2061 functions.php:2082
+#: functions.php:2082
 #, php-format
 msgid "Student has a %1$s alert for behaviour over the past 60 days."
 msgstr ""
@@ -8158,47 +8214,53 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1356 i18n/dbStringsForTranslation.php:1438
 #: i18n/dbStringsForTranslation.php:1717 i18n/dbStringsForTranslation.php:1443
 #: i18n/dbStringsForTranslation.php:1722 i18n/dbStringsForTranslation.php:1495
-#: i18n/dbStringsForTranslation.php:1774 functions.php:2062 functions.php:2062
-#: i18n/dbStringsForTranslation.php:1495 i18n/dbStringsForTranslation.php:1774
+#: i18n/dbStringsForTranslation.php:1774 functions.php:2062 functions.php:2083
+#: functions.php:2083 i18n/dbStringsForTranslation.php:1495
+#: i18n/dbStringsForTranslation.php:1774
 msgid "B"
 msgstr ""
 
-#: functions.php:2064 functions.php:2068 functions.php:2072 functions.php:2072
+#: functions.php:2064 functions.php:2068 functions.php:2072 functions.php:2093
+#: functions.php:2093
 #, php-format
 msgid "Medical alerts are set, up to a maximum of %1$s"
 msgstr ""
 
-#: functions.php:2065 functions.php:2069 functions.php:2073 functions.php:2073
+#: functions.php:2065 functions.php:2069 functions.php:2073 functions.php:2094
+#: functions.php:2094
 msgid "M"
 msgstr ""
 
-#: functions.php:2072 functions.php:2076 functions.php:2080 functions.php:2080
+#: functions.php:2072 functions.php:2076 functions.php:2080 functions.php:2101
+#: functions.php:2101
 #, php-format
 msgid "Privacy is required: %1$s"
 msgstr ""
 
-#: functions.php:2073 functions.php:2077 functions.php:2081 functions.php:2081
+#: functions.php:2073 functions.php:2077 functions.php:2081 functions.php:2102
+#: functions.php:2102
 msgid "P"
 msgstr ""
 
 #: functions.php:2258 functions.php:2262 functions.php:2266 functions.php:2268
-#: functions.php:2268
+#: functions.php:2289 functions.php:2289
 msgid "Records"
 msgstr ""
 
 #: functions.php:2265 functions.php:2269 functions.php:2273 functions.php:2275
-#: functions.php:2275
+#: functions.php:2296 functions.php:2296
 msgid "of"
 msgstr ""
 
 #: functions.php:2279 functions.php:2283 functions.php:2287 functions.php:2291
-#: functions.php:2289 functions.php:2293 functions.php:2289 functions.php:2293
+#: functions.php:2289 functions.php:2293 functions.php:2310 functions.php:2314
+#: functions.php:2310 functions.php:2314
 msgid "First"
 msgstr ""
 
 #: functions.php:2280 functions.php:2283 functions.php:2284 functions.php:2287
 #: functions.php:2288 functions.php:2291 functions.php:2290 functions.php:2293
-#: functions.php:2290 functions.php:2293
+#: functions.php:2311 functions.php:2314 functions.php:2311 functions.php:2314
 msgid "Previous"
 msgstr ""
 
@@ -8206,7 +8268,8 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage_add.php:268
 #: modules/Library/library_manage_catalog_duplicate.php:177
 #: modules/Planner/planner_duplicate.php:257 functions.php:2309
-#: functions.php:2307 functions.php:2311 functions.php:2307 functions.php:2311
+#: functions.php:2307 functions.php:2311 functions.php:2328 functions.php:2332
+#: functions.php:2328 functions.php:2332
 #: modules/Behaviour/behaviour_manage_add.php:268
 #: modules/Library/library_manage_catalog_duplicate.php:177
 #: modules/Planner/planner_duplicate.php:257
@@ -8215,7 +8278,7 @@ msgstr ""
 
 #: functions.php:2298 functions.php:2301 functions.php:2302 functions.php:2305
 #: functions.php:2306 functions.php:2309 functions.php:2308 functions.php:2311
-#: functions.php:2308 functions.php:2311
+#: functions.php:2329 functions.php:2332 functions.php:2329 functions.php:2332
 msgid "Last"
 msgstr ""
 
@@ -11295,6 +11358,7 @@ msgstr ""
 #: modules/Activities/activities_copy.php:84 Admin/systemSettings.php:1126
 #: installer/install.php:743 installer/install.php:809
 #: Admin/systemSettings.php:1117 installer/install.php:745
+#: installer/install.php:811 installer/install.php:745
 #: installer/install.php:811 modules/Activities/activities_copy.php:84
 #: modules/Activities/activities_view_register.php:348
 #: modules/Application Form/applicationForm.php:220
@@ -11500,6 +11564,7 @@ msgstr ""
 #: modules/Activities/activities_copy.php:100 Admin/systemSettings.php:1148
 #: installer/install.php:760 installer/install.php:826
 #: Admin/systemSettings.php:1139 installer/install.php:762
+#: installer/install.php:828 installer/install.php:762
 #: installer/install.php:828 modules/Activities/activities_copy.php:100
 #: modules/Activities/activities_view_register.php:371
 #: modules/Application Form/applicationForm.php:226
@@ -14814,8 +14879,9 @@ msgstr ""
 #: Admin/systemSettings.php:95 i18n/dbStringsForTranslation.php:348
 #: i18n/dbStringsForTranslation.php:349 Admin/systemSettings.php:65
 #: Admin/systemSettings.php:101 installer/install.php:302
-#: i18n/dbStringsForTranslation.php:348 i18n/dbStringsForTranslation.php:349
-#: installer/install.php:303 modules/System Admin/systemSettings.php:65
+#: installer/install.php:303 i18n/dbStringsForTranslation.php:348
+#: i18n/dbStringsForTranslation.php:349 installer/install.php:303
+#: modules/System Admin/systemSettings.php:65
 #: modules/System Admin/systemSettings.php:101
 msgid "System Settings"
 msgstr ""
@@ -14823,7 +14889,7 @@ msgstr ""
 #: modules/System Admin/systemSettings.php:279 Admin/systemSettings.php:295
 #: Admin/systemSettings.php:301 installer/install.php:463
 #: Admin/systemSettings.php:292 installer/install.php:465
-#: modules/System Admin/systemSettings.php:292
+#: installer/install.php:465 modules/System Admin/systemSettings.php:292
 msgid "Organisation Settings"
 msgstr ""
 
@@ -14849,7 +14915,8 @@ msgstr ""
 #: Admin/systemSettings.php:689 Admin/systemSettings.php:990
 #: installer/install.php:720 modules/Staff/staff_view_details.php:360
 #: Admin/systemSettings.php:680 Admin/systemSettings.php:981
-#: installer/install.php:722 modules/Application Form/applicationForm.php:1982
+#: installer/install.php:722 installer/install.php:722
+#: modules/Application Form/applicationForm.php:1982
 #: modules/Data Updater/data_personal.php:1573
 #: modules/Staff/staff_view_details.php:360
 #: modules/Students/student_view_details.php:893
@@ -14870,7 +14937,7 @@ msgstr ""
 #: modules/System Admin/systemSettings.php:775 Admin/systemSettings.php:791
 #: Admin/systemSettings.php:797 installer/install.php:672
 #: Admin/systemSettings.php:788 installer/install.php:674
-#: modules/System Admin/systemSettings.php:788
+#: installer/install.php:674 modules/System Admin/systemSettings.php:788
 msgid "gibbonedu.com Value-Added Services"
 msgstr ""
 
@@ -24192,7 +24259,7 @@ msgid "View Rubrics"
 msgstr ""
 
 #: functions.php:1253 modules/Planner/moduleFunctions.php:523
-#: functions.php:1257 functions.php:1261 functions.php:1261
+#: functions.php:1257 functions.php:1261 functions.php:1282 functions.php:1282
 #: modules/Planner/moduleFunctions.php:523
 msgid "Homework & Deadlines"
 msgstr ""
@@ -37895,7 +37962,7 @@ msgid ""
 "verbal skills, as well as KS3 and GCSE predicted grades."
 msgstr ""
 
-#: functions.php:309 functions.php:309
+#: functions.php:309 functions.php:330 functions.php:330
 msgid "Total Student Enrolment:"
 msgstr ""
 
@@ -38117,65 +38184,67 @@ msgid "Database Password"
 msgstr ""
 
 #: installer/install.php:423 installer/install.php:425
+#: installer/install.php:425
 msgid "Not recommended for non-experts!."
 msgstr ""
 
-#: installer/install.php:59
+#: installer/install.php:59 installer/install.php:59
 #, php-format
 msgid "Installation - Step %1$s"
 msgstr ""
 
-#: installer/install.php:82
+#: installer/install.php:82 installer/install.php:82
 msgid ""
 "../config.php already exists, which suggests this system is already "
 "installed. The installer cannot proceed."
 msgstr ""
 
-#: installer/install.php:88
+#: installer/install.php:88 installer/install.php:88
 msgid ""
 "The directory containing the Gibbon files is not currently writable, so the "
 "installer cannot proceed."
 msgstr ""
 
-#: installer/install.php:93
+#: installer/install.php:93 installer/install.php:93
 msgid ""
 "The directory containing the Gibbon files is writable, so the installation "
 "may proceed."
 msgstr ""
 
 #: installer/install.php:183 installer/install.php:200
-#: installer/install.php:864
+#: installer/install.php:864 installer/install.php:183
+#: installer/install.php:200 installer/install.php:864
 #, php-format
 msgid ""
 "A database connection could not be established. Please %1$stry again%2$s."
 msgstr ""
 
-#: installer/install.php:205
+#: installer/install.php:205 installer/install.php:205
 msgid ""
 "Your database connection was successful, so the installation may proceed."
 msgstr ""
 
-#: installer/install.php:261
+#: installer/install.php:261 installer/install.php:261
 msgid ""
 "../config.php could not be created, and so the installer cannot proceed."
 msgstr ""
 
-#: installer/install.php:268
+#: installer/install.php:268 installer/install.php:268
 msgid "../gibbon.sql does not exist, and so the installer cannot proceed."
 msgstr ""
 
-#: installer/install.php:293
+#: installer/install.php:293 installer/install.php:293
 msgid ""
 "Errors occurred in populating the database; empty your database, remove ../"
 "config.php and try again."
 msgstr ""
 
-#: installer/install.php:891
+#: installer/install.php:891 installer/install.php:891
 msgid ""
 "Some required fields have not been set, and so installation cannot proceed."
 msgstr ""
 
-#: installer/install.php:1114
+#: installer/install.php:1114 installer/install.php:1114
 #, php-format
 msgid ""
 "Some settings did not save. The system may work, but you may need to remove "
@@ -38184,13 +38253,14 @@ msgid ""
 msgstr ""
 
 #: installer/install.php:1116 installer/install.php:1126
+#: installer/install.php:1116 installer/install.php:1126
 #, php-format
 msgid ""
 "It is also advisable to follow the %1$sPost-Install and Server Config "
 "instructions%2$s."
 msgstr ""
 
-#: installer/install.php:1121
+#: installer/install.php:1121 installer/install.php:1121
 #, php-format
 msgid ""
 "Congratulations, your installation is complete. Feel free to %1$sgo to your "
@@ -38198,33 +38268,34 @@ msgid ""
 "u>."
 msgstr ""
 
-#: installer/install.php:1123
+#: installer/install.php:1123 installer/install.php:1123
 msgid ""
 "As you are running cutting edge code, it is recommended that after logging "
 "in, you go to Admin > System Admin > Update, and run any updates."
 msgstr ""
 
-#: installer/install.php:1136
+#: installer/install.php:1136 installer/install.php:1136
 msgid "Welcome To Gibbon"
 msgstr ""
 
-#: installer/install.php:1138
+#: installer/install.php:1138 installer/install.php:1138
 msgid ""
 "Created by teachers, Gibbon is the school platform which solves real "
 "problems faced by educators every day."
 msgstr ""
 
-#: installer/install.php:1140
+#: installer/install.php:1140 installer/install.php:1140
 msgid ""
 "Free, open source and flexible, Gibbon can morph to meet the needs of a huge "
 "range of schools."
 msgstr ""
 
-#: installer/install.php:1142
+#: installer/install.php:1142 installer/install.php:1142
 #, php-format
 msgid "For support, please visit %1$sgibbonedu.org%2$s."
 msgstr ""
 
+#: modules/Planner/planner_add.php:1243 modules/Planner/planner_edit.php:1427
 #: modules/Planner/planner_add.php:1243 modules/Planner/planner_edit.php:1427
 msgid "Integrate Twitter Content"
 msgstr ""

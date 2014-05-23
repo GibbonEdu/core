@@ -54,8 +54,6 @@ if ($caching>0 AND is_numeric($caching)) {
 	}
 }
 
-
-
 //Set sidebar values (from the entrySidebar field in gibbonAction and from $_GET variable)
 $_SESSION[$guid]["sidebarExtra"]="" ;
 $_SESSION[$guid]["sidebarExtraPosition"]="" ;
@@ -85,6 +83,14 @@ if (isset($_GET["q"])) {
 //Check to see if system settings are set from databases
 if (@$_SESSION[$guid]["systemSettingsSet"]==FALSE) {
 	getSystemSettings($guid, $connection2) ;
+}
+
+//Set up for i18n via gettext
+if ($_SESSION[$guid]["i18n"]["code"]!=NULL) {
+	putenv("LC_ALL=" . $_SESSION[$guid]["i18n"]["code"]);
+	setlocale(LC_ALL, $_SESSION[$guid]["i18n"]["code"]);
+	bindtextdomain("gibbon", "./i18n");
+	textdomain("gibbon");
 }
 
 //Check for force password reset flag
@@ -164,14 +170,6 @@ else {
 			<link rel="stylesheet" href="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/thickbox.css" type="text/css" media="screen" />
 		
 			<?php
-			//Set up for i18n via gettext
-			if ($_SESSION[$guid]["i18n"]["code"]!=NULL) {
-				putenv("LC_ALL=" . $_SESSION[$guid]["i18n"]["code"]);
-				setlocale(LC_ALL, $_SESSION[$guid]["i18n"]["code"]);
-				bindtextdomain("gibbon", "./i18n");
-				textdomain("gibbon");
-			}
-			
 			//Set theme
 			if ($cacheLoad OR $_SESSION[$guid]["themeCSS"]=="" OR isset($_SESSION[$guid]["themeJS"])==FALSE OR $_SESSION[$guid]["gibbonThemeID"]=="" OR $_SESSION[$guid]["gibbonThemeName"]=="") {
 				$_SESSION[$guid]["themeCSS"]="<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />" ;
