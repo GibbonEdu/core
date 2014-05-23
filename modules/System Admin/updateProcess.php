@@ -118,7 +118,7 @@ else {
 			$update=TRUE ;
 		}
 		else {
-			$sqlTokens=explode(";end", $sql[(count($sql)-1)][1]) ;
+			$sqlTokens=explode(";end", $sql[(count($sql))][1]) ;
 			$versionMaxLinesMax=(count($sqlTokens)-1) ;
 			if ($versionMaxLinesMax>$cuttingEdgeCodeLine) {
 				$update=TRUE ;
