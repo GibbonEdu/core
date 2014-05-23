@@ -1800,6 +1800,7 @@ function isSchoolOpen($guid, $date, $connection2, $allYears="" ) {
 	return $isSchoolOpen ;
 }
 
+//DEPRECATED IN VERSION 8 IN FAVOUR OF getUserPhoto
 //Prints a given user photo, or a blank if not available
 function printUserPhoto($guid, $path, $size) {
 	$sizeStyle="style='width: 75px; height: 100px'" ;
@@ -1864,7 +1865,7 @@ function printRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, 
 		}
 		
 		//User photo
-		printUserPhoto($guid, $rowRollGroup["image_75"], 75) ;
+		print getUserPhoto($guid, $rowRollGroup["image_75"], 75) ;
 		
 		//HEY SHORTY IT'S YOUR BIRTHDAY!
 		$daysUntilNextBirthday=daysUntilNextBirthday($rowRollGroup["dob"]) ;
@@ -1952,7 +1953,7 @@ function printClassGroupTable($guid, $gibbonCourseClassID, $columns, $connection
 		print getAlertBar($guid, $connection2, $rowClassGroup["gibbonPersonID"], $rowClassGroup["privacy"]) ;
 		
 		//User photo
-		printUserPhoto($guid, $rowClassGroup["image_75"], 75) ;
+		print getUserPhoto($guid, $rowClassGroup["image_75"], 75) ;
 		
 		//HEY SHORTY IT'S YOUR BIRTHDAY!
 		$daysUntilNextBirthday=daysUntilNextBirthday($rowClassGroup["dob"]) ;

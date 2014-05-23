@@ -457,7 +457,7 @@ else {
 						//COLOR ROW BY STATUS!
 						print "<tr class=$rowNum>" ;
 							print "<td>" ;
-								printUserPhoto($guid, $child["image_75"], 75) ;
+								print getUserPhoto($guid, $child["image_75"], 75) ;
 							print "</td>" ;
 							print "<td>" ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=" . $child["gibbonPersonID"] . "'>" . formatName("", $child["preferredName"], $child["surname"], "Student") . "</a>" ;

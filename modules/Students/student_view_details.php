@@ -1147,7 +1147,7 @@ else {
 											}
 											print "<td style='width:30%; text-align: left; vertical-align: top'>" ;
 												//User photo
-												printUserPhoto($guid, $rowMember["image_75"], 75) ;	
+												print getUserPhoto($guid, $rowMember["image_75"], 75) ;	
 												print "<div style='padding-top: 5px'><b>" ;
 												if ($rowMember["status"]=="Full") {
 													print "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowMember["gibbonPersonID"] . "'>" . formatName("", $rowMember["preferredName"], $rowMember["surname"], "Student") . "</a><br/>" ;

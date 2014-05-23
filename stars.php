@@ -68,7 +68,7 @@ if ($resultLike->rowCount()>0) {
 			//COLOR ROW BY STATUS!
 			print "<tr class=$rowNum>" ;
 				print "<td>" ;
-					printUserPhoto($guid, $row["image_75"], 75) ;
+					print getUserPhoto($guid, $row["image_75"], 75) ;
 				print "</td>" ;
 				print "<td>" ;
 					$roleCategory=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2) ;
@@ -137,7 +137,7 @@ if ($resultLike->rowCount()>0) {
 			//COLOR ROW BY STATUS!
 			print "<tr class=$rowNum>" ;
 				print "<td>" ;
-					printUserPhoto($guid, $row["image_75"], 75) ;
+					print getUserPhoto($guid, $row["image_75"], 75) ;
 				print "</td>" ;
 				print "<td>" ;
 					$roleCategory=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2) ;
@@ -202,7 +202,7 @@ if ($resultLike->rowCount()>0) {
 			//COLOR ROW BY STATUS!
 			print "<tr class=$rowNum>" ;
 				print "<td>" ;
-					printUserPhoto($guid, $row["image_75"], 75) ;
+					print getUserPhoto($guid, $row["image_75"], 75) ;
 				print "</td>" ;
 				print "<td>" ;
 					$roleCategory=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2) ;

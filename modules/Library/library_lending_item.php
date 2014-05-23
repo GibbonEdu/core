@@ -252,7 +252,7 @@ else {
 							}
 							print "<td>" ;
 								if (is_array($rowPerson)) {
-									printUserPhoto($guid, $rowPerson["image_75"], 75) ;
+									print getUserPhoto($guid, $rowPerson["image_75"], 75) ;
 								}
 								if (is_array($rowPerson)) {
 									print "<div style='margin-top: 3px; font-weight: bold'>" . formatName($rowPerson["title"], $rowPerson["preferredName"], $rowPerson["surname"], "Staff", FALSE, TRUE) . "</div>" ;
