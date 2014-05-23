@@ -190,10 +190,14 @@ else {
 							}
 						print "</td>" ;
 						print "<td>" ;
-							print _($row["yearGroup"]) ;
+							if ($row["yearGroup"]!="") {
+								print _($row["yearGroup"]) ;
+							}
 						print "</td>" ;
 						print "<td>" ;
-							print $row["rollGroup"] ;
+							if ($row["rollGroup"]!="") {
+								print $row["rollGroup"] ;
+							}
 						print "</td>" ;
 						print "<td>" ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_view.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&allUsers=$allUsers&search=$search'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
