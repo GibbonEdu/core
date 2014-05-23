@@ -592,7 +592,10 @@ else {
 														$styleAttainment="style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'" ;
 													}
 													print "<td style='border-left: 2px solid #666; text-align: center'>" ;
-														$attainment=_($rowEntry["attainmentValue"]) ;
+														$attainment="" ;
+														if ($rowEntry["attainmentValue"]!="") {
+															$attainment=_($rowEntry["attainmentValue"]) ;
+														}
 														if ($rowEntry["attainmentValue"]=="Complete") {
 															$attainment=_("Com") ;
 														}
@@ -609,7 +612,10 @@ else {
 													if ($rowEntry["effortConcern"]=="Y") {
 														$styleEffort="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
 													}
-													$effort=_($rowEntry["effortValue"]) ;
+													$effort="" ;
+													if ($rowEntry["effortValue"]!="") {
+														$effort=_($rowEntry["effortValue"]) ;
+													}
 													if ($rowEntry["effortValue"]=="Complete") {
 														$effort=_("Com") ;
 													}
