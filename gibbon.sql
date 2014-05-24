@@ -1568,8 +1568,6 @@ CREATE TABLE `gibboni18n` (
   `dateFormat` varchar(20) NOT NULL,
   `dateFormatRegEx` text NOT NULL,
   `dateFormatPHP` varchar(20) NOT NULL,
-  `currencyCode` varchar(3) NOT NULL COMMENT '3-char',
-  `currencySymbol` varchar(3) NOT NULL,
   PRIMARY KEY (`gibboni18nID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
@@ -1578,12 +1576,12 @@ CREATE TABLE `gibboni18n` (
 --
 
 INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `currencyCode`, `currencySymbol`) VALUES
-(0001, 'en_GB', 'English - United Kingdom', 'Y', 'Y', 'Gibbon', 'http://gibbonedu.org', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'GBP', '£'),
-(0002, 'en_US', 'English - United States', 'Y', 'N', 'Gibbon', 'http://gibbonedu.org', 'mm/dd/yyyy', '/(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20\\d\\d)/', 'm/d/Y', 'USD', '$'),
-(0003, 'es_ES', 'Español - España', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'EUR', '€'),
+(0001, 'en_GB', 'English - United Kingdom', 'Y', 'Y', 'Gibbon', 'http://gibbonedu.org', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y'),
+(0002, 'en_US', 'English - United States', 'Y', 'N', 'Gibbon', 'http://gibbonedu.org', 'mm/dd/yyyy', '/(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20\\d\\d)/', 'm/d/Y'),
+(0003, 'es_ES', 'Español - España', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y'),
 (0004, 'zh_CN', '汉语 - 中国', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'yyyy-mm-dd', '/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/', 'Y-m-d', 'CNY', '¥'),
-(0005, 'zh_HK', '體字 - 香港', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'HKD', '$'),
-(0006, 'pl_PL', 'Język polski - Polska', 'N', 'N', 'Arek Gladki', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\\d\\\\d$/i', 'd/m/Y', 'PLN', 'zł');
+(0005, 'zh_HK', '體字 - 香港', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y'),
+(0006, 'pl_PL', 'Język polski - Polska', 'N', 'N', 'Arek Gladki', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\\d\\\\d$/i', 'd/m/Y');
 
 -- --------------------------------------------------------
 

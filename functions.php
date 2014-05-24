@@ -2156,8 +2156,6 @@ function setLanguageSession($guid, $row) {
 	$_SESSION[$guid]["i18n"]["dateFormat"]=$row["dateFormat"] ;
 	$_SESSION[$guid]["i18n"]["dateFormatRegEx"]=$row["dateFormatRegEx"] ;
 	$_SESSION[$guid]["i18n"]["dateFormatPHP"]=$row["dateFormatPHP"] ;
-	$_SESSION[$guid]["i18n"]["currencyCode"]=$row["currencyCode"] ;
-	$_SESSION[$guid]["i18n"]["currencySymbol"]=$row["currencySymbol"] ;
 	$_SESSION[$guid]["i18n"]["maintainerName"]=$row["maintainerName"] ;
 	$_SESSION[$guid]["i18n"]["maintainerWebsite"]=$row["maintainerWebsite"] ;
 }
