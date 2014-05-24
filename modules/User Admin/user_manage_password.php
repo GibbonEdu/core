@@ -115,7 +115,7 @@ else {
 							<input readonly name="username" id="username" maxlength=20 value="<?php print htmlPrep($row["username"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var username=new LiveValidation('username');
-								username2.add(Validate.Presence);
+								username.add(Validate.Presence);
 							 </script>
 						</td>
 					</tr>

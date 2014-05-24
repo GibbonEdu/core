@@ -243,7 +243,7 @@ else {
 					<script type="text/javascript">
 						var username=new LiveValidation('username');
 						username.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "Username already in use!", partialMatch: false, caseSensitive: false } );
-						username2.add(Validate.Presence);
+						username.add(Validate.Presence);
 					 </script>
 				</td>
 			</tr>
