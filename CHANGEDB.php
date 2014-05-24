@@ -454,7 +454,7 @@ ALTER TABLE `gibbonPayment` CHANGE `paymentPayerID` `paymentPayerID` VARCHAR(50)
 UPDATE gibbonAction SET category='Assessment' WHERE category='ARR';end
 ALTER TABLE `gibbonPayment` CHANGE `paymentToken` `paymentToken` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL, CHANGE `paymentTransactionID` `paymentTransactionID` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL, CHANGE `paymentReceiptID` `paymentReceiptID` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;end
 UPDATE gibboni18n SET active='Y' WHERE code='en_US';end
-ALTER TABLE `gibboni18n` DROP `currencyCode`, DROP `currencySymbol`;
+ALTER TABLE `gibboni18n` DROP `currencyCode`, DROP `currencySymbol`;end
 ";
 
 
