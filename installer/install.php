@@ -418,13 +418,14 @@ include "../functions.php" ;
 														</tr>
 														<tr>
 															<td> 
-																<b><?php print _('Email') ?></b><br/>
+																<b><?php print _('Email') ?> *</b><br/>
 															</td>
 															<td class="right">
 																<input name="email" id="email" maxlength=50 value="" type="text" style="width: 300px">
 																<script type="text/javascript">
 																	var email=new LiveValidation('email');
 																	email.add(Validate.Email);
+																	email.add(Validate.Presence);
 																 </script>
 															</td>
 														</tr>
@@ -450,7 +451,6 @@ include "../functions.php" ;
 																?>
 																<script type="text/javascript">
 																	var username=new LiveValidation('username');
-																	username.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "Username already in use!", partialMatch: false, caseSensitive: false } );
 																	username.add(Validate.Presence);
 																 </script>
 															</td>
@@ -730,160 +730,7 @@ include "../functions.php" ;
 																 </script> 
 															</td>
 														</tr>
-														<tr>
-															<?php
-															try {
-																$data=array(); 
-																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdministratorName'" ;
-																$result=$connection2->prepare($sql);
-																$result->execute($data);
-															}
-															catch(PDOException $e) { 
-																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-															}
-															$row=$result->fetch() ;
-															?>
-															<td> 
-																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-															</td>
-															<td class="right">
-																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
-																<script type="text/javascript">
-																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																	<?php print $row["name"] ?>.add(Validate.Presence);
-																 </script> 
-															</td>
-														</tr>
-														<tr>
-															<?php
-															try {
-																$data=array(); 
-																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdministratorEmail'" ;
-																$result=$connection2->prepare($sql);
-																$result->execute($data);
-															}
-															catch(PDOException $e) { 
-																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-															}
-															$row=$result->fetch() ;
-															?>
-															<td> 
-																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-															</td>
-															<td class="right">
-																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
-																<script type="text/javascript">
-																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																	<?php print $row["name"] ?>.add(Validate.Email);
-																	<?php print $row["name"] ?>.add(Validate.Presence);
-																 </script> 
-															</td>
-														</tr>
-														<tr>
-															<?php
-															try {
-																$data=array(); 
-																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationDBAName'" ;
-																$result=$connection2->prepare($sql);
-																$result->execute($data);
-															}
-															catch(PDOException $e) { 
-																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-															}
-															$row=$result->fetch() ;
-															?>
-															<td> 
-																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-															</td>
-															<td class="right">
-																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
-																<script type="text/javascript">
-																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																	<?php print $row["name"] ?>.add(Validate.Presence);
-																 </script> 
-															</td>
-														</tr>
-														<tr>
-															<?php
-															try {
-																$data=array(); 
-																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationDBAEmail'" ;
-																$result=$connection2->prepare($sql);
-																$result->execute($data);
-															}
-															catch(PDOException $e) { 
-																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-															}
-															$row=$result->fetch() ;
-															?>
-															<td> 
-																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-															</td>
-															<td class="right">
-																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
-																<script type="text/javascript">
-																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																	<?php print $row["name"] ?>.add(Validate.Email);
-																	<?php print $row["name"] ?>.add(Validate.Presence);
-																 </script> 
-															</td>
-														</tr>
-														<tr>
-															<?php
-															try {
-																$data=array(); 
-																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsName'" ;
-																$result=$connection2->prepare($sql);
-																$result->execute($data);
-															}
-															catch(PDOException $e) { 
-																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-															}
-															$row=$result->fetch() ;
-															?>
-															<td> 
-																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-															</td>
-															<td class="right">
-																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
-																<script type="text/javascript">
-																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																	<?php print $row["name"] ?>.add(Validate.Presence);
-																 </script> 
-															</td>
-														</tr>
-														<tr>
-															<?php
-															try {
-																$data=array(); 
-																$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsEmail'" ;
-																$result=$connection2->prepare($sql);
-																$result->execute($data);
-															}
-															catch(PDOException $e) { 
-																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-															}
-															$row=$result->fetch() ;
-															?>
-															<td> 
-																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-															</td>
-															<td class="right">
-																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
-																<script type="text/javascript">
-																	var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																	<?php print $row["name"] ?>.add(Validate.Email);
-																	<?php print $row["name"] ?>.add(Validate.Presence);
-																 </script> 
-															</td>
-														</tr>
-			
+														
 														<tr class='break'>
 															<td colspan=2> 
 																<h3><?php print _('gibbonedu.com Value-Added Services') ?></h3>
@@ -1098,12 +945,6 @@ include "../functions.php" ;
 									$systemName=$_POST["systemName"] ;
 									$organisationName=$_POST["organisationName"] ;
 									$organisationNameShort=$_POST["organisationNameShort"] ;
-									$organisationAdministratorName=$_POST["organisationAdministratorName"] ;
-									$organisationAdministratorEmail=$_POST["organisationAdministratorEmail"] ;
-									$organisationDBAName=$_POST["organisationDBAName"] ;
-									$organisationDBAEmail=$_POST["organisationDBAEmail"] ;
-									$organisationAdmissionsName=$_POST["organisationAdmissionsName"] ;
-									$organisationAdmissionsEmail=$_POST["organisationAdmissionsEmail"] ;
 									$timezone=$_POST["timezone"] ;
 									$country=$_POST["country"] ;
 									$primaryAssessmentScale=$_POST["primaryAssessmentScale"] ;
@@ -1113,7 +954,7 @@ include "../functions.php" ;
 									$gibboneduComOrganisationName=$_POST["gibboneduComOrganisationName"] ;
 									$gibboneduComOrganisationKey=$_POST["gibboneduComOrganisationKey"] ;
 								
-									if ($title=="" OR $surname=="" OR $firstName=="" OR $preferredName=="" OR $username=="" OR $password=="" OR $passwordConfirm=="" OR $email=="" OR $absoluteURL=="" OR $absolutePath=="" OR $systemName=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $timezone=="" OR $country=="" OR $primaryAssessmentScale=="" OR $installType=="" OR $statsCollection=="" OR $cuttingEdgeCode=="") {
+									if ($title=="" OR $surname=="" OR $firstName=="" OR $preferredName=="" OR $email=="" OR $username=="" OR $password=="" OR $passwordConfirm=="" OR $email=="" OR $absoluteURL=="" OR $absolutePath=="" OR $systemName=="" OR $organisationName=="" OR $organisationNameShort=="" OR $timezone=="" OR $country=="" OR $primaryAssessmentScale=="" OR $installType=="" OR $statsCollection=="" OR $cuttingEdgeCode=="") {
 										print "<div class='error'>" ;
 											print _("Some required fields have not been set, and so installation cannot proceed.") ;
 										print "</div>" ;
@@ -1132,7 +973,7 @@ include "../functions.php" ;
 											$userFail=false ;
 											//Write to database
 											try {
-												$data=array("title"=>$title, "surname"=>$surname, "firstName"=>$firstName, "preferredName"=>$preferredName, "officialName"=>($preferredName . " " . $surname), "username"=>$username, "passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "status"=>'Full', "canLogin"=>'Y', "passwordForceReset"=>'N', "gibbonRoleIDPrimary"=>"001", "gibbonRoleIDAll"=>"001", "email"=>$email) ;
+												$data=array("title"=>$title, "surname"=>$surname, "firstName"=>$firstName, "preferredName"=>$preferredName, "officialName"=>($firstName . " " . $surname), "username"=>$username, "passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "status"=>'Full', "canLogin"=>'Y', "passwordForceReset"=>'N', "gibbonRoleIDPrimary"=>"001", "gibbonRoleIDAll"=>"001", "email"=>$email) ;
 												$sql="INSERT INTO gibbonPerson SET title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, canLogin=:canLogin, passwordForceReset=:passwordForceReset, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, email=:email" ;
 												$result=$connection2->prepare($sql);
 												$result->execute($data);
@@ -1197,7 +1038,7 @@ include "../functions.php" ;
 												}
 	
 												try {
-													$data=array("organisationAdministratorName"=>$organisationAdministratorName); 
+													$data=array("organisationAdministratorName"=>$preferredName . " " . $surname); 
 													$sql="UPDATE gibbonSetting SET value=:organisationAdministratorName WHERE scope='System' AND name='organisationAdministratorName'" ;
 													$result=$connection2->prepare($sql);
 													$result->execute($data);
@@ -1207,7 +1048,7 @@ include "../functions.php" ;
 												}
 	
 												try {
-													$data=array("organisationAdministratorEmail"=>$organisationAdministratorEmail); 
+													$data=array("organisationAdministratorEmail"=>$email); 
 													$sql="UPDATE gibbonSetting SET value=:organisationAdministratorEmail WHERE scope='System' AND name='organisationAdministratorEmail'" ;
 													$result=$connection2->prepare($sql);
 													$result->execute($data);
@@ -1217,7 +1058,7 @@ include "../functions.php" ;
 												}
 	
 												try {
-													$data=array("organisationDBAName"=>$organisationDBAName); 
+													$data=array("organisationDBAName"=>$preferredName . " " . $surname); 
 													$sql="UPDATE gibbonSetting SET value=:organisationDBAName WHERE scope='System' AND name='organisationDBAName'" ;
 													$result=$connection2->prepare($sql);
 													$result->execute($data);
@@ -1227,7 +1068,7 @@ include "../functions.php" ;
 												}
 	
 												try {
-													$data=array("organisationDBAEmail"=>$organisationDBAEmail); 
+													$data=array("organisationDBAEmail"=>$email); 
 													$sql="UPDATE gibbonSetting SET value=:organisationDBAEmail WHERE scope='System' AND name='organisationDBAEmail'" ;
 													$result=$connection2->prepare($sql);
 													$result->execute($data);
@@ -1237,7 +1078,7 @@ include "../functions.php" ;
 												}
 	
 												try {
-													$data=array("organisationAdmissionsName"=>$organisationAdmissionsName); 
+													$data=array("organisationAdmissionsName"=>$preferredName . " " . $surname); 
 													$sql="UPDATE gibbonSetting SET value=:organisationAdmissionsName WHERE scope='System' AND name='organisationAdmissionsName'" ;
 													$result=$connection2->prepare($sql);
 													$result->execute($data);
@@ -1247,7 +1088,7 @@ include "../functions.php" ;
 												}
 	
 												try {
-													$data=array("organisationAdmissionsEmail"=>$organisationAdmissionsEmail); 
+													$data=array("organisationAdmissionsEmail"=>$email); 
 													$sql="UPDATE gibbonSetting SET value=:organisationAdmissionsEmail WHERE scope='System' AND name='organisationAdmissionsEmail'" ;
 													$result=$connection2->prepare($sql);
 													$result->execute($data);
