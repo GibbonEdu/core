@@ -77,7 +77,7 @@ else {
 				?>
 				<td style='width: 275px'> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=10><?php print $row["value"] ?></textarea>
@@ -96,7 +96,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=10><?php print $row["value"] ?></textarea>
@@ -115,7 +115,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=10><?php print $row["value"] ?></textarea>
@@ -134,7 +134,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=10><?php print $row["value"] ?></textarea>
@@ -161,7 +161,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -185,7 +185,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -209,7 +209,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">

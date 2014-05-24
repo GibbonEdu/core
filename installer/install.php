@@ -51,13 +51,6 @@ include "../version.php" ;
 				<div id="content-wrap">
 					<div id='content'>
 						<?php
-							//Check and set current step
-							$step=1 ;
-							if (isset($_GET["step"])) {
-								$step=$_GET["step"] ;
-							}
-							print "<h2>" . sprintf(_('Installation - Step %1$s'), $step) . "</h2>" ;
-							
 							//Get and set database variables (not set until step 1)
 							$databaseServer="" ;
 							if (isset($_POST["databaseServer"])) {
@@ -76,7 +69,24 @@ include "../version.php" ;
 								$databasePassword=$_POST["databasePassword"] ;
 							}
 							
-							if ($step==1) {
+							//Get and set step
+							$step=0 ;
+							if (isset($_GET["step"])) {
+								$step=$_GET["step"] ;
+							}
+							print "<h2>" . sprintf(_('Installation - Step %1$s'), ($step+1)) . "</h2>" ;
+							
+							//Set language
+							$code="en_GB" ;
+							if (isset($_POST["code"])) {
+								$code=$_POST["code"] ;
+							}
+							putenv("LC_ALL=" . $code);
+							setlocale(LC_ALL, $code);
+							bindtextdomain("gibbon", "../i18n");
+							textdomain("gibbon");
+							
+							if ($step==0) { //Choose language
 								if (file_exists("../config.php")) { //Make sure system is not already installed
 									print "<div class='error'>" ;
 										print _("../config.php already exists, which suggests this system is already installed. The installer cannot proceed.") ;
@@ -92,73 +102,25 @@ include "../version.php" ;
 										print "<div class='success'>" ;
 											print _("The directory containing the Gibbon files is writable, so the installation may proceed.") ;
 										print "</div>" ;
-								
-										//Set options
+										
+										//Set language options
 										?>
-										<form method="post" action="./install.php?step=2">
+										<form method="post" action="./install.php?step=1">
 											<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 												<tr class='break'>
 													<td colspan=2> 
-														<h3><?php print _('Database Information') ?></h3>
-													</td>
-												</tr
-												><tr>
-													<td style='width: 275px'> 
-														<b><?php print _('Database Type') ?> *</b><br/>
-														<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
-													</td>
-													<td class="right">
-														<input readonly name="type" id="type" value="MySQL" type="text" style="width: 300px">
+														<h3><?php print "Language Settings" ?></h3>
 													</td>
 												</tr>
 												<tr>
 													<td style='width: 275px'> 
-														<b><?php print _('Database Server') ?> *</b><br/>
-														<span style="font-size: 90%"><i><?php print _('Localhost, IP address or domain.') ?></i></span>
+														<b><?php print "System Language" ?> *</b><br/>
 													</td>
 													<td class="right">
-														<input name="databaseServer" id="databaseServer" maxlength=255 value="" type="text" style="width: 300px">
-														<script type="text/javascript">
-															var databaseServer=new LiveValidation('databaseServer');
-															databaseServer.add(Validate.Presence);
-														 </script>
-													</td>
-												</tr>
-												<tr>
-													<td> 
-														<b><?php print _('Database Name') ?> *</b><br/>
-														<span style="font-size: 90%"><i><?php print _('This database must already exist. Collation should be utf8_general_ci.') ?></i></span>
-													</td>
-													<td class="right">
-														<input name="databaseName" id="databaseName" maxlength=50 value="" type="text" style="width: 300px">
-														<script type="text/javascript">
-															var databaseName=new LiveValidation('databaseName');
-															databaseName.add(Validate.Presence);
-														 </script>
-													</td>
-												</tr>
-												<tr>
-													<td> 
-														<b><?php print _('Database Username') ?>*</b><br/>
-													</td>
-													<td class="right">
-														<input name="databaseUsername" id="databaseUsername" maxlength=50 value="" type="text" style="width: 300px">
-														<script type="text/javascript">
-															var databaseUsername=new LiveValidation('databaseUsername');
-															databaseUsername.add(Validate.Presence);
-														 </script>
-													</td>
-												</tr>
-												<tr>
-													<td> 
-														<b><?php print _('Database Password') ?> *</b><br/>
-													</td>
-													<td class="right">
-														<input name="databasePassword" id="databasePassword" maxlength=255 value="" type="password" style="width: 300px">
-														<script type="text/javascript">
-															var databasePassword=new LiveValidation('databasePassword');
-															databasePassword.add(Validate.Presence);
-														 </script>
+														<select name="code" id="code" style="width: 302px">
+															<option value='en_GB'>English - United Kingdom</option>
+															<option value='en_US'>English - United States</option>
+														</select>
 													</td>
 												</tr>
 												<tr>
@@ -175,6 +137,88 @@ include "../version.php" ;
 										<?php
 									}
 								}
+							}
+							if ($step==1) { //Set database options
+								?>
+								<form method="post" action="./install.php?step=2">
+									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+										<tr class='break'>
+											<td colspan=2> 
+												<h3><?php print _('Database Information') ?></h3>
+											</td>
+										</tr>
+										<tr>
+											<td style='width: 275px'> 
+												<b><?php print _('Database Type') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+											</td>
+											<td class="right">
+												<input readonly name="type" id="type" value="MySQL" type="text" style="width: 300px">
+											</td>
+										</tr>
+										<tr>
+											<td style='width: 275px'> 
+												<b><?php print _('Database Server') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print _('Localhost, IP address or domain.') ?></i></span>
+											</td>
+											<td class="right">
+												<input name="databaseServer" id="databaseServer" maxlength=255 value="" type="text" style="width: 300px">
+												<script type="text/javascript">
+													var databaseServer=new LiveValidation('databaseServer');
+													databaseServer.add(Validate.Presence);
+												 </script>
+											</td>
+										</tr>
+										<tr>
+											<td> 
+												<b><?php print _('Database Name') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print _('This database must already exist. Collation should be utf8_general_ci.') ?></i></span>
+											</td>
+											<td class="right">
+												<input name="databaseName" id="databaseName" maxlength=50 value="" type="text" style="width: 300px">
+												<script type="text/javascript">
+													var databaseName=new LiveValidation('databaseName');
+													databaseName.add(Validate.Presence);
+												 </script>
+											</td>
+										</tr>
+										<tr>
+											<td> 
+												<b><?php print _('Database Username') ?>*</b><br/>
+											</td>
+											<td class="right">
+												<input name="databaseUsername" id="databaseUsername" maxlength=50 value="" type="text" style="width: 300px">
+												<script type="text/javascript">
+													var databaseUsername=new LiveValidation('databaseUsername');
+													databaseUsername.add(Validate.Presence);
+												 </script>
+											</td>
+										</tr>
+										<tr>
+											<td> 
+												<b><?php print _('Database Password') ?> *</b><br/>
+											</td>
+											<td class="right">
+												<input name="databasePassword" id="databasePassword" maxlength=255 value="" type="password" style="width: 300px">
+												<script type="text/javascript">
+													var databasePassword=new LiveValidation('databasePassword');
+													databasePassword.add(Validate.Presence);
+												 </script>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+											</td>
+											<td class="right">
+												<input type="hidden" name="code" value="<?php print $code ?>">
+												<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+												<input type="submit" value="<?php print _("Submit") ; ?>">
+											</td>
+										</tr>
+									</table>
+								</form>
+								<?php
 							}
 							else if ($step==2) {
 								//Check for db values
@@ -217,7 +261,7 @@ include "../version.php" ;
 										}
 									}
 								
-									//Set up config
+									//Set up config.php
 									$config="" ;
 									$config.="<?php\n" ;
 									$config.="/*\n" ;
@@ -274,7 +318,6 @@ include "../version.php" ;
 											$query=@fread(@fopen("../gibbon.sql", 'r'), @filesize("../gibbon.sql")) or die('Encountered a problem.');
 											$query=remove_remarks($query);
 											$query=split_sql_file($query, ';');
-
 										
 											$i=1;
 											$partialFail=FALSE ;
@@ -294,6 +337,22 @@ include "../version.php" ;
 												print "</div>" ;
 											}
 											else {
+												//Set default language
+												try {
+													$data=array("code"=>$code); 
+													$sql="UPDATE gibboni18n SET systemDefault='Y' WHERE code=:code" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { }
+												try {
+													$data=array("code"=>$code); 
+													$sql="UPDATE gibboni18n SET systemDefault='N' WHERE NOT code=:code" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { }
+										
 												//Let's gather some more information
 												?>
 												<form method="post" action="./install.php?step=3">
@@ -318,7 +377,7 @@ include "../version.php" ;
 															?>
 															<td style='width: 275px'> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td stclass="right">
 																<?php $pageURL = (@$_SERVER["HTTPS"] == "on") ? "https://" : "http://"; ?>
@@ -345,7 +404,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td stclass="right">
 																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print substr(__FILE__,0,-22) ?>" type="text" style="width: 300px">
@@ -370,7 +429,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="Gibbon" type="text" style="width: 300px">
@@ -395,7 +454,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -448,7 +507,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -480,7 +539,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
@@ -505,7 +564,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
@@ -530,7 +589,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
@@ -555,7 +614,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
@@ -581,7 +640,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
@@ -606,7 +665,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
@@ -632,7 +691,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
@@ -657,7 +716,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
@@ -689,7 +748,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?></b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
@@ -710,7 +769,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?></b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
@@ -737,7 +796,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -778,7 +837,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="Asia/Hong_Kong" type="text" style="width: 300px">
@@ -803,7 +862,7 @@ include "../version.php" ;
 															?>
 															<td> 
 																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -835,6 +894,7 @@ include "../version.php" ;
 																<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 															</td>
 															<td class="right">
+																<input type="hidden" name="code" value="<?php print $code ?>">
 																<input type="hidden" name="databaseServer" value="<?php print $databaseServer ?>">
 																<input type="hidden" name="databaseName" value="<?php print $databaseName ?>">
 																<input type="hidden" name="databaseUsername" value="<?php print $databaseUsername ?>">

@@ -116,7 +116,7 @@ else {
 				?>
 				<td style='width: 275px'> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td stclass="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
@@ -142,7 +142,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td stclass="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
@@ -167,7 +167,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
@@ -192,7 +192,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print htmlPrep($row["value"]) ?></textarea>
@@ -217,7 +217,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -271,7 +271,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -307,7 +307,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
@@ -332,7 +332,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
@@ -357,7 +357,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
@@ -382,7 +382,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
@@ -407,7 +407,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
@@ -432,7 +432,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
@@ -458,7 +458,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
@@ -483,7 +483,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
@@ -509,7 +509,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
@@ -534,7 +534,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
@@ -571,7 +571,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -600,7 +600,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -630,7 +630,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -660,7 +660,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -695,7 +695,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print htmlPrep($row["value"]) ?></textarea>
@@ -722,7 +722,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
@@ -747,7 +747,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
@@ -772,7 +772,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
@@ -803,7 +803,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
@@ -824,7 +824,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
@@ -852,7 +852,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -897,7 +897,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -927,7 +927,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
@@ -948,7 +948,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
@@ -969,7 +969,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
@@ -996,7 +996,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
@@ -1022,7 +1022,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -1063,7 +1063,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
@@ -1088,7 +1088,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print htmlPrep($row["value"]) ?></textarea>
@@ -1109,7 +1109,7 @@ else {
 				?>
 				<td> 
 					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?></i></span>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
