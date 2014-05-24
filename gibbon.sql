@@ -2388,12 +2388,6 @@ CREATE TABLE `gibbonPerson` (
   KEY `username_2` (`username`,`email`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1099 ;
 
---
--- Dumping data for table `gibbonPerson`
---
-
-INSERT INTO `gibbonPerson` (`gibbonPersonID`, `title`, `surname`, `firstName`, `preferredName`, `officialName`, `nameInCharacters`, `gender`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`, `dob`, `email`, `emailAlternate`, `image_240`, `image_75`, `lastIPAddress`, `lastTimestamp`, `lastFailIPAddress`, `lastFailTimestamp`, `failCount`, `address1`, `address1District`, `address1Country`, `address2`, `address2District`, `address2Country`, `phone1Type`, `phone1CountryCode`, `phone1`, `phone3Type`, `phone3CountryCode`, `phone3`, `phone2Type`, `phone2CountryCode`, `phone2`, `phone4Type`, `phone4CountryCode`, `phone4`, `website`, `languageFirst`, `languageSecond`, `languageThird`, `countryOfBirth`, `ethnicity`, `citizenship1`, `citizenship1Passport`, `citizenship2`, `citizenship2Passport`, `religion`, `nationalIDCardNumber`, `residencyStatus`, `visaExpiryDate`, `profession`, `employer`, `jobTitle`, `emergency1Name`, `emergency1Number1`, `emergency1Number2`, `emergency1Relationship`, `emergency2Name`, `emergency2Number1`, `emergency2Number2`, `emergency2Relationship`, `gibbonHouseID`, `studentID`, `dateStart`, `dateEnd`, `gibbonSchoolYearIDClassOf`, `lastSchool`, `nextSchool`, `departureReason`, `transport`, `calendarFeedPersonal`, `viewCalendarSchool`, `viewCalendarPersonal`, `gibbonApplicationFormID`, `lockerNumber`, `vehicleRegistration`, `personalBackground`, `messengerLastBubble`, `privacy`, `dayType`, `gibbonThemeIDPersonal`, `gibboni18nIDPersonal`) VALUES
-(0000000001, 'Mr. ', 'Administrator', 'System', 'System', 'System Administrator', '', 'M', 'admin', '76b9734ea08ecb8454c99f1c618d2553', '', '', 'Y', 'Full', 'Y', 001, '001,002', NULL, '', '', '', '', '', '0000-00-00 00:00:00', '::1', '2013-09-30 06:22:59', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', NULL, '', '', '', '', '', '', '', '', '', '', '', NULL, '', NULL, NULL, NULL, '', '', '', '', '', 'N', 'N', NULL, '', '123abc', '', '2013-09-30', '', NULL, 0001, NULL);
 
 -- --------------------------------------------------------
 

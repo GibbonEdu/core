@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 include "../version.php" ;
-
+include "../functions.php" ;
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -357,6 +357,162 @@ include "../version.php" ;
 												?>
 												<form method="post" action="./install.php?step=3">
 													<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+														<tr class='break'>
+															<td colspan=2> 
+																<h3><?php print _('User Account') ?></h3>
+															</td>
+														</tr>
+														<tr>
+															<td style='width: 275px'> 
+																<b><?php print _('Title') ?></b><br/>
+															</td>
+															<td class="right">
+																<select style="width: 302px" name="title">
+																	<option value=""></option>
+																	<option value="Ms. "><?php print _('Ms.') ?></option>
+																	<option value="Miss "><?php print _('Miss') ?></option>
+																	<option value="Mr. "><?php print _('Mr.') ?></option>
+																	<option value="Mrs. "><?php print _('Mrs.') ?></option>
+																	<option value="Dr. "><?php print _('Dr.') ?></option>
+																</select>
+															</td>
+														</tr>
+														<tr>
+															<td> 
+																<b><?php print _('Surname') ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _('Family name as shown in ID documents.') ?></i></span>
+															</td>
+															<td class="right">
+																<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var surname=new LiveValidation('surname');
+																	surname.add(Validate.Presence);
+																 </script>
+															</td>
+														</tr>
+														<tr>
+															<td> 
+																<b><?php print _('First Name') ?>*</b><br/>
+																<span style="font-size: 90%"><i><?php print _('First name as shown in ID documents.') ?></i></span>
+															</td>
+															<td class="right">
+																<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var firstName=new LiveValidation('firstName');
+																	firstName.add(Validate.Presence);
+																 </script>
+															</td>
+														</tr>
+														<tr>
+															<td> 
+																<b><?php print _('Preferred Name') ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _('Most common name, alias, nickname, etc.') ?></i></span>
+															</td>
+															<td class="right">
+																<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var preferredName=new LiveValidation('preferredName');
+																	preferredName.add(Validate.Presence);
+																 </script>
+															</td>
+														</tr>
+														<tr>
+															<td> 
+																<b><?php print _('Email') ?></b><br/>
+															</td>
+															<td class="right">
+																<input name="email" id="email" maxlength=50 value="" type="text" style="width: 300px">
+																<script type="text/javascript">
+																	var email=new LiveValidation('email');
+																	email.add(Validate.Email);
+																 </script>
+															</td>
+														</tr>
+														<tr>
+															<td> 
+																<b><?php print _('Username') ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php print _('Must be unique. System login name. Cannot be changed.') ?></i></span>
+															</td>
+															<td class="right">
+																<input name="username" id="username" maxlength=20 value="" type="text" style="width: 300px">
+																<?php
+																$idList="" ;
+																try {
+																	$dataSelect=array(); 
+																	$sqlSelect="SELECT username FROM gibbonPerson ORDER BY username" ;
+																	$resultSelect=$connection2->prepare($sqlSelect);
+																	$resultSelect->execute($dataSelect);
+																}
+																catch(PDOException $e) { }
+																while ($rowSelect=$resultSelect->fetch()) {
+																	$idList.="'" . $rowSelect["username"]  . "'," ;
+																}
+																?>
+																<script type="text/javascript">
+																	var username=new LiveValidation('username');
+																	username.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "Username already in use!", partialMatch: false, caseSensitive: false } );
+																	username2.add(Validate.Presence);
+																 </script>
+															</td>
+														</tr>
+														<tr>
+															<td colspan=2>
+																<?php
+																$policy=getPasswordPolicy($connection2) ;
+																if ($policy!=FALSE) {
+																	print "<div class='warning'>" ;
+																		print $policy ;
+																	print "</div>" ;
+																}
+																?>
+															</td>
+														</tr>
+														<tr>
+															<td> 
+																<b><?php print _('Password') ?> *</b><br/>
+																<span style="font-size: 90%"><i></i></span>
+															</td>
+															<td class="right">
+																<input name="password" id="password" maxlength=20 value="" type="password" style="width: 300px">
+																<script type="text/javascript">
+																	var password=new LiveValidation('password');
+																	password.add(Validate.Presence);
+																	<?php
+																	$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
+																	if ($alpha=="Y") {
+																		print "password.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
+																	}
+																	$numeric=getSettingByScope( $connection2, "System", "passwordPolicyNumeric" ) ;
+																	if ($numeric=="Y") {
+																		print "password.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
+																	}
+																	$punctuation=getSettingByScope( $connection2, "System", "passwordPolicyNonAlphaNumeric" ) ;
+																	if ($punctuation=="Y") {
+																		print "password.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
+																	}
+																	$minLength=getSettingByScope( $connection2, "System", "passwordPolicyMinLength" ) ;
+																	if (is_numeric($minLength)) {
+																		print "password.add( Validate.Length, { minimum: " . $minLength . "} );" ;
+																	}
+																	?>
+																 </script>
+															</td>
+														</tr>
+														<tr>
+															<td> 
+																<b><?php print _('Confirm Password') ?> *</b><br/>
+																<span style="font-size: 90%"><i></i></span>
+															</td>
+															<td class="right">
+																<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" style="width: 300px">
+																<script type="text/javascript">
+																	var passwordConfirm=new LiveValidation('passwordConfirm');
+																	passwordConfirm.add(Validate.Presence);
+																	passwordConfirm.add(Validate.Confirmation, { match: 'password' } );
+																 </script>
+															</td>
+														</tr>
+														
 														<tr class='break'>
 															<td colspan=2> 
 																<h3><?php print _('System Settings') ?></h3>
@@ -926,6 +1082,17 @@ include "../version.php" ;
 								}
 								
 								if ($connected) {
+									//Get user account details
+									$title=$_POST["title"] ; 	
+									$surname=$_POST["surname"] ;
+									$firstName=$_POST["firstName"] ;
+									$preferredName=$_POST["preferredName"] ;
+									$username=$_POST["username"] ;
+									$password=$_POST["password"] ;
+									$passwordConfirm=$_POST["passwordConfirm"] ;
+									$email=$_POST["email"] ;
+									
+									//Get system settings
 									$absoluteURL=$_POST["absoluteURL"] ; 	
 									$absolutePath=$_POST["absolutePath"] ; 	
 									$systemName=$_POST["systemName"] ;
@@ -946,245 +1113,273 @@ include "../version.php" ;
 									$gibboneduComOrganisationName=$_POST["gibboneduComOrganisationName"] ;
 									$gibboneduComOrganisationKey=$_POST["gibboneduComOrganisationKey"] ;
 								
-									if ($absoluteURL=="" OR $absolutePath=="" OR $systemName=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $timezone=="" OR $country=="" OR $primaryAssessmentScale=="" OR $installType=="" OR $statsCollection=="" OR $cuttingEdgeCode=="") {
+									if ($title=="" OR $surname=="" OR $firstName=="" OR $preferredName=="" OR $username=="" OR $password=="" OR $passwordConfirm=="" OR $email=="" OR $absoluteURL=="" OR $absolutePath=="" OR $systemName=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $timezone=="" OR $country=="" OR $primaryAssessmentScale=="" OR $installType=="" OR $statsCollection=="" OR $cuttingEdgeCode=="") {
 										print "<div class='error'>" ;
 											print _("Some required fields have not been set, and so installation cannot proceed.") ;
 										print "</div>" ;
 									}
 									else {
-										$settingsFail=FALSE ;		
-										try {
-											$data=array("absoluteURL"=>$absoluteURL); 
-											$sql="UPDATE gibbonSetting SET value=:absoluteURL WHERE scope='System' AND name='absoluteURL'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("absolutePath"=>$absolutePath); 
-											$sql="UPDATE gibbonSetting SET value=:absolutePath WHERE scope='System' AND name='absolutePath'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("systemName"=>$systemName); 
-											$sql="UPDATE gibbonSetting SET value=:systemName WHERE scope='System' AND name='systemName'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("organisationName"=>$organisationName); 
-											$sql="UPDATE gibbonSetting SET value=:organisationName WHERE scope='System' AND name='organisationName'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("organisationNameShort"=>$organisationNameShort); 
-											$sql="UPDATE gibbonSetting SET value=:organisationNameShort WHERE scope='System' AND name='organisationNameShort'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("organisationAdministratorName"=>$organisationAdministratorName); 
-											$sql="UPDATE gibbonSetting SET value=:organisationAdministratorName WHERE scope='System' AND name='organisationAdministratorName'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("organisationAdministratorEmail"=>$organisationAdministratorEmail); 
-											$sql="UPDATE gibbonSetting SET value=:organisationAdministratorEmail WHERE scope='System' AND name='organisationAdministratorEmail'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("organisationDBAName"=>$organisationDBAName); 
-											$sql="UPDATE gibbonSetting SET value=:organisationDBAName WHERE scope='System' AND name='organisationDBAName'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("organisationDBAEmail"=>$organisationDBAEmail); 
-											$sql="UPDATE gibbonSetting SET value=:organisationDBAEmail WHERE scope='System' AND name='organisationDBAEmail'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("organisationAdmissionsName"=>$organisationAdmissionsName); 
-											$sql="UPDATE gibbonSetting SET value=:organisationAdmissionsName WHERE scope='System' AND name='organisationAdmissionsName'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("organisationAdmissionsEmail"=>$organisationAdmissionsEmail); 
-											$sql="UPDATE gibbonSetting SET value=:organisationAdmissionsEmail WHERE scope='System' AND name='organisationAdmissionsEmail'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("country"=>$country); 
-											$sql="UPDATE gibbonSetting SET value=:country WHERE scope='System' AND name='country'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("gibboneduComOrganisationName"=>$gibboneduComOrganisationName); 
-											$sql="UPDATE gibbonSetting SET value=:gibboneduComOrganisationName WHERE scope='System' AND name='gibboneduComOrganisationName'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("gibboneduComOrganisationKey"=>$gibboneduComOrganisationKey); 
-											$sql="UPDATE gibbonSetting SET value=:gibboneduComOrganisationKey WHERE scope='System' AND name='gibboneduComOrganisationKey'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("timezone"=>$timezone); 
-											$sql="UPDATE gibbonSetting SET value=:timezone WHERE scope='System' AND name='timezone'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("primaryAssessmentScale"=>$primaryAssessmentScale); 
-											$sql="UPDATE gibbonSetting SET value=:primaryAssessmentScale WHERE scope='System' AND name='primaryAssessmentScale'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("installType"=>$installType); 
-											$sql="UPDATE gibbonSetting SET value=:installType WHERE scope='System' AND name='installType'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-	
-										try {
-											$data=array("statsCollection"=>$statsCollection); 
-											$sql="UPDATE gibbonSetting SET value=:statsCollection WHERE scope='System' AND name='statsCollection'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-										
-										if ($statsCollection=="Y") {
-											$absolutePathProtocol="" ;
-											$absolutePath="" ;
-											if (substr($absoluteURL,0,7)=="http://") {
-												$absolutePathProtocol="http" ;
-												$absolutePath=substr($absoluteURL,7) ;
-											}
-											else if (substr($absoluteURL,0,8)=="https://") {
-												$absolutePathProtocol="https" ;
-												$absolutePath=substr($absoluteURL,8) ;
-											}
-											print "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($organisationName) . "&type=" . urlencode($installType) . "&version=" . urlencode($version) . "&country=" . $country . "&usersTotal=1&usersFull=1'></iframe>" ;
-										}
-									
-										try {
-											$data=array("cuttingEdgeCode"=>$cuttingEdgeCode); 
-											$sql="UPDATE gibbonSetting SET value=:cuttingEdgeCode WHERE scope='System' AND name='cuttingEdgeCode'" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											$settingsFail=TRUE ;
-										}
-										if ($cuttingEdgeCode=="Y") {
-											include "../CHANGEDB.php" ;
-											$sqlTokens=explode(";end", $sql[(count($sql))][1]) ;
-											$versionMaxLinesMax=(count($sqlTokens)-1) ;
-											try {
-												$data=array("cuttingEdgeCodeLine"=>$versionMaxLinesMax); 
-												$sql="UPDATE gibbonSetting SET value=:cuttingEdgeCodeLine WHERE scope='System' AND name='cuttingEdgeCodeLine'" ;
-												$result=$connection2->prepare($sql);
-												$result->execute($data);
-											}
-											catch(PDOException $e) { }
-										}
-	
-										if ($settingsFail==TRUE) {
+										//Check passwords for match
+										if ($password!=$passwordConfirm) {
 											print "<div class='error'>" ;
-												print sprintf(_('Some settings did not save. The system may work, but you may need to remove evyerhting and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", "</a>") ;
-												print "<br/><br/>" ; 
-												print sprintf(_('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", "</a>") ;
+												print _("Your request failed because your passwords did not match.") ;
 											print "</div>" ;
 										}
 										else {
-											print "<div class='success'>" ;
-												print sprintf(_('Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", "</a>") ;
-												if ($cuttingEdgeCode=="Y") {
-													print " <b>" . _('As you are running cutting edge code, it is recommended that after logging in, you go to Admin > System Admin > Update, and run any updates.') . "</b>" ;
+											$salt=getSalt() ;
+											$passwordStrong=hash("sha256", $salt.$password) ;
+											
+											$userFail=false ;
+											//Write to database
+											try {
+												$data=array("title"=>$title, "surname"=>$surname, "firstName"=>$firstName, "preferredName"=>$preferredName, "officialName"=>($preferredName . " " . $surname), "username"=>$username, "passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "status"=>'Full', "canLogin"=>'Y', "passwordForceReset"=>'N', "gibbonRoleIDPrimary"=>"001", "gibbonRoleIDAll"=>"001", "email"=>$email) ;
+												$sql="INSERT INTO gibbonPerson SET title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, canLogin=:canLogin, passwordForceReset=:passwordForceReset, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, email=:email" ;
+												$result=$connection2->prepare($sql);
+												$result->execute($data);
+											}
+											catch(PDOException $e) { 
+												$userFail=true ;
+												print "<div class='error'>" ;
+													print _("Errors occurred in populating the database; empty your database, remove ../config.php and try again.") ;
+												print "</div>" ;
+											}
+											
+											if ($userFail==false) {
+												$settingsFail=FALSE ;		
+												try {
+													$data=array("absoluteURL"=>$absoluteURL); 
+													$sql="UPDATE gibbonSetting SET value=:absoluteURL WHERE scope='System' AND name='absoluteURL'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
 												}
-												print "<br/><br/>" ; 
-												print sprintf(_('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", "</a>") ;
-											print "</div>" ;
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("absolutePath"=>$absolutePath); 
+													$sql="UPDATE gibbonSetting SET value=:absolutePath WHERE scope='System' AND name='absolutePath'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("systemName"=>$systemName); 
+													$sql="UPDATE gibbonSetting SET value=:systemName WHERE scope='System' AND name='systemName'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("organisationName"=>$organisationName); 
+													$sql="UPDATE gibbonSetting SET value=:organisationName WHERE scope='System' AND name='organisationName'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("organisationNameShort"=>$organisationNameShort); 
+													$sql="UPDATE gibbonSetting SET value=:organisationNameShort WHERE scope='System' AND name='organisationNameShort'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("organisationAdministratorName"=>$organisationAdministratorName); 
+													$sql="UPDATE gibbonSetting SET value=:organisationAdministratorName WHERE scope='System' AND name='organisationAdministratorName'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("organisationAdministratorEmail"=>$organisationAdministratorEmail); 
+													$sql="UPDATE gibbonSetting SET value=:organisationAdministratorEmail WHERE scope='System' AND name='organisationAdministratorEmail'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("organisationDBAName"=>$organisationDBAName); 
+													$sql="UPDATE gibbonSetting SET value=:organisationDBAName WHERE scope='System' AND name='organisationDBAName'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("organisationDBAEmail"=>$organisationDBAEmail); 
+													$sql="UPDATE gibbonSetting SET value=:organisationDBAEmail WHERE scope='System' AND name='organisationDBAEmail'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("organisationAdmissionsName"=>$organisationAdmissionsName); 
+													$sql="UPDATE gibbonSetting SET value=:organisationAdmissionsName WHERE scope='System' AND name='organisationAdmissionsName'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("organisationAdmissionsEmail"=>$organisationAdmissionsEmail); 
+													$sql="UPDATE gibbonSetting SET value=:organisationAdmissionsEmail WHERE scope='System' AND name='organisationAdmissionsEmail'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("country"=>$country); 
+													$sql="UPDATE gibbonSetting SET value=:country WHERE scope='System' AND name='country'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("gibboneduComOrganisationName"=>$gibboneduComOrganisationName); 
+													$sql="UPDATE gibbonSetting SET value=:gibboneduComOrganisationName WHERE scope='System' AND name='gibboneduComOrganisationName'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("gibboneduComOrganisationKey"=>$gibboneduComOrganisationKey); 
+													$sql="UPDATE gibbonSetting SET value=:gibboneduComOrganisationKey WHERE scope='System' AND name='gibboneduComOrganisationKey'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("timezone"=>$timezone); 
+													$sql="UPDATE gibbonSetting SET value=:timezone WHERE scope='System' AND name='timezone'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("primaryAssessmentScale"=>$primaryAssessmentScale); 
+													$sql="UPDATE gibbonSetting SET value=:primaryAssessmentScale WHERE scope='System' AND name='primaryAssessmentScale'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("installType"=>$installType); 
+													$sql="UPDATE gibbonSetting SET value=:installType WHERE scope='System' AND name='installType'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+	
+												try {
+													$data=array("statsCollection"=>$statsCollection); 
+													$sql="UPDATE gibbonSetting SET value=:statsCollection WHERE scope='System' AND name='statsCollection'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+										
+												if ($statsCollection=="Y") {
+													$absolutePathProtocol="" ;
+													$absolutePath="" ;
+													if (substr($absoluteURL,0,7)=="http://") {
+														$absolutePathProtocol="http" ;
+														$absolutePath=substr($absoluteURL,7) ;
+													}
+													else if (substr($absoluteURL,0,8)=="https://") {
+														$absolutePathProtocol="https" ;
+														$absolutePath=substr($absoluteURL,8) ;
+													}
+													print "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($organisationName) . "&type=" . urlencode($installType) . "&version=" . urlencode($version) . "&country=" . $country . "&usersTotal=1&usersFull=1'></iframe>" ;
+												}
+									
+												try {
+													$data=array("cuttingEdgeCode"=>$cuttingEdgeCode); 
+													$sql="UPDATE gibbonSetting SET value=:cuttingEdgeCode WHERE scope='System' AND name='cuttingEdgeCode'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+												if ($cuttingEdgeCode=="Y") {
+													include "../CHANGEDB.php" ;
+													$sqlTokens=explode(";end", $sql[(count($sql))][1]) ;
+													$versionMaxLinesMax=(count($sqlTokens)-1) ;
+													try {
+														$data=array("cuttingEdgeCodeLine"=>$versionMaxLinesMax); 
+														$sql="UPDATE gibbonSetting SET value=:cuttingEdgeCodeLine WHERE scope='System' AND name='cuttingEdgeCodeLine'" ;
+														$result=$connection2->prepare($sql);
+														$result->execute($data);
+													}
+													catch(PDOException $e) { }
+												}
+	
+												if ($settingsFail==TRUE) {
+													print "<div class='error'>" ;
+														print sprintf(_('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", "</a>") ;
+														print "<br/><br/>" ; 
+														print sprintf(_('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", "</a>") ;
+													print "</div>" ;
+												}
+												else {
+													print "<div class='success'>" ;
+														print sprintf(_('Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login with the username and password you created.'), "<a href='$absoluteURL'>", "</a>") ;
+														if ($cuttingEdgeCode=="Y") {
+															print " <b>" . _('As you are running cutting edge code, it is recommended that after logging in, you go to Admin > System Admin > Update, and run any updates.') . "</b>" ;
+														}
+														print "<br/><br/>" ; 
+														print sprintf(_('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", "</a>") ;
+													print "</div>" ;
+												}
+											}
 										}
 									}
 								}
