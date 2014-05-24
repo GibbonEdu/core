@@ -300,6 +300,9 @@ Resources: fixed resource insert-by-ajax tag field error
 Activities: fixed slot location saving issue
 	Edited file /modules/Activities/activities_manage_addProcess.php, activities_manage_editProcess.php
 
+General: deprecated and replaced printUserPhoto
+	Edited /function.php and various other files
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)

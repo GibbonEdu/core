@@ -6946,7 +6946,7 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage_edit.php:134
 #: modules/Behaviour/moduleFunctions.php:40
 msgid "View Behaviour Policy"
-msgstr ""
+msgstr "View Behavior Policy"
 
 #: index.php:1336 index.php:1339 modules/Behaviour/behaviour_manage.php:275
 #: index.php:1345 index.php:1345 modules/Behaviour/behaviour_manage.php:275
