@@ -70,7 +70,7 @@ else {
 					print _("School Year") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Sequnce") ;
+					print _("Sequence") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Name") ;

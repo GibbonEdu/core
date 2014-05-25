@@ -253,7 +253,7 @@ else {
 					
 					<tr>
 						<td> 
-							<b><?php print _('HiFi') ?> *</b><br/>
+							<b><?php print _('Hifi') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="hifi" id="hifi" style="width: 302px">

@@ -121,7 +121,10 @@ else {
 								print "<i>" . _('None') . "</i>" ;
 							}
 							else {
-								print "$" . $row["payment"] ;
+								if (substr($_SESSION[$guid]["currency"],4)!="") {
+									print substr($_SESSION[$guid]["currency"],4) ;
+								}
+								print $row["payment"] ;
 							}
 						print "</td>" ;
 						print "<td style='padding-top: 15px; width: 33%; vertical-align: top'>" ;

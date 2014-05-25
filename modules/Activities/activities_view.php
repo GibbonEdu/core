@@ -382,7 +382,8 @@ else {
 								}
 							print "</th>" ;
 							print "<th>" ;
-								print _("Cost") ;
+								print _("Cost") . "<br/>" ;
+								print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 							print "</th>" ;
 							if (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0)) {
 								print "<th>" ;
@@ -497,7 +498,10 @@ else {
 											print "<i>" . _('None') . "</i>" ;
 										}
 										else {
-											print "$" . $row["payment"] ;
+											if (substr($_SESSION[$guid]["currency"],4)!="") {
+												print substr($_SESSION[$guid]["currency"],4) ;
+											}
+											print $row["payment"] ;
 										}
 									}
 								print "</td>" ;

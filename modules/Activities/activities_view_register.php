@@ -320,13 +320,13 @@ else {
 												<tr>
 													<td> 
 														<b><?php print _('Cost') ?></b><br/>
-														<span style="font-size: 90%"><i><?php print _('For entire programme') ?><br/></i></span>
+														<span style="font-size: 90%"><i><?php print _('For entire programme') . ". " . $_SESSION[$guid]["currency"] . "." ?><br/></i></span>
 													</td>
 													<td class="right">
 														<?php
 															if (getSettingByScope($connection2, "Activities", "payment")!="None" AND getSettingByScope($connection2, "Activities", "payment")!="Single") {
 																?>
-																<input readonly name="payment" id="payment" maxlength=7 value="$<?php print $row["payment"] ?>" type="text" style="width: 300px">
+																<input readonly name="payment" id="payment" maxlength=7 value="<?php if (substr($_SESSION[$guid]["currency"],4)!="") { print substr($_SESSION[$guid]["currency"],4) ; } print $row["payment"] ; ?>" type="text" style="width: 300px">
 																<?php
 															}
 														?>

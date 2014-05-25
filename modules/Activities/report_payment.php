@@ -64,7 +64,8 @@ else {
 					print _("Activity") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Cost") ;
+					print _("Cost") . "<br/>" ;
+					print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -119,8 +120,11 @@ else {
 						
 						print $row["name"] . $date ;
 					print "</td>" ;
-					print "<td style='text-align: right'>" ;
-						print "$" . number_format($row["payment"]) ;
+					print "<td style='text-align: left'>" ;
+						if (substr($_SESSION[$guid]["currency"],4)!="") {
+							print substr($_SESSION[$guid]["currency"],4) ;
+						}
+						print number_format($row["payment"]) ;
 					print "</td>" ;
 				print "</tr>" ;
 				

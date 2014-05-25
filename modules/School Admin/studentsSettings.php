@@ -73,7 +73,7 @@ else {
 		print _("Student Note Categories") ;
 	print "</h3>" ;
 	print "<p>" ;
-		print _("This section allows you to manage the categories which can be associated with student notes. Categories can be given templates, which will pre-populate the student not on selection.") ;
+		print _("This section allows you to manage the categories which can be associated with student notes. Categories can be given templates, which will pre-populate the student note on selection.") ;
 	print "</p>" ;	
 	
 	try {

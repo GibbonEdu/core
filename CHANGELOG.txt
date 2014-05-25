@@ -303,6 +303,9 @@ Activities: fixed slot location saving issue
 General: deprecated and replaced printUserPhoto
 	Edited /function.php and various other files
 
+Activities: brought currency display into line with the rest of the system
+	Edited /modules/Activities/activities*.php
+
 v7.1.02
 -------
 User Admin: added ability to set list of selected departure reasons (instead of just plain text entry)

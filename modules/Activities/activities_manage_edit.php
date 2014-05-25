@@ -361,7 +361,7 @@ else {
 					<tr>
 						<td> 
 							<b><?php print _('Cost') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('For entire programme') ?><br/></i></span>
+							<span style="font-size: 90%"><i><?php print _('For entire programme') . ". " . $_SESSION[$guid]["currency"] . "." ?><br/></i></span>
 						</td>
 						<td class="right">
 							<?php
