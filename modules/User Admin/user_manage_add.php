@@ -1166,7 +1166,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print _('Student ID') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('If set, must be unqiue.') ?></i></span>
+					<span style="font-size: 90%"><i><?php print _('Must be unique if set.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="studentID" id="studentID" maxlength=10 value="" type="text" style="width: 300px">

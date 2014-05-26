@@ -152,9 +152,9 @@ else {
 								<option <?php if ($row["role"]=="Student") { print "selected ";} ?>value="Student"><?php print _('Student') ?></option>
 								<option <?php if ($row["role"]=="Student - Left") { print "selected ";} ?>value="Student - Left"><?php print _('Student - Left') ?></option>
 								<option <?php if ($row["role"]=="Teacher") { print "selected ";} ?>value="Teacher"><?php print _('Teacher') ?></option>
-								<option <?php if ($row["role"]=="Teacher - Left") { print "selected ";} ?>value="<?php print _('Teacher - Left">Teacher - Left') ?></option>
-								<option <?php if ($row["role"]=="Assistant") { print "selected ";} ?>value="<?php print _('Assistant">Assistant') ?></option>
-								<option <?php if ($row["role"]=="Technician") { print "selected ";} ?>value="<?php print _('Technician">Technician') ?></option>
+								<option <?php if ($row["role"]=="Teacher - Left") { print "selected ";} ?>value="Teacher - Left"><?php print _('Teacher - Left') ?></option>
+								<option <?php if ($row["role"]=="Assistant") { print "selected ";} ?>value="Assistant"><?php print _('Assistant') ?></option>
+								<option <?php if ($row["role"]=="Technician") { print "selected ";} ?>value="Technician"><?php print _('Technician') ?></option>
 								<option <?php if ($row["role"]=="Parent") { print "selected ";} ?>value="Parent"><?php print _('Parent') ?></option>
 							</select>
 						</td>

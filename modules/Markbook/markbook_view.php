@@ -700,14 +700,14 @@ else {
 																}
 																else {
 																	if ($rowStudents["dateStart"]>$lessonDate[$i]) {
-																		print "<span title='" . _('Student joined school after assessment was given.') . "' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>" . _('N/A') . "</span>" ;
+																		print "<span title='" . _('Student joined school after assessment was given.') . "' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>" . _('NA') . "</span>" ;
 																	}
 																	else {
 																		if ($rowSub["homeworkSubmissionRequired"]=="Compulsory") {
 																			print "<span title='" . _('Incomplete') . "' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>" . _('Inc') . "</span>" ;
 																		}
 																		else {
-																			print "<span title='" . _('Not submitted online') . "'>" . _('N/A') . "</span>" ;
+																			print "<span title='" . _('Not submitted online') . "'>" . _('NA') . "</span>" ;
 																		}
 																	}
 																}

@@ -124,7 +124,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print _('Ignore Enrolment') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('This is useful for picking up students who are set to Full, have a start date but are not yet enrolled.') ?></span>
+					<span style="font-size: 90%"><i><?php print _('This is useful for picking up students who are set to Full, have a start date but are not yet enroled.') ?></span>
 				</td>
 				<td class="right">
 					<input <?php if ($ignoreEnrolment=="on") { print "checked" ; } ?> name="ignoreEnrolment" id="ignoreEnrolment" type="checkbox">

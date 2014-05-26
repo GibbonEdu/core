@@ -81,7 +81,7 @@ else {
 		print _("Choose A Student") ;
 		print "</h2>" ;
 		print "<p>" ;
-		print _("This page displays all students enrolled in the school, including those who have not yet met their start date. With the right permissions, you can set Individual Needs status and Individual Education Plan details for any student.") ;
+		print _("This page displays all students enroled in the school, including those who have not yet met their start date. With the right permissions, you can set Individual Needs status and Individual Education Plan details for any student.") ;
 		print "</p>" ;
 		
 		//Set pagination variable

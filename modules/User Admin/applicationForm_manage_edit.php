@@ -319,7 +319,7 @@ else {
 					<tr>
 						<td> 
 							<b><?php print _('Roll Group at Entry') ?></b><br/>
-							<span style="font-size: 90%"><?php print _('If set, the student will automatically be enrolled on Accept.') ?></span>
+							<span style="font-size: 90%"><?php print _('If set, the student will automatically be enroled on Accept.') ?></span>
 						</td>
 						<td class="right">
 							<select name="gibbonRollGroupID" id="gibbonRollGroupID" style="width: 302px">
@@ -852,7 +852,7 @@ else {
 					<tr>
 						<td colspan=2 style='padding-top: 15px'> 
 							<b><?php print _('Development Information') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Provide any comments or information concerning your child’s development that may be relevant to your child’s performance in the classroom or elsewhere? (Incorrect or withheld information may affect continued enrolment).') ?></i></span><br/> 					
+							<span style="font-size: 90%"><i><?php print _('Provide any comments or information concerning your child\'s development that may be relevant to your child’s performance in the classroom or elsewhere? (Incorrect or withheld information may affect continued enrolment).') ?></i></span><br/> 					
 							<textarea name="developmentInformation" id="developmentInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><?php print htmlPrep($row["developmentInformation"]) ?></textarea>
 						</td>
 					</tr>

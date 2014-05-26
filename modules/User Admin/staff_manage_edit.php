@@ -248,7 +248,7 @@ else {
 					<tr>
 						<td> 
 							<b><?php print _('Grouping') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Used for group staff when creating a staff directory.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('Used to group staff when creating a staff directory.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="biographicalGrouping" id="biographicalGrouping" maxlength=100 value="<?php print htmlPrep($row["biographicalGrouping"]) ?>" type="text" style="width: 300px">

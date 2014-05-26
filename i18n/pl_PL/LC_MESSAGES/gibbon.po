@@ -4246,10 +4246,11 @@ msgstr ""
 #: modules/Students/student_view_details.php:2080 functions.php:819
 #: functions.php:2417 functions.php:2419 index.php:673 index.php:1094
 #: functions.php:840 functions.php:2440 functions.php:2439 index.php:671
-#: index.php:1092 functions.php:840 functions.php:2439 index.php:671
-#: index.php:1092 modules/Activities/activities_copy.php:49
+#: index.php:1092 modules/Activities/activities_manage.php:184
+#: functions.php:840 functions.php:2439 index.php:671 index.php:1092
+#: modules/Activities/activities_copy.php:49
 #: modules/Activities/activities_manage.php:125
-#: modules/Activities/activities_manage.php:183
+#: modules/Activities/activities_manage.php:184
 #: modules/Activities/activities_manage_add.php:44
 #: modules/Activities/activities_manage_delete.php:48
 #: modules/Activities/activities_manage_edit.php:49
@@ -5122,9 +5123,10 @@ msgstr ""
 #: modules/Students/student_view_details.php:1566
 #: modules/Students/student_view_details.php:2275
 #: modules/Students/student_view_details.php:2530 index.php:775 index.php:1212
-#: index.php:773 index.php:1210 modules/Timetable/tt.php:203 index.php:773
-#: index.php:1210 modules/Activities/activities_my.php:113
-#: modules/Activities/activities_view.php:510
+#: index.php:773 index.php:1210 modules/Timetable/tt.php:203
+#: modules/Activities/activities_view.php:514 index.php:773 index.php:1210
+#: modules/Activities/activities_my.php:113
+#: modules/Activities/activities_view.php:514
 #: modules/Activities/report_activityChoices_byStudent.php:256
 #: modules/Behaviour/behaviour_pattern.php:384
 #: modules/Behaviour/behaviour_view.php:150
@@ -5368,9 +5370,9 @@ msgstr ""
 #: modules/Students/student_view_details.php:2362
 #: modules/Students/student_view_details.php:2568 index.php:784 index.php:1005
 #: index.php:1050 index.php:1338 index.php:782 index.php:1003 index.php:1048
-#: index.php:1336 modules/Markbook/markbook_view.php:1666 index.php:782
-#: index.php:1003 index.php:1048 index.php:1336
-#: modules/Activities/activities_manage.php:136
+#: index.php:1336 modules/Markbook/markbook_view.php:1666
+#: modules/Activities/report_payment.php:136 index.php:782 index.php:1003
+#: index.php:1048 index.php:1336 modules/Activities/activities_manage.php:136
 #: modules/Activities/activities_manage_edit.php:414
 #: modules/Activities/activities_manage_edit.php:704
 #: modules/Activities/activities_manage_enrolment.php:209
@@ -5392,7 +5394,7 @@ msgstr ""
 #: modules/Activities/report_participants.php:118
 #: modules/Activities/report_participants_print.php:68
 #: modules/Activities/report_payment.php:49
-#: modules/Activities/report_payment.php:132
+#: modules/Activities/report_payment.php:136
 #: modules/Attendance/attendance_take_byRollGroup.php:234
 #: modules/Attendance/moduleFunctions.php:91
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:113
@@ -7272,7 +7274,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:1343
 #: modules/Students/student_view_details.php:1554
 #: modules/Students/student_view_details.php:2099
-#: modules/Activities/activities_manage.php:268
+#: modules/Activities/activities_manage.php:272
+#: modules/Activities/activities_manage.php:272
 #: modules/Activities/activities_manage_enrolment.php:252
 #: modules/Behaviour/behaviour_manage.php:347
 #: modules/Behaviour/behaviour_manage_edit.php:42
@@ -7427,7 +7430,8 @@ msgstr ""
 #: Admin/user_manage_edit.php:1394 Admin/user_manage_edit.php:1417
 #: modules/Markbook/markbook_view.php:432
 #: modules/Students/student_view_details.php:1555
-#: modules/Activities/activities_manage.php:269
+#: modules/Activities/activities_manage.php:273
+#: modules/Activities/activities_manage.php:273
 #: modules/Activities/activities_manage_edit.php:476
 #: modules/Activities/activities_manage_edit.php:742
 #: modules/Activities/activities_manage_enrolment.php:253
@@ -7683,8 +7687,8 @@ msgstr ""
 msgid "Find Staff"
 msgstr ""
 
-#: functions.php:263 functions.php:309
-msgid "Total Student Enrollment:"
+#: functions.php:263 functions.php:309 functions.php:330 functions.php:330
+msgid "Total Student Enrolment:"
 msgstr ""
 
 #: functions.php:270 modules/School Admin/department_manage.php:81
@@ -7700,13 +7704,14 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1058 i18n/dbStringsForTranslation.php:1099
 #: i18n/dbStringsForTranslation.php:1063 i18n/dbStringsForTranslation.php:1104
 #: i18n/dbStringsForTranslation.php:1115 i18n/dbStringsForTranslation.php:1156
-#: functions.php:288 functions.php:288 i18n/dbStringsForTranslation.php:1115
-#: i18n/dbStringsForTranslation.php:1156
+#: functions.php:288 modules/Activities/activities_my_full.php:135
+#: modules/Activities/activities_view_full.php:157 functions.php:288
+#: i18n/dbStringsForTranslation.php:1115 i18n/dbStringsForTranslation.php:1156
 #: modules/Activities/activities_manage_add.php:566
 #: modules/Activities/activities_manage_add.php:571
 #: modules/Activities/activities_manage_edit.php:758
-#: modules/Activities/activities_my_full.php:132
-#: modules/Activities/activities_view_full.php:154
+#: modules/Activities/activities_my_full.php:135
+#: modules/Activities/activities_view_full.php:157
 #: modules/Departments/department.php:90
 #: modules/School Admin/department_manage.php:81
 #: modules/School Admin/department_manage_add.php:150
@@ -8107,9 +8112,11 @@ msgstr ""
 #: modules/Activities/activities_view_full.php:242
 #: modules/Departments/department_course_class.php:113
 #: modules/Departments/department_course_class.php:501 functions.php:1428
-#: functions.php:1432 functions.php:1453 functions.php:1453
-#: modules/Activities/activities_my_full.php:221
-#: modules/Activities/activities_view_full.php:242
+#: functions.php:1432 functions.php:1453
+#: modules/Activities/activities_my_full.php:224
+#: modules/Activities/activities_view_full.php:245 functions.php:1453
+#: modules/Activities/activities_my_full.php:224
+#: modules/Activities/activities_view_full.php:245
 #: modules/Departments/department_course_class.php:113
 #: modules/Departments/department_course_class.php:501
 #: modules/Timetable Admin/course_manage_edit.php:252
@@ -9125,13 +9132,15 @@ msgstr ""
 #: modules/Students/student_view_details.php:1522
 #: modules/Students/student_view_details.php:2216
 #: modules/Students/student_view_details.php:2419
+#: modules/Activities/activities_manage.php:171
+#: modules/Activities/activities_view.php:394
 #: i18n/dbStringsForTranslation.php:21
-#: modules/Activities/activities_manage.php:170
+#: modules/Activities/activities_manage.php:171
 #: modules/Activities/activities_manage_edit.php:431
 #: modules/Activities/activities_manage_edit.php:718
 #: modules/Activities/activities_manage_enrolment.php:225
 #: modules/Activities/activities_my.php:70
-#: modules/Activities/activities_view.php:393
+#: modules/Activities/activities_view.php:394
 #: modules/Activities/report_activityChoices_byStudent.php:196
 #: modules/Behaviour/behaviour_manage.php:290
 #: modules/Behaviour/behaviour_pattern.php:342
@@ -9459,7 +9468,7 @@ msgstr ""
 #: Admin/theme_manage.php:108 modules/Timetable
 #: Admin/courseEnrolment_manage.php:135 Admin/tt_edit.php:148
 #: modules/Rubrics/rubrics_add.php:185 Admin/i18n_manage.php:86
-#: modules/Activities/activities_manage_add.php:144
+#: Admin/tt.php:161 modules/Activities/activities_manage_add.php:144
 #: modules/Activities/activities_manage_edit.php:200
 #: modules/Finance/billingSchedule_manage_add.php:125
 #: modules/Finance/billingSchedule_manage_edit.php:143
@@ -9485,7 +9494,7 @@ msgstr ""
 #: modules/System Admin/module_manage_edit.php:132
 #: modules/System Admin/theme_manage.php:108
 #: modules/Timetable Admin/courseEnrolment_manage.php:135
-#: modules/Timetable Admin/tt_edit.php:148
+#: modules/Timetable Admin/tt.php:161 modules/Timetable Admin/tt_edit.php:148
 msgid "Active"
 msgstr ""
 
@@ -12367,11 +12376,14 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:352
 #: modules/Finance/moduleFunctions.php:610 modules/Planner/units.php:204
 #: modules/Resources/resources_manage_edit.php:407
-#: i18n/dbStringsForTranslation.php:1045 i18n/dbStringsForTranslation.php:1045
+#: i18n/dbStringsForTranslation.php:1045
+#: modules/Activities/activities_my_full.php:167
+#: modules/Activities/activities_view_full.php:189
+#: i18n/dbStringsForTranslation.php:1045
 #: modules/Activities/activities_manage_add.php:359
 #: modules/Activities/activities_manage_edit.php:389
-#: modules/Activities/activities_my_full.php:164
-#: modules/Activities/activities_view_full.php:186
+#: modules/Activities/activities_my_full.php:167
+#: modules/Activities/activities_view_full.php:189
 #: modules/Finance/billingSchedule_manage_add.php:137
 #: modules/Finance/billingSchedule_manage_edit.php:155
 #: modules/Finance/feeCategories_manage.php:91
@@ -12552,11 +12564,15 @@ msgstr ""
 #: modules/Library/report_catalogSummary.php:248
 #: modules/Library/report_catalogSummaryExportContents.php:97 modules/Roll
 #: Groups/rollGroups_details.php:98
+#: modules/Activities/activities_my_full.php:208
+#: modules/Activities/activities_my_full.php:212
+#: modules/Activities/activities_view_full.php:229
+#: modules/Activities/activities_view_full.php:233
 #: modules/Activities/activities_manage_edit.php:428
-#: modules/Activities/activities_my_full.php:205
-#: modules/Activities/activities_my_full.php:209
-#: modules/Activities/activities_view_full.php:226
-#: modules/Activities/activities_view_full.php:230
+#: modules/Activities/activities_my_full.php:208
+#: modules/Activities/activities_my_full.php:212
+#: modules/Activities/activities_view_full.php:229
+#: modules/Activities/activities_view_full.php:233
 #: modules/Library/library_browse.php:365
 #: modules/Library/library_lending.php:135
 #: modules/Library/library_lending.php:262
@@ -12715,18 +12731,28 @@ msgstr ""
 #: modules/Resources/resources_insert_ajax.php:411
 #: modules/Resources/resources_manage.php:241
 #: modules/Resources/resources_view.php:383
-#: modules/Activities/activities_manage.php:225
-#: modules/Activities/activities_manage.php:258
+#: modules/Activities/activities_manage.php:226
+#: modules/Activities/activities_manage.php:259
+#: modules/Activities/activities_my_full.php:147
+#: modules/Activities/activities_my_full.php:219
+#: modules/Activities/activities_my_full.php:237
+#: modules/Activities/activities_view.php:461
+#: modules/Activities/activities_view.php:498
+#: modules/Activities/activities_view_full.php:169
+#: modules/Activities/activities_view_full.php:240
+#: modules/Activities/activities_view_full.php:258
+#: modules/Activities/activities_manage.php:226
+#: modules/Activities/activities_manage.php:259
 #: modules/Activities/activities_my_full.php:121
-#: modules/Activities/activities_my_full.php:144
-#: modules/Activities/activities_my_full.php:216
-#: modules/Activities/activities_my_full.php:234
-#: modules/Activities/activities_view.php:460
-#: modules/Activities/activities_view.php:497
+#: modules/Activities/activities_my_full.php:147
+#: modules/Activities/activities_my_full.php:219
+#: modules/Activities/activities_my_full.php:237
+#: modules/Activities/activities_view.php:461
+#: modules/Activities/activities_view.php:498
 #: modules/Activities/activities_view_full.php:142
-#: modules/Activities/activities_view_full.php:166
-#: modules/Activities/activities_view_full.php:237
-#: modules/Activities/activities_view_full.php:255
+#: modules/Activities/activities_view_full.php:169
+#: modules/Activities/activities_view_full.php:240
+#: modules/Activities/activities_view_full.php:258
 #: modules/Planner/planner_add.php:748 modules/Planner/planner_edit.php:907
 #: modules/Planner/planner_view_full_submit_edit.php:283
 #: modules/Planner/planner_view_full_submit_edit.php:289
@@ -12882,7 +12908,8 @@ msgstr ""
 
 #: modules/School Admin/activitySettings.php:145 modules/User
 #: Admin/rollover.php:826 modules/Activities/activities_view.php:518
-#: modules/Activities/activities_view.php:518
+#: modules/Activities/activities_view.php:522
+#: modules/Activities/activities_view.php:522
 #: modules/School Admin/activitySettings.php:145
 #: modules/User Admin/rollover.php:826
 msgid "Register"
@@ -13653,8 +13680,8 @@ msgstr ""
 #: Admin/fileExtensions_manage_delete.php:31
 #: Admin/fileExtensions_manage_edit.php:31
 #: i18n/dbStringsForTranslation.php:109 i18n/dbStringsForTranslation.php:172
-#: i18n/dbStringsForTranslation.php:173 i18n/dbStringsForTranslation.php:172
-#: i18n/dbStringsForTranslation.php:173
+#: i18n/dbStringsForTranslation.php:173 Admin/fileExtensions_manage.php:31
+#: i18n/dbStringsForTranslation.php:172 i18n/dbStringsForTranslation.php:173
 #: modules/School Admin/fileExtensions_manage.php:31
 #: modules/School Admin/fileExtensions_manage_add.php:31
 #: modules/School Admin/fileExtensions_manage_delete.php:31
@@ -13669,7 +13696,7 @@ msgstr ""
 
 #: modules/School Admin/fileExtensions_manage_add.php:64
 #: Admin/fileExtensions_manage_edit.php:93 Admin/space_manage_add.php:253
-#: Admin/space_manage_edit.php:291
+#: Admin/space_manage_edit.php:291 Admin/fileExtensions_manage.php:76
 #: modules/School Admin/fileExtensions_manage.php:76
 #: modules/School Admin/fileExtensions_manage_add.php:64
 #: modules/School Admin/fileExtensions_manage_edit.php:93
@@ -14077,6 +14104,7 @@ msgid "Manage School Year"
 msgstr ""
 
 #: modules/School Admin/schoolYear_manage.php:70
+#: Admin/schoolYearTerm_manage.php:73
 #: modules/School Admin/schoolYear_manage.php:70
 #: modules/School Admin/schoolYearTerm_manage.php:73
 msgid "Sequence"
@@ -14404,8 +14432,8 @@ msgstr ""
 msgid "DVD Player"
 msgstr ""
 
-#: modules/School Admin/space_manage.php:160
-#: modules/School Admin/space_manage.php:160
+#: modules/School Admin/space_manage.php:160 Admin/space_manage_add.php:218
+#: Admin/space_manage_edit.php:256 modules/School Admin/space_manage.php:160
 #: modules/School Admin/space_manage_add.php:218
 #: modules/School Admin/space_manage_edit.php:256
 msgid "Hifi"
@@ -15412,20 +15440,24 @@ msgstr ""
 #: Admin/courseEnrolment_manage_class_edit.php:182
 #: modules/Activities/activities_manage_add.php:598
 #: modules/Activities/activities_manage_edit.php:785
+#: Admin/courseEnrolment_manage_class_edit_edit.php:156
 #: modules/Activities/activities_manage_add.php:598
 #: modules/Activities/activities_manage_edit.php:785
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:208
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:166
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:182
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:156
 msgid "Assistant"
 msgstr ""
 
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:209
 #: Admin/courseEnrolment_manage_byPerson_edit_edit.php:167
 #: Admin/courseEnrolment_manage_class_edit.php:183
+#: Admin/courseEnrolment_manage_class_edit_edit.php:157
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:209
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:167
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:183
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:157
 msgid "Technician"
 msgstr ""
 
@@ -15495,7 +15527,9 @@ msgid "Student - Left"
 msgstr ""
 
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:165
+#: Admin/courseEnrolment_manage_class_edit_edit.php:155
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:165
+#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:155
 msgid "Teacher - Left"
 msgstr ""
 
@@ -15560,21 +15594,6 @@ msgstr ""
 msgid "Former Participants"
 msgstr ""
 
-#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:155
-#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:155
-msgid "Teacher - Left\">Teacher - Left"
-msgstr ""
-
-#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:156
-#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:156
-msgid "Assistant\">Assistant"
-msgstr ""
-
-#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:157
-#: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:157
-msgid "Technician\">Technician"
-msgstr ""
-
 #: modules/Timetable Admin/report_classEnrolment_byRollGroup.php:34
 #: i18n/dbStringsForTranslation.php:60 i18n/dbStringsForTranslation.php:72
 #: i18n/dbStringsForTranslation.php:73 i18n/dbStringsForTranslation.php:72
@@ -15622,10 +15641,6 @@ msgstr ""
 #: modules/Timetable Admin/tt_edit_day_edit_class_edit.php:84
 #: modules/Timetable Admin/tt_import.php:31
 msgid "Manage Timetables"
-msgstr ""
-
-#: modules/Timetable Admin/tt.php:161 modules/Timetable Admin/tt.php:161
-msgid "Active?"
 msgstr ""
 
 #: modules/Timetable Admin/tt.php:230 i18n/dbStringsForTranslation.php:32
@@ -15776,9 +15791,11 @@ msgstr ""
 #: modules/Timetable/report_viewAvailableSpaces.php:289
 #: modules/Timetable/report_viewAvailableTeachers.php:262
 #: modules/Students/student_view_details.php:1510
+#: modules/Activities/activities_my_full.php:194
+#: modules/Activities/activities_view_full.php:215
 #: modules/Activities/activities_manage_edit.php:425
-#: modules/Activities/activities_my_full.php:191
-#: modules/Activities/activities_view_full.php:212
+#: modules/Activities/activities_my_full.php:194
+#: modules/Activities/activities_view_full.php:215
 #: modules/Departments/department_course_class.php:189
 #: modules/Departments/department_course_class.php:310
 #: modules/Departments/department_course_class.php:399
@@ -16195,7 +16212,7 @@ msgstr ""
 #, php-format
 msgid ""
 "Row check failed. The following rows were in the import file but could not "
-"be found in Gibbon: %1$s. Add the days into Gibbon and then try the import "
+"be found in Gibbon: %1$s. Add the rows into Gibbon and then try the import "
 "again."
 msgstr ""
 
@@ -16259,7 +16276,7 @@ msgstr ""
 #: modules/Timetable Admin/tt_import.php:767
 #, php-format
 msgid ""
-"Teacher sync failed. The following classes (an possibly some others) had "
+"Teacher sync failed. The following classes (and possibly some others) had "
 "problems: %1$s."
 msgstr ""
 
@@ -16335,7 +16352,7 @@ msgstr ""
 
 #: modules/Timetable Admin/tt_import.php:1032
 #: modules/Timetable Admin/tt_import.php:1032
-msgid "Your input was partially or entirely uncessful."
+msgid "Your input was partially or entirely unsuccessful."
 msgstr ""
 
 #: modules/Timetable Admin/tt_import.php:1037
@@ -16826,15 +16843,15 @@ msgstr ""
 #: modules/User Admin/applicationForm_manage_accept.php:375
 #: modules/User Admin/applicationForm_manage_accept.php:375
 msgid ""
-"Student could not be enrolled, so this will have to be done manually at a "
+"Student could not be enroled, so this will have to be done manually at a "
 "later date."
 msgstr ""
 
 #: modules/User Admin/applicationForm_manage_accept.php:383
 #: modules/User Admin/applicationForm_manage_accept.php:383
 msgid ""
-"The student has successfully been enrolled in the specified school year, "
-"year group and roll group."
+"The student has successfully been enroled in the specified school year, year "
+"group and roll group."
 msgstr ""
 
 #: modules/User Admin/applicationForm_manage_accept.php:433
@@ -17040,8 +17057,8 @@ msgstr ""
 #: modules/User Admin/applicationForm_manage_accept.php:1158
 #: modules/User Admin/applicationForm_manage_accept.php:1158
 msgid ""
-"Student status could not be updated:student is in the system, but acceptance "
-"has failed."
+"Student status could not be updated: student is in the system, but "
+"acceptance has failed."
 msgstr ""
 
 #: modules/User Admin/applicationForm_manage_accept.php:1163
@@ -17230,7 +17247,7 @@ msgstr ""
 
 #: modules/User Admin/applicationForm_manage_edit.php:322
 #: modules/User Admin/applicationForm_manage_edit.php:322
-msgid "If set, the student will automatically be enrolled on Accept."
+msgid "If set, the student will automatically be enroled on Accept."
 msgstr ""
 
 #: modules/User Admin/applicationForm_manage_edit.php:365
@@ -17839,12 +17856,13 @@ msgstr ""
 msgid "Development Information"
 msgstr ""
 
-#: modules/User Admin/applicationForm_manage_edit.php:855
-#: modules/User Admin/applicationForm_manage_edit.php:855
+#: modules/User Admin/applicationForm_manage_edit.php:855 modules/Application
+#: Form/applicationForm.php:583
 msgid ""
-"Provide any comments or information concerning your childâs development that "
-"may be relevant to your childâs performance in the classroom or elsewhere? "
-"(Incorrect or withheld information may affect continued enrolment)."
+"Provide any comments or information concerning your child\\'s development "
+"that may be relevant to your child\\'s performance in the classroom or "
+"elsewhere? (Incorrect or withheld information may affect continued "
+"enrolment)."
 msgstr ""
 
 #: modules/User Admin/applicationForm_manage_edit.php:864 modules/Application
@@ -20259,7 +20277,7 @@ msgstr ""
 
 #: modules/User Admin/import_families.php:507
 #: modules/User Admin/import_families.php:507
-msgid "There was an error parent:"
+msgid "There was an error updating parent:"
 msgstr ""
 
 #: modules/User Admin/import_families.php:512
@@ -20318,12 +20336,12 @@ msgstr ""
 
 #: modules/User Admin/import_studentEnrolment.php:120
 #: modules/User Admin/import_studentEnrolment.php:120
-msgid "Roll group short name, as set in School Admim. Nust already exist."
+msgid "Roll group short name, as set in School Admim. Must already exist."
 msgstr ""
 
 #: modules/User Admin/import_studentEnrolment.php:121
 #: modules/User Admin/import_studentEnrolment.php:121
-msgid "Year group short name, as set in School Admin. Mmust already exist."
+msgid "Year group short name, as set in School Admin. Must already exist"
 msgstr ""
 
 #: modules/User Admin/import_studentEnrolment.php:199
@@ -20562,11 +20580,6 @@ msgstr ""
 #: modules/User Admin/import_users.php:154
 #: modules/User Admin/import_users.php:157
 msgid "IDD code, without 00 or +"
-msgstr ""
-
-#: modules/User Admin/import_users.php:149
-#: modules/User Admin/import_users.php:149
-msgid "Phone 1<"
 msgstr ""
 
 #: modules/User Admin/import_users.php:149 Admin/import_users.php:152
@@ -21045,8 +21058,8 @@ msgstr ""
 
 #: modules/User Admin/rollover.php:274 modules/User Admin/rollover.php:274
 msgid ""
-"This step primes newcomers who have status set to \"Expected\" to be "
-"enrolled as students or added as staff (below)."
+"This step primes newcomers who have status set to \"Expected\" to be enroled "
+"as students or added as staff (below)."
 msgstr ""
 
 #: modules/User Admin/rollover.php:300 Admin/rollover.php:381
@@ -21114,7 +21127,7 @@ msgstr ""
 msgid ""
 "Take students who are marked expected and enrol them. All parents of new "
 "students who are enroled below will have their status set to \"Full\". If a "
-"student is not enrolled, they will be set to \"Left\"."
+"student is not enroled, they will be set to \"Left\"."
 msgstr ""
 
 #: modules/User Admin/rollover.php:356 Admin/rollover.php:443
@@ -21137,12 +21150,12 @@ msgstr ""
 
 #: modules/User Admin/rollover.php:439 modules/User Admin/rollover.php:439
 msgid ""
-"Take new students who are already set as full, but who were not enrolled "
-"last year, and enrol them. These students probably came through the Online "
-"Application form, and may already be enrolled in next year: if this is the "
+"Take new students who are already set as full, but who were not enroled last "
+"year, and enrol them. These students probably came through the Online "
+"Application form, and may already be enroled in next year: if this is the "
 "case, their enrolment will be updated as per the information below. All "
 "parents of new students who are enroled below will have their status set to "
-"\"Full\". If a student is not enrolled, they will be set to \"Left\""
+"\"Full\". If a student is not enroled, they will be set to \"Left\""
 msgstr ""
 
 #: modules/User Admin/rollover.php:600 Admin/rollover.php:1331
@@ -21207,11 +21220,6 @@ msgstr ""
 msgid "%1$s adds failed."
 msgstr ""
 
-#: modules/User Admin/rollover.php:1554 modules/User Admin/rollover.php:1554
-#, php-format
-msgid "%1$s adds failed"
-msgstr ""
-
 #: modules/User Admin/staff_manage.php:31 Admin/staff_manage_add.php:31
 #: Admin/staff_manage_delete.php:31 Admin/staff_manage_edit.php:31
 #: i18n/dbStringsForTranslation.php:136 i18n/dbStringsForTranslation.php:226
@@ -21236,11 +21244,6 @@ msgstr ""
 #: modules/User Admin/staff_manage_add.php:31
 #: modules/User Admin/staff_manage_add.php:31
 msgid "Add Staff"
-msgstr ""
-
-#: modules/User Admin/staff_manage_add.php:109
-#: modules/User Admin/staff_manage_add.php:109
-msgid "Must unique if set."
 msgstr ""
 
 #: modules/User Admin/staff_manage_add.php:159 Admin/staff_manage_edit.php:166
@@ -21307,7 +21310,7 @@ msgstr ""
 #: modules/User Admin/staff_manage_add.php:240 Admin/staff_manage_edit.php:251
 #: modules/User Admin/staff_manage_add.php:240
 #: modules/User Admin/staff_manage_edit.php:251
-msgid "Used for group staff when creating a staff directory."
+msgid "Used to group staff when creating a staff directory."
 msgstr ""
 
 #: modules/User Admin/staff_manage_add.php:248 Admin/staff_manage_edit.php:259
@@ -21846,12 +21849,6 @@ msgstr ""
 msgid "Student ID"
 msgstr ""
 
-#: modules/User Admin/user_manage_add.php:1169 Admin/user_manage_edit.php:1481
-#: Admin/user_manage_edit.php:1472 modules/User Admin/user_manage_add.php:1169
-#: modules/User Admin/user_manage_edit.php:1472
-msgid "If set, must be unqiue."
-msgstr ""
-
 #: modules/User Admin/user_manage_add.php:1177 Admin/user_manage_edit.php:1493
 #: modules/Staff/staff_view_details.php:368
 #: modules/Students/report_students_byRollGroup.php:177
@@ -21896,12 +21893,6 @@ msgid ""
 "categories (Staff, Student, Parent) that a user is assigned to. For example, "
 "parents do not get Emergency Contact fields, and stunders/staff do not get "
 "Employment fields."
-msgstr ""
-
-#: modules/User Admin/user_manage_edit.php:152 modules/Data
-#: Updater/data_personal.php:357 modules/Data Updater/data_personal.php:357
-#: modules/User Admin/user_manage_edit.php:152
-msgid "Miss."
 msgstr ""
 
 #: modules/User Admin/user_manage_edit.php:257
@@ -22208,12 +22199,15 @@ msgstr ""
 #: modules/Activities/activities_my_full.php:157
 #: modules/Activities/activities_view.php:368
 #: modules/Activities/activities_view_full.php:179
-#: modules/Activities/activities_manage.php:167
+#: modules/Activities/activities_manage.php:168
+#: modules/Activities/activities_my_full.php:160
+#: modules/Activities/activities_view_full.php:182
+#: modules/Activities/activities_manage.php:168
 #: modules/Activities/activities_manage_add.php:91
 #: modules/Activities/activities_manage_edit.php:148
-#: modules/Activities/activities_my_full.php:157
+#: modules/Activities/activities_my_full.php:160
 #: modules/Activities/activities_view.php:368
-#: modules/Activities/activities_view_full.php:179
+#: modules/Activities/activities_view_full.php:182
 msgid "Provider"
 msgstr ""
 
@@ -22222,18 +22216,23 @@ msgstr ""
 #: modules/Activities/activities_manage_edit.php:154
 #: modules/Activities/activities_my_full.php:158
 #: modules/Activities/activities_view_full.php:180
-#: modules/Activities/activities_manage.php:265
+#: modules/Activities/activities_manage.php:269
+#: modules/Activities/activities_my_full.php:161
+#: modules/Activities/activities_view_full.php:183
+#: modules/Activities/activities_manage.php:269
 #: modules/Activities/activities_manage_add.php:96
 #: modules/Activities/activities_manage_edit.php:154
-#: modules/Activities/activities_my_full.php:158
-#: modules/Activities/activities_view_full.php:180
+#: modules/Activities/activities_my_full.php:161
+#: modules/Activities/activities_view_full.php:183
 msgid "External"
 msgstr ""
 
 #: modules/Activities/activities_manage.php:270
 #: modules/Activities/activities_view.php:389
-#: modules/Activities/activities_manage.php:270
-#: modules/Activities/activities_view.php:389
+#: modules/Activities/activities_manage.php:274
+#: modules/Activities/activities_view.php:390
+#: modules/Activities/activities_manage.php:274
+#: modules/Activities/activities_view.php:390
 msgid "Enrolment"
 msgstr ""
 
@@ -22425,9 +22424,11 @@ msgstr ""
 #: modules/Activities/activities_manage_add.php:367
 #: modules/Activities/activities_my_full.php:175
 #: modules/Activities/activities_view_full.php:197
+#: modules/Activities/activities_my_full.php:178
+#: modules/Activities/activities_view_full.php:200
 #: modules/Activities/activities_manage_add.php:367
-#: modules/Activities/activities_my_full.php:175
-#: modules/Activities/activities_view_full.php:197
+#: modules/Activities/activities_my_full.php:178
+#: modules/Activities/activities_view_full.php:200
 msgid "Time Slots"
 msgstr ""
 
@@ -22694,8 +22695,10 @@ msgstr ""
 
 #: modules/Activities/activities_my_full.php:128
 #: modules/Activities/activities_view_full.php:150
-#: modules/Activities/activities_my_full.php:128
-#: modules/Activities/activities_view_full.php:150
+#: modules/Activities/activities_my_full.php:131
+#: modules/Activities/activities_view_full.php:153
+#: modules/Activities/activities_my_full.php:131
+#: modules/Activities/activities_view_full.php:153
 msgid "Maximum Participants"
 msgstr ""
 
@@ -22779,12 +22782,14 @@ msgid "Choose the child you are registering for."
 msgstr ""
 
 #: modules/Activities/activities_view.php:493
-#: modules/Activities/activities_view.php:493
+#: modules/Activities/activities_view.php:494
+#: modules/Activities/activities_view.php:494
 msgid "See activity details"
 msgstr ""
 
 #: modules/Activities/activities_view.php:521
-#: modules/Activities/activities_view.php:521
+#: modules/Activities/activities_view.php:525
+#: modules/Activities/activities_view.php:525
 msgid "Unregister"
 msgstr ""
 
@@ -22925,7 +22930,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:48 i18n/dbStringsForTranslation.php:49
 #: i18n/dbStringsForTranslation.php:48 i18n/dbStringsForTranslation.php:49
 #: modules/Activities/report_activityEnrollmentSummary.php:34
-msgid "Activity Enrollment Summary"
+msgid "Activity Enrolment Summary"
 msgstr ""
 
 #: modules/Activities/report_activityEnrollmentSummary.php:63
@@ -22939,7 +22944,7 @@ msgstr ""
 
 #: modules/Activities/report_activityEnrollmentSummary.php:64
 #: modules/Activities/report_activityEnrollmentSummary.php:64
-msgid "Excludes \"Not Accepted"
+msgid "Excludes \"Not Accepted\""
 msgstr ""
 
 #: modules/Activities/report_activityEnrollmentSummary.php:99
@@ -22969,11 +22974,12 @@ msgstr ""
 #: modules/Students/student_view_details.php:1248
 #: modules/Students/student_view_details.php:1374
 #: modules/Students/student_view_details.php:1389
+#: modules/Activities/report_payment.php:97
 #: modules/Activities/report_activityEnrollmentSummary.php:99
 #: modules/Activities/report_activityEnrollmentSummary.php:123
 #: modules/Activities/report_participants.php:169
 #: modules/Activities/report_participants_print.php:128
-#: modules/Activities/report_payment.php:96
+#: modules/Activities/report_payment.php:97
 #: modules/Attendance/report_studentsNotOnsite_byDate.php:179
 #: modules/Attendance/report_studentsNotOnsite_byDate_print.php:139
 #: modules/Attendance/report_studentsNotPresent_byDate.php:179
@@ -23867,21 +23873,6 @@ msgstr ""
 msgid "Inc"
 msgstr ""
 
-#: modules/Markbook/markbook_edit_data.php:444
-#: modules/Markbook/markbook_view.php:641
-#: modules/Markbook/markbook_view.php:648
-#: modules/Markbook/markbook_view_full.php:533
-#: modules/Markbook/markbook_view_full.php:540
-#: modules/Markbook/markbook_view.php:697
-#: modules/Markbook/markbook_view.php:704
-#: modules/Markbook/markbook_view.php:703
-#: modules/Markbook/markbook_view.php:710
-#: modules/Markbook/markbook_edit_data.php:444
-#: modules/Markbook/markbook_view.php:703
-#: modules/Markbook/markbook_view.php:710
-msgid "N/A"
-msgstr ""
-
 #: modules/Markbook/markbook_edit_data.php:475
 #: modules/Markbook/markbook_edit_data.php:502
 #: modules/Markbook/markbook_edit_data.php:475
@@ -23898,14 +23889,14 @@ msgstr ""
 #: modules/Markbook/markbook_edit_delete.php:96
 #: modules/Markbook/markbook_edit_delete.php:96
 msgid ""
-"This column is part of a set of columns, and so can not be individually "
+"This column is part of a set of columns, and so cannot be individually "
 "deleted."
 msgstr ""
 
 #: modules/Markbook/markbook_edit_edit.php:96
 #: modules/Markbook/markbook_edit_edit.php:96
 msgid ""
-"This column is part of a set of columns, and so can not be individually "
+"This column is part of a set of columns, and so cannot be individually "
 "edited."
 msgstr ""
 
@@ -24660,7 +24651,7 @@ msgstr ""
 #: modules/Individual Needs/in_view.php:84
 #: modules/Individual Needs/in_view.php:84
 msgid ""
-"This page displays all students enrolled in the school, including those who "
+"This page displays all students enroled in the school, including those who "
 "have not yet met their start date. With the right permissions, you can set "
 "Individual Needs status and Individual Education Plan details for any "
 "student."
@@ -32873,15 +32864,6 @@ msgstr ""
 msgid "The primary language used in the student's home.<"
 msgstr ""
 
-#: modules/Application Form/applicationForm.php:583
-#: modules/Application Form/applicationForm.php:583
-msgid ""
-"Provide any comments or information concerning your child\\âs development "
-"that may be relevant to your child\\âs performance in the classroom or "
-"elsewhere? (Incorrect or withheld information may affect continued "
-"enrolment)."
-msgstr ""
-
 #: modules/Application Form/applicationForm.php:592
 #: modules/Application Form/applicationForm.php:592
 msgid "Student Education"
@@ -36558,7 +36540,7 @@ msgstr ""
 #: modules/Students/report_students_new.php:127
 msgid ""
 "This is useful for picking up students who are set to Full, have a start "
-"date but are not yet enrolled."
+"date but are not yet enroled."
 msgstr ""
 
 #: modules/Students/report_students_new.php:151
@@ -36718,7 +36700,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2141
 msgid ""
 "This report shows the current and historical activities that a student has "
-"enrolled in."
+"enroled in."
 msgstr ""
 
 #: modules/Students/student_view_details.php:2340
@@ -37960,11 +37942,6 @@ msgstr ""
 msgid "View spread of enrolment over terms and days by roll group"
 msgstr ""
 
-#: i18n/dbStringsForTranslation.php:582 i18n/dbStringsForTranslation.php:582
-msgid ""
-"View summary enrollment information for all activities in the current year."
-msgstr ""
-
 #: i18n/dbStringsForTranslation.php:583 i18n/dbStringsForTranslation.php:583
 msgid "View unassigned rooms by timetable."
 msgstr ""
@@ -38050,10 +38027,6 @@ msgstr ""
 msgid ""
 "UK-based standardised tests that provides scores in maths, verbal and non-"
 "verbal skills, as well as KS3 and GCSE predicted grades."
-msgstr ""
-
-#: functions.php:309 functions.php:330 functions.php:330
-msgid "Total Student Enrolment:"
 msgstr ""
 
 #: i18n/dbStringsForTranslation.php:1021 i18n/dbStringsForTranslation.php:1021
@@ -38447,4 +38420,29 @@ msgstr ""
 #: modules/User Admin/user_manage_edit.php:31
 #: modules/User Admin/user_manage_edit.php:31
 msgid "Edit User"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:582 i18n/dbStringsForTranslation.php:582
+msgid ""
+"View summary enrolment information for all activities in the current year."
+msgstr ""
+
+#: modules/Application Form/applicationForm.php:583
+#: modules/Application Form/applicationForm.php:583
+msgid ""
+"Provide any comments or information concerning your child's development that "
+"may be relevant to your child\\âs performance in the classroom or elsewhere? "
+"(Incorrect or withheld information may affect continued enrolment)."
+msgstr ""
+
+#: modules/User Admin/applicationForm_manage_edit.php:855
+#: modules/User Admin/applicationForm_manage_edit.php:855
+msgid ""
+"Provide any comments or information concerning your child's development that "
+"may be relevant to your childâs performance in the classroom or elsewhere? "
+"(Incorrect or withheld information may affect continued enrolment)."
+msgstr ""
+
+#: modules/User Admin/import_users.php:149
+msgid "Phone 1"
 msgstr ""

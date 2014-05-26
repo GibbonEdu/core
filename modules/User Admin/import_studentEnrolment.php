@@ -117,8 +117,8 @@ else {
 			<li><?php print _('The submitted file must have the following fields in the following order (all fields are required):') ?></li> 
 				<ol>
 					<li><b><?php print _('Username') ?></b> - <?php print _('Must be unique.') ?></li>
-					<li><b><?php print _('Roll Group') ?></b> - <?php print _('Roll group short name, as set in School Admim. Nust already exist.') ?></li>
-					<li><b><?php print _('Year Group') ?></b> - <?php print _('Year group short name, as set in School Admin. Mmust already exist.') ?></li>
+					<li><b><?php print _('Roll Group') ?></b> - <?php print _('Roll group short name, as set in School Admim. Must already exist.') ?></li>
+					<li><b><?php print _('Year Group') ?></b> - <?php print _('Year group short name, as set in School Admin. Must already exist') ?></li>
 				</ol>
 			</li>
 			<li><?php print _('Do not include a header row in the CSV files.') ?></li>

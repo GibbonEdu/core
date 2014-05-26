@@ -372,7 +372,7 @@ else {
 						//Report back
 						if ($enrolmentOK==false) {
 							print "<div class='warning'>" ;
-							print _("Student could not be enrolled, so this will have to be done manually at a later date.") ;
+							print _("Student could not be enroled, so this will have to be done manually at a later date.") ;
 							print "</div>" ;
 						}
 						else {
@@ -380,7 +380,7 @@ else {
 							print "Student Enrolment" ;
 							print "</h4>" ;
 							print "<ul>" ;
-								print "<li>" . _('The student has successfully been enrolled in the specified school year, year group and roll group.') . "</li>" ;
+								print "<li>" . _('The student has successfully been enroled in the specified school year, year group and roll group.') . "</li>" ;
 							print "</ul>" ;
 						}
 					}
@@ -1155,7 +1155,7 @@ else {
 					
 					if ($failStatus==true) {
 						print "<div class='error'>" ;
-						print _("Student status could not be updated:student is in the system, but acceptance has failed.") ;
+						print _("Student status could not be updated: student is in the system, but acceptance has failed.") ;
 						print "</div>" ;
 					}
 					else {

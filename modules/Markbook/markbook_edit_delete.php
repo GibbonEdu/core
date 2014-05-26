@@ -93,7 +93,7 @@ else {
 				
 					if ($row2["groupingID"]!="" AND $row2["gibbonPersonIDCreator"]!=$_SESSION[$guid]["gibbonPersonID"]) {
 						print "<div class='error'>" ;
-							print _("This column is part of a set of columns, and so can not be individually deleted.") ;
+							print _("This column is part of a set of columns, and so cannot be individually deleted.") ;
 						print "</div>" ;
 					}
 					else {

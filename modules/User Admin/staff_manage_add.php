@@ -106,7 +106,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print _('Initials') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Must unique if set.') ?></i></span>
+					<span style="font-size: 90%"><i><?php print _('Must be unique if set.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="initials" id="initials" maxlength=4 value="" type="text" style="width: 300px">
@@ -237,7 +237,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print _('Grouping') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Used for group staff when creating a staff directory.') ?></i></span>
+					<span style="font-size: 90%"><i><?php print _('Used to group staff when creating a staff directory.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="biographicalGrouping" id="biographicalGrouping" maxlength=100 value="" type="text" style="width: 300px">

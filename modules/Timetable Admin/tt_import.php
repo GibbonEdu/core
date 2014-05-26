@@ -491,7 +491,7 @@ else {
 						}
 						if ($rowCheckFail==true) {
 							print "<div class='error'>" ;
-								print sprintf(_('Row check failed. The following rows were in the import file but could not be found in Gibbon: %1$s. Add the days into Gibbon and then try the import again.'), substr($errorList, 0, -2)) ;
+								print sprintf(_('Row check failed. The following rows were in the import file but could not be found in Gibbon: %1$s. Add the rows into Gibbon and then try the import again.'), substr($errorList, 0, -2)) ;
 							print "</div>" ;
 						}
 						else if ($rowCheckFail==false) {
@@ -764,7 +764,7 @@ else {
 						}
 						if ($teacherSyncFail==true) {
 							print "<div class='error'>" ;
-								print sprintf(_('Teacher sync failed. The following classes (an possibly some others) had problems: %1$s.'), substr($errorList, 0, -2)) ;
+								print sprintf(_('Teacher sync failed. The following classes (and possibly some others) had problems: %1$s.'), substr($errorList, 0, -2)) ;
 							print "</div>" ;
 						}
 						else if ($teacherSyncFail==false) {
@@ -1029,7 +1029,7 @@ else {
 				print "</h4>" ;
 				if ($proceed==false) {
 					print "<div class='error'>" ;
-						print "<b><u>" . _('Your input was partially or entirely uncessful.') . "</u></b>" ;
+						print "<b><u>" . _('Your input was partially or entirely unsuccessful.') . "</u></b>" ;
 					print "</div>" ;
 				}		
 				else if ($proceed==true) {

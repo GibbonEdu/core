@@ -271,7 +271,7 @@ else {
 					print _("Set Expected Users To Full") ;
 					print "</h4>" ;
 					print "<p>" ;
-					print _("This step primes newcomers who have status set to \"Expected\" to be enrolled as students or added as staff (below).") ;
+					print _("This step primes newcomers who have status set to \"Expected\" to be enroled as students or added as staff (below).") ;
 					print "</p>" ;
 					
 					
@@ -349,7 +349,7 @@ else {
 					print _("Enrol New Students (Status Expected)") ;
 					print "</h4>" ;
 					print "<p>" ;
-					print _("Take students who are marked expected and enrol them. All parents of new students who are enroled below will have their status set to \"Full\". If a student is not enrolled, they will be set to \"Left\".") ;
+					print _("Take students who are marked expected and enrol them. All parents of new students who are enroled below will have their status set to \"Full\". If a student is not enroled, they will be set to \"Left\".") ;
 					print "</p>" ;
 					
 					if ($yearGroupOptions=="" OR $rollGroupOptions=="") {
@@ -436,7 +436,7 @@ else {
 					print _("Enrol New Students (Status Full)") ;
 					print "</h4>" ;
 					print "<p>" ;
-					print _("Take new students who are already set as full, but who were not enrolled last year, and enrol them. These students probably came through the Online Application form, and may already be enrolled in next year: if this is the case, their enrolment will be updated as per the information below. All parents of new students who are enroled below will have their status set to \"Full\". If a student is not enrolled, they will be set to \"Left\"") ;
+					print _("Take new students who are already set as full, but who were not enroled last year, and enrol them. These students probably came through the Online Application form, and may already be enroled in next year: if this is the case, their enrolment will be updated as per the information below. All parents of new students who are enroled below will have their status set to \"Full\". If a student is not enroled, they will be set to \"Left\"") ;
 					print "</p>" ;
 					
 					if ($yearGroupOptions=="" OR $rollGroupOptions=="") {
@@ -1551,7 +1551,7 @@ else {
 							}
 							else if ($success<$count) {
 								print "<div class='warning'>" ;
-								print sprintf(_('%1$s adds failed'), ($count-$success)) ;
+								print sprintf(_('%1$s adds failed.'), ($count-$success)) ;
 								print "</div>" ;
 							}
 							else {

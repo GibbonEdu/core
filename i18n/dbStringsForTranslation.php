@@ -45,8 +45,8 @@ _('Years, Days & Times') ;
 //gibbonAction - name
 _('Activity Choices by Student')
 _('Activity Choices by Student') ;
-_('Activity Enrollment Summary')
-_('Activity Enrollment Summary') ;
+_('Activity Enrolment Summary')
+_('Activity Enrolment Summary') ;
 _('Activity Spread by Roll Group')
 _('Activity Spread by Roll Group') ;
 _('Activity Type by Roll Group')
@@ -579,7 +579,7 @@ _('View items which are on loan and have exceeded their due date.') ;
 _('View resources') ;
 _('View space usage according to the timetable') ;
 _('View spread of enrolment over terms and days by roll group') ;
-_('View summary enrollment information for all activities in the current year.') ;
+_('View summary enrolment information for all activities in the current year.') ;
 _('View unassigned rooms by timetable.') ;
 _('View unassigned teachers by timetable.') ;
 _('View your own marks') ;

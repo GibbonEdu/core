@@ -2138,7 +2138,7 @@ else {
 						}
 						else {
 							print "<p>" ;
-							print _("This report shows the current and historical activities that a student has enrolled in.") ;
+							print _("This report shows the current and historical activities that a student has enroled in.") ;
 							print "</p>" ;
 
 							$dateType=getSettingByScope($connection2, 'Activities', 'dateType') ;

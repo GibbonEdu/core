@@ -354,7 +354,7 @@ else {
 									<select style="width: 302px" name="title" id="title">
 										<?php if ($required["title"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; } ?>
 										<option <?php if ($row["title"]=="Ms. ") {print "selected ";}?>value="Ms. "><?php print _('Ms.') ?></option>
-										<option <?php if ($row["title"]=="Miss ") {print "selected ";}?>value="Miss "><?php print _('Miss.') ?></option>
+										<option <?php if ($row["title"]=="Miss ") {print "selected ";}?>value="Miss "><?php print _('Miss') ?></option>
 										<option <?php if ($row["title"]=="Mr. ") {print "selected ";}?>value="Mr. "><?php print _('Mr.') ?></option>
 										<option <?php if ($row["title"]=="Mrs. ") {print "selected ";}?>value="Mrs. "><?php print _('Mrs.') ?></option>
 										<option <?php if ($row["title"]=="Dr. ") {print "selected ";}?>value="Dr. "><?php print _('Dr.') ?></option>

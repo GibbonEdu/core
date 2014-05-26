@@ -504,7 +504,7 @@ else {
 								//Spit out results
 								if ($updateFamilyFail==TRUE) {
 									print "<div class='error'>" ;
-										print _("There was an error parent:") . " " . $parent["username"] . "." ;
+										print _("There was an error updating parent:") . " " . $parent["username"] . "." ;
 									print "</div>" ;
 								}
 								else {

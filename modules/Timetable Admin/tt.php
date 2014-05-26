@@ -158,7 +158,7 @@ else {
 						print _("Year Groups") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Active?") ;
+						print _("Active") ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Actions") ;
