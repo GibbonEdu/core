@@ -89,7 +89,7 @@ $output.="<table cellspacing='0' style='width: 100%'>" ;
 		$output.="<td colspan=2 style='padding-top: 0px'>" ; 
 			$output.="<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formReset(); \$(\"." .$id . "resourceQuickSlider\").slideUp();'><img title='" . _('Close') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a></div>" ;
 			$output.="<h3 style='margin-top: 0px; font-size: 140%'>" . _('Quick Insert') . "</h3>" ;
-			$output.="<p>" . _('Use the form below to quickly add a resource to this field, without having to set up a shared resource in Gibbon. If the addition is successful, then it will be automatically inserted into your work above. <b>You are encourage to create shared resources whenever you think a resource might be useful to others.') . "</b></p>" ;
+			$output.="<p>" . _('Use the form below to quickly add a resource to this field, without having to set up a shared resource in Gibbon. If the addition is successful, then it will be automatically inserted into your work above. <b>You are encouraged to create shared resources whenever you think a resource might be useful to others.') . "</b></p>" ;
 			$output.="<form id='" . $id . "ajaxForm'>" ;
 				$output.="<table cellspacing='0' style='width: 100%'>" ;
 					$output.="<tr><td style='width: 30%'></td><td></td></tr>" ;

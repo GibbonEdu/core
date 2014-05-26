@@ -44,373 +44,189 @@ _('Years, Days & Times') ;
 
 //gibbonAction - name
 _('Activity Choices by Student')
-_('Activity Choices by Student') ;
 _('Activity Enrolment Summary')
-_('Activity Enrolment Summary') ;
 _('Activity Spread by Roll Group')
-_('Activity Spread by Roll Group') ;
 _('Activity Type by Roll Group')
-_('Activity Type by Roll Group') ;
 _('Age & Gender Summary')
-_('Age & Gender Summary') ;
 _('Application Form Settings')
-_('Application Form Settings') ;
 _('Apply')
-_('Apply') ;
 _('Assess')
-_('Assess') ;
 _('Attendance by Activity')
-_('Attendance by Activity') ;
 _('Attendance By Person')
-_('Attendance By Person') ;
 _('Attendance By Roll')
-_('Attendance By Roll') ;
 _('Browse The Library')
-_('Browse The Library') ;
 _('Catalog Summary')
-_('Catalog Summary') ;
 _('Class Enrolment by Roll Group')
-_('Class Enrolment by Roll Group') ;
 _('Copy Activities')
-_('Copy Activities') ;
 _('Course Enrolment by Class')
-_('Course Enrolment by Class') ;
 _('Course Enrolment by Person')
-_('Course Enrolment by Person') ;
 _('Data Updater Settings')
-_('Data Updater Settings') ;
 _('Edit Markbook') ;
-_('Edit Markbook_everything') ;
 _('Edit Markbook') ;
-_('Edit Markbook_multipleClassesAcrossSchool') ;
 _('Edit Markbook') ;
-_('Edit Markbook_multipleClassesInDepartment') ;
 _('Edit Markbook') ;
-_('Edit Markbook_singleClass') ;
 _('Emergency Data Summary')
-_('Emergency Data Summary') ;
 _('Emergency SMS by Transport')
-_('Emergency SMS by Transport') ;
 _('Emergency SMS by Year Group')
-_('Emergency SMS by Year Group') ;
 _('External Assessment Data') ;
-_('External Assessment Data_manage') ;
 _('External Assessment Data') ;
-_('External Assessment Data_view') ;
 _('External Assessment Settings')
-_('External Assessment Settings') ;
 _('Family Address by Student')
-_('Family Address by Student') ;
 _('Family Data Updates')
-_('Family Data Updates') ;
 _('Finance Data Updates')
-_('Finance Data Updates') ;
 _('Find Behaviour Patterns')
-_('Find Behaviour Patterns') ;
 _('Individual Needs Records') ;
-_('Individual Needs Records_view') ;
 _('Individual Needs Records') ;
-_('Individual Needs Records_viewContribute') ;
 _('Individual Needs Records') ;
-_('Individual Needs Records_viewEdit') ;
 _('Individual Needs Summary')
-_('Individual Needs Summary') ;
 _('Invoice & Receipt Settings')
-_('Invoice & Receipt Settings') ;
 _('Language Settings')
-_('Language Settings') ;
 _('Left Students')
-_('Left Students') ;
 _('Lending & Activity Log')
-_('Lending & Activity Log') ;
 _('Lesson Planner') ;
-_('Lesson Planner_viewAllEditMyClasses') ;
 _('Lesson Planner') ;
-_('Lesson Planner_viewEditAllClasses') ;
 _('Lesson Planner') ;
-_('Lesson Planner_viewMyChildrensClasses') ;
 _('Lesson Planner') ;
-_('Lesson Planner_viewMyClasses') ;
 _('Letters Home by Roll Group')
-_('Letters Home by Roll Group') ;
 _('Manage Activities')
-_('Manage Activities') ;
 _('Manage Activity Settings')
-_('Manage Activity Settings') ;
 _('Manage Alert Levels')
-_('Manage Alert Levels') ;
 _('Manage Applications')
-_('Manage Applications') ;
 _('Manage Behaviour Records') ;
-_('Manage Behaviour Records_all') ;
 _('Manage Behaviour Records') ;
-_('Manage Behaviour Records_my') ;
 _('Manage Behaviour Settings')
-_('Manage Behaviour Settings') ;
 _('Manage Billing Schedule')
-_('Manage Billing Schedule') ;
 _('Manage Catalog')
-_('Manage Catalog') ;
 _('Manage Columns')
-_('Manage Columns') ;
 _('Manage Courses & Classes')
-_('Manage Courses & Classes') ;
 _('Manage Days of the Week')
-_('Manage Days of the Week') ;
 _('Manage Departments')
-_('Manage Departments') ;
 _('Manage Districts')
-_('Manage Districts') ;
 _('Manage External Assessments')
-_('Manage External Assessments') ;
 _('Manage Families')
-_('Manage Families') ;
 _('Manage Fee Categories')
-_('Manage Fee Categories') ;
 _('Manage Fees')
-_('Manage Fees') ;
 _('Manage File Extensions')
-_('Manage File Extensions') ;
 _('Manage Grade Scales')
-_('Manage Grade Scales') ;
 _('Manage Houses')
-_('Manage Houses') ;
 _('Manage IN Descriptors')
-_('Manage IN Descriptors') ;
 _('Manage Invoicees')
-_('Manage Invoicees') ;
 _('Manage Invoices')
-_('Manage Invoices') ;
 _('Manage Library Settings')
-_('Manage Library Settings') ;
 _('Manage Medical Forms')
-_('Manage Medical Forms') ;
 _('Manage Messages') ;
-_('Manage Messages_all') ;
 _('Manage Messages') ;
-_('Manage Messages_my') ;
 _('Manage Modules')
-_('Manage Modules') ;
 _('Manage Outcomes') ;
-_('Manage Outcomes_viewAll') ;
 _('Manage Outcomes') ;
-_('Manage Outcomes_viewAllEditLearningArea') ;
 _('Manage Outcomes') ;
-_('Manage Outcomes_viewEditAll') ;
 _('Manage Permissions')
-_('Manage Permissions') ;
 _('Manage Planner Settings')
-_('Manage Planner Settings') ;
 _('Manage Resource Settings')
-_('Manage Resource Settings') ;
 _('Manage Resources') ;
-_('Manage Resources_all') ;
 _('Manage Resources') ;
-_('Manage Resources_my') ;
 _('Manage Roles')
-_('Manage Roles') ;
 _('Manage Roll Groups')
-_('Manage Roll Groups') ;
 _('Manage Rubrics') ;
-_('Manage Rubrics_viewAllEditLearningArea') ;
 _('Manage Rubrics') ;
-_('Manage Rubrics_viewEditAll') ;
 _('Manage School Years')
-_('Manage School Years') ;
 _('Manage SMS Settings')
-_('Manage SMS Settings') ;
 _('Manage Spaces')
-_('Manage Spaces') ;
 _('Manage Special Days')
-_('Manage Special Days') ;
 _('Manage Staff')
-_('Manage Staff') ;
 _('Manage Students Settings')
-_('Manage Students Settings') ;
 _('Manage Terms')
-_('Manage Terms') ;
 _('Manage Themes')
-_('Manage Themes') ;
 _('Manage Timetables')
-_('Manage Timetables') ;
 _('Manage Units') ;
-_('Manage Units_all') ;
 _('Manage Units') ;
-_('Manage Units_learningAreas') ;
 _('Manage User Settings')
-_('Manage User Settings') ;
 _('Manage Users')
-_('Manage Users') ;
 _('Manage Year Groups')
-_('Manage Year Groups') ;
 _('Markbook Settings')
-_('Markbook Settings') ;
 _('Markbook') ;
-_('Markbook_viewMyChildrensClasses') ;
 _('Medical Data Summary')
-_('Medical Data Summary') ;
 _('Medical Form Updates ')
-_('Medical Form Updates ') ;
 _('My Activities')
-_('My Activities') ;
 _('New Message') ;
-_('New Message_activities_any') ;
 _('New Message') ;
-_('New Message_activities_my') ;
 _('New Message') ;
-_('New Message_activities_parents') ;
 _('New Message') ;
-_('New Message_applicants') ;
 _('New Message') ;
-_('New Message_byEmail') ;
 _('New Message') ;
-_('New Message_byMessageWall') ;
 _('New Message') ;
-_('New Message_bySMS') ;
 _('New Message') ;
-_('New Message_classes_any') ;
 _('New Message') ;
-_('New Message_classes_my') ;
 _('New Message') ;
-_('New Message_classes_parents') ;
 _('New Message') ;
-_('New Message_courses_any') ;
 _('New Message') ;
-_('New Message_courses_my') ;
 _('New Message') ;
-_('New Message_courses_parents') ;
 _('New Message') ;
-_('New Message_fromSchool') ;
 _('New Message') ;
-_('New Message_houses_all') ;
 _('New Message') ;
-_('New Message_houses_my') ;
 _('New Message') ;
-_('New Message_individuals') ;
 _('New Message') ;
-_('New Message_role') ;
 _('New Message') ;
-_('New Message_rollGroups_any') ;
 _('New Message') ;
-_('New Message_rollGroups_my') ;
 _('New Message') ;
-_('New Message_rollGroups_parents') ;
 _('New Message') ;
-_('New Message_yearGroups_any') ;
 _('New Message') ;
-_('New Message_yearGroups_parents') ;
 _('New Students')
-_('New Students') ;
 _('Participants by Activity')
-_('Participants by Activity') ;
 _('Payment')
-_('Payment') ;
 _('Personal Data Updates ')
-_('Personal Data Updates ') ;
 _('Privacy Choices by Student')
-_('Privacy Choices by Student') ;
 _('Roll Group Summary')
-_('Roll Group Summary') ;
 _('Roll Groups Not Registered')
-_('Roll Groups Not Registered') ;
 _('Rollover')
-_('Rollover') ;
 _('Set Future Absence')
-_('Set Future Absence') ;
 _('Staff Gold Stars')
-_('Staff Gold Stars') ;
 _('Student Borrowing Record')
-_('Student Borrowing Record') ;
 _('Student Data Updater History')
-_('Student Data Updater History') ;
 _('Student Enrolment')
-_('Student Enrolment') ;
 _('Student History') ;
-_('Student History_all') ;
 _('Student History') ;
-_('Student History_myChildren') ;
 _('Student ID Cards ')
-_('Student ID Cards ') ;
 _('Student Transport')
-_('Student Transport') ;
 _('Students by Roll Group')
-_('Students by Roll Group') ;
 _('Students Not Onsite')
-_('Students Not Onsite') ;
 _('Students Not Present')
-_('Students Not Present') ;
 _('Sync Families')
-_('Sync Families') ;
 _('Sync Student Enrolment')
-_('Sync Student Enrolment') ;
 _('Sync Users')
-_('Sync Users') ;
 _('System Settings')
-_('System Settings') ;
 _('Tie Days To Dates')
-_('Tie Days To Dates') ;
 _('Update')
-_('Update') ;
 _('Update Family Data') ;
-_('Update Family Data_any') ;
 _('Update Family Data') ;
-_('Update Family Data_family') ;
 _('Update Finance Data') ;
-_('Update Finance Data_any') ;
 _('Update Finance Data') ;
-_('Update Finance Data_family') ;
 _('Update Medical Data') ;
-_('Update Medical Data_any') ;
 _('Update Medical Form') ;
-_('Update Medical Form_family') ;
 _('Update Personal Data') ;
-_('Update Personal Data_any') ;
 _('Update Personal Data') ;
-_('Update Personal Data_family') ;
 _('View Activities') ;
-_('View Activities_studentRegister') ;
 _('View Activities') ;
-_('View Activities_studentRegisterByParent') ;
 _('View Activities') ;
-_('View Activities_view') ;
 _('View Available Spaces')
-_('View Available Spaces') ;
 _('View Available Teachers')
-_('View Available Teachers') ;
 _('View Behaviour Records')
-_('View Behaviour Records') ;
 _('View Departments')
-_('View Departments') ;
 _('View Markbook') ;
-_('View Markbook_allClassesAllData') ;
 _('View Markbook') ;
-_('View Markbook_myMarks') ;
 _('View Message Wall')
-_('View Message Wall') ;
 _('View Overdue Items')
-_('View Overdue Items') ;
 _('View Resources')
-_('View Resources') ;
 _('View Roll Groups')
-_('View Roll Groups') ;
 _('View Rubrics')
-_('View Rubrics') ;
 _('View Staff Profile') ;
-_('View Staff Profile_brief') ;
 _('View Staff Profile') ;
-_('View Staff Profile_full') ;
 _('View Student Profile') ;
-_('View Student Profile_brief') ;
 _('View Student Profile') ;
-_('View Student Profile_full') ;
 _('View Student Profile') ;
-_('View Student Profile_myChildren') ;
 _('View Timetable by Person')
-_('View Timetable by Person') ;
 _('View Timetable by Space')
-_('View Timetable by Space') ;
 _('Work Summary by Roll Group')
-_('Work Summary by Roll Group') ;
 
 //gibbonAction - description
 _('A leaque table of staff gold stars...just for fun.') ;
@@ -935,15 +751,10 @@ _('Visual Arts SL') ;
 
 //gibbonExternalAssessmentField - category
 _('Target Grade') ;
-_('0_Target Grade') ;
 _('Final Grade') ;
-_('1_Final Grade') ;
 _('Scores') ;
-_('1_Scores') ;
 _('KS3 Target Grades') ;
-_('2_KS3 Target Grades') ;
 _('GCSE Target Grades') ;
-_('3_GCSE Target Grades') ;
 
 //gibbonFileExtension - type
 _('Document') ;
@@ -1122,7 +933,7 @@ _('User Admin') ;
 //gibbonModule - description
 _('A system for keeping track of marks') ;
 _('Allow users to update their family\'s data') ;
-_('Allows a school to issue invocies and track payments.') ;
+_('Allows a school to issue invoices and track payments.') ;
 _('Allows administrators to configure school settings.') ;
 _('Allows administrators to configure system settings.') ;
 _('Allows administrators to manage users.') ;
@@ -2063,4 +1874,5 @@ _('Y10') ;
 _('Y11') ;
 _('Y12') ;
 _('Y13') ;
+
 ?>

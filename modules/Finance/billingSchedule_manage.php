@@ -32,7 +32,7 @@ else {
 	print "</div>" ;
 	
 	print "<p>" ;
-	print _("The billing schedule allows you to layout your overall timing for issueing invoices, making it easier to specific due dates in bulk. Invoices can be issued outside of the billing schedule, should ad hoc invoices be required.") ;
+	print _("The billing schedule allows you to layout your overall timing for issueing invoices, making it easier to specify due dates in bulk. Invoices can be issued outside of the billing schedule, should ad hoc invoices be required.") ;
 	print "</p>" ;
 	
 	$gibbonSchoolYearID="" ;

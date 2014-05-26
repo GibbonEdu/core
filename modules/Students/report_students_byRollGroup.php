@@ -260,7 +260,7 @@ else {
 						if ($resultForm->rowCount()==1) {
 							$rowForm=$resultForm->fetch() ;
 							if ($rowForm["longTermMedication"]=='Y') {
-								print "<b><i>" . _('Long Term Medication<') . "/i></b>: " . $rowForm["longTermMedicationDetails"] . "<br/>" ;
+								print "<b><i>" . _('Long Term Medication') . "</i></b>: " . $rowForm["longTermMedicationDetails"] . "<br/>" ;
 							}
 							$condCount=1 ;
 							try {

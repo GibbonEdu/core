@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 else {
 	if ($_SESSION[$guid]["email"]=="") {
 		print "<div class='error'>" ;
-			print _("You do not have an email address set in Gibbon, and so cannot send out emails.") ;
+			print _("You do not have a personal email address set in Gibbon, and so cannot send out emails.") ;
 		print "</div>" ;
 	}
 	else {

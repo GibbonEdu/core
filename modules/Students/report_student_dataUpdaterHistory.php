@@ -34,7 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Student Data Updater History') . "</div>" ;
 	print "</div>" ;
 	print "<p>" ;
-	print _("This report allows a user to select a range of students and check whether or not they have had their personal and meidcal data updated after a specified date.") ;
+	print _("This report allows a user to select a range of students and check whether or not they have had their personal and medical data updated after a specified date.") ;
 	print "</p>" ;
 	
 	print "<h2>" ;

@@ -44,7 +44,7 @@ else {
 	
 		if ($highestAction=="Update Finance Data_any") {
 			print "<p>" ;
-			print _("This page allows a user to request selected finance data updates for any user. If a user does not appear in the list, please visit the Manage Invoicees page to create an missing students.") ;
+			print _("This page allows a user to request selected finance data updates for any user. If a user does not appear in the list, please visit the Manage Invoicees page to create any missing students.") ;
 			print "</p>" ;
 		}
 		else {

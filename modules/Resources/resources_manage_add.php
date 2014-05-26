@@ -134,7 +134,7 @@ else {
 						<select name="type" id="type" class='type' style="width: 302px">
 							<option value="Please select..."><?php print _('Please select...') ?></option>
 							<option id='type' name="type" value="File" /> <?php print _('File') ?>
-							<option id='type' name="type" value="HTML" /> <?php print _('HMTL') ?>
+							<option id='type' name="type" value="HTML" /> <?php print _('HTML') ?>
 							<option id='type' name="type" value="Link" /> <?php print _('Link') ?>
 						</select>
 						<script type="text/javascript">

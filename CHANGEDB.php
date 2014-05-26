@@ -455,7 +455,8 @@ UPDATE gibbonAction SET category='Assessment' WHERE category='ARR';end
 ALTER TABLE `gibbonPayment` CHANGE `paymentToken` `paymentToken` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL, CHANGE `paymentTransactionID` `paymentTransactionID` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL, CHANGE `paymentReceiptID` `paymentReceiptID` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;end
 UPDATE gibboni18n SET active='Y' WHERE code='en_US';end
 ALTER TABLE `gibboni18n` DROP `currencyCode`, DROP `currencySymbol`;end
-UPDATE `gibbonAction` SET `name` = 'Activity Enrolment Summary', `description` = 'View summary enrolment information for all activities in the current year.' WHERE `gibbonAction`.`gibbonActionID` = 0000709;end
+UPDATE `gibbonAction` SET `name` = 'Activity Enrolment Summary', `description` = 'View summary enrolment information for all activities in the current year.' WHERE `gibbonAction`.`name` = 'Activity Enrollment Summary';end
+UPDATE gibbonModule SET description='Allows a school to issue invoices and track payments.' WHERE name='Finance';end
 ";
 
 

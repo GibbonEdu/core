@@ -66,7 +66,7 @@ else {
 			$class="success" ;
 		}
 		if ($updateReturn=="success1") {
-			$updateReturnMessage=_("Your request was completed successfully., but one or more requested emails could not be sent.") ;	
+			$updateReturnMessage=_("Your request was completed successfully, but one or more requested emails could not be sent.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

@@ -1369,7 +1369,7 @@ else {
 							print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 								print "<tr>" ;
 									print "<td style='width: 33%; vertical-align: top'>" ;
-										print "<span style='font-size: 115%; font-weight: bold'>" . _('Long Term Medication?') . "</span><br/>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>" . _('Long Term Medication') . "</span><br/>" ;
 										if ($rowMedical["longTermMedication"]=="") {
 											print "<i>" . _('Unknown') . "</i>" ;
 										}
@@ -2591,7 +2591,7 @@ else {
 								$include=$_SESSION[$guid]["absolutePath"] . "/modules/" . $options["sourceModuleName"] . "/" . $options["sourceModuleInclude"] ;
 								if (!file_exists($include)) {
 									print "<div class='error'>" ;
-										print _("The selected page cannot be display due to a hook error.") ;
+										print _("The selected page cannot be displayed due to a hook error.") ;
 									print "</div>" ;
 								}
 								else {
@@ -2692,9 +2692,9 @@ else {
 						$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					}
 					
-					//T&L MENU ITEMS
+					//LEARNING MENU ITEMS
 					if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activityChoices_byStudent.php") OR isActionAccessible($guid, $connection2, "/modules/Individual Needs/in_view.php") OR isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php") OR isActionAccessible($guid, $connection2, "/modules/Planner/planner_edit.php") OR isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full.php")) {
-						$_SESSION[$guid]["sidebarExtra"].="<h4>" . _('T&L') . "</h4>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<h4>" . _('Learning') . "</h4>" ;
 						$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activityChoices_byStudent.php")) {
 							$style="" ;

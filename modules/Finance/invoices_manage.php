@@ -40,7 +40,7 @@ else {
 			$class="success" ;
 		}
 		if ($issueReturn=="success1") {
-			$issueReturnMessage=_("Your request was completed successfully., but one or more requested emails could not be sent.") ;	
+			$issueReturnMessage=_("Your request was completed successfully, but one or more requested emails could not be sent.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -82,7 +82,7 @@ else {
 			$class="success" ;
 		}
 		if ($bulkReturn=="success1") {
-			$issueReturnMessage=_("Your request was completed successfully., but one or more requested emails could not be sent.") ;	
+			$issueReturnMessage=_("Your request was completed successfully, but one or more requested emails could not be sent.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -91,7 +91,7 @@ else {
 	}
 	
 	print "<p>" ;
-		print _("This section allows you to generate, view, edit and delete invoices, either for an individual or in bulk. You can use the filters below to pick up certain invoices types (e.g. those that are overdue) or view all invoices types for a particular user. Invoices, reminders and receipts can be send out using the Email function, shown in the right-hand side menu.") . "<br/>" ;
+		print _("This section allows you to generate, view, edit and delete invoices, either for an individual or in bulk. You can use the filters below to pick up certain invoices types (e.g. those that are overdue) or view all invoices for a particular user. Invoices, reminders and receipts can be sent out using the Email function, shown in the right-hand side menu.") . "<br/>" ;
 		print "<br/>" ;
 		print _("When you create invoices using the billing schedule or pre-defined fee features, the invoice will remain linked to these areas whilst pending. Thus, changes made to the billing schedule and pre-defined fees will be reflected in any pending invoices. Once invoices are issued, this link is removed, and the values are fixed at the levels when the invoice was issued.") ;
 	print "</p>" ;
@@ -448,7 +448,7 @@ else {
 			print "</h3>" ;
 			
 			print "<div class='linkTop' style='text-align: right'>" ;
-				print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='" . _('Ad New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a><br/>" ;
+				print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a><br/>" ;
 			print "</div>" ;
 			
 			print "<div class='error'>" ;

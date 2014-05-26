@@ -64,7 +64,7 @@ else {
 	}
 	
 	print "<p>" ;
-		print _("Inactive languages are not yet ready for use within the system as they are still under development. They cannot be set to default, not selected by users.") ;
+		print _("Inactive languages are not yet ready for use within the system as they are still under development. They cannot be set to default, nor selected by users.") ;
 	print "</p>" ;
 	
 	if ($result->rowCount()<1) {

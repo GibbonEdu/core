@@ -256,7 +256,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print _('Home Language') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('The primary language used in the student\'s home.<') ?>/i></span>
+					<span style="font-size: 90%"><i><?php print _('The primary language used in the student\'s home.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="languageHome" id="languageHome" maxlength=30 value="" type="text" style="width: 300px">
@@ -1497,7 +1497,7 @@ else {
 													<option <?php if ($rowRelationships["gender"]=="F") { print "selected" ; } ?> value="Mother"><?php print _('Mother') ?></option>
 													<option <?php if ($rowRelationships["gender"]=="M") { print "selected" ; } ?> value="Father"><?php print _('Father') ?></option>
 													<option value="Step-Mother"><?php print _('Step-Mother') ?></option>
-													<option value="Step-Father"><?php print _('Step-Father<') ?>/option>
+													<option value="Step-Father"><?php print _('Step-Father') ?></option>
 													<option value="Adoptive Parent"><?php print _('Adoptive Parent') ?></option>
 													<option value="Guardian"><?php print _('Guardian') ?></option>
 													<option value="Grandmother"><?php print _('Grandmother') ?></option>
