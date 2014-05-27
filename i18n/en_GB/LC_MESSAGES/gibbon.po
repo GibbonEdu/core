@@ -1515,7 +1515,7 @@ msgstr ""
 #: installer/install.php:216 installer/install.php:1059
 #: modules/Markbook/markbook_view.php:1222 installer/install.php:951
 #: installer/install.php:132 installer/install.php:216
-#: installer/install.php:951 modules/Activities/activities_copy.php:110
+#: installer/install.php:938 modules/Activities/activities_copy.php:110
 #: modules/Activities/activities_manage.php:79
 #: modules/Activities/activities_manage_add.php:611
 #: modules/Activities/activities_manage_edit.php:797
@@ -1907,7 +1907,7 @@ msgstr ""
 #: installer/install.php:835 installer/install.php:128
 #: installer/install.php:211 installer/install.php:1050
 #: installer/install.php:942 installer/install.php:128
-#: installer/install.php:211 installer/install.php:942
+#: installer/install.php:211 installer/install.php:929
 #: modules/Activities/activities_copy.php:106
 #: modules/Activities/activities_manage_add.php:606
 #: modules/Activities/activities_manage_edit.php:793
@@ -2688,7 +2688,7 @@ msgstr ""
 #: index.php:342 modules/Staff/staff_view_details.php:314 index.php:340
 #: installer/install.php:421 i18n/dbStringsForTranslation.php:1650
 #: i18n/dbStringsForTranslation.php:1650 index.php:340
-#: installer/install.php:421 modules/Application Form/applicationForm.php:517
+#: installer/install.php:408 modules/Application Form/applicationForm.php:517
 #: modules/Application Form/applicationForm.php:1349
 #: modules/Data Updater/data_personal.php:672
 #: modules/Library/report_viewOverdueItems.php:59
@@ -7192,13 +7192,13 @@ msgstr ""
 
 #: index.php:1466 index.php:1469 index.php:1475 installer/install.php:1127
 #: installer/install.php:1148 index.php:1473 installer/install.php:1403
-#: installer/install.php:1300 index.php:1473 installer/install.php:1300
+#: installer/install.php:1300 index.php:1473 installer/install.php:1287
 msgid "Powered by"
 msgstr ""
 
 #: index.php:1467 index.php:1470 index.php:1477 installer/install.php:1129
 #: installer/install.php:1150 index.php:1475 installer/install.php:1405
-#: installer/install.php:1302 index.php:1475 installer/install.php:1302
+#: installer/install.php:1302 index.php:1475 installer/install.php:1289
 msgid "Created under the"
 msgstr ""
 
@@ -7889,7 +7889,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:425
 #: modules/Students/student_view_details.php:878 functions.php:867
 #: functions.php:888 installer/install.php:433 installer/install.php:434
-#: functions.php:888 installer/install.php:434
+#: functions.php:888 installer/install.php:421
 #: modules/Application Form/applicationForm.php:903
 #: modules/Staff/staff_view_details.php:207
 #: modules/Students/report_students_left.php:142
@@ -7916,7 +7916,7 @@ msgstr ""
 #: Admin/applicationForm_manage_accept.php:1020 Admin/user_manage_add.php:264
 #: Admin/user_manage_password.php:124 functions.php:875 functions.php:879
 #: functions.php:900 installer/install.php:472 functions.php:900
-#: installer/install.php:472
+#: installer/install.php:459
 #: modules/User Admin/applicationForm_manage_accept.php:321
 #: modules/User Admin/applicationForm_manage_accept.php:857
 #: modules/User Admin/applicationForm_manage_accept.php:1020
@@ -11453,8 +11453,8 @@ msgstr ""
 #: Admin/systemSettings.php:1117 installer/install.php:745
 #: installer/install.php:811 installer/install.php:960
 #: installer/install.php:1026 installer/install.php:852
-#: installer/install.php:918 installer/install.php:852
-#: installer/install.php:918 modules/Activities/activities_copy.php:84
+#: installer/install.php:918 installer/install.php:839
+#: installer/install.php:905 modules/Activities/activities_copy.php:84
 #: modules/Activities/activities_view_register.php:348
 #: modules/Application Form/applicationForm.php:220
 #: modules/Application Form/applicationForm.php:603
@@ -11661,8 +11661,8 @@ msgstr ""
 #: Admin/systemSettings.php:1139 installer/install.php:762
 #: installer/install.php:828 installer/install.php:977
 #: installer/install.php:1043 installer/install.php:869
-#: installer/install.php:935 installer/install.php:869
-#: installer/install.php:935 modules/Activities/activities_copy.php:100
+#: installer/install.php:935 installer/install.php:856
+#: installer/install.php:922 modules/Activities/activities_copy.php:100
 #: modules/Activities/activities_view_register.php:371
 #: modules/Application Form/applicationForm.php:226
 #: modules/Application Form/applicationForm.php:620
@@ -11916,8 +11916,7 @@ msgstr ""
 #: Admin/applicationForm_manage_edit.php:1224 Admin/user_manage_add.php:125
 #: Admin/user_manage_edit.php:188 Form/applicationForm.php:182
 #: Form/applicationForm.php:923 Form/applicationForm.php:1102
-#: installer/install.php:409 installer/install.php:409
-#: modules/Application Form/applicationForm.php:182
+#: installer/install.php:409 modules/Application Form/applicationForm.php:182
 #: modules/Application Form/applicationForm.php:923
 #: modules/Application Form/applicationForm.php:1102
 #: modules/Data Updater/data_personal.php:412
@@ -14053,7 +14052,7 @@ msgstr ""
 #: modules/School Admin/rollGroup_manage_delete.php:31
 #: modules/School Admin/rollGroup_manage_edit.php:31
 msgid "Manage Roll Groups"
-msgstr "Manage For Groups"
+msgstr "Manage Form Groups"
 
 #: modules/School Admin/rollGroup_manage.php:130 modules/Roll
 #: Groups/rollGroups.php:60 modules/Roll Groups/rollGroups.php:60
@@ -14972,7 +14971,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:349 Admin/systemSettings.php:65
 #: Admin/systemSettings.php:101 installer/install.php:302
 #: installer/install.php:303 installer/install.php:518
-#: i18n/dbStringsForTranslation.php:197 installer/install.php:518
+#: i18n/dbStringsForTranslation.php:197 installer/install.php:505
 #: modules/System Admin/systemSettings.php:65
 #: modules/System Admin/systemSettings.php:101
 msgid "System Settings"
@@ -14981,7 +14980,7 @@ msgstr ""
 #: modules/System Admin/systemSettings.php:279 Admin/systemSettings.php:295
 #: Admin/systemSettings.php:301 installer/install.php:463
 #: Admin/systemSettings.php:292 installer/install.php:465
-#: installer/install.php:680 installer/install.php:680
+#: installer/install.php:680 installer/install.php:667
 #: modules/System Admin/systemSettings.php:292
 msgid "Organisation Settings"
 msgstr ""
@@ -15009,7 +15008,7 @@ msgstr ""
 #: installer/install.php:720 modules/Staff/staff_view_details.php:360
 #: Admin/systemSettings.php:680 Admin/systemSettings.php:981
 #: installer/install.php:722 installer/install.php:937
-#: installer/install.php:829 installer/install.php:829
+#: installer/install.php:829 installer/install.php:816
 #: modules/Application Form/applicationForm.php:1982
 #: modules/Data Updater/data_personal.php:1573
 #: modules/Staff/staff_view_details.php:360
@@ -15032,7 +15031,7 @@ msgstr ""
 #: Admin/systemSettings.php:797 installer/install.php:672
 #: Admin/systemSettings.php:788 installer/install.php:674
 #: installer/install.php:889 installer/install.php:781
-#: installer/install.php:781 modules/System Admin/systemSettings.php:788
+#: installer/install.php:768 modules/System Admin/systemSettings.php:788
 msgid "gibbonedu.com Value-Added Services"
 msgstr ""
 
@@ -17397,7 +17396,7 @@ msgstr ""
 #: Updater/data_personal.php:411 modules/Students/student_view_details.php:342
 #: modules/Students/student_view_details.php:515
 #: Admin/applicationForm_manage_edit_print.php:188 installer/install.php:408
-#: installer/install.php:408 modules/Application Form/applicationForm.php:181
+#: modules/Application Form/applicationForm.php:181
 #: modules/Application Form/applicationForm.php:922
 #: modules/Application Form/applicationForm.php:1101
 #: modules/Data Updater/data_personal.php:411
@@ -21454,8 +21453,7 @@ msgstr ""
 #: modules/User Admin/user_manage_add.php:51 Admin/user_manage_password.php:54
 #: modules/Finance/billingSchedule_manage_add.php:51
 #: installer/install.php:1125 installer/install.php:1012
-#: installer/install.php:1012
-#: modules/Finance/billingSchedule_manage_add.php:51
+#: installer/install.php:999 modules/Finance/billingSchedule_manage_add.php:51
 #: modules/User Admin/user_manage_add.php:51
 #: modules/User Admin/user_manage_password.php:54
 msgid "Your request failed because your passwords did not match."
@@ -21490,7 +21488,7 @@ msgid "Controls what a user can do and see."
 msgstr ""
 
 #: modules/User Admin/user_manage_add.php:226 installer/install.php:434
-#: installer/install.php:435 installer/install.php:435
+#: installer/install.php:435 installer/install.php:422
 #: modules/User Admin/user_manage_add.php:226
 msgid "Must be unique. System login name. Cannot be changed."
 msgstr ""
@@ -21499,8 +21497,8 @@ msgstr ""
 #: Admin/user_manage_add.php:283 Admin/user_manage_password.php:135
 #: Admin/user_manage_password.php:139 Admin/user_manage_password.php:143
 #: installer/install.php:483 installer/install.php:487
-#: installer/install.php:491 installer/install.php:483
-#: installer/install.php:487 installer/install.php:491
+#: installer/install.php:491 installer/install.php:470
+#: installer/install.php:474 installer/install.php:478
 #: modules/User Admin/user_manage_add.php:275
 #: modules/User Admin/user_manage_add.php:279
 #: modules/User Admin/user_manage_add.php:283
@@ -21512,7 +21510,7 @@ msgstr ""
 
 #: modules/User Admin/user_manage_add.php:295
 #: Admin/user_manage_password.php:155 installer/install.php:503
-#: installer/install.php:503 modules/User Admin/user_manage_add.php:295
+#: installer/install.php:490 modules/User Admin/user_manage_add.php:295
 #: modules/User Admin/user_manage_password.php:155
 msgid "Confirm Password"
 msgstr ""
@@ -38758,7 +38756,7 @@ msgid "Database Password"
 msgstr ""
 
 #: installer/install.php:423 installer/install.php:425
-#: installer/install.php:640 installer/install.php:640
+#: installer/install.php:640 installer/install.php:627
 msgid "Not recommended for non-experts!."
 msgstr ""
 
@@ -38790,7 +38788,7 @@ msgstr ""
 #: installer/install.php:864 installer/install.php:227
 #: installer/install.php:244 installer/install.php:1080
 #: installer/install.php:972 installer/install.php:227
-#: installer/install.php:244 installer/install.php:972
+#: installer/install.php:244 installer/install.php:959
 #, php-format
 msgid ""
 "A database connection could not be established. Please %1$stry again%2$s."
@@ -38815,14 +38813,14 @@ msgstr ""
 
 #: installer/install.php:293 installer/install.php:336
 #: installer/install.php:1143 installer/install.php:1030
-#: installer/install.php:336 installer/install.php:1030
+#: installer/install.php:336 installer/install.php:1017
 msgid ""
 "Errors occurred in populating the database; empty your database, remove ../"
 "config.php and try again."
 msgstr ""
 
 #: installer/install.php:891 installer/install.php:1118
-#: installer/install.php:1005 installer/install.php:1005
+#: installer/install.php:1005 installer/install.php:992
 msgid ""
 "Some required fields have not been set, and so installation cannot proceed."
 msgstr ""
@@ -38838,7 +38836,7 @@ msgstr ""
 #: installer/install.php:1116 installer/install.php:1126
 #: installer/install.php:1369 installer/install.php:1379
 #: installer/install.php:1266 installer/install.php:1276
-#: installer/install.php:1266 installer/install.php:1276
+#: installer/install.php:1253 installer/install.php:1263
 #, php-format
 msgid ""
 "It is also advisable to follow the %1$sPost-Install and Server Config "
@@ -38854,33 +38852,33 @@ msgid ""
 msgstr ""
 
 #: installer/install.php:1123 installer/install.php:1376
-#: installer/install.php:1273 installer/install.php:1273
+#: installer/install.php:1273 installer/install.php:1260
 msgid ""
 "As you are running cutting edge code, it is recommended that after logging "
 "in, you go to Admin > System Admin > Update, and run any updates."
 msgstr ""
 
 #: installer/install.php:1136 installer/install.php:1391
-#: installer/install.php:1288 installer/install.php:1288
+#: installer/install.php:1288 installer/install.php:1275
 msgid "Welcome To Gibbon"
 msgstr ""
 
 #: installer/install.php:1138 installer/install.php:1393
-#: installer/install.php:1290 installer/install.php:1290
+#: installer/install.php:1290 installer/install.php:1277
 msgid ""
 "Created by teachers, Gibbon is the school platform which solves real "
 "problems faced by educators every day."
 msgstr ""
 
 #: installer/install.php:1140 installer/install.php:1395
-#: installer/install.php:1292 installer/install.php:1292
+#: installer/install.php:1292 installer/install.php:1279
 msgid ""
 "Free, open source and flexible, Gibbon can morph to meet the needs of a huge "
 "range of schools."
 msgstr ""
 
 #: installer/install.php:1142 installer/install.php:1397
-#: installer/install.php:1294 installer/install.php:1294
+#: installer/install.php:1294 installer/install.php:1281
 #, php-format
 msgid "For support, please visit %1$sgibbonedu.org%2$s."
 msgstr ""
@@ -38895,7 +38893,7 @@ msgid "User Account"
 msgstr ""
 
 #: installer/install.php:1367 installer/install.php:1264
-#: installer/install.php:1264
+#: installer/install.php:1251
 #, php-format
 msgid ""
 "Some settings did not save. The system may work, but you may need to remove "
@@ -38904,7 +38902,7 @@ msgid ""
 msgstr ""
 
 #: installer/install.php:1374 installer/install.php:1271
-#: installer/install.php:1271
+#: installer/install.php:1258
 #, php-format
 msgid ""
 "Congratulations, your installation is complete. Feel free to %1$sgo to your "
@@ -38954,6 +38952,7 @@ msgstr ""
 msgid "Phone 1"
 msgstr ""
 
+#: modules/Messenger/messenger_post.php:111
 #: modules/Messenger/messenger_post.php:111
 msgid "Deliver this message to user's primaryemail account?"
 msgstr ""
