@@ -405,19 +405,6 @@ include "../functions.php" ;
 														</tr>
 														<tr>
 															<td> 
-																<b><?php print _('Preferred Name') ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php print _('Most common name, alias, nickname, etc.') ?></i></span>
-															</td>
-															<td class="right">
-																<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" style="width: 300px">
-																<script type="text/javascript">
-																	var preferredName=new LiveValidation('preferredName');
-																	preferredName.add(Validate.Presence);
-																 </script>
-															</td>
-														</tr>
-														<tr>
-															<td> 
 																<b><?php print _('Email') ?> *</b><br/>
 															</td>
 															<td class="right">
@@ -978,7 +965,7 @@ include "../functions.php" ;
 									$title=$_POST["title"] ; 	
 									$surname=$_POST["surname"] ;
 									$firstName=$_POST["firstName"] ;
-									$preferredName=$_POST["preferredName"] ;
+									$preferredName=$_POST["firstName"] ;
 									$username=$_POST["username"] ;
 									$password=$_POST["password"] ;
 									$passwordConfirm=$_POST["passwordConfirm"] ;
