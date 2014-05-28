@@ -130,14 +130,14 @@ else {
 		
 		//Check to see if there are any updates
 		include "./CHANGEDB.php" ;
-		$versionMax=$sql[(count($sql)-1)][0] ;
+		$versionMax=$sql[(count($sql))][0] ;
+		$sqlTokens=explode(";end", $sql[(count($sql))][1]) ;
+		$versionMaxLinesMax=(count($sqlTokens)-1) ;	
 		$update=FALSE ;
 		if ($versionMax>$versionDB) {
 			$update=TRUE ;
 		}
 		else {
-			$sqlTokens=explode(";end", $sql[(count($sql))][1]) ;
-			$versionMaxLinesMax=(count($sqlTokens)-1) ;
 			if ($versionMaxLinesMax>$cuttingEdgeCodeLine) {
 				$update=TRUE ;
 			}

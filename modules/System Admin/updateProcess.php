@@ -112,14 +112,14 @@ else {
 		$cuttingEdgeCodeLine=getSettingByScope( $connection2, "System", "cuttingEdgeCodeLine" ) ;
 		
 		include "../../CHANGEDB.php" ;
-		$versionMax=$sql[(count($sql)-1)][0] ;
+		$versionMax=$sql[(count($sql))][0] ;
+		$sqlTokens=explode(";end", $sql[(count($sql))][1]) ;
+		$versionMaxLinesMax=(count($sqlTokens)-1) ;	
 		$update=FALSE ;
 		if ($versionMax>$versionDB) {
 			$update=TRUE ;
 		}
 		else {
-			$sqlTokens=explode(";end", $sql[(count($sql))][1]) ;
-			$versionMaxLinesMax=(count($sqlTokens)-1) ;
 			if ($versionMaxLinesMax>$cuttingEdgeCodeLine) {
 				$update=TRUE ;
 			}
@@ -134,7 +134,7 @@ else {
 		else { //Let's do it
 			if ($versionMax>$versionDB) { //At least one whole verison needs to be done
 				foreach ($sql AS $version) {
-					$tokenCount=0 ;				
+					$tokenCount=0 ;		
 					if ($version[0]>=$versionDB AND $version[0]<=$versionCode) {
 						$sqlTokens=explode(";end", $version[1]) ;
 						if ($version[0]==$versionDB) { //Finish current version

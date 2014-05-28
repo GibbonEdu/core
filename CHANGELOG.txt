@@ -16,6 +16,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v8.0.01
+-------
+General: fixed intermittent login notice issue
+	Edited login.php
+
+Planner: fixed PHP notice issue in unit edit
+	Edited file /modules/Planner/units_editProcess.php
+
+Planner: improved unit dump to show lessons in all classes
+	Edited file /modules/Planner/units_dump.php
+
+General: fixed cutting edge update code to work between versions (within versions seemed to be working fine)
+	Edited files /modules/System Admin/update*.php
+
 v8.0.00
 -------
 User Admin: exposed hidden-by-default Manage Districts setting

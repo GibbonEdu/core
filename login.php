@@ -198,7 +198,7 @@ else {
 					$_SESSION[$guid]["gibboni18nIDPersonal"]=$row["gibboni18nIDPersonal"] ;
 					
 					//Allow for non-system default language to be specified from login form
-					if ($_POST["gibboni18nID"]!=$_SESSION[$guid]["i18n"]["gibboni18nID"]) {
+					if (@$_POST["gibboni18nID"]!=$_SESSION[$guid]["i18n"]["gibboni18nID"]) {
 						try {
 							$dataLanguage=array("gibboni18nID"=>$_POST["gibboni18nID"]); 
 							$sqlLanguage="SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID" ; 

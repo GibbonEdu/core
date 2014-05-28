@@ -459,5 +459,9 @@ UPDATE `gibbonAction` SET `name` = 'Activity Enrolment Summary', `description` =
 UPDATE gibbonModule SET description='Allows a school to issue invoices and track payments.' WHERE name='Finance';end
 ";
 
+//v8.0.01
+$count++ ;
+$sql[$count][0]="8.0.01" ;
+$sql[$count][1]="" ;
 
 ?>

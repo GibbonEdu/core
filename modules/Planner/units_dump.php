@@ -186,50 +186,50 @@ else {
 								print "</div>" ;
 							}
 							else {
-								$rowClass=$resultClass->fetch() ;
-								
-								print "<p>" . _('Displaying lessons from class:') . " " . $row["courseName"] . "." . $rowClass["nameShort"] . "</p>" ;
+								while ($rowClass=$resultClass->fetch()) {
+									print "<h3>" . _('Displaying lessons from class:') . " " . $row["courseName"] . "." . $rowClass["nameShort"] . "</h3>" ;
 									
-								try {
-									$dataLessons=array("gibbonCourseClassID"=>$rowClass["gibbonCourseClassID"], "gibbonUnitID"=>$gibbonUnitID); 
-									$sqlLessons="SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID" ;
-									$resultLessons=$connection2->prepare($sqlLessons) ;
-									$resultLessons->execute($dataLessons) ;
-								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ;
-								}	
-								
-								if ($resultLessons->rowCount()<1) {
-									print "<div class='warning'>" ;
-									print _("There are no records to display.") ;
-									print "</div>" ;
-								}
-								else {
-									while ($rowLessons=$resultLessons->fetch()) {
-										print "<h4>" . $rowLessons["name"] . "</h4>" ;
-										print $rowLessons["description"] ;
+									try {
+										$dataLessons=array("gibbonCourseClassID"=>$rowClass["gibbonCourseClassID"], "gibbonUnitID"=>$gibbonUnitID); 
+										$sqlLessons="SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID" ;
+										$resultLessons=$connection2->prepare($sqlLessons) ;
+										$resultLessons->execute($dataLessons) ;
+									}
+									catch(PDOException $e) { 
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
+									}	
+									
+									if ($resultLessons->rowCount()<1) {
+										print "<div class='warning'>" ;
+										print _("There are no records to display.") ;
+										print "</div>" ;
+									}
+									else {
+										while ($rowLessons=$resultLessons->fetch()) {
+											print "<h4>" . $rowLessons["name"] . "</h4>" ;
+											print $rowLessons["description"] ;
 										
-										try {
-											$dataBlock=array("gibbonPlannerEntryID"=>$rowLessons["gibbonPlannerEntryID"]); 
-											$sqlBlock="SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber" ; 
-											$resultBlock=$connection2->prepare($sqlBlock);
-											$resultBlock->execute($dataBlock);
-										}
-										catch(PDOException $e) { 
-											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-										}
+											try {
+												$dataBlock=array("gibbonPlannerEntryID"=>$rowLessons["gibbonPlannerEntryID"]); 
+												$sqlBlock="SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber" ; 
+												$resultBlock=$connection2->prepare($sqlBlock);
+												$resultBlock->execute($dataBlock);
+											}
+											catch(PDOException $e) { 
+												print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+											}
 							
-										while ($rowBlock=$resultBlock->fetch()) {
-											print "<h5 style='font-size: 85%'>" . $rowBlock["title"] . "</h5>" ;
-											print "<p>" ;
-											print "<b>" . _('Type') . "</b>: " . $rowBlock["type"] . "<br/>" ;
-											print "<b>" . _('Length') . "</b>: " . $rowBlock["length"] . "<br/>" ;
-											print "<b>" . _('Contents') . "</b>: " . $rowBlock["contents"] . "<br/>" ;
-											print "<b>" . _('Teacher\'s Notes') . "</b>: " . $rowBlock["teachersNotes"] . "<br/>" ;
-											print "</p>" ;
-										}
+											while ($rowBlock=$resultBlock->fetch()) {
+												print "<h5 style='font-size: 85%'>" . $rowBlock["title"] . "</h5>" ;
+												print "<p>" ;
+												print "<b>" . _('Type') . "</b>: " . $rowBlock["type"] . "<br/>" ;
+												print "<b>" . _('Length') . "</b>: " . $rowBlock["length"] . "<br/>" ;
+												print "<b>" . _('Contents') . "</b>: " . $rowBlock["contents"] . "<br/>" ;
+												print "<b>" . _('Teacher\'s Notes') . "</b>: " . $rowBlock["teachersNotes"] . "<br/>" ;
+												print "</p>" ;
+											}
 										
+										}
 									}
 								}
 							}

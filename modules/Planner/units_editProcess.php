@@ -197,7 +197,10 @@ else {
 						}
 						
 						//Update blocks
-						$order=$_POST["order"] ;
+						$order="" ;
+						if (isset($_POST["order"])) {
+							$order=$_POST["order"] ;
+						}
 						$sequenceNumber=0 ;
 						$dataRemove=array() ;
 						$whereRemove="" ;
