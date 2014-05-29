@@ -169,7 +169,9 @@ else {
 						print $row["status"] ;
 					print "</td>" ;
 					print "<td>" ;
-						print _($row["name"]) ;
+						if ($row["name"]!="") {
+							print _($row["name"]) ;
+						}
 					print "</td>" ;
 					print "<td>" ;
 						print $row["username"] ;
