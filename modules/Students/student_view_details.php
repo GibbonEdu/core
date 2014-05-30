@@ -1614,6 +1614,7 @@ else {
 								$entryCount=0 ;
 								
 								$and="" ;
+								$dataList=array() ;
 								$filter=NULL ;
 								if (isset($_GET["filter"])) {
 									$filter=$_GET["filter"] ;
@@ -1625,7 +1626,8 @@ else {
 									$filter=$_SESSION[$guid]["gibbonSchoolYearID"] ;
 								}
 								if ($filter!="*") {
-									$and=" AND gibbonSchoolYearID='$filter'" ;
+									$dataList["filter"]=$filter ;
+									$and.=" AND gibbonSchoolYearID=:filter" ;
 								}
 								
 								$filter2=NULL ;
@@ -1636,7 +1638,8 @@ else {
 									$filter2=$_POST["filter2"] ;
 								}
 								if ($filter2!="") {
-									$and.=" AND gibbonDepartmentID='$filter2'" ;
+									$dataList["filter2"]=$filter2 ;
+									$and.=" AND gibbonDepartmentID=:filter2" ;
 								}
 								
 								print "<p>" ;
@@ -1729,7 +1732,7 @@ else {
 								
 								//Get class list
 								try {
-									$dataList=array("gibbonPersonID"=>$gibbonPersonID); 
+									$dataList["gibbonPersonID"]=$gibbonPersonID ; 
 									$sqlList="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID $and ORDER BY course, class" ;
 									$resultList=$connection2->prepare($sqlList);
 									$resultList->execute($dataList);

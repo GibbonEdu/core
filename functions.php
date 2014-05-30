@@ -1536,14 +1536,14 @@ function mainMenu($connection2, $guid) {
 	
 	try {
 		$data=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]); 
-		$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) ORDER BY category, name";
+		$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) ORDER BY (gibbonModule.category = 'Other') ASC, category, name";
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
 	catch(PDOException $e) { 
-		$output.="<ul id='nav'>" ;
-		$output.="<li class='active'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" . _('Home') . "</a></li>" ;
-		$output.="</ul>" ;
+		$output.="<div class='error'>" ;
+		$output.=$e->getMessage() ;
+		$output.="</div>" ;	
 	}
 	
 	if ($result->rowCount()<1) {
