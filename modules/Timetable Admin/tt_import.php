@@ -930,16 +930,28 @@ else {
 								
 								$addFail=false ;
 								try {
-									$sqlRow="(SELECT gibbonTTColumnRowID FROM gibbonTTDay JOIN gibbonTTColumn ON (gibbonTTColumn.gibbonTTColumnID=gibbonTTDay.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE gibbonTTDay.name='" . $row["dayName"] . "' AND gibbonTTColumnRow.name='" . $row["rowName"] . "' AND gibbonTTDay.gibbonTTID=$gibbonTTID)" ;
-									$resultRow=$connection2->query($sqlRow); 
-									$sqlDay="(SELECT gibbonTTDayID FROM gibbonTTDay WHERE name='" . $row["dayName"] . "' AND gibbonTTID=$gibbonTTID)" ;
-									$resultDay=$connection2->query($sqlDay); 
-									$sqlClass="(SELECT gibbonCourseClassID FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.nameShort='" . $row["courseNameShort"] . "' AND gibbonCourseClass.nameShort='" . $row["classNameShort"] . "' AND gibbonSchoolYearID=$gibbonSchoolYearID)" ;
-									$resultClass=$connection2->query($sqlClass); 
-									$sqlSpace="(SELECT gibbonSpaceID FROM gibbonSpace WHERE name='" . $row["spaceName"] . "')" ;
-									$resultSpace=$connection2->query($sqlSpace);   
+									$dataRow=array("name1"=>$row["dayName"], "name2"=>$row["rowName"], "gibbonTTID"=>$gibbonTTID); 
+									$sqlRow="(SELECT gibbonTTColumnRowID FROM gibbonTTDay JOIN gibbonTTColumn ON (gibbonTTColumn.gibbonTTColumnID=gibbonTTDay.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE gibbonTTDay.name=:name1 AND gibbonTTColumnRow.name=:name2 AND gibbonTTDay.gibbonTTID=:gibbonTTID)" ;
+									$resultRow=$connection2->prepare($sqlRow);
+									$resultRow->execute($dataRow);
+									
+									$dataDay=array("name"=>$row["dayName"], "gibbonTTID"=>$gibbonTTID); 
+									$sqlDay="(SELECT gibbonTTDayID FROM gibbonTTDay WHERE name=:name AND gibbonTTID=:gibbonTTID)" ;
+									$resultDay=$connection2->prepare($sqlDay);
+									$resultDay->execute($dataDay);
+									
+									$dataClass=array("nameShort1"=>$row["courseNameShort"], "nameShort2"=>$row["classNameShort"], "gibbonSchoolYearID"=>$gibbonSchoolYearID); 
+									$sqlClass="(SELECT gibbonCourseClassID FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.nameShort=:nameShort1 AND gibbonCourseClass.nameShort=:nameShort2 AND gibbonSchoolYearID=:gibbonSchoolYearID)" ;
+									$resultClass=$connection2->prepare($sqlClass);
+									$resultClass->execute($dataClass);
+									
+									$dataSpace=array("name"=>$row["spaceName"]); 
+									$sqlSpace="(SELECT gibbonSpaceID FROM gibbonSpace WHERE name=:name)" ;
+									$resultSpace=$connection2->prepare($sqlSpace);
+									$resultSpace->execute($dataSpace);  
 								}
 								catch(PDOException $e) { 
+									print $e->getMessage() ;
 									$ttSyncFail=true ;
 									$proceed=false ;
 									$addFail=true ;

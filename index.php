@@ -431,11 +431,12 @@ else {
 										
 												$_SESSION[$guid]["messageWallCount"]=0 ;
 												if ($resultPosts->rowCount()>0) {
+													$count=0 ;
 													$output=array() ;
 													$last="" ;
 													while ($rowPosts=$resultPosts->fetch()) {
 														if ($last==$rowPosts["gibbonMessengerID"]) {
-															$output[($count-1)]["source"]=$output[($count-1)]["source"] . "<br/>" .$rowPosts["source"] ;
+															@$output[($count-1)]["source"]=$output[($count-1)]["source"] . "<br/>" .$rowPosts["source"] ;
 														}
 														else {
 															$output[$_SESSION[$guid]["messageWallCount"]]["photo"]=$rowPosts["image_75"] ;
@@ -447,6 +448,7 @@ else {
 															$_SESSION[$guid]["messageWallCount"]++ ;
 															$last=$rowPosts["gibbonMessengerID"] ;
 														}	
+														$count++ ;
 													}
 												}
 											}
