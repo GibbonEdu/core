@@ -940,7 +940,7 @@ include "../functions.php" ;
 														</tr>
 													</table>
 												</form>
-												<?
+												<?php
 											}
 										}
 									}
