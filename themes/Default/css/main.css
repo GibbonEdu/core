@@ -985,6 +985,12 @@ div.ui-datepicker-header {
 	border: none ;
 }
 
+td.hiddenReveal, div.hiddenReveal {
+	background: none; 
+	background-color: #333;
+}
+
+/* Timetable styles */
 th.ttCalendarBar {
 	vertical-align: top; 
 	width: 100%; 
@@ -992,8 +998,62 @@ th.ttCalendarBar {
 	background-image: none!important; 
 	background-color: #f2f2f2!important
 }
-
-td.hiddenReveal, div.hiddenReveal {
-	background: none; 
-	background-color: #333;
+span.ttSchoolCalendar {
+	color: #fff;
+	font-weight: bold; 
+	margin: 0px -2px 0px 5px; 
+	background-color: rgb(51,153,0); 
+	padding: 5px 7px; 
+	border: 1px solid #555
 }
+div.ttSchoolCalendar {
+	background-color: rgb(51,153,0) ;
+	color: #fff; 
+	font-weight: bold ;
+}
+span.ttPersonalCalendar {
+	color: #fff;
+	font-weight: bold; 
+	margin: 0px -2px 0px 5px; 
+	background-color: rgb(103,153,207); 
+	padding: 5px 7px; 
+	border: 1px solid #555;
+}
+div.ttPersonalCalendar {
+	background-color: rgb(103,153,207); 
+	color: #fff; 
+	font-weight: bold ;
+}
+
+div.ttClosure {
+	border: 1px solid rgb(136,136,136);
+	background-color: rgb(255,196,202);
+	color: rgb(255,0,0); 
+	border: 1px solid rgb(136,136,136) ;
+}
+div.ttGeneric {
+	background-color: rgb(238,238,238);
+	color: rgb(0,0,0); 
+	border: 1px solid rgb(136,136,136) ;
+}
+div.ttCurrent {
+	background-color: rgb(179,239,194) ;
+	color: rgb(0,0,0); 
+	border: 1px solid rgb(136,136,136) ;
+}
+div.ttLesson {
+	background-color: rgb(238,238,238);
+	color: rgb(136,136,136) ;
+	border: 1px solid rgb(136,136,136) ;
+}
+div.ttPeriod {
+	color: rgb(0,0,0);
+	border: 1px solid rgb(136,136,136) ;
+	background-color: rgb(150,190,234) ;
+}
+div.ttPeriodCurrent {
+	color: rgb(0,0,0);
+	border: 1px solid rgb(136,136,136) ;
+	background-color: rgb(179, 239, 194) ;
+}
+
