@@ -474,7 +474,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 			//Spit out controls for displaying calendars
 			if ($self==TRUE AND ($_SESSION[$guid]["calendarFeed"]!="" OR $_SESSION[$guid]["calendarFeedPersonal"]!="")) {
 				$output.="<tr class='head' style='height: 37px;'>" ;
-					$output.="<th colspan=" . ($daysInWeek+1) . " style='vertical-align: top; width: 100%; text-align: right; background: none!important; background-color: #f2f2f2!important'>" ;
+					$output.="<th class='ttCalendarBar' colspan=" . ($daysInWeek+1) . ">" ;
 						$output.="<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "' style='padding: 5px 5px 0 0'>" ;
 							if ($_SESSION[$guid]["calendarFeed"]!="") {
 								$checked="" ;

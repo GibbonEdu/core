@@ -20,5 +20,5 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 /**
  * Sets version information
  */
-$version="8.0.02" ;
+$version="8.0.03" ;
 ?>

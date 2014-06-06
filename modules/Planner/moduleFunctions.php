@@ -111,7 +111,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 		<?php
 	}
 	?>
-	<div style='background-color: #EDF7FF; border: 1px solid #d8dcdf; margin: 0 0 5px' id="block<?php print $i ?>" style='padding: 0px'>
+	<div class='hiddenReaveal' style='border: 1px solid #d8dcdf; margin: 0 0 5px' id="block<?php print $i ?>" style='padding: 0px'>
 		<table class='blank' cellspacing='0' style='width: 100%'>
 			<tr>
 				<td style='width: 50%'>
@@ -693,7 +693,7 @@ function makeBlockOutcome($guid,  $i, $type="", $gibbonOutcomeID="", $title="", 
 				
 			});
 		</script>
-		<div style='background-color: #EDF7FF; border: 1px solid #d8dcdf; margin: 0 0 5px' id="<?php print $type ?>Block<?php print $i ?>" style='padding: 0px'>
+		<div class='hiddenReaveal' style='border: 1px solid #d8dcdf; margin: 0 0 5px' id="<?php print $type ?>Block<?php print $i ?>" style='padding: 0px'>
 			<table class='blank' cellspacing='0' style='width: 100%'>
 				<tr>
 					<td style='width: 50%'>

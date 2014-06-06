@@ -335,11 +335,11 @@ else {
 						</td>
 					</tr>
 					<tr id="roleRow">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Select Roles') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="roles[]" id="roles[]" multiple style="width: 302px; height: 100px">
 								<?php
 								try {
@@ -393,11 +393,11 @@ else {
 						</td>
 					</tr>
 					<tr id="yearGroupRow">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Select Year Groups') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="yearGroups[]" id="yearGroups[]" multiple style="width: 302px; height: 100px">
 								<?php
 								try {
@@ -415,10 +415,10 @@ else {
 						</td>
 					</tr>
 					<tr id="yearGroupRow3">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Include staff?') ?></b><br/>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="yearGroupsStaff" id="yearGroupsStaff" style="width: 302px">
 								<?php
 								print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -428,10 +428,10 @@ else {
 						</td>
 					</tr>
 					<tr id="yearGroupRow4">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Include students?') ?></b><br/>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="yearGroupsStudents" id="yearGroupsStudents" style="width: 302px">
 								<?php
 								print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -444,10 +444,10 @@ else {
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_parents")) {
 						?>
 						<tr id="yearGroupRow2">
-							<td style='background: none; background-color: #EDF7FF;'> 
+							<td class='hiddenReveal'> 
 								<b><?php print _('Include parents?') ?></b><br/>
 							</td>
-							<td style='background: none; background-color: #EDF7FF;' class="right">
+							<td class="hiddenReveal right">
 								<select name="yearGroupsParents" id="yearGroupsParents" style="width: 302px">
 									<?php
 									print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -494,11 +494,11 @@ else {
 						</td>
 					</tr>
 					<tr id="rollGroupRow">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Select Roll Groups') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="rollGroups[]" id="rollGroups[]" multiple style="width: 302px; height: 100px">
 								<?php
 								try {
@@ -528,10 +528,10 @@ else {
 						</td>
 					</tr>
 					<tr id="rollGroupRow3">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Include staff?') ?></b><br/>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="rollGroupsStaff" id="rollGroupsStaff" style="width: 302px">
 								<?php
 								print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -541,10 +541,10 @@ else {
 						</td>
 					</tr>
 					<tr id="rollGroupRow4">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Include student?') ?></b><br/>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="rollGroupsStudents" id="rollGroupsStudents" style="width: 302px">
 								<?php
 								print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -557,10 +557,10 @@ else {
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_parents")) {
 						?>
 						<tr id="rollGroupRow2">
-							<td style='background: none; background-color: #EDF7FF;'> 
+							<td class='hiddenReveal'> 
 								<b><?php print _('Include parents?') ?></b><br/>
 							</td>
-							<td style='background: none; background-color: #EDF7FF;' class="right">
+							<td class="hiddenReveal right">
 								<select name="rollGroupsParents" id="rollGroupsParents" style="width: 302px">
 									<?php
 									print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -607,11 +607,11 @@ else {
 						</td>
 					</tr>
 					<tr id="courseRow">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Select Courses') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="courses[]" id="courses[]" multiple style="width: 302px; height: 100px">
 								<?php
 								try {
@@ -635,10 +635,10 @@ else {
 						</td>
 					</tr>
 					<tr id="courseRow3">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Include staff?') ?></b><br/>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="coursesStaff" id="coursesStaff" style="width: 302px">
 								<?php
 								print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -648,10 +648,10 @@ else {
 						</td>
 					</tr>
 					<tr id="courseRow4">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Include students?') ?></b><br/>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="coursesStudents" id="coursesStudents" style="width: 302px">
 								<?php
 								print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -664,10 +664,10 @@ else {
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_parents")) {
 						?>
 						<tr id="courseRow2">
-							<td style='background: none; background-color: #EDF7FF;'> 
+							<td class='hiddenReveal'> 
 								<b><?php print _('Include parents?') ?></b><br/>
 							</td>
-							<td style='background: none; background-color: #EDF7FF;' class="right">
+							<td class="hiddenReveal right">
 								<select name="coursesParents" id="coursesParents" style="width: 302px">
 									<?php
 									print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -714,11 +714,11 @@ else {
 						</td>
 					</tr>
 					<tr id="classRow">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Select Classes') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="classes[]" id="classes[]" multiple style="width: 302px; height: 100px">
 								<?php
 								try {
@@ -742,10 +742,10 @@ else {
 						</td>
 					</tr>
 					<tr id="classRow3">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Include staff?') ?></b><br/>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="classesStaff" id="classesStaff" style="width: 302px">
 								<?php
 								print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -755,10 +755,10 @@ else {
 						</td>
 					</tr>
 					<tr id="classRow4">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Include students?') ?></b><br/>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="classesStudents" id="classesStudents" style="width: 302px">
 								<?php
 								print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -771,10 +771,10 @@ else {
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_parents")) {
 						?>
 						<tr id="classRow2">
-							<td style='background: none; background-color: #EDF7FF;'> 
+							<td class='hiddenReveal'> 
 								<b><?php print _('Include parents?') ?></b><br/>
 							</td>
-							<td style='background: none; background-color: #EDF7FF;' class="right">
+							<td class="hiddenReveal right">
 								<select name="classesParents" id="classesParents" style="width: 302px">
 									<?php
 									print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -821,11 +821,11 @@ else {
 						</td>
 					</tr>
 					<tr id="activitiesRow">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Select Activities') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' activities="right">
+						<td class="hiddenReveal right">
 							<select name="activities[]" id="activities[]" multiple style="width: 302px; height: 100px">
 								<?php
 								try {
@@ -855,10 +855,10 @@ else {
 						</td>
 					</tr>
 					<tr id="activitiesRow3">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Include staff?') ?></b><br/>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' activities="right">
+						<td class="hiddenReveal right">
 							<select name="activitiesStaff" id="activitiesStaff" style="width: 302px">
 								<?php
 								print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -868,10 +868,10 @@ else {
 						</td>
 					</tr>
 					<tr id="activitiesRow4">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Include students?') ?></b><br/>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' activities="right">
+						<td class="hiddenReveal right">
 							<select name="activitiesStudents" id="activitiesStudents" style="width: 302px">
 								<?php
 								print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -884,10 +884,10 @@ else {
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_parents")) {
 						?>
 						<tr id="activitiesRow2">
-							<td style='background: none; background-color: #EDF7FF;'> 
+							<td class='hiddenReveal'> 
 								<b><?php print _('Include parents?') ?></b><br/>
 							</td>
-							<td style='background: none; background-color: #EDF7FF;' activities="right">
+							<td class="hiddenReveal right">
 								<select name="activitiesParents" id="activitiesParents" style="width: 302px">
 									<?php
 									print "<option value='Y'>" . _('Yes') . "</option>" ;
@@ -925,11 +925,11 @@ else {
 						</td>
 					</tr>
 					<tr id="applicantsRow">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Select Years') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="applicantList[]" id="applicantList[]" multiple style="width: 302px; height: 100px">
 								<?php
 								try {
@@ -974,11 +974,11 @@ else {
 						</td>
 					</tr>
 					<tr id="housesRow">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Select Houses') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="houseList[]" id="houseList[]" multiple style="width: 302px; height: 100px">
 								<?php
 								try {
@@ -1030,11 +1030,11 @@ else {
 						</td>
 					</tr>
 					<tr id="individualsRow">
-						<td style='background: none; background-color: #EDF7FF;'> 
+						<td class='hiddenReveal'> 
 							<b><?php print _('Select Individuals') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
-						<td style='background: none; background-color: #EDF7FF;' class="right">
+						<td class="hiddenReveal right">
 							<select name="individualList[]" id="individualList[]" multiple style="width: 302px; height: 100px">
 								<?php
 								try {

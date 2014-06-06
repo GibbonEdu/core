@@ -579,7 +579,7 @@ else {
 													print "</form>" ;
 												print "</div>" ;
 											}
-											print "<div id='smartView' style='background-color: #EDF7FF'>" ;
+											print "<div id='smartView' class='hiddenReaveal'>" ;
 												print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_smartProcess.php'>" ;
 													$blockCount=0 ;
 													while ($rowBlocksView=$resultBlocksView->fetch()) {

@@ -16,6 +16,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v8.0.03
+-------
+General: improved theme-ability
+	Edited file /themes/Default/css/main.css
+	Edited various module files
+
 v8.0.02
 -------
 Installer: fixed PHP shortcode which stopped installation in some environments

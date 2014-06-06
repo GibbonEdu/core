@@ -984,3 +984,16 @@ div.ui-datepicker-header {
 	border-radius: 0px ;
 	border: none ;
 }
+
+th.ttCalendarBar {
+	vertical-align: top; 
+	width: 100%; 
+	text-align: right!important; 
+	background-image: none!important; 
+	background-color: #f2f2f2!important
+}
+
+td.hiddenReveal, div.hiddenReveal {
+	background: none; 
+	background-color: #333;
+}
