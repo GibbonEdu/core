@@ -108,7 +108,9 @@ else {
 						print "</td>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
-						print "<i>" . _($row["yearGroup"]) . "</i>" ;
+						if ($row["yearGroup"]!="") {
+							print "<i>" . _($row["yearGroup"]) . "</i>" ;
+						}
 					print "</td>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;

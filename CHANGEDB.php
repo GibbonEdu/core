@@ -474,5 +474,10 @@ $count++ ;
 $sql[$count][0]="8.0.03" ;
 $sql[$count][1]="" ;
 
+//v8.0.04
+$count++ ;
+$sql[$count][0]="8.0.04" ;
+$sql[$count][1]="" ;
+
 
 ?>

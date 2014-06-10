@@ -16,6 +16,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v8.0.04
+-------
+Timetable Admin: fixed I18N issue with blank strings
+	Edited file /modules/Timetable Admin/courseEnrolment_manage_byPerson.php
+	Edited file /modules/Timetable/tt_view.php
+
 v8.0.03
 -------
 General: improved theme-ability
