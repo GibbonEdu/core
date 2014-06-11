@@ -22,6 +22,15 @@ Timetable Admin: fixed I18N issue with blank strings
 	Edited file /modules/Timetable Admin/courseEnrolment_manage_byPerson.php
 	Edited file /modules/Timetable/tt_view.php
 
+General: added interface for parents to upload a profile image
+	Edited file /index.php
+	New files /index_parentPhotoDeleteProcess.php, index_parentPhotoUploadProcess.php
+	Edited file /modules/Students/student_view_details.php
+	
+General: fixed redirect error if session times out and user uses student/staff fast finder
+	Edited file /indexFindRedirect.php
+	
+
 v8.0.03
 -------
 General: improved theme-ability

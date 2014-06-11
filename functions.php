@@ -333,6 +333,87 @@ function getStudentFastFinder($connection2, $guid) {
 	return $output ;
 }
 
+function getParentPhotoUploader($connection2, $guid) {
+	$output=FALSE ;
+	
+	$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
+	if ($category=="Parent") {
+		$output.="<h2 style='margin-bottom: 10px'>" ;
+			$output.="Profile Photo" ;
+		$output.="</h2>" ;
+		
+		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
+		$deleteReturnMessage="" ;
+		$class="error" ;
+		if (!($deleteReturn=="")) {
+			if ($deleteReturn=="fail1") {
+				$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			}
+			else if ($deleteReturn=="fail2") {
+				$deleteReturnMessage=_("Your request failed due to a database error.") ;	
+			}
+			else if ($deleteReturn=="success0") {
+				$deleteReturnMessage=_("Your request was completed successfully.") ;		
+				$class="success" ;
+			}
+			$output.="<div class='$class'>" ;
+				$output.=$deleteReturnMessage;
+			$output.="</div>" ;
+		} 
+		
+		if (isset($_GET["uploadReturn"])) { $uploadReturn=$_GET["uploadReturn"] ; } else { $uploadReturn="" ; }
+		$uploadReturnMessage="" ;
+		$class="error" ;
+		if (!($uploadReturn=="")) {
+			if ($uploadReturn=="fail1") {
+				$uploadReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			}
+			else if ($uploadReturn=="fail2") {
+				$uploadReturnMessage=_("Your request failed due to a database error.") ;	
+			}
+			else if ($uploadReturn=="success0") {
+				$uploadReturnMessage=_("Your request was completed successfully.") ;		
+				$class="success" ;
+			}
+			$output.="<div class='$class'>" ;
+				$output.=$uploadReturnMessage;
+			$output.="</div>" ;
+		}
+		
+		if ($_SESSION[$guid]["image_240"]=="") { //No photo, so show uploader
+			$output.="<p>" ;
+				$output.=_("Please upload a passport photo to use as a profile picture.") . " " . _('240px by 320px') . "." ;
+			$output.="</p>" ;
+			$output.="<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index_parentPhotoUploadProcess.php?gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] . "' enctype='multipart/form-data'>" ;
+				$output.="<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
+					$output.="<tr>" ;
+						$output.="<td style='vertical-align: top'>" ; 
+							$output.="<input type=\"file\" name=\"file1\" id=\"file1\" style='width: 165px'><br/><br/>" ;
+							$output.="<script type=\"text/javascript\">" ;
+								$output.="var file1=new LiveValidation('file1');" ;
+								$output.="file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: \"Illegal file type!\", partialMatch: true, caseSensitive: false } );" ;
+							$output.="</script>" ;
+						$output.="</td>" ;
+						$output.="<td class='right' style='vertical-align: top'>" ;
+							$output.="<input style='height: 27px; width: 20px!important; margin-top: 0px;' type='submit' value='" . _('Go') . "'>" ;
+						$output.="</td>" ;
+					$output.="</tr>" ;
+				$output.="</table>" ;
+			$output.="</form>" ;
+		}
+		else { //Photo, so show image and removal link
+			$output.="<p>" ;
+				$output.=getUserPhoto($guid, $_SESSION[$guid]["image_240"], 240) ;
+				$output.="<div style='margin-left: 220px; margin-top: -50px'>" ;
+					$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index_parentPhotoDeleteProcess.php?gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] . "' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
+				$output.="</div>" ;
+			$output.="</p>" ;
+		}
+	}
+	
+	return $output ;
+}
+
 function getAlert($connection2, $gibbonAlertLevelID) {
 	$output=FALSE; 
 	
@@ -1075,6 +1156,14 @@ function sidebar($connection2, $guid) {
 	//Show student and staff quick finder
 	if ($_SESSION[$guid]["address"]=="" AND isset($_SESSION[$guid]["username"])) {
 		$sidebar=getStudentFastFinder($connection2, $guid) ;
+		if ($sidebar!=FALSE) {
+			print $sidebar ;
+		}
+	}
+	
+	//Show parent photo uploader
+	if ($_SESSION[$guid]["address"]=="" AND isset($_SESSION[$guid]["username"])) {
+		$sidebar=getParentPhotoUploader($connection2, $guid) ;
 		if ($sidebar!=FALSE) {
 			print $sidebar ;
 		}

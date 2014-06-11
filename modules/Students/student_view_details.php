@@ -997,12 +997,13 @@ else {
 									print "</h4>" ;
 									print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 										print "<tr>" ;
-											print "<td style='width: 33%; vertical-align: top'>" ;
-												print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
-												print formatName($rowMember["title"], $rowMember["preferredName"], $rowMember["surname"], "Parent") ;
+											print "<td style='width: 33%; vertical-align: top' rowspan=2>" ;
+												print getUserPhoto($guid, $rowMember["image_75"], 75) ;
 											print "</td>" ;
 											print "<td style='width: 33%; vertical-align: top'>" ;
-												print "<span style='font-size: 115%; font-weight: bold'>" . _('Relationship') . "</span><br/>" ;
+												print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
+												print formatName($rowMember["title"], $rowMember["preferredName"], $rowMember["surname"], "Parent") . "<br/>" ;
+												print "<div style='font-size: 85%; font-style: italic'>" ;
 													try {
 														$dataRelationship=array("gibbonPersonID1"=>$rowMember["gibbonPersonID"], "gibbonPersonID2"=>$gibbonPersonID, "gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
 														$sqlRelationship="SELECT * FROM gibbonFamilyRelationship WHERE gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2 AND gibbonFamilyID=:gibbonFamilyID" ;
@@ -1017,8 +1018,9 @@ else {
 														print $rowRelationship["relationship"] ;
 													}
 													else {
-														print "<i>" . _('Unknown') . "</i>" ;
+														print "<i>" . _('Relationaship Unknown') . "</i>" ;
 													}
+												print "</div>" ;
 											print "</td>" ;
 											print "<td style='width: 34%; vertical-align: top' colspan=2>" ;
 												print "<span style='font-size: 115%; font-weight: bold'>" . _('Contact Priority') . "</span><br/>" ;
@@ -1033,10 +1035,6 @@ else {
 											print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 												print "<span style='font-size: 115%; font-weight: bold'>" . _('Second Language') . "</span><br/>" ;
 												print $rowMember["languageSecond"] ;
-											print "</td>" ;
-											print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-												print "<span style='font-size: 115%; font-weight: bold'>" . _('Third Language') . "</span><br/>" ;
-												print $rowMember["languageThird"] ;
 											print "</td>" ;
 										print "</tr>" ;
 										print "<tr>" ;
