@@ -423,7 +423,7 @@ else {
 												}
 												print $row["type"] ;
 												if ($row["attachment"]!="" AND file_exists($_SESSION[$guid]["absolutePath"] . "/" . $row["attachment"])) {
-													print " | <a style='color: #ffffff' 'title='" . _('Download more information') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["attachment"] . "'>More info</a>"; 
+													print " | <a 'title='" . _('Download more information') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["attachment"] . "'>More info</a>"; 
 												}
 												print "</span><br/>" ;
 												if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php")) {

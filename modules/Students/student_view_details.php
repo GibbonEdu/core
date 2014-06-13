@@ -2674,7 +2674,7 @@ else {
 					
 					//ARR MENU ITEMS
 					if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php") OR isActionAccessible($guid, $connection2, "/modules/External Assessment/externalAssessment_details.php")) {
-						$_SESSION[$guid]["sidebarExtra"].="<h4>" . _('ARR') . "</h4>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<h4>" . _('Assessment') . "</h4>" ;
 						$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php")) {
 							$style="" ;
