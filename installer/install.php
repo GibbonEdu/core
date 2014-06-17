@@ -987,7 +987,7 @@ include "../functions.php" ;
 									$gibboneduComOrganisationName=$_POST["gibboneduComOrganisationName"] ;
 									$gibboneduComOrganisationKey=$_POST["gibboneduComOrganisationKey"] ;
 								
-									if ($title=="" OR $surname=="" OR $firstName=="" OR $preferredName=="" OR $email=="" OR $username=="" OR $password=="" OR $passwordConfirm=="" OR $email=="" OR $absoluteURL=="" OR $absolutePath=="" OR $systemName=="" OR $organisationName=="" OR $organisationNameShort=="" OR $timezone=="" OR $country=="" OR $primaryAssessmentScale=="" OR $installType=="" OR $statsCollection=="" OR $cuttingEdgeCode=="") {
+									if ($surname=="" OR $firstName=="" OR $preferredName=="" OR $email=="" OR $username=="" OR $password=="" OR $passwordConfirm=="" OR $email=="" OR $absoluteURL=="" OR $absolutePath=="" OR $systemName=="" OR $organisationName=="" OR $organisationNameShort=="" OR $timezone=="" OR $country=="" OR $primaryAssessmentScale=="" OR $installType=="" OR $statsCollection=="" OR $cuttingEdgeCode=="") {
 										print "<div class='error'>" ;
 											print _("Some required fields have not been set, and so installation cannot proceed.") ;
 										print "</div>" ;
