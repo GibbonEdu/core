@@ -198,7 +198,7 @@ else {
 									break ;
 								}
 								
-								//Unlock the activityStudent database table
+								//Unlock locked database tables
 								try {
 									$sql="UNLOCK TABLES" ;
 									$result=$connection2->query($sql);   
@@ -293,7 +293,7 @@ else {
 										catch(PDOException $e) { }
 									}
 								}
-								//Unlock the activityStudent database table
+								//Unlock locked database tables
 								try {
 									$sql="UNLOCK TABLES" ;
 									$result=$connection2->query($sql);   

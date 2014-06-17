@@ -185,12 +185,12 @@ else {
 				}
 			}
 			$max_input_vars=ini_get('max_input_vars') ;
-			if ($totalCount>$max_input_vars) {
+			if (($totalCount*2)>$max_input_vars) {
 				print "<tr>" ;
 					print "<td colspan='6'>" ;	
 						print "<div class='error'>" ;
 						print "php.ini max_input_vars=" . $max_input_vars . "<br />";
-						print _("Number of inputs on this page") . "=" . $totalCount . "<br/>";
+						print _("Number of inputs on this page") . "=" . ($totalCount*2) . "<br/>";
 						print _("This form is very large and data will be truncated unless you edit php.ini. Add the line <i>max_input_vars=5000</i> to your php.ini file on your server.") ;
 						print "</div>" ;	
 					print "</td>" ;

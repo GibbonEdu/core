@@ -95,7 +95,7 @@ else {
 			$AI=str_pad($rowAI['Auto_increment'], 8, "0", STR_PAD_LEFT) ;
 			$partialFail=FALSE ; 
 			
-			//Unlock the activityStudent database table
+			//Unlock locked database tables
 			try {
 				$sql="UNLOCK TABLES" ;
 				$result=$connection2->query($sql);   

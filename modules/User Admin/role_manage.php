@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/role_manage.php
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Role') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Roles') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -41,6 +41,32 @@ else {
 		}
 		print "<div class='$class'>" ;
 			print $deleteReturnMessage;
+		print "</div>" ;
+	} 
+	
+	if (isset($_GET["duplicateReturn"])) { $duplicateReturn=$_GET["duplicateReturn"] ; } else { $duplicateReturn="" ; }
+	$duplicateReturnMessage="" ;
+	$class="error" ;
+	if (!($duplicateReturn=="")) {
+		if ($duplicateReturn=="fail0") {
+			$duplicateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+		}
+		else if ($duplicateReturn=="fail2") {
+			$duplicateReturnMessage=_("Your request failed due to a database error.") ;	
+		}
+		else if ($duplicateReturn=="fail3") {
+			$duplicateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+		}
+		else if ($duplicateReturn=="fail6") {
+			$duplicateReturnMessage="Your request was successful, but some data was not properly saved." ;	
+			$class="success" ;
+		}
+		else if ($duplicateReturn=="success0") {
+			$duplicateReturnMessage=_("Your request was successful.") ;	
+			$class="success" ;
+		}
+		print "<div class='$class'>" ;
+			print $duplicateReturnMessage;
 		print "</div>" ;
 	} 
 
@@ -81,7 +107,7 @@ else {
 				print "<th>" ;
 					print _("Type") ;
 				print "</th>" ;
-				print "<th style='width:50px'>" ;
+				print "<th style='width:80px'>" ;
 					print _("Action") ;
 				print "</th>" ;
 			print "</tr>" ;
@@ -119,6 +145,7 @@ else {
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/role_manage_edit.php&gibbonRoleID=" . $row["gibbonRoleID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/role_manage_delete.php&gibbonRoleID=" . $row["gibbonRoleID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 						}
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/role_manage_duplicate.php&gibbonRoleID=" . $row["gibbonRoleID"] . "'><img title='" . _('Duplicate') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a> " ;
 					print "</td>" ;
 				print "</tr>" ;
 			}
