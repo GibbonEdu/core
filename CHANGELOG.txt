@@ -16,6 +16,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v8.0.05
+-------
+General: added high quality favicon
+	Edited file /favicon.ico
+
+Markbook: added whole-class Markbook export
+	Edited file /modules/Markbook/markbook_view.php
+	New files /modules/Markbook/markbook_viewExportAll*.php
+
 v8.0.04
 -------
 Timetable Admin: fixed I18N issue with blank strings
