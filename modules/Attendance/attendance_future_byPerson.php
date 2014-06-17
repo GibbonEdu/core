@@ -34,6 +34,28 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Set Future Absence') . "</div>" ;
 	print "</div>" ;
 	
+	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
+	$deleteReturnMessage="" ;
+	$class="error" ;
+	if (!($deleteReturn=="")) {
+		if ($deleteReturn=="fail0") {
+			$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+		}
+		else if ($deleteReturn=="fail1") {
+			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+		}
+		else if ($deleteReturn=="fail2") {
+			$deleteReturnMessage=_("Your request failed due to a database error.") ;	
+		}
+		else if ($deleteReturn=="success0") {
+			$deleteReturnMessage=_("Your request was completed successfully.") ;	
+			$class="success" ;
+		}
+		print "<div class='$class'>" ;
+			print $deleteReturnMessage;
+		print "</div>" ;
+	} 
+	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage="" ;
 	$class="error" ;
@@ -52,6 +74,9 @@ else {
 		}
 		else if ($updateReturn=="fail4") {
 			$updateReturnMessage=_("Your request failed because specified date already has a record associated with it.") ;	
+		}
+		else if ($updateReturn=="fail5") {
+			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
 		}
 		else if ($updateReturn=="success0") {
 			$updateReturnMessage=_("Your request was completed successfully.") ;	
@@ -134,10 +159,10 @@ else {
 		
 		if ($resultLog->rowCount()>0) {
 			print "<div class='success'>" ;
-				print sprintf(_('The following future absences have been set for the selected student. To edit these, please contact %1$s.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>") ;
+				print _('The following future absences have been set for the selected student.') ;
 				print "<ul>" ;
 				while ($rowLog=$resultLog->fetch()) {
-					print "<li><b>" . dateConvertBack($guid, substr($rowLog["date"],0,10)) . "</b> | " . sprintf(_('Recorded at %1$s on %2$s by %3$s'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName($rowLog["title"], $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) ."</li>" ;
+					print "<li style='line-height: 250%'><b>" . dateConvertBack($guid, substr($rowLog["date"],0,10)) . "</b> | " . sprintf(_('Recorded at %1$s on %2$s by %3$s'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName($rowLog["title"], $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Attendance/attendance_future_byPersonDeleteProcess.php?gibbonPersonID=$gibbonPersonID&date=" .$rowLog["date"] . "' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a></li>" ;
 				}
 				print "</ul>" ;
 			print "</div>" ;
@@ -150,7 +175,7 @@ else {
 				<tr class='break'>
 					<td colspan=2> 
 						<h3>
-							<?php print _('Take Attendance') ?>
+							<?php print _('Set Future Attendance') ?>
 						</h3>
 					</td>
 				</tr>
@@ -165,19 +190,37 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Absence') ?> Date *</b><br/>
+						<b><?php print _('Start Date') ?> *</b><br/>
 						<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 					</td>
 					<td class="right">
-						<input name="date" id="date" maxlength=10 value="" type="text" style="width: 300px">
+						<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" style="width: 300px">
 						<script type="text/javascript">
-							var date=new LiveValidation('date');
-							date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-						 	date.add(Validate.Presence);
+							var dateStart=new LiveValidation('dateStart');
+							dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						 	dateStart.add(Validate.Presence);
 						 </script>
 						 <script type="text/javascript">
 							$(function() {
-								$( "#date" ).datepicker();
+								$( "#dateStart" ).datepicker();
+							});
+						</script>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b><?php print _('End Date') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					</td>
+					<td class="right">
+						<input name="dateEnd" id="dateEnd" maxlength=10 value="" type="text" style="width: 300px">
+						<script type="text/javascript">
+							var dateEnd=new LiveValidation('dateEnd');
+							dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						 </script>
+						 <script type="text/javascript">
+							$(function() {
+								$( "#dateEnd" ).datepicker();
 							});
 						</script>
 					</td>

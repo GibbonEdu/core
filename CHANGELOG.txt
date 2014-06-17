@@ -25,6 +25,13 @@ Markbook: added whole-class Markbook export
 	Edited file /modules/Markbook/markbook_view.php
 	New files /modules/Markbook/markbook_viewExportAll*.php
 
+Attendance: added ability to set future absences across multiple days
+	Edited files /modules/Attendance/attendance_future_byPerson*.php
+
+Attendance: added ability to remove future absence records
+	Edited files /modules/Attendance/attendance_future_byPerson
+	New file /modules/Attendance/attendance_future_byPersonDeleteProcess.php
+
 v8.0.04
 -------
 Timetable Admin: fixed I18N issue with blank strings

@@ -81,53 +81,69 @@ else {
 			$type="Absent" ;
 			$reason=$_POST["reason"] ;
 			$comment=$_POST["comment"] ;
-			$date=dateConvert($guid, $_POST["date"]) ;
+			$dateStart="" ;
+			if ($_POST["dateStart"]!="") {
+				$dateStart=dateConvert($guid, $_POST["dateStart"]) ;
+			}
+			$dateEnd=$dateStart ;
+			if ($_POST["dateEnd"]!="") {
+				$dateEnd=dateConvert($guid, $_POST["dateEnd"]) ;
+			}
 			$today=date("Y-m-d");
 			
 			//Check to see if date is in the future and is a school day.
-			if ($date<=$today OR isSchoolOpen($guid, $date, $connection2)==FALSE) {
+			if ($dateStart=="" OR $dateStart<=$today OR ($dateEnd!="" AND $dateEnd<$dateStart)) {
 				//Fail 3
 				$URL=$URL . "&updateReturn=fail3" ;
 				header("Location: {$URL}");
 			}
 			else {
-				//Check for record on same day
-				try {
-					$data=array("gibbonPersonID"=>$gibbonPersonID, "date"=>"$date%"); 
-					$sql="SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY date DESC" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					//Fail 2
-					$URL=$URL . "&updateReturn=fail2" ;
-					header("Location: {$URL}");
-					break ;
-				}
-
-				if ($result->rowCount()>0) {
-					//Fail 4
-					$URL=$URL . "&updateReturn=fail4" ;
-					header("Location: {$URL}");
-				}
-				else {
-					try {
-						$dataUpdate=array("gibbonPersonID"=>$gibbonPersonID, "direction"=>$direction, "type"=>$type, "reason"=>$reason, "comment"=>$comment, "gibbonPersonIDTaker"=>$_SESSION[$guid]["gibbonPersonID"], "date"=>$date, "timestampTaken"=>date("Y-m-d H:i:s")); 
-						$sqlUpdate="INSERT INTO gibbonAttendanceLogPerson SET gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken" ;
-						$resultUpdate=$connection2->prepare($sqlUpdate);
-						$resultUpdate->execute($dataUpdate);
-					}
-					catch(PDOException $e) { 
-						//Fail 2
-						$URL=$URL . "&updateReturn=fail2" ;
-						header("Location: {$URL}");
-						break ;
-					}
+				//Scroll through days
+				$partialFail=FALSE ;
+				$dateStartStamp=dateConvertToTimestamp($dateStart) ;
+				$dateEndStamp=dateConvertToTimestamp($dateEnd) ;
+				for ($i=$dateStartStamp; $i<=$dateEndStamp; $i=($i+86400)) {
+					$date=date("Y-m-d", $i) ; 
 					
-					//Success 0
-					$URL=$URL . "&updateReturn=success0" ;
-					header("Location: {$URL}");
+					if (isSchoolOpen($guid, $date, $connection2)) { //Only add if school is open on this day
+						//Check for record on same day
+						try {
+							$data=array("gibbonPersonID"=>$gibbonPersonID, "date"=>"$date%"); 
+							$sql="SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY date DESC" ;
+							$result=$connection2->prepare($sql);
+							$result->execute($data);
+						}
+						catch(PDOException $e) { 
+							$partialFail=TRUE ;
+						}
+
+						if ($result->rowCount()>0) {
+							$partialFail=TRUE ;
+						}
+						else {
+							try {
+								$dataUpdate=array("gibbonPersonID"=>$gibbonPersonID, "direction"=>$direction, "type"=>$type, "reason"=>$reason, "comment"=>$comment, "gibbonPersonIDTaker"=>$_SESSION[$guid]["gibbonPersonID"], "date"=>$date, "timestampTaken"=>date("Y-m-d H:i:s")); 
+								$sqlUpdate="INSERT INTO gibbonAttendanceLogPerson SET gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken" ;
+								$resultUpdate=$connection2->prepare($sqlUpdate);
+								$resultUpdate->execute($dataUpdate);
+							}
+							catch(PDOException $e) { 
+								$partialFail=TRUE ;
+							}
+						}
+					}
 				}
+			}
+			
+			if ($partialFail==TRUE) {
+				//Fail 5
+				$URL=$URL . "&updateReturn=fail5" ;
+				header("Location: {$URL}");
+			}
+			else {
+				//Success 0
+				$URL=$URL . "&updateReturn=success0" ;
+				header("Location: {$URL}");
 			}
 		}
 	}
