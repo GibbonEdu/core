@@ -117,6 +117,7 @@ else {
 					<td colspan=2 class="right">
 						<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/studentEnrolment_manage.php">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+						<input type="hidden" name="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>">
 						<?php
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage.php'>" . _('Clear Search') . "</a>" ;
 						?>
