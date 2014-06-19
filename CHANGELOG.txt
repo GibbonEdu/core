@@ -16,6 +16,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v8.1.00
+-------
+General: added dev indicator in footer, when running cuttingEdge
+	Edited file /index.php
+
+Planner: added ability for students to add their own homework tasks
+	New table gibbonPlannerEntryStudentHomework
+	Edited file /modules/Planner/planner_view_full.php
+	New file /modules/Planner/planner_view_full_myHomeworkProcess.php
+
 v8.0.06
 -------
 User Admin: added size checking to image upload in user add and edit

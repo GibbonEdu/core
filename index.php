@@ -54,6 +54,11 @@ if ($caching>0 AND is_numeric($caching)) {
 	}
 }
 
+//Check for cutting edge code
+if (isset($_SESSION[$guid]["cuttingEdgeCode"])==FALSE) {
+	$_SESSION[$guid]["cuttingEdgeCode"]=getSettingByScope($connection2, "System", "cuttingEdgeCode") ;
+}
+
 //Set sidebar values (from the entrySidebar field in gibbonAction and from $_GET variable)
 $_SESSION[$guid]["sidebarExtra"]="" ;
 $_SESSION[$guid]["sidebarExtraPosition"]="" ;
@@ -1476,7 +1481,7 @@ else {
 						?>
 					</div>
 					<div id="footer">
-						<?php print _("Powered by") ?> <a href="http://gibbonedu.org">Gibbon</a> v<?php print $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
+						<?php print _("Powered by") ?> <a href="http://gibbonedu.org">Gibbon</a> v<?php print $version ?><?php if ($_SESSION[$guid]["cuttingEdgeCode"]=="Y") { print "dev" ; }?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
 						<span style='font-size: 90%; '>
 							<?php print _("Created under the") ?> <a href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a>
 							<?php
