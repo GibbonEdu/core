@@ -16,6 +16,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v8.0.06
+-------
+User Admin: added size checking to image upload in user add and edit
+	Edited files /modules/User Admin/user_manage_add*.php, user_manage_edit*.php
+
+Staff: fixed issue preventing staff image showing up in brief profile
+	Edited file /modules/Staff/staff_view_details.php
+
+Planner: fixed transparent block issue for smart blocks and outcomes
+	Edited file /modules/Planner/moduleFunctions.php, planner_view_full.php
+	Edited file /themes/Default/img/plus.png
+	
+Finance: fixed transparent block issue for invoice fee blocks
+	Edited file /modules/Finance/moduleFunctions.php
+
 v8.0.05
 -------
 General: added high quality favicon

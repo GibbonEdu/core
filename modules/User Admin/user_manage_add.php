@@ -57,7 +57,11 @@ else {
 			$addReturnMessage=_("Your request failed because your password to not meet the minimum requirements for strength.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
+			$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
+			$class="success" ;
+		}
+		else if ($addReturn=="success1") {
+			$addReturnMessage=_("Your request was completed successfully, but one or more images were the wrong size and so were not saved. You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

@@ -53,7 +53,7 @@ else {
 			$addReturnMessage="Your request was successful, but some data was not properly saved." ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
+			$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

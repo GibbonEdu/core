@@ -987,7 +987,7 @@ div.ui-datepicker-header {
 
 td.hiddenReveal, div.hiddenReveal {
 	background: none; 
-	background-color: #EDF7FF;
+	background-color: #EDF7FF!important;
 }
 
 /* Timetable styles */

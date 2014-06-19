@@ -254,6 +254,7 @@ else {
 					$AI=str_pad($rowAI['Auto_increment'], 10, "0", STR_PAD_LEFT) ;
 					$attachment1=NULL ;
 					$attachment2=NULL ;
+					$imageFail=FALSE ;
 					if ($_FILES['file1']["tmp_name"]!="" OR $_FILES['file2']["tmp_name"]!="") {
 						$time=time() ;
 						//Check for folder in uploads based on today's date
@@ -262,7 +263,6 @@ else {
 							mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
 						}
 						//Move 240 attached file, if there is one
-						
 						if ($_FILES['file1']["tmp_name"]!="") {
 							$unique=FALSE;
 							$count=0 ;
@@ -288,6 +288,7 @@ else {
 						else {
 							$attachment1="" ;
 						}
+						
 						//Move 75 attached file, if there is one
 						if ($_FILES['file2']["tmp_name"]!="") {
 							$unique=FALSE;
@@ -313,6 +314,26 @@ else {
 						}
 						else {
 							$attachment2="" ;
+						}
+						
+						//Check image sizes
+						if ($attachment1!="") {
+							$size1=getimagesize($path . "/" . $attachment1) ;
+							$width1=$size1[0] ;
+							$height1=$size1[1] ;
+							if ($width1!=240 OR $height1!=320) {
+								$attachment1="" ;
+								$imageFail=TRUE ;
+							}
+						}
+						if ($attachment2!="") {
+							$size2=getimagesize($path . "/" . $attachment2) ;
+							$width2=$size2[0] ;
+							$height2=$size2[1] ;
+							if ($width2!=75 OR $height2!=100) {
+								$attachment2="" ;
+								$imageFail=TRUE ;
+							}
 						}
 					}
 					
@@ -340,9 +361,16 @@ else {
 					}
 					catch(PDOException $e) { }
 					
-					//Success 0
-					$URL=$URL . "&addReturn=success0" ;
-					header("Location: {$URL}");
+					if ($imageFail) {
+						//Success 1
+						$URL=$URL . "&addReturn=success1" ;
+						header("Location: {$URL}");
+					}
+					else {
+						//Success 0
+						$URL=$URL . "&addReturn=success0" ;
+						header("Location: {$URL}");
+					}
 				}
 			}
 		}

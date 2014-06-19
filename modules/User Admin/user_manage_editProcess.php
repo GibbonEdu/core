@@ -312,6 +312,7 @@ else {
 					header("Location: {$URL}");
 				}
 				else {
+					$imageFail=FALSE ;
 					if ($_FILES['file1']["tmp_name"]!="" OR $_FILES['file2']["tmp_name"]!="") {
 						$time=time() ;
 						//Check for folder in uploads based on today's date
@@ -365,6 +366,26 @@ else {
 								header("Location: {$URL}");
 							}
 						}
+						
+						//Check image sizes
+						if ($attachment1!="") {
+							$size1=getimagesize($path . "/" . $attachment1) ;
+							$width1=$size1[0] ;
+							$height1=$size1[1] ;
+							if ($width1!=240 OR $height1!=320) {
+								$attachment1="" ;
+								$imageFail=TRUE ;
+							}
+						}
+						if ($attachment2!="") {
+							$size2=getimagesize($path . "/" . $attachment2) ;
+							$width2=$size2[0] ;
+							$height2=$size2[1] ;
+							if ($width2!=75 OR $height2!=100) {
+								$attachment2="" ;
+								$imageFail=TRUE ;
+							}
+						}
 					}
 					
 					//Write to database
@@ -408,9 +429,16 @@ else {
 						header("Location: {$URL}");
 					}
 					else {
-						//Success 0
-						$URL=$URL . "&updateReturn=success0" ;
-						header("Location: {$URL}");
+						if ($imageFail) {
+							//Success 1
+							$URL=$URL . "&updateReturn=success1" ;
+							header("Location: {$URL}");
+						}
+						else {
+							//Success 0
+							$URL=$URL . "&updateReturn=success0" ;
+							header("Location: {$URL}");
+						}
 					}
 				}
 			}

@@ -57,6 +57,10 @@ else {
 			$updateReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
+		else if ($updateReturn=="success1") {
+			$updateReturnMessage=_("Your request was completed successfully, but one or more images were the wrong size and so were not saved. You can now add another record if you wish.") ;	
+			$class="success" ;
+		}
 		print "<div class='$class'>" ;
 			print $updateReturnMessage;
 		print "</div>" ;

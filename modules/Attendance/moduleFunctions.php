@@ -378,6 +378,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 					print "<b>" . _('Total number of school days to date:') . " $countSchoolDays</b><br/>" ;
 					print _("Total number of school days attended:") . " $countPresent<br/>" ;
 					print _("Total number of school days absent:") . " $countAbsent<br/>" ;
+					print "Alternative absence count: " . getAbsenceCount($guid, $gibbonPersonID, $connection2, "2013-08-28", "2014-06-28") ;
 				print "</p>" ;
 			print "</td>" ;
 			print "<td style='width: 10px'>" ;

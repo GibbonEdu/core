@@ -487,5 +487,10 @@ UPDATE `gibbonAction` SET entrySidebar='N' WHERE gibbonModuleID=(SELECT gibbonMo
 UPDATE `gibbonAction` SET URLList='role_manage.php,role_manage_add.php,role_manage_edit.php,role_manage_delete.php,role_manage_duplicate.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin') AND gibbonAction.name='Manage Roles';end
 " ;
 
+//v8.0.06
+$count++ ;
+$sql[$count][0]="8.0.06" ;
+$sql[$count][1]="" ;
+
 
 ?>

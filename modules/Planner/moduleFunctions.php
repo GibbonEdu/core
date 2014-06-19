@@ -111,7 +111,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 		<?php
 	}
 	?>
-	<div class='hiddenReaveal' style='border: 1px solid #d8dcdf; margin: 0 0 5px' id="block<?php print $i ?>" style='padding: 0px'>
+	<div class='hiddenReveal' style='border: 1px solid #d8dcdf; margin: 0 0 5px' id="block<?php print $i ?>" style='padding: 0px'>
 		<table class='blank' cellspacing='0' style='width: 100%'>
 			<tr>
 				<td style='width: 50%'>
@@ -142,7 +142,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 							}
 						}
 						if ($mode!="embed") {
-							print "<div title='" . _('Show/Hide Details') . "' id='show$i' style='margin-top: -1px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\")'></div></br>" ;
+							print "<div title='" . _('Show/Hide Details') . "' id='show$i' style='margin-right: 3px; margin-top: -1px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\"); background-repeat: no-repeat'></div></br>" ;
 						}
 						?>
 					</div>
@@ -693,7 +693,7 @@ function makeBlockOutcome($guid,  $i, $type="", $gibbonOutcomeID="", $title="", 
 				
 			});
 		</script>
-		<div class='hiddenReaveal' style='border: 1px solid #d8dcdf; margin: 0 0 5px' id="<?php print $type ?>Block<?php print $i ?>" style='padding: 0px'>
+		<div class='hiddenReveal' style='border: 1px solid #d8dcdf; margin: 0 0 5px' id="<?php print $type ?>Block<?php print $i ?>" style='padding: 0px'>
 			<table class='blank' cellspacing='0' style='width: 100%'>
 				<tr>
 					<td style='width: 50%'>
@@ -711,7 +711,7 @@ function makeBlockOutcome($guid,  $i, $type="", $gibbonOutcomeID="", $title="", 
 						<div style='margin-bottom: 25px'>
 							<?php
 							print "<img id='" . $type  . "delete$i' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
-							print "<div id='" . $type . "show$i' title='" . _('Show/Hide Details') . "' style='margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\")'></div>" ;
+							print "<div id='" . $type . "show$i' title='" . _('Show/Hide Details') . "' style='margin-right: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\"); background-repeat: no-repeat'></div>" ;
 							?>
 						</div>
 						<input type='hidden' name='id<?php print $i ?>' value='<?php print $id ?>'>

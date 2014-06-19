@@ -151,7 +151,7 @@ else {
 					$addReturnMessage=_("Your request failed due to an attachment error.") ;	
 				}
 				else if ($addReturn=="success0") {
-					$addReturnMessage=_("Your request was completed successfully.You can now add another record if you wish.") ;	
+					$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
