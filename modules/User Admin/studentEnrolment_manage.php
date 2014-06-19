@@ -119,7 +119,7 @@ else {
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 						<input type="hidden" name="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>">
 						<?php
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage.php'>" . _('Clear Search') . "</a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID'>" . _('Clear Search') . "</a>" ;
 						?>
 						<input type="submit" value="<?php print _("Submit") ; ?>">
 					</td>
