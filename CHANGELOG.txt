@@ -23,8 +23,10 @@ General: added dev indicator in footer, when running cuttingEdge
 
 Planner: added ability for students to add their own homework tasks
 	New table gibbonPlannerEntryStudentHomework
-	Edited file /modules/Planner/planner_view_full.php
+	Edited files /modules/Planner/planner_view_full.php, planner.php, planner_deadlines*.php
 	New file /modules/Planner/planner_view_full_myHomeworkProcess.php
+	Edited files /index.php, function.php
+	Edited file /modules/Students/student_view_details.php
 
 v8.0.06
 -------

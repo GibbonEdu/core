@@ -80,8 +80,13 @@ else {
 		//Check for existing completion
 		$completionArray=array() ;
 		try {
-			$dataCompletion=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-			$sqlCompletion="SELECT gibbonPlannerEntryStudentTracker.gibbonPlannerEntryID FROM gibbonPlannerEntryStudentTracker JOIN gibbonPlannerEntry ON (gibbonPlannerEntryStudentTracker.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND homeworkComplete='Y'" ;
+			$dataCompletion=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"] ); 
+			$sqlCompletion="
+			(SELECT 'teacherRecorded' AS type, gibbonPlannerEntryStudentTracker.gibbonPlannerEntryID FROM gibbonPlannerEntryStudentTracker JOIN gibbonPlannerEntry ON (gibbonPlannerEntryStudentTracker.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND homeworkComplete='Y')
+			UNION
+			(SELECT 'studentRecorded' AS type, gibbonPlannerEntry.gibbonPlannerEntryID FROM gibbonPlannerEntryStudentHomework JOIN gibbonPlannerEntry ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonPersonID=:gibbonPersonID2 AND homeworkComplete='Y')
+			ORDER BY gibbonPlannerEntryID, type
+			" ;
 			$resultCompletion=$connection2->prepare($sqlCompletion);
 			$resultCompletion->execute($dataCompletion);
 		}
@@ -105,14 +110,27 @@ else {
 			if (isset($_POST["complete-$count"])) {
 				if ($_POST["complete-$count"]=="on") {
 					if (isset($completionArray[$_POST["gibbonPlannerEntryID-$count"]])==FALSE) {
-						try {
-							$data=array("gibbonPlannerEntryID"=>$_POST["gibbonPlannerEntryID-$count"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-							$sql="INSERT INTO gibbonPlannerEntryStudentTracker SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, homeworkComplete='Y'" ;
-							$result=$connection2->prepare($sql);
-							$result->execute($data);
+						if (@$_POST["completeType-$count"]=="teacherRecorded") { //Teacher recorded
+							try {
+								$data=array("gibbonPlannerEntryID"=>$_POST["gibbonPlannerEntryID-$count"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+								$sql="INSERT INTO gibbonPlannerEntryStudentTracker SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, homeworkComplete='Y'" ;
+								$result=$connection2->prepare($sql);
+								$result->execute($data);
+							}
+							catch(PDOException $e) { 
+								$partialFail=TRUE ;
+							}
 						}
-						catch(PDOException $e) { 
-							$partialFail=TRUE ;
+						else { //Student recorded
+							try {
+								$data=array("gibbonPlannerEntryID"=>$_POST["gibbonPlannerEntryID-$count"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+								$sql="UPDATE gibbonPlannerEntryStudentHomework SET homeworkComplete='Y' WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
+								$result=$connection2->prepare($sql);
+								$result->execute($data);
+							}
+							catch(PDOException $e) { 
+								$partialFail=TRUE ;
+							}
 						}
 					}
 				}
@@ -124,14 +142,27 @@ else {
 			if (isset($completionArray[$_POST["gibbonPlannerEntryID-$count"]])) {
 				if ($completionArray[$_POST["gibbonPlannerEntryID-$count"]]=="Y") {
 					if (isset($_POST["complete-$count"])==FALSE) {
-						try {
-							$data=array("gibbonPlannerEntryID"=>$_POST["gibbonPlannerEntryID-$count"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-							$sql="UPDATE gibbonPlannerEntryStudentTracker SET homeworkComplete='N' WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-							$result=$connection2->prepare($sql);
-							$result->execute($data);
+						if (@$_POST["completeType-$count"]=="teacherRecorded") { //Teacher recorded
+							try {
+								$data=array("gibbonPlannerEntryID"=>$_POST["gibbonPlannerEntryID-$count"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+								$sql="UPDATE gibbonPlannerEntryStudentTracker SET homeworkComplete='N' WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
+								$result=$connection2->prepare($sql);
+								$result->execute($data);
+							}
+							catch(PDOException $e) { 
+								$partialFail=TRUE ;
+							}
 						}
-						catch(PDOException $e) { 
-							$partialFail=TRUE ;
+						else { //Student recorded
+							try {
+								$data=array("gibbonPlannerEntryID"=>$_POST["gibbonPlannerEntryID-$count"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+								$sql="UPDATE gibbonPlannerEntryStudentHomework SET homeworkComplete='N' WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
+								$result=$connection2->prepare($sql);
+								$result->execute($data);
+							}
+							catch(PDOException $e) { 
+								$partialFail=TRUE ;
+							}
 						}
 					}
 				}

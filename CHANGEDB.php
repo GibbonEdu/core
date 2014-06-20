@@ -497,6 +497,7 @@ $count++ ;
 $sql[$count][0]="8.1.00" ;
 $sql[$count][1]="
 CREATE TABLE `gibbonPlannerEntryStudentHomework` (  `gibbonPlannerEntryStudentHomeworkID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,  `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,  `gibbonPersonID` int(10) NOT NULL,  `homeworkDueDateTime` datetime NOT NULL,  `homeworkDetails` mediumtext NOT NULL,  `homeworkComplete` enum('Y','N') NOT NULL DEFAULT 'N',  PRIMARY KEY (`gibbonPlannerEntryStudentHomeworkID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Allows students to add homework deadlines themselves' ;end
+ALTER TABLE `gibbonPlannerEntryStudentHomework` ADD INDEX( `gibbonPlannerEntryID`, `gibbonPersonID`);end
 
 " ;
 

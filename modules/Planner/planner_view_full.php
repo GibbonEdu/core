@@ -226,7 +226,7 @@ else {
 						$params=$params."&date=" . $_GET["date"] ;
 					}
 					if ($viewBy!="") {
-						$params=$params."&viewBy=" . $_GET["viewBy"] ;
+						$params=$params."&viewBy=" . @$_GET["viewBy"] ;
 					}
 					if ($gibbonCourseClassID!="") {
 						$params=$params."&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] ;
@@ -1185,10 +1185,14 @@ else {
 										$myHomeworkFail=TRUE ;
 									}
 									
+									$roleCategory=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
+									
 									print "<tr class='break'>" ;
 										print "<td style='padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
-											print "<h3>" . _('My Homework') . "</h3>" ;
-											print "<p>" . _('If your teacher has not entered homework into Gibbon, or you want to record extra homework, you can enter the details here.') . "</p>" ;
+											print "<h3>" . _('Student Recorded Homework') . "</h3>" ;
+											if ($roleCategory=="Student") {
+												print "<p>" . _('If your teacher has not entered homework into Gibbon, or you want to record extra homework, you can enter the details here.') . "</p>" ;
+											}
 										print "</td>" ;
 									print "</tr>" ;
 									if ($myHomeworkFail OR $resultMyHomework->rowCount()>1) {
@@ -1197,6 +1201,7 @@ else {
 										print "</div>" ;
 									}
 									else {
+										
 										if ($resultMyHomework->rowCount()==1) {
 											$rowMyHomework=$resultMyHomework->fetch() ;
 											$rowMyHomework["homework"]="Y" ;
@@ -1206,138 +1211,185 @@ else {
 											$rowMyHomework["homework"]="N" ;
 											$rowMyHomework["homeworkDetails"]="" ;
 										}
-									
-										$checkedYes="" ;
-										$checkedNo="" ;
-										if ($rowMyHomework["homework"]=="Y") {
-											$checkedYes="checked" ;
-										}
-										else {
-											$checkedNo="checked" ;
-										}
-										?>
-								
-										<script type="text/javascript">
-											/* Homework Control */
-											$(document).ready(function(){
-												<?php
-												if ($checkedNo=="checked") {
-													?>
-													$("#homeworkDueDateRow").css("display","none");
-													$("#homeworkDueDateTimeRow").css("display","none");
-													$("#homeworkDetailsRow").css("display","none");
-													<?php
-												}
-												?>
-							
-												//Response to clicking on homework control
-												$(".homework").click(function(){
-													if ($('input[name=homework]:checked').val()=="Yes" ) {
-														homeworkDueDate.enable();
-														homeworkDetails.enable();
-														$("#homeworkDueDateRow").slideDown("fast", $("#homeworkDueDateRow").css("display","table-row")); 
-														$("#homeworkDueDateTimeRow").slideDown("fast", $("#homeworkDueDateTimeRow").css("display","table-row")); 
-														$("#homeworkDetailsRow").slideDown("fast", $("#homeworkDetailsRow").css("display","table-row")); 
-													} else {
-														homeworkDueDate.disable();
-														homeworkDetails.disable();
-														$("#homeworkDueDateRow").css("display","none");
-														$("#homeworkDueDateTimeRow").css("display","none");
-														$("#homeworkDetailsRow").css("display","none");
-													}
-												 });
-											});
-										</script>
-								
-										<?php print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_myHomeworkProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&address=" . $_SESSION[$guid]["address"] . "&gibbonCourseClassID=$gibbonCourseClassID&date=$date'>" ; ?>
+											
+										if ($roleCategory!="Student") { //Parent, so show readonly
+											?>
 											<tr>
 												<td> 
 													<b><?php print _('Homework?') ?> *</b><br/>
 												</td>
-												<td class="right">
-													<input <?php print $checkedYes ?> type="radio" name="homework" value="Yes" class="homework" /> <?php print _('Yes') ?>
-													<input <?php print $checkedNo ?> type="radio" name="homework" value="No" class="homework" /> <?php print _('No') ?>
-												</td>
-											</tr>
-											<tr id="homeworkDueDateRow">
-												<td> 
-													<b><?php print _('Homework Due Date') ?> *</b><br/>
-													<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
-												</td>
-												<td class="right">
-													<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="<?php if ($rowMyHomework["homework"]=="Y") { print dateConvertBack($guid, substr($rowMyHomework["homeworkDueDateTime"],0,10)) ; } ?>" type="text" style="width: 300px">
-													<script type="text/javascript">
-														var homeworkDueDate=new LiveValidation('homeworkDueDate');
-														homeworkDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-														homeworkDueDate.add(Validate.Presence);
-														<?php
-														if ($rowMyHomework["homework"]!="Y") { 
-															print "homeworkDueDate.disable();" ;
-														}
-														?>
-													 </script>
-													 <script type="text/javascript">
-														$(function() {
-															$( "#homeworkDueDate" ).datepicker();
-														});
-													</script>
-												</td>
-											</tr>
-											<tr id="homeworkDueDateTimeRow">
-												<td> 
-													<b><?php print _('Homework Due Date Time') ?></b><br/>
-													<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
-												</td>
-												<td class="right">
-													<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<?php if ($rowMyHomework["homework"]=="Y") { print substr($rowMyHomework["homeworkDueDateTime"],11,5) ; } ?>" type="text" style="width: 300px">
-													<script type="text/javascript">
-														var homeworkDueDateTime=new LiveValidation('homeworkDueDateTime');
-														homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
-													 </script>
-													<script type="text/javascript">
-														$(function() {
-															var availableTags=[
-																<?php
-																try {
-																	$dataAuto=array(); 
-																	$sqlAuto="SELECT DISTINCT SUBSTRING(homeworkDueDateTime,12,5) AS homeworkDueTime FROM gibbonPlannerEntry ORDER BY homeworkDueDateTime" ;
-																	$resultAuto=$connection2->prepare($sqlAuto);
-																	$resultAuto->execute($dataAuto);
-																}
-																catch(PDOException $e) { }
-																while ($rowAuto=$resultAuto->fetch()) {
-																	print "\"" . $rowAuto["homeworkDueTime"] . "\", " ;
-																}
-																?>
-															];
-															$( "#homeworkDueDateTime" ).autocomplete({source: availableTags});
-														});
-													</script>
-												</td>
-											</tr>
-											<tr id="homeworkDetailsRow">
-												<td colspan=2> 
-													<b><?php print _('Homework Details') ?> *</b> 
+												<td>
 													<?php
-													$initiallyHidden=true ;
-													if ($rowMyHomework["homework"]=="Y") {
-														$initiallyHidden=false ;
+													if ($rowMyHomework["homework"]) {
+														print _('Yes')  ;
 													}
-													print getEditor($guid,  TRUE, "homeworkDetails", $rowMyHomework["homeworkDetails"], 25, true, true, $initiallyHidden) 
+													else {
+														print _('No')  ;
+													}
 													?>
 												</td>
 											</tr>
 											<tr>
-												<td>
-													<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+												<td> 
+													<b><?php print _('Homework Due Date') ?> *</b><br/>
 												</td>
-												<td class="right">
-													<input type="submit" value="<?php print _("Submit") ; ?>">
+												<td>
+													<?php if ($rowMyHomework["homework"]=="Y") { print dateConvertBack($guid, substr($rowMyHomework["homeworkDueDateTime"],0,10)) ; } ?>
 												</td>
 											</tr>
-										</form>
-										<?php
+											<tr >
+												<td> 
+													<b><?php print _('Homework Due Date Time') ?></b><br/>
+													<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
+												</td>
+												<td >
+													<?php if ($rowMyHomework["homework"]=="Y") { print substr($rowMyHomework["homeworkDueDateTime"],11,5) ; } ?>
+												</td>
+											</tr>
+											
+											
+											<tr>
+												<td> 
+													<b><?php print _('Homework Details') ?></b><br/>
+												</td>
+												<td class="right">
+													<?php print $rowMyHomework["homeworkDetails"] ?>
+												</td>
+											</tr>
+											<?php
+										}	
+										else { //Student so show edit view
+											$checkedYes="" ;
+											$checkedNo="" ;
+											if ($rowMyHomework["homework"]=="Y") {
+												$checkedYes="checked" ;
+											}
+											else {
+												$checkedNo="checked" ;
+											}
+											?>
 								
+											<script type="text/javascript">
+												/* Homework Control */
+												$(document).ready(function(){
+													<?php
+													if ($checkedNo=="checked") {
+														?>
+														$("#homeworkDueDateRow").css("display","none");
+														$("#homeworkDueDateTimeRow").css("display","none");
+														$("#homeworkDetailsRow").css("display","none");
+														<?php
+													}
+													?>
+							
+													//Response to clicking on homework control
+													$(".homework").click(function(){
+														if ($('input[name=homework]:checked').val()=="Yes" ) {
+															homeworkDueDate.enable();
+															homeworkDetails.enable();
+															$("#homeworkDueDateRow").slideDown("fast", $("#homeworkDueDateRow").css("display","table-row")); 
+															$("#homeworkDueDateTimeRow").slideDown("fast", $("#homeworkDueDateTimeRow").css("display","table-row")); 
+															$("#homeworkDetailsRow").slideDown("fast", $("#homeworkDetailsRow").css("display","table-row")); 
+														} else {
+															homeworkDueDate.disable();
+															homeworkDetails.disable();
+															$("#homeworkDueDateRow").css("display","none");
+															$("#homeworkDueDateTimeRow").css("display","none");
+															$("#homeworkDetailsRow").css("display","none");
+														}
+													 });
+												});
+											</script>
+								
+											<?php print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_myHomeworkProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&address=" . $_SESSION[$guid]["address"] . "&gibbonCourseClassID=$gibbonCourseClassID&date=$date'>" ; ?>
+												<tr>
+													<td> 
+														<b><?php print _('Homework?') ?> *</b><br/>
+													</td>
+													<td class="right">
+														<input <?php print $checkedYes ?> type="radio" name="homework" value="Yes" class="homework" /> <?php print _('Yes') ?>
+														<input <?php print $checkedNo ?> type="radio" name="homework" value="No" class="homework" /> <?php print _('No') ?>
+													</td>
+												</tr>
+												<tr id="homeworkDueDateRow">
+													<td> 
+														<b><?php print _('Homework Due Date') ?> *</b><br/>
+														<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+													</td>
+													<td class="right">
+														<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="<?php if ($rowMyHomework["homework"]=="Y") { print dateConvertBack($guid, substr($rowMyHomework["homeworkDueDateTime"],0,10)) ; } ?>" type="text" style="width: 300px">
+														<script type="text/javascript">
+															var homeworkDueDate=new LiveValidation('homeworkDueDate');
+															homeworkDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+															homeworkDueDate.add(Validate.Presence);
+															<?php
+															if ($rowMyHomework["homework"]!="Y") { 
+																print "homeworkDueDate.disable();" ;
+															}
+															?>
+														 </script>
+														 <script type="text/javascript">
+															$(function() {
+																$( "#homeworkDueDate" ).datepicker();
+															});
+														</script>
+													</td>
+												</tr>
+												<tr id="homeworkDueDateTimeRow">
+													<td> 
+														<b><?php print _('Homework Due Date Time') ?></b><br/>
+														<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
+													</td>
+													<td class="right">
+														<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<?php if ($rowMyHomework["homework"]=="Y") { print substr($rowMyHomework["homeworkDueDateTime"],11,5) ; } ?>" type="text" style="width: 300px">
+														<script type="text/javascript">
+															var homeworkDueDateTime=new LiveValidation('homeworkDueDateTime');
+															homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
+														 </script>
+														<script type="text/javascript">
+															$(function() {
+																var availableTags=[
+																	<?php
+																	try {
+																		$dataAuto=array(); 
+																		$sqlAuto="SELECT DISTINCT SUBSTRING(homeworkDueDateTime,12,5) AS homeworkDueTime FROM gibbonPlannerEntry ORDER BY homeworkDueDateTime" ;
+																		$resultAuto=$connection2->prepare($sqlAuto);
+																		$resultAuto->execute($dataAuto);
+																	}
+																	catch(PDOException $e) { }
+																	while ($rowAuto=$resultAuto->fetch()) {
+																		print "\"" . $rowAuto["homeworkDueTime"] . "\", " ;
+																	}
+																	?>
+																];
+																$( "#homeworkDueDateTime" ).autocomplete({source: availableTags});
+															});
+														</script>
+													</td>
+												</tr>
+												<tr id="homeworkDetailsRow">
+													<td colspan=2> 
+														<b><?php print _('Homework Details') ?> *</b> 
+														<?php
+														$initiallyHidden=true ;
+														if ($rowMyHomework["homework"]=="Y") {
+															$initiallyHidden=false ;
+														}
+														print getEditor($guid,  TRUE, "homeworkDetails", $rowMyHomework["homeworkDetails"], 25, true, true, $initiallyHidden) 
+														?>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+													</td>
+													<td class="right">
+														<input type="submit" value="<?php print _("Submit") ; ?>">
+													</td>
+												</tr>
+											</form>
+											<?php
+										}
 									}
 								}
 						
