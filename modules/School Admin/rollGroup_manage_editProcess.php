@@ -92,7 +92,7 @@ else {
 				$gibbonSpaceID=$_POST["gibbonSpaceID"] ;
 			}
 			$gibbonRollGroupIDNext=NULL ;
-			if ($_POST["gibbonRollGroupIDNext"]!="") {
+			if (isset($_POST["gibbonRollGroupIDNext"])) {
 				$gibbonRollGroupIDNext=$_POST["gibbonRollGroupIDNext"] ;
 			}
 			

@@ -666,6 +666,23 @@ else {
 										print "<td>" ;
 											print "<input checked type='checkbox' name='$count-reenrol-enrol' value='Y'>" ;
 										print "</td>" ;
+										//Check for enrolment
+										try {
+											$dataEnrolmentCheck=array("gibbonPersonID"=>$rowReenrol["gibbonPersonID"], "gibbonSchoolYearID"=>$nextYear); 
+											$sqlEnrolmentCheck="SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
+											$resultEnrolmentCheck=$connection2->prepare($sqlEnrolmentCheck);
+											$resultEnrolmentCheck->execute($dataEnrolmentCheck);
+										}
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										$enrolmentCheckYearGroup=NULL ;
+										$enrolmentCheckRollGroup=NULL ;
+										if ($resultEnrolmentCheck->rowCount()==1) {
+											$rowEnrolmentCheck=$resultEnrolmentCheck->fetch() ;
+											$enrolmentCheckYearGroup=$rowEnrolmentCheck["gibbonYearGroupID"] ;
+											$enrolmentCheckRollGroup=$rowEnrolmentCheck["gibbonRollGroupID"] ;
+										}
 										print "<td>" ;
 											print "<select name='$count-reenrol-gibbonYearGroupID' id='$count-reenrol-gibbonYearGroupID' style='float: left; width:110px'>" ;
 												try {
@@ -679,7 +696,10 @@ else {
 												}
 												while ($rowSelect=$resultSelect->fetch()) {
 													$selected="" ;
-													if ($rowSelect["gibbonYearGroupID"]==getNextYearGroupID($rowReenrol["gibbonYearGroupID"], $connection2)) {
+													if ($rowSelect["gibbonYearGroupID"]==$enrolmentCheckYearGroup) {
+														$selected="selected" ;
+													}
+													else if ($rowSelect["gibbonYearGroupID"]==getNextYearGroupID($rowReenrol["gibbonYearGroupID"], $connection2)) {
 														$selected="selected" ;
 													}
 													print "<option $selected value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
@@ -699,7 +719,10 @@ else {
 												}
 												while ($rowSelect=$resultSelect->fetch()) {
 													$selected="" ;
-													if ($rowSelect["gibbonRollGroupID"]==$rowReenrol["gibbonRollGroupIDNext"]) {
+													if ($rowSelect["gibbonRollGroupID"]==$enrolmentCheckRollGroup) {
+														$selected="selected" ;
+													}
+													else if ($rowSelect["gibbonRollGroupID"]==$rowReenrol["gibbonRollGroupIDNext"]) {
 														$selected="selected" ;
 													}
 													print "<option $selected value='" . $rowSelect["gibbonRollGroupID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;

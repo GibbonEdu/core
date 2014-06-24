@@ -66,7 +66,7 @@ else {
 			$date=dateConvert($guid, $_POST["date"]) ;
 			$timeStart=$_POST["timeStart"] ;
 			$timeEnd=$_POST["timeEnd"] ;
-			$gibbonUnitID=$_POST["gibbonUnitID"] ;
+			@$gibbonUnitID=$_POST["gibbonUnitID"] ;
 			if ($gibbonUnitID=="") {
 				$gibbonUnitID=NULL ;
 				$gibbonHookID=NULL ;

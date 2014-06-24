@@ -1296,7 +1296,7 @@ function sidebar($connection2, $guid) {
 			}
 		}
 		
-		if (count($myLessons)>0 OR count($myLessonReplies)>0 OR count($myWork)>0 OR count($myReplies)>0) {
+		if (count(@$myLessons)>0 OR count(@$myLessonReplies)>0 OR count(@$myWork)>0 OR count(@$myReplies)>0) {
 			print "<h2>" ;
 			print _("Recent Discussion") ;
 			print "</h2>" ;
