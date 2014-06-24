@@ -600,7 +600,7 @@ else {
 					print _("Re-Enrol Other Students") ;
 					print "</h4>" ;
 					print "<p>" ;
-					print _("Any students who are not re-enroled will have their status set to \"Left\".") ;
+					print _("Any students who are not re-enroled will have their status set to \"Left\".") . " " . _('Students who are already enroled will have their enrolment updated.') ;
 					print "</p>" ;
 					
 					$lastYearGroup=getLastYearGroupID($connection2) ;
@@ -696,11 +696,15 @@ else {
 												}
 												while ($rowSelect=$resultSelect->fetch()) {
 													$selected="" ;
-													if ($rowSelect["gibbonYearGroupID"]==$enrolmentCheckYearGroup) {
-														$selected="selected" ;
+													if (is_null($enrolmentCheckYearGroup)) {
+														if ($rowSelect["gibbonYearGroupID"]==getNextYearGroupID($rowReenrol["gibbonYearGroupID"], $connection2)) {
+															$selected="selected" ;
+														}
 													}
-													else if ($rowSelect["gibbonYearGroupID"]==getNextYearGroupID($rowReenrol["gibbonYearGroupID"], $connection2)) {
-														$selected="selected" ;
+													else {
+														if ($rowSelect["gibbonYearGroupID"]==$enrolmentCheckYearGroup) {
+															$selected="selected" ;
+														}
 													}
 													print "<option $selected value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 												}	
@@ -719,11 +723,15 @@ else {
 												}
 												while ($rowSelect=$resultSelect->fetch()) {
 													$selected="" ;
-													if ($rowSelect["gibbonRollGroupID"]==$enrolmentCheckRollGroup) {
-														$selected="selected" ;
+													if (is_null($enrolmentCheckRollGroup)) {
+														if ($rowSelect["gibbonRollGroupID"]==$rowReenrol["gibbonRollGroupIDNext"]) {
+															$selected="selected" ;
+														}
 													}
-													else if ($rowSelect["gibbonRollGroupID"]==$rowReenrol["gibbonRollGroupIDNext"]) {
-														$selected="selected" ;
+													else {
+														if ($rowSelect["gibbonRollGroupID"]==$enrolmentCheckRollGroup) {
+															$selected="selected" ;
+														}
 													}
 													print "<option $selected value='" . $rowSelect["gibbonRollGroupID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 												}			
@@ -1374,9 +1382,10 @@ else {
 								//Write to database
 								if ($enrol=="Y") {
 									$reenroled=true ;
+									//Check for existing record...if exists, update
 									try {
-										$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$gibbonPersonID, "gibbonYearGroupID"=>$gibbonYearGroupID, "gibbonRollGroupID"=>$gibbonRollGroupID); 
-										$sql="INSERT INTO gibbonStudentEnrolment SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, gibbonYearGroupID=:gibbonYearGroupID, gibbonRollGroupID=:gibbonRollGroupID" ;
+										$data=array("gibbonSchoolYearID"=>$nextYear, "gibbonPersonID"=>$gibbonPersonID); 
+										$sql="SELECT * FROM gibbonStudentEnrolment WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID" ;
 										$result=$connection2->prepare($sql);
 										$result->execute($data);
 									}
@@ -1384,8 +1393,41 @@ else {
 										$reenroled=false ;
 										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 									}
-									if ($reenroled) {
-										$success++ ;
+									
+									if ($result->rowCount()!=1 AND $result->rowCount()!=0) {
+										$reenroled=false ;
+										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									}
+									else if ($result->rowCount()==1) {
+										try {
+											$data2=array("gibbonSchoolYearID"=>$nextYear, "gibbonPersonID"=>$gibbonPersonID, "gibbonYearGroupID"=>$gibbonYearGroupID, "gibbonRollGroupID"=>$gibbonRollGroupID); 
+											$sql2="UPDATE gibbonStudentEnrolment SET gibbonYearGroupID=:gibbonYearGroupID, gibbonRollGroupID=:gibbonRollGroupID WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID" ;
+											$result2=$connection2->prepare($sql2);
+											$result2->execute($data2);
+										}
+										catch(PDOException $e) { 
+											$reenroled=false ;
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										if ($reenroled) {
+											$success++ ;
+										}
+									}
+									else if ($result->rowCount()==0) {
+										//Else, write
+										try {
+											$data2=array("gibbonSchoolYearID"=>$nextYear, "gibbonPersonID"=>$gibbonPersonID, "gibbonYearGroupID"=>$gibbonYearGroupID, "gibbonRollGroupID"=>$gibbonRollGroupID); 
+											$sql2="INSERT INTO gibbonStudentEnrolment SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, gibbonYearGroupID=:gibbonYearGroupID, gibbonRollGroupID=:gibbonRollGroupID" ;
+											$result2=$connection2->prepare($sql2);
+											$result2->execute($data2);
+										}
+										catch(PDOException $e) { 
+											$reenroled=false ;
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										if ($reenroled) {
+											$success++ ;
+										}
 									}
 								}
 								else {
