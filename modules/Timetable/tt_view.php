@@ -126,14 +126,14 @@ else {
 			
 			if (isset($_POST["fromTT"])) {
 				if ($_POST["fromTT"]=="Y") {
-					if ($_POST["schoolCalendar"]=="on" OR $_POST["schoolCalendar"]=="Y") {
+					if (@$_POST["schoolCalendar"]=="on" OR @$_POST["schoolCalendar"]=="Y") {
 						$_SESSION[$guid]["viewCalendarSchool"]="Y" ;
 					}
 					else {
 						$_SESSION[$guid]["viewCalendarSchool"]="N" ;
 					}
 				
-					if ($_POST["personalCalendar"]=="on" OR $_POST["personalCalendar"]=="Y") {
+					if (@$_POST["personalCalendar"]=="on" OR @$_POST["personalCalendar"]=="Y") {
 						$_SESSION[$guid]["viewCalendarPersonal"]="Y" ;
 					}
 					else {

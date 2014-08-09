@@ -199,6 +199,19 @@ else {
 					?>	
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
+							<td colspan=2 style='padding-top: 25px'> 
+								<span style='font-weight: bold; font-size: 135%'><?php print _('Targets') ?></span><br/>
+								<?php
+								if ($highestAction=="Individual Needs Records_viewEdit") {
+									print getEditor($guid,  TRUE, "targets", $rowIEP["targets"], 20, true ) ;
+								}
+								else {
+									print "<p>" . $rowIEP["targets"] . "</p>" ;
+								}
+								?>
+							</td>
+						</tr>
+						<tr>
 							<td colspan=2> 
 								<span style='font-weight: bold; font-size: 135%'><?php print _('Teaching Strategies') ?></span><br/>
 								<?php
@@ -213,20 +226,7 @@ else {
 						</tr>
 						<tr>
 							<td colspan=2 style='padding-top: 25px'> 
-								<span style='font-weight: bold; font-size: 135%'><?php print _('Targets') ?></span><br/>
-								<?php
-								if ($highestAction=="Individual Needs Records_viewEdit") {
-									print getEditor($guid,  TRUE, "targets", $rowIEP["targets"], 20, true ) ;
-								}
-								else {
-									print "<p>" . $rowIEP["targets"] . "</p>" ;
-								}
-								?>
-							</td>
-						</tr>
-						<tr>
-							<td colspan=2 style='padding-top: 25px'> 
-								<span style='font-weight: bold; font-size: 135%'><?php print _('Notes') ?></span><br/>
+								<span style='font-weight: bold; font-size: 135%'><?php print _('Notes & Review') ?></span><br/>
 								<?php
 								if ($highestAction=="Individual Needs Records_viewEdit") {
 									print getEditor($guid,  TRUE, "notes", $rowIEP["notes"], 20, true ) ;

@@ -498,7 +498,8 @@ $sql[$count][0]="8.1.00" ;
 $sql[$count][1]="
 CREATE TABLE `gibbonPlannerEntryStudentHomework` (  `gibbonPlannerEntryStudentHomeworkID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,  `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,  `gibbonPersonID` int(10) NOT NULL,  `homeworkDueDateTime` datetime NOT NULL,  `homeworkDetails` mediumtext NOT NULL,  `homeworkComplete` enum('Y','N') NOT NULL DEFAULT 'N',  PRIMARY KEY (`gibbonPlannerEntryStudentHomeworkID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Allows students to add homework deadlines themselves' ;end
 ALTER TABLE `gibbonPlannerEntryStudentHomework` ADD INDEX( `gibbonPlannerEntryID`, `gibbonPersonID`);end
-
+UPDATE gibboni18n SET dateFormatRegEx='/(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20\\\d\\\d)/' WHERE code='en_US';end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`) VALUES ('it_IT', 'Italiano - Italia', 'Y', 'N', 'Carmine Sirignano', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y');end
 " ;
 
 

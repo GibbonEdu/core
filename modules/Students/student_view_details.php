@@ -321,7 +321,7 @@ else {
 					if ($subpage=="Summary") {
 						if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==TRUE) {
 							print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'><img style='margin: 0 0 -4px 3px' title='" . _('Edit Record') . " src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'><img style='margin: 0 0 -4px 3px' title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "</div>" ;
 						}
 					
@@ -2054,13 +2054,13 @@ else {
 							else {
 								$rowIN=$resultIN->fetch() ;
 								
-								print "<span style='font-weight: bold'>" . _('Teaching Strategies') . "</span>" ;
-								print "<p>" . $rowIN["strategies"] . "</p>" ;
-								
-								print "<div style='font-weight: bold; margin-top: 30px'>" . _('Targets') . "</div>" ;
+								print "<div style='font-weight: bold'>" . _('Targets') . "</div>" ;
 								print "<p>" . $rowIN["targets"] . "</p>" ;
 								
-								print "<div style='font-weight: bold; margin-top: 30px'>" . _('Note') . "s</div>" ;
+								print "<div style='font-weight: bold; margin-top: 30px'>" . _('Teaching Strategies') . "</div>" ;
+								print "<p>" . $rowIN["strategies"] . "</p>" ;
+								
+								print "<div style='font-weight: bold; margin-top: 30px'>" . _('Notes & Review') . "s</div>" ;
 								print "<p>" . $rowIN["notes"] . "</p>" ;
 							}
 						}
