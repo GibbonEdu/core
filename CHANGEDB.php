@@ -500,6 +500,8 @@ CREATE TABLE `gibbonPlannerEntryStudentHomework` (  `gibbonPlannerEntryStudentHo
 ALTER TABLE `gibbonPlannerEntryStudentHomework` ADD INDEX( `gibbonPlannerEntryID`, `gibbonPersonID`);end
 UPDATE gibboni18n SET dateFormatRegEx='/(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20\\\d\\\d)/' WHERE code='en_US';end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`) VALUES ('it_IT', 'Italiano - Italia', 'Y', 'N', 'Carmine Sirignano', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y');end
+CREATE TABLE `gibbonPlannerParentWeeklyEmailSummary` (  `gibbonPlannerParentWeeklyEmailSummaryID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,  `gibbonPersonIDParent` int(10) unsigned zerofill NOT NULL,  `gibbonPersonIDStudent` int(10) unsigned zerofill NOT NULL,  `weekOfYear` int(2) NOT NULL,  `key` varchar(40) NOT NULL,  `confirmed` enum('N','Y') NOT NULL DEFAULT 'Y',  PRIMARY KEY (`gibbonPlannerParentWeeklyEmailSummaryID`),  UNIQUE KEY `key` (`key`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;end
+
 " ;
 
 

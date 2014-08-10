@@ -48,8 +48,10 @@ Individual Needs: minor changes to interface language and field order
 	Edited file /modules/Students/student_view_details.php
 
 Planner: added new feature to allow weekly email update to parents, giving details of homework and behaviour
+	New table gibbonPlannerParentWeeklyEmailSummary
 	New folder /cli
 	New file /cli/planner_parentWeeklyEmailSummary.php
+	New file /modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php
 
 General: added Italian language support, with partially complete translation
 	New value in table gibboni18n
