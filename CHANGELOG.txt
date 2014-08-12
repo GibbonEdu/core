@@ -49,13 +49,21 @@ Individual Needs: minor changes to interface language and field order
 
 Planner: added new feature to allow weekly email update to parents, giving details of homework and behaviour
 	New table gibbonPlannerParentWeeklyEmailSummary
+	New values in tables gibbonAction, gibbonPermission
 	New folder /cli
 	New file /cli/planner_parentWeeklyEmailSummary.php
-	New file /modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php
+	New files /modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php, report_parentWeeklyEmailSummaryConfirmation.php
 
 General: added Italian language support, with partially complete translation
 	New value in table gibboni18n
 	New folder /i18n/it_IT
+
+Planner: improved year-switching in units, so course does not get dropped
+	Edited file /modules/Planner/units.php
+
+Planner: allowed unit duplicate to copy to and from same year/course (e.g. duplicate in place)
+	Edited files /modules/Planner/units_duplicate*.php 
+
 
 v8.0.06
 -------

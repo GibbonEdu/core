@@ -129,8 +129,12 @@ else {
 				}
 				else {
 					$row=$result->fetch() ;
+					$name=$row["name"] ;
+					if ($gibbonCourseIDTarget==$gibbonCourseID) {
+						$name.=" (Copy)" ;
+					}
 					try {
-						$data=array("gibbonCourseID"=>$gibbonCourseIDTarget, "name"=>$row["name"], "description"=>$row["description"] ,"attachment"=>$row["attachment"] ,"details"=>$row["details"], "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"] ,"gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"]); 
+						$data=array("gibbonCourseID"=>$gibbonCourseIDTarget, "name"=>$name, "description"=>$row["description"] ,"attachment"=>$row["attachment"] ,"details"=>$row["details"], "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"] ,"gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"]); 
 						$sql="INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, attachment=:attachment, details=:details ,gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
@@ -171,7 +175,10 @@ else {
 					//Copy Lessons & resources
 					if ($copyLessons=="Yes") {
 						$gibbonCourseClassIDSource=$_POST["gibbonCourseClassIDSource"] ;
-						$gibbonCourseClassIDTarget=$_POST["gibbonCourseClassIDTarget"] ;
+						$gibbonCourseClassIDTarget=NULL ;
+						if (isset($_POST["gibbonCourseClassIDTarget"])) {
+							$gibbonCourseClassIDTarget=$_POST["gibbonCourseClassIDTarget"] ;
+						}
 						
 						if ($gibbonCourseClassIDSource=="" OR count($gibbonCourseClassIDTarget)<1 OR $AI=="") {
 							//Fail 1

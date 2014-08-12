@@ -116,13 +116,60 @@ else {
 				catch(PDOException $e) { 
 					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 				}
-
 				if ($result->rowCount()>0) {
 					$row=$result->fetch() ;
 					$gibbonCourseID=$row["gibbonCourseID"] ;
 				}
 			}
-		
+			if ($gibbonCourseID!="") {
+				try {
+					$data=array("gibbonCourseID"=>$gibbonCourseID); 
+					$sql="SELECT * FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				if ($result->rowCount()==1) {
+					$row=$result->fetch() ;
+				}
+			}
+			
+			
+			//Work out previous and next course with same name
+			$gibbonCourseIDPrevious="" ;
+			$gibbonSchoolYearIDPrevious=getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) ;
+			if ($gibbonSchoolYearIDPrevious!=FALSE AND isset($row["nameShort"])) {
+				try {
+					$dataPrevious=array("gibbonSchoolYearID"=>$gibbonSchoolYearIDPrevious, "nameShort"=>$row["nameShort"]); 
+					$sqlPrevious="SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort" ;
+					$resultPrevious=$connection2->prepare($sqlPrevious);
+					$resultPrevious->execute($dataPrevious);
+				}
+				catch(PDOException $e) { 	}
+				if ($resultPrevious->rowCount()==1) {
+					$rowPrevious=$resultPrevious->fetch() ;
+					$gibbonCourseIDPrevious=$rowPrevious["gibbonCourseID"] ;
+				}
+			}
+			$gibbonCourseIDNext="" ;
+			$gibbonSchoolYearIDNext=getNextSchoolYearID($gibbonSchoolYearID, $connection2) ;
+			if ($gibbonSchoolYearIDNext!=FALSE) {
+				try {
+					$dataNext=array("gibbonSchoolYearID"=>$gibbonSchoolYearIDNext, "nameShort"=>$row["nameShort"]); 
+					$sqlNext="SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort" ;
+					$resultNext=$connection2->prepare($sqlNext);
+					$resultNext->execute($dataNext);
+				}
+				catch(PDOException $e) { 	}
+				if ($resultNext->rowCount()==1) {
+					$rowNext=$resultNext->fetch() ;
+					$gibbonCourseIDNext=$rowNext["gibbonCourseID"] ;
+				}
+			}
+			
+			
 			
 			print "<h2>" ;
 				print $gibbonSchoolYearName ;
@@ -131,14 +178,14 @@ else {
 			print "<div class='linkTop'>" ;
 				//Print year picker
 				if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Previous Year') . "</a> " ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "&gibbonCourseID=$gibbonCourseIDPrevious'>" . _('Previous Year') . "</a> " ;
 				}
 				else {
 					print _("Previous Year") . " " ;
 				}
 				print " | " ;
 				if (getNextSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Next Year') . "</a> " ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "&gibbonCourseID=$gibbonCourseIDNext'>" . _('Next Year') . "</a> " ;
 				}
 				else {
 					print _("Next Year") . " " ;

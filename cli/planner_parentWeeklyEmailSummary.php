@@ -286,9 +286,10 @@ else {
 			}
 		
 		
-			$body="Student Count: " . $studentCount . "<br/>" ;	
-			$body.="Send Succeed Count: " . $sendSucceedCount . "<br/>" ;	
-			$body.="Send Fail Count: " . $sendFailCount . "<br/><br/>" ;	
+			$body=_("Week") . ": " . date("W") . "<br/>" ;	
+			$body.=_("Student Count") . ": " . $studentCount . "<br/>" ;	
+			$body.=_("Send Succeed Count") . ": " . $sendSucceedCount . "<br/>" ;	
+			$body.=_("Send Fail Count") . ": " . $sendFailCount . "<br/><br/>" ;	
 			$body.="<p style='font-style: italic;'>" . sprintf(_('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
 			$bodyPlain=preg_replace('#<br\s*/?>#i', "\n", $body) ;
 			$bodyPlain=str_replace("</p>", "\n\n", $bodyPlain) ;
@@ -302,14 +303,10 @@ else {
 			$mail->CharSet="UTF-8"; 
 			$mail->Encoding="base64" ;
 			$mail->IsHTML(true);                            
-			$mail->Subject=_('Weekly Planner Summary Email Sending Report ') ;
+			$mail->Subject=_('Weekly Planner Summary Email Sending Report.') ;
 			$mail->Body=$body ;
 			$mail->AltBody=$bodyPlain ;
 			$mail->Send() ;
-		
-			print "Student Count: " . $studentCount . "<br/>" ;	
-			print "Send Succeed Count: " . $sendSucceedCount . "<br/>" ;	
-			print "Send Fail Count: " . $sendFailCount . "<br/>" ;	
 		}
 	}
 }
