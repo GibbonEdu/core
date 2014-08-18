@@ -366,22 +366,25 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 	
 	print "<table cellspacing='0'>" ;
 		print "<tr>" ;
-			print "<td style='vertical-align: top'>" ;
+			print "<td style='vertical-align: top; width: 410px'>" ;
 				print "<h3>" ;
 					print _("Summary") ;
 				print "</h2>" ;
 				print "<p>" ;
-					if ($countSchoolDays!=($countPresent+$countAbsent)) {
-						print "<i>" . _('It appears that this student is missing attendance data for some school days:') . "</i><br/>" ;
-						print "<br/>" ;
+					if (isset($countSchoolDays) AND isset($countPresent) AND isset($countAbsent)) {
+						if ($countSchoolDays!=($countPresent+$countAbsent)) {
+							print "<i>" . _('It appears that this student is missing attendance data for some school days:') . "</i><br/>" ;
+							print "<br/>" ;
+						}
+						print "<b>" . _('Total number of school days to date:') . " $countSchoolDays</b><br/>" ;
+						print _("Total number of school days attended:") . " $countPresent<br/>" ;
+						print _("Total number of school days absent:") . " $countAbsent<br/>" ;
+						print _("Alternative absence count:") . " " . getAbsenceCount($guid, $gibbonPersonID, $connection2, "2013-08-28", "2014-06-28") ;
 					}
-					print "<b>" . _('Total number of school days to date:') . " $countSchoolDays</b><br/>" ;
-					print _("Total number of school days attended:") . " $countPresent<br/>" ;
-					print _("Total number of school days absent:") . " $countAbsent<br/>" ;
-					print "Alternative absence count: " . getAbsenceCount($guid, $gibbonPersonID, $connection2, "2013-08-28", "2014-06-28") ;
+					else {
+						print _("NA") ;
+					}
 				print "</p>" ;
-			print "</td>" ;
-			print "<td style='width: 10px'>" ;
 			print "</td>" ;
 			print "<td style='vertical-align: top'>" ;
 				print "<h3>" ;

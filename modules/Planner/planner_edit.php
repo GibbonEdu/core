@@ -1416,22 +1416,6 @@ else {
 								</select>
 							</td>
 						</tr>
-						
-						<tr class='break'>
-							<td colspan=2> 
-								<h3><?php print _('Twitter') ?></h3>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php print _('Integrate Twitter Content') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('Returned tweets will display in your lesson. TAKE CARE!') ?> <a href='https://support.twitter.com/articles/71577#'><?php print _('Need help?') ?></a></i></span>
-							</td>
-							<td class="right">
-								<input name="twitterSearch" id="twitterSearch" maxlength=255 value="<?php print $row["twitterSearch"] ?>" type="text" style="width: 300px">
-							</td>
-						</tr>
-						
 						<tr>
 							<td>
 								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>

@@ -64,6 +64,21 @@ Planner: improved year-switching in units, so course does not get dropped
 Planner: allowed unit duplicate to copy to and from same year/course (e.g. duplicate in place)
 	Edited files /modules/Planner/units_duplicate*.php 
 
+Students: added ability to include Left students in search
+	Edited files /modules/Students/student_view*.php
+	Edited file /modules/Attendance/moduleFunctions.php
+
+Application Form: fixed PHP short open tag issue (e.g. <?)
+	Edited file /modules/Application Form/applicationForm.php
+
+Planner: dropped Twitter search integration due to changes to Twitter API
+	Edited table gibbonPlannerEntry
+	Removed file /modules/Planner/twitter.php
+	Edited files /modules/Planner/planner_*.php	
+
+Markbook: fixed (embarrassing) issue preventing new Markbook columns from being added when none exist
+	Edited file /modules/Markbook/markbook_view.php
+
 
 v8.0.06
 -------

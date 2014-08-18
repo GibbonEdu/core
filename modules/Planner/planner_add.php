@@ -1114,8 +1114,6 @@ else {
 								$("#guestRow").css("display","none");
 								$("#guestListRow").css("display","none");
 								$("#guestRoleRow").css("display","none");
-								$("#twitterRow").css("display","none");
-								$("#twitterRowDetails").css("display","none");
 								
 								$(".advanced").click(function(){
 									if ($('input[name=advanced]:checked').val()=="Yes" ) {
@@ -1125,8 +1123,6 @@ else {
 										$("#guestRow").slideDown("fast", $("#guestRow").css("display","table-row")); 
 										$("#guestListRow").slideDown("fast", $("#guestListRow").css("display","table-row")); 
 										$("#guestRoleRow").slideDown("fast", $("#guestRoleRow").css("display","table-row")); 
-										$("#twitterRow").slideDown("fast", $("#twitterRow").css("display","table-row")); 
-										$("#twitterRowDetails").slideDown("fast", $("#twitterRowDetails").css("display","table-row")); 
 									} 
 									else {
 										$("#accessRow").slideUp("fast"); 
@@ -1135,8 +1131,6 @@ else {
 										$("#guestRow").slideUp("fast"); 
 										$("#guestListRow").slideUp("fast"); 
 										$("#guestRoleRow").slideUp("fast"); 
-										$("#twitterRow").slideUp("fast"); 
-										$("#twitterRowDetails").slideUp("fast"); 
 									}
 								 });
 							});
@@ -1233,22 +1227,6 @@ else {
 							</select>
 						</td>
 					</tr>
-					<tr class='break' id="twitterRow">
-						<td colspan=2> 
-							<h4><?php print _('Twitter') ?></h4>
-						</td>
-					</tr>
-					<tr id="twitterRowDetails">
-						<td> 
-							<b><?php print _('Integrate Twitter Content') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Returned tweets will display in your lesson. TAKE CARE!') ?> <a href='https://support.twitter.com/articles/71577#'><?php print _('Need help?') ?></a></i></span>
-						</td>
-						<td class="right">
-							<input name="twitterSearch" id="twitterSearch" maxlength=255 value="" type="text" style="width: 300px">
-						</td>
-					</tr>
-					
-					
 					<tr>
 						<td>
 							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>

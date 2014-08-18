@@ -1656,7 +1656,7 @@ else {
 				?>
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><? print _('Language Selection') ?></h3>
+						<h3><?php print _('Language Selection') ?></h3>
 						<?php
 						$languageOptionsBlurb=getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb') ;
 						if ($languageOptionsBlurb!="") {
@@ -1669,8 +1669,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><? print _('Language Choice') ?> *</b><br/>
-						<span style="font-size: 90%"><i><? print _('Please choose preferred additional language to study.') ?></i></span>
+						<b><?php print _('Language Choice') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php  print _('Please choose preferred additional language to study.') ?></i></span>
 					</td>
 					<td class="right">
 						<select name="languageChoice" id="languageChoice" style="width: 302px">
@@ -1691,8 +1691,8 @@ else {
 				</tr>
 				<tr>
 					<td colspan=2 style='padding-top: 15px'> 
-						<b><? print _('Language Choice Experience') ?> *</b><br/>
-						<span style="font-size: 90%"><i><? print _('Has the applicant studied the selected language before? If so, please describe the level and type of experience.') ?></i></span><br/> 					
+						<b><?php print _('Language Choice Experience') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('Has the applicant studied the selected language before? If so, please describe the level and type of experience.') ?></i></span><br/> 					
 						<textarea name="languageChoiceExperience" id="languageChoiceExperience" rows=5 style="width:738px; margin: 5px 0px 0px 0px"></textarea>
 						<script type="text/javascript">
 							var languageChoiceExperience=new LiveValidation('languageChoiceExperience');
@@ -1708,7 +1708,7 @@ else {
 
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('Scholarships') ?></h3>
+					<h3><?php print _('Scholarships') ?></h3>
 					<?php
 					//Get scholarships info
 					$scholarship=getSettingByScope($connection2, 'Application Form', 'scholarships') ;
@@ -1722,8 +1722,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Interest') ?></b><br/>
-					<span style="font-size: 90%"><i><? print _('Indicate if you are interested in a scholarship.') ?></i></span><br/>
+					<b><?php print _('Interest') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Indicate if you are interested in a scholarship.') ?></i></span><br/>
 				</td>
 				<td class="right">
 					<input type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> Yes
@@ -1732,8 +1732,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Required?') ?></b><br/>
-					<span style="font-size: 90%"><i><? print _('Is a scholarship required for you to take up a place at the school?') ?></i></span><br/>
+					<b><?php print _('Required?') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Is a scholarship required for you to take up a place at the school?') ?></i></span><br/>
 				</td>
 				<td class="right">
 					<input type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> Yes
@@ -1744,7 +1744,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('Payment') ?></h3>
+					<h3><?php print _('Payment') ?></h3>
 				</td>
 			</tr>
 			<script type="text/javascript">
@@ -1795,12 +1795,12 @@ else {
 			</script>
 			<tr id="familyRow">
 				<td colspan=2>
-					<p><? print _('If you choose family, future invoices will be sent according to your family\'s contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.') ?></p>
+					<p><?php print _('If you choose family, future invoices will be sent according to your family\'s contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.') ?></p>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('Send Future Invoices To') ?></b><br/>
+					<b><?php print _('Send Future Invoices To') ?></b><br/>
 				</td>
 				<td class="right">
 					<input type="radio" name="payment" value="Family" class="payment" checked /> Family
@@ -1809,7 +1809,7 @@ else {
 			</tr>
 			<tr id="companyNameRow">
 				<td> 
-					<b><? print _('Company Name') ?></b><br/>
+					<b><?php print _('Company Name') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="companyName" id="companyName" maxlength=100 value="" type="text" style="width: 300px">
@@ -1817,7 +1817,7 @@ else {
 			</tr>
 			<tr id="companyContactRow">
 				<td> 
-					<b><? print _('Company Contact Person') ?></b><br/>
+					<b><?php print _('Company Contact Person') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="companyContact" id="companyContact" maxlength=100 value="" type="text" style="width: 300px">
@@ -1825,7 +1825,7 @@ else {
 			</tr>
 			<tr id="companyAddressRow">
 				<td> 
-					<b><? print _('Company Address') ?></b><br/>
+					<b><?php print _('Company Address') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="companyAddress" id="companyAddress" maxlength=255 value="" type="text" style="width: 300px">
@@ -1833,7 +1833,7 @@ else {
 			</tr>
 			<tr id="companyEmailRow">
 				<td> 
-					<b><? print _('Company Email') ?></b><br/>
+					<b><?php print _('Company Email') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="companyEmail" id="companyEmail" maxlength=255 value="" type="text" style="width: 300px">
@@ -1845,19 +1845,19 @@ else {
 			</tr>
 			<tr id="companyCCFamilyRow">
 				<td> 
-					<b><? print _('CC Family?') ?></b><br/>
-					<span style="font-size: 90%"><i><? print _('Should the family be sent a copy of billing emails?') ?></i></span>
+					<b><?php print _('CC Family?') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Should the family be sent a copy of billing emails?') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="companyCCFamily" id="companyCCFamily" style="width: 302px">
-						<option value="N" /> <? print _('No') ?>
-						<option value="Y" /> <? print _('Yes') ?>
+						<option value="N" /> <?php print _('No') ?>
+						<option value="Y" /> <?php print _('Yes') ?>
 					</select>
 				</td>
 			</tr>
 			<tr id="companyPhoneRow">
 				<td> 
-					<b><? print _('Company Phone') ?></b><br/>
+					<b><?php print _('Company Phone') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="companyPhone" id="companyPhone" maxlength=20 value="" type="text" style="width: 300px">
@@ -1878,18 +1878,18 @@ else {
 				?>
 				<tr id="companyAllRow">
 					<td> 
-						<b><? print _('Company All?') ?></b><br/>
-						<span style="font-size: 90%"><i><? print _('Should all items be billed to the specified company, or just some?') ?></i></span>
+						<b><?php print _('Company All?') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print _('Should all items be billed to the specified company, or just some?') ?></i></span>
 					</td>
 					<td class="right">
-						<input type="radio" name="companyAll" value="Y" class="companyAll" checked /> <? print _('All') ?>
-						<input type="radio" name="companyAll" value="N" class="companyAll" /> <? print _('Selected') ?>
+						<input type="radio" name="companyAll" value="Y" class="companyAll" checked /> <?php print _('All') ?>
+						<input type="radio" name="companyAll" value="N" class="companyAll" /> <?php print _('Selected') ?>
 					</td>
 				</tr>
 				<tr id="companyCategoriesRow">
 					<td> 
-						<b><? print _('Company Fee Categories') ?></b><br/>
-						<span style="font-size: 90%"><i><? print _('If the specified company is not paying all fees, which categories are they paying?') ?></i></span>
+						<b><?php print _('Company Fee Categories') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print _('If the specified company is not paying all fees, which categories are they paying?') ?></i></span>
 					</td>
 					<td class="right">
 						<?php
@@ -1910,7 +1910,7 @@ else {
 				?>
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><? print _('Supporting Documents') ?></h3>
+						<h3><?php print _('Supporting Documents') ?></h3>
 						<?php 
 						if ($requiredDocumentsText!="" OR $requiredDocumentsCompulsory!="") {
 							print "<p>" ;
@@ -1979,12 +1979,12 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><? print _('Miscellaneous') ?></h3>
+					<h3><?php print _('Miscellaneous') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><? print _('How Did You Hear About Us?') ?> *</b><br/>
+					<b><?php print _('How Did You Hear About Us?') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<?php
@@ -2024,8 +2024,8 @@ else {
 			</script>
 			<tr id="tellUsMoreRow" style='display: none'>
 				<td> 
-					<b><? print _('Tell Us More') ?> </b><br/>
-					<span style="font-size: 90%"><i><? print _('The name of a person or link to a website, etc.') ?></i></span>
+					<b><?php print _('Tell Us More') ?> </b><br/>
+					<span style="font-size: 90%"><i><?php print _('The name of a person or link to a website, etc.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="howDidYouHearMore" id="howDidYouHearMore" maxlength=255 value="" type="text" style="width: 300px">
@@ -2039,7 +2039,7 @@ else {
 				?>
 				<tr>
 					<td> 
-						<b><? print _('Privacy') ?> *</b><br/>
+						<b><?php print _('Privacy') ?> *</b><br/>
 						<span style="font-size: 90%"><i><?php print htmlPrep($privacyBlurb) ?><br/>
 						</i></span>
 					</td>

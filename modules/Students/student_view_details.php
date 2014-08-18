@@ -42,6 +42,10 @@ else {
 		if (isset($_GET["search"])) {
 			$search=$_GET["search"] ;
 		}
+		$allStudents="" ;
+		if (isset($_GET["allStudents"])) {
+			$allStudents=$_GET["allStudents"] ;
+		}
 		
 		if ($gibbonPersonID==FALSE) {
 			print "<div class='error'>" ;
@@ -260,8 +264,14 @@ else {
 						$sql="SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'" ;
 					}
 					else {
-						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$gibbonPersonID); 
-						$sql="SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
+						if ($allStudents!="on") {
+							$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$gibbonPersonID); 
+							$sql="SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
+						}
+						else {
+							$data=array("gibbonPersonID"=>$gibbonPersonID); 
+							$sql="SELECT DISTINCT gibbonPerson.* FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
+						}
 					}
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -279,7 +289,7 @@ else {
 					$row=$result->fetch() ;
 					
 					print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/student_view.php'>" . _('View Student Profiles') . "</a> > </div><div class='trailEnd'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/student_view.php&search=$search&allStudents=$allStudents'>" . _('View Student Profiles') . "</a> > </div><div class='trailEnd'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</div>" ;
 					print "</div>" ;
 					
 					$subpage=NULL ;
@@ -354,69 +364,75 @@ else {
 							print "<tr>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
-									try {
-										$dataDetail=array("gibbonYearGroupID"=>$row["gibbonYearGroupID"]); 
-										$sqlDetail="SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID" ;
-										$resultDetail=$connection2->prepare($sqlDetail);
-										$resultDetail->execute($dataDetail);
-									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-									}
-									if ($resultDetail->rowCount()==1) {
-										$rowDetail=$resultDetail->fetch() ;
-										print _($rowDetail["name"]) ;
-										$dayTypeOptions=getSettingByScope($connection2, 'User Admin', 'dayTypeOptions') ;
-										if ($dayTypeOptions!="") {
-											print " (" . $row["dayType"] . ")" ;
+									if (isset($row["gibbonYearGroupID"])) {
+										try {
+											$dataDetail=array("gibbonYearGroupID"=>$row["gibbonYearGroupID"]); 
+											$sqlDetail="SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID" ;
+											$resultDetail=$connection2->prepare($sqlDetail);
+											$resultDetail->execute($dataDetail);
 										}
-										print "</i>" ;
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										if ($resultDetail->rowCount()==1) {
+											$rowDetail=$resultDetail->fetch() ;
+											print _($rowDetail["name"]) ;
+											$dayTypeOptions=getSettingByScope($connection2, 'User Admin', 'dayTypeOptions') ;
+											if ($dayTypeOptions!="") {
+												print " (" . $row["dayType"] . ")" ;
+											}
+											print "</i>" ;
+										}
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;
-									try {
-										$dataDetail=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
-										$sqlDetail="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
-										$resultDetail=$connection2->prepare($sqlDetail);
-										$resultDetail->execute($dataDetail);
-									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-									}
-									if ($resultDetail->rowCount()==1) {
-										$rowDetail=$resultDetail->fetch() ;
-										if (isActionAccessible($guid, $connection2, "/modules/Roll Groups/rollGroups_details.php")) {
-											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $rowDetail["gibbonRollGroupID"] . "'>" . $rowDetail["name"] . "</a>" ;
+									if (isset($row["gibbonRollGroupID"])) {
+										try {
+											$dataDetail=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
+											$sqlDetail="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
+											$resultDetail=$connection2->prepare($sqlDetail);
+											$resultDetail->execute($dataDetail);
 										}
-										else {
-											print $rowDetail["name"] ;
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
-										$primaryTutor=$rowDetail["gibbonPersonIDTutor"] ;
+										if ($resultDetail->rowCount()==1) {
+											$rowDetail=$resultDetail->fetch() ;
+											if (isActionAccessible($guid, $connection2, "/modules/Roll Groups/rollGroups_details.php")) {
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $rowDetail["gibbonRollGroupID"] . "'>" . $rowDetail["name"] . "</a>" ;
+											}
+											else {
+												print $rowDetail["name"] ;
+											}
+											$primaryTutor=$rowDetail["gibbonPersonIDTutor"] ;
+										}
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>" . _('Tutors') . "</span><br/>" ;
-									try {
-										$dataDetail=array("gibbonPersonIDTutor"=>$rowDetail["gibbonPersonIDTutor"], "gibbonPersonIDTutor2"=>$rowDetail["gibbonPersonIDTutor2"], "gibbonPersonIDTutor3"=>$rowDetail["gibbonPersonIDTutor3"]); 
-										$sqlDetail="SELECT gibbonPersonID, title, surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonIDTutor OR gibbonPersonID=:gibbonPersonIDTutor2 OR gibbonPersonID=:gibbonPersonIDTutor3" ;
-										$resultDetail=$connection2->prepare($sqlDetail);
-										$resultDetail->execute($dataDetail);
-									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-									}
-									while ($rowDetail=$resultDetail->fetch()) {
-										if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_view_details.php")) {
-											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $rowDetail["gibbonPersonID"] . "'>" . formatName("", $rowDetail["preferredName"], $rowDetail["surname"], "Staff", false, true) . "</a>" ;
+									if (isset($rowDetail["gibbonPersonIDTutor"])) {
+										try {
+											$dataDetail=array("gibbonPersonIDTutor"=>$rowDetail["gibbonPersonIDTutor"], "gibbonPersonIDTutor2"=>$rowDetail["gibbonPersonIDTutor2"], "gibbonPersonIDTutor3"=>$rowDetail["gibbonPersonIDTutor3"]); 
+											$sqlDetail="SELECT gibbonPersonID, title, surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonIDTutor OR gibbonPersonID=:gibbonPersonIDTutor2 OR gibbonPersonID=:gibbonPersonIDTutor3" ;
+											$resultDetail=$connection2->prepare($sqlDetail);
+											$resultDetail->execute($dataDetail);
 										}
-										else {
-											print formatName($rowDetail["title"], $rowDetail["preferredName"], $rowDetail["surname"], "Staff") ;
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
-										if ($rowDetail["gibbonPersonID"]==$primaryTutor AND $resultDetail->rowCount()>1) {
-											print " (" . _('Main Tutor') . ")" ;
+										while ($rowDetail=$resultDetail->fetch()) {
+											if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_view_details.php")) {
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $rowDetail["gibbonPersonID"] . "'>" . formatName("", $rowDetail["preferredName"], $rowDetail["surname"], "Staff", false, true) . "</a>" ;
+											}
+											else {
+												print formatName($rowDetail["title"], $rowDetail["preferredName"], $rowDetail["surname"], "Staff") ;
+											}
+											if ($rowDetail["gibbonPersonID"]==$primaryTutor AND $resultDetail->rowCount()>1) {
+												print " (" . _('Main Tutor') . ")" ;
+											}
+											print "<br/>" ;
 										}
-										print "<br/>" ;
 									}
 								print "</td>" ;
 							print "</tr>" ;
@@ -780,65 +796,71 @@ else {
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
-									try {
-										$dataDetail=array("gibbonYearGroupID"=>$row["gibbonYearGroupID"]); 
-										$sqlDetail="SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID" ;
-										$resultDetail=$connection2->prepare($sqlDetail);
-										$resultDetail->execute($dataDetail);
-									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-									}
-									if ($resultDetail->rowCount()==1) {
-										$rowDetail=$resultDetail->fetch() ;
-										print _($rowDetail["name"]) ;
+									if (isset($row["gibbonYearGroupID"])) {
+										try {
+											$dataDetail=array("gibbonYearGroupID"=>$row["gibbonYearGroupID"]); 
+											$sqlDetail="SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID" ;
+											$resultDetail=$connection2->prepare($sqlDetail);
+											$resultDetail->execute($dataDetail);
+										}
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										if ($resultDetail->rowCount()==1) {
+											$rowDetail=$resultDetail->fetch() ;
+											print _($rowDetail["name"]) ;
+										}
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;
-									$sqlDetail="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID='" . $row["gibbonRollGroupID"] . "'" ;
-									try {
-										$dataDetail=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
-										$sqlDetail="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
-										$resultDetail=$connection2->prepare($sqlDetail);
-										$resultDetail->execute($dataDetail);
-									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-									}
-									if ($resultDetail->rowCount()==1) {
-										$rowDetail=$resultDetail->fetch() ;
-										if (isActionAccessible($guid, $connection2, "/modules/Roll Groups/rollGroups_details.php")) {
-											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $rowDetail["gibbonRollGroupID"] . "'>" . $rowDetail["name"] . "</a>" ;
+									if (isset($row["gibbonRollGroupID"])) {
+										$sqlDetail="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID='" . $row["gibbonRollGroupID"] . "'" ;
+										try {
+											$dataDetail=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
+											$sqlDetail="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
+											$resultDetail=$connection2->prepare($sqlDetail);
+											$resultDetail->execute($dataDetail);
 										}
-										else {
-											print $rowDetail["name"] ;
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
-										$primaryTutor=$rowDetail["gibbonPersonIDTutor"] ;
+										if ($resultDetail->rowCount()==1) {
+											$rowDetail=$resultDetail->fetch() ;
+											if (isActionAccessible($guid, $connection2, "/modules/Roll Groups/rollGroups_details.php")) {
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $rowDetail["gibbonRollGroupID"] . "'>" . $rowDetail["name"] . "</a>" ;
+											}
+											else {
+												print $rowDetail["name"] ;
+											}
+											$primaryTutor=$rowDetail["gibbonPersonIDTutor"] ;
+										}
 									}
 								print "</td>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>" . _('Tutors') . "</span><br/>" ;
-									try {
-										$dataDetail=array("gibbonPersonIDTutor"=>$rowDetail["gibbonPersonIDTutor"], "gibbonPersonIDTutor2"=>$rowDetail["gibbonPersonIDTutor2"], "gibbonPersonIDTutor3"=>$rowDetail["gibbonPersonIDTutor3"]); 
-										$sqlDetail="SELECT gibbonPersonID, title, surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonIDTutor OR gibbonPersonID=:gibbonPersonIDTutor2 OR gibbonPersonID=:gibbonPersonIDTutor3" ;
-										$resultDetail=$connection2->prepare($sqlDetail);
-										$resultDetail->execute($dataDetail);
-									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-									}
-									while ($rowDetail=$resultDetail->fetch()) {
-										if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_view_details.php")) {
-											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $rowDetail["gibbonPersonID"] . "'>" . formatName("", $rowDetail["preferredName"], $rowDetail["surname"], "Staff", false, true) . "</a>" ;
+									if (isset($rowDetail["gibbonPersonIDTutor"])) {
+										try {
+											$dataDetail=array("gibbonPersonIDTutor"=>$rowDetail["gibbonPersonIDTutor"], "gibbonPersonIDTutor2"=>$rowDetail["gibbonPersonIDTutor2"], "gibbonPersonIDTutor3"=>$rowDetail["gibbonPersonIDTutor3"]); 
+											$sqlDetail="SELECT gibbonPersonID, title, surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonIDTutor OR gibbonPersonID=:gibbonPersonIDTutor2 OR gibbonPersonID=:gibbonPersonIDTutor3" ;
+											$resultDetail=$connection2->prepare($sqlDetail);
+											$resultDetail->execute($dataDetail);
 										}
-										else {
-											print formatName($rowDetail["title"], $rowDetail["preferredName"], $rowDetail["surname"], "Staff") ;
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
-										if ($rowDetail["gibbonPersonID"]==$primaryTutor AND $resultDetail->rowCount()>1) {
-											print " (" . _('Main Tutor') . ")" ;
+										while ($rowDetail=$resultDetail->fetch()) {
+											if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_view_details.php")) {
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $rowDetail["gibbonPersonID"] . "'>" . formatName("", $rowDetail["preferredName"], $rowDetail["surname"], "Staff", false, true) . "</a>" ;
+											}
+											else {
+												print formatName($rowDetail["title"], $rowDetail["preferredName"], $rowDetail["surname"], "Staff") ;
+											}
+											if ($rowDetail["gibbonPersonID"]==$primaryTutor AND $resultDetail->rowCount()>1) {
+												print " (" . _('Main Tutor') . ")" ;
+											}
+											print "<br/>" ;
 										}
-										print "<br/>" ;
 									}
 								print "</td>" ;
 							print "<tr>" ;
@@ -1492,7 +1514,7 @@ else {
 							}
 							
 							print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=$search&subpage=Notes'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&search=$search&allStudents=$allStudents&subpage=Notes'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 							print "</div>" ;
 							
 							if ($result->rowCount()<1) {
@@ -1549,8 +1571,8 @@ else {
 											print "</td>" ;
 											print "<td>" ;
 												if ($row["gibbonPersonIDCreator"]==$_SESSION[$guid]["gibbonPersonID"]) {
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_edit.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&subpage=Notes'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_delete.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&subpage=Notes'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_edit.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_delete.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 												}
 												print "<script type='text/javascript'>" ;	
 													print "$(document).ready(function(){" ;
@@ -1644,7 +1666,7 @@ else {
 									print _("This page displays academic results for a student throughout their school career. Only subjects with published results are shown.") ;
 								print "</p>" ;
 								
-								print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&subpage=Markbook'>" ;
+								print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Markbook'>" ;
 									print"<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;	
 										?>
 										<tr>
@@ -2107,7 +2129,7 @@ else {
 							if (isset($_POST["ttDate"])) {
 								$ttDate=dateConvertToTimestamp(dateConvert($guid, $_POST["ttDate"]));
 							}
-							$tt=renderTT($guid, $connection2,$gibbonPersonID, "", FALSE, $ttDate, "/modules/Students/student_view_details.php", "&gibbonPersonID=$gibbonPersonID&subpage=Timetable") ;
+							$tt=renderTT($guid, $connection2,$gibbonPersonID, "", FALSE, $ttDate, "/modules/Students/student_view_details.php", "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Timetable") ;
 							if ($tt!=FALSE) {
 								print $tt ;
 							}
@@ -2128,7 +2150,11 @@ else {
 							include "./modules/External Assessment/moduleFunctions.php" ;
 							
 							//Print assessments
-							externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $row["gibbonYearGroupID"]) ;
+							$gibbonYearGroupID="" ;
+							if (isset($row["gibbonYearGroupID"])) {
+								$gibbonYearGroupID=$row["gibbonYearGroupID"] ;
+							}
+							externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbonYearGroupID) ;
 						}
 					}
 					else if ($subpage=="Activities") {
@@ -2653,40 +2679,40 @@ else {
 					if ($subpage=="Summary") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Summary'>" . _('Summary') . "</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Summary'>" . _('Summary') . "</a></li>" ;
 					$style="" ;
 					if ($subpage=="Personal") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Personal'>" . _('Personal') . "</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Personal'>" . _('Personal') . "</a></li>" ;
 					$style="" ;
 					if ($subpage=="Family") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Family'>" . _('Family') . "</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Family'>" . _('Family') . "</a></li>" ;
 					$style="" ;
 					if ($subpage=="Emergency Contacts") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Emergency Contacts'>" . _('Emergency Contacts') . "</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Emergency Contacts'>" . _('Emergency Contacts') . "</a></li>" ;
 					$style="" ;
 					if ($subpage=="Medical") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Medical'>" . _('Medical') . "</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Medical'>" . _('Medical') . "</a></li>" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details_notes_add.php")) {
 						$style="" ;
 						if ($subpage=="Notes") {
 							$style="style='font-weight: bold'" ;
 						}
-						$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Notes'>" . _('Notes') . "</a></li>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Notes'>" . _('Notes') . "</a></li>" ;
 					}
 					if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentHistory.php")) {
 						$style="" ;
 						if ($subpage=="School Attendance") {
 							$style="style='font-weight: bold'" ;
 						}
-						$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=School Attendance'>" . _('School Attendance') . "</a></li>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=School Attendance'>" . _('School Attendance') . "</a></li>" ;
 					}
 					$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					
@@ -2700,14 +2726,14 @@ else {
 							if ($subpage=="Markbook") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Markbook'>" . _('Markbook') . "</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Markbook'>" . _('Markbook') . "</a></li>" ;
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/External Assessment/externalAssessment_details.php")) {
 							$style="" ;
 							if ($subpage=="External Assessment") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=External Assessment'>" . _('External Assessment') . "</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=External Assessment'>" . _('External Assessment') . "</a></li>" ;
 						}
 						$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					}
@@ -2721,35 +2747,35 @@ else {
 							if ($subpage=="Activities") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Activities'>" . _('Activities') . "</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Activities'>" . _('Activities') . "</a></li>" ;
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_edit.php") OR isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full.php")) {
 							$style="" ;
 							if ($subpage=="Homework") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Homework'>" . _('Homework') . "</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Homework'>" . _('Homework') . "</a></li>" ;
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Individual Needs/in_view.php")) {
 							$style="" ;
 							if ($subpage=="Individual Needs") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Individual Needs'>" . _('Individual Needs') . "</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Individual Needs'>" . _('Individual Needs') . "</a></li>" ;
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Library/report_studentBorrowingRecord.php")) {
 							$style="" ;
 							if ($subpage=="Library Borrowing Record") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Library Borrowing Record'>" . _('Library Borrowing Record') . "</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Library Borrowing Record'>" . _('Library Borrowing Record') . "</a></li>" ;
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php")) {
 							$style="" ;
 							if ($subpage=="Timetable") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Timetable'>" . _('Timetable') . "</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Timetable'>" . _('Timetable') . "</a></li>" ;
 						}
 						$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					}
@@ -2763,7 +2789,7 @@ else {
 							if ($subpage=="Behaviour Record") {
 								$style="style='font-weight: bold'" ;
 							}
-							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Behaviour Record'>" . _('Behaviour Record') . "</a></li>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Behaviour Record'>" . _('Behaviour Record') . "</a></li>" ;
 						}
 						$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					}

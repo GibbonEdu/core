@@ -150,8 +150,11 @@ else {
 			if (isset($_GET["search"])) {
 				$search=$_GET["search"] ;
 			}
+			$allStudents="" ;
+			if (isset($_GET["allStudents"])) {
+				$allStudents=$_GET["allStudents"] ;
+			}
 			
-		
 			?>
 			<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 				<table class='noIntBorder' cellspacing='0' style="width: 100%">	
@@ -165,6 +168,23 @@ else {
 							<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
+					<?php if ($highestAction=="View Student Profile_full") { ?>
+						<tr>
+							<td> 
+								<b><?php print _('All Students') ?></b><br/>
+								<span style="font-size: 90%"><i><?php print _('Include all students, regardless of status and current enrolment. Some data may not display.') ?></i></span>
+							</td>
+							<td class="right">
+								<?php
+								$checked="" ;
+								if ($allStudents=="on") {
+									$checked="checked" ;
+								}
+								print "<input $checked name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">" ;
+								?>
+							</td>
+						</tr>
+					<?php } ?>
 					<tr>
 						<td colspan=2 class="right">
 							<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/student_view.php">
@@ -189,13 +209,22 @@ else {
 				$page=1 ;
 			}
 			
-			
 			try {
-				$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-				$sql="SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ; 
-				if ($search!="") {
-					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%"); 
-					$sql="SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND (preferredName LIKE :search1 OR surname LIKE :search2 OR username LIKE :search3) AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ; 
+				if ($allStudents!="on") {
+					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+					$sql="SELECT gibbonPerson.gibbonPersonID, status, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.status='Full' ORDER BY surname, preferredName" ; 
+					if ($search!="") {
+						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%"); 
+						$sql="SELECT gibbonPerson.gibbonPersonID, status, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND (preferredName LIKE :search1 OR surname LIKE :search2 OR username LIKE :search3) AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.status='Full' ORDER BY surname, preferredName" ; 
+					}
+				}
+				else {
+					$data=array(); 
+					$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, status, surname, preferredName, NULL AS yearGroup, NULL AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) ORDER BY surname, preferredName" ; 
+					if ($search!="") {
+						$data=array("search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%"); 
+						$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, status, surname, preferredName, NULL AS yearGroup, NULL AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (preferredName LIKE :search1 OR surname LIKE :search2 OR username LIKE :search3) ORDER BY surname, preferredName" ; 
+					}
 				}
 				$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
 				$result=$connection2->prepare($sql);
@@ -212,7 +241,7 @@ else {
 			}
 			else {
 				if ($result->rowcount()>$_SESSION[$guid]["pagination"]) {
-					printPagination($guid, $result->rowcount(), $page, $_SESSION[$guid]["pagination"], "top", "&search=$search") ;
+					printPagination($guid, $result->rowcount(), $page, $_SESSION[$guid]["pagination"], "top", "&search=$search&allStudents=$allStudents") ;
 				}
 			
 				print "<table cellspacing='0' style='width: 100%'>" ;
@@ -247,6 +276,9 @@ else {
 						else {
 							$rowNum="odd" ;
 						}
+						if ($row["status"]!="Full") {
+							$rowNum="error" ;
+						}
 						$count++ ;
 						
 						//COLOR ROW BY STATUS!
@@ -255,13 +287,15 @@ else {
 								print formatName("", $row["preferredName"],$row["surname"], "Student", true) ;
 							print "</td>" ;
 							print "<td>" ;
-								print _($row["yearGroup"]) ;
+								if ($row["yearGroup"]!="") {
+									print _($row["yearGroup"]) ;
+								}
 							print "</td>" ;
 							print "<td>" ;
 								print $row["rollGroup"] ;
 							print "</td>" ;
 							print "<td>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=$search'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=$search&allStudents=$allStudents'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 							print "</td>" ;
 						print "</tr>" ;
 					}

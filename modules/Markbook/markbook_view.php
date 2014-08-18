@@ -182,6 +182,12 @@ else {
 					}
 					$columns=$result->rowCount() ;
 					if ($columns<1) {
+						print "<div class='linkTop'>" ;
+							if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php") AND $teaching) {
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-right: 3px' title='" . _('Add Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+							}
+						print "</div>" ;
+						
 						print "<div class='warning'>" ;
 							print _("There are no records to display.") ;
 						print "</div>" ;
