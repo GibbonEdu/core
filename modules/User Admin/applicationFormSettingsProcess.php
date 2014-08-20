@@ -62,6 +62,8 @@ else {
 	$languageOptionsActive=$_POST["languageOptionsActive"] ; 
 	$languageOptionsBlurb=$_POST["languageOptionsBlurb"] ; 
 	$languageOptionsLanguageList=$_POST["languageOptionsLanguageList"] ;
+	$studentDefaultEmail=$_POST["studentDefaultEmail"] ; 
+	$studentDefaultWebsite=$_POST["studentDefaultWebsite"] ;
 	
 	//Write to database
 	$fail=FALSE ;
@@ -239,6 +241,26 @@ else {
 	try {
 		$data=array("value"=>$languageOptionsLanguageList); 
 		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='languageOptionsLanguageList'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
+	try {
+		$data=array("value"=>$studentDefaultEmail); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='studentDefaultEmail'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
+	try {
+		$data=array("value"=>$studentDefaultWebsite); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='studentDefaultWebsite'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}

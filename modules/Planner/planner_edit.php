@@ -1297,7 +1297,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b>Viewable to Parents *</b><br/>
+								<b><?php print _('Viewable to Parents') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">

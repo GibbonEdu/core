@@ -208,7 +208,7 @@ else {
 				$failStudent=TRUE ;
 				$lock=true ;
 				try {
-					$sql="LOCK TABLES gibbonPerson WRITE" ;
+					$sql="LOCK TABLES gibbonPerson WRITE, gibbonSetting WRITE" ;
 					$result=$connection2->query($sql);   
 				}
 				catch(PDOException $e) { 
@@ -231,7 +231,7 @@ else {
 						$gibbonPersonID=str_pad($rowAI['Auto_increment'], 10, "0", STR_PAD_LEFT) ;
 					
 						//Set username & password
-						$username=str_replace(" ", "", preg_replace("/[^A-Za-z ]/", '', strtolower(substr($row["preferredName"],0,1) . $row["surname"])));
+						$username=substr(str_replace(" ", "", preg_replace("/[^A-Za-z ]/", '', strtolower(substr($row["preferredName"],0,1) . $row["surname"]))), 0, 12);
 						$usernameBase=$username ;
 						$count=1 ;
 						$continueLoop=TRUE ;
@@ -269,11 +269,55 @@ else {
 							$lastSchool=$row["schoolName2"] ;
 						}
 						
+						//Set default email address for student
+						$email=$row["email"] ;
+						$emailAlternate="" ;
+						$studentDefaultEmail=getSettingByScope( $connection2, "Application Form", "studentDefaultEmail") ;
+						if ($studentDefaultEmail!="") {
+							$emailAlternate=$email ;
+							$email=str_replace("[username]", $username, $studentDefaultEmail) ; 
+						}
+						
+						//Set default website address for student
+						$website="" ;
+						$studentDefaultWebsite=getSettingByScope( $connection2, "Application Form", "studentDefaultWebsite") ;
+						if ($studentDefaultWebsite!="") {
+							$website=str_replace("[username]", $username, $studentDefaultWebsite) ; 
+						}
+						
+						//Email website and email address to admin for creation
+						if ($studentDefaultEmail!="" OR $studentDefaultWebsite!="") {
+							print "<h4>" ;
+							print _("Student Email & Website") ;
+							print "</h4>" ;
+							$to=$_SESSION[$guid]["organisationAdministratorEmail"] ;
+							$subject=sprintf(_('Create Student Email/Websites for %1$s at %2$s'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationNameShort"]) ;
+							$body=sprintf(_('Please create the following for new student %1$s.'), formatName("", $row["preferredName"], $row["surname"], "Student")) . "\n\n" ;
+							if ($studentDefaultEmail!="") {
+								$body.=_("Email") . ": " . $email . "\n" ;
+							}
+							if ($studentDefaultWebsite!="") {
+								$body.=_("Website") . ": " . $website . "\n" ;
+							}
+							$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
+
+							if (mail($to, $subject, $body, $headers)) {
+								print "<div class='success'>" ;
+									print sprintf(_('A request to create a student email address and/or website address was successfully sent to %1$s.'), $_SESSION[$guid]["organisationAdministratorName"]) ;
+								print "</div>" ;
+							}
+							else {
+								print "<div class='error'>" ;
+									print sprintf(_('A request to create a student email address and/or website address failed. Please contact %1$s to request these manually.'), $_SESSION[$guid]["organisationAdministratorName"]) ;
+								print "</div>" ;
+							}
+						}
+						
 						if ($continueLoop==FALSE) {
 							$insertOK=true ;
 							try {
-								$data=array("username"=>$username, "passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "surname"=>$row["surname"], "firstName"=>$row["firstName"], "preferredName"=>$row["preferredName"], "officialName"=>$row["officialName"], "nameInCharacters"=>$row["nameInCharacters"], "gender"=>$row["gender"], "dob"=>$row["dob"], "languageFirst"=>$row["languageFirst"], "languageSecond"=>$row["languageSecond"], "languageThird"=>$row["languageThird"], "countryOfBirth"=>$row["countryOfBirth"], "citizenship1"=>$row["citizenship1"], "citizenship1Passport"=>$row["citizenship1Passport"], "nationalIDCardNumber"=>$row["nationalIDCardNumber"], "residencyStatus"=>$row["residencyStatus"], "visaExpiryDate"=>$row["visaExpiryDate"], "email"=>$row["email"], "phone1Type"=>$row["phone1Type"],"phone1CountryCode"=>$row["phone1CountryCode"],"phone1"=>$row["phone1"],"phone2Type"=>$row["phone2Type"],"phone2CountryCode"=>$row["phone2CountryCode"],"phone2"=>$row["phone2"], "lastSchool"=>$lastSchool, "dateStart"=>$row["dateStart"], "privacy"=>$row["privacy"], "dayType"=>$row["dayType"]); 
-								$sql="INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='003', gibbonRoleIDAll='003', status='Full', surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, lastSchool=:lastSchool, dateStart=:dateStart, privacy=:privacy, dayType=:dayType" ;
+								$data=array("username"=>$username, "passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "surname"=>$row["surname"], "firstName"=>$row["firstName"], "preferredName"=>$row["preferredName"], "officialName"=>$row["officialName"], "nameInCharacters"=>$row["nameInCharacters"], "gender"=>$row["gender"], "dob"=>$row["dob"], "languageFirst"=>$row["languageFirst"], "languageSecond"=>$row["languageSecond"], "languageThird"=>$row["languageThird"], "countryOfBirth"=>$row["countryOfBirth"], "citizenship1"=>$row["citizenship1"], "citizenship1Passport"=>$row["citizenship1Passport"], "nationalIDCardNumber"=>$row["nationalIDCardNumber"], "residencyStatus"=>$row["residencyStatus"], "visaExpiryDate"=>$row["visaExpiryDate"], "email"=>$email, "emailAlternate"=>$emailAlternate, "website"=>$website, "phone1Type"=>$row["phone1Type"],"phone1CountryCode"=>$row["phone1CountryCode"],"phone1"=>$row["phone1"],"phone2Type"=>$row["phone2Type"],"phone2CountryCode"=>$row["phone2CountryCode"],"phone2"=>$row["phone2"], "lastSchool"=>$lastSchool, "dateStart"=>$row["dateStart"], "privacy"=>$row["privacy"], "dayType"=>$row["dayType"]); 
+								$sql="INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='003', gibbonRoleIDAll='003', status='Full', surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, lastSchool=:lastSchool, dateStart=:dateStart, privacy=:privacy, dayType=:dayType" ;
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}
@@ -316,7 +360,8 @@ else {
 					print "<ul>" ;
 						print "<li><b>gibbonPersonID</b>: $gibbonPersonID</li>" ;
 						print "<li><b>" . _('Name')  ."</b>: " . formatName("", $row["preferredName"], $row["surname"], "Student") . "</li>" ;
-						print "<li><b>" . _('Email') . "</b>: " . $row["email"] . "</li>" ;
+						print "<li><b>" . _('Email') . "</b>: " . $email . "</li>" ;
+						print "<li><b>" . _('Email Alternate') . "</b>: " . $emailAlternate . "</li>" ;
 						print "<li><b>" . _('Username') . "</b>: $username</li>" ;
 						print "<li><b>" . _('Password') ."</b>: $password</li>" ;
 					print "</ul>" ;
@@ -775,7 +820,7 @@ else {
 										$gibbonPersonIDParent1=str_pad($rowAI['Auto_increment'], 10, "0", STR_PAD_LEFT) ;
 									
 										//Set username & password
-										$username=str_replace(" ", "", preg_replace("/[^A-Za-z ]/", '', strtolower(substr($row["parent1preferredName"],0,1) . $row["parent1surname"])));
+										$username=substr(str_replace(" ", "", preg_replace("/[^A-Za-z ]/", '', strtolower(substr($row["parent1preferredName"],0,1) . $row["parent1surname"]))), 0, 12);
 										$usernameBase=$username ;
 										$count=1 ;
 										$continueLoop=TRUE ;
@@ -938,7 +983,7 @@ else {
 										$gibbonPersonIDParent2=str_pad($rowAI['Auto_increment'], 10, "0", STR_PAD_LEFT) ;
 									
 										//Set username & password
-										$username=str_replace(" ", "", preg_replace("/[^A-Za-z ]/", '', strtolower(substr($row["parent2preferredName"],0,1) . $row["parent2surname"])));
+										$username=substr(str_replace(" ", "", preg_replace("/[^A-Za-z ]/", '', strtolower(substr($row["parent2preferredName"],0,1) . $row["parent2surname"]))), 0, 12);
 										$usernameBase=$username ;
 										$count=1 ;
 										$continueLoop=TRUE ;

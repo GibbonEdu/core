@@ -43,6 +43,7 @@ if ($viewBy!="date" AND $viewBy!="class") {
 }
 $gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
 $date=$_POST["date"] ;
+$direction=$_POST["direction"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/planner_bump.php&gibbonPlannerEntryID=$gibbonPlannerEntryID" ;
 $URLBump=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/planner.php" ;
 
@@ -63,7 +64,7 @@ else {
 	}
 	else {
 		//Proceed!
-		if ($gibbonPlannerEntryID=="" OR $viewBy=="date" OR ($viewBy=="class" AND $gibbonCourseClassID=="Y")) {
+		if (($direction!="forward" AND $direction!="backward") OR $gibbonPlannerEntryID=="" OR $viewBy=="date" OR ($viewBy=="class" AND $gibbonCourseClassID=="Y")) {
 			//Fail1
 			$URL=$URL . "&bumpReturn=fail1$params" ;
 			header("Location: {$URL}");
@@ -97,50 +98,101 @@ else {
 				$row=$result->fetch() ;
 				$partialFail=FALSE ;
 				
-				try {
-					$dataList=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$row["date"], "timeStart"=>$row["timeStart"], "timeEnd"=>$row["timeEnd"]); 
-					$sqlList="SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND (date>=:date OR (date=:date AND timeStart>=:timeStart)) ORDER BY date DESC, timeStart DESC" ;
-					$resultList=$connection2->prepare($sqlList);
-					$resultList->execute($dataList);
-				}
-				catch(PDOException $e) { 
-					//Fail2
-					$URL=$URL . "&bumpReturn=fail2$params" ;
-					header("Location: {$URL}");
-					break ;
-				}
-				while ($rowList=$resultList->fetch()) {
-					//Look for next available slot
+				if ($direction=="forward") { //BUMP FORWARD
 					try {
-						$dataNext=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$rowList["date"]); 
-						$sqlNext="SELECT timeStart, timeEnd, date FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND date>=:date ORDER BY date, timestart LIMIT 0, 10" ;
-						$resultNext=$connection2->prepare($sqlNext);
-						$resultNext->execute($dataNext);
+						$dataList=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$row["date"], "timeStart"=>$row["timeStart"], "timeEnd"=>$row["timeEnd"]); 
+						$sqlList="SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND (date>=:date OR (date=:date AND timeStart>=:timeStart)) ORDER BY date DESC, timeStart DESC" ;
+						$resultList=$connection2->prepare($sqlList);
+						$resultList->execute($dataList);
 					}
 					catch(PDOException $e) { 
-						$partialFail=true ;
+						//Fail2
+						$URL=$URL . "&bumpReturn=fail2$params" ;
+						header("Location: {$URL}");
+						break ;
 					}
-					while ($rowNext=$resultNext->fetch()) {
+					while ($rowList=$resultList->fetch()) {
+						//Look for next available slot
 						try {
-							$dataPlanner=array("date"=>$rowNext["date"], "timeStart"=>$rowNext["timeStart"], "timeEnd"=>$rowNext["timeEnd"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
-							$sqlPlanner="SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID" ;
-							$resultPlanner=$connection2->prepare($sqlPlanner);
-							$resultPlanner->execute($dataPlanner);
+							$dataNext=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$rowList["date"]); 
+							$sqlNext="SELECT timeStart, timeEnd, date FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND date>=:date ORDER BY date, timestart LIMIT 0, 10" ;
+							$resultNext=$connection2->prepare($sqlNext);
+							$resultNext->execute($dataNext);
 						}
 						catch(PDOException $e) { 
 							$partialFail=true ;
 						}
-						if ($resultPlanner->rowCount()==0) {
+						while ($rowNext=$resultNext->fetch()) {
 							try {
-								$dataNext=array("gibbonPlannerEntryID"=>$rowList["gibbonPlannerEntryID"], "date"=>$rowNext["date"], "timeStart"=>$rowNext["timeStart"], "timeEnd"=>$rowNext["timeEnd"]); 
-								$sqlNext="UPDATE gibbonPlannerEntry  set date=:date, timeStart=:timeStart, timeEnd=:timeEnd WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
-								$resultNext=$connection2->prepare($sqlNext);
-								$resultNext->execute($dataNext);
+								$dataPlanner=array("date"=>$rowNext["date"], "timeStart"=>$rowNext["timeStart"], "timeEnd"=>$rowNext["timeEnd"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
+								$sqlPlanner="SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID" ;
+								$resultPlanner=$connection2->prepare($sqlPlanner);
+								$resultPlanner->execute($dataPlanner);
 							}
 							catch(PDOException $e) { 
 								$partialFail=true ;
 							}
-							break ;
+							if ($resultPlanner->rowCount()==0) {
+								try {
+									$dataNext=array("gibbonPlannerEntryID"=>$rowList["gibbonPlannerEntryID"], "date"=>$rowNext["date"], "timeStart"=>$rowNext["timeStart"], "timeEnd"=>$rowNext["timeEnd"]); 
+									$sqlNext="UPDATE gibbonPlannerEntry  set date=:date, timeStart=:timeStart, timeEnd=:timeEnd WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+									$resultNext=$connection2->prepare($sqlNext);
+									$resultNext->execute($dataNext);
+								}
+								catch(PDOException $e) { 
+									$partialFail=true ;
+								}
+								break ;
+							}
+						}
+					}
+				}
+				else { //BUMP BACKWARD
+					try {
+						$dataList=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$row["date"], "timeStart"=>$row["timeStart"], "timeEnd"=>$row["timeEnd"]); 
+						$sqlList="SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND (date<=:date OR (date=:date AND timeStart<=:timeStart)) ORDER BY date, timeStart" ;
+						$resultList=$connection2->prepare($sqlList);
+						$resultList->execute($dataList);
+					}
+					catch(PDOException $e) { 
+						//Fail2
+						$URL=$URL . "&bumpReturn=fail2$params" ;
+						header("Location: {$URL}");
+						break ;
+					}
+					while ($rowList=$resultList->fetch()) {
+						//Look for last available slot
+						try {
+							$dataNext=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$rowList["date"]); 
+							$sqlNext="SELECT timeStart, timeEnd, date FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND date<=:date ORDER BY date DESC, timestart DESC LIMIT 0, 10" ;
+							$resultNext=$connection2->prepare($sqlNext);
+							$resultNext->execute($dataNext);
+						}
+						catch(PDOException $e) { 
+							$partialFail=true ;
+						}
+						while ($rowNext=$resultNext->fetch()) {
+							try {
+								$dataPlanner=array("date"=>$rowNext["date"], "timeStart"=>$rowNext["timeStart"], "timeEnd"=>$rowNext["timeEnd"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
+								$sqlPlanner="SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID" ;
+								$resultPlanner=$connection2->prepare($sqlPlanner);
+								$resultPlanner->execute($dataPlanner);
+							}
+							catch(PDOException $e) { 
+								$partialFail=true ;
+							}
+							if ($resultPlanner->rowCount()==0) {
+								try {
+									$dataNext=array("gibbonPlannerEntryID"=>$rowList["gibbonPlannerEntryID"], "date"=>$rowNext["date"], "timeStart"=>$rowNext["timeStart"], "timeEnd"=>$rowNext["timeEnd"]); 
+									$sqlNext="UPDATE gibbonPlannerEntry  set date=:date, timeStart=:timeStart, timeEnd=:timeEnd WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+									$resultNext=$connection2->prepare($sqlNext);
+									$resultNext->execute($dataNext);
+								}
+								catch(PDOException $e) { 
+									$partialFail=true ;
+								}
+								break ;
+							}
 						}
 					}
 				}

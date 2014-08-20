@@ -2267,7 +2267,6 @@ function getSettingByScope( $connection2, $scope, $name ) {
 	if ($result->rowCount()==1) {
 		$row=$result->fetch() ;
 		$output=$row["value"] ;
-		
 	}
 	
 	return $output ;
@@ -2658,7 +2657,7 @@ function randomPassword($length) {
   	$length=255;
   }
   
-  $charList="abcdefghijkmnopqrstuvwxyz023456789-_";
+  $charList="abcdefghijkmnopqrstuvwxyz023456789";
   $password='' ;
   
   	//Generate the password

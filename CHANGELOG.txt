@@ -79,6 +79,21 @@ Planner: dropped Twitter search integration due to changes to Twitter API
 Markbook: fixed (embarrassing) issue preventing new Markbook columns from being added when none exist
 	Edited file /modules/Markbook/markbook_view.php
 
+Planner: changed Bump Forward to Bump, adding backwards bumping option
+	Edited files /modules/Planner/planner_bump*.php, planner.php
+
+General: unified length of username at 20 char (some areas were 20, some 50)
+	Edited table gibbonPerson
+	Edited file /modules/User Admin/applicationForm_manage_accept.php
+
+Application Form: added ability to automatically set website and email of student on accept, based on pattern
+	New values in table gibbonSetting
+	Edited files /modules/User Admin/applicationFormSettings*.php
+	Edited file /modules/User Admin/applicationForm_manage_accept.php
+
+General: removed underscore and hyphen from random password generator
+	Edited file  /functions.php
+	
 
 v8.0.06
 -------

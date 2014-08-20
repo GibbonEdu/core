@@ -248,103 +248,6 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Notification Options') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationStudentMessage'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print $row["value"] ?></textarea>
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationStudentDefault'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-						<option <?php if ($row["value"]=="On") {print "selected ";} ?>value="On"><?php print _('On') ?></option>
-						<option <?php if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><?php print _('Off') ?></option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationParentsMessage'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print $row["value"] ?></textarea>
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationParentsDefault'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-						<option <?php if ($row["value"]=="On") {print "selected ";} ?>value="On"><?php print _('On') ?></option>
-						<option <?php if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><?php print _('Off') ?></option>
-					</select>
-				</td>
-			</tr>
-			
-			
-			<tr class='break'>
-				<td colspan=2> 
 					<h3><?php print _('Required Documents Options') ?></h3>
 				</td>
 			</tr>
@@ -482,6 +385,144 @@ else {
 				</td>
 				<td class="right">
 					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
+				</td>
+			</tr>
+			
+			<tr class='break'>
+				<td colspan=2> 
+					<h3><?php print _('Acceptance Options') ?></h3>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationStudentMessage'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print $row["value"] ?></textarea>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationStudentDefault'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="On") {print "selected ";} ?>value="On"><?php print _('On') ?></option>
+						<option <?php if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><?php print _('Off') ?></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationParentsMessage'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print $row["value"] ?></textarea>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationParentsDefault'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="On") {print "selected ";} ?>value="On"><?php print _('On') ?></option>
+						<option <?php if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><?php print _('Off') ?></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='studentDefaultEmail'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='studentDefaultWebsite'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>
 				</td>
 			</tr>
 			
