@@ -172,6 +172,7 @@ _('New Message') ;
 _('New Message') ;
 _('New Message') ;
 _('New Students')
+_('Parent Weekly Email Summary')
 _('Participants by Activity')
 _('Payment')
 _('Personal Data Updates ')
@@ -373,6 +374,7 @@ _('Summarises gender, age and school year') ;
 _('Take attendance, one person at a time') ;
 _('Take attendance, one roll group at a time') ;
 _('This action copies all current activities, slots and staff into a specified year.') ;
+_('This report shows responses to the weekly summary email, organised by calendar week and role group.') ;
 _('Update Gibbon to a new version') ;
 _('View a brief profile of roll groups in school.') ;
 _('View all markbook information for all users') ;
@@ -1730,6 +1732,8 @@ _('SMS URL') ;
 _('SMS URL Credit') ;
 _('SMS Username') ;
 _('Statistics Collection') ;
+_('Student Default Email') ;
+_('Student Default Website') ;
 _('Student Notification Default') ;
 _('Student Notification Message') ;
 _('System Administrator') ;
@@ -1801,6 +1805,8 @@ _('Require both upper and lower case alpha characters?') ;
 _('RGB Hex value, without leading #. Background color used behind library browsing screen.') ;
 _('Serialized array connected gibbonExternalAssessmentID to gibbonYearGroupID, and specify which field set to use.') ;
 _('Serialized array listed personal fields in data updater, and whether or not they are required.') ;
+_('Set default email for students on acceptance, using [username] to insert username.') ;
+_('Set default website for students on acceptance, using [username] to insert username.') ;
 _('Should activities be organised around dates (flexible) or terms (easy)?') ;
 _('Should markbook warnings be based on personal targets, if they are available?') ;
 _('Should parent acceptance email be turned on or off by default.') ;
