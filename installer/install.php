@@ -120,6 +120,7 @@ include "../functions.php" ;
 														<select name="code" id="code" style="width: 302px">
 															<option value='en_GB'>English - United Kingdom</option>
 															<option value='en_US'>English - United States</option>
+															<option value='it_IT'>English - United States</option>
 														</select>
 													</td>
 												</tr>
