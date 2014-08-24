@@ -35,7 +35,7 @@ function getCurrentVersion($guid, $connection2, $version) {
 					$output.="else {" ;
 						$output.="if (data['version']<='" . $version . "') {" ;
 							$output.="$(\"#status\").attr(\"class\",\"success\");" ;
-							$output.="$(\"#status\").html('" . sprintf(_('Version check successful. Your Gibbon installation is up to date at %1$s.'), $version) . "') ;" ;
+							$output.="$(\"#status\").html('" . sprintf(_('Version check successful. Your Gibbon installation is up to date at %1$s.'), $version) . " " . sprintf(_('If you have recently updated your system files, please check that your database is up to date in %1$sUpdates%2$s.'), "<a href=\'" . $_SESSION[$guid]["absoluteURL"] . "/index.php&q=/modules/System Admin/update.php\'>", "</a>") . "') ;" ;
 						$output.="}" ;
 						$output.="else {" ;
 							$output.="$(\"#status\").attr(\"class\",\"warning\");" ;

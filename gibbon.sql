@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:8889
--- Generation Time: Jun 17, 2014 at 02:24 PM
+-- Generation Time: Aug 24, 2014 at 01:45 PM
 -- Server version: 5.5.34
 -- PHP Version: 5.5.10
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `gibbon`
+-- Database: `gibbon_tmp`
 --
 
 -- --------------------------------------------------------
@@ -47,7 +47,7 @@ CREATE TABLE `gibbonAction` (
   `categoryPermissionOther` enum('Y','N') NOT NULL DEFAULT 'Y',
   PRIMARY KEY (`gibbonActionID`),
   KEY `gibbonModuleID` (`gibbonModuleID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=810 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=811 ;
 
 --
 -- Dumping data for table `gibbonAction`
@@ -237,7 +237,8 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000806, 0003, 'Language Settings', 0, '', 'Allows administrators to control system-wide language and localisation settings.', 'i18n_manage.php', 'i18n_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000807, 0005, 'Privacy Choices by Student', 0, 'Reports', 'Shows privacy options selected, for those students with a selection made.', 'report_privacy_student.php', 'report_privacy_student.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000808, 0014, 'View Available Teachers', 0, 'Reports', 'View unassigned teachers by timetable.', 'report_viewAvailableTeachers.php', 'report_viewAvailableTeachers.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
-(0000809, 0015, 'Copy Activities', 0, 'Actions', 'This action copies all current activities, slots and staff into a specified year.', 'activities_copy.php', 'activities_copy.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
+(0000809, 0015, 'Copy Activities', 0, 'Actions', 'This action copies all current activities, slots and staff into a specified year.', 'activities_copy.php', 'activities_copy.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000810, 0009, 'Parent Weekly Email Summary', 0, 'Reports', 'This report shows responses to the weekly summary email, organised by calendar week and role group.', 'report_parentWeeklyEmailSummaryConfirmation.php', 'report_parentWeeklyEmailSummaryConfirmation.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
 
 -- --------------------------------------------------------
 
@@ -1569,7 +1570,7 @@ CREATE TABLE `gibboni18n` (
   `dateFormatRegEx` text NOT NULL,
   `dateFormatPHP` varchar(20) NOT NULL,
   PRIMARY KEY (`gibboni18nID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
 --
 -- Dumping data for table `gibboni18n`
@@ -1581,7 +1582,8 @@ INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `active`, `systemDefau
 (0003, 'es_ES', 'Español - España', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y'),
 (0004, 'zh_CN', '汉语 - 中国', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'yyyy-mm-dd', '/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/', 'Y-m-d'),
 (0005, 'zh_HK', '體字 - 香港', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y'),
-(0007, 'pl_PL', 'Język polski - Polska', 'N', 'N', 'Arek Gladki', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\\d\\\\d$/i', 'd/m/Y');
+(0007, 'pl_PL', 'Język polski - Polska', 'N', 'N', 'Arek Gladki', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\\d\\\\d$/i', 'd/m/Y'),
+(0008, 'it_IT', 'Italiano - Italia', 'Y', 'N', 'Carmine Sirignano', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y');
 
 -- --------------------------------------------------------
 
@@ -1986,7 +1988,7 @@ CREATE TABLE `gibbonPermission` (
   PRIMARY KEY (`permissionID`),
   KEY `gibbonRoleID` (`gibbonRoleID`),
   KEY `gibbonActionID` (`gibbonActionID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=53863 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=53865 ;
 
 --
 -- Dumping data for table `gibbonPermission`
@@ -2281,7 +2283,9 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000053859, 001, 0000807),
 (0000053860, 002, 0000807),
 (0000053861, 001, 0000808),
-(0000053862, 001, 0000809);
+(0000053862, 001, 0000809),
+(0000053863, 001, 0000810),
+(0000053864, 002, 0000810);
 
 -- --------------------------------------------------------
 
@@ -2298,7 +2302,7 @@ CREATE TABLE `gibbonPerson` (
   `officialName` varchar(150) NOT NULL,
   `nameInCharacters` varchar(20) NOT NULL,
   `gender` enum('M','F') NOT NULL DEFAULT 'M',
-  `username` varchar(50) NOT NULL,
+  `username` varchar(20) NOT NULL,
   `password` varchar(255) NOT NULL DEFAULT '',
   `passwordStrong` varchar(255) NOT NULL,
   `passwordStrongSalt` varchar(255) NOT NULL,
@@ -2574,7 +2578,6 @@ CREATE TABLE `gibbonPlannerEntry` (
   `homeworkCrowdAssessClassmatesRead` enum('N','Y') NOT NULL,
   `viewableStudents` enum('Y','N') NOT NULL DEFAULT 'Y',
   `viewableParents` enum('Y','N') NOT NULL DEFAULT 'N',
-  `twitterSearch` varchar(255) NOT NULL,
   `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
   `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL,
   PRIMARY KEY (`gibbonPlannerEntryID`),
@@ -2692,6 +2695,23 @@ CREATE TABLE `gibbonPlannerEntryOutcome` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `gibbonPlannerEntryStudentHomework`
+--
+
+CREATE TABLE `gibbonPlannerEntryStudentHomework` (
+  `gibbonPlannerEntryStudentHomeworkID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
+  `gibbonPersonID` int(10) NOT NULL,
+  `homeworkDueDateTime` datetime NOT NULL,
+  `homeworkDetails` mediumtext NOT NULL,
+  `homeworkComplete` enum('Y','N') NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`gibbonPlannerEntryStudentHomeworkID`),
+  KEY `gibbonPlannerEntryID` (`gibbonPlannerEntryID`,`gibbonPersonID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Allows students to add homework deadlines themselves' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `gibbonPlannerEntryStudentTracker`
 --
 
@@ -2701,6 +2721,24 @@ CREATE TABLE `gibbonPlannerEntryStudentTracker` (
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `homeworkComplete` enum('Y','N') NOT NULL,
   PRIMARY KEY (`gibbonPlannerEntryStudentTrackerID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonPlannerParentWeeklyEmailSummary`
+--
+
+CREATE TABLE `gibbonPlannerParentWeeklyEmailSummary` (
+  `gibbonPlannerParentWeeklyEmailSummaryID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
+  `gibbonPersonIDParent` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDStudent` int(10) unsigned zerofill NOT NULL,
+  `weekOfYear` int(2) NOT NULL,
+  `key` varchar(40) NOT NULL,
+  `confirmed` enum('N','Y') NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`gibbonPlannerParentWeeklyEmailSummaryID`),
+  UNIQUE KEY `key` (`key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -3340,7 +3378,7 @@ CREATE TABLE `gibbonSetting` (
   PRIMARY KEY (`gibbonSystemSettingsID`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `nameDisplay` (`nameDisplay`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=134 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=136 ;
 
 --
 -- Dumping data for table `gibbonSetting`
@@ -3468,7 +3506,9 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 (00130, 'System', 'cuttingEdgeCode', 'Cutting Edge Code', 'Are you running cutting edge code, instead of stable versions?', 'N'),
 (00131, 'System', 'cuttingEdgeCodeLine', 'Cutting Edge Code Line', 'What line of SQL code did the last cutting edge update hit?', ''),
 (00132, 'System', 'gibboneduComOrganisationName', 'gibbonedu.com Organisation Name', 'Name of organisation, as registered with gibbonedu.com, for access to value-added services.', ''),
-(00133, 'System', 'gibboneduComOrganisationKey', 'gibbonedu.com Organisation Key', 'Organisation''s private key, as registered with gibbonedu.com, for access to value-added services.', '');
+(00133, 'System', 'gibboneduComOrganisationKey', 'gibbonedu.com Organisation Key', 'Organisation''s private key, as registered with gibbonedu.com, for access to value-added services.', ''),
+(00134, 'Application Form', 'studentDefaultEmail', 'Student Default Email', 'Set default email for students on acceptance, using [username] to insert username.', ''),
+(00135, 'Application Form', 'studentDefaultWebsite', 'Student Default Website', 'Set default website for students on acceptance, using [username] to insert username.', '');
 
 -- --------------------------------------------------------
 

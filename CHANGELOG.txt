@@ -94,6 +94,8 @@ Application Form: added ability to automatically set website and email of studen
 General: removed underscore and hyphen from random password generator
 	Edited file  /functions.php
 	
+System Admin: improved text when system files are up to date
+	Edited file /modules/System Admin/moduleFunctions.php
 
 v8.0.06
 -------
