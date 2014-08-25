@@ -161,7 +161,5 @@ else {
 			}
 		}
 	}
-	//Print sidebar
-	$_SESSION[$guid]["sidebarExtra"]=sidebarExtra($guid, $connection2) ;
 }
 ?>

@@ -16,6 +16,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v8.2.00
+-------
+General: added system-wide notifications, which can be utilised by any module
+	New table gibbonNotification
+	Edited files /functions.php, /index.php
+	New files /themes/Default/img/notifications_off.png, notifications_on.png
+	New files /themes/Olden/img/notifications_off.png, notifications_on.png
+	Edited file /themes/Default/img/like_off.png
+	New files /notifications*.php
+	Edited files /modules/Crowd Assessment/crowdAssess*.php
+
 v8.1.00
 -------
 General: added dev indicator in footer, when running cuttingEdge

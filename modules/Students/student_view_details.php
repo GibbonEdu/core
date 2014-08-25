@@ -2666,7 +2666,6 @@ else {
 						$_SESSION[$guid]["sidebarExtra"].="<b>" . _('Current Alerts:') . "</b>$alert" ; 
 					}
 					$_SESSION[$guid]["sidebarExtra"].="</div>" ;
-						
 
 					$_SESSION[$guid]["sidebarExtra"].=getUserPhoto($guid, $row["image_240"], 240) ;
 					

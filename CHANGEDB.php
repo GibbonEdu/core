@@ -511,6 +511,16 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Application Form', 'studentDefaultWebsite', 'Student Default Website', 'Set default website for students on acceptance, using [username] to insert username.', '');end
 " ;
 
+//v8.2.00
+$count++ ;
+$sql[$count][0]="8.2.00" ;
+$sql[$count][1]="
+CREATE TABLE `gibbonNotification` (`gibbonNotificationID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,  `gibbonModuleID` int(4) unsigned zerofill DEFAULT NULL,  `text` text NOT NULL, `actionLink` varchar(255) NOT NULL COMMENT 'Relative to absoluteURL, start with a forward slash', `actionText` varchar(255) NOT NULL,  `timestamp` datetime NOT NULL,  PRIMARY KEY (`gibbonNotificationID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;end
+ALTER TABLE `gibbonNotification` DROP `actionText`;end
+ALTER TABLE `gibbonNotification` ADD `count` INT(4) NOT NULL DEFAULT '1' AFTER `gibbonModuleID`;end
+
+" ;
+
 
 
 ?>

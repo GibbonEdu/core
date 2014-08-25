@@ -227,7 +227,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 				$margintop="0px" ;
 			}
 			$output.="<a name='" . $rowDiscuss["gibbonPlannerEntryDiscussID"] . "'></a>" ; 
-			$output.="<table cellspacing='0' style='width: " . (755-($level*15)) . "px ; padding: 1px 3px; margin-bottom: -2px; margin-top: $margintop; margin-left: " . ($level*15) . "px; border: $border ; background-color: #f9f9f9'>" ;
+			$output.="<table class='noIntBorder' cellspacing='0' style='width: " . (755-($level*15)) . "px ; padding: 1px 3px; margin-bottom: -2px; margin-top: $margintop; margin-left: " . ($level*15) . "px; border: $border ; background-color: #f9f9f9'>" ;
 				$output.="<tr>" ;
 					$output.="<td style='color: #777'><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) . " " . _('said') . "</i>:</td>" ;
 					$output.="<td style='color: #777; text-align: right'><i>" . _('Posted at') . " <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack($guid, substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;

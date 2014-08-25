@@ -130,6 +130,39 @@ else {
 							$hash="#" . $_GET["replyTo"] ;	
 						}
 						
+						//Work out who we are replying too
+						$replyToID=NULL ;
+						$dataClassGroup=array("gibbonCrowdAssessDiscussID"=>$replyTo); 
+						$sqlClassGroup="SELECT * FROM gibbonCrowdAssessDiscuss WHERE gibbonCrowdAssessDiscussID=:gibbonCrowdAssessDiscussID" ;
+						$resultClassGroup=$connection2->prepare($sqlClassGroup);
+						$resultClassGroup->execute($dataClassGroup);
+						if ($resultClassGroup->rowCount()==1) {
+							$rowClassGroup=$resultClassGroup->fetch() ;
+							$replyToID=$rowClassGroup["gibbonPersonID"] ;
+						}
+						
+						//Get lesson plan name
+						$dataLesson=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
+						$sqlLesson="SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+						$resultLesson=$connection2->prepare($sqlLesson);
+						$resultLesson->execute($dataLesson);
+						if ($resultLesson->rowCount()==1) {
+							$rowLesson=$resultLesson->fetch() ;
+							$name=$rowLesson["name"] ;
+						}
+
+						//Create notification for homework owner, as long as it is not me.
+						if ($gibbonPersonID!=$_SESSION[$guid]["gibbonPersonID"] AND $gibbonPersonID!=$replyToID) {
+							$notificationText=sprintf(_('Someone has commented on your homework for lesson plan "%1$s".'), $name) ;
+							setNotification($connection2, $guid, $gibbonPersonID, $notificationText, "Crowd Assessment", "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID") ;
+						} 
+
+						//Create notification to person I am replying to
+						if (is_null($replyToID)==FALSE) {
+							$notificationText=sprintf(_('Someone has replied to a comment on homework for lesson plan "%1$s".'), $name) ;
+							setNotification($connection2, $guid, $replyToID, $notificationText, "Crowd Assessment", "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID") ;
+						}
+						
 						//Success 0
 						$URL=$URL . "&updateReturn=success0$hash" ;
 						header("Location: {$URL}");

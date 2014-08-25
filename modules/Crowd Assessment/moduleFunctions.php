@@ -17,123 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
-function sidebarExtra($guid, $connection2) {
-	$_SESSION[$guid]["lastTimestamp"] ;
-	$output="" ;
-	
-	if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess.php")) {
-		//Select my work with activity from Crowd Assessment
-		$myWork=array() ;
-		$countWork=0 ;
-		try {
-			$data=array("gibbonPersonID"=> $_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=> $_SESSION[$guid]["gibbonSchoolYearID"]); 
-			$sql="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClassPerson.gibbonPersonID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) WHERE role='Student' AND gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$output.="<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-
-		while ($row=$result->fetch()) {
-			try {
-				$dataWork=array("timestamp"=>$_SESSION[$guid]["lastTimestamp"], "gibbonPersonID1"=>$row["gibbonPersonID"], "gibbonCourseClassID"=>$row["gibbonCourseClassID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
-				$sqlWork="SELECT DISTINCT gibbonPlannerEntryHomework.gibbonPlannerEntryHomeworkID, gibbonPlannerEntry.name, gibbonPlannerEntry.gibbonPlannerEntryID FROM gibbonPlannerEntryHomework JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCrowdAssessDiscuss ON (gibbonPlannerEntryHomework.gibbonPlannerEntryHomeworkID=gibbonCrowdAssessDiscuss.gibbonPlannerEntryHomeworkID) WHERE gibbonCrowdAssessDiscuss.timestamp>=:timestamp AND gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID1 AND NOT gibbonCrowdAssessDiscuss.gibbonPersonID=:gibbonPersonID2 ORDER BY count DESC" ;
-				$resultWork=$connection2->prepare($sqlWork);
-				$resultWork->execute($dataWork);
-			}
-			catch(PDOException $e) { 
-				$output.="<div class='error'>" . $e->getMessage() . "</div>" ; 
-			}
-			while ($rowWork=$resultWork->fetch()) {
-				$myWork[$countWork][0]=$row["course"] . "." . $row["class"] ;
-				$myWork[$countWork][1]=$rowWork["name"] ;
-				$myWork[$countWork][2]=$rowWork["gibbonPlannerEntryHomeworkID"] ;
-				$myWork[$countWork][3]=$rowWork["gibbonPlannerEntryID"] ;
-				$myWork[$countWork][4]=$row["gibbonPersonID"] ;	
-				$countWork++ ;
-			}
-		}
-		
-		//Replies to me from Crowd Assessment
-		$myReplies=array() ;
-		$countReply=0 ;
-		try {
-			$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-			$sql="SELECT gibbonCrowdAssessDiscuss.*, gibbonPlannerEntry.name, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonPlannerEntryHomework.gibbonPersonID AS owner FROM gibbonCrowdAssessDiscuss JOIN gibbonPlannerEntryHomework ON (gibbonCrowdAssessDiscuss.gibbonPlannerEntryHomeworkID=gibbonPlannerEntryHomework.gibbonPlannerEntryHomeworkID) JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) WHERE gibbonCrowdAssessDiscuss.gibbonPersonID=:gibbonPersonID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$output.="<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-
-		while ($row=$result->fetch()) {
-			try {
-				$dataReply=array("timestamp"=>$_SESSION[$guid]["lastTimestamp"], "gibbonCrowdAssessDiscussID"=>$row["gibbonCrowdAssessDiscussID"]); 
-				$sqlReply="SELECT gibbonCrowdAssessDiscuss.*, title, surname, preferredName, category FROM gibbonCrowdAssessDiscuss JOIN gibbonPerson ON (gibbonCrowdAssessDiscuss.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonCrowdAssessDiscuss.timestamp>=:timestamp AND gibbonCrowdAssessDiscussIDReplyTo=:gibbonCrowdAssessDiscussID" ;
-				$resultReply=$connection2->prepare($sqlReply);
-				$resultReply->execute($dataReply);
-			}
-			catch(PDOException $e) { 
-				$output.="<div class='error'>" . $e->getMessage() . "</div>" ; 
-			}
-			while ($rowReply=$resultReply->fetch()) {
-				$myReplies[$countReply][0]=formatName($rowReply["title"], $rowReply["preferredName"], $rowReply["surname"], $rowReply["category"]) ;
-				$myReplies[$countReply][1]=$row["name"] ;
-				$myReplies[$countReply][2]=$rowReply["gibbonPlannerEntryHomeworkID"] ;
-				$myReplies[$countReply][3]=$row["gibbonPlannerEntryID"] ;
-				$myReplies[$countReply][4]=$row["owner"] ;	
-				$myReplies[$countReply][5]=$row["gibbonCrowdAssessDiscussID"] ;	
-				$countReply++ ;
-			}
-		}
-	}
-	
-		
-	$output.="<h2>" ;
-	$output.=_("Recent Discussion") ;
-	$output.="</h2>" ;
-		
-	if (count($myWork)>0 OR count($myReplies)>0) {
-		
-		$output.="<h5 style='margin-top: 2px'>" ;
-		$output.=_("Crowd Assessment") ;
-		$output.="</h5>" ;
-		
-		if (count($myWork)>0) {
-			$output.="<p>" ;
-			$output.=_("Comments on my work:") ;
-			$output.="</p>" ;
-		
-			$output.="<ul>" ;
-			for ($i=0; $i<$countWork; $i++) {
-				$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=" . $myWork[$i][3] . "&gibbonPlannerEntryHomeworkID=" . $myWork[$i][2] . "&gibbonPersonID=" . $myWork[$i][4] . "'>" . $myWork[$i][0] . " - " . $myWork[$i][1] . "</a></li>" ;
-			}
-			$output.="</ul>" ;
-		}
-		
-		if (count($myReplies)>0) {
-			$output.="<p>" ;
-			$output.=_("Replies to me:") ;
-			$output.="</p>" ;
-		
-			$output.="<ul>" ;
-			for ($i=0; $i<$countReply; $i++) {
-				$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=" . $myReplies[$i][3] . "&gibbonPlannerEntryHomeworkID=" . $myReplies[$i][2] . "&gibbonPersonID=" . $myReplies[$i][4] . "#" . $myReplies[$i][5] . "'>" . $myReplies[$i][0] . " - " . $myReplies[$i][1] . "</a></li>" ;
-			}
-			$output.="</ul>" ;
-		}
-	}
-	else {
-	$output.="<p><i>" . _('There has been no activity since your last login.') . "</i></p>" ;
-	}
-			
-	return $output ;
-}
-
 function getLessons($guid, $connection2, $and="" ) {
 	$today=date("Y-m-d") ;
 	$now=date("Y-m-d H:i:s") ;
@@ -432,7 +315,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
 				$margintop="0px" ;
 			}
 			$output.="<a name='" . $rowDiscuss["gibbonCrowdAssessDiscussID"] . "'></a>" ; 
-			$output.="<table cellspacing='0' style='width: " . (760-($level*15)) . "px ; padding: 1px 3px; margin-bottom: -2px; margin-top: $margintop; margin-left: " . ($level*15) . "px; border: $border ; background-color: #f9f9f9'>" ;
+			$output.="<table class='noIntBorder' cellspacing='0' style='width: " . (760-($level*15)) . "px ; padding: 1px 3px; margin-bottom: -2px; margin-top: $margintop; margin-left: " . ($level*15) . "px; border: $border ; background-color: #f9f9f9'>" ;
 				$output.="<tr>" ;
 					$output.="<td style='color: #777'><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) ." said</i>:</td>" ;
 					$output.="<td style='color: #777; text-align: right'><i>Posted at <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack($guid, substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;

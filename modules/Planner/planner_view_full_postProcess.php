@@ -82,17 +82,18 @@ else {
 				header("Location: {$URL}");
 			}
 			else {	
+				$row=$result->fetch() ;
+				
 				//INSERT
 				$replyTo=$_POST["replyTo"] ;
 				if ($_POST["replyTo"]=="") {
 					$replyTo=NULL ;
 				}
-				
 				try {
-					$data=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "comment"=>$_POST["comment"], "replyTo"=>$replyTo); 
-					$sql="INSERT INTO gibbonPlannerEntryDiscuss SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, comment=:comment, gibbonPlannerEntryDiscussIDReplyTo=:replyTo" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
+					$dataInsert=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "comment"=>$_POST["comment"], "replyTo"=>$replyTo); 
+					$sqlInsert="INSERT INTO gibbonPlannerEntryDiscuss SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, comment=:comment, gibbonPlannerEntryDiscussIDReplyTo=:replyTo" ;
+					$resultInsert=$connection2->prepare($sqlInsert);
+					$resultInsert->execute($dataInsert);
 				}
 				catch(PDOException $e) { 
 					//Fail2
@@ -101,6 +102,35 @@ else {
 					break ;
 				}
 				
+				//Work out who we are replying too
+				$replyToID=NULL ;
+				$dataClassGroup=array("gibbonPlannerEntryDiscussID"=>$replyTo); 
+				$sqlClassGroup="SELECT * FROM gibbonPlannerEntryDiscuss WHERE gibbonPlannerEntryDiscussID=:gibbonPlannerEntryDiscussID" ;
+				$resultClassGroup=$connection2->prepare($sqlClassGroup);
+				$resultClassGroup->execute($dataClassGroup);
+				if ($resultClassGroup->rowCount()==1) {
+					$rowClassGroup=$resultClassGroup->fetch() ;
+					$replyToID=$rowClassGroup["gibbonPersonID"] ;
+				}
+				
+				//Create notification for all people in class except me
+				$dataClassGroup=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"]); 
+				$sqlClassGroup="SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND (NOT role='Student - Left') AND (NOT role='Teacher - Left') ORDER BY role DESC, surname, preferredName" ;
+				$resultClassGroup=$connection2->prepare($sqlClassGroup);
+				$resultClassGroup->execute($dataClassGroup);
+				while ($rowClassGroup=$resultClassGroup->fetch()) {
+					if ($rowClassGroup["gibbonPersonID"]!=$_SESSION[$guid]["gibbonPersonID"] AND $rowClassGroup["gibbonPersonID"]!=$replyToID) {
+						$notificationText=sprintf(_('Someone has commented on your lesson plan "%1$s".'), $row["name"]) ;
+						setNotification($connection2, $guid, $rowClassGroup["gibbonPersonID"], $notificationText, "Planner", "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=" . $row["date"] . "&gibbonCourseClassID=&search=") ;
+					} 
+				}
+				
+				//Create notification to person I am replying to
+				if (is_null($replyToID)==FALSE) {
+					$notificationText=sprintf(_('Someone has replied to a comment you made on lesson plan "%1$s".'), $row["name"]) ;
+					setNotification($connection2, $guid, $replyToID, $notificationText, "Planner", "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=" . $row["date"] . "&gibbonCourseClassID=&search=") ;
+				}
+						
 				//Success 0
 				$URL=$URL . "&postReturn=success0" ;
 				header("Location: {$URL}");	

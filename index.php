@@ -402,10 +402,10 @@ else {
 										//Spit out likes
 										if (isset($_SESSION[$guid]["likeCount"])) {
 											if ($_SESSION[$guid]["likeCount"]>0) {
-												print " . <a title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=stars.php'>" . $_SESSION[$guid]["likeCount"] . " x </a><a title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=stars.php'><img style='opacity: 0.8; vertical-align: -60%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
+												print " . <a title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=stars.php'>" . $_SESSION[$guid]["likeCount"] . " x <img style='opacity: 0.8; vertical-align: -60%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
 											}
 											else {
-												print " . " . $_SESSION[$guid]["likeCount"] . " x <img title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' style='opacity: 0.8; vertical-align: -60%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'>" ;
+												print " . " . $_SESSION[$guid]["likeCount"] . " x <img title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' style='opacity: 0.8; vertical-align: -60%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'>" ;
 											}
 										}
 										
@@ -467,7 +467,7 @@ else {
 													print " . 0 x <img style='opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
 												}
 												else {
-													print " . <a class='thickbox' href='$URL'>" . $_SESSION[$guid]["messageWallCount"] . " x </a><a class='thickbox' href='$URL'><img style='opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall.png'></a>" ;
+													print " . <a title='" . _('Message Wall') . "'class='thickbox' href='$URL'>" . $_SESSION[$guid]["messageWallCount"] . " x <img style='opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall.png'></a>" ;
 													if ($_SESSION[$guid]["pageLoads"]==0 AND ($_SESSION[$guid]["messengerLastBubble"]==NULL OR $_SESSION[$guid]["messengerLastBubble"]<date("Y-m-d"))) {
 														?>
 														<div id='messageBubbleArrow' style="left: 650px; top: 42px" class='arrow top'></div>
@@ -531,6 +531,24 @@ else {
 											}
 										}
 										
+										//GET & SHOW NOTIFICATIONS
+										try {
+											$dataNotifications=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
+											$sqlNotifications="(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID)
+											UNION
+											(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2)
+											ORDER BY timestamp DESC, source, text" ;
+											$resultNotifications=$connection2->prepare($sqlNotifications);
+											$resultNotifications->execute($dataNotifications); 
+										}
+										catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
+										
+										if ($resultNotifications->rowCount()>0) {
+											print " . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
+										}
+										else {
+											print " . 0 x " . "<img style='opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
+										}
 									print "</div>" ;
 									
 									if ($cacheLoad) {
