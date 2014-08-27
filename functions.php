@@ -707,7 +707,7 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 		$output.="</div>" ;
 		
 		$output.="<div id='editorcontainer' style='margin-top: 4px'>" ;
-			$output.="<textarea name='" . $id . "' id='" . $id . "' rows=$rows style='width: 100%; margin-left: 0px'>" . htmlPrep($value) . "</textarea>" ;
+			$output.="<textarea class='tinymce' name='" . $id . "' id='" . $id . "' rows=$rows style='width: 100%; margin-left: 0px'>" . htmlPrep($value) . "</textarea>" ;
 			if ($required) {
 				$output.="<script type='text/javascript'>" ;
 					$output.="var " . $id ."='';" ;
@@ -727,7 +727,7 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 				}
 				$output.="$('#" . $id . "edButtonPreview').addClass('active') ;" ;
 				 $output.="$('#" . $id . "edButtonHTML').click(function(){" ;
-					$output.="tinyMCE.execCommand('mceRemoveControl', false, '" . $id . "');" ; 
+					$output.="tinyMCE.execCommand('mceRemoveEditor', false, '" . $id . "');" ; 
 					$output.="$('#" . $id . "edButtonHTML').addClass('active') ;" ;
 					$output.="$('#" . $id . "edButtonPreview').removeClass('active') ;" ;
 					$output.="\$(\"." .$id . "resourceSlider\").hide();" ;
@@ -740,7 +740,7 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 					}
 				 $output.="}) ;" ;
 				 $output.="$('#" . $id . "edButtonPreview').click(function(){" ;
-					$output.="tinyMCE.execCommand('mceAddControl', false, '" . $id . "');" ;
+					$output.="tinyMCE.execCommand('mceAddEditor', false, '" . $id . "');" ;
 					$output.="$('#" . $id . "edButtonPreview').addClass('active') ;" ;
 					$output.="$('#" . $id . "edButtonHTML').removeClass('active') ; " ;
 					$output.="\$(\"#" .$id . "mediaInner\").show();" ;
@@ -1758,10 +1758,15 @@ function getUserPhoto($guid, $path, $size) {
 }
 
 //Gets Members of a roll group and prints them as a table.
-function printRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $confidential=TRUE) {
+function printRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $confidential=TRUE, $orderBy="Normal") {
 	try {
 		$dataRollGroup=array("gibbonRollGroupID"=>$gibbonRollGroupID); 
-		$sqlRollGroup="SELECT * FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ;
+		if ($orderBy=="Reverse") {
+			$sqlRollGroup="SELECT * FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY preferredName, surname" ;
+		}
+		else {
+			$sqlRollGroup="SELECT * FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ;
+		}
 		$resultRollGroup=$connection2->prepare($sqlRollGroup);
 		$resultRollGroup->execute($dataRollGroup);
 	}

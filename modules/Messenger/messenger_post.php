@@ -356,6 +356,52 @@ else {
 							</select>
 						</td>
 					</tr>
+					
+					<script type="text/javascript">
+						/* Role CategoryControl */
+						$(document).ready(function(){
+							$("#roleCategoryRow").css("display","none");
+							$(".roleCategory").click(function(){
+								if ($('input[name=roleCategory]:checked').val()=="Y" ) {
+									$("#roleCategoryRow").slideDown("fast", $("#roleCategoryRow").css("display","table-row")); 
+								} else {
+									$("#roleCategoryRow").css("display","none");
+								}
+							 });
+						});
+					</script>
+					<tr>
+						<td> 
+							<b><?php print _('Role Category') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Users of a certain type.') ?><br/></i></span>
+						</td>
+						<td class="right">
+							<input type="radio" name="roleCategory" class="roleCategory" value="Y"/> <?php print _('Yes') ?>
+							<input checked type="radio" name="roleCategory" class="roleCategory" value="N"/> <?php print _('No') ?>
+						</td>
+					</tr>
+					<tr id="roleCategoryRow">
+						<td class='hiddenReveal'> 
+							<b><?php print _('Select Role Categories') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+						</td>
+						<td class="hiddenReveal right">
+							<select name="roleCategories[]" id="roleCategories[]" multiple style="width: 302px; height: 100px">
+								<?php
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT DISTINCT category FROM gibbonRole ORDER BY category" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									print "<option value='" . $rowSelect["category"] . "'>" . htmlPrep(_($rowSelect["category"])) . "</option>" ;
+								}
+								?>
+							</select>
+						</td>
+					</tr>
 					<?php
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {

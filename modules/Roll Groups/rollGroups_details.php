@@ -87,9 +87,12 @@ else {
 							else {
 								print "<i>" . formatName("", $rowTutor["preferredName"], $rowTutor["surname"], "Staff", false, true) ;
 							}
-							if ($rowTutor["gibbonPersonID"]==$row["gibbonPersonIDTutor"] AND $resultTutor->rowCount()>1) {
-								print " (" . _('Main Tutor') . ")" ;
+							$primaryTutor240="" ;
+							if ($rowTutor["gibbonPersonID"]==$row["gibbonPersonIDTutor"]) {
 								$primaryTutor240=$rowTutor["image_240"] ;
+								if ($resultTutor->rowCount()>1) {
+									print " (" . _('Main Tutor') . ")" ;
+								}
 							}
 							print "</i><br/>" ;
 						}
@@ -101,10 +104,50 @@ else {
 				print "</tr>" ;
 			print "</table>" ;
 			
+			print "<h2>" ;
+			print _("Filters") ;
+			print "</h2>" ;
+	
+			$orderBy=NULL ;
+			if (isset($_GET["orderBy"])) {
+				$orderBy=$_GET["orderBy"] ;
+			}
+			?>
+			<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+				<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+					<tr><td style="width: 30%"></td><td></td></tr>
+					<tr>
+						<td> 
+							<b><?php print _('Order By') ?></b><br/>
+						</td>
+						<td class="right">
+							<select name="orderBy" id="orderBy" style="width: 302px">
+								<?php
+								print "<option " ; if ($orderBy=="Normal") { print "selected " ; } print "value='Normal'>Normal</option>" ;
+								print "<option " ; if ($orderBy=="Reverse") { print "selected " ; } print "value='Reverse'>Reverse</option>" ;
+								?>			
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td colspan=2 class="right">
+							<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/rollGroups_details.php">
+							<input type="hidden" name="gibbonRollGroupID" value="<?php print $gibbonRollGroupID ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<?php
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroups_details.php&gibbonRollGroupID=$gibbonRollGroupID'>" . _('Clear Filters') . "</a>" ;
+							?>
+							<input type="submit" value="<?php print _("Submit") ; ?>">
+						</td>
+					</tr>
+				</table>
+			</form>
+			<?php
+	
 			print "<h3>" ;
 				print _("Students") ;
 			print "</h3>" ;
-			printRollGroupTable($guid, $gibbonRollGroupID, 5, $connection2, FALSE) ;
+			printRollGroupTable($guid, $gibbonRollGroupID, 5, $connection2, FALSE, $orderBy) ;
 		
 			//Set sidebar
 			$_SESSION[$guid]["sidebarExtra"]=getUserPhoto($guid, $primaryTutor240, 240) ;

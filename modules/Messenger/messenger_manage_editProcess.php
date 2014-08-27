@@ -117,6 +117,7 @@ else {
 				
 				//Roles
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
+					$_POST["role"] ;
 					if ($_POST["role"]=="Y") {
 						$choices=$_POST["roles"] ;
 						if ($choices!="") {
@@ -124,6 +125,27 @@ else {
 								try {
 									$data=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t); 
 									$sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Role', id=:t" ;
+									$result=$connection2->prepare($sql);
+									$result->execute($data);
+								}
+								catch(PDOException $e) { 
+									$partialFgibbonMessengerIDl=TRUE;
+								}
+							}
+						}
+					}
+				}
+				
+				
+				//Role Categories
+				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
+					if ($_POST["roleCategory"]=="Y") {
+						$choices=$_POST["roleCategories"] ;
+						if ($choices!="") {
+							foreach ($choices as $t) {
+								try {
+									$data=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t); 
+									$sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Role Category', id=:t" ;
 									$result=$connection2->prepare($sql);
 									$result->execute($data);
 								}

@@ -1200,7 +1200,7 @@ else {
 								<?php
 								try {
 									$dataSelect=array(); 
-									$sqlSelect="SELECT title, surname, preferredName, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Full' ORDER BY surname, preferredName" ;
+									$sqlSelect="SELECT title, surname, preferredName, category, gibbonPersonID FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Full' ORDER BY surname, preferredName" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
 								}

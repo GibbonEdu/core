@@ -507,12 +507,18 @@ else {
 								print "</td>" ;
 								if (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0)) {
 									print "<td>" ;
+										if ($row["registration"]=="N") {
+											print _('Closed') . "<br/>" ;
+										}
 										print $rowEnrol["status"] ;
 									print "</td>" ;
 								}
 								print "<td>" ;
 									print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_full.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 									$signup=TRUE ;
+									if ($row["registration"]=="N") {
+										$signup=FALSE ;
+									}
 									if ($row["provider"]=="External" AND $disableExternalProviderSignup=="Y") {
 										$signup=FALSE ;
 									}

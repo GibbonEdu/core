@@ -75,6 +75,7 @@ else {
 			$name=$_POST["name"] ;
 			$provider=$_POST["provider"] ;
 			$active=$_POST["active"] ;
+			$registration=$_POST["registration"] ;
 			$dateType=$_POST["dateType"] ;
 			if ($dateType=="Term") {
 				$terms=$_POST["gibbonSchoolYearTermID"] ;
@@ -103,7 +104,7 @@ else {
 			$payment=$_POST["payment"] ;
 			$description=$_POST["description"] ;
 			
-			if ($dateType=="" OR $name=="" OR $provider=="" OR $active=="" OR $maxParticipants=="" OR $payment=="" OR ($dateType=="Date" AND ($listingStart=="" OR $listingEnd=="" OR $programStart=="" OR $programEnd==""))) {
+			if ($dateType=="" OR $name=="" OR $provider=="" OR $active=="" OR $registration=="" OR $maxParticipants=="" OR $payment=="" OR ($dateType=="Date" AND ($listingStart=="" OR $listingEnd=="" OR $programStart=="" OR $programEnd==""))) {
 				//Fail 3
 				$URL=$URL . "&updateReturn=fail3" ;
 				header("Location: {$URL}");
@@ -189,12 +190,12 @@ else {
 			
 				try {
 					if ($dateType=="Date") {
-						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonActivityID"=>$gibbonActivityID, "name"=>$name, "provider"=>$provider, "type"=>$type, "active"=>$active, "listingStart"=>$listingStart, "listingEnd"=>$listingEnd, "programStart"=>$programStart, "programEnd"=>$programEnd, "gibbonYearGroupIDList"=>$gibbonYearGroupIDList, "maxParticipants"=>$maxParticipants, "payment"=>$payment, "description"=>$description); 
-						$sql="UPDATE gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, provider=:provider, type=:type, active=:active, gibbonSchoolYearTermIDList='', listingStart=:listingStart, listingEnd=:listingEnd, programStart=:programStart, programEnd=:programEnd, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, payment=:payment, description=:description WHERE gibbonActivityID=:gibbonActivityID" ;
+						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonActivityID"=>$gibbonActivityID, "name"=>$name, "provider"=>$provider, "type"=>$type, "active"=>$active, "registration"=>$registration, "listingStart"=>$listingStart, "listingEnd"=>$listingEnd, "programStart"=>$programStart, "programEnd"=>$programEnd, "gibbonYearGroupIDList"=>$gibbonYearGroupIDList, "maxParticipants"=>$maxParticipants, "payment"=>$payment, "description"=>$description); 
+						$sql="UPDATE gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, provider=:provider, type=:type, active=:active, registration=:registration, gibbonSchoolYearTermIDList='', listingStart=:listingStart, listingEnd=:listingEnd, programStart=:programStart, programEnd=:programEnd, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, payment=:payment, description=:description WHERE gibbonActivityID=:gibbonActivityID" ;
 					}
 					else {
-						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonActivityID"=>$gibbonActivityID, "name"=>$name, "provider"=>$provider, "type"=>$type, "active"=>$active, "gibbonSchoolYearTermIDList"=>$gibbonSchoolYearTermIDList, "gibbonYearGroupIDList"=>$gibbonYearGroupIDList, "maxParticipants"=>$maxParticipants, "payment"=>$payment, "description"=>$description); 
-						$sql="UPDATE gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, provider=:provider, type=:type, active=:active, gibbonSchoolYearTermIDList=:gibbonSchoolYearTermIDList, listingStart=NULL, listingEnd=NULL, programStart=NULL, programEnd=NULL, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, payment=:payment, description=:description WHERE gibbonActivityID=:gibbonActivityID" ;
+						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonActivityID"=>$gibbonActivityID, "name"=>$name, "provider"=>$provider, "type"=>$type, "active"=>$active, "registration"=>$registration, "gibbonSchoolYearTermIDList"=>$gibbonSchoolYearTermIDList, "gibbonYearGroupIDList"=>$gibbonYearGroupIDList, "maxParticipants"=>$maxParticipants, "payment"=>$payment, "description"=>$description); 
+						$sql="UPDATE gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, provider=:provider, type=:type, active=:active, registration=:registration, gibbonSchoolYearTermIDList=:gibbonSchoolYearTermIDList, listingStart=NULL, listingEnd=NULL, programStart=NULL, programEnd=NULL, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, payment=:payment, description=:description WHERE gibbonActivityID=:gibbonActivityID" ;
 					}
 					$result=$connection2->prepare($sql);
 					$result->execute($data); 

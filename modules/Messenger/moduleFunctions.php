@@ -96,6 +96,31 @@ function getMessages($guid, $connection2, $mode="", $date="") {
 		$sqlPosts="(SELECT gibbonMessenger.*, title, surname, preferredName, authorRole.category AS category, image_75, concat('Role: ', gibbonRole.name) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole AS authorRole ON (gibbonPerson.gibbonRoleIDPrimary=authorRole.gibbonRoleID) JOIN gibbonRole ON (gibbonMessengerTarget.id=gibbonRole.gibbonRoleID) WHERE gibbonMessengerTarget.type='Role' AND (messageWall_date1=:date1 OR messageWall_date2=:date2 OR messageWall_date3=:date3) AND $sqlWhere)" ;
 	}
 	
+	//My role categories
+	try {
+		$dataRoleCategory=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+		$sqlRoleCategory="SELECT DISTINCT category FROM gibbonRole JOIN gibbonPerson ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE gibbonPersonID=:gibbonPersonID" ;
+		$resultRoleCategory=$connection2->prepare($sqlRoleCategory);
+		$resultRoleCategory->execute($dataRoleCategory);
+	}
+	catch(PDOException $e) { print $e->getMessage() ; }
+	$sqlWhere="(" ;
+	if ($resultRoleCategory->rowCount()>0) {
+		$i=0 ;
+		while ($rowRoleCategory=$resultRoleCategory->fetch()) {
+			$dataPosts["role" . $rowRoleCategory["category"]]=$rowRoleCategory["category"] ;
+			$sqlWhere.="id=:role" . $rowRoleCategory["category"] . " OR " ;
+			$i++ ;
+		}
+		$sqlWhere=substr($sqlWhere,0,-3) . ")" ;
+	}
+	if ($sqlWhere!="(") {
+		$dataPosts["date1"]=$date ;
+		$dataPosts["date2"]=$date ;
+		$dataPosts["date3"]=$date ;
+		$sqlPosts=$sqlPosts . " UNION (SELECT DISTINCT gibbonMessenger.*, title, surname, preferredName, authorRole.category AS category, image_75, concat('Role Category: ', gibbonRole.category) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole AS authorRole ON (gibbonPerson.gibbonRoleIDPrimary=authorRole.gibbonRoleID) JOIN gibbonRole ON (gibbonMessengerTarget.id=gibbonRole.category) WHERE gibbonMessengerTarget.type='Role Category' AND (messageWall_date1=:date1 OR messageWall_date2=:date2 OR messageWall_date3=:date3) AND $sqlWhere)" ;
+	}
+	
 	//My year groups
 	if ($staff) {
 		$dataPosts["date4"]=$date ;

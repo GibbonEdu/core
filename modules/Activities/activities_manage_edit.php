@@ -208,6 +208,19 @@ else {
 						</td>
 					</tr>
 					
+					<tr>
+						<td> 
+							<b><?php print _('Registration') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Assuming system-wide registration is open, should this activity be open for registration?') ?></i></span>
+						</td>
+						<td class="right">
+							<select name="registration" id="registration" style="width: 302px">
+								<option <?php if ($row["registration"]=="Y") {print "selected ";}?>value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["registration"]=="N") {print "selected ";}?>value="N"><?php print _('No') ?></option>
+							</select>
+						</td>
+					</tr>
+					
 					<?php
 					//Should we show date as term or date?
 					$dateType=getSettingByScope( $connection2, "Activities", "dateType" ) ; 

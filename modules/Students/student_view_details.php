@@ -150,10 +150,16 @@ else {
 									print "<i><a href='mailto:" . $row["email"] . "'>" . $row["email"] . "</a></i>" ;
 								}
 							print "</td>" ;
-							print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=2>" ;
+							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>" . _('Website') . "</span><br/>" ;
 								if ($row["website"]!="") {
 									print "<i><a href='" . $row["website"] . "'>" . $row["website"] . "</a></i>" ;
+								}
+							print "</td>" ;
+							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>" . _('Student ID') . "</span><br/>" ;
+								if ($row["studentID"]!="") {
+									print "<i>" . $row["studentID"] . "</a></i>" ;
 								}
 							print "</td>" ;
 						print "</tr>" ;
@@ -478,10 +484,24 @@ else {
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+
+								print "</td>" ;
+							print "</tr>" ;
+							print "<tr>" ;
+								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>" . _('Locker Number') . "</span><br/>" ;
-									if ($row["email"]!="") {
+									if ($row["lockerNumber"]!="") {
 										print $row["lockerNumber"] ;
 									}
+								print "</td>" ;
+								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . _('Student ID') . "</span><br/>" ;
+									if ($row["studentID"]!="") {
+										print $row["studentID"] ;
+									}
+								print "</td>" ;
+								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+									
 								print "</td>" ;
 							print "</tr>" ;
 							$privacySetting=getSettingByScope( $connection2, "User Admin", "privacy" ) ;

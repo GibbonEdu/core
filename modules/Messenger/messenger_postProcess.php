@@ -270,6 +270,95 @@ else {
 				}
 			}
 			
+			//Role Categories
+			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
+				if ($_POST["roleCategory"]=="Y") {
+					$choices=$_POST["roleCategories"] ;
+					if ($choices!="") {
+						foreach ($choices as $t) {
+							try {
+								$data=array("AI"=>$AI, "t"=>$t); 
+								$sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:AI, type='Role Category', id=:t" ;
+								$result=$connection2->prepare($sql);
+								$result->execute($data);
+							}
+							catch(PDOException $e) { 
+								$partialFail=TRUE;
+							}
+							//Get email addresses
+							if ($email=="Y") {
+								if ($t=="Parent") {
+									try {
+										$dataEmail=array("category"=>$t); 
+										$sqlEmail="SELECT DISTINCT email, title, surname, preferredName FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE NOT email='' AND category=:category AND status='Full' AND contactEmail='Y'" ; 
+										$resultEmail=$connection2->prepare($sqlEmail);
+										$resultEmail->execute($dataEmail);
+									}
+									catch(PDOException $e) { }
+									while ($rowEmail=$resultEmail->fetch()) {
+										$emails.=$rowEmail["email"] . "," ; $emailsReport.=formatName('', $rowEmail["preferredName"], $rowEmail["surname"], "Student", false) . " (" . $rowEmail["email"] . ")," ;
+									}
+								}
+								else {
+									try {
+										$dataEmail=array("category"=>$t); 
+										$sqlEmail="SELECT DISTINCT email, title, surname, preferredName FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE NOT email='' AND category=:category AND status='Full'" ; 
+										$resultEmail=$connection2->prepare($sqlEmail);
+										$resultEmail->execute($dataEmail);
+									}
+									catch(PDOException $e) { }
+									while ($rowEmail=$resultEmail->fetch()) {
+										$emails.=$rowEmail["email"] . "," ; $emailsReport.=formatName('', $rowEmail["preferredName"], $rowEmail["surname"], "Student", false) . " (" . $rowEmail["email"] . ")," ;
+									}
+								}
+							}
+							if ($sms=="Y" AND $countryCode!="") {
+								if ($t=="Parent") {
+									try {
+										$dataEmail=array("category"=>$t); 
+										$sqlEmail="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE NOT phone1='' AND phone1Type='Mobile' AND category=:category AND status='Full' AND contactSMS='Y')" ; 
+										$sqlEmail.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE NOT phone2='' AND phone2Type='Mobile' AND category=:category AND status='Full' AND contactSMS='Y')" ; 
+										$sqlEmail.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE NOT phone3='' AND phone3Type='Mobile' AND category=:category AND status='Full' AND contactSMS='Y')" ; 
+										$sqlEmail.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE NOT phone4='' AND phone4Type='Mobile' AND category=:category AND status='Full' AND contactSMS='Y')" ; 
+										$resultEmail=$connection2->prepare($sqlEmail);
+										$resultEmail->execute($dataEmail);
+									}
+									catch(PDOException $e) { print $e->getMessage() ;}
+									while ($rowEmail=$resultEmail->fetch()) {
+										if ($rowEmail["countryCode"]=="") {
+											$phones.=$countryCode . $rowEmail["phone"] . "," ; $phonesReport.=formatName('', $rowEmail["preferredName"], $rowEmail["surname"], "Student", false) . " (" . $countryCode . $rowEmail["phone"] . ")," ;
+										}
+										else {
+											$phones.=$rowEmail["countryCode"] . $rowEmail["phone"] . "," ; $phonesReport.=formatName('', $rowEmail["preferredName"], $rowEmail["surname"], "Student", false) . " (" . $rowEmail["countryCode"] . $rowEmail["phone"] . ")," ;
+										}
+									}
+								}
+								else {
+									try {
+										$dataEmail=array("category"=>$t); 
+										$sqlEmail="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE NOT phone1='' AND phone1Type='Mobile' AND category=:category AND status='Full')" ; 
+										$sqlEmail.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE NOT phone2='' AND phone2Type='Mobile' AND category=:category AND status='Full')" ; 
+										$sqlEmail.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE NOT phone3='' AND phone3Type='Mobile' AND category=:category AND status='Full')" ; 
+										$sqlEmail.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE NOT phone4='' AND phone4Type='Mobile' AND category=:category AND status='Full')" ; 
+										$resultEmail=$connection2->prepare($sqlEmail);
+										$resultEmail->execute($dataEmail);
+									}
+									catch(PDOException $e) { }
+									while ($rowEmail=$resultEmail->fetch()) {
+										if ($rowEmail["countryCode"]=="") {
+											$phones.=$countryCode . $rowEmail["phone"] . "," ; $phonesReport.=formatName('', $rowEmail["preferredName"], $rowEmail["surname"], "Student", false) . " (" . $countryCode . $rowEmail["phone"] . ")," ;
+										}
+										else {
+											$phones.=$rowEmail["countryCode"] . $rowEmail["phone"] . "," ; $phonesReport.=formatName('', $rowEmail["preferredName"], $rowEmail["surname"], "Student", false) . " (" . $rowEmail["countryCode"] . $rowEmail["phone"] . ")," ;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
 			//Year Groups
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {
 				if ($_POST["yearGroup"]=="Y") {

@@ -237,79 +237,20 @@ else {
 			date_default_timezone_set($_SESSION[$guid]["timezone"]);
 			
 			//Initialise tinymce
-			$initArray=array (
-				'script_url'=> $_SESSION[$guid]["absoluteURL"] . "/lib/tiny_mce/tiny_mce.js",
-				'mode'=> 'textareas',
-				'editor_selector'=> 'tinymce',
-				'width'=> '738px',
-				'theme'=> 'advanced',
-				'skin'=> 'wp_theme',
-				'theme_advanced_buttons1'=> "formatselect, bold, italic, underline,forecolor,backcolor,separator,justifyleft, justifycenter, justifyright, justifyfull, separator, bullist, numlist,outdent, indent, separator, link, unlink, separator, hr,removeformat, charmap, table,image",
-				'theme_advanced_buttons2'=> "",
-				'theme_advanced_buttons3'=> "",
-				'theme_advanced_buttons4'=> "",
-				'theme_advanced_toolbar_location'=> 'top',
-				'theme_advanced_toolbar_align'=> 'left',
-				'theme_advanced_statusbar_location'=> 'bottom',
-				'theme_advanced_resizing'=> true,
-				'theme_advanced_resize_horizontal'=> false,
-				'dialog_type'=> 'modal',
-				'formats'=> "{
-					alignleft : [
-						{selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li', styles : {textAlign : 'left'}},
-						{selector : 'img,table', classes : 'alignleft'}
-					],
-					aligncenter : [
-						{selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li', styles : {textAlign : 'center'}},
-						{selector : 'img,table', classes : 'aligncenter'}
-					],
-					alignright : [
-						{selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li', styles : {textAlign : 'right'}},
-						{selector : 'img,table', classes : 'alignright'}
-					],
-					strikethrough : {inline : 'del'}
-				}",
-				'relative_urls'=> false,
-				'remove_script_host'=> false,
-				'convert_urls'=> false,
-				'apply_source_formatting'=> false,
-				'remove_linebreaks'=> true,
-				'gecko_spellcheck'=> true,
-				'keep_styles'=> false,
-				'entities'=> '38,amp,60,lt,62,gt',
-				'accessibility_focus'=> true,
-				'tabfocus_elements'=> 'major-publishing-actions',
-				'media_strict'=> false,
-				'paste_remove_styles'=> true,
-				'paste_remove_spans'=> true,
-				'paste_strip_class_attributes'=> 'all',
-				'paste_text_use_dialog'=> true,
-				'extended_valid_elements'=> getSettingByScope($connection2, "System", "allowableHTML"),
-				'wp_fullscreen_content_css'=> "/plugins/wpfullscreen/css/wp-fullscreen.css",
-				'plugins'=> "table,advlink,contextmenu,paste,visualchars,template,advimage"
-			);
-			
-			$mce_options='';
-			foreach ( $initArray as $k=> $v ) {
-				if ( is_bool($v) ) {
-					$val=$v ? 'true' : 'false';
-					$mce_options .=$k . ':' . $val . ', ';
-					continue;
-				} elseif ( !empty($v) && is_string($v) && ( ('{'==$v{0} && '}'==$v{strlen($v) - 1}) || ('['==$v{0} && ']'==$v{strlen($v) - 1}) || preg_match('/^\(?function ?\(/', $v) ) ) {
-					$mce_options .=$k . ':' . $v . ', ';
-					continue;
-				}
-				$mce_options .=$k . ':"' . $v . '", ';
-			}
-			$mce_options=rtrim( trim($mce_options), '\n\r,' );
 			?>
-			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/tinymce/tiny_mce.js"></script>
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/tinymce/tinymce.min.js"></script>
 			<script type="text/javascript">
-				tinymce.init({
-					<?php print $mce_options; ?>
-				});
-			</script>	
-			
+			tinymce.init({
+				selector: "div#editorcontainer textarea",
+				width: '738px',
+				menubar : false,
+				toolbar: 'bold, italic, underline,forecolor,backcolor,|,justifyleft, justifycenter, justifyright, justifyfull, |, bullist, numlist,outdent, indent, |, link, unlink, , | hr, |, image, |, charmap, |, table, |, formatselect',
+				plugins: 'table, template, paste, visualchars, contextmenu, image, link, template, textcolor, hr, charmap',
+			 	statusbar: false,
+			 	extended_valid_elements: '<?php print getSettingByScope($connection2, "System", "allowableHTML") ?>',
+			 	apply_source_formatting : true
+			 });
+			</script>
 			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-tokeninput/src/jquery.tokeninput.js"></script>
 			<link rel="stylesheet" href="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-tokeninput/styles/token-input-facebook.css" type="text/css" />
 			
@@ -470,8 +411,8 @@ else {
 													print " . <a title='" . _('Message Wall') . "'class='thickbox' href='$URL'>" . $_SESSION[$guid]["messageWallCount"] . " x <img style='opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall.png'></a>" ;
 													if ($_SESSION[$guid]["pageLoads"]==0 AND ($_SESSION[$guid]["messengerLastBubble"]==NULL OR $_SESSION[$guid]["messengerLastBubble"]<date("Y-m-d"))) {
 														?>
-														<div id='messageBubbleArrow' style="left: 650px; top: 42px" class='arrow top'></div>
-														<div id='messageBubble' style="left: 420px; top: 58px; width: 300px; min-width: 300px; max-width: 300px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip"">
+														<div id='messageBubbleArrow' style="left: 595px; top: 42px" class='arrow top'></div>
+														<div id='messageBubble' style="left: 365px; top: 58px; width: 300px; min-width: 300px; max-width: 300px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip"">
 															<div class="ui-tooltip-content">
 																<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'><?php print _('New Messages') ?></div>
 																<?php

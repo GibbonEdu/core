@@ -1229,6 +1229,7 @@ else {
 													?>
 												</td>
 											</tr>
+											
 											<tr>
 												<td> 
 													<b><?php print _('Homework Due Date') ?> *</b><br/>
@@ -1300,6 +1301,30 @@ else {
 													 });
 												});
 											</script>
+											
+											<?php
+											//Try and find the next slot for this class, to use as default HW deadline
+											if ($rowMyHomework["homework"]=="N" AND $row["date"]!="" AND $row["timeStart"]!="" AND $row["timeEnd"]!="") {
+												//Get $_GET values
+												$homeworkDueDate="" ;
+												$homeworkDueDateTime="" ;
+						
+												try {
+													$dataNext=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"], "date"=>$row["date"]); 
+													$sqlNext="SELECT timeStart, timeEnd, date FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND date>:date ORDER BY date, timeStart LIMIT 0, 10" ;
+													$resultNext=$connection2->prepare($sqlNext);
+													$resultNext->execute($dataNext);
+												}
+												catch(PDOException $e) { 
+													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+												}
+												if ($resultNext->rowCount()>0) {
+													$rowNext=$resultNext->fetch() ;
+													$homeworkDueDate=$rowNext["date"] ;
+													$homeworkDueDateTime=$rowNext["timeStart"] ;
+												}
+											}
+											?>
 								
 											<?php print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_myHomeworkProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&address=" . $_SESSION[$guid]["address"] . "&gibbonCourseClassID=$gibbonCourseClassID&date=$date'>" ; ?>
 												<tr>
@@ -1317,7 +1342,7 @@ else {
 														<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 													</td>
 													<td class="right">
-														<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="<?php if ($rowMyHomework["homework"]=="Y") { print dateConvertBack($guid, substr($rowMyHomework["homeworkDueDateTime"],0,10)) ; } ?>" type="text" style="width: 300px">
+														<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="<?php if ($rowMyHomework["homework"]=="Y") { print dateConvertBack($guid, substr($rowMyHomework["homeworkDueDateTime"],0,10)) ; } else { print dateConvertBack($guid, substr($homeworkDueDate,0,10)) ; } ?>" type="text" style="width: 300px">
 														<script type="text/javascript">
 															var homeworkDueDate=new LiveValidation('homeworkDueDate');
 															homeworkDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -1341,7 +1366,7 @@ else {
 														<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
 													</td>
 													<td class="right">
-														<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<?php if ($rowMyHomework["homework"]=="Y") { print substr($rowMyHomework["homeworkDueDateTime"],11,5) ; } ?>" type="text" style="width: 300px">
+														<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<?php if ($rowMyHomework["homework"]=="Y") { print substr($rowMyHomework["homeworkDueDateTime"],11,5) ; } else { print substr($homeworkDueDateTime,0,5) ; } ?>" type="text" style="width: 300px">
 														<script type="text/javascript">
 															var homeworkDueDateTime=new LiveValidation('homeworkDueDateTime');
 															homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 

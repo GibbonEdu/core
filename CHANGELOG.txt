@@ -27,6 +27,29 @@ General: added system-wide notifications, which can be utilised by any module
 	New files /notifications*.php
 	Edited files /modules/Crowd Assessment/crowdAssess*.php
 
+Planner: gave students auto-set homework due date and time, just like teachers have
+	Edited file /modules/Planner/planner_view_full.php
+
+Students: added student ID to summary page
+	Edited file /modules/Students/student_view_details.php
+
+General: updated to latest tinymce
+	Replaced files in /lib/tinymce
+	Edited files /index.php, functions.php
+
+Roll Groups: added ability to reverse ordering of students
+	Edited file /modules/Roll Group/rollGroups_details.php
+	Edited file /functions.php
+
+Activities: added per-activity control to determine whether or not registration is allowed
+	Edited table gibbonActivity
+	Edited files /modules/Activities/activities_manage_add*.php, activities_manage_edit*.php, activities_view.php, activities_view_register*.php
+
+Messenger: added ability to target role categories
+	Edited table gibbonMessengerTarget
+	Edited files /modules/Messenger/messenger_post.php
+
+
 v8.1.00
 -------
 General: added dev indicator in footer, when running cuttingEdge

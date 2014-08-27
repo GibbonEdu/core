@@ -252,6 +252,7 @@ else {
 						</tr>
 						<?php
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
+							//Role
 							try {
 								$dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID); 
 								$sqlTarget="SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Role'" ;
@@ -315,6 +316,77 @@ else {
 												$selected="selected" ;
 											}
 											print "<option $selected value='" . $rowSelect["gibbonRoleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . " (" . htmlPrep(_($rowSelect["category"])) . ")</option>" ;
+										}
+										?>
+									</select>
+								</td>
+							</tr>
+							
+							<?php
+							//Role Category
+							try {
+								$dataTarget=array("gibbonMessengerID"=>$gibbonMessengerID); 
+								$sqlTarget="SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Role Category'" ;
+								$resultTarget=$connection2->prepare($sqlTarget);
+								$resultTarget->execute($dataTarget);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+							?>
+							<script type="text/javascript">
+								/* Role Category Control */
+								$(document).ready(function(){
+									<?php if ($resultTarget->rowCount()<=0) { ?>
+										$("#roleCategoryRow").css("display","none");
+									<?php } ?>
+									$(".roleCategory").click(function(){
+										if ($('input[name=roleCategory]:checked').val()=="Y" ) {
+											$("#roleCategoryRow").slideDown("fast", $("#roleCategoryRow").css("display","table-row")); 
+										} else {
+											$("#roleCategoryRow").css("display","none");
+										}
+									 });
+								});
+							</script>
+							<tr>
+								<td> 
+									<b><?php print _('Role Category') ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('Users of a certain type.') ?><br/></i></span>
+								</td>
+								<td class="right">
+									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="roleCategory" class="roleCategory" value="Y"/> <?php print _('Yes') ?>
+									<input <?php if ($resultTarget->rowCount()<=0) { print "checked" ; }?> type="radio" name="roleCategory" class="roleCategory" value="N"/> <?php print _('No') ?>
+								</td>
+							</tr>
+							<?php
+							$selectedAll="" ;
+							while ($rowTarget=$resultTarget->fetch()) {
+								$selectedAll.=$rowTarget['id'] . "," ;
+							}
+							$selectedAll=substr($selectedAll,0,-1) ;
+							?>
+							<tr id="roleCategoryRow">
+								<td class='hiddenReveal'> 
+									<b><?php print _('Select Role Categories') ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+								</td>
+								<td class="hiddenReveal right">
+									<select name="roleCategories[]" id="roleCategories[]" multiple style="width: 302px; height: 100px">
+										<?php
+										try {
+											$dataSelect=array(); 
+											$sqlSelect="SELECT DISTINCT category FROM gibbonRole ORDER BY category" ;
+											$resultSelect=$connection2->prepare($sqlSelect);
+											$resultSelect->execute($dataSelect);
+										}
+										catch(PDOException $e) { }
+										while ($rowSelect=$resultSelect->fetch()) {
+											$selected="" ;
+											if (is_numeric(strpos($selectedAll,$rowSelect['category']))) {
+												$selected="selected" ;
+											}
+											print "<option $selected value='" . $rowSelect["category"] . "'>" . htmlPrep(_($rowSelect["category"])) . "</option>" ;
 										}
 										?>
 									</select>

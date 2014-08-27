@@ -151,6 +151,18 @@ else {
 					</select>
 				</td>
 			</tr>
+			<tr>
+				<td> 
+					<b><?php print _('Registration') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('Assuming system-wide registration is open, should this activity be open for registration?') ?></i></span>
+				</td>
+				<td class="right">
+					<select name="registration" id="registration" style="width: 302px">
+						<option value="Y"><?php print _('Yes') ?></option>
+						<option value="N"><?php print _('No') ?></option>
+					</select>
+				</td>
+			</tr>
 			
 			<?php
 			//Should we show date as term or date?
