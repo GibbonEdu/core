@@ -1035,7 +1035,7 @@ else {
 								
 								while ($rowMember=$resultMember->fetch()) {
 									print "<h4>" ;
-									print _("Adult") . $count ;
+									print _("Adult") . " " . $count ;
 									print "</h4>" ;
 									print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 										print "<tr>" ;
@@ -1146,6 +1146,19 @@ else {
 											print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 												print "<span style='font-size: 115%; font-weight: bold'>" . _('Job Title') . "</span><br/>" ;
 												print $rowMember["jobTitle"] ;
+											print "</td>" ;
+										print "</tr>" ;
+										
+										print "<tr>" ;
+											print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+												print "<span style='font-size: 115%; font-weight: bold'>" . _('Vehicle Registration') . "</span><br/>" ;
+												print $rowMember["vehicleRegistration"] ;
+											print "</td>" ;
+											print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+												
+											print "</td>" ;
+											print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+												
 											print "</td>" ;
 										print "</tr>" ;
 										
