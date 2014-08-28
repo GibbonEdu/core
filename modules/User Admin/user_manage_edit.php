@@ -1577,6 +1577,38 @@ else {
 					if ($imagePrivacySet==false) {
 						print "<input type=\"hidden\" name=\"imagePrivacy\" value=\"\">" ;
 					}
+					
+					//Student options for agreements
+					if ($student) {
+						$studentAgreementOptions=getSettingByScope($connection2, "School Admin", "studentAgreementOptions") ;
+						if ($studentAgreementOptions!="") {
+							?>
+							<tr>
+								<td> 
+									<b><?php print _('Student Agreements') ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('Check to indicate that student has signed the relevant agreement.') ?><br/>
+									</i></span>
+								</td>
+								<td class="right">
+									<?php
+									$agreements=explode(",",$studentAgreementOptions) ;
+									$agreementChecks=explode(",",$row["studentAgreements"]) ;
+									foreach ($agreements AS $agreement) {
+										$checked="" ;
+										foreach ($agreementChecks AS $agreementCheck) {
+											if (trim($agreement)==trim($agreementCheck)) {
+												$checked="checked" ;
+											}
+										}
+										print $agreement . " <input $checked type='checkbox' name='studentAgreements[]' value='" . htmlPrep(trim($agreement)) . "'/><br/>" ;
+									}
+									?>
+					
+								</td>
+							</tr>
+							<?php
+						}
+					}
 					?>
 						
 					<tr>

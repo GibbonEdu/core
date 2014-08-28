@@ -245,10 +245,11 @@ else {
 				width: '738px',
 				menubar : false,
 				toolbar: 'bold, italic, underline,forecolor,backcolor,|,justifyleft, justifycenter, justifyright, justifyfull, |, bullist, numlist,outdent, indent, |, link, unlink, , | hr, |, image, |, charmap, |, table, |, formatselect',
-				plugins: 'table, template, paste, visualchars, contextmenu, image, link, template, textcolor, hr, charmap',
+				plugins: 'table, template, paste, visualchars, image, link, template, textcolor, hr, charmap',
 			 	statusbar: false,
 			 	extended_valid_elements: '<?php print getSettingByScope($connection2, "System", "allowableHTML") ?>',
-			 	apply_source_formatting : true
+			 	apply_source_formatting : true,
+			 	browser_spellcheck: true
 			 });
 			</script>
 			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-tokeninput/src/jquery.tokeninput.js"></script>

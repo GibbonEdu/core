@@ -521,6 +521,9 @@ ALTER TABLE `gibbonNotification` ADD `count` INT(4) NOT NULL DEFAULT '1' AFTER `
 ALTER TABLE `gibbonActivity` ADD `registration` ENUM('Y','N') NOT NULL DEFAULT 'Y' COMMENT 'Can a parent/student select this for registration?' AFTER `active`;end
 ALTER TABLE `gibbonMessengerTarget` CHANGE `type` `type` ENUM('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ALTER TABLE `gibbonMessengerTarget` CHANGE `id` `id` VARCHAR(30) NOT NULL;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'School Admin', 'studentAgreementOptions', 'Student Agreement Options', 'Comma-separated list of agreements that students might be asked to sign in school (e.g. ICT Policy).', '');end
+ALTER TABLE `gibbonPerson` ADD `studentAgreements` TEXT NOT NULL ;end
+
 " ;
 
 

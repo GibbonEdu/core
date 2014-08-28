@@ -1249,6 +1249,28 @@ else {
 			else {
 				print "<input type=\"hidden\" name=\"privacy\" value=\"\">" ;
 			}
+			
+			$studentAgreementOptions=getSettingByScope($connection2, "School Admin", "studentAgreementOptions") ;
+			if ($studentAgreementOptions!="") {
+				?>
+				<tr>
+					<td> 
+						<b><?php print _('Student Agreements') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print _('Check to indicate that student has signed the relevant agreement.') ?><br/>
+						</i></span>
+					</td>
+					<td class="right">
+						<?php
+						$agreements=explode(",",$studentAgreementOptions) ;
+						foreach ($agreements AS $agreement) {
+							print $agreement . " <input type='checkbox' name='studentAgreements[]' value='" . htmlPrep(trim($agreement)) . "'/><br/>" ;
+						}
+						?>
+		
+					</td>
+				</tr>
+				<?php
+			}
 			?>
 			
 			<tr>

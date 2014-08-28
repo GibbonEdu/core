@@ -142,7 +142,7 @@ else {
 	}
 	
 	print "<h3>" ;
-		print _("Student Profile") ;
+		print _("Miscellaneous") ;
 	print "</h3>" ;
 	
 	?>
@@ -170,7 +170,25 @@ else {
 					</select>
 				</td>
 			</tr>
-			
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='School Admin' AND name='studentAgreementOptions'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td style='width: 275px'> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+				</td>
+			</tr>
 			<tr>
 				<td>
 					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
