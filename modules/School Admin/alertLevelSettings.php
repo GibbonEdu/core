@@ -79,7 +79,7 @@ else {
 				?>
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><?php print $row["name"] ?></h3>
+						<h3><?php print _($row["name"]) ?></h3>
 					</td>
 				</tr>
 				<tr>

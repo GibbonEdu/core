@@ -76,7 +76,7 @@ else {
 		} 
 		
 		print "<div class='warning'>" ;
-			print _("Each family in Gibbon must have one parent who is contact priority 1, and who must be enabled to receive email and SMS messages from " . $_SESSION[$guid]["organisationNameShort"] . ". As a result, when targetting parents, you can be fairly certain that messages should get through to each family.") ;
+			print sprintf(_('Each family in Gibbon must have one parent who is contact priority 1, and who must be enabled to receive email and SMS messages from %1$s. As a result, when targetting parents, you can be fairly certain that messages should get through to each family.'), $_SESSION[$guid]["organisationNameShort"]) ;
 		print "</div>" ;
 				
 		?>

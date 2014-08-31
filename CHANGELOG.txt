@@ -59,6 +59,15 @@ User Admin: added setting and interface to allow tracking of student agreement s
 	New value in table gibbonSetting
 	Edited files /modules/School Admin/studentsSettings*.php
 	Edited files /User Admin/user_manage_add*.php, user_manage_edit*.php
+	
+Planner: added file uploads to lesson chat, in order to allow richer conversations
+	Edited file /modules/Planner/planner_view_full_post.php
+
+Students: removed sidebar from Age & Gender Summary report
+	Edited value in table gibbonAction
+
+General: wrapped some strings for translation that had been previously been missed
+	Edited various files
 
 
 v8.1.00

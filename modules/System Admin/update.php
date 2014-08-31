@@ -73,7 +73,6 @@ else {
 		//Check for new version of Gibbon
 		print getCurrentVersion($guid, $connection2, $version) ;
 	
-	
 		if ($updateReturn=="success0") {
 			print "<p>" ;
 				print "<b>" . _('You seem to be all up to date, good work buddy!') . "</b>" ;

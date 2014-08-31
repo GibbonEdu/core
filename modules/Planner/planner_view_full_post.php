@@ -208,7 +208,7 @@ else {
 							<tr>
 								<td colspan=2> 
 									<b><?php print _('Write your comment below:') ?></b> 
-									<?php print getEditor($guid,  TRUE, "comment", "", 20 ) ?>
+									<?php print getEditor($guid,  TRUE, "comment", "", 20, TRUE ) ?>
 								</td>
 							</tr>
 							<tr>

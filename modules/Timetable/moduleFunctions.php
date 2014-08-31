@@ -188,18 +188,14 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;
-						?>
-						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='<?php print _('Last Week') ?>'>
-						<?php	
+						print "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='" . _('Last Week') . "'>" ;
 					print "</form>" ;
 					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "'>" ;
 						print "<input name='ttDate' value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(7*24*60*60))) . "' type='hidden'>" ;
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;
-						?>
-						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='<?php print _('Next Week') ?>'>
-						<?php	
+						print "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='" . _('Next Week') . "'>" ;
 					print "</form>" ;
 				print"</td>" ; 
 				print"<td style='vertical-align: top; text-align: right'>" ;

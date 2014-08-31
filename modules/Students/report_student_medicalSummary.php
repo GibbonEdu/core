@@ -40,7 +40,7 @@ else {
 	print "</p>" ;
 	
 	print "<h2>" ;
-	print "Choose Students" ;
+	print _("Choose Students") ;
 	print "</h2>" ;
 	
 	?>

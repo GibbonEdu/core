@@ -523,6 +523,7 @@ ALTER TABLE `gibbonMessengerTarget` CHANGE `type` `type` ENUM('Class','Course','
 ALTER TABLE `gibbonMessengerTarget` CHANGE `id` `id` VARCHAR(30) NOT NULL;end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'School Admin', 'studentAgreementOptions', 'Student Agreement Options', 'Comma-separated list of agreements that students might be asked to sign in school (e.g. ICT Policy).', '');end
 ALTER TABLE `gibbonPerson` ADD `studentAgreements` TEXT NOT NULL ;end
+UPDATE gibbonAction SET entrySidebar='N' WHERE name='Age & Gender Summary' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
 
 " ;
 
