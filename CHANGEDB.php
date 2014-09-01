@@ -524,6 +524,10 @@ ALTER TABLE `gibbonMessengerTarget` CHANGE `id` `id` VARCHAR(30) NOT NULL;end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'School Admin', 'studentAgreementOptions', 'Student Agreement Options', 'Comma-separated list of agreements that students might be asked to sign in school (e.g. ICT Policy).', '');end
 ALTER TABLE `gibbonPerson` ADD `studentAgreements` TEXT NOT NULL ;end
 UPDATE gibbonAction SET entrySidebar='N' WHERE name='Age & Gender Summary' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Markbook', 'attainmentAlternativeName', 'Attainment Alternative Name', 'A name to use isntead of \"Attainment\" in the first grade column of the markbook.', '');end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Markbook', 'effortAlternativeName', 'Effort Alternative Name', 'A name to use isntead of \"Effort\" in the second grade column of the markbook.', '');end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Markbook', 'attainmentAlternativeNameAbrev', 'Attainment Alternative Name Abbreviation', 'A short name to use isntead of \"Attainment\" in the first grade column of the markbook.', '');end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Markbook', 'effortAlternativeNameAbrev', 'Effort Alternative Name Abbreviation', 'A short name to use isntead of \"Effort\" in the second grade column of the markbook.', '');end
 
 " ;
 

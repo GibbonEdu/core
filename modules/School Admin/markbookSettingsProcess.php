@@ -49,6 +49,10 @@ else {
 		$markbookType.=trim($type) . "," ;
 	}
 	$markbookType=substr($markbookType,0,-1) ;
+	$attainmentAlternativeName=$_POST["attainmentAlternativeName"] ;
+	$attainmentAlternativeNameAbrev=$_POST["attainmentAlternativeNameAbrev"] ;
+	$effortAlternativeName=$_POST["effortAlternativeName"] ;
+	$effortAlternativeNameAbrev=$_POST["effortAlternativeNameAbrev"] ;
 	$wordpressCommentPush=$_POST["wordpressCommentPush"] ;
 	$showStudentAttainmentWarning=$_POST["showStudentAttainmentWarning"] ;
 	$showStudentEffortWarning=$_POST["showStudentEffortWarning"] ;
@@ -69,6 +73,46 @@ else {
 		try {
 			$data=array("value"=>$markbookType); 
 			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='markbookType'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$attainmentAlternativeName); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='attainmentAlternativeName'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$attainmentAlternativeNameAbrev); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='attainmentAlternativeNameAbrev'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$effortAlternativeName); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='effortAlternativeName'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$effortAlternativeNameAbrev); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='effortAlternativeNameAbrev'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

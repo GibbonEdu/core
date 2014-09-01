@@ -69,6 +69,16 @@ Students: removed sidebar from Age & Gender Summary report
 General: wrapped some strings for translation that had been previously been missed
 	Edited various files
 
+Rubrics: added outcome description as on-hover pop-up title in first column
+	Edited files /modules/Rubrics/moduleFunctions.php
+
+Rubrics: made outcomes pre-filtered based on matching year for outcome with year for rubric
+	Edited file /modules/Rubrics/rubrics_edit_editRowsColumns.php
+
+Markbook: added ability to change, school-wide, the headings "Attainment" and "Effort" as markbook columns
+	New values in table gibbonSetting
+	Edited files /modules/Markbook/markbookSettings*.php
+	Edited various Markbook-related files
 
 v8.1.00
 -------

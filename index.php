@@ -774,6 +774,12 @@ else {
 													print "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>" . _('Recent Grades') . "</span> . <span style='font-size: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php&search=" . $students[$i][4] . "'>" . _('View Markbook') . "</a></span></div>" ;
 													$grades=FALSE ;
 													
+													//Get alternative header names
+													$attainmentAlternativeName=getSettingByScope($connection2, "Markbook", "attainmentAlternativeName") ;
+													$attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
+													$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
+													$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
+													
 													try {
 														$dataEntry=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"],"gibbonPersonID"=>$students[$i][4]); 
 														$sqlEntry="SELECT *, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDStudent=:gibbonPersonID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND viewableParents='Y' ORDER BY completeDate DESC LIMIT 0, 3" ;
@@ -793,10 +799,10 @@ else {
 																print _("Assessment") ;
 															print "</th>" ;
 															print "<th style='width: 75px'>" ;
-																print _("Attainment") ;
+																if ($attainmentAlternativeName!="") { print $attainmentAlternativeName ; } else { print _('Attainment') ; }
 															print "</th>" ;
 															print "<th style='width: 75px'>" ;
-																print _("Effort") ;
+																if ($effortAlternativeName!="") { print $effortAlternativeName ; } else { print _('Effort') ; }
 															print "</th>" ;
 															print "<th>" ;
 																print _("Comment") ;

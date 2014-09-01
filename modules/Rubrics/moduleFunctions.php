@@ -398,10 +398,10 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 										}
 										
 										if ($rowOutcome["category"]=="") {
-											$output.="<b>" . $rowOutcome["name"] . "</b><br/>" ;
+											$output.="<span title='" . htmlprep($rowOutcome["description"]) . "'><b>" . $rowOutcome["name"] . "</b></span><br/>" ;
 										}
 										else {
-											$output.="<b>" . $rowOutcome["name"] . "</b><i> - " . $rowOutcome["category"] . "</i><br/>" ;
+											$output.="<span title='" . htmlprep($rowOutcome["description"]) . "'><b>" . $rowOutcome["name"] . "</b><i> - " . $rowOutcome["category"] . "</i></span><br/>" ;
 										}
 										$output.="<span style='font-size: 85%'><i>" . $rowOutcome["scope"] . " " . _('Outcome') . "</i></span><br/>" ;
 									}

@@ -221,6 +221,19 @@ else {
 													
 												});
 											</script>
+											<?php
+												//Prep filtering base don year groups of rubric
+												$years=explode(",", $row["gibbonYearGroupIDList"]) ;
+												$dataSelect=array() ;
+												$filterSelect="" ;
+												$count2=0 ;
+												foreach ($years AS $year) {
+													$filterSelect.=" AND gibbonYearGroupIDList LIKE :gibbonSchoolYearID$count2" ;
+													$dataSelect["gibbonSchoolYearID$count2"]="%" . $year . "%" ;
+													$count2++ ;
+												}
+											?>
+												
 											<input <?php if ($outcomeBased==FALSE) {print "checked";} ?> type="radio" name="type-<?php print $count ?>" value="Standalone" class="type-<?php print $count ?>" /> <?php print _('Standalone') ?> 
 											<input <?php if ($outcomeBased==TRUE) {print "checked";} ?> type="radio" name="type-<?php print $count ?>" value="Outcome Based" class="type-<?php print $count ?>" /> <?php print _('Outcome Based') ?><br/>
 											<select name='gibbonOutcomeID[]' id='gibbonOutcomeID-<?php print $count ?>' style='width: 304px'>
@@ -228,8 +241,7 @@ else {
 												<optgroup label='--<?php print _('School Outcomes') ?>--'>
 													<?php
 													try {
-														$dataSelect=array(); 
-														$sqlSelect="SELECT * FROM gibbonOutcome WHERE scope='School' AND active='Y' ORDER BY category, name" ;
+														$sqlSelect="SELECT * FROM gibbonOutcome WHERE scope='School' AND active='Y' $filterSelect ORDER BY category, name" ;
 														$resultSelect=$connection2->prepare($sqlSelect);
 														$resultSelect->execute($dataSelect);
 													}
@@ -256,8 +268,8 @@ else {
 													<optgroup label='--<?php print _('Learning Area Outcomes') ?>--'>
 														<?php
 														try {
-															$dataSelect=array("gibbonDepartmentID"=>$row["gibbonDepartmentID"]); 
-															$sqlSelect="SELECT * FROM gibbonOutcome WHERE scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID AND active='Y' ORDER BY category, name" ;
+															$dataSelect["gibbonDepartmentID"]=$row["gibbonDepartmentID"]; 
+															$sqlSelect="SELECT * FROM gibbonOutcome WHERE scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID AND active='Y' $filterSelect ORDER BY category, name" ;
 															$resultSelect=$connection2->prepare($sqlSelect);
 															$resultSelect->execute($dataSelect);
 														}

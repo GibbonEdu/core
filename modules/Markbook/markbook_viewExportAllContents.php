@@ -29,6 +29,12 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
+//Get alternative header names
+$attainmentAlternativeName=getSettingByScope($connection2, "Markbook", "attainmentAlternativeName") ;
+$attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
+$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
+$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
+
 @session_start() ;
 
 $gibbonCourseClassID=$_SESSION[$guid]["exportToExcelParams"] ;
@@ -106,44 +112,10 @@ else {
 					}
 					else {
 						print "<th style='border-left: 2px solid #666; text-align: center; width: 40px'>" ;
-							try {
-								$dataScale=array("gibbonScaleID"=>$attainmentID[$i]); 
-								$sqlScale="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
-								$resultScale=$connection2->prepare($sqlScale);
-								$resultScale->execute($dataScale);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							$scale="" ;
-							if ($resultScale->rowCount()==1) {
-								$rowScale=$resultScale->fetch() ;
-								$scale=" - " . $rowScale["name"] ;
-								if ($rowScale["usage"]!="") {
-									$scale=$scale . ": " . $rowScale["usage"] ;
-								}
-							}
-							print "<span title='" . _('Attainment') . "$scale'>" . _('Att') . "</span>" ;
+							print "<b>" ; if ($attainmentAlternativeNameAbrev!="") { print $attainmentAlternativeNameAbrev ; } else { print _('Att') ; } print "</b>" ;
 						print "</th>" ;
 						print "<th style='text-align: center; width: 40px'>" ;
-							try {
-								$dataScale=array("gibbonScaleID"=>$effortID[$i]); 
-								$sqlScale="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
-								$resultScale=$connection2->prepare($sqlScale);
-								$resultScale->execute($dataScale);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							$scale="" ;
-							if ($resultScale->rowCount()==1) {
-								$rowScale=$resultScale->fetch() ;
-								$scale=" - " . $rowScale["name"] ;
-								if ($rowScale["usage"]!="") {
-									$scale=$scale . ": " . $rowScale["usage"] ;
-								}
-							}
-							print "<span title='" . _('Effort') . "$scale'>" . _('Eff') . "</span>" ;
+							print "<b>" ; if ($effortAlternativeNameAbrev!="") { print $effortAlternativeNameAbrev ; } else { print _('Eff') ; } print "</b>" ;
 						print "</th>" ;
 						print "<th style='text-align: center; width: 80px'>" ;
 							print "<span title='" . _('Comment') . "'>" . _('Com') . "</span>" ;

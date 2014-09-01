@@ -29,6 +29,12 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
+//Get alternative header names
+$attainmentAlternativeName=getSettingByScope($connection2, "Markbook", "attainmentAlternativeName") ;
+$attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
+$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
+$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
+
 @session_start() ;
 
 $gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
@@ -72,10 +78,10 @@ else {
 					print "<b>Student</b>" ;
 				print "</td>" ;
 				print "<td>" ;
-					print "<b>Attainment</b>" ;
+					print "<b>" ; if ($attainmentAlternativeName!="") { print $attainmentAlternativeName ; } else { print _('Attainment') ; } print "</b>" ;
 				print "</td>" ;
 				print "<td>" ;
-					print "<b>Effort</b>" ;
+					print "<b>" ; if ($effortAlternativeName!="") { print $effortAlternativeName ; } else { print _('Effort') ; } print "</b>" ;
 				print "</td>" ;
 				print "<td>" ;
 					print "<b>Comment</b>" ;

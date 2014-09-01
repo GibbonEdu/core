@@ -1654,6 +1654,12 @@ else {
 								print "</div>" ;
 							}
 							else {
+								//Get alternative header names
+								$attainmentAlternativeName=getSettingByScope($connection2, "Markbook", "attainmentAlternativeName") ;
+								$attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
+								$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
+								$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
+
 								$alert=getAlert($connection2, 002) ;
 								$role=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 								if ($role=="Parent") {
@@ -1838,10 +1844,10 @@ else {
 													print _("Assessment") ;
 												print "</th>" ;
 												print "<th style='width: 75px; text-align: center'>" ;
-													print _("Attainment") ;
+													if ($attainmentAlternativeName!="") { print $attainmentAlternativeName ; } else { print _('Attainment') ; }
 												print "</th>" ;
 												print "<th style='width: 75px; text-align: center'>" ;
-													print _("Effort") ;
+													if ($effortAlternativeName!="") { print $effortAlternativeName ; } else { print _('Effort') ; }
 												print "</th>" ;
 												print "<th>" ;
 													print _("Comment") ;

@@ -59,6 +59,11 @@ else {
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/markbookSettingsProcess.php" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<tr class='break'>
+				<td colspan=2> 
+					<h3><?php print _('Interface Settings') ?></h3>
+				</td>
+			</tr>
 			<tr>
 				<?php
 				try {
@@ -86,24 +91,81 @@ else {
 				<?php
 				try {
 					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Markbook' AND name='wordpressCommentPush'" ;
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Markbook' AND name='attainmentAlternativeName'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
+				catch(PDOException $e) { }
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
 					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-						<option <?php if ($row["value"]=="On") {print "selected ";} ?>value="On"><?php print _('On') ?></option>
-						<option <?php if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><?php print _('Off') ?></option>
-					</select>
+					<input type='text' maxlength='25' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>"style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>	
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Markbook' AND name='attainmentAlternativeNameAbrev'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<input type='text' maxlength='3' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>"style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>	
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Markbook' AND name='effortAlternativeName'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<input type='text' maxlength='25' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>"style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>	
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Markbook' AND name='effortAlternativeNameAbrev'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<input type='text' maxlength='3' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>"style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>	
+				</td>
+			</tr>
+			<tr class='break'>
+				<td colspan=2> 
+					<h3><?php print _('Warnings') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -223,6 +285,36 @@ else {
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
 						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
 						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print _('No') ?></option>
+					</select>
+				</td>
+			</tr>
+			
+			<tr class='break'>
+				<td colspan=2> 
+					<h3><?php print _('Miscellaneous') ?></h3>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Markbook' AND name='wordpressCommentPush'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="On") {print "selected ";} ?>value="On"><?php print _('On') ?></option>
+						<option <?php if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><?php print _('Off') ?></option>
 					</select>
 				</td>
 			</tr>

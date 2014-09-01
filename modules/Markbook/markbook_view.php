@@ -22,6 +22,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
+//Get alternative header names
+$attainmentAlternativeName=getSettingByScope($connection2, "Markbook", "attainmentAlternativeName") ;
+$attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
+$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
+$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
+
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -470,7 +476,12 @@ else {
 														$scale=$scale . ": " . $rowScale["usage"] ;
 													}
 												}
-												print "<span title='" . _('Attainment') . "$scale'>" . _('Att') . "</span>" ;
+												if ($attainmentAlternativeName!="" AND $attainmentAlternativeNameAbrev!="") {
+													print "<span title='" . $attainmentAlternativeName . "$scale'>" . $attainmentAlternativeNameAbrev . "</span>" ;
+												}
+												else {
+													print "<span title='" . _('Attainment') . "$scale'>" . _('Att') . "</span>" ;
+												}
 											print "</th>" ;
 											print "<th style='text-align: center; width: 40px'>" ;
 												try {
@@ -490,7 +501,12 @@ else {
 														$scale=$scale . ": " . $rowScale["usage"] ;
 													}
 												}
-												print "<span title='" . _('Effort') . "$scale'>" . _('Eff') . "</span>" ;
+												if ($effortAlternativeName!="" AND $effortAlternativeNameAbrev!="") {
+													print "<span title='" . $effortAlternativeName . "$scale'>" . $effortAlternativeNameAbrev . "</span>" ;
+												}
+												else {
+													print "<span title='" . _('Effort') . "$scale'>" . _('Eff') . "</span>" ;
+												}
 											print "</th>" ;
 											print "<th style='text-align: center; width: 80px'>" ;
 												print "<span title='" . _('Comment') . "'>" . _('Com') . "</span>" ;
@@ -909,10 +925,10 @@ else {
 								print _("Assessment") ;
 							print "</th>" ;
 							print "<th style='width: 75px; text-align: center'>" ;
-								print _("Attainment") ;
+								if ($attainmentAlternativeName!="") { print $attainmentAlternativeName ; } else { print _('Attainment') ; }
 							print "</th>" ;
 							print "<th style='width: 75px; text-align: center'>" ;
-								print _("Effort") ;
+								if ($effortAlternativeName!="") { print $effortAlternativeName ; } else { print _('Effort') ; }
 							print "</th>" ;
 							print "<th>" ;
 								print _("Comment") ;
@@ -1423,10 +1439,10 @@ else {
 											print "Assessment" ;
 										print "</th>" ;
 										print "<th style='width: 75px; text-align: center'>" ;
-											print "Attainment" ;
+											if ($attainmentAlternativeName!="") { print $attainmentAlternativeName ; } else { print _('Attainment') ; }
 										print "</th>" ;
 										print "<th style='width: 75px; text-align: center'>" ;
-											print "Effort" ;
+											if ($effortAlternativeName!="") { print $effortAlternativeName ; } else { print _('Effort') ; }
 										print "</th>" ;
 										print "<th>" ;
 											print "Comment" ;

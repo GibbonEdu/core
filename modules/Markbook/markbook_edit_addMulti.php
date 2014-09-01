@@ -22,6 +22,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
+//Get alternative header names
+$attainmentAlternativeName=getSettingByScope($connection2, "Markbook", "attainmentAlternativeName") ;
+$attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
+$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
+$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
+
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_addMulti.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -188,8 +194,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b><?php print _('Attainment Scale') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('How will attainment be graded?') ?></i></span>
+								<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . _('Scale') ; } else { print _('Attainment Scale') ; } ?> *</b><br/>
 							</td>
 							<td class="right">
 								<select name="gibbonScaleIDAttainment" id="gibbonScaleIDAttainment" style="width: 302px">
@@ -219,7 +224,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Attainment Rubric') ?></b><br/>
+								<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . _('Rubric') ; } else { print _('Attainment Rubric') ; } ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('Choose predefined rubric, if desired.') ?></i></span>
 							</td>
 							<td class="right">
@@ -289,8 +294,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Effort Scale') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('How will effort be graded?') ?></i></span>
+								<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . _('Scale') ; } else { print _('Effort Scale') ; } ?> *</b><br/>
 							</td>
 							<td class="right">
 								<select name="gibbonScaleIDEffort" id="gibbonScaleIDEffort" style="width: 302px">
@@ -320,7 +324,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Effort Rubric') ?></b><br/>
+								<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . _('Rubric') ; } else { print _('Effort Rubric') ; } ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('Choose predefined rubric, if desired.') ?></i></span>
 							</td>
 							<td class="right">

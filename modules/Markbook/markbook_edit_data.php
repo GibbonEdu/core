@@ -22,6 +22,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
+//Get alternative header names
+$attainmentAlternativeName=getSettingByScope($connection2, "Markbook", "attainmentAlternativeName") ;
+$attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
+$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
+$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
+
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_data.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -281,7 +287,12 @@ else {
 										$gibbonScaleIDAttainment=$rowScale["gibbonScaleID"] ;
 										print "<input name='scaleAttainment' id='scaleAttainment' value='" . $attainmentID[$i] . "' type='hidden'>" ;
 										print "<input name='lowestAcceptableAttainment' id='lowestAcceptableAttainment' value='" . $rowScale["lowestAcceptable"] . "' type='hidden'>" ;
-										print "<span title='" . _('Attainment') . "$scale'>" . _('Att') . "</span>" ;
+										if ($attainmentAlternativeName!="" AND $attainmentAlternativeNameAbrev!="") {
+											print "<span title='" . $attainmentAlternativeName . "$scale'>" . $attainmentAlternativeNameAbrev . "</span>" ;
+										}
+										else {
+											print "<span title='" . _('Attainment') . "$scale'>" . _('Att') . "</span>" ;
+										}
 									print "</th>" ;
 									print "<th style='text-align: center; width: 30px'>" ;
 										try {
@@ -302,7 +313,12 @@ else {
 										$gibbonScaleIDEffort=$rowScale["gibbonScaleID"] ;
 										print "<input name='scaleEffort' id='scaleEffort' value='" . $effortID[$i] . "' type='hidden'>" ;
 										print "<input name='lowestAcceptableEffort' id='lowestAcceptableEffort' value='" . $rowScale["lowestAcceptable"] . "' type='hidden'>" ;
-										print "<span title='" . _('Effort') . "$scale'>" . _('Eff') . "</span>" ;
+										if ($effortAlternativeName!="" AND $effortAlternativeNameAbrev!="") {
+											print "<span title='" . $effortAlternativeName . "$scale'>" . $effortAlternativeNameAbrev . "</span>" ;
+										}
+										else {
+											print "<span title='" . _('Effort') . "$scale'>" . _('Eff') . "</span>" ;
+										}
 									print "</th>" ;
 									print "<th style='text-align: center; width: 80'>" ;
 										print "<span title='" . _('Comment') . "'>" . _('Com') . "</span>" ;
