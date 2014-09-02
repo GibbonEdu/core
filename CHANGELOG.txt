@@ -80,6 +80,9 @@ Markbook: added ability to change, school-wide, the headings "Attainment" and "E
 	Edited files /modules/Markbook/markbookSettings*.php
 	Edited various Markbook-related files
 
+CLI: added new script to check user status relative to start and end date and fix any issues, including family member left status
+	New file /cli/userAdmin_statusCheckAndFix.php
+
 v8.1.00
 -------
 General: added dev indicator in footer, when running cuttingEdge
