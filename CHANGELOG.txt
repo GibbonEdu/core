@@ -83,6 +83,15 @@ Markbook: added ability to change, school-wide, the headings "Attainment" and "E
 CLI: added new script to check user status relative to start and end date and fix any issues, including family member left status
 	New file /cli/userAdmin_statusCheckAndFix.php
 
+External Assessment: added ability to import external assessment results from CSV
+	New values in tables gibbonAction, gibbonPermission
+	Edited value in table gibbonAction 
+	New file /modules/External Assessment/import_results.php
+
+Activities: fixed bug in activity spread by roll group report
+	Edited file /modules/Activities/report_activitySpread_rollGroup.php
+
+
 v8.1.00
 -------
 General: added dev indicator in footer, when running cuttingEdge

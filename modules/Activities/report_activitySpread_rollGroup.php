@@ -216,10 +216,10 @@ else {
 								try {
 									$dataReg=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$row["gibbonPersonID"], "gibbonDaysOfWeekID"=>$columns[$i][1], "gibbonSchoolYearTermIDList"=>"%" . $columns[$i][0] . "%"); 
 									if ($_GET["status"]=="Accepted") {
-										$sqlReg="SELECT * FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonDaysOfWeekID=:gibbonDaysOfWeekID AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermIDList AND status='Accepted'" ;
+										$sqlReg="SELECT DISTINCT gibbonActivity.name, gibbonActivityStudent.status FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonDaysOfWeekID=:gibbonDaysOfWeekID AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermIDList AND status='Accepted'" ;
 									}
 									else {
-										$sqlReg="SELECT * FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonDaysOfWeekID=:gibbonDaysOfWeekID AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermIDList AND NOT status='Not Accepted'" ;
+										$sqlReg="SELECT DISTINCT gibbonActivity.name, gibbonActivityStudent.status FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonDaysOfWeekID=:gibbonDaysOfWeekID AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermIDList AND NOT status='Not Accepted'" ;
 									}
 									$resultReg=$connection2->prepare($sqlReg);
 									$resultReg->execute($dataReg);
