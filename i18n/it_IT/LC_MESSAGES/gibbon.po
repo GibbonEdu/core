@@ -27542,7 +27542,7 @@ msgstr ""
 
 #: modules/Messenger/messenger_post.php:63
 msgid ""
-"Your rquest was completed successfully: not all messages may arrive at their "
+"Your request was completed successfully: not all messages may arrive at their "
 "destination, but an attempt has been made to get them all out."
 msgstr ""
 "La tua richiesta &egrave stata completata con successo: non tutti i messaggi "

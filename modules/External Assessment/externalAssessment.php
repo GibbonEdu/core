@@ -41,6 +41,10 @@ else {
 	if (isset($_GET["search"])) {
 		$search=$_GET["search"] ;
 	}
+	$allStudents="" ;
+	if (isset($_GET["allStudents"])) {
+		$allStudents=$_GET["allStudents"] ;
+	}
 
 	?>
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -53,6 +57,21 @@ else {
 				</td>
 				<td class="right">
 					<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b><?php print _('All Students') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Include all students, regardless of status and current enrolment. Some data may not display.') ?></i></span>
+				</td>
+				<td class="right">
+					<?php
+					$checked="" ;
+					if ($allStudents=="on") {
+						$checked="checked" ;
+					}
+					print "<input $checked name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">" ;
+					?>
 				</td>
 			</tr>
 			<tr>
@@ -81,12 +100,24 @@ else {
 	
 		
 	try {
-		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-		$sql="SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' ORDER BY surname, preferredName" ; 
-		if ($search!="") {
-			$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%"); 
-			$and=" AND ((preferredName LIKE :search1) OR (surname LIKE :search2) OR (username LIKE :search3))" ;
-			$sql="SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' $and ORDER BY surname, preferredName" ; 
+		if ($allStudents!="on") {
+			$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+			$sql="SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' ORDER BY surname, preferredName" ; 
+			if ($search!="") {
+				$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%"); 
+				$and=" AND ((preferredName LIKE :search1) OR (surname LIKE :search2) OR (username LIKE :search3))" ;
+				$sql="SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' $and ORDER BY surname, preferredName" ; 
+			}
+		}
+		else {
+			$data=array(); 
+			$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) ORDER BY surname, preferredName" ; 
+			if ($search!="") {
+				$data=array("search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%"); 
+				$and=" AND ((preferredName LIKE :search1) OR (surname LIKE :search2) OR (username LIKE :search3))" ;
+				$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) $and ORDER BY surname, preferredName" ; 
+			}
+
 		}
 		$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
 		$result=$connection2->prepare($sql);
@@ -146,13 +177,15 @@ else {
 						print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
 					print "</td>" ;
 					print "<td>" ;
-						print _($row["yearGroup"]) ;
+						if ($row["yearGroup"]!="") {
+							print _($row["yearGroup"]) ;
+						}
 					print "</td>" ;
 					print "<td>" ;
 						print $row["rollGroup"] ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=$search'><img title='View Assessments' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=$search&allStudents=$allStudents'><img title='View Assessments' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

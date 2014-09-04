@@ -244,8 +244,8 @@ else {
 				selector: "div#editorcontainer textarea",
 				width: '738px',
 				menubar : false,
-				toolbar: 'bold, italic, underline,forecolor,backcolor,|,justifyleft, justifycenter, justifyright, justifyfull, |, bullist, numlist,outdent, indent, |, link, unlink, , | hr, |, image, |, charmap, |, table, |, formatselect',
-				plugins: 'table, template, paste, visualchars, image, link, template, textcolor, hr, charmap',
+				toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, |, cut, copy, paste, undo, redo, fullscreen',
+				plugins: 'table, template, paste, visualchars, image, link, template, textcolor, hr, charmap, fullscreen, media',
 			 	statusbar: false,
 			 	extended_valid_elements: '<?php print getSettingByScope($connection2, "System", "allowableHTML") ?>',
 			 	apply_source_formatting : true,
@@ -254,6 +254,9 @@ else {
 			 	relative_urls: false
 			 });
 			</script>
+			<style>
+				div.mce-listbox button, div.mce-menubtn button { padding-top: 2px!important ; padding-bottom: 2px!important }
+			</style>
 			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-tokeninput/src/jquery.tokeninput.js"></script>
 			<link rel="stylesheet" href="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-tokeninput/styles/token-input-facebook.css" type="text/css" />
 			

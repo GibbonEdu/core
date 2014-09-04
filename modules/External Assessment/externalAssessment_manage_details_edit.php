@@ -63,6 +63,10 @@ else {
 	$gibbonExternalAssessmentStudentID=$_GET["gibbonExternalAssessmentStudentID"] ;
 	$gibbonPersonID=$_GET["gibbonPersonID"] ;
 	$search=$_GET["search"] ;
+	$allStudents="" ;
+	if (isset($_GET["allStudents"])) {
+		$allStudents=$_GET["allStudents"] ;
+	}
 	if ($gibbonExternalAssessmentStudentID=="" OR $gibbonPersonID=="") {
 		print "<div class='error'>" ;
 			print _("You have not specified one or more required parameters.") ;
@@ -89,11 +93,11 @@ else {
 			
 			if ($search!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/External Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search'>" . _('Back') . "</a>" ;				
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/External Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>" . _('Back') . "</a>" ;				
 				print "</div>" ;
 			}
 			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_editProcess.php?search=$search" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_editProcess.php?search=$search&allStudents=$allStudents" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td style='width: 275px'> 

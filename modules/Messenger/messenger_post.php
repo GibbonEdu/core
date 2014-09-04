@@ -60,7 +60,7 @@ else {
 				$addReturnMessage=_("Your request failed due to an attachment error.") ;	
 			}
 			else if ($addReturn=="success0") {
-				$addReturnMessage=_("Your rquest was completed successfully: not all messages may arrive at their destination, but an attempt has been made to get them all out.") ;
+				$addReturnMessage=_("Your request was completed successfully: not all messages may arrive at their destination, but an attempt has been made to get them all out.") ;
 				if (is_numeric($_GET["emailCount"])) {
 					$addReturnMessage.=" " . sprintf(_('%1$s email(s) were dispatched.'), $_GET["emailCount"]) ;	
 				}

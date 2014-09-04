@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbonYearGroupID=NULL, $manage=FALSE, $search="" ) {
+function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbonYearGroupID=NULL, $manage=FALSE, $search="", $allStudents="" ) {
 	try {
 		$dataAssessments=array("gibbonPersonID"=>$gibbonPersonID); 
 		$sqlAssessments="SELECT * FROM gibbonExternalAssessmentStudent JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY date" ; 
@@ -38,8 +38,8 @@ function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbo
 			print "<h2>" ;
 			print _($rowAssessments["name"]) . " <span style='font-size: 75%; font-style: italic'>(" . substr($rowAssessments["date"], 0, 4) . ")</span>" ;
 			if ($manage==TRUE) {
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=" . $rowAssessments["gibbonExternalAssessmentStudentID"] . "&search=$search'><img style='margin-left: 5px' title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_delete.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=" . $rowAssessments["gibbonExternalAssessmentStudentID"] . "&search=$search'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=" . $rowAssessments["gibbonExternalAssessmentStudentID"] . "&search=$search&allStudents=$allStudents'><img style='margin-left: 5px' title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_delete.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=" . $rowAssessments["gibbonExternalAssessmentStudentID"] . "&search=$search&allStudents=$allStudents'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 			}
 			print "</h2>" ;
 			print "<p>" ;

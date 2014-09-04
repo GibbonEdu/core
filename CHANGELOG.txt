@@ -91,7 +91,18 @@ External Assessment: added ability to import external assessment results from CS
 Activities: fixed bug in activity spread by roll group report
 	Edited file /modules/Activities/report_activitySpread_rollGroup.php
 
+Students: added field to show student agreements signed
+	Edited file /modules/Students/student_view_details.php
+	
+School Admin: fixed maxlength of category field in external assessment management field edit/add
+	Edited files /modules/School Admin/externalAssessments_manage_edit_field_add.php, externalAssessments_manage_edit_field_edit.php
 
+External Assessment: added ability to work on students who are not 'Full' and enrolled in the current year.
+	Edited files /modules/External Assessment/externalAssessment.php
+
+Resources: added loading graphic when uploading a file view ajax in editor
+	Edited files /modules/Resources/resources_addQuick_ajax.php, resources_add_ajax.php
+	
 v8.1.00
 -------
 General: added dev indicator in footer, when running cuttingEdge

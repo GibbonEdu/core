@@ -61,6 +61,10 @@ else {
 	
 	$gibbonPersonID=$_GET["gibbonPersonID"] ;
 	$search=$_GET["search"] ;
+	$allStudents="" ;
+	if (isset($_GET["allStudents"])) {
+		$allStudents=$_GET["allStudents"] ;
+	}
 	
 	if ($gibbonPersonID=="") {
 		print "<div class='error'>" ;
@@ -69,8 +73,14 @@ else {
 	}
 	else {
 		try {
-			$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$gibbonPersonID); 
-			$sql="SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.name AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName" ; 
+			if ($allStudents!="on") {
+				$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$gibbonPersonID); 
+				$sql="SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolmentID, surname, preferredName, title, image_240, gibbonYearGroup.name AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName" ; 
+			}
+			else {
+				$data=array("gibbonPersonID"=>$gibbonPersonID); 
+				$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, title, image_240, NULL AS yearGroup, NULL AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName" ; 
+			}
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -86,7 +96,7 @@ else {
 		else {
 			if ($search!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/External Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search'>" . _('Back') . "</a>" ;				
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/External Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>" . _('Back') . "</a>" ;				
 				print "</div>" ;
 			}
 			$row=$result->fetch() ;
@@ -99,7 +109,9 @@ else {
 					print "</td>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
-						print _($row["yearGroup"]) ;
+						if ($row["yearGroup"]!="") {
+							print _($row["yearGroup"]) ;
+						}
 					print "</td>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;
@@ -216,6 +228,7 @@ else {
 							<td class="right">
 								<input type="hidden" name="step" value="2">
 								<input type="hidden" name="search" value="<?php print $search ?>">
+								<input type="hidden" name="allStudents" value="<?php print $allStudents ?>">
 								<input type="hidden" name="gibbonPersonID" value="<?php print $gibbonPersonID ?>">
 								<input type="hidden" name="q" value="<?php print $_GET["q"] ?>">
 								<input type="submit" value="Go">
@@ -453,7 +466,7 @@ else {
 					}
 					
 					?>
-					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_addProcess.php?search=$search" ?>">
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_addProcess.php?search=$search&allStudents=$allStudents" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td style='width: 275px'> 

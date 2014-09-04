@@ -115,7 +115,7 @@ else {
 							<b><?php print _('Category') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="category" id="category" maxlength=10 value="<?php if (isset($row["category"])) { print $row["category"] ; } ?>" type="text" style="width: 300px">
+							<input name="category" id="category" maxlength=50 value="<?php if (isset($row["category"])) { print $row["category"] ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var category=new LiveValidation('category');
 								category.add(Validate.Presence);

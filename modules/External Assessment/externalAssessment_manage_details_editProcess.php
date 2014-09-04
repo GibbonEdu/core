@@ -38,12 +38,16 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $gibbonPersonID=$_POST["gibbonPersonID"] ;
 $gibbonExternalAssessmentStudentID=$_POST["gibbonExternalAssessmentStudentID"] ;
 $search=$_GET["search"] ;
+$allStudents="" ;
+if (isset($_GET["allStudents"])) {
+	$allStudents=$_GET["allStudents"] ;
+}
 
 if ($gibbonPersonID=="") {
 	print "Fatal error loading this page!" ;
 }
 else {
-	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=$gibbonExternalAssessmentStudentID&search=$search" ;
+	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=$gibbonExternalAssessmentStudentID&search=$search&allStudents=$allStudents" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/External Assessment/externalAssessment_manage_details_edit.php")==FALSE) {
 		//Fail 0

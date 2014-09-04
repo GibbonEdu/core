@@ -707,7 +707,7 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 		$output.="</div>" ;
 		
 		$output.="<div id='editorcontainer' style='margin-top: 4px'>" ;
-			$output.="<textarea class='tinymce' name='" . $id . "' id='" . $id . "' style='height: " . ($rows*20) . "px; width: 100%; margin-left: 0px'>" . htmlPrep($value) . "</textarea>" ;
+			$output.="<textarea class='tinymce' name='" . $id . "' id='" . $id . "' style='height: " . ($rows*18) . "px; width: 100%; margin-left: 0px'>" . htmlPrep($value) . "</textarea>" ;
 			if ($required) {
 				$output.="<script type='text/javascript'>" ;
 					$output.="var " . $id ."='';" ;

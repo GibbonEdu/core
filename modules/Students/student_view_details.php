@@ -523,6 +523,16 @@ else {
 									print "</td>" ;
 								print "</tr>" ;
 							}
+							$studentAgreementOptions=getSettingByScope( $connection2, "School Admin", "studentAgreementOptions" ) ;
+							if ($studentAgreementOptions!="") {
+							
+								print "<tr>" ;
+									print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>" . _('Student Agreements') . "</span><br/>" ;
+										print _("Agreements Signed:") . " " . $row["studentAgreements"] ;
+									print "</td>" ;
+								print "</tr>" ;
+							}
 						print "</table>" ;
 					}
 					else if ($subpage=="Personal") {
@@ -950,6 +960,36 @@ else {
 									print $row["lockerNumber"] ;
 								print "</td>" ;
 							print "</tr>" ;
+							
+							$privacySetting=getSettingByScope( $connection2, "User Admin", "privacy" ) ;
+							if ($privacySetting=="Y") {
+								print "<tr>" ;
+									print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>" . _('Image Privacy') . "</span><br/>" ;
+										if ($row["privacy"]!="") {
+											print "<span style='color: #cc0000; background-color: #F6CECB'>" ;
+												print _("Privacy required:") . " " . $row["privacy"] ;
+											print "</span>" ;
+										}
+										else {
+											print "<span style='color: #390; background-color: #D4F6DC;'>" ;
+												print _("Privacy not required or not set.") ;
+											print "</span>" ;
+										}
+									
+									print "</td>" ;
+								print "</tr>" ;
+							}
+							$studentAgreementOptions=getSettingByScope( $connection2, "School Admin", "studentAgreementOptions" ) ;
+							if ($studentAgreementOptions!="") {
+							
+								print "<tr>" ;
+									print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>" . _('Student Agreements') . "</span><br/>" ;
+										print _("Agreements Signed:") . " " . $row["studentAgreements"] ;
+									print "</td>" ;
+								print "</tr>" ;
+							}
 						print "</table>" ;
 					}
 					else if ($subpage=="Family") {
