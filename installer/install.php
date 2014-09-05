@@ -1237,7 +1237,8 @@ include "../functions.php" ;
 												if ($cuttingEdgeCode=="Y") {
 													include "../CHANGEDB.php" ;
 													$sqlTokens=explode(";end", $sql[(count($sql))][1]) ;
-													$versionMaxLinesMax=(count($sqlTokens)-1) ;
+													print $versionMaxLinesMax=(count($sqlTokens)-1) ;
+													$tokenCount=0 ;
 													try {
 														$data=array("cuttingEdgeCodeLine"=>$versionMaxLinesMax); 
 														$sql="UPDATE gibbonSetting SET value=:cuttingEdgeCodeLine WHERE scope='System' AND name='cuttingEdgeCodeLine'" ;
@@ -1245,7 +1246,28 @@ include "../functions.php" ;
 														$result->execute($data);
 													}
 													catch(PDOException $e) { }
+													
+													print "there<br/>" ;
+													foreach ($sqlTokens AS $sqlToken) {
+														print $tokenCount . "<br/>" ;
+														print $versionMaxLinesMax . "<br/>" ;
+														print "<br/>" ;
+														if ($tokenCount<=$versionMaxLinesMax) {
+															if (trim($sqlToken)!="") { //Decide whether this has been run or not
+																try {
+																	print "here" ;
+																	$result=$connection2->query($sqlToken);   
+																}
+																catch(PDOException $e) { 
+																	print $e->getMessage() ;
+																	$partialFail=TRUE;
+																}
+															}
+														}
+														$tokenCount++ ;
+													}
 												}
+												
 	
 												if ($settingsFail==TRUE) {
 													print "<div class='error'>" ;
