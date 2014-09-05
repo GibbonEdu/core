@@ -706,6 +706,34 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 			$output.="</div>" ;
 		$output.="</div>" ;
 		
+		if ($showMedia==TRUE) {
+			//DEFINE MEDIA INPUT DISPLAY
+			$output.="<div class='" . $id . "resourceSlider' style='width: 100%; min-height: 60px;'>" ;
+				$output.="<div style='text-align: center'>" ;
+					$output.="<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Loading') . "' onclick='return false;' /><br/>" ;
+					$output.=_('Loading') ;
+				$output.="</div>" ;
+			$output.="</div>" ;
+			
+			//DEFINE QUICK INSERT
+			$output.="<div class='" . $id . "resourceQuickSlider' style='width: 100%; min-height: 60px;'>" ;
+				$output.="<div style='text-align: center'>" ;
+					$output.="<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Loading') . "' onclick='return false;' /><br/>" ;
+					$output.=_("Loading") ;
+				$output.="</div>" ;
+			$output.="</div>" ;
+		}
+		
+		if ($showMedia==TRUE AND $allowUpload==TRUE) {
+			//DEFINE MEDIA ADD DISPLAY
+			$output.="<div class='" . $id . "resourceAddSlider' style='width: 100%; min-height: 60px;'>" ;
+				$output.="<div style='text-align: center'>" ;
+					$output.="<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Loading') . "' onclick='return false;' /><br/>" ;
+					$output.=_("Loading") ;
+				$output.="</div>" ;
+			$output.="</div>" ;
+		}
+		
 		$output.="<div id='editorcontainer' style='margin-top: 4px'>" ;
 			$output.="<textarea class='tinymce' name='" . $id . "' id='" . $id . "' style='height: " . ($rows*18) . "px; width: 100%; margin-left: 0px'>" . htmlPrep($value) . "</textarea>" ;
 			if ($required) {
@@ -753,35 +781,6 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 				 $output.="}) ;" ;
 			$output.="});" ;
 		$output.="</script>" ;	
-		
-		if ($showMedia==TRUE) {
-			//DEFINE MEDIA INPUT DISPLAY
-			$output.="<div class='" . $id . "resourceSlider' style='min-height: 60px; background-color: #DEECF7; border:1px solid #aaa; -moz-box-shadow:inset 1px 1px 2px rgba(0,0,0,0.1);-webkit-box-shadow:inset 1px 1px 2px rgba(0,0,0,0.1);box-shadow:inset 1px 1px 2px rgba(0,0,0,0.1);}'>" ;
-				$output.="<div style='text-align: center'>" ;
-					$output.="<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Loading') . "' onclick='return false;' /><br/>" ;
-					$output.=_('Loading') ;
-				$output.="</div>" ;
-			$output.="</div>" ;
-			
-			//DEFINE QUICK INSERT
-			$output.="<div class='" . $id . "resourceQuickSlider' style='min-height: 60px; background-color: #DEECF7; border:1px solid #aaa; -moz-box-shadow:inset 1px 1px 2px rgba(0,0,0,0.1);-webkit-box-shadow:inset 1px 1px 2px rgba(0,0,0,0.1);box-shadow:inset 1px 1px 2px rgba(0,0,0,0.1);}'>" ;
-				$output.="<div style='text-align: center'>" ;
-					$output.="<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Loading') . "' onclick='return false;' /><br/>" ;
-					$output.=_("Loading") ;
-				$output.="</div>" ;
-			$output.="</div>" ;
-		}
-		
-		if ($showMedia==TRUE AND $allowUpload==TRUE) {
-			//DEFINE MEDIA ADD DISPLAY
-			$output.="<div class='" . $id . "resourceAddSlider' style='min-height: 60px; background-color: #DEECF7; border:1px solid #aaa; -moz-box-shadow:inset 1px 1px 2px rgba(0,0,0,0.1);-webkit-box-shadow:inset 1px 1px 2px rgba(0,0,0,0.1);box-shadow:inset 1px 1px 2px rgba(0,0,0,0.1);}'>" ;
-				$output.="<div style='text-align: center'>" ;
-					$output.="<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Loading') . "' onclick='return false;' /><br/>" ;
-					$output.=_("Loading") ;
-				$output.="</div>" ;
-			$output.="</div>" ;
-		}
-		
 	$output.="</div>" ;
 	
 	return $output ;
@@ -1224,7 +1223,7 @@ function sidebar($connection2, $guid) {
 				print "<ol>" ;
 				$count=0 ;
 				while ($row=$result->fetch()) {
-					if ($count<3) {
+					if ($count<5) {
 						$diff=(strtotime(substr($row["homeworkDueDateTime"],0,10)) - strtotime(date("Y-m-d")))/86400 ;
 						$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 						$style="padding-right: 3px;" ;

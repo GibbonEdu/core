@@ -312,8 +312,9 @@ else {
 				
 				print "<tr>" ;
 					print "<td class='right' colspan=2>" ;
+						print "<input type='hidden' name='gibbonSchoolYearID' value='$gibbonSchoolYearID'>" ;
 						print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php'>" . _('Clear Filters') . "</a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID'>" . _('Clear Filters') . "</a> " ;
 						print "<input type='submit' value='" . _('Go') . "'>" ;
 					print "</td>" ;
 				print "</tr>" ;

@@ -91,7 +91,7 @@ else {
 		 
 				$output.="$('#" . $id . "ajaxForm').submit(function() {" ; 
 					$output.="$(this).ajaxSubmit(options);" ; 
-					$output.="$(\"." .$id . "resourceAddSlider\").html(\"<div style='text-align: center'><img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Loading') . "' onclick='return false;' /><br/>" . _('Loading') . "</div>\");" ;
+					$output.="$(\"." .$id . "resourceAddSlider\").html(\"<div style='text-align: center'><img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Uploading') . "' onclick='return false;' /><br/>" . _('Loading') . "</div>\");" ;
 					$output.="return false;" ; 
 				$output.="});" ; 
 			$output.="});" ; 

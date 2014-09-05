@@ -102,7 +102,20 @@ External Assessment: added ability to work on students who are not 'Full' and en
 
 Resources: added loading graphic when uploading a file view ajax in editor
 	Edited files /modules/Resources/resources_addQuick_ajax.php, resources_add_ajax.php
-	
+
+General: improved UX when using editor to insert resources by placing resource insert UI above editor, not below
+	Edited file /functions.php
+
+General: increased Homework listing on homepage sidebar from 3 to 5 items.
+	Edited file /functions.php
+
+Finance: fixed year selection x filter issue in invoice view
+	Edited file /modules/Finance/invoices_manage.php 
+
+Finance: added roll group to invoice and receipt
+	Edited file /modules/Finance/moduleFunctions.php
+
+
 v8.1.00
 -------
 General: added dev indicator in footer, when running cuttingEdge

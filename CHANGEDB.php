@@ -531,7 +531,7 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 INSERT INTO `gibbonAction` (`gibbonModuleID` ,`name` ,`precedence` ,`category` ,`description` ,`URLList` ,`entryURL` ,`defaultPermissionAdmin` ,`defaultPermissionTeacher` ,`defaultPermissionStudent` ,`defaultPermissionParent` ,`defaultPermissionSupport` ,`categoryPermissionStaff` ,`categoryPermissionStudent` ,`categoryPermissionParent` ,`categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='External Assessment'), 'Import Assessment Results', 0, '', 'Import CSV file of results, to update matching records and create new records where none exist.', 'import_results.php', 'import_results.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='External Assessment' AND gibbonAction.name='Import Assessment Results'));end
 UPDATE gibbonAction SET entryURL='externalAssessment.php' WHERE name='External Assessment Data_manage' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='External Assessment');end
-
+ALTER TABLE `gibbonPerson` CHANGE `studentAgreements` `studentAgreements` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 " ;
 
 
