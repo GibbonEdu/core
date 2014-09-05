@@ -1237,7 +1237,7 @@ include "../functions.php" ;
 												if ($cuttingEdgeCode=="Y") {
 													include "../CHANGEDB.php" ;
 													$sqlTokens=explode(";end", $sql[(count($sql))][1]) ;
-													print $versionMaxLinesMax=(count($sqlTokens)-1) ;
+													$versionMaxLinesMax=(count($sqlTokens)-1) ;
 													$tokenCount=0 ;
 													try {
 														$data=array("cuttingEdgeCodeLine"=>$versionMaxLinesMax); 
@@ -1247,15 +1247,10 @@ include "../functions.php" ;
 													}
 													catch(PDOException $e) { }
 													
-													print "there<br/>" ;
 													foreach ($sqlTokens AS $sqlToken) {
-														print $tokenCount . "<br/>" ;
-														print $versionMaxLinesMax . "<br/>" ;
-														print "<br/>" ;
 														if ($tokenCount<=$versionMaxLinesMax) {
 															if (trim($sqlToken)!="") { //Decide whether this has been run or not
 																try {
-																	print "here" ;
 																	$result=$connection2->query($sqlToken);   
 																}
 																catch(PDOException $e) { 
