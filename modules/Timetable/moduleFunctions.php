@@ -25,11 +25,11 @@ function getSpaceBookingEvents($guid, $connection2, $startDayStamp, $gibbonPerso
 	try {
 		if ($gibbonPersonID!="") {
 			$dataSpaceBooking=array("gibbonPersonID"=>$gibbonPersonID); 
-			$sqlSpaceBooking="SELECT * FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonPersonID=:gibbonPersonID AND date>='" . date("Y-m-d", $startDayStamp) . "' AND  date<='" . date("Y-m-d", ($startDayStamp+(7*24*60*60))) . "' ORDER BY date, timeStart, name" ;
+			$sqlSpaceBooking="SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonTTSpaceBooking.gibbonPersonID=:gibbonPersonID AND date>='" . date("Y-m-d", $startDayStamp) . "' AND  date<='" . date("Y-m-d", ($startDayStamp+(7*24*60*60))) . "' ORDER BY date, timeStart, name" ;
 		} 
 		else {
 			$dataSpaceBooking=array(); 
-			$sqlSpaceBooking="SELECT * FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE date>='" . date("Y-m-d", $startDayStamp) . "' AND  date<='" . date("Y-m-d", ($startDayStamp+(7*24*60*60))) . "' ORDER BY date, timeStart, name" ;
+			$sqlSpaceBooking="SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE date>='" . date("Y-m-d", $startDayStamp) . "' AND  date<='" . date("Y-m-d", ($startDayStamp+(7*24*60*60))) . "' ORDER BY date, timeStart, name" ;
 		}
 		$resultSpaceBooking=$connection2->prepare($sqlSpaceBooking);
 		$resultSpaceBooking->execute($dataSpaceBooking);
@@ -45,6 +45,7 @@ function getSpaceBookingEvents($guid, $connection2, $startDayStamp, $gibbonPerso
 			$return[$count][3]=$rowSpaceBooking["date"] ;
 			$return[$count][4]=$rowSpaceBooking["timeStart"] ;
 			$return[$count][5]=$rowSpaceBooking["timeEnd"] ;
+			$return[$count][6]=formatName($rowSpaceBooking["title"], $rowSpaceBooking["preferredName"], $rowSpaceBooking["surname"], "Staff") ;
 			$count++ ;
 		}
 	}
@@ -222,6 +223,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 						print "<input name='ttDate' value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp-(7*24*60*60))) . "' type='hidden'>" ;
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
+						print "<input name='spaceBookingCalendar' value='" . $_SESSION[$guid]["viewCalendarSpaceBooking"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;
 						print "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='" . _('Last Week') . "'>" ;
 					print "</form>" ;
@@ -229,6 +231,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 						print "<input name='ttDate' value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(7*24*60*60))) . "' type='hidden'>" ;
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
+						print "<input name='spaceBookingCalendar' value='" . $_SESSION[$guid]["viewCalendarSpaceBooking"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;
 						print "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='" . _('Next Week') . "'>" ;
 					print "</form>" ;
@@ -251,6 +254,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 						<?php
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
+						print "<input name='spaceBookingCalendar' value='" . $_SESSION[$guid]["viewCalendarSpaceBooking"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;	
 					print "</form>" ;
 				print"</td>" ;
@@ -1258,14 +1262,16 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 				$top=0 ;
 				foreach ($eventsSpaceBooking AS $event) {
 					if ($event[3]==date("Y-m-d", ($startDayStamp+(86400*$count)))) {
-						$label=$event[1] . "<br/>(" . $event[4] . ")" ;
-						$title="" ;
-						if (strlen($label)>20) {
-							$label=substr($label, 0, 20) . "..." ;
-							$title="title='" . $event[1] . " (" . $event[4] . ")'" ;
-						}
 						$height=ceil((strtotime(date("Y-m-d", ($startDayStamp+(86400*$count))) . " " . $event[5])-strtotime(date("Y-m-d", ($startDayStamp+(86400*$count))) . " " . $event[4]))/60) . "px" ;
 						$top=(ceil((strtotime($event[3] . " " . $event[4])-strtotime(date("Y-m-d", $startDayStamp+(86400*$count)) . " " . $dayTimeStart))/60+($startPad/60))) . "px" ;
+						if ($height<45) {
+							$label=$event[1] ;
+							$title="title='" . substr($event[4],0,5) . "-" . substr($event[5],0,5) . "'";
+						}
+						else {
+							$label=$event[1] . "<br/><span style='font-weight: normal'>(" . substr($event[4],0,5) ."-" . substr($event[5],0,5) . ")<br/></span>" ;
+							$title="" ;
+						}
 						$output.="<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>" ;
 							$output.=$label ;
 						$output.="</div>" ;
@@ -1353,7 +1359,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 	//Get space booking array
 	$eventsSpaceBooking=FALSE ;
 	if ($_SESSION[$guid]["viewCalendarSpaceBooking"]=="Y") {
-		$eventsSpaceBooking=getSpaceBookingEvents($guid, $connection2, $startDayStamp, $_SESSION[$guid]["gibbonPersonID"]) ;
+		$eventsSpaceBooking=getSpaceBookingEvents($guid, $connection2, $startDayStamp) ;
 	}	
 
 	
@@ -1372,6 +1378,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 						print "<input name='ttDate' maxlength=10 value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp-(7*24*60*60))) . "' type='hidden'>" ;
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
+						print "<input name='spaceBookingCalendar' value='" . $_SESSION[$guid]["viewCalendarSpaceBooking"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;
 						?>
 						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='<?php print _('Last Week') ?>'>
@@ -1381,6 +1388,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 						print "<input name='ttDate' value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(7*24*60*60))) . "' type='hidden'>" ;
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
+						print "<input name='spaceBookingCalendar' value='" . $_SESSION[$guid]["viewCalendarSpaceBooking"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;
 						?>
 						<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='<?php print _('Next Week') ?>'>
@@ -1405,6 +1413,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 						<?php
 						print "<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 						print "<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
+						print "<input name='spaceBookingCalendar' value='" . $_SESSION[$guid]["viewCalendarSpaceBooking"] . "' type='hidden'>" ;
 						print "<input name='fromTT' value='Y' type='hidden'>" ;	
 					print "</form>" ;
 				print"</td>" ;
@@ -2112,14 +2121,16 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 				$top=0 ;
 				foreach ($eventsSpaceBooking AS $event) {
 					if ($event[3]==date("Y-m-d", ($startDayStamp+(86400*$count)))) {
-						$label=$event[1] . "<br/>(" . $event[4] . ")" ;
-						$title="" ;
-						if (strlen($label)>20) {
-							$label=substr($label, 0, 20) . "..." ;
-							$title="title='" . $event[1] . " (" . $event[4] . ")'" ;
-						}
 						$height=ceil((strtotime(date("Y-m-d", ($startDayStamp+(86400*$count))) . " " . $event[5])-strtotime(date("Y-m-d", ($startDayStamp+(86400*$count))) . " " . $event[4]))/60) . "px" ;
 						$top=(ceil((strtotime($event[3] . " " . $event[4])-strtotime(date("Y-m-d", $startDayStamp+(86400*$count)) . " " . $dayTimeStart))/60+($startPad/60))) . "px" ;
+						if ($height<45) {
+							$label=$event[1] ;
+							$title="title='" . substr($event[4],0,5) . "-" . substr($event[5],0,5) . " by " . $event[6] . "'";
+						}
+						else {
+							$label=$event[1] . "<br/><span style='font-weight: normal'>(" . substr($event[4],0,5) ."-" . substr($event[5],0,5) . ")<br/>by " . $event[6] ."</span>" ;
+							$title="" ;
+						}
 						$output.="<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>" ;
 							$output.=$label ;
 						$output.="</div>" ;

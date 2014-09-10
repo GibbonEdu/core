@@ -135,7 +135,9 @@ Timetable: added room booking functionality
 	Edited file /themes/Default/css/main.css
 	Edited file /themes/Olden/css/main.css
 	Edited file /modules/Timetable/report_viewAvailableSpaces.php, moduleFunctions.php, tt_space_view.php
-
+	New files /modules/Timetable/spaceBooking_manage*.php
+	New values in tables gibbonAction, gibbonPersmissions
+	
 
 v8.1.00
 -------
