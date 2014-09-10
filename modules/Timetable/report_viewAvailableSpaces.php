@@ -143,7 +143,10 @@ else {
 	if ($gibbonTTID!="") {
 		print "<h2>" ;
 		print _("Report Data") ;
-		print "<h2>" ;
+		print "</h2>" ;
+		print "<p>" ;
+		print _("This report does not take space bookings into account: please confirm that an available space has not been booked by looking at View Timetable by Space.") ;
+		print "</p>" ;
 		
 		try {
 			$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonTTID"=>$gibbonTTID); 
@@ -442,9 +445,23 @@ else {
 
 									$date=date("Y/m/d", ($startDayStamp+(86400*$count))) ;
 
-
 									$output="" ;
 									$blank=TRUE ;
+									
+									//Make array of space changes
+									$spaceChanges=array() ;
+									try {
+										$dataSpaceChange=array("date"=>date("Y-m-d", ($startDayStamp+(86400*$count)))); 
+										$sqlSpaceChange="SELECT gibbonTTSpaceChange.*, gibbonSpace.name AS space, phoneInternal FROM gibbonTTSpaceChange LEFT JOIN gibbonSpace ON (gibbonTTSpaceChange.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE date=:date" ;
+										$resultSpaceChange=$connection2->prepare($sqlSpaceChange);
+										$resultSpaceChange->execute($dataSpaceChange);
+									}
+									catch(PDOException $e) { }
+									while ($rowSpaceChange=$resultSpaceChange->fetch()) {
+										$spaceChanges[$rowSpaceChange["gibbonTTDayRowClassID"]][0]=$rowSpaceChange["space"] ;
+										$spaceChanges[$rowSpaceChange["gibbonTTDayRowClassID"]][1]=$rowSpaceChange["phoneInternal"] ;
+									}
+									
 									//Get day start and end!
 									$dayTimeStart="" ;
 									$dayTimeEnd="" ;
@@ -554,25 +571,65 @@ else {
 															$resultSelect->execute($dataSelect);
 														}
 														catch(PDOException $e) { }
+														$removers=array() ;
+														$adders=array() ;
 														while ($rowSelect=$resultSelect->fetch()) {
 															try {
 																$dataUnique=array("gibbonTTDayID"=>$rowDay["gibbonTTDayID"], "gibbonTTColumnRowID"=>$rowPeriods["gibbonTTColumnRowID"], "gibbonSpaceID"=>$rowSelect["gibbonSpaceID"]); 
-																$sqlUnique="SELECT * FROM gibbonTTDayRowClass WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonSpaceID=:gibbonSpaceID" ;
+																$sqlUnique="SELECT gibbonTTDayRowClass.*, gibbonSpace.name AS roomName FROM gibbonTTDayRowClass JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonTTDayRowClass.gibbonSpaceID=:gibbonSpaceID" ;
 																$resultUnique=$connection2->prepare($sqlUnique);
 																$resultUnique->execute($dataUnique);
 															}
 															catch(PDOException $e) { }
-															if ($resultUnique->rowCount()<1) {
+															if ($resultUnique->rowCount()!=1) {
 																$vacancies.=$rowSelect["name"] . ", " ;
 															}
+															else {
+																//Check if space freed up here
+																$rowUnique=$resultUnique->fetch() ;
+																if (isset($spaceChanges[$rowUnique["gibbonTTDayRowClassID"]])) {
+																	//Save newly used space
+																	$removers[$spaceChanges[$rowUnique["gibbonTTDayRowClassID"]][0]]=$spaceChanges[$rowUnique["gibbonTTDayRowClassID"]][0] ;
+																	
+																	//Save newly freed space
+																	$adders[$rowUnique["roomName"]]=$rowUnique["roomName"] ;
+																}
+															}
 														}
-														$vacancies=substr($vacancies,0,-2) ;
-														$day=$day . "<div title='" . htmlPrep($vacancies) . "' style='color: black; font-weight: normal; line-height: 0.9'>" ;
-															if (strlen($vacancies)<=50) {
-																$day.=$vacancies ;
+														
+														//Remove any cancelling moves
+														foreach ($removers AS $remove) {
+															if (isset($adders[$remove])) {
+																$adders[$remove]=NULL ;
+																$removers[$remove]=NULL ; 
+															}
+														}
+														foreach ($adders AS $adds) {
+															if ($adds!="") {
+																$vacancies.=$adds . ", " ;
+															}
+														}
+														foreach ($removers AS $remove) {
+															if ($remove!="") {
+																$vacancies=str_replace($remove . ", ", "", $vacancies) ;
+															}
+														}
+														
+														//Explode vacancies into array and sort, get ready to output
+														$vacancies=explode(",", substr($vacancies,0,-2)) ;
+														natcasesort($vacancies) ;
+														$vacanciesOutput="" ;
+														foreach ($vacancies AS $vacancy) {
+															$vacanciesOutput.=$vacancy . ", " ;
+														}
+														$vacanciesOutput=substr($vacanciesOutput,0,-2) ;
+														
+														$day=$day . "<div title='" . htmlPrep($vacanciesOutput) . "' style='color: black; font-weight: normal; line-height: 0.9'>" ;
+															if (strlen($vacanciesOutput)<=50) {
+																$day.=$vacanciesOutput ;
 															}
 															else {
-																$day.=substr($vacancies,0,50) . "..." ;
+																$day.=substr($vacanciesOutput,0,50) . "..." ;
 															}
 															
 														$day=$day . "</div>" ;

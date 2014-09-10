@@ -191,6 +191,7 @@ else {
 					$_SESSION[$guid]["calendarFeedPersonal"]=$row["calendarFeedPersonal"] ;
 					$_SESSION[$guid]["viewCalendarSchool"]=$row["viewCalendarSchool"] ;
 					$_SESSION[$guid]["viewCalendarPersonal"]=$row["viewCalendarPersonal"] ;
+					$_SESSION[$guid]["viewCalendarSpaceBooking"]=$row["viewCalendarSpaceBooking"] ;
 					$_SESSION[$guid]["dateStart"]=$row["dateStart"] ;
 					$_SESSION[$guid]["personalBackground"]=$row["personalBackground"] ;
 					$_SESSION[$guid]["messengerLastBubble"]=$row["messengerLastBubble"] ;

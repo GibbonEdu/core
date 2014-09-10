@@ -115,6 +115,27 @@ Finance: fixed year selection x filter issue in invoice view
 Finance: added roll group to invoice and receipt
 	Edited file /modules/Finance/moduleFunctions.php
 
+School Admin: fixed PHP Notice bug
+	Edited file /modules/School Admin/space_manage.php
+
+Timetable: fixed PHP Notice bug
+	Edited file /modules/Timetable/tt_space.php
+
+Timetable: added room change functionality
+	New table gibbonTTSpaceChange
+	New values in tables gibbonAction, gibbonPersmissions
+	Edited files /modules/Timetable/moduleFunctions.php, report_viewAvailableSpaces.php
+	New files /modules/Timetable/spaceChange_manage.php
+
+Timetable: added room booking functionality
+	New table gibbonTTSpaceBooking
+	Edited table gibbonPerson
+	Edited file /lib/googleOAuth/index.php
+	Edited file /login.php, index.php, index_tt_ajax.php
+	Edited file /themes/Default/css/main.css
+	Edited file /themes/Olden/css/main.css
+	Edited file /modules/Timetable/report_viewAvailableSpaces.php, moduleFunctions.php, tt_space_view.php
+
 
 v8.1.00
 -------

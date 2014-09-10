@@ -69,6 +69,13 @@ else {
 		else {
 			$_SESSION[$guid]["viewCalendarPersonal"]="N" ;
 		}
+		
+		if ($_POST["spaceBookingCalendar"]=="on" OR $_POST["spaceBookingCalendar"]=="Y") {
+			$_SESSION[$guid]["viewCalendarSpaceBooking"]="Y" ;
+		}
+		else {
+			$_SESSION[$guid]["viewCalendarSpaceBooking"]="N" ;
+		}
 	}
 	
 	$tt=renderTT($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"], $id, FALSE, $ttDate) ;

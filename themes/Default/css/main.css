@@ -1019,8 +1019,24 @@ span.ttPersonalCalendar {
 	padding: 5px 7px; 
 	border: 1px solid #555;
 }
+
 div.ttPersonalCalendar {
 	background-color: rgb(103,153,207); 
+	color: #fff; 
+	font-weight: bold ;
+}
+
+span.ttSpaceBookingCalendar {
+	color: #fff;
+	font-weight: bold; 
+	margin: 0px -2px 0px 5px; 
+	background-color: #E5760D; 
+	padding: 5px 7px; 
+	border: 1px solid #555;
+}
+
+div.ttSpaceBookingCalendar {
+	background-color: #E5760D; 
 	color: #fff; 
 	font-weight: bold ;
 }

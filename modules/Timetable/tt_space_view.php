@@ -80,18 +80,16 @@ else {
 			
 			if (isset($_POST["fromTT"])) {
 				if ($_POST["fromTT"]=="Y") {
-					if ($_POST["schoolCalendar"]=="on" OR $_POST["schoolCalendar"]=="Y") {
-						$_SESSION[$guid]["viewCalendarSchool"]="Y" ;
+					if (isset($_POST["spaceBookingCalendar"])) {
+						if ($_POST["spaceBookingCalendar"]=="on" OR $_POST["spaceBookingCalendar"]=="Y") {
+							$_SESSION[$guid]["viewCalendarSpaceBooking"]="Y" ;
+						}
+						else {
+							$_SESSION[$guid]["viewCalendarSpaceBooking"]="N" ;
+						}
 					}
 					else {
-						$_SESSION[$guid]["viewCalendarSchool"]="N" ;
-					}
-				
-					if ($_POST["personalCalendar"]=="on" OR $_POST["personalCalendar"]=="Y") {
-						$_SESSION[$guid]["viewCalendarPersonal"]="Y" ;
-					}
-					else {
-						$_SESSION[$guid]["viewCalendarPersonal"]="N" ;
+						$_SESSION[$guid]["viewCalendarSpaceBooking"]="N" ;
 					}
 				}
 			}
