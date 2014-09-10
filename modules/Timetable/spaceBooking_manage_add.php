@@ -19,6 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
+//Module includes
+include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+
+
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/spaceBooking_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -68,7 +72,7 @@ else {
 		if (isset($_GET["step"])) {
 			$step=$_GET["step"] ;
 		}
-		if ($step!=1 AND $step!=2 AND $step!=3) {
+		if ($step!=1 AND $step!=2) {
 			$step=1 ;
 		}
 	
@@ -101,9 +105,64 @@ else {
 								?>
 							</select>
 							<script type="text/javascript">
-								var gibbonSpace=new LiveValidation('gibbonSpace');
-								gibbonSpace.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								var gibbonSpaceID=new LiveValidation('gibbonSpaceID');
+								gibbonSpaceID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 							</script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print _('Date') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+						</td>
+						<td class="right">
+							<input name="date" id="date" maxlength=10 value="" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var date=new LiveValidation('date');
+								date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+								date.add(Validate.Presence);
+							 </script>
+							 <script type="text/javascript">
+								$(function() {
+									$( "#date" ).datepicker();
+								});
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print _('Start Time') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
+						</td>
+						<td class="right">
+							<input name="timeStart" id="timeStart" maxlength=5 value="" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var timeStart=new LiveValidation('timeStart');
+								timeStart.add(Validate.Presence);
+								timeStart.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
+							 </script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print _('End Time') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
+						</td>
+						<td class="right">
+							<input name="timeEnd" id="timeEnd" maxlength=5 value="" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var timeEnd=new LiveValidation('timeEnd');
+								timeEnd.add(Validate.Presence);
+								timeEnd.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
+							 </script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print _('Repeat?') ?> *</b><br/>
+						</td>
+						<td class="right">
+							<input readonly name="repeat" id="repeat" value="Coming Soon" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
@@ -121,118 +180,7 @@ else {
 		}
 		else if ($step==2) {
 			print "<h2>" ;
-				print _("Step 2 - Choose Options") ;
-			print "</h2>" ;
-			
-			$gibbonSpaceID=NULL ;
-			if (isset($_POST["gibbonSpaceID"])) {
-				$gibbonSpaceID=$_POST["gibbonSpaceID"] ;
-			}
-			
-			try {
-				$dataSelect=array("gibbonSpace"=>$gibbonSpaceID); 
-				$sqlSelect="SELECT * FROM gibbonSpace WHERE gibbonSpace.gibbonSpaceID=:gibbonSpace" ; 
-				$resultSelect=$connection2->prepare($sqlSelect);
-				$resultSelect->execute($dataSelect);
-			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" ;
-					print _("Your request failed due to a database error.") ;
-				print "</div>" ;
-			}
-			
-			if ($resultSelect->rowCount()!=1) {
-				print "<div class='error'>" ;
-					print _("Your request failed due to a database error.") ;
-				print "</div>" ;
-			}
-			else {
-				$rowSelect=$resultSelect->fetch() ;
-				?>
-				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/spaceBooking_manage_add.php&step=3" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
-						<tr>
-							<td style='width: 275px'> 
-								<b><?php print _('Space') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
-							</td>
-							<td class="right">
-								<input readonly name="class" id="class" value="<?php print $rowSelect["name"] ?>" type="text" style="width: 300px">
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php print _('Date') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
-							</td>
-							<td class="right">
-								<input name="date" id="date" maxlength=10 value="" type="text" style="width: 300px">
-								<script type="text/javascript">
-									var date=new LiveValidation('date');
-									date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-									date.add(Validate.Presence);
-								 </script>
-								 <script type="text/javascript">
-									$(function() {
-										$( "#date" ).datepicker();
-									});
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php print _('Start Time') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
-							</td>
-							<td class="right">
-								<input name="timeStart" id="timeStart" maxlength=5 value="" type="text" style="width: 300px">
-								<script type="text/javascript">
-									var timeStart=new LiveValidation('timeStart');
-									timeStart.add(Validate.Presence);
-									timeStart.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
-								 </script>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php print _('End Time') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
-							</td>
-							<td class="right">
-								<input name="timeEnd" id="timeEnd" maxlength=5 value="" type="text" style="width: 300px">
-								<script type="text/javascript">
-									var timeEnd=new LiveValidation('timeEnd');
-									timeEnd.add(Validate.Presence);
-									timeEnd.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
-								 </script>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php print _('Repeat?') ?> *</b><br/>
-							</td>
-							<td class="right">
-								<input readonly name="repeat" id="repeat" value="Coming Soon" type="text" style="width: 300px">
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
-							</td>
-							<td class="right">
-								<input type="hidden" name="gibbonSpaceID" value="<?php print $gibbonSpaceID ; ?>">
-								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<?php print _("Submit") ; ?>">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
-			}
-		}	
-		else if ($step==3) {
-			print "<h2>" ;
-				print _("Step 3 - Availability Check") ;
+				print _("Step 2 - Availability Check") ;
 			print "</h2>" ;
 			
 			$gibbonSpaceID=NULL ;
@@ -273,11 +221,20 @@ else {
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/spaceBooking_manage_addProcess.php" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
-								<td>
-									Availability checking is not currently available: you will need to check this yourself before proceeding.
-								</td>
-								<td class="right">
-									
+								<td colspan=2>
+									<?php
+									$available=isSpaceFree($guid, $connection2, $gibbonSpaceID, $date, $timeStart, $timeEnd) ;
+									if ($available==TRUE) {
+										print "<div class='success'>" ;
+											print _('The selected space is available for all of the specified time. Click submit below to complete your booking, before someone else beats you to it.') ;
+										print "</div>" ;
+									}
+									else {
+										print "<div class='error'>" ;
+											print _('The selected space is not available for some or all of the specified time. Please try again.') ;
+										print "</div>" ;
+									}
+									?>
 								</td>
 							</tr>
 							<tr>
@@ -290,7 +247,13 @@ else {
 									<input type="hidden" name="timeStart" value="<?php print $timeStart ; ?>">
 									<input type="hidden" name="timeEnd" value="<?php print $timeEnd ; ?>">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<?php print _("Submit") ; ?>">
+									<?php
+									if ($available==TRUE) {
+										?>
+										<input type="submit" value="<?php print _("Submit") ; ?>">
+										<?php
+									}
+									?>
 								</td>
 							</tr>
 						</table>

@@ -32,6 +32,9 @@ catch(PDOException $e) {
 
 @session_start() ;
 
+//Module includes
+include "./moduleFunctions.php" ;
+
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
@@ -57,7 +60,6 @@ else {
 		$timeStart=$_POST["timeStart"] ;
 		$timeEnd=$_POST["timeEnd"] ;
 		
-		
 		//Validate Inputs
 		if ($gibbonSpaceID=="" OR $date=="" OR $timeStart=="" OR $timeEnd=="") {
 			//Fail 3
@@ -65,23 +67,51 @@ else {
 			header("Location: {$URL}");
 		}
 		else {
-			//Write to database
+			//Lock tables
 			try {
-				$data=array("gibbonSpaceID"=>$gibbonSpaceID, "date"=>$date, "timeStart"=>$timeStart, "timeEnd"=>$timeEnd, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-				$sql="INSERT INTO gibbonTTSpaceBooking SET gibbonSpaceID=:gibbonSpaceID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonPersonID=:gibbonPersonID" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
+				$sql="LOCK TABLE gibbonDaysOfWeek WRITE, gibbonSchoolYear WRITE, gibbonSchoolYearSpecialDay WRITE, gibbonSchoolYearTerm WRITE, gibbonTTColumnRow WRITE, gibbonTTDay WRITE, gibbonTTDayDate WRITE, gibbonTTDayRowClass WRITE, gibbonTTSpaceBooking WRITE, gibbonTTSpaceChange WRITE" ;
+				$result=$connection2->query($sql);   
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "&addReturn=fail2" ;
+				$URL=$URL . "&duplicateReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
+			}	
+					
+			//Check that space is still available
+			$available=isSpaceFree($guid, $connection2, $gibbonSpaceID, $date, $timeStart, $timeEnd) ;
+			if ($available==FALSE) {
+				//Fail 3
+				$URL=$URL . "&addReturn=fail3" ;
+				header("Location: {$URL}");
 			}
+			else {
+				//Write to database
+				try {
+					$data=array("gibbonSpaceID"=>$gibbonSpaceID, "date"=>$date, "timeStart"=>$timeStart, "timeEnd"=>$timeEnd, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+					$sql="INSERT INTO gibbonTTSpaceBooking SET gibbonSpaceID=:gibbonSpaceID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonPersonID=:gibbonPersonID" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					//Fail 2
+					$URL=$URL . "&addReturn=fail2" ;
+					header("Location: {$URL}");
+					break ;
+				}
+				
+				//Unlock locked database tables
+				try {
+					$sql="UNLOCK TABLES" ;
+					$result=$connection2->query($sql);   
+				}
+				catch(PDOException $e) { }	
 		
-			//Success 0
-			$URL=$URL . "&addReturn=success0" ;
-			header("Location: {$URL}");
+				//Success 0
+				$URL=$URL . "&addReturn=success0" ;
+				header("Location: {$URL}");
+			}
 		}
 	}
 }

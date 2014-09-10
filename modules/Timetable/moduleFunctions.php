@@ -17,6 +17,75 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//Checks whether or not a space is free over a given period of time, returning true or false accordingly.
+function isSpaceFree($guid, $connection2, $gibbonSpaceID, $date, $timeStart, $timeEnd) {
+	$return=TRUE ;
+	
+	//Check if school is open
+	if (isSchoolOpen($guid, $date, $connection2)==FALSE) {
+		$return=FALSE ;
+	}
+	else {
+		
+		//Check timetable inc classes moved out
+		$ttClear=FALSE ;
+		try {
+			$dataSpace=array("gibbonSpaceID"=>$gibbonSpaceID, "date"=>$date, "timeStart1"=>$timeStart, "timeStart2"=>$timeStart, "timeStart3"=>$timeStart, "timeEnd1"=>$timeEnd, "timeStart4"=>$timeStart, "timeEnd2"=>$timeEnd); 
+			$sqlSpace="SELECT gibbonTTDayRowClass.gibbonSpaceID, gibbonTTDayDate.date, timeStart, timeEnd, gibbonTTSpaceChangeID FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) LEFT JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=gibbonTTDayDate.date) WHERE gibbonTTDayRowClass.gibbonSpaceID=:gibbonSpaceID AND gibbonTTDayDate.date=:date AND ((timeStart<=:timeStart1 AND timeEnd>:timeStart2) OR (timeStart>=:timeStart3 AND timeEnd<:timeEnd1) OR (timeStart>=:timeStart4 AND timeStart<:timeEnd2))" ;
+			$resultSpace=$connection2->prepare($sqlSpace);
+			$resultSpace->execute($dataSpace);
+		}
+		catch(PDOException $e) { $return=FALSE ; }
+		if ($resultSpace->rowCount()<1) {
+			$ttClear=TRUE ;
+		}
+		else {
+			$ttClashFixed=TRUE ;
+			
+			while ($rowSpace=$resultSpace->fetch()) {
+				if ($rowSpace["gibbonTTSpaceChangeID"]=="") {
+					$ttClashFixed=FALSE ;
+				}
+			}
+			if ($ttClashFixed==TRUE) {
+				$ttClear=TRUE ;
+			}
+		}
+		
+		if ($ttClear==FALSE) {
+			$return=FALSE ;
+		}
+		else {
+			//Check room changes moving in
+			try {
+				$dataSpace=array("gibbonSpaceID"=>$gibbonSpaceID, "date1"=>$date, "date2"=>$date, "timeStart1"=>$timeStart, "timeStart2"=>$timeStart, "timeStart3"=>$timeStart, "timeEnd1"=>$timeEnd, "timeStart4"=>$timeStart, "timeEnd2"=>$timeEnd); 
+				$sqlSpace="SELECT * FROM gibbonTTSpaceChange JOIN gibbonTTDayRowClass ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTSpaceChange.gibbonSpaceID=:gibbonSpaceID AND gibbonTTSpaceChange.date=:date1 AND gibbonTTDayDate.date=:date2 AND ((timeStart<=:timeStart1 AND timeEnd>:timeStart2) OR (timeStart>=:timeStart3 AND timeEnd<:timeEnd1) OR (timeStart>=:timeStart4 AND timeStart<:timeEnd2))" ;
+				$resultSpace=$connection2->prepare($sqlSpace);
+				$resultSpace->execute($dataSpace);
+			}
+			catch(PDOException $e) { $return=FALSE ; }
+			
+			if ($resultSpace->rowCount()>0) {
+				$return=FALSE ;
+			}
+			else {
+				//Check room bookings
+				try {
+					$dataSpace=array("gibbonSpaceID"=>$gibbonSpaceID, "date"=>$date, "timeStart1"=>$timeStart, "timeStart2"=>$timeStart, "timeStart3"=>$timeStart, "timeEnd1"=>$timeEnd, "timeStart4"=>$timeStart, "timeEnd2"=>$timeEnd); 
+					$sqlSpace="SELECT * FROM gibbonTTSpaceBooking WHERE gibbonSpaceID=:gibbonSpaceID AND date=:date AND ((timeStart<=:timeStart1 AND timeEnd>:timeStart2) OR (timeStart>=:timeStart3 AND timeEnd<:timeEnd1) OR (timeStart>=:timeStart4 AND timeStart<:timeEnd2))" ;
+					$resultSpace=$connection2->prepare($sqlSpace);
+					$resultSpace->execute($dataSpace);
+				}
+				catch(PDOException $e) { $return=FALSE ; }
+				if ($resultSpace->rowCount()>0) {
+					$return=FALSE ;
+				}
+			}
+		}
+	}
+	
+	return $return ;
+}
 
 //Returns space bookings for the specified user for the 7 days on/after $startDayStamp, or for all users for the 7 days on/after $startDayStamp if no user specified
 function getSpaceBookingEvents($guid, $connection2, $startDayStamp, $gibbonPersonID="") {
