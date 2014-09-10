@@ -59,6 +59,9 @@ else {
 			else if ($addReturn=="fail4") {
 				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
+			else if ($addReturn=="fail5") {
+				$addReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
+			}
 			else if ($addReturn=="success0") {
 				$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
 				$class="success" ;
@@ -157,14 +160,78 @@ else {
 							 </script>
 						</td>
 					</tr>
-					<tr>
+					<script type="text/javascript">
+						/* Homework Control */
+						$(document).ready(function(){
+							$("#repeatDailyRow").css("display","none");
+							$("#repeatWeeklyRow").css("display","none");
+							repeatDaily.disable();
+							repeatWeekly.disable();
+							
+							//Response to clicking on homework control
+							$(".repeat").click(function(){
+								if ($('input[name=repeat]:checked').val()=="Daily" ) {
+									repeatDaily.enable();
+									repeatWeekly.disable();
+									$("#repeatDailyRow").slideDown("fast", $("#repeatDailyRow").css("display","table-row")); 
+									$("#repeatWeeklyRow").css("display","none");
+								} else if ($('input[name=repeat]:checked').val()=="Weekly" ) {
+									repeatWeekly.enable();
+									repeatDaily.disable();
+									$("#repeatWeeklyRow").slideDown("fast", $("#repeatWeeklyRow").css("display","table-row")); 
+									$("#repeatDailyRow").css("display","none");
+								} else {
+									repeatWeekly.disable();
+									repeatDaily.disable();
+									$("#repeatWeeklyRow").css("display","none");
+									$("#repeatDailyRow").css("display","none");
+								}
+							 });
+						});
+					</script>
+					
+					<tr id="repeatRow">
 						<td> 
 							<b><?php print _('Repeat?') ?> *</b><br/>
+							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="repeat" id="repeat" value="Coming Soon" type="text" style="width: 300px">
+							<input checked type="radio" name="repeat" value="No" class="repeat" /> <?php print _('No') ?>
+							<input type="radio" name="repeat" value="Daily" class="repeat" /> <?php print _('Daily') ?>
+							<input type="radio" name="repeat" value="Weekly" class="repeat" /> <?php print _('Weekly') ?>
 						</td>
 					</tr>
+					<tr id="repeatDailyRow">
+						<td> 
+							<b><?php print _('Repeat Daily') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Repeat daily for this many days.') . "<br/>" . _('Does not include non-school days.') ?></i></span>
+						</td>
+						<td class="right">
+							<input name="repeatDaily" id="repeatDaily" maxlength=2 value="2" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var repeatDaily=new LiveValidation('repeatDaily');
+							 	repeatDaily.add(Validate.Presence);
+							 	repeatDaily.add( Validate.Numericality, { onlyInteger: true } );
+							 	repeatDaily.add( Validate.Numericality, { minimum: 2, maximum: 20 } );
+							</script>
+						</td>
+					</tr>
+					<tr id="repeatWeeklyRow">
+						<td> 
+							<b><?php print _('Repeat Weekly') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Repeat weekly for this many days.') . "<br/>" . _('Does not include non-school days.') ?></i></span>
+						</td>
+						<td class="right">
+							<input name="repeatWeekly" id="repeatWeekly" maxlength=2 value="2" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var repeatWeekly=new LiveValidation('repeatWeekly');
+							 	repeatWeekly.add(Validate.Presence);
+							 	repeatWeekly.add( Validate.Numericality, { onlyInteger: true } );
+							 	repeatWeekly.add( Validate.Numericality, { minimum: 2, maximum: 20 } );
+							 </script>
+						</td>
+					</tr>
+					
 					<tr>
 						<td>
 							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
@@ -190,6 +257,15 @@ else {
 			$date=dateConvert($guid, $_POST["date"]) ;
 			$timeStart=$_POST["timeStart"] ;
 			$timeEnd=$_POST["timeEnd"] ;
+			$repeat=$_POST["repeat"] ;
+			$repeatDaily=NULL ;
+			$repeatWeekly=NULL ;
+			if ($repeat=="Daily") {
+				$repeatDaily=$_POST["repeatDaily"] ;
+			}
+			else if ($repeat=="Weekly") {
+				$repeatWeekly=$_POST["repeatWeekly"] ;
+			}
 			
 			try {
 				$dataSelect=array("gibbonSpace"=>$gibbonSpaceID); 
@@ -211,47 +287,185 @@ else {
 			else {
 				$rowSelect=$resultSelect->fetch() ;
 				//Check for required fields
-				if ($gibbonSpaceID=="" OR $date=="" OR $timeStart=="" OR $timeEnd=="") {
+				if ($gibbonSpaceID=="" OR $date=="" OR $timeStart=="" OR $timeEnd=="" OR $repeat=="") {
 					print "<div class='error'>" ;
 						print _("Your request failed because your inputs were invalid.") ;
 					print "</div>" ;
 				}
 				else {
+					$available=FALSE ;
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/spaceBooking_manage_addProcess.php" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
-							<tr>
-								<td colspan=2>
-									<?php
-									$available=isSpaceFree($guid, $connection2, $gibbonSpaceID, $date, $timeStart, $timeEnd) ;
-									if ($available==TRUE) {
-										print "<div class='success'>" ;
-											print _('The selected space is available for all of the specified time. Click submit below to complete your booking, before someone else beats you to it.') ;
-										print "</div>" ;
+							<?php
+							if ($repeat=="No") {
+								?>
+								<tr>
+									<td colspan=2>
+										<?php
+										$available=isSpaceFree($guid, $connection2, $gibbonSpaceID, $date, $timeStart, $timeEnd) ;
+										if ($available==TRUE) {
+											?>
+											<tr class='current'>
+												<td> 
+													<b><?php print dateConvertBack($guid, $date) ?></b><br/>
+													<span style="font-size: 90%"><i><?php print _('Available') ?></i></span>
+												</td>
+												<td class="right">
+													<input checked type='checkbox' name='dates[]' value='<?php print $date ?>'>
+												</td>
+											</tr>
+											<?php
+										}
+										else {
+											?>
+											<tr class='error'>
+												<td> 
+													<b><?php print dateConvertBack($guid, $date) ?></b><br/>
+													<span style="font-size: 90%"><i><?php print _('Not Available') ?></i></span>
+												</td>
+												<td class="right">
+													<input disabled type='checkbox' name='dates[]' value='<?php print $date ?>'>
+												</td>
+											</tr>
+											<?php
+										}
+										?>
+									</td>
+								</tr>
+								<?php
+							}
+							else if ($repeat=="Daily" AND $repeatDaily>=2 AND $repeatDaily<=20) { //CREATE DAILY REPEATS
+								$continue=TRUE ;
+								$failCount=0 ;
+								$successCount=0 ;
+								$count=0 ;
+								while ($continue) {
+									$dateTemp=date('Y-m-d', strtotime($date)+(86400*$count)) ;
+									if (isSchoolOpen($guid,$dateTemp, $connection2)) {
+										$available=TRUE ;
+										$successCount++ ;
+										$failCount=0 ;
+										if ($successCount>=$repeatDaily) {
+											$continue=FALSE ;
+										}
+										//Print days
+										if (isSpaceFree($guid, $connection2, $gibbonSpaceID, $dateTemp, $timeStart, $timeEnd)==TRUE) {
+											?>
+											<tr class='current'>
+												<td> 
+													<b><?php print dateConvertBack($guid, $dateTemp) ?></b><br/>
+													<span style="font-size: 90%"><i></i></span>
+												</td>
+												<td class="right">
+													<input checked type='checkbox' name='dates[]' value='<?php print $dateTemp ?>'>
+												</td>
+											</tr>
+											<?php
+										}
+										else {
+											?>
+											<tr class='error'>
+												<td> 
+													<b><?php print dateConvertBack($guid, $dateTemp) ?></b><br/>
+													<span style="font-size: 90%"><i><?php print _('Not Available') ?></i></span>
+												</td>
+												<td class="right">
+													<input disabled type='checkbox' name='dates[]' value='<?php print $dateTemp ?>'>
+												</td>
+											</tr>
+											<?php
+										}
 									}
 									else {
-										print "<div class='error'>" ;
-											print _('The selected space is not available for some or all of the specified time. Please try again.') ;
-										print "</div>" ;
+										$failCount++ ;
+										if ($failCount>100) {
+											$continue=FALSE ;
+										}
 									}
-									?>
-								</td>
-							</tr>
+									$count++ ;
+								}
+							}
+							else if ($repeat=="Weekly" AND $repeatWeekly>=2 AND $repeatWeekly<=20) {
+								$continue=TRUE ;
+								$failCount=0 ;
+								$successCount=0 ;
+								$count=0 ;
+								while ($continue) {
+									$dateTemp=date('Y-m-d', strtotime($date)+(86400*7*$count)) ;
+									if (isSchoolOpen($guid,$dateTemp, $connection2)) {
+										$available=TRUE ;
+										$successCount++ ;
+										$failCount=0 ;
+										if ($successCount>=$repeatWeekly) {
+											$continue=FALSE ;
+										}
+										//Print days
+										if (isSpaceFree($guid, $connection2, $gibbonSpaceID, $dateTemp, $timeStart, $timeEnd)==TRUE) {
+											?>
+											<tr class='current'>
+												<td> 
+													<b><?php print dateConvertBack($guid, $dateTemp) ?></b><br/>
+													<span style="font-size: 90%"><i></i></span>
+												</td>
+												<td class="right">
+													<input checked type='checkbox' name='dates[]' value='<?php print $dateTemp ?>'>
+												</td>
+											</tr>
+											<?php
+										}
+										else {
+											?>
+											<tr class='error'>
+												<td> 
+													<b><?php print dateConvertBack($guid, $dateTemp) ?></b><br/>
+													<span style="font-size: 90%"><i><?php print _('Not Available') ?></i></span>
+												</td>
+												<td class="right">
+													<input disabled type='checkbox' name='dates[]' value='<?php print $dateTemp ?>'>
+												</td>
+											</tr>
+											<?php
+										}
+									}
+									else {
+										$failCount++ ;
+										if ($failCount>100) {
+											$continue=FALSE ;
+										}
+									}
+									$count++ ;
+								}
+							}
+							else {
+								print "<div class='error'>" ;
+									print _("Your request failed because your inputs were invalid.") ;
+								print "</div>" ;
+							}
+							?>
+							
+							
+							
 							<tr>
-								<td>
-									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
-								</td>
-								<td class="right">
-									<input type="hidden" name="gibbonSpaceID" value="<?php print $gibbonSpaceID ; ?>">
-									<input type="hidden" name="date" value="<?php print $date ; ?>">
-									<input type="hidden" name="timeStart" value="<?php print $timeStart ; ?>">
-									<input type="hidden" name="timeEnd" value="<?php print $timeEnd ; ?>">
-									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+								<td colspan=2 class="right">
 									<?php
 									if ($available==TRUE) {
 										?>
+										<input type="hidden" name="gibbonSpaceID" value="<?php print $gibbonSpaceID ; ?>">
+										<input type="hidden" name="date" value="<?php print $date ; ?>">
+										<input type="hidden" name="timeStart" value="<?php print $timeStart ; ?>">
+										<input type="hidden" name="timeEnd" value="<?php print $timeEnd ; ?>">
+										<input type="hidden" name="repeat" value="<?php print $repeat ; ?>">
+										<input type="hidden" name="repeatDaily" value="<?php print $repeatDaily ; ?>">
+										<input type="hidden" name="repeatWeekly" value="<?php print $repeatWeekly ; ?>">
+										<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 										<input type="submit" value="<?php print _("Submit") ; ?>">
 										<?php
+									}
+									else {
+										print "<div class='error'>" ;
+											print _('There are no sessions available, and so this form cannot be submitted.') ;
+										print "</div>" ;
 									}
 									?>
 								</td>

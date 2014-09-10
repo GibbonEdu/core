@@ -56,12 +56,21 @@ else {
 	else {
 		//Proceed!
 		$gibbonSpaceID=$_POST["gibbonSpaceID"] ;
-		$date=$_POST["date"] ;
+		$dates=$_POST["dates"] ;
 		$timeStart=$_POST["timeStart"] ;
 		$timeEnd=$_POST["timeEnd"] ;
+		$repeat=$_POST["repeat"] ;
+		$repeatDaily=NULL ;
+		$repeatWeekly=NULL ;
+		if ($repeat=="Daily") {
+			$repeatDaily=$_POST["repeatDaily"] ;
+		}
+		else if ($repeat=="Weekly") {
+			$repeatWeekly=$_POST["repeatWeekly"] ;
+		}
 		
 		//Validate Inputs
-		if ($gibbonSpaceID=="" OR $date=="" OR $timeStart=="" OR $timeEnd=="") {
+		if ($gibbonSpaceID=="" OR $timeStart=="" OR $timeEnd=="" OR $repeat=="" OR count($dates)<1) {
 			//Fail 3
 			$URL=$URL . "&addReturn=fail3" ;
 			header("Location: {$URL}");
@@ -79,39 +88,52 @@ else {
 				break ;
 			}	
 					
-			//Check that space is still available
-			$available=isSpaceFree($guid, $connection2, $gibbonSpaceID, $date, $timeStart, $timeEnd) ;
-			if ($available==FALSE) {
-				//Fail 3
-				$URL=$URL . "&addReturn=fail3" ;
+			$failCount=0 ;
+			$available="" ;
+			//Scroll through all dates
+			foreach ($dates AS $date) {
+				$available=isSpaceFree($guid, $connection2, $gibbonSpaceID, $date, $timeStart, $timeEnd) ;
+				if ($available==FALSE) {
+					$failCount++ ;
+				}
+				else {
+					//Write to database
+					try {
+						$data=array("gibbonSpaceID"=>$gibbonSpaceID, "date"=>$date, "timeStart"=>$timeStart, "timeEnd"=>$timeEnd, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+						$sql="INSERT INTO gibbonTTSpaceBooking SET gibbonSpaceID=:gibbonSpaceID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonPersonID=:gibbonPersonID" ;
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
+					}
+					catch(PDOException $e) { 
+						$failCount++ ;
+					}
+				}
+			}
+			
+			$successCount=count($dates)-$failCount ;
+			
+			//Unlock locked database tables
+			try {
+				$sql="UNLOCK TABLES" ;
+				$result=$connection2->query($sql);   
+			}
+			catch(PDOException $e) { }	
+
+			if ($successCount==0) {
+				//Fail 4
+				$URL=$URL . "&addReturn=fail4" ;
+				header("Location: {$URL}");
+			}
+			else if ($successCount<count($dates)) {
+				//Fail 5
+				$URL=$URL . "&addReturn=fail5" ;
 				header("Location: {$URL}");
 			}
 			else {
-				//Write to database
-				try {
-					$data=array("gibbonSpaceID"=>$gibbonSpaceID, "date"=>$date, "timeStart"=>$timeStart, "timeEnd"=>$timeEnd, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-					$sql="INSERT INTO gibbonTTSpaceBooking SET gibbonSpaceID=:gibbonSpaceID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonPersonID=:gibbonPersonID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					//Fail 2
-					$URL=$URL . "&addReturn=fail2" ;
-					header("Location: {$URL}");
-					break ;
-				}
-				
-				//Unlock locked database tables
-				try {
-					$sql="UNLOCK TABLES" ;
-					$result=$connection2->query($sql);   
-				}
-				catch(PDOException $e) { }	
-		
 				//Success 0
 				$URL=$URL . "&addReturn=success0" ;
 				header("Location: {$URL}");
-			}
+			}	
 		}
 	}
 }
