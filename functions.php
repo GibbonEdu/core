@@ -751,7 +751,7 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 		$output.="<script type='text/javascript'>" ;
 			$output.="$(document).ready(function(){" ;
 				if ($tinymceInit) {
-					$output.="tinyMCE.execCommand('mceAddControl', false, '" . $id . "');" ;
+					$output.="tinyMCE.execCommand('mceAddEditor', false, '" . $id . "');" ;
 				}
 				$output.="$('#" . $id . "edButtonPreview').addClass('active') ;" ;
 				 $output.="$('#" . $id . "edButtonHTML').click(function(){" ;
@@ -1228,10 +1228,22 @@ function sidebar($connection2, $guid) {
 						$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 						$style="padding-right: 3px;" ;
 						if ($category=="Student") {
-							//Calculate style for student-specified completion
+							//Calculate style for student-specified completion of teacher-recorded homework
 							try {
 								$dataCompletion=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
 								$sqlCompletion="SELECT gibbonPlannerEntryID FROM gibbonPlannerEntryStudentTracker WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID AND homeworkComplete='Y'" ;
+								$resultCompletion=$connection2->prepare($sqlCompletion);
+								$resultCompletion->execute($dataCompletion);
+							}
+							catch(PDOException $e) { }
+							if ($resultCompletion->rowCount()==1) {
+								$style.="; background-color: #B3EFC2" ;
+							}
+							
+							//Calculate style for student-specified completion of student-recorded homework
+							try {
+								$dataCompletion=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+								$sqlCompletion="SELECT gibbonPlannerEntryID FROM gibbonPlannerEntryStudentHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID AND homeworkComplete='Y'" ;
 								$resultCompletion=$connection2->prepare($sqlCompletion);
 								$resultCompletion->execute($dataCompletion);
 							}

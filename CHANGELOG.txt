@@ -137,6 +137,15 @@ Timetable: added room booking functionality
 	Edited file /modules/Timetable/report_viewAvailableSpaces.php, moduleFunctions.php, tt_space_view.php
 	New files /modules/Timetable/spaceBooking_manage*.php
 	New values in tables gibbonAction, gibbonPersmissions
+
+General: fixed non-highlighting of student recorded homework on index page sidebar
+	Edited file /functions.php
+
+Lib: upgrade jQuery to v1.11.1
+	Edited file /lib/jquery/jquery.js
+
+Planner: fixed drag and drop issue with smart content blocks, due to tinymce update
+	Edited file /modules/Planner/moduleFunctions.php
 	
 
 v8.1.00
