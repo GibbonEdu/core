@@ -129,6 +129,7 @@ else {
 							$homework.=_("There are no records to display.") . "<br/><br/>" ;
 						}
 				
+						/* THIS WILL BE RESTORED IN v8.3 WITH AN OPTION TO DISABLE 
 						//Get behaviour records for the past week, ready for email
 						$behaviour="" ;
 						$behaviour.="<h2>" . _('Behaviour') . "</h2>" ;
@@ -150,7 +151,8 @@ else {
 							$behaviour.="<li>" . _("Positive behaviour records this week") . ": " . $resultBehaviourPositive->rowCount() . "</li>" ;
 							$behaviour.="<li>" . _("Negative behaviour records this week") . ": " . $resultBehaviourNegative->rowCount() . "</li>" ;
 						$behaviour.="</ul><br/>" ;
-			
+						*/
+						
 						//Get main form tutor email for reply-to
 						$replyTo="" ;
 						$replyToName="" ;
