@@ -240,7 +240,7 @@ else {
 							print "</script>" ;
 							
 							if ($highestAction=="Manage Outcomes_viewEditAll") {
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_edit.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_edit.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_delete.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							}
 							else if ($highestAction=="Manage Outcomes_viewAllEditLearningArea") {
@@ -255,7 +255,7 @@ else {
 										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 									}
 									if ($resultLearningAreaStaff->rowCount()>0) {
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_edit.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_edit.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_delete.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 									}
 								}

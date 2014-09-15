@@ -415,7 +415,7 @@ else {
 							print "<div class='linkTop'>" ;
 								print "<tr>" ;
 									print "<td colspan=3>" ;
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_edit.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=" . $row["date"] . "&subView=$subView'><img style='margin: 0 0 -4px 3px' title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> | " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_edit.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=" . $row["date"] . "&subView=$subView'>" . _('Edit') . "<img style='margin: 0 0 -4px 3px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> | " ;
 										try {
 											$dataMarkbook=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"], "gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
 											$sqlMarkbook="SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
@@ -498,7 +498,7 @@ else {
 											print "<div class='odd' style='padding: 5px; margin-top: 0px; text-align: right; border-bottom: 1px solid #666; border-top: 1px solid #666'>" ;
 												print "<i>" . _('Smart Blocks') . "</i>: " ;
 												if ($resultBlocks->rowCount()>0) {
-													print "<a class='active' href='#' id='viewBlocks'>" . _('View Details') . "</a> | <a href='#' id='editBlocks'>" . _('Edit Blocks') . "</a> | " ;
+													print "<a class='active' href='#' id='viewBlocks'>" . _('View Record') . "</a> | <a href='#' id='editBlocks'>" . _('Edit Blocks') . "</a> | " ;
 												}
 												if ($hooked==FALSE) {
 													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonUnitID=" . $row["gibbonUnitID"] . "&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&gibbonUnitClassID=$gibbonUnitClassID'>" . _('Edit Unit') . "</a> " ;
@@ -1103,7 +1103,7 @@ else {
 																		</td>
 																		<td>
 																			<?php 
-																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $gibbonPersonID . "&gibbonPersonID=" . $rowClass["gibbonPersonID"] . "&submission=false'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;						
+																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $gibbonPersonID . "&gibbonPersonID=" . $rowClass["gibbonPersonID"] . "&submission=false'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;						
 																			?>
 																		</td>
 																		<?php
@@ -1149,7 +1149,7 @@ else {
 																		</td>
 																		<td>
 																			<?php 
-																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=" . $gibbonPersonID . "&gibbonPlannerEntryHomeworkID=" . $rowVersion["gibbonPlannerEntryHomeworkID"] . "&submission=true'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;						
+																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=" . $gibbonPersonID . "&gibbonPlannerEntryHomeworkID=" . $rowVersion["gibbonPlannerEntryHomeworkID"] . "&submission=true'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;						
 																			print "<a onclick='return confirm(\"" . _('Are you sure you wish to delete this record?') . "\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_submit_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$gibbonPersonID&gibbonPlannerEntryHomeworkID=" . $rowVersion["gibbonPlannerEntryHomeworkID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 																			?>
 																		</td>
@@ -1527,14 +1527,15 @@ else {
 								print "</tr>" ;
 							}
 						print "</table>" ;
-					
+						
+						print "<a name='chat'></a>" ;
 						print "<h2 style='padding-top: 30px'>" . _('Chat') . "</h2>" ;
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>" ;
 							print "<tr>" ;
 								print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top; max-width: 752px!important' colspan=3>" ;
 								
 									print "<div style='margin: 0px' class='linkTop'>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params'><img title='" . _('Refresh') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/refresh.png'/></a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $gibbonPersonID . "'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> " ;						
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params#chat'><img title='" . _('Refresh') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/refresh.png'/></a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $gibbonPersonID . "'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> " ;						
 									print "</div>" ;
 							
 									print "<div style='margin-bottom: 0px' class='success'>" ;

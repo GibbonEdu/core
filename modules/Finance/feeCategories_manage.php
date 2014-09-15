@@ -139,7 +139,7 @@ else {
 							print "<i>" . sprintf(_('This category cannot%1$sbe edited or deleted.'), "<br/>") . "</i>" ;
 						}
 						else {
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/feeCategories_manage_edit.php&gibbonFinanceFeeCategoryID=" . $row["gibbonFinanceFeeCategoryID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/feeCategories_manage_edit.php&gibbonFinanceFeeCategoryID=" . $row["gibbonFinanceFeeCategoryID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/feeCategories_manage_delete.php&gibbonFinanceFeeCategoryID=" . $row["gibbonFinanceFeeCategoryID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 						}
 					print "</td>" ;

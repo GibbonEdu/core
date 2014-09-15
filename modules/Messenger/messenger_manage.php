@@ -217,6 +217,9 @@ else {
 										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . _($rowTarget["name"]) . "<br/>" ;
 									}
 								}
+								else if ($rowTargets["type"]=="Role Category") {
+									$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . _($rowTargets["id"]) . "<br/>" ;
+								}
 								else if ($rowTargets["type"]=="Roll Group") {
 									try {
 										$dataTarget=array("gibbonRollGroupID"=>$rowTargets["id"]); 
@@ -320,7 +323,7 @@ else {
 							}
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							print "<script type='text/javascript'>" ;	
 								print "$(document).ready(function(){" ;

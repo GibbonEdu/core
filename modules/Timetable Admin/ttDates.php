@@ -282,7 +282,7 @@ else {
 										print "<span style='color: #000000'>" . date("d/m/Y",$i) . "<br/>" . _('School Day') . "</span>" ;
 									}
 									print "<br/>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=" . $i . "'><img style='margin-top: 3px' title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a><br/>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=" . $i . "'><img style='margin-top: 3px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a><br/>" ;
 									
 									try {
 										$dataDay=array("date"=>date("Y-m-d",$i)); 

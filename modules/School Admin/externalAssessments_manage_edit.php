@@ -230,7 +230,7 @@ else {
 								print $row["order"] ;
 							print "</td>" ;
 							print "<td>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessments_manage_edit_field_edit.php&gibbonExternalAssessmentFieldID=" . $row["gibbonExternalAssessmentFieldID"] . "&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessments_manage_edit_field_edit.php&gibbonExternalAssessmentFieldID=" . $row["gibbonExternalAssessmentFieldID"] . "&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessments_manage_edit_field_delete.php&gibbonExternalAssessmentFieldID=" . $row["gibbonExternalAssessmentFieldID"] . "&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							print "</td>" ;
 						print "</tr>" ;

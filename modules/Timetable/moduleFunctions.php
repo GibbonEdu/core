@@ -445,11 +445,14 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 			}
 		}
 		
-		//Get space booking array
+		$spaceBookingAvailable=isActionAccessible($guid, $connection2, "/modules/Timetable/spaceBooking_manage.php") ;
 		$eventsSpaceBooking=FALSE ;
-		if ($self==TRUE AND $_SESSION[$guid]["viewCalendarSpaceBooking"]=="Y") {
-			$eventsSpaceBooking=getSpaceBookingEvents($guid, $connection2, $startDayStamp, $_SESSION[$guid]["gibbonPersonID"]) ;
-		}	
+		if ($spaceBookingAvailable) {
+			//Get space booking array
+			if ($self==TRUE AND $_SESSION[$guid]["viewCalendarSpaceBooking"]=="Y") {
+				$eventsSpaceBooking=getSpaceBookingEvents($guid, $connection2, $startDayStamp, $_SESSION[$guid]["gibbonPersonID"]) ;
+			}	
+		}
 		
 		//Count up max number of all day events in a day
 		$eventsCombined=FALSE ;
@@ -618,14 +621,16 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 								$output.="<input $checked style='margin-left: 3px' type='checkbox' name='personalCalendar' onclick='submit();'/>" ;
 								$output.="</span>" ;
 							}
-							if ($_SESSION[$guid]["viewCalendarSpaceBooking"]!="") {
-								$checked="" ;
-								if ($_SESSION[$guid]["viewCalendarSpaceBooking"]=="Y") {
-									$checked="checked" ;
+							if ($spaceBookingAvailable) {
+								if ($_SESSION[$guid]["viewCalendarSpaceBooking"]!="") {
+									$checked="" ;
+									if ($_SESSION[$guid]["viewCalendarSpaceBooking"]=="Y") {
+										$checked="checked" ;
+									}
+									$output.="<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'>Space Booking " ;
+									$output.="<input $checked style='margin-left: 3px' type='checkbox' name='spaceBookingCalendar' onclick='submit();'/>" ;
+									$output.="</span>" ;
 								}
-								$output.="<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'>Space Booking " ;
-								$output.="<input $checked style='margin-left: 3px' type='checkbox' name='spaceBookingCalendar' onclick='submit();'/>" ;
-								$output.="</span>" ;
 							}
 							
 							$output.="<input type='hidden' name='ttDate' value='" . date("d/m/Y", $startDayStamp) . "'>" ;
