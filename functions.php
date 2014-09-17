@@ -751,7 +751,7 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 		$output.="<script type='text/javascript'>" ;
 			$output.="$(document).ready(function(){" ;
 				if ($tinymceInit) {
-					$output.="tinyMCE.execCommand('mceAddEditor', false, '" . $id . "');" ;
+					$output.="tinyMCE.execCommand('mceAddControl', false, '" . $id . "');" ;
 				}
 				$output.="$('#" . $id . "edButtonPreview').addClass('active') ;" ;
 				 $output.="$('#" . $id . "edButtonHTML').click(function(){" ;

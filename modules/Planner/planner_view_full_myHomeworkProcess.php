@@ -94,7 +94,7 @@ else {
 					$homeworkDueDateTime=$_POST["homeworkDueDateTime"] . ":59" ;
 				}
 				else {
-					$homeworkDueDateTime="23:59:59" ;
+					$homeworkDueDateTime="21:00:00" ;
 				}
 				if ($_POST["homeworkDueDate"]!="") {
 					$homeworkDueDate=dateConvert($guid, $_POST["homeworkDueDate"]) . " " . $homeworkDueDateTime ;

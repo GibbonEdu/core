@@ -85,7 +85,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="") {
 			$output.="table.rubric td { border: 1px solid #000 }" ;
 		$output.="</style>" ;
 		$output.="<div class='linkTop'>" ;
-			$output.="<a onclick='return confirm(\"Are you sure you want to edit rows and columns? Any unsaved changes will be lost.\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_editRowsColumns.php&gibbonRubricID=$gibbonRubricID'>Edit Rows & Columns<img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/ style='margin: 0px 1px -4px 3px'></a>" ;
+			$output.="<a onclick='return confirm(\"Are you sure you want to edit rows and columns? Any unsaved changes will be lost.\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_editRowsColumns.php&gibbonRubricID=$gibbonRubricID'>Edit Rows & Columns<img title='Edit Record' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/ style='margin: 0px 1px -4px 3px'></a>" ;
 			//$output.="<a onclick='return false' href='#'><img title='Add' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/ style='float: right; margin: 0px 0px 2px 0px'></a><br/>" ;
 		$output.="</div>" ;
 		$output.="<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_editCellProcess.php?gibbonRubricID=$gibbonRubricID'>" ;

@@ -143,7 +143,7 @@ else {
 						print $resultRows->rowCount() ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/ttColumn_edit.php&gibbonTTColumnID=" . $row["gibbonTTColumnID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/ttColumn_edit.php&gibbonTTColumnID=" . $row["gibbonTTColumnID"] . "'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/ttColumn_delete.php&gibbonTTColumnID=" . $row["gibbonTTColumnID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 					print "</td>" ;
 				print "</tr>" ;

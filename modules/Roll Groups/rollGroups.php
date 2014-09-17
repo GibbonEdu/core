@@ -63,6 +63,9 @@ else {
 					print _("Room") ;
 				print "</th>" ;
 				print "<th>" ;
+					print _("Students") ;
+				print "</th>" ;
+				print "<th>" ;
 					print _("Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
@@ -102,6 +105,18 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						print $row["space"] ;
+					print "</td>" ;
+					print "<td>" ;
+						try {
+							$dataCount=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
+							$sqlCount="SELECT gibbonPerson.gibbonPersonID FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY preferredName, surname" ;
+							$resultCount=$connection2->prepare($sqlCount);
+							$resultCount->execute($dataCount);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+						print $resultCount->rowCount() ;
 					print "</td>" ;
 					print "<td>" ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroups_details.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'><img title='" . _('View Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;

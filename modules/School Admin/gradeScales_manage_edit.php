@@ -270,7 +270,7 @@ else {
 								print $row["sequenceNumber"] ;
 							print "</td>" ;
 							print "<td>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/gradeScales_manage_edit_grade_edit.php&gibbonScaleGradeID=" . $row["gibbonScaleGradeID"] . "&gibbonScaleID=$gibbonScaleID'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/gradeScales_manage_edit_grade_edit.php&gibbonScaleGradeID=" . $row["gibbonScaleGradeID"] . "&gibbonScaleID=$gibbonScaleID'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/gradeScales_manage_edit_grade_delete.php&gibbonScaleGradeID=" . $row["gibbonScaleGradeID"] . "&gibbonScaleID=$gibbonScaleID'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							print "</td>" ;
 						print "</tr>" ;

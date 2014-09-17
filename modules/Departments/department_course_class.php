@@ -239,7 +239,7 @@ else {
 											}
 										print "</td>" ;
 										print "<td>" ;
-											print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Departments/department_course_class_full.php&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'><img title='" . _('View Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+											print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Departments/department_course_class_full.php&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 										print "</td>" ;
 									print "</tr>" ;
 								}
@@ -360,7 +360,7 @@ else {
 												}
 											print "</td>" ;
 											print "<td>" ;
-												print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Departments/department_course_class_full.php&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550'><img title='" . _('View Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+												print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Departments/department_course_class_full.php&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 											print "</td>" ;
 										print "</tr>" ;
 									}
@@ -449,7 +449,7 @@ else {
 									}
 								print "</td>" ;
 								print "<td>" ;
-									print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Departments/department_course_class_full.php&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "&viewBy=Class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'><img title='" . _('View Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+									print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Departments/department_course_class_full.php&gibbonPlannerEntryID=" . $rowLessons["gibbonPlannerEntryID"] . "&viewBy=Class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 								print "</td>" ;
 							print "</tr>" ;
 						}

@@ -356,6 +356,25 @@ else {
 											}
 										}
 										
+										//GET & SHOW NOTIFICATIONS
+										try {
+											$dataNotifications=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
+											$sqlNotifications="(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID)
+											UNION
+											(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2)
+											ORDER BY timestamp DESC, source, text" ;
+											$resultNotifications=$connection2->prepare($sqlNotifications);
+											$resultNotifications->execute($dataNotifications); 
+										}
+										catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
+										
+										if ($resultNotifications->rowCount()>0) {
+											print " . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
+										}
+										else {
+											print " . 0 x " . "<img style='opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
+										}
+										
 										//MESSAGE WALL!
 										if (isActionAccessible($guid, $connection2, "/modules/Messenger/messageWall_view.php")) {
 											include "./modules/Messenger/moduleFunctions.php" ; 
@@ -477,26 +496,9 @@ else {
 												}
 											}
 										}
-										
-										//GET & SHOW NOTIFICATIONS
-										try {
-											$dataNotifications=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
-											$sqlNotifications="(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID)
-											UNION
-											(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2)
-											ORDER BY timestamp DESC, source, text" ;
-											$resultNotifications=$connection2->prepare($sqlNotifications);
-											$resultNotifications->execute($dataNotifications); 
-										}
-										catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
-										
-										if ($resultNotifications->rowCount()>0) {
-											print " . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
-										}
-										else {
-											print " . 0 x " . "<img style='opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
-										}
 									print "</div>" ;
+									
+									
 									
 									if ($cacheLoad) {
 										$_SESSION[$guid]["mainMenu"]=mainMenu($connection2, $guid) ;

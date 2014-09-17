@@ -174,7 +174,7 @@ else {
 							print $row["space"] ;
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage_edit.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage_edit.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage_delete.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 						print "</td>" ;
 					print "</tr>" ;

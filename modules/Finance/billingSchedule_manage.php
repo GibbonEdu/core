@@ -220,7 +220,7 @@ else {
 							print dateConvertBack($guid, $row["invoiceDueDate"]) ;
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/billingSchedule_manage_edit.php&gibbonFinanceBillingScheduleID=" . $row["gibbonFinanceBillingScheduleID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/billingSchedule_manage_edit.php&gibbonFinanceBillingScheduleID=" . $row["gibbonFinanceBillingScheduleID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "<script type='text/javascript'>" ;	
 								print "$(document).ready(function(){" ;
 									print "\$(\".comment-$count-$count\").hide();" ;

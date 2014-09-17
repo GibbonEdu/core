@@ -225,7 +225,7 @@ else {
 							print ynExpander($row["active"]) ;
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_edit.php&gibbonTTID=" . $row["gibbonTTID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_edit.php&gibbonTTID=" . $row["gibbonTTID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_delete.php&gibbonTTID=" . $row["gibbonTTID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_import.php&gibbonTTID=" . $row["gibbonTTID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Import') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/upload.png'/></a> " ;
 						print "</td>" ;
