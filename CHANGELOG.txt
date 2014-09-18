@@ -164,6 +164,12 @@ Lib: rolled back jQuery to v1.8, but manually fixed JS errors caused by deprecat
 General: updated icon set
 	Edited files /themes/Default/img/*.png
 
+i18n: added Spanish (Mexico) as active language, 96% translated
+	Added new folder /i18n/es_MX
+	New values in table gibboni18n
+	Edited file /installer/install.php
+
+
 v8.1.00
 -------
 General: added dev indicator in footer, when running cuttingEdge
