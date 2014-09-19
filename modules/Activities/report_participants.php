@@ -67,20 +67,7 @@ else {
 							if ($gibbonActivityID==$rowSelect["gibbonActivityID"]) {
 								$selected="selected" ;
 							}
-							$date="" ;
-							if (substr($rowSelect["programStart"],0,4)==substr($rowSelect["programEnd"],0,4)) {
-								if (substr($rowSelect["programStart"],5,2)==substr($rowSelect["programEnd"],5,2)) {
-									$date=" (" . date("F", mktime(0, 0, 0, substr($rowSelect["programStart"],5,2))) . " " . substr($rowSelect["programStart"],0,4) . ")" ;
-								}
-								else {
-									$date=" (" . date("F", mktime(0, 0, 0, substr($rowSelect["programStart"],5,2))) . " - " . date("F", mktime(0, 0, 0, substr($rowSelect["programEnd"],5,2))) . " " . substr($rowSelect["programStart"],0,4) . ")" ;
-								}
-							}
-							else {
-								$date=" (" . date("F", mktime(0, 0, 0, substr($rowSelect["programStart"],5,2))) . " " . substr($rowSelect["programStart"],0,4) . " - " . date("F", mktime(0, 0, 0, substr($rowSelect["programEnd"],5,2))) . " " . substr($rowSelect["programEnd"],0,4) . ")" ;
-							}
-							
-							print "<option $selected value='" . $rowSelect["gibbonActivityID"] . "'>" . htmlPrep($rowSelect["name"]) . $date . "</option>" ;
+							print "<option $selected value='" . $rowSelect["gibbonActivityID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 							
 						}
 						?>				

@@ -105,20 +105,7 @@ else {
 						print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
 					print "</td>" ;
 					print "<td>" ;
-						$date="" ;
-						if (substr($row["programStart"],0,4)==substr($row["programEnd"],0,4)) {
-							if (substr($row["programStart"],5,2)==substr($row["programEnd"],5,2)) {
-								$date=" (" . date("F", mktime(0, 0, 0, substr($row["programStart"],5,2))) . " " . substr($row["programStart"],0,4) . ")" ;
-							}
-							else {
-								$date=" (" . date("F", mktime(0, 0, 0, substr($row["programStart"],5,2))) . " - " . date("F", mktime(0, 0, 0, substr($row["programEnd"],5,2))) . " " . substr($row["programStart"],0,4) . ")" ;
-							}
-						}
-						else {
-							$date=" (" . date("F", mktime(0, 0, 0, substr($row["programStart"],5,2))) . " " . substr($row["programStart"],0,4) . " - " . date("F", mktime(0, 0, 0, substr($row["programEnd"],5,2))) . " " . substr($row["programEnd"],0,4) . ")" ;
-						}
-						
-						print $row["name"] . $date ;
+						print $row["name"] ;
 					print "</td>" ;
 					print "<td style='text-align: left'>" ;
 						if (substr($_SESSION[$guid]["currency"],4)!="") {

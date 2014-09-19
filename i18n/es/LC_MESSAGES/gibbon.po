@@ -17,8 +17,8 @@ msgstr ""
 "POT-Creation-Date: 2014-03-05 09:36+0800\n"
 "PO-Revision-Date: 2014-09-18 10:24+0800\n"
 "Last-Translator: Guillermo Bautista Fuerte <gbautista_fuerte@hotmail.com>\n"
-"Language-Team: Guillermo Bautista Fuerte <gbautista_fuerte@hotmail.com>\n"
-"Language: es_MX\n"
+"Language-Team: ICHK <narriaga@ichk.edu.hk>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1662,8 +1662,11 @@ msgstr ""
 #: modules/Timetable/spaceChange_manage_add.php:121
 #: modules/Timetable/spaceChange_manage_add.php:234
 #: Admin/user_manage_add.php:1282 Admin/user_manage_edit.php:1620
-#: installer/install.php:133 installer/install.php:217
-#: installer/install.php:939 modules/Activities/activities_copy.php:110
+#: installer/install.php:134 installer/install.php:218
+#: installer/install.php:940 modules/Activities/report_attendance.php:80
+#: modules/Activities/report_participants.php:80 installer/install.php:134
+#: installer/install.php:218 installer/install.php:940
+#: modules/Activities/activities_copy.php:110
 #: modules/Activities/activities_manage.php:79
 #: modules/Activities/activities_manage_add.php:623
 #: modules/Activities/activities_manage_edit.php:810
@@ -1673,8 +1676,8 @@ msgstr ""
 #: modules/Activities/report_activityChoices_byStudent.php:94
 #: modules/Activities/report_activitySpread_rollGroup.php:96
 #: modules/Activities/report_activityType_rollGroup.php:96
-#: modules/Activities/report_attendance.php:93
-#: modules/Activities/report_participants.php:93
+#: modules/Activities/report_attendance.php:80
+#: modules/Activities/report_participants.php:80
 #: modules/Application Form/applicationForm.php:2096
 #: modules/Attendance/attendance_future_byPerson.php:267
 #: modules/Attendance/attendance_take_byPerson.php:344
@@ -2093,8 +2096,10 @@ msgstr "Confirmar nueva contrase&ntildea"
 #: modules/Timetable/spaceChange_manage_add.php:117
 #: modules/Timetable/spaceChange_manage_add.php:230 Admin/rollover.php:909
 #: Admin/user_manage_add.php:1278 Admin/user_manage_edit.php:1616
-#: installer/install.php:129 installer/install.php:212
-#: installer/install.php:930 modules/Activities/activities_copy.php:106
+#: installer/install.php:130 installer/install.php:213
+#: installer/install.php:931 installer/install.php:130
+#: installer/install.php:213 installer/install.php:931
+#: modules/Activities/activities_copy.php:106
 #: modules/Activities/activities_manage_add.php:618
 #: modules/Activities/activities_manage_edit.php:806
 #: modules/Activities/activities_manage_enrolment_add.php:241
@@ -2542,13 +2547,14 @@ msgstr "Foto"
 #: modules/Students/student_view_details.php:1322 Admin/rollover.php:297
 #: Admin/rollover.php:378 Admin/rollover.php:493 Admin/rollover.php:630
 #: Admin/rollover.php:774 Admin/rollover.php:851
+#: modules/Activities/report_participants.php:121
 #: modules/Activities/activities_manage_add.php:79
 #: modules/Activities/activities_manage_edit.php:135
 #: modules/Activities/activities_manage_edit.php:435
 #: modules/Activities/activities_manage_edit.php:725
 #: modules/Activities/activities_manage_enrolment.php:130
 #: modules/Activities/activities_manage_enrolment_add.php:104
-#: modules/Activities/report_participants.php:134
+#: modules/Activities/report_participants.php:121
 #: modules/Activities/report_participants_print.php:84
 #: modules/Attendance/report_studentsNotOnsite_byDate.php:141
 #: modules/Attendance/report_studentsNotOnsite_byDate_print.php:101
@@ -2984,9 +2990,9 @@ msgstr "Preferencias"
 #: modules/Students/student_view_details.php:481
 #: modules/Students/student_view_details.php:625
 #: modules/Students/student_view_details.php:1168
-#: modules/Students/student_view_details.php:1171
+#: modules/Students/student_view_details.php:1171 installer/install.php:410
 #: i18n/dbStringsForTranslation.php:1678 index.php:296
-#: installer/install.php:409 modules/Application Form/applicationForm.php:517
+#: installer/install.php:410 modules/Application Form/applicationForm.php:517
 #: modules/Application Form/applicationForm.php:1349
 #: modules/Data Updater/data_personal.php:672
 #: modules/Library/report_viewOverdueItems.php:59
@@ -3268,12 +3274,13 @@ msgstr "Perfil del estudiante"
 #: modules/Messenger/messenger_post.php:534
 #: modules/Students/student_view_details.php:395
 #: modules/Students/student_view_details.php:846 Admin/rollover.php:390
-#: Admin/rollover.php:505 Admin/rollover.php:642 index.php:630
+#: Admin/rollover.php:505 Admin/rollover.php:642
+#: modules/Activities/report_participants.php:118 index.php:630
 #: modules/Activities/report_activitySpread_rollGroup.php:51
 #: modules/Activities/report_activitySpread_rollGroup.php:128
 #: modules/Activities/report_activityType_rollGroup.php:51
 #: modules/Activities/report_activityType_rollGroup.php:128
-#: modules/Activities/report_participants.php:131
+#: modules/Activities/report_participants.php:118
 #: modules/Activities/report_participants_print.php:81
 #: modules/Activities/report_payment.php:58
 #: modules/Attendance/attendance_take_byRollGroup.php:109
@@ -6037,7 +6044,11 @@ msgstr "Ver Detalles"
 #: modules/Timetable/tt_space_view.php:104 Admin/rollover.php:290
 #: Admin/rollover.php:371 Admin/rollover.php:460 Admin/rollover.php:486
 #: Admin/rollover.php:623 Admin/rollover.php:767 Admin/rollover.php:844
-#: notifications.php:106 cli/planner_parentWeeklyEmailSummary.php:103
+#: notifications.php:106 modules/Activities/report_attendance.php:105
+#: modules/Activities/report_attendance.php:182
+#: modules/Activities/report_participants.php:105
+#: modules/Activities/report_payment.php:123
+#: cli/planner_parentWeeklyEmailSummary.php:103
 #: cli/planner_parentWeeklyEmailSummary.php:129 index.php:774 index.php:1001
 #: index.php:1045 index.php:1338 modules/Activities/activities_manage.php:136
 #: modules/Activities/activities_manage_edit.php:427
@@ -6054,14 +6065,14 @@ msgstr "Ver Detalles"
 #: modules/Activities/report_activitySpread_rollGroup.php:257
 #: modules/Activities/report_activityType_rollGroup.php:121
 #: modules/Activities/report_activityType_rollGroup.php:254
-#: modules/Activities/report_attendance.php:118
-#: modules/Activities/report_attendance.php:195
+#: modules/Activities/report_attendance.php:105
+#: modules/Activities/report_attendance.php:182
 #: modules/Activities/report_attendance_print.php:67
 #: modules/Activities/report_attendance_print.php:153
-#: modules/Activities/report_participants.php:118
+#: modules/Activities/report_participants.php:105
 #: modules/Activities/report_participants_print.php:68
 #: modules/Activities/report_payment.php:49
-#: modules/Activities/report_payment.php:136
+#: modules/Activities/report_payment.php:123
 #: modules/Attendance/attendance_take_byRollGroup.php:234
 #: modules/Attendance/moduleFunctions.php:91
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:113
@@ -8325,16 +8336,16 @@ msgstr "Posici&oacuten"
 #: index.php:1466 index.php:1469 index.php:1475 installer/install.php:1127
 #: installer/install.php:1148 index.php:1473 installer/install.php:1403
 #: installer/install.php:1300 installer/install.php:1287 index.php:1479
-#: index.php:1502 installer/install.php:1305 index.php:1475
-#: installer/install.php:1305
+#: index.php:1502 installer/install.php:1305 installer/install.php:1306
+#: index.php:1475 installer/install.php:1306
 msgid "Powered by"
 msgstr "Creado por"
 
 #: index.php:1467 index.php:1470 index.php:1477 installer/install.php:1129
 #: installer/install.php:1150 index.php:1475 installer/install.php:1405
 #: installer/install.php:1302 installer/install.php:1289 index.php:1481
-#: index.php:1504 installer/install.php:1307 index.php:1477
-#: installer/install.php:1307
+#: index.php:1504 installer/install.php:1307 installer/install.php:1308
+#: index.php:1477 installer/install.php:1308
 msgid "Created under the"
 msgstr "Creado bajo la"
 
@@ -9167,8 +9178,9 @@ msgstr "Acceder"
 #: Admin/applicationForm_manage_accept.php:901
 #: Admin/applicationForm_manage_accept.php:1064 functions.php:995
 #: installer/install.php:422 modules/Students/student_view_details.php:447
-#: modules/Students/student_view_details.php:930 functions.php:995
-#: installer/install.php:422 modules/Application Form/applicationForm.php:903
+#: modules/Students/student_view_details.php:930 installer/install.php:423
+#: functions.php:995 installer/install.php:423
+#: modules/Application Form/applicationForm.php:903
 #: modules/Staff/staff_view_details.php:207
 #: modules/Students/report_students_left.php:142
 #: modules/Students/report_students_new.php:204
@@ -9198,7 +9210,8 @@ msgstr "Usuario"
 #: Admin/applicationForm_manage_accept.php:366
 #: Admin/applicationForm_manage_accept.php:902
 #: Admin/applicationForm_manage_accept.php:1065 functions.php:1007
-#: installer/install.php:460 functions.php:1007 installer/install.php:460
+#: installer/install.php:460 installer/install.php:461 functions.php:1007
+#: installer/install.php:461
 #: modules/User Admin/applicationForm_manage_accept.php:366
 #: modules/User Admin/applicationForm_manage_accept.php:902
 #: modules/User Admin/applicationForm_manage_accept.php:1065
@@ -12092,6 +12105,7 @@ msgstr "Su solicitud ha fallado debido a un error de fijaci&oacuten."
 #: modules/Finance/invoices_manage.php:503
 #: modules/Students/student_view_details.php:1251
 #: modules/Students/student_view_details.php:2319 Admin/rollover.php:211
+#: modules/Activities/report_participants.php:124
 #: modules/Activities/activities_manage_enrolment.php:219
 #: modules/Activities/activities_manage_enrolment_add.php:222
 #: modules/Activities/activities_manage_enrolment_edit.php:120
@@ -12099,7 +12113,7 @@ msgstr "Su solicitud ha fallado debido a un error de fijaci&oacuten."
 #: modules/Activities/report_activityChoices_byStudent.php:193
 #: modules/Activities/report_activitySpread_rollGroup.php:78
 #: modules/Activities/report_activityType_rollGroup.php:78
-#: modules/Activities/report_participants.php:137
+#: modules/Activities/report_participants.php:124
 #: modules/Activities/report_participants_print.php:87
 #: modules/Attendance/report_studentsNotOnsite_byDate.php:144
 #: modules/Attendance/report_studentsNotOnsite_byDate_print.php:104
@@ -12637,7 +12651,8 @@ msgstr "El registro especificado no se puede encontrar."
 #: Assessment/externalAssessment_manage_details_edit.php:105
 #: modules/Markbook/markbook_edit_add.php:128
 #: modules/Markbook/markbook_edit_edit.php:149
-#: modules/Timetable/spaceChange_manage_add.php:172 installer/install.php:154
+#: modules/Timetable/spaceChange_manage_add.php:172 installer/install.php:155
+#: installer/install.php:155
 #: modules/Activities/activities_manage_enrolment_edit.php:103
 #: modules/Activities/activities_manage_enrolment_edit.php:112
 #: modules/Attendance/attendance_future_byPerson.php:185
@@ -12836,13 +12851,14 @@ msgstr "Este valor no se puede cambiar."
 #: modules/Markbook/markbook_edit_data.php:162
 #: modules/Markbook/markbook_view.php:317
 #: modules/Markbook/markbook_viewExportAllContents.php:71
+#: modules/Activities/report_attendance.php:118
 #: i18n/dbStringsForTranslation.php:982 i18n/dbStringsForTranslation.php:988
 #: modules/Activities/activities_manage_enrolment.php:216
 #: modules/Activities/activities_manage_enrolment_edit.php:111
 #: modules/Activities/report_activityChoices_byStudent.php:51
 #: modules/Activities/report_activitySpread_rollGroup.php:131
 #: modules/Activities/report_activityType_rollGroup.php:131
-#: modules/Activities/report_attendance.php:131
+#: modules/Activities/report_attendance.php:118
 #: modules/Activities/report_attendance_print.php:80
 #: modules/Activities/report_payment.php:61
 #: modules/Application Form/applicationForm.php:144
@@ -13007,8 +13023,9 @@ msgstr "Estudiante"
 #: modules/Markbook/markbook_edit_edit.php:442
 #: modules/Timetable/spaceBooking_manage_add.php:96
 #: modules/Timetable/spaceChange_manage_add.php:89
-#: modules/Timetable/spaceChange_manage_add.php:184 installer/install.php:840
-#: installer/install.php:906 modules/Activities/activities_copy.php:84
+#: modules/Timetable/spaceChange_manage_add.php:184 installer/install.php:841
+#: installer/install.php:907 installer/install.php:841
+#: installer/install.php:907 modules/Activities/activities_copy.php:84
 #: modules/Activities/activities_view_register.php:348
 #: modules/Application Form/applicationForm.php:220
 #: modules/Application Form/applicationForm.php:603
@@ -13242,8 +13259,9 @@ msgstr "Por favor seleccione ..."
 #: modules/Markbook/markbook_edit_edit.php:532
 #: modules/Timetable/spaceBooking_manage_add.php:112
 #: modules/Timetable/spaceChange_manage_add.php:111
-#: modules/Timetable/spaceChange_manage_add.php:202 installer/install.php:857
-#: installer/install.php:923 modules/Activities/activities_copy.php:100
+#: modules/Timetable/spaceChange_manage_add.php:202 installer/install.php:858
+#: installer/install.php:924 installer/install.php:858
+#: installer/install.php:924 modules/Activities/activities_copy.php:100
 #: modules/Activities/activities_view_register.php:371
 #: modules/Application Form/applicationForm.php:226
 #: modules/Application Form/applicationForm.php:620
@@ -13378,11 +13396,13 @@ msgstr "Seleccione algo!"
 #: modules/Timetable/report_viewAvailableTeachers.php:118
 #: modules/Students/report_students_new.php:145
 #: modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php:115
+#: modules/Activities/report_attendance.php:90
+#: modules/Activities/report_participants.php:90
 #: modules/Activities/report_activityChoices_byStudent.php:104
 #: modules/Activities/report_activitySpread_rollGroup.php:106
 #: modules/Activities/report_activityType_rollGroup.php:106
-#: modules/Activities/report_attendance.php:103
-#: modules/Activities/report_participants.php:103
+#: modules/Activities/report_attendance.php:90
+#: modules/Activities/report_participants.php:90
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:82
 #: modules/Attendance/report_studentHistory.php:101
 #: modules/Attendance/report_studentHistory.php:240
@@ -13431,9 +13451,11 @@ msgstr "Datos del informe"
 #: modules/Students/report_students_byRollGroup.php:155
 #: modules/Students/report_students_byRollGroup_print.php:98 modules/User
 #: Admin/applicationForm_manage_edit.php:100
-#: modules/Activities/report_attendance.php:123
+#: modules/Activities/report_attendance.php:110
+#: modules/Activities/report_participants.php:110
+#: modules/Activities/report_attendance.php:110
 #: modules/Activities/report_attendance_print.php:72
-#: modules/Activities/report_participants.php:123
+#: modules/Activities/report_participants.php:110
 #: modules/Activities/report_participants_print.php:73
 #: modules/Attendance/moduleFunctions.php:75
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:118
@@ -13467,7 +13489,8 @@ msgstr "Imprimir"
 #: Form/applicationForm.php:914 Form/applicationForm.php:1076
 #: installer/install.php:383 Admin/user_manage_add.php:103
 #: Admin/user_manage_edit.php:166 installer/install.php:384
-#: installer/install.php:384 modules/Application Form/applicationForm.php:156
+#: installer/install.php:385 installer/install.php:385
+#: modules/Application Form/applicationForm.php:156
 #: modules/Application Form/applicationForm.php:914
 #: modules/Application Form/applicationForm.php:1076
 #: modules/Data Updater/data_personal.php:376
@@ -13488,8 +13511,8 @@ msgstr ""
 #: Admin/user_manage_edit.php:175 Form/applicationForm.php:169
 #: Form/applicationForm.php:1089 installer/install.php:396
 #: Admin/user_manage_add.php:116 Admin/user_manage_edit.php:179
-#: installer/install.php:397 installer/install.php:397
-#: modules/Application Form/applicationForm.php:169
+#: installer/install.php:397 installer/install.php:398
+#: installer/install.php:398 modules/Application Form/applicationForm.php:169
 #: modules/Application Form/applicationForm.php:1089
 #: modules/Data Updater/data_personal.php:394
 #: modules/User Admin/applicationForm_manage_edit.php:438
@@ -16846,8 +16869,8 @@ msgstr ""
 #: installer/install.php:303 installer/install.php:518
 #: installer/install.php:505 i18n/dbStringsForTranslation.php:198
 #: i18n/dbStringsForTranslation.php:204 installer/install.php:506
-#: i18n/dbStringsForTranslation.php:204 installer/install.php:506
-#: modules/System Admin/systemSettings.php:65
+#: installer/install.php:507 i18n/dbStringsForTranslation.php:204
+#: installer/install.php:507 modules/System Admin/systemSettings.php:65
 #: modules/System Admin/systemSettings.php:101
 msgid "System Settings"
 msgstr "Ajustes del Sistema"
@@ -16856,8 +16879,8 @@ msgstr "Ajustes del Sistema"
 #: Admin/systemSettings.php:301 installer/install.php:463
 #: Admin/systemSettings.php:292 installer/install.php:465
 #: installer/install.php:680 installer/install.php:667
-#: installer/install.php:668 installer/install.php:668
-#: modules/System Admin/systemSettings.php:292
+#: installer/install.php:668 installer/install.php:669
+#: installer/install.php:669 modules/System Admin/systemSettings.php:292
 msgid "Organisation Settings"
 msgstr "Configuraci&oacuten de la Organizaci&oacuten"
 
@@ -16889,8 +16912,8 @@ msgstr "Directiva de contrase&ntildeas"
 #: modules/Students/student_view_details.php:915 installer/install.php:817
 #: modules/School Admin/markbookSettings.php:294
 #: Admin/studentsSettings.php:145
-#: modules/Students/student_view_details.php:945 installer/install.php:817
-#: modules/Application Form/applicationForm.php:1982
+#: modules/Students/student_view_details.php:945 installer/install.php:818
+#: installer/install.php:818 modules/Application Form/applicationForm.php:1982
 #: modules/Data Updater/data_personal.php:1573
 #: modules/School Admin/markbookSettings.php:294
 #: modules/School Admin/studentsSettings.php:145
@@ -16915,7 +16938,8 @@ msgstr "Calendario, Web y correo electr&oacutenico"
 #: Admin/systemSettings.php:788 installer/install.php:674
 #: installer/install.php:889 installer/install.php:781
 #: installer/install.php:768 installer/install.php:769
-#: installer/install.php:769 modules/System Admin/systemSettings.php:788
+#: installer/install.php:770 installer/install.php:770
+#: modules/System Admin/systemSettings.php:788
 msgid "gibbonedu.com Value-Added Services"
 msgstr "gibbonedu.com Servicios de Valor Agregado"
 
@@ -19569,8 +19593,8 @@ msgstr "Estudiante Datos de Car&aacutecter Personal"
 #: modules/Students/student_view_details.php:502 installer/install.php:382
 #: Admin/user_manage_add.php:102 Admin/user_manage_edit.php:165
 #: modules/Students/student_view_details.php:518 installer/install.php:383
-#: modules/Students/student_view_details.php:548 installer/install.php:383
-#: modules/Application Form/applicationForm.php:155
+#: modules/Students/student_view_details.php:548 installer/install.php:384
+#: installer/install.php:384 modules/Application Form/applicationForm.php:155
 #: modules/Application Form/applicationForm.php:913
 #: modules/Application Form/applicationForm.php:1075
 #: modules/Data Updater/data_personal.php:375
@@ -19596,8 +19620,8 @@ msgstr "Apellido"
 #: modules/Students/student_view_details.php:506 installer/install.php:395
 #: Admin/user_manage_add.php:115 Admin/user_manage_edit.php:178
 #: modules/Students/student_view_details.php:522 installer/install.php:396
-#: modules/Students/student_view_details.php:552 installer/install.php:396
-#: modules/Application Form/applicationForm.php:168
+#: modules/Students/student_view_details.php:552 installer/install.php:397
+#: installer/install.php:397 modules/Application Form/applicationForm.php:168
 #: modules/Application Form/applicationForm.php:1088
 #: modules/Data Updater/data_personal.php:393
 #: modules/Students/student_view_details.php:552
@@ -20534,8 +20558,8 @@ msgstr "Padres / Tutores %1$s Datos de Car&aacutecter Personal"
 #: modules/Application Form/applicationForm.php:1055 modules/Data
 #: Updater/data_personal.php:351 installer/install.php:367
 #: Admin/user_manage_add.php:87 Admin/user_manage_edit.php:150
-#: installer/install.php:368 installer/install.php:368
-#: modules/Application Form/applicationForm.php:1055
+#: installer/install.php:368 installer/install.php:369
+#: installer/install.php:369 modules/Application Form/applicationForm.php:1055
 #: modules/Data Updater/data_personal.php:351
 #: modules/Library/library_browse.php:220
 #: modules/User Admin/applicationForm_manage_edit.php:1147
@@ -20556,8 +20580,8 @@ msgstr "Sra."
 #: Admin/user_manage_add.php:89 installer/install.php:373 modules/Data
 #: Updater/data_personal.php:357 Admin/user_manage_edit.php:152
 #: Admin/user_manage_add.php:93 Admin/user_manage_edit.php:156
-#: installer/install.php:374 installer/install.php:374
-#: modules/Data Updater/data_personal.php:357
+#: installer/install.php:374 installer/install.php:375
+#: installer/install.php:375 modules/Data Updater/data_personal.php:357
 #: modules/User Admin/applicationForm_manage_edit.php:1165
 #: modules/User Admin/user_manage_add.php:93
 #: modules/User Admin/user_manage_edit.php:156
@@ -20568,8 +20592,8 @@ msgstr "Se&ntildeorita, Srta."
 #: Admin/user_manage_add.php:90 Admin/user_manage_edit.php:153 modules/Data
 #: Updater/data_personal.php:358 installer/install.php:374
 #: Admin/user_manage_add.php:94 Admin/user_manage_edit.php:157
-#: installer/install.php:375 installer/install.php:375
-#: modules/Data Updater/data_personal.php:358
+#: installer/install.php:375 installer/install.php:376
+#: installer/install.php:376 modules/Data Updater/data_personal.php:358
 #: modules/User Admin/applicationForm_manage_edit.php:1166
 #: modules/User Admin/user_manage_add.php:94
 #: modules/User Admin/user_manage_edit.php:157
@@ -20580,8 +20604,8 @@ msgstr "Sr."
 #: Admin/user_manage_add.php:91 Admin/user_manage_edit.php:154 modules/Data
 #: Updater/data_personal.php:359 installer/install.php:375
 #: Admin/user_manage_add.php:95 Admin/user_manage_edit.php:158
-#: installer/install.php:376 installer/install.php:376
-#: modules/Data Updater/data_personal.php:359
+#: installer/install.php:376 installer/install.php:377
+#: installer/install.php:377 modules/Data Updater/data_personal.php:359
 #: modules/User Admin/applicationForm_manage_edit.php:1167
 #: modules/User Admin/user_manage_add.php:95
 #: modules/User Admin/user_manage_edit.php:158
@@ -20592,8 +20616,8 @@ msgstr "Sra."
 #: Admin/user_manage_add.php:92 Admin/user_manage_edit.php:155 modules/Data
 #: Updater/data_personal.php:360 installer/install.php:376
 #: Admin/user_manage_add.php:96 Admin/user_manage_edit.php:159
-#: installer/install.php:377 installer/install.php:377
-#: modules/Data Updater/data_personal.php:360
+#: installer/install.php:377 installer/install.php:378
+#: installer/install.php:378 modules/Data Updater/data_personal.php:360
 #: modules/User Admin/applicationForm_manage_edit.php:1168
 #: modules/User Admin/user_manage_add.php:96
 #: modules/User Admin/user_manage_edit.php:159
@@ -24153,7 +24177,7 @@ msgstr "A&ntildeadir usuario"
 #: modules/Finance/billingSchedule_manage_add.php:51
 #: installer/install.php:1125 installer/install.php:1012
 #: installer/install.php:999 installer/install.php:1000
-#: installer/install.php:1000
+#: installer/install.php:1001 installer/install.php:1001
 #: modules/Finance/billingSchedule_manage_add.php:51
 #: modules/User Admin/user_manage_add.php:51
 #: modules/User Admin/user_manage_password.php:54
@@ -24174,8 +24198,8 @@ msgstr ""
 #: modules/User Admin/user_manage_add.php:88 Admin/user_manage_edit.php:151
 #: modules/Data Updater/data_personal.php:356 installer/install.php:372
 #: Admin/user_manage_add.php:92 Admin/user_manage_edit.php:155
-#: installer/install.php:373 installer/install.php:373
-#: modules/Data Updater/data_personal.php:356
+#: installer/install.php:373 installer/install.php:374
+#: installer/install.php:374 modules/Data Updater/data_personal.php:356
 #: modules/User Admin/user_manage_add.php:92
 #: modules/User Admin/user_manage_edit.php:155
 msgid "Ms."
@@ -24198,7 +24222,8 @@ msgstr "Controla lo que un usuario puede hacer y ver."
 #: modules/User Admin/user_manage_add.php:226 installer/install.php:434
 #: installer/install.php:435 installer/install.php:422
 #: Admin/user_manage_add.php:230 installer/install.php:423
-#: installer/install.php:423 modules/User Admin/user_manage_add.php:230
+#: installer/install.php:424 installer/install.php:424
+#: modules/User Admin/user_manage_add.php:230
 msgid "Must be unique. System login name. Cannot be changed."
 msgstr ""
 "Debe ser &uacutenico. Sistema de nombre de inicio de sesi&oacuten. No puede "
@@ -24212,8 +24237,10 @@ msgstr ""
 #: installer/install.php:474 installer/install.php:478
 #: Admin/user_manage_add.php:287 installer/install.php:471
 #: installer/install.php:475 installer/install.php:479
-#: installer/install.php:471 installer/install.php:475
-#: installer/install.php:479 modules/User Admin/user_manage_add.php:279
+#: installer/install.php:472 installer/install.php:476
+#: installer/install.php:480 installer/install.php:472
+#: installer/install.php:476 installer/install.php:480
+#: modules/User Admin/user_manage_add.php:279
 #: modules/User Admin/user_manage_add.php:283
 #: modules/User Admin/user_manage_add.php:287
 #: modules/User Admin/user_manage_password.php:135
@@ -24225,8 +24252,8 @@ msgstr "No cumple con la directiva de contrase&ntildeas."
 #: modules/User Admin/user_manage_add.php:295
 #: Admin/user_manage_password.php:155 installer/install.php:503
 #: installer/install.php:490 Admin/user_manage_add.php:299
-#: installer/install.php:491 installer/install.php:491
-#: modules/User Admin/user_manage_add.php:299
+#: installer/install.php:491 installer/install.php:492
+#: installer/install.php:492 modules/User Admin/user_manage_add.php:299
 #: modules/User Admin/user_manage_password.php:155
 msgid "Confirm Password"
 msgstr "Confirme su contrase&ntildea"
@@ -26005,9 +26032,10 @@ msgstr "Excluye \"No Aceptados\""
 #: modules/Students/student_view_details.php:1341
 #: modules/Students/student_view_details.php:1467
 #: modules/Students/student_view_details.php:1482
+#: modules/Activities/report_participants.php:156
 #: modules/Activities/report_activityEnrollmentSummary.php:99
 #: modules/Activities/report_activityEnrollmentSummary.php:123
-#: modules/Activities/report_participants.php:169
+#: modules/Activities/report_participants.php:156
 #: modules/Activities/report_participants_print.php:128
 #: modules/Activities/report_payment.php:97
 #: modules/Attendance/report_studentsNotOnsite_byDate.php:179
@@ -26072,8 +26100,9 @@ msgstr "Elige Actividad"
 #: i18n/dbStringsForTranslation.php:1042 i18n/dbStringsForTranslation.php:1047
 #: i18n/dbStringsForTranslation.php:1099 i18n/dbStringsForTranslation.php:910
 #: i18n/dbStringsForTranslation.php:912 i18n/dbStringsForTranslation.php:924
+#: modules/Activities/report_attendance.php:121
 #: i18n/dbStringsForTranslation.php:924
-#: modules/Activities/report_attendance.php:134
+#: modules/Activities/report_attendance.php:121
 #: modules/Activities/report_attendance_print.php:83
 msgid "Attendance"
 msgstr "Asistencia"
@@ -44658,49 +44687,58 @@ msgid "Translation led by"
 msgstr "Traducci&oacuten dirigida por"
 
 #: installer/install.php:102 installer/install.php:147
-#: installer/install.php:148 installer/install.php:148
+#: installer/install.php:148 installer/install.php:149
+#: installer/install.php:149
 msgid "Database Information"
 msgstr "Informaci&oacuten de Base de Datos"
 
 #: installer/install.php:107 installer/install.php:152
-#: installer/install.php:153 installer/install.php:153
+#: installer/install.php:153 installer/install.php:154
+#: installer/install.php:154
 msgid "Database Type"
 msgstr "Tipo de base de datos"
 
 #: installer/install.php:116 installer/install.php:161
-#: installer/install.php:162 installer/install.php:162
+#: installer/install.php:162 installer/install.php:163
+#: installer/install.php:163
 msgid "Database Server"
 msgstr "Servidor de base de datos"
 
 #: installer/install.php:117 installer/install.php:162
-#: installer/install.php:163 installer/install.php:163
+#: installer/install.php:163 installer/install.php:164
+#: installer/install.php:164
 msgid "Localhost, IP address or domain."
 msgstr "Localhost, la direcci&oacuten IP o dominio."
 
 #: installer/install.php:129 installer/install.php:174
-#: installer/install.php:175 installer/install.php:175
+#: installer/install.php:175 installer/install.php:176
+#: installer/install.php:176
 msgid "Database Name"
 msgstr "Database Name"
 
 #: installer/install.php:130 installer/install.php:175
-#: installer/install.php:176 installer/install.php:176
+#: installer/install.php:176 installer/install.php:177
+#: installer/install.php:177
 msgid "This database must already exist. Collation should be utf8_general_ci."
 msgstr ""
 "Esta base de datos ya debe existir. Colaci&oacuten debe ser utf8_general_ci."
 
 #: installer/install.php:142 installer/install.php:187
-#: installer/install.php:188 installer/install.php:188
+#: installer/install.php:188 installer/install.php:189
+#: installer/install.php:189
 msgid "Database Username"
 msgstr "Nombre de usuario de base de datos"
 
 #: installer/install.php:154 installer/install.php:199
-#: installer/install.php:200 installer/install.php:200
+#: installer/install.php:200 installer/install.php:201
+#: installer/install.php:201
 msgid "Database Password"
 msgstr "Database Password"
 
 #: installer/install.php:423 installer/install.php:425
 #: installer/install.php:640 installer/install.php:627
-#: installer/install.php:628 installer/install.php:628
+#: installer/install.php:628 installer/install.php:629
+#: installer/install.php:629
 msgid "Not recommended for non-experts!."
 msgstr "No se recomienda para los no expertos !."
 
@@ -44739,8 +44777,10 @@ msgstr ""
 #: installer/install.php:244 installer/install.php:1080
 #: installer/install.php:972 installer/install.php:959
 #: installer/install.php:228 installer/install.php:245
-#: installer/install.php:960 installer/install.php:228
-#: installer/install.php:245 installer/install.php:960
+#: installer/install.php:960 installer/install.php:229
+#: installer/install.php:246 installer/install.php:961
+#: installer/install.php:229 installer/install.php:246
+#: installer/install.php:961
 #, php-format
 msgid ""
 "A database connection could not be established. Please %1$stry again%2$s."
@@ -44749,7 +44789,8 @@ msgstr ""
 "vuelve a intentarlo %2$s ."
 
 #: installer/install.php:205 installer/install.php:249
-#: installer/install.php:250 installer/install.php:250
+#: installer/install.php:250 installer/install.php:251
+#: installer/install.php:251
 msgid ""
 "Your database connection was successful, so the installation may proceed."
 msgstr ""
@@ -44757,7 +44798,8 @@ msgstr ""
 "la instalaci&oacuten puede continuar."
 
 #: installer/install.php:261 installer/install.php:305
-#: installer/install.php:306 installer/install.php:306
+#: installer/install.php:306 installer/install.php:307
+#: installer/install.php:307
 msgid ""
 "../config.php could not be created, and so the installer cannot proceed."
 msgstr ""
@@ -44765,7 +44807,8 @@ msgstr ""
 "continuar."
 
 #: installer/install.php:268 installer/install.php:312
-#: installer/install.php:313 installer/install.php:313
+#: installer/install.php:313 installer/install.php:314
+#: installer/install.php:314
 msgid "../gibbon.sql does not exist, and so the installer cannot proceed."
 msgstr ""
 "../gibbon.sql no existe, por lo que el programa de instalaci&oacuten no "
@@ -44774,8 +44817,9 @@ msgstr ""
 #: installer/install.php:293 installer/install.php:336
 #: installer/install.php:1143 installer/install.php:1030
 #: installer/install.php:1017 installer/install.php:337
-#: installer/install.php:1018 installer/install.php:337
-#: installer/install.php:1018
+#: installer/install.php:1018 installer/install.php:338
+#: installer/install.php:1019 installer/install.php:338
+#: installer/install.php:1019
 msgid ""
 "Errors occurred in populating the database; empty your database, remove ../"
 "config.php and try again."
@@ -44785,7 +44829,8 @@ msgstr ""
 
 #: installer/install.php:891 installer/install.php:1118
 #: installer/install.php:1005 installer/install.php:992
-#: installer/install.php:993 installer/install.php:993
+#: installer/install.php:993 installer/install.php:994
+#: installer/install.php:994
 msgid ""
 "Some required fields have not been set, and so installation cannot proceed."
 msgstr ""
@@ -44809,7 +44854,8 @@ msgstr ""
 #: installer/install.php:1266 installer/install.php:1276
 #: installer/install.php:1253 installer/install.php:1263
 #: installer/install.php:1271 installer/install.php:1281
-#: installer/install.php:1271 installer/install.php:1281
+#: installer/install.php:1272 installer/install.php:1282
+#: installer/install.php:1272 installer/install.php:1282
 #, php-format
 msgid ""
 "It is also advisable to follow the %1$sPost-Install and Server Config "
@@ -44831,7 +44877,8 @@ msgstr ""
 
 #: installer/install.php:1123 installer/install.php:1376
 #: installer/install.php:1273 installer/install.php:1260
-#: installer/install.php:1278 installer/install.php:1278
+#: installer/install.php:1278 installer/install.php:1279
+#: installer/install.php:1279
 msgid ""
 "As you are running cutting edge code, it is recommended that after logging "
 "in, you go to Admin > System Admin > Update, and run any updates."
@@ -44842,13 +44889,15 @@ msgstr ""
 
 #: installer/install.php:1136 installer/install.php:1391
 #: installer/install.php:1288 installer/install.php:1275
-#: installer/install.php:1293 installer/install.php:1293
+#: installer/install.php:1293 installer/install.php:1294
+#: installer/install.php:1294
 msgid "Welcome To Gibbon"
 msgstr "Bienvenido a Gibbon"
 
 #: installer/install.php:1138 installer/install.php:1393
 #: installer/install.php:1290 installer/install.php:1277
-#: installer/install.php:1295 installer/install.php:1295
+#: installer/install.php:1295 installer/install.php:1296
+#: installer/install.php:1296
 msgid ""
 "Created by teachers, Gibbon is the school platform which solves real "
 "problems faced by educators every day."
@@ -44859,7 +44908,8 @@ msgstr ""
 
 #: installer/install.php:1140 installer/install.php:1395
 #: installer/install.php:1292 installer/install.php:1279
-#: installer/install.php:1297 installer/install.php:1297
+#: installer/install.php:1297 installer/install.php:1298
+#: installer/install.php:1298
 msgid ""
 "Free, open source and flexible, Gibbon can morph to meet the needs of a huge "
 "range of schools."
@@ -44869,7 +44919,8 @@ msgstr ""
 
 #: installer/install.php:1142 installer/install.php:1397
 #: installer/install.php:1294 installer/install.php:1281
-#: installer/install.php:1299 installer/install.php:1299
+#: installer/install.php:1299 installer/install.php:1300
+#: installer/install.php:1300
 #, php-format
 msgid "For support, please visit %1$sgibbonedu.org%2$s."
 msgstr "Para obtener asistencia, visite %1$s gibbonedu.org %2$s ."
@@ -44879,13 +44930,13 @@ msgid "Integrate Twitter Content"
 msgstr "Integrar Twitter Contenido"
 
 #: installer/install.php:362 installer/install.php:363
-#: installer/install.php:363
+#: installer/install.php:364 installer/install.php:364
 msgid "User Account"
 msgstr "Cuenta de Usuario"
 
 #: installer/install.php:1367 installer/install.php:1264
 #: installer/install.php:1251 installer/install.php:1269
-#: installer/install.php:1269
+#: installer/install.php:1270 installer/install.php:1270
 #, php-format
 msgid ""
 "Some settings did not save. The system may work, but you may need to remove "
@@ -44899,7 +44950,7 @@ msgstr ""
 
 #: installer/install.php:1374 installer/install.php:1271
 #: installer/install.php:1258 installer/install.php:1276
-#: installer/install.php:1276
+#: installer/install.php:1277 installer/install.php:1277
 #, php-format
 msgid ""
 "Congratulations, your installation is complete. Feel free to %1$sgo to your "
@@ -46115,6 +46166,7 @@ msgstr ""
 msgid "Action & Delete"
 msgstr ""
 
+#: modules/Students/report_students_IDCards.php:155
 #: modules/Students/report_students_IDCards.php:155
 #, php-format
 msgid ""

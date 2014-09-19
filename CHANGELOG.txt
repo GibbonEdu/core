@@ -169,7 +169,16 @@ i18n: added Spanish (Mexico) as active language, 96% translated
 	New values in table gibboni18n
 	Edited file /installer/install.php
 
+Activities: removed broken date display
+	Edited files /modules/Activities/report_payment.php, report_participants.php, report_attendance.php
 
+i18n: changed Spanish (Mexico) to just Spanish
+	Deleted value in table gibboni18n
+	Edited value in table gibboni18n
+	Moved /i18n/es_MX to es
+	Deleted /i18n/es_ES
+	Edited /i18n/es/LC_MESSAGES/gibbon.po, gibbon.mo
+	
 v8.1.00
 -------
 General: added dev indicator in footer, when running cuttingEdge
