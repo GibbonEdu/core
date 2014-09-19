@@ -546,6 +546,7 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`) VALUES ('es_MX', 'Español - México', 'Y', 'N', 'Guillermo Bautista Fuerte.', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y');end
 DELETE FROM gibboni18n WHERE code='es_MX';end
 UPDATE `gibboni18n` SET `code` = 'es', `name` = 'Español', active='Y' WHERE `code`='es_ES';end
+UPDATE `gibboni18n` SET `code` = 'es_ES' WHERE `code`='es';end
 " ;
 
 ?>
