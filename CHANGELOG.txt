@@ -178,6 +178,10 @@ i18n: changed Spanish (Mexico) to just Spanish
 	Moved /i18n/es_MX to es
 	Deleted /i18n/es_ES
 	Edited /i18n/es/LC_MESSAGES/gibbon.po, gibbon.mo
+
+Planner: added lesson chats and improved layout of unit export
+	Edited files /modules/Planner/modulesFunction.php, units_dump.php, units_php
+ 
 	
 v8.1.00
 -------

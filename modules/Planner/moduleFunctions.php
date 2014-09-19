@@ -192,7 +192,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 	}
 }
 
-function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, $self, $viewBy, $subView, $date, $class, $gibbonCourseClassID, $search, $role) {
+function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, $self, $viewBy, $subView, $date, $class, $gibbonCourseClassID, $search, $role, $links=TRUE) {
 	$output="" ;
 	
 	try {
@@ -240,11 +240,13 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 					$output.="<td style='padding: 1px 4px; border-left: $borderleft' colspan=2><b>" . $rowDiscuss["comment"] . "</b></td>" ;
 				$output.="</tr>" ;
 				$output.="<tr>" ;
-					$output.="<td style='text-align: right' colspan=2><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&replyTo=" . $rowDiscuss["gibbonPlannerEntryDiscussID"] . "&search=$search'>Reply</a> " ;						
-					if ($role=="Teacher") {
-						$output.=" | <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_post_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$search&gibbonPlannerEntryDiscussID=" . $rowDiscuss["gibbonPlannerEntryDiscussID"] . "'>Delete</a>" ;
+					if ($links==TRUE) {
+						$output.="<td style='text-align: right' colspan=2><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&replyTo=" . $rowDiscuss["gibbonPlannerEntryDiscussID"] . "&search=$search'>Reply</a> " ;						
+						if ($role=="Teacher") {
+							$output.=" | <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_post_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$search&gibbonPlannerEntryDiscussID=" . $rowDiscuss["gibbonPlannerEntryDiscussID"] . "'>Delete</a>" ;
+						}
+						$output.="</td>" ;
 					}
-					$output.="</td>" ;
 				$output.="</tr>" ;
 				
 				
@@ -265,7 +267,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 			
 			if ($replies) {
 				while ($rowReplies=$resultReplies->fetch()) {
-					$output.=getThread($guid, $connection2, $gibbonPlannerEntryID, $rowDiscuss["gibbonPlannerEntryDiscussID"], ($level+1), $rowReplies["gibbonPlannerEntryDiscussID"], $viewBy, $subView, $date, $class, $gibbonCourseClassID, $search, $role) ;
+					$output.=getThread($guid, $connection2, $gibbonPlannerEntryID, $rowDiscuss["gibbonPlannerEntryDiscussID"], ($level+1), $rowReplies["gibbonPlannerEntryDiscussID"], $viewBy, $subView, $date, $class, $gibbonCourseClassID, $search, $role, $links) ;
 				}
 			}
 		}
