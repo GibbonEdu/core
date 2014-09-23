@@ -251,7 +251,8 @@ else {
 			 	apply_source_formatting : true,
 			 	browser_spellcheck: true,
 			 	convert_urls: false,
-			 	relative_urls: false
+			 	relative_urls: false,
+			 	paste_data_images: true
 			 });
 			</script>
 			<style>
