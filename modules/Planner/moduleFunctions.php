@@ -25,30 +25,33 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 	}
 	if ($mode!="embed") {
 		?>
-		<script>
+		<style>
+			.sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+			.sortable div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
+			div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
+			html>body .sortable li { min-height: 58px; line-height: 1.2em; }
+			.sortable .ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
+		</style>
+											
+		<script type='text/javascript'>
 			$(function() {
-				$( "#sortable" ).sortable({
+				$( ".sortable" ).sortable({
 					placeholder: "ui-state-highlight"
 				});
 			
-				$( "#sortable" ).bind( "sortstart", function(event, ui) { 
+				$( ".sortable" ).bind( "sortstart", function(event, ui) { 
 					$("#blockInner<?php print $i ?>").css("display","none") ;
 					$("#block<?php print $i ?>").css("height","72px") ;
 					$('#show<?php print $i ?>').css("background-image", "<?php print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)"); 
 					tinyMCE.execCommand('mceRemoveEditor', false, 'contents<?php print $i ?>') ;
 					tinyMCE.execCommand('mceRemoveEditor', false, 'teachersNotes<?php print $i ?>') ;
-					$("#sortable").sortable( "refreshPositions" ) ;
-				});
-			
-				$( "#sortable" ).bind( "sortstop", function(event, ui) {
-					//These two lines have been removed to improve performance with long lists
-					//tinyMCE.execCommand('mceAddEditor', false, 'contents<?php print $i ?>') ;
-					//tinyMCE.execCommand('mceAddEditor', false, 'teachersNotes<?php print $i ?>') ;
-					$("#block<?php print $i ?>").css("height","72px") ;
+					$(".sortable").sortable( "refresh" ) ;
+					$(".sortable").sortable( "refreshPositions" ) ;
 				});
 			});
+			
 		</script>
-		<script type="text/javascript">
+		<script type='text/javascript'>	
 			$(document).ready(function(){
 				$("#blockInner<?php print $i ?>").css("display","none");
 				$("#block<?php print $i ?>").css("height","72px")
@@ -103,7 +106,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 			
 				$('#delete<?php print $i ?>').unbind('click').click(function() {
 					if (confirm("<?php print _('Are you sure you want to delete this record?') ?>")) {
-						$('#blockOuter<?php print $i ?>').fadeOut(600, function(){ $('#block<?php print $i ?>').remove(); });
+						$('#block<?php print $i ?>').fadeOut(600, function(){ $('#block<?php print $i ?>').remove(); });
 					}
 				});
 			});
