@@ -244,25 +244,29 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 	}
 	
 	//link to other TTs
-	if ($result->rowcount()>1 AND $title!=FALSE) {
-		$output.="<p>" ;
-			$output.="<span style='font-size: 115%; font-weight: bold'>" . _('Timetable Chooser') . "</span><br/>" ;
-			$count=1 ;
-			while ($row=$result->fetch()) {
-				$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID=$gibbonPersonID&gibbonTTID=" . $row["gibbonTTID"] . "'>" . $row["name"] . "</a>" ;
-				if ($count<$result->rowCount()) {
-					$output.=" . " ;
-				}
-				$count++ ;
-			}
-			try {
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-			}
-		$output.="</p>" ;
+	if ($result->rowcount()>1) {
+		$output.="<table class='noIntBorder' style='width: 100%; margin-top: -13px'>" ;
+			$output.="<tr>" ; 
+				$output.="<td>" ; 
+					$output.="<span style='font-size: 115%; font-weight: bold'>" . _('Timetable Chooser') . "</span>: " ;
+					$count=1 ;
+					while ($row=$result->fetch()) {
+						$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID=$gibbonPersonID&gibbonTTID=" . $row["gibbonTTID"] . "'>" . $row["name"] . "</a>" ;
+						if ($count<$result->rowCount()) {
+							$output.=" . " ;
+						}
+						$count++ ;
+					}
+					try {
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
+					}
+					catch(PDOException $e) { 
+						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					}
+				$output.="</td>" ; 
+			$output.="</tr>" ; 
+		$output.="</table>" ;
 		
 		if ($gibbonTTID!="") {
 			$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonTTID"=>$gibbonTTID); 
@@ -1397,25 +1401,29 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 	}
 	
 	//link to other TTs
-	if ($result->rowCount()>1 AND $title!=FALSE) {
-		$output.="<p>" ;
-			$output.="<span style='font-size: 115%; font-weight: bold'>" . _('Timetable Chooser') ."</span><br/>" ;
-			$count=1 ;
-			while ($row=$result->fetch()) {
-				$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID=$gibbonSpaceID&gibbonTTID=" . $row["gibbonTTID"] . "'>" . $row["name"] . "</a>" ;
-				if ($count<$result->rowCount()) {
-					$output.=" . " ;
-				}
-				$count++ ;
-			}
-			try {
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-			}
-		$output.="</p>" ;
+	if ($result->rowcount()>1) {
+		$output.="<table class='noIntBorder' style='width: 100%; margin-top: -13px'>" ;
+			$output.="<tr>" ; 
+				$output.="<td>" ; 
+					$output.="<span style='font-size: 115%; font-weight: bold'>" . _('Timetable Chooser') ."</span>: " ;
+					$count=1 ;
+					while ($row=$result->fetch()) {
+						$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID=$gibbonSpaceID&gibbonTTID=" . $row["gibbonTTID"] . "'>" . $row["name"] . "</a>" ;
+						if ($count<$result->rowCount()) {
+							$output.=" . " ;
+						}
+						$count++ ;
+					}
+					try {
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
+					}
+					catch(PDOException $e) { 
+						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					}
+				$output.="</td>" ; 
+			$output.="</tr>" ; 
+		$output.="</table>" ;
 		
 		if ($gibbonTTID!="") {
 			$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonTTID"=>$gibbonTTID); 

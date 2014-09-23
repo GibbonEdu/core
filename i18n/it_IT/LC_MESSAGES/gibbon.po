@@ -12,7 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 msgid ""
 msgstr ""
-"Project-Id-Version: Gibbon v8.1.00\n"
+"Project-Id-Version: Gibbon v8.2.00\n"
 "Report-Msgid-Bugs-To: support@gibbonedu.org\n"
 "POT-Creation-Date: 2014-03-05 09:36+0800\n"
 "PO-Revision-Date: 2014-09-11 15:16+0100\n"

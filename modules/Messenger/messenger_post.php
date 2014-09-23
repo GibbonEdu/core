@@ -19,8 +19,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
-//Module includes (not needed because already called by index page)
-//include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+//Only include module include if it is not already included (which it may be been on the index page)
+$included=FALSE ;
+$includes=get_included_files() ;
+foreach ($includes AS $include) {
+	if ($include==$_SESSION[$guid]["absolutePath"] . "/modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php") {
+		$included=TRUE ;
+	}
+}
+if ($included==FALSE) {
+	include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+}
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
 	//Acess denied
@@ -299,7 +308,11 @@ else {
 				<tr>
 					<td colspan=2> 
 						<b><?php print _('Body') ?> *</b>
-						<?php print getEditor($guid,  TRUE, "body", "", 20, true, true, false, true ) ?>
+						<?php 
+						//Attempt to build a signature for the user
+						$signature=getSignature($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"]) ;
+						print getEditor($guid,  TRUE, "body", $signature, 20, true, true, false, true ) ;
+						?>
 					</td>
 				</tr>
 				

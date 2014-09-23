@@ -299,6 +299,22 @@ else {
 							if ($studentDefaultWebsite!="") {
 								$body.=_("Website") . ": " . $website . "\n" ;
 							}
+							if ($row["gibbonYearGroupIDEntry"]!="") {
+								try {
+									$dataYearGroup=array("gibbonYearGroupID"=>$row["gibbonYearGroupIDEntry"]); 
+									$sqlYearGroup="SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID" ;
+									$resultYearGroup=$connection2->prepare($sqlYearGroup);
+									$resultYearGroup->execute($dataYearGroup);
+								}
+								catch(PDOException $e) { }
+								
+								if ($resultYearGroup->rowCount()==1) {
+									$rowYearGroup=$resultYearGroup->fetch() ;
+									if ($rowYearGroup["name"]!="") {
+											$body.=_("Year Group") . ": " . $rowYearGroup["name"] . "\n" ;
+									}
+								}
+							}
 							$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
 
 							if (mail($to, $subject, $body, $headers)) {

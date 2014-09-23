@@ -181,7 +181,13 @@ i18n: changed Spanish (Mexico) to just Spanish
 
 Planner: added lesson chats and improved layout of unit export
 	Edited files /modules/Planner/modulesFunction.php, units_dump.php, units_php
- 
+
+Timetable: made timetable choose appear for users with multiple timetables
+	Edited files /modules/Timetable/moduleFunctions.php, tt_space_view.php
+
+Messenger: added auto signature to the bottom of new messages
+	Edited files /modules/Messenger/messenger_post.php, moduleFunctions.php
+
 	
 v8.1.00
 -------

@@ -44,6 +44,11 @@ else {
 			$search=$_GET["search"] ;
 		}
 		
+		$gibbonTTID=NULL ;
+		if (isset($_GET["gibbonTTID"])) {
+			$gibbonTTID=$_GET["gibbonTTID"] ;
+		}
+		
 		try {
 			$data=array("gibbonSpaceID"=>$gibbonSpaceID); 
 			$sql="SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID" ; 
@@ -94,7 +99,7 @@ else {
 				}
 			}
 			
-			$tt=renderTTSpace($guid, $connection2, $gibbonSpaceID, NULL, FALSE, $ttDate, "/modules/Timetable/tt_space_view.php", "&gibbonSpaceID=$gibbonSpaceID&search=$search") ;
+			$tt=renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, FALSE, $ttDate, "/modules/Timetable/tt_space_view.php", "&gibbonSpaceID=$gibbonSpaceID&search=$search") ;
 			
 			if ($tt!=FALSE) {
 				print $tt ;
