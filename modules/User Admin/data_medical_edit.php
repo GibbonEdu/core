@@ -509,7 +509,9 @@ else {
 									print _("Name") ;
 								print "</td>" ;
 								print "<td>" ;
-									print _($rowCond2["name"]) ;
+									if ($rowCond2["name"]!="") {
+										print _($rowCond2["name"]) ;
+									}
 								print "</td>" ;
 								print "<td>" ;
 									$style="" ;

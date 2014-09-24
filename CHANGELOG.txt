@@ -191,6 +191,9 @@ Messenger: added auto signature to the bottom of new messages
 Messenger: added ability to email from alternate email
 	Edited file /login.php, index.php
 	Edited file /modules/Messenger/messenger_post.php
+
+i18n: fixed blank string translation issue
+	Edite file /modules/User Admin/data_medical_edit.php
 	
 v8.1.00
 -------
