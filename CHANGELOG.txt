@@ -193,7 +193,14 @@ Messenger: added ability to email from alternate email
 	Edited file /modules/Messenger/messenger_post.php
 
 i18n: fixed blank string translation issue
-	Edite file /modules/User Admin/data_medical_edit.php
+	Edited file /modules/User Admin/data_medical_edit.php
+
+External Assessment: added month to assessment date in assessment header
+	Edited file /modules/External Assessment/moduleFunctions.php
+
+Students: added list of current teachers plus email address to Summary view.
+	Edited file /modules/Students/student_view_details.php
+
 	
 v8.1.00
 -------

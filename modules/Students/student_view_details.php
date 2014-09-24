@@ -525,7 +525,6 @@ else {
 							}
 							$studentAgreementOptions=getSettingByScope( $connection2, "School Admin", "studentAgreementOptions" ) ;
 							if ($studentAgreementOptions!="") {
-							
 								print "<tr>" ;
 									print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
 										print "<span style='font-size: 115%; font-weight: bold'>" . _('Student Agreements') . "</span><br/>" ;
@@ -533,6 +532,29 @@ else {
 									print "</td>" ;
 								print "</tr>" ;
 							}
+							//Get list of teachers
+							try {
+								$dataDetail=array("gibbonPersonID"=>$gibbonPersonID); 
+								$sqlDetail="SELECT DISTINCT teacher.surname, teacher.preferredName, teacher.email FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email ;" ;
+								$resultDetail=$connection2->prepare($sqlDetail);
+								$resultDetail->execute($dataDetail);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+							if ($resultDetail->rowCount()>0) {
+								print "<tr>" ;
+									print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>" . _('Teachers') . "</span><br/>" ;
+										print "<ul>" ;
+											while ($rowDetail=$resultDetail->fetch()) {
+												print "<li>" . htmlPrep(formatName("", $rowDetail["preferredName"], $rowDetail["surname"], "Student", FALSE) . " <" . $rowDetail["email"] . ">") . "</li>" ;
+											}
+										print "</ul>" ;
+									print "</td>" ;
+								print "</tr>" ;
+							}
+							
 						print "</table>" ;
 					}
 					else if ($subpage=="Personal") {
