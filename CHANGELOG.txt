@@ -188,6 +188,9 @@ Timetable: made timetable choose appear for users with multiple timetables
 Messenger: added auto signature to the bottom of new messages
 	Edited files /modules/Messenger/messenger_post.php, moduleFunctions.php
 
+Messenger: added ability to email from alternate email
+	Edited file /login.php, index.php
+	Edited file /modules/Messenger/messenger_post.php
 	
 v8.1.00
 -------

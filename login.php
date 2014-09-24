@@ -179,6 +179,7 @@ else {
 					$_SESSION[$guid]["preferredName"]=$row["preferredName"] ;
 					$_SESSION[$guid]["officialName"]=$row["officialName"] ;
 					$_SESSION[$guid]["email"]=$row["email"] ;
+					$_SESSION[$guid]["emailAlternate"]=$row["emailAlternate"] ;
 					$_SESSION[$guid]["website"]=$row["website"] ;
 					$_SESSION[$guid]["gender"]=$row["gender"] ;
 					$_SESSION[$guid]["status"]=$row["status"] ;

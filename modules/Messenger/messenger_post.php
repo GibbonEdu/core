@@ -132,6 +132,9 @@ else {
 							<?php
 							print "<select style='float: none; width:302px' name='from' id='from'>" ;
 								print "<option value='" . $_SESSION[$guid]["email"] . "'>" . $_SESSION[$guid]["email"] . "</option>" ;
+								if ($_SESSION[$guid]["emailAlternate"]!="") {
+									print "<option value='" . $_SESSION[$guid]["emailAlternate"] . "'>" . $_SESSION[$guid]["emailAlternate"] . "</option>" ;
+								}
 								if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_fromSchool") AND $_SESSION[$guid]["organisationEmail"]!="") {
 									print "<option value='" . $_SESSION[$guid]["organisationEmail"] . "'>" . $_SESSION[$guid]["organisationEmail"] . "</option>" ;
 								}
