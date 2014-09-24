@@ -291,7 +291,6 @@ else {
 							}
 							?>
 						</select>
-						<?php print $row["type"] ; ?>
 					</td>
 					
 					<tr id='roleLARow'>

@@ -1148,6 +1148,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 						$top=(ceil((strtotime($effectiveStart)-strtotime($dayTimeStart))/60+($startPad/60))) . "px" ;
 						$title="title='" ;
 						if ($height<45) {
+							$title=$title . $rowPeriods["name"] . " | " ;
 							$title=$title . _("Timeslot:") . " " . $rowPeriods["name"] . " " ;
 						}
 						if ($rowPeriods["roomName"]!="") {
@@ -1178,8 +1179,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 						$output.="<div class='$class2' $title style='z-index: $zCount; position: absolute; top: $top; width: $width; height: $height; margin: 0px; padding: 0px; opacity: $ttAlpha'>" ;
 						if ($height>=45) {
 							$output.=$rowPeriods["name"] . "<br/>" ;
+							$output.="<i>" . substr($effectiveStart,0,5) . " - " . substr($effectiveEnd,0,5) . "</i><br/>" ;
 						}
-						$output.="<i>" . substr($effectiveStart,0,5) . " - " . substr($effectiveEnd,0,5) . "</i><br/>" ;
+						
 						if (isActionAccessible($guid, $connection2, "/modules/Departments/department_course_class.php")) {
 							$output.="<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&subpage=Participants'>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</a><br/>" ;
 						}
