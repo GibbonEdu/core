@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:8889
--- Generation Time: Aug 24, 2014 at 01:45 PM
+-- Generation Time: Sep 27, 2014 at 02:10 AM
 -- Server version: 5.5.34
 -- PHP Version: 5.5.10
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `gibbon_tmp`
+-- Database: `temp`
 --
 
 -- --------------------------------------------------------
@@ -47,7 +47,7 @@ CREATE TABLE `gibbonAction` (
   `categoryPermissionOther` enum('Y','N') NOT NULL DEFAULT 'Y',
   PRIMARY KEY (`gibbonActionID`),
   KEY `gibbonModuleID` (`gibbonModuleID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=811 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=816 ;
 
 --
 -- Dumping data for table `gibbonAction`
@@ -120,7 +120,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000066, 0013, 'Class Enrolment by Roll Group', 0, 'Reports', 'Shows the number of classes students are enroled in, organised by roll group', 'report_classEnrolment_byRollGroup.php', 'report_classEnrolment_byRollGroup.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000067, 0015, 'Activity Type by Roll Group', 0, 'Reports', 'Print roll group lists showing count of various activity types', 'report_activityType_rollGroup.php', 'report_activityType_rollGroup.php', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N'),
 (0000068, 0016, 'External Assessment Data_view', 0, '', 'Allow users to view assessment data for all students', 'externalAssessment.php, externalAssessment_details.php', 'externalAssessment.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000069, 0016, 'External Assessment Data_manage', 1, '', 'Allows users to manage external assessment data', 'externalAssessment.php, externalAssessment_details.php, externalAssessment_manage_details_add.php, externalAssessment_manage_details_edit.php, externalAssessment_manage_details_delete.php', 'externalAssessment_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000069, 0016, 'External Assessment Data_manage', 1, '', 'Allows users to manage external assessment data', 'externalAssessment.php, externalAssessment_details.php, externalAssessment_manage_details_add.php, externalAssessment_manage_details_edit.php, externalAssessment_manage_details_delete.php', 'externalAssessment.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000070, 0002, 'Rollover', 0, 'Admissions', 'Allows admins to kick the school forward one year', 'rollover.php', 'rollover.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000776, 0002, 'Sync Users', 0, 'Import', 'Import CSV file of users, and use it to create new users and set left user status.', 'import_users.php', 'import_users.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000072, 0005, 'Student Transport', 0, 'Reports', 'Shows student transport details', 'report_transport_student.php', 'report_transport_student.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -193,7 +193,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000710, 0130, 'Manage Catalog', 0, 'Catalog', 'Control all items in the school library catalog', 'library_manage_catalog.php, library_manage_catalog_add.php, library_manage_catalog_edit.php, library_manage_catalog_delete.php, library_manage_catalog_duplicate.php', 'library_manage_catalog.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000711, 0130, 'Lending & Activity Log', 0, 'Catalog', 'Manage lending, returns, reservations, repairs, decommissioning, etc.', 'library_lending.php, library_lending_item.php,library_lending_item_signout.php,library_lending_item_return.php,library_lending_item_edit.php,library_lending_item_renew.php', 'library_lending.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000712, 0001, 'Manage Library Settings', 0, 'Teaching & Learning', 'Manage settings for the Library module', 'librarySettings.php', 'librarySettings.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000713, 0005, 'Age & Gender Summary', 0, 'Reports', 'Summarises gender, age and school year', 'report_students_ageGenderSummary.php', 'report_students_ageGenderSummary.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000713, 0005, 'Age & Gender Summary', 0, 'Reports', 'Summarises gender, age and school year', 'report_students_ageGenderSummary.php', 'report_students_ageGenderSummary.php', 'N', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000714, 0005, 'Roll Group Summary', 0, 'Reports', 'Summarises gender and number of students across all roll groups.', 'report_rollGroupSummary.php', 'report_rollGroupSummary.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000715, 0001, 'Manage Alert Levels', 0, 'People', 'Manage the alert levels which are used throughout the school to flag problems.', 'alertLevelSettings.php', 'alertLevelSettings.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000716, 0011, 'Individual Needs Records_viewContribute', 1, '', 'Allows users to contribute teaching strategies to IN records for all students ', 'in_view.php, in_edit.php', 'in_view.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -238,7 +238,12 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000807, 0005, 'Privacy Choices by Student', 0, 'Reports', 'Shows privacy options selected, for those students with a selection made.', 'report_privacy_student.php', 'report_privacy_student.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000808, 0014, 'View Available Teachers', 0, 'Reports', 'View unassigned teachers by timetable.', 'report_viewAvailableTeachers.php', 'report_viewAvailableTeachers.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000809, 0015, 'Copy Activities', 0, 'Actions', 'This action copies all current activities, slots and staff into a specified year.', 'activities_copy.php', 'activities_copy.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000810, 0009, 'Parent Weekly Email Summary', 0, 'Reports', 'This report shows responses to the weekly summary email, organised by calendar week and role group.', 'report_parentWeeklyEmailSummaryConfirmation.php', 'report_parentWeeklyEmailSummaryConfirmation.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
+(0000810, 0009, 'Parent Weekly Email Summary', 0, 'Reports', 'This report shows responses to the weekly summary email, organised by calendar week and role group.', 'report_parentWeeklyEmailSummaryConfirmation.php', 'report_parentWeeklyEmailSummaryConfirmation.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000811, 0016, 'Import Assessment Results', 0, '', 'Import CSV file of results, to update matching records and create new records where none exist.', 'import_results.php', 'import_results.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000812, 0014, 'Manage Space Changes_allClasses', 0, 'Spaces', 'Allows a user to create and manage one-off location changes for all classes within the timetable.', 'spaceChange_manage.php,spaceChange_manage_add.php,spaceChange_manage_edit.php,spaceChange_manage_delete.php', 'spaceChange_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000813, 0014, 'Manage Space Changes_myClasses', 0, 'Spaces', 'Allows a user to create and manage one-off location changes for their own classes within the timetable.', 'spaceChange_manage.php,spaceChange_manage_add.php,spaceChange_manage_edit.php,spaceChange_manage_delete.php', 'spaceChange_manage.php', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000814, 0014, 'Manage Space Bookings_allBookings', 0, 'Spaces', 'Allows a user to book a room for on-off use, and manage bookings made by all other users.', 'spaceBooking_manage.php,spaceBooking_manage_add.php,spaceBooking_manage_edit.php,spaceBooking_manage_delete.php', 'spaceBooking_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000815, 0014, 'Manage Space Bookings_myBookings', 0, 'Spaces', 'Allows a user to book a room for on-off use, and manage their own bookings.', 'spaceBooking_manage.php,spaceBooking_manage_add.php,spaceBooking_manage_edit.php,spaceBooking_manage_delete.php', 'spaceBooking_manage.php', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
 
 -- --------------------------------------------------------
 
@@ -250,6 +255,7 @@ CREATE TABLE `gibbonActivity` (
   `gibbonActivityID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL DEFAULT '000',
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `registration` enum('Y','N') NOT NULL DEFAULT 'Y' COMMENT 'Can a parent/student select this for registration?',
   `name` varchar(40) NOT NULL DEFAULT '',
   `provider` enum('School','External') NOT NULL DEFAULT 'School',
   `type` varchar(255) NOT NULL,
@@ -1570,7 +1576,7 @@ CREATE TABLE `gibboni18n` (
   `dateFormatRegEx` text NOT NULL,
   `dateFormatPHP` varchar(20) NOT NULL,
   PRIMARY KEY (`gibboni18nID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `gibboni18n`
@@ -1579,7 +1585,7 @@ CREATE TABLE `gibboni18n` (
 INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`) VALUES
 (0001, 'en_GB', 'English - United Kingdom', 'Y', 'Y', 'Gibbon', 'http://gibbonedu.org', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y'),
 (0002, 'en_US', 'English - United States', 'Y', 'N', 'Gibbon', 'http://gibbonedu.org', 'mm/dd/yyyy', '/(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20\\d\\d)/', 'm/d/Y'),
-(0003, 'es_ES', 'Español - España', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y'),
+(0003, 'es_ES', 'Español', 'Y', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y'),
 (0004, 'zh_CN', '汉语 - 中国', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'yyyy-mm-dd', '/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/', 'Y-m-d'),
 (0005, 'zh_HK', '體字 - 香港', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y'),
 (0007, 'pl_PL', 'Język polski - Polska', 'N', 'N', 'Arek Gladki', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\\d\\\\d$/i', 'd/m/Y'),
@@ -1876,8 +1882,8 @@ CREATE TABLE `gibbonMessenger` (
 CREATE TABLE `gibbonMessengerTarget` (
   `gibbonMessengerTargetID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `gibbonMessengerID` int(12) unsigned zerofill NOT NULL,
-  `type` enum('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses') NOT NULL,
-  `id` int(12) NOT NULL,
+  `type` enum('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category') NOT NULL,
+  `id` varchar(30) NOT NULL,
   `parents` enum('N','Y') NOT NULL DEFAULT 'N',
   `students` enum('N','Y') NOT NULL DEFAULT 'N',
   `staff` enum('N','Y') NOT NULL DEFAULT 'N',
@@ -1938,6 +1944,23 @@ INSERT INTO `gibbonModule` (`gibbonModuleID`, `name`, `description`, `entryURL`,
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `gibbonNotification`
+--
+
+CREATE TABLE `gibbonNotification` (
+  `gibbonNotificationID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonModuleID` int(4) unsigned zerofill DEFAULT NULL,
+  `count` int(4) NOT NULL DEFAULT '1',
+  `text` text NOT NULL,
+  `actionLink` varchar(255) NOT NULL COMMENT 'Relative to absoluteURL, start with a forward slash',
+  `timestamp` datetime NOT NULL,
+  PRIMARY KEY (`gibbonNotificationID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `gibbonOutcome`
 --
 
@@ -1988,7 +2011,7 @@ CREATE TABLE `gibbonPermission` (
   PRIMARY KEY (`permissionID`),
   KEY `gibbonRoleID` (`gibbonRoleID`),
   KEY `gibbonActionID` (`gibbonActionID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=53865 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=53870 ;
 
 --
 -- Dumping data for table `gibbonPermission`
@@ -2285,7 +2308,12 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000053861, 001, 0000808),
 (0000053862, 001, 0000809),
 (0000053863, 001, 0000810),
-(0000053864, 002, 0000810);
+(0000053864, 002, 0000810),
+(0000053865, 001, 0000811),
+(0000053866, 001, 0000812),
+(0000053867, 002, 0000813),
+(0000053868, 001, 0000814),
+(0000053869, 002, 0000815);
 
 -- --------------------------------------------------------
 
@@ -2376,6 +2404,7 @@ CREATE TABLE `gibbonPerson` (
   `calendarFeedPersonal` text NOT NULL,
   `viewCalendarSchool` enum('Y','N') NOT NULL DEFAULT 'Y',
   `viewCalendarPersonal` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `viewCalendarSpaceBooking` enum('Y','N') NOT NULL DEFAULT 'N',
   `gibbonApplicationFormID` int(12) unsigned zerofill DEFAULT NULL,
   `lockerNumber` varchar(20) NOT NULL,
   `vehicleRegistration` varchar(20) NOT NULL,
@@ -2385,6 +2414,7 @@ CREATE TABLE `gibbonPerson` (
   `dayType` varchar(255) DEFAULT NULL COMMENT 'Student day type, as specified in the application form.',
   `gibbonThemeIDPersonal` int(4) unsigned zerofill DEFAULT NULL,
   `gibboni18nIDPersonal` int(4) unsigned zerofill DEFAULT NULL,
+  `studentAgreements` text,
   PRIMARY KEY (`gibbonPersonID`),
   UNIQUE KEY `username` (`username`),
   KEY `username_2` (`username`,`email`)
@@ -3378,7 +3408,7 @@ CREATE TABLE `gibbonSetting` (
   PRIMARY KEY (`gibbonSystemSettingsID`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `nameDisplay` (`nameDisplay`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=136 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=141 ;
 
 --
 -- Dumping data for table `gibbonSetting`
@@ -3508,7 +3538,12 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 (00132, 'System', 'gibboneduComOrganisationName', 'gibbonedu.com Organisation Name', 'Name of organisation, as registered with gibbonedu.com, for access to value-added services.', ''),
 (00133, 'System', 'gibboneduComOrganisationKey', 'gibbonedu.com Organisation Key', 'Organisation''s private key, as registered with gibbonedu.com, for access to value-added services.', ''),
 (00134, 'Application Form', 'studentDefaultEmail', 'Student Default Email', 'Set default email for students on acceptance, using [username] to insert username.', ''),
-(00135, 'Application Form', 'studentDefaultWebsite', 'Student Default Website', 'Set default website for students on acceptance, using [username] to insert username.', '');
+(00135, 'Application Form', 'studentDefaultWebsite', 'Student Default Website', 'Set default website for students on acceptance, using [username] to insert username.', ''),
+(00136, 'School Admin', 'studentAgreementOptions', 'Student Agreement Options', 'Comma-separated list of agreements that students might be asked to sign in school (e.g. ICT Policy).', ''),
+(00137, 'Markbook', 'attainmentAlternativeName', 'Attainment Alternative Name', 'A name to use isntead of "Attainment" in the first grade column of the markbook.', ''),
+(00138, 'Markbook', 'effortAlternativeName', 'Effort Alternative Name', 'A name to use isntead of "Effort" in the second grade column of the markbook.', ''),
+(00139, 'Markbook', 'attainmentAlternativeNameAbrev', 'Attainment Alternative Name Abbreviation', 'A short name to use isntead of "Attainment" in the first grade column of the markbook.', ''),
+(00140, 'Markbook', 'effortAlternativeNameAbrev', 'Effort Alternative Name Abbreviation', 'A short name to use isntead of "Effort" in the second grade column of the markbook.', '');
 
 -- --------------------------------------------------------
 
@@ -3768,6 +3803,39 @@ CREATE TABLE `gibbonTTImport` (
   `teacherUsernameList` text NOT NULL,
   `spaceName` varchar(30) NOT NULL,
   PRIMARY KEY (`gibbonTTImportID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonTTSpaceBooking`
+--
+
+CREATE TABLE `gibbonTTSpaceBooking` (
+  `gibbonTTSpaceBookingID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `gibbonSpaceID` int(5) unsigned zerofill NOT NULL,
+  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `date` date NOT NULL,
+  `timeStart` time NOT NULL,
+  `timeEnd` time NOT NULL,
+  PRIMARY KEY (`gibbonTTSpaceBookingID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonTTSpaceChange`
+--
+
+CREATE TABLE `gibbonTTSpaceChange` (
+  `gibbonTTSpaceChangeID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `gibbonTTDayRowClassID` int(12) unsigned zerofill NOT NULL,
+  `gibbonSpaceID` int(5) unsigned zerofill DEFAULT NULL,
+  `date` date NOT NULL,
+  `gibbonPersonID` int(12) unsigned zerofill NOT NULL,
+  PRIMARY KEY (`gibbonTTSpaceChangeID`),
+  KEY `gibbonTTDayRowClassID` (`gibbonTTDayRowClassID`),
+  KEY `date` (`date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------

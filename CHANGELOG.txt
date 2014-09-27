@@ -206,6 +206,9 @@ Timetable: adjusted display of periods less than 45px high
 
 School Admin: fixed interface display bug in edit screen
 	Edited file /modules/School Admin/department_manage_edit.php
+
+General: fixed password force reset lockout scenario when using Google Apps to authenticate
+	Edited file /lib/googleOAuth/index.php
 	
 v8.1.00
 -------
