@@ -101,8 +101,6 @@ else {
 					?>
 					<script type="text/javascript">
 						$(document).ready(function(){
-							$("#emailRow").css("display","none");
-							$("#emailReplyToRow").css("display","none");
 							$(".email").click(function(){
 								if ($('input[name=email]:checked').val()=="Y" ) {
 									$("#emailRow").slideDown("fast", $("#emailRow").css("display","table-row")); 
@@ -117,11 +115,11 @@ else {
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print _('Email') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Deliver this message to user\'s primaryemail account?') ?><br/></i></span>
+							<span style="font-size: 90%"><i><?php print _('Deliver this message to user\'s primary email account?') ?><br/></i></span>
 						</td>
 						<td class="right">
-							<input type="radio" name="email" class="email" value="Y"/> <?php print _('Yes') ?>
-							<input checked type="radio" name="email" class="email" value="N"/> <?php print _('No') ?>
+							<input checked type="radio" name="email" class="email" value="Y"/> <?php print _('Yes') ?>
+							<input type="radio" name="email" class="email" value="N"/> <?php print _('No') ?>
 						</td>
 					</tr>
 					<tr id="emailRow">

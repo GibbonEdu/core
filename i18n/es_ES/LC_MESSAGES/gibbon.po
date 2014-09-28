@@ -44976,8 +44976,8 @@ msgstr "Tel&eacutefono 1"
 
 #: modules/Messenger/messenger_post.php:111
 #: modules/Messenger/messenger_post.php:120
-msgid "Deliver this message to user's primaryemail account?"
-msgstr "Entregar este mensaje a la cuenta primaryemail de usuario?"
+msgid "Deliver this message to user's primary email account?"
+msgstr "Entregar este mensaje a la cuenta primary email de usuario?"
 
 #: modules/User Admin/applicationForm_manage_edit.php:855
 #: modules/User Admin/applicationForm_manage_edit.php:855

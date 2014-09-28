@@ -70,7 +70,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonRollGroupID"=>$gibbonRollGroupID); 
-			$sql="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonSpaceID, gibbonRollGroupIDNext FROM gibbonRollGroup JOIN gibbonSchoolYear ON gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY sequenceNumber, gibbonRollGroup.name" ; 
+			$sql="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonSpaceID, gibbonRollGroupIDNext, website FROM gibbonRollGroup JOIN gibbonSchoolYear ON gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY sequenceNumber, gibbonRollGroup.name" ; 
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -266,6 +266,19 @@ else {
 								print "</select>" ;
 							 }
 							?>		
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print _('Website') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Include http://') ?></i></span>
+						</td>
+						<td class="right">
+							<input name="website" id="website" maxlength=255 value="<?php print htmlPrep($row["website"]) ?>" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var website=new LiveValidation('website');
+								website.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
+							</script>	
 						</td>
 					</tr>
 					<tr>

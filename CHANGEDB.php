@@ -549,4 +549,11 @@ UPDATE `gibboni18n` SET `code` = 'es', `name` = 'Español', active='Y' WHERE `co
 UPDATE `gibboni18n` SET `code` = 'es_ES' WHERE `code`='es';end
 " ;
 
+//v8.3.00
+$count++ ;
+$sql[$count][0]="8.3.00" ;
+$sql[$count][1]="
+ALTER TABLE `gibbonRollGroup` ADD `website` VARCHAR(255) NOT NULL ;end
+";
+
 ?>

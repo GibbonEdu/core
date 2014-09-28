@@ -42160,7 +42160,7 @@ msgstr ""
 
 #: modules/Messenger/messenger_post.php:111
 #: modules/Messenger/messenger_post.php:111
-msgid "Deliver this message to user's primaryemail account?"
+msgid "Deliver this message to user's primary email account?"
 msgstr ""
 
 #: modules/User Admin/applicationForm_manage_edit.php:855

@@ -33604,7 +33604,7 @@ msgid "Phone 1"
 msgstr "Telefono 1"
 
 #: modules/Messenger/messenger_post.php:111
-msgid "Deliver this message to user's primaryemail account?"
+msgid "Deliver this message to user's primary email account?"
 msgstr "Consegnare questo messaggio account di email primaria utente?"
 
 #: functions.php:385 functions.php:412

@@ -95,6 +95,10 @@ else {
 			if (isset($_POST["gibbonRollGroupIDNext"])) {
 				$gibbonRollGroupIDNext=$_POST["gibbonRollGroupIDNext"] ;
 			}
+			$website=NULL ;
+			if (isset($_POST["website"])) {
+				$website=$_POST["website"] ;
+			}
 			
 			if ($gibbonSchoolYearID=="" OR $name=="" OR $nameShort=="") {
 				//Fail 3
@@ -124,8 +128,8 @@ else {
 				else {
 					//Write to database
 					try {
-						$data=array("name"=>$name, "nameShort"=>$nameShort, "gibbonPersonIDTutor"=>$gibbonPersonIDTutor, "gibbonPersonIDTutor2"=>$gibbonPersonIDTutor2, "gibbonPersonIDTutor3"=>$gibbonPersonIDTutor3, "gibbonSpaceID"=>$gibbonSpaceID, "gibbonRollGroupIDNext"=>$gibbonRollGroupIDNext, "gibbonRollGroupID"=>$gibbonRollGroupID); 
-						$sql="UPDATE gibbonRollGroup SET name=:name, nameShort=:nameShort, gibbonPersonIDTutor=:gibbonPersonIDTutor, gibbonPersonIDTutor2=:gibbonPersonIDTutor2, gibbonPersonIDTutor3=:gibbonPersonIDTutor3, gibbonSpaceID=:gibbonSpaceID, gibbonRollGroupIDNext=:gibbonRollGroupIDNext WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
+						$data=array("name"=>$name, "nameShort"=>$nameShort, "gibbonPersonIDTutor"=>$gibbonPersonIDTutor, "gibbonPersonIDTutor2"=>$gibbonPersonIDTutor2, "gibbonPersonIDTutor3"=>$gibbonPersonIDTutor3, "gibbonSpaceID"=>$gibbonSpaceID, "gibbonRollGroupIDNext"=>$gibbonRollGroupIDNext, "website"=>$website, "gibbonRollGroupID"=>$gibbonRollGroupID); 
+						$sql="UPDATE gibbonRollGroup SET name=:name, nameShort=:nameShort, gibbonPersonIDTutor=:gibbonPersonIDTutor, gibbonPersonIDTutor2=:gibbonPersonIDTutor2, gibbonPersonIDTutor3=:gibbonPersonIDTutor3, gibbonSpaceID=:gibbonSpaceID, gibbonRollGroupIDNext=:gibbonRollGroupIDNext, website=:website WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

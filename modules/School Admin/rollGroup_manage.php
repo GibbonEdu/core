@@ -99,7 +99,7 @@ else {
 	
 		try {
 			$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
-			$sql="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonSpace.name AS space FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber, gibbonRollGroup.name" ; 
+			$sql="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonSpace.name AS space, website FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber, gibbonRollGroup.name" ; 
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -120,9 +120,6 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("School Year") ;
-					print "</th>" ;
-					print "<th>" ;
 						print _("Name") . "<br/>" ;
 						print "<span style='font-size: 85%; font-style: italic'>" . _("Short Name") . "</span>" ;
 					print "</th>" ;
@@ -131,6 +128,9 @@ else {
 					print "</th>" ;
 					print "<th>" ;
 						print _("Space") ;
+					print "</th>" ;
+					print "<th>" ;
+						print _("Website") ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Actions") ;
@@ -149,9 +149,6 @@ else {
 					
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
-						print "<td>" ;
-							print $row["yearName"] ;
-						print "</td>" ;
 						print "<td>" ;
 							print "<b>" . $row["name"] ."</b><br/>" ;
 							print "<span style='font-size: 85%; font-style: italic'>" . $row["nameShort"] . "</span>" ;
@@ -172,6 +169,11 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							print $row["space"] ;
+						print "</td>" ;
+						print "<td>" ;
+							if ($row["website"]!="") {
+								print "<a target='_blank' href='" . $row["website"] . "'>" . $row["website"] . "</a>" ;
+							}
 						print "</td>" ;
 						print "<td>" ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage_edit.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;

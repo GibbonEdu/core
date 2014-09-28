@@ -16,6 +16,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v8.3.00
+-------
+General: added footer link to credits on Gibbon website
+	Edited file /index.php
+
+General: improved Parental Dashboard to make it more useful for schools not using Planner and Markbook
+	Edited files /index.php, function.php
+	Edited file /modules/Timetable/moduleFunctions.php
+
+Roll Groups: added ability to store and show a website for the group
+	Edited files /modules/School Admin/rollGroup_manage*.php
+	Edited files /modules/Roll Groups/rollGroups*.php
+	Edited file /index.php
+
+Messenger: set email to "Yes" by default, to avoid messages being send to no targets
+	Edited file /modules/Messenger/messenger_post.php
+
 v8.2.00
 -------
 General: added system-wide notifications, which can be utilised by any module

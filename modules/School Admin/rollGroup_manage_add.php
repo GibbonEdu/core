@@ -244,6 +244,19 @@ else {
 						</td>
 					</tr>
 					<tr>
+						<td> 
+							<b><?php print _('Website') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Include http://') ?></i></span>
+						</td>
+						<td class="right">
+							<input name="website" id="website" maxlength=255 value="" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var website=new LiveValidation('website');
+								website.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
+							</script>	
+						</td>
+					</tr>
+					<tr>
 						<td>
 							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>

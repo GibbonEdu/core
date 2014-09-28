@@ -38,7 +38,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonRollGroupID"=>$gibbonRollGroupID); 
-			$sql="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonSpace.name AS space FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY sequenceNumber, gibbonRollGroup.name" ; 
+			$sql="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonSpace.name AS space, website FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY sequenceNumber, gibbonRollGroup.name" ; 
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -102,6 +102,14 @@ else {
 						print "<i>" . $row["space"] . "</i>" ;
 					print "</td>" ;
 				print "</tr>" ;
+				if ($row["website"]!="") {
+					print "<tr>" ;
+						print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>" . _('Website') . "</span><br/>" ;
+							print "<a target='_blank' href='" . $row["website"] . "'>" . $row["website"] . "</a>" ;
+						print "</td>" ;
+					print "</tr>" ;
+				}
 			print "</table>" ;
 			
 			print "<h2>" ;
