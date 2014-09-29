@@ -76,7 +76,7 @@ else {
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-						<?php for ($i=1; $i<31; $i++) { ?>
+						<?php for ($i=0; $i<=31; $i++) { ?>
 							<option <?php if ($row["value"]==$i) {print "selected ";} ?>value="<?php print $i ?>"><?php print $i ?></option>
 						<?php } ?>
 					</select>

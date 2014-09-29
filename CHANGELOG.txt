@@ -33,6 +33,15 @@ Roll Groups: added ability to store and show a website for the group
 Messenger: set email to "Yes" by default, to avoid messages being send to no targets
 	Edited file /modules/Messenger/messenger_post.php
 
+Library: set to allow 0-day loan length as default (e.g. same day return)
+	Edited files /modules/Library/library_lending_item_*.php
+	Edited file /modules/School Admin/librarySettings.php
+
+Timetable: improvements to timetable selector
+	Edited files /modules/Timetable/moduleFunctions.php, tt_view.php
+	Edited file /modules/Staff/staff_view_details.php
+
+
 v8.2.00
 -------
 General: added system-wide notifications, which can be utilised by any module

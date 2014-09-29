@@ -173,7 +173,7 @@ else {
 					<tr>
 						<?php
 						$loanLength=getSettingByScope($connection2, "Library", "defaultLoanLength") ;
-						if (is_numeric($loanLength)==FALSE OR $loanLength<1) {
+						if (is_numeric($loanLength)==FALSE OR $loanLength<0) {
 							$loanLength=7 ;
 						}
 						?>

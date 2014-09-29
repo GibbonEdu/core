@@ -518,7 +518,7 @@ else {
 						else {
 							if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php")==TRUE) {
 								print "<div class='linkTop'>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=Staff&allUsers='><img style='margin: 0 0 -4px 3px' title='Edit Timetable' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=Staff&allUsers='>" . _('Edit Timetable') . "<img style='margin: 0 0 -4px 3px' title='Edit Timetable' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.png'/></a> " ;
 								print "</div>" ;
 							}
 						
@@ -527,7 +527,11 @@ else {
 							if (isset($_POST["ttDate"])) {
 								$ttDate=dateConvertToTimestamp(dateConvert($guid, $_POST["ttDate"]));
 							}
-							$tt=renderTT($guid, $connection2,$gibbonPersonID, "", FALSE, $ttDate, "/modules/Staff/staff_view_details.php", "&gibbonPersonID=$gibbonPersonID&subpage=Timetable&search=$search") ;
+							$gibbonTTID=NULL ;
+							if (isset($_GET["gibbonTTID"])) {
+								$gibbonTTID=$_GET["gibbonTTID"] ;
+							}
+							$tt=renderTT($guid, $connection2,$gibbonPersonID, $gibbonTTID, FALSE, $ttDate, "/modules/Staff/staff_view_details.php", "&gibbonPersonID=$gibbonPersonID&subpage=Timetable&search=$search") ;
 							if ($tt!=FALSE) {
 								print $tt ;
 							}
