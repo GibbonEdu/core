@@ -330,8 +330,8 @@ else {
 								print "<a style='margin-left: 5px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_reject.php&gibbonApplicationFormID=" . $row["gibbonApplicationFormID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='" . _('Reject') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a>" ;
 								print "<br/>" ;
 							}
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_edit.php&gibbonApplicationFormID=" . $row["gibbonApplicationFormID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-							print " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_delete.php&gibbonApplicationFormID=" . $row["gibbonApplicationFormID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img style='margin-left: 4px' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_edit.php&gibbonApplicationFormID=" . $row["gibbonApplicationFormID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_delete.php&gibbonApplicationFormID=" . $row["gibbonApplicationFormID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img style='margin-left: 4px' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 							
 						print "</td>" ;
 					print "</tr>" ;

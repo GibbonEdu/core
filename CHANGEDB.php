@@ -554,6 +554,7 @@ $count++ ;
 $sql[$count][0]="8.3.00" ;
 $sql[$count][1]="
 ALTER TABLE `gibbonRollGroup` ADD `website` VARCHAR(255) NOT NULL ;end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`) VALUES ('id_ID', 'Bahasa Indonesia - Indonesia', 'N', 'N', 'Adrian Hodson', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y');end
 ";
 
 ?>

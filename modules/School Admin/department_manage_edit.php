@@ -257,7 +257,7 @@ else {
 												print $row["role"] ;
 											print "</td>" ;
 											print "<td>" ;
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_manage_edit_staff_deleteProcess.php?address=" . $_GET["q"] . "&gibbonDepartmentStaffID=" . $row["gibbonDepartmentStaffID"] . "&gibbonDepartmentID=$gibbonDepartmentID'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_manage_edit_staff_deleteProcess.php?address=" . $_GET["q"] . "&gibbonDepartmentStaffID=" . $row["gibbonDepartmentStaffID"] . "&gibbonDepartmentID=$gibbonDepartmentID'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 											print "</td>" ;
 										print "</tr>" ;
 									}

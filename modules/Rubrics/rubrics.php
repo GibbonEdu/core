@@ -228,8 +228,8 @@ else {
 							print "</script>" ;
 							
 							if ($highestAction=="Manage Rubrics_viewEditAll") {
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit.php&gibbonRubricID=" . $row["gibbonRubricID"] . "&sidebar=false'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_delete.php&gibbonRubricID=" . $row["gibbonRubricID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit.php&gibbonRubricID=" . $row["gibbonRubricID"] . "&sidebar=false'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_delete.php&gibbonRubricID=" . $row["gibbonRubricID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							}
 							else if ($highestAction=="Manage Rubrics_viewAllEditLearningArea") {
 								if ($row["scope"]=="Learning Area" AND $row["gibbonDepartmentID"]!="") {
@@ -244,8 +244,8 @@ else {
 									}
 									
 									if ($resultLearningAreaStaff->rowCount()>0) {
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit.php&gibbonRubricID=" . $row["gibbonRubricID"] . "&sidebar=false'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_delete.php&gibbonRubricID=" . $row["gibbonRubricID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit.php&gibbonRubricID=" . $row["gibbonRubricID"] . "&sidebar=false'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_delete.php&gibbonRubricID=" . $row["gibbonRubricID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 									}
 								}
 							}

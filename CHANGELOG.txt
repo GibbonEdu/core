@@ -41,6 +41,21 @@ Timetable: improvements to timetable selector
 	Edited files /modules/Timetable/moduleFunctions.php, tt_view.php
 	Edited file /modules/Staff/staff_view_details.php
 
+Staff: added filter to allow display of all staff, irrespective of status
+	Edited files /modules/Staff/staff_view*.php
+
+Messenger: fixed bug preventing message deletion for those with access to manage only their own messages
+	Edited files /modules/Messenger/messenger_manage_delete*.php
+
+System Admin: added cache reset on successful update to force top menu reload
+	Edited file /modules/System Admin/updateProcess.php
+
+General: changed "Add Record" to "Add", etc, throughout the system.
+	Edited various files
+
+i18n: added Bahasa Indonesian as non-active language for development
+	Added value to table gibboni18n
+	Added folder /i18n/id_ID
 
 v8.2.00
 -------

@@ -337,7 +337,7 @@ else {
 					if ($subpage=="Summary") {
 						if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==TRUE) {
 							print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'><img style='margin: 0 0 -4px 3px' title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'><img style='margin: 0 0 -4px 3px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "</div>" ;
 						}
 					
@@ -560,7 +560,7 @@ else {
 					else if ($subpage=="Personal") {
 						if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==TRUE) {
 							print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'><img style='margin: 0 0 -4px 3px' title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'><img style='margin: 0 0 -4px 3px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "</div>" ;
 						}
 						
@@ -1036,7 +1036,7 @@ else {
 								
 								if (isActionAccessible($guid, $connection2, "/modules/User Admin/family_manage.php")==TRUE) {
 									print "<div class='linkTop'>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=" . $rowFamily["gibbonFamilyID"] . "'><img style='margin: 0 0 -4px 3px' title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=" . $rowFamily["gibbonFamilyID"] . "'><img style='margin: 0 0 -4px 3px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 									print "</div>" ;
 								}
 								
@@ -1122,7 +1122,7 @@ else {
 														print $rowRelationship["relationship"] ;
 													}
 													else {
-														print "<i>" . _('Relationaship Unknown') . "</i>" ;
+														print "<i>" . _('Relationship Unknown') . "</i>" ;
 													}
 												print "</div>" ;
 											print "</td>" ;
@@ -1296,7 +1296,7 @@ else {
 					else if ($subpage=="Emergency Contacts") {
 						if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==TRUE) {
 							print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'><img style='margin: 0 0 -4px 3px' title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'><img style='margin: 0 0 -4px 3px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "</div>" ;
 						}
 						
@@ -1455,7 +1455,7 @@ else {
 							
 							if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_manage.php")==TRUE) {
 								print "<div class='linkTop'>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_edit.php&gibbonPersonMedicalID=" . $rowMedical["gibbonPersonMedicalID"] . "'><img style='margin: 0 0 -4px 3px' title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_edit.php&gibbonPersonMedicalID=" . $rowMedical["gibbonPersonMedicalID"] . "'><img style='margin: 0 0 -4px 3px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 								print "</div>" ;
 							}
 						
@@ -1666,8 +1666,8 @@ else {
 											print "</td>" ;
 											print "<td>" ;
 												if ($row["gibbonPersonIDCreator"]==$_SESSION[$guid]["gibbonPersonID"]) {
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_edit.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_delete.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_edit.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_delete.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 												}
 												print "<script type='text/javascript'>" ;	
 													print "$(document).ready(function(){" ;
@@ -2220,7 +2220,7 @@ else {
 								$role=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2) ;
 								if ($role=="Student" OR $role=="Staff") {
 									print "<div class='linkTop'>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=$role'><img style='margin: 0 0 -4px 3px' title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=$role'><img style='margin: 0 0 -4px 3px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 									print "</div>" ;
 								}
 							}

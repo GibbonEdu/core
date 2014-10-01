@@ -45079,8 +45079,8 @@ msgstr "Establecer Futuro Asistencia"
 #: modules/Students/student_view_details.php:1043
 #: modules/Students/student_view_details.php:1103
 #: modules/Students/student_view_details.php:1103
-msgid "Relationaship Unknown"
-msgstr "Relationaship Desconocido"
+msgid "Relationship Unknown"
+msgstr "Relationship Desconocido"
 
 #: modules/User Admin/role_manage_duplicate.php:34
 #: modules/User Admin/role_manage_duplicate.php:34

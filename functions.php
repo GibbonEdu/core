@@ -20,7 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Gets the contents of a single dashboard, for the person specified
 function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 	$return=FALSE ;
-	
+	$alert=getAlert($connection2, 002) ;
+	$entryCount=0 ;
+											
 	//PREPARE PLANNER SUMMARY
 	$plannerOutput="<span style='font-size: 85%; font-weight: bold'>" . _('Today\'s Classes') . "</span> . <span style='font-size: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=" . $gibbonPersonID . "'>" . _('View Planner') . "</a></span>" ;
 	
@@ -151,7 +153,7 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 							}
 						$plannerOutput.="</td>" ;
 						$plannerOutput.="<td>" ;
-							$plannerOutput.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=" . $gibbonPersonID . "&viewBy=date&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&date=$date&width=1000&height=550'><img title='" . _('View Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+							$plannerOutput.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=" . $gibbonPersonID . "&viewBy=date&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&date=$date&width=1000&height=550'><img title='" . _('View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 						$plannerOutput.="</td>" ;
 					$plannerOutput.="</tr>" ;
 				}
@@ -285,15 +287,15 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 						if (strlen($rowEntry["comment"])>50) {
 							$gradesOutput.="<script type='text/javascript'>" ;	
 								$gradesOutput.="$(document).ready(function(){" ;
-									$gradesOutput.="\$(\".comment-$entryCount\").hide();" ;
-									$gradesOutput.="\$(\".show_hide-$entryCount\").fadeIn(1000);" ;
-									$gradesOutput.="\$(\".show_hide-$entryCount\").click(function(){" ;
-									$gradesOutput.="\$(\".comment-$entryCount\").fadeToggle(1000);" ;
+									$gradesOutput.="\$(\".comment-$entryCount-$gibbonPersonID\").hide();" ;
+									$gradesOutput.="\$(\".show_hide-$entryCount-$gibbonPersonID\").fadeIn(1000);" ;
+									$gradesOutput.="\$(\".show_hide-$entryCount-$gibbonPersonID\").click(function(){" ;
+									$gradesOutput.="\$(\".comment-$entryCount-$gibbonPersonID\").fadeToggle(1000);" ;
 									$gradesOutput.="});" ;
 								$gradesOutput.="});" ;
 							$gradesOutput.="</script>" ;
 							$gradesOutput.="<span>" . substr($rowEntry["comment"], 0, 50) . "...<br/>" ;
-							$gradesOutput.="<a title='" . _('View Description') . "' class='show_hide-$entryCount' onclick='return false;' href='#'>" . _('Read more') . "</a></span><br/>" ;
+							$gradesOutput.="<a title='" . _('View Description') . "' class='show_hide-$entryCount-$gibbonPersonID' onclick='return false;' href='#'>" . _('Read more') . "</a></span><br/>" ;
 						}
 						else {
 							$gradesOutput.=$rowEntry["comment"] ;
@@ -374,7 +376,7 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 				$gradesOutput.="</td>" ;
 			$gradesOutput.="</tr>" ;
 			if (strlen($rowEntry["comment"])>50) {
-				$gradesOutput.="<tr class='comment-$entryCount' id='comment-$entryCount'>" ;
+				$gradesOutput.="<tr class='comment-$entryCount-$gibbonPersonID' id='comment-$entryCount-$gibbonPersonID'>" ;
 					$gradesOutput.="<td colspan=6>" ;
 						$gradesOutput.=$rowEntry["comment"] ;
 					$gradesOutput.="</td>" ;
@@ -443,7 +445,6 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 		$timetableOutput.="<div class='linkTop'>" ;
 			$timetableOutput.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt.php'>" . _('View All Timetables') . "</a>" ;
 		$timetableOutput.="</div>" ;
-		include "./modules/Timetable/moduleFunctions.php" ;
 		$timetableOutputTemp=renderTT($guid, $connection2, $gibbonPersonID, NULL, NULL, dateConvertToTimestamp(date("Y-m-d")), "/index.php", "", TRUE) ;
 		if ($timetableOutputTemp!=FALSE) {
 			$timetable=TRUE ;
@@ -600,7 +601,7 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 	else {
 		$return.="<script type='text/javascript'>" ;
 			$return.="$(function() {" ;
-				$return.="$( \"#tabs\" ).tabs({" ;
+				$return.="$( \"#" . $gibbonPersonID . "tabs\" ).tabs({" ;
 					$return.="ajaxOptions: {" ;
 						$return.="error: function( xhr, status, index, anchor ) {" ;
 							$return.="$( anchor.hash ).html(" ;
@@ -611,7 +612,7 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 			$return.="});" ;
 		$return.="</script>" ;
 	
-		$return.="<div id='tabs' style='margin: 0 0'>" ;
+		$return.="<div id='" . $gibbonPersonID . "tabs' style='margin: 0 0'>" ;
 			$return.="<ul>" ;
 				if ($classes!=FALSE OR $grades!=FALSE OR $deadlines!=FALSE) {
 					$return.="<li><a href='#tabs1'>" . _('Learning Overview') . "</a></li>" ;
@@ -1062,7 +1063,7 @@ function getParentPhotoUploader($connection2, $guid) {
 			$output.="<p>" ;
 				$output.=getUserPhoto($guid, $_SESSION[$guid]["image_240"], 240) ;
 				$output.="<div style='margin-left: 220px; margin-top: -50px'>" ;
-					$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index_parentPhotoDeleteProcess.php?gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] . "' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
+					$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index_parentPhotoDeleteProcess.php?gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] . "' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
 				$output.="</div>" ;
 			$output.="</p>" ;
 		}

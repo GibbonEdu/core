@@ -270,14 +270,14 @@ else {
 							if ($i==$specialDayStamp) {
 								print "<span style='color: #ff0000'>" . date("d/m/Y",$i) . "<br/>" . $rowSpecial["name"] . "</span>" ;
 								print "<br/>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manage_edit.php&gibbonSchoolYearSpecialDayID=" . $rowSpecial["gibbonSchoolYearSpecialDayID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img style='margin-top: 3px' title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manage_delete.php&gibbonSchoolYearSpecialDayID=" . $rowSpecial["gibbonSchoolYearSpecialDayID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img style='margin-top: 3px' title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manage_edit.php&gibbonSchoolYearSpecialDayID=" . $rowSpecial["gibbonSchoolYearSpecialDayID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img style='margin-top: 3px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manage_delete.php&gibbonSchoolYearSpecialDayID=" . $rowSpecial["gibbonSchoolYearSpecialDayID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img style='margin-top: 3px' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 								$rowSpecial=$resultSpecial->fetch() ;
 							}
 							else {
 								print "<span style='color: #000000'>" . date("d/m/Y",$i) . "<br/>School Day</span>" ;
 								print "<br/>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=" . $i . "&gibbonSchoolYearTermID=" . $row["gibbonSchoolYearTermID"] . "&firstDay=$firstDayStamp&lastDay=$lastDayStamp'><img style='margin-top: 3px' title='" . _('Add Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=" . $i . "&gibbonSchoolYearTermID=" . $row["gibbonSchoolYearTermID"] . "&firstDay=$firstDayStamp&lastDay=$lastDayStamp'><img style='margin-top: 3px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> " ;
 							}
 						print "</td>" ;
 					}

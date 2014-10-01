@@ -597,7 +597,13 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 		
 		//Final calc
 		$diffTime=strtotime($timeEnd)-strtotime($timeStart) ;
-		$width=(ceil(690/$daysInWeek)-20) . "px" ;
+		
+		if ($narrow) {
+			$width=(ceil(515/$daysInWeek)-20) . "px" ;
+		}
+		else {
+			$width=(ceil(690/$daysInWeek)-20) . "px" ;
+		}
 		
 		$count=0;
 		

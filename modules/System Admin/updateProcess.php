@@ -223,6 +223,9 @@ else {
 					header("Location: {$URL}");
 					break ;
 				}
+				
+				//Reset cache to force top-menu reload
+				$_SESSION[$guid]["pageLoads"]=NULL ;
 			
 				//Success 0
 				$URL=$URL . "&updateReturn=success0" ;

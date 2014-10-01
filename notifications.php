@@ -133,7 +133,7 @@ print "<table cellspacing='0' style='width: 100%'>" ;
 				print "</td>" ;
 				print "<td>" ;
 					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsActionProcess.php?action=" . urlencode($row["actionLink"]) . "&gibbonNotificationID=" . $row["gibbonNotificationID"] . "'><img title='" . _('Action & Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsDeleteProcess.php?gibbonNotificationID=" . $row["gibbonNotificationID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsDeleteProcess.php?gibbonNotificationID=" . $row["gibbonNotificationID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 				print "</td>" ;
 			print "</tr>" ;
 		}

@@ -486,7 +486,7 @@ else {
 												}
 											print "</td>" ;
 											print "<td>" ;
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit_slot_deleteProcess.php?address=" . $_GET["q"] . "&gibbonActivitySlotID=" . $row["gibbonActivitySlotID"] . "&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit_slot_deleteProcess.php?address=" . $_GET["q"] . "&gibbonActivitySlotID=" . $row["gibbonActivitySlotID"] . "&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 											print "</td>" ;
 										print "</tr>" ;
 									}
@@ -752,7 +752,7 @@ else {
 												print $row["role"] ;
 											print "</td>" ;
 											print "<td>" ;
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit_staff_deleteProcess.php?address=" . $_GET["q"] . "&gibbonActivityStaffID=" . $row["gibbonActivityStaffID"] . "&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit_staff_deleteProcess.php?address=" . $_GET["q"] . "&gibbonActivityStaffID=" . $row["gibbonActivityStaffID"] . "&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 											print "</td>" ;
 										print "</tr>" ;
 									}

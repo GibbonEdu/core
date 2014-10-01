@@ -127,7 +127,7 @@ else {
 						}
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroups_details.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'><img title='" . _('View Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroups_details.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'><img title='" . _('View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 					print "</td>" ;
 				print "</tr>" ;
 				

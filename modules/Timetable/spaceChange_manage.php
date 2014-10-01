@@ -148,7 +148,7 @@ else {
 							print $row["spaceNew"] ;
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/spaceChange_manage_delete.php&gibbonTTSpaceChangeID=" . $row["gibbonTTSpaceChangeID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/spaceChange_manage_delete.php&gibbonTTSpaceChangeID=" . $row["gibbonTTSpaceChangeID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

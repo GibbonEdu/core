@@ -48,6 +48,10 @@ else {
 			if (isset($_GET["search"])) {
 				$search=$_GET["search"] ;
 			}
+			$allStaff="" ;
+			if (isset($_GET["allStaff"])) {
+				$allStaff=$_GET["allStaff"] ;
+			}
 					
 			if ($highestAction=="View Staff Profile_brief") {
 				//Proceed!
@@ -140,7 +144,12 @@ else {
 			else {
 				try {
 					$data=array("gibbonPersonID"=>$gibbonPersonID); 
-					$sql="SELECT gibbonPerson.*, gibbonStaff.initials, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
+					if ($allStaff!="on") {
+						$sql="SELECT gibbonPerson.*, gibbonStaff.initials, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
+					}
+					else {
+						$sql="SELECT gibbonPerson.*, gibbonStaff.initials, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
+					}
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -157,7 +166,7 @@ else {
 					$row=$result->fetch() ;
 					
 					print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/staff_view.php'>" . _('View Staff Profiles') . "</a> > </div><div class='trailEnd'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/staff_view.php&search=$search&allStaff=$allStaff'>" . _('View Staff Profiles') . "</a> > </div><div class='trailEnd'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</div>" ;
 					print "</div>" ;
 					
 					$subpage=NULL ;
@@ -183,7 +192,7 @@ else {
 					if ($subpage=="Summary") {
 						if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==TRUE) {
 							print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'><img style='margin: 0 0 -4px 3px' title='Edit Record' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'><img style='margin: 0 0 -4px 3px' title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "</div>" ;
 						}
 					
@@ -247,7 +256,7 @@ else {
 					else if ($subpage=="Personal") {
 						if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==TRUE) {
 							print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'><img style='margin: 0 0 -4px 3px' title='Edit Record' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'><img style='margin: 0 0 -4px 3px' title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "</div>" ;
 						}
 						
@@ -557,23 +566,23 @@ else {
 					if ($subpage=="Summary") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Summary'>" . _('Summary') . "</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Summary'>" . _('Summary') . "</a></li>" ;
 					$style="" ;
 					if ($subpage=="Personal") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Personal'>" . _('Personal') . "</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Personal'>" . _('Personal') . "</a></li>" ;
 					$style="" ;
 					if ($subpage=="Emergency Contacts") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Emergency Contacts'>" . _('Emergency Contacts') . "</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Emergency Contacts'>" . _('Emergency Contacts') . "</a></li>" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php")) {
 						$style="" ;
 						if ($subpage=="Timetable") {
 							$style="style='font-weight: bold'" ;
 						}
-						$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&subpage=Timetable'>" . _('Timetable') . "</a></li>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Timetable'>" . _('Timetable') . "</a></li>" ;
 					}
 					$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					

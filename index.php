@@ -615,8 +615,7 @@ else {
 											print "<h2>" ;
 												print _("Parental Dashboard") ;
 											print "</h2>" ;
-											$alert=getAlert($connection2, 002) ;
-											$entryCount=0 ;
+											include "./modules/Timetable/moduleFunctions.php" ;
 											
 											for ($i=0; $i<$count; $i++) {
 												print "<h4>" ;
@@ -810,7 +809,7 @@ else {
 																	}
 																print "</td>" ;
 																print "<td>" ;
-																	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "'><img title='" . _('View Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
+																	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "'><img title='" . _('View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
 																print "</td>" ;
 															print "</tr>" ;
 														}

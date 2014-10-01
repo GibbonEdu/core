@@ -498,7 +498,7 @@ else {
 											print "<div class='odd' style='padding: 5px; margin-top: 0px; text-align: right; border-bottom: 1px solid #666; border-top: 1px solid #666'>" ;
 												print "<i>" . _('Smart Blocks') . "</i>: " ;
 												if ($resultBlocks->rowCount()>0) {
-													print "<a class='active' href='#' id='viewBlocks'>" . _('View Record') . "</a> | <a href='#' id='editBlocks'>" . _('Edit Blocks') . "</a> | " ;
+													print "<a class='active' href='#' id='viewBlocks'>" . _('View') . "</a> | <a href='#' id='editBlocks'>" . _('Edit Blocks') . "</a> | " ;
 												}
 												if ($hooked==FALSE) {
 													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonUnitID=" . $row["gibbonUnitID"] . "&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&gibbonUnitClassID=$gibbonUnitClassID'>" . _('Edit Unit') . "</a> " ;
@@ -1150,7 +1150,7 @@ else {
 																		<td>
 																			<?php 
 																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=" . $gibbonPersonID . "&gibbonPlannerEntryHomeworkID=" . $rowVersion["gibbonPlannerEntryHomeworkID"] . "&submission=true'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;						
-																			print "<a onclick='return confirm(\"" . _('Are you sure you wish to delete this record?') . "\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_submit_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$gibbonPersonID&gibbonPlannerEntryHomeworkID=" . $rowVersion["gibbonPlannerEntryHomeworkID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+																			print "<a onclick='return confirm(\"" . _('Are you sure you wish to delete this record?') . "\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_submit_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$gibbonPersonID&gibbonPlannerEntryHomeworkID=" . $rowVersion["gibbonPlannerEntryHomeworkID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 																			?>
 																		</td>
 																		<?php

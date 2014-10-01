@@ -42440,7 +42440,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:1043
 #: modules/Students/student_view_details.php:1063
 #: modules/Students/student_view_details.php:1103
-msgid "Relationaship Unknown"
+msgid "Relationship Unknown"
 msgstr ""
 
 #: modules/User Admin/role_manage_duplicate.php:34
