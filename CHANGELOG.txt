@@ -57,6 +57,19 @@ i18n: added Bahasa Indonesian as non-active language for development
 	Added value to table gibboni18n
 	Added folder /i18n/id_ID
 
+Planner: added unit overview page, accessible from within a lesson plan, to act as VLE-style overview
+	Edited values in table gibbonAction
+	New file /modules/Planner/planner_unitOverview.php
+	Edited file /themes/Olden/css/main.css
+	Edited file /themes/Default/css/main.css
+
+User Admin: fixed issue preventing some staff from showing in the Manage Staff > Add Staff list of staff
+	Edited file /modules/User Admin/staff_manage_add.php
+
+Library: added import function to make setting up a library/inventory system easier
+	New values in gibbonAction, gibbonPermission
+	New file /modules/Library/library_import.php
+
 v8.2.00
 -------
 General: added system-wide notifications, which can be utilised by any module

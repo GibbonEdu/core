@@ -202,7 +202,7 @@ else {
 					}
 				}
 				else {
-					$personal="<span style='color: #ff0000; font-weight: bold'>NA</span>" ;
+					$personal="<span style='color: #ff0000; font-weight: bold'>" . _("No data") . "</span>" ;
 					$personalFail=TRUE ;
 				}
 				
@@ -229,7 +229,7 @@ else {
 					}
 				}
 				else {
-					$medical="<span style='color: #ff0000; font-weight: bold'>NA</span>" ;
+					$medical="<span style='color: #ff0000; font-weight: bold'>" . _("No data") . "</span>" ;
 					$medicalFail=TRUE ;
 				}
 			

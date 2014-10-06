@@ -85,7 +85,7 @@ else {
 						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 						try {
 							$data=array(); 
-							$sql="SELECT * FROM gibbonPerson WHERE status='Full' AND gibbonRoleIDPrimary in('2','6') ORDER BY surname, preferredName" ;
+							$sql="SELECT DISTINCT gibbonPerson.* FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE concat('%', gibbonRoleID, '%')) WHERE status='Full' AND gibbonRole.category='Staff' ORDER BY surname, preferredName" ;
 							$result=$connection2->prepare($sql);
 							$result->execute($data);
 						}

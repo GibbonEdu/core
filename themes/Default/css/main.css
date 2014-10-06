@@ -786,7 +786,7 @@ img.user {
 	box-shadow: 2px 2px 2px rgba(50,50,50,0.35);
 }
 
-a img.resource {
+a img.resource, img.resource {
 	background-color: #ffffff!important;
 	border: 1px solid #000000!important;
 	padding: 4px!important;

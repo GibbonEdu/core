@@ -415,6 +415,9 @@ else {
 							print "<div class='linkTop'>" ;
 								print "<tr>" ;
 									print "<td colspan=3>" ;
+										if ($row["gibbonUnitID"]!="") {
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_unitOverview.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=" . $row["date"] . "&subView=$subView&gibbonUnitID=" . $row["gibbonUnitID"] . "'>" . _('Unit Overview') . "</a> | " ;
+										}
 										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_edit.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=" . $row["date"] . "&subView=$subView'>" . _('Edit') . "<img style='margin: 0 0 -4px 3px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> | " ;
 										try {
 											$dataMarkbook=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"], "gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
@@ -433,6 +436,13 @@ else {
 										print "<span title='" . _('Includes student data & teacher\'s notes') . "' style='font-size: 85%; font-weight: normal; font-style: italic'> " . _('Show Confidential Data') . "</span>" ;
 									print "</td>" ;
 								print "</tr>" ;
+							print "</div>" ;
+						}
+						else {
+							print "<div class='linkTop'>" ;
+								if ($row["gibbonUnitID"]!="") {
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_unitOverview.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=" . $row["date"] . "&subView=$subView&gibbonUnitID=" . $row["gibbonUnitID"] . "&search=$gibbonPersonID'>" . _('Unit Overview') . "</a>" ;
+								}
 							print "</div>" ;
 						}
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>" ;
@@ -617,7 +627,7 @@ else {
 															print "<div style='padding: 15px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'>" . $rowBlocksView["contents"] . "</div>" ;
 														}
 														if ($rowBlocksView["teachersNotes"]!="" AND ($highestAction=="Lesson Planner_viewAllEditMyClasses" OR $highestAction=="Lesson Planner_viewEditAllClasses")) {
-															print "<div class='teachersNotes' style='background-color: #F6CECB; display: none; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><i>Teacher's Notes:</i> " . $rowBlocksView["teachersNotes"] . "</div>" ;
+															print "<div class='teachersNotes' style='background-color: #F6CECB; display: none; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><i>" . _("Teacher's Notes") . ":</i> " . $rowBlocksView["teachersNotes"] . "</div>" ;
 														}
 														$checked="" ;
 														if ($rowBlocksView["complete"]=="Y") {

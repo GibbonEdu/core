@@ -214,7 +214,7 @@ else {
 											print "<div style='padding: 15px 3px 10px 3px; width: 100%; text-align: justify; border-bottom: 1px solid #ddd'>" . $rowBlocks["contents"] . "</div>" ;
 										}
 										if ($rowBlocks["teachersNotes"]!="") {
-											print "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 100%; text-align: justify; border-bottom: 1px solid #ddd'><i>Teacher's Notes:</i> " . $rowBlocks["teachersNotes"] . "</div>" ;
+											print "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>" . _("Teacher's Notes") . ":</b></p> " . $rowBlocks["teachersNotes"] . "</div>" ;
 										}
 									}
 								print "</div>" ;
@@ -343,9 +343,11 @@ else {
 										else {
 											while ($rowLessons=$resultLessons->fetch()) {
 												print "<h3>" . $rowLessons["name"] . "</h3>" ;
-												print $rowLessons["description"] ;
-												print $rowLessons["teachersNotes"] ;
-									
+												print $rowLessons["description"] . "<br/>" ;
+												if ($rowLessons["teachersNotes"]!="") {
+													print "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>" . _("Teacher's Notes") . ":</b></p> " . $rowLessons["teachersNotes"] . "</div>" ;
+												}
+												
 												try {
 													$dataBlock=array("gibbonPlannerEntryID"=>$rowLessons["gibbonPlannerEntryID"]); 
 													$sqlBlock="SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber" ; 
@@ -363,7 +365,7 @@ else {
 													print "<b>" . _('Length') . "</b>: " . $rowBlock["length"] . "<br/>" ;
 													print "<b>" . _('Contents') . "</b>: " . $rowBlock["contents"] . "<br/>" ;
 													if ($rowBlock["teachersNotes"]!="") {
-														print "<b>" . _('Teacher\'s Notes') . "</b>: " . $rowBlock["teachersNotes"] . "<br/>" ;
+														print "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>" . _("Teacher's Notes") . ":</b></p> " . $rowBlock["teachersNotes"] . "</div>" ;
 													}
 													print "</p>" ;
 												}
