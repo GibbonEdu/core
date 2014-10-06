@@ -116,40 +116,72 @@ else {
 			<li><?php print _('Imports can only be for one Type (e.g. Print Publication, Computer, etc). The type of the first item in the import will be applied to all other entries.') ?></li>
 			<li><?php print _('The submitted file must have the following fields in the following order (* denotes required field):') ?></li> 
 				<ol>
-					<li><b><?php print _('Type') ?>* </b> - <?php print _('One of:') . " " ;
-						try {
-							$dataType=array(); 
-							$sqlType="SELECT name FROM gibbonLibraryType WHERE active='Y' ORDER BY name" ;
-							$resultType=$connection2->prepare($sqlType);
-							$resultType->execute($dataType);
-						}
-						catch(PDOException $e) { }
-						$typeCount=1 ;
-						while ($rowType=$resultType->fetch()) {
-							print "'" . _($rowType["name"]) . "'" ;
-							if ($typeCount<$resultType->rowCount()) {
-								print ", " ;
+					<li><b><?php print _('General Details') ; ?></b></li>
+					<ol>
+						<li><b><?php print _('Type') ?>* </b> - <?php print _('One of:') . " " ;
+							try {
+								$dataType=array(); 
+								$sqlType="SELECT name FROM gibbonLibraryType WHERE active='Y' ORDER BY name" ;
+								$resultType=$connection2->prepare($sqlType);
+								$resultType->execute($dataType);
 							}
-							else {
-								print "." ;
+							catch(PDOException $e) { }
+							$typeCount=1 ;
+							while ($rowType=$resultType->fetch()) {
+								print "'" . _($rowType["name"]) . "'" ;
+								if ($typeCount<$resultType->rowCount()) {
+									print ", " ;
+								}
+								else {
+									print "." ;
+								}
+								$typeCount++ ;
 							}
-							$typeCount++ ;
-						}
-					?></li>
-					<li><b><?php print _('Name') ?> *</b> - <?php print _('Volume or product name.') ?></li>
-					<li><b><?php print _('ID') ?> *</b> - <?php print _('Must be unique, or will lead to update not insert.') ?></li>
-					<li><b><?php print _('Author/Brand') ?> *</b> - <?php print _('Who created the item?') ?></li>
-					<li><b><?php print _('Vendor') ?></b> - <?php print _('Who supplied the item?') ?></li>
-					<li><b><?php print _('Purchase Date') ?></b> - <?php print _('dd/mm/yyyy') ?></li>
-					<li><b><?php print _('Invoice Number') ?></b></li>
-					<li><b><?php print _('Location') ?> *</b> - <?php print _('Space \'Name\' field.') ?></li>
-					<li><b><?php print _('Location Detail') ?></b> - <?php print _('Shelf, cabinet, sector, etc') ?></li>
-					<li><b><?php print _('Ownership Type') ?> *</b> - <?php print _('One of: \'School\' or \'Individual\'.') ?></li>
-					<li><b><?php print _('Main User') . "/" . _('Owner') ?></b> - <?php print _('Username of person the device is assigned to.') ?></li>
-					<li><b><?php print _('Department') ?></b> - <?php print _('\'Name\' filed for department responsible for the item.') ?></li>
-					<li><b><?php print _('Borrowable?') ?> *</b> - <?php print _('Is item available for loan?' . " " . _('One of: \'Y\' or \'N\'.')) ?></li>
-					<li><b><?php print _('Status?') ?> *</b> - <?php print _('Initial availability.' . " " . 'One of: \'Available\',\'In Use\',\'Decommissioned\',\'Lost\',\'On Loan\',\'Repair\' or \'Reserved\'.') ?></li>
-					<li><b><?php print _('Comments/Notes') ?></b></li>
+						?></li>
+						<li><b><?php print _('Name') ?> *</b> - <?php print _('Volume or product name.') ?></li>
+						<li><b><?php print _('ID') ?> *</b> - <?php print _('Must be unique, or will lead to update not insert.') ?></li>
+						<li><b><?php print _('Author/Brand') ?> *</b> - <?php print _('Who created the item?') ?></li>
+						<li><b><?php print _('Vendor') ?></b> - <?php print _('Who supplied the item?') ?></li>
+						<li><b><?php print _('Purchase Date') ?></b> - <?php print _('dd/mm/yyyy') ?></li>
+						<li><b><?php print _('Invoice Number') ?></b></li>
+						<li><b><?php print _('Location') ?> *</b> - <?php print _('Space \'Name\' field.') ?></li>
+						<li><b><?php print _('Location Detail') ?></b> - <?php print _('Shelf, cabinet, sector, etc') ?></li>
+						<li><b><?php print _('Ownership Type') ?> *</b> - <?php print _('One of: \'School\' or \'Individual\'.') ?></li>
+						<li><b><?php print _('Main User') . "/" . _('Owner') ?></b> - <?php print _('Username of person the device is assigned to.') ?></li>
+						<li><b><?php print _('Department') ?></b> - <?php print _('\'Name\' filed for department responsible for the item.') ?></li>
+						<li><b><?php print _('Borrowable?') ?> *</b> - <?php print _('Is item available for loan?' . " " . _('One of: \'Y\' or \'N\'.')) ?></li>
+						<li><b><?php print _('Status?') ?> *</b> - <?php print _('Initial availability.' . " " . 'One of: \'Available\',\'In Use\',\'Decommissioned\',\'Lost\',\'On Loan\',\'Repair\' or \'Reserved\'.') ?></li>
+						<li><b><?php print _('Comments/Notes') ?></b></li>
+					</ol>
+					<li><b><?php print _('Type-Specific Details') ; ?></b></li>
+						<ol>
+							<?php
+							try {
+								$dataType=array(); 
+								$sqlType="SELECT * FROM gibbonLibraryType WHERE active='Y' ORDER BY name" ;
+								$resultType=$connection2->prepare($sqlType);
+								$resultType->execute($dataType);
+							}
+							catch(PDOException $e) { }
+							while ($rowType=$resultType->fetch()) {
+								print "<li><b>" . $rowType["name"] . "</b></li>" ;
+								print "<ol>" ;
+									$fields=unserialize($rowType["fields"]) ;
+									foreach ($fields AS $field) {
+										print "<li>" ;
+											print "<b>" . $field["name"] ;
+											if ($field["required"]=="Y") {
+												print " *" ;
+											}
+											print "</b>" ;
+											if ($field["description"]!="") {
+												 print " - " . $field["description"] . "</li>" ;
+											}
+									}
+								print "</ol>" ;
+							}
+							?>
+						</ol>
 				</ol>
 			</li>
 			<li><?php print _('Do not include a header row in the CSV files.') ?></li>
@@ -219,7 +251,38 @@ else {
 					$resultCount=0 ;
 					$resultSuccessCount=0 ;
 					while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !==FALSE) {
+						//Turn type into gibbonTypeID (only needs to be done once)
+						if ($resultCount==0 AND $data[0]!="") {
+							try {
+								$dataType=array("name"=>$data[0]); 
+								$sqlType="SELECT gibbonLibraryTypeID, fields FROM gibbonLibraryType WHERE name=:name" ;
+								$resultType=$connection2->prepare($sqlType);
+								$resultType->execute($dataType);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" ;
+									print _('Your request failed due to a database error.') ;
+								print "</div>" ;
+								$types=NULL ;
+								$typeFields=NULL ;
+							}
+							if ($resultType->rowCount()!=1) {
+								print "<div class='error'>" ;
+									print sprintf(_('Type with name %1$s in import cannot be found.'), $result["type"]) ;
+								print "</div>" ;
+								$types=NULL ;
+								$typeFields=NULL ;
+							}
+							else {
+								$rowType=$resultType->fetch() ;
+								$type=$rowType["gibbonLibraryTypeID"] ;
+								$typeFields=unserialize($rowType["fields"]) ;
+							}
+						}
+						
+						//Get fields
 						if ($data[0]!="" AND $data[1]!="" AND $data[2]!="" AND $data[3]!="" AND $data[7]!="" AND $data[9]!="" AND $data[12]!="" AND $data[13]!="" ) {
+							//General fields
 							$results[$resultSuccessCount]["type"]="" ; if (isset($data[0])) { $results[$resultSuccessCount]["type"]=$data[0] ; }
 							$results[$resultSuccessCount]["name"]="" ; if (isset($data[1])) { $results[$resultSuccessCount]["name"]=$data[1] ; }
 							$results[$resultSuccessCount]["id"]="" ; if (isset($data[2])) { $results[$resultSuccessCount]["id"]=$data[2] ; }
@@ -235,6 +298,21 @@ else {
 							$results[$resultSuccessCount]["borrowable"]="" ; if (isset($data[12])) { $results[$resultSuccessCount]["borrowable"]=$data[12] ; }
 							$results[$resultSuccessCount]["status"]="" ; if (isset($data[13])) { $results[$resultSuccessCount]["status"]=$data[13] ; }
 							$results[$resultSuccessCount]["comment"]="" ; if (isset($data[14])) { $results[$resultSuccessCount]["comment"]=$data[14] ; }
+							
+							//Type specific fields
+							$results[$resultSuccessCount]["fields"]="" ;
+							$typeFieldValues=array() ;
+							$totalFieldCount=15 ;
+							foreach ($typeFields AS $typeField) {
+								if (isset($data[$totalFieldCount])) { 
+									$typeFieldValues[$typeField["name"]]=$data[$totalFieldCount] ; 
+								}
+								$totalFieldCount++ ;
+							}
+							if (count($typeFieldValues)>0) {
+								$results[$resultSuccessCount]["fields"]=serialize($typeFieldValues) ;
+							}
+							
 							$resultSuccessCount++ ;
 						}
 						else {
@@ -281,35 +359,8 @@ else {
 					
 					//Scroll through all records
 					foreach ($results AS $result) {
-					
-						//Turn type into gibbonTypeID in db-efficient manner (only needs to be done once)
-						if (isset($type)==FALSE) {
-							try {
-								$dataUser=array("name"=>$result["type"]); 
-								$sqlUser="SELECT gibbonLibraryTypeID FROM gibbonLibraryType WHERE name=:name" ;
-								$resultUser=$connection2->prepare($sqlUser);
-								$resultUser->execute($dataUser);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" ;
-									print _('Your request failed due to a database error.') ;
-								print "</div>" ;
-								$types[$result["type"]]=NULL ;
-							}
-							if ($resultUser->rowCount()!=1) {
-								print "<div class='error'>" ;
-									print sprintf(_('Type with name %1$s in import cannot be found.'), $result["type"]) ;
-								print "</div>" ;
-								$types[$result["type"]]=NULL ;
-							}
-							else {
-								$rowUser=$resultUser->fetch() ;
-								$type=$rowUser["gibbonLibraryTypeID"] ;
-							}
-						}
-						
 						//If we have gibbonLibraryTypeID, move on
-						if ($type!="") {
+						if ($type!="" AND is_array($typeFields)) {
 							//Turn location into gibbonSpaceID in db-efficient manner
 							if (isset($locations[$result["location"]])==FALSE) {
 								try {
@@ -425,6 +476,7 @@ else {
 									$borrowable=$result["borrowable"] ;
 									$status=$result["status"] ;
 									$comment=$result["comment"] ;
+									$fields=$result["fields"] ;
 									
 									//CHECK IF ID EXISTS
 									try {
@@ -441,8 +493,8 @@ else {
 									if ($resultCheck->rowCount()==1) { //IF IT DOES, UPDATE
 										$updateFail=FALSE ;
 										try {
-											$dataUpdate=array("gibbonLibraryTypeID"=>$type, "id"=>$id, "name"=>$name, "producer"=>$producer, "vendor"=>$vendor, "purchaseDate"=>$purchaseDate, "invoiceNumber"=>$invoiceNumber, "comment"=>$comment, "gibbonSpaceID"=>$gibbonSpaceID, "locationDetail"=>$locationDetail, "ownershipType"=>$ownershipType, "gibbonPersonIDOwnership"=>$gibbonPersonIDOwnership, "gibbonDepartmentID"=>$gibbonDepartmentID, "borrowable"=>$borrowable, "status"=>$status, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "timestampCreator"=>date('Y-m-d H:i:s', time())); 
-											$sqlUpdate="UPDATE gibbonLibraryItem SET gibbonLibraryTypeID=:gibbonLibraryTypeID, name=:name, producer=:producer, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, borrowable=:borrowable, status=:status, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator WHERE id=:id" ;
+											$dataUpdate=array("gibbonLibraryTypeID"=>$type, "id"=>$id, "name"=>$name, "producer"=>$producer, "vendor"=>$vendor, "purchaseDate"=>$purchaseDate, "invoiceNumber"=>$invoiceNumber, "comment"=>$comment, "gibbonSpaceID"=>$gibbonSpaceID, "locationDetail"=>$locationDetail, "ownershipType"=>$ownershipType, "gibbonPersonIDOwnership"=>$gibbonPersonIDOwnership, "gibbonDepartmentID"=>$gibbonDepartmentID, "borrowable"=>$borrowable, "status"=>$status, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "timestampCreator"=>date('Y-m-d H:i:s', time()), "fields"=>$fields); 
+											$sqlUpdate="UPDATE gibbonLibraryItem SET gibbonLibraryTypeID=:gibbonLibraryTypeID, name=:name, producer=:producer, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, borrowable=:borrowable, status=:status, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator, fields=:fields WHERE id=:id" ;
 											$resultUpdate=$connection2->prepare($sqlUpdate);
 											$resultUpdate->execute($dataUpdate);
 										}
@@ -463,8 +515,8 @@ else {
 									else { //IF IT DOES NOT, INSERT
 										$insertFail=FALSE ;
 										try {
-											$dataInsert=array("gibbonLibraryTypeID"=>$type, "id"=>$id, "name"=>$name, "producer"=>$producer, "vendor"=>$vendor, "purchaseDate"=>$purchaseDate, "invoiceNumber"=>$invoiceNumber, "comment"=>$comment, "gibbonSpaceID"=>$gibbonSpaceID, "locationDetail"=>$locationDetail, "ownershipType"=>$ownershipType, "gibbonPersonIDOwnership"=>$gibbonPersonIDOwnership, "gibbonDepartmentID"=>$gibbonDepartmentID, "borrowable"=>$borrowable, "status"=>$status, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "timestampCreator"=>date('Y-m-d H:i:s', time())); 
-											$sqlInsert="INSERT INTO gibbonLibraryItem SET gibbonLibraryTypeID=:gibbonLibraryTypeID, id=:id, name=:name, producer=:producer, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, borrowable=:borrowable, status=:status, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator" ;
+											$dataInsert=array("gibbonLibraryTypeID"=>$type, "id"=>$id, "name"=>$name, "producer"=>$producer, "vendor"=>$vendor, "purchaseDate"=>$purchaseDate, "invoiceNumber"=>$invoiceNumber, "comment"=>$comment, "gibbonSpaceID"=>$gibbonSpaceID, "locationDetail"=>$locationDetail, "ownershipType"=>$ownershipType, "gibbonPersonIDOwnership"=>$gibbonPersonIDOwnership, "gibbonDepartmentID"=>$gibbonDepartmentID, "borrowable"=>$borrowable, "status"=>$status, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "timestampCreator"=>date('Y-m-d H:i:s', time()), "fields"=>$fields); 
+											$sqlInsert="INSERT INTO gibbonLibraryItem SET gibbonLibraryTypeID=:gibbonLibraryTypeID, id=:id, name=:name, producer=:producer, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, borrowable=:borrowable, status=:status, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator, fields=:fields" ;
 											$resultInsert=$connection2->prepare($sqlInsert);
 											$resultInsert->execute($dataInsert);
 										}
