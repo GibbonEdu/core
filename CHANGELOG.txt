@@ -70,6 +70,10 @@ Library: added import function to make setting up a library/inventory system eas
 	New values in gibbonAction, gibbonPermission
 	New file /modules/Library/library_import.php
 
+Timetable: fixed bug causing space booking to show in every space, not just specified space
+	Edited file /modules/Timetable/moduleFunctions.php
+
+
 v8.2.00
 -------
 General: added system-wide notifications, which can be utilised by any module

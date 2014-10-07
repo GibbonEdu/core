@@ -122,6 +122,35 @@ function getSpaceBookingEvents($guid, $connection2, $startDayStamp, $gibbonPerso
 	return $return ;
 }
 
+//Returns space bookings for the specified space for the 7 days on/after $startDayStamp
+function getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbonSpaceID) {
+	$return=FALSE ;
+	
+	try {
+		$dataSpaceBooking=array("gibbonSpaceID"=>$gibbonSpaceID); 
+		$sqlSpaceBooking="SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonTTSpaceBooking.gibbonSpaceID=:gibbonSpaceID AND date>='" . date("Y-m-d", $startDayStamp) . "' AND  date<='" . date("Y-m-d", ($startDayStamp+(7*24*60*60))) . "' ORDER BY date, timeStart, name" ;
+		$resultSpaceBooking=$connection2->prepare($sqlSpaceBooking);
+		$resultSpaceBooking->execute($dataSpaceBooking);
+	}
+	catch(PDOException $e) { }
+	if ($resultSpaceBooking->rowCount()>0) {
+		$return=array() ;
+		$count=0 ;
+		while ($rowSpaceBooking=$resultSpaceBooking->fetch()) {
+			$return[$count][0]=$rowSpaceBooking["gibbonTTSpaceBookingID"] ;
+			$return[$count][1]=$rowSpaceBooking["name"] ;
+			$return[$count][2]=$rowSpaceBooking["gibbonPersonID"] ;
+			$return[$count][3]=$rowSpaceBooking["date"] ;
+			$return[$count][4]=$rowSpaceBooking["timeStart"] ;
+			$return[$count][5]=$rowSpaceBooking["timeEnd"] ;
+			$return[$count][6]=formatName($rowSpaceBooking["title"], $rowSpaceBooking["preferredName"], $rowSpaceBooking["surname"], "Staff") ;
+			$count++ ;
+		}
+	}
+	
+	return $return ;
+}
+
 //Returns events from a Google Calendar XML field, between the time and date specified
 function getCalendarEvents($guid, $xml, $startDayStamp, $endDayStamp) {
 	$start=date("Y-m-d\TH:i:s", strtotime(date("Y-m-d", $startDayStamp))) ;
@@ -1463,7 +1492,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 	//Get space booking array
 	$eventsSpaceBooking=FALSE ;
 	if ($_SESSION[$guid]["viewCalendarSpaceBooking"]=="Y") {
-		$eventsSpaceBooking=getSpaceBookingEvents($guid, $connection2, $startDayStamp) ;
+		$eventsSpaceBooking=getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbonSpaceID) ;
 	}	
 
 	
