@@ -80,6 +80,7 @@ else {
 						catch(PDOException $e) { 
 							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
+						$primaryTutor240="" ;
 						while ($rowTutor=$resultTutor->fetch()) {
 							if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_view_details.php")) {
 								print "<i><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $rowTutor["gibbonPersonID"] . "'>" . formatName("", $rowTutor["preferredName"], $rowTutor["surname"], "Staff", false, true) . "</a></i>" ;
@@ -87,7 +88,6 @@ else {
 							else {
 								print "<i>" . formatName("", $rowTutor["preferredName"], $rowTutor["surname"], "Staff", false, true) ;
 							}
-							$primaryTutor240="" ;
 							if ($rowTutor["gibbonPersonID"]==$row["gibbonPersonIDTutor"]) {
 								$primaryTutor240=$rowTutor["image_240"] ;
 								if ($resultTutor->rowCount()>1) {
