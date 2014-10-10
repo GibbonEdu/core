@@ -450,7 +450,7 @@ table {
 	margin: 5px 0 5px 0;
 }
 table th {
-	padding:15px 15px 15px 15px;
+	padding:15px 15px 15px 5px;
 	border-top:1px solid #fafafa;
 	border-bottom:1px solid #e0e0e0;
 	font-size: 110% ;
@@ -464,13 +464,13 @@ table tr:first-child th:first-child {
 	-webkit-border-top-left-radius:3px;
 	border-top-left-radius:3px;
 	text-align: left;
-	padding-left: 20px;
+	padding-left: 5px;
 }
 table tr:first-child th:last-child {
 	-moz-border-radius-topright:3px;
 	-webkit-border-top-right-radius:3px;
 	border-top-right-radius:3px;
-	padding-left: 20px;
+	padding-left: 5px;
 }
 table tr {
 	text-align: center;

@@ -743,6 +743,13 @@ else {
 																<th> 
 																	<?php print _('View') ?><br/>
 																</td>
+																<?php
+																if (date("Y-m-d H:i:s")<$row["homeworkDueDateTime"]) {
+																	print "<th>" ;
+																		print _('Actions') . "<br/>" ;
+																	print "</td>" ;
+																}
+																?>
 															</tr>
 															<?php
 															while ($rowVersion=$resultVersion->fetch()) {
@@ -780,6 +787,13 @@ else {
 																		}
 																		?>
 																	</td>
+																	<?php
+																	if (date("Y-m-d H:i:s")<$row["homeworkDueDateTime"]) {
+																		print "<td>" ;
+																			print "<a onclick='return confirm(\"" . _('Are you sure you wish to delete this record?') . "\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_submit_studentDeleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$gibbonPersonID&gibbonPlannerEntryHomeworkID=" . $rowVersion["gibbonPlannerEntryHomeworkID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/>" ;
+																		print "</td>" ;
+																	}
+																	?>
 																</tr>
 																<?php
 																$latestVersion=$rowVersion["version"] ;

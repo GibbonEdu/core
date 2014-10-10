@@ -187,7 +187,7 @@ else {
 			$max_input_vars=ini_get('max_input_vars') ;
 			if (($totalCount*2)>$max_input_vars) {
 				print "<tr>" ;
-					print "<td colspan='6'>" ;	
+					print "<td colspan=" . ($resultRoles->rowCount()+1) . ">" ;
 						print "<div class='error'>" ;
 						print "php.ini max_input_vars=" . $max_input_vars . "<br />";
 						print _("Number of inputs on this page") . "=" . ($totalCount*2) . "<br/>";

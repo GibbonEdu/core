@@ -130,28 +130,29 @@ else {
 						}
 				
 						$behaviour="" ;
-						/* THIS WILL BE RESTORED IN v8.3 WITH AN OPTION TO DISABLE 
-						//Get behaviour records for the past week, ready for email
-						$behaviour.="<h2>" . _('Behaviour') . "</h2>" ;
-						try {
-							$dataBehaviourPositive=array("gibbonPersonID"=>$row["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]) ;
-							$sqlBehaviourPositive="SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Positive' AND date>'" . date('Y-m-d', strtotime("-1 week")) . "' AND date<='" . date("Y-m-d") . "'" ;
-							$resultBehaviourPositive=$connection2->prepare($sqlBehaviourPositive);
-							$resultBehaviourPositive->execute($dataBehaviourPositive);
+						$parentWeeklyEmailSummaryIncludeBehaviour=getSettingByScope($connection2, "Planner", "parentWeeklyEmailSummaryIncludeBehaviour" ) ; 
+						if ($parentWeeklyEmailSummaryIncludeBehaviour=="Y") {
+							//Get behaviour records for the past week, ready for email
+							$behaviour.="<h2>" . _('Behaviour') . "</h2>" ;
+							try {
+								$dataBehaviourPositive=array("gibbonPersonID"=>$row["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]) ;
+								$sqlBehaviourPositive="SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Positive' AND date>'" . date('Y-m-d', strtotime("-1 week")) . "' AND date<='" . date("Y-m-d") . "'" ;
+								$resultBehaviourPositive=$connection2->prepare($sqlBehaviourPositive);
+								$resultBehaviourPositive->execute($dataBehaviourPositive);
+							}
+							catch(PDOException $e) { }
+							try {
+								$dataBehaviourNegative=array("gibbonPersonID"=>$row["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]) ;
+								$sqlBehaviourNegative="SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Negative' AND date>'" . date('Y-m-d', strtotime("-1 week")) . "' AND date<='" . date("Y-m-d") . "'" ;
+								$resultBehaviourNegative=$connection2->prepare($sqlBehaviourNegative);
+								$resultBehaviourNegative->execute($dataBehaviourNegative);
+							}
+							catch(PDOException $e) { }
+							$behaviour.="<ul>" ;
+								$behaviour.="<li>" . _("Positive behaviour records this week") . ": " . $resultBehaviourPositive->rowCount() . "</li>" ;
+								$behaviour.="<li>" . _("Negative behaviour records this week") . ": " . $resultBehaviourNegative->rowCount() . "</li>" ;
+							$behaviour.="</ul><br/>" ;
 						}
-						catch(PDOException $e) { }
-						try {
-							$dataBehaviourNegative=array("gibbonPersonID"=>$row["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]) ;
-							$sqlBehaviourNegative="SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Negative' AND date>'" . date('Y-m-d', strtotime("-1 week")) . "' AND date<='" . date("Y-m-d") . "'" ;
-							$resultBehaviourNegative=$connection2->prepare($sqlBehaviourNegative);
-							$resultBehaviourNegative->execute($dataBehaviourNegative);
-						}
-						catch(PDOException $e) { }
-						$behaviour.="<ul>" ;
-							$behaviour.="<li>" . _("Positive behaviour records this week") . ": " . $resultBehaviourPositive->rowCount() . "</li>" ;
-							$behaviour.="<li>" . _("Negative behaviour records this week") . ": " . $resultBehaviourNegative->rowCount() . "</li>" ;
-						$behaviour.="</ul><br/>" ;
-						*/
 						
 						//Get main form tutor email for reply-to
 						$replyTo="" ;

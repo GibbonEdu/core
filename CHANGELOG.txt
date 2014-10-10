@@ -76,7 +76,27 @@ Timetable: fixed bug causing space booking to show in every space, not just spec
 Roll Groups: fixed bug preventing main tutor's image from showing when there are multiple tutors
 	Edited file /modules/Roll Groups/rollGroups_details.php
 
+Planner: added option to show behaviour information in weekly planner summary email to parents
+	New value in table gibbonSetting
+	Edited file /cli/planner_parentWeeklyEmailSummary.php
+	Edited files /modules/School Admin/plannerSettings.php
 
+Planner: fixed PHP Notice errors in homework view
+	Edited file /modules/Planner/planner_deadlines.php 
+
+Default: improved tabler header alignment
+	Edited file /themes/Default/css/main.css
+
+Planner: added ability for students to delete homework submissions, if deadline has not expired
+	Edited file /modules/Planner/planner_view_full.php
+	New file /modules/Planner/planner_view_full_submit_studentDeleteProcess.php
+
+User Admin: fixed colspan problem when max vars exceeded in permission management
+	Edited file /modules/User Admin/permission_manage.php
+
+Library: added new software type for Software
+	New value in table gibbonLibraryType
+	
 
 v8.2.00
 -------

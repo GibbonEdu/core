@@ -22,6 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
+$style="" ;
+
 $highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_deadlines.php")==FALSE) {
 	//Acess denied
@@ -854,7 +856,7 @@ else {
 											}
 											else {
 												$status.=_("Not submitted online") ;
-												$completion="<input " . $completionArray[$row["gibbonPlannerEntryID"]] . " name='complete-$count' type='checkbox'>" ;
+												@$completion="<input " . $completionArray[$row["gibbonPlannerEntryID"]] . " name='complete-$count' type='checkbox'>" ;
 											}
 										}
 									}

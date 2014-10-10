@@ -51,7 +51,7 @@ else {
 	$allowOutcomeEditing=$_POST["allowOutcomeEditing"] ;
 	$sharingDefaultParents=$_POST["sharingDefaultParents"] ;
 	$sharingDefaultStudents=$_POST["sharingDefaultStudents"] ;
-	
+	$parentWeeklyEmailSummaryIncludeBehaviour=$_POST["parentWeeklyEmailSummaryIncludeBehaviour"] ;
 	
 	//Write to database
 	$fail=FALSE ;
@@ -119,6 +119,16 @@ else {
 	try {
 		$data=array("value"=>$sharingDefaultStudents); 
 		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='sharingDefaultStudents'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ;
+	}
+	
+	try {
+		$data=array("value"=>$parentWeeklyEmailSummaryIncludeBehaviour); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='parentWeeklyEmailSummaryIncludeBehaviour'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
