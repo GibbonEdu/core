@@ -212,7 +212,7 @@ else {
 			}
 			
 			print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_add.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonTTID=$gibbonTTID'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_add.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonTTID=$gibbonTTID'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 			print "</div>" ;
 			
 			if ($result->rowCount()<1) {

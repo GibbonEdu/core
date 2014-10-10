@@ -95,8 +95,7 @@ User Admin: fixed colspan problem when max vars exceeded in permission managemen
 	Edited file /modules/User Admin/permission_manage.php
 
 Library: added new software type for Software
-	New value in table gibbonLibraryType
-	
+	New value in table gibbonLibraryType	
 
 v8.2.00
 -------

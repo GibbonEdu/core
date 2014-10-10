@@ -127,7 +127,7 @@ else {
 			}
 			else {
 				print "<div class='linkTop'>" ;
-				print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentsNotOnsite_byDate_print.php&currentDate=" . dateConvertBack($guid, $currentDate) . "'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+				print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentsNotOnsite_byDate_print.php&currentDate=" . dateConvertBack($guid, $currentDate) . "'>" .  _('Print') . "<img style='margin-left: 5px' title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 				print "</div>" ;
 			
 				$lastPerson="" ;

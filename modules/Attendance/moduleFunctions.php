@@ -72,7 +72,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 	
 	if ($print) {
 		print "<div class='linkTop'>" ;
-		print "<a target=_blank href='$printURL'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+		print "<a target=_blank href='$printURL'>" .  _('Print') . "<img style='margin-left: 5px' title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 		print "</div>" ;
 	}
 	

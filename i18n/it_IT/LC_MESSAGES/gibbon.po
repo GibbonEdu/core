@@ -4712,7 +4712,7 @@ msgstr "Esportare in Excel"
 #: modules/Students/student_view_details.php:1590
 #: modules/Timetable/spaceBooking_manage.php:86
 #: modules/Timetable/spaceChange_manage.php:86
-msgid "Add New Record"
+msgid "Add"
 msgstr "Aggiungi nuovo record"
 
 #: index.php:1322 index.php:1325 modules/Behaviour/behaviour_manage.php:258

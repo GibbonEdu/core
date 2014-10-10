@@ -434,13 +434,24 @@ else {
 									
 									//Links
 									$links="" ;
+									$linksArray=array() ;
+									$linksCount=0;
 									$dom=new DOMDocument;
 									$dom->loadHTML($resourceContents);
 									foreach ($dom->getElementsByTagName('a') as $node) {
 										if ($node->nodeValue!="") {
-											$links.="<li><a href='" .$node->getAttribute("href") . "'>" . $node->nodeValue . "</a></li>" ;
+											$linksArray[$linksCount]="<li><a href='" .$node->getAttribute("href") . "'>" . $node->nodeValue . "</a></li>" ;
+											$linksCount++ ;
 										}
 									}
+									
+									$linksArray=array_unique($linksArray) ;
+									natcasesort($linksArray) ;
+									
+									foreach ($linksArray AS $link) {
+										$links.=$link ;
+									}
+									
 									if ($links!="" ) {
 										print "<h2>" ;
 											print "Links" ;
@@ -453,14 +464,24 @@ else {
 									
 									//Images
 									$images="" ;
+									$imagesArray=array() ;
+									$imagesCount=0;
 									$dom2=new DOMDocument;
 									$dom2->loadHTML($resourceContents);
 									foreach ($dom2->getElementsByTagName('img') as $node) {
-										
 										if ($node->getAttribute("src")!="") {
-											$images.="<img class='resource' style='margin: 10px 0; max-width: 560px' src='" . $node->getAttribute("src") . "'/><br/>" ;
+											$imagesArray[$imagesCount]="<img class='resource' style='margin: 10px 0; max-width: 560px' src='" . $node->getAttribute("src") . "'/><br/>" ;
+											$imagesCount++ ;
 										}
 									}
+									
+									$imagesArray=array_unique($imagesArray) ;
+									natcasesort($imagesArray) ;
+									
+									foreach ($imagesArray AS $image) {
+										$images.=$image ;
+									}
+									
 									if ($images!="" ) {
 										print "<h2>" ;
 											print "Images" ;
@@ -471,13 +492,24 @@ else {
 									
 									//Embeds
 									$embeds="" ;
+									$embedsArray=array() ;
+									$embedsCount=0;
 									$dom2=new DOMDocument;
 									$dom2->loadHTML($resourceContents);
 									foreach ($dom2->getElementsByTagName('iframe') as $node) {
 										if ($node->getAttribute("src")!="") {
-											$embeds.="<iframe style='max-width: 560px' width='" . $node->getAttribute("width") . "' height='" . $node->getAttribute("height") . "' src='" . $node->getAttribute("src") . "' frameborder='" . $node->getAttribute("frameborder") . "'></iframe>" ;
+											$embedsArray[$embedsCount]="<iframe style='max-width: 560px' width='" . $node->getAttribute("width") . "' height='" . $node->getAttribute("height") . "' src='" . $node->getAttribute("src") . "' frameborder='" . $node->getAttribute("frameborder") . "'></iframe>" ;
+											$embedsCount++ ;
 										}
 									}
+									
+									$embedsArray=array_unique($embedsArray) ;
+									natcasesort($embedsArray) ;
+									
+									foreach ($embedsArray AS $embed) {
+										$embeds.=$embed ."<br/><br/>" ;
+									}
+									
 									if ($embeds!="" ) {
 										print "<h2>" ;
 											print "Embeds" ;

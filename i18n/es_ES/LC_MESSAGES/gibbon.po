@@ -8060,7 +8060,7 @@ msgstr "Exportaci&oacuten a Excel"
 #: modules/User Admin/staff_manage.php:107
 #: modules/User Admin/studentEnrolment_manage.php:164
 #: modules/User Admin/user_manage.php:107
-msgid "Add New Record"
+msgid "Add"
 msgstr "A&ntildeadir nuevo registro"
 
 #: index.php:1322 index.php:1325 modules/Behaviour/behaviour_manage.php:258
