@@ -77,7 +77,7 @@ else {
 			if ($resultEnrolment->rowCount()==1) {
 				$rowEnrolment=$resultEnrolment->fetch() ;
 				$data=array("gibbonSchoolYearID"=>"%" . $rowEnrolment["gibbonYearGroupID"] . "%"); 
-				$sql="SELECT * FROM gibbonRubric WHERE active='Y' AND gibbonYearGroupIDList LIKE :gibbonSchoolYearID ORDER BY scope, category, name" ; 
+				$sql="SELECT * FROM gibbonRubric WHERE active='Y' AND gibbonYearGroupIDList LIKE :gibbonSchoolYearID  $and ORDER BY scope, category, name" ; 
 			}
 			else {
 				$data=array(); 

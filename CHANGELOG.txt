@@ -95,7 +95,18 @@ User Admin: fixed colspan problem when max vars exceeded in permission managemen
 	Edited file /modules/User Admin/permission_manage.php
 
 Library: added new software type for Software
-	New value in table gibbonLibraryType	
+	New value in table gibbonLibraryType
+
+General: made sure that every icon in a linkTop div has matching text label
+	Edited various files across the system
+
+Timetable Admin: made teacher error more user friendly when importing a TT.
+	Edited file /modules/Timetable Admin/tt_import.php	
+
+Rubrics: fixed filter in student view
+	Edited file /modules/Rubrics/rubrics_view.php
+
+
 
 v8.2.00
 -------

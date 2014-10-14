@@ -738,6 +738,7 @@ else {
 												}
 												
 												if ($resultConvert->rowCount()!=1) {
+													$errorList.=$staff . ", " ;
 													$teacherSyncFail=true ;
 													$proceed=false ;
 												}
@@ -764,7 +765,7 @@ else {
 						}
 						if ($teacherSyncFail==true) {
 							print "<div class='error'>" ;
-								print sprintf(_('Teacher sync failed. The following classes (and possibly some others) had problems: %1$s.'), substr($errorList, 0, -2)) ;
+								print sprintf(_('Teacher sync failed. The following classes/teachers (and possibly some others) had problems: %1$s.'), substr($errorList, 0, -2)) ;
 							print "</div>" ;
 						}
 						else if ($teacherSyncFail==false) {
