@@ -240,7 +240,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 					if ($rowDiscuss["timestamp"]>=$_SESSION[$guid]["lastTimestamp"]) {
 						$borderleft="4px solid #c00" ;
 					}
-					$output.="<td style='padding: 1px 4px; border-left: $borderleft' colspan=2><b>" . $rowDiscuss["comment"] . "</b></td>" ;
+					$output.="<td style='max-width: " . (700-($level*15)) . "px; padding: 1px 4px; border-left: $borderleft; word-wrap: break-word;' colspan=2><b>" . $rowDiscuss["comment"] . "</b></td>" ;
 				$output.="</tr>" ;
 				$output.="<tr>" ;
 					if ($links==TRUE) {

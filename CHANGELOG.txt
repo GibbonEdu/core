@@ -106,6 +106,17 @@ Timetable Admin: made teacher error more user friendly when importing a TT.
 Rubrics: fixed filter in student view
 	Edited file /modules/Rubrics/rubrics_view.php
 
+Planner: fixed long-link overflow issue in chat and homework submission
+	Edited files /modules/Planner/moduleFunctions.php, planner_view_full.php
+
+Planner: moved Outcomes nearer to top of page when planning units
+	Edited files /modules/Planner/units_add.php, units_edit.php
+
+System Admin: allowed for editing of core modules, including category rename and active status control
+	Edited file /modules/System Admin/module_manage.php
+
+General: shortened longer module category names
+	Edited values in gibbonModule
 
 
 v8.2.00

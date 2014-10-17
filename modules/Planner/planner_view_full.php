@@ -776,7 +776,7 @@ else {
 																	<td>
 																		<?php print substr($rowVersion["timestamp"],11,5) . " " . dateConvertBack($guid, substr($rowVersion["timestamp"],0,10)) ?><br/>
 																	</td>
-																	<td>
+																	<td style='max-width: 180px; word-wrap: break-word;'>
 																		<?php 
 																		if ($rowVersion["type"]=="File") {
 																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowVersion["location"] ."'>" . $rowVersion["location"] . "</a>" ;
@@ -1556,10 +1556,10 @@ else {
 						print "<h2 style='padding-top: 30px'>" . _('Chat') . "</h2>" ;
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>" ;
 							print "<tr>" ;
-								print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top; max-width: 752px!important' colspan=3>" ;
+								print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top; max-width: 752px!important;' colspan=3>" ;
 								
 									print "<div style='margin: 0px' class='linkTop'>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params#chat'><img title='" . _('Refresh') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/refresh.png'/></a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $gibbonPersonID . "'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> " ;						
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params#chat'>" . _('Refresh') . "<img style='margin-left: 5px' title='" . _('Refresh') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/refresh.png'/></a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $gibbonPersonID . "'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> " ;						
 									print "</div>" ;
 							
 									print "<div style='margin-bottom: 0px' class='success'>" ;

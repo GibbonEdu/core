@@ -180,181 +180,6 @@ else {
 									</td>
 								</tr>
 								
-								<tr class='break' id="datesHeaderRow">
-									<td colspan=2> 
-										<h3><?php print _('Classes') ?></h3>
-									</td>
-								</tr>
-								<tr id="datesRow">
-									<td colspan=2> 
-										<p><?php print _('Select classes which will have access to this unit.') ?></p>
-										<?php
-										$classCount=0 ;
-										try {
-											$dataClass=array(); 
-											$sqlClass="SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=$gibbonCourseID ORDER BY name" ;
-											$resultClass=$connection2->prepare($sqlClass);
-											$resultClass->execute($dataClass);
-										}
-										catch(PDOException $e) { 
-											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-										}
-										
-										if ($resultClass->rowCount()<1) {
-											print "<div class='error'>" ;
-											print _("There are no records to display.") ;
-											print "</div>" ;
-										}
-										else {
-											print "<table cellspacing='0' style='width: 100%'>" ;
-												print "<tr class='head'>" ;
-													print "<th>" ;
-														print _("Class") ;
-													print "</th>" ;
-													print "<th>" ;
-														print _("Running") . "<br/><span style='font-size: 80%'>" . _('Is class studying this unit?') . "</span>" ;
-													print "</th>" ;
-												print "</tr>" ;
-												
-												$count=0;
-												$rowNum="odd" ;
-												while ($rowClass=$resultClass->fetch()) {
-													if ($count%2==0) {
-														$rowNum="even" ;
-													}
-													else {
-														$rowNum="odd" ;
-													}
-													$count++ ;
-													
-													//COLOR ROW BY STATUS!
-													print "<tr class=$rowNum>" ;
-														print "<td>" ;
-															print $rowCourse["nameShort"] . "." . $rowClass["name"] . "</a>" ;
-														print "</td>" ;
-														print "<td>" ;
-															?>
-															<input name="gibbonCourseClassID<?php print $classCount?>" id="gibbonCourseClassID<?php print $classCount?>" maxlength=10 value="<?php print $rowClass["gibbonCourseClassID"] ?>" type="hidden" style="width: 300px">
-															<select name="running<?php print $classCount?>" id="running<?php print $classCount?>" style="width:100%">
-																<option value="N"><?php print _('No') ?></option>
-																<option value="Y"><?php print _('Yes') ?></option>
-															</select>
-															<?php
-														print "</td>" ;
-													print "</tr>" ;
-													$classCount++ ;
-												}
-											print "</table>" ;
-										}
-										?>
-									</td>
-								</tr>
-								
-								<tr class='break'>
-									<td colspan=2> 
-										<h3><?php print _('Unit Outline') ?></h3>
-									</td>
-								</tr>
-								<tr>
-									<td colspan=2> 
-										<?php $unitOutline=getSettingByScope($connection2, "Planner", "unitOutlineTemplate" ) ?>
-										<p><?php print _('The contents of this field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users (usually parents).') ?></p>
-										<?php print getEditor($guid,  TRUE, "details", $unitOutline, 40, true, false, false) ?>
-									</td>
-								</tr>
-								<tr>
-									<td> 
-										<b><?php print _('Downloadable Unit Outline') ?></b><br/>
-										<span style="font-size: 90%"><i><?php print _('Available to most users.') ?></i></span>
-									</td>
-									<td class="right">
-										<input type="file" name="file" id="file"><br/><br/>
-										<?php
-										print getMaxUpload() ;
-										
-										//Get list of acceptable file extensions
-										try {
-											$dataExt=array(); 
-											$sqlExt="SELECT * FROM gibbonFileExtension" ;
-											$resultExt=$connection2->prepare($sqlExt);
-											$resultExt->execute($dataExt);
-										}
-										catch(PDOException $e) { }
-										$ext="" ;
-										while ($rowExt=$resultExt->fetch()) {
-											$ext=$ext . "'." . $rowExt["extension"] . "'," ;
-										}
-										?>
-										
-										<script type="text/javascript">
-											var file=new LiveValidation('file');
-											file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-										</script>
-									</td>
-								</tr>
-								
-								
-								
-								
-								<tr class='break'>
-									<td colspan=2> 
-										<h3><?php print _('Smart Blocks') ?></h3>
-									</td>
-								</tr>
-								<tr>
-									<td colspan=2> 
-										<p>
-											<?php print _('Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.') ?>
-										</p>
-										<style>
-											#sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
-											#sortable div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-											div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-											html>body #sortable li { min-height: 58px; line-height: 1.2em; }
-											#sortable .ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
-										</style>
-										<script>
-											$(function() {
-												$( "#sortable" ).sortable({
-													placeholder: "ui-state-highlight";
-													axis: 'y'
-												});
-											});
-										</script>
-										
-										<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px'>
-											<?php 
-											for ($i=1; $i<=5; $i++) {
-												makeBlock($guid, $connection2, $i) ;
-											}
-											?>
-										</div>
-										
-										<div style='width: 100%; padding: 0px 0px 0px 0px'>
-											<div class="ui-state-default_dud" style='padding: 0px; height: 40px'>
-												<table class='blank' cellspacing='0' style='width: 100%'>
-													<tr>
-														<td style='width: 50%'>
-															<script type="text/javascript">
-																var count=6 ;
-																/* Unit type control */
-																$(document).ready(function(){
-																	$("#new").click(function(){
-																		$("#sortable").append('<div id=\'blockOuter' + count + '\'><img style=\'margin: 10px 0 5px 0\' src=\'<?php print $_SESSION[$guid]["absoluteURL"] ?>/themes/Default/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');
-																		$("#blockOuter" + count).load("<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Planner/units_add_blockAjax.php","id=" + count) ;
-																		count++ ;
-																	 });
-																});
-															</script>
-															<div id='new' style='cursor: default; float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; color: #999; margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px'><?php print _('Click to create a new block') ?></div><br/>
-														</td>
-													</tr>
-												</table>
-											</div>
-										</div>
-									</td>
-								</tr>
-								
 								<tr class='break'>
 									<td colspan=2> 
 										<h3><?php print _('Outcomes') ?></h3>	
@@ -529,6 +354,181 @@ else {
 																	}
 																}
 															</script>
+														</td>
+													</tr>
+												</table>
+											</div>
+										</div>
+									</td>
+								</tr>
+								
+								<tr class='break' id="datesHeaderRow">
+									<td colspan=2> 
+										<h3><?php print _('Classes') ?></h3>
+									</td>
+								</tr>
+								<tr id="datesRow">
+									<td colspan=2> 
+										<p><?php print _('Select classes which will have access to this unit.') ?></p>
+										<?php
+										$classCount=0 ;
+										try {
+											$dataClass=array(); 
+											$sqlClass="SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=$gibbonCourseID ORDER BY name" ;
+											$resultClass=$connection2->prepare($sqlClass);
+											$resultClass->execute($dataClass);
+										}
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										
+										if ($resultClass->rowCount()<1) {
+											print "<div class='error'>" ;
+											print _("There are no records to display.") ;
+											print "</div>" ;
+										}
+										else {
+											print "<table cellspacing='0' style='width: 100%'>" ;
+												print "<tr class='head'>" ;
+													print "<th>" ;
+														print _("Class") ;
+													print "</th>" ;
+													print "<th>" ;
+														print _("Running") . "<br/><span style='font-size: 80%'>" . _('Is class studying this unit?') . "</span>" ;
+													print "</th>" ;
+												print "</tr>" ;
+												
+												$count=0;
+												$rowNum="odd" ;
+												while ($rowClass=$resultClass->fetch()) {
+													if ($count%2==0) {
+														$rowNum="even" ;
+													}
+													else {
+														$rowNum="odd" ;
+													}
+													$count++ ;
+													
+													//COLOR ROW BY STATUS!
+													print "<tr class=$rowNum>" ;
+														print "<td>" ;
+															print $rowCourse["nameShort"] . "." . $rowClass["name"] . "</a>" ;
+														print "</td>" ;
+														print "<td>" ;
+															?>
+															<input name="gibbonCourseClassID<?php print $classCount?>" id="gibbonCourseClassID<?php print $classCount?>" maxlength=10 value="<?php print $rowClass["gibbonCourseClassID"] ?>" type="hidden" style="width: 300px">
+															<select name="running<?php print $classCount?>" id="running<?php print $classCount?>" style="width:100%">
+																<option value="N"><?php print _('No') ?></option>
+																<option value="Y"><?php print _('Yes') ?></option>
+															</select>
+															<?php
+														print "</td>" ;
+													print "</tr>" ;
+													$classCount++ ;
+												}
+											print "</table>" ;
+										}
+										?>
+									</td>
+								</tr>
+								
+								<tr class='break'>
+									<td colspan=2> 
+										<h3><?php print _('Unit Outline') ?></h3>
+									</td>
+								</tr>
+								<tr>
+									<td colspan=2> 
+										<?php $unitOutline=getSettingByScope($connection2, "Planner", "unitOutlineTemplate" ) ?>
+										<p><?php print _('The contents of this field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users (usually parents).') ?></p>
+										<?php print getEditor($guid,  TRUE, "details", $unitOutline, 40, true, false, false) ?>
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b><?php print _('Downloadable Unit Outline') ?></b><br/>
+										<span style="font-size: 90%"><i><?php print _('Available to most users.') ?></i></span>
+									</td>
+									<td class="right">
+										<input type="file" name="file" id="file"><br/><br/>
+										<?php
+										print getMaxUpload() ;
+										
+										//Get list of acceptable file extensions
+										try {
+											$dataExt=array(); 
+											$sqlExt="SELECT * FROM gibbonFileExtension" ;
+											$resultExt=$connection2->prepare($sqlExt);
+											$resultExt->execute($dataExt);
+										}
+										catch(PDOException $e) { }
+										$ext="" ;
+										while ($rowExt=$resultExt->fetch()) {
+											$ext=$ext . "'." . $rowExt["extension"] . "'," ;
+										}
+										?>
+										
+										<script type="text/javascript">
+											var file=new LiveValidation('file');
+											file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+										</script>
+									</td>
+								</tr>
+								
+								
+								
+								
+								<tr class='break'>
+									<td colspan=2> 
+										<h3><?php print _('Smart Blocks') ?></h3>
+									</td>
+								</tr>
+								<tr>
+									<td colspan=2> 
+										<p>
+											<?php print _('Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.') ?>
+										</p>
+										<style>
+											#sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+											#sortable div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
+											div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
+											html>body #sortable li { min-height: 58px; line-height: 1.2em; }
+											#sortable .ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
+										</style>
+										<script>
+											$(function() {
+												$( "#sortable" ).sortable({
+													placeholder: "ui-state-highlight";
+													axis: 'y'
+												});
+											});
+										</script>
+										
+										<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px'>
+											<?php 
+											for ($i=1; $i<=5; $i++) {
+												makeBlock($guid, $connection2, $i) ;
+											}
+											?>
+										</div>
+										
+										<div style='width: 100%; padding: 0px 0px 0px 0px'>
+											<div class="ui-state-default_dud" style='padding: 0px; height: 40px'>
+												<table class='blank' cellspacing='0' style='width: 100%'>
+													<tr>
+														<td style='width: 50%'>
+															<script type="text/javascript">
+																var count=6 ;
+																/* Unit type control */
+																$(document).ready(function(){
+																	$("#new").click(function(){
+																		$("#sortable").append('<div id=\'blockOuter' + count + '\'><img style=\'margin: 10px 0 5px 0\' src=\'<?php print $_SESSION[$guid]["absoluteURL"] ?>/themes/Default/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');
+																		$("#blockOuter" + count).load("<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Planner/units_add_blockAjax.php","id=" + count) ;
+																		count++ ;
+																	 });
+																});
+															</script>
+															<div id='new' style='cursor: default; float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; color: #999; margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px'><?php print _('Click to create a new block') ?></div><br/>
 														</td>
 													</tr>
 												</table>
