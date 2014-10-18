@@ -182,6 +182,9 @@ else {
 			//Set theme
 			if ($cacheLoad OR $_SESSION[$guid]["themeCSS"]=="" OR isset($_SESSION[$guid]["themeJS"])==FALSE OR $_SESSION[$guid]["gibbonThemeID"]=="" OR $_SESSION[$guid]["gibbonThemeName"]=="") {
 				$_SESSION[$guid]["themeCSS"]="<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />" ;
+				if ($_SESSION[$guid]["i18n"]["rtl"]=="Y") {
+					$_SESSION[$guid]["themeCSS"].="<link rel='stylesheet' type='text/css' href='./themes/Default/css/main_rtl.css' />" ;
+				}
 				$_SESSION[$guid]["themeJS"]="<script type='text/javascript' src='./themes/Default/js/common.js'></script>" ;
 				$_SESSION[$guid]["gibbonThemeID"]="001" ;
 				$_SESSION[$guid]["gibbonThemeName"]="Default" ;
@@ -199,6 +202,9 @@ else {
 					if ($resultTheme->rowCount()==1) {
 						$rowTheme=$resultTheme->fetch() ;
 						$_SESSION[$guid]["themeCSS"]="<link rel='stylesheet' type='text/css' href='./themes/" . $rowTheme["name"] . "/css/main.css' />" ;
+						if ($_SESSION[$guid]["i18n"]["rtl"]=="Y") {
+							$_SESSION[$guid]["themeCSS"].="<link rel='stylesheet' type='text/css' href='./themes/" . $rowTheme["name"] . "/css/main_rtl.css' />" ;
+						}
 						$_SESSION[$guid]["themeJS"]="<script type='text/javascript' src='./themes/" . $rowTheme["name"] . "/js/common.js'></script>" ;
 						$_SESSION[$guid]["gibbonThemeID"]=$rowTheme["gibbonThemeID"] ;
 						$_SESSION[$guid]["gibbonThemeName"]=$rowTheme["name"] ;

@@ -79,7 +79,7 @@ else {
 		
 		try {
 			$data=array(); 
-			$sql="SELECT * FROM gibbonOutcome $where ORDER BY scope, gibbonDepartmentID, category, nameShort" ; 
+			$sql="SELECT gibbonOutcome.*, gibbonDepartment.name AS department FROM gibbonOutcome LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) $where ORDER BY scope, gibbonDepartmentID, category, nameShort" ; 
 			$sqlPage=$sql ." LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
@@ -199,20 +199,8 @@ else {
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
 							print "<b>" . $row["scope"] . "</b><br/>" ;
-							if ($row["scope"]=="Learning Area" AND $row["gibbonDepartmentID"]!="") {
-								try {
-									$dataLearningArea=array("gibbonDepartmentID"=>$row["gibbonDepartmentID"]); 
-									$sqlLearningArea="SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID" ;
-									$resultLearningArea=$connection2->prepare($sqlLearningArea);
-									$resultLearningArea->execute($dataLearningArea);
-								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
-								if ($resultLearningArea->rowCount()==1) {
-									$rowLearningAreas=$resultLearningArea->fetch() ;
-									print "<span style='font-size: 75%; font-style: italic'>" . $rowLearningAreas["name"] . "</span>" ;
-								}
+							if ($row["scope"]=="Learning Area" AND $row["department"]!="") {
+								print "<span style='font-size: 75%; font-style: italic'>" . $row["department"] . "</span>" ;
 							}
 						print "</td>" ;
 						print "<td>" ;

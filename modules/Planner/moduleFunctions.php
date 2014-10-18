@@ -19,7 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Make the display for a block, according to the input provided, where $i is a unique number appended to the block's field ids.
 //Mode can be masterAdd, masterEdit, workingDeploy, workingEdit, plannerEdit, embed
-function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type="", $length="", $contents="", $complete="N", $gibbonUnitBlockID="", $gibbonUnitClassBlockID="", $teachersNotes="", $outerBlock=TRUE) {	
+//Outcomes is the result set of a mysql query of all outcomes from the unit the class belongs to
+function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type="", $length="", $contents="", $complete="N", $gibbonUnitBlockID="", $gibbonUnitClassBlockID="", $teachersNotes="", $outerBlock=TRUE, $unitOutcomes=NULL, $gibbonOutcomeIDList=NULL) {	
 	if ($outerBlock) {
 		print "<div id='blockOuter$i' class='blockOuter'>" ;
 	}
@@ -170,19 +171,77 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 						$contents=getSettingByScope($connection2, "Planner", "smartBlockTemplate" ) ; 
 					}
 					print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . _('Block Contents') . "</div>" ;
+					//Block Contents
 					if ($mode!="embed") {
 						print getEditor($guid, FALSE, "contents$i", $contents, 20, true, false, false, true) ;
 					}
 					else {
 						print "<div style='max-width: 595px; margin-right: 0!important; padding: 5px!important'><p>$contents</p></div>" ;
 					}
+					
+					//Teacher's Notes
 					if ($mode!="embed") {
 						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . _('Teacher\'s Notes') . "</div>" ;
 						print getEditor($guid, FALSE, "teachersNotes$i", $teachersNotes, 20, true, false, false, true) ;
 					}
 					else if ($teachersNotes!="") {
-						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>Teacher's Notes</div>" ;
+						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . _('Teacher\'s Notes') . "</div>" ;
 						print "<div style='max-width: 595px; margin-right: 0!important; padding: 5px!important; background-color: #F6CECB'><p>$teachersNotes</p></div>" ;
+					}
+					
+					//Outcomes
+					if ($mode=="masterAdd") { 
+						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . _('Outcomes') . "</div>" ;
+						print "<div class='warning'>" . _("After creating this unit, you will be able to edit the unit and assign unit outcomes to individual blocks. These will then become lesson outcomes when you deploy a unit.") . "</div>" ;
+					}
+					else if ($mode=="masterEdit") { 
+						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . _('Outcomes') . "</div>" ;
+						if (count($unitOutcomes)<1) {
+							print "<div class='warning'>" . _("There are no records to display.") . "</div>" ;
+						}
+						else {				
+							print "<table cellspacing='0' style='width:100%'>" ;
+								print "<tr class='head'>" ;
+									print "<th>" ;
+										print _("Scope") ;
+									print "</th>" ;
+									print "<th>" ;
+										print _("Category") ;
+									print "</th>" ;
+									print "<th>" ;
+										print _("Name") ;
+									print "</th>" ;
+									print "<th>" ;
+										print _("Include") ;
+									print "</th>" ;
+								print "</tr>" ;
+							
+								foreach ($unitOutcomes AS $unitOutcome) {
+									//COLOR ROW BY STATUS!
+									print "<tr>" ;
+										print "<td style='padding: 5px!important'>" ;
+											print "<b>" . $unitOutcome["scope"] . "</b><br/>" ;
+											if ($unitOutcome["scope"]=="Learning Area" AND $unitOutcome["department"]!="") {
+												print "<span style='font-size: 75%; font-style: italic'>" . $unitOutcome["department"] . "</span>" ;
+											}
+										print "</td>" ;
+										print "<td style='padding: 5px!important'>" ;
+											print $unitOutcome["category"] ;
+										print "</td>" ;
+										print "<td style='padding: 5px!important'>" ;
+											print $unitOutcome["name"] ;
+										print "</td>" ;
+										print "<td style='padding: 5px!important'>" ;
+											$checked="" ;
+											if (strpos($gibbonOutcomeIDList, $unitOutcome["gibbonOutcomeID"])!==FALSE) {
+												$checked="checked" ;
+											}
+											print "<input $checked type='checkbox' name='outcomes" . $i . "[]' value='" . $unitOutcome["gibbonOutcomeID"] . "' />" ;
+										print "</td>" ;
+									print "</tr>" ;
+								}
+							print "</table>" ;
+						}
 					}
 					?>
 				</td>

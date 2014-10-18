@@ -118,6 +118,25 @@ System Admin: allowed for editing of core modules, including category rename and
 General: shortened longer module category names
 	Edited values in gibbonModule
 
+Tinymce: upgrade to 4.1.6 for minor bug fixes
+	New files in /lib/tinymce
+
+Planner: improved SQL efficiency of outcomes listing
+	Edited file /modules/Planner/outcomes.php
+
+Planner: added ability to specify outcomes in blocks, and have these carry over to become lesson outcomes
+	Edited table gibbonUnitBlock
+	Edited various files in /modules/Planner
+
+i18n: added support for RTL languages
+	Edited table gibboni18n
+	Edited file /function.php, index.php, fullscreen.php, report.php
+	New file /themes/Default/css/main_rtl.css
+
+i18n: added Arabic (العربية) - Saudi Arabia (المملكة العربية السعودية) as a non-active language choice for development
+	New value in gibboni18n
+	Added new folder /i18n/ar_SA
+
 
 v8.2.00
 -------
