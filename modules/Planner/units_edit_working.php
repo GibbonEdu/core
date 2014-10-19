@@ -252,6 +252,7 @@ else {
 								$blocks[$blockCount][3]=$rowBlocks["length"];
 								$blocks[$blockCount][4]=$rowBlocks["contents"];
 								$blocks[$blockCount][5]=$rowBlocks["teachersNotes"];
+								$blocks[$blockCount][5]=$rowBlocks["teachersNotes"];
 							}
 							else {
 								$blocks[$blockCount][0]=$rowBlocks[$hookOptions["unitSmartBlockIDField"]];
@@ -267,9 +268,10 @@ else {
 						
 						print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_edit_workingProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&address=" . $_GET["q"] . "&gibbonUnitClassID=$gibbonUnitClassID'>" ;
 							//LESSONS (SORTABLES)
+							print "<div class='linkTop'>" ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working_add.php&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+							print "</div>" ;
 							print "<div style='width: 100%; height: auto'>" ;
-								print "<a style='margin-top: -8px; float: right' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working_add.php&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
-								print "<br/>" ;
 								try {
 									$dataLessons=array("gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonUnitID"=>$gibbonUnitID); 
 									$sqlLessons="SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date, timeStart" ;
@@ -350,6 +352,7 @@ else {
 													print "</div>" ;
 												print "</div>" ;
 												
+												//Get blocks
 												try {
 													if ($hooked==FALSE) {
 														$dataLessonBlocks=array("gibbonPlannerEntryID"=>$rowLessons["gibbonPlannerEntryID"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
@@ -365,9 +368,22 @@ else {
 												catch(PDOException $e) { 
 													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 												}
+												
+												//Get outcomes
+												try {
+													$dataOutcomes=array("gibbonUnitID"=>$gibbonUnitID); 
+													$sqlOutcomes="SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber" ;
+													$resultOutcomes=$connection2->prepare($sqlOutcomes);
+													$resultOutcomes->execute($dataOutcomes);
+												}
+												catch(PDOException $e) { 
+													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+												}
+												$unitOutcomes=$resultOutcomes->fetchall() ;
+												
 												while ($rowLessonBlocks=$resultLessonBlocks->fetch()) {
 													if ($hooked==FALSE) {
-														makeBlock($guid,  $connection2, $blockCount2, $mode="workingEdit", $rowLessonBlocks["title"], $rowLessonBlocks["type"], $rowLessonBlocks["length"], $rowLessonBlocks["contents"], $rowLessonBlocks["complete"], $rowLessonBlocks["gibbonUnitBlockID"], $rowLessonBlocks["gibbonUnitClassBlockID"], $rowLessonBlocks["teachersNotes"], TRUE) ;
+														makeBlock($guid,  $connection2, $blockCount2, $mode="workingEdit", $rowLessonBlocks["title"], $rowLessonBlocks["type"], $rowLessonBlocks["length"], $rowLessonBlocks["contents"], $rowLessonBlocks["complete"], $rowLessonBlocks["gibbonUnitBlockID"], $rowLessonBlocks["gibbonUnitClassBlockID"], $rowLessonBlocks["teachersNotes"], TRUE, $unitOutcomes, $rowLessonBlocks["gibbonOutcomeIDList"]) ;
 													}
 													else {
 														makeBlock($guid,  $connection2, $blockCount2, $mode="workingEdit", $rowLessonBlocks[$hookOptions["classSmartBlockTitleField"]], $rowLessonBlocks[$hookOptions["classSmartBlockTypeField"]], $rowLessonBlocks[$hookOptions["classSmartBlockLengthField"]], $rowLessonBlocks[$hookOptions["classSmartBlockContentsField"]], $rowLessonBlocks["complete"], $rowLessonBlocks["gibbonUnitBlockID"], $rowLessonBlocks["gibbonUnitClassBlockID"], $rowLessonBlocks[$hookOptions["classSmartBlockTeachersNotesField"]], TRUE) ;

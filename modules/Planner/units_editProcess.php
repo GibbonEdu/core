@@ -238,7 +238,6 @@ else {
 										$gibbonOutcomeIDList=substr($gibbonOutcomeIDList, 0, -1) ;
 									}
 									
-									
 									if ($gibbonUnitBlockID!="") {
 										try {
 											$dataBlock=array("gibbonUnitID"=>$gibbonUnitID, "title"=>$title, "type"=>$type2, "length"=>$length, "contents"=>$contents, "teachersNotes"=>$teachersNotes, "sequenceNumber"=>$sequenceNumber, "gibbonOutcomeIDList"=>$gibbonOutcomeIDList, "gibbonUnitBlockID"=>$gibbonUnitBlockID); 

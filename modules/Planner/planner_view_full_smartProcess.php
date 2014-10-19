@@ -164,15 +164,28 @@ else {
 						$contents=$_POST["contents$i"] ;
 						$teachersNotes=$_POST["teachersNotes$i"] ;
 						$complete="N" ;
-						if ($_POST["complete$i"]=="on") {
-							$complete="Y" ;
+						if (isset($_POST["complete$i"])) {
+							if ($_POST["complete$i"]=="on") {
+								$complete="Y" ;
+							}
+						}
+						
+						//Deal with outcomes
+						$gibbonOutcomeIDList="" ;
+						if (isset($_POST["outcomes" . $i])) {
+							if (is_array($_POST["outcomes" . $i])) {
+								foreach ($_POST["outcomes" . $i] AS $outcome) {
+									$gibbonOutcomeIDList.=$outcome . "," ;
+								}
+							}
+							$gibbonOutcomeIDList=substr($gibbonOutcomeIDList, 0, -1) ;
 						}
 						
 						//Write to database
 						try {
 							if ($hooked==FALSE) {
-								$data=array("title"=>$title, "type"=>$type, "length"=>$length, "contents"=>$contents, "teachersNotes"=>$teachersNotes, "complete"=>$complete, "sequenceNumber"=>$seq, "gibbonUnitClassBlockID"=>$id); 
-								$sql="UPDATE gibbonUnitClassBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, complete=:complete, sequenceNumber=:sequenceNumber WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID" ;
+								$data=array("title"=>$title, "type"=>$type, "length"=>$length, "contents"=>$contents, "teachersNotes"=>$teachersNotes, "complete"=>$complete, "sequenceNumber"=>$seq, "gibbonOutcomeIDList"=>$gibbonOutcomeIDList, "gibbonUnitClassBlockID"=>$id); 
+								$sql="UPDATE gibbonUnitClassBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, complete=:complete, sequenceNumber=:sequenceNumber, gibbonOutcomeIDList=:gibbonOutcomeIDList WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID" ;
 							}
 							else {
 								$data=array("title"=>$title, "type"=>$type, "length"=>$length, "contents"=>$contents, "teachersNotes"=>$teachersNotes, "complete"=>$complete, "sequenceNumber"=>$seq, "gibbonUnitClassBlockID"=>$id); 

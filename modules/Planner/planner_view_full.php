@@ -561,6 +561,18 @@ else {
 												
 														<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px; border-top: 1px dotted #666; border-bottom: 1px dotted #666'>
 															<?php 
+															//Get outcomes
+															try {
+																$dataOutcomes=array("gibbonUnitID"=>$gibbonUnitID); 
+																$sqlOutcomes="SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber" ;
+																$resultOutcomes=$connection2->prepare($sqlOutcomes);
+																$resultOutcomes->execute($dataOutcomes);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+															$unitOutcomes=$resultOutcomes->fetchall() ;
+															
 															$i=1 ;
 															$minSeq=0 ;
 															while ($rowBlocks=$resultBlocks->fetch()) {
@@ -568,7 +580,7 @@ else {
 																	$minSeq=$rowBlocks["sequenceNumber"] ;
 																}
 																if ($hooked==FALSE) {
-																	makeBlock($guid, $connection2, $i, "plannerEdit", $rowBlocks["title"], $rowBlocks["type"], $rowBlocks["length"], $rowBlocks["contents"], $rowBlocks["complete"], "", $rowBlocks["gibbonUnitClassBlockID"], $rowBlocks["teachersNotes"]) ;
+																	makeBlock($guid, $connection2, $i, "plannerEdit", $rowBlocks["title"], $rowBlocks["type"], $rowBlocks["length"], $rowBlocks["contents"], $rowBlocks["complete"], "", $rowBlocks["gibbonUnitClassBlockID"], $rowBlocks["teachersNotes"], TRUE, $unitOutcomes, $rowBlocks["gibbonOutcomeIDList"]) ;
 																}
 																else {
 																	makeBlock($guid, $connection2, $i, "plannerEdit", $rowBlocks[$hookOptions["classSmartBlockTitleField"]], $rowBlocks[$hookOptions["classSmartBlockTypeField"]], $rowBlocks[$hookOptions["classSmartBlockLengthField"]], $rowBlocks[$hookOptions["classSmartBlockContentsField"]], $rowBlocks[$hookOptions["classSmartBlockCompleteField"]], "", $rowBlocks[$hookOptions["classSmartBlockIDField"]], $rowBlocks[$hookOptions["classSmartBlockTeachersNotesField"]]) ;

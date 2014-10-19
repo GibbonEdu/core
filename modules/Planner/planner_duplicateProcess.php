@@ -259,8 +259,8 @@ else {
 						}
 						while ($rowBlocks=$resultBlocks->fetch()) {
 							try {
-								$dataBlocksInsert=array("gibbonUnitClassID"=>$gibbonUnitClassID, "gibbonPlannerEntryID"=>$AI, "gibbonUnitBlockID"=>$rowBlocks["gibbonUnitBlockID"], "title"=>$rowBlocks["title"], "type"=>$rowBlocks["type"], "length"=>$rowBlocks["length"], "contents"=>$rowBlocks["contents"], "teachersNotes"=>$rowBlocks["teachersNotes"], "sequenceNumber"=>$rowBlocks["sequenceNumber"]); 
-								$sqlBlocksInsert="INSERT INTO gibbonUnitClassBlock SET gibbonUnitClassID=:gibbonUnitClassID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonUnitBlockID=:gibbonUnitBlockID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber, complete='N'" ;
+								$dataBlocksInsert=array("gibbonUnitClassID"=>$gibbonUnitClassID, "gibbonPlannerEntryID"=>$AI, "gibbonUnitBlockID"=>$rowBlocks["gibbonUnitBlockID"], "title"=>$rowBlocks["title"], "type"=>$rowBlocks["type"], "length"=>$rowBlocks["length"], "contents"=>$rowBlocks["contents"], "teachersNotes"=>$rowBlocks["teachersNotes"], "sequenceNumber"=>$rowBlocks["sequenceNumber"], "gibbonOutcomeIDList"=>$rowBlocks["gibbonOutcomeIDList"]); 
+								$sqlBlocksInsert="INSERT INTO gibbonUnitClassBlock SET gibbonUnitClassID=:gibbonUnitClassID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonUnitBlockID=:gibbonUnitBlockID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber, gibbonOutcomeIDList=:gibbonOutcomeIDList, complete='N'" ;
 								$resultBlocksInsert=$connection2->prepare($sqlBlocksInsert);
 								$resultBlocksInsert->execute($dataBlocksInsert);
 							}

@@ -570,6 +570,7 @@ ALTER TABLE `gibboni18n` ADD `rtl` ENUM('Y','N') NOT NULL DEFAULT 'N' ;end
 ALTER TABLE `gibboni18n` CHANGE `name` `name` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `rtl`) VALUES (NULL, 'ar_SA', 'Arabic (العربية) - Saudi Arabia (المملكة العربية السعودية)', 'N', 'N', 'Abdul Rahman Yousef', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'Y');end
 UPDATE `gibboni18n` SET `name` = 'العربية - المملكة العربية السعودية' WHERE `code`='ar_SA';end
+ALTER TABLE `gibbonUnitClassBlock` ADD `gibbonOutcomeIDList` TEXT NOT NULL ;end
 ";
 
 ?>

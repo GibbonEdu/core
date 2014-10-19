@@ -194,7 +194,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . _('Outcomes') . "</div>" ;
 						print "<div class='warning'>" . _("After creating this unit, you will be able to edit the unit and assign unit outcomes to individual blocks. These will then become lesson outcomes when you deploy a unit.") . "</div>" ;
 					}
-					else if ($mode=="masterEdit") { 
+					else if ($mode=="masterEdit" OR $mode=="workingDeploy" OR $mode=="workingEdit" OR $mode=="plannerEdit") { 
 						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . _('Outcomes') . "</div>" ;
 						if (count($unitOutcomes)<1) {
 							print "<div class='warning'>" . _("There are no records to display.") . "</div>" ;

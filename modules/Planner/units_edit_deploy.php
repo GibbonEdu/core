@@ -544,6 +544,7 @@ else {
 									$blocks[$blockCount][3]=$rowBlocks["length"];
 									$blocks[$blockCount][4]=$rowBlocks["contents"];
 									$blocks[$blockCount][5]=$rowBlocks["teachersNotes"];
+									$blocks[$blockCount][6]=$rowBlocks["gibbonOutcomeIDList"];
 								}
 								else {
 									$blocks[$blockCount][0]=$rowBlocks[$hookOptions["unitSmartBlockIDField"]];
@@ -626,19 +627,34 @@ else {
 															print "</div>" ;
 														print "</div>" ;
 														
+														//Prep outcomes
+														try {
+															$dataOutcomes=array("gibbonUnitID"=>$gibbonUnitID); 
+															$sqlOutcomes="SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber" ;
+															$resultOutcomes=$connection2->prepare($sqlOutcomes);
+															$resultOutcomes->execute($dataOutcomes);
+														}
+														catch(PDOException $e) { 
+															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+														}
+														$unitOutcomes=$resultOutcomes->fetchall() ;
+												
 														//Attempt auto deploy
 														$spinCount=0 ;
 														while ($spinCount<$blockCount AND $length>0) {
-															if ($blocks[$deployCount][3]<1 OR $blocks[$deployCount][3]=="") {
-																$deployCount++ ;
-															}
-															else {
-																if (($length-$blocks[$deployCount][3])>=0) {
-																	makeBlock($guid,  $connection2, $blockCount2, $mode="workingDeploy", $blocks[$deployCount][1], $blocks[$deployCount][2], $blocks[$deployCount][3], $blocks[$deployCount][4], "N", $blocks[$deployCount][0], "", $blocks[$deployCount][5], TRUE) ;
-																	$length=$length-$blocks[$deployCount][3] ;
-																	$deployCount++ ;									
+															if (isset($blocks[$deployCount])) {
+																if ($blocks[$deployCount][3]<1 OR $blocks[$deployCount][3]=="") {
+																	$deployCount++ ;
+																}
+																else {
+																	if (($length-$blocks[$deployCount][3])>=0) {
+																		makeBlock($guid,  $connection2, $blockCount2, $mode="workingDeploy", $blocks[$deployCount][1], $blocks[$deployCount][2], $blocks[$deployCount][3], $blocks[$deployCount][4], "N", $blocks[$deployCount][0], "", $blocks[$deployCount][5], TRUE, $unitOutcomes, $blocks[$deployCount][6]) ;
+																		$length=$length-$blocks[$deployCount][3] ;
+																		$deployCount++ ;									
+																	}
 																}
 															}
+															
 															$spinCount++ ;
 															$blockCount2++ ;
 														}

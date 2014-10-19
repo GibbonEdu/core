@@ -241,8 +241,8 @@ else {
 											}
 											while ($rowBlocks=$resultBlocks->fetch()) {
 												try {
-													$dataBlock=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryNew, "gibbonUnitClassID"=>$gibbonUnitClassIDNew, "gibbonUnitBlockID"=>$rowBlocks["gibbonUnitBlockID"], "title"=>$rowBlocks["title"], "type"=>$rowBlocks["type"], "length"=>$rowBlocks["length"], "contents"=>$rowBlocks["contents"], "teachersNotes"=>$rowBlocks["teachersNotes"], "sequenceNumber"=>$rowBlocks["sequenceNumber"]); 
-													$sqlBlock="INSERT INTO gibbonUnitClassBlock SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonUnitClassID=:gibbonUnitClassID, gibbonUnitBlockID=:gibbonUnitBlockID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber" ;
+													$dataBlock=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryNew, "gibbonUnitClassID"=>$gibbonUnitClassIDNew, "gibbonUnitBlockID"=>$rowBlocks["gibbonUnitBlockID"], "title"=>$rowBlocks["title"], "type"=>$rowBlocks["type"], "length"=>$rowBlocks["length"], "contents"=>$rowBlocks["contents"], "teachersNotes"=>$rowBlocks["teachersNotes"], "sequenceNumber"=>$rowBlocks["sequenceNumber"], "gibbonOutcomeIDList"=>$rowBlocks["gibbonOutcomeIDList"]); 
+													$sqlBlock="INSERT INTO gibbonUnitClassBlock SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonUnitClassID=:gibbonUnitClassID, gibbonUnitBlockID=:gibbonUnitBlockID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber, gibbonOutcomeIDList=:gibbonOutcomeIDList" ;
 													$resultBlock=$connection2->prepare($sqlBlock);
 													$resultBlock->execute($dataBlock);
 												}
@@ -268,8 +268,8 @@ else {
 					}
 					while ($rowBlocks=$resultBlocks->fetch()) {
 						try {
-							$dataBlock=array("gibbonUnitID"=>$AI, "title"=>$rowBlocks["title"], "type"=>$rowBlocks["type"], "length"=>$rowBlocks["length"], "contents"=>$rowBlocks["contents"], "teachersNotes"=>$rowBlocks["teachersNotes"], "sequenceNumber"=>$rowBlocks["sequenceNumber"]); 
-							$sqlBlock="INSERT INTO gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber" ;
+							$dataBlock=array("gibbonUnitID"=>$AI, "title"=>$rowBlocks["title"], "type"=>$rowBlocks["type"], "length"=>$rowBlocks["length"], "contents"=>$rowBlocks["contents"], "teachersNotes"=>$rowBlocks["teachersNotes"], "sequenceNumber"=>$rowBlocks["sequenceNumber"], "gibbonOutcomeIDList"=>$rowBlocks["gibbonOutcomeIDList"]); 
+							$sqlBlock="INSERT INTO gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber, gibbonOutcomeIDList=:gibbonOutcomeIDList" ;
 							$resultBlock=$connection2->prepare($sqlBlock);
 							$resultBlock->execute($dataBlock);
 						}

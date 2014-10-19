@@ -136,8 +136,8 @@ else {
 					$partialFail=false ;
 					while ($rowBlocks=$resultBlocks->fetch()) {
 						try {
-							$dataBlock=array("gibbonUnitID"=>$gibbonUnitID, "title"=>$rowBlocks["title"], "type"=>$rowBlocks["type"], "length"=>$rowBlocks["length"], "contents"=>$rowBlocks["contents"], "sequenceNumber"=>$rowBlocks["sequenceNumber"]); 
-							$sqlBlock="INSERT INTO gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, sequenceNumber=:sequenceNumber" ;
+							$dataBlock=array("gibbonUnitID"=>$gibbonUnitID, "title"=>$rowBlocks["title"], "type"=>$rowBlocks["type"], "length"=>$rowBlocks["length"], "contents"=>$rowBlocks["contents"], "sequenceNumber"=>$rowBlocks["sequenceNumber"], "gibbonOutcomeIDList"=>$rowBlocks["gibbonOutcomeIDList"]); 
+							$sqlBlock="INSERT INTO gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, sequenceNumber=:sequenceNumber, gibbonOutcomeIDList=:gibbonOutcomeIDList" ;
 							$resultBlock=$connection2->prepare($sqlBlock);
 							$resultBlock->execute($dataBlock);
 						}
