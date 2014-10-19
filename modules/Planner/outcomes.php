@@ -168,7 +168,7 @@ else {
 					print "<th>" ;
 						print _("Active") ;
 					print "</th>" ;
-					print "<th style='min-width: 80px'>" ;
+					print "<th style='min-width: 100px'>" ;
 						print _("Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
