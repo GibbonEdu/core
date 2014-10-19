@@ -74,7 +74,7 @@ else {
 			$filter2=$_POST["filter2"] ;
 		}
 		if ($filter2!="") {
-			$where.=" WHERE gibbonDepartmentID='$filter2'" ;
+			$where.=" WHERE gibbonDepartment.gibbonDepartmentID='$filter2'" ;
 		}
 		
 		try {
