@@ -137,6 +137,9 @@ i18n: added Arabic (العربية) - Saudi Arabia (المملكة العربي�
 	New value in gibboni18n
 	Added new folder /i18n/ar_SA
 
+Planner: added ability to view outcomes by classes in a course
+	New values in tables gibbonAction, gibbonPermission
+	New file /modules/Planner/curriculumMapping_outcomesByCourse.php
 
 v8.2.00
 -------
