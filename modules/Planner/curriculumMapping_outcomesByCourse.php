@@ -245,7 +245,7 @@ else {
 									print "<td>" ;
 										$outcomeCount=0 ;
 										foreach ($allOutcomes AS $anOutcome) {
-											if ($anOutcome["type"]=="Unit" AND $anOutcome["scope"]=="School" AND $anOutcome["gibbonOutcomeID"]==$rowOutcomes["gibbonOutcomeID"]) {
+											if ($anOutcome["type"]=="Unit" AND $anOutcome["scope"]=="School" AND $anOutcome["gibbonOutcomeID"]==$rowOutcomes["gibbonOutcomeID"] AND $class["gibbonCourseClassID"]==$anOutcome["gibbonCourseClassID"]) {
 												$outcomeCount++ ;
 											}
 										}
@@ -259,7 +259,7 @@ else {
 									print "<td>" ;
 										$outcomeCount=0 ;
 										foreach ($allOutcomes AS $anOutcome) {
-											if ($anOutcome["type"]!="Unit" AND $anOutcome["scope"]=="School" AND $anOutcome["gibbonOutcomeID"]==$rowOutcomes["gibbonOutcomeID"]) {
+											if ($anOutcome["type"]!="Unit" AND $anOutcome["scope"]=="School" AND $anOutcome["gibbonOutcomeID"]==$rowOutcomes["gibbonOutcomeID"] AND $class["gibbonCourseClassID"]==$anOutcome["gibbonCourseClassID"]) {
 												$outcomeCount++ ;
 											}
 										}
@@ -329,7 +329,7 @@ else {
 									print "<td>" ;
 										$outcomeCount=0 ;
 										foreach ($allOutcomes AS $anOutcome) {
-											if ($anOutcome["type"]=="Unit" AND $anOutcome["scope"]=="Learning Area" AND $anOutcome["gibbonOutcomeID"]==$rowOutcomes["gibbonOutcomeID"]) {
+											if ($anOutcome["type"]=="Unit" AND $anOutcome["scope"]=="Learning Area" AND $anOutcome["gibbonOutcomeID"]==$rowOutcomes["gibbonOutcomeID"] AND $class["gibbonCourseClassID"]==$anOutcome["gibbonCourseClassID"]) {
 												$outcomeCount++ ;
 											}
 										}
@@ -343,7 +343,7 @@ else {
 									print "<td>" ;
 										$outcomeCount=0 ;
 										foreach ($allOutcomes AS $anOutcome) {
-											if ($anOutcome["type"]!="Unit" AND $anOutcome["scope"]=="Learning Area" AND $anOutcome["gibbonOutcomeID"]==$rowOutcomes["gibbonOutcomeID"]) {
+											if ($anOutcome["type"]!="Unit" AND $anOutcome["scope"]=="Learning Area" AND $anOutcome["gibbonOutcomeID"]==$rowOutcomes["gibbonOutcomeID"] AND $class["gibbonCourseClassID"]==$anOutcome["gibbonCourseClassID"]) {
 												$outcomeCount++ ;
 											}
 										}
