@@ -209,8 +209,6 @@ else {
 										error_log(sprintf(_('Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), "2", $rowMember["preferredName"] . " " . $rowMember["surname"])) ;
 									}
 									else {
-										print $homework . "\n\n" ;
-									
 										//Make and store unique code for confirmation. add it to email text.
 										$key="" ;
 									

@@ -258,7 +258,7 @@ a{
 <div class="wrapper">
 <?php 
 if(isset($authUrl)) {
-	echo "<a class='login' target='_top' href='$authUrl'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/g_login_btn.png' alt='Google login using php api for your website' alt='Login With Google' /></a>";
+	echo "<a class='login' target='_top' href='$authUrl'><img style='width: 254px; height: 44px;' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/g_login_btn.png' alt='Login With Google' /></a>";
 	} else {
 	echo "<a class='logout' href='index.php?logout'>Logout</a>";
 }

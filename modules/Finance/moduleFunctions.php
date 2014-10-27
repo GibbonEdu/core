@@ -403,6 +403,32 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 			}
 		$return.="</table>" ;
 
+		//Online payment
+		$currency=getSettingByScope($connection2, "System", "currency") ;
+		$enablePayments=getSettingByScope($connection2, "System", "enablePayments") ;
+		$paypalAPIUsername=getSettingByScope($connection2, "System", "paypalAPIUsername") ;
+		$paypalAPIPassword=getSettingByScope($connection2, "System", "paypalAPIPassword") ;
+		$paypalAPISignature=getSettingByScope($connection2, "System", "paypalAPISignature") ;
+	
+		if ($enablePayments=="Y" AND $paypalAPIUsername!="" AND $paypalAPIPassword!="" AND $paypalAPISignature!="" AND $row["status"]!="Paid" AND $row["status"]!="Cancelled" AND $row["status"]!="Refunded") {
+			$financeOnlinePaymentEnabled=getSettingByScope($connection2, "Finance", "financeOnlinePaymentEnabled" ) ; 
+			$financeOnlinePaymentThreshold=getSettingByScope($connection2, "Finance", "financeOnlinePaymentThreshold" ) ; 
+			if ($financeOnlinePaymentEnabled=="Y") {
+				$return.="<h3 style='margin-top: 40px'>" ;
+					$return.=_("Online Payment") ;
+				$return.="</h3>" ;
+				$return.="<p>" ;
+					if  ($financeOnlinePaymentThreshold=="" OR $financeOnlinePaymentThreshold>=$feeTotal) {
+						$return.=sprintf(_('Payment can be made by credit card, using our secure PayPal payment gateway. When you press Pay Now below, you will be directed to a %1$s page from where you can use PayPal in order to make payment. You can continue with payment through %1$s whether you are logged in or not. During this process we do not see or store your credit card details.'), $_SESSION[$guid]["systemName"]) . " " ;
+						$return.="<a style='font-weight: bold' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_payOnline.php&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=" . $row["key"] . "'>" . _('Pay Now') . ".</a>" ;
+					}
+					else {
+						$return.="<div class='warning'>" . _("Payment is not permitted for this invoice, as the total amount is greater than the permitted online payment threshold.") . "</div>" ;
+					}
+				$return.="</p>" ;
+			}
+		}
+		
 		//Invoice Notes
 		$invoiceNotes=getSettingByScope( $connection2, "Finance", "invoiceNotes" ) ;
 		if ($invoiceNotes!="") {

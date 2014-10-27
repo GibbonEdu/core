@@ -299,7 +299,7 @@ else {
 					if ($resultOutcomes->rowCount()<1) {
 						print "<tr>" ;
 							print "<td colspan=" . (($classCount*2)+2) . ">" ; 
-								print "<div class='error'>" . _("The selected record does not exist, or you do not have access to it.") . "</div>" ; 
+								print "<div class='error'>" . _("There are no records to display.") . "</div>" ; 
 							print "</td>" ;
 						print "</tr>" ;
 					}

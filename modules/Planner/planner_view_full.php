@@ -327,7 +327,12 @@ else {
 					else {
 						print "<div style='height:50px'>" ;
 							print "<h2>" ;
-								print $row["name"] . "<br/>" ;
+								if (strlen($row["name"])<=34) {
+									print $row["name"] . "<br/>" ;
+								}
+								else {
+									print substr($row["name"], 0, 34) . "...<br/>" ;
+								}
 								$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
 								if (isset($unit[0])) {
 									if ($unit[0]!="") {

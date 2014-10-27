@@ -614,7 +614,7 @@ else {
 							</td>
 						</tr>
 						<?php
-						$email=getSettingByScope($connection2, "Finance", "email" ) ;
+						$email=getSettingByScope($connection2, "Finance", "email") ;
 						if ($email=="") {
 							print "<tr class='emailReceipt'>" ;
 								print "<td colspan=2>" ; 

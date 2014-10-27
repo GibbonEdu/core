@@ -521,6 +521,13 @@ else {
 											print "</td>" ;
 										
 											print "<td style='text-align: right'>" ;
+											
+												print "<script type='text/javascript'>" ;
+													print "$(document).ready(function(){" ;
+														print "$('textarea').autosize();" ;    
+													print "});" ;
+												print "</script>" ;
+												
 												print "<textarea name='comment" . $count . "' id='comment" . $count . "' rows=6 style='width: 330px'>" . $rowEntry["comment"] . "</textarea>" ;
 												print "<br/>" ;
 												if ($rowEntry["response"]!="") {

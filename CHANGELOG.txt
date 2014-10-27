@@ -141,6 +141,28 @@ Planner: added ability to view outcomes by classes in a course
 	New values in tables gibbonAction, gibbonPermission
 	New file /modules/Planner/curriculumMapping_outcomesByCourse.php
 
+Google OAuth: added size to image to make display more graceful
+	Edited file /lib/googleOAuth/index.php
+
+General: added library to allow auto-resizing textareas, and put it to use in Markbook data entry
+	New folder /lib/jquery-autosize
+	Edited file /modules/Markbook/markbook_edit_data.php
+	Edited file /index.php
+
+Planner: fixed issue when a long lesson name obscures the Previous Lesson link in the planner view
+	Edited file /modules/Planner/planner_view_full.php
+
+Finance: moved Finance Settings from Finance module to School Admin module, to keep in line with other settings pages
+	Edited values in table gibbonAction
+	Moved files /modules/Finance/invoiceReceiptSettings*.php to /modules/School Admin/financeSettings*.php
+	Edited files /modules/School Admin/financeSettings*.php
+
+Finance: enabled online payment using existing online payment gateway (setup in System Settings)
+	New values in table gibbonSetting
+	Edited files /modules/School Admin/financeSettings*.php
+	Edited table gibbonFinanceInvoice
+	New files /modules/Finance/invoices_payOnline*.php
+
 v8.2.00
 -------
 General: added system-wide notifications, which can be utilised by any module

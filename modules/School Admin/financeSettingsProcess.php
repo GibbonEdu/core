@@ -35,9 +35,9 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/invoiceReceiptSettings.php" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/financeSettings.php" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/Finance/invoiceReceiptSettings.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/School Admin/financeSettings.php")==FALSE) {
 	//Fail 0
 	$URL=$URL . "&updateReturn=fail0" ;
 	header("Location: {$URL}");
@@ -45,6 +45,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/invoiceReceiptSett
 else {
 	//Proceed!
 	$email=$_POST["email"] ;
+	$financeOnlinePaymentEnabled=$_POST["financeOnlinePaymentEnabled"] ;
+	$financeOnlinePaymentThreshold=$_POST["financeOnlinePaymentThreshold"] ;
 	$invoiceText=$_POST["invoiceText"] ;
 	$invoiceNotes=$_POST["invoiceNotes"] ;
 	$invoiceNumber=$_POST["invoiceNumber"] ;
@@ -66,6 +68,26 @@ else {
 		try {
 			$data=array("value"=>$email); 
 			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='email'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$financeOnlinePaymentEnabled); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='financeOnlinePaymentEnabled'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$financeOnlinePaymentThreshold); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='financeOnlinePaymentThreshold'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

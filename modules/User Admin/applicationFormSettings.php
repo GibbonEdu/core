@@ -168,7 +168,7 @@ else {
 							print $row["description"] ;
 							$currency=getSettingByScope($connection2, "System", "currency") ;
 							if ($currency!=FALSE AND $currency!="") {
-								print " In $currency" ;
+								print " " . sprintf(_('In %1$s.'), $currency) ;
 							}
 						?>
 					</i></span>

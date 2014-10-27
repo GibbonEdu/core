@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
-if (isActionAccessible($guid, $connection2, "/modules/Finance/invoiceReceiptSettings.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/School Admin/financeSettings.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
 		print _("You do not have access to this action.") ;
@@ -57,7 +57,7 @@ else {
 	} 
 	?>
 	
-	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoiceReceiptSettingsProcess.php" ?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/financeSettingsProcess.php" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2> 
@@ -85,6 +85,70 @@ else {
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Email);
 						<?php print $row["name"] ?>.add(Validate.Presence);
+					 </script>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='financeOnlinePaymentEnabled'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
+						$selected="" ;
+						if ($row["value"]=="Y" ) { $selected="selected" ; }
+						print "<option $selected value='Y'>Y</option>" ;
+						$selected="" ;
+						if ($row["value"]=="N" ) { $selected="selected" ; }
+						print "<option $selected value='N'>N</option>" ;
+						?>			
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='financeOnlinePaymentThreshold'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i>
+						<?php 
+							if ($row["description"]!="") { print _($row["description"]) ; } 
+							$currency=getSettingByScope($connection2, "System", "currency") ;
+							if ($currency!=FALSE AND $currency!="") {
+								print " " . sprintf(_('In %1$s.'), $currency) ;
+							}
+							?> 
+					
+					</i></span>
+				</td>
+				<td class="right">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Numericality);
 					 </script>
 				</td>
 			</tr>
