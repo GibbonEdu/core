@@ -25,6 +25,7 @@ _('Assessment') ;
 _('Billing') ;
 _('Catalog') ;
 _('Courses & Classes') ;
+_('Curriculum Mapping') ;
 _('Data Updater') ;
 _('Future Information') ;
 _('Groupings') ;
@@ -77,11 +78,11 @@ _('Family Data Updates')
 _('Finance Data Updates')
 _('Find Behaviour Patterns')
 _('Import Assessment Results')
+_('Import Records')
 _('Individual Needs Records') ;
 _('Individual Needs Records') ;
 _('Individual Needs Records') ;
 _('Individual Needs Summary')
-_('Invoice & Receipt Settings')
 _('Language Settings')
 _('Left Students')
 _('Lending & Activity Log')
@@ -109,6 +110,7 @@ _('Manage Families')
 _('Manage Fee Categories')
 _('Manage Fees')
 _('Manage File Extensions')
+_('Manage Finance Settings')
 _('Manage Grade Scales')
 _('Manage Houses')
 _('Manage IN Descriptors')
@@ -178,6 +180,7 @@ _('New Message') ;
 _('New Message') ;
 _('New Message') ;
 _('New Students')
+_('Outcomes By Course')
 _('Parent Weekly Email Summary')
 _('Participants by Activity')
 _('Payment')
@@ -329,6 +332,7 @@ _('Import CSV file of results, to update matching records and create new records
 _('Import CSV file of students, and use it to register certain users as students.') ;
 _('Import CSV file of users, and use it to create new users and set left user status.') ;
 _('Import CSV files of families and their members, and use it to sync.') ;
+_('Import records of different types (e.g. Print Publications, Computer, etc)') ;
 _('Include parents in messages posted to activities') ;
 _('Include parents in messages posted to classes') ;
 _('Include parents in messages posted to courses') ;
@@ -386,6 +390,7 @@ _('Take attendance, one person at a time') ;
 _('Take attendance, one roll group at a time') ;
 _('This action copies all current activities, slots and staff into a specified year.') ;
 _('This report shows responses to the weekly summary email, organised by calendar week and role group.') ;
+_('This view gives an overview of which whole school and learning area outcomes are covered by classes in a given course, allowing for curriculum mapping by outcome and course.') ;
 _('Update Gibbon to a new version') ;
 _('View a brief profile of roll groups in school.') ;
 _('View all markbook information for all users') ;
@@ -841,6 +846,7 @@ _('Computer') ;
 _('Electronics') ;
 _('Other') ;
 _('Print Publication') ;
+_('Software') ;
 
 //gibbonLibraryType - fields
 _('Form Factor') ;
@@ -888,6 +894,14 @@ _('Accessories') ;
 _('Warranty Number') ;
 _('Warranty Expiry') ;
 _('Repair Log/Notes') ;
+_('Version') ;
+_('Operating System') ;
+_('License Type') ;
+_('License Name') ;
+_('License Serial Number') ;
+_('License Expiry') ;
+_('License Management Link') ;
+_('License Management Link') ;
 
 //gibbonMedicalCondition - name
 _('Allergy - Animal') ;
@@ -972,8 +986,8 @@ _('View details within a department') ;
 
 //gibbonModule - category
 _('Admin') ;
-_('Assessment') ;
-_('Learning') ;
+_('Assess') ;
+_('Learn') ;
 _('Other') ;
 _('People') ;
 
@@ -1676,6 +1690,7 @@ _('Disable External Provider Signup') ;
 _('Effort Alternative Name') ;
 _('Effort Alternative Name Abbreviation') ;
 _('Email') ;
+_('Enable Online Payment') ;
 _('Enable Payments') ;
 _('Enrolment Type') ;
 _('Ethnicity') ;
@@ -1712,10 +1727,12 @@ _('Nationality') ;
 _('Negative Descriptors') ;
 _('Non-Alphanumeric Requirement') ;
 _('Numeric Requirement') ;
+_('Online Payment Threshold') ;
 _('Organisation Email') ;
 _('Organisation Initials') ;
 _('Organisation Name') ;
 _('Pagination Count') ;
+_('Parent Weekly Email Summary Include Behaviour') ;
 _('Parents Notification Default') ;
 _('Parents Notification Message') ;
 _('Payment') ;
@@ -1818,6 +1835,7 @@ _('General email address for the school') ;
 _('Google project Developer Key.') ;
 _('Google Redirect on sucessful auth.') ;
 _('How should invoice numbers be constructed?') ;
+_('If invoices are payable online, what is the maximum payment allowed? Useful for controlling payment fees. No value means unlimited.') ;
 _('If yes, members of the public can submit applications') ;
 _('Information to display at the end of the form') ;
 _('Information to display before the form') ;
@@ -1840,6 +1858,8 @@ _('Serialized array listed personal fields in data updater, and whether or not t
 _('Set default email for students on acceptance, using [username] to insert username.') ;
 _('Set default website for students on acceptance, using [username] to insert username.') ;
 _('Should activities be organised around dates (flexible) or terms (easy)?') ;
+_('Should behaviour information be included in the weekly planner email summary that goes out to parents?') ;
+_('Should invoices be payable online, via an encrypted link in the invoice? Requires correctly configured payment gateway in System Settings.') ;
 _('Should markbook warnings be based on personal targets, if they are available?') ;
 _('Should parent acceptance email be turned on or off by default.') ;
 _('Should payments be enabled across the system?') ;
