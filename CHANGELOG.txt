@@ -162,6 +162,10 @@ Finance: enabled online payment using existing online payment gateway (setup in 
 	Edited files /modules/School Admin/financeSettings*.php
 	Edited table gibbonFinanceInvoice
 	New files /modules/Finance/invoices_payOnline*.php
+	
+Planner: fixed missing Submit button in working unit edit view
+	Edited file /modules/Planner/units_edit_working.php	
+
 
 v8.2.00
 -------

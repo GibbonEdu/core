@@ -397,18 +397,14 @@ else {
 									$cells=$i ;
 								}
 								?>
-								<table class='blank' style='width: 100%' cellspacing=0>
-									<tr>
-										<td class='right'>
-											<?php
-											print "<script type='text/javascript'>" ;
-												print "var count=$blockCount2 ;" ;
-											print "</script>" ;
-											print "<input type='submit' value='Submit'>" ;
-											?>
-										</td>
-									</tr>
-								</table>
+								<div class='linkTop' style='margin-top: 0px!important'>
+									<?php
+									print "<script type='text/javascript'>" ;
+										print "var count=$blockCount2 ;" ;
+									print "</script>" ;
+									print "<input type='submit' value='Submit'>" ;
+									?>
+								</div>
 							<?php
 							print "</div>" ;
 						print "</form>" ;
