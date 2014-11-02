@@ -144,11 +144,12 @@ else {
 								print "<ul>" ;
 									print "<li><a href='#tabs1'>" . _('Unit Overview') . "</a></li>" ;
 									print "<li><a href='#tabs2'>" . _('Smart Blocks') . "</a></li>" ;
-									print "<li><a href='#tabs3'>" . _('Outcomes') . "</a></li>" ;
+									print "<li><a href='#tabs3'>" . _('Resources') . "</a></li>" ;
+									print "<li><a href='#tabs4'>" . _('Outcomes') . "</a></li>" ;
 									$classes=array() ;
 									$classCount=0 ;
 									while ($rowClass=$resultClass->fetch()) {
-										print "<li><a href='#tabs" . ($classCount+4) . "'>" . $row["courseName"] . "." . $rowClass["nameShort"] . "</a></li>" ;
+										print "<li><a href='#tabs" . ($classCount+5) . "'>" . $row["courseName"] . "." . $rowClass["nameShort"] . "</a></li>" ;
 										$classes[$classCount][0]=$rowClass["nameShort"] ;
 										$classes[$classCount][1]=$rowClass["gibbonCourseClassID"] ;
 										$classCount++ ;
@@ -178,6 +179,8 @@ else {
 									catch(PDOException $e) { 
 										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 									}
+									
+									$resourceContents="" ;
 							
 									while ($rowBlocks=$resultBlocks->fetch()) {
 										if ($rowBlocks["title"]!="" OR $rowBlocks["type"]!="" OR $rowBlocks["length"]!="") {
@@ -212,13 +215,113 @@ else {
 										}
 										if ($rowBlocks["contents"]!="") {
 											print "<div style='padding: 15px 3px 10px 3px; width: 100%; text-align: justify; border-bottom: 1px solid #ddd'>" . $rowBlocks["contents"] . "</div>" ;
+											$resourceContents.=$rowBlocks["contents"] ;
 										}
 										if ($rowBlocks["teachersNotes"]!="") {
 											print "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>" . _("Teacher's Notes") . ":</b></p> " . $rowBlocks["teachersNotes"] . "</div>" ;
+											$resourceContents.=$rowBlocks["teachersNotes"] ;
 										}
 									}
+									
 								print "</div>" ;
 								print "<div id='tabs3'>" ;
+									//Resources
+									$noReosurces=TRUE ;
+									
+									//Links
+									$links="" ;
+									$linksArray=array() ;
+									$linksCount=0;
+									$dom=new DOMDocument;
+									$dom->loadHTML($resourceContents);
+									foreach ($dom->getElementsByTagName('a') as $node) {
+										if ($node->nodeValue!="") {
+											$linksArray[$linksCount]="<li><a href='" .$node->getAttribute("href") . "'>" . $node->nodeValue . "</a></li>" ;
+											$linksCount++ ;
+										}
+									}
+									
+									$linksArray=array_unique($linksArray) ;
+									natcasesort($linksArray) ;
+									
+									foreach ($linksArray AS $link) {
+										$links.=$link ;
+									}
+									
+									if ($links!="" ) {
+										print "<h2>" ;
+											print "Links" ;
+										print "</h2>" ;
+										print "<ul>" ;
+											print $links ;
+										print "</ul>" ;
+										$noReosurces=FALSE ;
+									}
+									
+									//Images
+									$images="" ;
+									$imagesArray=array() ;
+									$imagesCount=0;
+									$dom2=new DOMDocument;
+									$dom2->loadHTML($resourceContents);
+									foreach ($dom2->getElementsByTagName('img') as $node) {
+										if ($node->getAttribute("src")!="") {
+											$imagesArray[$imagesCount]="<img class='resource' style='margin: 10px 0; max-width: 560px' src='" . $node->getAttribute("src") . "'/><br/>" ;
+											$imagesCount++ ;
+										}
+									}
+									
+									$imagesArray=array_unique($imagesArray) ;
+									natcasesort($imagesArray) ;
+									
+									foreach ($imagesArray AS $image) {
+										$images.=$image ;
+									}
+									
+									if ($images!="" ) {
+										print "<h2>" ;
+											print "Images" ;
+										print "</h2>" ;
+										print $images ;
+										$noReosurces=FALSE ;
+									}
+									
+									//Embeds
+									$embeds="" ;
+									$embedsArray=array() ;
+									$embedsCount=0;
+									$dom2=new DOMDocument;
+									$dom2->loadHTML($resourceContents);
+									foreach ($dom2->getElementsByTagName('iframe') as $node) {
+										if ($node->getAttribute("src")!="") {
+											$embedsArray[$embedsCount]="<iframe style='max-width: 560px' width='" . $node->getAttribute("width") . "' height='" . $node->getAttribute("height") . "' src='" . $node->getAttribute("src") . "' frameborder='" . $node->getAttribute("frameborder") . "'></iframe>" ;
+											$embedsCount++ ;
+										}
+									}
+									
+									$embedsArray=array_unique($embedsArray) ;
+									natcasesort($embedsArray) ;
+									
+									foreach ($embedsArray AS $embed) {
+										$embeds.=$embed ."<br/><br/>" ;
+									}
+									
+									if ($embeds!="" ) {
+										print "<h2>" ;
+											print "Embeds" ;
+										print "</h2>" ;
+										print $embeds ;
+										$noReosurces=FALSE ;
+									}
+									
+									//No resources!
+									if ($noReosurces) {
+										print "<div class='error'>" ;
+											print _("There are no records to display.") ;
+										print "</div>" ;
+									}
+								print "</div>" ;
+								print "<div id='tabs4'>" ;
 									//Spit out outcomes
 									try {
 										$dataBlocks=array("gibbonUnitID"=>$gibbonUnitID);  
@@ -321,7 +424,7 @@ else {
 								print "</div>" ;
 								$classCount=0 ;
 								foreach($classes AS $class) {
-									print "<div id='tabs" . ($classCount+4) . "'>" ;
+									print "<div id='tabs" . ($classCount+5) . "'>" ;
 										
 										//Print Lessons
 										print "<h2>" . _("Lessons") . "</h2>" ;

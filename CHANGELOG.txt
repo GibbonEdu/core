@@ -166,6 +166,9 @@ Finance: enabled online payment using existing online payment gateway (setup in 
 Planner: fixed missing Submit button in working unit edit view
 	Edited file /modules/Planner/units_edit_working.php	
 
+Planner: added resources to Unit export
+	Edited file /modules/Planner/units_dump.php
+
 
 v8.2.00
 -------
