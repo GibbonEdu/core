@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.1.8
+-- version 4.2.10
 -- http://www.phpmyadmin.net
 --
--- Host: localhost:8889
--- Generation Time: Sep 27, 2014 at 02:10 AM
--- Server version: 5.5.34
--- PHP Version: 5.5.10
+-- Host: localhost:3306
+-- Generation Time: Nov 09, 2014 at 12:08 PM
+-- Server version: 5.5.38
+-- PHP Version: 5.6.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `temp`
+-- Database: `update`
 --
 
 -- --------------------------------------------------------
@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `gibbonAction` (
-  `gibbonActionID` int(7) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonActionID` int(7) unsigned zerofill NOT NULL,
   `gibbonModuleID` int(4) unsigned zerofill NOT NULL,
   `name` varchar(50) NOT NULL COMMENT 'The action name should be unqiue to the module that it is related to',
   `precedence` int(2) NOT NULL,
@@ -44,10 +44,8 @@ CREATE TABLE `gibbonAction` (
   `categoryPermissionStaff` enum('Y','N') NOT NULL DEFAULT 'Y',
   `categoryPermissionStudent` enum('Y','N') NOT NULL DEFAULT 'Y',
   `categoryPermissionParent` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `categoryPermissionOther` enum('Y','N') NOT NULL DEFAULT 'Y',
-  PRIMARY KEY (`gibbonActionID`),
-  KEY `gibbonModuleID` (`gibbonModuleID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=816 ;
+  `categoryPermissionOther` enum('Y','N') NOT NULL DEFAULT 'Y'
+) ENGINE=MyISAM AUTO_INCREMENT=818 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonAction`
@@ -75,11 +73,11 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000043, 0005, 'Students by Roll Group', 0, 'Reports', 'Print student roll group lists', 'report_students_byRollGroup.php, report_students_byRollGroup_print.php', 'report_students_byRollGroup.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000042, 0005, 'View Student Profile_myChildren', 1, 'Profiles', 'Allows parents to view their student''s information', 'student_view.php, student_view_details.php', 'student_view.php', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
 (0000041, 0007, 'Markbook_viewMyChildrensClasses', 1, '', 'Allows parents to view their children''s classes', 'markbook_view.php', 'markbook_view.php', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
-(0000040, 0009, 'Lesson Planner_viewMyChildrensClasses', 0, 'Planning', 'Allows parents to view their children''s classes', 'planner.php, planner_view_full.php, planner_deadlines.php, planner_view_full_post.php', 'planner.php', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
+(0000040, 0009, 'Lesson Planner_viewMyChildrensClasses', 0, 'Planning', 'Allows parents to view their children''s classes', 'planner.php, planner_view_full.php, planner_deadlines.php, planner_view_full_post.php, planner_unitOverview.php', 'planner.php', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
 (0000063, 0002, 'Personal Data Updates ', 0, 'Data Updater', 'Allows admins to process data update requests for personal data', 'data_personal.php, data_personal_edit.php, data_personal_delete.php', 'data_personal.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000039, 0007, 'View Markbook_myMarks', 2, '', 'View your own marks', 'markbook_view.php', 'markbook_view.php', 'Y', 'N', 'N', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
-(0000036, 0009, 'Lesson Planner_viewAllEditMyClasses', 2, 'Planning', 'View all planner information and edit all planner information for classes user is in', 'planner.php, planner_view_full.php, planner_add.php, planner_edit.php, planner_delete.php, planner_deadlines.php, planner_duplicate.php, planner_view_full_post.php, planner_view_full_submit_edit.php, planner_bump.php', 'planner.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
-(0000035, 0009, 'Lesson Planner_viewMyClasses', 1, 'Planning', 'View all planner information for classes user is in', 'planner.php, planner_view_full.php, planner_deadlines.php, planner_view_full_post.php', 'planner.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
+(0000036, 0009, 'Lesson Planner_viewAllEditMyClasses', 2, 'Planning', 'View all planner information and edit all planner information for classes user is in', 'planner.php, planner_view_full.php, planner_add.php, planner_edit.php, planner_delete.php, planner_deadlines.php, planner_duplicate.php, planner_view_full_post.php, planner_view_full_submit_edit.php, planner_bump.php, planner_unitOverview.php', 'planner.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
+(0000035, 0009, 'Lesson Planner_viewMyClasses', 1, 'Planning', 'View all planner information for classes user is in', 'planner.php, planner_view_full.php, planner_deadlines.php, planner_view_full_post.php, planner_unitOverview.php', 'planner.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000022, 0004, 'View Departments', 0, '', 'Allows uers to view all department details.', 'departments.php, department.php, department_course.php, department_course_class.php, department_course_class_full.php, department_course_unit_add.php, department_course_unit_edit.php, department_course_unit_delete.php, department_course_unit_duplicate.php, department_edit.php, department_course_edit.php', 'departments.php', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'),
 (0000065, 0002, 'Medical Form Updates ', 0, 'Data Updater', 'Allows admins to process data update requests for medical data', 'data_medical.php, data_medical_edit.php, data_medical_delete.php', 'data_medical.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000064, 0008, 'Update Medical Form_family', 0, '', 'Allows users to update medical information for themselves and their family members', 'data_medical.php', 'data_medical.php', 'Y', 'N', 'N', 'N', 'Y', 'N', 'Y', 'Y', 'Y', 'Y'),
@@ -116,7 +114,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000060, 0006, 'Student History_myChildren', 0, 'Reports', 'Print a report of all attendance data in the current school yearfor my children', 'report_studentHistory.php', 'report_studentHistory.php', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
 (0000061, 0009, 'Work Summary by Roll Group', 0, 'Reports', 'Print work summary statistical data by roll group', 'report_workSummary_byRollGroup.php', 'report_workSummary_byRollGroup.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000062, 0001, 'Manage Departments', 0, 'Groupings', 'Allows admins to create learning areas and administrative groups.', 'department_manage.php,department_manage_add.php,department_manage_edit.php,department_manage_delete.php', 'department_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000038, 0009, 'Lesson Planner_viewEditAllClasses', 3, 'Planning', 'View and edit all planner information for all classes', 'planner.php, planner_view_full.php, planner_add.php, planner_edit.php, planner_delete.php, planner_deadlines.php, planner_duplicate.php, planner_view_full_post.php, planner_view_full_submit_edit.php, planner_bump.php', 'planner.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000038, 0009, 'Lesson Planner_viewEditAllClasses', 3, 'Planning', 'View and edit all planner information for all classes', 'planner.php, planner_view_full.php, planner_add.php, planner_edit.php, planner_delete.php, planner_deadlines.php, planner_duplicate.php, planner_view_full_post.php, planner_view_full_submit_edit.php, planner_bump.php, planner_unitOverview.php', 'planner.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000066, 0013, 'Class Enrolment by Roll Group', 0, 'Reports', 'Shows the number of classes students are enroled in, organised by roll group', 'report_classEnrolment_byRollGroup.php', 'report_classEnrolment_byRollGroup.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000067, 0015, 'Activity Type by Roll Group', 0, 'Reports', 'Print roll group lists showing count of various activity types', 'report_activityType_rollGroup.php', 'report_activityType_rollGroup.php', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N'),
 (0000068, 0016, 'External Assessment Data_view', 0, '', 'Allow users to view assessment data for all students', 'externalAssessment.php, externalAssessment_details.php', 'externalAssessment.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -222,7 +220,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000769, 0135, 'Manage Fees', 0, 'Admin', 'Allows users to create, view and edit fees.', 'fees_manage.php,fees_manage_edit.php,fees_manage_add.php', 'fees_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000770, 0135, 'Manage Billing Schedule', 0, 'Admin', 'Allows users to create, view and edit billing windows.', 'billingSchedule_manage.php,billingSchedule_manage_edit.php,billingSchedule_manage_add.php', 'billingSchedule_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000771, 0135, 'Manage Invoices', 0, 'Billing', 'Allows users to generate, view, delete and edit invoices.', 'invoices_manage.php,invoices_manage_edit.php,invoices_manage_add.php,invoices_manage_delete.php,invoices_manage_view.php,invoices_manage_issue.php,invoices_manage_print.php', 'invoices_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000772, 0135, 'Invoice & Receipt Settings', 0, 'Billing', 'Allows users to edit the text that appears in invoices and receipts.', 'invoiceReceiptSettings.php', 'invoiceReceiptSettings.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000772, 0001, 'Manage Finance Settings', 0, 'Other', 'Allows users to edit the text that appears in invoices and receipts.', 'financeSettings.php', 'financeSettings.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000773, 0008, 'Update Finance Data_any', 1, '', 'Create finance data update request for any user', 'data_finance.php', 'data_finance.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000774, 0008, 'Update Finance Data_family', 0, '', 'Allows adults in a family to create finance data update request for their family.', 'data_finance.php', 'data_finance.php', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y', 'N', 'Y', 'N'),
 (0000775, 0002, 'Finance Data Updates', 0, 'Data Updater', 'Manage requests for updates to finance data.', 'data_finance.php,data_finance_edit.php,data_finance_delete.php', 'data_finance.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -243,7 +241,9 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000812, 0014, 'Manage Space Changes_allClasses', 0, 'Spaces', 'Allows a user to create and manage one-off location changes for all classes within the timetable.', 'spaceChange_manage.php,spaceChange_manage_add.php,spaceChange_manage_edit.php,spaceChange_manage_delete.php', 'spaceChange_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000813, 0014, 'Manage Space Changes_myClasses', 0, 'Spaces', 'Allows a user to create and manage one-off location changes for their own classes within the timetable.', 'spaceChange_manage.php,spaceChange_manage_add.php,spaceChange_manage_edit.php,spaceChange_manage_delete.php', 'spaceChange_manage.php', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000814, 0014, 'Manage Space Bookings_allBookings', 0, 'Spaces', 'Allows a user to book a room for on-off use, and manage bookings made by all other users.', 'spaceBooking_manage.php,spaceBooking_manage_add.php,spaceBooking_manage_edit.php,spaceBooking_manage_delete.php', 'spaceBooking_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000815, 0014, 'Manage Space Bookings_myBookings', 0, 'Spaces', 'Allows a user to book a room for on-off use, and manage their own bookings.', 'spaceBooking_manage.php,spaceBooking_manage_add.php,spaceBooking_manage_edit.php,spaceBooking_manage_delete.php', 'spaceBooking_manage.php', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
+(0000815, 0014, 'Manage Space Bookings_myBookings', 0, 'Spaces', 'Allows a user to book a room for on-off use, and manage their own bookings.', 'spaceBooking_manage.php,spaceBooking_manage_add.php,spaceBooking_manage_edit.php,spaceBooking_manage_delete.php', 'spaceBooking_manage.php', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000816, 0130, 'Import Records', 0, 'Catalog', 'Import records of different types (e.g. Print Publications, Computer, etc)', 'library_import.php', 'library_import.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000817, 0009, 'Outcomes By Course', 0, 'Curriculum Mapping', 'This view gives an overview of which whole school and learning area outcomes are covered by classes in a given course, allowing for curriculum mapping by outcome and course.', 'curriculumMapping_outcomesByCourse.php', 'curriculumMapping_outcomesByCourse.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N');
 
 -- --------------------------------------------------------
 
@@ -252,7 +252,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 --
 
 CREATE TABLE `gibbonActivity` (
-  `gibbonActivityID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonActivityID` int(8) unsigned zerofill NOT NULL,
   `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL DEFAULT '000',
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `registration` enum('Y','N') NOT NULL DEFAULT 'Y' COMMENT 'Can a parent/student select this for registration?',
@@ -267,9 +267,8 @@ CREATE TABLE `gibbonActivity` (
   `gibbonYearGroupIDList` varchar(255) NOT NULL DEFAULT '',
   `maxParticipants` int(3) NOT NULL DEFAULT '0',
   `description` text,
-  `payment` decimal(8,2) NOT NULL,
-  PRIMARY KEY (`gibbonActivityID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `payment` decimal(8,2) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -278,15 +277,14 @@ CREATE TABLE `gibbonActivity` (
 --
 
 CREATE TABLE `gibbonActivitySlot` (
-  `gibbonActivitySlotID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonActivitySlotID` int(10) unsigned zerofill NOT NULL,
   `gibbonActivityID` int(8) unsigned zerofill NOT NULL,
   `gibbonSpaceID` int(5) unsigned zerofill DEFAULT NULL,
   `locationExternal` varchar(50) NOT NULL,
   `gibbonDaysOfWeekID` int(2) unsigned zerofill NOT NULL,
   `timeStart` time NOT NULL,
-  `timeEnd` time NOT NULL,
-  PRIMARY KEY (`gibbonActivitySlotID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timeEnd` time NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -295,12 +293,11 @@ CREATE TABLE `gibbonActivitySlot` (
 --
 
 CREATE TABLE `gibbonActivityStaff` (
-  `gibbonActivityStaffID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonActivityStaffID` int(8) unsigned zerofill NOT NULL,
   `gibbonActivityID` int(8) unsigned zerofill NOT NULL DEFAULT '00000000',
   `gibbonPersonID` int(8) unsigned zerofill NOT NULL DEFAULT '00000000',
-  `role` enum('Organiser','Coach','Assistant','Other') NOT NULL DEFAULT 'Organiser',
-  PRIMARY KEY (`gibbonActivityStaffID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `role` enum('Organiser','Coach','Assistant','Other') NOT NULL DEFAULT 'Organiser'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -309,14 +306,13 @@ CREATE TABLE `gibbonActivityStaff` (
 --
 
 CREATE TABLE `gibbonActivityStudent` (
-  `gibbonActivityStudentID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonActivityStudentID` int(10) unsigned zerofill NOT NULL,
   `gibbonActivityID` int(8) unsigned zerofill NOT NULL DEFAULT '00000000',
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL DEFAULT '0000000000',
   `status` enum('Accepted','Pending','Waiting List','Not Accepted') NOT NULL DEFAULT 'Pending',
   `timestamp` datetime NOT NULL,
-  `gibbonActivityIDBackup` int(8) unsigned zerofill DEFAULT NULL,
-  PRIMARY KEY (`gibbonActivityStudentID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonActivityIDBackup` int(8) unsigned zerofill DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -325,13 +321,12 @@ CREATE TABLE `gibbonActivityStudent` (
 --
 
 CREATE TABLE `gibbonActivityStudentPayment` (
-  `gibbonActivityStudentPaymentID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonActivityStudentPaymentID` int(8) unsigned zerofill NOT NULL,
   `studentAcademicYearID` int(8) unsigned zerofill NOT NULL DEFAULT '00000000',
   `studentPaymentPrice` decimal(5,2) NOT NULL DEFAULT '0.00',
   `studentPaymentPaid` enum('Y','N') NOT NULL DEFAULT 'N',
-  `studentPaymentDatePaid` date DEFAULT NULL,
-  PRIMARY KEY (`gibbonActivityStudentPaymentID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `studentPaymentDatePaid` date DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -340,15 +335,14 @@ CREATE TABLE `gibbonActivityStudentPayment` (
 --
 
 CREATE TABLE `gibbonAlertLevel` (
-  `gibbonAlertLevelID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonAlertLevelID` int(3) unsigned zerofill NOT NULL,
   `name` varchar(50) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `color` varchar(6) NOT NULL COMMENT 'RGB Hex, no leading #',
   `colorBG` varchar(6) NOT NULL COMMENT 'RGB Hex, no leading #',
   `description` text NOT NULL,
-  `sequenceNumber` int(3) NOT NULL,
-  PRIMARY KEY (`gibbonAlertLevelID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+  `sequenceNumber` int(3) NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonAlertLevel`
@@ -366,7 +360,7 @@ INSERT INTO `gibbonAlertLevel` (`gibbonAlertLevelID`, `name`, `nameShort`, `colo
 --
 
 CREATE TABLE `gibbonApplicationForm` (
-  `gibbonApplicationFormID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonApplicationFormID` int(12) unsigned zerofill NOT NULL,
   `surname` varchar(30) NOT NULL DEFAULT '',
   `firstName` varchar(30) NOT NULL DEFAULT '',
   `preferredName` varchar(30) NOT NULL DEFAULT '',
@@ -494,9 +488,8 @@ CREATE TABLE `gibbonApplicationForm` (
   `howDidYouHearMore` varchar(255) DEFAULT NULL,
   `paymentMade` enum('N','Y','Exemption') NOT NULL DEFAULT 'N',
   `gibbonPaymentID` int(14) unsigned zerofill DEFAULT NULL,
-  `privacy` text,
-  PRIMARY KEY (`gibbonApplicationFormID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `privacy` text
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -505,12 +498,11 @@ CREATE TABLE `gibbonApplicationForm` (
 --
 
 CREATE TABLE `gibbonApplicationFormFile` (
-  `gibbonApplicationFormFileID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonApplicationFormFileID` int(14) unsigned zerofill NOT NULL,
   `gibbonApplicationFormID` int(12) unsigned zerofill NOT NULL,
   `name` varchar(255) NOT NULL,
-  `path` varchar(255) NOT NULL,
-  PRIMARY KEY (`gibbonApplicationFormFileID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `path` varchar(255) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -519,12 +511,11 @@ CREATE TABLE `gibbonApplicationFormFile` (
 --
 
 CREATE TABLE `gibbonApplicationFormRelationship` (
-  `gibbonApplicationFormRelationshipID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonApplicationFormRelationshipID` int(14) unsigned zerofill NOT NULL,
   `gibbonApplicationFormID` int(12) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `relationship` varchar(50) NOT NULL,
-  PRIMARY KEY (`gibbonApplicationFormRelationshipID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `relationship` varchar(50) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -533,7 +524,7 @@ CREATE TABLE `gibbonApplicationFormRelationship` (
 --
 
 CREATE TABLE `gibbonAttendanceLogPerson` (
-  `gibbonAttendanceLogPersonID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonAttendanceLogPersonID` int(14) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `direction` enum('In','Out') NOT NULL,
   `type` enum('Present','Present - Late','Present - Offsite','Absent','Left','Left - Early') NOT NULL,
@@ -541,10 +532,8 @@ CREATE TABLE `gibbonAttendanceLogPerson` (
   `comment` varchar(255) NOT NULL,
   `date` date DEFAULT NULL,
   `gibbonPersonIDTaker` int(10) unsigned zerofill NOT NULL,
-  `timestampTaken` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`gibbonAttendanceLogPersonID`),
-  KEY `date` (`date`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestampTaken` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -553,13 +542,12 @@ CREATE TABLE `gibbonAttendanceLogPerson` (
 --
 
 CREATE TABLE `gibbonAttendanceLogRollGroup` (
-  `gibbonAttendanceLogRollGroupID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonAttendanceLogRollGroupID` int(14) unsigned zerofill NOT NULL,
   `gibbonRollGroupID` int(5) unsigned zerofill NOT NULL,
   `gibbonPersonIDTaker` int(10) unsigned zerofill NOT NULL,
   `date` date DEFAULT NULL,
-  `timestampTaken` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`gibbonAttendanceLogRollGroupID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestampTaken` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -568,7 +556,7 @@ CREATE TABLE `gibbonAttendanceLogRollGroup` (
 --
 
 CREATE TABLE `gibbonBehaviour` (
-  `gibbonBehaviourID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonBehaviourID` int(12) unsigned zerofill NOT NULL,
   `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
   `date` date NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
@@ -578,10 +566,8 @@ CREATE TABLE `gibbonBehaviour` (
   `comment` text CHARACTER SET utf8 NOT NULL,
   `gibbonPlannerEntryID` int(14) unsigned zerofill DEFAULT NULL,
   `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`gibbonBehaviourID`),
-  KEY `gibbonPersonID` (`gibbonPersonID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -846,17 +832,14 @@ INSERT INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES
 --
 
 CREATE TABLE `gibbonCourse` (
-  `gibbonCourseID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonCourseID` int(8) unsigned zerofill NOT NULL,
   `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
   `gibbonDepartmentID` int(4) unsigned zerofill DEFAULT NULL,
   `name` varchar(45) DEFAULT NULL,
   `nameShort` varchar(6) NOT NULL DEFAULT '',
   `description` text NOT NULL,
-  `gibbonYearGroupIDList` varchar(255) NOT NULL,
-  PRIMARY KEY (`gibbonCourseID`),
-  UNIQUE KEY `nameYear` (`gibbonSchoolYearID`,`name`),
-  KEY `gibbonSchoolYearID` (`gibbonSchoolYearID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonYearGroupIDList` varchar(255) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -865,14 +848,12 @@ CREATE TABLE `gibbonCourse` (
 --
 
 CREATE TABLE `gibbonCourseClass` (
-  `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
   `gibbonCourseID` int(8) unsigned zerofill NOT NULL,
   `name` varchar(12) NOT NULL DEFAULT '',
   `nameShort` varchar(5) NOT NULL,
-  `reportable` enum('Y','N') NOT NULL DEFAULT 'Y',
-  PRIMARY KEY (`gibbonCourseClassID`),
-  KEY `gibbonCourseID` (`gibbonCourseID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `reportable` enum('Y','N') NOT NULL DEFAULT 'Y'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -881,14 +862,12 @@ CREATE TABLE `gibbonCourseClass` (
 --
 
 CREATE TABLE `gibbonCourseClassPerson` (
-  `gibbonCourseClassPersonID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonCourseClassPersonID` int(10) unsigned zerofill NOT NULL,
   `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `role` enum('Student','Teacher','Assistant','Technician','Parent','Student - Left','Teacher - Left') NOT NULL,
-  `reportable` enum('Y','N') NOT NULL DEFAULT 'Y',
-  PRIMARY KEY (`gibbonCourseClassPersonID`),
-  KEY `gibbonCourseClassID` (`gibbonCourseClassID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `reportable` enum('Y','N') NOT NULL DEFAULT 'Y'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -897,14 +876,13 @@ CREATE TABLE `gibbonCourseClassPerson` (
 --
 
 CREATE TABLE `gibbonCrowdAssessDiscuss` (
-  `gibbonCrowdAssessDiscussID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonCrowdAssessDiscussID` int(16) unsigned zerofill NOT NULL,
   `gibbonPlannerEntryHomeworkID` int(16) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `comment` text NOT NULL,
-  `gibbonCrowdAssessDiscussIDReplyTo` int(16) unsigned zerofill DEFAULT NULL,
-  PRIMARY KEY (`gibbonCrowdAssessDiscussID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonCrowdAssessDiscussIDReplyTo` int(16) unsigned zerofill DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -913,13 +891,11 @@ CREATE TABLE `gibbonCrowdAssessDiscuss` (
 --
 
 CREATE TABLE `gibbonCrowdAssessLike` (
-  `gibbonCrowdAssessLikeID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonCrowdAssessLikeID` int(16) unsigned zerofill NOT NULL,
   `gibbonPlannerEntryHomeworkID` int(16) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`gibbonCrowdAssessLikeID`),
-  UNIQUE KEY `gibbonPlannerEntryHomeworkID` (`gibbonPlannerEntryHomeworkID`,`gibbonPersonID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -928,7 +904,7 @@ CREATE TABLE `gibbonCrowdAssessLike` (
 --
 
 CREATE TABLE `gibbonDaysOfWeek` (
-  `gibbonDaysOfWeekID` int(2) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonDaysOfWeekID` int(2) unsigned zerofill NOT NULL,
   `name` varchar(10) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `sequenceNumber` int(2) NOT NULL,
@@ -936,12 +912,8 @@ CREATE TABLE `gibbonDaysOfWeek` (
   `schoolOpen` time DEFAULT NULL,
   `schoolStart` time DEFAULT NULL,
   `schoolEnd` time DEFAULT NULL,
-  `schoolClose` time DEFAULT NULL,
-  PRIMARY KEY (`gibbonDaysOfWeekID`),
-  UNIQUE KEY `name` (`name`,`nameShort`),
-  UNIQUE KEY `sequenceNumber` (`sequenceNumber`),
-  UNIQUE KEY `nameShort` (`nameShort`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+  `schoolClose` time DEFAULT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonDaysOfWeek`
@@ -963,15 +935,14 @@ INSERT INTO `gibbonDaysOfWeek` (`gibbonDaysOfWeekID`, `name`, `nameShort`, `sequ
 --
 
 CREATE TABLE `gibbonDepartment` (
-  `gibbonDepartmentID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonDepartmentID` int(4) unsigned zerofill NOT NULL,
   `type` enum('Learning Area','Administration') NOT NULL DEFAULT 'Learning Area',
   `name` varchar(40) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `subjectListing` varchar(255) NOT NULL,
   `blurb` text NOT NULL,
-  `logo` varchar(255) NOT NULL,
-  PRIMARY KEY (`gibbonDepartmentID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `logo` varchar(255) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -980,13 +951,12 @@ CREATE TABLE `gibbonDepartment` (
 --
 
 CREATE TABLE `gibbonDepartmentResource` (
-  `gibbonDepartmentResourceID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonDepartmentResourceID` int(8) unsigned zerofill NOT NULL,
   `gibbonDepartmentID` int(4) unsigned zerofill NOT NULL,
   `type` enum('Link','File') NOT NULL,
   `name` varchar(100) NOT NULL,
-  `url` varchar(255) NOT NULL,
-  PRIMARY KEY (`gibbonDepartmentResourceID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `url` varchar(255) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -995,12 +965,11 @@ CREATE TABLE `gibbonDepartmentResource` (
 --
 
 CREATE TABLE `gibbonDepartmentStaff` (
-  `gibbonDepartmentStaffID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonDepartmentStaffID` int(6) unsigned zerofill NOT NULL,
   `gibbonDepartmentID` int(4) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `role` enum('Coordinator','Assistant Coordinator','Teacher (Curriculum)','Teacher','Director','Manager','Administrator','Other') NOT NULL,
-  PRIMARY KEY (`gibbonDepartmentStaffID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `role` enum('Coordinator','Assistant Coordinator','Teacher (Curriculum)','Teacher','Director','Manager','Administrator','Other') NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1009,10 +978,9 @@ CREATE TABLE `gibbonDepartmentStaff` (
 --
 
 CREATE TABLE `gibbonDistrict` (
-  `gibbonDistrictID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL,
-  PRIMARY KEY (`gibbonDistrictID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+`gibbonDistrictID` int(6) unsigned zerofill NOT NULL,
+  `name` varchar(30) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1021,14 +989,13 @@ CREATE TABLE `gibbonDistrict` (
 --
 
 CREATE TABLE `gibbonExternalAssessment` (
-  `gibbonExternalAssessmentID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonExternalAssessmentID` int(4) unsigned zerofill NOT NULL,
   `name` varchar(50) NOT NULL,
   `nameShort` varchar(10) NOT NULL,
   `description` varchar(255) NOT NULL,
   `website` text NOT NULL,
-  `active` enum('Y','N') NOT NULL,
-  PRIMARY KEY (`gibbonExternalAssessmentID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+  `active` enum('Y','N') NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonExternalAssessment`
@@ -1046,15 +1013,14 @@ INSERT INTO `gibbonExternalAssessment` (`gibbonExternalAssessmentID`, `name`, `n
 --
 
 CREATE TABLE `gibbonExternalAssessmentField` (
-  `gibbonExternalAssessmentFieldID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonExternalAssessmentFieldID` int(6) unsigned zerofill NOT NULL,
   `gibbonExternalAssessmentID` int(4) unsigned zerofill NOT NULL,
   `name` varchar(50) NOT NULL,
   `category` varchar(50) NOT NULL,
   `order` int(4) NOT NULL,
   `gibbonScaleID` int(5) unsigned zerofill NOT NULL,
-  `gibbonYearGroupIDList` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`gibbonExternalAssessmentFieldID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=133 ;
+  `gibbonYearGroupIDList` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=133 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonExternalAssessmentField`
@@ -1197,12 +1163,11 @@ INSERT INTO `gibbonExternalAssessmentField` (`gibbonExternalAssessmentFieldID`, 
 --
 
 CREATE TABLE `gibbonExternalAssessmentStudent` (
-  `gibbonExternalAssessmentStudentID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonExternalAssessmentStudentID` int(12) unsigned zerofill NOT NULL,
   `gibbonExternalAssessmentID` int(4) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `date` date NOT NULL,
-  PRIMARY KEY (`gibbonExternalAssessmentStudentID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `date` date NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1211,13 +1176,12 @@ CREATE TABLE `gibbonExternalAssessmentStudent` (
 --
 
 CREATE TABLE `gibbonExternalAssessmentStudentEntry` (
-  `gibbonExternalAssessmentStudentEntryID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonExternalAssessmentStudentEntryID` int(14) unsigned zerofill NOT NULL,
   `gibbonExternalAssessmentStudentID` int(12) unsigned zerofill NOT NULL,
   `gibbonExternalAssessmentFieldID` int(6) unsigned zerofill NOT NULL,
   `gibbonScaleGradeID` int(7) unsigned zerofill DEFAULT NULL COMMENT 'Key for the actual grade achieved',
-  `gibbonScaleGradeIDPrimaryAssessmentScale` int(7) unsigned zerofill DEFAULT NULL COMMENT 'Key for the equivalent grade on the school''s primary assessment scale',
-  PRIMARY KEY (`gibbonExternalAssessmentStudentEntryID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonScaleGradeIDPrimaryAssessmentScale` int(7) unsigned zerofill DEFAULT NULL COMMENT 'Key for the equivalent grade on the school''s primary assessment scale'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1226,7 +1190,7 @@ CREATE TABLE `gibbonExternalAssessmentStudentEntry` (
 --
 
 CREATE TABLE `gibbonFamily` (
-  `gibbonFamilyID` int(7) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonFamilyID` int(7) unsigned zerofill NOT NULL,
   `name` varchar(100) NOT NULL,
   `nameAddress` varchar(100) NOT NULL COMMENT 'The formal name to be used for addressing the family (e.g. Mr. & Mrs. Smith)',
   `homeAddress` mediumtext NOT NULL,
@@ -1234,9 +1198,8 @@ CREATE TABLE `gibbonFamily` (
   `homeAddressCountry` varchar(255) NOT NULL,
   `status` enum('Married','Separated','Divorced','De Facto','Other') NOT NULL,
   `languageHome` varchar(30) NOT NULL,
-  `familySync` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`gibbonFamilyID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `familySync` varchar(50) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1245,7 +1208,7 @@ CREATE TABLE `gibbonFamily` (
 --
 
 CREATE TABLE `gibbonFamilyAdult` (
-  `gibbonFamilyAdultID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonFamilyAdultID` int(8) unsigned zerofill NOT NULL,
   `gibbonFamilyID` int(7) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(8) unsigned zerofill NOT NULL,
   `comment` text NOT NULL,
@@ -1254,9 +1217,8 @@ CREATE TABLE `gibbonFamilyAdult` (
   `contactCall` enum('Y','N') NOT NULL,
   `contactSMS` enum('Y','N') NOT NULL,
   `contactEmail` enum('Y','N') NOT NULL,
-  `contactMail` enum('Y','N') NOT NULL,
-  PRIMARY KEY (`gibbonFamilyAdultID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `contactMail` enum('Y','N') NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1265,12 +1227,11 @@ CREATE TABLE `gibbonFamilyAdult` (
 --
 
 CREATE TABLE `gibbonFamilyChild` (
-  `gibbonFamilyChildID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonFamilyChildID` int(8) unsigned zerofill NOT NULL,
   `gibbonFamilyID` int(7) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(8) unsigned zerofill NOT NULL,
-  `comment` text NOT NULL,
-  PRIMARY KEY (`gibbonFamilyChildID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `comment` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1279,13 +1240,12 @@ CREATE TABLE `gibbonFamilyChild` (
 --
 
 CREATE TABLE `gibbonFamilyRelationship` (
-  `gibbonFamilyRelationshipID` int(9) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonFamilyRelationshipID` int(9) unsigned zerofill NOT NULL,
   `gibbonFamilyID` int(7) unsigned zerofill NOT NULL,
   `gibbonPersonID1` int(10) unsigned zerofill NOT NULL,
   `gibbonPersonID2` int(10) unsigned zerofill NOT NULL,
-  `relationship` varchar(50) NOT NULL,
-  PRIMARY KEY (`gibbonFamilyRelationshipID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Person 1 is [relationship] to person 2?' AUTO_INCREMENT=1 ;
+  `relationship` varchar(50) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Person 1 is [relationship] to person 2?';
 
 -- --------------------------------------------------------
 
@@ -1294,7 +1254,7 @@ CREATE TABLE `gibbonFamilyRelationship` (
 --
 
 CREATE TABLE `gibbonFamilyUpdate` (
-  `gibbonFamilyUpdateID` int(9) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonFamilyUpdateID` int(9) unsigned zerofill NOT NULL,
   `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
   `gibbonFamilyID` int(7) unsigned zerofill NOT NULL,
   `nameAddress` varchar(100) NOT NULL DEFAULT '',
@@ -1302,9 +1262,8 @@ CREATE TABLE `gibbonFamilyUpdate` (
   `homeAddressDistrict` varchar(255) NOT NULL DEFAULT '',
   `homeAddressCountry` varchar(255) NOT NULL DEFAULT '',
   `gibbonPersonIDUpdater` int(10) unsigned zerofill NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`gibbonFamilyUpdateID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1313,12 +1272,11 @@ CREATE TABLE `gibbonFamilyUpdate` (
 --
 
 CREATE TABLE `gibbonFileExtension` (
-  `gibbonFileExtensionID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonFileExtensionID` int(4) unsigned zerofill NOT NULL,
   `type` enum('Document','Spreadsheet','Presentation','Graphics/Design','Video','Audio','Other') NOT NULL DEFAULT 'Other',
   `extension` varchar(7) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  PRIMARY KEY (`gibbonFileExtensionID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=48 ;
+  `name` varchar(50) NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonFileExtension`
@@ -1380,7 +1338,7 @@ INSERT INTO `gibbonFileExtension` (`gibbonFileExtensionID`, `type`, `extension`,
 --
 
 CREATE TABLE `gibbonFinanceBillingSchedule` (
-  `gibbonFinanceBillingScheduleID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonFinanceBillingScheduleID` int(6) unsigned zerofill NOT NULL,
   `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
   `name` varchar(100) NOT NULL,
   `description` text NOT NULL,
@@ -1390,9 +1348,8 @@ CREATE TABLE `gibbonFinanceBillingSchedule` (
   `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
   `timestampCreator` timestamp NULL DEFAULT NULL,
   `gibbonPersonIDUpdate` int(10) unsigned zerofill DEFAULT NULL,
-  `timestampUpdate` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`gibbonFinanceBillingScheduleID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestampUpdate` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1401,7 +1358,7 @@ CREATE TABLE `gibbonFinanceBillingSchedule` (
 --
 
 CREATE TABLE `gibbonFinanceFee` (
-  `gibbonFinanceFeeID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonFinanceFeeID` int(6) unsigned zerofill NOT NULL,
   `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
   `name` varchar(100) NOT NULL,
   `nameShort` varchar(6) NOT NULL,
@@ -1412,9 +1369,8 @@ CREATE TABLE `gibbonFinanceFee` (
   `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
   `timestampCreator` timestamp NULL DEFAULT NULL,
   `gibbonPersonIDUpdate` int(10) unsigned zerofill DEFAULT NULL,
-  `timestampUpdate` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`gibbonFinanceFeeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestampUpdate` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1423,7 +1379,7 @@ CREATE TABLE `gibbonFinanceFee` (
 --
 
 CREATE TABLE `gibbonFinanceFeeCategory` (
-  `gibbonFinanceFeeCategoryID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonFinanceFeeCategoryID` int(4) unsigned zerofill NOT NULL,
   `name` varchar(100) NOT NULL,
   `nameShort` varchar(6) NOT NULL,
   `description` text NOT NULL,
@@ -1431,9 +1387,8 @@ CREATE TABLE `gibbonFinanceFeeCategory` (
   `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
   `timestampCreator` timestamp NULL DEFAULT NULL,
   `gibbonPersonIDUpdate` int(10) unsigned zerofill DEFAULT NULL,
-  `timestampUpdate` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`gibbonFinanceFeeCategoryID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestampUpdate` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1442,7 +1397,7 @@ CREATE TABLE `gibbonFinanceFeeCategory` (
 --
 
 CREATE TABLE `gibbonFinanceInvoice` (
-  `gibbonFinanceInvoiceID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonFinanceInvoiceID` int(14) unsigned zerofill NOT NULL,
   `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
   `gibbonFinanceInvoiceeID` int(10) unsigned zerofill NOT NULL,
   `invoiceTo` enum('Family','Company') NOT NULL DEFAULT 'Family',
@@ -1454,14 +1409,15 @@ CREATE TABLE `gibbonFinanceInvoice` (
   `invoiceDueDate` date DEFAULT NULL,
   `paidDate` date DEFAULT NULL,
   `paidAmount` decimal(13,2) DEFAULT NULL COMMENT 'The final amount paid',
+  `gibbonPaymentID` int(14) unsigned zerofill DEFAULT NULL,
   `reminderCount` int(3) NOT NULL DEFAULT '0',
   `notes` text NOT NULL,
+  `key` varchar(40) NOT NULL,
   `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
   `timestampCreator` timestamp NULL DEFAULT NULL,
   `gibbonPersonIDUpdate` int(10) unsigned zerofill DEFAULT NULL,
-  `timestampUpdate` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`gibbonFinanceInvoiceID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestampUpdate` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1470,7 +1426,7 @@ CREATE TABLE `gibbonFinanceInvoice` (
 --
 
 CREATE TABLE `gibbonFinanceInvoicee` (
-  `gibbonFinanceInvoiceeID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonFinanceInvoiceeID` int(10) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `invoiceTo` enum('Family','Company') NOT NULL,
   `companyName` varchar(100) DEFAULT NULL,
@@ -1480,9 +1436,8 @@ CREATE TABLE `gibbonFinanceInvoicee` (
   `companyCCFamily` enum('N','Y') DEFAULT NULL COMMENT 'When company is billed, should family receive a copy?',
   `companyPhone` varchar(20) DEFAULT NULL,
   `companyAll` enum('Y','N') DEFAULT NULL COMMENT 'Should company pay all invoices?.',
-  `gibbonFinanceFeeCategoryIDList` text COMMENT 'If companyAll is N, list category IDs for campany to pay here.',
-  PRIMARY KEY (`gibbonFinanceInvoiceeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonFinanceFeeCategoryIDList` text COMMENT 'If companyAll is N, list category IDs for campany to pay here.'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1491,7 +1446,7 @@ CREATE TABLE `gibbonFinanceInvoicee` (
 --
 
 CREATE TABLE `gibbonFinanceInvoiceeUpdate` (
-  `gibbonFinanceInvoiceeUpdateID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonFinanceInvoiceeUpdateID` int(12) unsigned zerofill NOT NULL,
   `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
   `gibbonFinanceInvoiceeID` int(10) unsigned zerofill NOT NULL,
   `invoiceTo` enum('Family','Company') NOT NULL,
@@ -1504,9 +1459,8 @@ CREATE TABLE `gibbonFinanceInvoiceeUpdate` (
   `companyAll` enum('Y','N') DEFAULT NULL COMMENT 'Should company pay all invoices?.',
   `gibbonFinanceFeeCategoryIDList` text COMMENT 'If companyAll is N, list category IDs for campany to pay here.',
   `gibbonPersonIDUpdater` int(10) unsigned zerofill NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`gibbonFinanceInvoiceeUpdateID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1515,7 +1469,7 @@ CREATE TABLE `gibbonFinanceInvoiceeUpdate` (
 --
 
 CREATE TABLE `gibbonFinanceInvoiceFee` (
-  `gibbonFinanceInvoiceFeeID` int(15) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonFinanceInvoiceFeeID` int(15) unsigned zerofill NOT NULL,
   `gibbonFinanceInvoiceID` int(14) unsigned zerofill NOT NULL,
   `feeType` enum('Standard','Ad Hoc') NOT NULL DEFAULT 'Ad Hoc',
   `gibbonFinanceFeeID` int(6) unsigned zerofill DEFAULT NULL,
@@ -1524,9 +1478,8 @@ CREATE TABLE `gibbonFinanceInvoiceFee` (
   `description` text,
   `gibbonFinanceFeeCategoryID` int(4) unsigned zerofill DEFAULT NULL,
   `fee` decimal(12,2) DEFAULT NULL,
-  `sequenceNumber` int(10) DEFAULT NULL,
-  PRIMARY KEY (`gibbonFinanceInvoiceFeeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `sequenceNumber` int(10) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1535,14 +1488,12 @@ CREATE TABLE `gibbonFinanceInvoiceFee` (
 --
 
 CREATE TABLE `gibbonHook` (
-  `gibbonHookID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonHookID` int(4) unsigned zerofill NOT NULL,
   `name` varchar(50) NOT NULL,
   `type` enum('Student Profile','Unit') DEFAULT NULL,
   `options` text NOT NULL,
-  `gibbonModuleID` int(4) unsigned zerofill NOT NULL COMMENT 'The module which installed this hook.',
-  PRIMARY KEY (`gibbonHookID`),
-  UNIQUE KEY `name` (`name`,`type`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+  `gibbonModuleID` int(4) unsigned zerofill NOT NULL COMMENT 'The module which installed this hook.'
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1551,12 +1502,10 @@ CREATE TABLE `gibbonHook` (
 --
 
 CREATE TABLE `gibbonHouse` (
-  `gibbonHouseID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonHouseID` int(3) unsigned zerofill NOT NULL,
   `name` varchar(10) NOT NULL,
-  `nameShort` varchar(4) NOT NULL,
-  PRIMARY KEY (`gibbonHouseID`),
-  UNIQUE KEY `name` (`name`,`nameShort`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `nameShort` varchar(4) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1565,9 +1514,9 @@ CREATE TABLE `gibbonHouse` (
 --
 
 CREATE TABLE `gibboni18n` (
-  `gibboni18nID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibboni18nID` int(4) unsigned zerofill NOT NULL,
   `code` varchar(5) NOT NULL,
-  `name` varchar(50) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `systemDefault` enum('Y','N') NOT NULL DEFAULT 'N',
   `maintainerName` varchar(100) NOT NULL,
@@ -1575,21 +1524,23 @@ CREATE TABLE `gibboni18n` (
   `dateFormat` varchar(20) NOT NULL,
   `dateFormatRegEx` text NOT NULL,
   `dateFormatPHP` varchar(20) NOT NULL,
-  PRIMARY KEY (`gibboni18nID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+  `rtl` enum('Y','N') NOT NULL DEFAULT 'N'
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibboni18n`
 --
 
-INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`) VALUES
-(0001, 'en_GB', 'English - United Kingdom', 'Y', 'Y', 'Gibbon', 'http://gibbonedu.org', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y'),
-(0002, 'en_US', 'English - United States', 'Y', 'N', 'Gibbon', 'http://gibbonedu.org', 'mm/dd/yyyy', '/(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20\\d\\d)/', 'm/d/Y'),
-(0003, 'es_ES', 'Español', 'Y', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y'),
-(0004, 'zh_CN', '汉语 - 中国', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'yyyy-mm-dd', '/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/', 'Y-m-d'),
-(0005, 'zh_HK', '體字 - 香港', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y'),
-(0007, 'pl_PL', 'Język polski - Polska', 'N', 'N', 'Arek Gladki', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\\d\\\\d$/i', 'd/m/Y'),
-(0008, 'it_IT', 'Italiano - Italia', 'Y', 'N', 'Carmine Sirignano', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y');
+INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `rtl`) VALUES
+(0001, 'en_GB', 'English - United Kingdom', 'Y', 'Y', 'Gibbon', 'http://gibbonedu.org', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
+(0002, 'en_US', 'English - United States', 'Y', 'N', 'Gibbon', 'http://gibbonedu.org', 'mm/dd/yyyy', '/(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20\\d\\d)/', 'm/d/Y', 'N'),
+(0003, 'es_ES', 'Español', 'Y', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
+(0004, 'zh_CN', '汉语 - 中国', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'yyyy-mm-dd', '/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/', 'Y-m-d', 'N'),
+(0005, 'zh_HK', '體字 - 香港', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
+(0007, 'pl_PL', 'Język polski - Polska', 'N', 'N', 'Arek Gladki', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\\d\\\\d$/i', 'd/m/Y', 'N'),
+(0008, 'it_IT', 'Italiano - Italia', 'Y', 'N', 'Carmine Sirignano', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
+(0010, 'id_ID', 'Bahasa Indonesia - Indonesia', 'N', 'N', 'Adrian Hodson', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
+(0011, 'ar_SA', 'العربية - المملكة العربية السعودية', 'N', 'N', 'Abdul Rahman Yousef', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'Y');
 
 -- --------------------------------------------------------
 
@@ -1598,14 +1549,12 @@ INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `active`, `systemDefau
 --
 
 CREATE TABLE `gibbonIN` (
-  `gibbonINID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonINID` int(10) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `strategies` text NOT NULL,
   `targets` text NOT NULL,
-  `notes` text NOT NULL,
-  PRIMARY KEY (`gibbonINID`),
-  UNIQUE KEY `gibbonPersonID` (`gibbonPersonID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `notes` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1614,13 +1563,12 @@ CREATE TABLE `gibbonIN` (
 --
 
 CREATE TABLE `gibbonINDescriptor` (
-  `gibbonINDescriptorID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonINDescriptorID` int(3) unsigned zerofill NOT NULL,
   `name` varchar(50) NOT NULL,
   `nameShort` varchar(5) NOT NULL,
   `description` text NOT NULL,
-  `sequenceNumber` int(3) NOT NULL,
-  PRIMARY KEY (`gibbonINDescriptorID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+  `sequenceNumber` int(3) NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonINDescriptor`
@@ -1638,12 +1586,11 @@ INSERT INTO `gibbonINDescriptor` (`gibbonINDescriptorID`, `name`, `nameShort`, `
 --
 
 CREATE TABLE `gibbonINPersonDescriptor` (
-  `gibbonINPersonDescriptorID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonINPersonDescriptorID` int(12) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `gibbonINDescriptorID` int(3) unsigned zerofill NOT NULL,
-  `gibbonAlertLevelID` int(3) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`gibbonINPersonDescriptorID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonAlertLevelID` int(3) unsigned zerofill NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1652,7 +1599,7 @@ CREATE TABLE `gibbonINPersonDescriptor` (
 --
 
 CREATE TABLE `gibbonLibraryItem` (
-  `gibbonLibraryItemID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonLibraryItemID` int(10) unsigned zerofill NOT NULL,
   `gibbonLibraryTypeID` int(5) unsigned zerofill NOT NULL,
   `id` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL COMMENT 'Name for book, model for computer, etc.',
@@ -1680,10 +1627,8 @@ CREATE TABLE `gibbonLibraryItem` (
   `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
   `timestampCreator` datetime NOT NULL,
   `gibbonPersonIDUpdate` int(10) unsigned zerofill DEFAULT NULL,
-  `timestampUpdate` datetime DEFAULT NULL,
-  PRIMARY KEY (`gibbonLibraryItemID`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestampUpdate` datetime DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1692,7 +1637,7 @@ CREATE TABLE `gibbonLibraryItem` (
 --
 
 CREATE TABLE `gibbonLibraryItemEvent` (
-  `gibbonLibraryItemEventID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonLibraryItemEventID` int(14) unsigned zerofill NOT NULL,
   `gibbonLibraryItemID` int(10) unsigned zerofill NOT NULL,
   `type` enum('Decommission','Loss','Loan','Repair','Reserve','Other') NOT NULL DEFAULT 'Other' COMMENT 'This is maintained even after the item is returned, so we know what type of event it was.',
   `status` enum('Available','Decommissioned','Lost','On Loan','Repair','Reserved','Returned') NOT NULL DEFAULT 'Available',
@@ -1703,9 +1648,8 @@ CREATE TABLE `gibbonLibraryItemEvent` (
   `returnAction` enum('Make Available','Decommission','Repair','Reserve') DEFAULT NULL COMMENT 'What to do when the item is returned?',
   `gibbonPersonIDReturnAction` int(10) unsigned zerofill DEFAULT NULL,
   `timestampReturn` datetime DEFAULT NULL,
-  `gibbonPersonIDIn` int(10) unsigned zerofill DEFAULT NULL,
-  PRIMARY KEY (`gibbonLibraryItemEventID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonPersonIDIn` int(10) unsigned zerofill DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1714,12 +1658,11 @@ CREATE TABLE `gibbonLibraryItemEvent` (
 --
 
 CREATE TABLE `gibbonLibraryType` (
-  `gibbonLibraryTypeID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonLibraryTypeID` int(5) unsigned zerofill NOT NULL,
   `name` varchar(30) NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `fields` text NOT NULL,
-  PRIMARY KEY (`gibbonLibraryTypeID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+  `fields` text NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonLibraryType`
@@ -1729,7 +1672,8 @@ INSERT INTO `gibbonLibraryType` (`gibbonLibraryTypeID`, `name`, `active`, `field
 (00004, 'Print Publication', 'Y', 'a:20:{i:0;a:6:{s:4:"name";s:6:"Format";s:11:"description";s:0:"";s:4:"type";s:6:"Select";s:7:"options";s:341:",Art - Original,Art - Reproduction,Book,Braille,Cartographic material,Chart,Diorama,Electronic Resource,Filmstrip,Flash Card,Game,Globe,Journal,Kit,Large print,Magazine,Manuscript,Microform,Microscope slide,Model,Motion Picture,Music,Picture,Realia,Resource,Serial,Slide,Sound Recording,Technical Drawing,Text,Toy,Transparency,Videorecording";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:1;a:6:{s:4:"name";s:9:"Publisher";s:11:"description";s:45:"Name of the company who published the volume.";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:2;a:6:{s:4:"name";s:16:"Publication Date";s:11:"description";s:36:"Format: dd/mm/yyyy, mm/yyyy or yyyy.";s:4:"type";s:4:"Text";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:3;a:6:{s:4:"name";s:22:"Country of Publication";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:4;a:6:{s:4:"name";s:7:"Edition";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:5;a:6:{s:4:"name";s:6:"ISBN10";s:11:"description";s:28:"10-digit unique ISBN number.";s:4:"type";s:4:"Text";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"Y";}i:6;a:6:{s:4:"name";s:6:"ISBN13";s:11:"description";s:28:"13-digit unique ISBN number.";s:4:"type";s:4:"Text";s:7:"options";s:2:"13";s:7:"default";s:0:"";s:8:"required";s:1:"Y";}i:7;a:6:{s:4:"name";s:11:"Description";s:11:"description";s:36:"A brief blurb describing the volume.";s:4:"type";s:8:"Textarea";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:8;a:6:{s:4:"name";s:8:"Subjects";s:11:"description";s:33:"Comma separated list of subjects.";s:4:"type";s:8:"Textarea";s:7:"options";s:1:"2";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:9;a:6:{s:4:"name";s:10:"Collection";s:11:"description";s:0:"";s:4:"type";s:6:"Select";s:7:"options";s:230:",Fiction, Fiction - Best Sellers, Fiction - Classics, Fiction - Mystery, Fiction - Series, Fiction - Young Adult, Nonfiction, Nonfiction - College Prep, Nonfiction - Graphic Novels, Nonfiction - Life Skills, Nonfiction - Reference";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:10;a:6:{s:4:"name";s:14:"Control Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:11;a:6:{s:4:"name";s:20:"Cataloging Authority";s:11:"description";s:37:"Issuing authority for Control Number.";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:12;a:6:{s:4:"name";s:21:"Reader Age (Youngest)";s:11:"description";s:50:"Age in years, youngest reading age recommendation.";s:4:"type";s:4:"Text";s:7:"options";s:1:"3";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:13;a:6:{s:4:"name";s:19:"Reader Age (Oldest)";s:11:"description";s:48:"Age in years, oldest reading age recommendation.";s:4:"type";s:4:"Text";s:7:"options";s:1:"3";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:14;a:6:{s:4:"name";s:10:"Page Count";s:11:"description";s:34:"The number of pages in the volume.";s:4:"type";s:4:"Text";s:7:"options";s:1:"4";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:15;a:6:{s:4:"name";s:6:"Height";s:11:"description";s:41:"The physical height of the volume, in cm.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:16;a:6:{s:4:"name";s:5:"Width";s:11:"description";s:40:"The physical width of the volume, in cm.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:17;a:6:{s:4:"name";s:9:"Thickness";s:11:"description";s:44:"The physical thickness of the volume, in cm.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:18;a:6:{s:4:"name";s:8:"Language";s:11:"description";s:35:"The primary language of the volume.";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:19;a:6:{s:4:"name";s:4:"Link";s:11:"description";s:44:"Link to web-based information on the volume.";s:4:"type";s:3:"URL";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}}'),
 (00008, 'Electronics', 'Y', 'a:8:{i:0;a:6:{s:4:"name";s:4:"Type";s:11:"description";s:29:"What kind of product is this?";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"Y";}i:1;a:6:{s:4:"name";s:13:"Serial Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:2;a:6:{s:4:"name";s:10:"Model Name";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:3;a:6:{s:4:"name";s:8:"Model ID";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:4;a:6:{s:4:"name";s:11:"Accessories";s:11:"description";s:36:"Any chargers, remotes controls, etc?";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:5;a:6:{s:4:"name";s:15:"Warranty Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:6;a:6:{s:4:"name";s:15:"Warranty Expiry";s:11:"description";s:19:"Format: dd/mm/yyyy.";s:4:"type";s:4:"Date";s:7:"options";s:0:"";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:7;a:6:{s:4:"name";s:16:"Repair Log/Notes";s:11:"description";s:0:"";s:4:"type";s:8:"Textarea";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}}'),
 (00007, 'Computer', 'Y', 'a:16:{i:0;a:6:{s:4:"name";s:11:"Form Factor";s:11:"description";s:0:"";s:4:"type";s:6:"Select";s:7:"options";s:50:"Desktop, Laptop, Tablet, Phone, Set-Top Box, Other";s:7:"default";s:6:"Laptop";s:8:"required";s:1:"Y";}i:1;a:6:{s:4:"name";s:16:"Operating System";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:2;a:6:{s:4:"name";s:13:"Serial Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:3;a:6:{s:4:"name";s:10:"Model Name";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:4;a:6:{s:4:"name";s:8:"Model ID";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:5;a:6:{s:4:"name";s:8:"CPU Type";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:6;a:6:{s:4:"name";s:9:"CPU Speed";s:11:"description";s:7:"In GHz.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:7;a:6:{s:4:"name";s:6:"Memory";s:11:"description";s:17:"Total RAM, in GB.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:8;a:6:{s:4:"name";s:7:"Storage";s:11:"description";s:30:"Total HDD/SDD capacity, in GB.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:9;a:6:{s:4:"name";s:20:"Wireless MAC Address";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"17";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:10;a:6:{s:4:"name";s:17:"Wired MAC Address";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"17";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:11;a:6:{s:4:"name";s:11:"Accessories";s:11:"description";s:43:"Any chargers, display dongles, remotes etc?";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:12;a:6:{s:4:"name";s:15:"Warranty Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:13;a:6:{s:4:"name";s:15:"Warranty Expiry";s:11:"description";s:19:"Format: dd/mm/yyyy.";s:4:"type";s:4:"Date";s:7:"options";s:0:"";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:14;a:6:{s:4:"name";s:19:"Last Reinstall Date";s:11:"description";s:19:"Format: dd/mm/yyyy.";s:4:"type";s:4:"Date";s:7:"options";s:0:"";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:15;a:6:{s:4:"name";s:16:"Repair Log/Notes";s:11:"description";s:0:"";s:4:"type";s:8:"Textarea";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}}'),
-(00009, 'Other', 'Y', 'a:1:{i:0;a:6:{s:4:"name";s:4:"Type";s:11:"description";s:29:"What kind of product is this?";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"Y";}}');
+(00009, 'Other', 'Y', 'a:1:{i:0;a:6:{s:4:"name";s:4:"Type";s:11:"description";s:29:"What kind of product is this?";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"Y";}}'),
+(00010, 'Software', 'Y', 'a:7:{i:0;a:6:{s:4:"name";s:7:"Version";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:1;a:6:{s:4:"name";s:16:"Operating System";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:2;a:6:{s:4:"name";s:12:"License Type";s:11:"description";s:48:"E.g. Open Source, Site License, number of users.";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:3;a:6:{s:4:"name";s:12:"License Name";s:11:"description";s:55:"If the software is registered, who is it registered to?";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:4;a:6:{s:4:"name";s:21:"License Serial Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:5;a:6:{s:4:"name";s:14:"License Expiry";s:11:"description";s:19:"Format: dd/mm/yyyy.";s:4:"type";s:4:"Date";s:7:"options";s:0:"";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:6;a:6:{s:4:"name";s:23:"License Management Link";s:11:"description";s:34:"Link to web-based management tool.";s:4:"type";s:3:"URL";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}}');
 
 -- --------------------------------------------------------
 
@@ -1738,7 +1682,7 @@ INSERT INTO `gibbonLibraryType` (`gibbonLibraryTypeID`, `name`, `active`, `field
 --
 
 CREATE TABLE `gibbonMarkbookColumn` (
-  `gibbonMarkbookColumnID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonMarkbookColumnID` int(10) unsigned zerofill NOT NULL,
   `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
   `gibbonHookID` int(4) unsigned zerofill DEFAULT NULL,
   `gibbonUnitID` int(10) unsigned zerofill DEFAULT NULL,
@@ -1760,10 +1704,8 @@ CREATE TABLE `gibbonMarkbookColumn` (
   `viewableStudents` enum('N','Y') NOT NULL,
   `viewableParents` enum('N','Y') NOT NULL,
   `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`gibbonMarkbookColumnID`),
-  KEY `gibbonCourseClassID` (`gibbonCourseClassID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1772,7 +1714,7 @@ CREATE TABLE `gibbonMarkbookColumn` (
 --
 
 CREATE TABLE `gibbonMarkbookEntry` (
-  `gibbonMarkbookEntryID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonMarkbookEntryID` int(12) unsigned zerofill NOT NULL,
   `gibbonMarkbookColumnID` int(10) unsigned zerofill NOT NULL,
   `gibbonPersonIDStudent` int(10) unsigned zerofill NOT NULL,
   `attainmentValue` varchar(10) NOT NULL,
@@ -1783,11 +1725,8 @@ CREATE TABLE `gibbonMarkbookEntry` (
   `effortConcern` enum('N','Y') NOT NULL,
   `comment` text NOT NULL,
   `response` varchar(255) DEFAULT NULL,
-  `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`gibbonMarkbookEntryID`),
-  KEY `gibbonPersonIDStudent` (`gibbonPersonIDStudent`),
-  KEY `gibbonMarkbookColumnID` (`gibbonMarkbookColumnID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1796,13 +1735,11 @@ CREATE TABLE `gibbonMarkbookEntry` (
 --
 
 CREATE TABLE `gibbonMarkbookTarget` (
-  `gibbonMarkbookTargetID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonMarkbookTargetID` int(14) unsigned zerofill NOT NULL,
   `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
   `gibbonPersonIDStudent` int(10) unsigned zerofill NOT NULL,
-  `gibbonScaleGradeID` int(7) DEFAULT NULL,
-  PRIMARY KEY (`gibbonMarkbookTargetID`),
-  UNIQUE KEY `coursePerson` (`gibbonCourseClassID`,`gibbonPersonIDStudent`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonScaleGradeID` int(7) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1811,11 +1748,9 @@ CREATE TABLE `gibbonMarkbookTarget` (
 --
 
 CREATE TABLE `gibbonMedicalCondition` (
-  `gibbonMedicalConditionID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `name` varchar(80) NOT NULL,
-  PRIMARY KEY (`gibbonMedicalConditionID`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=28 ;
+`gibbonMedicalConditionID` int(4) unsigned zerofill NOT NULL,
+  `name` varchar(80) NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonMedicalCondition`
@@ -1857,7 +1792,7 @@ INSERT INTO `gibbonMedicalCondition` (`gibbonMedicalConditionID`, `name`) VALUES
 --
 
 CREATE TABLE `gibbonMessenger` (
-  `gibbonMessengerID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonMessengerID` int(12) unsigned zerofill NOT NULL,
   `email` enum('N','Y') NOT NULL DEFAULT 'N',
   `messageWall` enum('N','Y') NOT NULL DEFAULT 'N',
   `messageWall_date1` date DEFAULT NULL,
@@ -1869,9 +1804,8 @@ CREATE TABLE `gibbonMessenger` (
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `timestamp` timestamp NULL DEFAULT NULL,
   `emailReport` text NOT NULL,
-  `smsReport` text NOT NULL,
-  PRIMARY KEY (`gibbonMessengerID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `smsReport` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1880,15 +1814,14 @@ CREATE TABLE `gibbonMessenger` (
 --
 
 CREATE TABLE `gibbonMessengerTarget` (
-  `gibbonMessengerTargetID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonMessengerTargetID` int(14) unsigned zerofill NOT NULL,
   `gibbonMessengerID` int(12) unsigned zerofill NOT NULL,
   `type` enum('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category') NOT NULL,
   `id` varchar(30) NOT NULL,
   `parents` enum('N','Y') NOT NULL DEFAULT 'N',
   `students` enum('N','Y') NOT NULL DEFAULT 'N',
-  `staff` enum('N','Y') NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`gibbonMessengerTargetID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `staff` enum('N','Y') NOT NULL DEFAULT 'N'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1897,7 +1830,7 @@ CREATE TABLE `gibbonMessengerTarget` (
 --
 
 CREATE TABLE `gibbonModule` (
-  `gibbonModuleID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT 'This number is assigned at install, and is only unique to the installation',
+`gibbonModuleID` int(4) unsigned zerofill NOT NULL COMMENT 'This number is assigned at install, and is only unique to the installation',
   `name` varchar(30) NOT NULL DEFAULT '' COMMENT 'This name should be globally unique preferably, but certainly locally unique',
   `description` varchar(100) NOT NULL,
   `entryURL` varchar(255) NOT NULL DEFAULT 'index.php',
@@ -1906,10 +1839,8 @@ CREATE TABLE `gibbonModule` (
   `category` varchar(10) NOT NULL,
   `version` varchar(6) NOT NULL,
   `author` varchar(40) NOT NULL,
-  `url` varchar(255) NOT NULL,
-  PRIMARY KEY (`gibbonModuleID`),
-  UNIQUE KEY `gibbonModuleName` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=141 ;
+  `url` varchar(255) NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=141 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonModule`
@@ -1921,22 +1852,22 @@ INSERT INTO `gibbonModule` (`gibbonModuleID`, `name`, `description`, `entryURL`,
 (0003, 'System Admin', 'Allows administrators to configure system settings.', 'systemSettings.php', 'Core', 'Y', 'Admin', '', 'Ross Parker', 'http://rossparker.org'),
 (0005, 'Students', 'Allows users to view student data', 'student_view.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
 (0006, 'Attendance', 'School attendance taking', 'attendance_take_byRollGroup.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
-(0007, 'Markbook', 'A system for keeping track of marks', 'markbook_view.php', 'Core', 'Y', 'Assessment', '', 'Ross Parker', 'http://rossparker.org'),
-(0004, 'Departments', 'View details within a department', 'departments.php', 'Core', 'Y', 'Learning', '', 'Ross Parker', 'http://rossparker.org'),
-(0009, 'Planner', 'Supports lesson planning and information sharing for staff, student and parents', 'planner.php', 'Core', 'Y', 'Learning', '', 'Ross Parker', 'http://rossparker.org'),
-(0011, 'Individual Needs', 'Individual Needs', 'in_view.php', 'Core', 'Y', 'Learning', '', 'Ross Parker', 'http://rossparker.org'),
-(0012, 'Crowd Assessment', 'Allows users to assess each other''s work', 'crowdAssess.php', 'Core', 'Y', 'Assessment', '', 'Ross Parker', 'http://rossparker.org'),
+(0007, 'Markbook', 'A system for keeping track of marks', 'markbook_view.php', 'Core', 'Y', 'Assess', '', 'Ross Parker', 'http://rossparker.org'),
+(0004, 'Departments', 'View details within a department', 'departments.php', 'Core', 'Y', 'Learn', '', 'Ross Parker', 'http://rossparker.org'),
+(0009, 'Planner', 'Supports lesson planning and information sharing for staff, student and parents', 'planner.php', 'Core', 'Y', 'Learn', '', 'Ross Parker', 'http://rossparker.org'),
+(0011, 'Individual Needs', 'Individual Needs', 'in_view.php', 'Core', 'Y', 'Learn', '', 'Ross Parker', 'http://rossparker.org'),
+(0012, 'Crowd Assessment', 'Allows users to assess each other''s work', 'crowdAssess.php', 'Core', 'Y', 'Assess', '', 'Ross Parker', 'http://rossparker.org'),
 (0013, 'Timetable Admin', 'Timetable administration', 'tt.php', 'Core', 'Y', 'Admin', '', 'Ross Parker', 'http://rossparker.org'),
-(0014, 'Timetable', 'Allows users to view timetables', 'tt.php', 'Core', 'Y', 'Learning', '', 'Ross Parker', 'http://rossparker.org'),
-(0015, 'Activities', 'Run a school activities program', 'activities_view.php', 'Core', 'Y', 'Learning', '', 'Ross Parker', 'http://rossparker.org'),
+(0014, 'Timetable', 'Allows users to view timetables', 'tt.php', 'Core', 'Y', 'Learn', '', 'Ross Parker', 'http://rossparker.org'),
+(0015, 'Activities', 'Run a school activities program', 'activities_view.php', 'Core', 'Y', 'Learn', '', 'Ross Parker', 'http://rossparker.org'),
 (0008, 'Data Updater', 'Allow users to update their family''s data', 'data_personal.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
-(0016, 'External Assessment', 'Facilitates tracking of student performance in external examinations.', 'externalAssessment.php', 'Core', 'Y', 'Assessment', '', 'Ross Parker', 'http://rossparker.org'),
+(0016, 'External Assessment', 'Facilitates tracking of student performance in external examinations.', 'externalAssessment.php', 'Core', 'Y', 'Assess', '', 'Ross Parker', 'http://rossparker.org'),
 (0017, 'Application Form', 'Allows users, with or without an account, to apply for student places.', 'applicationForm.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
 (0119, 'Behaviour', 'Tracking Student Behaviour', 'behaviour_manage.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
-(0120, 'Resources', 'Collect and manage resources for teaching and learning', 'resources_view.php', 'Core', 'Y', 'Learning', '', 'Ross Parker', 'http://rossparker.org'),
+(0120, 'Resources', 'Collect and manage resources for teaching and learning', 'resources_view.php', 'Core', 'Y', 'Learn', '', 'Ross Parker', 'http://rossparker.org'),
 (0121, 'Messenger', 'Unified messenger for email, message wall and more.', 'messenger_manage.php', 'Core', 'Y', 'Other', '', 'Ross Parker', 'http://rossparker.org'),
-(0126, 'Rubrics', 'Allows users to create rubrics for assessment', 'rubrics.php', 'Core', 'Y', 'Assessment', '', 'Ross Parker', 'http://rossparker.org'),
-(0130, 'Library', 'Allows the management of a catalog from which items can be borrowed.', 'library_manage_catalog.php', 'Core', 'Y', 'Learning', '', 'Ross Parker', 'http://rossparker.org'),
+(0126, 'Rubrics', 'Allows users to create rubrics for assessment', 'rubrics.php', 'Core', 'Y', 'Assess', '', 'Ross Parker', 'http://rossparker.org'),
+(0130, 'Library', 'Allows the management of a catalog from which items can be borrowed.', 'library_manage_catalog.php', 'Core', 'Y', 'Learn', '', 'Ross Parker', 'http://rossparker.org'),
 (0135, 'Finance', 'Allows a school to issue invoices and track payments.', 'invoices_manage.php', 'Core', 'Y', 'Other', '', 'Ross Parker', 'http://rossparker.org'),
 (0136, 'Staff', 'Allows users to view staff information', 'staff_view.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
 (0137, 'Roll Groups', 'Allows users to view a listing of roll groups', 'rollGroups.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org');
@@ -1948,15 +1879,14 @@ INSERT INTO `gibbonModule` (`gibbonModuleID`, `name`, `description`, `entryURL`,
 --
 
 CREATE TABLE `gibbonNotification` (
-  `gibbonNotificationID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonNotificationID` int(10) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `gibbonModuleID` int(4) unsigned zerofill DEFAULT NULL,
   `count` int(4) NOT NULL DEFAULT '1',
   `text` text NOT NULL,
   `actionLink` varchar(255) NOT NULL COMMENT 'Relative to absoluteURL, start with a forward slash',
-  `timestamp` datetime NOT NULL,
-  PRIMARY KEY (`gibbonNotificationID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestamp` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1965,7 +1895,7 @@ CREATE TABLE `gibbonNotification` (
 --
 
 CREATE TABLE `gibbonOutcome` (
-  `gibbonOutcomeID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonOutcomeID` int(8) unsigned zerofill NOT NULL,
   `name` varchar(100) NOT NULL,
   `nameShort` varchar(14) NOT NULL,
   `category` varchar(50) NOT NULL,
@@ -1974,9 +1904,8 @@ CREATE TABLE `gibbonOutcome` (
   `scope` enum('School','Learning Area') NOT NULL,
   `gibbonDepartmentID` int(4) unsigned zerofill DEFAULT NULL,
   `gibbonYearGroupIDList` varchar(255) NOT NULL,
-  `gibbonPersonIDCreator` int(8) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`gibbonOutcomeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonPersonIDCreator` int(8) unsigned zerofill NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1985,7 +1914,7 @@ CREATE TABLE `gibbonOutcome` (
 --
 
 CREATE TABLE `gibbonPayment` (
-  `gibbonPaymentID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPaymentID` int(14) unsigned zerofill NOT NULL,
   `foreignTable` varchar(50) NOT NULL,
   `foreignTableID` int(14) unsigned zerofill NOT NULL,
   `gateway` enum('Paypal') NOT NULL,
@@ -1994,9 +1923,8 @@ CREATE TABLE `gibbonPayment` (
   `paymentPayerID` varchar(50) DEFAULT NULL,
   `paymentTransactionID` varchar(50) DEFAULT NULL,
   `paymentReceiptID` varchar(50) DEFAULT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`gibbonPaymentID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2005,13 +1933,10 @@ CREATE TABLE `gibbonPayment` (
 --
 
 CREATE TABLE `gibbonPermission` (
-  `permissionID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`permissionID` int(10) unsigned zerofill NOT NULL,
   `gibbonRoleID` int(3) unsigned zerofill NOT NULL,
-  `gibbonActionID` int(7) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`permissionID`),
-  KEY `gibbonRoleID` (`gibbonRoleID`),
-  KEY `gibbonActionID` (`gibbonActionID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=53870 ;
+  `gibbonActionID` int(7) unsigned zerofill NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=53873 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonPermission`
@@ -2313,7 +2238,10 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000053866, 001, 0000812),
 (0000053867, 002, 0000813),
 (0000053868, 001, 0000814),
-(0000053869, 002, 0000815);
+(0000053869, 002, 0000815),
+(0000053870, 001, 0000816),
+(0000053871, 001, 0000817),
+(0000053872, 002, 0000817);
 
 -- --------------------------------------------------------
 
@@ -2322,7 +2250,7 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 --
 
 CREATE TABLE `gibbonPerson` (
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `title` varchar(5) NOT NULL,
   `surname` varchar(30) NOT NULL DEFAULT '',
   `firstName` varchar(30) NOT NULL DEFAULT '',
@@ -2414,11 +2342,8 @@ CREATE TABLE `gibbonPerson` (
   `dayType` varchar(255) DEFAULT NULL COMMENT 'Student day type, as specified in the application form.',
   `gibbonThemeIDPersonal` int(4) unsigned zerofill DEFAULT NULL,
   `gibboni18nIDPersonal` int(4) unsigned zerofill DEFAULT NULL,
-  `studentAgreements` text,
-  PRIMARY KEY (`gibbonPersonID`),
-  UNIQUE KEY `username` (`username`),
-  KEY `username_2` (`username`,`email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1099 ;
+  `studentAgreements` text
+) ENGINE=MyISAM AUTO_INCREMENT=1099 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2427,15 +2352,13 @@ CREATE TABLE `gibbonPerson` (
 --
 
 CREATE TABLE `gibbonPersonMedical` (
-  `gibbonPersonMedicalID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPersonMedicalID` int(10) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `bloodType` enum('','O+','A+','B+','AB+','O-','A-','B-','AB-') NOT NULL,
   `longTermMedication` enum('','Y','N') NOT NULL,
   `longTermMedicationDetails` text NOT NULL,
-  `tetanusWithin10Years` enum('','Y','N') NOT NULL,
-  PRIMARY KEY (`gibbonPersonMedicalID`),
-  KEY `gibbonPersonID` (`gibbonPersonID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `tetanusWithin10Years` enum('','Y','N') NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2444,7 +2367,7 @@ CREATE TABLE `gibbonPersonMedical` (
 --
 
 CREATE TABLE `gibbonPersonMedicalCondition` (
-  `gibbonPersonMedicalConditionID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPersonMedicalConditionID` int(12) unsigned zerofill NOT NULL,
   `gibbonPersonMedicalID` int(10) unsigned zerofill NOT NULL,
   `name` varchar(100) NOT NULL,
   `gibbonAlertLevelID` int(3) unsigned zerofill NOT NULL,
@@ -2454,10 +2377,8 @@ CREATE TABLE `gibbonPersonMedicalCondition` (
   `medication` varchar(255) NOT NULL,
   `lastEpisode` date DEFAULT NULL,
   `lastEpisodeTreatment` varchar(255) NOT NULL,
-  `comment` text NOT NULL,
-  PRIMARY KEY (`gibbonPersonMedicalConditionID`),
-  KEY `gibbonPersonMedicalID` (`gibbonPersonMedicalID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `comment` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2466,7 +2387,7 @@ CREATE TABLE `gibbonPersonMedicalCondition` (
 --
 
 CREATE TABLE `gibbonPersonMedicalConditionUpdate` (
-  `gibbonPersonMedicalConditionUpdateID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPersonMedicalConditionUpdateID` int(14) unsigned zerofill NOT NULL,
   `gibbonPersonMedicalUpdateID` int(12) unsigned zerofill DEFAULT NULL,
   `gibbonPersonMedicalConditionID` int(12) unsigned zerofill DEFAULT NULL,
   `gibbonPersonMedicalID` int(10) unsigned zerofill DEFAULT NULL,
@@ -2480,9 +2401,8 @@ CREATE TABLE `gibbonPersonMedicalConditionUpdate` (
   `lastEpisodeTreatment` varchar(255) NOT NULL,
   `comment` text NOT NULL,
   `gibbonPersonIDUpdater` int(10) unsigned zerofill NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`gibbonPersonMedicalConditionUpdateID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2491,7 +2411,7 @@ CREATE TABLE `gibbonPersonMedicalConditionUpdate` (
 --
 
 CREATE TABLE `gibbonPersonMedicalUpdate` (
-  `gibbonPersonMedicalUpdateID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPersonMedicalUpdateID` int(12) unsigned zerofill NOT NULL,
   `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
   `gibbonPersonMedicalID` int(10) unsigned zerofill DEFAULT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
@@ -2500,9 +2420,8 @@ CREATE TABLE `gibbonPersonMedicalUpdate` (
   `longTermMedicationDetails` text NOT NULL,
   `tetanusWithin10Years` enum('','Y','N') NOT NULL,
   `gibbonPersonIDUpdater` int(10) unsigned zerofill NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`gibbonPersonMedicalUpdateID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2511,7 +2430,7 @@ CREATE TABLE `gibbonPersonMedicalUpdate` (
 --
 
 CREATE TABLE `gibbonPersonUpdate` (
-  `gibbonPersonUpdateID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPersonUpdateID` int(12) unsigned zerofill NOT NULL,
   `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `title` varchar(5) NOT NULL,
@@ -2569,9 +2488,8 @@ CREATE TABLE `gibbonPersonUpdate` (
   `vehicleRegistration` varchar(20) NOT NULL,
   `gibbonPersonIDUpdater` int(10) unsigned zerofill NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `privacy` text,
-  PRIMARY KEY (`gibbonPersonUpdateID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `privacy` text
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2580,7 +2498,7 @@ CREATE TABLE `gibbonPersonUpdate` (
 --
 
 CREATE TABLE `gibbonPlannerEntry` (
-  `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
   `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
   `gibbonHookID` int(4) unsigned zerofill DEFAULT NULL,
   `gibbonUnitID` int(10) unsigned zerofill DEFAULT NULL,
@@ -2609,10 +2527,8 @@ CREATE TABLE `gibbonPlannerEntry` (
   `viewableStudents` enum('Y','N') NOT NULL DEFAULT 'Y',
   `viewableParents` enum('Y','N') NOT NULL DEFAULT 'N',
   `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`gibbonPlannerEntryID`),
-  KEY `gibbonCourseClassID` (`gibbonCourseClassID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2621,13 +2537,12 @@ CREATE TABLE `gibbonPlannerEntry` (
 --
 
 CREATE TABLE `gibbonPlannerEntryAttendance` (
-  `gibbonPlannerEntryAttendanceID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPlannerEntryAttendanceID` int(16) unsigned zerofill NOT NULL,
   `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `type` enum('Present','Present - Late','Absent','Left','Left - Early') NOT NULL,
-  `gibbonPersonIDTaker` int(10) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`gibbonPlannerEntryAttendanceID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonPersonIDTaker` int(10) unsigned zerofill NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2636,12 +2551,11 @@ CREATE TABLE `gibbonPlannerEntryAttendance` (
 --
 
 CREATE TABLE `gibbonPlannerEntryAttendanceLog` (
-  `gibbonPlannerEntryAttendanceLogID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPlannerEntryAttendanceLogID` int(16) unsigned zerofill NOT NULL,
   `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
   `gibbonPersonIDTaker` int(10) unsigned zerofill NOT NULL,
-  `timestampTaken` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`gibbonPlannerEntryAttendanceLogID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestampTaken` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2650,14 +2564,13 @@ CREATE TABLE `gibbonPlannerEntryAttendanceLog` (
 --
 
 CREATE TABLE `gibbonPlannerEntryDiscuss` (
-  `gibbonPlannerEntryDiscussID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPlannerEntryDiscussID` int(16) unsigned zerofill NOT NULL,
   `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `comment` text NOT NULL,
-  `gibbonPlannerEntryDiscussIDReplyTo` int(16) unsigned zerofill DEFAULT NULL,
-  PRIMARY KEY (`gibbonPlannerEntryDiscussID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonPlannerEntryDiscussIDReplyTo` int(16) unsigned zerofill DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2666,12 +2579,11 @@ CREATE TABLE `gibbonPlannerEntryDiscuss` (
 --
 
 CREATE TABLE `gibbonPlannerEntryGuest` (
-  `gibbonPlannerEntryGuestID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPlannerEntryGuestID` int(16) unsigned zerofill NOT NULL,
   `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `role` enum('Guest Student','Guest Teacher','Guest Assistant','Guest Technician','Guest Parent','Other Guest') NOT NULL,
-  PRIMARY KEY (`gibbonPlannerEntryGuestID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `role` enum('Guest Student','Guest Teacher','Guest Assistant','Guest Technician','Guest Parent','Other Guest') NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2680,7 +2592,7 @@ CREATE TABLE `gibbonPlannerEntryGuest` (
 --
 
 CREATE TABLE `gibbonPlannerEntryHomework` (
-  `gibbonPlannerEntryHomeworkID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPlannerEntryHomeworkID` int(16) unsigned zerofill NOT NULL,
   `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `type` enum('Link','File') NOT NULL,
@@ -2688,9 +2600,8 @@ CREATE TABLE `gibbonPlannerEntryHomework` (
   `status` enum('On Time','Late','Exemption') NOT NULL,
   `location` varchar(255) DEFAULT NULL,
   `count` int(1) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`gibbonPlannerEntryHomeworkID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2699,13 +2610,11 @@ CREATE TABLE `gibbonPlannerEntryHomework` (
 --
 
 CREATE TABLE `gibbonPlannerEntryLike` (
-  `gibbonPlannerEntryLikeID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPlannerEntryLikeID` int(16) unsigned zerofill NOT NULL,
   `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`gibbonPlannerEntryLikeID`),
-  UNIQUE KEY `gibbonPlannerEntryID` (`gibbonPlannerEntryID`,`gibbonPersonID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2714,13 +2623,12 @@ CREATE TABLE `gibbonPlannerEntryLike` (
 --
 
 CREATE TABLE `gibbonPlannerEntryOutcome` (
-  `gibbonPlannerEntryOutcomeID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPlannerEntryOutcomeID` int(16) unsigned zerofill NOT NULL,
   `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
   `gibbonOutcomeID` int(8) unsigned zerofill NOT NULL,
   `sequenceNumber` int(4) NOT NULL,
-  `content` text NOT NULL,
-  PRIMARY KEY (`gibbonPlannerEntryOutcomeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `content` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2729,15 +2637,13 @@ CREATE TABLE `gibbonPlannerEntryOutcome` (
 --
 
 CREATE TABLE `gibbonPlannerEntryStudentHomework` (
-  `gibbonPlannerEntryStudentHomeworkID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPlannerEntryStudentHomeworkID` int(14) unsigned zerofill NOT NULL,
   `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) NOT NULL,
   `homeworkDueDateTime` datetime NOT NULL,
   `homeworkDetails` mediumtext NOT NULL,
-  `homeworkComplete` enum('Y','N') NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`gibbonPlannerEntryStudentHomeworkID`),
-  KEY `gibbonPlannerEntryID` (`gibbonPlannerEntryID`,`gibbonPersonID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Allows students to add homework deadlines themselves' AUTO_INCREMENT=1 ;
+  `homeworkComplete` enum('Y','N') NOT NULL DEFAULT 'N'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Allows students to add homework deadlines themselves';
 
 -- --------------------------------------------------------
 
@@ -2746,12 +2652,11 @@ CREATE TABLE `gibbonPlannerEntryStudentHomework` (
 --
 
 CREATE TABLE `gibbonPlannerEntryStudentTracker` (
-  `gibbonPlannerEntryStudentTrackerID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPlannerEntryStudentTrackerID` int(16) unsigned zerofill NOT NULL,
   `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `homeworkComplete` enum('Y','N') NOT NULL,
-  PRIMARY KEY (`gibbonPlannerEntryStudentTrackerID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `homeworkComplete` enum('Y','N') NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2760,16 +2665,14 @@ CREATE TABLE `gibbonPlannerEntryStudentTracker` (
 --
 
 CREATE TABLE `gibbonPlannerParentWeeklyEmailSummary` (
-  `gibbonPlannerParentWeeklyEmailSummaryID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonPlannerParentWeeklyEmailSummaryID` int(14) unsigned zerofill NOT NULL,
   `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
   `gibbonPersonIDParent` int(10) unsigned zerofill NOT NULL,
   `gibbonPersonIDStudent` int(10) unsigned zerofill NOT NULL,
   `weekOfYear` int(2) NOT NULL,
   `key` varchar(40) NOT NULL,
-  `confirmed` enum('N','Y') NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`gibbonPlannerParentWeeklyEmailSummaryID`),
-  UNIQUE KEY `key` (`key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `confirmed` enum('N','Y') NOT NULL DEFAULT 'N'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2778,7 +2681,7 @@ CREATE TABLE `gibbonPlannerParentWeeklyEmailSummary` (
 --
 
 CREATE TABLE `gibbonResource` (
-  `gibbonResourceID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonResourceID` int(14) unsigned zerofill NOT NULL,
   `name` varchar(60) NOT NULL,
   `description` text NOT NULL,
   `gibbonYearGroupIDList` varchar(255) NOT NULL,
@@ -2788,9 +2691,8 @@ CREATE TABLE `gibbonResource` (
   `tags` text NOT NULL,
   `content` text NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `timestamp` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`gibbonResourceID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestamp` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2799,13 +2701,10 @@ CREATE TABLE `gibbonResource` (
 --
 
 CREATE TABLE `gibbonResourceTag` (
-  `gibbonResourceTagID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonResourceTagID` int(12) unsigned zerofill NOT NULL,
   `tag` varchar(100) NOT NULL,
-  `count` int(6) NOT NULL,
-  PRIMARY KEY (`gibbonResourceTagID`),
-  UNIQUE KEY `tag` (`tag`),
-  KEY `tag_2` (`tag`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `count` int(6) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2814,16 +2713,13 @@ CREATE TABLE `gibbonResourceTag` (
 --
 
 CREATE TABLE `gibbonRole` (
-  `gibbonRoleID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonRoleID` int(3) unsigned zerofill NOT NULL,
   `category` enum('Staff','Student','Parent','Other') NOT NULL DEFAULT 'Staff',
   `name` varchar(20) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `description` varchar(60) NOT NULL,
-  `type` enum('Core','Additional') NOT NULL DEFAULT 'Core',
-  PRIMARY KEY (`gibbonRoleID`),
-  UNIQUE KEY `name` (`name`),
-  UNIQUE KEY `nameShort` (`nameShort`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=30 ;
+  `type` enum('Core','Additional') NOT NULL DEFAULT 'Core'
+) ENGINE=MyISAM AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonRole`
@@ -2843,7 +2739,7 @@ INSERT INTO `gibbonRole` (`gibbonRoleID`, `category`, `name`, `nameShort`, `desc
 --
 
 CREATE TABLE `gibbonRollGroup` (
-  `gibbonRollGroupID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonRollGroupID` int(5) unsigned zerofill NOT NULL,
   `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
   `name` varchar(10) NOT NULL,
   `nameShort` varchar(5) NOT NULL,
@@ -2852,8 +2748,8 @@ CREATE TABLE `gibbonRollGroup` (
   `gibbonPersonIDTutor3` int(10) unsigned zerofill DEFAULT NULL,
   `gibbonSpaceID` int(5) unsigned zerofill DEFAULT NULL,
   `gibbonRollGroupIDNext` int(5) unsigned zerofill DEFAULT NULL,
-  PRIMARY KEY (`gibbonRollGroupID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `website` varchar(255) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2862,7 +2758,7 @@ CREATE TABLE `gibbonRollGroup` (
 --
 
 CREATE TABLE `gibbonRubric` (
-  `gibbonRubricID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonRubricID` int(8) unsigned zerofill NOT NULL,
   `name` varchar(50) NOT NULL,
   `category` varchar(50) NOT NULL,
   `description` text NOT NULL,
@@ -2871,9 +2767,8 @@ CREATE TABLE `gibbonRubric` (
   `gibbonDepartmentID` int(4) unsigned zerofill DEFAULT NULL,
   `gibbonYearGroupIDList` varchar(255) NOT NULL,
   `gibbonScaleID` int(5) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonIDCreator` int(8) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`gibbonRubricID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonPersonIDCreator` int(8) unsigned zerofill NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2882,13 +2777,12 @@ CREATE TABLE `gibbonRubric` (
 --
 
 CREATE TABLE `gibbonRubricCell` (
-  `gibbonRubricCellID` int(11) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonRubricCellID` int(11) unsigned zerofill NOT NULL,
   `gibbonRubricID` int(8) unsigned zerofill NOT NULL,
   `gibbonRubricColumnID` int(9) unsigned zerofill NOT NULL,
   `gibbonRubricRowID` int(9) unsigned zerofill NOT NULL,
-  `contents` text NOT NULL,
-  PRIMARY KEY (`gibbonRubricCellID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `contents` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2897,13 +2791,12 @@ CREATE TABLE `gibbonRubricCell` (
 --
 
 CREATE TABLE `gibbonRubricColumn` (
-  `gibbonRubricColumnID` int(9) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonRubricColumnID` int(9) unsigned zerofill NOT NULL,
   `gibbonRubricID` int(8) unsigned zerofill NOT NULL,
   `title` varchar(20) NOT NULL,
   `sequenceNumber` int(2) NOT NULL,
-  `gibbonScaleGradeID` int(7) unsigned zerofill DEFAULT NULL,
-  PRIMARY KEY (`gibbonRubricColumnID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonScaleGradeID` int(7) unsigned zerofill DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2912,14 +2805,13 @@ CREATE TABLE `gibbonRubricColumn` (
 --
 
 CREATE TABLE `gibbonRubricEntry` (
-  `gibbonRubricEntry` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonRubricEntry` int(14) unsigned zerofill NOT NULL,
   `gibbonRubricID` int(8) unsigned NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `gibbonRubricCellID` int(11) unsigned zerofill NOT NULL,
   `contextDBTable` varchar(255) NOT NULL COMMENT 'Which database table is this entry related to?',
-  `contextDBTableID` int(20) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`gibbonRubricEntry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `contextDBTableID` int(20) unsigned zerofill NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2928,13 +2820,12 @@ CREATE TABLE `gibbonRubricEntry` (
 --
 
 CREATE TABLE `gibbonRubricRow` (
-  `gibbonRubricRowID` int(9) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonRubricRowID` int(9) unsigned zerofill NOT NULL,
   `gibbonRubricID` int(8) unsigned zerofill NOT NULL,
   `title` varchar(40) NOT NULL,
   `sequenceNumber` int(2) NOT NULL,
-  `gibbonOutcomeID` int(8) unsigned zerofill DEFAULT NULL,
-  PRIMARY KEY (`gibbonRubricRowID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonOutcomeID` int(8) unsigned zerofill DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2943,15 +2834,14 @@ CREATE TABLE `gibbonRubricRow` (
 --
 
 CREATE TABLE `gibbonScale` (
-  `gibbonScaleID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonScaleID` int(5) unsigned zerofill NOT NULL,
   `name` varchar(40) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `usage` varchar(50) NOT NULL,
   `lowestAcceptable` varchar(5) DEFAULT NULL COMMENT 'This is the sequence number of the lowest grade a student can get without being unsatisfactory',
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `numeric` enum('N','Y') NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`gibbonScaleID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
+  `numeric` enum('N','Y') NOT NULL DEFAULT 'N'
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonScale`
@@ -2980,13 +2870,12 @@ INSERT INTO `gibbonScale` (`gibbonScaleID`, `name`, `nameShort`, `usage`, `lowes
 --
 
 CREATE TABLE `gibbonScaleGrade` (
-  `gibbonScaleGradeID` int(7) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonScaleGradeID` int(7) unsigned zerofill NOT NULL,
   `gibbonScaleID` int(5) unsigned zerofill NOT NULL,
   `value` varchar(10) NOT NULL,
   `descriptor` varchar(50) NOT NULL,
-  `sequenceNumber` int(5) NOT NULL,
-  PRIMARY KEY (`gibbonScaleGradeID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=331 ;
+  `sequenceNumber` int(5) NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=331 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonScaleGrade`
@@ -3330,16 +3219,13 @@ INSERT INTO `gibbonScaleGrade` (`gibbonScaleGradeID`, `gibbonScaleID`, `value`, 
 --
 
 CREATE TABLE `gibbonSchoolYear` (
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
   `name` varchar(9) NOT NULL DEFAULT '',
   `status` enum('Past','Current','Upcoming') NOT NULL DEFAULT 'Upcoming',
   `sequenceNumber` int(3) NOT NULL,
   `firstDay` date DEFAULT NULL,
-  `lastDay` date DEFAULT NULL,
-  PRIMARY KEY (`gibbonSchoolYearID`),
-  UNIQUE KEY `academicYearName` (`name`),
-  UNIQUE KEY `sequenceNumber` (`sequenceNumber`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
+  `lastDay` date DEFAULT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonSchoolYear`
@@ -3360,7 +3246,7 @@ INSERT INTO `gibbonSchoolYear` (`gibbonSchoolYearID`, `name`, `status`, `sequenc
 --
 
 CREATE TABLE `gibbonSchoolYearSpecialDay` (
-  `gibbonSchoolYearSpecialDayID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonSchoolYearSpecialDayID` int(10) unsigned zerofill NOT NULL,
   `gibbonSchoolYearTermID` int(5) unsigned zerofill NOT NULL,
   `type` enum('School Closure','Timing Change') NOT NULL,
   `name` varchar(20) NOT NULL,
@@ -3369,10 +3255,8 @@ CREATE TABLE `gibbonSchoolYearSpecialDay` (
   `schoolOpen` time DEFAULT NULL,
   `schoolStart` time DEFAULT NULL,
   `schoolEnd` time DEFAULT NULL,
-  `schoolClose` time DEFAULT NULL,
-  PRIMARY KEY (`gibbonSchoolYearSpecialDayID`),
-  UNIQUE KEY `date` (`date`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `schoolClose` time DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3381,16 +3265,14 @@ CREATE TABLE `gibbonSchoolYearSpecialDay` (
 --
 
 CREATE TABLE `gibbonSchoolYearTerm` (
-  `gibbonSchoolYearTermID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonSchoolYearTermID` int(5) unsigned zerofill NOT NULL,
   `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
   `sequenceNumber` int(5) NOT NULL,
   `name` varchar(20) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `firstDay` date NOT NULL,
-  `lastDay` date NOT NULL,
-  PRIMARY KEY (`gibbonSchoolYearTermID`),
-  UNIQUE KEY `sequenceNumber` (`sequenceNumber`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `lastDay` date NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3399,16 +3281,13 @@ CREATE TABLE `gibbonSchoolYearTerm` (
 --
 
 CREATE TABLE `gibbonSetting` (
-  `gibbonSystemSettingsID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonSystemSettingsID` int(5) unsigned zerofill NOT NULL,
   `scope` varchar(50) NOT NULL,
   `name` varchar(50) NOT NULL,
   `nameDisplay` varchar(60) NOT NULL,
   `description` varchar(255) NOT NULL,
-  `value` text NOT NULL,
-  PRIMARY KEY (`gibbonSystemSettingsID`),
-  UNIQUE KEY `name` (`name`),
-  UNIQUE KEY `nameDisplay` (`nameDisplay`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=141 ;
+  `value` text NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=144 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonSetting`
@@ -3543,7 +3422,10 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 (00137, 'Markbook', 'attainmentAlternativeName', 'Attainment Alternative Name', 'A name to use isntead of "Attainment" in the first grade column of the markbook.', ''),
 (00138, 'Markbook', 'effortAlternativeName', 'Effort Alternative Name', 'A name to use isntead of "Effort" in the second grade column of the markbook.', ''),
 (00139, 'Markbook', 'attainmentAlternativeNameAbrev', 'Attainment Alternative Name Abbreviation', 'A short name to use isntead of "Attainment" in the first grade column of the markbook.', ''),
-(00140, 'Markbook', 'effortAlternativeNameAbrev', 'Effort Alternative Name Abbreviation', 'A short name to use isntead of "Effort" in the second grade column of the markbook.', '');
+(00140, 'Markbook', 'effortAlternativeNameAbrev', 'Effort Alternative Name Abbreviation', 'A short name to use isntead of "Effort" in the second grade column of the markbook.', ''),
+(00141, 'Planner', 'parentWeeklyEmailSummaryIncludeBehaviour', 'Parent Weekly Email Summary Include Behaviour', 'Should behaviour information be included in the weekly planner email summary that goes out to parents?', 'Y'),
+(00142, 'Finance', 'financeOnlinePaymentEnabled', 'Enable Online Payment', 'Should invoices be payable online, via an encrypted link in the invoice? Requires correctly configured payment gateway in System Settings.', 'N'),
+(00143, 'Finance', 'financeOnlinePaymentThreshold', 'Online Payment Threshold', 'If invoices are payable online, what is the maximum payment allowed? Useful for controlling payment fees. No value means unlimited.', '');
 
 -- --------------------------------------------------------
 
@@ -3552,7 +3434,7 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 --
 
 CREATE TABLE `gibbonSpace` (
-  `gibbonSpaceID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonSpaceID` int(5) unsigned zerofill NOT NULL,
   `name` varchar(30) NOT NULL,
   `type` enum('Classroom','Performance','Hall','Outdoor','Undercover','Storage','Office','Staffroom','Study','Library','Other') NOT NULL,
   `gibbonPersonID1` int(10) unsigned zerofill DEFAULT NULL,
@@ -3568,10 +3450,8 @@ CREATE TABLE `gibbonSpace` (
   `iwb` enum('N','Y') NOT NULL,
   `phoneInternal` varchar(5) NOT NULL,
   `phoneExternal` varchar(20) NOT NULL,
-  `comment` text NOT NULL,
-  PRIMARY KEY (`gibbonSpaceID`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `comment` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3580,7 +3460,7 @@ CREATE TABLE `gibbonSpace` (
 --
 
 CREATE TABLE `gibbonStaff` (
-  `gibbonStaffID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonStaffID` int(10) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `type` enum('Teaching','Support') NOT NULL,
   `initials` varchar(4) DEFAULT NULL,
@@ -3592,11 +3472,8 @@ CREATE TABLE `gibbonStaff` (
   `qualifications` varchar(255) NOT NULL,
   `biography` text NOT NULL,
   `biographicalGrouping` varchar(100) NOT NULL COMMENT 'Used for group staff when creating a staff directory.',
-  `biographicalGroupingPriority` int(3) NOT NULL,
-  PRIMARY KEY (`gibbonStaffID`),
-  UNIQUE KEY `gibbonPersonID` (`gibbonPersonID`),
-  UNIQUE KEY `initials` (`initials`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `biographicalGroupingPriority` int(3) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3605,16 +3482,12 @@ CREATE TABLE `gibbonStaff` (
 --
 
 CREATE TABLE `gibbonStudentEnrolment` (
-  `gibbonStudentEnrolmentID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonStudentEnrolmentID` int(8) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
   `gibbonYearGroupID` int(3) unsigned zerofill NOT NULL,
-  `gibbonRollGroupID` int(5) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`gibbonStudentEnrolmentID`),
-  KEY `gibbonSchoolYearID` (`gibbonSchoolYearID`),
-  KEY `gibbonYearGroupID` (`gibbonYearGroupID`),
-  KEY `gibbonRollGroupID` (`gibbonRollGroupID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonRollGroupID` int(5) unsigned zerofill NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3623,14 +3496,13 @@ CREATE TABLE `gibbonStudentEnrolment` (
 --
 
 CREATE TABLE `gibbonStudentNote` (
-  `gibbonStudentNoteID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonStudentNoteID` int(12) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `gibbonStudentNoteCategoryID` int(5) unsigned zerofill DEFAULT NULL,
   `note` text NOT NULL,
   `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
-  `timestamp` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`gibbonStudentNoteID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timestamp` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3639,12 +3511,11 @@ CREATE TABLE `gibbonStudentNote` (
 --
 
 CREATE TABLE `gibbonStudentNoteCategory` (
-  `gibbonStudentNoteCategoryID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonStudentNoteCategoryID` int(5) unsigned zerofill NOT NULL,
   `name` varchar(30) NOT NULL,
   `template` text NOT NULL,
-  `active` enum('Y','N') NOT NULL DEFAULT 'Y',
-  PRIMARY KEY (`gibbonStudentNoteCategoryID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+  `active` enum('Y','N') NOT NULL DEFAULT 'Y'
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonStudentNoteCategory`
@@ -3663,15 +3534,14 @@ INSERT INTO `gibbonStudentNoteCategory` (`gibbonStudentNoteCategoryID`, `name`, 
 --
 
 CREATE TABLE `gibbonTheme` (
-  `gibbonThemeID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonThemeID` int(4) unsigned zerofill NOT NULL,
   `name` varchar(30) NOT NULL,
   `description` varchar(100) NOT NULL,
   `active` enum('N','Y') NOT NULL DEFAULT 'N',
   `version` varchar(6) NOT NULL,
   `author` varchar(40) NOT NULL,
-  `url` varchar(255) NOT NULL,
-  PRIMARY KEY (`gibbonThemeID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
+  `url` varchar(255) NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonTheme`
@@ -3688,14 +3558,13 @@ INSERT INTO `gibbonTheme` (`gibbonThemeID`, `name`, `description`, `active`, `ve
 --
 
 CREATE TABLE `gibbonTT` (
-  `gibbonTTID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonTTID` int(8) unsigned zerofill NOT NULL,
   `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
   `name` varchar(30) NOT NULL,
   `nameShort` varchar(12) NOT NULL,
   `gibbonYearGroupIDList` varchar(255) NOT NULL,
-  `active` enum('Y','N') NOT NULL,
-  PRIMARY KEY (`gibbonTTID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `active` enum('Y','N') NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3704,11 +3573,10 @@ CREATE TABLE `gibbonTT` (
 --
 
 CREATE TABLE `gibbonTTColumn` (
-  `gibbonTTColumnID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonTTColumnID` int(6) unsigned zerofill NOT NULL,
   `name` varchar(30) NOT NULL,
-  `nameShort` varchar(12) NOT NULL,
-  PRIMARY KEY (`gibbonTTColumnID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `nameShort` varchar(12) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3717,16 +3585,14 @@ CREATE TABLE `gibbonTTColumn` (
 --
 
 CREATE TABLE `gibbonTTColumnRow` (
-  `gibbonTTColumnRowID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonTTColumnRowID` int(8) unsigned zerofill NOT NULL,
   `gibbonTTColumnID` int(6) unsigned zerofill NOT NULL,
   `name` varchar(12) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `timeStart` time NOT NULL,
   `timeEnd` time NOT NULL,
-  `type` enum('Lesson','Pastoral','Sport','Break','Service','Other') NOT NULL,
-  PRIMARY KEY (`gibbonTTColumnRowID`),
-  KEY `gibbonTTColumnID` (`gibbonTTColumnID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `type` enum('Lesson','Pastoral','Sport','Break','Service','Other') NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3735,13 +3601,12 @@ CREATE TABLE `gibbonTTColumnRow` (
 --
 
 CREATE TABLE `gibbonTTDay` (
-  `gibbonTTDayID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonTTDayID` int(10) unsigned zerofill NOT NULL,
   `gibbonTTID` int(8) unsigned zerofill NOT NULL,
   `gibbonTTColumnID` int(6) unsigned zerofill NOT NULL,
   `name` varchar(12) NOT NULL,
-  `nameShort` varchar(4) NOT NULL,
-  PRIMARY KEY (`gibbonTTDayID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `nameShort` varchar(4) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3750,12 +3615,10 @@ CREATE TABLE `gibbonTTDay` (
 --
 
 CREATE TABLE `gibbonTTDayDate` (
-  `gibbonTTDayDateID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonTTDayDateID` int(10) unsigned zerofill NOT NULL,
   `gibbonTTDayID` int(10) unsigned zerofill NOT NULL,
-  `date` date NOT NULL,
-  PRIMARY KEY (`gibbonTTDayDateID`),
-  KEY `gibbonTTDayID` (`gibbonTTDayID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `date` date NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3764,16 +3627,12 @@ CREATE TABLE `gibbonTTDayDate` (
 --
 
 CREATE TABLE `gibbonTTDayRowClass` (
-  `gibbonTTDayRowClassID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonTTDayRowClassID` int(12) unsigned zerofill NOT NULL,
   `gibbonTTColumnRowID` int(8) unsigned zerofill NOT NULL,
   `gibbonTTDayID` int(10) unsigned zerofill NOT NULL,
   `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
-  `gibbonSpaceID` int(5) unsigned zerofill DEFAULT NULL,
-  PRIMARY KEY (`gibbonTTDayRowClassID`),
-  KEY `gibbonCourseClassID` (`gibbonCourseClassID`),
-  KEY `gibbonSpaceID` (`gibbonSpaceID`),
-  KEY `gibbonTTColumnRowID` (`gibbonTTColumnRowID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonSpaceID` int(5) unsigned zerofill DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3782,11 +3641,10 @@ CREATE TABLE `gibbonTTDayRowClass` (
 --
 
 CREATE TABLE `gibbonTTDayRowClassException` (
-  `gibbonTTDayRowClassExceptionID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonTTDayRowClassExceptionID` int(14) unsigned zerofill NOT NULL,
   `gibbonTTDayRowClassID` int(12) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`gibbonTTDayRowClassExceptionID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonPersonID` int(10) unsigned zerofill NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3795,15 +3653,14 @@ CREATE TABLE `gibbonTTDayRowClassException` (
 --
 
 CREATE TABLE `gibbonTTImport` (
-  `gibbonTTImportID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonTTImportID` int(14) unsigned zerofill NOT NULL,
   `courseNameShort` varchar(6) NOT NULL,
   `classNameShort` varchar(5) NOT NULL,
   `dayName` varchar(12) NOT NULL,
   `rowName` varchar(12) NOT NULL,
   `teacherUsernameList` text NOT NULL,
-  `spaceName` varchar(30) NOT NULL,
-  PRIMARY KEY (`gibbonTTImportID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `spaceName` varchar(30) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3812,14 +3669,13 @@ CREATE TABLE `gibbonTTImport` (
 --
 
 CREATE TABLE `gibbonTTSpaceBooking` (
-  `gibbonTTSpaceBookingID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonTTSpaceBookingID` int(12) unsigned zerofill NOT NULL,
   `gibbonSpaceID` int(5) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `date` date NOT NULL,
   `timeStart` time NOT NULL,
-  `timeEnd` time NOT NULL,
-  PRIMARY KEY (`gibbonTTSpaceBookingID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `timeEnd` time NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3828,15 +3684,12 @@ CREATE TABLE `gibbonTTSpaceBooking` (
 --
 
 CREATE TABLE `gibbonTTSpaceChange` (
-  `gibbonTTSpaceChangeID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonTTSpaceChangeID` int(12) unsigned zerofill NOT NULL,
   `gibbonTTDayRowClassID` int(12) unsigned zerofill NOT NULL,
   `gibbonSpaceID` int(5) unsigned zerofill DEFAULT NULL,
   `date` date NOT NULL,
-  `gibbonPersonID` int(12) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`gibbonTTSpaceChangeID`),
-  KEY `gibbonTTDayRowClassID` (`gibbonTTDayRowClassID`),
-  KEY `date` (`date`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonPersonID` int(12) unsigned zerofill NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3845,7 +3698,7 @@ CREATE TABLE `gibbonTTSpaceChange` (
 --
 
 CREATE TABLE `gibbonUnit` (
-  `gibbonUnitID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonUnitID` int(10) unsigned zerofill NOT NULL,
   `gibbonCourseID` int(8) unsigned zerofill NOT NULL,
   `name` varchar(40) NOT NULL,
   `description` text NOT NULL,
@@ -3853,9 +3706,8 @@ CREATE TABLE `gibbonUnit` (
   `details` text NOT NULL,
   `embeddable` enum('N','Y') NOT NULL DEFAULT 'N',
   `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`gibbonUnitID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3864,7 +3716,7 @@ CREATE TABLE `gibbonUnit` (
 --
 
 CREATE TABLE `gibbonUnitBlock` (
-  `gibbonUnitBlockID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonUnitBlockID` int(12) unsigned zerofill NOT NULL,
   `gibbonUnitID` int(10) unsigned zerofill NOT NULL,
   `title` varchar(100) NOT NULL,
   `type` varchar(50) NOT NULL,
@@ -3872,8 +3724,8 @@ CREATE TABLE `gibbonUnitBlock` (
   `contents` text NOT NULL,
   `teachersNotes` text NOT NULL,
   `sequenceNumber` int(4) NOT NULL,
-  PRIMARY KEY (`gibbonUnitBlockID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonOutcomeIDList` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3882,12 +3734,11 @@ CREATE TABLE `gibbonUnitBlock` (
 --
 
 CREATE TABLE `gibbonUnitClass` (
-  `gibbonUnitClassID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonUnitClassID` int(12) unsigned zerofill NOT NULL,
   `gibbonUnitID` int(10) unsigned zerofill NOT NULL,
   `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
-  `running` enum('N','Y') NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`gibbonUnitClassID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `running` enum('N','Y') NOT NULL DEFAULT 'N'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3896,7 +3747,7 @@ CREATE TABLE `gibbonUnitClass` (
 --
 
 CREATE TABLE `gibbonUnitClassBlock` (
-  `gibbonUnitClassBlockID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonUnitClassBlockID` int(14) unsigned zerofill NOT NULL,
   `gibbonUnitClassID` int(12) unsigned zerofill NOT NULL,
   `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
   `gibbonUnitBlockID` int(12) unsigned zerofill NOT NULL,
@@ -3907,8 +3758,8 @@ CREATE TABLE `gibbonUnitClassBlock` (
   `teachersNotes` text NOT NULL,
   `sequenceNumber` int(4) NOT NULL,
   `complete` enum('Y','N') NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`gibbonUnitClassBlockID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `gibbonOutcomeIDList` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3917,13 +3768,12 @@ CREATE TABLE `gibbonUnitClassBlock` (
 --
 
 CREATE TABLE `gibbonUnitOutcome` (
-  `gibbonUnitOutcomeID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonUnitOutcomeID` int(12) unsigned zerofill NOT NULL,
   `gibbonUnitID` int(10) unsigned zerofill NOT NULL,
   `gibbonOutcomeID` int(8) unsigned zerofill NOT NULL,
   `sequenceNumber` int(4) NOT NULL,
-  `content` text NOT NULL,
-  PRIMARY KEY (`gibbonUnitOutcomeID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `content` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3932,13 +3782,11 @@ CREATE TABLE `gibbonUnitOutcome` (
 --
 
 CREATE TABLE `gibbonYearGroup` (
-  `gibbonYearGroupID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,
+`gibbonYearGroupID` int(3) unsigned zerofill NOT NULL,
   `name` varchar(10) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
-  `sequenceNumber` int(3) NOT NULL,
-  PRIMARY KEY (`gibbonYearGroupID`),
-  UNIQUE KEY `name` (`name`,`nameShort`,`sequenceNumber`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+  `sequenceNumber` int(3) NOT NULL
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonYearGroup`
@@ -3953,6 +3801,1268 @@ INSERT INTO `gibbonYearGroup` (`gibbonYearGroupID`, `name`, `nameShort`, `sequen
 (006, 'Year 12', 'Y12', 6),
 (007, 'Year 13', 'Y13', 7);
 
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `gibbonAction`
+--
+ALTER TABLE `gibbonAction`
+ ADD PRIMARY KEY (`gibbonActionID`), ADD KEY `gibbonModuleID` (`gibbonModuleID`);
+
+--
+-- Indexes for table `gibbonActivity`
+--
+ALTER TABLE `gibbonActivity`
+ ADD PRIMARY KEY (`gibbonActivityID`);
+
+--
+-- Indexes for table `gibbonActivitySlot`
+--
+ALTER TABLE `gibbonActivitySlot`
+ ADD PRIMARY KEY (`gibbonActivitySlotID`);
+
+--
+-- Indexes for table `gibbonActivityStaff`
+--
+ALTER TABLE `gibbonActivityStaff`
+ ADD PRIMARY KEY (`gibbonActivityStaffID`);
+
+--
+-- Indexes for table `gibbonActivityStudent`
+--
+ALTER TABLE `gibbonActivityStudent`
+ ADD PRIMARY KEY (`gibbonActivityStudentID`);
+
+--
+-- Indexes for table `gibbonActivityStudentPayment`
+--
+ALTER TABLE `gibbonActivityStudentPayment`
+ ADD PRIMARY KEY (`gibbonActivityStudentPaymentID`);
+
+--
+-- Indexes for table `gibbonAlertLevel`
+--
+ALTER TABLE `gibbonAlertLevel`
+ ADD PRIMARY KEY (`gibbonAlertLevelID`);
+
+--
+-- Indexes for table `gibbonApplicationForm`
+--
+ALTER TABLE `gibbonApplicationForm`
+ ADD PRIMARY KEY (`gibbonApplicationFormID`);
+
+--
+-- Indexes for table `gibbonApplicationFormFile`
+--
+ALTER TABLE `gibbonApplicationFormFile`
+ ADD PRIMARY KEY (`gibbonApplicationFormFileID`);
+
+--
+-- Indexes for table `gibbonApplicationFormRelationship`
+--
+ALTER TABLE `gibbonApplicationFormRelationship`
+ ADD PRIMARY KEY (`gibbonApplicationFormRelationshipID`);
+
+--
+-- Indexes for table `gibbonAttendanceLogPerson`
+--
+ALTER TABLE `gibbonAttendanceLogPerson`
+ ADD PRIMARY KEY (`gibbonAttendanceLogPersonID`), ADD KEY `date` (`date`);
+
+--
+-- Indexes for table `gibbonAttendanceLogRollGroup`
+--
+ALTER TABLE `gibbonAttendanceLogRollGroup`
+ ADD PRIMARY KEY (`gibbonAttendanceLogRollGroupID`);
+
+--
+-- Indexes for table `gibbonBehaviour`
+--
+ALTER TABLE `gibbonBehaviour`
+ ADD PRIMARY KEY (`gibbonBehaviourID`), ADD KEY `gibbonPersonID` (`gibbonPersonID`);
+
+--
+-- Indexes for table `gibbonCourse`
+--
+ALTER TABLE `gibbonCourse`
+ ADD PRIMARY KEY (`gibbonCourseID`), ADD UNIQUE KEY `nameYear` (`gibbonSchoolYearID`,`name`), ADD KEY `gibbonSchoolYearID` (`gibbonSchoolYearID`);
+
+--
+-- Indexes for table `gibbonCourseClass`
+--
+ALTER TABLE `gibbonCourseClass`
+ ADD PRIMARY KEY (`gibbonCourseClassID`), ADD KEY `gibbonCourseID` (`gibbonCourseID`);
+
+--
+-- Indexes for table `gibbonCourseClassPerson`
+--
+ALTER TABLE `gibbonCourseClassPerson`
+ ADD PRIMARY KEY (`gibbonCourseClassPersonID`), ADD KEY `gibbonCourseClassID` (`gibbonCourseClassID`);
+
+--
+-- Indexes for table `gibbonCrowdAssessDiscuss`
+--
+ALTER TABLE `gibbonCrowdAssessDiscuss`
+ ADD PRIMARY KEY (`gibbonCrowdAssessDiscussID`);
+
+--
+-- Indexes for table `gibbonCrowdAssessLike`
+--
+ALTER TABLE `gibbonCrowdAssessLike`
+ ADD PRIMARY KEY (`gibbonCrowdAssessLikeID`), ADD UNIQUE KEY `gibbonPlannerEntryHomeworkID` (`gibbonPlannerEntryHomeworkID`,`gibbonPersonID`);
+
+--
+-- Indexes for table `gibbonDaysOfWeek`
+--
+ALTER TABLE `gibbonDaysOfWeek`
+ ADD PRIMARY KEY (`gibbonDaysOfWeekID`), ADD UNIQUE KEY `name` (`name`,`nameShort`), ADD UNIQUE KEY `sequenceNumber` (`sequenceNumber`), ADD UNIQUE KEY `nameShort` (`nameShort`);
+
+--
+-- Indexes for table `gibbonDepartment`
+--
+ALTER TABLE `gibbonDepartment`
+ ADD PRIMARY KEY (`gibbonDepartmentID`);
+
+--
+-- Indexes for table `gibbonDepartmentResource`
+--
+ALTER TABLE `gibbonDepartmentResource`
+ ADD PRIMARY KEY (`gibbonDepartmentResourceID`);
+
+--
+-- Indexes for table `gibbonDepartmentStaff`
+--
+ALTER TABLE `gibbonDepartmentStaff`
+ ADD PRIMARY KEY (`gibbonDepartmentStaffID`);
+
+--
+-- Indexes for table `gibbonDistrict`
+--
+ALTER TABLE `gibbonDistrict`
+ ADD PRIMARY KEY (`gibbonDistrictID`);
+
+--
+-- Indexes for table `gibbonExternalAssessment`
+--
+ALTER TABLE `gibbonExternalAssessment`
+ ADD PRIMARY KEY (`gibbonExternalAssessmentID`);
+
+--
+-- Indexes for table `gibbonExternalAssessmentField`
+--
+ALTER TABLE `gibbonExternalAssessmentField`
+ ADD PRIMARY KEY (`gibbonExternalAssessmentFieldID`);
+
+--
+-- Indexes for table `gibbonExternalAssessmentStudent`
+--
+ALTER TABLE `gibbonExternalAssessmentStudent`
+ ADD PRIMARY KEY (`gibbonExternalAssessmentStudentID`);
+
+--
+-- Indexes for table `gibbonExternalAssessmentStudentEntry`
+--
+ALTER TABLE `gibbonExternalAssessmentStudentEntry`
+ ADD PRIMARY KEY (`gibbonExternalAssessmentStudentEntryID`);
+
+--
+-- Indexes for table `gibbonFamily`
+--
+ALTER TABLE `gibbonFamily`
+ ADD PRIMARY KEY (`gibbonFamilyID`);
+
+--
+-- Indexes for table `gibbonFamilyAdult`
+--
+ALTER TABLE `gibbonFamilyAdult`
+ ADD PRIMARY KEY (`gibbonFamilyAdultID`);
+
+--
+-- Indexes for table `gibbonFamilyChild`
+--
+ALTER TABLE `gibbonFamilyChild`
+ ADD PRIMARY KEY (`gibbonFamilyChildID`);
+
+--
+-- Indexes for table `gibbonFamilyRelationship`
+--
+ALTER TABLE `gibbonFamilyRelationship`
+ ADD PRIMARY KEY (`gibbonFamilyRelationshipID`);
+
+--
+-- Indexes for table `gibbonFamilyUpdate`
+--
+ALTER TABLE `gibbonFamilyUpdate`
+ ADD PRIMARY KEY (`gibbonFamilyUpdateID`);
+
+--
+-- Indexes for table `gibbonFileExtension`
+--
+ALTER TABLE `gibbonFileExtension`
+ ADD PRIMARY KEY (`gibbonFileExtensionID`);
+
+--
+-- Indexes for table `gibbonFinanceBillingSchedule`
+--
+ALTER TABLE `gibbonFinanceBillingSchedule`
+ ADD PRIMARY KEY (`gibbonFinanceBillingScheduleID`);
+
+--
+-- Indexes for table `gibbonFinanceFee`
+--
+ALTER TABLE `gibbonFinanceFee`
+ ADD PRIMARY KEY (`gibbonFinanceFeeID`);
+
+--
+-- Indexes for table `gibbonFinanceFeeCategory`
+--
+ALTER TABLE `gibbonFinanceFeeCategory`
+ ADD PRIMARY KEY (`gibbonFinanceFeeCategoryID`);
+
+--
+-- Indexes for table `gibbonFinanceInvoice`
+--
+ALTER TABLE `gibbonFinanceInvoice`
+ ADD PRIMARY KEY (`gibbonFinanceInvoiceID`);
+
+--
+-- Indexes for table `gibbonFinanceInvoicee`
+--
+ALTER TABLE `gibbonFinanceInvoicee`
+ ADD PRIMARY KEY (`gibbonFinanceInvoiceeID`);
+
+--
+-- Indexes for table `gibbonFinanceInvoiceeUpdate`
+--
+ALTER TABLE `gibbonFinanceInvoiceeUpdate`
+ ADD PRIMARY KEY (`gibbonFinanceInvoiceeUpdateID`);
+
+--
+-- Indexes for table `gibbonFinanceInvoiceFee`
+--
+ALTER TABLE `gibbonFinanceInvoiceFee`
+ ADD PRIMARY KEY (`gibbonFinanceInvoiceFeeID`);
+
+--
+-- Indexes for table `gibbonHook`
+--
+ALTER TABLE `gibbonHook`
+ ADD PRIMARY KEY (`gibbonHookID`), ADD UNIQUE KEY `name` (`name`,`type`);
+
+--
+-- Indexes for table `gibbonHouse`
+--
+ALTER TABLE `gibbonHouse`
+ ADD PRIMARY KEY (`gibbonHouseID`), ADD UNIQUE KEY `name` (`name`,`nameShort`);
+
+--
+-- Indexes for table `gibboni18n`
+--
+ALTER TABLE `gibboni18n`
+ ADD PRIMARY KEY (`gibboni18nID`);
+
+--
+-- Indexes for table `gibbonIN`
+--
+ALTER TABLE `gibbonIN`
+ ADD PRIMARY KEY (`gibbonINID`), ADD UNIQUE KEY `gibbonPersonID` (`gibbonPersonID`);
+
+--
+-- Indexes for table `gibbonINDescriptor`
+--
+ALTER TABLE `gibbonINDescriptor`
+ ADD PRIMARY KEY (`gibbonINDescriptorID`);
+
+--
+-- Indexes for table `gibbonINPersonDescriptor`
+--
+ALTER TABLE `gibbonINPersonDescriptor`
+ ADD PRIMARY KEY (`gibbonINPersonDescriptorID`);
+
+--
+-- Indexes for table `gibbonLibraryItem`
+--
+ALTER TABLE `gibbonLibraryItem`
+ ADD PRIMARY KEY (`gibbonLibraryItemID`), ADD UNIQUE KEY `id` (`id`);
+
+--
+-- Indexes for table `gibbonLibraryItemEvent`
+--
+ALTER TABLE `gibbonLibraryItemEvent`
+ ADD PRIMARY KEY (`gibbonLibraryItemEventID`);
+
+--
+-- Indexes for table `gibbonLibraryType`
+--
+ALTER TABLE `gibbonLibraryType`
+ ADD PRIMARY KEY (`gibbonLibraryTypeID`);
+
+--
+-- Indexes for table `gibbonMarkbookColumn`
+--
+ALTER TABLE `gibbonMarkbookColumn`
+ ADD PRIMARY KEY (`gibbonMarkbookColumnID`), ADD KEY `gibbonCourseClassID` (`gibbonCourseClassID`);
+
+--
+-- Indexes for table `gibbonMarkbookEntry`
+--
+ALTER TABLE `gibbonMarkbookEntry`
+ ADD PRIMARY KEY (`gibbonMarkbookEntryID`), ADD KEY `gibbonPersonIDStudent` (`gibbonPersonIDStudent`), ADD KEY `gibbonMarkbookColumnID` (`gibbonMarkbookColumnID`);
+
+--
+-- Indexes for table `gibbonMarkbookTarget`
+--
+ALTER TABLE `gibbonMarkbookTarget`
+ ADD PRIMARY KEY (`gibbonMarkbookTargetID`), ADD UNIQUE KEY `coursePerson` (`gibbonCourseClassID`,`gibbonPersonIDStudent`);
+
+--
+-- Indexes for table `gibbonMedicalCondition`
+--
+ALTER TABLE `gibbonMedicalCondition`
+ ADD PRIMARY KEY (`gibbonMedicalConditionID`), ADD UNIQUE KEY `name` (`name`);
+
+--
+-- Indexes for table `gibbonMessenger`
+--
+ALTER TABLE `gibbonMessenger`
+ ADD PRIMARY KEY (`gibbonMessengerID`);
+
+--
+-- Indexes for table `gibbonMessengerTarget`
+--
+ALTER TABLE `gibbonMessengerTarget`
+ ADD PRIMARY KEY (`gibbonMessengerTargetID`);
+
+--
+-- Indexes for table `gibbonModule`
+--
+ALTER TABLE `gibbonModule`
+ ADD PRIMARY KEY (`gibbonModuleID`), ADD UNIQUE KEY `gibbonModuleName` (`name`);
+
+--
+-- Indexes for table `gibbonNotification`
+--
+ALTER TABLE `gibbonNotification`
+ ADD PRIMARY KEY (`gibbonNotificationID`);
+
+--
+-- Indexes for table `gibbonOutcome`
+--
+ALTER TABLE `gibbonOutcome`
+ ADD PRIMARY KEY (`gibbonOutcomeID`);
+
+--
+-- Indexes for table `gibbonPayment`
+--
+ALTER TABLE `gibbonPayment`
+ ADD PRIMARY KEY (`gibbonPaymentID`);
+
+--
+-- Indexes for table `gibbonPermission`
+--
+ALTER TABLE `gibbonPermission`
+ ADD PRIMARY KEY (`permissionID`), ADD KEY `gibbonRoleID` (`gibbonRoleID`), ADD KEY `gibbonActionID` (`gibbonActionID`);
+
+--
+-- Indexes for table `gibbonPerson`
+--
+ALTER TABLE `gibbonPerson`
+ ADD PRIMARY KEY (`gibbonPersonID`), ADD UNIQUE KEY `username` (`username`), ADD KEY `username_2` (`username`,`email`);
+
+--
+-- Indexes for table `gibbonPersonMedical`
+--
+ALTER TABLE `gibbonPersonMedical`
+ ADD PRIMARY KEY (`gibbonPersonMedicalID`), ADD KEY `gibbonPersonID` (`gibbonPersonID`);
+
+--
+-- Indexes for table `gibbonPersonMedicalCondition`
+--
+ALTER TABLE `gibbonPersonMedicalCondition`
+ ADD PRIMARY KEY (`gibbonPersonMedicalConditionID`), ADD KEY `gibbonPersonMedicalID` (`gibbonPersonMedicalID`);
+
+--
+-- Indexes for table `gibbonPersonMedicalConditionUpdate`
+--
+ALTER TABLE `gibbonPersonMedicalConditionUpdate`
+ ADD PRIMARY KEY (`gibbonPersonMedicalConditionUpdateID`);
+
+--
+-- Indexes for table `gibbonPersonMedicalUpdate`
+--
+ALTER TABLE `gibbonPersonMedicalUpdate`
+ ADD PRIMARY KEY (`gibbonPersonMedicalUpdateID`);
+
+--
+-- Indexes for table `gibbonPersonUpdate`
+--
+ALTER TABLE `gibbonPersonUpdate`
+ ADD PRIMARY KEY (`gibbonPersonUpdateID`);
+
+--
+-- Indexes for table `gibbonPlannerEntry`
+--
+ALTER TABLE `gibbonPlannerEntry`
+ ADD PRIMARY KEY (`gibbonPlannerEntryID`), ADD KEY `gibbonCourseClassID` (`gibbonCourseClassID`);
+
+--
+-- Indexes for table `gibbonPlannerEntryAttendance`
+--
+ALTER TABLE `gibbonPlannerEntryAttendance`
+ ADD PRIMARY KEY (`gibbonPlannerEntryAttendanceID`);
+
+--
+-- Indexes for table `gibbonPlannerEntryAttendanceLog`
+--
+ALTER TABLE `gibbonPlannerEntryAttendanceLog`
+ ADD PRIMARY KEY (`gibbonPlannerEntryAttendanceLogID`);
+
+--
+-- Indexes for table `gibbonPlannerEntryDiscuss`
+--
+ALTER TABLE `gibbonPlannerEntryDiscuss`
+ ADD PRIMARY KEY (`gibbonPlannerEntryDiscussID`);
+
+--
+-- Indexes for table `gibbonPlannerEntryGuest`
+--
+ALTER TABLE `gibbonPlannerEntryGuest`
+ ADD PRIMARY KEY (`gibbonPlannerEntryGuestID`);
+
+--
+-- Indexes for table `gibbonPlannerEntryHomework`
+--
+ALTER TABLE `gibbonPlannerEntryHomework`
+ ADD PRIMARY KEY (`gibbonPlannerEntryHomeworkID`);
+
+--
+-- Indexes for table `gibbonPlannerEntryLike`
+--
+ALTER TABLE `gibbonPlannerEntryLike`
+ ADD PRIMARY KEY (`gibbonPlannerEntryLikeID`), ADD UNIQUE KEY `gibbonPlannerEntryID` (`gibbonPlannerEntryID`,`gibbonPersonID`);
+
+--
+-- Indexes for table `gibbonPlannerEntryOutcome`
+--
+ALTER TABLE `gibbonPlannerEntryOutcome`
+ ADD PRIMARY KEY (`gibbonPlannerEntryOutcomeID`);
+
+--
+-- Indexes for table `gibbonPlannerEntryStudentHomework`
+--
+ALTER TABLE `gibbonPlannerEntryStudentHomework`
+ ADD PRIMARY KEY (`gibbonPlannerEntryStudentHomeworkID`), ADD KEY `gibbonPlannerEntryID` (`gibbonPlannerEntryID`,`gibbonPersonID`);
+
+--
+-- Indexes for table `gibbonPlannerEntryStudentTracker`
+--
+ALTER TABLE `gibbonPlannerEntryStudentTracker`
+ ADD PRIMARY KEY (`gibbonPlannerEntryStudentTrackerID`);
+
+--
+-- Indexes for table `gibbonPlannerParentWeeklyEmailSummary`
+--
+ALTER TABLE `gibbonPlannerParentWeeklyEmailSummary`
+ ADD PRIMARY KEY (`gibbonPlannerParentWeeklyEmailSummaryID`), ADD UNIQUE KEY `key` (`key`);
+
+--
+-- Indexes for table `gibbonResource`
+--
+ALTER TABLE `gibbonResource`
+ ADD PRIMARY KEY (`gibbonResourceID`);
+
+--
+-- Indexes for table `gibbonResourceTag`
+--
+ALTER TABLE `gibbonResourceTag`
+ ADD PRIMARY KEY (`gibbonResourceTagID`), ADD UNIQUE KEY `tag` (`tag`), ADD KEY `tag_2` (`tag`);
+
+--
+-- Indexes for table `gibbonRole`
+--
+ALTER TABLE `gibbonRole`
+ ADD PRIMARY KEY (`gibbonRoleID`), ADD UNIQUE KEY `name` (`name`), ADD UNIQUE KEY `nameShort` (`nameShort`);
+
+--
+-- Indexes for table `gibbonRollGroup`
+--
+ALTER TABLE `gibbonRollGroup`
+ ADD PRIMARY KEY (`gibbonRollGroupID`);
+
+--
+-- Indexes for table `gibbonRubric`
+--
+ALTER TABLE `gibbonRubric`
+ ADD PRIMARY KEY (`gibbonRubricID`);
+
+--
+-- Indexes for table `gibbonRubricCell`
+--
+ALTER TABLE `gibbonRubricCell`
+ ADD PRIMARY KEY (`gibbonRubricCellID`);
+
+--
+-- Indexes for table `gibbonRubricColumn`
+--
+ALTER TABLE `gibbonRubricColumn`
+ ADD PRIMARY KEY (`gibbonRubricColumnID`);
+
+--
+-- Indexes for table `gibbonRubricEntry`
+--
+ALTER TABLE `gibbonRubricEntry`
+ ADD PRIMARY KEY (`gibbonRubricEntry`);
+
+--
+-- Indexes for table `gibbonRubricRow`
+--
+ALTER TABLE `gibbonRubricRow`
+ ADD PRIMARY KEY (`gibbonRubricRowID`);
+
+--
+-- Indexes for table `gibbonScale`
+--
+ALTER TABLE `gibbonScale`
+ ADD PRIMARY KEY (`gibbonScaleID`);
+
+--
+-- Indexes for table `gibbonScaleGrade`
+--
+ALTER TABLE `gibbonScaleGrade`
+ ADD PRIMARY KEY (`gibbonScaleGradeID`);
+
+--
+-- Indexes for table `gibbonSchoolYear`
+--
+ALTER TABLE `gibbonSchoolYear`
+ ADD PRIMARY KEY (`gibbonSchoolYearID`), ADD UNIQUE KEY `academicYearName` (`name`), ADD UNIQUE KEY `sequenceNumber` (`sequenceNumber`);
+
+--
+-- Indexes for table `gibbonSchoolYearSpecialDay`
+--
+ALTER TABLE `gibbonSchoolYearSpecialDay`
+ ADD PRIMARY KEY (`gibbonSchoolYearSpecialDayID`), ADD UNIQUE KEY `date` (`date`);
+
+--
+-- Indexes for table `gibbonSchoolYearTerm`
+--
+ALTER TABLE `gibbonSchoolYearTerm`
+ ADD PRIMARY KEY (`gibbonSchoolYearTermID`), ADD UNIQUE KEY `sequenceNumber` (`sequenceNumber`);
+
+--
+-- Indexes for table `gibbonSetting`
+--
+ALTER TABLE `gibbonSetting`
+ ADD PRIMARY KEY (`gibbonSystemSettingsID`), ADD UNIQUE KEY `name` (`name`), ADD UNIQUE KEY `nameDisplay` (`nameDisplay`);
+
+--
+-- Indexes for table `gibbonSpace`
+--
+ALTER TABLE `gibbonSpace`
+ ADD PRIMARY KEY (`gibbonSpaceID`), ADD UNIQUE KEY `name` (`name`);
+
+--
+-- Indexes for table `gibbonStaff`
+--
+ALTER TABLE `gibbonStaff`
+ ADD PRIMARY KEY (`gibbonStaffID`), ADD UNIQUE KEY `gibbonPersonID` (`gibbonPersonID`), ADD UNIQUE KEY `initials` (`initials`);
+
+--
+-- Indexes for table `gibbonStudentEnrolment`
+--
+ALTER TABLE `gibbonStudentEnrolment`
+ ADD PRIMARY KEY (`gibbonStudentEnrolmentID`), ADD KEY `gibbonSchoolYearID` (`gibbonSchoolYearID`), ADD KEY `gibbonYearGroupID` (`gibbonYearGroupID`), ADD KEY `gibbonRollGroupID` (`gibbonRollGroupID`);
+
+--
+-- Indexes for table `gibbonStudentNote`
+--
+ALTER TABLE `gibbonStudentNote`
+ ADD PRIMARY KEY (`gibbonStudentNoteID`);
+
+--
+-- Indexes for table `gibbonStudentNoteCategory`
+--
+ALTER TABLE `gibbonStudentNoteCategory`
+ ADD PRIMARY KEY (`gibbonStudentNoteCategoryID`);
+
+--
+-- Indexes for table `gibbonTheme`
+--
+ALTER TABLE `gibbonTheme`
+ ADD PRIMARY KEY (`gibbonThemeID`);
+
+--
+-- Indexes for table `gibbonTT`
+--
+ALTER TABLE `gibbonTT`
+ ADD PRIMARY KEY (`gibbonTTID`);
+
+--
+-- Indexes for table `gibbonTTColumn`
+--
+ALTER TABLE `gibbonTTColumn`
+ ADD PRIMARY KEY (`gibbonTTColumnID`);
+
+--
+-- Indexes for table `gibbonTTColumnRow`
+--
+ALTER TABLE `gibbonTTColumnRow`
+ ADD PRIMARY KEY (`gibbonTTColumnRowID`), ADD KEY `gibbonTTColumnID` (`gibbonTTColumnID`);
+
+--
+-- Indexes for table `gibbonTTDay`
+--
+ALTER TABLE `gibbonTTDay`
+ ADD PRIMARY KEY (`gibbonTTDayID`);
+
+--
+-- Indexes for table `gibbonTTDayDate`
+--
+ALTER TABLE `gibbonTTDayDate`
+ ADD PRIMARY KEY (`gibbonTTDayDateID`), ADD KEY `gibbonTTDayID` (`gibbonTTDayID`);
+
+--
+-- Indexes for table `gibbonTTDayRowClass`
+--
+ALTER TABLE `gibbonTTDayRowClass`
+ ADD PRIMARY KEY (`gibbonTTDayRowClassID`), ADD KEY `gibbonCourseClassID` (`gibbonCourseClassID`), ADD KEY `gibbonSpaceID` (`gibbonSpaceID`), ADD KEY `gibbonTTColumnRowID` (`gibbonTTColumnRowID`);
+
+--
+-- Indexes for table `gibbonTTDayRowClassException`
+--
+ALTER TABLE `gibbonTTDayRowClassException`
+ ADD PRIMARY KEY (`gibbonTTDayRowClassExceptionID`);
+
+--
+-- Indexes for table `gibbonTTImport`
+--
+ALTER TABLE `gibbonTTImport`
+ ADD PRIMARY KEY (`gibbonTTImportID`);
+
+--
+-- Indexes for table `gibbonTTSpaceBooking`
+--
+ALTER TABLE `gibbonTTSpaceBooking`
+ ADD PRIMARY KEY (`gibbonTTSpaceBookingID`);
+
+--
+-- Indexes for table `gibbonTTSpaceChange`
+--
+ALTER TABLE `gibbonTTSpaceChange`
+ ADD PRIMARY KEY (`gibbonTTSpaceChangeID`), ADD KEY `gibbonTTDayRowClassID` (`gibbonTTDayRowClassID`), ADD KEY `date` (`date`);
+
+--
+-- Indexes for table `gibbonUnit`
+--
+ALTER TABLE `gibbonUnit`
+ ADD PRIMARY KEY (`gibbonUnitID`);
+
+--
+-- Indexes for table `gibbonUnitBlock`
+--
+ALTER TABLE `gibbonUnitBlock`
+ ADD PRIMARY KEY (`gibbonUnitBlockID`);
+
+--
+-- Indexes for table `gibbonUnitClass`
+--
+ALTER TABLE `gibbonUnitClass`
+ ADD PRIMARY KEY (`gibbonUnitClassID`);
+
+--
+-- Indexes for table `gibbonUnitClassBlock`
+--
+ALTER TABLE `gibbonUnitClassBlock`
+ ADD PRIMARY KEY (`gibbonUnitClassBlockID`);
+
+--
+-- Indexes for table `gibbonUnitOutcome`
+--
+ALTER TABLE `gibbonUnitOutcome`
+ ADD PRIMARY KEY (`gibbonUnitOutcomeID`);
+
+--
+-- Indexes for table `gibbonYearGroup`
+--
+ALTER TABLE `gibbonYearGroup`
+ ADD PRIMARY KEY (`gibbonYearGroupID`), ADD UNIQUE KEY `name` (`name`,`nameShort`,`sequenceNumber`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `gibbonAction`
+--
+ALTER TABLE `gibbonAction`
+MODIFY `gibbonActionID` int(7) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=818;
+--
+-- AUTO_INCREMENT for table `gibbonActivity`
+--
+ALTER TABLE `gibbonActivity`
+MODIFY `gibbonActivityID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonActivitySlot`
+--
+ALTER TABLE `gibbonActivitySlot`
+MODIFY `gibbonActivitySlotID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonActivityStaff`
+--
+ALTER TABLE `gibbonActivityStaff`
+MODIFY `gibbonActivityStaffID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonActivityStudent`
+--
+ALTER TABLE `gibbonActivityStudent`
+MODIFY `gibbonActivityStudentID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonActivityStudentPayment`
+--
+ALTER TABLE `gibbonActivityStudentPayment`
+MODIFY `gibbonActivityStudentPaymentID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonAlertLevel`
+--
+ALTER TABLE `gibbonAlertLevel`
+MODIFY `gibbonAlertLevelID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `gibbonApplicationForm`
+--
+ALTER TABLE `gibbonApplicationForm`
+MODIFY `gibbonApplicationFormID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonApplicationFormFile`
+--
+ALTER TABLE `gibbonApplicationFormFile`
+MODIFY `gibbonApplicationFormFileID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonApplicationFormRelationship`
+--
+ALTER TABLE `gibbonApplicationFormRelationship`
+MODIFY `gibbonApplicationFormRelationshipID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonAttendanceLogPerson`
+--
+ALTER TABLE `gibbonAttendanceLogPerson`
+MODIFY `gibbonAttendanceLogPersonID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonAttendanceLogRollGroup`
+--
+ALTER TABLE `gibbonAttendanceLogRollGroup`
+MODIFY `gibbonAttendanceLogRollGroupID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonBehaviour`
+--
+ALTER TABLE `gibbonBehaviour`
+MODIFY `gibbonBehaviourID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonCourse`
+--
+ALTER TABLE `gibbonCourse`
+MODIFY `gibbonCourseID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonCourseClass`
+--
+ALTER TABLE `gibbonCourseClass`
+MODIFY `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonCourseClassPerson`
+--
+ALTER TABLE `gibbonCourseClassPerson`
+MODIFY `gibbonCourseClassPersonID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonCrowdAssessDiscuss`
+--
+ALTER TABLE `gibbonCrowdAssessDiscuss`
+MODIFY `gibbonCrowdAssessDiscussID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonCrowdAssessLike`
+--
+ALTER TABLE `gibbonCrowdAssessLike`
+MODIFY `gibbonCrowdAssessLikeID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonDaysOfWeek`
+--
+ALTER TABLE `gibbonDaysOfWeek`
+MODIFY `gibbonDaysOfWeekID` int(2) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+--
+-- AUTO_INCREMENT for table `gibbonDepartment`
+--
+ALTER TABLE `gibbonDepartment`
+MODIFY `gibbonDepartmentID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonDepartmentResource`
+--
+ALTER TABLE `gibbonDepartmentResource`
+MODIFY `gibbonDepartmentResourceID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonDepartmentStaff`
+--
+ALTER TABLE `gibbonDepartmentStaff`
+MODIFY `gibbonDepartmentStaffID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonDistrict`
+--
+ALTER TABLE `gibbonDistrict`
+MODIFY `gibbonDistrictID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonExternalAssessment`
+--
+ALTER TABLE `gibbonExternalAssessment`
+MODIFY `gibbonExternalAssessmentID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `gibbonExternalAssessmentField`
+--
+ALTER TABLE `gibbonExternalAssessmentField`
+MODIFY `gibbonExternalAssessmentFieldID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=133;
+--
+-- AUTO_INCREMENT for table `gibbonExternalAssessmentStudent`
+--
+ALTER TABLE `gibbonExternalAssessmentStudent`
+MODIFY `gibbonExternalAssessmentStudentID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonExternalAssessmentStudentEntry`
+--
+ALTER TABLE `gibbonExternalAssessmentStudentEntry`
+MODIFY `gibbonExternalAssessmentStudentEntryID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonFamily`
+--
+ALTER TABLE `gibbonFamily`
+MODIFY `gibbonFamilyID` int(7) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonFamilyAdult`
+--
+ALTER TABLE `gibbonFamilyAdult`
+MODIFY `gibbonFamilyAdultID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonFamilyChild`
+--
+ALTER TABLE `gibbonFamilyChild`
+MODIFY `gibbonFamilyChildID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonFamilyRelationship`
+--
+ALTER TABLE `gibbonFamilyRelationship`
+MODIFY `gibbonFamilyRelationshipID` int(9) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonFamilyUpdate`
+--
+ALTER TABLE `gibbonFamilyUpdate`
+MODIFY `gibbonFamilyUpdateID` int(9) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonFileExtension`
+--
+ALTER TABLE `gibbonFileExtension`
+MODIFY `gibbonFileExtensionID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=48;
+--
+-- AUTO_INCREMENT for table `gibbonFinanceBillingSchedule`
+--
+ALTER TABLE `gibbonFinanceBillingSchedule`
+MODIFY `gibbonFinanceBillingScheduleID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonFinanceFee`
+--
+ALTER TABLE `gibbonFinanceFee`
+MODIFY `gibbonFinanceFeeID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonFinanceFeeCategory`
+--
+ALTER TABLE `gibbonFinanceFeeCategory`
+MODIFY `gibbonFinanceFeeCategoryID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonFinanceInvoice`
+--
+ALTER TABLE `gibbonFinanceInvoice`
+MODIFY `gibbonFinanceInvoiceID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonFinanceInvoicee`
+--
+ALTER TABLE `gibbonFinanceInvoicee`
+MODIFY `gibbonFinanceInvoiceeID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonFinanceInvoiceeUpdate`
+--
+ALTER TABLE `gibbonFinanceInvoiceeUpdate`
+MODIFY `gibbonFinanceInvoiceeUpdateID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonFinanceInvoiceFee`
+--
+ALTER TABLE `gibbonFinanceInvoiceFee`
+MODIFY `gibbonFinanceInvoiceFeeID` int(15) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonHook`
+--
+ALTER TABLE `gibbonHook`
+MODIFY `gibbonHookID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `gibbonHouse`
+--
+ALTER TABLE `gibbonHouse`
+MODIFY `gibbonHouseID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibboni18n`
+--
+ALTER TABLE `gibboni18n`
+MODIFY `gibboni18nID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
+--
+-- AUTO_INCREMENT for table `gibbonIN`
+--
+ALTER TABLE `gibbonIN`
+MODIFY `gibbonINID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonINDescriptor`
+--
+ALTER TABLE `gibbonINDescriptor`
+MODIFY `gibbonINDescriptorID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `gibbonINPersonDescriptor`
+--
+ALTER TABLE `gibbonINPersonDescriptor`
+MODIFY `gibbonINPersonDescriptorID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonLibraryItem`
+--
+ALTER TABLE `gibbonLibraryItem`
+MODIFY `gibbonLibraryItemID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonLibraryItemEvent`
+--
+ALTER TABLE `gibbonLibraryItemEvent`
+MODIFY `gibbonLibraryItemEventID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonLibraryType`
+--
+ALTER TABLE `gibbonLibraryType`
+MODIFY `gibbonLibraryTypeID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+--
+-- AUTO_INCREMENT for table `gibbonMarkbookColumn`
+--
+ALTER TABLE `gibbonMarkbookColumn`
+MODIFY `gibbonMarkbookColumnID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonMarkbookEntry`
+--
+ALTER TABLE `gibbonMarkbookEntry`
+MODIFY `gibbonMarkbookEntryID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonMarkbookTarget`
+--
+ALTER TABLE `gibbonMarkbookTarget`
+MODIFY `gibbonMarkbookTargetID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonMedicalCondition`
+--
+ALTER TABLE `gibbonMedicalCondition`
+MODIFY `gibbonMedicalConditionID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=28;
+--
+-- AUTO_INCREMENT for table `gibbonMessenger`
+--
+ALTER TABLE `gibbonMessenger`
+MODIFY `gibbonMessengerID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonMessengerTarget`
+--
+ALTER TABLE `gibbonMessengerTarget`
+MODIFY `gibbonMessengerTargetID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonModule`
+--
+ALTER TABLE `gibbonModule`
+MODIFY `gibbonModuleID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT 'This number is assigned at install, and is only unique to the installation',AUTO_INCREMENT=141;
+--
+-- AUTO_INCREMENT for table `gibbonNotification`
+--
+ALTER TABLE `gibbonNotification`
+MODIFY `gibbonNotificationID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonOutcome`
+--
+ALTER TABLE `gibbonOutcome`
+MODIFY `gibbonOutcomeID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPayment`
+--
+ALTER TABLE `gibbonPayment`
+MODIFY `gibbonPaymentID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPermission`
+--
+ALTER TABLE `gibbonPermission`
+MODIFY `permissionID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=53873;
+--
+-- AUTO_INCREMENT for table `gibbonPerson`
+--
+ALTER TABLE `gibbonPerson`
+MODIFY `gibbonPersonID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1099;
+--
+-- AUTO_INCREMENT for table `gibbonPersonMedical`
+--
+ALTER TABLE `gibbonPersonMedical`
+MODIFY `gibbonPersonMedicalID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPersonMedicalCondition`
+--
+ALTER TABLE `gibbonPersonMedicalCondition`
+MODIFY `gibbonPersonMedicalConditionID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPersonMedicalConditionUpdate`
+--
+ALTER TABLE `gibbonPersonMedicalConditionUpdate`
+MODIFY `gibbonPersonMedicalConditionUpdateID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPersonMedicalUpdate`
+--
+ALTER TABLE `gibbonPersonMedicalUpdate`
+MODIFY `gibbonPersonMedicalUpdateID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPersonUpdate`
+--
+ALTER TABLE `gibbonPersonUpdate`
+MODIFY `gibbonPersonUpdateID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPlannerEntry`
+--
+ALTER TABLE `gibbonPlannerEntry`
+MODIFY `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPlannerEntryAttendance`
+--
+ALTER TABLE `gibbonPlannerEntryAttendance`
+MODIFY `gibbonPlannerEntryAttendanceID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPlannerEntryAttendanceLog`
+--
+ALTER TABLE `gibbonPlannerEntryAttendanceLog`
+MODIFY `gibbonPlannerEntryAttendanceLogID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPlannerEntryDiscuss`
+--
+ALTER TABLE `gibbonPlannerEntryDiscuss`
+MODIFY `gibbonPlannerEntryDiscussID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPlannerEntryGuest`
+--
+ALTER TABLE `gibbonPlannerEntryGuest`
+MODIFY `gibbonPlannerEntryGuestID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPlannerEntryHomework`
+--
+ALTER TABLE `gibbonPlannerEntryHomework`
+MODIFY `gibbonPlannerEntryHomeworkID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPlannerEntryLike`
+--
+ALTER TABLE `gibbonPlannerEntryLike`
+MODIFY `gibbonPlannerEntryLikeID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPlannerEntryOutcome`
+--
+ALTER TABLE `gibbonPlannerEntryOutcome`
+MODIFY `gibbonPlannerEntryOutcomeID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPlannerEntryStudentHomework`
+--
+ALTER TABLE `gibbonPlannerEntryStudentHomework`
+MODIFY `gibbonPlannerEntryStudentHomeworkID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPlannerEntryStudentTracker`
+--
+ALTER TABLE `gibbonPlannerEntryStudentTracker`
+MODIFY `gibbonPlannerEntryStudentTrackerID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonPlannerParentWeeklyEmailSummary`
+--
+ALTER TABLE `gibbonPlannerParentWeeklyEmailSummary`
+MODIFY `gibbonPlannerParentWeeklyEmailSummaryID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonResource`
+--
+ALTER TABLE `gibbonResource`
+MODIFY `gibbonResourceID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonResourceTag`
+--
+ALTER TABLE `gibbonResourceTag`
+MODIFY `gibbonResourceTagID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonRole`
+--
+ALTER TABLE `gibbonRole`
+MODIFY `gibbonRoleID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=30;
+--
+-- AUTO_INCREMENT for table `gibbonRollGroup`
+--
+ALTER TABLE `gibbonRollGroup`
+MODIFY `gibbonRollGroupID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonRubric`
+--
+ALTER TABLE `gibbonRubric`
+MODIFY `gibbonRubricID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonRubricCell`
+--
+ALTER TABLE `gibbonRubricCell`
+MODIFY `gibbonRubricCellID` int(11) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonRubricColumn`
+--
+ALTER TABLE `gibbonRubricColumn`
+MODIFY `gibbonRubricColumnID` int(9) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonRubricEntry`
+--
+ALTER TABLE `gibbonRubricEntry`
+MODIFY `gibbonRubricEntry` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonRubricRow`
+--
+ALTER TABLE `gibbonRubricRow`
+MODIFY `gibbonRubricRowID` int(9) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonScale`
+--
+ALTER TABLE `gibbonScale`
+MODIFY `gibbonScaleID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
+--
+-- AUTO_INCREMENT for table `gibbonScaleGrade`
+--
+ALTER TABLE `gibbonScaleGrade`
+MODIFY `gibbonScaleGradeID` int(7) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=331;
+--
+-- AUTO_INCREMENT for table `gibbonSchoolYear`
+--
+ALTER TABLE `gibbonSchoolYear`
+MODIFY `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=21;
+--
+-- AUTO_INCREMENT for table `gibbonSchoolYearSpecialDay`
+--
+ALTER TABLE `gibbonSchoolYearSpecialDay`
+MODIFY `gibbonSchoolYearSpecialDayID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonSchoolYearTerm`
+--
+ALTER TABLE `gibbonSchoolYearTerm`
+MODIFY `gibbonSchoolYearTermID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonSetting`
+--
+ALTER TABLE `gibbonSetting`
+MODIFY `gibbonSystemSettingsID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=144;
+--
+-- AUTO_INCREMENT for table `gibbonSpace`
+--
+ALTER TABLE `gibbonSpace`
+MODIFY `gibbonSpaceID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonStaff`
+--
+ALTER TABLE `gibbonStaff`
+MODIFY `gibbonStaffID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonStudentEnrolment`
+--
+ALTER TABLE `gibbonStudentEnrolment`
+MODIFY `gibbonStudentEnrolmentID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonStudentNote`
+--
+ALTER TABLE `gibbonStudentNote`
+MODIFY `gibbonStudentNoteID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonStudentNoteCategory`
+--
+ALTER TABLE `gibbonStudentNoteCategory`
+MODIFY `gibbonStudentNoteCategoryID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+--
+-- AUTO_INCREMENT for table `gibbonTheme`
+--
+ALTER TABLE `gibbonTheme`
+MODIFY `gibbonThemeID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=13;
+--
+-- AUTO_INCREMENT for table `gibbonTT`
+--
+ALTER TABLE `gibbonTT`
+MODIFY `gibbonTTID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonTTColumn`
+--
+ALTER TABLE `gibbonTTColumn`
+MODIFY `gibbonTTColumnID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonTTColumnRow`
+--
+ALTER TABLE `gibbonTTColumnRow`
+MODIFY `gibbonTTColumnRowID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonTTDay`
+--
+ALTER TABLE `gibbonTTDay`
+MODIFY `gibbonTTDayID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonTTDayDate`
+--
+ALTER TABLE `gibbonTTDayDate`
+MODIFY `gibbonTTDayDateID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonTTDayRowClass`
+--
+ALTER TABLE `gibbonTTDayRowClass`
+MODIFY `gibbonTTDayRowClassID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonTTDayRowClassException`
+--
+ALTER TABLE `gibbonTTDayRowClassException`
+MODIFY `gibbonTTDayRowClassExceptionID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonTTImport`
+--
+ALTER TABLE `gibbonTTImport`
+MODIFY `gibbonTTImportID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonTTSpaceBooking`
+--
+ALTER TABLE `gibbonTTSpaceBooking`
+MODIFY `gibbonTTSpaceBookingID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonTTSpaceChange`
+--
+ALTER TABLE `gibbonTTSpaceChange`
+MODIFY `gibbonTTSpaceChangeID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonUnit`
+--
+ALTER TABLE `gibbonUnit`
+MODIFY `gibbonUnitID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonUnitBlock`
+--
+ALTER TABLE `gibbonUnitBlock`
+MODIFY `gibbonUnitBlockID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonUnitClass`
+--
+ALTER TABLE `gibbonUnitClass`
+MODIFY `gibbonUnitClassID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonUnitClassBlock`
+--
+ALTER TABLE `gibbonUnitClassBlock`
+MODIFY `gibbonUnitClassBlockID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonUnitOutcome`
+--
+ALTER TABLE `gibbonUnitOutcome`
+MODIFY `gibbonUnitOutcomeID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonYearGroup`
+--
+ALTER TABLE `gibbonYearGroup`
+MODIFY `gibbonYearGroupID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

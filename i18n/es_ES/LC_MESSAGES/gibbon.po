@@ -2624,6 +2624,7 @@ msgstr "Foto"
 #: modules/Finance/moduleFunctions.php:630
 #: modules/Planner/planner_view_full.php:505
 #: modules/Planner/planner_view_full.php:1645
+#: modules/Planner/units_dump.php:345
 #: modules/Activities/activities_manage_add.php:79
 #: modules/Activities/activities_manage_edit.php:135
 #: modules/Activities/activities_manage_edit.php:435
@@ -2688,7 +2689,7 @@ msgstr "Foto"
 #: modules/Planner/planner_view_full.php:505
 #: modules/Planner/planner_view_full.php:1645 modules/Planner/units.php:248
 #: modules/Planner/units.php:312 modules/Planner/units_add.php:161
-#: modules/Planner/units_dump.php:242 modules/Planner/units_edit.php:248
+#: modules/Planner/units_dump.php:345 modules/Planner/units_edit.php:248
 #: modules/Planner/units_edit.php:879 modules/Planner/units_embed.php:175
 #: modules/Resources/resources_add_ajax.php:213
 #: modules/Resources/resources_addQuick_ajax.php:189
@@ -6285,6 +6286,8 @@ msgstr "Ver Detalles"
 #: modules/Planner/units_edit_deploy.php:568
 #: modules/Planner/units_edit_deploy.php:589
 #: modules/Planner/units_edit_working.php:287
+#: modules/Planner/units_dump.php:163 modules/Planner/units_dump.php:320
+#: modules/Planner/units_dump.php:443
 #: cli/planner_parentWeeklyEmailSummary.php:103
 #: cli/planner_parentWeeklyEmailSummary.php:129 functions.php:165
 #: functions.php:392 functions.php:436 functions.php:486 functions.php:505
@@ -6388,9 +6391,10 @@ msgstr "Ver Detalles"
 #: modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php:202
 #: modules/Planner/report_workSummary_byRollGroup.php:407
 #: modules/Planner/units.php:241 modules/Planner/units_add.php:387
-#: modules/Planner/units_dump.php:162 modules/Planner/units_dump.php:340
-#: modules/Planner/units_edit.php:531 modules/Planner/units_edit.php:600
-#: modules/Planner/units_edit.php:909 modules/Planner/units_edit.php:958
+#: modules/Planner/units_dump.php:163 modules/Planner/units_dump.php:320
+#: modules/Planner/units_dump.php:443 modules/Planner/units_edit.php:531
+#: modules/Planner/units_edit.php:600 modules/Planner/units_edit.php:909
+#: modules/Planner/units_edit.php:958
 #: modules/Planner/units_edit_deploy.php:280
 #: modules/Planner/units_edit_deploy.php:568
 #: modules/Planner/units_edit_deploy.php:589
@@ -6811,7 +6815,8 @@ msgstr "Marcado en"
 #: modules/Planner/planner_view_full.php:1534
 #: modules/Students/student_view_details.php:1681
 #: modules/Students/student_view_details.php:2031
-#: modules/Planner/planner_view_full.php:566 functions.php:298 index.php:1021
+#: modules/Planner/planner_view_full.php:566
+#: modules/Planner/units_dump.php:406 functions.php:298 index.php:1021
 #: modules/Behaviour/behaviour_manage.php:360
 #: modules/Behaviour/moduleFunctions.php:145
 #: modules/Finance/billingSchedule_manage.php:234
@@ -6821,7 +6826,7 @@ msgstr "Marcado en"
 #: modules/Markbook/markbook_view.php:1561 modules/Planner/outcomes.php:252
 #: modules/Planner/planner_unitOverview.php:355
 #: modules/Planner/planner_view_full.php:566
-#: modules/Planner/units_dump.php:303 modules/Rubrics/rubrics.php:253
+#: modules/Planner/units_dump.php:406 modules/Rubrics/rubrics.php:253
 #: modules/Students/student_view_details.php:1681
 #: modules/Students/student_view_details.php:2031
 msgid "View Description"
@@ -8634,7 +8639,8 @@ msgstr "Estudiante y Fecha"
 #: modules/Students/student_view_details.php:2329
 #: modules/Students/student_view_details.php:2547
 #: i18n/dbStringsForTranslation.php:868 i18n/dbStringsForTranslation.php:889
-#: modules/Planner/planner_view_full.php:939 functions.php:517
+#: modules/Planner/planner_view_full.php:939
+#: modules/Planner/units_dump.php:467 functions.php:517
 #: i18n/dbStringsForTranslation.php:868 i18n/dbStringsForTranslation.php:889
 #: index.php:954 modules/Activities/activities_manage_add.php:121
 #: modules/Activities/activities_manage_edit.php:177
@@ -8669,7 +8675,7 @@ msgstr "Estudiante y Fecha"
 #: modules/Planner/planner_unitOverview.php:414
 #: modules/Planner/planner_view_full.php:939
 #: modules/Planner/planner_view_full_submit_edit.php:276
-#: modules/Planner/units_dump.php:364
+#: modules/Planner/units_dump.php:467
 #: modules/Resources/resources_add_ajax.php:149
 #: modules/Resources/resources_addQuick_ajax.php:132
 #: modules/Resources/resources_insert_ajax.php:318
@@ -10999,7 +11005,7 @@ msgstr "Borrar palabras de busqueda"
 #: modules/Planner/planner_view_full.php:511
 #: modules/Planner/planner_view_full.php:870
 #: modules/Planner/planner_view_full.php:1651
-#: i18n/dbStringsForTranslation.php:21
+#: modules/Planner/units_dump.php:351 i18n/dbStringsForTranslation.php:21
 #: modules/Activities/activities_manage.php:171
 #: modules/Activities/activities_manage_edit.php:444
 #: modules/Activities/activities_manage_edit.php:731
@@ -11041,7 +11047,7 @@ msgstr "Borrar palabras de busqueda"
 #: modules/Planner/planner_view_full.php:511
 #: modules/Planner/planner_view_full.php:870
 #: modules/Planner/planner_view_full.php:1651 modules/Planner/units.php:254
-#: modules/Planner/units.php:318 modules/Planner/units_dump.php:248
+#: modules/Planner/units.php:318 modules/Planner/units_dump.php:351
 #: modules/Planner/units_edit.php:547 modules/Planner/units_edit.php:925
 #: modules/Resources/resources_manage.php:162
 #: modules/Roll Groups/rollGroups.php:72 modules/Rubrics/rubrics.php:161
@@ -11383,6 +11389,7 @@ msgstr "Activo"
 #: modules/Planner/planner_view_full.php:1636
 #: modules/Planner/planner_view_full.php:508
 #: modules/Planner/planner_view_full.php:1648
+#: modules/Planner/units_dump.php:348
 #: modules/Activities/activities_manage_add.php:311
 #: modules/Activities/activities_manage_edit.php:339
 #: modules/Activities/activities_my_full.php:113
@@ -11392,7 +11399,7 @@ msgstr "Activo"
 #: modules/Planner/planner_unitOverview.php:297
 #: modules/Planner/planner_view_full.php:508
 #: modules/Planner/planner_view_full.php:1648
-#: modules/Planner/units_dump.php:245 modules/Planner/units_embed.php:178
+#: modules/Planner/units_dump.php:348 modules/Planner/units_embed.php:178
 #: modules/Resources/resources_insert_ajax.php:328
 #: modules/Resources/resources_manage.php:159
 #: modules/Resources/resources_manage_add.php:351
@@ -15899,7 +15906,8 @@ msgstr "Editar campos"
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:160
 #: modules/Planner/planner_view_full.php:502
 #: modules/Planner/planner_view_full.php:1642
-#: modules/Finance/fees_manage.php:170 modules/Finance/fees_manage_add.php:157
+#: modules/Planner/units_dump.php:342 modules/Finance/fees_manage.php:170
+#: modules/Finance/fees_manage_add.php:157
 #: modules/Finance/fees_manage_edit.php:175
 #: modules/Finance/invoices_manage_edit.php:532
 #: modules/Finance/moduleFunctions.php:349
@@ -15911,7 +15919,7 @@ msgstr "Editar campos"
 #: modules/Planner/planner_unitOverview.php:291
 #: modules/Planner/planner_view_full.php:502
 #: modules/Planner/planner_view_full.php:1642
-#: modules/Planner/units_dump.php:239
+#: modules/Planner/units_dump.php:342
 #: modules/Resources/resources_add_ajax.php:243
 #: modules/Resources/resources_insert_ajax.php:160
 #: modules/Resources/resources_insert_ajax.php:321
@@ -25940,7 +25948,8 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:1534
 #: modules/Planner/planner_view_full.php:1694
 #: modules/Planner/planner_view_full.php:566
-#: modules/Planner/planner_view_full.php:1706 index.php:1021
+#: modules/Planner/planner_view_full.php:1706
+#: modules/Planner/units_dump.php:406 index.php:1021
 #: modules/Behaviour/behaviour_manage.php:360
 #: modules/Behaviour/moduleFunctions.php:145
 #: modules/Finance/billingSchedule_manage.php:234
@@ -25949,7 +25958,7 @@ msgstr ""
 #: modules/Planner/planner_unitOverview.php:355
 #: modules/Planner/planner_view_full.php:566
 #: modules/Planner/planner_view_full.php:1706
-#: modules/Planner/units_dump.php:303 modules/Rubrics/rubrics.php:253
+#: modules/Planner/units_dump.php:406 modules/Rubrics/rubrics.php:253
 msgid "Show Comment"
 msgstr "Mostrar comentario"
 
@@ -28836,11 +28845,12 @@ msgstr "Las r&uacutebricas"
 #: modules/Planner/planner_unitOverview.php:288
 #: modules/Planner/planner_view_full.php:1627
 #: modules/Planner/planner_view_full.php:1639
-#: modules/Planner/moduleFunctions.php:206 modules/Planner/outcomes.php:157
-#: modules/Planner/outcomes_add.php:84 modules/Planner/outcomes_edit.php:120
+#: modules/Planner/units_dump.php:339 modules/Planner/moduleFunctions.php:206
+#: modules/Planner/outcomes.php:157 modules/Planner/outcomes_add.php:84
+#: modules/Planner/outcomes_edit.php:120
 #: modules/Planner/planner_unitOverview.php:288
 #: modules/Planner/planner_view_full.php:1639
-#: modules/Planner/units_dump.php:236 modules/Rubrics/rubrics.php:146
+#: modules/Planner/units_dump.php:339 modules/Rubrics/rubrics.php:146
 #: modules/Rubrics/rubrics_add.php:83 modules/Rubrics/rubrics_edit.php:204
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:112
 #: modules/Rubrics/rubrics_view.php:159
@@ -29936,8 +29946,10 @@ msgstr "Necesidades Individuales"
 #: i18n/dbStringsForTranslation.php:1111 i18n/dbStringsForTranslation.php:922
 #: i18n/dbStringsForTranslation.php:924 i18n/dbStringsForTranslation.php:936
 #: modules/Planner/planner_unitOverview.php:251
-#: i18n/dbStringsForTranslation.php:950 i18n/dbStringsForTranslation.php:950
+#: i18n/dbStringsForTranslation.php:950 modules/Planner/units_dump.php:147
+#: i18n/dbStringsForTranslation.php:950
 #: modules/Planner/planner_unitOverview.php:251
+#: modules/Planner/units_dump.php:147
 msgid "Resources"
 msgstr "Recursos"
 
@@ -30552,15 +30564,16 @@ msgstr "Contenido del bloque"
 #: modules/Planner/units_dump.php:368
 #: modules/Planner/planner_view_full.php:751
 #: modules/Planner/planner_view_full.php:803
-#: modules/Planner/moduleFunctions.php:184
+#: modules/Planner/units_dump.php:221 modules/Planner/units_dump.php:451
+#: modules/Planner/units_dump.php:471 modules/Planner/moduleFunctions.php:184
 #: modules/Planner/moduleFunctions.php:188 modules/Planner/planner_add.php:535
 #: modules/Planner/planner_edit.php:609
 #: modules/Planner/planner_unitOverview.php:397
 #: modules/Planner/planner_unitOverview.php:419
 #: modules/Planner/planner_view_full.php:751
 #: modules/Planner/planner_view_full.php:803
-#: modules/Planner/units_dump.php:217 modules/Planner/units_dump.php:348
-#: modules/Planner/units_dump.php:368
+#: modules/Planner/units_dump.php:221 modules/Planner/units_dump.php:451
+#: modules/Planner/units_dump.php:471
 msgid "Teacher's Notes"
 msgstr "Notas del profesor"
 
@@ -30642,13 +30655,14 @@ msgstr "Gestionar Resultados"
 #: modules/Planner/planner_unitOverview.php:249
 #: modules/Planner/units_add.php:185 modules/Planner/units_edit.php:311
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:100
+#: modules/Planner/units_dump.php:148
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:100
 #: modules/Planner/moduleFunctions.php:194
 #: modules/Planner/moduleFunctions.php:198 modules/Planner/outcomes.php:136
 #: modules/Planner/planner_add.php:884 modules/Planner/planner_add.php:900
 #: modules/Planner/planner_edit.php:1054 modules/Planner/planner_edit.php:1070
 #: modules/Planner/planner_unitOverview.php:249
-#: modules/Planner/units_add.php:185 modules/Planner/units_dump.php:147
+#: modules/Planner/units_add.php:185 modules/Planner/units_dump.php:148
 #: modules/Planner/units_edit.php:311
 msgid "Outcomes"
 msgstr "Resultados"
@@ -30688,9 +30702,9 @@ msgstr "Elije"
 
 #: modules/Planner/planner.php:220 modules/Planner/units_dump.php:327
 #: modules/Planner/planner_unitOverview.php:250
-#: modules/Planner/planner.php:220
+#: modules/Planner/units_dump.php:430 modules/Planner/planner.php:220
 #: modules/Planner/planner_unitOverview.php:250
-#: modules/Planner/units_dump.php:327
+#: modules/Planner/units_dump.php:430
 msgid "Lessons"
 msgstr "Lecciones"
 
@@ -31572,9 +31586,10 @@ msgstr "Lecci&oacuten Resultados"
 #: modules/Planner/planner_view_full.php:1556
 #: modules/Planner/units_dump.php:374
 #: modules/Planner/planner_view_full.php:1568
+#: modules/Planner/units_dump.php:477
 #: modules/Planner/planner_unitOverview.php:426
 #: modules/Planner/planner_view_full.php:1568
-#: modules/Planner/units_dump.php:374
+#: modules/Planner/units_dump.php:477
 msgid "Chat"
 msgstr "Chatee"
 
@@ -31990,18 +32005,18 @@ msgstr "Viendo lecciones de clase:"
 #: modules/Planner/units_dump.php:227 modules/Planner/units_dump.php:226
 #: modules/Planner/units_dump.php:363
 #: modules/Planner/planner_unitOverview.php:415
-#: modules/Planner/units_dump.php:365
+#: modules/Planner/units_dump.php:365 modules/Planner/units_dump.php:468
 #: modules/Planner/planner_unitOverview.php:415
-#: modules/Planner/units_dump.php:365
+#: modules/Planner/units_dump.php:468
 msgid "Length"
 msgstr "Longitud "
 
 #: modules/Planner/units_dump.php:228 modules/Planner/units_dump.php:227
 #: modules/Planner/units_dump.php:364
 #: modules/Planner/planner_unitOverview.php:416
-#: modules/Planner/units_dump.php:366
+#: modules/Planner/units_dump.php:366 modules/Planner/units_dump.php:469
 #: modules/Planner/planner_unitOverview.php:416
-#: modules/Planner/units_dump.php:366
+#: modules/Planner/units_dump.php:469
 msgid "Contents"
 msgstr "Contenido"
 
