@@ -84,13 +84,26 @@ else {
 
 			if ($_GET["search"]!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage'>" . _('Back to Search Results') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"] . "'>" . _('Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 
 			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_addProcess.php?gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_addProcess.php?gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"] ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr>
+						<td style='width: 275px'> 
+							<b><?php print _('Title') ?> *</b><br/>
+							<span style="font-size: 90%"><i></i></span>
+						</td>
+						<td class="right">
+							<input name="title" id="title" maxlength=100 value="" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var title=new LiveValidation('title');
+								title.add(Validate.Presence);
+							 </script>
+						</td>
+					</tr>
 					<?php
 					try {
 						$dataCategories=array(); 

@@ -107,7 +107,7 @@ else {
 				print "<th>" ;
 					print _("Type") ;
 				print "</th>" ;
-				print "<th style='width:80px'>" ;
+				print "<th style='width:110px'>" ;
 					print _("Action") ;
 				print "</th>" ;
 			print "</tr>" ;

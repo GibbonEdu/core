@@ -38,7 +38,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $gibbonPersonID=$_GET["gibbonPersonID"] ;
 $subpage=$_GET["subpage"] ;
 $gibbonStudentNoteID=$_GET["gibbonStudentNoteID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/student_view_details_notes_edit.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=Notes&gibbonStudentNoteID=$gibbonStudentNoteID" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/student_view_details_notes_edit.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=Notes&gibbonStudentNoteID=$gibbonStudentNoteID&category=" . $_GET["category"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details_notes_edit.php")==FALSE) {
 	//Fail 0
@@ -72,6 +72,7 @@ else {
 		}
 		else {
 			//Validate Inputs
+			$title=$_POST["title"] ;
 			$gibbonStudentNoteCategoryID=$_POST["gibbonStudentNoteCategoryID"] ;
 			if ($gibbonStudentNoteCategoryID=="") {
 				$gibbonStudentNoteCategoryID=NULL ;
@@ -86,8 +87,8 @@ else {
 			else {
 				//Write to database
 				try {
-					$data=array("gibbonStudentNoteCategoryID"=>$gibbonStudentNoteCategoryID, "note"=>$note, "gibbonStudentNoteID"=>$gibbonStudentNoteID); 
-					$sql="UPDATE gibbonStudentNote SET gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID, note=:note WHERE gibbonStudentNoteID=:gibbonStudentNoteID" ;
+					$data=array("gibbonStudentNoteCategoryID"=>$gibbonStudentNoteCategoryID, "title"=>$title, "note"=>$note, "gibbonStudentNoteID"=>$gibbonStudentNoteID); 
+					$sql="UPDATE gibbonStudentNote SET gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID, title=:title, note=:note WHERE gibbonStudentNoteID=:gibbonStudentNoteID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}

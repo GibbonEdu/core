@@ -37,7 +37,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonPersonID=$_GET["gibbonPersonID"] ;
 $subpage=$_GET["subpage"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details_notes_add.php")==FALSE) {
 	//Fail 0
@@ -51,13 +51,14 @@ else {
 	else {
 		//Proceed!
 		//Validate Inputs
+		$title=$_POST["title"] ;
 		$gibbonStudentNoteCategoryID=$_POST["gibbonStudentNoteCategoryID"] ;
 		if ($gibbonStudentNoteCategoryID=="") {
 			$gibbonStudentNoteCategoryID=NULL ;
 		}
 		$note=$_POST["note"] ;
 		
-		if ($note=="") {
+		if ($note=="" OR $title=="") {
 			//Fail 3
 			$URL=$URL . "&addReturn=fail3" ;
 			header("Location: {$URL}");
@@ -65,8 +66,8 @@ else {
 		else {
 			//Write to database
 			try {
-				$data=array("gibbonStudentNoteCategoryID"=>$gibbonStudentNoteCategoryID, "note"=>$note, "gibbonPersonID"=>$gibbonPersonID, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "timestamp"=>date('Y-m-d H:i:s', time())); 
-				$sql="INSERT INTO gibbonStudentNote SET gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID, note=:note, gibbonPersonID=:gibbonPersonID, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp" ;
+				$data=array("gibbonStudentNoteCategoryID"=>$gibbonStudentNoteCategoryID, "title"=>$title, "note"=>$note, "gibbonPersonID"=>$gibbonPersonID, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "timestamp"=>date('Y-m-d H:i:s', time())); 
+				$sql="INSERT INTO gibbonStudentNote SET gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID, title=:title, note=:note, gibbonPersonID=:gibbonPersonID, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
