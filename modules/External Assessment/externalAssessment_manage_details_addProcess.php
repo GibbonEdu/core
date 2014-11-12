@@ -35,7 +35,10 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$count=$_POST["count"] ;
+$count=0 ;
+if (is_numeric($_POST["count"])) {
+	$count=$_POST["count"] ;
+}
 $gibbonPersonID=$_POST["gibbonPersonID"] ;
 $gibbonExternalAssessmentID=$_POST["gibbonExternalAssessmentID"] ;
 $date=dateConvert($guid, $_POST["date"]) ;
@@ -55,7 +58,7 @@ if (isActionAccessible($guid, $connection2, "/modules/External Assessment/extern
 else {
 	//Proceed!
 	//Validate Inputs
-	if ($count=="" OR $gibbonPersonID=="" OR $gibbonExternalAssessmentID=="" OR $date=="") {
+	if ($gibbonPersonID=="" OR $gibbonExternalAssessmentID=="" OR $date=="") {
 		//Fail 3
 		$URL=$URL . "&addReturn=fail3" ;
 		header("Location: {$URL}");
@@ -87,6 +90,33 @@ else {
 		
 		$rowAI=$resultAI->fetch() ;
 		$AI=str_pad($rowAI['Auto_increment'], 14, "0", STR_PAD_LEFT) ;
+		
+		$time=time() ;
+		//Move attached file, if there is one
+		if ($_FILES['file']["tmp_name"]!="") {
+			//Check for folder in uploads based on today's date
+			$path=$_SESSION[$guid]["absolutePath"] ;
+			if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
+				mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
+			}
+			$unique=FALSE;
+			while ($unique==FALSE) {
+				$suffix=randomPassword(16) ;
+				$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/externalAssessmentUpload_$suffix" . strrchr($_FILES["file"]["name"], ".") ;
+				if (!(file_exists($path . "/" . $attachment))) {
+					$unique=TRUE ;
+				}
+			}
+			
+			if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
+				//Fail 5
+				$URL=$URL . "&updateReturn=fail5" ;
+				header("Location: {$URL}");
+			}
+		}
+		else {
+			$attachment="" ;
+		}
 		
 		//Scan through fields
 		$partialFail=FALSE ;
@@ -120,8 +150,8 @@ else {
 		
 		//Write to database
 		try {
-			$data=array("gibbonExternalAssessmentID"=>$gibbonExternalAssessmentID, "gibbonPersonID"=>$gibbonPersonID, "date"=>$date); 
-			$sql="INSERT INTO gibbonExternalAssessmentStudent SET gibbonExternalAssessmentID=:gibbonExternalAssessmentID, gibbonPersonID=:gibbonPersonID, date=:date" ;
+			$data=array("gibbonExternalAssessmentID"=>$gibbonExternalAssessmentID, "gibbonPersonID"=>$gibbonPersonID, "date"=>$date, "attachment"=>$attachment); 
+			$sql="INSERT INTO gibbonExternalAssessmentStudent SET gibbonExternalAssessmentID=:gibbonExternalAssessmentID, gibbonPersonID=:gibbonPersonID, date=:date, attachment=:attachment" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

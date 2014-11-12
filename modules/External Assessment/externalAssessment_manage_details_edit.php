@@ -75,7 +75,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonExternalAssessmentStudentID"=>$gibbonExternalAssessmentStudentID); 
-			$sql="SELECT gibbonExternalAssessmentStudent.*, gibbonExternalAssessment.name AS assessment FROM gibbonExternalAssessmentStudent JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID" ;
+			$sql="SELECT gibbonExternalAssessmentStudent.*, gibbonExternalAssessment.name AS assessment, gibbonExternalAssessment.allowFileUpload FROM gibbonExternalAssessmentStudent JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -97,7 +97,7 @@ else {
 				print "</div>" ;
 			}
 			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_editProcess.php?search=$search&allStudents=$allStudents" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_editProcess.php?search=$search&allStudents=$allStudents" ?>" enctype="multipart/form-data">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td style='width: 275px'> 
@@ -127,8 +127,50 @@ else {
 							</script>
 						</td>
 					</tr>
-				
 					<?php
+					if ($row["allowFileUpload"]=="Y") {
+						?>
+						<tr>
+							<td style='width: 275px'> 
+								<b><?php print _('Upload File') ?></b><br/>
+								<span style="font-size: 90%"><i><?php print _('Use this to attach raw data, graphical summary, etc.') ?></i><br/></span>
+								<?php if ($row["attachment"]!="") { ?>
+									<span style="font-size: 90%"><i><?php print _('Will overwrite existing attachment.') ?></i></span>
+								<?php } ?>
+							</td>
+							<td class="right" colspan=2>
+								<?php
+								if ($row["attachment"]!="") {
+									print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["attachment"] . "'>" . $row["attachment"] . "</a><br/><br/>" ;
+								}
+								?>
+								<input type="file" name="file" id="file"><br/><br/>
+								<?php
+								print getMaxUpload() ;
+					
+								//Get list of acceptable file extensions
+								try {
+									$dataExt=array(); 
+									$sqlExt="SELECT * FROM gibbonFileExtension" ;
+									$resultExt=$connection2->prepare($sqlExt);
+									$resultExt->execute($dataExt);
+								}
+								catch(PDOException $e) { }
+								$ext="" ;
+								while ($rowExt=$resultExt->fetch()) {
+									$ext=$ext . "'." . $rowExt["extension"] . "'," ;
+								}
+								?>
+					
+								<script type="text/javascript">
+									var file=new LiveValidation('file');
+									file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+								</script>
+							</td>
+						</tr>
+						<?php
+					}	
+					
 					//Check for all fields
 					try {
 						$dataCheck=array("gibbonExternalAssessmentID"=>$row["gibbonExternalAssessmentID"]); 
@@ -175,9 +217,13 @@ else {
 					}
 					
 					if ($resultField->rowCount()<1) {
-						print "<div class='error'>" ;
-						print _("There are no records to display.") ;
-						print "</div>" ;
+						print "<tr class='break'>" ;
+							print "<td colspan=3> " ;
+								print "<div class='warning'>" ;
+									print _("There are no fields in this assessment.") ;
+								print "</div>" ;
+							print "</td>" ;
+						print "</tr>" ;
 					}
 					else {
 						$lastCategory="" ;

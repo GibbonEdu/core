@@ -103,7 +103,10 @@ else {
 				print "<th>" ;
 					print _("Active") ;
 				print "</th>" ;
-				print "<th>" ;
+				print "<th style='min-width: 80px'>" ;
+					print _("File Upload") ;
+				print "</th>" ;
+				print "<th style='min-width: 70px'>" ;
 					print _("Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
@@ -133,6 +136,9 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						print ynExpander($row["active"]) ;
+					print "</td>" ;
+					print "<td>" ;
+						print ynExpander($row["allowFileUpload"]) ;
 					print "</td>" ;
 					print "<td>" ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessments_manage_edit.php&gibbonExternalAssessmentID=" . $row["gibbonExternalAssessmentID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;

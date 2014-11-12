@@ -115,6 +115,19 @@ else {
 					</select>
 				</td>
 			</tr>
+			
+			<tr>
+				<td> 
+					<b><?php print _('Allow File Upload') ; ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _('Should the student record include the option of a file upload?') ; ?> </i></span>
+				</td>
+				<td class="right">
+					<select name="allowFileUpload" id="allowFileUpload" style="width: 302px">
+						<option value="N"><?php print _('No') ?></option>
+						<option value="Y"><?php print _('Yes') ?></option>
+					</select>
+				</td>
+			</tr>
 			<tr>
 				<td>
 					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>

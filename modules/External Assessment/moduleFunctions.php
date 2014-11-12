@@ -46,6 +46,13 @@ function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbo
 			print _($rowAssessments["description"]) ;
 			print "</p>" ;
 			
+			if ($rowAssessments["attachment"]!="") {
+				print "<div class='linkTop'>" ;
+					print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowAssessments["attachment"] . "'>" . _('Uploaded File') . "</a>" ;
+				print "</div>" ;
+			}
+			
+			
 			//Get results
 			try {
 				$dataResults=array("gibbonPersonID"=>$gibbonPersonID, "gibbonExternalAssessmentStudentID"=>$rowAssessments["gibbonExternalAssessmentStudentID"]); 
@@ -58,7 +65,7 @@ function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbo
 			}
 
 			if ($resultResults->rowCount()<1) {
-				print "<div class='error'>" ;
+				print "<div class='warning'>" ;
 				print _("There are no records to display.") ;
 				print "</div>" ;
 			}

@@ -40,6 +40,7 @@ $nameShort=$_POST["nameShort"] ;
 $gibbonExternalAssessmentID=$_POST["gibbonExternalAssessmentID"] ;
 $description=$_POST["description"] ;
 $active=$_POST["active"] ;
+$allowFileUpload=$_POST["allowFileUpload"] ;
 
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/externalAssessments_manage_edit.php&gibbonExternalAssessmentID=" . $gibbonExternalAssessmentID ;
 
@@ -104,8 +105,8 @@ else {
 				else {
 					//Write to database
 					try {
-						$data=array("name"=>$name, "nameShort"=>$nameShort, "description"=>$description, "active"=>$active, "gibbonExternalAssessmentID"=>$gibbonExternalAssessmentID); 
-						$sql="UPDATE gibbonExternalAssessment SET name=:name, nameShort=:nameShort, `description`=:description, active=:active WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID" ;
+						$data=array("name"=>$name, "nameShort"=>$nameShort, "description"=>$description, "active"=>$active, "allowFileUpload"=>$allowFileUpload, "gibbonExternalAssessmentID"=>$gibbonExternalAssessmentID); 
+						$sql="UPDATE gibbonExternalAssessment SET name=:name, nameShort=:nameShort, `description`=:description, active=:active, allowFileUpload=:allowFileUpload WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

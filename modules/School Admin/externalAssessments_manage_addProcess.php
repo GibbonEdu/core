@@ -39,6 +39,7 @@ $name=$_POST["name"] ;
 $nameShort=$_POST["nameShort"] ;
 $description=$_POST["description"] ;
 $active=$_POST["active"] ;
+$allowFileUpload=$_POST["allowFileUpload"] ;
 
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/externalAssessments_manage_add.php" ;
 
@@ -78,8 +79,8 @@ else {
 		else {	
 			//Write to database
 			try {
-				$data=array("name"=>$name, "nameShort"=>$nameShort, "description"=>$description, "active"=>$active); 
-				$sql="INSERT INTO gibbonExternalAssessment SET name=:name, nameShort=:nameShort, `description`=:description, active=:active" ;
+				$data=array("name"=>$name, "nameShort"=>$nameShort, "description"=>$description, "active"=>$active, "allowFileUpload"=>$allowFileUpload); 
+				$sql="INSERT INTO gibbonExternalAssessment SET name=:name, nameShort=:nameShort, `description`=:description, active=:active, allowFileUpload=:allowFileUpload" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}

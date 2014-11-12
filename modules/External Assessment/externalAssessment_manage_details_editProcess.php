@@ -81,13 +81,44 @@ else {
 				header("Location: {$URL}");
 			}
 			else {
+				$row=$result->fetch() ;
+				
 				//Validate Inputs
-				$count=$_POST["count"] ;
+				$count=0 ;
+				if (is_numeric($_POST["count"])) {
+					$count=$_POST["count"] ;
+				}
 				$date=dateConvert($guid, $_POST["date"]) ;
+				
+				$time=time() ;
+				//Move attached file, if there is one
+				if ($_FILES['file']["tmp_name"]!="") {
+					//Check for folder in uploads based on today's date
+					$path=$_SESSION[$guid]["absolutePath"] ;
+					if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
+						mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
+					}
+					$unique=FALSE;
+					while ($unique==FALSE) {
+						$suffix=randomPassword(16) ;
+						$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/externalAssessmentUpload_$suffix" . strrchr($_FILES["file"]["name"], ".") ;
+						if (!(file_exists($path . "/" . $attachment))) {
+							$unique=TRUE ;
+						}
+					}
+				
+					if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
+						//Fail 5
+						$URL=$URL . "&updateReturn=fail5" ;
+						header("Location: {$URL}");
+					}
+				}
+				else {
+					$attachment=$row["attachment"] ;
+				}
 
-				if ($count=="" OR $date=="") {
+				if ($date=="") {
 					//Fail 3
-					
 					$URL=$URL . "&updateReturn=fail3" ;
 					header("Location: {$URL}");
 				}
@@ -124,8 +155,8 @@ else {
 					
 					//Write to database
 					try {
-						$data=array("date"=>$date, "gibbonExternalAssessmentStudentID"=>$gibbonExternalAssessmentStudentID); 
-						$sql="UPDATE gibbonExternalAssessmentStudent SET date=:date WHERE gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID" ;
+						$data=array("date"=>$date, "attachment"=>$attachment, "gibbonExternalAssessmentStudentID"=>$gibbonExternalAssessmentStudentID); 
+						$sql="UPDATE gibbonExternalAssessmentStudent SET date=:date, attachment=:attachment WHERE gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

@@ -466,7 +466,7 @@ else {
 					}
 					
 					?>
-					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_addProcess.php?search=$search&allStudents=$allStudents" ?>">
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_addProcess.php?search=$search&allStudents=$allStudents" ?>" enctype="multipart/form-data">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td style='width: 275px'> 
@@ -496,8 +496,42 @@ else {
 									</script>
 								</td>
 							</tr>
-						
 							<?php
+							if ($rowSelect["allowFileUpload"]=="Y") {
+								?>
+								<tr>
+									<td style='width: 275px'> 
+										<b><?php print _('Upload File') ?></b><br/>
+										<span style="font-size: 90%"><i><?php print _('Use this to attach raw data, graphical summary, etc.') ?></i></span>
+									</td>
+									<td class="right" colspan=2>
+										<input type="file" name="file" id="file"><br/><br/>
+										<?php
+										print getMaxUpload() ;
+							
+										//Get list of acceptable file extensions
+										try {
+											$dataExt=array(); 
+											$sqlExt="SELECT * FROM gibbonFileExtension" ;
+											$resultExt=$connection2->prepare($sqlExt);
+											$resultExt->execute($dataExt);
+										}
+										catch(PDOException $e) { }
+										$ext="" ;
+										while ($rowExt=$resultExt->fetch()) {
+											$ext=$ext . "'." . $rowExt["extension"] . "'," ;
+										}
+										?>
+							
+										<script type="text/javascript">
+											var file=new LiveValidation('file');
+											file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+										</script>
+									</td>
+								</tr>
+								<?php
+							}	
+
 							try {
 								$dataField=array("gibbonExternalAssessmentID"=>$gibbonExternalAssessmentID); 
 								$sqlField="SELECT gibbonExternalAssessmentField.*, gibbonScale.usage FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID ORDER BY category, gibbonExternalAssessmentField.order" ;
@@ -509,9 +543,13 @@ else {
 							}
 
 							if ($resultField->rowCount()<1) {
-								print "<div class='error'>" ;
-								print _("There are no records to display.") ;
-								print "</div>" ;
+								print "<tr class='break'>" ;
+									print "<td colspan=3> " ;
+										print "<div class='warning'>" ;
+											print _("There are no fields in this assessment.") ;
+										print "</div>" ;
+									print "</td>" ;
+								print "</tr>" ;
 							}
 							else {
 								$lastCategory="" ;
