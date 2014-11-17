@@ -43,7 +43,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/role_manage_duplicate.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&duplicateReturn=fail0" ;
+	$URL.="&duplicateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -54,7 +54,7 @@ else {
 	
 	if ($gibbonRoleID=="" OR $name=="" OR $nameShort=="") {
 		//Fail 3
-		$URL=$URL . "&duplicateReturn=fail3" ;
+		$URL.="&duplicateReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -65,7 +65,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL=$URL . "&duplicateReturn=fail2" ;
+			$URL.="&duplicateReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}			
@@ -77,7 +77,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL=$URL . "&duplicateReturn=fail2" ;
+			$URL.="&duplicateReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}			
@@ -88,7 +88,7 @@ else {
 		
 		if ($AI=="") {
 			//Fail 2
-			$URL=$URL . "&duplicateReturn=fail2" ;
+			$URL.="&duplicateReturn=fail2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -101,14 +101,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "&duplicateReturn=fail2" ;
+				$URL.="&duplicateReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
 			
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL=$URL . "&duplicateReturn=fail2" ;
+				$URL.="&duplicateReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -121,7 +121,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL=$URL . "&duplicateReturn=fail2" ;
+					$URL.="&duplicateReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
@@ -161,12 +161,12 @@ else {
 				
 				if ($partialFail==TRUE) {
 					//Fail 6
-					$URL=$URL . "&duplicateReturn=fail6" ;
+					$URL.="&duplicateReturn=fail6" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL=$URL . "&duplicateReturn=success0" ;
+					$URL.="&duplicateReturn=success0" ;
 					header("Location: {$URL}");
 				}
 			}

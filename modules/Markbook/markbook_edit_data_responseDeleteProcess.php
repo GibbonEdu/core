@@ -46,7 +46,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_
 
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_data.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&deleteReturn=fail0" ;
+	$URL.="&deleteReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -54,7 +54,7 @@ else {
 	//Check if planner specified
 	if ($gibbonPersonID=="" OR $gibbonCourseClassID=="" OR $gibbonMarkbookColumnID=="") {
 		//Fail1
-		$URL=$URL . "&deleteReturn=fail1" ;
+		$URL.="&deleteReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -66,12 +66,12 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL=$URL . "&deleteReturn=fail2" ;
+			$URL.="&deleteReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}
 		
-		$URL=$URL . "&deleteReturn=success0" ;
+		$URL.="&deleteReturn=success0" ;
 		//Success 0
 		header("Location: {$URL}");
 	}

@@ -39,7 +39,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage_add.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&addReturn=fail0" ;
+	$URL.="&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -85,7 +85,7 @@ else {
 	}
 	catch(PDOException $e) { 
 		//Fail 2
-		$URL=$URL . "&addReturn=fail2" ;
+		$URL.="&addReturn=fail2" ;
 		header("Location: {$URL}");
 		break ;
 	}
@@ -99,7 +99,7 @@ else {
 	}
 	catch(PDOException $e) { 
 		//Fail 2
-		$URL=$URL . "&addReturn=fail2" ;
+		$URL.="&addReturn=fail2" ;
 		header("Location: {$URL}");
 		break ;
 	}
@@ -110,7 +110,7 @@ else {
 		
 		if ($dateType=="" OR $name=="" OR $provider=="" OR $active=="" OR $registration=="" OR $maxParticipants=="" OR $payment=="" OR ($dateType=="Date" AND ($listingStart=="" OR $listingEnd=="" OR $programStart=="" OR $programEnd=="")) OR ($dateType=="Term" AND $gibbonSchoolYearTermIDList=="")) {
 			//Fail 3
-			$URL=$URL . "&addReturn=fail3" ;
+			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -206,7 +206,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "&addReturn=fail2" ;
+				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ; 
 			}
@@ -220,12 +220,12 @@ else {
 			
 			if ($partialFail==TRUE) {
 				//Fail 5
-				$URL=$URL . "&addReturn=fail5" ;
+				$URL.="&addReturn=fail5" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Success 0
-				$URL=$URL . "&addReturn=success0" ;
+				$URL.="&addReturn=success0" ;
 				header("Location: {$URL}");
 			}
 		}

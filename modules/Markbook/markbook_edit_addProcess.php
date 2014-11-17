@@ -40,12 +40,12 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_add.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&addReturn=fail0" ;
+	$URL.="&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_POST)) {
-		$URL=$URL . "&addReturn=fail5" ;
+		$URL.="&addReturn=fail5" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -114,7 +114,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL=$URL . "&addReturn=fail2" ;
+			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}			
@@ -126,7 +126,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL=$URL . "&addReturn=fail2" ;
+			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}			
@@ -153,7 +153,7 @@ else {
 			
 			if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
 				//Fail 5
-				$URL=$URL . "&updateReturn=fail5" ;
+				$URL.="&updateReturn=fail5" ;
 				header("Location: {$URL}");
 			}
 		}
@@ -163,7 +163,7 @@ else {
 		
 		if ($name=="" OR $description=="" OR $type=="" OR $gibbonScaleIDAttainment=="" OR $gibbonScaleIDEffort=="" OR $viewableStudents=="" OR $viewableParents=="") {
 			//Fail 3
-			$URL=$URL . "&addReturn=fail3" ;
+			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -176,7 +176,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "&addReturn=fail2" ;
+				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
@@ -189,7 +189,7 @@ else {
 			catch(PDOException $e) { }			
 			
 			//Success 0
-			$URL=$URL . "&addReturn=success0" ;
+			$URL.="&addReturn=success0" ;
 			header("Location: {$URL}");
 		}
 	}

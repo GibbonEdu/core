@@ -40,7 +40,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_targets.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
+	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -48,7 +48,7 @@ else {
 	//Check if school year specified
 	if ($gibbonCourseClassID=="") {
 		//Fail1
-		$URL=$URL . "&updateReturn=fail1" ;
+		$URL.="&updateReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -105,12 +105,12 @@ else {
 		//Return!
 		if ($partialFail==TRUE) {
 			//Fail 3
-			$URL=$URL . "&updateReturn=fail3" ;
+			$URL.="&updateReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Success 0
-			$URL=$URL . "&updateReturn=success0" ;
+			$URL.="&updateReturn=success0" ;
 			header("Location: {$URL}");
 		}
 	}

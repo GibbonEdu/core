@@ -41,20 +41,20 @@ $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_edit.php")==FALSE) {
 	//FgibbonMessengerIDl 0
-	$URL=$URL . "&updateReturn=fgibbonMessengerIDl0" ;
+	$URL.="&updateReturn=fgibbonMessengerIDl0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_POST)) {
 		//FgibbonMessengerIDl 5
-		$URL=$URL . "&updateReturn=fgibbonMessengerIDl5" ;
+		$URL.="&updateReturn=fgibbonMessengerIDl5" ;
 		header("Location: {$URL}");
 	}
 	else {
 		$highestAction=getHighestGroupedAction($guid, $_GET["address"], $connection2) ;
 		if ($highestAction==FALSE) {
 			//FgibbonMessengerIDl 0
-			$URL=$URL . "&updateReturn=fgibbonMessengerIDl0$params" ;
+			$URL.="&updateReturn=fgibbonMessengerIDl0$params" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -84,7 +84,7 @@ else {
 			
 			if ($subject=="" OR $body=="") {
 				//FgibbonMessengerIDl 3
-				$URL=$URL . "&updateReturn=fgibbonMessengerIDl3" ;
+				$URL.="&updateReturn=fgibbonMessengerIDl3" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -97,7 +97,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//FgibbonMessengerIDl 2
-					$URL=$URL . "&updateReturn=fgibbonMessengerIDl2" ;
+					$URL.="&updateReturn=fgibbonMessengerIDl2" ;
 					header("Location: {$URL}");
 					break ;
 				}
@@ -350,12 +350,12 @@ else {
 			
 				if ($partialFgibbonMessengerIDl==TRUE) {
 					//FgibbonMessengerIDl 4
-					$URL=$URL . "&updateReturn=fgibbonMessengerIDl4" ;
+					$URL.="&updateReturn=fgibbonMessengerIDl4" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL=$URL . "&updateReturn=success0" ;
+					$URL.="&updateReturn=success0" ;
 					header("Location: {$URL}") ;
 				}
 			}

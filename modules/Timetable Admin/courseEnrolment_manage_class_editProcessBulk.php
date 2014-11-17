@@ -48,7 +48,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_class_edit.php")==FALSE) {
 		//Fail 0
-		$URL=$URL . "&updateReturn=fail0" ;
+		$URL.="&updateReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -67,7 +67,7 @@ else {
 		//Check if person specified
 		if (count($people)<1) {
 			//Fail4
-			$URL=$URL . "&updateReturn=fail4" ;
+			$URL.="&updateReturn=fail4" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -105,12 +105,12 @@ else {
 			}
 			
 			if ($partialFail==TRUE) {
-				$URL=$URL . "&updateReturn=fail5" ;
+				$URL.="&updateReturn=fail5" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Success 0
-				$URL=$URL . "&updateReturn=success0" ;
+				$URL.="&updateReturn=success0" ;
 				header("Location: {$URL}");
 			}
 		}

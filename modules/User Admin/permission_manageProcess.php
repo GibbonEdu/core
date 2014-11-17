@@ -39,13 +39,13 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/permission_manage.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
+	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (is_null(ini_get("max_input_vars"))!=FALSE AND ini_get("max_input_vars")<=count($_POST)) {
 		//Fail 3
-		$URL=$URL . "&updateReturn=fail3" ;
+		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -57,7 +57,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL=$URL . "&updateReturn=fail2" ;
+			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}
@@ -86,12 +86,12 @@ else {
 		
 		if ($insertFail==TRUE) {
 			//Fail 2
-			$URL=$URL . "&updateReturn=fail2" ;
+			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Success0
-			$URL=$URL . "&updateReturn=success0" ;
+			$URL.="&updateReturn=success0" ;
 			header("Location: {$URL}");
 		}
 	}

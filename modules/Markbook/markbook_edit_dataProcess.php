@@ -43,12 +43,12 @@ $personalisedWarnings=getSettingByScope( $connection2, "Markbook", "personalised
 
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_data.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
+	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_POST)) {
-		$URL=$URL . "&updateReturn=fail5" ;
+		$URL.="&updateReturn=fail5" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -56,7 +56,7 @@ else {
 		//Check if school year specified
 		if ($gibbonMarkbookColumnID=="" OR $gibbonCourseClassID=="") {
 			//Fail1
-			$URL=$URL . "&updateReturn=fail1" ;
+			$URL.="&updateReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -68,14 +68,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL=$URL . "&updateReturn=fail2" ;
+				$URL.="&updateReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
 			
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL=$URL . "&updateReturn=fail2" ;
+				$URL.="&updateReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -302,12 +302,12 @@ else {
 				//Return!
 				if ($partialFail==TRUE) {
 					//Fail 3
-					$URL=$URL . "&updateReturn=fail3" ;
+					$URL.="&updateReturn=fail3" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL=$URL . "&updateReturn=success0" ;
+					$URL.="&updateReturn=success0" ;
 					header("Location: {$URL}");
 				}
 			}

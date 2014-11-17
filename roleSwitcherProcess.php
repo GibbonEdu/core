@@ -42,7 +42,7 @@ $_SESSION[$guid]["pageLoads"]=NULL ;
 
 //Check for parameter
 if ($role=="") {
-	$URL=$URL . "?switchReturn=fail0" ;
+	$URL.="?switchReturn=fail0" ;
 	header("Location: {$URL}");
 }
 //Check for access to role
@@ -58,14 +58,14 @@ else {
 	}
 	
 	if ($result->rowCount()!=1) {
-		$URL=$URL . "?switchReturn=fail1" ;
+		$URL.="?switchReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Make the switch
 		$_SESSION[$guid]["gibbonRoleIDCurrent"]=$role;
 		$_SESSION[$guid]["mainMenu"]=mainMenu($connection2, $guid) ;
-		$URL=$URL . "?switchReturn=success0" ;
+		$URL.="?switchReturn=success0" ;
 		header("Location: {$URL}");
 	}
 }

@@ -42,7 +42,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_transport_student.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&exportReturn=fail0" ;
+	$URL.="&exportReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -58,7 +58,7 @@ else {
 
 	if ($result->rowCount()<1) {
 		//Fail 3
-		$URL=$URL . "&exportReturn=fail3" ;
+		$URL.="&exportReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else {

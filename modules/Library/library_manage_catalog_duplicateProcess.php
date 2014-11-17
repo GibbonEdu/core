@@ -42,7 +42,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_catalog_edit.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&duplicateReturn=fail0" ;
+	$URL.="&duplicateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -50,7 +50,7 @@ else {
 	//Check if school year specified
 	if ($gibbonLibraryItemID=="") {
 		//Fail1
-		$URL=$URL . "&duplicateReturn=fail1" ;
+		$URL.="&duplicateReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -62,14 +62,14 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail2
-			$URL=$URL . "&deleteReturn=fail2" ;
+			$URL.="&deleteReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}
 		
 		if ($result->rowCount()!=1) {
 			//Fail 2
-			$URL=$URL . "&duplicateReturn=fail2" ;
+			$URL.="&duplicateReturn=fail2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -173,12 +173,12 @@ else {
 			
 			if ($partialFail==TRUE) {
 				//Fail 2
-				$URL=$URL . "&duplicateReturn=fail2" ;
+				$URL.="&duplicateReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Success 0
-				$URL=$URL . "&duplicateReturn=success0" ;
+				$URL.="&duplicateReturn=success0" ;
 				header("Location: {$URL}");
 			}
 		}

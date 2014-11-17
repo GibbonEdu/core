@@ -43,20 +43,20 @@ $URLSuccess=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModu
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_add.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&addReturn=fail0" ;
+	$URL.="&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL=$URL . "&updateReturn=fail0$params" ;
+		$URL.="&updateReturn=fail0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if (!(isset($_POST))) {
 			//Fail 5
-			$URL=$URL . "&addReturn=fail5" ;
+			$URL.="&addReturn=fail5" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -68,7 +68,7 @@ else {
 			
 			if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $name=="" OR $description=="") {
 				//Fail 3
-				$URL=$URL . "&addReturn=fail3" ;
+				$URL.="&addReturn=fail3" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -87,14 +87,14 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL=$URL . "&addReturn=fail2" . $e->getMessage() ;
+					$URL.="&addReturn=fail2" . $e->getMessage() ;
 					header("Location: {$URL}");
 					break ;
 				}
 				
 				if ($result->rowCount()!=1) {
 					//Fail 4
-					$URL=$URL . "&addReturn=fail4" ;
+					$URL.="&addReturn=fail4" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -105,7 +105,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL=$URL . "&addReturn=fail2" ;
+						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}	
@@ -117,7 +117,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL=$URL . "&addReturn=fail2" ;
+						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}		
@@ -146,7 +146,7 @@ else {
 							
 							if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
 								//Fail 5
-								$URL=$URL . "&addReturn=fail5" ;
+								$URL.="&addReturn=fail5" ;
 								header("Location: {$URL}");
 							}
 						}
@@ -248,7 +248,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL=$URL . "&addReturn=fail2" ;
+						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -262,7 +262,7 @@ else {
 					
 					if ($partialFail==TRUE) {
 						//Fail 6
-						$URL=$URL . "&addReturn=fail6" ;
+						$URL.="&addReturn=fail6" ;
 						header("Location: {$URL}");
 					}
 					else {

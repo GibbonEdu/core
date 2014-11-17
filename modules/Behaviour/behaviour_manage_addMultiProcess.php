@@ -35,60 +35,54 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/yearGroup_manage_add.php" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/behaviour_manage_addMulti.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ;
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/yearGroup_manage_add.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_add.php")==FALSE) {
 	//Fail 0
 	$URL.="&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
-	//Validate Inputs
-	$name=$_POST["name"] ;
-	$nameShort=$_POST["nameShort"] ;
-	$sequenceNumber=$_POST["sequenceNumber"] ;
-	
-	if ($name=="" OR $nameShort=="" OR $sequenceNumber=="" OR is_numeric($sequenceNumber)==FALSE) {
+	if (isset($_POST["gibbonPersonIDMulti"])) {
+		$gibbonPersonIDMulti=$_POST["gibbonPersonIDMulti"] ; 
+	}
+	else {
+		$gibbonPersonIDMulti=NULL ; 
+	}
+	$date=$_POST["date"] ; 
+	$type=$_POST["type"] ; 
+	$descriptor=$_POST["descriptor"] ; 
+	$level=$_POST["level"] ; 
+	$comment=$_POST["comment"] ; 
+		
+	if (is_null($gibbonPersonIDMulti)==TRUE OR $date=="" OR $type=="" OR $descriptor=="") {
 		//Fail 3
 		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else {
-		//Check unique inputs for uniquness
-		try {
-			$data=array("name"=>$name, "nameShort"=>$nameShort, "sequenceNumber"=>$sequenceNumber); 
-			$sql="SELECT * FROM gibbonYearGroup WHERE name=:name OR nameShort=:nameShort OR sequenceNumber=:sequenceNumber" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
+		$partialFail=FALSE ;
 		
-		if ($result->rowCount()>0) {
-			//Fail 4
-			$URL.="&addReturn=fail4" ;
-			header("Location: {$URL}");
-		}
-		else {	
+		foreach ($gibbonPersonIDMulti AS $gibbonPersonID) {
 			//Write to database
 			try {
-				$data=array("name"=>$name, "nameShort"=>$nameShort, "sequenceNumber"=>$sequenceNumber); 
-				$sql="INSERT INTO gibbonYearGroup SET name=:name, nameShort=:nameShort, sequenceNumber=:sequenceNumber" ;
+				$data=array("gibbonPersonID"=>$gibbonPersonID, "date"=>dateConvert($guid, $date), "type"=>$type, "descriptor"=>$descriptor, "level"=>$level, "comment"=>$comment, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+				$sql="INSERT INTO gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonSchoolYearID=:gibbonSchoolYearID" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
-				header("Location: {$URL}");
-				break ;
+				$partialFail=TRUE ;	
 			}
-			
+		}
+		
+		if ($partialFail==TRUE) {
+			//Fail 5
+			$URL.="&addReturn=fail5" ;
+			header("Location: {$URL}");
+		}
+		else {
 			//Success 0
 			$URL.="&addReturn=success0" ;
 			header("Location: {$URL}");

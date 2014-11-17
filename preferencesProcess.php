@@ -57,7 +57,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php" ;
 
 //Check passwords are not blank
 if (FALSE) {
-	$URL=$URL . "&editReturn=fail0" ;
+	$URL.="&editReturn=fail0" ;
 	header("Location: {$URL}");
 }
 //Otherwise proceed
@@ -69,7 +69,7 @@ else {
 		$result->execute($data);
 	}
 	catch(PDOException $e) { 
-		$URL=$URL . "&editReturn=fail1" ;
+		$URL.="&editReturn=fail1" ;
 		header("Location: {$URL}");
 		break ;
 	}
@@ -110,7 +110,7 @@ else {
 	
 	
 	$_SESSION[$guid]["pageLoads"]=NULL ;
-	$URL=$URL . "&editReturn=success0" ;
+	$URL.="&editReturn=success0" ;
 	header("Location: {$URL}");
 }
 ?>

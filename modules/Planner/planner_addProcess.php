@@ -39,19 +39,19 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_add.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&addReturn=fail0" ;
+	$URL.="&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL=$URL . "&updateReturn=fail0$params" ;
+		$URL.="&updateReturn=fail0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if (empty($_POST)) {
-			$URL=$URL . "&addReturn=fail6" ;
+			$URL.="&addReturn=fail6" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -215,7 +215,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "&addReturn=fail2$params" ;
+				$URL.="&addReturn=fail2$params" ;
 				header("Location: {$URL}");
 				break ;
 			}	
@@ -227,7 +227,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "&addReturn=fail2$params" ;
+				$URL.="&addReturn=fail2$params" ;
 				header("Location: {$URL}");
 				break ;
 			}	
@@ -237,7 +237,7 @@ else {
 			
 			if ($viewBy=="" OR $gibbonCourseClassID=="" OR $date=="" OR $timeStart=="" OR $timeEnd=="" OR $name=="" OR $summary=="" OR $homework=="" OR $viewableParents=="" OR $viewableStudents=="" OR ($homework=="Y" AND ($homeworkDetails=="" OR $homeworkDueDate==""))) {
 				//Fail 3
-				$URL=$URL . "&addReturn=fail3$params" ;
+				$URL.="&addReturn=fail3$params" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -309,7 +309,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL=$URL . "&addReturn=fail2$params" ;
+					$URL.="&addReturn=fail2$params" ;
 					header("Location: {$URL}");
 					break ;
 				}
@@ -323,7 +323,7 @@ else {
 				
 				if ($partialFail==TRUE) {
 					//Fail 5
-					$URL=$URL . "&addReturn=fail5$params" ;
+					$URL.="&addReturn=fail5$params" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -335,7 +335,7 @@ else {
 					}
 					else {
 						//Success 0
-						$URL=$URL . "&addReturn=success0$params" ;
+						$URL.="&addReturn=success0$params" ;
 						header("Location: {$URL}");
 					}
 				}

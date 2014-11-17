@@ -43,13 +43,13 @@ $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&addReturn=fail0" ;
+	$URL.="&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_POST)) {
 		//Fail 5
-		$URL=$URL . "&addReturn=fail5" ;
+		$URL.="&addReturn=fail5" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -102,7 +102,7 @@ else {
 		
 		if ($subject=="" OR $body=="" OR ($email=="Y" AND $from=="")) {
 			//Fail 3
-			$URL=$URL . "&addReturn=fail3" ;
+			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -113,7 +113,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "&addReturn=fail2" ;
+				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}		
@@ -125,7 +125,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "&addReturn=fail2" ;
+				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}		
@@ -142,7 +142,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "&addReturn=fail2" ;
+				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
@@ -153,7 +153,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "&addReturn=fail2" ;
+				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}		
@@ -1654,12 +1654,12 @@ else {
 		
 			if ($partialFail==TRUE) {
 				//Fail 4
-				$URL=$URL . "&addReturn=fail4" ;
+				$URL.="&addReturn=fail4" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Success 0
-				$URL=$URL . "&addReturn=success0&emailCount=" . $emailCount . "&smsCount=" . $smsCount . "&smsBatchCount=" . $smsBatchCount ;
+				$URL.="&addReturn=success0&emailCount=" . $emailCount . "&smsCount=" . $smsCount . "&smsBatchCount=" . $smsBatchCount ;
 				header("Location: {$URL}") ;
 			}
 		}

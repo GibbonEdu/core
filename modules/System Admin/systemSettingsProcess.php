@@ -39,7 +39,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/systemSettings.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
+	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -84,7 +84,7 @@ else {
 	//Validate Inputs
 	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $currency=="" OR $enablePayments=="") {
 		//Fail 3
-		$URL=$URL . "&updateReturn=fail3" ;
+		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else {	
@@ -471,13 +471,13 @@ else {
 		
 		if ($fail==TRUE) {
 			//Fail 2
-			$URL=$URL . "&updateReturn=fail2" ;
+			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Success 0
 			getSystemSettings($guid, $connection2) ;
-			$URL=$URL . "&updateReturn=success0" ;
+			$URL.="&updateReturn=success0" ;
 			header("Location: {$URL}");
 		}
 	}

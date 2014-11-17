@@ -46,20 +46,20 @@ try {
 }
 catch(PDOException $e) { 
 	//Fail 0
-	$URL=$URL . "?exportReturn=fail0" ;
+	$URL.="?exportReturn=fail0" ;
 	header("Location: {$URL}");
 }
 
 if ($result) {
 	if ($gibbonRollGroupID=="") {
 		//Fail 1
-		$URL=$URL . "?exportReturn=fail1" ;
+		$URL.="?exportReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if ($result->rowCount()<1) {
 			//Fail 3
-			$URL=$URL . "?exportReturn=fail3" ;
+			$URL.="?exportReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {

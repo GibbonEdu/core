@@ -40,12 +40,12 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_addMulti.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&addReturn=fail0" ;
+	$URL.="&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_POST)) {
-		$URL=$URL . "&addReturn=fail5" ;
+		$URL.="&addReturn=fail5" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -93,7 +93,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL=$URL . "&addReturn=fail2" ;
+			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}			
@@ -105,7 +105,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL=$URL . "&addReturn=fail2" ;
+			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}			
@@ -136,7 +136,7 @@ else {
 			}
 			if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
 				//Fail 5
-				$URL=$URL . "&updateReturn=fail5" ;
+				$URL.="&updateReturn=fail5" ;
 				header("Location: {$URL}");
 			}
 		}
@@ -146,7 +146,7 @@ else {
 		
 		if (count($gibbonCourseClassIDMulti)<1 OR is_numeric($groupingID)==FALSE or $groupingID<1 OR $name=="" OR $description=="" OR $type=="" OR $gibbonScaleIDAttainment=="" OR $gibbonScaleIDEffort=="" OR $viewableStudents=="" OR $viewableParents=="") {
 			//Fail 3
-			$URL=$URL . "&addReturn=fail3" ;
+			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -175,12 +175,12 @@ else {
 			
 			if ($partialFail!=FALSE) {
 				//Success 0
-				$URL=$URL . "&addReturn=fail6" ;
+				$URL.="&addReturn=fail6" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Success 0
-				$URL=$URL . "&addReturn=success0" ;
+				$URL.="&addReturn=success0" ;
 				header("Location: {$URL}");
 			}
 		}

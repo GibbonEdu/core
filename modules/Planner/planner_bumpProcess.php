@@ -52,21 +52,21 @@ $params="&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subVi
 	
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_bump.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&bumpReturn=fail0$params" ;
+	$URL.="&bumpReturn=fail0$params" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL=$URL . "&updateReturn=fail0$params" ;
+		$URL.="&updateReturn=fail0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		if (($direction!="forward" AND $direction!="backward") OR $gibbonPlannerEntryID=="" OR $viewBy=="date" OR ($viewBy=="class" AND $gibbonCourseClassID=="Y")) {
 			//Fail1
-			$URL=$URL . "&bumpReturn=fail1$params" ;
+			$URL.="&bumpReturn=fail1$params" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -84,14 +84,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL=$URL . "&bumpReturn=fail2$params" ;
+				$URL.="&bumpReturn=fail2$params" ;
 				header("Location: {$URL}");
 				break ;
 			}
 			
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL=$URL . "&bumpReturn=fail2$params" ;
+				$URL.="&bumpReturn=fail2$params" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -107,7 +107,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail2
-						$URL=$URL . "&bumpReturn=fail2$params" ;
+						$URL.="&bumpReturn=fail2$params" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -156,7 +156,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail2
-						$URL=$URL . "&bumpReturn=fail2$params" ;
+						$URL.="&bumpReturn=fail2$params" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -201,7 +201,7 @@ else {
 				//Write to database
 				if ($partialFail==TRUE) {
 					//Fail 5
-					$URL=$URL . "&bumpReturn=fail5$params" ;
+					$URL.="&bumpReturn=fail5$params" ;
 					header("Location: {$URL}");
 				}
 				else {

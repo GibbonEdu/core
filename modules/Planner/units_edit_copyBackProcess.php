@@ -44,21 +44,21 @@ $URLCopy=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleN
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_edit_copyBack.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&addReturn=fail0" ;
+	$URL.="&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL=$URL . "&updateReturn=fail0$params" ;
+		$URL.="&updateReturn=fail0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $gibbonCourseClassID=="" OR $gibbonUnitID=="") {
 			//Fail 3
-			$URL=$URL . "&addReturn=fail3" ;
+			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -77,13 +77,13 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "&addReturn=fail2" ;
+				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
 			if ($result->rowCount()!=1) {
 				//Fail 4
-				$URL=$URL . "&addReturn=fail4" ;
+				$URL.="&addReturn=fail4" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -96,13 +96,13 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL=$URL . "&addReturn=fail2" ;
+					$URL.="&addReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
 				if ($result->rowCount()!=1) {
 					//Fail 4
-					$URL=$URL . "&addReturn=fail4" ;
+					$URL.="&addReturn=fail4" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -115,7 +115,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL=$URL . "&copyReturn=fail2" ;
+						$URL.="&copyReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -128,7 +128,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL=$URL . "&copyReturn=fail2" ;
+						$URL.="&copyReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -148,7 +148,7 @@ else {
 				
 					if ($partialFail==true) {
 						//Fail 2
-						$URL=$URL . "&copyReturn=fail6" ;
+						$URL.="&copyReturn=fail6" ;
 						header("Location: {$URL}");
 					}
 					else {

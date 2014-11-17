@@ -302,7 +302,7 @@ try {
 				mail($to, $subject, $body, $headers) ;
 			}
 		
-			$URL=$URL . "?loginReturn=fail6" ;
+			$URL.="?loginReturn=fail6" ;
 			header("Location: {$URL}");
 		}
 		
@@ -331,7 +331,7 @@ try {
 		
 		if ($row["gibbonRoleIDPrimary"]=="" OR count(getRoleList($row["gibbonRoleIDAll"], $connection2))==0) {
 					//FAILED TO SET ROLES
-					$URL=$URL . "?loginReturn=fail2" ;
+					$URL.="?loginReturn=fail2" ;
 					header("Location: {$URL}");
 				}
 				//USER EXISTS, SET SESSION VARIABLES

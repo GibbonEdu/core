@@ -49,7 +49,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage_add.php")==FALSE) {
 		//Fail 0
-		$URL=$URL . "&addReturn=fail0" ;
+		$URL.="&addReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -68,7 +68,7 @@ else {
 			
 		if (count($gibbonFinanceInvoiceeIDs)==0 OR $scheduling=="" OR ($scheduling=="Scheduled" AND $gibbonFinanceBillingScheduleID=="") OR ($scheduling=="Ad Hoc" AND $invoiceDueDate=="") OR count($order)==0) {
 			//Fail 3
-			$URL=$URL . "&addReturn=fail3" ;
+			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -94,7 +94,7 @@ else {
 			
 			if ($feeFail==TRUE) {
 				//Fail3
-				$URL=$URL . "&addReturn=fail3" ;
+				$URL.="&addReturn=fail3" ;
 				header("Location: {$URL}");
 				break ;
 			}
@@ -108,7 +108,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL=$URL . "&addReturn=fail2" ;
+					$URL.="&addReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
@@ -245,7 +245,7 @@ else {
 
 									if ($continue==FALSE) {
 										//Fail 2
-										$URL=$URL . "&addReturn=fail2" ;
+										$URL.="&addReturn=fail2" ;
 										header("Location: {$URL}");
 										break ;
 									}
@@ -415,7 +415,7 @@ else {
 
 									if ($continue==FALSE) {
 										//Fail 2
-										$URL=$URL . "&addReturn=fail2" ;
+										$URL.="&addReturn=fail2" ;
 										header("Location: {$URL}");
 										break ;
 									}
@@ -528,12 +528,12 @@ else {
 				//Return results, include three types of fail and counts
 				if ($studentFailCount!=0 OR $invoiceFailCount!=0 OR $invoiceFeeFailCount!=0) {
 					//Fail 4
-					$URL=$URL . "&addReturn=fail4&studentFailCount=$studentFailCount&invoiceFailCount=$invoiceFailCount&invoiceFeeFailCount=$invoiceFeeFailCount" ;
+					$URL.="&addReturn=fail4&studentFailCount=$studentFailCount&invoiceFailCount=$invoiceFailCount&invoiceFeeFailCount=$invoiceFeeFailCount" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL=$URL . "&addReturn=success0" ;
+					$URL.="&addReturn=success0" ;
 					header("Location: {$URL}");	
 				}
 			}			

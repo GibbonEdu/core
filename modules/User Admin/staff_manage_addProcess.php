@@ -40,7 +40,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/staff_manage_add.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&addReturn=fail0" ;
+	$URL.="&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -66,7 +66,7 @@ else {
 	//Validate Inputs
 	if ($gibbonPersonID=="" OR $type=="") {
 		//Fail 3
-		$URL=$URL . "&addReturn=fail3" ;
+		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -85,14 +85,14 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL=$URL . "&addReturn=fail2" ;
+			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}
 		
 		if ($result->rowCount()>0) {
 			//Fail 4
-			$URL=$URL . "&addReturn=fail4" ;
+			$URL.="&addReturn=fail4" ;
 			header("Location: {$URL}");
 		}
 		else {	
@@ -105,13 +105,13 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "&addReturn=fail2" ;
+				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
 			
 			//Success 0
-			$URL=$URL . "&addReturn=success0" ;
+			$URL.="&addReturn=success0" ;
 			header("Location: {$URL}");
 		}
 	}

@@ -56,13 +56,13 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php&forceReset=
 
 //Check passwords are not blank
 if ($password=="" OR $passwordNew=="" or $passwordConfirm=="") {
-	$URL=$URL . "&editReturn=fail0" ;
+	$URL.="&editReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Check that new password is not same as old password
 	if ($password==$passwordNew) {
-		$URL=$URL . "&editReturn=fail7" ;
+		$URL.="&editReturn=fail7" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -71,19 +71,19 @@ else {
 		
 		if ($passwordMatch==FALSE) {
 			//Fail 6
-			$URL=$URL . "&editReturn=fail6" ;
+			$URL.="&editReturn=fail6" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Check new passwords match
 			if ($passwordNew!=$passwordConfirm) {
-				$URL=$URL . "&editReturn=fail2" ;
+				$URL.="&editReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Check current password
 				if (hash("sha256", $_SESSION[$guid]["passwordStrongSalt"].$password)!=$_SESSION[$guid]["passwordStrong"]) {
-					$URL=$URL . "&editReturn=fail3" ;
+					$URL.="&editReturn=fail3" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -97,7 +97,7 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						$URL=$URL . "&editReturn=fail1" ;
+						$URL.="&editReturn=fail1" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -112,19 +112,19 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							$URL=$URL . "&forceResetReturn=fail0" ;
+							$URL.="&forceResetReturn=fail0" ;
 							header("Location: {$URL}");
 							break ;
 						}
 						$_SESSION[$guid]["passwordForceReset"]="N" ;
-						$URL=$URL . "&forceResetReturn=success0" ;
+						$URL.="&forceResetReturn=success0" ;
 					}
 					
 					
 					$_SESSION[$guid]["passwordStrongSalt"]=$salt ;
 					$_SESSION[$guid]["passwordStrong"]=$passwordStrong ;
 					$_SESSION[$guid]["pageLoads"]=NULL ;
-					$URL=$URL . "&editReturn=success0" ;
+					$URL.="&editReturn=success0" ;
 					header("Location: {$URL}");	
 				}
 			}

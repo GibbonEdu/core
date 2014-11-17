@@ -42,20 +42,20 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/outcomes_edit.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
+	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail2
-		$URL=$URL . "&updateReturn=fail2" ;
+		$URL.="&updateReturn=fail2" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if ($highestAction!="Manage Outcomes_viewEditAll" AND $highestAction!="Manage Outcomes_viewAllEditLearningArea") {
 			//Fail 0
-			$URL=$URL . "&updateReturn=fail0" ;
+			$URL.="&updateReturn=fail0" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -63,7 +63,7 @@ else {
 			//Check if school year specified
 			if ($gibbonOutcomeID=="") {
 				//Fail1
-				$URL=$URL . "&updateReturn=fail1" ;
+				$URL.="&updateReturn=fail1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -81,14 +81,14 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail2
-					$URL=$URL . "&deleteReturn=fail2" ;
+					$URL.="&deleteReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
 			
 				if ($result->rowCount()!=1) {
 					//Fail 2
-					$URL=$URL . "&updateReturn=fail2" ;
+					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -117,7 +117,7 @@ else {
 							
 					if ($scope=="" OR ($scope=="Learning Area" AND $gibbonDepartmentID=="") OR $name=="" OR $nameShort=="" OR $active=="") {
 						//Fail 3
-						$URL=$URL . "&updateReturn=fail3" ;
+						$URL.="&updateReturn=fail3" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -130,13 +130,13 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail 2
-							$URL=$URL . "&addReturn=fail2" ;
+							$URL.="&addReturn=fail2" ;
 							header("Location: {$URL}");
 							break ;
 						}
 						
 						//Success 0
-						$URL=$URL . "&updateReturn=success0" ;
+						$URL.="&updateReturn=success0" ;
 						header("Location: {$URL}");
 					}
 				}

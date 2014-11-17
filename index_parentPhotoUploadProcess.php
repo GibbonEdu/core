@@ -43,7 +43,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php" ;
 //Check if planner specified
 if ($gibbonPersonID=="" OR $gibbonPersonID!=$_SESSION[$guid]["gibbonPersonID"] OR $_FILES['file1']["tmp_name"]=="") {
 	//Fail1
-	$URL=$URL . "?uploadReturn=fail1" ;
+	$URL.="?uploadReturn=fail1" ;
 	header("Location: {$URL}");
 }
 else {
@@ -55,14 +55,14 @@ else {
 	}
 	catch(PDOException $e) { 
 		//Fail2
-		$URL=$URL . "?uploadReturn=fail2" ;
+		$URL.="?uploadReturn=fail2" ;
 		header("Location: {$URL}");
 		BREAK ;
 	}
 
 	if ($result->rowCount()!=1) {
 		//Fail 2
-		$URL=$URL . "?uploadReturn=fail2" ;
+		$URL.="?uploadReturn=fail2" ;
 		header("Location: {$URL}");
 	}
 	else {	
@@ -93,7 +93,7 @@ else {
 			
 			if (!(move_uploaded_file($_FILES["file1"]["tmp_name"],$path . "/" . $attachment1))) {
 				//Fail 6
-				$URL=$URL . "&addReturn=fail6" ;
+				$URL.="&addReturn=fail6" ;
 				header("Location: {$URL}");
 				break ;
 			}
@@ -105,17 +105,17 @@ else {
 		$height=$size[1] ;
 		if ($width<240 OR $height<320) {
 			//Fail1
-			$URL=$URL . "?uploadReturn=fail1" ;
+			$URL.="?uploadReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else if ($width>480 OR $height>640) {
 			//Fail1
-			$URL=$URL . "?uploadReturn=fail1" ;
+			$URL.="?uploadReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else if (($width/$height)<0.60 OR ($width/$height)>0.8) {
 			//Fail1
-			$URL=$URL . "?uploadReturn=fail1" ;
+			$URL.="?uploadReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -128,7 +128,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "?uploadReturn=fail2" ;
+				$URL.="?uploadReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
@@ -137,7 +137,7 @@ else {
 			$_SESSION[$guid]["image_240"]=$attachment1 ;
 			$_SESSION[$guid]["image_75"]=$attachment1 ;
 		
-			$URL=$URL . "?uploadReturn=success0" ;
+			$URL.="?uploadReturn=success0" ;
 			//Success 0
 			header("Location: {$URL}");
 		}

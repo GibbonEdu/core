@@ -46,7 +46,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage_enrolment_edit.php")==FALSE) {
 		//Fail 0
-		$URL=$URL . "&deleteReturn=fail0" ;
+		$URL.="&deleteReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -55,7 +55,7 @@ else {
 		$status=$_POST["status"] ;
 		if ($status=="") {
 			//Fail1
-			$URL=$URL . "&deleteReturn=fail1" ;
+			$URL.="&deleteReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -67,14 +67,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL=$URL . "&deleteReturn=fail2" ;
+				$URL.="&deleteReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
 		
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL=$URL . "&deleteReturn=fail2" ;
+				$URL.="&deleteReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -87,13 +87,13 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL=$URL . "&updateReturn=fail2" ;
+					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
 
 				//Success 0
-				$URL=$URL . "&updateReturn=success0" ;
+				$URL.="&updateReturn=success0" ;
 				header("Location: {$URL}");
 			}
 		}

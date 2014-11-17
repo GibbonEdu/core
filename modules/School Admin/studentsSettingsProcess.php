@@ -39,7 +39,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/studentsSettings.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
+	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -76,13 +76,13 @@ else {
 	
 	if ($fail==TRUE) {
 		//Fail 2
-		$URL=$URL . "&updateReturn=fail2" ;
+		$URL.="&updateReturn=fail2" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Success 0
 		getSystemSettings($guid, $connection2) ;
-		$URL=$URL . "&updateReturn=success0" ;
+		$URL.="&updateReturn=success0" ;
 		header("Location: {$URL}");
 	}
 }

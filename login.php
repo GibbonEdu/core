@@ -48,7 +48,7 @@ $username=$_POST["username"] ;
 $password=$_POST["password"] ; 
 
 if (($username=="") OR ($password=="")) {
-	$URL=$URL . "?loginReturn=fail0b" ;
+	$URL.="?loginReturn=fail0b" ;
 	header("Location: {$URL}");
 }
 //VALIDATE LOGIN INFORMATION
@@ -63,7 +63,7 @@ else {
 	
 	//Test to see if username exists and is unique
 	if ($result->rowCount()!=1) {
-		$URL=$URL . "?loginReturn=fail1" ;
+		$URL.="?loginReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -87,7 +87,7 @@ else {
 				mail($to, $subject, $body, $headers) ;
 			}
 		
-			$URL=$URL . "?loginReturn=fail6" ;
+			$URL.="?loginReturn=fail6" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -134,13 +134,13 @@ else {
 					$passwordTest=false ; 
 				}
 			
-				$URL=$URL . "?loginReturn=fail1" ;
+				$URL.="?loginReturn=fail1" ;
 				header("Location: {$URL}");
 			}
 			else {			
 				if ($row["gibbonRoleIDPrimary"]=="" OR count(getRoleList($row["gibbonRoleIDAll"], $connection2))==0) {
 					//FAILED TO SET ROLES
-					$URL=$URL . "?loginReturn=fail2" ;
+					$URL.="?loginReturn=fail2" ;
 					header("Location: {$URL}");
 				}
 				else {

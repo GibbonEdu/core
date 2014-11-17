@@ -40,7 +40,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/module_manage_update.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
+	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -48,7 +48,7 @@ else {
 	//Check if role specified
 	if ($gibbonModuleID=="") {
 		//Fail1
-		$URL=$URL . "&updateReturn=fail1" ;
+		$URL.="&updateReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -61,14 +61,14 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail2
-			$URL=$URL . "&updateReturn=fail2" ;
+			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}
 		
 		if ($result->rowCount()!=1) {
 			//Fail 2
-			$URL=$URL . "&updateReturn=fail2" ;
+			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -80,7 +80,7 @@ else {
 			//Validate Inputs
 			if ($versionDB=="" OR $versionCode=="" OR $versionDB>=$versionCode) {
 				//Fail 3
-				$URL=$URL . "&updateReturn=fail3" ;
+				$URL.="&updateReturn=fail3" ;
 				header("Location: {$URL}");
 			}
 			else {	
@@ -105,7 +105,7 @@ else {
 				
 				if ($partialFail==TRUE) {
 					//Fail 5
-					$URL=$URL . "&updateReturn=fail5" ;
+					$URL.="&updateReturn=fail5" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -118,13 +118,13 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL=$URL . "&updateReturn=fail2" ;
+						$URL.="&updateReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
 					
 					//Success 0
-					$URL=$URL . "&updateReturn=success0" ;
+					$URL.="&updateReturn=success0" ;
 					header("Location: {$URL}");
 				}
 			}

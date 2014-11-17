@@ -40,7 +40,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_password.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
+	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -48,7 +48,7 @@ else {
 	//Check if person specified
 	if ($gibbonPersonID=="") {
 		//Fail1
-		$URL=$URL . "&updateReturn=fail1" ;
+		$URL.="&updateReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -60,14 +60,14 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail2
-			$URL=$URL . "&updateReturn=fail2" ;
+			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}
 		
 		if ($result->rowCount()!=1) {
 			//Fail 2
-			$URL=$URL . "&updateReturn=fail2" ;
+			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -78,7 +78,7 @@ else {
 			//Validate Inputs
 			if ($passwordNew=="" OR $passwordConfirm=="") {
 				//Fail 3
-				$URL=$URL . "&updateReturn=fail3" ;
+				$URL.="&updateReturn=fail3" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -87,13 +87,13 @@ else {
 				
 				if ($passwordMatch==FALSE) {
 					//Fail 6
-					$URL=$URL . "&updateReturn=fail6" ;
+					$URL.="&updateReturn=fail6" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Check new passwords match
 					if ($passwordNew!=$passwordConfirm) {
-						$URL=$URL . "&editReturn=fail5" ;
+						$URL.="&editReturn=fail5" ;
 						header("Location: {$URL}");
 					}
 					else {	
@@ -109,13 +109,13 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail 2
-							$URL=$URL . "&updateReturn=fail2" ;
+							$URL.="&updateReturn=fail2" ;
 							header("Location: {$URL}");
 							break ;
 						}
 	
 						//Success 0
-						$URL=$URL . "&updateReturn=success0" ;
+						$URL.="&updateReturn=success0" ;
 						header("Location: {$URL}");
 					}
 				}

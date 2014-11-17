@@ -40,12 +40,12 @@ $URL=$_GET["return"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/theme_manage_install.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&addReturn=fail0" ;
+	$URL.="&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_FILES)) {
-		$URL=$URL . "&addReturn=fail3" ;
+		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -54,27 +54,27 @@ else {
 		//Check file type
 		if ($_FILES['file']['type']!="text/php" AND $_FILES['file']['name']!="manifest.php") {
 			//Fail 3
-			$URL=$URL . "&addReturn=fail3" ;
+			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Move uploaded file
 			if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$_SESSION[$guid]["absolutePath"] . "/uploads/manifest.php"))) {
 				//Fail 3
-				$URL=$URL . "&addReturn=fail3" ;
+				$URL.="&addReturn=fail3" ;
 				header("Location: {$URL}");
 			}
 			else {
 				if (!(include "../../uploads/manifest.php")) {
 					//Fail 3
-					$URL=$URL . "&addReturn=fail3" ;
+					$URL.="&addReturn=fail3" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Validate Inputs
 					if ($name=="" OR $description=="" OR $version=="") {
 						//Fail 3
-						$URL=$URL . "&addReturn=fail3" ;
+						$URL.="&addReturn=fail3" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -87,14 +87,14 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail 2
-							$URL=$URL . "&addReturn=fail2" ;
+							$URL.="&addReturn=fail2" ;
 							header("Location: {$URL}");
 							break ;
 						}
 
 						if ($resultModule->rowCount()>0) {
 							//Fail 4
-							$URL=$URL . "&addReturn=fail4" ;
+							$URL.="&addReturn=fail4" ;
 							header("Location: {$URL}");
 						}
 						else {
@@ -107,13 +107,13 @@ else {
 							}
 							catch(PDOException $e) { 
 								//Fail 2
-								$URL=$URL . "&addReturn=fail2" ;
+								$URL.="&addReturn=fail2" ;
 								header("Location: {$URL}");
 								break ;
 							}
 							
 							//Success 0
-							$URL=$URL . "&addReturn=success0" ;
+							$URL.="&addReturn=success0" ;
 							header("Location: {$URL}");
 						}
 					}

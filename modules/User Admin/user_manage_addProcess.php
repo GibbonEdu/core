@@ -39,7 +39,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_add.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&addReturn=fail0" ;
+	$URL.="&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -199,7 +199,7 @@ else {
 	//Validate Inputs
 	if ($surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $username=="" OR $password=="" OR $passwordConfirm=="" OR $status=="" OR $gibbonRoleIDPrimary=="") {
 		//Fail 3
-		$URL=$URL . "&addReturn=fail3" ;
+		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -216,21 +216,21 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL=$URL . "&addReturn=fail2" ;
+			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}
 		
 		if ($result->rowCount()>0) {
 			//Fail 4
-			$URL=$URL . "&addReturn=fail4" ;
+			$URL.="&addReturn=fail4" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Check passwords for match
 			if ($password!=$passwordConfirm) {
 				//Fail 5
-				$URL=$URL . "&addReturn=fail5" ;
+				$URL.="&addReturn=fail5" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -239,7 +239,7 @@ else {
 				
 				if ($passwordMatch==FALSE) {
 					//Fail 6
-					$URL=$URL . "&addReturn=fail7" ;
+					$URL.="&addReturn=fail7" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -250,7 +250,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL=$URL . "&addReturn=fail2" ;
+						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -262,7 +262,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL=$URL . "&addReturn=fail2" ;
+						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -298,7 +298,7 @@ else {
 							}
 							if (!(move_uploaded_file($_FILES["file1"]["tmp_name"],$path . "/" . $attachment1))) {
 								//Fail 5
-								$URL=$URL . "&addReturn=fail6" ;
+								$URL.="&addReturn=fail6" ;
 								header("Location: {$URL}");
 							}
 						}
@@ -325,7 +325,7 @@ else {
 							}
 							if (!(move_uploaded_file($_FILES["file2"]["tmp_name"],$path . "/" . $attachment2))) {
 								//Fail 5
-								$URL=$URL . "&addReturn=fail6" ;
+								$URL.="&addReturn=fail6" ;
 								header("Location: {$URL}");
 							}
 						}
@@ -366,7 +366,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL=$URL . "&addReturn=fail2" ;
+						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
@@ -380,12 +380,12 @@ else {
 					
 					if ($imageFail) {
 						//Success 1
-						$URL=$URL . "&addReturn=success1" ;
+						$URL.="&addReturn=success1" ;
 						header("Location: {$URL}");
 					}
 					else {
 						//Success 0
-						$URL=$URL . "&addReturn=success0" ;
+						$URL.="&addReturn=success0" ;
 						header("Location: {$URL}");
 					}
 				}

@@ -58,7 +58,7 @@ else {
 	}
 	catch(PDOException $e) { 
 		//Fail 2
-		$URL=$URL . "&addReturn=fail2" ;
+		$URL.="&addReturn=fail2" ;
 		header("Location: {$URL}");
 		break ;
 	}

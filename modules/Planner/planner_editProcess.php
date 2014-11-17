@@ -55,19 +55,19 @@ else {
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_edit.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&updateReturn=fail0$params" ;
+	$URL.="&updateReturn=fail0$params" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL=$URL . "&updateReturn=fail0$params" ;
+		$URL.="&updateReturn=fail0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if (empty($_POST)) {
-			$URL=$URL . "&updateReturn=fail6" ;
+			$URL.="&updateReturn=fail6" ;
 			header("Location: {$URL}");
 		}
 		else {	
@@ -75,7 +75,7 @@ else {
 			//Check if school year specified
 			if ($gibbonPlannerEntryID=="" OR ($viewBy=="class" AND $gibbonCourseClassID=="")) {
 				//Fail1
-				$URL=$URL . "&updateReturn=fail1$params" ;
+				$URL.="&updateReturn=fail1$params" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -93,14 +93,14 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail2
-					$URL=$URL . "&updateReturn=fail2$params" ;
+					$URL.="&updateReturn=fail2$params" ;
 					header("Location: {$URL}");
 					break ;
 				}
 				
 				if ($result->rowCount()!=1) {
 					//Fail 2
-					$URL=$URL . "&updateReturn=fail2$params" ;
+					$URL.="&updateReturn=fail2$params" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -262,7 +262,7 @@ else {
 					
 					if ($viewBy=="" OR $gibbonCourseClassID=="" OR $date=="" OR $timeStart=="" OR $timeEnd=="" OR $name=="" OR $summary=="" OR $homework=="" OR $viewableParents=="" OR $viewableStudents=="" OR ($homework=="Y" AND ($homeworkDetails=="" OR $homeworkDueDate==""))) {
 						//Fail 3
-						$URL=$URL . "&updateReturn=fail3$params" ;
+						$URL.="&updateReturn=fail3$params" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -369,7 +369,7 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail2
-							$URL=$URL . "&updateReturn=fail2" ;
+							$URL.="&updateReturn=fail2" ;
 							header("Location: {$URL}");
 							break ;
 						}
@@ -406,19 +406,19 @@ else {
 						catch(PDOException $e) { 
 							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							//Fail 2
-							$URL=$URL . "&addReturn=fail2$params" ;
+							$URL.="&addReturn=fail2$params" ;
 							header("Location: {$URL}");
 							break ;
 						}
 						
 						if ($partialFail==TRUE) {
 							//Fail 5
-							$URL=$URL . "&updateReturn=fail5$params" ;
+							$URL.="&updateReturn=fail5$params" ;
 							header("Location: {$URL}");
 						}
 						else {
 							//Success 0
-							$URL=$URL . "&updateReturn=success0$params" ;
+							$URL.="&updateReturn=success0$params" ;
 							header("Location: {$URL}");
 						}
 					}

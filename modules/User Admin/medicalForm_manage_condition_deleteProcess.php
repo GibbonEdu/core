@@ -48,7 +48,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_manage_condition_delete.php")==FALSE) {
 		//Fail 0
-		$URL=$URL . "&deleteReturn=fail0" ;
+		$URL.="&deleteReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -56,7 +56,7 @@ else {
 		//Check if condition specified
 		if ($gibbonPersonMedicalConditionID=="") {
 			//Fail1
-			$URL=$URL . "&deleteReturn=fail1" ;
+			$URL.="&deleteReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -68,14 +68,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL=$URL . "&deleteReturn=fail2" ;
+				$URL.="&deleteReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
 			
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL=$URL . "&deleteReturn=fail2" ;
+				$URL.="&deleteReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -88,7 +88,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL=$URL . "&deleteReturn=fail2" ;
+					$URL.="&deleteReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}

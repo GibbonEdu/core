@@ -46,7 +46,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byPerson.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
+	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -54,7 +54,7 @@ else {
 	//Check if school year specified
 	if ($gibbonPersonID=="" AND $currentDate=="") {
 		//Fail1
-		$URL=$URL . "&updateReturn=fail1" ;
+		$URL.="&updateReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -66,28 +66,28 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail2
-			$URL=$URL . "&updateReturn=fail2" ;
+			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}
 		
 		if ($result->rowCount()!=1) {
 			//Fail 2
-			$URL=$URL . "&updateReturn=fail2" ;
+			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Check that date is not in the future
 			if ($currentDate>$today) {
 				//Fail 4
-				$URL=$URL . "&updateReturn=fail4" ;
+				$URL.="&updateReturn=fail4" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Check that date is a school day
 				if (isSchoolOpen($guid, $currentDate, $connection2)==FALSE) {
 					//Fail 5
-					$URL=$URL . "&updateReturn=fail5" ;
+					$URL.="&updateReturn=fail5" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -110,7 +110,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL=$URL . "&updateReturn=fail2" ;
+						$URL.="&updateReturn=fail2" ;
 						header("Location: {$URL}");
 						break ; 
 					}
@@ -160,12 +160,12 @@ else {
 		
 			if ($fail==TRUE) {
 				//Fail 2
-				$URL=$URL . "&updateReturn=fail2" ;
+				$URL.="&updateReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Success 0
-				$URL=$URL . "&updateReturn=success0" ;
+				$URL.="&updateReturn=success0" ;
 				header("Location: {$URL}");
 			}
 		}

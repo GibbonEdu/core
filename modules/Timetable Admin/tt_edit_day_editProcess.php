@@ -47,7 +47,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_edit_day_edit.php")==FALSE) {
 		//Fail 0
-		$URL=$URL . "&updateReturn=fail0" ;
+		$URL.="&updateReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -55,7 +55,7 @@ else {
 		//Check if tt specified
 		if ($gibbonTTDayID=="") {
 			//Fail1
-			$URL=$URL . "&updateReturn=fail1" ;
+			$URL.="&updateReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -67,14 +67,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL=$URL . "&updateReturn=fail2" ;
+				$URL.="&updateReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
 			
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL=$URL . "&updateReturn=fail2" ;
+				$URL.="&updateReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -85,7 +85,7 @@ else {
 
 				if ($name=="" OR $nameShort=="" OR $gibbonTTColumnID=="") {
 					//Fail 3
-					$URL=$URL . "&updateReturn=fail3" ;
+					$URL.="&updateReturn=fail3" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -98,14 +98,14 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL=$URL . "&updateReturn=fail2" ;
+						$URL.="&updateReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
 					
 					if ($result->rowCount()>0) {
 						//Fail 4
-						$URL=$URL . "&updateReturn=fail4" ;
+						$URL.="&updateReturn=fail4" ;
 						header("Location: {$URL}");
 					}
 					else {	
@@ -118,13 +118,13 @@ else {
 						}
 						catch(PDOException $e) {
 							//Fail 2
-							$URL=$URL . "&updateReturn=fail2" ;
+							$URL.="&updateReturn=fail2" ;
 							header("Location: {$URL}");
 							break ;
 						}
 
 						//Success 0
-						$URL=$URL . "&updateReturn=success0" ;
+						$URL.="&updateReturn=success0" ;
 						header("Location: {$URL}");
 					}
 				}

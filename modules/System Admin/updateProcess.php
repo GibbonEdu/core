@@ -40,7 +40,7 @@ $partialFail=FALSE;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/update.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
+	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -48,7 +48,7 @@ else {
 	$type=$_GET["type"] ;
 	if ($type!="regularRelease" AND $type!="cuttingEdge") {
 		//Fail 3
-		$URL=$URL . "&updateReturn=fail3" ;
+		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else if ($type=="regularRelease") { //Do regular release update
@@ -58,7 +58,7 @@ else {
 		//Validate Inputs
 		if ($versionDB=="" OR $versionCode=="" OR $versionDB>=$versionCode) {
 			//Fail 3
-			$URL=$URL . "&updateReturn=fail3" ;
+			$URL.="&updateReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {	
@@ -82,7 +82,7 @@ else {
 		
 			if ($partialFail==TRUE) {
 				//Fail 5
-				$URL=$URL . "&updateReturn=fail5" ;
+				$URL.="&updateReturn=fail5" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -95,13 +95,13 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL=$URL . "&updateReturn=fail2" ;
+					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
 			
 				//Success 0
-				$URL=$URL . "&updateReturn=success0" ;
+				$URL.="&updateReturn=success0" ;
 				header("Location: {$URL}");
 			}
 		}
@@ -127,7 +127,7 @@ else {
 		
 		if ($update==FALSE) { //Something went wrong...abandon!
 			//Fail 3
-			$URL=$URL . "&updateReturn=fail2" ;
+			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}
@@ -192,7 +192,7 @@ else {
 			
 			if ($partialFail==TRUE) {
 				//Fail 5
-				$URL=$URL . "&updateReturn=fail5" ;
+				$URL.="&updateReturn=fail5" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -205,7 +205,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL=$URL . "&updateReturn=fail2" ;
+					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
@@ -219,7 +219,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL=$URL . "&updateReturn=fail2" ;
+					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
@@ -228,7 +228,7 @@ else {
 				$_SESSION[$guid]["pageLoads"]=NULL ;
 			
 				//Success 0
-				$URL=$URL . "&updateReturn=success0" ;
+				$URL.="&updateReturn=success0" ;
 				header("Location: {$URL}");
 			}
 		}

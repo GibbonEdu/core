@@ -43,7 +43,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/ttDates_edit_add.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&addReturn=fail0" ;
+	$URL.="&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -51,13 +51,13 @@ else {
 	//Validate Inputs
 	if ($gibbonSchoolYearID=="" OR $dateStamp=="" OR $gibbonTTDayID=="") {
 		//Fail 3
-		$URL=$URL . "&addReturn=fail3" ;
+		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if (isSchoolOpen($guid, date("Y-m-d", $dateStamp), $connection2, TRUE)==FALSE) {
 			//Fail 3
-			$URL=$URL . "&addReturn=fail3" ;
+			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -69,14 +69,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "&addReturn=fail2" ;
+				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
 
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL=$URL . "&addReturn=fail2" ;
+				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -89,13 +89,13 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL=$URL . "&addReturn=fail2" ;
+					$URL.="&addReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
 
 				//Success 0
-				$URL=$URL . "&addReturn=success0" ;
+				$URL.="&addReturn=success0" ;
 				header("Location: {$URL}");
 			}
 		}

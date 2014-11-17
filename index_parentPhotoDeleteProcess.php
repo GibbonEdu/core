@@ -43,7 +43,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php" ;
 //Check if planner specified
 if ($gibbonPersonID=="" OR $gibbonPersonID!=$_SESSION[$guid]["gibbonPersonID"]) {
 	//Fail1
-	$URL=$URL . "?deleteReturn=fail1" ;
+	$URL.="?deleteReturn=fail1" ;
 	header("Location: {$URL}");
 }
 else {
@@ -55,14 +55,14 @@ else {
 	}
 	catch(PDOException $e) { 
 		//Fail2
-		$URL=$URL . "?deleteReturn=fail2" ;
+		$URL.="?deleteReturn=fail2" ;
 		header("Location: {$URL}");
 		BREAK ;
 	}
 
 	if ($result->rowCount()!=1) {
 		//Fail 2
-		$URL=$URL . "?deleteReturn=fail2" ;
+		$URL.="?deleteReturn=fail2" ;
 		header("Location: {$URL}");
 	}
 	else {	
@@ -75,7 +75,7 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL=$URL . "?deleteReturn=fail2" ;
+			$URL.="?deleteReturn=fail2" ;
 			header("Location: {$URL}");
 			break ;
 		}
@@ -84,7 +84,7 @@ else {
 		$_SESSION[$guid]["image_240"]="" ;
 		$_SESSION[$guid]["image_75"]="" ;
 		
-		$URL=$URL . "?deleteReturn=success0" ;
+		$URL.="?deleteReturn=success0" ;
 		//Success 0
 		header("Location: {$URL}");
 	}

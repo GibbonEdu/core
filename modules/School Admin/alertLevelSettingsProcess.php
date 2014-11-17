@@ -39,7 +39,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/alertLevelSettings.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
+	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -48,7 +48,7 @@ else {
 	//Proceed!
 	if ($count<1) {
 		//Fail 2
-		$URL=$URL . "&updateReturn=fail2" ;
+		$URL.="&updateReturn=fail2" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -80,12 +80,12 @@ else {
 		//Deal with failed update
 		if ($partialFail==TRUE) {
 			//Fail 4
-			$URL=$URL . "&updateReturn=fail4" ;
+			$URL.="&updateReturn=fail4" ;
 			header("Location: {$URL}");
 		}	
 		else {
 			//Success 0
-			$URL=$URL . "&updateReturn=success0" ;
+			$URL.="&updateReturn=success0" ;
 			header("Location: {$URL}");
 		}
 	}

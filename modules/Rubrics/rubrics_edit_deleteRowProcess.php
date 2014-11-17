@@ -41,20 +41,20 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_edit.php")==FALSE) {
 	//Fail 0
-	$URL=$URL . "&rowDeleteReturn=fail0" ;
+	$URL.="&rowDeleteReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail2
-		$URL=$URL . "&rowDeleteReturn=fail2" ;
+		$URL.="&rowDeleteReturn=fail2" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if ($highestAction!="Manage Rubrics_viewEditAll" AND $highestAction!="Manage Rubrics_viewAllEditLearningArea") {
 			//Fail 0
-			$URL=$URL . "&rowDeleteReturn=fail0" ;
+			$URL.="&rowDeleteReturn=fail0" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -62,7 +62,7 @@ else {
 			//Check if school year specified
 			if ($gibbonRubricID=="" OR $gibbonRubricRowID=="") {
 				//Fail1
-				$URL=$URL . "&rowDeleteReturn=fail1" ;
+				$URL.="&rowDeleteReturn=fail1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -80,14 +80,14 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail2
-					$URL=$URL . "&columnDeleteReturn=fail2" ;
+					$URL.="&columnDeleteReturn=fail2" ;
 					header("Location: {$URL}");
 					break ;
 				}
 				
 				if ($result->rowCount()!=1) {
 					//Fail 2
-					$URL=$URL . "&rowDeleteReturn=fail2" ;
+					$URL.="&rowDeleteReturn=fail2" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -100,14 +100,14 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail2
-						$URL=$URL . "&rowDeleteReturn=fail2" ;
+						$URL.="&rowDeleteReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
 					
 					if ($resultRow->rowCount()!=1) {
 						//Fail 2
-						$URL=$URL . "&rowDeleteReturn=fail2" ;
+						$URL.="&rowDeleteReturn=fail2" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -120,7 +120,7 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail 2
-							$URL=$URL . "&rowDeleteReturn=fail2" ;
+							$URL.="&rowDeleteReturn=fail2" ;
 							header("Location: {$URL}");
 							break ;
 						}
@@ -134,7 +134,7 @@ else {
 						catch(PDOException $e) { }
 						
 						//Success 0
-						$URL=$URL . "&rowDeleteReturn=success0" ;
+						$URL.="&rowDeleteReturn=success0" ;
 						header("Location: {$URL}");
 					}
 				}

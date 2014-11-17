@@ -57,7 +57,7 @@ else {
 
 if ($proceed==FALSE) {
 	//Fail 0
-	$URL=$URL . "&addReturn=fail0" ;
+	$URL.="&addReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -544,7 +544,7 @@ else {
 		}
 		if ($surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageHome=="" OR $languageFirst=="" OR $gibbonSchoolYearIDEntry=="" OR $dateStart=="" OR $gibbonYearGroupIDEntry=="" OR $howDidYouHear=="" OR (isset($_POST["agreement"]) AND $agreement!="Y") OR $familyFail) {
 			//Fail 3
-			$URL=$URL . "&addReturn=fail3" ;
+			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -557,7 +557,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL=$URL . "&addReturn=fail2" ;
+				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
@@ -660,7 +660,7 @@ else {
 			}
 			else {
 				//Success 0
-				$URL=$URL . "&addReturn=success0&id=$AI" ;
+				$URL.="&addReturn=success0&id=$AI" ;
 				header("Location: {$URL}");
 			}
 		}
@@ -700,7 +700,7 @@ else {
 			mail($to, $subject, $body, $headers) ;
 			
 			//Success 2
-			$URL=$URL . "&addReturn=success2&id=" . $_GET["id"] ;
+			$URL.="&addReturn=success2&id=" . $_GET["id"] ;
 			header("Location: {$URL}");
 			exit() ;
 		}
@@ -753,13 +753,13 @@ else {
 					mail($to, $subject, $body, $headers) ;
 			
 					//Success 3
-					$URL=$URL . "&addReturn=success3&id=" . $_GET["id"] ;
+					$URL.="&addReturn=success3&id=" . $_GET["id"] ;
 					header("Location: {$URL}");
 					exit ;
 				}
 				
 				//Success 1
-				$URL=$URL . "&addReturn=success1&id=" . $_GET["id"] ;
+				$URL.="&addReturn=success1&id=" . $_GET["id"] ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -799,13 +799,13 @@ else {
 					mail($to, $subject, $body, $headers) ;
 			
 					//Success 2
-					$URL=$URL . "&addReturn=success2&id=" . $_GET["id"] ;
+					$URL.="&addReturn=success2&id=" . $_GET["id"] ;
 					header("Location: {$URL}");
 					exit ;
 				}
 				
 				//Success 2
-				$URL=$URL . "&addReturn=success2&id=" . $_GET["id"] ;
+				$URL.="&addReturn=success2&id=" . $_GET["id"] ;
 				header("Location: {$URL}");
 			}
 		}

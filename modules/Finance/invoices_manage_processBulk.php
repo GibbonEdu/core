@@ -62,13 +62,13 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage.php")==FALSE) {
 		//Fail 0
-		$URL=$URL . "&bulkReturn=fail0" ;
+		$URL.="&bulkReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		$gibbonFinanceInvoiceIDs=$_POST["gibbonFinanceInvoiceIDs"] ;
 		if (count($gibbonFinanceInvoiceIDs)<1) {
-			$URL=$URL . "&bulkReturn=fail3" ;
+			$URL.="&bulkReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -97,12 +97,12 @@ else {
 					}
 				}
 				if ($partialFail==TRUE) {
-					$URL=$URL . "&bulkReturn=fail5" ;
+					$URL.="&bulkReturn=fail5" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL=$URL . "&bulkReturn=success0" ;
+					$URL.="&bulkReturn=success0" ;
 					header("Location: {$URL}");
 				}
 			}
@@ -161,7 +161,7 @@ else {
 								}
 								catch(PDOException $e) { 
 									//Fail 2
-									$URL=$URL . "&issueReturn=fail2" ;
+									$URL.="&issueReturn=fail2" ;
 									header("Location: {$URL}");
 									break ;
 								}
@@ -366,17 +366,17 @@ else {
 				}
 				
 				if ($partialFail==TRUE) {
-					$URL=$URL . "&bulkReturn=fail5" ;
+					$URL.="&bulkReturn=fail5" ;
 					header("Location: {$URL}");
 				}
 				else if ($emailFail==TRUE) { 
 					//Success 1
-					$URL=$URL . "&bulkReturn=success1" ;
+					$URL.="&bulkReturn=success1" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL=$URL . "&bulkReturn=success0" ;
+					$URL.="&bulkReturn=success0" ;
 					header("Location: {$URL}");
 				}
 			}
@@ -526,17 +526,17 @@ else {
 				}
 				
 				if ($partialFail==TRUE) {
-					$URL=$URL . "&bulkReturn=fail5" ;
+					$URL.="&bulkReturn=fail5" ;
 					header("Location: {$URL}");
 				}
 				else if ($emailFail==TRUE) { 
 					//Success 1
-					$URL=$URL . "&bulkReturn=success1" ;
+					$URL.="&bulkReturn=success1" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL=$URL . "&bulkReturn=success0" ;
+					$URL.="&bulkReturn=success0" ;
 					header("Location: {$URL}");
 				}
 			}
@@ -549,11 +549,11 @@ else {
 				
 				// THIS CODE HAS BEEN COMMENTED OUT, AS THE EXPORT RETURNS WITHOUT IT...NOT SURE WHY!
 				//Success 0
-				//$URL=$URL . "&bulkReturn=success0" ;
+				//$URL.="&bulkReturn=success0" ;
 				//header("Location: {$URL}");
 			}
 			else {
-				$URL=$URL . "&bulkReturn=fail3" ;
+				$URL.="&bulkReturn=fail3" ;
 				header("Location: {$URL}");
 			}
 		}
