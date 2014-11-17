@@ -249,18 +249,29 @@ else {
 							<span style="font-size: 90%"><i>Relevant student year groups<br/></i></span>
 						</td>
 						<td class="right">
-							<?php 
+							<?php
+							print "<fieldset style='border: none'>" ;
+							?>
+							<script type="text/javascript">
+								$(function () { // this line makes sure this code runs on page load
+									$('.checkall').click(function () {
+										$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+									});
+								});
+							</script>
+							<?php
+							print _("All/None") . " <input type='checkbox' class='checkall'><br/>" ;
 							$yearGroups=getYearGroups($connection2) ;
 							if ($yearGroups=="") {
 								print "<i>" . _('No year groups available.') . "</i>" ;
 							}
 							else {
 								for ($i=0; $i<count($yearGroups); $i=$i+2) {
-									$checked="checked " ;
-									print _($yearGroups[($i+1)]) . " <input $checked type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
+									print _($yearGroups[($i+1)]) . " <input type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
 									print "<input type='hidden' name='gibbonYearGroupID" . ($i)/2 . "' value='" . $yearGroups[$i] . "'>" ;
 								}
 							}
+							print "</fieldset>" ;
 							?>
 							<input type="hidden" name="count" value="<?php print (count($yearGroups))/2 ?>">
 						</td>

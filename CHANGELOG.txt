@@ -43,6 +43,14 @@ External Assessments: added ability to allow file upload of student results
 CLI: added new cronable script to check who has not taken attendance, and email them a reminder
 	New file /cli/attendance_dailyIncompleteEmail.php
 
+Outcomes: fixed outcome edit view for users with department-only editing rights
+	Edited file /modules/Planner/outcomes_edit.php
+
+User Admin: added Roll Order field to Roll Group admin
+	Edited table gibbonStudentEnrolment
+	Edited files /modules/User Admin/studentEnrolment_manage*.php
+	
+
 
 v8.3.00
 -------

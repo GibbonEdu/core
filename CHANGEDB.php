@@ -591,6 +591,7 @@ ALTER TABLE `gibbonStudentNote` ADD `title` VARCHAR(50) NOT NULL AFTER `gibbonSt
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`) VALUES ('fr_FR', 'Français - France', 'N', 'N', 'Jean-Baptiste Tamegnon', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y');end
 ALTER TABLE `gibbonExternalAssessment` ADD `allowFileUpload` ENUM('Y','N') NOT NULL DEFAULT 'N' ;end
 ALTER TABLE `gibbonExternalAssessmentStudent` ADD `attachment` VARCHAR(255) NOT NULL ;end
+ALTER TABLE `gibbonStudentEnrolment` ADD `rollOrder` INT(2) NULL DEFAULT NULL ;end
 ";
 
 ?>

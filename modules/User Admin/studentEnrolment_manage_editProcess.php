@@ -80,11 +80,16 @@ else {
 			else {
 				$gibbonYearGroupID=$_POST["gibbonYearGroupID"] ;
 				$gibbonRollGroupID=$_POST["gibbonRollGroupID"] ;
+				
+				$rollOrder=$_POST["rollOrder"] ;
+				if ($rollOrder=="") {
+					$rollOrder=NULL ;
+				}
 			
-				//Write to database
+				//Check unique inputs for uniquness
 				try {
-					$data=array("gibbonYearGroupID"=>$gibbonYearGroupID, "gibbonRollGroupID"=>$gibbonRollGroupID, "gibbonStudentEnrolmentID"=>$gibbonStudentEnrolmentID); 
-					$sql="UPDATE gibbonStudentEnrolment SET gibbonYearGroupID=:gibbonYearGroupID, gibbonRollGroupID=:gibbonRollGroupID WHERE gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID" ;
+					$data=array("gibbonStudentEnrolmentID"=>$gibbonStudentEnrolmentID, "rollOrder"=>$rollOrder, "gibbonRollGroupID"=>$gibbonRollGroupID); 
+					$sql="SELECT * FROM gibbonStudentEnrolment WHERE rollOrder=:rollOrder AND gibbonRollGroupID=:gibbonRollGroupID AND NOT gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID AND NOT rollOrder=''" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -92,12 +97,32 @@ else {
 					//Fail 2
 					$URL=$URL . "&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
 				}
+		
+				if ($result->rowCount()>0) {
+					//Fail 4
+					$URL=$URL . "&updateReturn=fail4" ;
+					header("Location: {$URL}");
+				}
+				else {
+					//Write to database
+					try {
+						$data=array("gibbonYearGroupID"=>$gibbonYearGroupID, "gibbonRollGroupID"=>$gibbonRollGroupID, "rollOrder"=>$rollOrder, "gibbonStudentEnrolmentID"=>$gibbonStudentEnrolmentID); 
+						$sql="UPDATE gibbonStudentEnrolment SET gibbonYearGroupID=:gibbonYearGroupID, gibbonRollGroupID=:gibbonRollGroupID, rollOrder=:rollOrder WHERE gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID" ;
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
+					}
+					catch(PDOException $e) { 
+						//Fail 2
+						$URL=$URL . "&updateReturn=fail2" ;
+						header("Location: {$URL}");
+						break ;
+					}
 
-				//Success 0
-				$URL=$URL . "&updateReturn=success0" ;
-				header("Location: {$URL}");
+					//Success 0
+					$URL=$URL . "&updateReturn=success0" ;
+					header("Location: {$URL}");
+				}
 			}
 		}
 	}

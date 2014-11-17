@@ -105,10 +105,8 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					print $e->getMessage() ; exit() ;
 					$URL=$URL . "&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
 				}
 		
 				if ($result->rowCount()>0) {

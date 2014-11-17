@@ -100,24 +100,48 @@ else {
 				else {
 					$gibbonYearGroupID=$_POST["gibbonYearGroupID"] ;
 					$gibbonRollGroupID=$_POST["gibbonRollGroupID"] ;
-				
-					//Write to database
+					$rollOrder=$_POST["rollOrder"] ;
+					if ($rollOrder=="") {
+						$rollOrder=NULL ;
+					}
+					
+					//Check unique inputs for uniquness
 					try {
-						$data=array("gibbonPersonID"=>$gibbonPersonID, "gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonYearGroupID"=>$gibbonYearGroupID, "gibbonRollGroupID"=>$gibbonRollGroupID); 
-						$sql="INSERT INTO gibbonStudentEnrolment SET gibbonPersonID=:gibbonPersonID, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonYearGroupID=:gibbonYearGroupID, gibbonRollGroupID=:gibbonRollGroupID" ;
+						$data=array("rollOrder"=>$rollOrder, "gibbonRollGroupID"=>$gibbonRollGroupID); 
+						$sql="SELECT * FROM gibbonStudentEnrolment WHERE rollOrder=:rollOrder AND gibbonRollGroupID=:gibbonRollGroupID AND NOT rollOrder=''" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail2
+						//Fail 2
 						$URL=$URL . "&addReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
 					}
+		
+					if ($result->rowCount()>0) {
+						//Fail 4
+						$URL=$URL . "&addReturn=fail4" ;
+						header("Location: {$URL}");
+					}
+					else {
+						//Write to database
+						try {
+							$data=array("gibbonPersonID"=>$gibbonPersonID, "gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonYearGroupID"=>$gibbonYearGroupID, "gibbonRollGroupID"=>$gibbonRollGroupID, "rollOrder"=>$rollOrder); 
+							$sql="INSERT INTO gibbonStudentEnrolment SET gibbonPersonID=:gibbonPersonID, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonYearGroupID=:gibbonYearGroupID, gibbonRollGroupID=:gibbonRollGroupID, rollOrder=:rollOrder" ;
+							$result=$connection2->prepare($sql);
+							$result->execute($data);
+						}
+						catch(PDOException $e) { 
+							//Fail2
+							$URL=$URL . "&addReturn=fail2" ;
+							header("Location: {$URL}");
+							break ;
+						}
 				
-					//Success 0
-					$URL=$URL . "&addReturn=success0" ;
-					header("Location: {$URL}");
+						//Success 0
+						$URL=$URL . "&addReturn=success0" ;
+						header("Location: {$URL}");
+					}
 				}
 			}
 		}
