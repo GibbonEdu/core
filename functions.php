@@ -2400,14 +2400,18 @@ function getUserPhoto($guid, $path, $size) {
 }
 
 //Gets Members of a roll group and prints them as a table.
+//Three modes: normal (roll order, surnema, firstName), surname (surname, preferredName), preferredName (preferredNam, surname)
 function printRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $confidential=TRUE, $orderBy="Normal") {
 	try {
 		$dataRollGroup=array("gibbonRollGroupID"=>$gibbonRollGroupID); 
-		if ($orderBy=="Reverse") {
+		if ($orderBy=="surname") {
+			$sqlRollGroup="SELECT * FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ;
+		}
+		else if ($orderBy=="preferredName") {
 			$sqlRollGroup="SELECT * FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY preferredName, surname" ;
 		}
 		else {
-			$sqlRollGroup="SELECT * FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ;
+			$sqlRollGroup="SELECT * FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY rollOrder, surname, preferredName" ;
 		}
 		$resultRollGroup=$connection2->prepare($sqlRollGroup);
 		$resultRollGroup->execute($dataRollGroup);

@@ -131,8 +131,9 @@ else {
 						<td class="right">
 							<select name="orderBy" id="orderBy" style="width: 302px">
 								<?php
-								print "<option " ; if ($orderBy=="Normal") { print "selected " ; } print "value='Normal'>Normal</option>" ;
-								print "<option " ; if ($orderBy=="Reverse") { print "selected " ; } print "value='Reverse'>Reverse</option>" ;
+								print "<option " ; if ($orderBy=="normal") { print "selected " ; } print "value='normal'>" . _('Normal (Roll Order, Surname, Preferred Name)') . "</option>" ;
+								print "<option " ; if ($orderBy=="surname") { print "selected " ; } print "value='surname'>" . _('Surname (Surname, Preferred Name)') . "</option>" ;
+								print "<option " ; if ($orderBy=="preferredName") { print "selected " ; } print "value='preferredName'>" . _('Preferred Name (PreferredName, Surname)') . "</option>" ;
 								?>			
 							</select>
 						</td>

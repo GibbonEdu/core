@@ -57,6 +57,11 @@ Behaviour: added ability to add multiple records in one go
 	Edited file /modules/Behaviour/behaviour_manage.php 
 	Added files /modules/Behaviour/behaviour_manage_addMulti*.php
 
+General: applied new roll order field to index page, attendance and roll group information
+	Edited files /index.php, functions.php
+	Edited file /modules/Roll Groups/rollGroups_details.php
+	Edited file /modules/Attendance/attendance_take_byRollGroup.php
+
 
 v8.3.00
 -------
