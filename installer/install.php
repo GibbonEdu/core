@@ -42,7 +42,7 @@ include "../functions.php" ;
 			<div id="wrap">
 				<div id="header">
 					<div id="header-left">
-						<img height='107px' width='250px' class="logo" alt="Logo" src="../themes/Default/img/logo.jpg"></a>
+						<img height='100px' width='400px' class="logo" alt="Logo" src="../themes/Default/img/logo.jpg"></a>
 					</div>
 					<div id="header-right">
 						

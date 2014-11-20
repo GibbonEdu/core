@@ -39,7 +39,7 @@ print "<link rel='stylesheet' type='text/css' href='" . $_SESSION[$guid]["absolu
 <div id="wrap">
 	<div id="header">
 		<div id="header-left">
-			<a href='<?php print $_SESSION[$guid]["absoluteURL"] ?>'><img height='107px' width='250px' class="logo" alt="Logo" title="Logo" src="<?php print $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ; ?>"/></a>
+			<a href='<?php print $_SESSION[$guid]["absoluteURL"] ?>'><img height='100px' width='400px' class="logo" alt="Logo" title="Logo" src="<?php print $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ; ?>"/></a>
 		</div>
 		<div id="header-right">
 		

@@ -574,8 +574,8 @@ else {
 								<?php
 								print "<td colspan=" . ($span-1) . ">" ;
 								?>
-									<b><?php print _('Grading Completion Date') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print _('1. Format') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print _('2. Enter date after grading.') ?><br/><?php print _('3. Column is hidden without date.') ?></i></span>
+									<b><?php print _('Go Live Date') ?></b><br/>
+								<span style="font-size: 90%"><i><?php print _('1. Format') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print _('2. Column is hidden until date is reached.') ?></i></span>
 								</td>
 								<td class="right">
 									<input name="completeDate" id="completeDate" maxlength=10 value="<?php print dateConvertBack($guid, $row2["completeDate"]) ?>" type="text" style="width: 300px">

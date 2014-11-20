@@ -31,7 +31,10 @@ else {
 	$gibbonPersonID=$_GET["gibbonPersonID"] ;
 	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
 	$type=$_GET["type"] ;
-	$allUsers=$_GET["allUsers"] ;
+	$allUsers="" ;
+	if (isset($_GET["allUsers"])) {
+		$allUsers=$_GET["allUsers"] ;
+	}
 	$search="" ;
 	if (isset($_GET["search"])) {
 		$search=$_GET["search"] ;

@@ -17,6 +17,215 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+
+function getMinorLinks($connection2, $guid, $cacheLoad) {
+	$return=FALSE ;
+	
+	if (isset($_SESSION[$guid]["username"])) {
+		$return.=$_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"] . " . " ;
+		$return.="<a href='./logout.php'>Logout</a> . <a href='./index.php?q=preferences.php'>" . _('Preferences') . "</a>" ;
+		if ($_SESSION[$guid]["emailLink"]!="") {
+			$return.=" . <a target='_blank' href='" . $_SESSION[$guid]["emailLink"] . "'>" . _('Email') . "</a>" ;
+		}
+		if ($_SESSION[$guid]["webLink"]!="") {
+			$return.=" . <a target='_blank' href='" . $_SESSION[$guid]["webLink"] . "'>" . $_SESSION[$guid]["organisationNameShort"] . " " . _('Website') . "</a>" ;
+		}
+		if ($_SESSION[$guid]["website"]!="") {
+			$return.=" . <a target='_blank' href='" . $_SESSION[$guid]["website"] . "'>" . _('My Website') . "</a>" ;
+		}
+
+		//STARS!
+		if ($cacheLoad) {
+			$_SESSION[$guid]["likeCount"]=0 ;
+			$_SESSION[$guid]["likeCountTitle"]="" ;
+			//Count crowd assessment likes
+			try {
+				$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+				$sqlLike="SELECT * FROM gibbonCrowdAssessLike JOIN gibbonPlannerEntryHomework ON (gibbonCrowdAssessLike.gibbonPlannerEntryHomeworkID=gibbonPlannerEntryHomework.gibbonPlannerEntryHomeworkID) JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
+				$resultLike=$connection2->prepare($sqlLike);
+				$resultLike->execute($dataLike); 
+				if ($resultLike->rowCount()>0) {
+					$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
+					$_SESSION[$guid]["likeCountTitle"].=_('Crowd Assessment') . ": " . $resultLike->rowCount() . ", " ;
+				}
+			}
+			catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
+
+			//Count planner likes
+			try {
+				$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+				$sqlLike="SELECT * FROM gibbonPlannerEntryLike JOIN gibbonPlannerEntry ON (gibbonPlannerEntryLike.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
+				$resultLike=$connection2->prepare($sqlLike);
+				$resultLike->execute($dataLike); 
+				if ($resultLike->rowCount()>0) {
+					$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
+					$_SESSION[$guid]["likeCountTitle"].=_('Planner') . ": " . $resultLike->rowCount() . ", " ;
+				}
+			}
+			catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
+
+			//Count positive haviour
+			try {
+				$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+				$sqlLike="SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type='Positive' AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
+				$resultLike=$connection2->prepare($sqlLike);
+				$resultLike->execute($dataLike); 
+				if ($resultLike->rowCount()>0) {
+					$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
+					$_SESSION[$guid]["likeCountTitle"].=_('Behaviour') . ": " . $resultLike->rowCount() . ", " ;
+				}
+			}
+			catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
+		}
+
+		//Spit out likes
+		if (isset($_SESSION[$guid]["likeCount"])) {
+			if ($_SESSION[$guid]["likeCount"]>0) {
+				$return.=" . <a title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=stars.php'>" . $_SESSION[$guid]["likeCount"] . " x <img style='margin-left: 2px; vertical-align: -60%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
+			}
+			else {
+				$return.=" . " . $_SESSION[$guid]["likeCount"] . " x <img title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' style='margin-left: 2px; opacity: 0.8; vertical-align: -60%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'>" ;
+			}
+		}
+
+		//GET & SHOW NOTIFICATIONS
+		try {
+			$dataNotifications=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
+			$sqlNotifications="(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID)
+			UNION
+			(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2)
+			ORDER BY timestamp DESC, source, text" ;
+			$resultNotifications=$connection2->prepare($sqlNotifications);
+			$resultNotifications->execute($dataNotifications); 
+		}
+		catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
+
+		if ($resultNotifications->rowCount()>0) {
+			$return.=" . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
+		}
+		else {
+			$return.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
+		}
+
+		//MESSAGE WALL!
+		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messageWall_view.php")) {
+			include "./modules/Messenger/moduleFunctions.php" ; 
+	
+			$addReturn=NULL ;
+			if (isset($_GET["addReturn"])) {
+				$addReturn=$_GET["addReturn"] ;
+			}
+			$updateReturn=NULL ;
+			if (isset($_GET["updateReturn"])) {
+				$updateReturn=$_GET["updateReturn"] ;
+			}
+			$deleteReturn=NULL ;
+			if (isset($_GET["deleteReturn"])) {
+				$deleteReturn=$_GET["deleteReturn"] ;
+			}
+			if ($cacheLoad OR ($q=="/modules/Messenger/messenger_post.php" AND $addReturn=="success0") OR ($q=="/modules/Messenger/messenger_manage_edit.php" AND $updateReturn=="success0") OR ($q=="/modules/Messenger/messenger_manage.php" AND $deleteReturn=="success0")) {
+				$messages=getMessages($guid, $connection2, "result") ;					
+				$messages=unserialize($messages) ;
+				try {
+					$resultPosts=$connection2->prepare($messages[1]);
+					$resultPosts->execute($messages[0]);  
+				}
+				catch(PDOException $e) { }	
+
+				$_SESSION[$guid]["messageWallCount"]=0 ;
+				if ($resultPosts->rowCount()>0) {
+					$count=0 ;
+					$output=array() ;
+					$last="" ;
+					while ($rowPosts=$resultPosts->fetch()) {
+						if ($last==$rowPosts["gibbonMessengerID"]) {
+							@$output[($count-1)]["source"]=$output[($count-1)]["source"] . "<br/>" .$rowPosts["source"] ;
+						}
+						else {
+							$output[$_SESSION[$guid]["messageWallCount"]]["photo"]=$rowPosts["image_75"] ;
+							$output[$_SESSION[$guid]["messageWallCount"]]["subject"]=$rowPosts["subject"] ;
+							$output[$_SESSION[$guid]["messageWallCount"]]["details"]=$rowPosts["body"] ;
+							$output[$_SESSION[$guid]["messageWallCount"]]["author"]=formatName($rowPosts["title"], $rowPosts["preferredName"], $rowPosts["surname"], $rowPosts["category"]) ;
+							$output[$_SESSION[$guid]["messageWallCount"]]["source"]=$rowPosts["source"] ;
+
+							$_SESSION[$guid]["messageWallCount"]++ ;
+							$last=$rowPosts["gibbonMessengerID"] ;
+						}	
+						$count++ ;
+					}
+				}
+			}
+	
+			$URL=$_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Messenger/messageWall_view_full.php&width=1000&height=550" ;
+			if (isset($_SESSION[$guid]["messageWallCount"])==FALSE) {
+				$return.=" . 0 x <img style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
+			}
+			else {
+				if ($_SESSION[$guid]["messageWallCount"]<1) {
+					$return.=" . 0 x <img style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
+				}
+				else {
+					$return.=" . <a title='" . _('Message Wall') . "'class='thickbox' href='$URL'>" . $_SESSION[$guid]["messageWallCount"] . " x <img style='margin-left: 4px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall.png'></a>" ;
+					if ($_SESSION[$guid]["pageLoads"]==0 AND ($_SESSION[$guid]["messengerLastBubble"]==NULL OR $_SESSION[$guid]["messengerLastBubble"]<date("Y-m-d"))) {
+						$return.="<div id='messageBubbleArrow' style=\"left: 1089px; top: 38px; z-index: 9999\" class='arrow top'></div>" ;
+						$return.="<div id='messageBubble' style=\"left: 770px; top: 54px; width: 300px; min-width: 300px; max-width: 300px; min-height: 100px; text-align: center; padding-bottom: 10px\" class=\"ui-tooltip ui-widget ui-corner-all ui-widget-content\" role=\"tooltip\">" ;
+							$return.="<div class=\"ui-tooltip-content\">" ;
+								$return.="<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>" . _('New Messages') . "</div>" ;
+								$test=count($output) ;
+								if ($test>3) {
+									$test=3 ;
+								}
+								for ($i=0; $i<$test; $i++) {
+									$return.="<span style='font-size: 120%; font-weight: bold'>" ;
+									if (strlen($output[$i]["subject"])<=30) {
+										$return.=$output[$i]["subject"] ;
+									}
+									else {
+										$return.=substr($output[$i]["subject"],0,30) . "..." ;
+									}
+					 
+									 $return.="</span><br/>" ;
+									$return.="<i>" . $output[$i]["author"] . "</i><br/><br/>" ;
+								}
+								if (count($output)>3) {
+									$return.="<i>" . _('Plus more') . "...</i>" ;
+								}
+							$return.="</div>" ;
+							$return.="<div style='text-align: right; margin-top: 20px; color: #666'>" ;
+								$return.="<a onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1)' style='text-decoration: none; color: #666' class='thickbox' href='" . $URL . "'>" . _('Read All') . "</a> . " ;
+								$return.="<a style='text-decoration: none; color: #666' onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1000); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1000)' href='#'>" . _('Dismiss') . "</a>" ;
+							$return.="</div>" ;
+						$return.="</div>" ;
+		
+						$return.="<script type=\"text/javascript\">" ;
+							$return.="$(function() {" ;
+								$return.="setTimeout(function() {" ;
+									$return.="$(\"#messageBubble\").hide('fade', {}, 3000)" ;
+								$return.="}, 10000);" ;
+							$return.="});" ;
+							$return.="$(function() {" ;
+								$return.="setTimeout(function() {" ;
+									$return.="$(\"#messageBubbleArrow\").hide('fade', {}, 3000)" ;
+								$return.="}, 10000);" ;
+							$return.="});" ;
+						$return.="</script>" ;
+						
+						try {
+							$data=array("messengerLastBubble"=>date("Y-m-d"), "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"] ); 
+							$sql="UPDATE gibbonPerson SET messengerLastBubble=:messengerLastBubble WHERE gibbonPersonID=:gibbonPersonID" ;
+							$result=$connection2->prepare($sql);
+							$result->execute($data); 
+						}
+						catch(PDOException $e) { }
+					}
+				}
+			}
+		}
+	}
+	
+	return $return ;
+}
+
 //Gets the contents of a single dashboard, for the person specified
 function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 	$return=FALSE ;
@@ -906,87 +1115,95 @@ function getPasswordPolicy($connection2) {
 function getStudentFastFinder($connection2, $guid) {
 	$output=FALSE ;
 	
-	$studentHighestAction=getHighestGroupedAction($guid, "/modules/Students/student_view_details.php", $connection2) ;
-	$staffIsAccessible=isActionAccessible($guid, $connection2, "/modules/Staff/staff_view.php") ;
-	if ($studentHighestAction=="View Student Profile_full" OR $staffIsAccessible==TRUE) {
-		//Get student list
-		try {
-			if ($studentHighestAction=="View Student Profile_full" AND $staffIsAccessible==TRUE) {
-				$dataList=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-				$sqlList="(SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name, 'Student' AS role FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID) UNION (SELECT gibbonPerson.gibbonPersonID, preferredName, surname, NULL AS name, 'Staff' AS role FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full') ORDER BY surname, preferredName" ;
+	$output.="<div id='findStaffStudents'>" ;
+		$studentHighestAction=getHighestGroupedAction($guid, "/modules/Students/student_view_details.php", $connection2) ;
+		$staffIsAccessible=isActionAccessible($guid, $connection2, "/modules/Staff/staff_view.php") ;
+		if ($studentHighestAction=="View Student Profile_full" OR $staffIsAccessible==TRUE) {
+			//Get student list
+			try {
+				if ($studentHighestAction=="View Student Profile_full" AND $staffIsAccessible==TRUE) {
+					$dataList=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+					$sqlList="(SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name, 'Student' AS role FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID) UNION (SELECT gibbonPerson.gibbonPersonID, preferredName, surname, NULL AS name, 'Staff' AS role FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full') ORDER BY surname, preferredName" ;
+				}
+				else if ($studentHighestAction=="View Student Profile_full") {
+					$dataList=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+					$sqlList="SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name, 'Student' AS role FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName" ;
+				}
+				else {
+					$dataList=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+					$sqlList="SELECT gibbonPerson.gibbonPersonID, preferredName, surname, NULL AS name, 'Staff' AS role FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
+				}
+				$resultList=$connection2->prepare($sqlList);
+				$resultList->execute($dataList); 
 			}
-			else if ($studentHighestAction=="View Student Profile_full") {
-				$dataList=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-				$sqlList="SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name, 'Student' AS role FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName" ;
-			}
-			else {
-				$dataList=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-				$sqlList="SELECT gibbonPerson.gibbonPersonID, preferredName, surname, NULL AS name, 'Staff' AS role FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
-			}
-			$resultList=$connection2->prepare($sqlList);
-			$resultList->execute($dataList); 
-		}
-		catch(PDOException $e) { $output.=$e->getMessage() ; }
+			catch(PDOException $e) { $output.=$e->getMessage() ; }
 
-		$output.="<h2 style='margin-bottom: 10px'>" ;
-		if ($studentHighestAction=="View Student Profile_full" AND $staffIsAccessible==TRUE) {
-			$output.=_("Find Staff & Students") . "<br/>" ;
-		}
-		else if ($studentHighestAction=="View Student Profile_full") {
-			$output.=_("Find Students") . "<br/>" ;
-		}
-		else {
-			$output.=_("Find Staff") . "<br/>" ;
-		}
-		$output.="</h2>" ;
-		
-		$studentCount=0 ;
-		$list="" ;
-		while ($rowList=$resultList->fetch()) {
-			$list.="{id: \"" . substr($rowList["role"],0,3) . "-" . $rowList["gibbonPersonID"] . "\", name: \"" . formatName("", htmlPrep($rowList["preferredName"]), htmlPrep($rowList["surname"]), "Student", true) ; if ($rowList["role"]=="Student") { $list.=" (" . htmlPrep($rowList["name"]) . ")\"}," ; } else { $list.=" (" . _("Staff") . ")\"}," ; }
-			if ($rowList["role"]=="Student") {
-				$studentCount++ ;
+			$studentCount=0 ;
+			$list="" ;
+			while ($rowList=$resultList->fetch()) {
+				$list.="{id: \"" . substr($rowList["role"],0,3) . "-" . $rowList["gibbonPersonID"] . "\", name: \"" . formatName("", htmlPrep($rowList["preferredName"]), htmlPrep($rowList["surname"]), "Student", true) ; if ($rowList["role"]=="Student") { $list.=" (" . htmlPrep($rowList["name"]) . ")\"}," ; } else { $list.=" (" . _("Staff") . ")\"}," ; }
+				if ($rowList["role"]=="Student") {
+					$studentCount++ ;
+				}
 			}
+			$output.="<style>" ;
+				$output.="ul.token-input-list-facebook { width: 275px; float: left; height: 25px!important; }" ;
+				$output.="div.token-input-dropdown-facebook { width: 275px }" ;
+			$output.="</style>" ;
+			$output.="<div style='padding-bottom: 7px; height: 40px; margin-top: 0px'>" ;
+				$output.="<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/indexFindRedirect.php'>" ;
+					$output.="<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px; opacity: 0.8'>" ;	
+						$output.="<tr>" ;
+							$output.="<td style='vertical-align: top; padding: 0px' colspan=2>" ;
+								$output.="<h2 style='padding-bottom: 0px'>" ;
+								if ($studentHighestAction=="View Student Profile_full" AND $staffIsAccessible==TRUE) {
+									$output.=_("Find Staff & Students") . "<br/>" ;
+								}
+								else if ($studentHighestAction=="View Student Profile_full") {
+									$output.=_("Find Students") . "<br/>" ;
+								}
+								else {
+									$output.=_("Find Staff") . "<br/>" ;
+								}
+								$output.="</h2>" ;
+							$output.="</td>" ;
+						$output.="</tr>" ;
+						$output.="<tr>" ;
+							$output.="<td style='vertical-align: top; border: none'>" ; 
+								$output.="<input style='width: 275px' type='text' id='gibbonPersonID' name='gibbonPersonID' />" ;
+								$output.="<script type='text/javascript'>" ;
+									$output.="$(document).ready(function() {" ;
+										 $output.="$(\"#gibbonPersonID\").tokenInput([" ;
+											$output.=substr($list,0,-1) ;
+										$output.="]," ; 
+											$output.="{theme: \"facebook\"," ;
+											$output.="hintText: \"Start typing a name...\"," ;
+											$output.="allowCreation: false," ;
+											$output.="preventDuplicates: true," ;
+											$output.="tokenLimit: 1});" ;
+									$output.="});" ;
+								$output.="</script>" ;
+								$output.="<script type='text/javascript'>" ;
+									$output.="var gibbonPersonID=new LiveValidation('gibbonPersonID');" ;
+									$output.="gibbonPersonID.add(Validate.Presence);" ;
+								 $output.="</script>" ;
+							$output.="</td>" ;
+							$output.="<td class='right' style='vertical-align: top; border: none'>" ;
+								$output.="<input style='height: 27px; width: 60px!important; margin-top: 0px;' type='submit' value='" . _('Go') . "'>" ;
+							$output.="</td>" ;
+						$output.="</tr>" ;
+						if (getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2)=="Staff") {
+							$output.="<tr>" ;
+								$output.="<td style='vertical-align: top' colspan=2>" ;
+									$output.="<div style='padding-bottom: 0px; font-size: 80%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: left; color: #888;' >" . _('Total Student Enrolment:') . " " . $studentCount . "</div>" ;
+								$output.="</td>" ;
+							$output.="</tr>" ;
+						}
+					$output.="</table>" ;
+				$output.="</form>" ;
+			$output.="</div>" ;
 		}
-		$output.="<style>" ;
-			$output.="ul.token-input-list-facebook { width: 157px; float: left; height: 25px!important; }" ;
-			$output.="div.token-input-dropdown-facebook { width: 157px }" ;
-		$output.="</style>" ;
-		$output.="<div style='padding-bottom: 7px; height: 40px; margin-top: 0px'>" ;
-			$output.="<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/indexFindRedirect.php'>" ;
-				$output.="<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px'>" ;	
-					$output.="<tr>" ;
-						$output.="<td style='vertical-align: top'>" ; 
-							$output.="<input type='text' id='gibbonPersonID' name='gibbonPersonID' />" ;
-							$output.="<script type='text/javascript'>" ;
-								$output.="$(document).ready(function() {" ;
-									 $output.="$(\"#gibbonPersonID\").tokenInput([" ;
-										$output.=substr($list,0,-1) ;
-									$output.="]," ; 
-										$output.="{theme: \"facebook\"," ;
-										$output.="hintText: \"Start typing a name...\"," ;
-										$output.="allowCreation: false," ;
-										$output.="preventDuplicates: true," ;
-										$output.="tokenLimit: 1});" ;
-								$output.="});" ;
-							$output.="</script>" ;
-							$output.="<script type='text/javascript'>" ;
-								$output.="var gibbonPersonID=new LiveValidation('gibbonPersonID');" ;
-								$output.="gibbonPersonID.add(Validate.Presence);" ;
-							 $output.="</script>" ;
-						$output.="</td>" ;
-						$output.="<td class='right' style='vertical-align: top'>" ;
-							$output.="<input style='height: 27px; width: 20px!important; margin-top: 0px;' type='submit' value='" . _('Go') . "'>" ;
-						$output.="</td>" ;
-					$output.="</tr>" ;
-				$output.="</table>" ;
-			$output.="</form>" ;
-		$output.="</div>" ;
-	}
-	
-	if (getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2)=="Staff") {
-		$output.="<div style='padding-bottom: 15px; font-size: 70%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: right; color: #888;' >" . _('Total Student Enrolment:') . " " . $studentCount . "</div>" ;
-	}
+	$output.="</div>" ;
 	
 	return $output ;
 }
@@ -1750,11 +1967,7 @@ function sidebar($connection2, $guid) {
 			catch(PDOException $e) { }
 			
 			if ($result->rowCount()>0) {			
-				$output="<h2>" ;
-				$output.=_("Module Menu") ;
-				$output.="</h2>" ;
-				
-				$output.="<ul class='moduleMenu'>" ;
+				$output="<ul class='moduleMenu'>" ;
 				
 				$currentCategory="" ;
 				$lastCategory="" ;
@@ -1785,7 +1998,7 @@ function sidebar($connection2, $guid) {
 							if ($count>0) {
 								$output.="</ul></li>";
 							}
-							$output.="<li><b>" . _($currentCategory) . "</b>" ;
+							$output.="<li><h4>" . _($currentCategory) . "</h4>" ;
 							$output.="<ul>" ;
 							$output.="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . _($currentName) . "</a></li>" ;
 						}
@@ -1807,14 +2020,6 @@ function sidebar($connection2, $guid) {
 					print $output ;
 				}
 			}
-		}
-	}
-	
-	//Show student and staff quick finder
-	if ($_SESSION[$guid]["address"]=="" AND isset($_SESSION[$guid]["username"])) {
-		$sidebar=getStudentFastFinder($connection2, $guid) ;
-		if ($sidebar!=FALSE) {
-			print $sidebar ;
 		}
 	}
 	
@@ -1968,24 +2173,24 @@ function sidebar($connection2, $guid) {
 			
 			print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
-						print "<th style='width: 40%'>" ;
+						print "<th style='width: 40%; font-size: 85%; text-transform: uppercase'>" ;
 						print _("Class") ;
 					print "</th>" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
-						print "<th style='width: 20%; font-size: 75%; text-align: center'>" ;
+						print "<th style='width: 20%; font-size: 65%; text-align: center; text-transform: uppercase'>" ;
 							print _("Planner") ;
 						print "</th>" ;
 					}
 					if (getHighestGroupedAction($guid, "/modules/Markbook/markbook_view.php", $connection2)=="View Markbook_allClassesAllData") {
-						print "<th style='width: 20%; font-size: 75%; text-align: center'>" ;
+						print "<th style='width: 20%; font-size: 65%; text-align: center; text-transform: uppercase'>" ;
 							print _("Markbook") ;
 						print "</th>" ;
 					}
-					print "<th style='width: 20%; font-size: 75%; text-align: center'>" ;
+					print "<th style='width: 20%; font-size: 65%; text-align: center; text-transform: uppercase'>" ;
 						print _("People") ;
 					print "</th>" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
-						print "<th style='width: 20%; font-size: 75%; text-align: center'>" ;
+						print "<th style='width: 20%; font-size: 65%; text-align: center; text-transform: uppercase'>" ;
 							print _("Homework") ;
 						print "</th>" ;
 					}
@@ -2102,66 +2307,73 @@ function sidebar($connection2, $guid) {
 function mainMenu($connection2, $guid) {
 	$output="" ;
 	
-	try {
-		$data=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]); 
-		$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) ORDER BY (gibbonModule.category='Other') ASC, category, name";
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$output.="<div class='error'>" ;
-		$output.=$e->getMessage() ;
-		$output.="</div>" ;	
-	}
-	
-	if ($result->rowCount()<1) {
+	if (isset($_SESSION[$guid]["gibbonRoleIDCurrent"])==FALSE) {
 		$output.="<ul id='nav'>" ;
 		$output.="<li class='active'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" . _('Home') . "</a></li>" ;
 		$output.="</ul>" ;
 	}
 	else {
-		$output.="<ul id='nav'>" ;
-		$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" . _('Home') . "</a></li>" ;
+		try {
+			$data=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]); 
+			$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) ORDER BY (gibbonModule.category='Other') ASC, category, name";
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$output.="<div class='error'>" ;
+			$output.=$e->getMessage() ;
+			$output.="</div>" ;	
+		}
+	
+		if ($result->rowCount()<1) {
+			$output.="<ul id='nav'>" ;
+			$output.="<li class='active'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" . _('Home') . "</a></li>" ;
+			$output.="</ul>" ;
+		}
+		else {
+			$output.="<ul id='nav'>" ;
+			$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" . _('Home') . "</a></li>" ;
 		
-		$currentCategory="" ;
-		$lastCategory="" ;
-		$count=0;
-		while ($row=$result->fetch()) {
-			$currentCategory=$row["category"] ;
+			$currentCategory="" ;
+			$lastCategory="" ;
+			$count=0;
+			while ($row=$result->fetch()) {
+				$currentCategory=$row["category"] ;
 			
-			$entryURL=$row["entryURL"] ;
-			if (isActionAccessible($guid, $connection2, "/modules/" . $row["name"] . "/" . $entryURL)==FALSE AND $entryURL!="index.php") {
-				try {
-					$dataEntry=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"],"name"=>$row["name"]); 
-					$sqlEntry="SELECT DISTINCT gibbonAction.entryURL FROM gibbonModule, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND gibbonModule.name=:name ORDER BY gibbonAction.name";
-					$resultEntry=$connection2->prepare($sqlEntry);
-					$resultEntry->execute($dataEntry);
+				$entryURL=$row["entryURL"] ;
+				if (isActionAccessible($guid, $connection2, "/modules/" . $row["name"] . "/" . $entryURL)==FALSE AND $entryURL!="index.php") {
+					try {
+						$dataEntry=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"],"name"=>$row["name"]); 
+						$sqlEntry="SELECT DISTINCT gibbonAction.entryURL FROM gibbonModule, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND gibbonModule.name=:name ORDER BY gibbonAction.name";
+						$resultEntry=$connection2->prepare($sqlEntry);
+						$resultEntry->execute($dataEntry);
+					}
+					catch(PDOException $e) { }
+					if ($resultEntry->rowCount()>0) {
+						$rowEntry=$resultEntry->fetch() ;
+						$entryURL=$rowEntry["entryURL"] ;
+					}
 				}
-				catch(PDOException $e) { }
-				if ($resultEntry->rowCount()>0) {
-					$rowEntry=$resultEntry->fetch() ;
-					$entryURL=$rowEntry["entryURL"] ;
-				}
-			}
 					
-			if ($currentCategory!=$lastCategory) {
-				if ($count>0) {
-					$output.="</ul></li>";
+				if ($currentCategory!=$lastCategory) {
+					if ($count>0) {
+						$output.="</ul></li>";
+					}
+					$output.="<li><a href='#'>" . _($currentCategory) . "</a>" ;
+					$output.="<ul>" ;
+					$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . _($row["name"]) . "</a></li>" ;
 				}
-				$output.="<li><a href='#'>" . _($currentCategory) . "</a>" ;
-				$output.="<ul>" ;
-				$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . _($row["name"]) . "</a></li>" ;
+				else {
+					$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . _($row["name"]) . "</a></li>" ;
+				}
+				$lastCategory=$currentCategory ;
+				$count++ ;
 			}
-			else {
-				$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . _($row["name"]) . "</a></li>" ;
+			if ($count>0) {
+				$output.="</ul></li>";
 			}
-			$lastCategory=$currentCategory ;
-			$count++ ;
+			$output.="</ul>" ;
 		}
-		if ($count>0) {
-			$output.="</ul></li>";
-		}
-		$output.="</ul>" ;
 	}
 	return $output ;
 }

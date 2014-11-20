@@ -337,11 +337,11 @@ else {
 								if (isset($unit[0])) {
 									if ($unit[0]!="") {
 										if ($unit[1]!="") {
-											print "<div style='font-weight: normal; font-style: italic; font-size: 60%; margin-top: -5px'>$unit[1] " . _('Unit:') . " " . $unit[0] . "</div>" ;
+											print "<div style='font-weight: normal; font-style: italic; font-size: 60%; margin-top: 0px'>$unit[1] " . _('Unit:') . " " . $unit[0] . "</div>" ;
 											$unitType=$unit[1] ;
 										}
 										else {
-											print "<div style='font-weight: normal; font-style: italic; font-size: 60%; margin-top: -5px'>" . _('Unit:') . " " . $unit[0] . "</div>" ;
+											print "<div style='font-weight: normal; font-style: italic; font-size: 60%; margin-top: 0px'>" . _('Unit:') . " " . $unit[0] . "</div>" ;
 										}
 									}
 								}

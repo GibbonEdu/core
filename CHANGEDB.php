@@ -592,6 +592,10 @@ INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainer
 ALTER TABLE `gibbonExternalAssessment` ADD `allowFileUpload` ENUM('Y','N') NOT NULL DEFAULT 'N' ;end
 ALTER TABLE `gibbonExternalAssessmentStudent` ADD `attachment` VARCHAR(255) NOT NULL ;end
 ALTER TABLE `gibbonStudentEnrolment` ADD `rollOrder` INT(2) NULL DEFAULT NULL ;end
+ALTER TABLE `gibbonMarkbookColumn` CHANGE `description` `description` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+DELETE FROM gibbonTheme WHERE name='Default' OR name='Olden';end
+INSERT INTO `gibbonTheme` (`gibbonThemeID` ,`name` ,`description` ,`active` ,`version` ,`author` ,`url`)VALUES (NULL , 'Default', 'Gibbon\'s 2015 look and feel.', 'Y', '1.0.00', 'Ross Parker', 'http://rossparker.org');end
+UPDATE gibbonSetting SET description='Relative path to site logo (400 x 100px)' WHERE scope='System' AND name='organisationLogo' ;end
 ";
 
 ?>

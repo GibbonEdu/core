@@ -114,19 +114,19 @@ else {
 			?>
 		</head>
 		<body style="background: none">
-			<div id="wrap" style="width:750px">
-				<div id="header">
-					<div id="header-left" style="width:480px; font-size: 100%; height: 120px">
+			<div id="wrap-report" style="width:750px">
+				<div id="header-report">
+					<div style="width:400px; font-size: 100%; float: right">
 						<?php
-						print "<div style='padding-top: 30px'>" ;
-							print "<p>" ;
+						print "<div style='padding-top: 10px'>" ;
+							print "<p style='margin-bottom: 0; padding-bottom: 0'>" ;
 								print sprintf(_('This printout contains information that is the property of %1$s. If you find this report, and do not have permission to read it, please return it to %2$s (%3$s). In the event that it cannot be returned, please destroy it.'), $_SESSION[$guid]["organisationName"], $_SESSION[$guid]["organisationAdministratorName"], $_SESSION[$guid]["organisationAdministratorEmail"]) ;
 							print "</p>" ;
 						print "</div>" ;
 						?>
 					</div>
-					<div id="header-right" style="text-align: right">
-						<img height='107px' width='250px' style="margin-top: 10px" alt="Logo" src="<?php print $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ; ?>"/>
+					<div id="header-logo-report" style="text-align: right">
+						<img height='75px' width='300px' alt="Logo" src="<?php print $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ; ?>"/>
 					</div>
 				</div>
 				<div id="content-wrap-report" style="min-height: 500px">
@@ -151,7 +151,7 @@ else {
 					}
 					?>
 				</div>
-				<div id="footer" style="padding-top: 30px; background-color: #fff; color: #333">
+				<div id="footer-report">
 					<?php print sprintf(_('Created by %1$s (%2$s) at %3$s on %4$s.'), $_SESSION[$guid]["username"], $_SESSION[$guid]["organisationNameShort"], date("H:i"), date("d/m/Y")) ; ?>
 				</div>
 			</div>

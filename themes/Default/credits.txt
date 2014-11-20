@@ -1,5 +1,3 @@
-<?php
-/*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
 
@@ -15,14 +13,10 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
-//This file describes the module, including database tables
 
-//Basica variables
-$name="Olden" ;
-$description="Gibbon\'s 2012 look and feel." ;
-$version="1.0.00" ;
-$author="Ross Parker" ;
-$url="http://rossparker.org" ;
-?>
+THEME CREDITS
+-------------
+Default background image (Aurora Borealis stock) by Smattila on DeviantArt
+	Shared under CC BY
+	Downloaded from http://smattila.deviantart.com/art/Aurora-Borealis-stock-82049584?moodonly=123#skins

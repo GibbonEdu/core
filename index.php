@@ -177,7 +177,7 @@ else {
 			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/thickbox-compressed.js"></script>
 			<script type="text/javascript"> var tb_pathToImage="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/loadingAnimation.gif"</script>
 			<link rel="stylesheet" href="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/thickbox.css" type="text/css" media="screen" />
-			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-autosize/jquery.autosize.min.js"></script>
+			
 			<?php
 			//Set theme
 			if ($cacheLoad OR $_SESSION[$guid]["themeCSS"]=="" OR isset($_SESSION[$guid]["themeJS"])==FALSE OR $_SESSION[$guid]["gibbonThemeID"]=="" OR $_SESSION[$guid]["gibbonThemeName"]=="") {
@@ -233,7 +233,7 @@ else {
 				if ($_SESSION[$guid]["personalBackground"]!="") {
 					print "<style type=\"text/css\">" ;
 						print "body {" ;
-							print "background: url(\"" . $_SESSION[$guid]["personalBackground"] . "\") repeat scroll center top #fff!important;" ;
+							print "background: url(\"" . $_SESSION[$guid]["personalBackground"] . "\") repeat scroll center top #A88EDB!important;" ;
 						print "}" ;
 					print "</style>" ;
 				}
@@ -288,231 +288,33 @@ else {
 			?>
 						
 			<div id="wrapOuter">
+				<?php
+				print "<div class='minorLinks'>" ;
+					print getMinorLinks($connection2, $guid, $cacheLoad) ;
+				print "</div>" ;
+				?>
 				<div id="wrap">
 					<div id="header">
-						<div id="header-left">
-							<a href='<?php print $_SESSION[$guid]["absoluteURL"] ?>'><img height='107px' width='250px' class="logo" alt="Logo" src="<?php print $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ; ?>"/></a>
+						<div id="header-logo">
+							<a href='<?php print $_SESSION[$guid]["absoluteURL"] ?>'><img height='100px' width='400px' class="logo" alt="Logo" src="<?php print $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ; ?>"/></a>
 						</div>
-						<div id="header-right">
-							<?php 
-								if (isset($_SESSION[$guid]["username"]) && $_SESSION[$guid]["username"]!="") {
-									print "<div class='minorLinks'>" ;
-										print $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"] . " . " ;
-										print "<a href='./logout.php'>Logout</a> . <a href='./index.php?q=preferences.php'>" . _('Preferences') . "</a>" ;
-										if ($_SESSION[$guid]["emailLink"]!="") {
-											print " . <a target='_blank' href='" . $_SESSION[$guid]["emailLink"] . "'>" . _('Email') . "</a>" ;
-										}
-										if ($_SESSION[$guid]["webLink"]!="") {
-											print " . <a target='_blank' href='" . $_SESSION[$guid]["webLink"] . "'>" . $_SESSION[$guid]["organisationNameShort"] . " " . _('Website') . "</a>" ;
-										}
-										if ($_SESSION[$guid]["website"]!="") {
-											print " . <a target='_blank' href='" . $_SESSION[$guid]["website"] . "'>" . _('My Website') . "</a>" ;
-										}
-										
-										//STARS!
-										if ($cacheLoad) {
-											$_SESSION[$guid]["likeCount"]=0 ;
-											$_SESSION[$guid]["likeCountTitle"]="" ;
-											//Count crowd assessment likes
-											try {
-												$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-												$sqlLike="SELECT * FROM gibbonCrowdAssessLike JOIN gibbonPlannerEntryHomework ON (gibbonCrowdAssessLike.gibbonPlannerEntryHomeworkID=gibbonPlannerEntryHomework.gibbonPlannerEntryHomeworkID) JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
-												$resultLike=$connection2->prepare($sqlLike);
-												$resultLike->execute($dataLike); 
-												if ($resultLike->rowCount()>0) {
-													$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-													$_SESSION[$guid]["likeCountTitle"].=_('Crowd Assessment') . ": " . $resultLike->rowCount() . ", " ;
-												}
-											}
-											catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
-										
-											//Count planner likes
-											try {
-												$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-												$sqlLike="SELECT * FROM gibbonPlannerEntryLike JOIN gibbonPlannerEntry ON (gibbonPlannerEntryLike.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
-												$resultLike=$connection2->prepare($sqlLike);
-												$resultLike->execute($dataLike); 
-												if ($resultLike->rowCount()>0) {
-													$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-													$_SESSION[$guid]["likeCountTitle"].=_('Planner') . ": " . $resultLike->rowCount() . ", " ;
-												}
-											}
-											catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
-										
-											//Count positive haviour
-											try {
-												$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-												$sqlLike="SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type='Positive' AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
-												$resultLike=$connection2->prepare($sqlLike);
-												$resultLike->execute($dataLike); 
-												if ($resultLike->rowCount()>0) {
-													$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-													$_SESSION[$guid]["likeCountTitle"].=_('Behaviour') . ": " . $resultLike->rowCount() . ", " ;
-												}
-											}
-											catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
-										}
-										
-										//Spit out likes
-										if (isset($_SESSION[$guid]["likeCount"])) {
-											if ($_SESSION[$guid]["likeCount"]>0) {
-												print " . <a title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=stars.php'>" . $_SESSION[$guid]["likeCount"] . " x <img style='margin-left: 2px; vertical-align: -60%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
-											}
-											else {
-												print " . " . $_SESSION[$guid]["likeCount"] . " x <img title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' style='margin-left: 2px; opacity: 0.8; vertical-align: -60%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'>" ;
-											}
-										}
-										
-										//GET & SHOW NOTIFICATIONS
-										try {
-											$dataNotifications=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
-											$sqlNotifications="(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID)
-											UNION
-											(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2)
-											ORDER BY timestamp DESC, source, text" ;
-											$resultNotifications=$connection2->prepare($sqlNotifications);
-											$resultNotifications->execute($dataNotifications); 
-										}
-										catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
-										
-										if ($resultNotifications->rowCount()>0) {
-											print " . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
-										}
-										else {
-											print " . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
-										}
-										
-										//MESSAGE WALL!
-										if (isActionAccessible($guid, $connection2, "/modules/Messenger/messageWall_view.php")) {
-											include "./modules/Messenger/moduleFunctions.php" ; 
-											
-											$addReturn=NULL ;
-											if (isset($_GET["addReturn"])) {
-												$addReturn=$_GET["addReturn"] ;
-											}
-											$updateReturn=NULL ;
-											if (isset($_GET["updateReturn"])) {
-												$updateReturn=$_GET["updateReturn"] ;
-											}
-											$deleteReturn=NULL ;
-											if (isset($_GET["deleteReturn"])) {
-												$deleteReturn=$_GET["deleteReturn"] ;
-											}
-											if ($cacheLoad OR ($q=="/modules/Messenger/messenger_post.php" AND $addReturn=="success0") OR ($q=="/modules/Messenger/messenger_manage_edit.php" AND $updateReturn=="success0") OR ($q=="/modules/Messenger/messenger_manage.php" AND $deleteReturn=="success0")) {
-												$messages=getMessages($guid, $connection2, "result") ;					
-												$messages=unserialize($messages) ;
-												try {
-													$resultPosts=$connection2->prepare($messages[1]);
-													$resultPosts->execute($messages[0]);  
-												}
-												catch(PDOException $e) { }	
-										
-												$_SESSION[$guid]["messageWallCount"]=0 ;
-												if ($resultPosts->rowCount()>0) {
-													$count=0 ;
-													$output=array() ;
-													$last="" ;
-													while ($rowPosts=$resultPosts->fetch()) {
-														if ($last==$rowPosts["gibbonMessengerID"]) {
-															@$output[($count-1)]["source"]=$output[($count-1)]["source"] . "<br/>" .$rowPosts["source"] ;
-														}
-														else {
-															$output[$_SESSION[$guid]["messageWallCount"]]["photo"]=$rowPosts["image_75"] ;
-															$output[$_SESSION[$guid]["messageWallCount"]]["subject"]=$rowPosts["subject"] ;
-															$output[$_SESSION[$guid]["messageWallCount"]]["details"]=$rowPosts["body"] ;
-															$output[$_SESSION[$guid]["messageWallCount"]]["author"]=formatName($rowPosts["title"], $rowPosts["preferredName"], $rowPosts["surname"], $rowPosts["category"]) ;
-															$output[$_SESSION[$guid]["messageWallCount"]]["source"]=$rowPosts["source"] ;
-		
-															$_SESSION[$guid]["messageWallCount"]++ ;
-															$last=$rowPosts["gibbonMessengerID"] ;
-														}	
-														$count++ ;
-													}
-												}
-											}
-											
-											$URL=$_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Messenger/messageWall_view_full.php&width=1000&height=550" ;
-											if (isset($_SESSION[$guid]["messageWallCount"])==FALSE) {
-												print " . 0 x <img style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
-											}
-											else {
-												if ($_SESSION[$guid]["messageWallCount"]<1) {
-													print " . 0 x <img style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
-												}
-												else {
-													print " . <a title='" . _('Message Wall') . "'class='thickbox' href='$URL'>" . $_SESSION[$guid]["messageWallCount"] . " x <img style='margin-left: 4px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall.png'></a>" ;
-													if ($_SESSION[$guid]["pageLoads"]==0 AND ($_SESSION[$guid]["messengerLastBubble"]==NULL OR $_SESSION[$guid]["messengerLastBubble"]<date("Y-m-d"))) {
-														?>
-														<div id='messageBubbleArrow' style="left: 667px; top: 45px" class='arrow top'></div>
-														<div id='messageBubble' style="left: 360px; top: 57px; width: 300px; min-width: 300px; max-width: 300px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip"">
-															<div class="ui-tooltip-content">
-																<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'><?php print _('New Messages') ?></div>
-																<?php
-																$test=count($output) ;
-																if ($test>3) {
-																	$test=3 ;
-																}
-																for ($i=0; $i<$test; $i++) {
-																	print "<span style='font-size: 120%; font-weight: bold'>" ;
-																	if (strlen($output[$i]["subject"])<=30) {
-																		print $output[$i]["subject"] ;
-																	}
-																	else {
-																		print substr($output[$i]["subject"],0,30) . "..." ;
-																	}
-															 
-																	 print "</span><br/>" ;
-																	print "<i>" . $output[$i]["author"] . "</i><br/><br/>" ;
-																}
-																?>
-																<?php
-																if (count($output)>3) {
-																	print "<i>" . _('Plus more') . "...</i>" ;
-																}
-																?>
-														
-															</div>
-															<div style='text-align: right; margin-top: 20px; color: #666'>
-																<a onclick='$("#messageBubble").hide("fade", {}, 1); $("#messageBubbleArrow").hide("fade", {}, 1)' style='text-decoration: none; color: #666' class='thickbox' href='<?php print $URL ?>'><?php print _('Read All') ?></a> . 
-																<a style='text-decoration: none; color: #666' onclick='$("#messageBubble").hide("fade", {}, 1000); $("#messageBubbleArrow").hide("fade", {}, 1000)' href='#'><?php print _('Dismiss') ?></a>
-															</div>
-														</div>
-												
-														<script type="text/javascript">
-															$(function() {
-																setTimeout(function() {
-																	$("#messageBubble").hide('fade', {}, 3000)
-																}, 10000);
-															});
-															$(function() {
-																setTimeout(function() {
-																	$("#messageBubbleArrow").hide('fade', {}, 3000)
-																}, 10000);
-															});
-														</script>
-														<?php
-													
-														try {
-															$data=array("messengerLastBubble"=>date("Y-m-d"), "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"] ); 
-															$sql="UPDATE gibbonPerson SET messengerLastBubble=:messengerLastBubble WHERE gibbonPersonID=:gibbonPersonID" ;
-															$result=$connection2->prepare($sql);
-															$result->execute($data); 
-														}
-														catch(PDOException $e) { }
-													}
-												}
-											}
-										}
-									print "</div>" ;
-									
-									
-									
-									if ($cacheLoad) {
-										$_SESSION[$guid]["mainMenu"]=mainMenu($connection2, $guid) ;
-									}
-									print $_SESSION[$guid]["mainMenu"] ;
+						<div id="header-finder">
+							<?php
+							//Show student and staff quick finder
+							if (isset($_SESSION[$guid]["username"])) {
+								$finder=getStudentFastFinder($connection2, $guid) ;
+								if ($finder!=FALSE) {
+									print $finder ;
 								}
-							
+							}
+							?>
+						</div>
+						<div id="header-menu">
+							<?php 
+								if ($cacheLoad) {
+									$_SESSION[$guid]["mainMenu"]=mainMenu($connection2, $guid) ;
+								}
+								print $_SESSION[$guid]["mainMenu"] ;
 							?>
 						</div>
 					</div>
@@ -530,10 +332,6 @@ else {
 							if ($_SESSION[$guid]["address"]=="") {
 								//Welcome message
 								if (isset($_SESSION[$guid]["username"])==FALSE) {
-									print "<div class='trail'>" ;
-									print "<div class='trailEnd'>" . _('Home') . "</div>" ;
-									print "</div>" ;
-									
 									print "<h2>" ;
 									print _("Welcome") ;
 									print "</h2>" ;
@@ -564,10 +362,6 @@ else {
 									}
 								}
 								else {
-									print "<div class='trail'>" ;
-									print "<div class='trailEnd'>" . _('Home') . "</div>" ;
-									print "</div>" ;
-									
 									$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 									if ($category==FALSE) {
 										print "<div class='error'>" ;
@@ -1093,7 +887,7 @@ else {
 								print " | <a href='https://www.gibbonedu.org/contribute/'>" . _("Credits") . "</a>" ;
 							?>
 						</span><br/>
-						<img style='z-index: 100; margin-bottom: -57px; margin-right: -50px' alt='Logo Small' src='./themes/Default/img/logoFooter.png'/>
+						<img style='z-index: 9999; margin-top: -67px; margin-left: 850px; opacity: 0.8' alt='Logo Small' src='./themes/Default/img/logoFooter.png'/>
 					</div>
 				</div>
 			</div>

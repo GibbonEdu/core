@@ -77,7 +77,7 @@ print "<h2>" ;
 	print _("Notifications") . " <span style='font-size: 65%; font-style: italic; font-weight: normal'> x" . $resultNotifications->rowCount() . "</span>" ;
 print "</h2>" ;
 print "<div class='linkTop'>" ; 
-	print "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' title='" . _('Delete All Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsDeleteAllProcess.php'><img style='opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'>" ;
+	print "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' title='" . _('Delete All Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsDeleteAllProcess.php'><img style='opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on_dark.png'>" ;
 print "</div>" ;
 print "<table cellspacing='0' style='width: 100%'>" ;
 	print "<tr class='head'>" ;
