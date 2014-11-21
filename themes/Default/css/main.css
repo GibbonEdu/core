@@ -394,7 +394,7 @@ ul, ol {
 	font-size: 13px;
 }
 h1, h2, h3, h4, h5, h6 {
-	margin: 40px 0 10px 0;
+	margin: 20px 0 10px 0;
 	color:#444;
 	background-color: none ;
 	padding: 0 0 0 0px;
@@ -406,26 +406,27 @@ h1, h2, h3, h4, h5, h6 {
 }
 h1 {
 	font-size: 17pt;
-	margin-top:10px;
 }
 h1.report {
 	font-size: 17pt;
-	margin-top:10px;
 }
 h2 {
 	font-size: 14pt;
 }
 #sidebar h2, div.sidebarExtra h2 {
 	font-size: 14pt;
-	margin-top:40px;
 	border-left: none ;
 	background: none ;
 }
-
 h3 {
 	font-size: 13pt;
 }
-h4, h5, h6 {
+h4 {
+	margin-top: 30px;
+	margin-bottom:10px;
+	font-size: 11pt;
+}
+h5, h6 {
 	margin-top:10px;
 	margin-bottom:10px;
 	font-size: 11pt;

@@ -597,6 +597,8 @@ DELETE FROM gibbonTheme WHERE name='Default' OR name='Olden';end
 INSERT INTO `gibbonTheme` (`gibbonThemeID` ,`name` ,`description` ,`active` ,`version` ,`author` ,`url`)VALUES (NULL , 'Default', 'Gibbon\'s 2015 look and feel.', 'Y', '1.0.00', 'Ross Parker', 'http://rossparker.org');end
 UPDATE gibbonSetting SET description='Relative path to site logo (400 x 100px)' WHERE scope='System' AND name='organisationLogo' ;end
 DELETE FROM gibbonTheme WHERE NOT name='Default';end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Departments', 'makeDepartmentsPublic', 'Make Departments Public', 'Should department information be made available to the public, via the Gibbon homeoage?', 'N');end
+
 ";
 
 ?>

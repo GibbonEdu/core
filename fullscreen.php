@@ -72,7 +72,7 @@ else {
 			$_SESSION[$guid]["gibbonThemeID"]="001" ;
 			$_SESSION[$guid]["gibbonThemeName"]="Default" ;
 			try {
-				if ($_SESSION[$guid]["gibbonThemeIDPersonal"]!=NULL) {
+				if (@$_SESSION[$guid]["gibbonThemeIDPersonal"]!=NULL) {
 					$dataTheme=array("gibbonThemeIDPersonal"=>$_SESSION[$guid]["gibbonThemeIDPersonal"]); 
 					$sqlTheme="SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeIDPersonal" ;
 				}

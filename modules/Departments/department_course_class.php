@@ -22,7 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/Departments/department_course_class.php")==FALSE) {
+$makeDepartmentsPublic=getSettingByScope($connection2, "Departments", "makeDepartmentsPublic") ;
+if (isActionAccessible($guid, $connection2, "/modules/Departments/department_course_class.php")==FALSE AND $makeDepartmentsPublic!="Y") {
 	//Acess denied
 	print "<div class='error'>" ;
 		print _("You do not have access to this action.") ;
@@ -91,7 +92,7 @@ else {
 		if ($proceed==true) {
 			//Get role within learning area
 			$role=NULL ;
-			if ($gibbonDepartmentID!="") {
+			if ($gibbonDepartmentID!="" AND isset($_SESSION[$guid]["username"])) {
 				$role=getRole($_SESSION[$guid]["gibbonPersonID"], $gibbonDepartmentID, $connection2 ) ;
 			}
 			
@@ -101,20 +102,18 @@ else {
 			}
 			print "<div class='trail'>" ;
 			if ($gibbonDepartmentID!="") {
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/departments.php'>" . _('View All') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department.php&gibbonDepartmentID=" . $_GET["gibbonDepartmentID"] . "'>" . $row["department"] . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_course.php&gibbonDepartmentID=" . $_GET["gibbonDepartmentID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . $row["courseLong"] . "$extra</a> ></div><div class='trailEnd'>" . $row["course"] . "." . $row["class"] . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/departments.php'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/departments.php'>" . _('View All') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department.php&gibbonDepartmentID=" . $_GET["gibbonDepartmentID"] . "'>" . $row["department"] . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_course.php&gibbonDepartmentID=" . $_GET["gibbonDepartmentID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . $row["courseLong"] . "$extra</a> ></div><div class='trailEnd'>" . $row["course"] . "." . $row["class"] . "</div>" ;
 			}
 			else {
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/departments.php'>" . _('View All') . "</a> > Class ></div><div class='trailEnd'>" . $row["course"] . "." . $row["class"] . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/departments.php'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/departments.php'>" . _('View All') . "</a> > Class ></div><div class='trailEnd'>" . $row["course"] . "." . $row["class"] . "</div>" ;
 			}
 			print "</div>" ;
 			
 			$subpage=NULL ;
-			_('Study Plan') ;
-			_('Participants') ;
 			if (isset($_GET["subpage"])) {
 				$subpage=$_GET["subpage"] ;
 			}
-			if ($subpage=="") {
+			if ($subpage=="" OR isset($_SESSION[$guid]["username"])==FALSE) {
 				$subpage="Study Plan" ;
 			}
 			
@@ -123,14 +122,16 @@ else {
 			print "</h2>" ;
 			
 			if ($subpage=="Study Plan") {
-				print "<div style='margin-top: 0px' class='linkTop'>" ;
-				if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID=$gibbonCourseClassID&viewBy=class'>" . _('View Planner') . "<img style='margin-left: 5px' title='" . _('View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.png'/></a> | " ;
+				if (isset($_SESSION[$guid]["username"])) {
+					print "<div style='margin-top: 0px' class='linkTop'>" ;
+					if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID=$gibbonCourseClassID&viewBy=class'>" . _('View Planner') . "<img style='margin-left: 5px' title='" . _('View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.png'/></a> | " ;
+					}
+					if (getHighestGroupedAction($guid, "/modules/Markbook/markbook_view.php", $connection2)=="View Markbook_allClassesAllData") {
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID'>" . _('View Markbook') . "<img style='margin-left: 5px' title='" . _('View Markbook') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.png'/></a> " ;
+					}
+					print "</div>" ;
 				}
-				if (getHighestGroupedAction($guid, "/modules/Markbook/markbook_view.php", $connection2)=="View Markbook_allClassesAllData") {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID'>" . _('View Markbook') . "<img style='margin-left: 5px' title='" . _('View Markbook') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.png'/></a> " ;
-				}
-				print "</div>" ;
 				
 				//PRINT LESSONS IN UNITS
 				$count=0 ;
@@ -483,86 +484,87 @@ else {
 			}
 				
 			//Print sidebar
-			$_SESSION[$guid]["sidebarExtra"]="" ;
+			if (isset($_SESSION[$guid]["username"])) {
+				$_SESSION[$guid]["sidebarExtra"]="" ;
 			
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . $row["course"] . "." . $row["class"] . " " . _('Information') ;
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ul>" ;
-			$style="" ;
-			if ($subpage=="Study Plan") {
-				$style="style='font-weight: bold'" ;
-			}
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=$gibbonCourseClassID&subpage=Study Plan'>" . _('Study Plan') . "</a></li>" ;
-			$style="" ;
-			if ($subpage=="Participants") {
-				$style="style='font-weight: bold'" ;
-			}
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=$gibbonCourseClassID&subpage=Participants'>" . _('Participants') . "</a></li>" ;
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</ul>" ;
-			
-			//Print related class list
-			try {
-				$dataCourse=array("gibbonCourseID"=>$row["gibbonCourseID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-				$sqlCourse="SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY class" ;
-				$resultCourse=$connection2->prepare($sqlCourse);
-				$resultCourse->execute($dataCourse);
-			}
-			catch(PDOException $e) { 
-				$_SESSION[$guid]["sidebarExtra"].="<div class='error'>" . $e->getMessage() . "</div>" ; 
-			}
-			
-			if ($resultCourse->rowCount()>0) {
 				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
-				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . _("Related Classes") ;
+				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . $row["course"] . "." . $row["class"] . " " . _('Information') ;
 				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
-			
 				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ul>" ;
-				while ($rowCourse=$resultCourse->fetch()) {
-					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=" . $rowCourse["gibbonCourseClassID"] . "'>" . $rowCourse["course"] . "." . $rowCourse["class"] . "</a></li>" ;
+				$style="" ;
+				if ($subpage=="Study Plan") {
+					$style="style='font-weight: bold'" ;
 				}
-				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</ul>" ;	
+				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=$gibbonCourseClassID&subpage=Study Plan'>" . _('Study Plan') . "</a></li>" ;
+				$style="" ;
+				if ($subpage=="Participants") {
+					$style="style='font-weight: bold'" ;
+				}
+				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=$gibbonCourseClassID&subpage=Participants'>" . _('Participants') . "</a></li>" ;
+				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</ul>" ;
+			
+				//Print related class list
+				try {
+					$dataCourse=array("gibbonCourseID"=>$row["gibbonCourseID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+					$sqlCourse="SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY class" ;
+					$resultCourse=$connection2->prepare($sqlCourse);
+					$resultCourse->execute($dataCourse);
+				}
+				catch(PDOException $e) { 
+					$_SESSION[$guid]["sidebarExtra"].="<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+			
+				if ($resultCourse->rowCount()>0) {
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . _("Related Classes") ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
+			
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ul>" ;
+					while ($rowCourse=$resultCourse->fetch()) {
+						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonCourseClassID=" . $rowCourse["gibbonCourseClassID"] . "'>" . $rowCourse["course"] . "." . $rowCourse["class"] . "</a></li>" ;
+					}
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</ul>" ;	
+				}
+			
+				//Print list of all classes
+				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
+				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . _("Current Classes") ;
+				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
+				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
+						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<tr>" ;
+							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<td class='right'>" ;
+								$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<select style='width:160px; float: none' name='gibbonCourseClassID'>" ;
+									try {
+										$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+										$sqlSelect="SELECT gibbonCourseClassID, gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS courseName, gibbonCourseClass.nameShort AS className FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort" ;
+										$resultSelect=$connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
+									}
+									catch(PDOException $e) { 
+										$_SESSION[$guid]["sidebarExtra"].="<div class='error'>" . $e->getMessage() . "</div>" ; 
+									}
+								
+								
+									$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<option value=''></option>" ;
+									while ($rowSelect=$resultSelect->fetch()) {
+										if ($gibbonCourseClassID==$rowSelect["gibbonCourseClassID"]) {
+											$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<option selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["courseName"]) . "." . htmlPrep($rowSelect["className"]) . "</option>" ;
+										}
+										else {
+											$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<option value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["courseName"]) . "." . htmlPrep($rowSelect["className"]) . "</option>" ;
+										}
+									}
+								$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</select>" ;
+							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</td>" ;
+							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<td class='right'>" ;
+								$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<input type='hidden' name='q' value='/modules/" . $_SESSION[$guid]["module"] . "/department_course_class.php'>" ;
+								$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<input type='submit' value='" . _('Go') . "'>" ;
+							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</td>" ;
+						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</tr>" ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</table>" ;
+				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</form>" ;
 			}
-			
-			//Print list of all classes
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . _("Current Classes") ;
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
-				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
-					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<tr>" ;
-						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<td class='right'>" ;
-							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<select style='width:160px; float: none' name='gibbonCourseClassID'>" ;
-								try {
-									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-									$sqlSelect="SELECT gibbonCourseClassID, gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS courseName, gibbonCourseClass.nameShort AS className FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort" ;
-									$resultSelect=$connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								}
-								catch(PDOException $e) { 
-									$_SESSION[$guid]["sidebarExtra"].="<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
-								
-								
-								$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<option value=''></option>" ;
-								while ($rowSelect=$resultSelect->fetch()) {
-									if ($gibbonCourseClassID==$rowSelect["gibbonCourseClassID"]) {
-										$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<option selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["courseName"]) . "." . htmlPrep($rowSelect["className"]) . "</option>" ;
-									}
-									else {
-										$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<option value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["courseName"]) . "." . htmlPrep($rowSelect["className"]) . "</option>" ;
-									}
-								}
-							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</select>" ;
-						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</td>" ;
-						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<td class='right'>" ;
-							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<input type='hidden' name='q' value='/modules/" . $_SESSION[$guid]["module"] . "/department_course_class.php'>" ;
-							$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<input type='submit' value='" . _('Go') . "'>" ;
-						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</td>" ;
-					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</tr>" ;
-				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</table>" ;
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</form>" ;
-			
 		}
 	}
 }

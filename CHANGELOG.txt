@@ -79,6 +79,13 @@ Markbook: made target grade visible in student, parent and student profile views
 	Edited file /modules/Markbook/markbook_view.php
 	Edited file /modules/Students/student_view_details.php
 
+Departments: added the ability to show department information to members of the public video the Gibbon front page. Useful for sharing curriculum documentation.
+	Added value to table gibbonSetting
+	Edited file /modules/School Admin/department_manage.php
+	New file /modules/School Admin/department_manageProcess.php
+	Edited files /modules/Departments/department*.php
+	Edited file /index.php
+
 
 v8.3.00
 -------

@@ -46,6 +46,77 @@ else {
 		print "</div>" ;
 	} 
 	
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
+	$updateReturnMessage="" ;
+	$class="error" ;
+	if (!($updateReturn=="")) {
+		if ($updateReturn=="fail0") {
+			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+		}
+		else if ($updateReturn=="fail1") {
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+		}
+		else if ($updateReturn=="fail2") {
+			$updateReturnMessage=_("One or more of the fields in your request failed due to a database error.") ;	
+		}
+		else if ($updateReturn=="fail3") {
+			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+		}
+		else if ($updateReturn=="success0") {
+			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$class="success" ;
+		}
+		print "<div class='$class'>" ;
+			print $updateReturnMessage;
+		print "</div>" ;
+	} 
+	
+	print "<h3>" ;
+		print _("Department Access") ;
+	print "</h3>" ;
+	
+	?>
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_manageProcess.php" ?>">
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Departments' AND name='makeDepartmentsPublic'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td style='width: 275px'> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print _('No') ?></option>
+						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+				</td>
+				<td class="right">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
+				</td>
+			</tr>
+		</table>
+	</form>
+	<?php
+	
+	print "<h3>" ;
+		print _("Departments") ;
+	print "</h3>" ;
+	
 	try {
 		$data=array(); 
 		$sql="SELECT * FROM gibbonDepartment ORDER BY name" ; 

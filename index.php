@@ -355,11 +355,25 @@ else {
 											}
 										}
 									}
-									catch(PDOException $e) {
-										print "<div class='error'>" ;
-											print $e->getMessage();
-										print "</div>" ;
+									catch(PDOException $e) { }
+									
+									//Public applications permitted?
+									try {
+										$sqlIntro="SELECT * FROM gibbonSetting WHERE scope='Departments' AND name='makeDepartmentsPublic'" ;
+										$resultIntro=$connection2->query($sqlIntro);  
+										if (count($resultIntro)==1) {
+											$rowIntro=$resultIntro->fetch() ;
+											if ($rowIntro["value"]=="Y") {
+												print "<h2 style='margin-top: 30px'>" ;
+												print _("Departments") ;
+												print "</h2>" ;
+												print "<p>" ;
+												print sprintf(_('Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Departments/departments.php'>", "</a>", $_SESSION[$guid]["organisationName"]) ;
+												print "</p>" ;
+											}
+										}
 									}
+									catch(PDOException $e) { }
 								}
 								else {
 									$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;

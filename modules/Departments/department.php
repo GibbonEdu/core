@@ -22,7 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/Departments/department.php")==FALSE) {
+$makeDepartmentsPublic=getSettingByScope($connection2, "Departments", "makeDepartmentsPublic") ;
+if (isActionAccessible($guid, $connection2, "/modules/Departments/department.php")==FALSE AND $makeDepartmentsPublic!="Y") {
 	//Acess denied
 	print "<div class='error'>" ;
 		print _("You do not have access to this action.") ;
@@ -55,10 +56,13 @@ else {
 			$row=$result->fetch() ;
 			
 			//Get role within learning area
-			$role=getRole($_SESSION[$guid]["gibbonPersonID"], $gibbonDepartmentID, $connection2 ) ;
+			$role=NULL ;
+			if (isset($_SESSION[$guid]["username"])) {
+				$role=getRole($_SESSION[$guid]["gibbonPersonID"], $gibbonDepartmentID, $connection2 ) ;
+			}
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/departments.php'>" . _('View All') . "</a> > </div><div class='trailEnd'>" . $row["name"] . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/departments.php'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/departments.php'>" . _('View All') . "</a> > </div><div class='trailEnd'>" . $row["name"] . "</div>" ;
 			print "</div>" ;
 			
 			//Print overview
@@ -153,10 +157,11 @@ else {
 				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</ul>" ;	
 			}
 			
+			
 			//Print current course list
 			try {
-				$dataCourse=array("gibbonDepartmentID"=>$gibbonDepartmentID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-				$sqlCourse="SELECT * FROM gibbonCourse WHERE gibbonDepartmentID=:gibbonDepartmentID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY nameShort, name" ;
+				$dataCourse=array("gibbonDepartmentID"=>$gibbonDepartmentID); 
+				$sqlCourse="SELECT * FROM gibbonCourse WHERE gibbonDepartmentID=:gibbonDepartmentID AND gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY nameShort, name" ;
 				$resultCourse=$connection2->prepare($sqlCourse);
 				$resultCourse->execute($dataCourse);
 			}
