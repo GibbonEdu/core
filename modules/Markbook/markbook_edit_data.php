@@ -567,7 +567,7 @@ else {
 								}
 								print "<td colspan=$span>" ;
 								?>
-									<h3>Grading Complete?</h3>
+									<h3>Assessment Complete?</h3>
 								</td>
 							</tr>
 							<tr>

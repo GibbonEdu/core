@@ -1752,7 +1752,7 @@ else {
 							$_SESSION[$guid]["sidebarExtra"].="<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
 					
-						$_SESSION[$guid]["sidebarExtra"]="<div style='border-left: 1px dotted #666; width:260px; float: right; font-size: 115%; font-weight: bold; margin-top: 8px; padding-left: 25px'>Participants & Attendance<br/>" ;
+						$_SESSION[$guid]["sidebarExtra"]="<div style='width:260px; float: right; font-size: 115%; font-weight: bold; margin-top: 8px; padding-left: 25px'>Participants & Attendance<br/>" ;
 							//Show attendance log for the current day
 							if ($row["role"]=="Teacher" AND $teacher==TRUE) {
 								try {

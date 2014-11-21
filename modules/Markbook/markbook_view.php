@@ -879,8 +879,8 @@ else {
 			//Get class list
 			
 			try {
-				$dataList=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-				$sqlList="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID $and ORDER BY course, class" ;
+				$dataList=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
+				$sqlList="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name, gibbonCourseClass.gibbonCourseClassID, gibbonScaleGrade.value AS target FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonMarkbookTarget ON (gibbonMarkbookTarget.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonMarkbookTarget.gibbonPersonIDStudent=:gibbonPersonID2) LEFT JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID $and ORDER BY course, class" ;
 				$resultList=$connection2->prepare($sqlList);
 				$resultList->execute($dataList);
 			}
@@ -918,6 +918,12 @@ else {
 						$teachers=substr($teachers,0,-2) ;
 						$teachers=$teachers . "</p>" ;
 						print $teachers ;
+						
+						if ($rowList["target"]!="") {
+							print "<div style='font-weight: bold' class='linkTop'>" ;
+								print _("Target") . ": " . $rowList["target"] ;
+							print "</div>" ; 
+						}
 	
 						print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
@@ -1394,7 +1400,8 @@ else {
 						//Get class list
 						try {
 							$dataList["gibbonPersonID"]=$gibbonPersonID; 
-							$sqlList="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID $and ORDER BY course, class" ;
+							$dataList["gibbonPersonID2"]=$gibbonPersonID; 
+							$sqlList="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name, gibbonCourseClass.gibbonCourseClassID, gibbonScaleGrade.value AS target FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonMarkbookTarget ON (gibbonMarkbookTarget.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonMarkbookTarget.gibbonPersonIDStudent=:gibbonPersonID2) LEFT JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID $and ORDER BY course, class" ;
 							$resultList=$connection2->prepare($sqlList);
 							$resultList->execute($dataList);
 						}
@@ -1432,6 +1439,12 @@ else {
 									$teachers=substr($teachers,0,-2) ;
 									$teachers=$teachers . "</p>" ;
 									print $teachers ;
+									
+									if ($rowList["target"]!="") {
+										print "<div style='font-weight: bold' class='linkTop'>" ;
+											print _("Target") . ": " . $rowList["target"] ;
+										print "</div>" ; 
+									}
 				
 									print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
