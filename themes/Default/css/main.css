@@ -346,10 +346,11 @@ ul.moduleMenu ul {
 }
 
 ul.moduleMenu h4 {
+	margin-top: 10px ;
 	padding-top: 20px ;
 	padding-bottom: 0px ;
 	margin-bottom: 0px ;
-	font-size: 80% ;
+	font-size: 95% ;
 }
 
 /* LINKS */

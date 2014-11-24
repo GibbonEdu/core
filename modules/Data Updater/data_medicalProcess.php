@@ -284,12 +284,12 @@ else {
 				//Write to database
 				try {
 					if ($existing!="N") {
-						$data=array("gibbonPersonMedicalID"=>$gibbonPersonMedicalID, "gibbonPersonID"=>$gibbonPersonID, "bloodType"=>$bloodType, "longTermMedication"=>$longTermMedication, "longTermMedicationDetails"=>$longTermMedicationDetails, "tetanusWithin10Years"=>$tetanusWithin10Years, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonMedicalUpdateID"=>$existing); 
-						$sql="UPDATE gibbonPersonMedicalUpdate SET gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, gibbonPersonIDUpdater=:gibbonPersonIDUpdater WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID" ;
+						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonMedicalID"=>$gibbonPersonMedicalID, "gibbonPersonID"=>$gibbonPersonID, "bloodType"=>$bloodType, "longTermMedication"=>$longTermMedication, "longTermMedicationDetails"=>$longTermMedicationDetails, "tetanusWithin10Years"=>$tetanusWithin10Years, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonMedicalUpdateID"=>$existing); 
+						$sql="UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, gibbonPersonIDUpdater=:gibbonPersonIDUpdater WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID" ;
 					}
 					else {
-						$data=array("gibbonPersonMedicalID"=>$gibbonPersonMedicalID, "gibbonPersonID"=>$gibbonPersonID, "bloodType"=>$bloodType, "longTermMedication"=>$longTermMedication, "longTermMedicationDetails"=>$longTermMedicationDetails, "tetanusWithin10Years"=>$tetanusWithin10Years, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"]); 
-						$sql="INSERT INTO gibbonPersonMedicalUpdate SET gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, gibbonPersonIDUpdater=:gibbonPersonIDUpdater" ;
+						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonMedicalID"=>$gibbonPersonMedicalID, "gibbonPersonID"=>$gibbonPersonID, "bloodType"=>$bloodType, "longTermMedication"=>$longTermMedication, "longTermMedicationDetails"=>$longTermMedicationDetails, "tetanusWithin10Years"=>$tetanusWithin10Years, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"]); 
+						$sql="INSERT INTO gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, gibbonPersonIDUpdater=:gibbonPersonIDUpdater" ;
 					}
 					$result=$connection2->prepare($sql);
 					$result->execute($data);

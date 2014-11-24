@@ -106,12 +106,12 @@ else {
 				
 				try {
 					if ($existing!="N") {
-						$data=array("nameAddress"=>$nameAddress, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonFamilyUpdateID"=>$existing); 
-						$sql="UPDATE gibbonFamilyUpdate SET nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, gibbonPersonIDUpdater=:gibbonPersonIDUpdater WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID" ;
+						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "nameAddress"=>$nameAddress, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonFamilyUpdateID"=>$existing); 
+						$sql="UPDATE gibbonFamilyUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, gibbonPersonIDUpdater=:gibbonPersonIDUpdater WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID" ;
 					}
 					else {
-						$data=array("gibbonFamilyID"=>$gibbonFamilyID, "nameAddress"=>$nameAddress, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"]); 
-						$sql="INSERT INTO gibbonFamilyUpdate SET gibbonFamilyID=:gibbonFamilyID, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, gibbonPersonIDUpdater=:gibbonPersonIDUpdater" ;
+						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonFamilyID"=>$gibbonFamilyID, "nameAddress"=>$nameAddress, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"]); 
+						$sql="INSERT INTO gibbonFamilyUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFamilyID=:gibbonFamilyID, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, gibbonPersonIDUpdater=:gibbonPersonIDUpdater" ;
 					}
 					$result=$connection2->prepare($sql);
 					$result->execute($data);

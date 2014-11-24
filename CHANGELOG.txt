@@ -86,6 +86,12 @@ Departments: added the ability to show department information to members of the 
 	Edited files /modules/Departments/department*.php
 	Edited file /index.php
 
+Data Updater: changed to show only current year, instead of all updates
+	Edited tables gibbonFamilyUpdate, gibbonFinanceInvoiceeUpdate, gibbonPersonMedicalUpdate, gibbonPersonUpdate
+	Edited values in tables gibbonFamilyUpdate, gibbonFinanceInvoiceeUpdate, gibbonPersonMedicalUpdate, gibbonPersonUpdate
+	Edited files /modules/User Admin/data_family.php, data_finance.php, data_medical.php, data_personal.php
+	Edited files /modules/Data Updater/data_*.php
+	Deleted file /modules/System Admin/module_manage_install.php
 
 v8.3.00
 -------

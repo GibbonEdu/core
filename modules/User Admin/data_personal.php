@@ -51,8 +51,8 @@ else {
 	}
 	
 	try {
-		$data=array(); 
-		$sql="SELECT gibbonPersonUpdateID, gibbonPerson.surname, gibbonPerson.preferredName, timestamp, gibbonPersonIDUpdater, gibbonPersonUpdate.status FROM gibbonPersonUpdate JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonPersonUpdate.gibbonPersonID) ORDER BY status, timestamp" ; 
+		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+		$sql="SELECT gibbonPersonUpdateID, gibbonPerson.surname, gibbonPerson.preferredName, timestamp, gibbonPersonIDUpdater, gibbonPersonUpdate.status FROM gibbonPersonUpdate JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonPersonUpdate.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY status, timestamp" ; 
 		$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
 		$result=$connection2->prepare($sql);
 		$result->execute($data);

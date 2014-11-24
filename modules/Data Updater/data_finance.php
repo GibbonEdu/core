@@ -237,7 +237,7 @@ else {
 				else if ($result->rowCount()==1) {
 					$existing=TRUE ;
 					$proceed=FALSE;
-					if ($addReturn=="") {
+					if ($updateReturn=="") {
 						print "<div class='warning'>" ;
 							print _("You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.") ;
 						print "</div>" ;

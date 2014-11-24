@@ -598,7 +598,18 @@ INSERT INTO `gibbonTheme` (`gibbonThemeID` ,`name` ,`description` ,`active` ,`ve
 UPDATE gibbonSetting SET description='Relative path to site logo (400 x 100px)' WHERE scope='System' AND name='organisationLogo' ;end
 DELETE FROM gibbonTheme WHERE NOT name='Default';end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Departments', 'makeDepartmentsPublic', 'Make Departments Public', 'Should department information be made available to the public, via the Gibbon homeoage?', 'N');end
-
+ALTER TABLE `gibbonFamilyUpdate` ADD `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonFamilyUpdateID`;end
+ALTER TABLE `gibbonFinanceInvoiceeUpdate` ADD `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonFinanceInvoiceeUpdateID`;end
+ALTER TABLE `gibbonPersonMedicalUpdate` ADD `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonMedicalUpdateID`;end
+ALTER TABLE `gibbonPersonUpdate` ADD `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonUpdateID`;end
+UPDATE gibbonFamilyUpdate SET gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') WHERE timestamp>='2014-07-01 00:00:00';end
+UPDATE gibbonFamilyUpdate SET gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Past' ORDER BY sequenceNumber DESC LIMIT 0,1) WHERE timestamp<'2014-07-01 00:00:00';end
+UPDATE gibbonFinanceInvoiceeUpdate SET gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') WHERE timestamp>='2014-07-01 00:00:00';end
+UPDATE gibbonFinanceInvoiceeUpdate SET gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Past' ORDER BY sequenceNumber DESC LIMIT 0,1) WHERE timestamp<'2014-07-01 00:00:00';end
+UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') WHERE timestamp>='2014-07-01 00:00:00';end
+UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Past' ORDER BY sequenceNumber DESC LIMIT 0,1) WHERE timestamp<'2014-07-01 00:00:00';end
+UPDATE gibbonPersonUpdate SET gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') WHERE timestamp>='2014-07-01 00:00:00';end
+UPDATE gibbonPersonUpdate SET gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Past' ORDER BY sequenceNumber DESC LIMIT 0,1) WHERE timestamp<'2014-07-01 00:00:00';end
 ";
 
 ?>
