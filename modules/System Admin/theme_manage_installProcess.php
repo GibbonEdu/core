@@ -36,7 +36,7 @@ catch(PDOException $e) {
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 //Get URL from calling page, and set returning URL
-$URL=$_GET["return"] ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/System Admin/theme_manage.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/theme_manage_install.php")==FALSE) {
 	//Fail 0
@@ -44,79 +44,67 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/theme_manage_
 	header("Location: {$URL}");
 }
 else {
-	if (empty($_FILES)) {
+	$themeName=NULL ;
+	if (isset($_GET["name"])) {
+		$themeName=$_GET["name"] ;
+	}
+
+	if ($themeName==NULL OR $themeName=="") {
+		//Fail 3
 		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else {
-		//Proceed!
-		//Get module variables from file
-		//Check file type
-		if ($_FILES['file']['type']!="text/php" AND $_FILES['file']['name']!="manifest.php") {
+		if (!(include $_SESSION[$guid]["absolutePath"] . "/themes/$themeName/manifest.php")) {
 			//Fail 3
 			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
-			//Move uploaded file
-			if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$_SESSION[$guid]["absolutePath"] . "/uploads/manifest.php"))) {
+			//Validate Inputs
+			if ($name=="" OR $description=="" OR $version=="") {
 				//Fail 3
 				$URL.="&addReturn=fail3" ;
 				header("Location: {$URL}");
 			}
 			else {
-				if (!(include "../../uploads/manifest.php")) {
-					//Fail 3
-					$URL.="&addReturn=fail3" ;
+				//Check for existence of theme
+				try {
+					$dataModule=array("name"=>$name); 
+					$sqlModule="SELECT * FROM gibbonTheme WHERE name=:name" ;
+					$resultModule=$connection2->prepare($sqlModule);
+					$resultModule->execute($dataModule);
+				}
+				catch(PDOException $e) { 
+					//Fail 2
+					$URL.="&addReturn=fail2" ;
+					header("Location: {$URL}");
+					break ;
+				}
+
+				if ($resultModule->rowCount()>0) {
+					//Fail 4
+					$URL.="&addReturn=fail4" ;
 					header("Location: {$URL}");
 				}
 				else {
-					//Validate Inputs
-					if ($name=="" OR $description=="" OR $version=="") {
-						//Fail 3
-						$URL.="&addReturn=fail3" ;
+					//Insert new theme row
+					try {
+						$dataModule=array("name"=>$name, "description"=>$description, "version"=>$version, "author"=>$author, "url"=>$url) ; 
+						$sqlModule="INSERT INTO gibbonTheme SET name=:name, description=:description, active='N', version=:version, author=:author, url=:url" ;
+						$resultModule=$connection2->prepare($sqlModule);
+						$resultModule->execute($dataModule);
+					}
+					catch(PDOException $e) { 
+						//Fail 2
+						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
+						break ;
 					}
-					else {
-						//Check for existence of theme
-						try {
-							$dataModule=array("name"=>$name); 
-							$sqlModule="SELECT * FROM gibbonTheme WHERE name=:name" ;
-							$resultModule=$connection2->prepare($sqlModule);
-							$resultModule->execute($dataModule);
-						}
-						catch(PDOException $e) { 
-							//Fail 2
-							$URL.="&addReturn=fail2" ;
-							header("Location: {$URL}");
-							break ;
-						}
-
-						if ($resultModule->rowCount()>0) {
-							//Fail 4
-							$URL.="&addReturn=fail4" ;
-							header("Location: {$URL}");
-						}
-						else {
-							//Insert new theme row
-							try {
-								$dataModule=array("name"=>$name, "description"=>$description, "version"=>$version, "author"=>$author, "url"=>$url) ; 
-								$sqlModule="INSERT INTO gibbonTheme SET name=:name, description=:description, active='N', version=:version, author=:author, url=:url" ;
-								$resultModule=$connection2->prepare($sqlModule);
-								$resultModule->execute($dataModule);
-							}
-							catch(PDOException $e) { 
-								//Fail 2
-								$URL.="&addReturn=fail2" ;
-								header("Location: {$URL}");
-								break ;
-							}
-							
-							//Success 0
-							$URL.="&addReturn=success0" ;
-							header("Location: {$URL}");
-						}
-					}
+				
+					//Success 0
+					$URL.="&addReturn=success0" ;
+					header("Location: {$URL}");
 				}
 			}
 		}

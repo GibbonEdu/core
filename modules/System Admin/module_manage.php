@@ -100,7 +100,7 @@ else {
 	$modulesFS=glob($_SESSION[$guid]["absolutePath"] . "/modules/*" , GLOB_ONLYDIR);
 
 	print "<div class='warning'>" ;
-		print sprintf(_('To install a module upload the module folder to %1$s on your server and then refresh this page. After refresh, the module should appear in the list below: use the install button in the Actions column to set it up.'), "<b><u>" . $_SESSION[$guid]["absolutePath"] . "/modules/</u></b>") ;
+		print sprintf(_('To install a module, upload the module folder to %1$s on your server and then refresh this page. After refresh, the module should appear in the list below: use the install button in the Actions column to set it up.'), "<b><u>" . $_SESSION[$guid]["absolutePath"] . "/modules/</u></b>") ;
 	print "</div>" ;
 	
 	if (count($modulesFS)<1) {
@@ -178,12 +178,12 @@ else {
 						}
 						if ($manifestOK) {
 							print "<td colspan=6>" ;
-								print _("Inactive") ;
+								print _("Not Installed") ;
 							print "</td>" ;
 						}
 						else {
 							print "<td colspan=7>" ;
-								print _("Module error") ;
+								print _("Module Error") ;
 							print "</td>" ;
 						}
 					}

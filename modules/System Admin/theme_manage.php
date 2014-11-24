@@ -44,6 +44,31 @@ else {
 		print "</div>" ;
 	} 
 	
+	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
+	$addReturnMessage="" ;
+	$class="error" ;
+	if (!($addReturn=="")) {
+		if ($addReturn=="fail0") {
+			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+		}
+		else if ($addReturn=="fail2") {
+			$addReturnMessage=_("Your request failed due to a database error.") ;	
+		}
+		else if ($addReturn=="fail3") {
+			$addReturnMessage=_("Your request failed because your manifest file was invalid.") ;	
+		}
+		else if ($addReturn=="fail4") {
+			$addReturnMessage=_("Your request failed because a theme with the same name is already installed.") ;	
+		}
+		else if ($addReturn=="success0") {
+			$addReturnMessage=_("Your request was successful. You can now add another record if you wish.") ;	
+			$class="success" ;
+		}
+		print "<div class='$class'>" ;
+			print $addReturnMessage;
+		print "</div>" ;
+	} 
+	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage="" ;
 	$class="error" ;
@@ -69,6 +94,8 @@ else {
 		print "</div>" ;
 	} 
 	
+	
+	//Get themes from database, and store in an array
 	try {
 		$data=array(); 
 		$sql="SELECT * FROM gibbonTheme ORDER BY name" ; 
@@ -78,12 +105,19 @@ else {
 	catch(PDOException $e) { 
 		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 	}
+	$themesSQL=array() ;
+	while ($row=$result->fetch()) {
+		$themesSQL[$row["name"]]=$row ;
+	}
 	
-	print "<div class='linkTop'>" ;
-	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_install.php'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+	//Get list of modules in /modules directory
+	$themesFS=glob($_SESSION[$guid]["absolutePath"] . "/themes/*" , GLOB_ONLYDIR);
+	
+	print "<div class='warning'>" ;
+		print sprintf(_('To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.'), "<b><u>" . $_SESSION[$guid]["absolutePath"] . "/modules/</u></b>") ;
 	print "</div>" ;
 	
-	if ($result->rowCount()<1) {
+	if (count($themesFS)<1) {
 		print "<div class='error'>" ;
 		print _("There are no records to display.") ;
 		print "</div>" ;
@@ -94,6 +128,9 @@ else {
 				print "<tr class='head'>" ;
 					print "<th>" ;
 						print _("Name") ;
+					print "</th>" ;
+					print "<th>" ;
+						print _("Status") ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Description") ;
@@ -114,60 +151,104 @@ else {
 				
 				$count=0;
 				$rowNum="odd" ;
-				while ($row=$result->fetch()) {
+				foreach ($themesFS AS $themesFS) {
+					$themeName=substr($themesFS, strlen($_SESSION[$guid]["absolutePath"] ."/themes/")) ;
+					
 					if ($count%2==0) {
 						$rowNum="even" ;
 					}
 					else {
 						$rowNum="odd" ;
 					}
+					
+					$installed=TRUE ;
+					if (isset($themesSQL[$themeName])==FALSE) {
+						$installed=FALSE ;
+						$rowNum="warning" ;
+					}
+				
 					$count++ ;
 					
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
-							print $row["name"] ;
+							print _($themeName) ;
 						print "</td>" ;
-						print "<td>" ;
-							print $row["description"] ;
-						print "</td>" ;
-						print "<td>" ;
-							if ($row["name"]=="Default") {
-								print "v" . $version ;
+						if ($installed) {
+							print "<td>" ;
+								print _("Installed") ;
+							print "</td>" ;
+						}
+						else {
+							//Check for valid manifest
+							$manifestOK=FALSE ;
+							if (include $_SESSION[$guid]["absolutePath"] . "/themes/$themeName/manifest.php") {
+								if ($name!="" AND $description!="" AND $version!="") {
+									if ($name==$themeName) {
+										$manifestOK=TRUE ;
+									}
+								}
+							}
+							if ($manifestOK) {
+								print "<td colspan=5>" ;
+									print _("Not Installed") ;
+								print "</td>" ;
 							}
 							else {
-								print "v" . $row["version"] ;
+								print "<td colspan=6>" ;
+									print _("Module Error") ;
+								print "</td>" ;
 							}
+						}
+						if ($installed) {
+							print "<td>" ;
+								print $themesSQL[$themeName]["description"] ;
+							print "</td>" ;
+							print "<td>" ;
+								if ($themesSQL[$themeName]["name"]=="Default") {
+									print "v" . $version ;
+								}
+								else {
+									print "v" . $themesSQL[$themeName]["version"] ;
+								}
 							
-						print "</td>" ;
-						print "<td>" ;
-							if ($row["url"]!="") {
-								print "<a href='" . $row["url"] . "'>" . $row["author"] . "</a>" ;
+							print "</td>" ;
+							print "<td>" ;
+								if ($themesSQL[$themeName]["url"]!="") {
+									print "<a href='" . $themesSQL[$themeName]["url"] . "'>" . $themesSQL[$themeName]["author"] . "</a>" ;
+								}
+								else {
+									print $themesSQL[$themeName]["author"] ;
+								}
+							print "</td>" ;
+							print "<td>" ;
+								if ($themesSQL[$themeName]["active"]=="Y") {
+									print "<input checked type='radio' name='gibbonThemeID' value='" . $themesSQL[$themeName]["gibbonThemeID"] . "'>" ;
+								}
+								else {
+									print "<input type='radio' name='gibbonThemeID' value='" . $themesSQL[$themeName]["gibbonThemeID"] . "'>" ;
+								}
+							print "</td>" ;
+							print "<td>" ;
+								if ($themesSQL[$themeName]["name"]!="Default") {
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstall.php&gibbonThemeID=" . $themesSQL[$themeName]["gibbonThemeID"] . "'><img title='" . _('Remove Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+								}
+							print "</td>" ;
+						}
+						else {
+							if ($manifestOK) {
+								print "<td>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_installProcess.php?name=" . urlencode($themeName) . "'><img title='" . _('Install') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+								print "</td>" ;
 							}
-							else {
-								print $row["author"] ;
-							}
-						print "</td>" ;
-						print "<td>" ;
-							if ($row["active"]=="Y") {
-								print "<input checked type='radio' name='gibbonThemeID' value='" . $row["gibbonThemeID"] . "'>" ;
-							}
-							else {
-								print "<input type='radio' name='gibbonThemeID' value='" . $row["gibbonThemeID"] . "'>" ;
-							}
-						print "</td>" ;
-						print "<td>" ;
-							if ($row["name"]!="Default") {
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstall.php&gibbonThemeID=" . $row["gibbonThemeID"] . "'><img title='" . _('Remove Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
-							}
-						print "</td>" ;
+						}
 					print "</tr>" ;
 				}
 				print "<tr>" ;
-					print "<td colspan=6 class='right'>" ;
+					print "<td colspan=7 class='right'>" ;
 						?>
-							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+						<input type="submit" value="<?php print _("Submit") ; ?>">
 						<?php
 					print "</td>" ;
 				print "</tr>" ;
