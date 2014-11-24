@@ -123,7 +123,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 			if (isset($_GET["deleteReturn"])) {
 				$deleteReturn=$_GET["deleteReturn"] ;
 			}
-			if ($cacheLoad OR ($q=="/modules/Messenger/messenger_post.php" AND $addReturn=="success0") OR ($q=="/modules/Messenger/messenger_manage_edit.php" AND $updateReturn=="success0") OR ($q=="/modules/Messenger/messenger_manage.php" AND $deleteReturn=="success0")) {
+			if ($cacheLoad OR (@$_GET["q"]=="/modules/Messenger/messenger_post.php" AND $addReturn=="success0") OR (@$_GET["q"]=="/modules/Messenger/messenger_manage_edit.php" AND $updateReturn=="success0") OR (@$_GET["q"]=="/modules/Messenger/messenger_manage.php" AND $deleteReturn=="success0")) {
 				$messages=getMessages($guid, $connection2, "result") ;					
 				$messages=unserialize($messages) ;
 				try {

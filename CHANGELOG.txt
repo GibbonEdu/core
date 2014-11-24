@@ -98,6 +98,9 @@ System Admin: improved ease-of-use for installing modules and themes
 	Deleted file /modules/System Admin/module_manage_install.php
 	Edited files /modules/System Admin/theme_manage.php, theme_manage_installProcess.php
 	Deleted file /modules/System Admin/theme_manage_install.php
+
+General: added caching to fast student and staff finder to reduce repeated reloading of same content
+	Edited files /index.php, functions.php
 	
 	
 

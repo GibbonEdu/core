@@ -301,16 +301,15 @@ else {
 						<div id="header-finder">
 							<?php
 							//Show student and staff quick finder
-							if (isset($_SESSION[$guid]["username"])) {
-								$finder=getStudentFastFinder($connection2, $guid) ;
-								if ($finder!=FALSE) {
-									print $finder ;
-								}
+							if ($cacheLoad) {
+								$_SESSION[$guid]["studentFastFinder"]=getStudentFastFinder($connection2, $guid) ;
 							}
+							print $_SESSION[$guid]["studentFastFinder"] ;
 							?>
 						</div>
 						<div id="header-menu">
 							<?php 
+								//Get main menu
 								if ($cacheLoad) {
 									$_SESSION[$guid]["mainMenu"]=mainMenu($connection2, $guid) ;
 								}
