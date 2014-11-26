@@ -610,6 +610,12 @@ UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=(SELECT gibbonSchoolYear
 UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Past' ORDER BY sequenceNumber DESC LIMIT 0,1) WHERE timestamp<'2014-07-01 00:00:00';end
 UPDATE gibbonPersonUpdate SET gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') WHERE timestamp>='2014-07-01 00:00:00';end
 UPDATE gibbonPersonUpdate SET gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Past' ORDER BY sequenceNumber DESC LIMIT 0,1) WHERE timestamp<'2014-07-01 00:00:00';end
+UPDATE gibbonPerson SET calendarFeedPersonal='';end
+UPDATE gibbonSetting SET scope='System' WHERE name LIKE 'google%';end
+UPDATE gibbonSetting SET nameDisplay='Google Integration', description='Enable Gibbon-wide integration with the Google APIs?' WHERE name='googleOAuth' AND scope='System';end
+UPDATE gibbonSetting SET nameDisplay='School Google Calendar ID', description='Google Calendar ID for your school calendar. Only enables timetable integration when logging in via Google.' WHERE name='calendarFeed' AND scope='System';end
+
+
 ";
 
 ?>

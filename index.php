@@ -100,6 +100,28 @@ if (isset($_SESSION[$guid]["i18n"]["code"])) {
 	}
 }
 
+//Try to autoset user's calendar feed if not set already
+if (isset($_SESSION[$guid]["calendarFeedPersonal"]) AND isset($_SESSION[$guid]['google_api_access_token'])) {
+	if ($_SESSION[$guid]["calendarFeedPersonal"]=="" AND $_SESSION[$guid]['google_api_access_token']!=NULL) {
+		require_once $_SESSION[$guid]["absolutePath"] . '/lib/google/google-api-php-client/autoload.php';
+		$client2=new Google_Client();
+		$client2->setAccessToken($_SESSION[$guid]['google_api_access_token']);
+		$service=new Google_Service_Calendar($client2);
+		$calendar=$service->calendars->get('primary');
+	
+		if ($calendar["id"]!="") {
+			try {
+				$dataCalendar=array("calendarFeedPersonal"=>$calendar["id"], "gibbonPersonID"=>$_SESSION[$guid]['gibbonPersonID']); 
+				$sqlCalendar="UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal WHERE gibbonPersonID=:gibbonPersonID";
+				$resultCalendar=$connection2->prepare($sqlCalendar);
+				$resultCalendar->execute($dataCalendar); 
+			}
+			catch(PDOException $e) { }
+			$_SESSION[$guid]["calendarFeedPersonal"]=$calendar["id"] ;
+		}
+	}
+}
+
 //Check for force password reset flag
 if (isset($_SESSION[$guid]["passwordForceReset"])) {
 	if ($_SESSION[$guid]["passwordForceReset"]=="Y" AND $q!="preferences.php") {

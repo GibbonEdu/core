@@ -48,12 +48,6 @@ else {
 	$nationality=$_POST["nationality"] ; 	
 	$residencyStatus=$_POST["residencyStatus"] ; 	
 	$departureReasons=$_POST["departureReasons"] ; 	
-	$googleOAuth=$_POST["googleOAuth"] ; 	
-	$googleClientName=$_POST["googleClientName"] ; 	
-	$googleClientID=$_POST["googleClientID"] ; 
-	$googleClientSecret=$_POST["googleClientSecret"] ;
-	$googleRedirectUri=$_POST["googleRedirectUri"] ;
-	$googleDeveloperKey=$_POST["googleDeveloperKey"] ;
 	$privacy=$_POST["privacy"] ; 	
 	$privacyBlurb=$_POST["privacyBlurb"] ; 	
 	$privacyOptions=$_POST["privacyOptions"] ; 	
@@ -97,66 +91,6 @@ else {
 	try {
 		$data=array("value"=>$residencyStatus); 
 		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='residencyStatus'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$googleOAuth); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='googleOAuth'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$googleClientName); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='googleClientName'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$googleClientID); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='googleClientID'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$googleClientSecret); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='googleClientSecret'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$googleRedirectUri); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='googleRedirectUri'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$googleDeveloperKey); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='googleDeveloperKey'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}

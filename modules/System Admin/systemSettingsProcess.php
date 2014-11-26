@@ -80,9 +80,15 @@ else {
 	$paypalAPISignature=$_POST["paypalAPISignature"] ;
 	$gibboneduComOrganisationName=$_POST["gibboneduComOrganisationName"] ;
 	$gibboneduComOrganisationKey=$_POST["gibboneduComOrganisationKey"] ;
+	$googleOAuth=$_POST["googleOAuth"] ; 	
+	$googleClientName=$_POST["googleClientName"] ; 	
+	$googleClientID=$_POST["googleClientID"] ; 
+	$googleClientSecret=$_POST["googleClientSecret"] ;
+	$googleRedirectUri=$_POST["googleRedirectUri"] ;
+	$googleDeveloperKey=$_POST["googleDeveloperKey"] ;
 	
 	//Validate Inputs
-	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $currency=="" OR $enablePayments=="") {
+	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $currency=="" OR $enablePayments=="" OR $googleOAuth=="") {
 		//Fail 3
 		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -297,6 +303,66 @@ else {
 			$fail=TRUE ;
 		}
 		
+		try {
+			$data=array("value"=>$googleOAuth); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleOAuth'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ; 
+		}
+
+		try {
+			$data=array("value"=>$googleClientName); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleClientName'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ; 
+		}
+
+		try {
+			$data=array("value"=>$googleClientID); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleClientID'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ; 
+		}
+
+		try {
+			$data=array("value"=>$googleClientSecret); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleClientSecret'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ; 
+		}
+
+		try {
+			$data=array("value"=>$googleRedirectUri); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleRedirectUri'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ; 
+		}
+
+		try {
+			$data=array("value"=>$googleDeveloperKey); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleDeveloperKey'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ; 
+		}
+	
 		try {
 			$data=array("enablePayments"=>$enablePayments); 
 			$sql="UPDATE gibbonSetting SET value=:enablePayments WHERE scope='System' AND name='enablePayments'" ;

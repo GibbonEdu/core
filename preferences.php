@@ -211,15 +211,11 @@ if ($result->rowCount()==1) {
 		</tr>
 		<tr>
 			<td> 
-				<b><?php print _("Personal Calendar Feed") ; ?></b><br/>
-				<span style="font-size: 90%"><i><?php print _("XML feed for the your calendar (Google Calendar only)") ; ?></i></span>
+				<b><?php print _("Personal Google Calendar ID") ; ?></b><br/>
+				<span style="font-size: 90%"><i><?php print _("Google Calendar ID for your personal calendar.") . "<br/>" . _("Only enables timetable integration when logging in via Google.") ; ?></i></span>
 			</td>
 			<td class="right">
 				<input name="calendarFeedPersonal" id="calendarFeedPersonal" value="<?php print $row["calendarFeedPersonal"] ?>" type="text" style="width: 300px">
-				<script type="text/javascript">
-					var calendarFeedPersonal=new LiveValidation('calendarFeedPersonal');
-					calendarFeedPersonal.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-				</script>	
 			</td>
 		</tr>
 		

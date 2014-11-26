@@ -152,65 +152,73 @@ function getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbon
 }
 
 //Returns events from a Google Calendar XML field, between the time and date specified
-function getCalendarEvents($guid, $xml, $startDayStamp, $endDayStamp) {
-	$start=date("Y-m-d\TH:i:s", strtotime(date("Y-m-d", $startDayStamp))) ;
-	$end=date("Y-m-d\TH:i:s", (strtotime(date("Y-m-d", $endDayStamp))+86399)) ;
-	
-	$feed=(substr($xml,0,-5)) . 
-		"full?sortorder=a&orderby=starttime&singleevents=true" .
-		"&start-min=" . $start .
-		"&start-max=" . $end .
-		"&recurrence-expansion-start=" . $start .
-		"&recurrence-expansion-end=" . $end .
-		"&max-results=100" .
-		"&ctz=" . $_SESSION[$guid]["timezone"];
-	
-	$doc=new DOMDocument(); 
-	if (@$doc->load( $feed )) {
-		$entries=$doc->getElementsByTagName("entry"); 
+function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDayStamp) {
+	$googleOAuth=getSettingByScope($connection2, "System", "googleOAuth") ;
+	if ($googleOAuth=="Y" AND isset($_SESSION[$guid]['google_api_access_token'])) {
 		$eventsSchool=array() ;
-		$count=0 ;
-		foreach ($entries as $entry) { 
-			
-			//WHAT
-			$titles=$entry->getElementsByTagName("title"); 
-			$eventsSchool[$count][0]=$titles->item(0)->nodeValue;
+		$start=date("Y-m-d\TH:i:s", strtotime(date("Y-m-d", $startDayStamp))) ;
+		$end=date("Y-m-d\TH:i:s", (strtotime(date("Y-m-d", $endDayStamp))+86399)) ;
 	
-			//WHEN
-			$times=$entry->getElementsByTagName("when"); 
-			//Single events
-			if ($times->length==1) {
-				$startTime=$times->item(0)->getAttributeNode("startTime")->value;
-				$endTime=$times->item(0)->getAttributeNode("endTime")->value;
-			}
-			//Recurring events
-			else {
-				$startTime=$times->item(1)->getAttributeNode("startTime")->value;
-				$endTime=$times->item(1)->getAttributeNode("endTime")->value;
-			}
-			//All day
-			if (date("H:i", strtotime($startTime))=="00:00" AND ((strtotime($endTime)-strtotime($startTime))==(60*60*24))) {
-				$eventsSchool[$count][1]="All Day";
-				$eventsSchool[$count][2]=strtotime($startTime) ;
-				$eventsSchool[$count][3]=NULL;
-			}
-			//Time specified
-			else {
-				$eventsSchool[$count][1]="Specified Time" ;
-				$eventsSchool[$count][2]=strtotime($startTime) ;
-				$eventsSchool[$count][3]=mktime (substr($endTime,11,2), substr($endTime,14,2), substr($endTime,17,2), substr($endTime,5,2), substr($endTime,8,2), substr($endTime,0,4) ) ;
-			}
-			
-			//WHERE
-			$places=$entry->getElementsByTagName("where"); 
-			$eventsSchool[$count][4]=$places->item(0)->getAttributeNode("valueString")->value;
-			
-			//LINK
-			$link=$entry->getElementsByTagName("link"); 
-			$eventsSchool[$count][4]=$link->item(0)->getAttribute("href");
+		require_once $_SESSION[$guid]["absolutePath"] . '/lib/google/google-api-php-client/autoload.php';
 		
-			$count++ ;
-
+		$client=new Google_Client();
+		$client->setAccessToken($_SESSION[$guid]['google_api_access_token']);
+		
+		$service=new Google_Service_Calendar($client);
+		$optParams = array('timeMin'=>$start . "+00:00", 'timeMax'=>$end . "+00:00", "singleEvents"=>TRUE);
+		$calendarListEntry=$service->events->listEvents($xml, $optParams);
+		
+		$count=0 ;
+		foreach ($calendarListEntry as $entry) { 
+			if ($entry["start"]["date"]!=$entry["start"]["end"] OR substr($entry["start"]["dateTime"], 0, 10)!=substr($entry["end"]["dateTime"], 0, 10)) { //This event spans multiple days
+				if ($entry["start"]["date"]!=$entry["start"]["end"]) {
+					$days=(strtotime($entry["end"]["date"])-strtotime($entry["start"]["date"]))/(60*60*24) ;
+				}
+				else if (substr($entry["start"]["dateTime"], 0, 10)!=substr($entry["end"]["dateTime"], 0, 10)) {
+					$days=(strtotime(substr($entry["end"]["dateTime"], 0, 10))-strtotime(substr($entry["start"]["dateTime"], 0, 10)))/(60*60*24) ;
+					$days++ ; //A hack for events that span multiple days with times set
+				}
+				for ($i=0; $i<$days; $i++) {
+					//WHAT
+					$eventsSchool[$count][0]=$entry["summary"]; 
+			
+					//WHEN - treat events that span multiple days, but have times set, the same as those without time set
+					$eventsSchool[$count][1]="All Day" ;
+					$eventsSchool[$count][2]=strtotime(substr($entry["start"]["dateTime"], 0, 10) . " " . substr($entry["start"]["dateTime"], 11, 8))+($i*60*60*24) ;
+					$eventsSchool[$count][3]=NULL ;
+						
+					//WHERE
+					$eventsSchool[$count][4]=$entry["location"];
+		
+					//LINK
+					$eventsSchool[$count][5]=$entry["htmlLink"];
+					
+					$count++ ;
+				}
+			}
+			else {  //This event falls on a single day
+				//WHAT
+				$eventsSchool[$count][0]=$entry["summary"]; 
+			
+				//WHEN
+				if ($entry["start"]["dateTime"]!="") { //Part of day
+					$eventsSchool[$count][1]="Specified Time" ;
+					$eventsSchool[$count][2]=strtotime(substr($entry["start"]["dateTime"], 0, 10) . " " . substr($entry["start"]["dateTime"], 11, 8)) ;
+					$eventsSchool[$count][3]=strtotime(substr($entry["end"]["dateTime"], 0, 10) . " " . substr($entry["end"]["dateTime"], 11, 8)) ;
+				}
+				else { //All day
+					$eventsSchool[$count][1]="All Day" ;
+					$eventsSchool[$count][2]=strtotime(substr($entry["start"]["dateTime"], 0, 10) . " " . substr($entry["start"]["dateTime"], 11, 8)) ;
+					$eventsSchool[$count][3]=NULL ;
+				}
+				//WHERE
+				$eventsSchool[$count][4]=$entry["location"];
+		
+				//LINK
+				$eventsSchool[$count][5]=$entry["htmlLink"];
+				
+				$count++ ;
+			}
 		}
 	}
 	else {
@@ -450,7 +458,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 		$eventsSchool=FALSE ;
 		if ($self==TRUE AND $_SESSION[$guid]["viewCalendarSchool"]=="Y") {
 			if ($_SESSION[$guid]["calendarFeed"]!="") {
-				$eventsSchool=getCalendarEvents($guid,  $_SESSION[$guid]["calendarFeed"], $startDayStamp, $endDayStamp) ;
+				$eventsSchool=getCalendarEvents($connection2, $guid,  $_SESSION[$guid]["calendarFeed"], $startDayStamp, $endDayStamp) ;
 			}
 			//Any all days?
 			if ($eventsSchool!=FALSE) {
@@ -466,7 +474,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 		$eventsPersonal=FALSE ;
 		if ($self==TRUE AND $_SESSION[$guid]["viewCalendarPersonal"]=="Y") {
 			if ($_SESSION[$guid]["calendarFeedPersonal"]!="") {
-				$eventsPersonal=getCalendarEvents($guid,  $_SESSION[$guid]["calendarFeedPersonal"], $startDayStamp, $endDayStamp) ;
+				$eventsPersonal=getCalendarEvents($connection2, $guid,  $_SESSION[$guid]["calendarFeedPersonal"], $startDayStamp, $endDayStamp) ;
 			}
 			//Any all days?
 			if ($eventsPersonal!=FALSE) {
@@ -642,7 +650,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				$output.="<tr class='head' style='height: 37px;'>" ;
 					$output.="<th class='ttCalendarBar' colspan=" . ($daysInWeek+1) . ">" ;
 						$output.="<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "' style='padding: 5px 5px 0 0'>" ;
-							if ($_SESSION[$guid]["calendarFeed"]!="") {
+							if ($_SESSION[$guid]["calendarFeed"]!="" AND $_SESSION[$guid]['google_api_access_token']!=NULL) {
 								$checked="" ;
 								if ($_SESSION[$guid]["viewCalendarSchool"]=="Y") {
 									$checked="checked" ;
@@ -651,7 +659,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 								$output.="<input $checked style='margin-left: 3px' type='checkbox' name='schoolCalendar' onclick='submit();'/>" ;
 								$output.="</span>" ;
 							}
-							if ($_SESSION[$guid]["calendarFeedPersonal"]!="") {
+							if ($_SESSION[$guid]["calendarFeedPersonal"]!="" AND isset($_SESSION[$guid]['google_api_access_token'])) {
 								$checked="" ;
 								if ($_SESSION[$guid]["viewCalendarPersonal"]=="Y") {
 									$checked="checked" ;
@@ -1322,7 +1330,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 							$height="30px" ;
 							$top=(($maxAllDays*-31)-8+($allDay*30)) . "px" ;
 							$output.="<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>" ;
-								$output.="<a target=_blank style='color: #fff' href='" . $event[4] . "'>" . $label . "</a>" ;
+								$output.="<a target=_blank style='color: #fff' href='" . $event[5] . "'>" . $label . "</a>" ;
 							$output.="</div>" ;
 							$allDay++ ;
 						}
@@ -1336,7 +1344,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 							$height=ceil(($event[3]-$event[2])/60) . "px" ;
 							$top=(ceil(($event[2]-strtotime(date("Y-m-d", $startDayStamp+(86400*$count)) . " " . $dayTimeStart))/60+($startPad/60))) . "px" ;
 							$output.="<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>" ;
-								$output.="<a target=_blank style='color: #fff' href='" . $event[4] . "'>" . $label . "</a>" ;
+								$output.="<a target=_blank style='color: #fff' href='" . $event[5] . "'>" . $label . "</a>" ;
 							$output.="</div>" ;
 						}
 						$zCount++ ;
@@ -1361,7 +1369,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 							$height="30px" ;
 							$top=(($maxAllDays*-31)-8+($allDay*30)) . "px" ;
 							$output.="<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>" ;
-								$output.="<a target=_blank style='color: #fff' href='" . $event[4] . "'>" . $label . "</a>" ;
+								$output.="<a target=_blank style='color: #fff' href='" . $event[5] . "'>" . $label . "</a>" ;
 							$output.="</div>" ;
 							$allDay++ ;
 						}
@@ -1375,7 +1383,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 							$height=ceil(($event[3]-$event[2])/60) . "px" ;
 							$top=(ceil(($event[2]-strtotime(date("Y-m-d", $startDayStamp+(86400*$count)) . " " . $dayTimeStart))/60+($startPad/60))) . "px" ;
 							$output.="<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>" ;
-								$output.="<a target=_blank style='color: #fff' href='" . $event[4] . "'>" . $label . "</a>" ;
+								$output.="<a target=_blank style='color: #fff' href='" . $event[5] . "'>" . $label . "</a>" ;
 							$output.="</div>" ;
 						}
 						$zCount++ ;

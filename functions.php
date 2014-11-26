@@ -1773,7 +1773,7 @@ function msort($array, $id="id", $sort_ascending=true) {
 
 //Create the sidebar
 function sidebar($connection2, $guid) {
-	$googleOAuth=getSettingByScope( $connection2, "User Admin", "googleOAuth" ) ;
+	$googleOAuth=getSettingByScope($connection2, "System", "googleOAuth") ;
 	if (isset($_GET["loginReturn"])) {
 		$loginReturn=$_GET["loginReturn"] ;
 	}

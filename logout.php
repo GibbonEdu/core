@@ -24,8 +24,8 @@ include "config.php" ;
 
 $URL="./index.php" ;
 
-unset($_SESSION['access_token']);
-unset($_SESSION['gplusuer']);
+unset($_SESSION[$guid]['google_api_access_token']);
+unset($_SESSION[$guid]['gplusuer']);
  
 session_destroy();
 

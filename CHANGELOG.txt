@@ -101,6 +101,15 @@ System Admin: improved ease-of-use for installing modules and themes
 
 General: added caching to fast student and staff finder to reduce repeated reloading of same content
 	Edited files /index.php, functions.php
+
+General: fixed Google Calendar integration issue
+	Edited file /modules/Timetable/moduleFunctions.php
+	Edited file /lib/googleOAuth/index.php
+	Edited file /index.php, functions.php, preferences.php
+	New folder /lib/google
+	Edited values in tables gibbonPerson, gibbonSetting
+	Edited files /modules/System Admin/systemSettings*.php
+	Edited files /modules/User Admin/userSettings*.php
 	
 	
 

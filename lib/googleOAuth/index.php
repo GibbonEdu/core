@@ -39,14 +39,14 @@ $URL="index.php" ;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require_once 'src/Google_Client.php'; // include the required calss files for google login
+require_once 'src/Google_Client.php'; // include the required class files for google login
 require_once 'src/contrib/Google_PlusService.php';
 require_once 'src/contrib/Google_Oauth2Service.php';
 
 //Get Google Oauth Details
 try {
 		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='User Admin' and name='googleClientName'" ;
+		$sql="SELECT value from gibbonSetting where scope='System' and name='googleClientName'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -54,8 +54,8 @@ try {
 	
 	//Test to see if Google Client Name exists.
 	if ($result->rowCount()!=1) {
-		unset($_SESSION['access_token']);
-		unset($_SESSION['gplusuer']);
+		unset($_SESSION[$guid]['google_api_access_token']);
+		unset($_SESSION[$guid]['gplusuer']);
  		session_destroy();
 		$_SESSION[$guid]=NULL ;
 		
@@ -67,7 +67,7 @@ try {
 	
 	try {
 		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='User Admin' and name='googleClientID'" ;
+		$sql="SELECT value from gibbonSetting where scope='System' and name='googleClientID'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -75,8 +75,8 @@ try {
 	
 	//Test to see if Google Client id exists.
 	if ($result->rowCount()!=1) {
-		unset($_SESSION['access_token']);
-		unset($_SESSION['gplusuer']);
+		unset($_SESSION[$guid]['google_api_access_token']);
+		unset($_SESSION[$guid]['gplusuer']);
  		session_destroy();
 		$_SESSION[$guid]=NULL ;
 		
@@ -89,7 +89,7 @@ try {
 
 try {
 		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='User Admin' and name='googleClientSecret'" ;
+		$sql="SELECT value from gibbonSetting where scope='System' and name='googleClientSecret'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -97,8 +97,8 @@ try {
 	
 	//Test to see if Google Client id exists.
 	if ($result->rowCount()!=1) {
-		unset($_SESSION['access_token']);
-		unset($_SESSION['gplusuer']);
+		unset($_SESSION[$guid]['google_api_access_token']);
+		unset($_SESSION[$guid]['gplusuer']);
  		session_destroy();
 		$_SESSION[$guid]=NULL ;
 		
@@ -110,7 +110,7 @@ try {
 	
 try {
 		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='User Admin' and name='googleRedirectUri'" ;
+		$sql="SELECT value from gibbonSetting where scope='System' and name='googleRedirectUri'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -118,8 +118,8 @@ try {
 	
 	//Test to see if Google Redirect Url exists.
 	if ($result->rowCount()!=1) {
-		unset($_SESSION['access_token']);
-		unset($_SESSION['gplusuer']);
+		unset($_SESSION[$guid]['google_api_access_token']);
+		unset($_SESSION[$guid]['gplusuer']);
  		session_destroy();
 		$_SESSION[$guid]=NULL ;
 		
@@ -131,7 +131,7 @@ try {
 	
 try {
 		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='User Admin' and name='googleDeveloperKey'" ;
+		$sql="SELECT value from gibbonSetting where scope='System' and name='googleDeveloperKey'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -139,8 +139,8 @@ try {
 	
 	//Test to see if Google Developer Key exists.
 	if ($result->rowCount()!=1) {
-		unset($_SESSION['access_token']);
-		unset($_SESSION['gplusuer']);
+		unset($_SESSION[$guid]['google_api_access_token']);
+		unset($_SESSION[$guid]['gplusuer']);
  		session_destroy();
 		$_SESSION[$guid]=NULL ;
 		
@@ -152,7 +152,7 @@ try {
 
 $client=new Google_Client();
 $client->setApplicationName($googleClientName); // Set your applicatio name
-$client->setScopes(array('https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me')); // set scope during user login
+$client->setScopes(array('https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/calendar')); // set scope during user login
 $client->setClientId($googleClientID); // paste the client id which you get from google API Console
 $client->setClientSecret($googleClientSecret); // set the client secret
 $client->setRedirectUri($googleRedirectUri); // paste the redirect URI where you given in APi Console. You will get the Access Token here during login success
@@ -161,12 +161,12 @@ $plus 		=new Google_PlusService($client);
 $oauth2 	=new Google_Oauth2Service($client); // Call the OAuth2 class for get email address
 if(isset($_GET['code'])) {
 	$client->authenticate(); // Authenticate
-	$_SESSION['access_token']=$client->getAccessToken(); // get the access token here
+	$_SESSION[$guid]['google_api_access_token']=$client->getAccessToken(); // get the access token here
 	header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 }
 
-if(isset($_SESSION['access_token'])) {
-	$client->setAccessToken($_SESSION['access_token']);
+if(isset($_SESSION[$guid]['google_api_access_token'])) {
+	$client->setAccessToken($_SESSION[$guid]['google_api_access_token']);
 }
 
 if ($client->getAccessToken()) {
@@ -175,7 +175,7 @@ if ($client->getAccessToken()) {
   $optParams 	=array('maxResults'=> 100);
   $activities 	=$plus->activities->listActivities('me', 'public',$optParams);
   // The access token may have been updated lazily.
-  $_SESSION['access_token'] 		=$client->getAccessToken();
+  $_SESSION[$guid]['google_api_access_token'] 		=$client->getAccessToken();
   $email 							=filter_var($user['email'], FILTER_SANITIZE_EMAIL); // get the USER EMAIL ADDRESS using OAuth2
   $_SESSION['emailaddress']=$email;
 } else {
@@ -183,7 +183,7 @@ if ($client->getAccessToken()) {
 }
 
 if(isset($me)){ 
-	$_SESSION['gplusuer']=$me; // start the session
+	$_SESSION[$guid]['gplusuer']=$me; // start the session
 	try {
 		$data=array("email"=>$email); 
 		$sql="SELECT * FROM gibbonPerson WHERE (email=:email)" ;
@@ -194,8 +194,8 @@ if(isset($me)){
 	
 	//Test to see if email exists in logintable
 	if ($result->rowCount()!=1) {
-		unset($_SESSION['access_token']);
-		unset($_SESSION['gplusuer']);
+		unset($_SESSION[$guid]['google_api_access_token']);
+		unset($_SESSION[$guid]['gplusuer']);
  		session_destroy();
 		$_SESSION[$guid]=NULL ;
 		$URL="../../index.php?loginReturn=fail8" ;
@@ -208,8 +208,8 @@ if(isset($me)){
 
 if(isset($_GET['logout'])) {
 	 	
-  unset($_SESSION['access_token']);
-  unset($_SESSION['gplusuer']);
+  unset($_SESSION[$guid]['google_api_access_token']);
+  unset($_SESSION[$guid]['gplusuer']);
  
   session_destroy();
   header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']); // it will simply destroy the current seesion which you started before
@@ -262,7 +262,7 @@ if(isset($authUrl)) {
 	} else {
 	echo "<a class='logout' href='index.php?logout'>Logout</a>";
 }
-if(isset($_SESSION['gplusuer'])){ ?>
+if(isset($_SESSION[$guid]['gplusuer'])){ ?>
 <?php
 
 try {
@@ -275,8 +275,8 @@ try {
 	
 	//Test to see if gmail matches email in gibbon
 	if ($result->rowCount()!=1) {
-		unset($_SESSION['access_token']);
-		unset($_SESSION['gplusuer']);
+		unset($_SESSION[$guid]['google_api_access_token']);
+		unset($_SESSION[$guid]['gplusuer']);
  		session_destroy();
 		$_SESSION[$guid]=NULL ;
 		//$URL="../../index.php?loginReturn=fail7" ;
@@ -284,6 +284,7 @@ try {
 	}
 	else {
 		$row=$result->fetch() ;
+		
 		$username=$row['username'];
 		if ($row["failCount"]>=3) {
 			try {
@@ -395,8 +396,8 @@ try {
 						$URL="../../index.php" ;
 					}
 					else {
-						unset($_SESSION['access_token']);
-						unset($_SESSION['gplusuer']);
+						unset($_SESSION[$guid]['google_api_access_token']);
+						unset($_SESSION[$guid]['gplusuer']);
 						session_destroy();
 						$_SESSION[$guid]=NULL ;
 						$URL="../../index.php?loginReturn=fail8" ;
