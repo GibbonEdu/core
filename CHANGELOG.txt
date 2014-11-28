@@ -110,6 +110,9 @@ General: fixed Google Calendar integration issue
 	Edited values in tables gibbonPerson, gibbonSetting
 	Edited files /modules/System Admin/systemSettings*.php
 	Edited files /modules/User Admin/userSettings*.php
+
+User Admin: fixed bug related to short Ethnicity storage field for users
+	Edited tables gibbonPerson, gibbonPersonUpdate
 	
 	
 

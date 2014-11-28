@@ -614,8 +614,8 @@ UPDATE gibbonPerson SET calendarFeedPersonal='';end
 UPDATE gibbonSetting SET scope='System' WHERE name LIKE 'google%';end
 UPDATE gibbonSetting SET nameDisplay='Google Integration', description='Enable Gibbon-wide integration with the Google APIs?' WHERE name='googleOAuth' AND scope='System';end
 UPDATE gibbonSetting SET nameDisplay='School Google Calendar ID', description='Google Calendar ID for your school calendar. Only enables timetable integration when logging in via Google.' WHERE name='calendarFeed' AND scope='System';end
-
-
+ALTER TABLE `gibbonPerson` CHANGE `ethnicity` `ethnicity` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonPersonUpdate` CHANGE `ethnicity` `ethnicity` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ";
 
 ?>

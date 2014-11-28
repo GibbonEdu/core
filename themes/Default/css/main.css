@@ -293,7 +293,6 @@ div.minorLinks a:hover {
 	line-height: 105% ;
 	background-color: rgba(0, 0, 0, 0.1) ;
 	margin: 0 ;
-	padding: 6px 0 ;
 }
 #nav li li:hover {
 	color:#fff;
@@ -304,7 +303,7 @@ div.minorLinks a:hover {
 }
 #nav li li a, #nav li li a:link, #nav li li a:visited, #nav li li a:hover {
 	color:#fff;
-	padding: 3px 10px 2px;
+	padding: 8px 9px;
 	min-width: 60px;
 }
 
