@@ -113,6 +113,9 @@ General: fixed Google Calendar integration issue
 
 User Admin: fixed bug related to short Ethnicity storage field for users
 	Edited tables gibbonPerson, gibbonPersonUpdate
+
+General: fixed no focus resource insert bug in tinyMCE editor instances
+	Edited file /functions.php
 	
 	
 

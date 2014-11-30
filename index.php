@@ -323,10 +323,12 @@ else {
 						<div id="header-finder">
 							<?php
 							//Show student and staff quick finder
-							if ($cacheLoad) {
-								$_SESSION[$guid]["studentFastFinder"]=getStudentFastFinder($connection2, $guid) ;
+							if (isset($_SESSION[$guid]["username"])) {
+								if ($cacheLoad) {
+									$_SESSION[$guid]["studentFastFinder"]=getStudentFastFinder($connection2, $guid) ;
+								}
+								print $_SESSION[$guid]["studentFastFinder"] ;
 							}
-							print $_SESSION[$guid]["studentFastFinder"] ;
 							?>
 						</div>
 						<div id="header-menu">
