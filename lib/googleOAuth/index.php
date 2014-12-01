@@ -22,8 +22,6 @@ $_SESSION[$guid]["pageLoads"]=NULL ;
 
 $URL="index.php" ;
 
-
-
 /*
  * Copyright 2011 Google Inc.
  *
@@ -39,116 +37,26 @@ $URL="index.php" ;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
 require_once 'src/Google_Client.php'; // include the required class files for google login
 require_once 'src/contrib/Google_PlusService.php';
 require_once 'src/contrib/Google_Oauth2Service.php';
 
-//Get Google Oauth Details
-try {
-		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='System' and name='googleClientName'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { }
-	
-	//Test to see if Google Client Name exists.
-	if ($result->rowCount()!=1) {
-		unset($_SESSION[$guid]['google_api_access_token']);
-		unset($_SESSION[$guid]['gplusuer']);
- 		session_destroy();
-		$_SESSION[$guid]=NULL ;
-		
-	}
-	else {
-		$row=$result->fetch() ;
-		$googleClientName=$row['value'];
-	}
-	
-	try {
-		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='System' and name='googleClientID'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { }
-	
-	//Test to see if Google Client id exists.
-	if ($result->rowCount()!=1) {
-		unset($_SESSION[$guid]['google_api_access_token']);
-		unset($_SESSION[$guid]['gplusuer']);
- 		session_destroy();
-		$_SESSION[$guid]=NULL ;
-		
-	}
-	else {
-		$row=$result->fetch() ;
-		$googleClientID=$row['value'];
-	}
+//Get API details
+$googleOAuth=getSettingByScope($connection2, "System", "googleOAuth") ;
+$googleClientName=getSettingByScope($connection2, "System", "googleClientName" ) ; 
+$googleClientID=getSettingByScope($connection2, "System", "googleClientID" ) ; 
+$googleClientSecret=getSettingByScope($connection2, "System", "googleClientSecret" ) ; 
+$googleRedirectUri=getSettingByScope($connection2, "System", "googleRedirectUri" ) ; 
+$googleDeveloperKey=getSettingByScope($connection2, "System", "googleDeveloperKey" ) ; 
 
-
-try {
-		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='System' and name='googleClientSecret'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { }
-	
-	//Test to see if Google Client id exists.
-	if ($result->rowCount()!=1) {
-		unset($_SESSION[$guid]['google_api_access_token']);
-		unset($_SESSION[$guid]['gplusuer']);
- 		session_destroy();
-		$_SESSION[$guid]=NULL ;
-		
-	}
-	else {
-		$row=$result->fetch() ;
-		$googleClientSecret=$row['value'];
-	}
-	
-try {
-		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='System' and name='googleRedirectUri'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { }
-	
-	//Test to see if Google Redirect Url exists.
-	if ($result->rowCount()!=1) {
-		unset($_SESSION[$guid]['google_api_access_token']);
-		unset($_SESSION[$guid]['gplusuer']);
- 		session_destroy();
-		$_SESSION[$guid]=NULL ;
-		
-	}
-	else {
-		$row=$result->fetch() ;
-		$googleRedirectUri=$row['value'];
-	}
-	
-try {
-		$data=array(); 
-		$sql="SELECT value from gibbonSetting where scope='System' and name='googleDeveloperKey'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { }
-	
-	//Test to see if Google Developer Key exists.
-	if ($result->rowCount()!=1) {
-		unset($_SESSION[$guid]['google_api_access_token']);
-		unset($_SESSION[$guid]['gplusuer']);
- 		session_destroy();
-		$_SESSION[$guid]=NULL ;
-		
-	}
-	else {
-		$row=$result->fetch() ;
-		$googleDeveloperKey=$row['value'];
-	}
+//Test to see if correct API details exists.
+if ($googleOAuth!="Y" OR $googleClientName==FALSE OR $googleClientID==FALSE OR $googleClientSecret==FALSE OR $googleRedirectUri==FALSE OR $googleDeveloperKey==FALSE) {
+	unset($_SESSION[$guid]['googleAPIAccessToken']);
+	unset($_SESSION[$guid]['gplusuer']);
+	session_destroy();
+	$_SESSION[$guid]=NULL ;	
+}
 
 $client=new Google_Client();
 $client->setApplicationName($googleClientName); // Set your applicatio name
@@ -157,26 +65,29 @@ $client->setClientId($googleClientID); // paste the client id which you get from
 $client->setClientSecret($googleClientSecret); // set the client secret
 $client->setRedirectUri($googleRedirectUri); // paste the redirect URI where you given in APi Console. You will get the Access Token here during login success
 $client->setDeveloperKey($googleDeveloperKey); // Developer key
-$plus 		=new Google_PlusService($client);
-$oauth2 	=new Google_Oauth2Service($client); // Call the OAuth2 class for get email address
+$client->setAccessType('offline');
+$plus=new Google_PlusService($client);
+$oauth2=new Google_Oauth2Service($client); // Call the OAuth2 class for get email address
 if(isset($_GET['code'])) {
 	$client->authenticate(); // Authenticate
-	$_SESSION[$guid]['google_api_access_token']=$client->getAccessToken(); // get the access token here
+	$_SESSION[$guid]['googleAPIAccessToken']=$client->getAccessToken(); // get the access token here
 	header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 }
 
-if(isset($_SESSION[$guid]['google_api_access_token'])) {
-	$client->setAccessToken($_SESSION[$guid]['google_api_access_token']);
+@$refreshToken=json_decode($_SESSION[$guid]['googleAPIAccessToken'])->refresh_token ;
+
+if(isset($_SESSION[$guid]['googleAPIAccessToken'])) {
+	$client->setAccessToken($_SESSION[$guid]['googleAPIAccessToken']);
 }
 
 if ($client->getAccessToken()) {
-  $user 		=$oauth2->userinfo->get();
-  $me 			=$plus->people->get('me');
-  $optParams 	=array('maxResults'=> 100);
-  $activities 	=$plus->activities->listActivities('me', 'public',$optParams);
+  $user=$oauth2->userinfo->get();
+  $me=$plus->people->get('me');
+  $optParams=array('maxResults'=> 100);
+  $activities=$plus->activities->listActivities('me', 'public',$optParams);
   // The access token may have been updated lazily.
-  $_SESSION[$guid]['google_api_access_token'] 		=$client->getAccessToken();
-  $email 							=filter_var($user['email'], FILTER_SANITIZE_EMAIL); // get the USER EMAIL ADDRESS using OAuth2
+  $_SESSION[$guid]['googleAPIAccessToken']=$client->getAccessToken();
+  $email=filter_var($user['email'], FILTER_SANITIZE_EMAIL); // get the USER EMAIL ADDRESS using OAuth2
   $_SESSION['emailaddress']=$email;
 } else {
 	$authUrl=$client->createAuthUrl();
@@ -194,7 +105,7 @@ if(isset($me)){
 	
 	//Test to see if email exists in logintable
 	if ($result->rowCount()!=1) {
-		unset($_SESSION[$guid]['google_api_access_token']);
+		unset($_SESSION[$guid]['googleAPIAccessToken']);
 		unset($_SESSION[$guid]['gplusuer']);
  		session_destroy();
 		$_SESSION[$guid]=NULL ;
@@ -208,134 +119,131 @@ if(isset($me)){
 
 if(isset($_GET['logout'])) {
 	 	
-  unset($_SESSION[$guid]['google_api_access_token']);
+  unset($_SESSION[$guid]['googleAPIAccessToken']);
   unset($_SESSION[$guid]['gplusuer']);
  
   session_destroy();
-  header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']); // it will simply destroy the current seesion which you started before
-  #header('Location: https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
-  
-  /*NOTE: for logout and clear all the session direct google just uncomment the above line and comment the first header function */
+  header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']); // it will simply destroy the current seesion which you started before 
+  //NOTE: for logout and clear all the session direct google just uncomment the above line and comment the first header function
 }
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Google Apps login using PHP with user email</title>
-<style>
-body{
-	margin: 0;
-	padding: 0;
-	font-family: arial;
-	color: #2C2C2C;
-	font-size: 14px;
-}
-h1 a{
-	color:#2C2C2C;
-	text-decoration:none;
-}
-h1 a:hover{
-	text-decoration:underline;
-}
-a{
-	color: #069FDF;
-}
-.wrapper{
-	margin: 0 auto;
-	width: 254px;
-	height: 46px;
-}
-.mytable{
-	width: 700px;
-	margin: 0 auto;
-	border:2px dashed #17A3F7;
-	padding: 20px;
-}
-</style>
-</head>
-<body>
-<div class="wrapper">
-<?php 
-if(isset($authUrl)) {
-	echo "<a class='login' target='_top' href='$authUrl'><img style='width: 254px; height: 44px;' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/g_login_btn.png' alt='Login With Google' /></a>";
-	} else {
-	echo "<a class='logout' href='index.php?logout'>Logout</a>";
-}
-if(isset($_SESSION[$guid]['gplusuer'])){ ?>
-<?php
-
-try {
-		$data=array("email"=>$email); 
-		$sql="SELECT * FROM gibbonPerson WHERE ((email=:email) AND (status='Full') AND (canLogin='Y'))" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { }
-	
-	//Test to see if gmail matches email in gibbon
-	if ($result->rowCount()!=1) {
-		unset($_SESSION[$guid]['google_api_access_token']);
-		unset($_SESSION[$guid]['gplusuer']);
- 		session_destroy();
-		$_SESSION[$guid]=NULL ;
-		//$URL="../../index.php?loginReturn=fail7" ;
-		//header("Location: {$URL}");
-	}
-	else {
-		$row=$result->fetch() ;
-		
-		$username=$row['username'];
-		if ($row["failCount"]>=3) {
-			try {
-				$data=array("lastFailIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastFailTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
-				$sqlSecure="UPDATE gibbonPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)";
-				$resultSecure=$connection2->prepare($sqlSecure);
-				$resultSecure->execute($data); 
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Google Apps login using PHP with user email</title>
+		<style>
+			body{
+				margin: 0;
+				padding: 0;
+				font-family: arial;
+				color: #2C2C2C;
+				font-size: 14px;
 			}
-			catch(PDOException $e) { }
-		
-			if ($row["failCount"]==3) {
-				$to=getSettingByScope($connection2, "System", "organisationAdministratorEmail") ;
-				$subject=$_SESSION[$guid]["organisationNameShort"] . " Failed Login Notification";
-				$body="Please note that someone has failed to login to account \"$username\" 3 times in a row.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-				$headers="From: " . $to ;
-				mail($to, $subject, $body, $headers) ;
+			h1 a{
+				color:#2C2C2C;
+				text-decoration:none;
 			}
-		
-			$URL.="?loginReturn=fail6" ;
-			header("Location: {$URL}");
-		}
-		
-		//Check for forceReset password flag, and if Y, set to N and set random password, emailing user. This prevents lock out.
-		if ($row["passwordForceReset"]=="Y") {
-			$salt=getSalt() ;
-			$password=randomPassword(8);
-			$passwordStrong=hash("sha256", $salt.$password) ;
-			
-			try {
-				$data=array("passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "username"=>$username); 
-				$sql="UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, failCount=0, passwordForceReset='N' WHERE username=:username";
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
+			h1 a:hover{
+				text-decoration:underline;
 			}
-			catch(PDOException $e) { }
-			
-			$row["passwordForceReset"]="N" ;
-			
-			$to=$row["email"];
-			$subject=$_SESSION[$guid]["organisationNameShort"] . " Gibbon Password Reset";
-			$body="Your new password for account $username is as follows:\n\n$password\n\nPlease log in an change your password as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-			$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
-			mail($to, $subject, $body, $headers) ;
-		}
-		
-		if ($row["gibbonRoleIDPrimary"]=="" OR count(getRoleList($row["gibbonRoleIDAll"], $connection2))==0) {
-					//FAILED TO SET ROLES
-					$URL.="?loginReturn=fail2" ;
-					header("Location: {$URL}");
+			a{
+				color: #069FDF;
+			}
+			.wrapper{
+				margin: 0 auto;
+				width: 254px;
+				height: 46px;
+			}
+			.mytable{
+				width: 700px;
+				margin: 0 auto;
+				border:2px dashed #17A3F7;
+				padding: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="wrapper">
+			<?php 
+			if(isset($authUrl)) {
+				echo "<a class='login' target='_top' href='$authUrl'><img style='width: 254px; height: 44px;' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/g_login_btn.png' alt='Login With Google' /></a>";
+				} else {
+				echo "<a class='logout' href='index.php?logout'>Logout</a>";
+			}
+			if(isset($_SESSION[$guid]['gplusuer'])){ ?>
+				<?php
+				try {
+					$data=array("email"=>$email); 
+					$sql="SELECT * FROM gibbonPerson WHERE ((email=:email) AND (status='Full') AND (canLogin='Y'))" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
 				}
-				//USER EXISTS, SET SESSION VARIABLES
+				catch(PDOException $e) { }
+	
+				//Test to see if gmail matches email in gibbon
+				if ($result->rowCount()!=1) {
+					unset($_SESSION[$guid]['googleAPIAccessToken']);
+					unset($_SESSION[$guid]['gplusuer']);
+					session_destroy();
+					$_SESSION[$guid]=NULL ;
+					//$URL="../../index.php?loginReturn=fail7" ;
+					//header("Location: {$URL}");
+				}
+				else {
+					$row=$result->fetch() ;
+		
+					$username=$row['username'];
+					if ($row["failCount"]>=3) {
+						try {
+							$data=array("lastFailIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastFailTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
+							$sqlSecure="UPDATE gibbonPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)";
+							$resultSecure=$connection2->prepare($sqlSecure);
+							$resultSecure->execute($data); 
+						}
+						catch(PDOException $e) { }
+		
+						if ($row["failCount"]==3) {
+							$to=getSettingByScope($connection2, "System", "organisationAdministratorEmail") ;
+							$subject=$_SESSION[$guid]["organisationNameShort"] . " Failed Login Notification";
+							$body="Please note that someone has failed to login to account \"$username\" 3 times in a row.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
+							$headers="From: " . $to ;
+							mail($to, $subject, $body, $headers) ;
+						}
+		
+						$URL.="?loginReturn=fail6" ;
+						header("Location: {$URL}");
+					}
+		
+					//Check for forceReset password flag, and if Y, set to N and set random password, emailing user. This prevents lock out.
+					if ($row["passwordForceReset"]=="Y") {
+						$salt=getSalt() ;
+						$password=randomPassword(8);
+						$passwordStrong=hash("sha256", $salt.$password) ;
+			
+						try {
+							$data=array("passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "username"=>$username); 
+							$sql="UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, failCount=0, passwordForceReset='N' WHERE username=:username";
+							$result=$connection2->prepare($sql);
+							$result->execute($data);
+						}
+						catch(PDOException $e) { }
+			
+						$row["passwordForceReset"]="N" ;
+			
+						$to=$row["email"];
+						$subject=$_SESSION[$guid]["organisationNameShort"] . " Gibbon Password Reset";
+						$body="Your new password for account $username is as follows:\n\n$password\n\nPlease log in an change your password as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
+						$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
+						mail($to, $subject, $body, $headers) ;
+					}
+		
+					if ($row["gibbonRoleIDPrimary"]=="" OR count(getRoleList($row["gibbonRoleIDAll"], $connection2))==0) {
+						//FAILED TO SET ROLES
+						$URL.="?loginReturn=fail2" ;
+						header("Location: {$URL}");
+					}
+					//USER EXISTS, SET SESSION VARIABLES
 					$_SESSION[$guid]["username"]=$username ;
 					$_SESSION[$guid]["email"]=$email ;
 					$_SESSION[$guid]["passwordStrong"]=$passwordStrong ;
@@ -366,7 +274,8 @@ try {
 					$_SESSION[$guid]["messengerLastBubble"]=$row["messengerLastBubble"] ;
 					$_SESSION[$guid]["gibbonThemeIDPersonal"]=$row["gibbonThemeIDPersonal"] ;
 					$_SESSION[$guid]["gibboni18nIDPersonal"]=$row["gibboni18nIDPersonal"] ;
-					
+					$_SESSION[$guid]["googleAPIRefreshToken"]=$row["googleAPIRefreshToken"] ;
+		
 					//If user has personal language set, load it to session variable.
 					if (!is_null($_SESSION[$guid]["gibboni18nIDPersonal"])) {
 						try {
@@ -381,7 +290,7 @@ try {
 							setLanguageSession($guid, $rowLanguage) ;
 						}
 					}
-			
+
 					//Make best effort to set IP address and other details, but no need to error check etc.
 					try {
 						$data=array( "lastIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>0, "username"=> $username ); 
@@ -390,30 +299,34 @@ try {
 						$result->execute($data); 
 					}
 					catch(PDOException $e) { }
-			
-			
+		
+					//Set Goolge API refresh token where appropriate, and update user
+					if ($refreshToken!="") {
+						$_SESSION[$guid]["googleAPIRefreshToken"]=$refreshToken ;
+						try {
+							$data=array( "googleAPIRefreshToken"=> $_SESSION[$guid]["googleAPIRefreshToken"], "username"=> $username ); 
+							$sql="UPDATE gibbonPerson SET googleAPIRefreshToken=:googleAPIRefreshToken WHERE username=:username" ;
+							$result=$connection2->prepare($sql);
+							$result->execute($data); 
+						}
+						catch(PDOException $e) { }
+					} 
+
 					if (isset($_SESSION[$guid]["username"])) {
 						$URL="../../index.php" ;
 					}
 					else {
-						unset($_SESSION[$guid]['google_api_access_token']);
+						unset($_SESSION[$guid]['googleAPIAccessToken']);
 						unset($_SESSION[$guid]['gplusuer']);
 						session_destroy();
 						$_SESSION[$guid]=NULL ;
 						$URL="../../index.php?loginReturn=fail8" ;
-			
+
 					}		
 					header("Location: {$URL}");		
-				
-		
-	}
-}
-	
-?>	
-
-
-
-
-</div>
-</body>
+				}
+			}
+			?>	
+		</div>
+	</body>
 </html>

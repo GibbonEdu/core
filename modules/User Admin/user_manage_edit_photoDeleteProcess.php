@@ -89,6 +89,12 @@ else {
 				else if ($size=="75") {
 					$sizeField="image_75" ;
 				}
+				else if ($size=="passport") {
+					$sizeField="citizenship1PassportScan" ;
+				}
+				else if ($size=="id") {
+					$sizeField="nationalIDCardScan" ;
+				}
 				$data=array("gibbonPersonID"=>$gibbonPersonID); 
 				$sql="UPDATE gibbonPerson SET $sizeField='' WHERE gibbonPersonID=:gibbonPersonID" ;
 				$result=$connection2->prepare($sql);

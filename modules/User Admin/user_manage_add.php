@@ -873,6 +873,20 @@ else {
 					<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="" type="text" style="width: 300px">
 				</td>
 			</tr>
+			
+			<tr>
+				<td> 
+					<b><?php print _('Citizenship 1 Passport Scan') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Less than 1440px by 900px') ?></i></span>
+				</td>
+				<td class="right">
+					<input type="file" name="citizenship1PassportScan" id="citizenship1PassportScan"><br/><br/>
+					<script type="text/javascript">
+						var citizenship1PassportScan=new LiveValidation('citizenship1PassportScan');
+						citizenship1PassportScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+					</script>
+				</td>
+			</tr>
 			<tr>
 				<td> 
 					<b><?php print _('Citizenship 2') ?></b><br/>
@@ -925,6 +939,26 @@ else {
 				</td>
 				<td class="right">
 					<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="" type="text" style="width: 300px">
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<?php
+					if ($_SESSION[$guid]["country"]=="") {
+						print "<b>" . _('National ID Card Scan') . "</b><br/>" ;
+					}
+					else {
+						print "<b>" . $_SESSION[$guid]["country"] . " " . _('ID Card Scan') . "</b><br/>" ;
+					}
+					?>
+					<span style="font-size: 90%"><i><?php print _('Less than 1440px by 900px') ?></i></span>
+				</td>
+				<td class="right">
+					<input type="file" name="nationalIDCardScan" id="nationalIDCardScan"><br/><br/>
+					<script type="text/javascript">
+						var nationalIDCardScan=new LiveValidation('nationalIDCardScan');
+						nationalIDCardScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -1130,9 +1164,6 @@ else {
 				</td>
 				<td class="right">
 					<input type="file" name="file2" id="file2"><br/><br/>
-					<?php
-					print getMaxUpload(TRUE) ;				
-					?>
 					<script type="text/javascript">
 						var file2=new LiveValidation('file2');
 						file2.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
@@ -1275,7 +1306,11 @@ else {
 			
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i><br/>
+					<?php
+					print getMaxUpload(TRUE) ;				
+					?>
+					</span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

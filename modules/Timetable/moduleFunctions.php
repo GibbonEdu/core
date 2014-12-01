@@ -154,7 +154,7 @@ function getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbon
 //Returns events from a Google Calendar XML field, between the time and date specified
 function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDayStamp) {
 	$googleOAuth=getSettingByScope($connection2, "System", "googleOAuth") ;
-	if ($googleOAuth=="Y" AND isset($_SESSION[$guid]['google_api_access_token'])) {
+	if ($googleOAuth=="Y" AND isset($_SESSION[$guid]['googleAPIAccessToken'])) {
 		$eventsSchool=array() ;
 		$start=date("Y-m-d\TH:i:s", strtotime(date("Y-m-d", $startDayStamp))) ;
 		$end=date("Y-m-d\TH:i:s", (strtotime(date("Y-m-d", $endDayStamp))+86399)) ;
@@ -162,7 +162,29 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 		require_once $_SESSION[$guid]["absolutePath"] . '/lib/google/google-api-php-client/autoload.php';
 		
 		$client=new Google_Client();
-		$client->setAccessToken($_SESSION[$guid]['google_api_access_token']);
+		$expires=(json_decode($_SESSION[$guid]['googleAPIAccessToken'])->created) + 3600 ;
+		if ($expires-time()>600) { //Not yet expired, and not expiring imminently, so no need to refresh the token, just use it
+			$client->setAccessToken($_SESSION[$guid]['googleAPIAccessToken']);
+		}
+		else { //Need to refresh the token
+			//Get API details
+			$googleClientName=getSettingByScope($connection2, "System", "googleClientName" ) ; 
+			$googleClientID=getSettingByScope($connection2, "System", "googleClientID" ) ; 
+			$googleClientSecret=getSettingByScope($connection2, "System", "googleClientSecret" ) ; 
+			$googleRedirectUri=getSettingByScope($connection2, "System", "googleRedirectUri" ) ; 
+			$googleDeveloperKey=getSettingByScope($connection2, "System", "googleDeveloperKey" ) ;
+			
+			//Re-establish $client
+			$client->setApplicationName($googleClientName); // Set your applicatio name
+			$client->setScopes(array('https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/calendar')); // set scope during user login
+			$client->setClientId($googleClientID); // paste the client id which you get from google API Console
+			$client->setClientSecret($googleClientSecret); // set the client secret
+			$client->setRedirectUri($googleRedirectUri); // paste the redirect URI where you given in APi Console. You will get the Access Token here during login success
+			$client->setDeveloperKey($googleDeveloperKey); // Developer key
+			$client->setAccessType('offline');	
+			$client->refreshToken($_SESSION[$guid]['googleAPIRefreshToken']);
+			$_SESSION[$guid]['googleAPIAccessToken']=$client->getAccessToken();
+		}
 		
 		$service=new Google_Service_Calendar($client);
 		$optParams = array('timeMin'=>$start . "+00:00", 'timeMax'=>$end . "+00:00", "singleEvents"=>TRUE);
@@ -650,7 +672,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				$output.="<tr class='head' style='height: 37px;'>" ;
 					$output.="<th class='ttCalendarBar' colspan=" . ($daysInWeek+1) . ">" ;
 						$output.="<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "' style='padding: 5px 5px 0 0'>" ;
-							if ($_SESSION[$guid]["calendarFeed"]!="" AND $_SESSION[$guid]['google_api_access_token']!=NULL) {
+							if ($_SESSION[$guid]["calendarFeed"]!="" AND $_SESSION[$guid]['googleAPIAccessToken']!=NULL) {
 								$checked="" ;
 								if ($_SESSION[$guid]["viewCalendarSchool"]=="Y") {
 									$checked="checked" ;
@@ -659,7 +681,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 								$output.="<input $checked style='margin-left: 3px' type='checkbox' name='schoolCalendar' onclick='submit();'/>" ;
 								$output.="</span>" ;
 							}
-							if ($_SESSION[$guid]["calendarFeedPersonal"]!="" AND isset($_SESSION[$guid]['google_api_access_token'])) {
+							if ($_SESSION[$guid]["calendarFeedPersonal"]!="" AND isset($_SESSION[$guid]['googleAPIAccessToken'])) {
 								$checked="" ;
 								if ($_SESSION[$guid]["viewCalendarPersonal"]=="Y") {
 									$checked="checked" ;

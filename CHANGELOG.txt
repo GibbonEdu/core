@@ -116,7 +116,10 @@ User Admin: fixed bug related to short Ethnicity storage field for users
 
 General: fixed no focus resource insert bug in tinyMCE editor instances
 	Edited file /functions.php
-	
+
+User Admin: added fields to store ID Card scan and passport scan
+	Edited table gibbonPerson
+	Edited files /modules/User Admin/user_manage_add*.php, user_manage_edit*.php, user_manage_edit_photoDeleteProcess.php
 	
 
 v8.3.00

@@ -77,7 +77,7 @@ else {
 		
 			$unique=FALSE;
 			$count=0 ;
-			while ($unique==FALSE) {
+			while ($unique==FALSE AND $count<100) {
 				if ($count==0) {
 					$attachment1="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . $_SESSION[$guid]["username"] . "_240" . strrchr($_FILES["file1"]["name"], ".") ;
 				}

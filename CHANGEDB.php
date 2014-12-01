@@ -616,6 +616,9 @@ UPDATE gibbonSetting SET nameDisplay='Google Integration', description='Enable G
 UPDATE gibbonSetting SET nameDisplay='School Google Calendar ID', description='Google Calendar ID for your school calendar. Only enables timetable integration when logging in via Google.' WHERE name='calendarFeed' AND scope='System';end
 ALTER TABLE `gibbonPerson` CHANGE `ethnicity` `ethnicity` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ALTER TABLE `gibbonPersonUpdate` CHANGE `ethnicity` `ethnicity` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonPerson` ADD `nationalIDCardScan` VARCHAR(255) NOT NULL AFTER `nationalIDCardNumber`;end
+ALTER TABLE `gibbonPerson` ADD `citizenship1PassportScan` VARCHAR(255) NOT NULL AFTER `citizenship1Passport`;end
+ALTER TABLE `gibbonPerson` ADD `googleAPIRefreshToken` VARCHAR(255) NOT NULL ;end
 ";
 
 ?>
