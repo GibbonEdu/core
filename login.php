@@ -199,6 +199,7 @@ else {
 					$_SESSION[$guid]["gibbonThemeIDPersonal"]=$row["gibbonThemeIDPersonal"] ;
 					$_SESSION[$guid]["gibboni18nIDPersonal"]=$row["gibboni18nIDPersonal"] ;
 					$_SESSION[$guid]["googleAPIRefreshToken"]=$row["googleAPIRefreshToken"] ;
+					$_SESSION[$guid]['googleAPIAccessToken']=NULL ; //Set only when user logs in with Google
 					
 					//Allow for non-system default language to be specified from login form
 					if (@$_POST["gibboni18nID"]!=$_SESSION[$guid]["i18n"]["gibboni18nID"]) {
