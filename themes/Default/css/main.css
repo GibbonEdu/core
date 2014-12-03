@@ -865,6 +865,31 @@ ul.ui-tabs-nav li.ui-state-default a {
 	color: rgba(0,0,0,1);
 }
 
+div.ui-widget-overlay {
+	background-image: none ;
+	background-color: #000!important ;
+	opacity: 0.7 ;
+}
+div.ui-dialog {
+	font-family: Helvetica, Arial, sans-serif!important;
+	font-size: 85% ;
+	border-radius: 2px; 
+}
+
+div.ui-dialog div.ui-dialog-titlebar {
+	border-radius: 2px; 
+	background-image: none ;
+	background-color: #A88EDB!important ;
+	border: none ;
+}
+
+div.ui-dialog button.ui-button {
+	font-family: Helvetica, Arial, sans-serif!important;
+	font-size: 85% ;
+	color: #333 ;
+	border-radius: 2px; 
+}
+
 /* Live Validation */
 
 .LV_validation_message{

@@ -46,7 +46,7 @@ else {
 			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 		}
 
-		if ($result->rowCount()!=1) {
+		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
 				print _("The specified record cannot be found.") ;
 			print "</div>" ;

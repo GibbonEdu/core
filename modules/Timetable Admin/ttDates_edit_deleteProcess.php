@@ -73,7 +73,7 @@ else {
 				break ;
 			}
 			
-			if ($result->rowCount()!=1) {
+			if ($result->rowCount()<1) {
 				//Fail 2
 				$URL.="&deleteReturn=fail2" ;
 				header("Location: {$URL}");

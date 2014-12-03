@@ -120,7 +120,21 @@ General: fixed no focus resource insert bug in tinyMCE editor instances
 User Admin: added fields to store ID Card scan and passport scan
 	Edited table gibbonPerson
 	Edited files /modules/User Admin/user_manage_add*.php, user_manage_edit*.php, user_manage_edit_photoDeleteProcess.php
-	
+
+Markbook: added ability for creator of multiple columns to edit them, even if they are no the class teacher (useful for heads of department)
+	Edited file /modules/Markbook/markbook_edit_edit.php
+
+General: added JS timeout warning system before session expires
+	New folder /lib/jquery-sessionTimeout
+	New file /keepAlive.php
+	Edited files /index.php, logout.php
+	New value in table gibbonSetting
+	Edited files /modules/System Admin/systemSettings*.php
+	Edited file /themes/Default/css/main.css
+
+Timetable: added bulk-add functionality for tying days to dates
+	New file /modules/Timetable Admin/ttDates_addMultiProcess.php
+	Edited file /modules/Timetable Admin/ttDates.php
 
 v8.3.00
 -------

@@ -200,7 +200,31 @@ else {
 			<script type="text/javascript"> var tb_pathToImage="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/loadingAnimation.gif"</script>
 			<link rel="stylesheet" href="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/thickbox/thickbox.css" type="text/css" media="screen" />
 			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-autosize/jquery.autosize.min.js"></script>
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js"></script>
 			<?php
+			if (isset($_SESSION[$guid]["username"])) {
+				$sessionDuration=getSettingByScope($connection2, "System", "sessionDuration") ;
+				if (is_numeric($sessionDuration)==FALSE) {
+					$sessionDuration=1200 ;
+				}
+				if ($sessionDuration<1200) {
+					$sessionDuration=1200 ;
+				}
+				?>
+				<script type="text/javascript">
+					$(document).ready(function(){
+						$.sessionTimeout({
+							message: '<?php print _("Your session is about to expire: you will be logged out shortly.") ?>',
+							keepAliveUrl: 'keepAlive.php' ,
+							redirUrl: 'logout.php?timeout=true', 
+							logoutUrl: 'logout.php' , 
+							warnAfter: <?php print ($sessionDuration*1000) ?>,
+							redirAfter: <?php print ($sessionDuration*1000)+600000 ?>
+			 			});
+					});
+				</script>
+			<?php
+			}
 			//Set theme
 			if ($cacheLoad OR $_SESSION[$guid]["themeCSS"]=="" OR isset($_SESSION[$guid]["themeJS"])==FALSE OR $_SESSION[$guid]["gibbonThemeID"]=="" OR $_SESSION[$guid]["gibbonThemeName"]=="") {
 				$_SESSION[$guid]["themeCSS"]="<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />" ;
@@ -355,6 +379,15 @@ else {
 							if ($_SESSION[$guid]["address"]=="") {
 								//Welcome message
 								if (isset($_SESSION[$guid]["username"])==FALSE) {
+									//Create auto timeout message
+									if (isset($_GET["timeout"])) {
+										if ($_GET["timeout"]=="true") {
+											print "<div class='warning'>" ;
+												print _('Your session expired, so you were automatically logged out of the system.');
+											print "</div>" ;
+										}
+									}
+											
 									print "<h2>" ;
 									print _("Welcome") ;
 									print "</h2>" ;
@@ -513,6 +546,27 @@ else {
 												print "</h2>" ;
 												
 												if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
+												$updateReturnMessage="" ;
+												$class="error" ;
+												if (!($updateReturn=="")) {
+													if ($updateReturn=="fail0") {
+														$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+													}
+													else if ($updateReturn=="fail1") {
+														$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+													}
+													else if ($updateReturn=="fail2") {
+														$updateReturnMessage=_("Your request failed due to a database error.") ;	
+													}
+													else if ($updateReturn=="success0") {
+														$updateReturnMessage=_("Your request was completed successfully.") ;	
+														$class="success" ;
+													}
+													print "<div class='$class'>" ;
+														print $updateReturnMessage;
+													print "</div>" ;
+												} 
+												
 												$updateReturnMessage="" ;
 												$class="error" ;
 												if (!($updateReturn=="")) {

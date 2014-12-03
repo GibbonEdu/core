@@ -57,8 +57,11 @@ else {
 					$sql="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class" ;
 				}
 				else {
-					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
-					$sql="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class" ;
+					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID2"=>$gibbonCourseClassID, "gibbonMarkbookColumnID"=>$gibbonMarkbookColumnID); 
+					$sql="(SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID)
+					UNION
+					(SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonMarkbookColumn ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonMarkbookColumn.gibbonPersonIDCreator=:gibbonPersonID2 AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID2 AND gibbonMarkbookColumnID=:gibbonMarkbookColumnID)
+					ORDER BY course, class" ;
 				}	
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
@@ -99,7 +102,7 @@ else {
 				
 					if ($row2["groupingID"]!="" AND $row2["gibbonPersonIDCreator"]!=$_SESSION[$guid]["gibbonPersonID"]) {
 						print "<div class='error'>" ;
-							print _("This column is part of a set of columns, and so cannot be individually edited.") ;
+							print _("This column is part of a set of columns, which you did not create, and so cannot be individually edited.") ;
 						print "</div>" ;
 					}
 					else {
@@ -590,8 +593,6 @@ else {
 										?>
 										<input type="file" name="file" id="file"><br/><br/>
 										<?php
-										print getMaxUpload() ;
-								
 										//Get list of acceptable file extensions
 										try {
 											$dataExt=array(); 
@@ -614,7 +615,9 @@ else {
 								</tr>
 								<tr>
 									<td>
-										<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+										<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?><br/>
+										<?php print getMaxUpload() ; ?>
+										</i></span>
 									</td>
 									<td class="right">
 										<input type="submit" value="<?php print _("Submit") ; ?>">

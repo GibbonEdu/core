@@ -17,24 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "functions.php" ;
-include "config.php" ;
-
 @session_start() ;
 
-$URL="./index.php" ;
-if (isset($_GET["timeout"])) {
-	if ($_GET["timeout"]=="true") {
-		$URL="./index.php?timeout=true" ;
-	}
-}
-
-
-unset($_SESSION[$guid]['googleAPIAccessToken']);
-unset($_SESSION[$guid]['gplusuer']);
- 
-session_destroy();
-
-$_SESSION[$guid]=NULL ;
-header("Location: {$URL}");
 ?>

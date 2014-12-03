@@ -72,6 +72,7 @@ else {
 	$passwordPolicyAlpha=$_POST["passwordPolicyAlpha"] ;
 	$passwordPolicyNumeric=$_POST["passwordPolicyNumeric"] ;
 	$passwordPolicyNonAlphaNumeric=$_POST["passwordPolicyNonAlphaNumeric"] ;
+	$sessionDuration=$_POST["sessionDuration"] ;
 	$allowableHTML=$_POST["allowableHTML"] ;
 	$currency=$_POST["currency"] ;
 	$enablePayments=$_POST["enablePayments"] ;
@@ -88,7 +89,7 @@ else {
 	$googleDeveloperKey=$_POST["googleDeveloperKey"] ;
 	
 	//Validate Inputs
-	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $currency=="" OR $enablePayments=="" OR $googleOAuth=="") {
+	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $currency=="" OR $enablePayments=="" OR $googleOAuth=="" OR $sessionDuration=="") {
 		//Fail 3
 		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -534,6 +535,17 @@ else {
 		catch(PDOException $e) { 
 			$fail=TRUE ;
 		}	
+		try {
+			$data=array("sessionDuration"=>$sessionDuration); 
+			$sql="UPDATE gibbonSetting SET value=:sessionDuration WHERE scope='System' AND name='sessionDuration'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}	
+		
+		
 		
 		if ($fail==TRUE) {
 			//Fail 2

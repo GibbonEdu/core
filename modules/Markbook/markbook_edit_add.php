@@ -533,8 +533,6 @@ else {
 							<td class="right">
 								<input type="file" name="file" id="file"><br/><br/>
 								<?php
-								print getMaxUpload() ;
-							
 								//Get list of acceptable file extensions
 								try {
 									$dataExt=array(); 
@@ -557,7 +555,9 @@ else {
 						</tr>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?><br/>
+								<?php print getMaxUpload() ; ?>
+								</i></span>
 							</td>
 							<td class="right">
 								<input type="submit" value="<?php print _("Submit") ; ?>">

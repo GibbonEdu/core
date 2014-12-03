@@ -684,6 +684,33 @@ else {
 				<?php
 				try {
 					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='sessionDuration'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Numericality);
+						<?php print $row["name"] ?>.add( Validate.Numericality, { minimum: 1200 } );
+						<?php print $row["name"] ?>.add(Validate.Presence);
+					 </script> 
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='allowableHTML'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);

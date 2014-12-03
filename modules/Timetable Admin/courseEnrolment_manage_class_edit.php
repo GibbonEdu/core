@@ -255,7 +255,7 @@ else {
 							print "<th>" ;
 								?>
 								<script type="text/javascript">
-									$(function () { // this line makes sure this code runs on page load
+									$(function () {
 										$('.checkall').click(function () {
 											$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
 										});
