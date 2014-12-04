@@ -2671,12 +2671,12 @@ function printRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, 
 			print "<img title='" . sprintf(_('%1$s  birthday today!'), $rowRollGroup["preferredName"] . "&#39;s") . "' style='z-index: 99; margin: -20px 0 0 74px; width: 25px; height: 25px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/gift_pink.png'/>" ;
 		}
 		else if ($daysUntilNextBirthday>0 AND $daysUntilNextBirthday<8) {
-			print "<img title='$daysUntilNextBirthday " ;
+			print "<img title='" ;
 			if ($daysUntilNextBirthday!=1) {
-				print sprintf(_('days until %1$s birthday!'), $rowRollGroup["preferredName"] . "&#39;s") ;
+				print sprintf(_('%1$s days until %2$s birthday!'), $daysUntilNextBirthday, $rowRollGroup["preferredName"] . "&#39;s") ;
 			}
 			else {
-				print sprintf(_('day until %1$s birthday!'), $rowRollGroup["preferredName"] . "&#39;s") ;
+				print sprintf(_('%1$s day until %2$s birthday!'), $daysUntilNextBirthday, $rowRollGroup["preferredName"] . "&#39;s") ;
 			}
 			print "' style='z-index: 99; margin: -20px 0 0 74px; width: 25px; height: 25px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/gift.png'/>" ;
 		}

@@ -97,6 +97,7 @@ if (isset($_SESSION[$guid]["i18n"]["code"])) {
 		setlocale(LC_ALL, $_SESSION[$guid]["i18n"]["code"]);
 		bindtextdomain("gibbon", "./i18n");
 		textdomain("gibbon");
+		bind_textdomain_codeset("gibbon", 'UTF-8');
 	}
 }
 
@@ -167,6 +168,7 @@ else {
 				}
 				?>
 			</title>
+			<meta charset="utf-8"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
 			<meta name="ROBOTS" content="none"/>
 			
