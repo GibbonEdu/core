@@ -22,6 +22,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
+//Search & Filters
+$search=NULL ;
+if (isset($_GET["search"])) {
+	$search=$_GET["search"] ;
+}
+$filter2=NULL ;
+if (isset($_GET["filter2"])) {
+	$filter2=$_GET["filter2"] ;
+}
+
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -45,8 +55,14 @@ else {
 		else {
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php'>" . _('Manage Rubrics') . "</a> > </div><div class='trailEnd'>" . _('Add Rubric') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php&search=$search&filter2=$filter2'>" . _('Manage Rubrics') . "</a> > </div><div class='trailEnd'>" . _('Add Rubric') . "</div>" ;
 			print "</div>" ;
+			
+			if ($search!="" OR $filter2!="") {
+				print "<div class='linkTop'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Rubrics/rubrics.php&search=$search&filter2=$filter2'>" . _('Back to Search Results') . "</a>" ;
+				print "</div>" ;
+			}
 			
 			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 			$addReturnMessage="" ;
@@ -71,7 +87,7 @@ else {
 			} 
 			
 			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_addProcess.php" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_addProcess.php?search=$search&filter2=$filter2" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2>

@@ -22,6 +22,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
+//Search & Filters
+$search=NULL ;
+if (isset($_GET["search"])) {
+	$search=$_GET["search"] ;
+}
+$filter2=NULL ;
+if (isset($_GET["filter2"])) {
+	$filter2=$_GET["filter2"] ;
+}
 
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_edit_editRowsColumns.php")==FALSE) {
 	//Acess denied
@@ -46,8 +55,14 @@ else {
 		else {
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php'>" . _('Manage Rubrics') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics_edit.php&gibbonRubricID=" . $_GET["gibbonRubricID"] ."'>" . _('Edit Rubric') . "</a> > </div><div class='trailEnd'>" . _('Edit Rubric Rows & Columns') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php&search=$search&filter2=$filter2'>" . _('Manage Rubrics') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics_edit.php&gibbonRubricID=" . $_GET["gibbonRubricID"] ."&search=$search&filter2=$filter2'>" . _('Edit Rubric') . "</a> > </div><div class='trailEnd'>" . _('Edit Rubric Rows & Columns') . "</div>" ;
 			print "</div>" ;
+			
+			if ($search!="" OR $filter2!="") {
+				print "<div class='linkTop'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Rubrics/rubrics_edit.php&gibbonRubricID=" . $_GET["gibbonRubricID"] . "&search=$search&filter2=$filter2&sidebar=false'>" . _('Back') . "</a>" ;
+				print "</div>" ;
+			}
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 			$updateReturnMessage="" ;
@@ -100,7 +115,7 @@ else {
 					//Let's go!
 					$row=$result->fetch() ;
 					?>
-					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_editRowsColumnsProcess.php?gibbonRubricID=$gibbonRubricID" ?>">
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_editRowsColumnsProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 760px">	
 							<tr class='break'>
 								<td colspan=2>

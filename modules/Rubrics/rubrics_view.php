@@ -52,12 +52,14 @@ else {
 	
 	//Filter variables
 	$and="" ;
+	$data=array(); 
 	$filter2=NULL ;
 	if (isset($_POST["filter2"])) {
 		$filter2=$_POST["filter2"] ;
 	}
 	if ($filter2!="") {
-		$and.=" AND gibbonDepartmentID='$filter2'" ;
+		$data["gibbonDepartmentID"]=$filter2 ;
+		$and.=" AND gibbonDepartmentID=:gibbonDepartmentID" ;
 	}
 		
 	
@@ -80,12 +82,10 @@ else {
 				$sql="SELECT * FROM gibbonRubric WHERE active='Y' AND gibbonYearGroupIDList LIKE :gibbonSchoolYearID  $and ORDER BY scope, category, name" ; 
 			}
 			else {
-				$data=array(); 
 				$sql="SELECT * FROM gibbonRubric WHERE active='Y' $and ORDER BY scope, category, name" ; 
 			}
 		}
 		else {
-			$data=array(); 
 			$sql="SELECT * FROM gibbonRubric WHERE active='Y' $and ORDER BY scope, category, name" ; 
 		}
 		$sqlPage=$sql ." LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 

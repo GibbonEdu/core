@@ -136,6 +136,10 @@ Timetable: added bulk-add functionality for tying days to dates
 	New file /modules/Timetable Admin/ttDates_addMultiProcess.php
 	Edited file /modules/Timetable Admin/ttDates.php
 
+Rubrics: added name search to rubric manage view
+	Edited files /modules/Rubrics/*
+
+
 v8.3.00
 -------
 General: added footer link to credits on Gibbon website

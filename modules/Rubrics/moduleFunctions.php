@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="") {
+function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="", $search="", $filter2="") {
 	$output=false ;
 	
 	//Get rows, columns and cells
@@ -85,9 +85,9 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="") {
 			$output.="table.rubric td { border: 1px solid #000 }" ;
 		$output.="</style>" ;
 		$output.="<div class='linkTop'>" ;
-			$output.="<a onclick='return confirm(\"Are you sure you want to edit rows and columns? Any unsaved changes will be lost.\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_editRowsColumns.php&gibbonRubricID=$gibbonRubricID'>Edit Rows & Columns<img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/ style='margin: 0px 1px -4px 3px'></a>" ;
+			$output.="<a onclick='return confirm(\"Are you sure you want to edit rows and columns? Any unsaved changes will be lost.\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_editRowsColumns.php&gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2'>Edit Rows & Columns<img title='Edit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/ style='margin: 0px 1px -4px 3px'></a>" ;
 		$output.="</div>" ;
-		$output.="<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_editCellProcess.php?gibbonRubricID=$gibbonRubricID'>" ;
+		$output.="<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_editCellProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2'>" ;
 			$output.="<table cellspacing='0' class='rubric'>" ;
 				//Create header
 				$output.="<tr class='head'>" ;
@@ -114,7 +114,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="") {
 							else {
 								$output.="<b>" . $columns[$n][1] . "</b><br/>" ;
 							}
-							$output.="<a onclick='return confirm(\"" . _('Are you sure you want to delete this column? Any unsaved changes will be lost.') . "\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_deleteColumnProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricColumnID=" . $columns[$n][0] . "&address=" . $_GET["q"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a>" ;	
+							$output.="<a onclick='return confirm(\"" . _('Are you sure you want to delete this column? Any unsaved changes will be lost.') . "\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_deleteColumnProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricColumnID=" . $columns[$n][0] . "&address=" . $_GET["q"] . "&search=$search&filter2=$filter2'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a>" ;	
 						$output.="</td>" ;
 					}
 				$output.="</tr>" ;
@@ -149,7 +149,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="") {
 							else {
 								$output.="<b>" . $rows[$i][1] . "</b><br/>" ;
 							}
-							$output.="<a onclick='return confirm(\"" . _('Are you sure you want to delete this row? Any unsaved changes will be lost.') . "\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_deleteRowProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricRowID=" . $rows[$i][0] . "&address=" . $_GET["q"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a><br/>" ;
+							$output.="<a onclick='return confirm(\"" . _('Are you sure you want to delete this row? Any unsaved changes will be lost.') . "\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_deleteRowProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricRowID=" . $rows[$i][0] . "&address=" . $_GET["q"] . "&search=$search&filter2=$filter2'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a><br/>" ;
 						$output.="</td>" ;
 						for ($n=0; $n<$columnCount; $n++) {
 							$output.="<td style='background: none; background-color: #fff; padding: 0px; margin: 0px'>" ;

@@ -37,8 +37,18 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
+//Search & Filters
+$search=NULL ;
+if (isset($_GET["search"])) {
+	$search=$_GET["search"] ;
+}
+$filter2=NULL ;
+if (isset($_GET["filter2"])) {
+	$filter2=$_GET["filter2"] ;
+}
+
 $gibbonRubricID=$_GET["gibbonRubricID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/rubrics_edit.php&gibbonRubricID=$gibbonRubricID&sidebar=false" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/rubrics_edit.php&gibbonRubricID=$gibbonRubricID&sidebar=false&search=$search&filter2=$filter2" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_edit.php")==FALSE) {
 	//Fail 0
