@@ -234,6 +234,8 @@ else {
 				$_SESSION[$guid]["themeJS"]="<script type='text/javascript' src='./themes/Default/js/common.js'></script>" ;
 				$_SESSION[$guid]["gibbonThemeID"]="001" ;
 				$_SESSION[$guid]["gibbonThemeName"]="Default" ;
+				$_SESSION[$guid]["gibbonThemeAuthor"]="" ;
+				$_SESSION[$guid]["gibbonThemeURL"]="" ;
 				try {
 					if (isset($_SESSION[$guid]["gibbonThemeIDPersonal"])) {
 						$dataTheme=array("gibbonThemeIDPersonal"=>$_SESSION[$guid]["gibbonThemeIDPersonal"]); 
@@ -254,6 +256,8 @@ else {
 						$_SESSION[$guid]["themeJS"]="<script type='text/javascript' src='./themes/" . $rowTheme["name"] . "/js/common.js'></script>" ;
 						$_SESSION[$guid]["gibbonThemeID"]=$rowTheme["gibbonThemeID"] ;
 						$_SESSION[$guid]["gibbonThemeName"]=$rowTheme["name"] ;
+						$_SESSION[$guid]["gibbonThemeAuthor"]=$rowTheme["author"] ;
+						$_SESSION[$guid]["gibbonThemeURL"]=$rowTheme["url"] ;
 					}
 				}
 				catch(PDOException $e) {
@@ -963,19 +967,31 @@ else {
 						?>
 					</div>
 					<div id="footer">
-						<?php print _("Powered by") ?> <a href="http://gibbonedu.org">Gibbon</a> v<?php print $version ?><?php if ($_SESSION[$guid]["cuttingEdgeCode"]=="Y") { print "dev" ; }?> | &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
+						<?php print _("Powered by") ?> <a target='_blank' href="http://gibbonedu.org">Gibbon</a> v<?php print $version ?><?php if ($_SESSION[$guid]["cuttingEdgeCode"]=="Y") { print "dev" ; }?> | &#169; <a target='_blank' href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
 						<span style='font-size: 90%; '>
-							<?php print _("Created under the") ?> <a href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a>
+							<?php print _("Created under the") ?> <a target='_blank' href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | <a target='_blank' href='https://www.gibbonedu.org/contribute/'><?php print _("Credits") ; ?></a><br/>
 							<?php
+								$seperator=FALSE ;
 								if ($_SESSION[$guid]["i18n"]["maintainerName"]!="" AND $_SESSION[$guid]["i18n"]["maintainerName"]!="Gibbon") {
 									if ($_SESSION[$guid]["i18n"]["maintainerWebsite"]!="") {
-										print " | " . _("Translation led by") . " <a href='" . $_SESSION[$guid]["i18n"]["maintainerWebsite"] . "'>" . $_SESSION[$guid]["i18n"]["maintainerName"] . "</a>" ;
+										print _("Translation led by") . " <a target='_blank' href='" . $_SESSION[$guid]["i18n"]["maintainerWebsite"] . "'>" . $_SESSION[$guid]["i18n"]["maintainerName"] . "</a>" ;
 									}
 									else {
-										print " | " . _("Translation led by") . " " . $_SESSION[$guid]["i18n"]["maintainerName"] ;
+										print _("Translation led by") . " " . $_SESSION[$guid]["i18n"]["maintainerName"] ;
+									}
+									$seperator=TRUE ;
+								}
+								if ($_SESSION[$guid]["gibbonThemeName"]!="Default" AND $_SESSION[$guid]["gibbonThemeAuthor"]!="") {
+									if ($seperator) {
+										print " | " ;
+									}
+									if ($_SESSION[$guid]["gibbonThemeURL"]!="") {
+										print _("Theme by") . " <a target='_blank' href='" . $_SESSION[$guid]["gibbonThemeURL"] . "'>" . $_SESSION[$guid]["gibbonThemeAuthor"] . "</a>" ;
+									}
+									else {
+										print _("Theme by") . " " . $_SESSION[$guid]["gibbonThemeAuthor"] ;
 									}
 								}
-								print " | <a href='https://www.gibbonedu.org/contribute/'>" . _("Credits") . "</a>" ;
 							?>
 						</span><br/>
 						<img style='z-index: 9999; margin-top: -67px; margin-left: 850px; opacity: 0.8' alt='Logo Small' src='./themes/Default/img/logoFooter.png'/>

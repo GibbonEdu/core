@@ -139,6 +139,8 @@ Timetable: added bulk-add functionality for tying days to dates
 Rubrics: added name search to rubric manage view
 	Edited files /modules/Rubrics/*
 
+General: added theme credits to footer, where theme is not Default
+	Edited file /index.php
 
 v8.3.00
 -------
