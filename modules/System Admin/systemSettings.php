@@ -1200,7 +1200,7 @@ else {
 							if ($row["value"]==$rowSelect["printable_name"]) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+							print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . _($rowSelect["printable_name"]) . "</option>" ;
 						}
 						?>
 					</select>

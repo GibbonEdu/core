@@ -167,8 +167,6 @@ else {
 				}
 				?>
 			</title>
-			<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-			<meta http-equiv="content-language" content="en"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
 			<meta name="ROBOTS" content="none"/>
 			
