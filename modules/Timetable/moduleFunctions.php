@@ -192,7 +192,19 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 		
 		$count=0 ;
 		foreach ($calendarListEntry as $entry) { 
-			if ($entry["start"]["date"]!=$entry["start"]["end"] OR substr($entry["start"]["dateTime"], 0, 10)!=substr($entry["end"]["dateTime"], 0, 10)) { //This event spans multiple days
+			$multiDay=FALSE ;
+			if (substr($entry["start"]["dateTime"], 0, 10)!=substr($entry["end"]["dateTime"], 0, 10)) {
+				$multiDay=TRUE ;
+			}
+			if ($entry["start"]["dateTime"]=="") {
+				if ((strtotime($entry["end"]["date"])-strtotime($entry["start"]["date"]))/(60*60*24)>1) {
+					$multiDay=TRUE ;
+				}
+			}
+			
+			//!=
+			
+			if ($multiDay) { //This event spans multiple days
 				if ($entry["start"]["date"]!=$entry["start"]["end"]) {
 					$days=(strtotime($entry["end"]["date"])-strtotime($entry["start"]["date"]))/(60*60*24) ;
 				}
@@ -206,7 +218,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 			
 					//WHEN - treat events that span multiple days, but have times set, the same as those without time set
 					$eventsSchool[$count][1]="All Day" ;
-					$eventsSchool[$count][2]=strtotime(substr($entry["start"]["dateTime"], 0, 10) . " " . substr($entry["start"]["dateTime"], 11, 8))+($i*60*60*24) ;
+					$eventsSchool[$count][2]=strtotime($entry["start"]["date"])+($i*60*60*24) ;
 					$eventsSchool[$count][3]=NULL ;
 						
 					//WHERE
@@ -230,7 +242,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 				}
 				else { //All day
 					$eventsSchool[$count][1]="All Day" ;
-					$eventsSchool[$count][2]=strtotime(substr($entry["start"]["dateTime"], 0, 10) . " " . substr($entry["start"]["dateTime"], 11, 8)) ;
+					$eventsSchool[$count][2]=strtotime($entry["start"]["date"]) ;
 					$eventsSchool[$count][3]=NULL ;
 				}
 				//WHERE
@@ -522,9 +534,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 		$maxAllDays=0 ;
 		if ($allDay==TRUE) {
 			if ($eventsPersonal!=FALSE AND $eventsSchool!=FALSE) {
-				$eventsCombined=array_merge ($eventsSchool, $eventsPersonal) ;
+				$eventsCombined=array_merge($eventsSchool, $eventsPersonal) ;
 			}
-			else if ( $eventsSchool!=FALSE) {
+			else if ($eventsSchool!=FALSE) {
 				$eventsCombined=$eventsSchool ;
 			}
 			else if ($eventsPersonal!=FALSE) {
