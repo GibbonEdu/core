@@ -142,6 +142,10 @@ Rubrics: added name search to rubric manage view
 General: added theme credits to footer, where theme is not Default
 	Edited file /index.php
 
+System Admin: added display and removal of orphaned themes and modules
+	Edited files /modules/System Admin/theme_manage.php, module_manage.php, theme_manage_uninstall*.php, module_manage_uninstall*.php
+
+
 v8.3.00
 -------
 General: added footer link to credits on Gibbon website

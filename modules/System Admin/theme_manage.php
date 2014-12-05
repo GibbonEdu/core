@@ -39,6 +39,10 @@ else {
 			$deleteReturnMessage=_("Uninstall was successful. You will still need to remove the theme's files yourself.") ;	
 			$class="success" ;
 		}
+		if ($deleteReturn=="success1") {
+			$deleteReturnMessage=_("Uninstall was successful.") ;	
+			$class="success" ;
+		}
 		print "<div class='$class'>" ;
 			print $deleteReturnMessage;
 		print "</div>" ;
@@ -107,7 +111,8 @@ else {
 	}
 	$themesSQL=array() ;
 	while ($row=$result->fetch()) {
-		$themesSQL[$row["name"]]=$row ;
+		$themesSQL[$row["name"]][0]=$row ;
+		$themesSQL[$row["name"]][1]="orphaned" ;
 	}
 	
 	//Get list of modules in /modules directory
@@ -144,7 +149,7 @@ else {
 					print "<th>" ;
 						print _("Active") ;
 					print "</th>" ;
-					print "<th>" ;
+					print "<th style='width: 50px'>" ;
 						print _("Action") ;
 					print "</th>" ;
 				print "</tr>" ;
@@ -153,6 +158,7 @@ else {
 				$rowNum="odd" ;
 				foreach ($themesFS AS $themesFS) {
 					$themeName=substr($themesFS, strlen($_SESSION[$guid]["absolutePath"] ."/themes/")) ;
+					$themesSQL[$themeName][1]="present" ;
 					
 					if ($count%2==0) {
 						$rowNum="even" ;
@@ -162,7 +168,7 @@ else {
 					}
 					
 					$installed=TRUE ;
-					if (isset($themesSQL[$themeName])==FALSE) {
+					if (isset($themesSQL[$themeName][0])==FALSE) {
 						$installed=FALSE ;
 						$rowNum="warning" ;
 					}
@@ -196,42 +202,42 @@ else {
 							}
 							else {
 								print "<td colspan=6>" ;
-									print _("Module Error") ;
+									print _("Theme Error") ;
 								print "</td>" ;
 							}
 						}
 						if ($installed) {
 							print "<td>" ;
-								print $themesSQL[$themeName]["description"] ;
+								print $themesSQL[$themeName][0]["description"] ;
 							print "</td>" ;
 							print "<td>" ;
-								if ($themesSQL[$themeName]["name"]=="Default") {
+								if ($themesSQL[$themeName][0]["name"]=="Default") {
 									print "v" . $version ;
 								}
 								else {
-									print "v" . $themesSQL[$themeName]["version"] ;
+									print "v" . $themesSQL[$themeName][0]["version"] ;
 								}
 							
 							print "</td>" ;
 							print "<td>" ;
-								if ($themesSQL[$themeName]["url"]!="") {
-									print "<a href='" . $themesSQL[$themeName]["url"] . "'>" . $themesSQL[$themeName]["author"] . "</a>" ;
+								if ($themesSQL[$themeName][0]["url"]!="") {
+									print "<a href='" . $themesSQL[$themeName][0]["url"] . "'>" . $themesSQL[$themeName][0]["author"] . "</a>" ;
 								}
 								else {
-									print $themesSQL[$themeName]["author"] ;
+									print $themesSQL[$themeName][0]["author"] ;
 								}
 							print "</td>" ;
 							print "<td>" ;
-								if ($themesSQL[$themeName]["active"]=="Y") {
-									print "<input checked type='radio' name='gibbonThemeID' value='" . $themesSQL[$themeName]["gibbonThemeID"] . "'>" ;
+								if ($themesSQL[$themeName][0]["active"]=="Y") {
+									print "<input checked type='radio' name='gibbonThemeID' value='" . $themesSQL[$themeName][0]["gibbonThemeID"] . "'>" ;
 								}
 								else {
-									print "<input type='radio' name='gibbonThemeID' value='" . $themesSQL[$themeName]["gibbonThemeID"] . "'>" ;
+									print "<input type='radio' name='gibbonThemeID' value='" . $themesSQL[$themeName][0]["gibbonThemeID"] . "'>" ;
 								}
 							print "</td>" ;
 							print "<td>" ;
-								if ($themesSQL[$themeName]["name"]!="Default") {
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstall.php&gibbonThemeID=" . $themesSQL[$themeName]["gibbonThemeID"] . "'><img title='" . _('Remove Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+								if ($themesSQL[$themeName][0]["name"]!="Default") {
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstall.php&gibbonThemeID=" . $themesSQL[$themeName][0]["gibbonThemeID"] . "'><img title='" . _('Remove Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 								}
 							print "</td>" ;
 						}
@@ -255,6 +261,69 @@ else {
 			print "</table>" ;
 			
 		print "</form>" ;
+	}
+	
+	//Find and display orphaned themes
+	$orphans=FALSE ;
+	foreach($themesSQL AS $themeSQL) {
+		if ($themeSQL[1]=="orphaned") {
+			$orphans=TRUE ;
+		}
+	}
+	
+	if ($orphans) {
+		print "<h2 style='margin-top: 40px'>" ;
+			print _("Orphaned Themes") ;
+		print "</h2>" ;
+		print "<p>" ;
+			print _("These themes are installed in the database, but are missing from within the file system.") ;
+		print "</p>" ;
+		
+		print "<table cellspacing='0' style='width: 100%'>" ;
+			print "<tr class='head'>" ;
+				print "<th>" ;
+					print _("Name") ;
+				print "</th>" ;
+				print "<th style='width: 50px'>" ;
+					print _("Action") ;
+				print "</th>" ;
+			print "</tr>" ;
+			
+			$count=0;
+			$rowNum="odd" ;
+			foreach($themesSQL AS $themeSQL) {
+				if ($themeSQL[1]=="orphaned") {
+					$themeName=$themeSQL[0]["name"] ;
+					
+					if ($count%2==0) {
+						$rowNum="even" ;
+					}
+					else {
+						$rowNum="odd" ;
+					}
+				
+					$count++ ;
+				
+					//COLOR ROW BY STATUS!
+					print "<tr class=$rowNum>" ;
+						print "<td>" ;
+							print _($themeName) ;
+						print "</td>" ;
+						print "<td>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstall.php&gibbonThemeID=" . $themesSQL[$themeName][0]["gibbonThemeID"] . "&orphaned=true'><img title='" . _('Remove Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+						print "</td>" ;
+					print "</tr>" ;
+				}
+			}
+			print "<tr>" ;
+				print "<td colspan=7 class='right'>" ;
+					?>
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<?php
+				print "</td>" ;
+			print "</tr>" ;
+		print "</table>" ;
 	}
 }
 ?>

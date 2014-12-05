@@ -19,6 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
+$orphaned="" ;
+if (isset($_GET["orphaned"])) {
+	if ($_GET["orphaned"]=="true") {
+		$orphaned="true" ;
+	}
+}
+
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/theme_manage_uninstall.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -79,7 +86,7 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstallProcess.php?gibbonThemeID=$gibbonThemeID" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstallProcess.php?gibbonThemeID=$gibbonThemeID&orphaned=$orphaned" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td style='width: 275px'> 

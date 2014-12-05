@@ -35,6 +35,13 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
+$orphaned="" ;
+if (isset($_GET["orphaned"])) {
+	if ($_GET["orphaned"]=="true") {
+		$orphaned="true" ;
+	}
+}
+
 $gibbonThemeID=$_GET["gibbonThemeID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/theme_manage_uninstall.php&gibbonThemeID=" . $gibbonThemeID ;
 $URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/theme_manage.php" ;
@@ -86,7 +93,12 @@ else {
 			}
 
 			//Success 0
-			$URLDelete=$URLDelete . "&deleteReturn=success0" ;
+			if ($orphaned!="true") {
+				$URLDelete=$URLDelete . "&deleteReturn=success0" ;
+			}
+			else {
+				$URLDelete=$URLDelete . "&deleteReturn=success1" ;
+			}
 			header("Location: {$URLDelete}");
 		}
 	}

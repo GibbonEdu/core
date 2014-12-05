@@ -39,6 +39,10 @@ else {
 			$deleteReturnMessage="Uninstall was successful. You will still need to remove the module's files and database tables yourself." ;	
 			$class="success" ;
 		}
+		if ($deleteReturn=="success1") {
+			$deleteReturnMessage="Uninstall was successful. You will still need to remove the module's database tables yourself." ;	
+			$class="success" ;
+		}
 		print "<div class='$class'>" ;
 			print $deleteReturnMessage;
 		print "</div>" ;
@@ -93,7 +97,8 @@ else {
 	}
 	$modulesSQL=array() ;
 	while ($row=$result->fetch()) {
-		$modulesSQL[$row["name"]]=$row ;
+		$modulesSQL[$row["name"]][0]=$row ;
+		$modulesSQL[$row["name"]][1]="orphaned" ;
 	}
 	
 	//Get list of modules in /modules directory
@@ -141,6 +146,7 @@ else {
 			$rowNum="odd" ;
 			foreach ($modulesFS AS $moduleFS) {
 				$moduleName=substr($moduleFS, strlen($_SESSION[$guid]["absolutePath"] ."/modules/")) ;
+				$modulesSQL[$moduleName][1]="present" ;
 				
 				if ($count%2==0) {
 					$rowNum="even" ;
@@ -149,7 +155,7 @@ else {
 					$rowNum="odd" ;
 				}
 				$installed=TRUE ;
-				if (isset($modulesSQL[$moduleName])==FALSE) {
+				if (isset($modulesSQL[$moduleName][0])==FALSE) {
 					$installed=FALSE ;
 					$rowNum="warning" ;
 				}
@@ -189,17 +195,17 @@ else {
 					}
 					if ($installed) {
 						print "<td>" ;
-							print _($modulesSQL[$moduleName]["description"]) ;
+							print _($modulesSQL[$moduleName][0]["description"]) ;
 						print "</td>" ;
 						print "<td>" ;
-							print _($modulesSQL[$moduleName]["type"]) ;
+							print _($modulesSQL[$moduleName][0]["type"]) ;
 						print "</td>" ;
 						print "<td>" ;
-							print ynExpander($modulesSQL[$moduleName]["active"]) ;
+							print ynExpander($modulesSQL[$moduleName][0]["active"]) ;
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["type"]=="Additional") {
-								print "v" . $modulesSQL[$moduleName]["version"] ;
+								print "v" . $modulesSQL[$moduleName][0]["version"] ;
 							}
 							else {
 								print "v" . $version ;
@@ -207,17 +213,17 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["url"]!="") {
-								print "<a href='" . $modulesSQL[$moduleName]["url"] . "'>" . $modulesSQL[$moduleName]["author"] . "</a>" ;
+								print "<a href='" . $modulesSQL[$moduleName][0]["url"] . "'>" . $modulesSQL[$moduleName][0]["author"] . "</a>" ;
 							}
 							else {
-								print $modulesSQL[$moduleName]["author"] ;
+								print $modulesSQL[$moduleName][0]["author"] ;
 							}
 						print "</td>" ;
 						print "<td style='width: 120px'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/module_manage_edit.php&gibbonModuleID=" . $modulesSQL[$moduleName]["gibbonModuleID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-							if ($modulesSQL[$moduleName]["type"]=="Additional") {
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/module_manage_uninstall.php&gibbonModuleID=" . $modulesSQL[$moduleName]["gibbonModuleID"] . "'><img title='Uninstall' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/module_manage_update.php&gibbonModuleID=" . $modulesSQL[$moduleName]["gibbonModuleID"] . "'><img title='Update' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/delivery2.png'/></a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/module_manage_edit.php&gibbonModuleID=" . $modulesSQL[$moduleName][0]["gibbonModuleID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							if ($modulesSQL[$moduleName][0]["type"]=="Additional") {
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/module_manage_uninstall.php&gibbonModuleID=" . $modulesSQL[$moduleName][0]["gibbonModuleID"] . "'><img title='Uninstall' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/module_manage_update.php&gibbonModuleID=" . $modulesSQL[$moduleName][0]["gibbonModuleID"] . "'><img title='Update' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/delivery2.png'/></a>" ;
 							}
 						print "</td>" ;
 					}
@@ -230,6 +236,69 @@ else {
 					}
 				print "</tr>" ;
 			}
+		print "</table>" ;
+	}
+	
+	//Find and display orphaned modules
+	$orphans=FALSE ;
+	foreach($modulesSQL AS $moduleSQL) {
+		if ($moduleSQL[1]=="orphaned") {
+			$orphans=TRUE ;
+		}
+	}
+	
+	if ($orphans) {
+		print "<h2 style='margin-top: 40px'>" ;
+			print _("Orphaned Modules") ;
+		print "</h2>" ;
+		print "<p>" ;
+			print _("These modules are installed in the database, but are missing from within the file system.") ;
+		print "</p>" ;
+		
+		print "<table cellspacing='0' style='width: 100%'>" ;
+			print "<tr class='head'>" ;
+				print "<th>" ;
+					print _("Name") ;
+				print "</th>" ;
+				print "<th style='width: 50px'>" ;
+					print _("Action") ;
+				print "</th>" ;
+			print "</tr>" ;
+			
+			$count=0;
+			$rowNum="odd" ;
+			foreach($modulesSQL AS $moduleSQL) {
+				if ($moduleSQL[1]=="orphaned") {
+					$moduleName=$moduleSQL[0]["name"] ;
+					
+					if ($count%2==0) {
+						$rowNum="even" ;
+					}
+					else {
+						$rowNum="odd" ;
+					}
+				
+					$count++ ;
+				
+					//COLOR ROW BY STATUS!
+					print "<tr class=$rowNum>" ;
+						print "<td>" ;
+							print _($moduleName) ;
+						print "</td>" ;
+						print "<td>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/module_manage_uninstall.php&gibbonModuleID=" . $modulesSQL[$moduleName][0]["gibbonModuleID"] . "&orphaned=true'><img title='Remove Record' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+						print "</td>" ;
+					print "</tr>" ;
+				}
+			}
+			print "<tr>" ;
+				print "<td colspan=7 class='right'>" ;
+					?>
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<?php
+				print "</td>" ;
+			print "</tr>" ;
 		print "</table>" ;
 	}
 }
