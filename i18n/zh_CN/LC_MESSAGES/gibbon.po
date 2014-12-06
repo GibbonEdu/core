@@ -26,19 +26,19 @@ msgstr ""
 
 #: index.php:1077 index.php:1072 index.php:1074 index.php:1080 index.php:1078
 #: index.php:1084 index.php:1102 index.php:1064 index.php:1073 index.php:681
-#: index.php:510 index.php:543 index.php:545
+#: index.php:510 index.php:543 index.php:545 index.php:549
 msgid "Today's Lessons"
 msgstr ""
 
 #: index.php:1227 index.php:1222 index.php:1229 index.php:1232 index.php:1238
 #: index.php:1236 index.php:1242 index.php:1265 index.php:844 index.php:673
-#: index.php:727 index.php:729
+#: index.php:727 index.php:729 index.php:733
 msgid "My Timetable"
 msgstr ""
 
 #: index.php:1262 index.php:1257 index.php:1267 index.php:1270 index.php:1276
 #: index.php:1274 index.php:1280 index.php:1303 index.php:1265 index.php:882
-#: index.php:711 index.php:765 index.php:767
+#: index.php:711 index.php:765 index.php:767 index.php:771
 msgid "My Roll Group"
 msgstr ""
 
@@ -73,8 +73,8 @@ msgid ""
 msgstr ""
 
 #: fullscreen.php:44 index.php:110 report.php:43 index.php:116 index.php:122
-#: index.php:124 index.php:129 index.php:151 fullscreen.php:44 index.php:152
-#: report.php:43
+#: index.php:124 index.php:129 index.php:151 index.php:152 fullscreen.php:44
+#: index.php:152 report.php:43
 msgid "System Settings are not set: the system cannot be displayed"
 msgstr ""
 
@@ -85,8 +85,8 @@ msgstr ""
 #: fullscreen.php:139 index.php:1438 report.php:135 index.php:1433
 #: index.php:1439 index.php:1442 index.php:1448 index.php:1446 index.php:1452
 #: index.php:1475 index.php:1437 fullscreen.php:145 index.php:1054
-#: report.php:141 index.php:883 index.php:937 fullscreen.php:145 index.php:939
-#: report.php:141
+#: report.php:141 index.php:883 index.php:937 index.php:939 fullscreen.php:145
+#: index.php:943 report.php:141
 msgid "Illegal address detected: access denied."
 msgstr ""
 
@@ -440,8 +440,9 @@ msgstr ""
 #: modules/Rubrics/rubrics_add.php:72 modules/Rubrics/rubrics_delete.php:66
 #: modules/Rubrics/rubrics_edit.php:66 modules/Rubrics/rubrics_edit.php:104
 #: modules/Rubrics/rubrics_edit.php:129 modules/Rubrics/rubrics_edit.php:154
-#: modules/Rubrics/rubrics_edit_editRowsColumns.php:72 functions.php:243
-#: functions.php:669 index.php:553 index.php:574 index_tt_ajax.php:48
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:72 index.php:553
+#: index.php:574 functions.php:243 functions.php:669 index.php:557
+#: index.php:578 index_tt_ajax.php:48
 #: modules/Activities/activities_copy.php:43
 #: modules/Activities/activities_manage_add.php:41
 #: modules/Activities/activities_manage_delete.php:42
@@ -641,14 +642,14 @@ msgstr ""
 #: modules/Students/student_view_details_notes_delete.php:64
 #: modules/Students/student_view_details_notes_edit.php:64
 #: modules/System Admin/i18n_manage.php:39
-#: modules/System Admin/module_manage.php:52
+#: modules/System Admin/module_manage.php:56
 #: modules/System Admin/module_manage_edit.php:39
-#: modules/System Admin/module_manage_uninstall.php:39
+#: modules/System Admin/module_manage_uninstall.php:46
 #: modules/System Admin/module_manage_update.php:39
 #: modules/System Admin/systemSettings.php:76
-#: modules/System Admin/theme_manage.php:52
-#: modules/System Admin/theme_manage.php:77
-#: modules/System Admin/theme_manage_uninstall.php:39
+#: modules/System Admin/theme_manage.php:56
+#: modules/System Admin/theme_manage.php:81
+#: modules/System Admin/theme_manage_uninstall.php:46
 #: modules/System Admin/update.php:42
 #: modules/Timetable/spaceBooking_manage_add.php:51
 #: modules/Timetable/spaceBooking_manage_delete.php:47
@@ -1345,11 +1346,11 @@ msgstr ""
 #: modules/System Admin/i18n_manage.php:31
 #: modules/System Admin/module_manage.php:31
 #: modules/System Admin/module_manage_edit.php:31
-#: modules/System Admin/module_manage_uninstall.php:31
+#: modules/System Admin/module_manage_uninstall.php:38
 #: modules/System Admin/module_manage_update.php:31
 #: modules/System Admin/systemSettings.php:65
 #: modules/System Admin/theme_manage.php:31
-#: modules/System Admin/theme_manage_uninstall.php:31
+#: modules/System Admin/theme_manage_uninstall.php:38
 #: modules/System Admin/update.php:34
 #: modules/Timetable/report_viewAvailableSpaces.php:33
 #: modules/Timetable/report_viewAvailableTeachers.php:33
@@ -1928,10 +1929,12 @@ msgstr ""
 #: modules/Students/student_view_details_notes_add.php:171
 #: modules/Students/student_view_details_notes_edit.php:184
 #: modules/System Admin/i18n_manage.php:146
+#: modules/System Admin/module_manage.php:298
 #: modules/System Admin/module_manage_edit.php:148
 #: modules/System Admin/module_manage_update.php:139
 #: modules/System Admin/systemSettings.php:1308
-#: modules/System Admin/theme_manage.php:251
+#: modules/System Admin/theme_manage.php:257
+#: modules/System Admin/theme_manage.php:322
 #: modules/System Admin/update.php:116 modules/System Admin/update.php:184
 #: modules/Timetable/report_viewAvailableSpaces.php:136
 #: modules/Timetable/report_viewAvailableTeachers.php:109
@@ -2844,9 +2847,11 @@ msgstr ""
 #: modules/Students/student_view_details.php:1108
 #: modules/Students/student_view_details.php:1344
 #: modules/System Admin/i18n_manage.php:80
-#: modules/System Admin/module_manage.php:115
+#: modules/System Admin/module_manage.php:120
+#: modules/System Admin/module_manage.php:261
 #: modules/System Admin/module_manage_edit.php:93
-#: modules/System Admin/theme_manage.php:130 modules/Timetable/tt.php:151
+#: modules/System Admin/theme_manage.php:135
+#: modules/System Admin/theme_manage.php:285 modules/Timetable/tt.php:151
 #: modules/Timetable/tt_space.php:122 modules/Timetable/tt_view.php:106
 #: modules/Timetable Admin/course_manage.php:166
 #: modules/Timetable Admin/course_manage_add.php:133
@@ -3093,8 +3098,8 @@ msgstr ""
 #: modules/Departments/department_course_class.php:305
 #: modules/Departments/department_course_class.php:394
 #: modules/Students/student_view_details.php:2624 index.php:599
-#: modules/Markbook/markbook_edit_edit.php:233 functions.php:280 index.php:601
-#: modules/Crowd Assessment/crowdAssess.php:62
+#: modules/Markbook/markbook_edit_edit.php:233 index.php:601 functions.php:280
+#: index.php:605 modules/Crowd Assessment/crowdAssess.php:62
 #: modules/Departments/department_course_class.php:184
 #: modules/Departments/department_course_class.php:305
 #: modules/Departments/department_course_class.php:394
@@ -3113,7 +3118,7 @@ msgstr ""
 
 #: index.php:311 index.php:317 index.php:323 index.php:321 index.php:325
 #: index.php:330 index.php:274 index.php:277 index.php:284 index.php:306
-#: index.php:328 index.php:330
+#: index.php:328 index.php:334
 #, php-format
 msgid ""
 "Warning: you are logged into the system in school year %1$s, which is not "
@@ -3122,7 +3127,7 @@ msgstr ""
 
 #: index.php:311 index.php:317 index.php:323 index.php:321 index.php:325
 #: index.php:330 index.php:274 index.php:277 index.php:284 index.php:306
-#: index.php:328 index.php:330
+#: index.php:328 index.php:334
 msgid ""
 "Your data may not look quite right (for example, students who have left the "
 "school will not appear in previous years), but you should be able to edit "
@@ -3257,7 +3262,7 @@ msgstr ""
 #: modules/Staff/staff_view_details.php:220
 #: modules/Staff/staff_view_details.php:335
 #: modules/Students/student_view_details.php:659 functions.php:31
-#: index.php:469 index.php:502 functions.php:31 index.php:504
+#: index.php:469 index.php:502 index.php:504 functions.php:31 index.php:508
 #: modules/Roll Groups/rollGroups.php:69
 #: modules/Roll Groups/rollGroups_details.php:108
 #: modules/School Admin/rollGroup_manage.php:133
@@ -3309,8 +3314,9 @@ msgstr ""
 #: index.php:607 modules/Departments/department_course_class.php:238
 #: modules/Departments/department_course_class.php:359
 #: modules/Departments/department_course_class.php:448 index.php:661
-#: functions.php:49 functions.php:338 i18n/dbStringsForTranslation.php:940
-#: index.php:663 modules/Departments/department_course_class.php:238
+#: index.php:663 functions.php:49 functions.php:338
+#: i18n/dbStringsForTranslation.php:940 index.php:667
+#: modules/Departments/department_course_class.php:238
 #: modules/Departments/department_course_class.php:359
 #: modules/Departments/department_course_class.php:448
 #: modules/Planner/planner.php:341 modules/Planner/planner.php:528
@@ -3369,8 +3375,8 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:925 index.php:343
 #: cli/planner_parentWeeklyEmailSummary.php:136 index.php:350 index.php:893
 #: i18n/dbStringsForTranslation.php:939 functions.php:75 index.php:722
-#: index.php:776 cli/planner_parentWeeklyEmailSummary.php:136 functions.php:75
-#: i18n/dbStringsForTranslation.php:939 index.php:778
+#: index.php:776 index.php:778 cli/planner_parentWeeklyEmailSummary.php:136
+#: functions.php:75 i18n/dbStringsForTranslation.php:939 index.php:782
 msgid "Behaviour"
 msgstr ""
 
@@ -3400,13 +3406,13 @@ msgstr ""
 
 #: index.php:543 index.php:549 index.php:555 index.php:553 index.php:559
 #: index.php:564 index.php:526 index.php:529 index.php:538 index.php:357
-#: index.php:390 index.php:392
+#: index.php:390 index.php:392 index.php:396
 msgid "Welcome"
 msgstr ""
 
 #: index.php:560 index.php:566 index.php:572 index.php:570 index.php:576
 #: index.php:581 index.php:543 index.php:546 index.php:555 index.php:374
-#: index.php:407 index.php:409
+#: index.php:407 index.php:409 index.php:413
 #, php-format
 msgid ""
 "Parents of students interested in study at %1$s may use our %2$s online form"
@@ -3415,19 +3421,20 @@ msgstr ""
 
 #: index.php:579 index.php:585 index.php:591 index.php:589 index.php:595
 #: index.php:600 index.php:562 index.php:565 index.php:574 index.php:403
-#: index.php:436 index.php:438
+#: index.php:436 index.php:438 index.php:442
 msgid "Your current role type cannot be determined."
 msgstr ""
 
 #: index.php:626 index.php:632 index.php:638 index.php:636 index.php:642
 #: index.php:647 index.php:609 index.php:612 index.php:622 index.php:451
-#: index.php:484 index.php:486
+#: index.php:484 index.php:486 index.php:490
 msgid "Parental Dashboard"
 msgstr ""
 
 #: index.php:640 index.php:646 modules/School Admin/studentsSettings.php:145
 #: index.php:652 index.php:650 index.php:656 index.php:661 index.php:623
 #: index.php:626 index.php:635 index.php:464 index.php:497 index.php:499
+#: index.php:503
 msgid "Student Profile"
 msgstr ""
 
@@ -3516,7 +3523,8 @@ msgstr ""
 #: modules/Messenger/messenger_post.php:548
 #: modules/Students/student_view_details.php:868
 #: modules/Finance/moduleFunctions.php:554 index.php:466 index.php:499
-#: index.php:501 modules/Activities/report_activitySpread_rollGroup.php:51
+#: index.php:501 index.php:505
+#: modules/Activities/report_activitySpread_rollGroup.php:51
 #: modules/Activities/report_activitySpread_rollGroup.php:128
 #: modules/Activities/report_activityType_rollGroup.php:51
 #: modules/Activities/report_activityType_rollGroup.php:128
@@ -3601,8 +3609,8 @@ msgstr ""
 #: index.php:634 index.php:1099 functions.php:27 functions.php:2012
 #: index.php:707 modules/Planner/units_edit.php:615
 #: modules/Planner/units_edit.php:972 functions.php:236 functions.php:2217
-#: index.php:536 functions.php:2226 index.php:590 functions.php:236
-#: functions.php:2226 index.php:592
+#: index.php:536 functions.php:2226 index.php:590 index.php:592
+#: functions.php:236 functions.php:2226 index.php:596
 #: modules/Departments/department_course_class.php:128
 #: modules/Markbook/moduleFunctions.php:97 modules/Planner/units_edit.php:615
 #: modules/Planner/units_edit.php:972
@@ -4123,9 +4131,9 @@ msgstr ""
 #: modules/Rubrics/rubrics_edit.php:138 modules/Rubrics/rubrics_edit.php:157
 #: modules/Rubrics/rubrics_edit.php:163
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:75
-#: modules/Rubrics/rubrics_edit_editRowsColumns.php:81 functions.php:246
-#: functions.php:1225 functions.php:1244 index.php:556 index.php:577
-#: modules/Activities/activities_copy.php:46
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:81 index.php:556
+#: index.php:577 functions.php:246 functions.php:1225 functions.php:1244
+#: index.php:560 index.php:581 modules/Activities/activities_copy.php:46
 #: modules/Activities/activities_copy.php:52
 #: modules/Activities/activities_manage_add.php:47
 #: modules/Activities/activities_manage_delete.php:45
@@ -4503,15 +4511,15 @@ msgstr ""
 #: modules/System Admin/module_manage_edit.php:42
 #: modules/System Admin/module_manage_edit.php:48
 #: modules/System Admin/module_manage_edit.php:51
-#: modules/System Admin/module_manage_uninstall.php:42
-#: modules/System Admin/module_manage_uninstall.php:45
+#: modules/System Admin/module_manage_uninstall.php:49
+#: modules/System Admin/module_manage_uninstall.php:52
 #: modules/System Admin/module_manage_update.php:42
 #: modules/System Admin/module_manage_update.php:48
 #: modules/System Admin/systemSettings.php:79
 #: modules/System Admin/systemSettings.php:85
-#: modules/System Admin/theme_manage.php:80
-#: modules/System Admin/theme_manage.php:86
-#: modules/System Admin/theme_manage_uninstall.php:42
+#: modules/System Admin/theme_manage.php:84
+#: modules/System Admin/theme_manage.php:90
+#: modules/System Admin/theme_manage_uninstall.php:49
 #: modules/System Admin/update.php:45 modules/System Admin/update.php:51
 #: modules/Timetable/spaceBooking_manage_add.php:57
 #: modules/Timetable/spaceBooking_manage_add.php:60
@@ -5014,12 +5022,12 @@ msgstr ""
 #: modules/Rubrics/rubrics_add.php:75 modules/Rubrics/rubrics_delete.php:72
 #: modules/Rubrics/rubrics_edit.php:72 modules/Rubrics/rubrics_edit.php:110
 #: modules/Rubrics/rubrics_edit.php:135 modules/Rubrics/rubrics_edit.php:160
-#: modules/Rubrics/rubrics_edit_editRowsColumns.php:78
-#: cli/attendance_dailyIncompleteEmail.php:77
+#: modules/Rubrics/rubrics_edit_editRowsColumns.php:78 index.php:559
+#: index.php:580 cli/attendance_dailyIncompleteEmail.php:77
 #: cli/attendance_dailyIncompleteEmail.php:93
 #: cli/planner_parentWeeklyEmailSummary.php:86 functions.php:249
 #: functions.php:1228 functions.php:1247 functions.php:1804 functions.php:3237
-#: index.php:559 index.php:580 modules/Activities/activities_copy.php:49
+#: index.php:563 index.php:584 modules/Activities/activities_copy.php:49
 #: modules/Activities/activities_manage.php:125
 #: modules/Activities/activities_manage.php:184
 #: modules/Activities/activities_manage_add.php:44
@@ -5212,11 +5220,11 @@ msgstr ""
 #: modules/Students/student_view_details_notes_delete.php:70
 #: modules/Students/student_view_details_notes_edit.php:70
 #: modules/System Admin/i18n_manage.php:45
-#: modules/System Admin/module_manage.php:55
+#: modules/System Admin/module_manage.php:59
 #: modules/System Admin/module_manage_edit.php:45
 #: modules/System Admin/module_manage_update.php:45
-#: modules/System Admin/theme_manage.php:55
-#: modules/System Admin/theme_manage.php:83
+#: modules/System Admin/theme_manage.php:59
+#: modules/System Admin/theme_manage.php:87
 #: modules/Timetable/spaceBooking_manage_add.php:54
 #: modules/Timetable/spaceBooking_manage_add.php:278
 #: modules/Timetable/spaceBooking_manage_add.php:284
@@ -5515,8 +5523,8 @@ msgstr ""
 #: modules/Rubrics/rubrics_edit.php:78 modules/Rubrics/rubrics_edit.php:91
 #: modules/Rubrics/rubrics_edit.php:116 modules/Rubrics/rubrics_edit.php:141
 #: modules/Rubrics/rubrics_edit.php:169 Admin/ttDates.php:57
-#: Admin/ttDates.php:70 functions.php:252 functions.php:1231
-#: functions.php:1250 index.php:562 index.php:583
+#: Admin/ttDates.php:70 index.php:562 index.php:583 functions.php:252
+#: functions.php:1231 functions.php:1250 index.php:566 index.php:587
 #: modules/Activities/activities_copy.php:55
 #: modules/Activities/activities_manage.php:42
 #: modules/Activities/activities_manage_edit.php:61
@@ -5648,7 +5656,7 @@ msgstr ""
 #: modules/System Admin/module_manage_edit.php:54
 #: modules/System Admin/module_manage_update.php:54
 #: modules/System Admin/systemSettings.php:88
-#: modules/System Admin/theme_manage.php:89 modules/System Admin/update.php:54
+#: modules/System Admin/theme_manage.php:93 modules/System Admin/update.php:54
 #: modules/Timetable/spaceBooking_manage.php:54
 #: modules/Timetable/spaceChange_manage.php:54
 #: modules/Timetable Admin/course_manage.php:54
@@ -5795,8 +5803,8 @@ msgstr ""
 #: functions.php:2177 index.php:542
 #: modules/Departments/department_course_class_full.php:116
 #: modules/Students/student_view_details.php:2620 functions.php:2186
-#: index.php:596 modules/Markbook/markbook_edit_edit.php:151 functions.php:277
-#: functions.php:2186 index.php:598
+#: index.php:596 modules/Markbook/markbook_edit_edit.php:151 index.php:598
+#: functions.php:277 functions.php:2186 index.php:602
 #: modules/Crowd Assessment/crowdAssess.php:59
 #: modules/Crowd Assessment/crowdAssess_view.php:98
 #: modules/Departments/department_course_class_full.php:116
@@ -5864,8 +5872,8 @@ msgstr ""
 #: modules/Departments/department_course_class.php:317
 #: modules/Departments/department_course_class.php:406
 #: modules/Students/student_view_details.php:2932 functions.php:2203
-#: index.php:603 cli/planner_parentWeeklyEmailSummary.php:109
-#: functions.php:284 functions.php:2203 index.php:605
+#: index.php:603 index.php:605 cli/planner_parentWeeklyEmailSummary.php:109
+#: functions.php:284 functions.php:2203 index.php:609
 #: modules/Departments/department_course_class.php:196
 #: modules/Departments/department_course_class.php:317
 #: modules/Departments/department_course_class.php:406
@@ -5912,8 +5920,8 @@ msgstr ""
 #: modules/Departments/department_course_class.php:314
 #: modules/Departments/department_course_class.php:403
 #: modules/Departments/department_course_class_full.php:130
-#: modules/Students/student_view_details.php:2857 index.php:606
-#: functions.php:281 index.php:608 modules/Attendance/moduleFunctions.php:371
+#: modules/Students/student_view_details.php:2857 index.php:606 index.php:608
+#: functions.php:281 index.php:612 modules/Attendance/moduleFunctions.php:371
 #: modules/Departments/department_course_class.php:193
 #: modules/Departments/department_course_class.php:314
 #: modules/Departments/department_course_class.php:403
@@ -5933,8 +5941,8 @@ msgstr ""
 #: index.php:1129 index.php:720 index.php:1147 modules/Planner/planner.php:469
 #: modules/Planner/planner.php:693 modules/Planner/planner.php:989
 #: index.php:682 index.php:1109 index.php:685 functions.php:78 index.php:726
-#: functions.php:287 index.php:555 index.php:609 functions.php:287
-#: index.php:611 modules/Planner/planner.php:287
+#: functions.php:287 index.php:555 index.php:609 index.php:611
+#: functions.php:287 index.php:615 modules/Planner/planner.php:287
 #: modules/Planner/planner.php:469 modules/Planner/planner.php:693
 #: modules/Planner/planner.php:989
 msgid "Like"
@@ -5956,14 +5964,17 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:1073
 #: modules/Planner/planner_view_full.php:1194 functions.php:290 index.php:558
 #: index.php:795 Admin/module_manage.php:136 Admin/theme_manage.php:148
-#: index.php:612 index.php:849 functions.php:290 index.php:614 index.php:851
+#: index.php:612 index.php:849 index.php:614 index.php:851 functions.php:290
+#: index.php:618 index.php:855
 #: modules/Library/library_lending_item_edit.php:206
 #: modules/Library/library_lending_item_return.php:138
 #: modules/Library/library_lending_item_signout.php:258
 #: modules/Planner/planner_view_full.php:1194
 #: modules/School Admin/department_manage_edit.php:236
-#: modules/System Admin/module_manage.php:136
-#: modules/System Admin/theme_manage.php:148
+#: modules/System Admin/module_manage.php:141
+#: modules/System Admin/module_manage.php:264
+#: modules/System Admin/theme_manage.php:153
+#: modules/System Admin/theme_manage.php:288
 #: modules/User Admin/role_manage.php:111
 msgid "Action"
 msgstr ""
@@ -6028,8 +6039,9 @@ msgstr ""
 #: index.php:546 index.php:592 modules/Markbook/markbook_view.php:967
 #: modules/Students/student_view_details.php:2024
 #: modules/Students/student_view_details.php:2625 index.php:600 index.php:646
-#: modules/Markbook/markbook_edit_edit.php:160 functions.php:321 index.php:602
-#: index.php:648 modules/Crowd Assessment/crowdAssess.php:63
+#: modules/Markbook/markbook_edit_edit.php:160 index.php:602 index.php:648
+#: functions.php:321 index.php:606 index.php:652
+#: modules/Crowd Assessment/crowdAssess.php:63
 #: modules/Markbook/markbook_edit.php:212
 #: modules/Markbook/markbook_edit_add.php:136
 #: modules/Markbook/markbook_edit_edit.php:160
@@ -6520,12 +6532,12 @@ msgstr ""
 #: index.php:827 modules/Rubrics/rubrics.php:167
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:192
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:341 Admin/ttDates.php:146
-#: cli/attendance_dailyIncompleteEmail.php:99
+#: index.php:513 index.php:829 cli/attendance_dailyIncompleteEmail.php:99
 #: cli/attendance_dailyIncompleteEmail.php:101
 #: cli/planner_parentWeeklyEmailSummary.php:103
 #: cli/planner_parentWeeklyEmailSummary.php:129 functions.php:374
 #: functions.php:601 functions.php:645 functions.php:695 functions.php:714
-#: functions.php:807 index.php:513 index.php:829
+#: functions.php:807 index.php:517 index.php:833
 #: modules/Activities/activities_manage.php:136
 #: modules/Activities/activities_manage_edit.php:427
 #: modules/Activities/activities_manage_edit.php:717
@@ -6687,8 +6699,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2580
 #: modules/Students/student_view_details.php:2796
 #: modules/System Admin/i18n_manage.php:72
-#: modules/System Admin/module_manage.php:108
-#: modules/System Admin/theme_manage.php:122
+#: modules/System Admin/module_manage.php:113
+#: modules/System Admin/theme_manage.php:127
 #: modules/Timetable/spaceBooking_manage.php:91
 #: modules/Timetable/spaceChange_manage.php:91 modules/Timetable/tt.php:140
 #: modules/Timetable/tt_space.php:111 modules/Timetable/tt_space_view.php:109
@@ -6998,8 +7010,8 @@ msgstr ""
 #: modules/Departments/department_course_class.php:357
 #: modules/Departments/department_course_class.php:446
 #: modules/Markbook/markbook_view.php:943
-#: modules/Students/student_view_details.php:1999 index.php:659
-#: functions.php:336 functions.php:416 index.php:661
+#: modules/Students/student_view_details.php:1999 index.php:659 index.php:661
+#: functions.php:336 functions.php:416 index.php:665
 #: modules/Departments/department_course_class.php:236
 #: modules/Departments/department_course_class.php:357
 #: modules/Departments/department_course_class.php:446
@@ -7094,8 +7106,8 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:1054
 #: modules/Markbook/markbook_view.php:1574
 #: modules/Students/student_view_details.php:2112 index.php:904
-#: modules/Rubrics/rubrics.php:285 functions.php:507 index.php:906
-#: modules/Behaviour/behaviour_manage.php:361
+#: modules/Rubrics/rubrics.php:285 index.php:906 functions.php:507
+#: index.php:910 modules/Behaviour/behaviour_manage.php:361
 #: modules/Behaviour/moduleFunctions.php:145
 #: modules/Finance/billingSchedule_manage.php:234
 #: modules/Finance/fees_manage.php:230 modules/Library/library_browse.php:433
@@ -8002,7 +8014,8 @@ msgstr ""
 #: modules/Markbook/markbook_edit_edit.php:559
 #: modules/Rubrics/rubrics_add.php:206 modules/Rubrics/rubrics_delete.php:132
 #: modules/Rubrics/rubrics_edit.php:276 Admin/systemSettings.php:810
-#: functions.php:334 functions.php:343 index.php:659 index.php:668
+#: index.php:659 index.php:668 functions.php:334 functions.php:343
+#: index.php:663 index.php:672
 #: modules/Activities/activities_manage_add.php:149
 #: modules/Activities/activities_manage_add.php:161
 #: modules/Activities/activities_manage_delete.php:107
@@ -8156,9 +8169,9 @@ msgstr ""
 #: modules/Students/student_view_details.php:1517
 #: modules/Students/student_view_details_notes_delete.php:127
 #: modules/System Admin/module_manage_edit.php:137
-#: modules/System Admin/module_manage_uninstall.php:96
+#: modules/System Admin/module_manage_uninstall.php:103
 #: modules/System Admin/systemSettings.php:810
-#: modules/System Admin/theme_manage_uninstall.php:96
+#: modules/System Admin/theme_manage_uninstall.php:103
 #: modules/Timetable/spaceBooking_manage_delete.php:110
 #: modules/Timetable/spaceChange_manage_delete.php:110
 #: modules/Timetable Admin/course_manage_class_add.php:150
@@ -8463,7 +8476,7 @@ msgstr ""
 #: modules/Markbook/markbook_edit_edit.php:546
 #: modules/Markbook/markbook_edit_edit.php:558
 #: modules/Rubrics/rubrics_add.php:207 modules/Rubrics/rubrics_edit.php:277
-#: Admin/systemSettings.php:809 functions.php:330 index.php:655
+#: Admin/systemSettings.php:809 index.php:655 functions.php:330 index.php:659
 #: modules/Activities/activities_manage_add.php:150
 #: modules/Activities/activities_manage_add.php:162
 #: modules/Activities/activities_manage_edit.php:206
@@ -8636,22 +8649,23 @@ msgstr ""
 #: functions.php:1363 index.php:846 functions.php:1561 functions.php:1562
 #: functions.php:1569 functions.php:1570 functions.php:1579 functions.php:1580
 #: index.php:675 functions.php:1571 functions.php:1578 functions.php:1588
-#: functions.php:1589 index.php:729 functions.php:1570 functions.php:1571
-#: functions.php:1578 functions.php:1579 functions.php:1588 functions.php:1589
-#: index.php:731 modules/Resources/resources_add_ajax.php:94
+#: functions.php:1589 index.php:729 index.php:731 functions.php:1570
+#: functions.php:1571 functions.php:1578 functions.php:1579 functions.php:1588
+#: functions.php:1589 index.php:735
+#: modules/Resources/resources_add_ajax.php:94
 #: modules/Resources/resources_addQuick_ajax.php:77
 msgid "Loading"
 msgstr ""
 
 #: index.php:1245 index.php:1248 index.php:1254 index.php:1252 index.php:1258
 #: index.php:1281 index.php:1243 index.php:860 index.php:689 index.php:743
-#: index.php:745
+#: index.php:745 index.php:749
 msgid "Couldn't load this tab."
 msgstr ""
 
 #: index.php:1265 index.php:1268 index.php:1274 index.php:1272 index.php:1278
 #: index.php:1301 index.php:1263 index.php:880 index.php:709 index.php:763
-#: index.php:765
+#: index.php:765 index.php:769
 msgid "My Roll Groups"
 msgstr ""
 
@@ -8674,8 +8688,8 @@ msgstr ""
 #: Groups/rollGroups_details.php:148 i18n/dbStringsForTranslation.php:941
 #: index.php:892 Groups/rollGroups.php:66 Groups/rollGroups_details.php:156
 #: i18n/dbStringsForTranslation.php:955 index.php:721
-#: Groups/rollGroups_details.php:157 index.php:775
-#: i18n/dbStringsForTranslation.php:955 index.php:777
+#: Groups/rollGroups_details.php:157 index.php:775 index.php:777
+#: i18n/dbStringsForTranslation.php:955 index.php:781
 #: modules/Activities/activities_manage_enrolment_add.php:158
 #: modules/Library/report_studentBorrowingRecord.php:53
 #: modules/Planner/planner.php:352 modules/Planner/planner.php:539
@@ -8696,7 +8710,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:38 index.php:1301 index.php:1299
 #: index.php:1305 index.php:1328 index.php:1290 index.php:907
 #: i18n/dbStringsForTranslation.php:40 index.php:736 index.php:790
-#: i18n/dbStringsForTranslation.php:40 index.php:792
+#: index.php:792 i18n/dbStringsForTranslation.php:40 index.php:796
 #: modules/Attendance/attendance_take_byPerson.php:218
 #: modules/Attendance/attendance_take_byRollGroup.php:247
 msgid "Take Attendance"
@@ -8716,7 +8730,8 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:295
 #: modules/Markbook/markbook_view.php:446 index.php:908 index.php:737
 #: modules/Departments/department_course_class.php:463 index.php:791
-#: index.php:793 modules/Departments/department_course_class.php:463
+#: index.php:793 index.php:797
+#: modules/Departments/department_course_class.php:463
 #: modules/Library/report_catalogSummary.php:194
 #: modules/Markbook/markbook_edit.php:233
 #: modules/Markbook/markbook_view.php:295
@@ -8797,7 +8812,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:1679 index.php:763
 #: Admin/department_manage.php:131
 #: Admin/externalAssessments_manage_edit.php:198 index.php:817
-#: modules/Rubrics/rubrics.php:162 index.php:819
+#: modules/Rubrics/rubrics.php:162 index.php:819 index.php:823
 #: modules/Activities/activities_manage.php:131
 #: modules/Activities/activities_manage_enrolment.php:204
 #: modules/Behaviour/behaviour_manage.php:255
@@ -8865,7 +8880,7 @@ msgstr ""
 #: index.php:1335 index.php:1358 index.php:1320 index.php:937 index.php:766
 #: modules/Behaviour/behaviour_manage.php:259
 #: modules/Behaviour/behaviour_manage_addMulti.php:68 index.php:820
-#: index.php:822 modules/Behaviour/behaviour_manage.php:259
+#: index.php:822 index.php:826 modules/Behaviour/behaviour_manage.php:259
 #: modules/Behaviour/behaviour_manage_add.php:85
 #: modules/Behaviour/behaviour_manage_add.php:279
 #: modules/Behaviour/behaviour_manage_addMulti.php:68
@@ -8877,7 +8892,8 @@ msgstr ""
 #: index.php:1336 index.php:1339 modules/Behaviour/behaviour_manage.php:275
 #: index.php:1345 index.php:1343 index.php:1349 index.php:1372 index.php:1334
 #: index.php:951 index.php:780 modules/Behaviour/behaviour_manage.php:276
-#: index.php:834 index.php:836 modules/Behaviour/behaviour_manage.php:276
+#: index.php:834 index.php:836 index.php:840
+#: modules/Behaviour/behaviour_manage.php:276
 msgid "Student & Date"
 msgstr ""
 
@@ -8983,9 +8999,10 @@ msgstr ""
 #: Admin/department_manage.php:146
 #: modules/Students/student_view_details.php:2410
 #: modules/Students/student_view_details.php:2628 Admin/module_manage.php:124
-#: index.php:837 modules/Markbook/markbook_edit_edit.php:296 functions.php:726
-#: i18n/dbStringsForTranslation.php:868 i18n/dbStringsForTranslation.php:889
-#: index.php:839 modules/Activities/activities_manage_add.php:121
+#: index.php:837 modules/Markbook/markbook_edit_edit.php:296 index.php:839
+#: functions.php:726 i18n/dbStringsForTranslation.php:868
+#: i18n/dbStringsForTranslation.php:889 index.php:843
+#: modules/Activities/activities_manage_add.php:121
 #: modules/Activities/activities_manage_edit.php:177
 #: modules/Activities/activities_my.php:60
 #: modules/Activities/report_activityChoices_byStudent.php:181
@@ -9040,7 +9057,7 @@ msgstr ""
 #: modules/Students/report_students_new.php:77
 #: modules/Students/student_view_details.php:2410
 #: modules/Students/student_view_details.php:2628
-#: modules/System Admin/module_manage.php:124
+#: modules/System Admin/module_manage.php:129
 #: modules/Timetable/tt_space.php:125
 #: modules/Timetable Admin/tt_edit_day_edit.php:216
 #: modules/Timetable Admin/ttColumn_edit.php:182
@@ -9066,7 +9083,7 @@ msgstr ""
 #: index.php:1349 index.php:1355 index.php:1378 index.php:1340 index.php:957
 #: index.php:786 modules/Behaviour/behaviour_manage.php:282
 #: modules/Behaviour/behaviour_manage_addMulti.php:171 index.php:840
-#: index.php:842 modules/Behaviour/behaviour_manage.php:282
+#: index.php:842 index.php:846 modules/Behaviour/behaviour_manage.php:282
 #: modules/Behaviour/behaviour_manage_add.php:190
 #: modules/Behaviour/behaviour_manage_addMulti.php:171
 #: modules/Behaviour/behaviour_manage_edit.php:216
@@ -9088,7 +9105,7 @@ msgstr ""
 #: index.php:1358 index.php:1381 index.php:1343 index.php:960 index.php:789
 #: modules/Behaviour/behaviour_manage.php:285
 #: modules/Behaviour/behaviour_manage_addMulti.php:211 index.php:843
-#: index.php:845 modules/Behaviour/behaviour_manage.php:285
+#: index.php:845 index.php:849 modules/Behaviour/behaviour_manage.php:285
 #: modules/Behaviour/behaviour_manage_add.php:230
 #: modules/Behaviour/behaviour_manage_addMulti.php:211
 #: modules/Behaviour/behaviour_manage_edit.php:279
@@ -9115,7 +9132,7 @@ msgstr ""
 #: Admin/department_manage_edit.php:308 i18n/dbStringsForTranslation.php:1004
 #: index.php:792 modules/Behaviour/behaviour_manage.php:288
 #: Admin/courseEnrolment_manage_byPerson_edit.php:210 index.php:846
-#: i18n/dbStringsForTranslation.php:1004 index.php:848
+#: index.php:848 i18n/dbStringsForTranslation.php:1004 index.php:852
 #: modules/Behaviour/behaviour_manage.php:288
 #: modules/Behaviour/moduleFunctions.php:88
 #: modules/Planner/report_goldStars_staff.php:53
@@ -9130,13 +9147,13 @@ msgstr ""
 
 #: index.php:1371 index.php:1374 index.php:1380 index.php:1378 index.php:1384
 #: index.php:1407 index.php:1369 index.php:986 index.php:815 index.php:869
-#: index.php:871
+#: index.php:871 index.php:875
 msgid "Date Updated"
 msgstr ""
 
 #: index.php:1372 index.php:1375 index.php:1381 index.php:1379 index.php:1385
 #: index.php:1408 index.php:1370 index.php:987 index.php:816 index.php:870
-#: index.php:872
+#: index.php:872 index.php:876
 msgid "Incident Date"
 msgstr ""
 
@@ -9145,7 +9162,8 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage_edit.php:190 index.php:1389
 #: index.php:1387 index.php:1393 index.php:1416 index.php:1378 index.php:995
 #: index.php:824 modules/Behaviour/behaviour_manage_addMulti.php:145
-#: index.php:878 index.php:880 modules/Behaviour/behaviour_manage.php:182
+#: index.php:878 index.php:880 index.php:884
+#: modules/Behaviour/behaviour_manage.php:182
 #: modules/Behaviour/behaviour_manage_add.php:164
 #: modules/Behaviour/behaviour_manage_addMulti.php:145
 #: modules/Behaviour/behaviour_manage_edit.php:190
@@ -9154,7 +9172,7 @@ msgstr ""
 
 #: index.php:1383 index.php:1386 modules/Planner/report_goldStars_staff.php:50
 #: index.php:1392 index.php:1390 index.php:1396 index.php:1419 index.php:1381
-#: index.php:998 index.php:827 index.php:881 index.php:883
+#: index.php:998 index.php:827 index.php:881 index.php:883 index.php:887
 #: modules/Planner/report_goldStars_staff.php:50
 msgid "Position"
 msgstr ""
@@ -9164,7 +9182,8 @@ msgstr ""
 #: installer/install.php:1300 installer/install.php:1287 index.php:1479
 #: index.php:1502 index.php:1464 installer/install.php:1288
 #: installer/install.php:1305 index.php:1081 installer/install.php:1306
-#: index.php:910 index.php:964 index.php:966 installer/install.php:1306
+#: index.php:910 index.php:964 index.php:966 index.php:970
+#: installer/install.php:1306
 msgid "Powered by"
 msgstr ""
 
@@ -9173,7 +9192,8 @@ msgstr ""
 #: installer/install.php:1302 installer/install.php:1289 index.php:1481
 #: index.php:1504 index.php:1466 installer/install.php:1290
 #: installer/install.php:1307 index.php:1083 installer/install.php:1308
-#: index.php:912 index.php:966 index.php:968 installer/install.php:1308
+#: index.php:912 index.php:966 index.php:968 index.php:972
+#: installer/install.php:1308
 msgid "Created under the"
 msgstr ""
 
@@ -9758,8 +9778,8 @@ msgstr ""
 #: modules/Rubrics/rubrics_view.php:136
 #: modules/Students/student_view_details.php:1922
 #: modules/Students/student_view_details.php:2608
-#: modules/Timetable/moduleFunctions.php:386
-#: modules/Timetable/moduleFunctions.php:1572
+#: modules/Timetable/moduleFunctions.php:398
+#: modules/Timetable/moduleFunctions.php:1584
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:253
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:225
 msgid "Go"
@@ -10486,7 +10506,7 @@ msgstr ""
 
 #: index.php:563 index.php:569 index.php:567 index.php:573 index.php:578
 #: index.php:540 index.php:543 index.php:552 index.php:371 index.php:404
-#: index.php:406
+#: index.php:406 index.php:410
 msgid "Applications"
 msgstr ""
 
@@ -11052,11 +11072,11 @@ msgstr ""
 #: modules/System Admin/i18n_manage.php:25
 #: modules/System Admin/module_manage.php:25
 #: modules/System Admin/module_manage_edit.php:25
-#: modules/System Admin/module_manage_uninstall.php:25
+#: modules/System Admin/module_manage_uninstall.php:32
 #: modules/System Admin/module_manage_update.php:25
 #: modules/System Admin/systemSettings.php:28
 #: modules/System Admin/theme_manage.php:25
-#: modules/System Admin/theme_manage_uninstall.php:25
+#: modules/System Admin/theme_manage_uninstall.php:32
 #: modules/System Admin/update.php:28
 #: modules/Timetable/report_viewAvailableSpaces.php:28
 #: modules/Timetable/report_viewAvailableTeachers.php:28
@@ -11718,9 +11738,9 @@ msgstr ""
 #: modules/School Admin/studentsSettings_noteCategory_add.php:77
 #: modules/School Admin/studentsSettings_noteCategory_edit.php:119
 #: modules/System Admin/i18n_manage.php:86
-#: modules/System Admin/module_manage.php:127
+#: modules/System Admin/module_manage.php:132
 #: modules/System Admin/module_manage_edit.php:132
-#: modules/System Admin/theme_manage.php:145
+#: modules/System Admin/theme_manage.php:150
 #: modules/Timetable Admin/courseEnrolment_manage.php:135
 #: modules/Timetable Admin/tt.php:161 modules/Timetable Admin/tt_edit.php:148
 msgid "Active"
@@ -12288,10 +12308,10 @@ msgstr ""
 #: modules/Students/student_view_details_notes_edit.php:33
 #: modules/Students/student_view_details_notes_edit.php:91
 #: modules/System Admin/module_manage_edit.php:66
-#: modules/System Admin/module_manage_uninstall.php:59
-#: modules/System Admin/module_manage_uninstall.php:75
+#: modules/System Admin/module_manage_uninstall.php:66
+#: modules/System Admin/module_manage_uninstall.php:82
 #: modules/System Admin/module_manage_update.php:66
-#: modules/System Admin/theme_manage_uninstall.php:59
+#: modules/System Admin/theme_manage_uninstall.php:66
 #: modules/Timetable/spaceBooking_manage_delete.php:67
 #: modules/Timetable/spaceChange_manage_delete.php:67
 #: modules/Timetable Admin/course_manage_add.php:69
@@ -12683,8 +12703,8 @@ msgstr ""
 #: modules/School Admin/studentsSettings_noteCategory_delete.php:86
 #: modules/School Admin/yearGroup_manage_delete.php:86
 #: modules/Students/student_view_details_notes_delete.php:117
-#: modules/System Admin/module_manage_uninstall.php:86
-#: modules/System Admin/theme_manage_uninstall.php:86
+#: modules/System Admin/module_manage_uninstall.php:93
+#: modules/System Admin/theme_manage_uninstall.php:93
 #: modules/Timetable/spaceBooking_manage_delete.php:100
 #: modules/Timetable/spaceChange_manage_delete.php:100
 #: modules/Timetable Admin/course_manage_class_delete.php:88
@@ -12795,8 +12815,8 @@ msgstr ""
 #: modules/School Admin/studentsSettings_noteCategory_delete.php:87
 #: modules/School Admin/yearGroup_manage_delete.php:87
 #: modules/Students/student_view_details_notes_delete.php:118
-#: modules/System Admin/module_manage_uninstall.php:87
-#: modules/System Admin/theme_manage_uninstall.php:87
+#: modules/System Admin/module_manage_uninstall.php:94
+#: modules/System Admin/theme_manage_uninstall.php:94
 #: modules/Timetable/spaceBooking_manage_delete.php:101
 #: modules/Timetable/spaceChange_manage_delete.php:101
 #: modules/Timetable Admin/course_manage_class_delete.php:89
@@ -13027,8 +13047,8 @@ msgstr ""
 #: modules/School Admin/schoolYear_manage_edit.php:106
 #: modules/Students/student_view_details.php:1273
 #: modules/Students/student_view_details.php:2422
-#: modules/System Admin/module_manage.php:118
-#: modules/System Admin/theme_manage.php:133
+#: modules/System Admin/module_manage.php:123
+#: modules/System Admin/theme_manage.php:138
 #: modules/User Admin/applicationForm_manage.php:203
 #: modules/User Admin/applicationForm_manage_accept.php:1227
 #: modules/User Admin/applicationForm_manage_edit.php:153
@@ -15042,9 +15062,9 @@ msgstr ""
 #: modules/School Admin/inDescriptors_manage_edit.php:145
 #: modules/School Admin/schoolYearSpecialDay_manage_add.php:115
 #: modules/School Admin/schoolYearSpecialDay_manage_edit.php:136
-#: modules/System Admin/module_manage.php:121
+#: modules/System Admin/module_manage.php:126
 #: modules/System Admin/module_manage_edit.php:106
-#: modules/System Admin/theme_manage.php:136
+#: modules/System Admin/theme_manage.php:141
 #: modules/User Admin/role_manage.php:105
 #: modules/User Admin/role_manage_add.php:108
 #: modules/User Admin/role_manage_edit.php:137
@@ -15603,8 +15623,8 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:1109
 #: modules/Planner/planner_view_full.php:1191 functions.php:365 index.php:647
 #: Admin/courseEnrolment_manage_byPerson_edit.php:130 index.php:701
-#: modules/Markbook/markbook_edit_edit.php:100 functions.php:365 index.php:703
-#: modules/Crowd Assessment/crowdAssess_view.php:227
+#: modules/Markbook/markbook_edit_edit.php:100 index.php:703 functions.php:365
+#: index.php:707 modules/Crowd Assessment/crowdAssess_view.php:227
 #: modules/Finance/billingSchedule_manage.php:122
 #: modules/Finance/fees_manage.php:122
 #: modules/Finance/invoicees_manage.php:136
@@ -17616,7 +17636,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:123
 #: modules/System Admin/module_manage.php:31
 #: modules/System Admin/module_manage_edit.php:31
-#: modules/System Admin/module_manage_uninstall.php:31
+#: modules/System Admin/module_manage_uninstall.php:38
 #: modules/System Admin/module_manage_update.php:31
 msgid "Manage Modules"
 msgstr ""
@@ -17655,16 +17675,16 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:1100
 #: modules/Planner/planner_view_full.php:1185
 #: modules/Planner/planner_view_full_submit_edit.php:304
-#: modules/System Admin/module_manage.php:130
-#: modules/System Admin/theme_manage.php:139
+#: modules/System Admin/module_manage.php:135
+#: modules/System Admin/theme_manage.php:144
 msgid "Version"
 msgstr ""
 
 #: modules/System Admin/module_manage.php:91 Admin/theme_manage.php:105
 #: modules/Messenger/messenger_manage.php:102 Admin/module_manage.php:133
 #: Admin/theme_manage.php:142 modules/Messenger/messenger_manage.php:102
-#: modules/System Admin/module_manage.php:133
-#: modules/System Admin/theme_manage.php:142
+#: modules/System Admin/module_manage.php:138
+#: modules/System Admin/theme_manage.php:147
 msgid "Author"
 msgstr ""
 
@@ -17689,12 +17709,12 @@ msgid ""
 msgstr ""
 
 #: modules/System Admin/module_manage_install.php:51
-#: Admin/module_manage.php:64 modules/System Admin/module_manage.php:64
+#: Admin/module_manage.php:64 modules/System Admin/module_manage.php:68
 msgid "Install failed, but module was added to the system and set non-active."
 msgstr ""
 
 #: modules/System Admin/module_manage_install.php:54
-#: Admin/module_manage.php:67 modules/System Admin/module_manage.php:67
+#: Admin/module_manage.php:67 modules/System Admin/module_manage.php:71
 msgid "Install was successful, but module could not be activated."
 msgstr ""
 
@@ -17703,14 +17723,14 @@ msgstr ""
 #: modules/Finance/billingSchedule_manage_add.php:57
 #: Admin/module_manage.php:70 Admin/theme_manage.php:64
 #: modules/Finance/billingSchedule_manage_add.php:57
-#: modules/System Admin/module_manage.php:70
-#: modules/System Admin/theme_manage.php:64
+#: modules/System Admin/module_manage.php:74
+#: modules/System Admin/theme_manage.php:68
 msgid ""
 "Your request was successful. You can now add another record if you wish."
 msgstr ""
 
 #: modules/System Admin/module_manage_install.php:64
-#: Admin/module_manage.php:77 modules/System Admin/module_manage.php:77
+#: Admin/module_manage.php:77 modules/System Admin/module_manage.php:81
 msgid "The following SQL statements caused errors:"
 msgstr ""
 
@@ -17738,12 +17758,12 @@ msgid ""
 msgstr ""
 
 #: modules/System Admin/module_manage_uninstall.php:31
-#: modules/System Admin/module_manage_uninstall.php:31
+#: modules/System Admin/module_manage_uninstall.php:38
 msgid "Uninstall Module"
 msgstr ""
 
 #: modules/System Admin/module_manage_uninstall.php:48
-#: modules/System Admin/module_manage_uninstall.php:48
+#: modules/System Admin/module_manage_uninstall.php:55
 msgid ""
 "Uninstall encountered a partial fail: the module may or may not still work."
 msgstr ""
@@ -17948,7 +17968,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:145 i18n/dbStringsForTranslation.php:147
 #: i18n/dbStringsForTranslation.php:147
 #: modules/System Admin/theme_manage.php:31
-#: modules/System Admin/theme_manage_uninstall.php:31
+#: modules/System Admin/theme_manage_uninstall.php:38
 msgid "Manage Themes"
 msgstr ""
 
@@ -17960,7 +17980,8 @@ msgid ""
 msgstr ""
 
 #: modules/System Admin/theme_manage.php:161 Admin/theme_manage.php:234
-#: modules/System Admin/theme_manage.php:234
+#: modules/System Admin/theme_manage.php:240
+#: modules/System Admin/theme_manage.php:313
 msgid "Remove Record"
 msgstr ""
 
@@ -17969,12 +17990,12 @@ msgid "Install Theme"
 msgstr ""
 
 #: modules/System Admin/theme_manage_install.php:45 Admin/theme_manage.php:58
-#: modules/System Admin/theme_manage.php:58
+#: modules/System Admin/theme_manage.php:62
 msgid "Your request failed because your manifest file was invalid."
 msgstr ""
 
 #: modules/System Admin/theme_manage_install.php:48 Admin/theme_manage.php:61
-#: modules/System Admin/theme_manage.php:61
+#: modules/System Admin/theme_manage.php:65
 msgid ""
 "Your request failed because a theme with the same name is already installed."
 msgstr ""
@@ -17990,19 +18011,19 @@ msgid ""
 msgstr ""
 
 #: modules/System Admin/theme_manage_uninstall.php:31
-#: modules/System Admin/theme_manage_uninstall.php:31
+#: modules/System Admin/theme_manage_uninstall.php:38
 msgid "Uninstall Theme"
 msgstr ""
 
 #: modules/System Admin/theme_manage_uninstall.php:45
-#: modules/System Admin/theme_manage_uninstall.php:45
+#: modules/System Admin/theme_manage_uninstall.php:52
 msgid ""
 "Your request encountered a partial fail: the module may or may not still "
 "work."
 msgstr ""
 
 #: modules/System Admin/theme_manage_uninstall.php:48
-#: modules/System Admin/theme_manage_uninstall.php:48
+#: modules/System Admin/theme_manage_uninstall.php:55
 msgid "Your request failed because theme does not exist or is active."
 msgstr ""
 
@@ -18969,8 +18990,8 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:464
 #: modules/Planner/units_edit_deploy.php:367
 #: modules/Students/student_view_details.php:1692
-#: modules/Timetable/moduleFunctions.php:720
-#: modules/Timetable/moduleFunctions.php:1766
+#: modules/Timetable/moduleFunctions.php:732
+#: modules/Timetable/moduleFunctions.php:1778
 #: modules/Timetable/report_viewAvailableSpaces.php:292
 #: modules/Timetable/report_viewAvailableTeachers.php:262
 #: modules/Timetable/spaceBooking_manage.php:113
@@ -26088,7 +26109,7 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:1706
 #: modules/Planner/units_dump.php:406 index.php:850
 #: modules/Behaviour/behaviour_manage.php:361 index.php:904
-#: modules/Rubrics/rubrics.php:285 index.php:906
+#: modules/Rubrics/rubrics.php:285 index.php:906 index.php:910
 #: modules/Behaviour/behaviour_manage.php:361
 #: modules/Behaviour/moduleFunctions.php:145
 #: modules/Finance/billingSchedule_manage.php:234
@@ -27716,7 +27737,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:1458
 #: modules/Students/student_view_details.php:1743
 #: modules/Students/student_view_details.php:2304
-#: modules/System Admin/module_manage.php:217 modules/Timetable/tt_view.php:97
+#: modules/System Admin/module_manage.php:223 modules/Timetable/tt_view.php:97
 #: modules/Timetable Admin/course_manage.php:237
 #: modules/Timetable Admin/course_manage_edit.php:299
 #: modules/Timetable Admin/courseEnrolment_manage.php:206
@@ -32953,7 +32974,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:914 i18n/dbStringsForTranslation.php:916
 #: i18n/dbStringsForTranslation.php:928 i18n/dbStringsForTranslation.php:942
 #: index.php:389 modules/School Admin/department_manage.php:117 index.php:422
-#: i18n/dbStringsForTranslation.php:942 index.php:424
+#: index.php:424 i18n/dbStringsForTranslation.php:942 index.php:428
 #: modules/School Admin/department_manage.php:117
 msgid "Departments"
 msgstr ""
@@ -39408,8 +39429,8 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1770
 #: modules/Attendance/moduleFunctions.php:194
 #: modules/Planner/moduleFunctions.php:411
-#: modules/Timetable/moduleFunctions.php:724
-#: modules/Timetable/moduleFunctions.php:1770
+#: modules/Timetable/moduleFunctions.php:736
+#: modules/Timetable/moduleFunctions.php:1782
 #: modules/Timetable/report_viewAvailableSpaces.php:296
 #: modules/Timetable/report_viewAvailableTeachers.php:266
 msgid "Mon"
@@ -39437,8 +39458,8 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1789
 #: modules/Attendance/moduleFunctions.php:199
 #: modules/Planner/moduleFunctions.php:414
-#: modules/Timetable/moduleFunctions.php:743
-#: modules/Timetable/moduleFunctions.php:1789
+#: modules/Timetable/moduleFunctions.php:755
+#: modules/Timetable/moduleFunctions.php:1801
 #: modules/Timetable/report_viewAvailableSpaces.php:302
 #: modules/Timetable/report_viewAvailableTeachers.php:272
 msgid "Tue"
@@ -39466,8 +39487,8 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1808
 #: modules/Attendance/moduleFunctions.php:205
 #: modules/Planner/moduleFunctions.php:417
-#: modules/Timetable/moduleFunctions.php:762
-#: modules/Timetable/moduleFunctions.php:1808
+#: modules/Timetable/moduleFunctions.php:774
+#: modules/Timetable/moduleFunctions.php:1820
 #: modules/Timetable/report_viewAvailableSpaces.php:308
 #: modules/Timetable/report_viewAvailableTeachers.php:278
 msgid "Wed"
@@ -39495,8 +39516,8 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1827
 #: modules/Attendance/moduleFunctions.php:211
 #: modules/Planner/moduleFunctions.php:420
-#: modules/Timetable/moduleFunctions.php:781
-#: modules/Timetable/moduleFunctions.php:1827
+#: modules/Timetable/moduleFunctions.php:793
+#: modules/Timetable/moduleFunctions.php:1839
 #: modules/Timetable/report_viewAvailableSpaces.php:314
 #: modules/Timetable/report_viewAvailableTeachers.php:284
 msgid "Thu"
@@ -39524,8 +39545,8 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1846
 #: modules/Attendance/moduleFunctions.php:216
 #: modules/Planner/moduleFunctions.php:423
-#: modules/Timetable/moduleFunctions.php:800
-#: modules/Timetable/moduleFunctions.php:1846
+#: modules/Timetable/moduleFunctions.php:812
+#: modules/Timetable/moduleFunctions.php:1858
 #: modules/Timetable/report_viewAvailableSpaces.php:320
 #: modules/Timetable/report_viewAvailableTeachers.php:290
 msgid "Fri"
@@ -39553,8 +39574,8 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1865
 #: modules/Attendance/moduleFunctions.php:221
 #: modules/Planner/moduleFunctions.php:426
-#: modules/Timetable/moduleFunctions.php:819
-#: modules/Timetable/moduleFunctions.php:1865
+#: modules/Timetable/moduleFunctions.php:831
+#: modules/Timetable/moduleFunctions.php:1877
 #: modules/Timetable/report_viewAvailableSpaces.php:326
 #: modules/Timetable/report_viewAvailableTeachers.php:296
 msgid "Sat"
@@ -39582,8 +39603,8 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1884
 #: modules/Attendance/moduleFunctions.php:226
 #: modules/Planner/moduleFunctions.php:429
-#: modules/Timetable/moduleFunctions.php:838
-#: modules/Timetable/moduleFunctions.php:1884
+#: modules/Timetable/moduleFunctions.php:850
+#: modules/Timetable/moduleFunctions.php:1896
 #: modules/Timetable/report_viewAvailableSpaces.php:332
 #: modules/Timetable/report_viewAvailableTeachers.php:302
 msgid "Sun"
@@ -45301,8 +45322,8 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1467
 #: modules/Timetable/moduleFunctions.php:310
 #: modules/Timetable/moduleFunctions.php:1489
-#: modules/Timetable/moduleFunctions.php:310
-#: modules/Timetable/moduleFunctions.php:1489
+#: modules/Timetable/moduleFunctions.php:322
+#: modules/Timetable/moduleFunctions.php:1501
 msgid "Timetable Chooser"
 msgstr ""
 
@@ -45320,8 +45341,8 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1526
 #: modules/Timetable/moduleFunctions.php:362
 #: modules/Timetable/moduleFunctions.php:1548
-#: modules/Timetable/moduleFunctions.php:362
-#: modules/Timetable/moduleFunctions.php:1548
+#: modules/Timetable/moduleFunctions.php:374
+#: modules/Timetable/moduleFunctions.php:1560
 msgid "Last Week"
 msgstr ""
 
@@ -45339,8 +45360,8 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1534
 #: modules/Timetable/moduleFunctions.php:370
 #: modules/Timetable/moduleFunctions.php:1556
-#: modules/Timetable/moduleFunctions.php:370
-#: modules/Timetable/moduleFunctions.php:1556
+#: modules/Timetable/moduleFunctions.php:382
+#: modules/Timetable/moduleFunctions.php:1568
 msgid "Next Week"
 msgstr ""
 
@@ -45358,8 +45379,8 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:2213
 #: modules/Timetable/moduleFunctions.php:1227
 #: modules/Timetable/moduleFunctions.php:2235
-#: modules/Timetable/moduleFunctions.php:1227
-#: modules/Timetable/moduleFunctions.php:2235
+#: modules/Timetable/moduleFunctions.php:1239
+#: modules/Timetable/moduleFunctions.php:2247
 msgid "Timeslot:"
 msgstr ""
 
@@ -45381,9 +45402,9 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1232
 #: modules/Timetable/moduleFunctions.php:1235
 #: modules/Timetable/moduleFunctions.php:2239
-#: modules/Timetable/moduleFunctions.php:1232
-#: modules/Timetable/moduleFunctions.php:1235
-#: modules/Timetable/moduleFunctions.php:2239
+#: modules/Timetable/moduleFunctions.php:1244
+#: modules/Timetable/moduleFunctions.php:1247
+#: modules/Timetable/moduleFunctions.php:2251
 msgid "Room:"
 msgstr ""
 
@@ -45405,9 +45426,9 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1240
 #: modules/Timetable/moduleFunctions.php:1243
 #: modules/Timetable/moduleFunctions.php:2242
-#: modules/Timetable/moduleFunctions.php:1240
-#: modules/Timetable/moduleFunctions.php:1243
-#: modules/Timetable/moduleFunctions.php:2242
+#: modules/Timetable/moduleFunctions.php:1252
+#: modules/Timetable/moduleFunctions.php:1255
+#: modules/Timetable/moduleFunctions.php:2254
 msgid "Phone:"
 msgstr ""
 
@@ -47216,7 +47237,7 @@ msgstr ""
 #: index.php:1481 index.php:1484 index.php:1479 index.php:1482 index.php:1485
 #: index.php:1488 index.php:1508 index.php:1511 index.php:1470 index.php:1473
 #: index.php:1087 index.php:1090 index.php:916 index.php:919 index.php:970
-#: index.php:973 index.php:972 index.php:975
+#: index.php:973 index.php:972 index.php:975 index.php:977 index.php:980
 msgid "Translation led by"
 msgstr ""
 
@@ -47715,7 +47736,7 @@ msgstr ""
 #: modules/Planner/planner.php:524 modules/Planner/planner.php:747
 #: modules/Planner/planner.php:1058 index.php:729 index.php:1157 index.php:732
 #: index.php:1166 functions.php:125 index.php:774 functions.php:334
-#: index.php:603 index.php:657 functions.php:334 index.php:659
+#: index.php:603 index.php:657 index.php:659 functions.php:334 index.php:663
 #: modules/Planner/planner.php:337 modules/Planner/planner.php:524
 #: modules/Planner/planner.php:747 modules/Planner/planner.php:1058
 msgid "Teacher Recorded"
@@ -47725,7 +47746,7 @@ msgstr ""
 #: modules/Planner/planner.php:533 modules/Planner/planner.php:756
 #: modules/Planner/planner.php:1067 index.php:738 index.php:1166 index.php:741
 #: index.php:1175 functions.php:134 index.php:783 functions.php:343
-#: index.php:612 index.php:666 functions.php:343 index.php:668
+#: index.php:612 index.php:666 index.php:668 functions.php:343 index.php:672
 #: modules/Planner/planner.php:346 modules/Planner/planner.php:533
 #: modules/Planner/planner.php:756 modules/Planner/planner.php:1067
 msgid "Student Recorded"
@@ -48507,7 +48528,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1245
 #: modules/Timetable/moduleFunctions.php:1253
 #: modules/Timetable/moduleFunctions.php:1275
-#: modules/Timetable/moduleFunctions.php:1275
+#: modules/Timetable/moduleFunctions.php:1287
 msgid "No Space Allocated"
 msgstr ""
 
@@ -48682,7 +48703,7 @@ msgstr ""
 msgid "Learning Overview"
 msgstr ""
 
-#: index.php:1093 index.php:922 index.php:976 index.php:978
+#: index.php:1093 index.php:922 index.php:976 index.php:978 index.php:972
 msgid "Credits"
 msgstr ""
 
@@ -49032,7 +49053,7 @@ msgstr ""
 msgid "Incomplete Attendance Report"
 msgstr ""
 
-#: index.php:392 index.php:425 index.php:427
+#: index.php:392 index.php:425 index.php:427 index.php:431
 #, php-format
 msgid ""
 "Please feel free to %1$sbrowse our departmental information%2$s, to learn "
@@ -49136,14 +49157,14 @@ msgid "Should the student record include the option of a file upload?"
 msgstr ""
 
 #: modules/System Admin/module_manage.php:58
-#: modules/System Admin/module_manage.php:58
+#: modules/System Admin/module_manage.php:62
 msgid ""
 "Install failed because either the module name was not given or the manifest "
 "file was invalid."
 msgstr ""
 
 #: modules/System Admin/module_manage.php:103
-#: modules/System Admin/module_manage.php:103
+#: modules/System Admin/module_manage.php:108
 #, php-format
 msgid ""
 "To install a module, upload the module folder to %1$s on your server and "
@@ -49152,26 +49173,25 @@ msgid ""
 msgstr ""
 
 #: modules/System Admin/module_manage.php:166 Admin/theme_manage.php:179
-#: modules/System Admin/module_manage.php:166
-#: modules/System Admin/theme_manage.php:179
+#: modules/System Admin/module_manage.php:172
+#: modules/System Admin/theme_manage.php:185
 msgid "Installed"
 msgstr ""
 
 #: modules/System Admin/module_manage.php:181 Admin/theme_manage.php:194
-#: modules/System Admin/module_manage.php:181
-#: modules/System Admin/theme_manage.php:194
+#: modules/System Admin/module_manage.php:187
+#: modules/System Admin/theme_manage.php:200
 msgid "Not Installed"
 msgstr ""
 
 #: modules/System Admin/module_manage.php:186 Admin/theme_manage.php:199
-#: modules/System Admin/module_manage.php:186
-#: modules/System Admin/theme_manage.php:199
+#: modules/System Admin/module_manage.php:192
 msgid "Module Error"
 msgstr ""
 
 #: modules/System Admin/module_manage.php:227 Admin/theme_manage.php:241
-#: modules/System Admin/module_manage.php:227
-#: modules/System Admin/theme_manage.php:241
+#: modules/System Admin/module_manage.php:233
+#: modules/System Admin/theme_manage.php:247
 msgid "Install"
 msgstr ""
 
@@ -49202,7 +49222,7 @@ msgid ""
 msgstr ""
 
 #: modules/System Admin/theme_manage.php:117
-#: modules/System Admin/theme_manage.php:117
+#: modules/System Admin/theme_manage.php:122
 #, php-format
 msgid ""
 "To install a theme, upload the theme folder to %1$s on your server and then "
@@ -49248,11 +49268,11 @@ msgstr ""
 msgid "%1$s day until %2$s birthday!"
 msgstr ""
 
-#: index.php:215 index.php:217
+#: index.php:215 index.php:217 index.php:217
 msgid "Your session is about to expire: you will be logged out shortly."
 msgstr ""
 
-#: index.php:384 index.php:386
+#: index.php:384 index.php:386 index.php:390
 msgid ""
 "Your session expired, so you were automatically logged out of the system."
 msgstr ""
@@ -49316,4 +49336,36 @@ msgstr ""
 #: functions.php:2767 functions.php:2767
 #, php-format
 msgid "day until %1$s birthday!"
+msgstr ""
+
+#: index.php:989 index.php:992
+msgid "Theme by"
+msgstr ""
+
+#: modules/System Admin/module_manage.php:252
+msgid "Orphaned Modules"
+msgstr ""
+
+#: modules/System Admin/module_manage.php:255
+msgid ""
+"These modules are installed in the database, but are missing from within the "
+"file system."
+msgstr ""
+
+#: modules/System Admin/theme_manage.php:43
+msgid "Uninstall was successful."
+msgstr ""
+
+#: modules/System Admin/theme_manage.php:205
+msgid "Theme Error"
+msgstr ""
+
+#: modules/System Admin/theme_manage.php:276
+msgid "Orphaned Themes"
+msgstr ""
+
+#: modules/System Admin/theme_manage.php:279
+msgid ""
+"These themes are installed in the database, but are missing from within the "
+"file system."
 msgstr ""
