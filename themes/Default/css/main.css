@@ -768,7 +768,7 @@ div.message {
 	font-size: 12px;
 	padding: 5px;
 	margin: 10px 0px 5px 0px;
-	box-shadow: 2px 2px 2px rgba(50,50,50,0.4);
+	box-shadow: 2px 2px 2px rgba(50,50,50,0.05);
 }
 div.message a {
 	color: #3B73AF; 
@@ -784,7 +784,7 @@ div.error {
 	font-size: 12px;
 	padding: 10px;
 	margin: 10px 0px 15px 0px;
-	box-shadow: 2px 2px 2px rgba(50,50,50,0.3);
+	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
 }
 div.warning {
 	border-left: 6px solid #D65602;
@@ -793,7 +793,7 @@ div.warning {
 	font-size: 12px;
 	padding: 10px;
 	margin: 10px 0px 15px 0px;
-	box-shadow: 2px 2px 2px rgba(50,50,50,0.3);
+	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
 }
 div.success {
 	border-left: 6px solid #390;
@@ -802,7 +802,7 @@ div.success {
 	font-size: 12px;
 	padding: 10px;
 	margin: 10px 0px 15px 0px;
-	box-shadow: 2px 2px 2px rgba(50,50,50,0.3);
+	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
 }
 div.paginationTop {
 	text-align: right;

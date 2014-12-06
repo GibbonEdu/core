@@ -43,7 +43,10 @@ if (isset($_SESSION[$guid]["gibbonAcademicYearID"])==FALSE OR isset($_SESSION[$g
 
 //Check password address is not blank
 $calendarFeedPersonal=$_POST["calendarFeedPersonal"] ;
-$personalBackground=$_POST["personalBackground"] ;
+$personalBackground="" ;
+if (isset($_POST["personalBackground"])) {
+	$personalBackground=$_POST["personalBackground"] ;
+}
 $gibbonThemeIDPersonal=$_POST["gibbonThemeIDPersonal"] ;
 if ($gibbonThemeIDPersonal=="") {
 	$gibbonThemeIDPersonal=NULL ;

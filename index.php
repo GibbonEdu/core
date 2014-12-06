@@ -714,7 +714,7 @@ else {
 										}
 										
 										//Display TT
-										if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt.php") AND $_SESSION[$guid]["username"]!="") {			
+										if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt.php") AND $_SESSION[$guid]["username"]!="" AND (getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2)=="Staff" OR getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2)=="Student")) {			
 											?>
 											<script type="text/javascript">
 												$(document).ready(function(){
@@ -722,19 +722,10 @@ else {
 												});
 											</script>
 											<?php
-											try {
-												$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-												$sql="SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' " ;
-												$result=$connection2->prepare($sql);
-												$result->execute($data);
-											}
-											catch(PDOException $e) { }
-											if ($result->rowCount()>0) {
-												print "<h2>" . _("My Timetable") . "</h2>" ;
-												print "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>" ;
-													print "<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Loading') . "' onclick='return false;' /><br/><p style='text-align: center'>" . _('Loading') . "</p>" ;
-												print "</div>" ;
-											}
+											print "<h2>" . _("My Timetable") . "</h2>" ;
+											print "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>" ;
+												print "<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Loading') . "' onclick='return false;' /><br/><p style='text-align: center'>" . _('Loading') . "</p>" ;
+											print "</div>" ;
 										}
 										
 										//Display "My Roll Groups"
@@ -972,6 +963,7 @@ else {
 							<?php print _("Created under the") ?> <a target='_blank' href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | <a target='_blank' href='https://www.gibbonedu.org/contribute/'><?php print _("Credits") ; ?></a><br/>
 							<?php
 								$seperator=FALSE ;
+								$thirdLine=FALSE ;
 								if ($_SESSION[$guid]["i18n"]["maintainerName"]!="" AND $_SESSION[$guid]["i18n"]["maintainerName"]!="Gibbon") {
 									if ($_SESSION[$guid]["i18n"]["maintainerWebsite"]!="") {
 										print _("Translation led by") . " <a target='_blank' href='" . $_SESSION[$guid]["i18n"]["maintainerWebsite"] . "'>" . $_SESSION[$guid]["i18n"]["maintainerName"] . "</a>" ;
@@ -980,6 +972,7 @@ else {
 										print _("Translation led by") . " " . $_SESSION[$guid]["i18n"]["maintainerName"] ;
 									}
 									$seperator=TRUE ;
+									$thirdLine=TRUE ;
 								}
 								if ($_SESSION[$guid]["gibbonThemeName"]!="Default" AND $_SESSION[$guid]["gibbonThemeAuthor"]!="") {
 									if ($seperator) {
@@ -991,10 +984,14 @@ else {
 									else {
 										print _("Theme by") . " " . $_SESSION[$guid]["gibbonThemeAuthor"] ;
 									}
+									$thirdLine=TRUE ;
+								}
+								if ($thirdLine==FALSE) {
+									print "<br/>" ; 
 								}
 							?>
-						</span><br/>
-						<img style='z-index: 9999; margin-top: -67px; margin-left: 850px; opacity: 0.8' alt='Logo Small' src='./themes/Default/img/logoFooter.png'/>
+						</span>
+						<img style='z-index: 9999; margin-top: -82px; margin-left: 850px; opacity: 0.8' alt='Logo Small' src='./themes/Default/img/logoFooter.png'/>
 					</div>
 				</div>
 			</div>

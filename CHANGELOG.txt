@@ -145,6 +145,14 @@ General: added theme credits to footer, where theme is not Default
 System Admin: added display and removal of orphaned themes and modules
 	Edited files /modules/System Admin/theme_manage.php, module_manage.php, theme_manage_uninstall*.php, module_manage_uninstall*.php
 
+Timetable: made index timetable display for staff and students, even if blank, as it is useful for calendar, room bookings, etc.
+	Edited file /index.php
+
+General: updated logo from jpg to png in default theme
+	Edited value in table gibbonSetting
+	Delete file /themes/Default/img/logo.jpg
+	New file /themes/Default/img/logo.png
+
 
 v8.3.00
 -------
