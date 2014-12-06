@@ -167,7 +167,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 		
 		if ($email==TRUE) {
 			$return.="<div style='width: 100%; text-align: right'>" ;
-				$return.="<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "'><img height='107px' width='250px' class='School Logo' alt='Logo' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ."'/></a>" ;
+				$return.="<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "'><img height='100px' width='400px' class='School Logo' alt='Logo' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ."'/></a>" ;
 			$return.="</div>" ;
 		}
 		
@@ -463,7 +463,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 		
 		if ($email==TRUE) {
 			$return.="<div style='width: 100%; text-align: right'>" ;
-				$return.="<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "'><img height='107px' width='250px' class='School Logo' alt='Logo' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ."'/></a>" ;
+				$return.="<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "'><img height='100px' width='400px' class='School Logo' alt='Logo' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ."'/></a>" ;
 			$return.="</div>" ;
 		}
 		
