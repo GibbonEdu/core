@@ -93,12 +93,14 @@ else {
 						mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
 					}
 					$unique=FALSE;
-					while ($unique==FALSE) {
+					$count=0 ;
+					while ($unique==FALSE AND $count<100) {
 						$suffix=randomPassword(16) ;
 						$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $name) . "_$suffix" . strrchr($_FILES["file"]["name"], ".") ;
 						if (!(file_exists($path . "/" . $attachment))) {
 							$unique=TRUE ;
 						}
+						$count++ ;
 					}
 					
 					if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {

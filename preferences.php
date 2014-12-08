@@ -304,6 +304,29 @@ if ($result->rowCount()==1) {
 			</td>
 		</tr>
 		
+		<tr>
+			<td> 
+				<b><?php print _("Receive Email Notifications?") ; ?></b><br/>
+				<span style="font-size: 90%"><i><?php print _("Notifications can always be viewed on screen.") ; ?></i></span>
+			</td>
+			<td class="right">
+				<select name="receiveNoticiationEmails" id="receiveNoticiationEmails" style="width: 302px">
+					<?php
+					print "<option " ;
+					if ($_SESSION[$guid]["receiveNoticiationEmails"]=="N") {
+						print " selected " ;
+					}
+					print "value='N'>N</option>" ;
+					print "<option " ;
+					if ($_SESSION[$guid]["receiveNoticiationEmails"]=="Y") {
+						print " selected " ;
+					}
+					print "value='Y'>Y</option>" ;
+					?>				
+				</select>
+			</td>
+		</tr>
+		
 		
 		<tr>
 			<td>

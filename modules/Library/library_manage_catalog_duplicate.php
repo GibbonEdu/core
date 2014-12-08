@@ -227,7 +227,7 @@ else {
 									<span style="font-size: 90%"><i><?php print _('School-unique ID or barcode.') ?></i></span>
 								</td>
 								<td class="right">
-									<input name="id<?php print $i ?>" id="id<?php print $i ?>" maxlength=255 value="<?php print $row["id"] ?>" type="text" style="width: 300px">
+									<input name="id<?php print $i ?>" id="id<?php print $i ?>" maxlength=255 value="" type="text" style="width: 300px">
 									<?php
 									//Get list of all ids already in use
 									$idList="" ;

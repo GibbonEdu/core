@@ -621,6 +621,7 @@ ALTER TABLE `gibbonPerson` ADD `citizenship1PassportScan` VARCHAR(255) NOT NULL 
 ALTER TABLE `gibbonPerson` ADD `googleAPIRefreshToken` VARCHAR(255) NOT NULL ;end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'sessionDuration', 'Session Duration', 'Time, in seconds, before system logs a user out. Should be less than PHP\'s session.gc_maxlifetime option.', '1200');end
 UPDATE gibbonSetting SET value='themes/Default/img/logo.png' WHERE value='themes/Default/img/logo.jpg' AND scope='System' AND name='organisationLogo';end
+ALTER TABLE `gibbonPerson` ADD `receiveNoticiationEmails` ENUM('N','Y') NOT NULL DEFAULT 'N' ;end
 ";
 
 ?>

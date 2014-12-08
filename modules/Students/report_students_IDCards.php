@@ -165,12 +165,14 @@ else {
 					mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
 				}
 				$unique=FALSE;
-				while ($unique==FALSE) {
+				$count=0 ;
+				while ($unique==FALSE AND $count<100) {
 					$suffix=randomPassword(16) ;
 					$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/Card BG_$suffix" . strrchr($_FILES["file"]["name"], ".") ;
 					if (!(file_exists($path . "/" . $attachment))) {
 						$unique=TRUE ;
 					}
+					$count++ ;
 				}
 				if (move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment)) {
 					$bg="background: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/$attachment\") repeat left top #fff;" ;

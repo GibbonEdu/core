@@ -99,12 +99,14 @@ else {
 						mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
 					}
 					$unique=FALSE;
-					while ($unique==FALSE) {
+					$count=0 ;
+					while ($unique==FALSE AND $count<100) {
 						$suffix=randomPassword(16) ;
 						$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/externalAssessmentUpload_$suffix" . strrchr($_FILES["file"]["name"], ".") ;
 						if (!(file_exists($path . "/" . $attachment))) {
 							$unique=TRUE ;
 						}
+						$count++ ;
 					}
 				
 					if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
@@ -126,14 +128,14 @@ else {
 					//Scan through fields
 					$partialFail=FALSE ;
 					for ($i=0; $i<$count; $i++) {
-						$gibbonExternalAssessmentStudentEntryID=$_POST[$i . "-gibbonExternalAssessmentStudentEntryID"] ;
-						if ($_POST[$i . "-gibbonScaleGradeID"]=="") {
+						$gibbonExternalAssessmentStudentEntryID=@$_POST[$i . "-gibbonExternalAssessmentStudentEntryID"] ;
+						if (isset($_POST[$i . "-gibbonScaleGradeID"])==FALSE) {
 							$gibbonScaleGradeID=NULL ;
 						}
 						else {
 							$gibbonScaleGradeID=$_POST[$i . "-gibbonScaleGradeID"] ;
 						}
-						if ($_POST[$i . "-gibbonScaleGradeIDPAS"]=="") {
+						if (isset($_POST[$i . "-gibbonScaleGradeIDPAS"])==FALSE) {
 							$gibbonScaleGradeIDPAS=NULL ;
 						}
 						else {

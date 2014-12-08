@@ -41,7 +41,6 @@ if (isset($_SESSION[$guid]["gibbonAcademicYearID"])==FALSE OR isset($_SESSION[$g
 	setCurrentSchoolYear($guid, $connection2) ;
 }
 
-//Check password address is not blank
 $calendarFeedPersonal=$_POST["calendarFeedPersonal"] ;
 $personalBackground="" ;
 if (isset($_POST["personalBackground"])) {
@@ -55,65 +54,62 @@ $gibboni18nIDPersonal=$_POST["gibboni18nIDPersonal"] ;
 if ($gibboni18nIDPersonal=="") {
 	$gibboni18nIDPersonal=NULL ;
 }
+$receiveNoticiationEmails=$_POST["receiveNoticiationEmails"] ;
+if ($receiveNoticiationEmails=="") {
+	$receiveNoticiationEmails=NULL ;
+}
 
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php" ;
 
-//Check passwords are not blank
-if (FALSE) {
-	$URL.="&editReturn=fail0" ;
-	header("Location: {$URL}");
+try {
+	$data=array("calendarFeedPersonal"=>$calendarFeedPersonal, "personalBackground"=>$personalBackground, "gibbonThemeIDPersonal"=>$gibbonThemeIDPersonal, "gibboni18nIDPersonal"=>$gibboni18nIDPersonal, "receiveNoticiationEmails"=>$receiveNoticiationEmails, "username"=>$_SESSION[$guid]["username"]); 
+	$sql="UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal, personalBackground=:personalBackground, gibbonThemeIDPersonal=:gibbonThemeIDPersonal, gibboni18nIDPersonal=:gibboni18nIDPersonal, receiveNoticiationEmails=:receiveNoticiationEmails WHERE (username=:username)" ;
+	$result=$connection2->prepare($sql);
+	$result->execute($data);
 }
-//Otherwise proceed
-else {
+catch(PDOException $e) { 
+	$URL.="&editReturn=fail1" ;
+	header("Location: {$URL}");
+	break ;
+}
+
+//Update personal preferences in session
+$_SESSION[$guid]["calendarFeedPersonal"]=$calendarFeedPersonal ;
+$_SESSION[$guid]["personalBackground"]=$personalBackground ;
+$_SESSION[$guid]["gibbonThemeIDPersonal"]=$gibbonThemeIDPersonal ;
+$_SESSION[$guid]["gibboni18nIDPersonal"]=$gibboni18nIDPersonal ;
+$_SESSION[$guid]["receiveNoticiationEmails"]=$receiveNoticiationEmails ;
+
+//Update language settings in session (to personal preference if set, or system default if not)
+if (!is_null($gibboni18nIDPersonal)) {
 	try {
-		$data=array("calendarFeedPersonal"=>$calendarFeedPersonal, "personalBackground"=>$personalBackground, "gibbonThemeIDPersonal"=>$gibbonThemeIDPersonal, "gibboni18nIDPersonal"=>$gibboni18nIDPersonal, "username"=>$_SESSION[$guid]["username"]); 
-		$sql="UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal, personalBackground=:personalBackground, gibbonThemeIDPersonal=:gibbonThemeIDPersonal, gibboni18nIDPersonal=:gibboni18nIDPersonal WHERE (username=:username)" ;
+		$data=array("gibboni18nID"=>$gibboni18nIDPersonal); 
+		$sql="SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID" ; 
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
-	catch(PDOException $e) { 
-		$URL.="&editReturn=fail1" ;
-		header("Location: {$URL}");
-		break ;
+	catch(PDOException $e) { 	}
+	if ($result->rowCount()==1) {
+		$row=$result->fetch() ;
+		setLanguageSession($guid, $row) ;
 	}
-	
-	//Update personal preferences in session
-	$_SESSION[$guid]["calendarFeedPersonal"]=$calendarFeedPersonal ;
-	$_SESSION[$guid]["personalBackground"]=$personalBackground ;
-	$_SESSION[$guid]["gibbonThemeIDPersonal"]=$gibbonThemeIDPersonal ;
-	$_SESSION[$guid]["gibboni18nIDPersonal"]=$gibboni18nIDPersonal ;
-	
-	//Update language settings in session (to personal preference if set, or system default if not)
-	if (!is_null($gibboni18nIDPersonal)) {
-		try {
-			$data=array("gibboni18nID"=>$gibboni18nIDPersonal); 
-			$sql="SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID" ; 
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 	}
-		if ($result->rowCount()==1) {
-			$row=$result->fetch() ;
-			setLanguageSession($guid, $row) ;
-		}
-	}
-	else {
-		try {
-			$data=array(); 
-			$sql="SELECT * FROM gibboni18n WHERE systemDefault='Y'" ; 
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { }
-		if ($result->rowCount()==1) {
-			$row=$result->fetch() ;
-			setLanguageSession($guid, $row) ;
-		}
-	}
-	
-	
-	$_SESSION[$guid]["pageLoads"]=NULL ;
-	$URL.="&editReturn=success0" ;
-	header("Location: {$URL}");
 }
+else {
+	try {
+		$data=array(); 
+		$sql="SELECT * FROM gibboni18n WHERE systemDefault='Y'" ; 
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { }
+	if ($result->rowCount()==1) {
+		$row=$result->fetch() ;
+		setLanguageSession($guid, $row) ;
+	}
+}
+
+
+$_SESSION[$guid]["pageLoads"]=NULL ;
+$URL.="&editReturn=success0" ;
+header("Location: {$URL}");
 ?>

@@ -147,12 +147,14 @@ else {
 							mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
 						}
 						$unique=FALSE;
-						while ($unique==FALSE) {
+						$count=0 ;
+						while ($unique==FALSE AND $count<100) {
 							$suffix=randomPassword(16) ;
 							$imageLocation="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $id) . "_$suffix" . strrchr($_FILES["imageFile"]["name"], ".") ;
 							if (!(file_exists($path . "/" . $imageLocation))) {
 								$unique=TRUE ;
 							}
+							$count++ ;
 						}
 					
 						if (!(move_uploaded_file($_FILES["imageFile"]["tmp_name"],$path . "/" . $imageLocation))) {

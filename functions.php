@@ -863,7 +863,7 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
 		$moduleName=NULL ;
 	}
 	
-	//Check for existence of comment
+	//Check for existence of notification
 	$dataCheck=array("gibbonPersonID"=>$gibbonPersonID, "text"=>$text, "name"=>$moduleName); 
 	$sqlCheck="SELECT * FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name)" ;
 	$resultCheck=$connection2->prepare($sqlCheck);
@@ -881,6 +881,23 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
 		$sqlInsert="INSERT INTO gibbonNotification SET gibbonPersonID=:gibbonPersonID, gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name), text=:text, actionLink=:actionLink, timestamp=now()" ;
 		$resultInsert=$connection2->prepare($sqlInsert);
 		$resultInsert->execute($dataInsert);
+	}
+	
+	//Check for email notification preference and email address, and send if required
+	$dataSelect=array("gibbonPersonID"=>$gibbonPersonID); 
+	$sqlSelect="SELECT email, receiveNoticiationEmails FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID AND receiveNoticiationEmails='Y' AND NOT email=''" ;
+	$resultSelect=$connection2->prepare($sqlSelect);
+	$resultSelect->execute($dataSelect);
+	if ($resultSelect->rowCount()==1) {
+		$rowSelect=$resultSelect->fetch() ;
+		
+		//Attempt email send
+		$to=$rowSelect["email"] ;
+		$subject=sprintf(_('You have received a notification on %1$s at %2$s'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationNameShort"]) ;
+		$body=sprintf(_('Login to %1$s and use the noticiation icon to check your new notification, or use the link below:'), $_SESSION[$guid]["systemName"]) . "\n\n" ;
+		$body.=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php\n\n" ;
+		$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
+		mail($to, $subject, $body, $headers) ;
 	}
 }
 

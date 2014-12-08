@@ -153,6 +153,17 @@ General: updated logo from jpg to png in default theme
 	Delete file /themes/Default/img/logo.jpg
 	New file /themes/Default/img/logo.png
 
+Library: improved usability of duplicate screen
+	Edited file /modules/Library/library_manage_catalog_duplicate.php
+
+General: fixed potential infinite loop code
+	Edited various process files across the system
+
+General: added option (set to No by default) to email user for system-wide notifications
+	New value in table gibbonSetting
+	Edited files /preferences*.php, functions.php, login.php
+	Edited file /lib/googleOAuth/index.php
+
 
 v8.3.00
 -------

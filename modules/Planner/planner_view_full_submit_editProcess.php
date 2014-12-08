@@ -185,12 +185,14 @@ else {
 											mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
 										}
 										$unique=FALSE;
-										while ($unique==FALSE) {
+										$count=0 ;
+										while ($unique==FALSE AND $count<100) {
 											$suffix=randomPassword(16) ;
 											$location="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . $_SESSION[$guid]["username"] . "_" . preg_replace("/[^a-zA-Z0-9]/", "", $lesson) . "_$suffix" . strrchr($_FILES["file"]["name"], ".") ;
 											if (!(file_exists($path . "/" . $location))) {
 												$unique=TRUE ;
 											}
+											$count++ ;
 										}
 										if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $location))) {
 											//Fail 5
