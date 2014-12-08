@@ -271,8 +271,8 @@ else {
 					$AI=str_pad($rowAI['Auto_increment'], 10, "0", STR_PAD_LEFT) ;
 					$attachment1=NULL ;
 					$attachment2=NULL ;
-					$nationalIDCardScan=NULL ; 
-					$citizenship1PassportScan=NULL ;
+					$nationalIDCardScan='' ; 
+					$citizenship1PassportScan='' ;
 					$imageFail=FALSE ;
 					if ($_FILES['file1']["tmp_name"]!="" OR $_FILES['file2']["tmp_name"]!="" OR $_FILES['nationalIDCardScan']["tmp_name"]!="" OR $_FILES['citizenship1PassportScan']["tmp_name"]!="") {
 						$time=time() ;
