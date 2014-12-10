@@ -1187,7 +1187,7 @@ function getStudentFastFinder($connection2, $guid) {
 						$output.="</tr>" ;
 						$output.="<tr>" ;
 							$output.="<td style='vertical-align: top; border: none'>" ; 
-								$output.="<input style='width: 275px' type='text' id='gibbonPersonID' name='gibbonPersonID' />" ;
+								$output.="<input class='topFinder' style='width: 275px' type='text' id='gibbonPersonID' name='gibbonPersonID' />" ;
 								$output.="<script type='text/javascript'>" ;
 									$output.="$(document).ready(function() {" ;
 										 $output.="$(\"#gibbonPersonID\").tokenInput([" ;

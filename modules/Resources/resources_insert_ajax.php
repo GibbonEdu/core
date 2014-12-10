@@ -129,7 +129,7 @@ else {
 								while ($rowList=$resultList->fetch()) {
 									$list=$list . "{id: \"" . $rowList["tag"] . "\", name: \"" . $rowList["tag"] . " <i>(" . $rowList["count"] . ")</i>\"}," ;
 								}
-								$output.="<style>ul.token-input-list-facebook { margin-left: 2px; width: 700px; height: 25px!important; float: none }</style>" ;
+								$output.="<style>ul.token-input-list-facebook { margin-left: 2px; width: 275px; height: 25px!important; float: none }</style>" ;
 								$output.="<input type='text' id='tagSearch" . $id . "' name='tag" . $id . "' />" ;
 								$output.="<script type='text/javascript'>" ;
 									$output.="$(document).ready(function() {" ;
