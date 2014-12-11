@@ -168,6 +168,9 @@ Installer: added ability to install demo data
 	New file /gibbon_demo.sql
 	Edited file /installer/install.php
 	
+Crowd Assessment: added fields to listing to make it more usable
+	Edited file /modules/Crowd Assessment/crowdAssess_view.php, crowdAssess_view_discuss.php
+
 
 v8.3.00
 -------

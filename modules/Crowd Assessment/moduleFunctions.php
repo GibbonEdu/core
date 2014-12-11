@@ -331,7 +331,6 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
 					$output.="<td style='text-align: right' colspan=2><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss_post.php&gibbonPersonID=$gibbonPersonID&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&replyTo=" . $rowDiscuss["gibbonCrowdAssessDiscussID"] . "'>Reply</a></td>" ;
 				$output.="</tr>" ;
 				
-				
 			$output.="</table>" ; 
 			
 			//Get any replies

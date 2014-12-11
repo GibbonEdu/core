@@ -147,6 +147,9 @@ else {
 								print _("Star") ;
 							print "</th>" ;
 							print "<th>" ;
+								print _("Comments") ;
+							print "</th>" ;
+							print "<th>" ;
 								print _("Discuss") ;
 							print "</th>" ;
 						print "</tr>" ;
@@ -220,7 +223,25 @@ else {
 										else {
 											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Crowd Assessment/crowdAssess_viewProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=" . $rowWork["gibbonPlannerEntryHomeworkID"] . "&address=" . $_GET["q"] . "&gibbonPersonID=" . $rowList["gibbonPersonID"] . "'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
 										}
+										
+										try {
+											$dataLike=array("gibbonPlannerEntryHomeworkID"=>$rowWork["gibbonPlannerEntryHomeworkID"]); 
+											$sqlLike="SELECT * FROM gibbonCrowdAssessLike WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID" ;
+											$resultLike=$connection2->prepare($sqlLike);
+											$resultLike->execute($dataLike);
+										}
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										print " x " . $resultLike->rowCount() ;
 									}
+								print "</td>" ;
+								print "<td>" ;
+									$dataDiscuss=array("gibbonPlannerEntryHomeworkID"=>$rowWork["gibbonPlannerEntryHomeworkID"]); 
+									$sqlDiscuss="SELECT gibbonCrowdAssessDiscuss.*, title, surname, preferredName, category FROM gibbonCrowdAssessDiscuss JOIN gibbonPerson ON (gibbonCrowdAssessDiscuss.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID" ;
+									$resultDiscuss=$connection2->prepare($sqlDiscuss);
+									$resultDiscuss->execute($dataDiscuss);
+									print $resultDiscuss->rowCount() ;
 								print "</td>" ;
 								print "<td>" ;
 									if ($rowWork["gibbonPlannerEntryHomeworkID"]!="" AND $rowWork["status"]!="Exemption") {

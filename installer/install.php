@@ -134,7 +134,6 @@ include "../functions.php" ;
 														<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 													</td>
 													<td class="right">
-														<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 														<input type="submit" value="<?php print _("Submit") ; ?>">
 													</td>
 												</tr>
@@ -232,7 +231,6 @@ include "../functions.php" ;
 											</td>
 											<td class="right">
 												<input type="hidden" name="code" value="<?php print $code ?>">
-												<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 												<input type="submit" value="<?php print _("Submit") ; ?>">
 											</td>
 										</tr>
@@ -988,7 +986,6 @@ include "../functions.php" ;
 																<input type="hidden" name="databaseName" value="<?php print $databaseName ?>">
 																<input type="hidden" name="databaseUsername" value="<?php print $databaseUsername ?>">
 																<input type="hidden" name="databasePassword" value="<?php print $databasePassword ?>">
-																<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 																<input type="submit" value="<?php print _("Submit") ; ?>">
 															</td>
 														</tr>
