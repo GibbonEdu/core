@@ -42,7 +42,7 @@ include "../functions.php" ;
 			<div id="wrap">
 				<div id="header">
 					<div id="header-left">
-						<img height='100px' width='400px' class="logo" alt="Logo" src="../themes/Default/img/logo.jpg"></a>
+						<img height='100px' width='400px' class="logo" alt="Logo" src="../themes/Default/img/logo.png"></a>
 					</div>
 					<div id="header-right">
 						
@@ -67,6 +67,10 @@ include "../functions.php" ;
 							$databasePassword="" ;
 							if (isset($_POST["databasePassword"])) {
 								$databasePassword=$_POST["databasePassword"] ;
+							}
+							$demoData="" ;
+							if (isset($_POST["demoData"])) {
+								$demoData=$_POST["demoData"] ;
 							}
 							
 							//Get and set step
@@ -208,6 +212,20 @@ include "../functions.php" ;
 												 </script>
 											</td>
 										</tr>
+										
+										<tr>
+											<td> 
+												<b><?php print _('Install Demo Data?') ?> *</b><br/>
+											</td>
+											<td class="right">
+												<select name="demoData" id="demoData" style="width: 302px">
+													<?php
+													print "<option selected value='N'>N</option>" ;
+													print "<option value='Y'>Y</option>" ;
+													?>			
+												</select>
+											</td>
+										</tr>
 										<tr>
 											<td>
 												<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
@@ -224,7 +242,7 @@ include "../functions.php" ;
 							}
 							else if ($step==2) {
 								//Check for db values
-								if ($databaseServer=="" OR $databaseName=="" OR $databaseUsername=="" OR $databasePassword=="") {
+								if ($databaseServer=="" OR $databaseName=="" OR $databaseUsername=="" OR $databasePassword=="" OR $demoData=="") {
 									print "<div class='error'>" ;
 										print sprintf(_('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
 									print "</div>" ;
@@ -339,6 +357,40 @@ include "../functions.php" ;
 												print "</div>" ;
 											}
 											else {
+												//Try to install the demo data, report error but don't stop if any issues
+												if ($demoData=="Y") {
+													if (file_exists("../gibbon_demo.sql")==FALSE) {
+														print "<div class='error'>" ;
+															print _("../gibbon_demo.sql does not exist, so we will conintue without demo data.") ;
+														print "</div>" ;
+													}
+													else {
+														$query=@fread(@fopen("../gibbon_demo.sql", 'r'), @filesize("../gibbon.sql")) or die('Encountered a problem.');
+														$query=remove_remarks($query);
+														$query=split_sql_file($query, ';');
+										
+														$i=1;
+														$demoFail=FALSE ;
+														foreach($query as $sql){
+															$i++;
+															try {
+																$connection2->query($sql) ;
+															}
+															catch(PDOException $e) {
+																print $e->getMessage() . "<br/><br/>" ;
+																$demoFail=TRUE ;
+															}
+														}
+														
+														if ($demoFail) {
+															print "<div class='error'>" ;
+																print _("There were some issues installing the demo data, but we will conintue anyway.") ;
+															print "</div>" ;
+														}
+													}
+												}
+												
+												
 												//Set default language
 												try {
 													$data=array("code"=>$code); 
@@ -1009,7 +1061,7 @@ include "../functions.php" ;
 											//Write to database
 											try {
 												$data=array("title"=>$title, "surname"=>$surname, "firstName"=>$firstName, "preferredName"=>$preferredName, "officialName"=>($firstName . " " . $surname), "username"=>$username, "passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "status"=>'Full', "canLogin"=>'Y', "passwordForceReset"=>'N', "gibbonRoleIDPrimary"=>"001", "gibbonRoleIDAll"=>"001", "email"=>$email) ;
-												$sql="INSERT INTO gibbonPerson SET title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, canLogin=:canLogin, passwordForceReset=:passwordForceReset, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, email=:email" ;
+												$sql="INSERT INTO gibbonPerson SET gibbonPersonID=1, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, canLogin=:canLogin, passwordForceReset=:passwordForceReset, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, email=:email" ;
 												$result=$connection2->prepare($sql);
 												$result->execute($data);
 											}

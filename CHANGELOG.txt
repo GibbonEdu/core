@@ -164,6 +164,10 @@ General: added option (set to No by default) to email user for system-wide notif
 	Edited files /preferences*.php, functions.php, login.php
 	Edited file /lib/googleOAuth/index.php
 
+Installer: added ability to install demo data
+	New file /gibbon_demo.sql
+	Edited file /installer/install.php
+	
 
 v8.3.00
 -------
