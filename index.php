@@ -307,8 +307,7 @@ else {
 			 	apply_source_formatting : true,
 			 	browser_spellcheck: true,
 			 	convert_urls: false,
-			 	relative_urls: false,
-			 	paste_data_images: true
+			 	relative_urls: false
 			 });
 			</script>
 			<style>
