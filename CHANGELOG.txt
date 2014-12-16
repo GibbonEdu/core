@@ -171,6 +171,14 @@ Installer: added ability to install demo data
 Crowd Assessment: added fields to listing to make it more usable
 	Edited file /modules/Crowd Assessment/crowdAssess_view.php, crowdAssess_view_discuss.php
 
+Installer: added ability to join mailing list and request support team welcome email
+	Edited file /installer/install.php
+
+Installer: added ability to create database if it does not exist
+	Edited file /installer/install.php
+
+Installer: added check of gibbonedu.org services to see if code is development or otherwise: set's Cutting Edge Code automatically on result
+	Edited file /installer/install.php
 
 v8.3.00
 -------

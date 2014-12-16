@@ -152,11 +152,7 @@ else {
 							}
 							catch(PDOException $e) { }
 							while ($rowSelect=$resultSelect->fetch()) {
-								$selected="" ;
-								if ($row["gibbonYearGroupID"]==$rowSelect["gibbonYearGroupID"]) {
-									$selected="selected" ;
-								}
-								print "<option $selected value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+								print "<option value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 							}
 							?>				
 						</select>
@@ -183,11 +179,7 @@ else {
 							}
 							catch(PDOException $e) { }
 							while ($rowSelect=$resultSelect->fetch()) {
-								$selected="" ;
-								if ($row["gibbonRollGroupID"]==$rowSelect["gibbonRollGroupID"]) {
-									$selected="selected" ;
-								}
-								print "<option $selected value='" . $rowSelect["gibbonRollGroupID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+								print "<option value='" . $rowSelect["gibbonRollGroupID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 							}
 							?>				
 						</select>

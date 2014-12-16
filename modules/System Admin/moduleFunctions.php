@@ -56,7 +56,7 @@ function getCurrentVersion($guid, $connection2, $version) {
 		$output.="<div id='status' class='warning'>" ;
 			$output.="<div style='width: 100%; text-align: center'>" ;
 				$output.="<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='Loading'/><br/>" ;
-				$output.="Checking for Gibbon updates." ;
+				$output.=_("Checking for Gibbon updates.") ;
 			$output.="</div>" ;
 		$output.="</div>" ;
 	}

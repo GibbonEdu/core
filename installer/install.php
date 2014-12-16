@@ -36,6 +36,7 @@ include "../functions.php" ;
 		<script type="text/javascript" src="../lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
 		<link rel='stylesheet' type='text/css' href='../themes/Default/css/main.css' />
 		<script type='text/javascript' src='../themes/Default/js/common.js'></script>
+		<script type="text/javascript" src="../lib/jquery/jquery.js"></script>
 	</head>
 	<body>
 		<div id="wrapOuter">
@@ -46,6 +47,9 @@ include "../functions.php" ;
 					</div>
 					<div id="header-right">
 						
+					</div>
+					<div id="header-menu">
+					
 					</div>
 				</div>
 				<div id="content-wrap">
@@ -177,7 +181,7 @@ include "../functions.php" ;
 										<tr>
 											<td> 
 												<b><?php print _('Database Name') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print _('This database must already exist. Collation should be utf8_general_ci.') ?></i></span>
+												<span style="font-size: 90%"><i><?php print _('This database will be created if it does not already exist. Collation should be utf8_general_ci.') ?></i></span>
 											</td>
 											<td class="right">
 												<input name="databaseName" id="databaseName" maxlength=50 value="" type="text" style="width: 300px">
@@ -246,14 +250,39 @@ include "../functions.php" ;
 									print "</div>" ;
 								}
 								
-								//Estabish db connection
+								//Estabish db connection without database name
 								$connected=TRUE ;
 								try {
-									$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
+									$connection2=new PDO("mysql:host=$databaseServer;charset=utf8", $databaseUsername, $databasePassword);
 									$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 									$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 								}
 								catch(PDOException $e) {
+									print "here" . $e->getMessage() ;
+									$connected=FALSE ;
+								}
+								
+								//Create database if needed.
+								$databaseNameClean="`".str_replace("`","``",$databaseName)."`";
+								try {
+									$data=array(); 
+									$sql="CREATE DATABASE IF NOT EXISTS $databaseNameClean DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci" ;
+									$result=$connection2->prepare($sql);
+									$result->execute($data);
+								}
+								catch(PDOException $e) { 
+									$connected=FALSE ;
+								}
+								
+								//Use database, to make it active.
+								try {
+									$data=array(); 
+									$sql="USE $databaseNameClean" ;
+									$result=$connection2->prepare($sql);
+									$result->execute($data);
+								}
+								catch(PDOException $e) { 
+									print "here" . $e->getMessage() ;
 									$connected=FALSE ;
 								}
 								
@@ -470,6 +499,15 @@ include "../functions.php" ;
 														</tr>
 														<tr>
 															<td> 
+																<b><?php print _('Receive Support?') ?></b><br/>
+																<span style="font-size: 90%"><i><?php print _('Join our mailing list and recieve a welcome email from the team.') ?></i></span>
+															</td>
+															<td class="right">
+																<input name="support" id="support" value="true" type="checkbox">
+															</td>
+														</tr>
+														<tr>
+															<td> 
 																<b><?php print _('Username') ?> *</b><br/>
 																<span style="font-size: 90%"><i><?php print _('Must be unique. System login name. Cannot be changed.') ?></i></span>
 															</td>
@@ -661,6 +699,18 @@ include "../functions.php" ;
 																</select>
 															</td>
 														</tr>
+														<?php
+														print "<tr>" ;
+															print "<td colspan=2>" ;
+																print "<div id='status' class='warning'>" ;
+																	print "<div style='width: 100%; text-align: center'>" ;
+																		print "<img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>" ;
+																		print _("Checking for Cutting Edge Code.") ;
+																	print "</div>" ;
+																print "</div>" ;
+															print "<td>" ;
+														print "</tr>"
+														?>
 														<tr>
 															<?php
 															try {
@@ -687,6 +737,33 @@ include "../functions.php" ;
 																</select>
 															</td>
 														</tr>
+														<?php
+														//Check and set cutting edge code based on gibbonedu.org services value
+														print "<script type=\"text/javascript\">" ;
+															print "$(document).ready(function(){" ;
+																print "$.ajax({" ;
+																	print "crossDomain: true, type:\"GET\", contentType: \"application/json; charset=utf-8\",async:false," ;
+																	print "url: \"https://gibbonedu.org/services/version/devCheck.php?version=" . $version . "&callback=?\"," ;
+																	print "data: \"\",dataType: \"jsonp\", jsonpCallback: 'fnsuccesscallback',jsonpResult: 'jsonpResult'," ;
+																	print "success: function(data) {" ;
+																		print "$(\"#status\").attr(\"class\",\"success\");" ;
+																		print "if (data['status']==='false') {" ;
+																			print "$(\"#status\").html('" . _('Cutting Edge Code check successful.') . ".') ;" ;
+																		print "}" ;
+																		print "else {" ;
+																			print "$(\"#status\").html('" . _('Cutting Edge Code check successful.') . ".') ;" ;
+																			print "$(\"#cuttingEdgeCode\").val('Y');" ;
+																		print "}" ;
+																	print "}," ;
+																	print "error: function (data, textStatus, errorThrown) {" ;
+																		print "$(\"#status\").attr(\"class\",\"error\");" ;
+																			print "$(\"#status\").html('" . _('Cutting Edge Code check failed') . ".') ;" ;
+																	print "}" ;
+																print "});" ;
+															print "});" ;
+														print "</script>" ;
+														?>
+														
 														<tr>
 															<?php
 															try {
@@ -1021,6 +1098,12 @@ include "../functions.php" ;
 									$password=$_POST["password"] ;
 									$passwordConfirm=$_POST["passwordConfirm"] ;
 									$email=$_POST["email"] ;
+									$support=FALSE ;
+									if (isset($_POST["support"])) {
+										if ($_POST["support"]=="true") {
+											$support=TRUE ;
+										}
+									}
 									
 									//Get system settings
 									$absoluteURL=$_POST["absoluteURL"] ; 	
@@ -1313,7 +1396,22 @@ include "../functions.php" ;
 													}
 												}
 												
-	
+												//Deal with request to receive welcome email
+												if ($support==TRUE) {
+													$to="support@gibbonedu.org" ;
+													$subject=sprintf('New Gibbon Install Support Request for %1$s', $organisationName) ;
+													$body=sprintf('Send email welcome to %1$s on %2$s and register them on the mailing list.', formatName($title, $preferredName, $surname, "Parent"), $email) . "\n\n" ;
+													$headers="From: " . $email ;
+													if (!(mail($to, $subject, $body, $headers))) { //Failure to send
+														print "<div class='error'>" ;
+															print _('New Gibbon install support request failed to send.') ;
+														print "</div>" ;
+													}
+													else { //Sent OK
+														print _('New Gibbon install support request sent successfully.') ;
+													}
+												}
+												
 												if ($settingsFail==TRUE) {
 													print "<div class='error'>" ;
 														print sprintf(_('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", "</a>") ;
@@ -1324,9 +1422,6 @@ include "../functions.php" ;
 												else {
 													print "<div class='success'>" ;
 														print sprintf(_('Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login with the username and password you created.'), "<a href='$absoluteURL'>", "</a>") ;
-														if ($cuttingEdgeCode=="Y") {
-															print " <b>" . _('As you are running cutting edge code, it is recommended that after logging in, you go to Admin > System Admin > Update, and run any updates.') . "</b>" ;
-														}
 														print "<br/><br/>" ; 
 														print sprintf(_('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", "</a>") ;
 													print "</div>" ;
