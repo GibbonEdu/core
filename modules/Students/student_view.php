@@ -198,9 +198,9 @@ else {
 				</table>
 			</form>
 			
-			<h2>Choose A Student</h2>
+			<h2><?php print _("Choose A Student"); ?></h2>
 
-			<span>Sort by: </span>
+			<span><?php print _("Sort by: "); ?></span>
 			<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 				<select name="sort" style="float:left">
 					<option value="surname">Surname</option>
