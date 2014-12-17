@@ -1016,14 +1016,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 		$output.="</table>" ;
 	}
 	
-	
-	
-	if ($blank==TRUE) {
-		return FALSE ;
-	}
-	else {
-		return $output ;
-	}
+	return $output ;
 }
 
 function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, $specialDayStart="", $specialDayEnd="") {
@@ -2050,12 +2043,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 		$output.="</table>" ;
 	}
 	
-	if ($blank==TRUE) {
-		return FALSE ;
-	}
-	else {
-		return $output ;
-	}
+	return $output ;
 }
 
 function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $daysInWeek, $gibbonSpaceID, $gridTimeStart, $diffTime, $eventsSpaceBooking, $specialDayStart="", $specialDayEnd="") {

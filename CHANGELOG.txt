@@ -188,6 +188,10 @@ Planner: added public listing of units
 	Edited file /index.php
 	New files /modules/Planner/units_public*.php
 
+Timetable: fixed bug with timetable display during the holidays
+	Edited file /modules/Timetable/moduleFunctions.php
+
+
 v8.3.00
 -------
 General: added footer link to credits on Gibbon website
