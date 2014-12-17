@@ -1396,22 +1396,21 @@ include "../functions.php" ;
 													}
 												}
 												
-												//Deal with request to receive welcome email
+												//Deal with request to receive welcome email by calling gibbonedu.org iframe
 												if ($support==TRUE) {
-													$to="support@gibbonedu.org" ;
-													$subject=sprintf('New Gibbon Install Support Request for %1$s', $organisationName) ;
-													$body=sprintf('Send email welcome to %1$s on %2$s and register them on the mailing list.', formatName($title, $preferredName, $surname, "Parent"), $email) . "\n\n" ;
-													$headers="From: " . $email ;
-													if (!(mail($to, $subject, $body, $headers))) { //Failure to send
-														print "<div class='error'>" ;
-															print _('New Gibbon install support request failed to send.') ;
-														print "</div>" ;
+													$absolutePathProtocol="" ;
+													$absolutePath="" ;
+													if (substr($absoluteURL,0,7)=="http://") {
+														$absolutePathProtocol="http" ;
+														$absolutePath=substr($absoluteURL,7) ;
 													}
-													else { //Sent OK
-														print _('New Gibbon install support request sent successfully.') ;
+													else if (substr($absoluteURL,0,8)=="https://") {
+														$absolutePathProtocol="https" ;
+														$absolutePath=substr($absoluteURL,8) ;
 													}
+													print "<iframe class='support' style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/support/supportRegistration.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($organisationName) . "&email=" . urlencode($email) . "&title=" . urlencode($title) . "&surname=" . urlencode($surname) . "&preferredName=" . urlencode($preferredName) . "'></iframe>" ;
 												}
-												
+																							
 												if ($settingsFail==TRUE) {
 													print "<div class='error'>" ;
 														print sprintf(_('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", "</a>") ;

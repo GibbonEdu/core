@@ -19,10 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 ?>
 
 <h1>
-	<?php print _("Error") ; ?><br/>
+	<?php print _("Oh no!") ; ?><br/>
 </h1>
 <p>
-	<?php print _("An error has occurred. This could mean a number of different things, but generally indicates that you have a misspelt an address, or are trying to access a page that you are not permitted to access.") ?><br/>
+	<?php print _("Something has gone wrong: the Gibbon's have escaped!") ?><br/>
 	<br/>
-	<?php print _("If you cannot solve this problem by retyping the address, or through other means, please contact your system administrator.") ?><br/>
+	<?php print _("An error has occurred. This could mean a number of different things, but generally indicates that you have a misspelt an address, or are trying to access a page that you are not permitted to access.") . " " . _("If you cannot solve this problem by retyping the address, or through other means, please contact your system administrator.") ?><br/>
 </p>

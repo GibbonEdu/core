@@ -622,6 +622,9 @@ ALTER TABLE `gibbonPerson` ADD `googleAPIRefreshToken` VARCHAR(255) NOT NULL ;en
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'sessionDuration', 'Session Duration', 'Time, in seconds, before system logs a user out. Should be less than PHP\'s session.gc_maxlifetime option.', '1200');end
 UPDATE gibbonSetting SET value='themes/Default/img/logo.png' WHERE value='themes/Default/img/logo.jpg' AND scope='System' AND name='organisationLogo';end
 ALTER TABLE `gibbonPerson` ADD `receiveNoticiationEmails` ENUM('N','Y') NOT NULL DEFAULT 'N' ;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Planner', 'makeUnitsPublic', 'Make Units Public', 'Enables a public listing of units, with teachers able to opt in to share units.', 'N');end
+ALTER TABLE `gibbonUnit` ADD `license` VARCHAR(50) NULL DEFAULT NULL AFTER `embeddable`, ADD `sharedPublic` ENUM('Y','N') NULL DEFAULT NULL AFTER `license`;end
+UPDATE gibboni18n SET maintainerName='Jasmine Chan & Charlie Chow' WHERE code='zh_HK'end
 ";
 
 ?>

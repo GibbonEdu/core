@@ -65,8 +65,10 @@ else {
 			$name=$_POST["name"] ;
 			$description=$_POST["description"] ;
 			$details=$_POST["details"] ;
+			$license=$_POST["license"] ;
+			$sharedPublic=$_POST["sharedPublic"] ;
 			
-			if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $name=="" OR $description=="") {
+			if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $name=="" OR $description=="" OR $sharedPublic=="") {
 				//Fail 3
 				$URL.="&addReturn=fail3" ;
 				header("Location: {$URL}");
@@ -243,8 +245,8 @@ else {
 					
 					//Write to database
 					try {
-						$data=array("gibbonCourseID"=>$gibbonCourseID, "name"=>$name, "description"=>$description, "attachment"=>$attachment, "details"=>$details, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"], ); 
-						$sql="INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+						$data=array("gibbonCourseID"=>$gibbonCourseID, "name"=>$name, "description"=>$description, "license"=>$license, "sharedPublic"=>$sharedPublic, "attachment"=>$attachment, "details"=>$details, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"], ); 
+						$sql="INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, license=:license, sharedPublic=:sharedPublic, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

@@ -180,6 +180,14 @@ Installer: added ability to create database if it does not exist
 Installer: added check of gibbonedu.org services to see if code is development or otherwise: set's Cutting Edge Code automatically on result
 	Edited file /installer/install.php
 
+Planner: added public listing of units
+	New value in table gibbonSetting
+	Edited table gibbonUnit
+	Edited files /modules/School Admin/plannerSettings.php
+	Edited files /modules/Planner/units_edit*.php, units_add*.php
+	Edited file /index.php
+	New files /modules/Planner/units_public*.php
+
 v8.3.00
 -------
 General: added footer link to credits on Gibbon website

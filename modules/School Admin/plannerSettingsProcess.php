@@ -48,6 +48,7 @@ else {
 	$teachersNotesTemplate=$_POST["teachersNotesTemplate"] ;
 	$unitOutlineTemplate=$_POST["unitOutlineTemplate"] ;
 	$smartBlockTemplate=$_POST["smartBlockTemplate"] ;
+	$makeUnitsPublic=$_POST["makeUnitsPublic"] ;
 	$allowOutcomeEditing=$_POST["allowOutcomeEditing"] ;
 	$sharingDefaultParents=$_POST["sharingDefaultParents"] ;
 	$sharingDefaultStudents=$_POST["sharingDefaultStudents"] ;
@@ -89,6 +90,16 @@ else {
 	try {
 		$data=array("value"=>$smartBlockTemplate); 
 		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='smartBlockTemplate'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ;
+	}
+	
+	try {
+		$data=array("value"=>$makeUnitsPublic); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='makeUnitsPublic'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
