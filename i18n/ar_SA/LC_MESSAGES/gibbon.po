@@ -300,7 +300,13 @@ msgstr ""
 #: functions.php:1264 functions.php:1821 functions.php:3254
 #: modules/Resources/resources_add_ajaxProcess.php:120
 #: modules/Resources/resources_add_ajaxProcess.php:177 index.php:558
-#: index.php:579 cli/attendance_dailyIncompleteEmail.php:77
+#: index.php:579 modules/Library/library_import.php:376
+#: modules/Library/library_import.php:405
+#: modules/Library/library_import.php:433
+#: modules/Library/library_import.php:492
+#: modules/Library/library_import.php:506
+#: modules/Library/library_import.php:528
+#: cli/attendance_dailyIncompleteEmail.php:77
 #: cli/attendance_dailyIncompleteEmail.php:93
 #: cli/planner_parentWeeklyEmailSummary.php:86 functions.php:249
 #: functions.php:1245 functions.php:1264 functions.php:1821 functions.php:3254
@@ -5601,7 +5607,8 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1572
 #: modules/Timetable/moduleFunctions.php:398
 #: modules/Timetable/moduleFunctions.php:1584 functions.php:1209
-#: functions.php:1290 functions.php:1209 functions.php:1290
+#: functions.php:1290 modules/Timetable/moduleFunctions.php:1577
+#: functions.php:1209 functions.php:1290
 #: modules/Behaviour/behaviour_manage.php:193
 #: modules/Behaviour/behaviour_pattern.php:239
 #: modules/Departments/department.php:224
@@ -21935,6 +21942,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1766
 #: modules/Timetable/moduleFunctions.php:732
 #: modules/Timetable/moduleFunctions.php:1778
+#: modules/Timetable/moduleFunctions.php:1771
 #: modules/Activities/activities_manage_edit.php:438
 #: modules/Activities/activities_my_full.php:194
 #: modules/Activities/activities_view_full.php:215
@@ -25069,6 +25077,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1770
 #: modules/Timetable/moduleFunctions.php:736
 #: modules/Timetable/moduleFunctions.php:1782
+#: modules/Timetable/moduleFunctions.php:1775
 #: modules/Attendance/moduleFunctions.php:194
 #: modules/Planner/moduleFunctions.php:411
 #: modules/Timetable/moduleFunctions.php:736
@@ -25091,6 +25100,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1789
 #: modules/Timetable/moduleFunctions.php:755
 #: modules/Timetable/moduleFunctions.php:1801
+#: modules/Timetable/moduleFunctions.php:1794
 #: modules/Attendance/moduleFunctions.php:199
 #: modules/Planner/moduleFunctions.php:414
 #: modules/Timetable/moduleFunctions.php:755
@@ -25113,6 +25123,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1808
 #: modules/Timetable/moduleFunctions.php:774
 #: modules/Timetable/moduleFunctions.php:1820
+#: modules/Timetable/moduleFunctions.php:1813
 #: modules/Attendance/moduleFunctions.php:205
 #: modules/Planner/moduleFunctions.php:417
 #: modules/Timetable/moduleFunctions.php:774
@@ -25135,6 +25146,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1827
 #: modules/Timetable/moduleFunctions.php:793
 #: modules/Timetable/moduleFunctions.php:1839
+#: modules/Timetable/moduleFunctions.php:1832
 #: modules/Attendance/moduleFunctions.php:211
 #: modules/Planner/moduleFunctions.php:420
 #: modules/Timetable/moduleFunctions.php:793
@@ -25157,6 +25169,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1846
 #: modules/Timetable/moduleFunctions.php:812
 #: modules/Timetable/moduleFunctions.php:1858
+#: modules/Timetable/moduleFunctions.php:1851
 #: modules/Attendance/moduleFunctions.php:216
 #: modules/Planner/moduleFunctions.php:423
 #: modules/Timetable/moduleFunctions.php:812
@@ -25179,6 +25192,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1865
 #: modules/Timetable/moduleFunctions.php:831
 #: modules/Timetable/moduleFunctions.php:1877
+#: modules/Timetable/moduleFunctions.php:1870
 #: modules/Attendance/moduleFunctions.php:221
 #: modules/Planner/moduleFunctions.php:426
 #: modules/Timetable/moduleFunctions.php:831
@@ -25201,6 +25215,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1884
 #: modules/Timetable/moduleFunctions.php:850
 #: modules/Timetable/moduleFunctions.php:1896
+#: modules/Timetable/moduleFunctions.php:1889
 #: modules/Attendance/moduleFunctions.php:226
 #: modules/Planner/moduleFunctions.php:429
 #: modules/Timetable/moduleFunctions.php:850
@@ -27389,6 +27404,7 @@ msgstr ""
 
 #: modules/External Assessment/import_results.php:215
 #: modules/Library/library_import.php:328
+#: modules/Library/library_import.php:330
 #: modules/External Assessment/import_results.php:215
 #: modules/Library/library_import.php:330
 msgid ""
@@ -27398,6 +27414,7 @@ msgstr ""
 
 #: modules/External Assessment/import_results.php:221
 #: modules/Library/library_import.php:334
+#: modules/Library/library_import.php:336
 #: modules/External Assessment/import_results.php:221
 #: modules/Library/library_import.php:336
 msgid ""
@@ -27407,6 +27424,7 @@ msgstr ""
 
 #: modules/External Assessment/import_results.php:227
 #: modules/Library/library_import.php:340
+#: modules/Library/library_import.php:342
 #: modules/External Assessment/import_results.php:227
 #: modules/Library/library_import.php:342
 msgid "All results could be read and used, so the import will proceed."
@@ -27415,7 +27433,7 @@ msgstr ""
 #: modules/External Assessment/import_results.php:232
 #: modules/Library/library_import.php:345 modules/User
 #: Admin/import_families.php:379 Admin/import_studentEnrolment.php:224
-#: Admin/import_users.php:322
+#: Admin/import_users.php:322 modules/Library/library_import.php:347
 #: modules/External Assessment/import_results.php:232
 #: modules/Library/library_import.php:347
 #: modules/User Admin/import_families.php:379
@@ -27427,6 +27445,7 @@ msgstr ""
 #: modules/External Assessment/import_results.php:241
 #: modules/Library/library_import.php:353
 #: modules/Students/report_students_left.php:116
+#: modules/Library/library_import.php:355
 #: modules/External Assessment/import_results.php:241
 #: modules/Library/library_import.php:355
 #: modules/Students/report_students_left.php:116
@@ -29038,11 +29057,14 @@ msgstr ""
 #: modules/Library/library_import.php:451
 #: modules/Library/library_import.php:322
 #: modules/Library/library_import.php:453
+#: modules/Library/library_import.php:322
+#: modules/Library/library_import.php:453
 #, php-format
 msgid "Record with ID %1$s had some information malformations."
 msgstr ""
 
 #: modules/Library/library_import.php:380
+#: modules/Library/library_import.php:382
 #: modules/Library/library_import.php:382
 #, php-format
 msgid "Location with name %1$s in import cannot be found."
@@ -29050,11 +29072,13 @@ msgstr ""
 
 #: modules/Library/library_import.php:409
 #: modules/Library/library_import.php:411
+#: modules/Library/library_import.php:411
 #, php-format
 msgid "User with username %1$s in import cannot be found."
 msgstr ""
 
 #: modules/Library/library_import.php:437
+#: modules/Library/library_import.php:439
 #: modules/Library/library_import.php:439
 #, php-format
 msgid "Department with name %1$s in import cannot be found."
@@ -29062,11 +29086,13 @@ msgstr ""
 
 #: modules/Library/library_import.php:510
 #: modules/Library/library_import.php:512
+#: modules/Library/library_import.php:512
 #, php-format
 msgid "%1$s was successfully updated."
 msgstr ""
 
 #: modules/Library/library_import.php:532
+#: modules/Library/library_import.php:534
 #: modules/Library/library_import.php:534
 #, php-format
 msgid "%1$s was successfully inserted into the system."
@@ -35511,6 +35537,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1489
 #: modules/Timetable/moduleFunctions.php:322
 #: modules/Timetable/moduleFunctions.php:1501
+#: modules/Timetable/moduleFunctions.php:1494
 #: modules/Timetable/moduleFunctions.php:322
 #: modules/Timetable/moduleFunctions.php:1494
 msgid "Timetable Chooser"
@@ -35525,6 +35552,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1548
 #: modules/Timetable/moduleFunctions.php:374
 #: modules/Timetable/moduleFunctions.php:1560
+#: modules/Timetable/moduleFunctions.php:1553
 #: modules/Timetable/moduleFunctions.php:374
 #: modules/Timetable/moduleFunctions.php:1553
 msgid "Last Week"
@@ -35539,6 +35567,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1556
 #: modules/Timetable/moduleFunctions.php:382
 #: modules/Timetable/moduleFunctions.php:1568
+#: modules/Timetable/moduleFunctions.php:1561
 #: modules/Timetable/moduleFunctions.php:382
 #: modules/Timetable/moduleFunctions.php:1561
 msgid "Next Week"
@@ -35553,6 +35582,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:2235
 #: modules/Timetable/moduleFunctions.php:1239
 #: modules/Timetable/moduleFunctions.php:2247
+#: modules/Timetable/moduleFunctions.php:1232
 #: modules/Timetable/moduleFunctions.php:1232
 #: modules/Timetable/moduleFunctions.php:2235
 msgid "Timeslot:"
@@ -35571,6 +35601,8 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1244
 #: modules/Timetable/moduleFunctions.php:1247
 #: modules/Timetable/moduleFunctions.php:2251
+#: modules/Timetable/moduleFunctions.php:1237
+#: modules/Timetable/moduleFunctions.php:1240
 #: modules/Timetable/moduleFunctions.php:1237
 #: modules/Timetable/moduleFunctions.php:1240
 #: modules/Timetable/moduleFunctions.php:2239
@@ -35592,6 +35624,8 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:2254
 #: modules/Timetable/moduleFunctions.php:1245
 #: modules/Timetable/moduleFunctions.php:1248
+#: modules/Timetable/moduleFunctions.php:1245
+#: modules/Timetable/moduleFunctions.php:1248
 #: modules/Timetable/moduleFunctions.php:2242
 msgid "Phone:"
 msgstr ""
@@ -35600,6 +35634,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1253
 #: modules/Timetable/moduleFunctions.php:1275
 #: modules/Timetable/moduleFunctions.php:1287
+#: modules/Timetable/moduleFunctions.php:1280
 #: modules/Timetable/moduleFunctions.php:1280
 msgid "No Space Allocated"
 msgstr ""
