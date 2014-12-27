@@ -78,7 +78,7 @@ else {
 			$imageType=$row["imageType"] ;
 			$imageLocation=$row["imageLocation"] ;
 			$gibbonLibraryTypeID=$row["gibbonLibraryTypeID"] ;
-			$status=$row["status"] ;
+			$status="Available" ;
 				
 			$partialFail=FALSE ;
 			$count=$_POST["count"] ;

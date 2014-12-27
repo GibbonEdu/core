@@ -191,6 +191,9 @@ Planner: added public listing of units
 Timetable: fixed bug with timetable display during the holidays
 	Edited file /modules/Timetable/moduleFunctions.php
 
+Library: fixed item duplication issue for items on loan or for some other reason not available
+	Edited file /modules/Library/library_manage_catalog_duplicateProcess.php
+	
 
 v8.3.00
 -------
