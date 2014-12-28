@@ -2849,7 +2849,7 @@ else {
 				
 					//PERSONAL DATA MENU ITEMS
 					$_SESSION[$guid]["sidebarExtra"].="<h4>" . _('Personal') . "</h4>" ;
-					$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<ul class='moduleMenu'>" ;
 					$style="" ;
 					if ($subpage=="Summary") {
 						$style="style='font-weight: bold'" ;
@@ -2895,7 +2895,7 @@ else {
 					//ARR MENU ITEMS
 					if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php") OR isActionAccessible($guid, $connection2, "/modules/External Assessment/externalAssessment_details.php")) {
 						$_SESSION[$guid]["sidebarExtra"].="<h4>" . _('Assessment') . "</h4>" ;
-						$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<ul class='moduleMenu'>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php")) {
 							$style="" ;
 							if ($subpage=="Markbook") {
@@ -2916,7 +2916,7 @@ else {
 					//LEARNING MENU ITEMS
 					if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activityChoices_byStudent.php") OR isActionAccessible($guid, $connection2, "/modules/Individual Needs/in_view.php") OR isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php") OR isActionAccessible($guid, $connection2, "/modules/Planner/planner_edit.php") OR isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full.php")) {
 						$_SESSION[$guid]["sidebarExtra"].="<h4>" . _('Learning') . "</h4>" ;
-						$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<ul class='moduleMenu'>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activityChoices_byStudent.php")) {
 							$style="" ;
 							if ($subpage=="Activities") {
@@ -2958,7 +2958,7 @@ else {
 					//PEOPLE MENU ITEMS
 					if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_view.php")) {
 						$_SESSION[$guid]["sidebarExtra"].="<h4>" . _('People') . "</h4>" ;
-						$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<ul class='moduleMenu'>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_view.php")) {
 							$style="" ;
 							if ($subpage=="Behaviour Record") {
@@ -3007,7 +3007,7 @@ else {
 						
 						if (count($hooks)>0) {
 							$_SESSION[$guid]["sidebarExtra"].="<h4>Extras</h4>" ;
-							$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<ul class='moduleMenu'>" ;
 								foreach ($hooks as $hook) {
 									$_SESSION[$guid]["sidebarExtra"].=$hook ;
 								}
