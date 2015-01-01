@@ -200,7 +200,10 @@ Students: adjusted minor sidebar menu link display issue
 System Admin: fixed bug preventing module version number for additional modules from displaying
 	Edited file /core/modules/System Admin/module_manage.php
 
-
+General: added new hook to allow an additional module to insert content into the public home page
+	Edited table gibbonHook
+	Edited /index.php
+	
 v8.3.00
 -------
 General: added footer link to credits on Gibbon website

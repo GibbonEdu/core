@@ -402,10 +402,10 @@ else {
 									$publicApplications=getSettingByScope($connection2, "Application Form", "publicApplications" ) ; 
 									if ($publicApplications=="Y") {
 										print "<h2 style='margin-top: 30px'>" ;
-										print _("Applications") ;
+											print _("Applications") ;
 										print "</h2>" ;
 										print "<p>" ;
-										print sprintf(_('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]["organisationName"], "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Application Form/applicationForm.php'>", "</a>") ;
+											print sprintf(_('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]["organisationName"], "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Application Form/applicationForm.php'>", "</a>") ;
 										print "</p>" ;
 									}
 									
@@ -413,21 +413,43 @@ else {
 									$makeDepartmentsPublic=getSettingByScope($connection2, "Departments", "makeDepartmentsPublic" ) ; 
 									if ($makeDepartmentsPublic=="Y") {
 										print "<h2 style='margin-top: 30px'>" ;
-										print _("Departments") ;
+											print _("Departments") ;
 										print "</h2>" ;
 										print "<p>" ;
-										print sprintf(_('Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Departments/departments.php'>", "</a>", $_SESSION[$guid]["organisationName"]) ;
+											print sprintf(_('Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Departments/departments.php'>", "</a>", $_SESSION[$guid]["organisationName"]) ;
 										print "</p>" ;
 									}
 									
+									//Public units permitted?
 									$makeUnitsPublic=getSettingByScope($connection2, "Planner", "makeUnitsPublic" ) ; 
 									if ($makeUnitsPublic=="Y") {
 										print "<h2 style='margin-top: 30px'>" ;
-										print _("Learn With Us") ;
+											print _("Learn With Us") ;
 										print "</h2>" ;
 										print "<p>" ;
-										print sprintf(_('We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Planner/units_public.php&sidebar=false'>", "</a>", $_SESSION[$guid]["organisationName"]) ;
+											print sprintf(_('We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Planner/units_public.php&sidebar=false'>", "</a>", $_SESSION[$guid]["organisationName"]) ;
 										print "</p>" ;
+									}
+									
+									//Get any elements hooked into public home page, checking if they are turned on
+									try {
+										$dataHook=array(); 
+										$sqlHook="SELECT * FROM gibbonHook WHERE type='Public Home Page' ORDER BY name" ;
+										$resultHook=$connection2->prepare($sqlHook);
+										$resultHook->execute($dataHook);
+									}
+									catch(PDOException $e) { }
+									while ($rowHook=$resultHook->fetch()) {
+										$options=unserialize($rowHook["options"]) ;
+										$check=getSettingByScope($connection2, $options["toggleSettingScope"], $options["toggleSettingName"]) ;
+										if ($check==$options["toggleSettingValue"]) { //If its turned on, display it
+											print "<h2 style='margin-top: 30px'>" ;
+												print $options["title"] ;
+											print "</h2>" ;
+											print "<p>" ;
+												print $options["text"] ;
+											print "</p>" ;
+										}
 									}
 								}
 								else {
