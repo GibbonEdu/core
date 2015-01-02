@@ -50217,7 +50217,7 @@ msgid "Oh no!"
 msgstr ""
 
 #: error.php:25 error.php:25
-msgid "Something has gone wrong: the Gibbon's have escaped!"
+msgid "Something has gone wrong: the Gibbons have escaped!"
 msgstr ""
 
 #: i18n/dbStringsForTranslation.php:691 i18n/dbStringsForTranslation.php:691

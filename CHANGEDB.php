@@ -627,6 +627,10 @@ ALTER TABLE `gibbonUnit` ADD `license` VARCHAR(50) NULL DEFAULT NULL AFTER `embe
 UPDATE gibboni18n SET maintainerName='Jasmine Chan & Charlie Chow' WHERE code='zh_HK';end
 ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Unit') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 UPDATE gibboni18n SET maintainerName='Dicky Widhyatmoko' WHERE code='id_ID';end
+ALTER TABLE gibbonSetting DROP INDEX name;end
+ALTER TABLE gibbonSetting DROP INDEX nameDisplay;end
+ALTER TABLE gibbonSetting ADD UNIQUE (scope, nameDisplay) COMMENT '';end
+ALTER TABLE gibbonSetting ADD UNIQUE (scope,name) COMMENT '';end
 ";
 
 ?>

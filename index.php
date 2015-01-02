@@ -440,14 +440,14 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowHook=$resultHook->fetch()) {
-										$options=unserialize($rowHook["options"]) ;
+										$options=unserialize(str_replace("'", "\'", $rowHook["options"])) ;
 										$check=getSettingByScope($connection2, $options["toggleSettingScope"], $options["toggleSettingName"]) ;
 										if ($check==$options["toggleSettingValue"]) { //If its turned on, display it
 											print "<h2 style='margin-top: 30px'>" ;
 												print $options["title"] ;
 											print "</h2>" ;
 											print "<p>" ;
-												print $options["text"] ;
+												print stripslashes($options["text"]) ;
 											print "</p>" ;
 										}
 									}
