@@ -631,6 +631,7 @@ ALTER TABLE gibbonSetting DROP INDEX name;end
 ALTER TABLE gibbonSetting DROP INDEX nameDisplay;end
 ALTER TABLE gibbonSetting ADD UNIQUE (scope, nameDisplay) COMMENT '';end
 ALTER TABLE gibbonSetting ADD UNIQUE (scope,name) COMMENT '';end
+ALTER TABLE `gibbonModule` CHANGE `description` `description` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ";
 
 ?>
