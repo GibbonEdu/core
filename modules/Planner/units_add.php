@@ -509,8 +509,6 @@ else {
 								</tr>
 								
 								
-								
-								
 								<tr class='break'>
 									<td colspan=2> 
 										<h3><?php print _('Smart Blocks') ?></h3>

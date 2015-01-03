@@ -161,26 +161,26 @@ else {
 					
 					//ADD CLASS RECORDS
 					$partialFail=FALSE ;
-						if ($classCount>0) {
-							for ($i=0;$i<$classCount;$i++) {
-								$running=$_POST["running" . $i] ;
-								if ($running!="Y" AND $running!="N") {
-									$running="N" ;
-								}
-								
-								try {
-									$dataClass=array("gibbonUnitID"=>$AI, "gibbonCourseClassID"=>$_POST["gibbonCourseClassID" . $i], "running"=>$running); 
-									$sqlClass="INSERT INTO gibbonUnitClass SET gibbonUnitID=:gibbonUnitID, gibbonCourseClassID=:gibbonCourseClassID, running=:running" ;
-									$resultClass=$connection2->prepare($sqlClass);
-									$resultClass->execute($dataClass);
-								}
-								catch(PDOException $e) { 
-									$partialFail=TRUE ;
-								}
+					if ($classCount>0) {
+						for ($i=0;$i<$classCount;$i++) {
+							$running=$_POST["running" . $i] ;
+							if ($running!="Y" AND $running!="N") {
+								$running="N" ;
+							}
+							
+							try {
+								$dataClass=array("gibbonUnitID"=>$AI, "gibbonCourseClassID"=>$_POST["gibbonCourseClassID" . $i], "running"=>$running); 
+								$sqlClass="INSERT INTO gibbonUnitClass SET gibbonUnitID=:gibbonUnitID, gibbonCourseClassID=:gibbonCourseClassID, running=:running" ;
+								$resultClass=$connection2->prepare($sqlClass);
+								$resultClass->execute($dataClass);
+							}
+							catch(PDOException $e) { 
+								$partialFail=TRUE ;
 							}
 						}
+					}
 					
-					//ADD BLOCKS IF SMART
+					//ADD BLOCKS
 					$blockCount=($_POST["blockCount"]-1) ;
 					$sequenceNumber=0 ;
 					if ($blockCount>0) {
