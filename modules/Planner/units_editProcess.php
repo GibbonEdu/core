@@ -65,10 +65,13 @@ else {
 			$description=$_POST["description"] ;
 			$details=$_POST["details"] ;
 			$license=$_POST["license"] ;
-			$sharedPublic=$_POST["sharedPublic"] ;
+			$sharedPublic=NULL ;
+			if (isset($_POST["sharedPublic"])) {
+				$sharedPublic=$_POST["sharedPublic"] ;
+			}
 			$embeddable=$_POST["embeddable"] ;
 			
-			if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $gibbonUnitID=="" OR $name=="" OR $description=="" OR $sharedPublic=="" OR $embeddable=="") {
+			if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $gibbonUnitID=="" OR $name=="" OR $description=="" OR $embeddable=="") {
 				//Fail 3
 				$URL.="&updateReturn=fail3" ;
 				header("Location: {$URL}");

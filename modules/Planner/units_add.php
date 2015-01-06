@@ -529,7 +529,7 @@ else {
 										<script>
 											$(function() {
 												$( "#sortable" ).sortable({
-													placeholder: "ui-state-highlight";
+													placeholder: "ui-state-highlight",
 													axis: 'y'
 												});
 											});

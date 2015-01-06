@@ -67,6 +67,43 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 	}
 }
 
+//Get's a count of late days for specified student between specified dates (YYYY-MM-DD, inclusive). Return of FALSE means there was an error, or no data
+function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dateEnd) {
+	$queryFail=FALSE ;
+
+	//Get all records for the student, in the date range specified, ordered by date and timestamp taken.
+	try {
+		$data=array("gibbonPersonID"=>$gibbonPersonID, "dateStart"=>$dateStart, "dateEnd"=>$dateEnd); 
+		$sql="SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date>=:dateStart AND date<=:dateEnd ORDER BY date, timestampTaken" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$queryFail=TRUE ;
+	}
+	
+	if ($queryFail) {
+		return FALSE ;
+	}	
+	else {
+		$latenessCount=0 ;
+		if ($result->rowCount()>=0) {
+			$lateDays=array() ;
+			//Scan through all records, saving the last record for each day
+			while ($row=$result->fetch()) {
+				if ($row["type"]=="Present - Late") {
+					$lateDays[$row["date"]]=$row["type"] ;
+				}
+			}
+			
+			$latenessCount=count($lateDays) ;
+		}
+	
+		return $latenessCount ;
+	}
+}
+
+//$dateStart and $dateEnd refer to the students' first and last day at the school, not the range of dates for the report
 function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $connection2, $dateStart, $dateEnd) {
 	$output="" ;
 	
@@ -379,8 +416,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 						print "<b>" . _('Total number of school days to date:') . " $countSchoolDays</b><br/>" ;
 						print _("Total number of school days attended:") . " $countPresent<br/>" ;
 						print _("Total number of school days absent:") . " $countAbsent<br/>" ;
-						print _("Alternative absence count:") . " " . getAbsenceCount($guid, $gibbonPersonID, $connection2, "2013-08-28", "2014-06-28") ;
-					}
+					 }
 					else {
 						print _("NA") ;
 					}

@@ -203,6 +203,9 @@ System Admin: fixed bug preventing module version number for additional modules 
 General: added new hook to allow an additional module to insert content into the public home page
 	Edited table gibbonHook
 	Edited /index.php
+
+Attendance: added function to calculate late days for a student
+	Edited file /modules/Attendance/moduleFunctions.php
 	
 v8.3.00
 -------
