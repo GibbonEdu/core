@@ -206,6 +206,9 @@ General: added new hook to allow an additional module to insert content into the
 
 Attendance: added function to calculate late days for a student
 	Edited file /modules/Attendance/moduleFunctions.php
+
+System Admin: made module installer aware of sidebarEntry paramater
+	Edited file /modules/System Admin/module_manage_installProcess.php
 	
 v8.3.00
 -------
