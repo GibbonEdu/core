@@ -223,8 +223,8 @@ include "../functions.php" ;
 											<td class="right">
 												<select name="demoData" id="demoData" style="width: 302px">
 													<?php
-													print "<option selected value='N'>N</option>" ;
-													print "<option value='Y'>Y</option>" ;
+													print "<option selected value='N'>" . ynExpander('N') . "</option>" ;
+													print "<option value='Y'>" . ynExpander('Y') . "</option>" ;
 													?>			
 												</select>
 											</td>
@@ -731,8 +731,8 @@ include "../functions.php" ;
 															<td class="right">
 																<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
 																	<?php
-																	print "<option selected value='N'>N</option>" ;
-																	print "<option value='Y'>Y</option>" ;
+																	print "<option selected value='N'>" . ynExpander('N') . "</option>" ;
+																	print "<option value='Y'>" . ynExpander('Y') . "</option>" ;
 																	?>			
 																</select>
 															</td>
@@ -784,8 +784,8 @@ include "../functions.php" ;
 															<td class="right">
 																<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
 																	<?php
-																	print "<option value='Y'>Y</option>" ;
-																	print "<option value='N'>N</option>" ;
+																	print "<option value='Y'>" . ynExpander('Y') . "</option>" ;
+																	print "<option value='N'>" . ynExpander('N') . "</option>" ;
 																	?>			
 																</select>
 															</td>
