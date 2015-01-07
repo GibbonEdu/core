@@ -1809,7 +1809,9 @@ else {
 								$entryCount=0 ;
 								
 								$and="" ;
+								$and2="" ;
 								$dataList=array() ;
+								$dataEntry=array() ;
 								$filter=NULL ;
 								if (isset($_GET["filter"])) {
 									$filter=$_GET["filter"] ;
@@ -1835,6 +1837,18 @@ else {
 								if ($filter2!="") {
 									$dataList["filter2"]=$filter2 ;
 									$and.=" AND gibbonDepartmentID=:filter2" ;
+								}
+								
+								$filter3=NULL ;
+								if (isset($_GET["filter3"])) {
+									$filter3=$_GET["filter3"] ;
+								}
+								else if (isset($_POST["filter3"])) {
+									$filter3=$_POST["filter3"] ;
+								}
+								if ($filter3!="") {
+									$dataEntry["filter3"]=$filter3 ;
+									$and2.=" AND type=:filter3" ;
 								}
 								
 								print "<p>" ;
@@ -1899,6 +1913,34 @@ else {
 											</td>
 										</tr>
 										<?php
+										$types=getSettingByScope($connection2, "Markbook", "markbookType") ;
+										if ($types!=FALSE) {
+											$types=explode(",", $types) ;
+											?>
+											<tr>
+												<td> 
+													<b><?php print _('Type') ?></b><br/>
+													<span style="font-size: 90%"><i></i></span>
+												</td>
+												<td class="right">
+													<select name="filter3" id="filter3" style="width: 302px">
+														<option value=""></option>
+														<?php
+														for ($i=0; $i<count($types); $i++) {
+															$selected="" ;
+															if ($filter3==$types[$i]) {
+																$selected="selected" ;
+															}
+															?>
+															<option <?php print $selected ?> value="<?php print trim($types[$i]) ?>"><?php print trim($types[$i]) ?></option>
+														<?php
+														}
+														?>
+													</select>
+												</td>
+											</tr>
+											<?php
+										}
 										print "<tr>" ;
 											print "<td class='right' colspan=2>" ;
 												print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
@@ -1940,12 +1982,13 @@ else {
 								if ($resultList->rowCount()>0) {
 									while ($rowList=$resultList->fetch()) {
 										try {
-											$dataEntry=array("gibbonPersonID"=>$gibbonPersonID, "gibbonCourseClassID"=>$rowList["gibbonCourseClassID"]); 
+											$dataEntry["gibbonPersonID"]=$gibbonPersonID ;
+											$dataEntry["gibbonCourseClassID"]=$rowList["gibbonCourseClassID"] ;
 											if ($highestAction=="Markbook_viewMyChildrensClasses") {
-												$sqlEntry="SELECT *, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND viewableParents='Y' ORDER BY completeDate" ;
+												$sqlEntry="SELECT *, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND viewableParents='Y' $and2 ORDER BY completeDate" ;
 											}
 											else {
-												$sqlEntry="SELECT *, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' ORDER BY completeDate" ;
+												$sqlEntry="SELECT *, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' $and2 ORDER BY completeDate" ;
 											}
 											$resultEntry=$connection2->prepare($sqlEntry);
 											$resultEntry->execute($dataEntry);

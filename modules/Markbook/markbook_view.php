@@ -765,29 +765,38 @@ else {
 			print "</p>" ;
 			
 			$and="" ;
+			$and2="" ;
+			$dataList=array() ;
+			$dataEntry=array() ;
 			$filter=NULL ;
-			if (isset($_GET["filter"])) {
-				$filter=$_GET["filter"] ;
-			}
-			else if (isset($_POST["filter"])) {
+			if (isset($_POST["filter"])) {
 				$filter=$_POST["filter"] ;
 			}
 			if ($filter=="") {
 				$filter=$_SESSION[$guid]["gibbonSchoolYearID"] ;
 			}
 			if ($filter!="*") {
-				$and=" AND gibbonSchoolYearID='$filter'" ;
+				$dataList["filter"]=$filter ;
+				$and.=" AND gibbonSchoolYearID=:filter" ;
 			}
-			
 			$filter2=NULL ;
-			if (isset($_GET["filter2"])) {
-				$filter2=$_GET["filter2"] ;
-			}
-			else if (isset($_POST["filter2"])) {
+			if (isset($_POST["filter2"])) {
 				$filter2=$_POST["filter2"] ;
 			}
 			if ($filter2!="") {
-				$and.=" AND gibbonDepartmentID='$filter2'" ;
+				$dataList["filter2"]=$filter2 ;
+				$and.=" AND gibbonDepartmentID=:filter2" ;
+			}
+			$filter3=NULL ;
+			if (isset($_GET["filter3"])) {
+				$filter3=$_GET["filter3"] ;
+			}
+			else if (isset($_POST["filter3"])) {
+				$filter3=$_POST["filter3"] ;
+			}
+			if ($filter3!="") {
+				$dataEntry["filter3"]=$filter3 ;
+				$and2.=" AND type=:filter3" ;
 			}
 			
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "'>" ;
@@ -850,6 +859,34 @@ else {
 						</td>
 					</tr>
 					<?php
+					$types=getSettingByScope($connection2, "Markbook", "markbookType") ;
+					if ($types!=FALSE) {
+						$types=explode(",", $types) ;
+						?>
+						<tr>
+							<td> 
+								<b><?php print _('Type') ?></b><br/>
+								<span style="font-size: 90%"><i></i></span>
+							</td>
+							<td class="right">
+								<select name="filter3" id="filter3" style="width: 302px">
+									<option value=""></option>
+									<?php
+									for ($i=0; $i<count($types); $i++) {
+										$selected="" ;
+										if ($filter3==$types[$i]) {
+											$selected="selected" ;
+										}
+										?>
+										<option <?php print $selected ?> value="<?php print trim($types[$i]) ?>"><?php print trim($types[$i]) ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</td>
+						</tr>
+						<?php
+					}
 					print "<tr>" ;
 						print "<td class='right' colspan=2>" ;
 							print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
@@ -877,9 +914,9 @@ else {
 			print "</form>" ;
 			
 			//Get class list
-			
 			try {
-				$dataList=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
+				$dataList["gibbonPersonID"]=$gibbonPersonID ; 
+				$dataList["gibbonPersonID2"]=$gibbonPersonID; 
 				$sqlList="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name, gibbonCourseClass.gibbonCourseClassID, gibbonScaleGrade.value AS target FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonMarkbookTarget ON (gibbonMarkbookTarget.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonMarkbookTarget.gibbonPersonIDStudent=:gibbonPersonID2) LEFT JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID $and ORDER BY course, class" ;
 				$resultList=$connection2->prepare($sqlList);
 				$resultList->execute($dataList);
@@ -890,8 +927,9 @@ else {
 			if ($resultList->rowCount()>0) {
 				while ($rowList=$resultList->fetch()) {
 					try {
-						$dataEntry=array("gibbonPersonIDStudent"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$rowList["gibbonCourseClassID"]); 
-						$sqlEntry="SELECT *, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' ORDER BY completeDate" ;
+						$dataEntry["gibbonPersonID"]=$gibbonPersonID ;
+						$dataEntry["gibbonCourseClassID"]=$rowList["gibbonCourseClassID"] ;
+						$sqlEntry="SELECT *, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' $and2  ORDER BY completeDate" ;
 						$resultEntry=$connection2->prepare($sqlEntry);
 						$resultEntry->execute($dataEntry);
 					}
@@ -1290,7 +1328,9 @@ else {
 						
 						
 						$and="" ;
+						$and2="" ;
 						$dataList=array() ;
+						$dataEntry=array() ;
 						$filter=NULL ;
 						if (isset($_POST["filter"])) {
 							$filter=$_POST["filter"] ;
@@ -1309,6 +1349,17 @@ else {
 						if ($filter2!="") {
 							$dataList["filter2"]=$filter2 ;
 							$and.=" AND gibbonDepartmentID=:filter2" ;
+						}
+						$filter3=NULL ;
+						if (isset($_GET["filter3"])) {
+							$filter3=$_GET["filter3"] ;
+						}
+						else if (isset($_POST["filter3"])) {
+							$filter3=$_POST["filter3"] ;
+						}
+						if ($filter3!="") {
+							$dataEntry["filter3"]=$filter3 ;
+							$and2.=" AND type=:filter3" ;
 						}
 						
 						print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&search=$gibbonPersonID'>" ;
@@ -1371,6 +1422,34 @@ else {
 									</td>
 								</tr>
 								<?php
+								$types=getSettingByScope($connection2, "Markbook", "markbookType") ;
+								if ($types!=FALSE) {
+									$types=explode(",", $types) ;
+									?>
+									<tr>
+										<td> 
+											<b><?php print _('Type') ?></b><br/>
+											<span style="font-size: 90%"><i></i></span>
+										</td>
+										<td class="right">
+											<select name="filter3" id="filter3" style="width: 302px">
+												<option value=""></option>
+												<?php
+												for ($i=0; $i<count($types); $i++) {
+													$selected="" ;
+													if ($filter3==$types[$i]) {
+														$selected="selected" ;
+													}
+													?>
+													<option <?php print $selected ?> value="<?php print trim($types[$i]) ?>"><?php print trim($types[$i]) ?></option>
+												<?php
+												}
+												?>
+											</select>
+										</td>
+									</tr>
+									<?php
+								}
 								print "<tr>" ;
 									print "<td class='right' colspan=2>" ;
 										print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
@@ -1411,13 +1490,14 @@ else {
 						if ($resultList->rowCount()>0) {
 							while ($rowList=$resultList->fetch()) {
 								try {
-									$dataEntry=array("gibbonCourseClassID"=>$rowList["gibbonCourseClassID"], "gibbonPersonID"=>$gibbonPersonID); 
-									$sqlEntry="SELECT *, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND viewableParents='Y' ORDER BY completeDate" ;
+									$dataEntry["gibbonPersonID"]=$gibbonPersonID ;
+									$dataEntry["gibbonCourseClassID"]=$rowList["gibbonCourseClassID"] ;
+									$sqlEntry="SELECT *, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND viewableParents='Y' $and2 ORDER BY completeDate" ;
 									$resultEntry=$connection2->prepare($sqlEntry);
 									$resultEntry->execute($dataEntry);
 								}
 								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									print "<div class='error'>" . print_r($dataEntry) . "<br/>" . $e->getMessage() . "</div>" ; 
 								}
 								if ($resultEntry->rowCount()>0) {
 									print "<h4>" . $rowList["course"] . "." . $rowList["class"] . " <span style='font-size:85%; font-style: italic'>(" . $rowList["name"] . ")</span></h4>" ;
@@ -1672,15 +1752,15 @@ else {
 									print "</table>" ;
 									
 									try {
-										$dataEntry=array("gibbonPersonIDStudent"=>$_SESSION[$guid]["gibbonPersonID"]); 
-										$sqlEntry="SELECT gibbonMarkbookEntryID, gibbonMarkbookColumn.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND viewableStudents='Y' ORDER BY completeDate DESC, name" ;
-										$resultEntry=$connection2->prepare($sqlEntry);
-										$resultEntry->execute($dataEntry);
+										$dataEntry2=array("gibbonPersonIDStudent"=>$_SESSION[$guid]["gibbonPersonID"]); 
+										$sqlEntry2="SELECT gibbonMarkbookEntryID, gibbonMarkbookColumn.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND viewableStudents='Y' ORDER BY completeDate DESC, name" ;
+										$resultEntry2=$connection2->prepare($sqlEntry2);
+										$resultEntry2->execute($dataEntry2);
 									}
 									catch(PDOException $e) { 
 										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 									}
-									if ($resultEntry->rowCount()>0) {
+									if ($resultEntry2->rowCount()>0) {
 										$_SESSION[$guid]["sidebarExtra"]="<h2 class='sidebar'>" ;
 										$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . _("Recent Marks") ;
 										$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
@@ -1688,8 +1768,8 @@ else {
 										$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ol>" ;
 										$count=0 ;
 										
-										while ($rowEntry=$resultEntry->fetch() AND $count<5) {
-											$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a href='#" . $rowEntry["gibbonMarkbookEntryID"] . "'>" . $rowEntry["course"] . "." . $rowEntry["class"] . "<br/><span style='font-size: 85%; font-style: italic'>" . $rowEntry["name"] . "</span></a></li>" ;
+										while ($rowEntry2=$resultEntry2->fetch() AND $count<5) {
+											$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a href='#" . $rowEntry2["gibbonMarkbookEntryID"] . "'>" . $rowEntry["course"] . "." . $rowEntry["class"] . "<br/><span style='font-size: 85%; font-style: italic'>" . $rowEntry["name"] . "</span></a></li>" ;
 											$count++ ;
 										}
 										
