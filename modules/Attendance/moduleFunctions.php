@@ -67,14 +67,14 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 	}
 }
 
-//Get's a count of late days for specified student between specified dates (YYYY-MM-DD, inclusive). Return of FALSE means there was an error, or no data
+//Get's a count of late days for specified student between specified dates (YYYY-MM-DD, inclusive). Return of FALSE means there was an error.
 function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dateEnd) {
 	$queryFail=FALSE ;
 
 	//Get all records for the student, in the date range specified, ordered by date and timestamp taken.
 	try {
 		$data=array("gibbonPersonID"=>$gibbonPersonID, "dateStart"=>$dateStart, "dateEnd"=>$dateEnd); 
-		$sql="SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date>=:dateStart AND date<=:dateEnd ORDER BY date, timestampTaken" ;
+		$sql="SELECT * FROM gibbonAttendanceLogPerson WHERE type='Present - Late' AND gibbonPersonID=:gibbonPersonID AND date>=:dateStart AND date<=:dateEnd" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -86,20 +86,7 @@ function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dat
 		return FALSE ;
 	}	
 	else {
-		$latenessCount=0 ;
-		if ($result->rowCount()>=0) {
-			$lateDays=array() ;
-			//Scan through all records, saving the last record for each day
-			while ($row=$result->fetch()) {
-				if ($row["type"]=="Present - Late") {
-					$lateDays[$row["date"]]=$row["type"] ;
-				}
-			}
-			
-			$latenessCount=count($lateDays) ;
-		}
-	
-		return $latenessCount ;
+		return $result->rowCount() ;
 	}
 }
 
