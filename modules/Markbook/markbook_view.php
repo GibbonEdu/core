@@ -915,8 +915,8 @@ else {
 			
 			//Get class list
 			try {
-				$dataList["gibbonPersonID"]=$gibbonPersonID ; 
-				$dataList["gibbonPersonID2"]=$gibbonPersonID; 
+				$dataList["gibbonPersonID"]=$_SESSION[$guid]["gibbonPersonID"] ; 
+				$dataList["gibbonPersonID2"]=$_SESSION[$guid]["gibbonPersonID"]; 
 				$sqlList="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name, gibbonCourseClass.gibbonCourseClassID, gibbonScaleGrade.value AS target FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonMarkbookTarget ON (gibbonMarkbookTarget.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonMarkbookTarget.gibbonPersonIDStudent=:gibbonPersonID2) LEFT JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID $and ORDER BY course, class" ;
 				$resultList=$connection2->prepare($sqlList);
 				$resultList->execute($dataList);
@@ -927,7 +927,7 @@ else {
 			if ($resultList->rowCount()>0) {
 				while ($rowList=$resultList->fetch()) {
 					try {
-						$dataEntry["gibbonPersonID"]=$gibbonPersonID ;
+						$dataEntry["gibbonPersonIDStudent"]=$_SESSION[$guid]["gibbonPersonID"] ;
 						$dataEntry["gibbonCourseClassID"]=$rowList["gibbonCourseClassID"] ;
 						$sqlEntry="SELECT *, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' $and2  ORDER BY completeDate" ;
 						$resultEntry=$connection2->prepare($sqlEntry);
