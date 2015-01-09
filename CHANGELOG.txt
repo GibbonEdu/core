@@ -214,6 +214,9 @@ Markbook: added filter based on markbook type
 	Edited file /modules/Students/student_view_details.php
 	Edited file /modules/Markbook/markbook_view.php
 
+General: added floating top-right module menu to full width pages
+	Edited file /index.php
+
 	
 v8.3.00
 -------

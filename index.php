@@ -133,8 +133,7 @@ if (isset($_SESSION[$guid]["passwordForceReset"])) {
 	}
 }
 
-
-if ($_SESSION[$guid]["address"]!="") {
+if ($_SESSION[$guid]["address"]!="" AND $sidebar!=true) {
 	try {
 		$dataSidebar=array("action"=>"%" . $_SESSION[$guid]["action"] . "%", "name"=>$_SESSION[$guid]["module"]); 
 		$sqlSidebar="SELECT gibbonAction.name FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonAction.URLList LIKE :action AND entrySidebar='N' AND gibbonModule.name=:name" ;
@@ -373,6 +372,74 @@ else {
 						//Allow for wide pages (no sidebar)
 						if ($sidebar=="false") {
 							print "<div id='content-wide'>" ;
+								//Get floating module menu
+								if (substr($_SESSION[$guid]["address"],0,8)=="/modules") {
+									$moduleID=checkModuleReady($_SESSION[$guid]["address"], $connection2 );
+									if ($moduleID!=FALSE) {
+										$gibbonRoleIDCurrent=NULL ;
+										if (isset($_SESSION[$guid]["gibbonRoleIDCurrent"])) {
+											$gibbonRoleIDCurrent=$_SESSION[$guid]["gibbonRoleIDCurrent"] ;
+										}
+										try {
+											$data=array("gibbonModuleID"=>$moduleID, "gibbonRoleID"=>$gibbonRoleIDCurrent); 
+											$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule, gibbonAction, gibbonPermission WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
+											$result=$connection2->prepare($sql);
+											$result->execute($data);
+										}
+										catch(PDOException $e) { }
+	
+										if ($result->rowCount()>0) {			
+											
+											$currentCategory="" ;
+											$lastCategory="" ;
+											$currentName="" ;
+											$lastName="" ;
+											$count=0;
+											$links=0 ;
+											$menu="" ;
+											while ($row=$result->fetch()) {
+												$moduleName=$row["moduleName"] ;
+												$moduleEntry=$row["moduleEntry"] ;
+			
+												$currentCategory=$row["category"] ;
+												if (strpos($row["name"],"_")>0) {
+													$currentName=_(substr($row["name"],0,strpos($row["name"],"_"))) ;
+												}
+												else {
+													$currentName=_($row["name"]) ;
+												}
+					
+												if ($currentName!=$lastName) {
+													if ($currentCategory!=$lastCategory) {
+														$menu.="<optgroup label='--" .  _($currentCategory) . "--'/>" ;
+													}
+													$selected="" ;
+													if ($_GET["q"]=="/modules/" . $row["moduleName"] . "/" . $row["entryURL"]) {
+														$selected="selected" ;
+													}
+													$menu.="<option onclick=\"javascript:location.href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'\" $selected>" . _($currentName) . "</option>" ;
+													$links++ ;
+												}
+												$lastCategory=$currentCategory ;
+												$lastName=$currentName ;
+												$count++ ;
+											}
+		
+											if ($links>1) {
+												print "<div class='linkTop'>" ;
+													print "<select style='width: 200px'>" ;
+														print $menu ;
+													print "</select>" ;
+													print "<div style='float: right; padding-top: 10px'>" ;
+														print _("Module Menu") ;
+													print "</div>" ;
+												print "</div>" ;
+											}
+										}
+									}
+								}
+								
+							//No closing </div> required here
 						}
 						else {
 							print "<div id='content'>" ;
