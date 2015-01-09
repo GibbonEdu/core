@@ -217,6 +217,8 @@ Markbook: added filter based on markbook type
 General: added floating top-right module menu to full width pages
 	Edited file /index.php
 
+General: fixed minor display issue in max file size display
+	Edited file /functions.php
 	
 v8.3.00
 -------
