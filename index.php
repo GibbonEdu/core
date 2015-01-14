@@ -655,27 +655,6 @@ else {
 													print "</div>" ;
 												} 
 												
-												$updateReturnMessage="" ;
-												$class="error" ;
-												if (!($updateReturn=="")) {
-													if ($updateReturn=="fail0") {
-														$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-													}
-													else if ($updateReturn=="fail1") {
-														$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-													}
-													else if ($updateReturn=="fail2") {
-														$updateReturnMessage=_("Your request failed due to a database error.") ;	
-													}
-													else if ($updateReturn=="success0") {
-														$updateReturnMessage=_("Your request was completed successfully.") ;	
-														$class="success" ;
-													}
-													print "<div class='$class'>" ;
-														print $updateReturnMessage;
-													print "</div>" ;
-												} 
-												
 												print "<div class='linkTop'>" ;
 													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php'>" . _('View Planner') . "</a>" ;
 												print "</div>" ;

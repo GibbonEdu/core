@@ -219,6 +219,12 @@ General: added floating top-right module menu to full width pages
 
 General: fixed minor display issue in max file size display
 	Edited file /functions.php
+
+Tinymce: removed annoying popup which covers part of editing menu
+	Edited file /lib/tinymce/tinymce.min.js
+
+Planner: fixed double update confirm on homepage when starring a lesson plan
+	Edited file /index.php
 	
 v8.3.00
 -------
