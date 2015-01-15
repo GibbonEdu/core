@@ -27,21 +27,21 @@ msgstr ""
 #: index.php:1077 index.php:1072 index.php:1074 index.php:1080 index.php:1078
 #: index.php:1084 index.php:1102 index.php:1064 index.php:1073 index.php:681
 #: index.php:510 index.php:543 index.php:545 index.php:549 index.php:544
-#: index.php:566
+#: index.php:566 index.php:633
 msgid "Today's Lessons"
 msgstr ""
 
 #: index.php:1227 index.php:1222 index.php:1229 index.php:1232 index.php:1238
 #: index.php:1236 index.php:1242 index.php:1265 index.php:844 index.php:673
 #: index.php:727 index.php:729 index.php:733 index.php:725 index.php:720
-#: index.php:742
+#: index.php:742 index.php:788
 msgid "My Timetable"
 msgstr ""
 
 #: index.php:1262 index.php:1257 index.php:1267 index.php:1270 index.php:1276
 #: index.php:1274 index.php:1280 index.php:1303 index.php:1265 index.php:882
 #: index.php:711 index.php:765 index.php:767 index.php:771 index.php:762
-#: index.php:757 index.php:779
+#: index.php:757 index.php:779 index.php:825
 msgid "My Roll Group"
 msgstr ""
 
@@ -77,7 +77,7 @@ msgstr ""
 
 #: fullscreen.php:44 index.php:110 report.php:43 index.php:116 index.php:122
 #: index.php:124 index.php:129 index.php:151 index.php:152 fullscreen.php:44
-#: index.php:152 report.php:43
+#: index.php:151 report.php:43
 msgid "System Settings are not set: the system cannot be displayed"
 msgstr ""
 
@@ -89,7 +89,8 @@ msgstr ""
 #: index.php:1439 index.php:1442 index.php:1448 index.php:1446 index.php:1452
 #: index.php:1475 index.php:1437 fullscreen.php:145 index.php:1054
 #: report.php:141 index.php:883 index.php:937 index.php:939 index.php:943
-#: index.php:934 index.php:929 fullscreen.php:145 index.php:951 report.php:141
+#: index.php:934 index.php:929 index.php:951 fullscreen.php:145 index.php:997
+#: report.php:141
 msgid "Illegal address detected: access denied."
 msgstr ""
 
@@ -448,8 +449,16 @@ msgstr ""
 #: Admin/module_manage_uninstall.php:46 Admin/theme_manage.php:56
 #: Admin/theme_manage.php:81 Admin/theme_manage_uninstall.php:46 index.php:552
 #: index.php:573 modules/Planner/units_public.php:29
-#: modules/Planner/units_public_view.php:29 functions.php:243
-#: functions.php:669 index.php:574 index.php:595 index_tt_ajax.php:48
+#: modules/Planner/units_public_view.php:29 index.php:595
+#: modules/Students/student_view_details.php:2266
+#: modules/Students/student_view_details.php:2318
+#: modules/Students/student_view_details.php:2339
+#: modules/Students/student_view_details.php:2371
+#: modules/Students/student_view_details.php:2388
+#: modules/Students/student_view_details.php:2540
+#: modules/Students/student_view_details.php:2813
+#: modules/Students/student_view_details.php:2858 functions.php:243
+#: functions.php:669 index.php:641 index_tt_ajax.php:48
 #: modules/Activities/activities_copy.php:43
 #: modules/Activities/activities_manage_add.php:41
 #: modules/Activities/activities_manage_delete.php:42
@@ -1112,7 +1121,8 @@ msgstr ""
 #: Admin/module_manage_uninstall.php:38 Admin/theme_manage_uninstall.php:38
 #: functions.php:2338 functions.php:2356 functions.php:2361
 #: modules/Planner/units_public.php:35
-#: modules/Planner/units_public_view.php:34 functions.php:2338
+#: modules/Planner/units_public_view.php:34
+#: modules/Markbook/markbook_view.php:1203 functions.php:2338
 #: functions.php:2356 functions.php:2361
 #: modules/Activities/activities_copy.php:34
 #: modules/Activities/activities_manage.php:34
@@ -1800,7 +1810,8 @@ msgstr ""
 #: Assessment/externalAssessment_manage_details_edit.php:327
 #: preferences.php:337 installer/install.php:141 installer/install.php:238
 #: installer/install.php:1066 Admin/plannerSettings.php:282
-#: Admin/studentEnrolment_manage_add.php:212 installer/install.php:141
+#: Admin/studentEnrolment_manage_add.php:212
+#: modules/Markbook/markbook_view.php:1289 installer/install.php:141
 #: installer/install.php:238 installer/install.php:1066
 #: modules/Activities/activities_copy.php:110
 #: modules/Activities/activities_manage.php:79
@@ -2268,9 +2279,9 @@ msgstr ""
 #: preferences.php:333 installer/install.php:138 installer/install.php:234
 #: installer/install.php:1058 modules/Planner/units_add.php:589
 #: modules/Planner/units_edit.php:807 Admin/plannerSettings.php:278
-#: Admin/studentEnrolment_manage_add.php:207 installer/install.php:138
-#: installer/install.php:234 installer/install.php:1058
-#: modules/Activities/activities_copy.php:106
+#: Admin/studentEnrolment_manage_add.php:207 modules/Planner/units_add.php:587
+#: installer/install.php:138 installer/install.php:234
+#: installer/install.php:1058 modules/Activities/activities_copy.php:106
 #: modules/Activities/activities_manage_add.php:618
 #: modules/Activities/activities_manage_edit.php:806
 #: modules/Activities/activities_manage_enrolment_add.php:241
@@ -3012,6 +3023,7 @@ msgstr ""
 #: modules/Departments/department_course_class.php:397
 #: modules/Departments/department_course_class_full.php:120
 #: modules/Students/student_view_details.php:2621
+#: modules/Students/student_view_details.php:2664
 #: modules/Attendance/attendance_take_byPerson.php:123
 #: modules/Attendance/attendance_take_byRollGroup.php:140
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:53
@@ -3085,6 +3097,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2548
 #: modules/Students/student_view_details.php:2622
 #: modules/Students/student_view_details.php:2629
+#: modules/Students/student_view_details.php:2672
 #: modules/Library/report_catalogSummaryExportContents.php:112
 #: modules/Planner/planner_deadlines.php:362
 #: modules/Planner/planner_deadlines.php:780
@@ -3133,8 +3146,8 @@ msgstr ""
 #: modules/Departments/department_course_class.php:394
 #: modules/Students/student_view_details.php:2624 index.php:599
 #: modules/Markbook/markbook_edit_edit.php:233 index.php:601 index.php:605
-#: index.php:600 functions.php:280 index.php:622
-#: modules/Crowd Assessment/crowdAssess.php:62
+#: index.php:600 index.php:622 modules/Students/student_view_details.php:2667
+#: functions.php:280 index.php:668 modules/Crowd Assessment/crowdAssess.php:62
 #: modules/Departments/department_course_class.php:184
 #: modules/Departments/department_course_class.php:305
 #: modules/Departments/department_course_class.php:394
@@ -3153,7 +3166,7 @@ msgstr ""
 
 #: index.php:311 index.php:317 index.php:323 index.php:321 index.php:325
 #: index.php:330 index.php:274 index.php:277 index.php:284 index.php:306
-#: index.php:328 index.php:334 index.php:333 index.php:333
+#: index.php:328 index.php:334 index.php:333 index.php:332
 #, php-format
 msgid ""
 "Warning: you are logged into the system in school year %1$s, which is not "
@@ -3162,7 +3175,7 @@ msgstr ""
 
 #: index.php:311 index.php:317 index.php:323 index.php:321 index.php:325
 #: index.php:330 index.php:274 index.php:277 index.php:284 index.php:306
-#: index.php:328 index.php:334 index.php:333 index.php:333
+#: index.php:328 index.php:334 index.php:333 index.php:332
 msgid ""
 "Your data may not look quite right (for example, students who have left the "
 "school will not appear in previous years), but you should be able to edit "
@@ -3300,7 +3313,8 @@ msgstr ""
 #: modules/Staff/staff_view_details.php:335
 #: modules/Students/student_view_details.php:659 functions.php:31
 #: index.php:469 index.php:502 index.php:504 index.php:508 index.php:503
-#: functions.php:31 index.php:525 modules/Roll Groups/rollGroups.php:69
+#: index.php:525 functions.php:31 index.php:592
+#: modules/Roll Groups/rollGroups.php:69
 #: modules/Roll Groups/rollGroups_details.php:108
 #: modules/School Admin/rollGroup_manage.php:133
 #: modules/School Admin/rollGroup_manage_add.php:248
@@ -3352,8 +3366,8 @@ msgstr ""
 #: modules/Departments/department_course_class.php:359
 #: modules/Departments/department_course_class.php:448 index.php:661
 #: index.php:663 index.php:667 i18n/dbStringsForTranslation.php:943
-#: index.php:662 functions.php:49 functions.php:338
-#: i18n/dbStringsForTranslation.php:943 index.php:684
+#: index.php:662 index.php:684 functions.php:49 functions.php:338
+#: i18n/dbStringsForTranslation.php:943 index.php:730
 #: modules/Departments/department_course_class.php:238
 #: modules/Departments/department_course_class.php:359
 #: modules/Departments/department_course_class.php:448
@@ -3414,9 +3428,9 @@ msgstr ""
 #: cli/planner_parentWeeklyEmailSummary.php:136 index.php:350 index.php:893
 #: i18n/dbStringsForTranslation.php:939 functions.php:75 index.php:722
 #: index.php:776 index.php:778 index.php:782 index.php:773
-#: i18n/dbStringsForTranslation.php:942 index.php:768
+#: i18n/dbStringsForTranslation.php:942 index.php:768 index.php:790
 #: cli/planner_parentWeeklyEmailSummary.php:136 functions.php:75
-#: i18n/dbStringsForTranslation.php:942 index.php:790
+#: i18n/dbStringsForTranslation.php:942 index.php:836
 msgid "Behaviour"
 msgstr ""
 
@@ -3446,13 +3460,13 @@ msgstr ""
 
 #: index.php:543 index.php:549 index.php:555 index.php:553 index.php:559
 #: index.php:564 index.php:526 index.php:529 index.php:538 index.php:357
-#: index.php:390 index.php:392 index.php:396 index.php:395 index.php:395
+#: index.php:390 index.php:392 index.php:396 index.php:395 index.php:462
 msgid "Welcome"
 msgstr ""
 
 #: index.php:560 index.php:566 index.php:572 index.php:570 index.php:576
 #: index.php:581 index.php:543 index.php:546 index.php:555 index.php:374
-#: index.php:407 index.php:409 index.php:413 index.php:408 index.php:408
+#: index.php:407 index.php:409 index.php:413 index.php:408 index.php:475
 #, php-format
 msgid ""
 "Parents of students interested in study at %1$s may use our %2$s online form"
@@ -3462,19 +3476,21 @@ msgstr ""
 #: index.php:579 index.php:585 index.php:591 index.php:589 index.php:595
 #: index.php:600 index.php:562 index.php:565 index.php:574 index.php:403
 #: index.php:436 index.php:438 index.php:442 index.php:437 index.php:459
+#: index.php:526
 msgid "Your current role type cannot be determined."
 msgstr ""
 
 #: index.php:626 index.php:632 index.php:638 index.php:636 index.php:642
 #: index.php:647 index.php:609 index.php:612 index.php:622 index.php:451
 #: index.php:484 index.php:486 index.php:490 index.php:485 index.php:507
+#: index.php:574
 msgid "Parental Dashboard"
 msgstr ""
 
 #: index.php:640 index.php:646 modules/School Admin/studentsSettings.php:145
 #: index.php:652 index.php:650 index.php:656 index.php:661 index.php:623
 #: index.php:626 index.php:635 index.php:464 index.php:497 index.php:499
-#: index.php:503 index.php:498 index.php:520
+#: index.php:503 index.php:498 index.php:520 index.php:587
 msgid "Student Profile"
 msgstr ""
 
@@ -3565,7 +3581,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:868
 #: modules/Finance/moduleFunctions.php:554 index.php:466 index.php:499
 #: index.php:501 index.php:505 index.php:500
-#: Admin/studentEnrolment_manage_add.php:167 index.php:522
+#: Admin/studentEnrolment_manage_add.php:167 index.php:522 index.php:589
 #: modules/Activities/report_activitySpread_rollGroup.php:51
 #: modules/Activities/report_activitySpread_rollGroup.php:128
 #: modules/Activities/report_activityType_rollGroup.php:51
@@ -3653,8 +3669,9 @@ msgstr ""
 #: modules/Planner/units_edit.php:972 functions.php:236 functions.php:2217
 #: index.php:536 functions.php:2226 index.php:590 index.php:592 index.php:596
 #: functions.php:2243 index.php:591 modules/Planner/units_edit.php:648
-#: modules/Planner/units_edit.php:1005 functions.php:236 functions.php:2243
-#: index.php:613 modules/Departments/department_course_class.php:128
+#: modules/Planner/units_edit.php:1005 index.php:613 functions.php:236
+#: functions.php:2243 index.php:659
+#: modules/Departments/department_course_class.php:128
 #: modules/Markbook/moduleFunctions.php:97 modules/Planner/units_edit.php:648
 #: modules/Planner/units_edit.php:1005
 msgid "View Planner"
@@ -4180,8 +4197,8 @@ msgstr ""
 #: Admin/module_manage_uninstall.php:49 Admin/module_manage_uninstall.php:52
 #: Admin/theme_manage.php:84 Admin/theme_manage.php:90
 #: Admin/theme_manage_uninstall.php:49 functions.php:1242 functions.php:1261
-#: index.php:555 index.php:576 functions.php:246 functions.php:1242
-#: functions.php:1261 index.php:577 index.php:598
+#: index.php:555 index.php:576 index.php:598 functions.php:246
+#: functions.php:1242 functions.php:1261 index.php:644
 #: modules/Activities/activities_copy.php:46
 #: modules/Activities/activities_copy.php:52
 #: modules/Activities/activities_manage_add.php:47
@@ -5081,12 +5098,14 @@ msgstr ""
 #: modules/Library/library_import.php:433
 #: modules/Library/library_import.php:492
 #: modules/Library/library_import.php:506
-#: modules/Library/library_import.php:528
+#: modules/Library/library_import.php:528 index.php:601
+#: modules/Students/student_view_details.php:2276
+#: modules/Students/student_view_details.php:2328
 #: cli/attendance_dailyIncompleteEmail.php:77
 #: cli/attendance_dailyIncompleteEmail.php:93
 #: cli/planner_parentWeeklyEmailSummary.php:86 functions.php:249
 #: functions.php:1245 functions.php:1264 functions.php:1821 functions.php:3254
-#: index.php:580 index.php:601 modules/Activities/activities_copy.php:49
+#: index.php:647 modules/Activities/activities_copy.php:49
 #: modules/Activities/activities_manage.php:125
 #: modules/Activities/activities_manage.php:184
 #: modules/Activities/activities_manage_add.php:44
@@ -5584,8 +5603,8 @@ msgstr ""
 #: modules/Rubrics/rubrics_edit.php:169 Admin/ttDates.php:57
 #: Admin/ttDates.php:70 index.php:562 index.php:583 index.php:566
 #: index.php:587 Admin/theme_manage.php:93 functions.php:1248
-#: functions.php:1267 index.php:561 index.php:582 functions.php:252
-#: functions.php:1248 functions.php:1267 index.php:583 index.php:604
+#: functions.php:1267 index.php:561 index.php:582 index.php:604
+#: functions.php:252 functions.php:1248 functions.php:1267 index.php:650
 #: modules/Activities/activities_copy.php:55
 #: modules/Activities/activities_manage.php:42
 #: modules/Activities/activities_manage_edit.php:61
@@ -5867,8 +5886,10 @@ msgstr ""
 #: index.php:596 modules/Markbook/markbook_edit_edit.php:151 index.php:598
 #: index.php:602 functions.php:2203 index.php:597
 #: modules/Planner/units_add.php:427 modules/Planner/units_edit.php:571
-#: modules/Planner/units_edit.php:949 functions.php:277 functions.php:2203
-#: index.php:619 modules/Crowd Assessment/crowdAssess.php:59
+#: modules/Planner/units_edit.php:949 index.php:619
+#: modules/Students/student_view_details.php:2663 functions.php:277
+#: functions.php:2203 index.php:665
+#: modules/Crowd Assessment/crowdAssess.php:59
 #: modules/Crowd Assessment/crowdAssess_view.php:98
 #: modules/Departments/department_course_class_full.php:116
 #: modules/Markbook/markbook_edit_add.php:127
@@ -5937,8 +5958,9 @@ msgstr ""
 #: modules/Departments/department_course_class.php:406
 #: modules/Students/student_view_details.php:2932 functions.php:2203
 #: index.php:603 index.php:605 index.php:609 functions.php:2220 index.php:604
+#: index.php:626 modules/Students/student_view_details.php:2975
 #: cli/planner_parentWeeklyEmailSummary.php:109 functions.php:284
-#: functions.php:2220 index.php:626
+#: functions.php:2220 index.php:672
 #: modules/Departments/department_course_class.php:196
 #: modules/Departments/department_course_class.php:317
 #: modules/Departments/department_course_class.php:406
@@ -5986,8 +6008,10 @@ msgstr ""
 #: modules/Departments/department_course_class.php:403
 #: modules/Departments/department_course_class_full.php:130
 #: modules/Students/student_view_details.php:2857 index.php:606 index.php:608
-#: index.php:612 index.php:607 functions.php:281 index.php:629
+#: index.php:612 index.php:607 index.php:629
 #: modules/Attendance/moduleFunctions.php:395
+#: modules/Students/student_view_details.php:2900 functions.php:281
+#: index.php:675 modules/Attendance/moduleFunctions.php:395
 #: modules/Departments/department_course_class.php:193
 #: modules/Departments/department_course_class.php:314
 #: modules/Departments/department_course_class.php:403
@@ -6008,7 +6032,7 @@ msgstr ""
 #: modules/Planner/planner.php:693 modules/Planner/planner.php:989
 #: index.php:682 index.php:1109 index.php:685 functions.php:78 index.php:726
 #: functions.php:287 index.php:555 index.php:609 index.php:611 index.php:615
-#: index.php:610 functions.php:287 index.php:632
+#: index.php:610 index.php:632 functions.php:287 index.php:678
 #: modules/Planner/planner.php:287 modules/Planner/planner.php:469
 #: modules/Planner/planner.php:693 modules/Planner/planner.php:989
 msgid "Like"
@@ -6033,7 +6057,8 @@ msgstr ""
 #: index.php:612 index.php:849 index.php:614 index.php:851 index.php:618
 #: index.php:855 Admin/module_manage.php:141 Admin/module_manage.php:264
 #: Admin/theme_manage.php:153 Admin/theme_manage.php:288 index.php:846
-#: index.php:613 index.php:841 functions.php:290 index.php:635 index.php:863
+#: index.php:613 index.php:841 index.php:635 index.php:863 functions.php:290
+#: index.php:681 index.php:909
 #: modules/Library/library_lending_item_edit.php:206
 #: modules/Library/library_lending_item_return.php:138
 #: modules/Library/library_lending_item_signout.php:258
@@ -6108,8 +6133,11 @@ msgstr ""
 #: modules/Students/student_view_details.php:2024
 #: modules/Students/student_view_details.php:2625 index.php:600 index.php:646
 #: modules/Markbook/markbook_edit_edit.php:160 index.php:602 index.php:648
-#: index.php:606 index.php:652 index.php:601 index.php:647 functions.php:321
-#: index.php:623 index.php:669 modules/Crowd Assessment/crowdAssess.php:63
+#: index.php:606 index.php:652 index.php:601 index.php:647 index.php:623
+#: index.php:669 modules/Markbook/markbook_view.php:1005
+#: modules/Students/student_view_details.php:2067
+#: modules/Students/student_view_details.php:2668 functions.php:321
+#: index.php:669 index.php:715 modules/Crowd Assessment/crowdAssess.php:63
 #: modules/Markbook/markbook_edit.php:212
 #: modules/Markbook/markbook_edit_add.php:136
 #: modules/Markbook/markbook_edit_edit.php:160
@@ -6208,6 +6236,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2484
 #: modules/Students/student_view_details.php:2758
 #: modules/Planner/units_public.php:165
+#: modules/Students/student_view_details.php:2527
+#: modules/Students/student_view_details.php:2801
 #: modules/Activities/activities_my.php:113
 #: modules/Activities/activities_view.php:517
 #: modules/Activities/report_activityChoices_byStudent.php:256
@@ -6608,13 +6638,21 @@ msgstr ""
 #: modules/Planner/units_edit.php:942 modules/Planner/units_edit.php:991
 #: modules/Planner/units_public.php:123
 #: modules/Planner/units_public_view.php:110
-#: modules/Planner/units_public_view.php:272
+#: modules/Planner/units_public_view.php:272 index.php:534 index.php:841
+#: modules/Attendance/moduleFunctions.php:115
+#: modules/Markbook/markbook_view.php:1786
+#: modules/Students/student_view_details.php:2257
+#: modules/Students/student_view_details.php:2298
+#: modules/Students/student_view_details.php:2413
+#: modules/Students/student_view_details.php:2441
+#: modules/Students/student_view_details.php:2623
+#: modules/Students/student_view_details.php:2839
 #: cli/attendance_dailyIncompleteEmail.php:99
 #: cli/attendance_dailyIncompleteEmail.php:101
 #: cli/planner_parentWeeklyEmailSummary.php:103
 #: cli/planner_parentWeeklyEmailSummary.php:129 functions.php:374
 #: functions.php:601 functions.php:645 functions.php:695 functions.php:714
-#: functions.php:807 index.php:534 index.php:841
+#: functions.php:807 index.php:601 index.php:887
 #: modules/Activities/activities_manage.php:136
 #: modules/Activities/activities_manage_edit.php:427
 #: modules/Activities/activities_manage_edit.php:717
@@ -6885,7 +6923,10 @@ msgstr ""
 #: modules/Students/student_view_details.php:2896 functions.php:404
 #: modules/Markbook/markbook_view.php:931
 #: modules/Students/student_view_details.php:1987
-#: modules/Students/student_view_details.php:2897 functions.php:404
+#: modules/Students/student_view_details.php:2897
+#: modules/Markbook/markbook_view.php:969
+#: modules/Students/student_view_details.php:2030
+#: modules/Students/student_view_details.php:2940 functions.php:404
 #: i18n/dbStringsForTranslation.php:24 modules/Markbook/markbook_view.php:969
 #: modules/Students/student_view_details.php:2030
 #: modules/Students/student_view_details.php:2940
@@ -6919,7 +6960,10 @@ msgstr ""
 #: modules/Students/student_view_details.php:1983 functions.php:407
 #: modules/Markbook/markbook_view.php:934
 #: modules/Markbook/markbook_view.php:1455
-#: modules/Students/student_view_details.php:1990 functions.php:407
+#: modules/Students/student_view_details.php:1990
+#: modules/Markbook/markbook_view.php:972
+#: modules/Markbook/markbook_view.php:1535
+#: modules/Students/student_view_details.php:2033 functions.php:407
 #: modules/Markbook/markbook_edit_data.php:294
 #: modules/Markbook/markbook_view.php:483
 #: modules/Markbook/markbook_view.php:972
@@ -6956,7 +7000,10 @@ msgstr ""
 #: modules/Students/student_view_details.php:1986 functions.php:410
 #: modules/Markbook/markbook_view.php:937
 #: modules/Markbook/markbook_view.php:1458
-#: modules/Students/student_view_details.php:1993 functions.php:410
+#: modules/Students/student_view_details.php:1993
+#: modules/Markbook/markbook_view.php:975
+#: modules/Markbook/markbook_view.php:1538
+#: modules/Students/student_view_details.php:2036 functions.php:410
 #: modules/Markbook/markbook_edit_data.php:320
 #: modules/Markbook/markbook_view.php:508
 #: modules/Markbook/markbook_view.php:975
@@ -7021,7 +7068,9 @@ msgstr ""
 #: modules/Students/student_view_details.php:1989 functions.php:413
 #: modules/Behaviour/behaviour_manage_addMulti.php:236
 #: modules/Markbook/markbook_view.php:940
-#: modules/Students/student_view_details.php:1996 functions.php:413
+#: modules/Students/student_view_details.php:1996
+#: modules/Markbook/markbook_view.php:978
+#: modules/Students/student_view_details.php:2039 functions.php:413
 #: modules/Attendance/attendance_future_byPerson.php:248
 #: modules/Attendance/attendance_take_byPerson.php:324
 #: modules/Attendance/report_studentsNotOnsite_byDate.php:150
@@ -7091,8 +7140,11 @@ msgstr ""
 #: modules/Departments/department_course_class.php:446
 #: modules/Markbook/markbook_view.php:943
 #: modules/Students/student_view_details.php:1999 index.php:659 index.php:661
-#: index.php:665 index.php:660 functions.php:336 functions.php:416
-#: index.php:682 modules/Departments/department_course_class.php:236
+#: index.php:665 index.php:660 index.php:682
+#: modules/Markbook/markbook_view.php:981
+#: modules/Students/student_view_details.php:2042 functions.php:336
+#: functions.php:416 index.php:728
+#: modules/Departments/department_course_class.php:236
 #: modules/Departments/department_course_class.php:357
 #: modules/Departments/department_course_class.php:446
 #: modules/Markbook/markbook_view.php:981 modules/Planner/planner.php:339
@@ -7125,7 +7177,9 @@ msgstr ""
 #: modules/Students/student_view_details.php:1947
 #: modules/Students/student_view_details.php:2021 functions.php:436
 #: modules/Markbook/markbook_view.php:971
-#: modules/Students/student_view_details.php:2028 functions.php:436
+#: modules/Students/student_view_details.php:2028
+#: modules/Markbook/markbook_view.php:1009
+#: modules/Students/student_view_details.php:2071 functions.php:436
 #: modules/Markbook/markbook_edit_data.php:250
 #: modules/Markbook/markbook_view.php:432
 #: modules/Markbook/markbook_view.php:1009
@@ -7188,8 +7242,11 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:1574
 #: modules/Students/student_view_details.php:2112 index.php:904
 #: modules/Rubrics/rubrics.php:285 index.php:906 index.php:910 index.php:901
-#: modules/Planner/units_public_view.php:343 functions.php:507 index.php:918
-#: modules/Behaviour/behaviour_manage.php:361
+#: modules/Planner/units_public_view.php:343 index.php:918
+#: modules/Markbook/markbook_view.php:1092
+#: modules/Markbook/markbook_view.php:1654
+#: modules/Students/student_view_details.php:2155 functions.php:507
+#: index.php:964 modules/Behaviour/behaviour_manage.php:361
 #: modules/Behaviour/moduleFunctions.php:145
 #: modules/Finance/billingSchedule_manage.php:234
 #: modules/Finance/fees_manage.php:230 modules/Library/library_browse.php:433
@@ -7220,7 +7277,9 @@ msgstr ""
 #: modules/Students/student_view_details.php:2031
 #: modules/Students/student_view_details.php:2105 functions.php:507
 #: modules/Markbook/markbook_view.php:1054
-#: modules/Students/student_view_details.php:2112 functions.php:507
+#: modules/Students/student_view_details.php:2112
+#: modules/Markbook/markbook_view.php:1092
+#: modules/Students/student_view_details.php:2155 functions.php:507
 #: modules/Markbook/markbook_view.php:1092
 #: modules/Students/student_view_details.php:2155
 msgid "Read more"
@@ -7257,7 +7316,9 @@ msgstr ""
 #: modules/Markbook/markbook_edit_data.php:535
 #: modules/Students/student_view_details.php:2111 functions.php:513
 #: modules/Markbook/markbook_view.php:1060
-#: modules/Students/student_view_details.php:2118 functions.php:513
+#: modules/Students/student_view_details.php:2118
+#: modules/Markbook/markbook_view.php:1098
+#: modules/Students/student_view_details.php:2161 functions.php:513
 #: modules/Markbook/markbook_edit_data.php:535
 #: modules/Markbook/markbook_view.php:515
 #: modules/Markbook/markbook_view.php:663
@@ -7298,7 +7359,9 @@ msgstr ""
 #: modules/Students/student_view_details.php:2074
 #: modules/Planner/planner_view_full.php:966
 #: modules/Students/student_view_details.php:2148 functions.php:542
-#: modules/Students/student_view_details.php:2155 functions.php:542
+#: modules/Students/student_view_details.php:2155
+#: Assessment/crowdAssess_view_discuss.php:148
+#: modules/Students/student_view_details.php:2198 functions.php:542
 #: modules/Crowd Assessment/crowdAssess_view_discuss.php:148
 #: modules/Planner/planner_view_full.php:966
 #: modules/Planner/planner_view_full_submit_edit.php:310
@@ -7316,7 +7379,8 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:1078 index.php:935
 #: modules/Markbook/markbook_edit_data.php:421
 #: modules/Markbook/markbook_view.php:1094 functions.php:337 functions.php:546
-#: modules/Markbook/markbook_view.php:1100 functions.php:546
+#: modules/Markbook/markbook_view.php:1100
+#: modules/Markbook/markbook_view.php:1138 functions.php:546
 #: modules/Markbook/markbook_edit_data.php:421
 #: modules/Markbook/markbook_view.php:1138
 #: modules/Planner/planner_view_full_submit_edit.php:215
@@ -7358,7 +7422,10 @@ msgstr ""
 #: modules/Students/student_view_details.php:2154 functions.php:548
 #: modules/Markbook/markbook_view.php:1102
 #: modules/Students/student_view_details.php:2149
-#: modules/Students/student_view_details.php:2161 functions.php:548
+#: modules/Students/student_view_details.php:2161
+#: modules/Markbook/markbook_view.php:1140
+#: modules/Students/student_view_details.php:2192
+#: modules/Students/student_view_details.php:2204 functions.php:548
 #: modules/Markbook/markbook_edit_data.php:423
 #: modules/Markbook/markbook_view.php:703
 #: modules/Markbook/markbook_view.php:1140
@@ -7403,7 +7470,9 @@ msgstr ""
 #: modules/Students/student_view_details.php:2158 functions.php:552
 #: modules/Markbook/markbook_view.php:1106
 #: modules/Students/student_view_details.php:2165
-#: i18n/dbStringsForTranslation.php:1362 functions.php:552
+#: i18n/dbStringsForTranslation.php:1362
+#: modules/Markbook/markbook_view.php:1144
+#: modules/Students/student_view_details.php:2208 functions.php:552
 #: i18n/dbStringsForTranslation.php:1362
 #: modules/Markbook/markbook_edit_data.php:427
 #: modules/Markbook/markbook_view.php:707
@@ -7433,7 +7502,9 @@ msgstr ""
 #: modules/Students/student_view_details.php:2162
 #: modules/Students/student_view_details.php:2165 functions.php:556
 #: functions.php:559 modules/Students/student_view_details.php:2169
-#: modules/Students/student_view_details.php:2172 functions.php:556
+#: modules/Students/student_view_details.php:2172
+#: modules/Students/student_view_details.php:2212
+#: modules/Students/student_view_details.php:2215 functions.php:556
 #: functions.php:559 modules/Students/student_view_details.php:2212
 #: modules/Students/student_view_details.php:2215
 #, php-format
@@ -7448,7 +7519,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2072 functions.php:353
 #: modules/Students/student_view_details.php:2094
 #: modules/Students/student_view_details.php:2168 functions.php:562
-#: modules/Students/student_view_details.php:2175 functions.php:562
+#: modules/Students/student_view_details.php:2175
+#: modules/Students/student_view_details.php:2218 functions.php:562
 #: modules/Students/student_view_details.php:2218
 #, php-format
 msgid "Recorded at %1$s on %2$s"
@@ -7504,7 +7576,10 @@ msgstr ""
 #: modules/Students/student_view_details.php:2716 functions.php:567
 #: modules/Markbook/markbook_view.php:1121
 #: modules/Students/student_view_details.php:2180
-#: modules/Students/student_view_details.php:2723 functions.php:567
+#: modules/Students/student_view_details.php:2723
+#: modules/Markbook/markbook_view.php:1159
+#: modules/Students/student_view_details.php:2223
+#: modules/Students/student_view_details.php:2766 functions.php:567
 #: modules/Activities/activities_manage_enrolment_add.php:233
 #: modules/Activities/activities_manage_enrolment_edit.php:134
 #: modules/Attendance/attendance_future_byPerson.php:237
@@ -7595,7 +7670,11 @@ msgstr ""
 #: modules/Students/student_view_details.php:2721 functions.php:571
 #: functions.php:793 modules/Students/student_view_details.php:2184
 #: modules/Students/student_view_details.php:2480
-#: modules/Students/student_view_details.php:2728 functions.php:571
+#: modules/Students/student_view_details.php:2728
+#: modules/Attendance/moduleFunctions.php:408
+#: modules/Students/student_view_details.php:2227
+#: modules/Students/student_view_details.php:2523
+#: modules/Students/student_view_details.php:2771 functions.php:571
 #: functions.php:793 modules/Activities/activities_my.php:109
 #: modules/Activities/activities_my_full.php:95
 #: modules/Activities/activities_view_full.php:112
@@ -7677,7 +7756,10 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:1651
 #: modules/Students/student_view_details.php:2188
 #: modules/Students/student_view_details.php:2732
-#: i18n/dbStringsForTranslation.php:1359 functions.php:575
+#: i18n/dbStringsForTranslation.php:1359
+#: modules/Markbook/markbook_view.php:1731
+#: modules/Students/student_view_details.php:2231
+#: modules/Students/student_view_details.php:2775 functions.php:575
 #: i18n/dbStringsForTranslation.php:1359
 #: modules/Markbook/markbook_edit_data.php:457
 #: modules/Markbook/markbook_view.php:730
@@ -7736,7 +7818,10 @@ msgstr ""
 #: modules/Students/student_view_details.php:2728 functions.php:578
 #: modules/Markbook/markbook_view.php:1654
 #: modules/Students/student_view_details.php:2191
-#: modules/Students/student_view_details.php:2735 functions.php:578
+#: modules/Students/student_view_details.php:2735
+#: modules/Markbook/markbook_view.php:1734
+#: modules/Students/student_view_details.php:2234
+#: modules/Students/student_view_details.php:2778 functions.php:578
 #: modules/Markbook/markbook_edit_data.php:460
 #: modules/Markbook/markbook_view.php:733
 #: modules/Markbook/markbook_view.php:1734
@@ -7762,7 +7847,8 @@ msgstr ""
 #: modules/Planner/planner_deadlines.php:531
 #: modules/Students/student_view_details.php:2421
 #: modules/Students/student_view_details.php:2495 functions.php:606
-#: modules/Students/student_view_details.php:2502 functions.php:606
+#: modules/Students/student_view_details.php:2502
+#: modules/Students/student_view_details.php:2545 functions.php:606
 #: modules/Planner/planner_deadlines.php:206
 #: modules/Planner/planner_deadlines.php:531
 #: modules/Students/student_view_details.php:2545
@@ -7783,7 +7869,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2434 functions.php:428
 #: modules/Students/student_view_details.php:2456
 #: modules/Students/student_view_details.php:2530 functions.php:637
-#: modules/Students/student_view_details.php:2537 functions.php:637
+#: modules/Students/student_view_details.php:2537
+#: modules/Students/student_view_details.php:2580 functions.php:637
 #: modules/Students/student_view_details.php:2580
 #, php-format
 msgid "Due at %1$s on %2$s"
@@ -8104,9 +8191,9 @@ msgstr ""
 #: index.php:658 index.php:667 modules/Planner/units_add.php:208
 #: modules/Planner/units_add.php:455 modules/Planner/units_edit.php:296
 #: modules/Planner/units_edit.php:309 modules/Planner/units_edit.php:620
-#: Admin/plannerSettings.php:240 Admin/plannerSettings.php:270
-#: functions.php:334 functions.php:343 index.php:680 index.php:689
-#: modules/Activities/activities_manage_add.php:149
+#: Admin/plannerSettings.php:240 Admin/plannerSettings.php:270 index.php:680
+#: index.php:689 functions.php:334 functions.php:343 index.php:726
+#: index.php:735 modules/Activities/activities_manage_add.php:149
 #: modules/Activities/activities_manage_add.php:161
 #: modules/Activities/activities_manage_delete.php:107
 #: modules/Activities/activities_manage_edit.php:205
@@ -8572,7 +8659,7 @@ msgstr ""
 #: modules/Planner/units_add.php:209 modules/Planner/units_add.php:454
 #: modules/Planner/units_edit.php:297 modules/Planner/units_edit.php:310
 #: modules/Planner/units_edit.php:619 Admin/plannerSettings.php:241
-#: Admin/plannerSettings.php:271 functions.php:330 index.php:676
+#: Admin/plannerSettings.php:271 index.php:676 functions.php:330 index.php:722
 #: modules/Activities/activities_manage_add.php:150
 #: modules/Activities/activities_manage_add.php:162
 #: modules/Activities/activities_manage_edit.php:206
@@ -8749,9 +8836,9 @@ msgstr ""
 #: index.php:675 functions.php:1571 functions.php:1578 functions.php:1588
 #: functions.php:1589 index.php:729 index.php:731 index.php:735
 #: functions.php:1587 functions.php:1595 functions.php:1596 functions.php:1605
-#: functions.php:1606 index.php:727 index.php:722 functions.php:1587
-#: functions.php:1588 functions.php:1595 functions.php:1596 functions.php:1605
-#: functions.php:1606 index.php:744
+#: functions.php:1606 index.php:727 index.php:722 index.php:744
+#: functions.php:1587 functions.php:1588 functions.php:1595 functions.php:1596
+#: functions.php:1605 functions.php:1606 index.php:790
 #: modules/Resources/resources_add_ajax.php:94
 #: modules/Resources/resources_addQuick_ajax.php:77
 msgid "Loading"
@@ -8760,12 +8847,14 @@ msgstr ""
 #: index.php:1245 index.php:1248 index.php:1254 index.php:1252 index.php:1258
 #: index.php:1281 index.php:1243 index.php:860 index.php:689 index.php:743
 #: index.php:745 index.php:749 index.php:740 index.php:735 index.php:757
+#: index.php:803
 msgid "Couldn't load this tab."
 msgstr ""
 
 #: index.php:1265 index.php:1268 index.php:1274 index.php:1272 index.php:1278
 #: index.php:1301 index.php:1263 index.php:880 index.php:709 index.php:763
 #: index.php:765 index.php:769 index.php:760 index.php:755 index.php:777
+#: index.php:823
 msgid "My Roll Groups"
 msgstr ""
 
@@ -8790,7 +8879,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:955 index.php:721
 #: Groups/rollGroups_details.php:157 index.php:775 index.php:777 index.php:781
 #: index.php:772 i18n/dbStringsForTranslation.php:958 index.php:767
-#: i18n/dbStringsForTranslation.php:958 index.php:789
+#: index.php:789 i18n/dbStringsForTranslation.php:958 index.php:835
 #: modules/Activities/activities_manage_enrolment_add.php:158
 #: modules/Library/report_studentBorrowingRecord.php:53
 #: modules/Planner/planner.php:352 modules/Planner/planner.php:539
@@ -8811,8 +8900,8 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:38 index.php:1301 index.php:1299
 #: index.php:1305 index.php:1328 index.php:1290 index.php:907
 #: i18n/dbStringsForTranslation.php:40 index.php:736 index.php:790
-#: index.php:792 index.php:796 index.php:787 index.php:782
-#: i18n/dbStringsForTranslation.php:40 index.php:804
+#: index.php:792 index.php:796 index.php:787 index.php:782 index.php:804
+#: i18n/dbStringsForTranslation.php:40 index.php:850
 #: modules/Attendance/attendance_take_byPerson.php:218
 #: modules/Attendance/attendance_take_byRollGroup.php:247
 msgid "Take Attendance"
@@ -8833,7 +8922,7 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:446 index.php:908 index.php:737
 #: modules/Departments/department_course_class.php:463 index.php:791
 #: index.php:793 index.php:797 index.php:788 index.php:783 index.php:805
-#: modules/Departments/department_course_class.php:463
+#: index.php:851 modules/Departments/department_course_class.php:463
 #: modules/Library/report_catalogSummary.php:194
 #: modules/Markbook/markbook_edit.php:233
 #: modules/Markbook/markbook_view.php:295
@@ -8915,7 +9004,8 @@ msgstr ""
 #: Admin/department_manage.php:131
 #: Admin/externalAssessments_manage_edit.php:198 index.php:817
 #: modules/Rubrics/rubrics.php:162 index.php:819 index.php:823 index.php:814
-#: index.php:809 index.php:831 modules/Activities/activities_manage.php:131
+#: index.php:809 index.php:831 index.php:877
+#: modules/Activities/activities_manage.php:131
 #: modules/Activities/activities_manage_enrolment.php:204
 #: modules/Behaviour/behaviour_manage.php:255
 #: modules/Behaviour/behaviour_manage_add.php:41
@@ -8983,7 +9073,7 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage.php:259
 #: modules/Behaviour/behaviour_manage_addMulti.php:68 index.php:820
 #: index.php:822 index.php:826 index.php:817 index.php:812 index.php:834
-#: modules/Behaviour/behaviour_manage.php:259
+#: index.php:880 modules/Behaviour/behaviour_manage.php:259
 #: modules/Behaviour/behaviour_manage_add.php:85
 #: modules/Behaviour/behaviour_manage_add.php:279
 #: modules/Behaviour/behaviour_manage_addMulti.php:68
@@ -8996,7 +9086,7 @@ msgstr ""
 #: index.php:1345 index.php:1343 index.php:1349 index.php:1372 index.php:1334
 #: index.php:951 index.php:780 modules/Behaviour/behaviour_manage.php:276
 #: index.php:834 index.php:836 index.php:840 index.php:831 index.php:826
-#: index.php:848 modules/Behaviour/behaviour_manage.php:276
+#: index.php:848 index.php:894 modules/Behaviour/behaviour_manage.php:276
 msgid "Student & Date"
 msgstr ""
 
@@ -9104,9 +9194,14 @@ msgstr ""
 #: modules/Students/student_view_details.php:2628 Admin/module_manage.php:124
 #: index.php:837 modules/Markbook/markbook_edit_edit.php:296 index.php:839
 #: index.php:843 Admin/module_manage.php:129 index.php:834
-#: i18n/dbStringsForTranslation.php:892 index.php:829 functions.php:726
+#: i18n/dbStringsForTranslation.php:892 index.php:829 index.php:851
+#: modules/Markbook/markbook_view.php:868
+#: modules/Markbook/markbook_view.php:1431
+#: modules/Students/student_view_details.php:1922
+#: modules/Students/student_view_details.php:2453
+#: modules/Students/student_view_details.php:2671 functions.php:726
 #: i18n/dbStringsForTranslation.php:871 i18n/dbStringsForTranslation.php:892
-#: index.php:851 modules/Activities/activities_manage_add.php:121
+#: index.php:897 modules/Activities/activities_manage_add.php:121
 #: modules/Activities/activities_manage_edit.php:177
 #: modules/Activities/activities_my.php:60
 #: modules/Activities/report_activityChoices_byStudent.php:181
@@ -9191,7 +9286,7 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage.php:282
 #: modules/Behaviour/behaviour_manage_addMulti.php:171 index.php:840
 #: index.php:842 index.php:846 index.php:837 index.php:832 index.php:854
-#: modules/Behaviour/behaviour_manage.php:282
+#: index.php:900 modules/Behaviour/behaviour_manage.php:282
 #: modules/Behaviour/behaviour_manage_add.php:190
 #: modules/Behaviour/behaviour_manage_addMulti.php:171
 #: modules/Behaviour/behaviour_manage_edit.php:216
@@ -9214,7 +9309,7 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage.php:285
 #: modules/Behaviour/behaviour_manage_addMulti.php:211 index.php:843
 #: index.php:845 index.php:849 index.php:840 index.php:835 index.php:857
-#: modules/Behaviour/behaviour_manage.php:285
+#: index.php:903 modules/Behaviour/behaviour_manage.php:285
 #: modules/Behaviour/behaviour_manage_add.php:230
 #: modules/Behaviour/behaviour_manage_addMulti.php:211
 #: modules/Behaviour/behaviour_manage_edit.php:279
@@ -9242,8 +9337,8 @@ msgstr ""
 #: index.php:792 modules/Behaviour/behaviour_manage.php:288
 #: Admin/courseEnrolment_manage_byPerson_edit.php:210 index.php:846
 #: index.php:848 index.php:852 index.php:843
-#: i18n/dbStringsForTranslation.php:1007 index.php:838
-#: i18n/dbStringsForTranslation.php:1007 index.php:860
+#: i18n/dbStringsForTranslation.php:1007 index.php:838 index.php:860
+#: i18n/dbStringsForTranslation.php:1007 index.php:906
 #: modules/Behaviour/behaviour_manage.php:288
 #: modules/Behaviour/moduleFunctions.php:88
 #: modules/Planner/report_goldStars_staff.php:53
@@ -9259,12 +9354,14 @@ msgstr ""
 #: index.php:1371 index.php:1374 index.php:1380 index.php:1378 index.php:1384
 #: index.php:1407 index.php:1369 index.php:986 index.php:815 index.php:869
 #: index.php:871 index.php:875 index.php:866 index.php:861 index.php:883
+#: index.php:929
 msgid "Date Updated"
 msgstr ""
 
 #: index.php:1372 index.php:1375 index.php:1381 index.php:1379 index.php:1385
 #: index.php:1408 index.php:1370 index.php:987 index.php:816 index.php:870
 #: index.php:872 index.php:876 index.php:867 index.php:862 index.php:884
+#: index.php:930
 msgid "Incident Date"
 msgstr ""
 
@@ -9274,7 +9371,7 @@ msgstr ""
 #: index.php:1387 index.php:1393 index.php:1416 index.php:1378 index.php:995
 #: index.php:824 modules/Behaviour/behaviour_manage_addMulti.php:145
 #: index.php:878 index.php:880 index.php:884 index.php:875 index.php:870
-#: index.php:892 modules/Behaviour/behaviour_manage.php:182
+#: index.php:892 index.php:938 modules/Behaviour/behaviour_manage.php:182
 #: modules/Behaviour/behaviour_manage_add.php:164
 #: modules/Behaviour/behaviour_manage_addMulti.php:145
 #: modules/Behaviour/behaviour_manage_edit.php:190
@@ -9284,7 +9381,7 @@ msgstr ""
 #: index.php:1383 modules/Planner/report_goldStars_staff.php:50 index.php:1386
 #: index.php:1392 index.php:1390 index.php:1396 index.php:1419 index.php:1381
 #: index.php:998 index.php:827 index.php:881 index.php:883 index.php:887
-#: index.php:878 index.php:873 index.php:895
+#: index.php:878 index.php:873 index.php:895 index.php:941
 #: modules/Planner/report_goldStars_staff.php:50
 msgid "Position"
 msgstr ""
@@ -9295,7 +9392,8 @@ msgstr ""
 #: installer/install.php:1288 installer/install.php:1305 index.php:1081
 #: installer/install.php:1306 index.php:910 index.php:964 index.php:966
 #: index.php:970 index.php:961 installer/install.php:1358 index.php:956
-#: installer/install.php:1449 index.php:978 installer/install.php:1449
+#: installer/install.php:1449 index.php:978 index.php:1024
+#: installer/install.php:1449
 msgid "Powered by"
 msgstr ""
 
@@ -9305,7 +9403,8 @@ msgstr ""
 #: installer/install.php:1290 installer/install.php:1307 index.php:1083
 #: installer/install.php:1308 index.php:912 index.php:966 index.php:968
 #: index.php:972 index.php:963 installer/install.php:1360 index.php:958
-#: installer/install.php:1451 index.php:980 installer/install.php:1451
+#: installer/install.php:1451 index.php:980 index.php:1026
+#: installer/install.php:1451
 msgid "Created under the"
 msgstr ""
 
@@ -9885,8 +9984,11 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:398
 #: modules/Timetable/moduleFunctions.php:1584 functions.php:1209
 #: functions.php:1290 modules/Timetable/moduleFunctions.php:1577
-#: functions.php:1209 functions.php:1290
-#: modules/Behaviour/behaviour_manage.php:193
+#: modules/Markbook/markbook_view.php:910
+#: modules/Markbook/markbook_view.php:1473
+#: modules/Students/student_view_details.php:1964
+#: modules/Students/student_view_details.php:2651 functions.php:1209
+#: functions.php:1290 modules/Behaviour/behaviour_manage.php:193
 #: modules/Behaviour/behaviour_pattern.php:239
 #: modules/Departments/department.php:224
 #: modules/Departments/department_course_class.php:562
@@ -10129,7 +10231,8 @@ msgstr ""
 #: modules/Planner/units_edit.php:861 functions.php:1867
 #: modules/Markbook/markbook_view.php:1346 functions.php:1876
 #: functions.php:1893 modules/Students/report_students_IDCards.php:210
-#: modules/Planner/units_edit.php:894 functions.php:1893
+#: modules/Planner/units_edit.php:894 modules/Markbook/markbook_view.php:834
+#: modules/Markbook/markbook_view.php:1397 functions.php:1893
 #: modules/Finance/billingSchedule_manage_add.php:84
 #: modules/Finance/billingSchedule_manage_edit.php:102
 #: modules/Finance/fees_manage_add.php:84
@@ -10196,6 +10299,7 @@ msgstr ""
 
 #: functions.php:987 functions.php:991 functions.php:995 functions.php:1016
 #: functions.php:1097 functions.php:1124 functions.php:1123 functions.php:1754
+#: index.php:434
 msgid "Module Menu"
 msgstr ""
 
@@ -10249,8 +10353,8 @@ msgstr ""
 #: functions.php:1294 modules/Markbook/markbook_view.php:1672
 #: functions.php:1937 functions.php:2142
 #: modules/Markbook/markbook_view.php:1685 functions.php:2151
-#: functions.php:2168 functions.php:2168
-#: modules/Markbook/markbook_view.php:1765
+#: functions.php:2168 modules/Markbook/markbook_view.php:1765
+#: functions.php:2168 modules/Markbook/markbook_view.php:1765
 msgid "Recent Marks"
 msgstr ""
 
@@ -10297,7 +10401,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2903 functions.php:2186
 #: modules/Students/student_view_details.php:2904 functions.php:2195
 #: modules/Markbook/markbook_edit_edit.php:100 functions.php:2212
-#: i18n/dbStringsForTranslation.php:950 functions.php:2212
+#: i18n/dbStringsForTranslation.php:950
+#: modules/Students/student_view_details.php:2947 functions.php:2212
 #: i18n/dbStringsForTranslation.php:155 i18n/dbStringsForTranslation.php:950
 #: modules/Markbook/markbook_edit.php:90
 #: modules/Markbook/markbook_edit_add.php:75
@@ -10328,7 +10433,8 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:992
 #: modules/Students/student_view_details.php:2959 functions.php:2190
 #: modules/Students/student_view_details.php:2960 functions.php:2199
-#: functions.php:2216 i18n/dbStringsForTranslation.php:995 functions.php:2216
+#: functions.php:2216 i18n/dbStringsForTranslation.php:995
+#: modules/Students/student_view_details.php:3003 functions.php:2216
 #: i18n/dbStringsForTranslation.php:35 i18n/dbStringsForTranslation.php:995
 #: modules/Students/student_view_details.php:3003
 msgid "People"
@@ -10668,7 +10774,7 @@ msgstr ""
 
 #: index.php:563 index.php:569 index.php:567 index.php:573 index.php:578
 #: index.php:540 index.php:543 index.php:552 index.php:371 index.php:404
-#: index.php:406 index.php:410 index.php:405 index.php:405
+#: index.php:406 index.php:410 index.php:405 index.php:472
 msgid "Applications"
 msgstr ""
 
@@ -11381,6 +11487,7 @@ msgstr ""
 #: modules/Planner/planner_deadlines.php:174 modules/Staff/staff_view.php:89
 #: modules/Students/student_view_details.php:1648
 #: modules/Markbook/markbook_view.php:1249
+#: modules/Markbook/markbook_view.php:1287
 #: modules/Activities/activities_manage.php:77
 #: modules/Activities/activities_view.php:204
 #: modules/Attendance/report_studentHistory.php:206
@@ -11564,6 +11671,8 @@ msgstr ""
 #: modules/Planner/units_edit.php:580 modules/Planner/units_edit.php:958
 #: modules/Planner/units_public.php:139
 #: modules/Planner/units_public_view.php:303
+#: modules/Students/student_view_details.php:2468
+#: modules/Students/student_view_details.php:2681
 #: i18n/dbStringsForTranslation.php:21
 #: modules/Activities/activities_manage.php:171
 #: modules/Activities/activities_manage_edit.php:444
@@ -12695,6 +12804,7 @@ msgstr ""
 #: modules/Markbook/markbook_edit_edit.php:75
 #: modules/Markbook/markbook_edit_edit.php:91
 #: modules/Rubrics/rubrics_delete.php:108 modules/Planner/units_edit.php:841
+#: modules/Markbook/markbook_view.php:1317
 #: modules/Activities/activities_manage_delete.php:78
 #: modules/Activities/activities_manage_edit.php:114
 #: modules/Activities/activities_manage_enrolment.php:113
@@ -13185,7 +13295,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2415 functions.php:738
 #: modules/Students/student_view_details.php:2422 modules/System
 #: Admin/module_manage.php:118 Admin/theme_manage.php:133
-#: Admin/module_manage.php:123 Admin/theme_manage.php:138 functions.php:738
+#: Admin/module_manage.php:123 Admin/theme_manage.php:138
+#: modules/Students/student_view_details.php:2465 functions.php:738
 #: modules/Activities/activities_manage_enrolment.php:219
 #: modules/Activities/activities_manage_enrolment_add.php:222
 #: modules/Activities/activities_manage_enrolment_edit.php:120
@@ -14592,6 +14703,7 @@ msgstr ""
 #: Admin/applicationForm_manage_edit.php:100
 #: modules/Activities/report_attendance.php:110
 #: modules/Activities/report_participants.php:110
+#: modules/Attendance/moduleFunctions.php:99
 #: modules/Activities/report_attendance.php:110
 #: modules/Activities/report_attendance_print.php:72
 #: modules/Activities/report_participants.php:110
@@ -14945,6 +15057,7 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:1228
 #: modules/Planner/planner_deadlines.php:159 modules/Staff/staff_view.php:60
 #: modules/Markbook/markbook_view.php:1234 modules/Rubrics/rubrics.php:113
+#: modules/Markbook/markbook_view.php:1272
 #: modules/Attendance/report_studentHistory.php:191
 #: modules/Behaviour/behaviour_view.php:48
 #: modules/External Assessment/externalAssessment.php:55
@@ -15687,7 +15800,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2312 functions.php:522
 #: modules/Students/student_view_details.php:2334
 #: modules/Students/student_view_details.php:2408 functions.php:731
-#: modules/Students/student_view_details.php:2415 functions.php:731
+#: modules/Students/student_view_details.php:2415
+#: modules/Students/student_view_details.php:2458 functions.php:731
 #: modules/Activities/activities_manage.php:157
 #: modules/Activities/activities_view.php:378
 #: modules/Activities/report_activityChoices_byStudent.php:186
@@ -15840,8 +15954,9 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:1191 functions.php:365 index.php:647
 #: Admin/courseEnrolment_manage_byPerson_edit.php:130 index.php:701
 #: modules/Markbook/markbook_edit_edit.php:100 index.php:703 index.php:707
-#: index.php:702 Assessment/crowdAssess_view.php:248 functions.php:365
-#: index.php:724 modules/Crowd Assessment/crowdAssess_view.php:248
+#: index.php:702 Assessment/crowdAssess_view.php:248 index.php:724
+#: functions.php:365 index.php:770
+#: modules/Crowd Assessment/crowdAssess_view.php:248
 #: modules/Finance/billingSchedule_manage.php:122
 #: modules/Finance/fees_manage.php:122
 #: modules/Finance/invoicees_manage.php:136
@@ -16675,7 +16790,9 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:943
 #: modules/Students/student_view_details.php:2910
 #: modules/Students/student_view_details.php:2911
-#: i18n/dbStringsForTranslation.php:946 i18n/dbStringsForTranslation.php:946
+#: i18n/dbStringsForTranslation.php:946
+#: modules/Students/student_view_details.php:2954
+#: i18n/dbStringsForTranslation.php:946
 #: modules/School Admin/externalAssessments_manage_edit_field_add.php:92
 #: modules/School Admin/externalAssessments_manage_edit_field_edit.php:93
 #: modules/School Admin/externalAssessmentSettings.php:89
@@ -17231,7 +17348,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2315 functions.php:525
 #: modules/Students/student_view_details.php:2337
 #: modules/Students/student_view_details.php:2411 functions.php:734
-#: modules/Students/student_view_details.php:2418 functions.php:734
+#: modules/Students/student_view_details.php:2418
+#: modules/Students/student_view_details.php:2461 functions.php:734
 #: modules/Activities/activities_manage.php:160
 #: modules/Activities/activities_view.php:381
 #: modules/Activities/report_activityChoices_byStudent.php:189
@@ -18387,6 +18505,7 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:798 modules/Rubrics/rubrics_add.php:109
 #: modules/Rubrics/rubrics_add.php:151 modules/Rubrics/rubrics_edit.php:244
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:153
+#: modules/Markbook/markbook_view.php:807
 #: modules/Markbook/markbook_view.php:807 modules/Planner/outcomes_add.php:94
 #: modules/Planner/outcomes_add.php:136 modules/Planner/outcomes_edit.php:145
 #: modules/Rubrics/rubrics_add.php:109 modules/Rubrics/rubrics_add.php:151
@@ -19114,7 +19233,8 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:42 i18n/dbStringsForTranslation.php:957
 #: modules/Students/student_view_details.php:2952 functions.php:830
 #: modules/Students/student_view_details.php:2953
-#: i18n/dbStringsForTranslation.php:960 functions.php:830
+#: i18n/dbStringsForTranslation.php:960
+#: modules/Students/student_view_details.php:2996 functions.php:830
 #: i18n/dbStringsForTranslation.php:42 i18n/dbStringsForTranslation.php:960
 #: modules/Staff/staff_view_details.php:585
 #: modules/Students/student_view_details.php:2996
@@ -19442,6 +19562,7 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:705
 #: modules/Students/student_view_details.php:2882
 #: modules/Students/student_view_details.php:2883
+#: modules/Students/student_view_details.php:2926
 #: modules/External Assessment/import_results.php:110
 #: modules/Finance/invoices_manage_add.php:273
 #: modules/Finance/invoices_manage_edit.php:388
@@ -20444,6 +20565,7 @@ msgstr ""
 #: Admin/applicationForm_manage_accept.php:615
 #: modules/Students/student_view_details.php:2866
 #: modules/Students/student_view_details.php:2867
+#: modules/Students/student_view_details.php:2910
 #: modules/Application Form/applicationForm.php:1446
 #: modules/Attendance/attendance_future_byPerson.php:239
 #: modules/Attendance/attendance_take_byPerson.php:315
@@ -25853,6 +25975,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2871
 #: modules/Students/student_view_details.php:2872
 #: Admin/user_manage_add.php:1053 Admin/user_manage_edit.php:1338
+#: modules/Students/student_view_details.php:2915
 #: modules/Data Updater/data_personal.php:499
 #: modules/Staff/staff_view_details.php:478
 #: modules/Staff/staff_view_details.php:579
@@ -26338,7 +26461,11 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:1125
 #: modules/Markbook/markbook_view.php:1647
 #: modules/Students/student_view_details.php:2184
-#: modules/Students/student_view_details.php:2728 functions.php:571
+#: modules/Students/student_view_details.php:2728
+#: modules/Markbook/markbook_view.php:1163
+#: modules/Markbook/markbook_view.php:1727
+#: modules/Students/student_view_details.php:2227
+#: modules/Students/student_view_details.php:2771 functions.php:571
 #: modules/Markbook/markbook_edit_data.php:453
 #: modules/Markbook/markbook_view.php:726
 #: modules/Markbook/markbook_view.php:1163
@@ -26376,7 +26503,7 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage.php:361 index.php:904
 #: modules/Rubrics/rubrics.php:285 index.php:906 index.php:910 index.php:901
 #: index.php:896 modules/Planner/units_public_view.php:343 index.php:918
-#: modules/Behaviour/behaviour_manage.php:361
+#: index.php:964 modules/Behaviour/behaviour_manage.php:361
 #: modules/Behaviour/moduleFunctions.php:145
 #: modules/Finance/billingSchedule_manage.php:234
 #: modules/Finance/fees_manage.php:230 modules/Finance/invoices_manage.php:656
@@ -26441,7 +26568,8 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:936
 #: modules/Students/student_view_details.php:2924 functions.php:833
 #: modules/Students/student_view_details.php:2925
-#: i18n/dbStringsForTranslation.php:939 functions.php:833
+#: i18n/dbStringsForTranslation.php:939
+#: modules/Students/student_view_details.php:2968 functions.php:833
 #: i18n/dbStringsForTranslation.php:939
 #: modules/Activities/activities_manage.php:87
 #: modules/Activities/activities_view.php:214
@@ -26475,7 +26603,8 @@ msgstr ""
 #: modules/Messenger/messenger_post.php:875
 #: modules/Students/student_view_details.php:2324
 #: modules/Students/student_view_details.php:2398 functions.php:721
-#: modules/Students/student_view_details.php:2405 functions.php:721
+#: modules/Students/student_view_details.php:2405
+#: modules/Students/student_view_details.php:2448 functions.php:721
 #: modules/Activities/activities_manage.php:147
 #: modules/Activities/activities_manage_enrolment_edit.php:102
 #: modules/Activities/activities_my.php:55
@@ -27189,6 +27318,8 @@ msgstr ""
 #: modules/Planner/planner_deadlines.php:142
 #: modules/Markbook/markbook_view.php:1184
 #: modules/Markbook/markbook_view.php:1217
+#: modules/Markbook/markbook_view.php:1222
+#: modules/Markbook/markbook_view.php:1255
 #: modules/Activities/activities_view.php:110
 #: modules/Activities/activities_view_register.php:118
 #: modules/Attendance/report_studentHistory.php:141
@@ -27635,6 +27766,8 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:968
 #: modules/Students/student_view_details.php:2145
 #: modules/Students/student_view_details.php:2152
+#: Assessment/crowdAssess_view_discuss.php:145
+#: modules/Students/student_view_details.php:2195
 #: modules/Crowd Assessment/crowdAssess_view_discuss.php:145
 #: modules/Planner/planner_view_full.php:968
 #: modules/Planner/planner_view_full_submit_edit.php:312
@@ -27958,7 +28091,8 @@ msgstr ""
 #: Admin/courseEnrolment_manage_byPerson_edit.php:404
 #: Admin/studentEnrolment_manage.php:231 modules/Rubrics/rubrics.php:263
 #: modules/Rubrics/rubrics.php:279 Admin/ttDates.php:291
-#: Admin/module_manage.php:223 modules/Activities/activities_manage.php:272
+#: Admin/module_manage.php:223 modules/Students/student_view_details.php:2347
+#: modules/Activities/activities_manage.php:272
 #: modules/Activities/activities_manage_enrolment.php:252
 #: modules/Behaviour/behaviour_manage.php:348
 #: modules/Behaviour/behaviour_manage_edit.php:42
@@ -28412,6 +28546,9 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:924
 #: modules/Markbook/markbook_view.php:1445
 #: modules/Students/student_view_details.php:1980
+#: modules/Markbook/markbook_view.php:962
+#: modules/Markbook/markbook_view.php:1525
+#: modules/Students/student_view_details.php:2023
 #: modules/Markbook/markbook_edit_data.php:183
 #: modules/Markbook/markbook_view.php:366
 #: modules/Markbook/markbook_view.php:962
@@ -28447,6 +28584,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2024
 #: modules/Markbook/markbook_view.php:974
 #: modules/Students/student_view_details.php:2031
+#: modules/Markbook/markbook_view.php:1012
+#: modules/Students/student_view_details.php:2074
 #: modules/Markbook/markbook_edit_data.php:253
 #: modules/Markbook/markbook_view.php:435
 #: modules/Markbook/markbook_view.php:1012
@@ -28478,6 +28617,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2028
 #: modules/Markbook/markbook_view.php:978
 #: modules/Students/student_view_details.php:2035
+#: modules/Markbook/markbook_view.php:1016
+#: modules/Students/student_view_details.php:2078
 #: modules/Markbook/markbook_edit_data.php:257
 #: modules/Markbook/markbook_view.php:439
 #: modules/Markbook/markbook_view.php:1016
@@ -28504,6 +28645,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2028
 #: modules/Markbook/markbook_view.php:978
 #: modules/Students/student_view_details.php:2035
+#: modules/Markbook/markbook_view.php:1016
+#: modules/Students/student_view_details.php:2078
 #: modules/Markbook/markbook_edit_data.php:257
 #: modules/Markbook/markbook_view.php:1016
 #: modules/Students/student_view_details.php:2078
@@ -28620,6 +28763,7 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:691
 #: modules/Markbook/markbook_view.php:1084
 #: modules/Markbook/markbook_view.php:1090
+#: modules/Markbook/markbook_view.php:1128
 #: modules/Markbook/markbook_edit_data.php:411
 #: modules/Markbook/markbook_view.php:691
 #: modules/Markbook/markbook_view.php:1128
@@ -28642,6 +28786,7 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:694
 #: modules/Markbook/markbook_view.php:1087
 #: modules/Markbook/markbook_view.php:1093
+#: modules/Markbook/markbook_view.php:1131
 #: modules/Markbook/markbook_edit_data.php:414
 #: modules/Markbook/markbook_view.php:694
 #: modules/Markbook/markbook_view.php:1131
@@ -28664,6 +28809,7 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:697
 #: modules/Markbook/markbook_view.php:1090
 #: modules/Markbook/markbook_view.php:1096
+#: modules/Markbook/markbook_view.php:1134
 #: modules/Markbook/markbook_edit_data.php:417
 #: modules/Markbook/markbook_view.php:697
 #: modules/Markbook/markbook_view.php:1134
@@ -28702,6 +28848,8 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:1107
 #: modules/Markbook/markbook_view.php:1110
 #: modules/Markbook/markbook_view.php:1113
+#: modules/Markbook/markbook_view.php:1148
+#: modules/Markbook/markbook_view.php:1151
 #: modules/Markbook/markbook_edit_data.php:431
 #: modules/Markbook/markbook_edit_data.php:434
 #: modules/Markbook/markbook_view.php:711
@@ -28754,6 +28902,9 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:1110
 #: modules/Markbook/markbook_view.php:1113
 #: modules/Markbook/markbook_view.php:1116
+#: modules/Markbook/markbook_view.php:1148
+#: modules/Markbook/markbook_view.php:1151
+#: modules/Markbook/markbook_view.php:1154
 #: modules/Markbook/markbook_edit_data.php:431
 #: modules/Markbook/markbook_edit_data.php:434
 #: modules/Markbook/markbook_edit_data.php:444
@@ -28782,6 +28933,7 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:717
 #: modules/Markbook/markbook_view.php:1110
 #: modules/Markbook/markbook_view.php:1116
+#: modules/Markbook/markbook_view.php:1154
 #: modules/Markbook/markbook_edit_data.php:444
 #: modules/Markbook/markbook_view.php:717
 #: modules/Markbook/markbook_view.php:1154
@@ -29025,6 +29177,8 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:1000
 #: modules/Markbook/markbook_view.php:1028
 #: modules/Markbook/markbook_view.php:1034
+#: modules/Markbook/markbook_view.php:1044
+#: modules/Markbook/markbook_view.php:1072
 #: modules/Markbook/markbook_view.php:630
 #: modules/Markbook/markbook_view.php:651
 #: modules/Markbook/markbook_view.php:1044
@@ -29060,8 +29214,9 @@ msgstr ""
 #: modules/Students/student_view_details.php:1781
 #: modules/Students/student_view_details.php:1855
 #: modules/Rubrics/rubrics.php:128 modules/Markbook/markbook_view.php:813
-#: modules/Planner/outcomes.php:105 modules/Rubrics/rubrics.php:128
-#: modules/Rubrics/rubrics_view.php:113
+#: modules/Students/student_view_details.php:1869
+#: modules/Markbook/markbook_view.php:813 modules/Planner/outcomes.php:105
+#: modules/Rubrics/rubrics.php:128 modules/Rubrics/rubrics_view.php:113
 #: modules/Students/student_view_details.php:1869
 msgid "All Learning Areas"
 msgstr ""
@@ -29083,6 +29238,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:1786
 #: modules/Students/student_view_details.php:1808
 #: modules/Students/student_view_details.php:1882
+#: modules/Markbook/markbook_view.php:840
+#: modules/Students/student_view_details.php:1896
 #: modules/Markbook/markbook_view.php:840
 #: modules/Resources/resources_manage.php:221
 #: modules/Resources/resources_view.php:363
@@ -29110,6 +29267,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:1832
 #: modules/Students/student_view_details.php:1906
 #: modules/Markbook/markbook_view.php:894
+#: modules/Students/student_view_details.php:1948
+#: modules/Markbook/markbook_view.php:894
 #: modules/Planner/moduleFunctions.php:149
 #: modules/Planner/moduleFunctions.php:778
 #: modules/Students/student_view_details.php:1948
@@ -29131,6 +29290,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:1895
 #: modules/Students/student_view_details.php:1969
 #: modules/Students/student_view_details.php:1970
+#: modules/Markbook/markbook_view.php:952
+#: modules/Students/student_view_details.php:2013
 #: modules/Markbook/markbook_view.php:952
 #: modules/Students/student_view_details.php:2013
 msgid "Taught by:"
@@ -29286,6 +29447,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:1775
 #: modules/Students/student_view_details.php:1849
 #: modules/Departments/departments.php:52 modules/Rubrics/rubrics.php:122
+#: modules/Students/student_view_details.php:1863
 #: modules/Departments/departments.php:52 modules/Planner/outcomes.php:99
 #: modules/Rubrics/rubrics.php:122 modules/Rubrics/rubrics_view.php:107
 #: modules/Students/student_view_details.php:1863
@@ -29782,6 +29944,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2160
 #: modules/Students/student_view_details.php:2234
 #: modules/Students/student_view_details.php:2241
+#: modules/Students/student_view_details.php:2284
 #: modules/Individual Needs/in_edit.php:180
 #: modules/Students/student_view_details.php:2284
 msgid "Individual Education Plan"
@@ -29797,6 +29960,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2183
 #: modules/Students/student_view_details.php:2257
 #: modules/Students/student_view_details.php:2264
+#: modules/Students/student_view_details.php:2307
 #: modules/Individual Needs/in_edit.php:216
 #: modules/Students/student_view_details.php:2307
 msgid "Teaching Strategies"
@@ -29817,6 +29981,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2180
 #: modules/Students/student_view_details.php:2254
 #: modules/Students/student_view_details.php:2261
+#: modules/Students/student_view_details.php:2304
 #: modules/Individual Needs/in_edit.php:203
 #: modules/Markbook/markbook_view.php:294
 #: modules/Messenger/messenger_manage_edit.php:250
@@ -30972,6 +31137,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2440
 #: modules/Students/student_view_details.php:2514
 #: modules/Students/student_view_details.php:2521
+#: modules/Students/student_view_details.php:2564
 #: modules/Planner/moduleFunctions.php:608
 #: modules/Planner/planner_deadlines.php:252
 #: modules/Planner/planner_deadlines.php:589
@@ -31157,6 +31323,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2802
 #: modules/Students/student_view_details.php:2876
 #: modules/Students/student_view_details.php:2877
+#: modules/Students/student_view_details.php:2920
 #: i18n/dbStringsForTranslation.php:33
 #: modules/Attendance/attendance_future_byPerson.php:240
 #: modules/Attendance/attendance_take_byPerson.php:316
@@ -34814,7 +34981,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:928 i18n/dbStringsForTranslation.php:942
 #: index.php:389 modules/School Admin/department_manage.php:117 index.php:422
 #: index.php:424 index.php:428 i18n/dbStringsForTranslation.php:945
-#: index.php:416 i18n/dbStringsForTranslation.php:945 index.php:416
+#: index.php:416 i18n/dbStringsForTranslation.php:945 index.php:483
 #: modules/School Admin/department_manage.php:117
 msgid "Departments"
 msgstr ""
@@ -34845,6 +35012,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2938
 #: modules/Students/student_view_details.php:2939
 #: i18n/dbStringsForTranslation.php:948 i18n/dbStringsForTranslation.php:981
+#: modules/Students/student_view_details.php:2982
 #: i18n/dbStringsForTranslation.php:948 i18n/dbStringsForTranslation.php:981
 #: modules/Students/student_view_details.php:2982
 msgid "Individual Needs"
@@ -35117,6 +35285,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2843
 #: modules/Students/student_view_details.php:2917
 #: modules/Students/student_view_details.php:2918
+#: modules/Students/student_view_details.php:2961
 #: modules/Students/student_view_details.php:2961
 msgid "Learning"
 msgstr ""
@@ -41529,6 +41698,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1782
 #: modules/Timetable/moduleFunctions.php:1775
 #: modules/Attendance/moduleFunctions.php:218
+#: modules/Attendance/moduleFunctions.php:218
 #: modules/Planner/moduleFunctions.php:411
 #: modules/Timetable/moduleFunctions.php:736
 #: modules/Timetable/moduleFunctions.php:1775
@@ -41560,6 +41730,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:755
 #: modules/Timetable/moduleFunctions.php:1801
 #: modules/Timetable/moduleFunctions.php:1794
+#: modules/Attendance/moduleFunctions.php:223
 #: modules/Attendance/moduleFunctions.php:223
 #: modules/Planner/moduleFunctions.php:414
 #: modules/Timetable/moduleFunctions.php:755
@@ -41593,6 +41764,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1820
 #: modules/Timetable/moduleFunctions.php:1813
 #: modules/Attendance/moduleFunctions.php:229
+#: modules/Attendance/moduleFunctions.php:229
 #: modules/Planner/moduleFunctions.php:417
 #: modules/Timetable/moduleFunctions.php:774
 #: modules/Timetable/moduleFunctions.php:1813
@@ -41624,6 +41796,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:793
 #: modules/Timetable/moduleFunctions.php:1839
 #: modules/Timetable/moduleFunctions.php:1832
+#: modules/Attendance/moduleFunctions.php:235
 #: modules/Attendance/moduleFunctions.php:235
 #: modules/Planner/moduleFunctions.php:420
 #: modules/Timetable/moduleFunctions.php:793
@@ -41657,6 +41830,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1858
 #: modules/Timetable/moduleFunctions.php:1851
 #: modules/Attendance/moduleFunctions.php:240
+#: modules/Attendance/moduleFunctions.php:240
 #: modules/Planner/moduleFunctions.php:423
 #: modules/Timetable/moduleFunctions.php:812
 #: modules/Timetable/moduleFunctions.php:1851
@@ -41688,6 +41862,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:831
 #: modules/Timetable/moduleFunctions.php:1877
 #: modules/Timetable/moduleFunctions.php:1870
+#: modules/Attendance/moduleFunctions.php:245
 #: modules/Attendance/moduleFunctions.php:245
 #: modules/Planner/moduleFunctions.php:426
 #: modules/Timetable/moduleFunctions.php:831
@@ -41721,6 +41896,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1896
 #: modules/Timetable/moduleFunctions.php:1889
 #: modules/Attendance/moduleFunctions.php:250
+#: modules/Attendance/moduleFunctions.php:250
 #: modules/Planner/moduleFunctions.php:429
 #: modules/Timetable/moduleFunctions.php:850
 #: modules/Timetable/moduleFunctions.php:1889
@@ -41731,11 +41907,13 @@ msgstr ""
 
 #: modules/Attendance/moduleFunctions.php:258
 #: modules/Attendance/moduleFunctions.php:282
+#: modules/Attendance/moduleFunctions.php:282
 msgid "After End Date"
 msgstr ""
 
 #: modules/Attendance/moduleFunctions.php:375
 #: modules/Attendance/moduleFunctions.php:376
+#: modules/Attendance/moduleFunctions.php:400
 #: modules/Attendance/moduleFunctions.php:400
 msgid ""
 "It appears that this student is missing attendance data for some school days:"
@@ -41744,11 +41922,13 @@ msgstr ""
 #: modules/Attendance/moduleFunctions.php:378
 #: modules/Attendance/moduleFunctions.php:379
 #: modules/Attendance/moduleFunctions.php:403
+#: modules/Attendance/moduleFunctions.php:403
 msgid "Total number of school days to date:"
 msgstr ""
 
 #: modules/Attendance/moduleFunctions.php:379
 #: modules/Attendance/moduleFunctions.php:380
+#: modules/Attendance/moduleFunctions.php:404
 #: modules/Attendance/moduleFunctions.php:404
 msgid "Total number of school days attended:"
 msgstr ""
@@ -41756,12 +41936,14 @@ msgstr ""
 #: modules/Attendance/moduleFunctions.php:380
 #: modules/Attendance/moduleFunctions.php:381
 #: modules/Attendance/moduleFunctions.php:405
+#: modules/Attendance/moduleFunctions.php:405
 msgid "Total number of school days absent:"
 msgstr ""
 
 #: modules/Attendance/moduleFunctions.php:387
 #: modules/Attendance/moduleFunctions.php:388
 #: modules/Attendance/moduleFunctions.php:391
+#: modules/Attendance/moduleFunctions.php:414
 #: modules/Attendance/moduleFunctions.php:414
 msgid "Key"
 msgstr ""
@@ -43862,6 +44044,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2551
 #: modules/Students/student_view_details.php:2625
 #: modules/Students/student_view_details.php:2632
+#: modules/Students/student_view_details.php:2675
 #: modules/Planner/planner_deadlines.php:365
 #: modules/Planner/planner_deadlines.php:783
 #: modules/Students/student_view_details.php:2675
@@ -43971,7 +44154,8 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:509 modules/Planner/units_add.php:483
 #: modules/Planner/units_dump.php:146 modules/Planner/units_edit.php:694
 #: modules/Planner/planner_view_full.php:618 modules/Planner/units_add.php:516
-#: modules/Planner/units_edit.php:727 modules/Planner/planner_edit.php:535
+#: modules/Planner/units_edit.php:727 modules/Planner/units_add.php:514
+#: modules/Planner/planner_edit.php:535
 #: modules/Planner/planner_view_full.php:618 modules/Planner/units_add.php:514
 #: modules/Planner/units_dump.php:146 modules/Planner/units_edit.php:727
 msgid "Smart Blocks"
@@ -44169,6 +44353,7 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:1158
 #: modules/Students/student_view_details.php:2628
 #: modules/Students/student_view_details.php:2635
+#: modules/Students/student_view_details.php:2678
 #: modules/Planner/planner_view_full.php:828
 #: modules/Planner/planner_view_full.php:1158
 #: modules/Students/student_view_details.php:2678
@@ -44479,7 +44664,8 @@ msgstr ""
 #: modules/Planner/units_add.php:307 modules/Planner/units_edit.php:505
 #: modules/Planner/units_add.php:489 modules/Planner/units_edit.php:700
 #: modules/Planner/units_add.php:522 modules/Planner/units_edit.php:733
-#: modules/Planner/units_add.php:520 modules/Planner/units_edit.php:733
+#: modules/Planner/units_add.php:520 modules/Planner/units_add.php:520
+#: modules/Planner/units_edit.php:733
 msgid ""
 "Smart Blocks aid unit planning by giving teachers help in creating and "
 "maintaining new units, splitting material into smaller units which can be "
@@ -44492,7 +44678,8 @@ msgstr ""
 #: modules/Planner/units_add.php:349 modules/Planner/units_edit.php:558
 #: modules/Planner/units_add.php:531 modules/Planner/units_edit.php:763
 #: modules/Planner/units_add.php:564 modules/Planner/units_edit.php:796
-#: modules/Planner/units_add.php:562 modules/Planner/units_edit.php:796
+#: modules/Planner/units_add.php:562 modules/Planner/units_add.php:562
+#: modules/Planner/units_edit.php:796
 msgid "Click to create a new block"
 msgstr ""
 
@@ -45222,6 +45409,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2861
 #: modules/Students/student_view_details.php:2851
 #: modules/Students/student_view_details.php:2862
+#: modules/Students/student_view_details.php:2894
+#: modules/Students/student_view_details.php:2905
 #: modules/Staff/staff_view_details.php:574
 #: modules/Students/student_view_details.php:2894
 #: modules/Students/student_view_details.php:2905
@@ -45807,6 +45996,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:1767
 #: modules/Students/student_view_details.php:1841
 #: modules/Students/student_view_details.php:1855
+#: modules/Students/student_view_details.php:1855
 msgid ""
 "This page displays academic results for a student throughout their school "
 "career. Only subjects with published results are shown."
@@ -45821,6 +46011,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:1802
 #: modules/Students/student_view_details.php:1876
 #: modules/Students/student_view_details.php:1890
+#: modules/Students/student_view_details.php:1890
 msgid "School Years"
 msgstr ""
 
@@ -45833,6 +46024,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2269
 #: modules/Students/student_view_details.php:2343
 #: modules/Students/student_view_details.php:2350
+#: modules/Students/student_view_details.php:2393
 #: modules/Students/student_view_details.php:2393
 msgid ""
 "This report shows the current and historical activities that a student has "
@@ -45849,6 +46041,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2539
 #: modules/Students/student_view_details.php:2546
 #: modules/Students/student_view_details.php:2589
+#: modules/Students/student_view_details.php:2589
 msgid "Homework History"
 msgstr ""
 
@@ -45861,6 +46054,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2741
 #: modules/Students/student_view_details.php:2815
 #: modules/Students/student_view_details.php:2822
+#: modules/Students/student_view_details.php:2865
 #: modules/Students/student_view_details.php:2865
 msgid "The selected page cannot be displayed due to a hook error."
 msgstr ""
@@ -45875,6 +46069,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2838
 #: modules/Students/student_view_details.php:2839
 #: modules/Students/student_view_details.php:2882
+#: modules/Students/student_view_details.php:2882
 msgid "No Current Alerts"
 msgstr ""
 
@@ -45887,6 +46082,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2767
 #: modules/Students/student_view_details.php:2841
 #: modules/Students/student_view_details.php:2842
+#: modules/Students/student_view_details.php:2885
 #: modules/Students/student_view_details.php:2885
 msgid "Current Alerts:"
 msgstr ""
@@ -45901,6 +46097,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2889
 #: modules/Students/student_view_details.php:2890
 #: modules/Students/student_view_details.php:2933
+#: modules/Students/student_view_details.php:2933
 msgid "School Attendance"
 msgstr ""
 
@@ -45914,6 +46111,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2945
 #: modules/Students/student_view_details.php:2946
 #: modules/Students/student_view_details.php:2989
+#: modules/Students/student_view_details.php:2989
 msgid "Library Borrowing Record"
 msgstr ""
 
@@ -45926,6 +46124,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2892
 #: modules/Students/student_view_details.php:2966
 #: modules/Students/student_view_details.php:2967
+#: modules/Students/student_view_details.php:3010
 #: modules/Students/student_view_details.php:3010
 msgid "Behaviour Record"
 msgstr ""
@@ -47976,6 +48175,7 @@ msgstr ""
 #: index.php:1087 index.php:1090 index.php:916 index.php:919 index.php:970
 #: index.php:973 index.php:972 index.php:975 index.php:977 index.php:980
 #: index.php:969 index.php:964 index.php:967 index.php:986 index.php:989
+#: index.php:1032 index.php:1035
 msgid "Translation led by"
 msgstr ""
 
@@ -48494,9 +48694,9 @@ msgstr ""
 #: modules/Planner/planner.php:1058 index.php:729 index.php:1157 index.php:732
 #: index.php:1166 functions.php:125 index.php:774 functions.php:334
 #: index.php:603 index.php:657 index.php:659 index.php:663 index.php:658
-#: functions.php:334 index.php:680 modules/Planner/planner.php:337
-#: modules/Planner/planner.php:524 modules/Planner/planner.php:747
-#: modules/Planner/planner.php:1058
+#: index.php:680 functions.php:334 index.php:726
+#: modules/Planner/planner.php:337 modules/Planner/planner.php:524
+#: modules/Planner/planner.php:747 modules/Planner/planner.php:1058
 msgid "Teacher Recorded"
 msgstr ""
 
@@ -48505,9 +48705,9 @@ msgstr ""
 #: modules/Planner/planner.php:1067 index.php:738 index.php:1166 index.php:741
 #: index.php:1175 functions.php:134 index.php:783 functions.php:343
 #: index.php:612 index.php:666 index.php:668 index.php:672 index.php:667
-#: functions.php:343 index.php:689 modules/Planner/planner.php:346
-#: modules/Planner/planner.php:533 modules/Planner/planner.php:756
-#: modules/Planner/planner.php:1067
+#: index.php:689 functions.php:343 index.php:735
+#: modules/Planner/planner.php:346 modules/Planner/planner.php:533
+#: modules/Planner/planner.php:756 modules/Planner/planner.php:1067
 msgid "Student Recorded"
 msgstr ""
 
@@ -48522,6 +48722,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2186
 #: modules/Students/student_view_details.php:2260
 #: modules/Students/student_view_details.php:2267
+#: modules/Students/student_view_details.php:2310
 #: modules/Individual Needs/in_edit.php:229
 #: modules/Students/student_view_details.php:2310
 msgid "Notes & Review"
@@ -49471,7 +49672,7 @@ msgid "Learning Overview"
 msgstr ""
 
 #: index.php:1093 index.php:922 index.php:976 index.php:978 index.php:972
-#: index.php:963 index.php:958 index.php:980
+#: index.php:963 index.php:958 index.php:980 index.php:1026
 msgid "Credits"
 msgstr ""
 
@@ -49842,7 +50043,7 @@ msgid "Incomplete Attendance Report"
 msgstr ""
 
 #: index.php:392 index.php:425 index.php:427 index.php:431 index.php:419
-#: index.php:419
+#: index.php:486
 #, php-format
 msgid ""
 "Please feel free to %1$sbrowse our departmental information%2$s, to learn "
@@ -50065,11 +50266,11 @@ msgstr ""
 msgid "%1$s day until %2$s birthday!"
 msgstr ""
 
-#: index.php:215 index.php:217 index.php:217
+#: index.php:215 index.php:217 index.php:216
 msgid "Your session is about to expire: you will be logged out shortly."
 msgstr ""
 
-#: index.php:384 index.php:386 index.php:390 index.php:389 index.php:389
+#: index.php:384 index.php:386 index.php:390 index.php:389 index.php:456
 msgid ""
 "Your session expired, so you were automatically logged out of the system."
 msgstr ""
@@ -50136,7 +50337,7 @@ msgid "day until %1$s birthday!"
 msgstr ""
 
 #: index.php:989 index.php:992 index.php:982 index.php:985 index.php:977
-#: index.php:980 index.php:999 index.php:1002
+#: index.php:980 index.php:999 index.php:1002 index.php:1045 index.php:1048
 msgid "Theme by"
 msgstr ""
 
@@ -50276,13 +50477,13 @@ msgid ""
 msgstr ""
 
 #: index.php:426 modules/Planner/units_public.php:35
-#: modules/Planner/units_public_view.php:34 index.php:427
+#: modules/Planner/units_public_view.php:34 index.php:427 index.php:494
 #: modules/Planner/units_public.php:35
 #: modules/Planner/units_public_view.php:34
 msgid "Learn With Us"
 msgstr ""
 
-#: index.php:429 index.php:430
+#: index.php:429 index.php:430 index.php:497
 #, php-format
 msgid ""
 "We are sharing some of our units of study with members of the public, so you "

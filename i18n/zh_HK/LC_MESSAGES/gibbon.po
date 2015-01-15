@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: Gibbon v9.0.00\n"
 "Report-Msgid-Bugs-To: support@gibbonedu.org\n"
 "POT-Creation-Date: 2014-03-05 09:36+0800\n"
-"PO-Revision-Date: 2015-01-06 16:30+0800\n"
+"PO-Revision-Date: 2015-01-15 08:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: ICHK Languages Department <narriaga@ichk.edu.hk>\n"
 "Language: zh_HK\n"
@@ -26,19 +26,19 @@ msgstr ""
 
 #: index.php:1077 index.php:1072 index.php:1074 index.php:1080 index.php:1078
 #: index.php:1084 index.php:1102 index.php:1064 index.php:1073 index.php:681
-#: index.php:510 index.php:543 index.php:549 index.php:544 index.php:566
+#: index.php:510 index.php:543 index.php:549 index.php:544 index.php:633
 msgid "Today's Lessons"
 msgstr "今天的課堂"
 
 #: index.php:1227 index.php:1222 index.php:1229 index.php:1232 index.php:1238
 #: index.php:1236 index.php:1242 index.php:1265 index.php:844 index.php:673
-#: index.php:727 index.php:725 index.php:720 index.php:742
+#: index.php:727 index.php:725 index.php:720 index.php:788
 msgid "My Timetable"
 msgstr "我的時間表"
 
 #: index.php:1262 index.php:1257 index.php:1267 index.php:1270 index.php:1276
 #: index.php:1274 index.php:1280 index.php:1303 index.php:1265 index.php:882
-#: index.php:711 index.php:765 index.php:762 index.php:757 index.php:779
+#: index.php:711 index.php:765 index.php:762 index.php:757 index.php:825
 msgid "My Roll Group"
 msgstr "我的"
 
@@ -60,11 +60,12 @@ msgid "Error"
 msgstr "錯誤"
 
 #: error.php:25 error.php:27 error.php:27
+#, fuzzy
 msgid ""
 "An error has occurred. This could mean a number of different things, but "
 "generally indicates that you have a misspelt an address, or are trying to "
 "access a page that you are not permitted to access."
-msgstr ""
+msgstr "發生了錯誤. "
 
 #: error.php:27 error.php:27
 msgid ""
@@ -74,19 +75,19 @@ msgstr ""
 
 #: fullscreen.php:44 index.php:110 report.php:43 index.php:116 index.php:122
 #: index.php:124 index.php:129 index.php:151 index.php:152 fullscreen.php:44
-#: index.php:152 report.php:43
+#: index.php:151 report.php:43
 msgid "System Settings are not set: the system cannot be displayed"
 msgstr ""
 
 #: fullscreen.php:133 fullscreen.php:139 fullscreen.php:139
 msgid "There is no content to display"
-msgstr ""
+msgstr "沒有內容要顯示"
 
 #: fullscreen.php:139 index.php:1438 report.php:135 index.php:1433
 #: index.php:1439 index.php:1442 index.php:1448 index.php:1446 index.php:1452
 #: index.php:1475 index.php:1437 fullscreen.php:145 index.php:1054
 #: report.php:141 index.php:883 index.php:937 index.php:934 index.php:929
-#: fullscreen.php:145 index.php:951 report.php:141
+#: fullscreen.php:145 index.php:997 report.php:141
 msgid "Illegal address detected: access denied."
 msgstr "檢測到非法的地址."
 
@@ -446,7 +447,7 @@ msgstr "檢測到非法的地址."
 #: Admin/theme_manage.php:81 Admin/theme_manage_uninstall.php:46 index.php:552
 #: index.php:573 modules/Planner/units_public.php:29
 #: modules/Planner/units_public_view.php:29 functions.php:243
-#: functions.php:669 index.php:574 index.php:595 index_tt_ajax.php:48
+#: functions.php:669 index.php:641 index_tt_ajax.php:48
 #: modules/Activities/activities_copy.php:43
 #: modules/Activities/activities_manage_add.php:41
 #: modules/Activities/activities_manage_delete.php:42
@@ -2433,8 +2434,9 @@ msgid "Settings"
 msgstr "設定"
 
 #: preferences.php:214
+#, fuzzy
 msgid "Personal Calendar Feed"
-msgstr ""
+msgstr "個人日曆供稿"
 
 #: preferences.php:215
 msgid "XML feed for the your calendar (Google Calendar only)"
@@ -2448,11 +2450,11 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1742 preferences.php:228
 #: modules/Application Form/applicationForm.php:1179 preferences.php:228
 msgid "Personal Background"
-msgstr ""
+msgstr "個人背景"
 
 #: preferences.php:233 preferences.php:229 preferences.php:229
 msgid "Set your own custom background image."
-msgstr ""
+msgstr "設置自己定義的背景圖片"
 
 #: preferences.php:233 preferences.php:229 preferences.php:229
 msgid "Please provide URL to image."
@@ -2938,7 +2940,7 @@ msgstr "姓名"
 
 #: stars.php:50 stars.php:50
 msgid "Class/Lesson"
-msgstr ""
+msgstr "班/課"
 
 #: stars.php:53 stars.php:122 stars.php:187 modules/School
 #: Admin/activitySettings.php:79 Admin/schoolYearSpecialDay_manage_add.php:72
@@ -3129,7 +3131,7 @@ msgstr ""
 #: modules/Departments/department_course_class.php:394
 #: modules/Students/student_view_details.php:2624 index.php:599
 #: modules/Markbook/markbook_edit_edit.php:233 index.php:605 index.php:600
-#: functions.php:280 index.php:622 modules/Crowd Assessment/crowdAssess.php:62
+#: functions.php:280 index.php:668 modules/Crowd Assessment/crowdAssess.php:62
 #: modules/Departments/department_course_class.php:184
 #: modules/Departments/department_course_class.php:305
 #: modules/Departments/department_course_class.php:394
@@ -3148,7 +3150,7 @@ msgstr "課"
 
 #: index.php:311 index.php:317 index.php:323 index.php:321 index.php:325
 #: index.php:330 index.php:274 index.php:277 index.php:284 index.php:306
-#: index.php:328 index.php:334 index.php:333 index.php:333
+#: index.php:328 index.php:334 index.php:333 index.php:332
 #, php-format
 msgid ""
 "Warning: you are logged into the system in school year %1$s, which is not "
@@ -3157,7 +3159,7 @@ msgstr ""
 
 #: index.php:311 index.php:317 index.php:323 index.php:321 index.php:325
 #: index.php:330 index.php:274 index.php:277 index.php:284 index.php:306
-#: index.php:328 index.php:334 index.php:333 index.php:333
+#: index.php:328 index.php:334 index.php:333 index.php:332
 msgid ""
 "Your data may not look quite right (for example, students who have left the "
 "school will not appear in previous years), but you should be able to edit "
@@ -3295,7 +3297,7 @@ msgstr "電子郵件"
 #: modules/Staff/staff_view_details.php:335
 #: modules/Students/student_view_details.php:659 functions.php:31
 #: index.php:469 index.php:502 index.php:508 index.php:503 functions.php:31
-#: index.php:525 modules/Roll Groups/rollGroups.php:69
+#: index.php:592 modules/Roll Groups/rollGroups.php:69
 #: modules/Roll Groups/rollGroups_details.php:108
 #: modules/School Admin/rollGroup_manage.php:133
 #: modules/School Admin/rollGroup_manage_add.php:248
@@ -3348,7 +3350,7 @@ msgstr "我的網站"
 #: modules/Departments/department_course_class.php:448 index.php:661
 #: index.php:667 i18n/dbStringsForTranslation.php:943 index.php:662
 #: functions.php:49 functions.php:338 i18n/dbStringsForTranslation.php:943
-#: index.php:684 modules/Departments/department_course_class.php:238
+#: index.php:730 modules/Departments/department_course_class.php:238
 #: modules/Departments/department_course_class.php:359
 #: modules/Departments/department_course_class.php:448
 #: modules/Planner/planner.php:341 modules/Planner/planner.php:528
@@ -3409,7 +3411,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:939 functions.php:75 index.php:722
 #: index.php:776 index.php:773 i18n/dbStringsForTranslation.php:942
 #: index.php:768 cli/planner_parentWeeklyEmailSummary.php:136 functions.php:75
-#: i18n/dbStringsForTranslation.php:942 index.php:790
+#: i18n/dbStringsForTranslation.php:942 index.php:836
 msgid "Behaviour"
 msgstr ""
 
@@ -3423,13 +3425,13 @@ msgstr "新信息"
 #: index.php:497 index.php:441 index.php:444 index.php:470 functions.php:191
 #: functions.php:191
 msgid "Plus more"
-msgstr ""
+msgstr "增加"
 
 #: index.php:482 index.php:488 index.php:494 index.php:492 index.php:498
 #: index.php:503 index.php:447 index.php:450 index.php:476 functions.php:195
 #: functions.php:195
 msgid "Read All"
-msgstr ""
+msgstr "閱讀全部"
 
 #: index.php:483 index.php:489 index.php:495 index.php:493 index.php:499
 #: index.php:504 index.php:448 index.php:451 index.php:477 functions.php:196
@@ -3439,13 +3441,13 @@ msgstr "解僱"
 
 #: index.php:543 index.php:549 index.php:555 index.php:553 index.php:559
 #: index.php:564 index.php:526 index.php:529 index.php:538 index.php:357
-#: index.php:390 index.php:396 index.php:395 index.php:395
+#: index.php:390 index.php:396 index.php:395 index.php:462
 msgid "Welcome"
 msgstr "歡迎"
 
 #: index.php:560 index.php:566 index.php:572 index.php:570 index.php:576
 #: index.php:581 index.php:543 index.php:546 index.php:555 index.php:374
-#: index.php:407 index.php:413 index.php:408 index.php:408
+#: index.php:407 index.php:413 index.php:408 index.php:475
 #, php-format
 msgid ""
 "Parents of students interested in study at %1$s may use our %2$s online form"
@@ -3454,20 +3456,20 @@ msgstr ""
 
 #: index.php:579 index.php:585 index.php:591 index.php:589 index.php:595
 #: index.php:600 index.php:562 index.php:565 index.php:574 index.php:403
-#: index.php:436 index.php:442 index.php:437 index.php:459
+#: index.php:436 index.php:442 index.php:437 index.php:526
 msgid "Your current role type cannot be determined."
 msgstr ""
 
 #: index.php:626 index.php:632 index.php:638 index.php:636 index.php:642
 #: index.php:647 index.php:609 index.php:612 index.php:622 index.php:451
-#: index.php:484 index.php:490 index.php:485 index.php:507
+#: index.php:484 index.php:490 index.php:485 index.php:574
 msgid "Parental Dashboard"
 msgstr ""
 
 #: index.php:640 index.php:646 modules/School Admin/studentsSettings.php:145
 #: index.php:652 index.php:650 index.php:656 index.php:661 index.php:623
 #: index.php:626 index.php:635 index.php:464 index.php:497 index.php:503
-#: index.php:498 index.php:520
+#: index.php:498 index.php:587
 msgid "Student Profile"
 msgstr "學生"
 
@@ -3557,7 +3559,7 @@ msgstr "學生"
 #: modules/Students/student_view_details.php:868
 #: modules/Finance/moduleFunctions.php:554 index.php:466 index.php:499
 #: index.php:505 index.php:500 Admin/studentEnrolment_manage_add.php:167
-#: index.php:522 modules/Activities/report_activitySpread_rollGroup.php:51
+#: index.php:589 modules/Activities/report_activitySpread_rollGroup.php:51
 #: modules/Activities/report_activitySpread_rollGroup.php:128
 #: modules/Activities/report_activityType_rollGroup.php:51
 #: modules/Activities/report_activityType_rollGroup.php:128
@@ -3645,7 +3647,7 @@ msgstr "今天的課堂"
 #: index.php:536 functions.php:2226 index.php:590 functions.php:2243
 #: index.php:596 index.php:591 modules/Planner/units_edit.php:648
 #: modules/Planner/units_edit.php:1005 functions.php:236 functions.php:2243
-#: index.php:613 modules/Departments/department_course_class.php:128
+#: index.php:659 modules/Departments/department_course_class.php:128
 #: modules/Markbook/moduleFunctions.php:97 modules/Planner/units_edit.php:648
 #: modules/Planner/units_edit.php:1005
 msgid "View Planner"
@@ -4170,8 +4172,8 @@ msgstr ""
 #: Admin/module_manage_uninstall.php:49 Admin/module_manage_uninstall.php:52
 #: Admin/theme_manage.php:84 Admin/theme_manage.php:90
 #: Admin/theme_manage_uninstall.php:49 index.php:555 index.php:576
-#: functions.php:246 functions.php:1242 functions.php:1261 index.php:577
-#: index.php:598 modules/Activities/activities_copy.php:46
+#: functions.php:246 functions.php:1242 functions.php:1261 index.php:644
+#: modules/Activities/activities_copy.php:46
 #: modules/Activities/activities_copy.php:52
 #: modules/Activities/activities_manage_add.php:47
 #: modules/Activities/activities_manage_delete.php:45
@@ -5076,7 +5078,7 @@ msgstr ""
 #: cli/attendance_dailyIncompleteEmail.php:93
 #: cli/planner_parentWeeklyEmailSummary.php:86 functions.php:249
 #: functions.php:1245 functions.php:1264 functions.php:1821 functions.php:3254
-#: index.php:580 index.php:601 modules/Activities/activities_copy.php:49
+#: index.php:647 modules/Activities/activities_copy.php:49
 #: modules/Activities/activities_manage.php:125
 #: modules/Activities/activities_manage.php:184
 #: modules/Activities/activities_manage_add.php:44
@@ -5574,8 +5576,8 @@ msgstr ""
 #: modules/Rubrics/rubrics_edit.php:169 Admin/ttDates.php:57
 #: Admin/ttDates.php:70 functions.php:1248 functions.php:1267 index.php:566
 #: index.php:587 Admin/theme_manage.php:93 index.php:561 index.php:582
-#: functions.php:252 functions.php:1248 functions.php:1267 index.php:583
-#: index.php:604 modules/Activities/activities_copy.php:55
+#: functions.php:252 functions.php:1248 functions.php:1267 index.php:650
+#: modules/Activities/activities_copy.php:55
 #: modules/Activities/activities_manage.php:42
 #: modules/Activities/activities_manage_edit.php:61
 #: modules/Activities/activities_manage_edit.php:86
@@ -5790,7 +5792,7 @@ msgstr ""
 #: modules/User Admin/userSettings.php:51 notifications.php:35
 #: notifications.php:54 preferences.php:84
 msgid "Your request was completed successfully."
-msgstr ""
+msgstr "你的請求成功的完成了"
 
 #: index.php:689 index.php:695 index.php:1106 functions.php:1375
 #: modules/Markbook/markbook_edit_add.php:121
@@ -5857,7 +5859,7 @@ msgstr ""
 #: functions.php:2203 index.php:602 index.php:597
 #: modules/Planner/units_add.php:427 modules/Planner/units_edit.php:571
 #: modules/Planner/units_edit.php:949 functions.php:277 functions.php:2203
-#: index.php:619 modules/Crowd Assessment/crowdAssess.php:59
+#: index.php:665 modules/Crowd Assessment/crowdAssess.php:59
 #: modules/Crowd Assessment/crowdAssess_view.php:98
 #: modules/Departments/department_course_class_full.php:116
 #: modules/Markbook/markbook_edit_add.php:127
@@ -5926,7 +5928,7 @@ msgstr "班"
 #: modules/Students/student_view_details.php:2932 functions.php:2203
 #: index.php:603 functions.php:2220 index.php:609 index.php:604
 #: cli/planner_parentWeeklyEmailSummary.php:109 functions.php:284
-#: functions.php:2220 index.php:626
+#: functions.php:2220 index.php:672
 #: modules/Departments/department_course_class.php:196
 #: modules/Departments/department_course_class.php:317
 #: modules/Departments/department_course_class.php:406
@@ -5974,7 +5976,7 @@ msgstr "功課"
 #: modules/Departments/department_course_class.php:403
 #: modules/Departments/department_course_class_full.php:130
 #: modules/Students/student_view_details.php:2857 index.php:606 index.php:612
-#: index.php:607 functions.php:281 index.php:629
+#: index.php:607 functions.php:281 index.php:675
 #: modules/Attendance/moduleFunctions.php:395
 #: modules/Departments/department_course_class.php:193
 #: modules/Departments/department_course_class.php:314
@@ -5996,7 +5998,7 @@ msgstr "總結"
 #: modules/Planner/planner.php:693 modules/Planner/planner.php:989
 #: index.php:682 index.php:1109 index.php:685 functions.php:78 index.php:726
 #: functions.php:287 index.php:555 index.php:609 index.php:615 index.php:610
-#: functions.php:287 index.php:632 modules/Planner/planner.php:287
+#: functions.php:287 index.php:678 modules/Planner/planner.php:287
 #: modules/Planner/planner.php:469 modules/Planner/planner.php:693
 #: modules/Planner/planner.php:989
 msgid "Like"
@@ -6021,7 +6023,7 @@ msgstr ""
 #: index.php:612 index.php:849 index.php:618 index.php:846
 #: Admin/module_manage.php:141 Admin/module_manage.php:264
 #: Admin/theme_manage.php:153 Admin/theme_manage.php:288 index.php:613
-#: index.php:841 functions.php:290 index.php:635 index.php:863
+#: index.php:841 functions.php:290 index.php:681 index.php:909
 #: modules/Library/library_lending_item_edit.php:206
 #: modules/Library/library_lending_item_return.php:138
 #: modules/Library/library_lending_item_signout.php:258
@@ -6096,7 +6098,7 @@ msgstr "行動"
 #: modules/Students/student_view_details.php:2024
 #: modules/Students/student_view_details.php:2625 index.php:600 index.php:646
 #: modules/Markbook/markbook_edit_edit.php:160 index.php:606 index.php:652
-#: index.php:601 index.php:647 functions.php:321 index.php:623 index.php:669
+#: index.php:601 index.php:647 functions.php:321 index.php:669 index.php:715
 #: modules/Crowd Assessment/crowdAssess.php:63
 #: modules/Markbook/markbook_edit.php:212
 #: modules/Markbook/markbook_edit_add.php:136
@@ -6601,7 +6603,7 @@ msgstr "查看詳情"
 #: cli/planner_parentWeeklyEmailSummary.php:103
 #: cli/planner_parentWeeklyEmailSummary.php:129 functions.php:374
 #: functions.php:601 functions.php:645 functions.php:695 functions.php:714
-#: functions.php:807 index.php:534 index.php:841
+#: functions.php:807 index.php:601 index.php:887
 #: modules/Activities/activities_manage.php:136
 #: modules/Activities/activities_manage_edit.php:427
 #: modules/Activities/activities_manage_edit.php:717
@@ -6807,7 +6809,7 @@ msgstr "查看詳情"
 #: modules/User Admin/studentEnrolment_manage.php:169
 #: modules/User Admin/user_manage.php:112 notifications.php:106
 msgid "There are no records to display."
-msgstr ""
+msgstr "沒有記錄要顯示"
 
 #: index.php:777 index.php:783 index.php:789 index.php:787 index.php:793
 #: index.php:812 index.php:774 functions.php:170 functions.php:379
@@ -6951,7 +6953,7 @@ msgstr "發跡"
 #: modules/Markbook/markbook_viewExportContents.php:84
 #: modules/Students/student_view_details.php:2036
 msgid "Effort"
-msgstr ""
+msgstr "成就"
 
 #: index.php:805 index.php:811 modules/School Admin/space_manage_add.php:271
 #: Admin/space_manage_edit.php:309 modules/User
@@ -7078,7 +7080,7 @@ msgstr "評論"
 #: modules/Departments/department_course_class.php:446
 #: modules/Markbook/markbook_view.php:943
 #: modules/Students/student_view_details.php:1999 index.php:659 index.php:665
-#: index.php:660 functions.php:336 functions.php:416 index.php:682
+#: index.php:660 functions.php:336 functions.php:416 index.php:728
 #: modules/Departments/department_course_class.php:236
 #: modules/Departments/department_course_class.php:357
 #: modules/Departments/department_course_class.php:446
@@ -7174,7 +7176,7 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:1574
 #: modules/Students/student_view_details.php:2112 index.php:904
 #: modules/Rubrics/rubrics.php:285 index.php:901
-#: modules/Planner/units_public_view.php:343 functions.php:507 index.php:918
+#: modules/Planner/units_public_view.php:343 functions.php:507 index.php:964
 #: modules/Behaviour/behaviour_manage.php:361
 #: modules/Behaviour/moduleFunctions.php:145
 #: modules/Finance/billingSchedule_manage.php:234
@@ -7210,7 +7212,7 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:1092
 #: modules/Students/student_view_details.php:2155
 msgid "Read more"
-msgstr ""
+msgstr "閱讀更多"
 
 #: index.php:905 index.php:911 modules/Markbook/markbook_edit_data.php:512
 #: modules/Markbook/markbook_view.php:437
@@ -7249,8 +7251,9 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:663
 #: modules/Markbook/markbook_view.php:1098
 #: modules/Students/student_view_details.php:2161
+#, fuzzy
 msgid "Uploaded Response"
-msgstr ""
+msgstr "上載了"
 
 #: functions.php:53 functions.php:74 functions.php:101 functions.php:732
 #: functions.php:941 functions.php:958 functions.php:958
@@ -7401,7 +7404,6 @@ msgstr ""
 msgid "Late"
 msgstr "遲到"
 
-# not done
 #: index.php:954 index.php:957 modules/Students/student_view_details.php:1966
 #: modules/Students/student_view_details.php:1969
 #: modules/Students/student_view_details.php:1964
@@ -7423,7 +7425,7 @@ msgstr "遲到"
 #: modules/Students/student_view_details.php:2172 functions.php:556
 #: functions.php:559 modules/Students/student_view_details.php:2212
 #: modules/Students/student_view_details.php:2215
-#, php-format
+#, fuzzy, php-format
 msgid "Submitted at %1$s on %2$s"
 msgstr "提交在 %1$s 的 %2$s"
 
@@ -7733,7 +7735,7 @@ msgstr "殘缺"
 #: modules/Students/student_view_details.php:2234
 #: modules/Students/student_view_details.php:2778
 msgid "Not submitted online"
-msgstr ""
+msgstr "沒有在網上提交"
 
 #: index.php:1004 modules/Planner/planner_deadlines.php:204
 #: modules/Planner/planner_deadlines.php:505
@@ -7754,7 +7756,7 @@ msgstr ""
 #: modules/Planner/planner_deadlines.php:531
 #: modules/Students/student_view_details.php:2545
 msgid "Upcoming Deadlines"
-msgstr ""
+msgstr "即將到來的最後期限"
 
 #: index.php:1004 index.php:1010 index.php:1008 index.php:1014 index.php:1033
 #: index.php:995 functions.php:397 functions.php:606 functions.php:606
@@ -7778,7 +7780,7 @@ msgstr "在 %1$s 的 %2$s 到期"
 
 #: index.php:1109 modules/Crowd Assessment/crowdAssess.php:62
 msgid "Lesson/Unit"
-msgstr ""
+msgstr "課/單元"
 
 #: index.php:1160 modules/Departments/department_course_class.php:227
 #: modules/Departments/department_course_class.php:348
@@ -8092,7 +8094,7 @@ msgstr ""
 #: modules/Planner/units_edit.php:296 modules/Planner/units_edit.php:309
 #: modules/Planner/units_edit.php:620 Admin/plannerSettings.php:240
 #: Admin/plannerSettings.php:270 functions.php:334 functions.php:343
-#: index.php:680 index.php:689
+#: index.php:726 index.php:735
 #: modules/Activities/activities_manage_add.php:149
 #: modules/Activities/activities_manage_add.php:161
 #: modules/Activities/activities_manage_delete.php:107
@@ -8559,7 +8561,7 @@ msgstr "是"
 #: modules/Planner/units_add.php:209 modules/Planner/units_add.php:454
 #: modules/Planner/units_edit.php:297 modules/Planner/units_edit.php:310
 #: modules/Planner/units_edit.php:619 Admin/plannerSettings.php:241
-#: Admin/plannerSettings.php:271 functions.php:330 index.php:676
+#: Admin/plannerSettings.php:271 functions.php:330 index.php:722
 #: modules/Activities/activities_manage_add.php:150
 #: modules/Activities/activities_manage_add.php:162
 #: modules/Activities/activities_manage_edit.php:206
@@ -8737,7 +8739,7 @@ msgstr "否"
 #: functions.php:1589 index.php:729 functions.php:1587 functions.php:1595
 #: functions.php:1596 functions.php:1605 functions.php:1606 index.php:727
 #: index.php:722 functions.php:1587 functions.php:1588 functions.php:1595
-#: functions.php:1596 functions.php:1605 functions.php:1606 index.php:744
+#: functions.php:1596 functions.php:1605 functions.php:1606 index.php:790
 #: modules/Resources/resources_add_ajax.php:94
 #: modules/Resources/resources_addQuick_ajax.php:77
 msgid "Loading"
@@ -8745,13 +8747,13 @@ msgstr "載入中"
 
 #: index.php:1245 index.php:1248 index.php:1254 index.php:1252 index.php:1258
 #: index.php:1281 index.php:1243 index.php:860 index.php:689 index.php:743
-#: index.php:740 index.php:735 index.php:757
+#: index.php:740 index.php:735 index.php:803
 msgid "Couldn't load this tab."
 msgstr ""
 
 #: index.php:1265 index.php:1268 index.php:1274 index.php:1272 index.php:1278
 #: index.php:1301 index.php:1263 index.php:880 index.php:709 index.php:763
-#: index.php:760 index.php:755 index.php:777
+#: index.php:760 index.php:755 index.php:823
 msgid "My Roll Groups"
 msgstr "我的班級"
 
@@ -8776,7 +8778,7 @@ msgstr "我的班級"
 #: i18n/dbStringsForTranslation.php:955 index.php:721
 #: Groups/rollGroups_details.php:157 index.php:775 index.php:772
 #: i18n/dbStringsForTranslation.php:958 index.php:767
-#: i18n/dbStringsForTranslation.php:958 index.php:789
+#: i18n/dbStringsForTranslation.php:958 index.php:835
 #: modules/Activities/activities_manage_enrolment_add.php:158
 #: modules/Library/report_studentBorrowingRecord.php:53
 #: modules/Planner/planner.php:352 modules/Planner/planner.php:539
@@ -8798,7 +8800,7 @@ msgstr "學生"
 #: index.php:1305 index.php:1328 index.php:1290 index.php:907
 #: i18n/dbStringsForTranslation.php:40 index.php:736 index.php:790
 #: index.php:787 index.php:782 i18n/dbStringsForTranslation.php:40
-#: index.php:804 modules/Attendance/attendance_take_byPerson.php:218
+#: index.php:850 modules/Attendance/attendance_take_byPerson.php:218
 #: modules/Attendance/attendance_take_byRollGroup.php:247
 msgid "Take Attendance"
 msgstr ""
@@ -8817,7 +8819,7 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:295
 #: modules/Markbook/markbook_view.php:446 index.php:908 index.php:737
 #: modules/Departments/department_course_class.php:463 index.php:791
-#: index.php:788 index.php:783 index.php:805
+#: index.php:788 index.php:783 index.php:851
 #: modules/Departments/department_course_class.php:463
 #: modules/Library/report_catalogSummary.php:194
 #: modules/Markbook/markbook_edit.php:233
@@ -8899,7 +8901,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:1679 index.php:763
 #: Admin/department_manage.php:131
 #: Admin/externalAssessments_manage_edit.php:198 index.php:817
-#: modules/Rubrics/rubrics.php:162 index.php:814 index.php:809 index.php:831
+#: modules/Rubrics/rubrics.php:162 index.php:814 index.php:809 index.php:877
 #: modules/Activities/activities_manage.php:131
 #: modules/Activities/activities_manage_enrolment.php:204
 #: modules/Behaviour/behaviour_manage.php:255
@@ -8967,7 +8969,7 @@ msgstr "增加"
 #: index.php:1335 index.php:1358 index.php:1320 index.php:937 index.php:766
 #: modules/Behaviour/behaviour_manage.php:259
 #: modules/Behaviour/behaviour_manage_addMulti.php:68 index.php:820
-#: index.php:817 index.php:812 index.php:834
+#: index.php:817 index.php:812 index.php:880
 #: modules/Behaviour/behaviour_manage.php:259
 #: modules/Behaviour/behaviour_manage_add.php:85
 #: modules/Behaviour/behaviour_manage_add.php:279
@@ -8980,7 +8982,7 @@ msgstr ""
 #: index.php:1336 index.php:1339 modules/Behaviour/behaviour_manage.php:275
 #: index.php:1345 index.php:1343 index.php:1349 index.php:1372 index.php:1334
 #: index.php:951 index.php:780 modules/Behaviour/behaviour_manage.php:276
-#: index.php:834 index.php:831 index.php:826 index.php:848
+#: index.php:834 index.php:831 index.php:826 index.php:894
 #: modules/Behaviour/behaviour_manage.php:276
 msgid "Student & Date"
 msgstr "學生和日期"
@@ -9090,7 +9092,7 @@ msgstr "學生和日期"
 #: index.php:837 modules/Markbook/markbook_edit_edit.php:296 index.php:834
 #: Admin/module_manage.php:129 i18n/dbStringsForTranslation.php:892
 #: index.php:829 functions.php:726 i18n/dbStringsForTranslation.php:871
-#: i18n/dbStringsForTranslation.php:892 index.php:851
+#: i18n/dbStringsForTranslation.php:892 index.php:897
 #: modules/Activities/activities_manage_add.php:121
 #: modules/Activities/activities_manage_edit.php:177
 #: modules/Activities/activities_my.php:60
@@ -9175,7 +9177,7 @@ msgstr "類型"
 #: index.php:1349 index.php:1355 index.php:1378 index.php:1340 index.php:957
 #: index.php:786 modules/Behaviour/behaviour_manage.php:282
 #: modules/Behaviour/behaviour_manage_addMulti.php:171 index.php:840
-#: index.php:837 index.php:832 index.php:854
+#: index.php:837 index.php:832 index.php:900
 #: modules/Behaviour/behaviour_manage.php:282
 #: modules/Behaviour/behaviour_manage_add.php:190
 #: modules/Behaviour/behaviour_manage_addMulti.php:171
@@ -9198,7 +9200,7 @@ msgstr ""
 #: index.php:1358 index.php:1381 index.php:1343 index.php:960 index.php:789
 #: modules/Behaviour/behaviour_manage.php:285
 #: modules/Behaviour/behaviour_manage_addMulti.php:211 index.php:843
-#: index.php:840 index.php:835 index.php:857
+#: index.php:840 index.php:835 index.php:903
 #: modules/Behaviour/behaviour_manage.php:285
 #: modules/Behaviour/behaviour_manage_add.php:230
 #: modules/Behaviour/behaviour_manage_addMulti.php:211
@@ -9227,7 +9229,7 @@ msgstr "級別"
 #: index.php:792 modules/Behaviour/behaviour_manage.php:288
 #: Admin/courseEnrolment_manage_byPerson_edit.php:210 index.php:846
 #: index.php:843 i18n/dbStringsForTranslation.php:1007 index.php:838
-#: i18n/dbStringsForTranslation.php:1007 index.php:860
+#: i18n/dbStringsForTranslation.php:1007 index.php:906
 #: modules/Behaviour/behaviour_manage.php:288
 #: modules/Behaviour/moduleFunctions.php:88
 #: modules/Planner/report_goldStars_staff.php:53
@@ -9242,13 +9244,13 @@ msgstr "老師"
 
 #: index.php:1371 index.php:1374 index.php:1380 index.php:1378 index.php:1384
 #: index.php:1407 index.php:1369 index.php:986 index.php:815 index.php:869
-#: index.php:866 index.php:861 index.php:883
+#: index.php:866 index.php:861 index.php:929
 msgid "Date Updated"
 msgstr "更新日期"
 
 #: index.php:1372 index.php:1375 index.php:1381 index.php:1379 index.php:1385
 #: index.php:1408 index.php:1370 index.php:987 index.php:816 index.php:870
-#: index.php:867 index.php:862 index.php:884
+#: index.php:867 index.php:862 index.php:930
 msgid "Incident Date"
 msgstr ""
 
@@ -9257,7 +9259,7 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage_edit.php:190 index.php:1389
 #: index.php:1387 index.php:1393 index.php:1416 index.php:1378 index.php:995
 #: index.php:824 modules/Behaviour/behaviour_manage_addMulti.php:145
-#: index.php:878 index.php:875 index.php:870 index.php:892
+#: index.php:878 index.php:875 index.php:870 index.php:938
 #: modules/Behaviour/behaviour_manage.php:182
 #: modules/Behaviour/behaviour_manage_add.php:164
 #: modules/Behaviour/behaviour_manage_addMulti.php:145
@@ -9265,10 +9267,11 @@ msgstr ""
 msgid "Negative"
 msgstr "負"
 
+# not done
 #: index.php:1383 index.php:1386 modules/Planner/report_goldStars_staff.php:50
 #: index.php:1392 index.php:1390 index.php:1396 index.php:1419 index.php:1381
 #: index.php:998 index.php:827 index.php:881 index.php:878 index.php:873
-#: index.php:895 modules/Planner/report_goldStars_staff.php:50
+#: index.php:941 modules/Planner/report_goldStars_staff.php:50
 msgid "Position"
 msgstr ""
 
@@ -9278,7 +9281,7 @@ msgstr ""
 #: index.php:1502 index.php:1464 installer/install.php:1288
 #: installer/install.php:1305 index.php:1081 installer/install.php:1306
 #: index.php:910 index.php:964 index.php:961 installer/install.php:1358
-#: index.php:956 installer/install.php:1449 index.php:978
+#: index.php:956 installer/install.php:1449 index.php:1024
 #: installer/install.php:1449
 msgid "Powered by"
 msgstr ""
@@ -9289,7 +9292,7 @@ msgstr ""
 #: index.php:1504 index.php:1466 installer/install.php:1290
 #: installer/install.php:1307 index.php:1083 installer/install.php:1308
 #: index.php:912 index.php:966 index.php:963 installer/install.php:1360
-#: index.php:958 installer/install.php:1451 index.php:980
+#: index.php:958 installer/install.php:1451 index.php:1026
 #: installer/install.php:1451
 msgid "Created under the"
 msgstr ""
@@ -9604,10 +9607,11 @@ msgstr ""
 #: functions.php:172 functions.php:176 functions.php:803 functions.php:807
 #: functions.php:1012 functions.php:1016 functions.php:1029 functions.php:1033
 #: functions.php:1029 functions.php:1033
+#, fuzzy
 msgid ""
 "<b>Note</b>: You need to be in a department, with the correct permissions, "
 "in order to be able to do this."
-msgstr ""
+msgstr "<b>注意</b>: 你一定要在一個部門裏, "
 
 #: functions.php:124 functions.php:128 functions.php:132 functions.php:136
 #: functions.php:140 functions.php:145 functions.php:149 functions.php:153
@@ -9704,25 +9708,25 @@ msgstr ""
 #: functions.php:210 functions.php:231 functions.php:258 functions.php:889
 #: functions.php:1098 functions.php:1115 functions.php:1115
 msgid "Contain at least one lowercase letter, and one uppercase letter."
-msgstr ""
+msgstr "至少包括一個小寫字母, 和一個大寫字母"
 
 #: functions.php:213 functions.php:234 functions.php:261 functions.php:892
 #: functions.php:1101 functions.php:1118 functions.php:1118
 msgid "Contain at least one number."
-msgstr ""
+msgstr "至少包括一個數字"
 
 #: functions.php:216 functions.php:237 functions.php:264 functions.php:895
 #: functions.php:1104 functions.php:1121 functions.php:1121
 msgid ""
 "Contain at least one non-alphanumeric character (e.g. a punctuation mark or "
 "space)."
-msgstr ""
+msgstr "至少包括一個非字母數字字符 (例如 標點符號或空格)."
 
 #: functions.php:219 functions.php:240 functions.php:267 functions.php:898
 #: functions.php:1107 functions.php:1124 functions.php:1124
-#, php-format
+#, fuzzy, php-format
 msgid "Must be at least %1$s characters in length."
-msgstr ""
+msgstr "至少有 %1$s 字符"
 
 #: functions.php:254 functions.php:275 functions.php:302 functions.php:933
 #: functions.php:1160 functions.php:1177 functions.php:1177
@@ -9907,13 +9911,14 @@ msgstr ""
 #: functions.php:697 functions.php:1328 functions.php:1545 functions.php:1554
 #: functions.php:1571 functions.php:1571
 msgid "Shared Resources"
-msgstr ""
+msgstr "共享資源"
 
 #: functions.php:565 functions.php:569 functions.php:590 functions.php:671
 #: functions.php:698 functions.php:1329 functions.php:1546 functions.php:1555
 #: functions.php:1572 functions.php:1572
+#, fuzzy
 msgid "Insert Existing Resource"
-msgstr ""
+msgstr "輸入存在的資源"
 
 #: functions.php:567 functions.php:571 functions.php:592 functions.php:673
 #: functions.php:700 functions.php:1331 functions.php:1548 functions.php:1557
@@ -9945,7 +9950,7 @@ msgstr "用戶名或密碼不正確"
 #: functions.php:918 functions.php:945 functions.php:944 functions.php:1575
 #: functions.php:1792 functions.php:1801 functions.php:1818 functions.php:1818
 msgid "You do not have sufficient privileges to login."
-msgstr ""
+msgstr "你沒有足夠的特權去登入"
 
 #: functions.php:817 functions.php:821 functions.php:825 functions.php:846
 #: functions.php:927 functions.php:954 functions.php:953 functions.php:1584
@@ -10168,13 +10173,14 @@ msgstr "忘記密碼"
 
 #: functions.php:987 functions.php:991 functions.php:995 functions.php:1016
 #: functions.php:1097 functions.php:1124 functions.php:1123 functions.php:1754
+#: index.php:434
 msgid "Module Menu"
 msgstr ""
 
 #: functions.php:1183 modules/Crowd Assessment/moduleFunctions.php:97
 #: functions.php:1187 functions.php:1191 functions.php:1212 functions.php:1301
 msgid "Recent Discussion"
-msgstr ""
+msgstr "最近的討論"
 
 #: functions.php:1193 modules/Crowd Assessment/moduleFunctions.php:108
 #: functions.php:1197 functions.php:1201 functions.php:1222 functions.php:1311
@@ -10644,7 +10650,7 @@ msgstr ""
 
 #: index.php:563 index.php:569 index.php:567 index.php:573 index.php:578
 #: index.php:540 index.php:543 index.php:552 index.php:371 index.php:404
-#: index.php:410 index.php:405 index.php:405
+#: index.php:410 index.php:405 index.php:472
 msgid "Applications"
 msgstr ""
 
@@ -15812,7 +15818,7 @@ msgstr "5"
 #: modules/Planner/planner_view_full.php:1191 functions.php:365 index.php:647
 #: Admin/courseEnrolment_manage_byPerson_edit.php:130 index.php:701
 #: modules/Markbook/markbook_edit_edit.php:100 index.php:707 index.php:702
-#: Assessment/crowdAssess_view.php:248 functions.php:365 index.php:724
+#: Assessment/crowdAssess_view.php:248 functions.php:365 index.php:770
 #: modules/Crowd Assessment/crowdAssess_view.php:248
 #: modules/Finance/billingSchedule_manage.php:122
 #: modules/Finance/fees_manage.php:122
@@ -16021,7 +16027,6 @@ msgstr "分中國"
 msgid "Hours"
 msgstr "小時"
 
-# not done
 #: modules/School Admin/daysOfWeek_manage.php:155
 #: Admin/schoolYearSpecialDay_manage_add.php:167
 #: Admin/schoolYearSpecialDay_manage_edit.php:188
@@ -16325,14 +16330,13 @@ msgstr "刪除部門"
 msgid "Edit Department"
 msgstr "編輯部門"
 
-# not done
 #: modules/School Admin/department_manage_edit.php:125 modules/User
 #: Admin/family_manage_add.php:74 Admin/family_manage_edit.php:151
 #: modules/School Admin/department_manage_edit.php:125
 #: modules/User Admin/family_manage_add.php:74
 #: modules/User Admin/family_manage_edit.php:151
 msgid "General Information"
-msgstr ""
+msgstr "基本資料"
 
 #: modules/School Admin/department_manage_edit.php:181 modules/User
 #: Admin/user_manage_edit.php:1419
@@ -16364,7 +16368,7 @@ msgstr ""
 #: modules/User Admin/user_manage_edit.php:1449
 #: modules/User Admin/user_manage_edit.php:1472
 msgid "Current attachment:"
-msgstr ""
+msgstr "現在附件"
 
 #: modules/School Admin/department_manage_edit.php:198
 #: modules/School Admin/department_manage_edit.php:198
@@ -16613,7 +16617,7 @@ msgstr ""
 #: modules/User Admin/role_manage_add.php:64
 #: modules/User Admin/role_manage_edit.php:93
 msgid "Category"
-msgstr ""
+msgstr "類別"
 
 #: modules/School Admin/externalAssessments_manage_edit.php:204
 #: Admin/externalAssessments_manage_edit_field_add.php:126
@@ -18016,14 +18020,13 @@ msgid ""
 "An error has occurred determining the version of the system you are using."
 msgstr ""
 
-# not done
 #: modules/System Admin/module_manage_update.php:113 Admin/update.php:78
 #: Admin/update.php:152 Admin/update.php:85 Admin/update.php:159
 #: Admin/update.php:84 Admin/update.php:158
 #: modules/System Admin/module_manage_update.php:113
 #: modules/System Admin/update.php:84 modules/System Admin/update.php:158
 msgid "Update Instructions"
-msgstr ""
+msgstr "更新說明"
 
 #: modules/System Admin/module_manage_update.php:116
 #: modules/System Admin/module_manage_update.php:116
@@ -18157,7 +18160,7 @@ msgstr ""
 #: Admin/systemSettings.php:1035 Admin/systemSettings.php:1062
 #: modules/System Admin/systemSettings.php:1062
 msgid "Calendar, Web & Email"
-msgstr ""
+msgstr "日曆, 網頁, 電子郵件"
 
 #: modules/System Admin/systemSettings.php:775 Admin/systemSettings.php:791
 #: Admin/systemSettings.php:797 installer/install.php:672
@@ -18448,17 +18451,17 @@ msgstr ""
 #: modules/Timetable Admin/course_manage_class_delete.php:31
 #: modules/Timetable Admin/course_manage_class_delete.php:31
 msgid "Delete Class"
-msgstr ""
+msgstr "刪除課堂"
 
 #: modules/Timetable Admin/course_manage_class_edit.php:31
 #: modules/Timetable Admin/course_manage_class_edit.php:31
 msgid "Edit Class"
-msgstr ""
+msgstr "編輯課堂"
 
 #: modules/Timetable Admin/course_manage_delete.php:31
 #: modules/Timetable Admin/course_manage_delete.php:31
 msgid "Delete Course & Classes"
-msgstr ""
+msgstr "刪除課程和課堂"
 
 #: modules/Timetable Admin/course_manage_edit.php:219
 #: modules/Timetable Admin/course_manage_edit.php:219
@@ -18643,7 +18646,7 @@ msgstr ""
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:182
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:156
 msgid "Assistant"
-msgstr ""
+msgstr "助手"
 
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:209
 #: Admin/courseEnrolment_manage_byPerson_edit_edit.php:167
@@ -18655,7 +18658,7 @@ msgstr ""
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:183
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:157
 msgid "Technician"
-msgstr ""
+msgstr "技術員"
 
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:227
 #: Admin/courseEnrolment_manage_byPerson_edit.php:230
@@ -18840,7 +18843,7 @@ msgstr "刪除"
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:269
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:368
 msgid "Class Code"
-msgstr ""
+msgstr "班級代碼"
 
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:272
 #: Admin/courseEnrolment_manage_byPerson_edit.php:371
@@ -18867,11 +18870,11 @@ msgstr "刪除參與者"
 msgid "Edit Participant"
 msgstr "編輯參與者"
 
-# not done
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:143
 #: Admin/courseEnrolment_manage_class_edit_edit.php:134
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:143
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:134
+#, fuzzy
 msgid "Participant"
 msgstr "參與者"
 
@@ -18882,11 +18885,11 @@ msgstr "參與者"
 msgid "Student - Left"
 msgstr ""
 
-# not done
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:165
 #: Admin/courseEnrolment_manage_class_edit_edit.php:155
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:165
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:155
+#, fuzzy
 msgid "Teacher - Left"
 msgstr "老師 -"
 
@@ -19053,7 +19056,7 @@ msgstr "編輯時間表"
 #: modules/Timetable Admin/tt_edit.php:201
 #: modules/Timetable Admin/tt_edit.php:201
 msgid "Edit Timetable Days"
-msgstr ""
+msgstr "編輯時間表的日期"
 
 #: modules/Timetable Admin/tt_edit.php:233 Admin/ttColumn_edit_row_add.php:91
 #: Admin/ttColumn_edit_row_edit.php:93 modules/Timetable Admin/tt_edit.php:233
@@ -19065,7 +19068,7 @@ msgstr ""
 #: modules/Timetable Admin/tt_edit_day_add.php:57
 #: modules/Timetable Admin/tt_edit_day_add.php:57
 msgid "Add Timetable Day"
-msgstr ""
+msgstr "加入時間表的日期"
 
 #: modules/Timetable Admin/tt_edit_day_add.php:105
 #: Admin/tt_edit_day_edit.php:107 Admin/tt_edit_day_edit_class.php:108
@@ -19127,7 +19130,7 @@ msgstr ""
 #: modules/Timetable Admin/tt_edit_day_delete.php:59
 #: modules/Timetable Admin/tt_edit_day_delete.php:59
 msgid "Delete Timetable Day"
-msgstr ""
+msgstr "刪除時間表的日期"
 
 #: modules/Timetable Admin/tt_edit_day_edit.php:58
 #: Admin/tt_edit_day_edit_class.php:61 Admin/tt_edit_day_edit_class_add.php:61
@@ -19145,7 +19148,7 @@ msgstr ""
 #: modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php:84
 #: modules/Timetable Admin/tt_edit_day_edit_class_exception_delete.php:84
 msgid "Edit Timetable Day"
-msgstr ""
+msgstr "編輯時間表的日期"
 
 #: modules/Timetable Admin/tt_edit_day_edit.php:185
 #: modules/Timetable Admin/tt_edit_day_edit.php:185
@@ -19257,7 +19260,7 @@ msgstr ""
 #: modules/Timetable Admin/ttDates_edit.php:112
 #: modules/Timetable Admin/ttDates_edit_add.php:120
 msgid "Day"
-msgstr ""
+msgstr "日期"
 
 #: modules/Timetable Admin/tt_edit_day_edit_class.php:116
 #: Admin/tt_edit_day_edit_class_add.php:122
@@ -20098,7 +20101,6 @@ msgstr ""
 msgid "Birth Year"
 msgstr "出生年份"
 
-# not done
 #: modules/User Admin/applicationForm_manage.php:194
 #: modules/User Admin/applicationForm_manage.php:194
 msgid "Entry Year"
@@ -22081,10 +22083,9 @@ msgstr "家長/監護人 %1$s 背景"
 msgid "First Language"
 msgstr "第一語言"
 
-# not done
 #: modules/User Admin/applicationForm_manage_edit.php:1500
 #: modules/User Admin/applicationForm_manage_edit.php:1500
-#, php-format
+#, fuzzy, php-format
 msgid "Parent/Guardian %1$s Contact"
 msgstr "家長/監護人 %1$s 聯絡"
 
@@ -22478,10 +22479,10 @@ msgstr ""
 msgid "There is no data to display, or an error has occurred."
 msgstr ""
 
-# not done
 #: modules/User Admin/applicationForm_manage_edit_print.php:200
 #: Admin/applicationForm_manage_edit_print.php:206
 #: modules/User Admin/applicationForm_manage_edit_print.php:206
+#, fuzzy
 msgid "Current/Last School"
 msgstr "目前/"
 
@@ -22577,7 +22578,6 @@ msgstr "家長 %1$s 名字"
 msgid "Parent %1$s Relationship"
 msgstr "家長 %1$s 關係"
 
-# not done
 #: modules/User Admin/applicationForm_manage_edit_print.php:449
 #: Admin/applicationForm_manage_edit_print.php:579
 #: Admin/applicationForm_manage_edit_print.php:455
@@ -23102,7 +23102,6 @@ msgstr ""
 msgid "Response"
 msgstr ""
 
-# not done
 #: modules/User Admin/data_medical_edit.php:402
 #: Admin/data_medical_edit.php:608 Admin/medicalForm_manage.php:132
 #: Admin/medicalForm_manage_condition_add.php:190
@@ -23129,6 +23128,7 @@ msgstr ""
 #: modules/User Admin/medicalForm_manage_condition_add.php:190
 #: modules/User Admin/medicalForm_manage_condition_edit.php:206
 #: modules/User Admin/medicalForm_manage_edit.php:232
+#, fuzzy
 msgid "Medication"
 msgstr "藥物治療"
 
@@ -23655,7 +23655,6 @@ msgstr "編輯地區"
 msgid "Manage Families"
 msgstr "管理家庭"
 
-# not done
 #: modules/User Admin/family_manage.php:64
 #: modules/User Admin/family_manage.php:64
 msgid "Family name."
@@ -23807,7 +23806,6 @@ msgstr ""
 msgid "Data Access"
 msgstr ""
 
-# not done
 #: modules/User Admin/family_manage_edit.php:604
 #: Admin/family_manage_edit.php:741 Admin/family_manage_edit_editAdult.php:131
 #: Admin/import_families.php:158
@@ -24095,9 +24093,9 @@ msgstr ""
 msgid "Marital Status"
 msgstr "婚姻狀況"
 
-# not done
 #: modules/User Admin/import_families.php:150
 #: modules/User Admin/import_families.php:150
+#, fuzzy
 msgid "Married, Separated, Divorced, De Facto or Other"
 msgstr "已婚，分居，離婚，"
 
@@ -24331,10 +24329,9 @@ msgstr "學生 %1$s 更新時成功."
 msgid "There was an error creating student:"
 msgstr "創建學生時有錯誤"
 
-# not done
 #: modules/User Admin/import_families.php:625
 #: modules/User Admin/import_families.php:625
-#, php-format
+#, fuzzy, php-format
 msgid "Student %1$s was successfully created."
 msgstr "成功的創建了學生 %1$s"
 
@@ -24415,10 +24412,9 @@ msgstr ""
 msgid "There was an error enroling student:"
 msgstr ""
 
-# not done
 #: modules/User Admin/import_studentEnrolment.php:284
 #: modules/User Admin/import_studentEnrolment.php:284
-#, php-format
+#, fuzzy, php-format
 msgid "User %1$s was successfully enroled."
 msgstr "用戶 %1$s 成功的"
 
@@ -24802,9 +24798,9 @@ msgstr "更新用戶時有錯誤:"
 msgid "User %1$s was successfully updated."
 msgstr "用戶%1$s更新時成功"
 
-# not done
 #: modules/User Admin/import_users.php:461 Admin/import_users.php:459
 #: modules/User Admin/import_users.php:459
+#, fuzzy
 msgid "There was an error with the role of user:"
 msgstr "用戶角色有錯誤:"
 
@@ -24813,10 +24809,9 @@ msgstr "用戶角色有錯誤:"
 msgid "There was an error creating user:"
 msgstr "創造用戶有錯誤:"
 
-# not done
 #: modules/User Admin/import_users.php:484 Admin/import_users.php:482
 #: modules/User Admin/import_users.php:482
-#, php-format
+#, fuzzy, php-format
 msgid "User %1$s was successfully created with password %2$s."
 msgstr "成功的創建了用戶 %1$s 和他的密碼 %2$s"
 
@@ -25000,7 +24995,6 @@ msgstr "醫療狀況"
 msgid "Manage Permissions"
 msgstr "編輯授權"
 
-# not done
 #: modules/User Admin/permission_manage.php:45
 #: modules/User Admin/permission_manage.php:45
 #, php-format
@@ -26375,7 +26369,7 @@ msgstr "學生在給功課後才加入學校"
 #: modules/Planner/units_dump.php:406 index.php:850
 #: modules/Behaviour/behaviour_manage.php:361 index.php:904
 #: modules/Rubrics/rubrics.php:285 index.php:901 index.php:896
-#: modules/Planner/units_public_view.php:343 index.php:918
+#: modules/Planner/units_public_view.php:343 index.php:964
 #: modules/Behaviour/behaviour_manage.php:361
 #: modules/Behaviour/moduleFunctions.php:145
 #: modules/Finance/billingSchedule_manage.php:234
@@ -27204,7 +27198,7 @@ msgstr ""
 #: modules/Activities/activities_view.php:156
 #: modules/Activities/activities_view.php:156
 msgid "Filter & Search"
-msgstr ""
+msgstr "過濾器&搜尋"
 
 #: modules/Activities/activities_view.php:172
 #: modules/Activities/activities_view.php:172
@@ -27358,7 +27352,7 @@ msgstr "選擇學生"
 #: modules/Students/report_students_byRollGroup_print.php:36
 #: modules/Students/report_students_IDCards.php:54
 msgid "Students by Roll Group"
-msgstr ""
+msgstr "用班級找學生"
 
 #: modules/Activities/report_activityChoices_byStudent.php:74
 #: modules/Students/report_familyAddress_byStudent.php:70
@@ -27495,7 +27489,7 @@ msgstr "沒有"
 #: i18n/dbStringsForTranslation.php:56 i18n/dbStringsForTranslation.php:56
 #: modules/Activities/report_attendance.php:34
 msgid "Attendance by Activity"
-msgstr ""
+msgstr "活動的出席表"
 
 #: modules/Activities/report_attendance.php:38
 #: modules/Activities/report_participants.php:38
@@ -27516,7 +27510,7 @@ msgstr "選擇活動"
 #: modules/Activities/report_attendance.php:121
 #: modules/Activities/report_attendance_print.php:83
 msgid "Attendance"
-msgstr ""
+msgstr "出席表"
 
 #: modules/Activities/report_attendance_print.php:62
 #: modules/Activities/report_participants_print.php:63
@@ -27660,7 +27654,7 @@ msgstr "最後"
 #, php-format
 msgid ""
 "Items in %1$sred%2$s are new since your last login. Items in green are older."
-msgstr "在%1$sred%2$s的東西是在你上一次登錄後新的。在綠色的東西是舊的。"
+msgstr "在%1$s紅色%2$s的東西是在你上一次登錄後新的。在綠色的東西是舊的。"
 
 #: modules/Crowd Assessment/crowdAssess_view_discuss_post.php:33
 #: modules/Crowd Assessment/crowdAssess_view_discuss_post.php:33
@@ -29370,7 +29364,7 @@ msgstr "學校"
 
 #: modules/Rubrics/rubrics_add.php:254 modules/Rubrics/rubrics_edit.php:328
 msgid "Grading Scale"
-msgstr ""
+msgstr "計分規模"
 
 #: modules/Rubrics/rubrics_add.php:255 modules/Rubrics/rubrics_add.php:271
 #: modules/Rubrics/rubrics_add.php:271
@@ -29442,7 +29436,7 @@ msgstr ""
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:253
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:253
 msgid "Outcome Based"
-msgstr ""
+msgstr "根據結果"
 
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:228
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:241
@@ -29530,7 +29524,7 @@ msgstr "計費"
 #: i18n/dbStringsForTranslation.php:27 i18n/dbStringsForTranslation.php:26
 #: i18n/dbStringsForTranslation.php:26
 msgid "Catalog"
-msgstr ""
+msgstr "目錄"
 
 #: i18n/dbStringsForTranslation.php:28 i18n/dbStringsForTranslation.php:27
 #: i18n/dbStringsForTranslation.php:27
@@ -29651,20 +29645,20 @@ msgstr "評估"
 #: i18n/dbStringsForTranslation.php:65 i18n/dbStringsForTranslation.php:55
 #: i18n/dbStringsForTranslation.php:57 i18n/dbStringsForTranslation.php:57
 msgid "Attendance By Person"
-msgstr ""
+msgstr "由人士找出席"
 
 #: i18n/dbStringsForTranslation.php:57 i18n/dbStringsForTranslation.php:66
 #: i18n/dbStringsForTranslation.php:67 i18n/dbStringsForTranslation.php:56
 #: i18n/dbStringsForTranslation.php:58 i18n/dbStringsForTranslation.php:58
 msgid "Attendance By Roll"
-msgstr ""
+msgstr "由班級找出席"
 
 #: i18n/dbStringsForTranslation.php:58 modules/Library/library_browse.php:34
 #: i18n/dbStringsForTranslation.php:68 i18n/dbStringsForTranslation.php:69
 #: i18n/dbStringsForTranslation.php:57 i18n/dbStringsForTranslation.php:59
 #: i18n/dbStringsForTranslation.php:59 modules/Library/library_browse.php:34
 msgid "Browse The Library"
-msgstr ""
+msgstr "瀏覽文庫"
 
 #: i18n/dbStringsForTranslation.php:59
 #: modules/Library/report_catalogSummary.php:36
@@ -29675,7 +29669,7 @@ msgstr ""
 #: modules/Library/report_catalogSummary.php:36
 #: modules/Library/report_catalogSummaryExportContents.php:48
 msgid "Catalog Summary"
-msgstr ""
+msgstr "目錄總結"
 
 #: i18n/dbStringsForTranslation.php:68 i18n/dbStringsForTranslation.php:90
 #: i18n/dbStringsForTranslation.php:91 i18n/dbStringsForTranslation.php:69
@@ -29769,7 +29763,7 @@ msgstr "離開的學生"
 #: modules/Library/library_lending_item_return.php:58
 #: modules/Library/library_lending_item_signout.php:57
 msgid "Lending & Activity Log"
-msgstr ""
+msgstr "借和活動紀錄"
 
 #: i18n/dbStringsForTranslation.php:86 i18n/dbStringsForTranslation.php:87
 #: i18n/dbStringsForTranslation.php:88 i18n/dbStringsForTranslation.php:89
@@ -29789,7 +29783,7 @@ msgstr "課程計畫"
 #: i18n/dbStringsForTranslation.php:93
 #: modules/Students/report_lettersHome_byRollGroup.php:34
 msgid "Letters Home by Roll Group"
-msgstr ""
+msgstr "從班級寄回家的信"
 
 #: i18n/dbStringsForTranslation.php:94 i18n/dbStringsForTranslation.php:142
 #: i18n/dbStringsForTranslation.php:143 i18n/dbStringsForTranslation.php:96
@@ -29841,7 +29835,7 @@ msgstr "編輯計費的時間表"
 #: modules/Library/library_manage_catalog_duplicate.php:35
 #: modules/Library/library_manage_catalog_edit.php:35
 msgid "Manage Catalog"
-msgstr ""
+msgstr "管理目錄"
 
 #: i18n/dbStringsForTranslation.php:107
 #: modules/Finance/feeCategories_manage.php:31
@@ -30061,7 +30055,7 @@ msgstr "新學生"
 #: i18n/dbStringsForTranslation.php:185
 #: modules/Activities/report_participants.php:34
 msgid "Participants by Activity"
-msgstr ""
+msgstr "活動的參加者"
 
 #: i18n/dbStringsForTranslation.php:177 i18n/dbStringsForTranslation.php:308
 #: i18n/dbStringsForTranslation.php:309 i18n/dbStringsForTranslation.php:178
@@ -30077,7 +30071,7 @@ msgstr "私人資料更新"
 #: i18n/dbStringsForTranslation.php:188 i18n/dbStringsForTranslation.php:188
 #: modules/Students/report_privacy_student.php:34
 msgid "Privacy Choices by Student"
-msgstr ""
+msgstr "學生的私人選擇"
 
 #: i18n/dbStringsForTranslation.php:179
 #: modules/Students/report_rollGroupSummary.php:34
@@ -30086,7 +30080,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:189 i18n/dbStringsForTranslation.php:189
 #: modules/Students/report_rollGroupSummary.php:34
 msgid "Roll Group Summary"
-msgstr ""
+msgstr "班級總結"
 
 #: i18n/dbStringsForTranslation.php:180
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:34
@@ -30097,7 +30091,7 @@ msgstr ""
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:34
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate_print.php:41
 msgid "Roll Groups Not Registered"
-msgstr ""
+msgstr "還沒有登記的班級"
 
 #: i18n/dbStringsForTranslation.php:182
 #: modules/Attendance/attendance_future_byPerson.php:34
@@ -30124,7 +30118,7 @@ msgstr "員工的星"
 #: i18n/dbStringsForTranslation.php:194 i18n/dbStringsForTranslation.php:194
 #: modules/Library/report_studentBorrowingRecord.php:36
 msgid "Student Borrowing Record"
-msgstr ""
+msgstr "學生結束紀錄"
 
 #: i18n/dbStringsForTranslation.php:185
 #: modules/Students/report_student_dataUpdaterHistory.php:34
@@ -30133,7 +30127,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:195 i18n/dbStringsForTranslation.php:195
 #: modules/Students/report_student_dataUpdaterHistory.php:34
 msgid "Student Data Updater History"
-msgstr ""
+msgstr "學生更新資料歷史"
 
 #: i18n/dbStringsForTranslation.php:187 i18n/dbStringsForTranslation.php:188
 #: modules/Attendance/report_studentHistory.php:34
@@ -30299,7 +30293,7 @@ msgstr "觀看過期物品"
 #: i18n/dbStringsForTranslation.php:230 modules/Roll Groups/rollGroups.php:31
 #: modules/Roll Groups/rollGroups_details.php:59
 msgid "View Roll Groups"
-msgstr ""
+msgstr "觀看班級"
 
 #: i18n/dbStringsForTranslation.php:222 i18n/dbStringsForTranslation.php:223
 #: i18n/dbStringsForTranslation.php:398 i18n/dbStringsForTranslation.php:400
@@ -32481,7 +32475,7 @@ msgstr "音樂"
 #: i18n/dbStringsForTranslation.php:745 i18n/dbStringsForTranslation.php:748
 #: i18n/dbStringsForTranslation.php:748
 msgid "Non-Verbal"
-msgstr ""
+msgstr "非語言"
 
 #: i18n/dbStringsForTranslation.php:545 i18n/dbStringsForTranslation.php:906
 #: i18n/dbStringsForTranslation.php:911 i18n/dbStringsForTranslation.php:727
@@ -32633,7 +32627,7 @@ msgstr "標準級西班牙語"
 #: i18n/dbStringsForTranslation.php:764 i18n/dbStringsForTranslation.php:767
 #: i18n/dbStringsForTranslation.php:767
 msgid "Statistics"
-msgstr ""
+msgstr "統計"
 
 #: i18n/dbStringsForTranslation.php:564 i18n/dbStringsForTranslation.php:925
 #: i18n/dbStringsForTranslation.php:930 i18n/dbStringsForTranslation.php:746
@@ -32657,7 +32651,7 @@ msgstr "基本級戲劇"
 #: i18n/dbStringsForTranslation.php:767 i18n/dbStringsForTranslation.php:770
 #: i18n/dbStringsForTranslation.php:770
 msgid "Verbal"
-msgstr ""
+msgstr "語言"
 
 #: i18n/dbStringsForTranslation.php:567 i18n/dbStringsForTranslation.php:928
 #: i18n/dbStringsForTranslation.php:933 i18n/dbStringsForTranslation.php:749
@@ -33340,7 +33334,7 @@ msgstr "報名表"
 #: i18n/dbStringsForTranslation.php:928 i18n/dbStringsForTranslation.php:942
 #: index.php:389 modules/School Admin/department_manage.php:117 index.php:422
 #: index.php:428 i18n/dbStringsForTranslation.php:945 index.php:416
-#: i18n/dbStringsForTranslation.php:945 index.php:416
+#: i18n/dbStringsForTranslation.php:945 index.php:483
 #: modules/School Admin/department_manage.php:117
 msgid "Departments"
 msgstr "部門"
@@ -33404,7 +33398,7 @@ msgstr "資源"
 #: i18n/dbStringsForTranslation.php:937 i18n/dbStringsForTranslation.php:951
 #: i18n/dbStringsForTranslation.php:954 i18n/dbStringsForTranslation.php:954
 msgid "Roll Groups"
-msgstr ""
+msgstr "班級"
 
 #: i18n/dbStringsForTranslation.php:696 i18n/dbStringsForTranslation.php:1057
 #: i18n/dbStringsForTranslation.php:1062 i18n/dbStringsForTranslation.php:1114
@@ -33519,7 +33513,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:957 i18n/dbStringsForTranslation.php:971
 #: i18n/dbStringsForTranslation.php:974 i18n/dbStringsForTranslation.php:974
 msgid "Allows users to view a listing of roll groups"
-msgstr ""
+msgstr "允許用戶觀看班級的列表"
 
 #: i18n/dbStringsForTranslation.php:715 i18n/dbStringsForTranslation.php:1076
 #: i18n/dbStringsForTranslation.php:1081 i18n/dbStringsForTranslation.php:1133
@@ -33586,7 +33580,7 @@ msgstr "進行一個學校活動的系統"
 #: i18n/dbStringsForTranslation.php:966 i18n/dbStringsForTranslation.php:980
 #: i18n/dbStringsForTranslation.php:983 i18n/dbStringsForTranslation.php:983
 msgid "School attendance taking"
-msgstr ""
+msgstr "點學校出席表"
 
 #: i18n/dbStringsForTranslation.php:724 i18n/dbStringsForTranslation.php:1085
 #: i18n/dbStringsForTranslation.php:1090 i18n/dbStringsForTranslation.php:1142
@@ -33661,7 +33655,7 @@ msgstr "支援員工"
 #: i18n/dbStringsForTranslation.php:993 i18n/dbStringsForTranslation.php:1007
 #: i18n/dbStringsForTranslation.php:1010 i18n/dbStringsForTranslation.php:1010
 msgid "Admn"
-msgstr ""
+msgstr "管理員"
 
 #: i18n/dbStringsForTranslation.php:751 i18n/dbStringsForTranslation.php:1112
 #: i18n/dbStringsForTranslation.php:1117 i18n/dbStringsForTranslation.php:1169
@@ -33746,7 +33740,7 @@ msgstr "支持教書和學習的員工"
 #: i18n/dbStringsForTranslation.php:1026 i18n/dbStringsForTranslation.php:1074
 #: i18n/dbStringsForTranslation.php:1026 i18n/dbStringsForTranslation.php:1074
 msgid "Completion"
-msgstr ""
+msgstr "完成"
 
 #: i18n/dbStringsForTranslation.php:766 i18n/dbStringsForTranslation.php:814
 #: i18n/dbStringsForTranslation.php:1127 i18n/dbStringsForTranslation.php:1175
@@ -33759,7 +33753,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1027 i18n/dbStringsForTranslation.php:1075
 #: i18n/dbStringsForTranslation.php:1027 i18n/dbStringsForTranslation.php:1075
 msgid "Full Letter Grade"
-msgstr ""
+msgstr "完整字母分數"
 
 #: i18n/dbStringsForTranslation.php:767 i18n/dbStringsForTranslation.php:815
 #: i18n/dbStringsForTranslation.php:1128 i18n/dbStringsForTranslation.php:1176
@@ -33772,7 +33766,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1028 i18n/dbStringsForTranslation.php:1076
 #: i18n/dbStringsForTranslation.php:1028 i18n/dbStringsForTranslation.php:1076
 msgid "IB Diploma (Subject)"
-msgstr ""
+msgstr "國際文憑大學預科課程 (科目)"
 
 #: i18n/dbStringsForTranslation.php:768 i18n/dbStringsForTranslation.php:816
 #: i18n/dbStringsForTranslation.php:1129 i18n/dbStringsForTranslation.php:1177
@@ -33785,7 +33779,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1029 i18n/dbStringsForTranslation.php:1077
 #: i18n/dbStringsForTranslation.php:1029 i18n/dbStringsForTranslation.php:1077
 msgid "IB Diploma (Total)"
-msgstr ""
+msgstr "國際文憑大學預科課程 (共計)"
 
 #: i18n/dbStringsForTranslation.php:769 i18n/dbStringsForTranslation.php:817
 #: i18n/dbStringsForTranslation.php:1130 i18n/dbStringsForTranslation.php:1178
@@ -33811,7 +33805,7 @@ msgstr "國際文憑組織"
 #: i18n/dbStringsForTranslation.php:1031 i18n/dbStringsForTranslation.php:1079
 #: i18n/dbStringsForTranslation.php:1031 i18n/dbStringsForTranslation.php:1079
 msgid "International Baccalaureate EE"
-msgstr ""
+msgstr "國際文憑大學預科課程 擴展文章"
 
 #: i18n/dbStringsForTranslation.php:771 i18n/dbStringsForTranslation.php:819
 #: i18n/dbStringsForTranslation.php:1132 i18n/dbStringsForTranslation.php:1180
@@ -33850,7 +33844,7 @@ msgstr "百分比"
 #: i18n/dbStringsForTranslation.php:1034 i18n/dbStringsForTranslation.php:1082
 #: i18n/dbStringsForTranslation.php:1034 i18n/dbStringsForTranslation.php:1082
 msgid "Simple Letter Grade"
-msgstr ""
+msgstr "簡單字幕分數"
 
 #: i18n/dbStringsForTranslation.php:774 i18n/dbStringsForTranslation.php:822
 #: i18n/dbStringsForTranslation.php:1135 i18n/dbStringsForTranslation.php:1183
@@ -33859,7 +33853,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1003 i18n/dbStringsForTranslation.php:1051
 #: i18n/dbStringsForTranslation.php:1005 i18n/dbStringsForTranslation.php:1053
 msgid "Testing"
-msgstr ""
+msgstr "測試"
 
 #: i18n/dbStringsForTranslation.php:775 i18n/dbStringsForTranslation.php:823
 #: i18n/dbStringsForTranslation.php:1136 i18n/dbStringsForTranslation.php:1184
@@ -37746,7 +37740,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1651 i18n/dbStringsForTranslation.php:1665
 #: i18n/dbStringsForTranslation.php:1668 i18n/dbStringsForTranslation.php:1668
 msgid "Allowable HTML"
-msgstr ""
+msgstr "允許 HTML"
 
 #: i18n/dbStringsForTranslation.php:1399 i18n/dbStringsForTranslation.php:1760
 #: i18n/dbStringsForTranslation.php:1765 i18n/dbStringsForTranslation.php:1817
@@ -37895,7 +37889,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1648 i18n/dbStringsForTranslation.php:1650
 #: i18n/dbStringsForTranslation.php:1674 i18n/dbStringsForTranslation.php:1688
 msgid "Departure Reasons"
-msgstr ""
+msgstr "離開原因"
 
 #: i18n/dbStringsForTranslation.php:1420 i18n/dbStringsForTranslation.php:1781
 #: i18n/dbStringsForTranslation.php:1786 i18n/dbStringsForTranslation.php:1838
@@ -38020,7 +38014,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1694 i18n/dbStringsForTranslation.php:1709
 #: i18n/dbStringsForTranslation.php:1707 i18n/dbStringsForTranslation.php:1707
 msgid "Install Type"
-msgstr ""
+msgstr "安裝類型"
 
 #: i18n/dbStringsForTranslation.php:1438 i18n/dbStringsForTranslation.php:1799
 #: i18n/dbStringsForTranslation.php:1804 i18n/dbStringsForTranslation.php:1856
@@ -38184,7 +38178,7 @@ msgstr "組織電郵"
 #: i18n/dbStringsForTranslation.php:1716 i18n/dbStringsForTranslation.php:1732
 #: i18n/dbStringsForTranslation.php:1731 i18n/dbStringsForTranslation.php:1731
 msgid "Organisation Initials"
-msgstr ""
+msgstr "組織縮寫"
 
 #: i18n/dbStringsForTranslation.php:1460 i18n/dbStringsForTranslation.php:1821
 #: i18n/dbStringsForTranslation.php:1826 i18n/dbStringsForTranslation.php:1878
@@ -38200,7 +38194,7 @@ msgstr "組織名稱"
 #: i18n/dbStringsForTranslation.php:1718 i18n/dbStringsForTranslation.php:1734
 #: i18n/dbStringsForTranslation.php:1733 i18n/dbStringsForTranslation.php:1733
 msgid "Pagination Count"
-msgstr ""
+msgstr "頁數"
 
 #: i18n/dbStringsForTranslation.php:1462 i18n/dbStringsForTranslation.php:1823
 #: i18n/dbStringsForTranslation.php:1828 i18n/dbStringsForTranslation.php:1880
@@ -38208,7 +38202,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1719 i18n/dbStringsForTranslation.php:1736
 #: i18n/dbStringsForTranslation.php:1735 i18n/dbStringsForTranslation.php:1735
 msgid "Parents Notification Default"
-msgstr ""
+msgstr "自動家長通知"
 
 #: i18n/dbStringsForTranslation.php:1463 i18n/dbStringsForTranslation.php:1824
 #: i18n/dbStringsForTranslation.php:1829 i18n/dbStringsForTranslation.php:1881
@@ -38216,7 +38210,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1720 i18n/dbStringsForTranslation.php:1737
 #: i18n/dbStringsForTranslation.php:1736 i18n/dbStringsForTranslation.php:1736
 msgid "Parents Notification Message"
-msgstr ""
+msgstr "家長通知留言"
 
 #: i18n/dbStringsForTranslation.php:1465 i18n/dbStringsForTranslation.php:1826
 #: i18n/dbStringsForTranslation.php:1831 i18n/dbStringsForTranslation.php:1883
@@ -38302,7 +38296,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1706 i18n/dbStringsForTranslation.php:1708
 #: i18n/dbStringsForTranslation.php:1734 i18n/dbStringsForTranslation.php:1751
 msgid "Privacy Blurb"
-msgstr ""
+msgstr "私人簡介"
 
 #: i18n/dbStringsForTranslation.php:1479 i18n/dbStringsForTranslation.php:1840
 #: i18n/dbStringsForTranslation.php:1845 i18n/dbStringsForTranslation.php:1897
@@ -38310,7 +38304,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1736 i18n/dbStringsForTranslation.php:1753
 #: i18n/dbStringsForTranslation.php:1747 i18n/dbStringsForTranslation.php:1747
 msgid "Public Applications?"
-msgstr ""
+msgstr "公眾應用程式?"
 
 #: i18n/dbStringsForTranslation.php:1480 i18n/dbStringsForTranslation.php:1841
 #: i18n/dbStringsForTranslation.php:1846 i18n/dbStringsForTranslation.php:1898
@@ -38318,7 +38312,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1737 i18n/dbStringsForTranslation.php:1754
 #: i18n/dbStringsForTranslation.php:1748 i18n/dbStringsForTranslation.php:1748
 msgid "Purposes (General)"
-msgstr ""
+msgstr "目的 (一般)"
 
 #: i18n/dbStringsForTranslation.php:1481 i18n/dbStringsForTranslation.php:1842
 #: i18n/dbStringsForTranslation.php:1847 i18n/dbStringsForTranslation.php:1899
@@ -38326,7 +38320,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1738 i18n/dbStringsForTranslation.php:1755
 #: i18n/dbStringsForTranslation.php:1749 i18n/dbStringsForTranslation.php:1749
 msgid "Purposes (Restricted)"
-msgstr ""
+msgstr "目的 (受限)"
 
 #: i18n/dbStringsForTranslation.php:1482 i18n/dbStringsForTranslation.php:1843
 #: i18n/dbStringsForTranslation.php:1848 i18n/dbStringsForTranslation.php:1900
@@ -38454,7 +38448,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1756 i18n/dbStringsForTranslation.php:1773
 #: i18n/dbStringsForTranslation.php:1768 i18n/dbStringsForTranslation.php:1768
 msgid "SMS Password"
-msgstr ""
+msgstr "SMS 密碼"
 
 #: i18n/dbStringsForTranslation.php:1500 i18n/dbStringsForTranslation.php:1861
 #: i18n/dbStringsForTranslation.php:1866 i18n/dbStringsForTranslation.php:1918
@@ -38462,15 +38456,16 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1757 i18n/dbStringsForTranslation.php:1774
 #: i18n/dbStringsForTranslation.php:1769 i18n/dbStringsForTranslation.php:1769
 msgid "SMS URL"
-msgstr ""
+msgstr "SMS 網頁"
 
 #: i18n/dbStringsForTranslation.php:1501 i18n/dbStringsForTranslation.php:1862
 #: i18n/dbStringsForTranslation.php:1867 i18n/dbStringsForTranslation.php:1919
 #: i18n/dbStringsForTranslation.php:1730 i18n/dbStringsForTranslation.php:1732
 #: i18n/dbStringsForTranslation.php:1758 i18n/dbStringsForTranslation.php:1775
 #: i18n/dbStringsForTranslation.php:1770 i18n/dbStringsForTranslation.php:1770
+#, fuzzy
 msgid "SMS URL Credit"
-msgstr ""
+msgstr "SMS 網頁"
 
 #: i18n/dbStringsForTranslation.php:1502 i18n/dbStringsForTranslation.php:1863
 #: i18n/dbStringsForTranslation.php:1868 i18n/dbStringsForTranslation.php:1920
@@ -38478,7 +38473,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1759 i18n/dbStringsForTranslation.php:1776
 #: i18n/dbStringsForTranslation.php:1771 i18n/dbStringsForTranslation.php:1771
 msgid "SMS Username"
-msgstr ""
+msgstr "SMS 用戶名稱"
 
 #: i18n/dbStringsForTranslation.php:1503 i18n/dbStringsForTranslation.php:1864
 #: i18n/dbStringsForTranslation.php:1869 i18n/dbStringsForTranslation.php:1921
@@ -38810,7 +38805,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1810 i18n/dbStringsForTranslation.php:1827
 #: i18n/dbStringsForTranslation.php:1816 i18n/dbStringsForTranslation.php:1816
 msgid "Database Administrator"
-msgstr ""
+msgstr "數據庫管理員"
 
 #: i18n/dbStringsForTranslation.php:1546 i18n/dbStringsForTranslation.php:1907
 #: i18n/dbStringsForTranslation.php:1912 i18n/dbStringsForTranslation.php:1964
@@ -38825,7 +38820,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1812 i18n/dbStringsForTranslation.php:1829
 #: i18n/dbStringsForTranslation.php:1817 i18n/dbStringsForTranslation.php:1817
 msgid "Email address to send finance emails from."
-msgstr ""
+msgstr "用來送財政網頁的電郵"
 
 #: i18n/dbStringsForTranslation.php:1548 i18n/dbStringsForTranslation.php:1909
 #: i18n/dbStringsForTranslation.php:1914 i18n/dbStringsForTranslation.php:1966
@@ -38895,7 +38890,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1821 i18n/dbStringsForTranslation.php:1839
 #: i18n/dbStringsForTranslation.php:1828 i18n/dbStringsForTranslation.php:1828
 msgid "If yes, members of the public can submit applications"
-msgstr ""
+msgstr "如果是，那公眾人士可以提交申請表"
 
 #: i18n/dbStringsForTranslation.php:1557 i18n/dbStringsForTranslation.php:1918
 #: i18n/dbStringsForTranslation.php:1923 i18n/dbStringsForTranslation.php:1975
@@ -38903,7 +38898,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1822 i18n/dbStringsForTranslation.php:1840
 #: i18n/dbStringsForTranslation.php:1829 i18n/dbStringsForTranslation.php:1829
 msgid "Information to display at the end of the form"
-msgstr ""
+msgstr "在表格的結尾可觀看的資料"
 
 #: i18n/dbStringsForTranslation.php:1558 i18n/dbStringsForTranslation.php:1919
 #: i18n/dbStringsForTranslation.php:1924 i18n/dbStringsForTranslation.php:1976
@@ -38911,7 +38906,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1823 i18n/dbStringsForTranslation.php:1841
 #: i18n/dbStringsForTranslation.php:1830 i18n/dbStringsForTranslation.php:1830
 msgid "Information to display before the form"
-msgstr ""
+msgstr "在表格前可觀看的資料"
 
 #: i18n/dbStringsForTranslation.php:1559 i18n/dbStringsForTranslation.php:1920
 #: i18n/dbStringsForTranslation.php:1925 i18n/dbStringsForTranslation.php:1977
@@ -38943,7 +38938,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1827 i18n/dbStringsForTranslation.php:1845
 #: i18n/dbStringsForTranslation.php:1834 i18n/dbStringsForTranslation.php:1834
 msgid "Minimum acceptable password length."
-msgstr ""
+msgstr "最短可接受的密碼長度"
 
 #: i18n/dbStringsForTranslation.php:1563 i18n/dbStringsForTranslation.php:1924
 #: i18n/dbStringsForTranslation.php:1929 i18n/dbStringsForTranslation.php:1981
@@ -39082,14 +39077,14 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1845 i18n/dbStringsForTranslation.php:1865
 #: i18n/dbStringsForTranslation.php:1854 i18n/dbStringsForTranslation.php:1854
 msgid "Should payments be enabled across the system?"
-msgstr ""
+msgstr "付款可以在系統中用嗎?"
 
 #: i18n/dbStringsForTranslation.php:1579 i18n/dbStringsForTranslation.php:1940
 #: i18n/dbStringsForTranslation.php:1945 i18n/dbStringsForTranslation.php:1997
 #: i18n/dbStringsForTranslation.php:1808 i18n/dbStringsForTranslation.php:1814
 #: i18n/dbStringsForTranslation.php:1846 i18n/dbStringsForTranslation.php:1866
 msgid "Should privacy options be turned on across the system?"
-msgstr ""
+msgstr "私人選擇應該在系統中開嗎？"
 
 #: i18n/dbStringsForTranslation.php:1580 i18n/dbStringsForTranslation.php:1941
 #: i18n/dbStringsForTranslation.php:1946 i18n/dbStringsForTranslation.php:1998
@@ -39105,7 +39100,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1848 i18n/dbStringsForTranslation.php:1868
 #: i18n/dbStringsForTranslation.php:1856 i18n/dbStringsForTranslation.php:1856
 msgid "Should the Language Options section be turned on?"
-msgstr ""
+msgstr "語言選擇應該開嗎?"
 
 #: i18n/dbStringsForTranslation.php:1582 i18n/dbStringsForTranslation.php:1943
 #: i18n/dbStringsForTranslation.php:1948 i18n/dbStringsForTranslation.php:2000
@@ -39121,7 +39116,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1812 i18n/dbStringsForTranslation.php:1818
 #: i18n/dbStringsForTranslation.php:1850 i18n/dbStringsForTranslation.php:1870
 msgid "Should users be allowed to set their own personal backgrounds?"
-msgstr ""
+msgstr "用戶可以定自己的背景嗎?"
 
 #: i18n/dbStringsForTranslation.php:1584 i18n/dbStringsForTranslation.php:1945
 #: i18n/dbStringsForTranslation.php:1950 i18n/dbStringsForTranslation.php:2002
@@ -39982,14 +39977,14 @@ msgstr ""
 #: modules/Attendance/attendance_take_byRollGroup.php:34
 #: modules/Attendance/attendance_take_byRollGroup.php:34
 msgid "Take Attendance by Roll Group"
-msgstr ""
+msgstr "用班級點出席表"
 
 #: modules/Attendance/attendance_take_byRollGroup.php:176
 #: modules/Attendance/attendance_take_byRollGroup.php:176
 msgid ""
 "School is closed on the specified date, and so attendance information cannot "
 "be recorded."
-msgstr ""
+msgstr "在指定的日期是關門，所以出席表不能紀錄。"
 
 #: modules/Attendance/attendance_take_byRollGroup.php:207
 #: modules/Attendance/attendance_take_byRollGroup.php:207
@@ -40009,7 +40004,7 @@ msgstr ""
 #: modules/Attendance/attendance_take_byRollGroup.php:377
 #: modules/Attendance/attendance_take_byRollGroup.php:377
 msgid "Total students:"
-msgstr ""
+msgstr "總共學生："
 
 #: modules/Attendance/attendance_take_byRollGroup.php:379
 #: modules/Attendance/attendance_take_byRollGroup.php:379
@@ -40306,7 +40301,7 @@ msgstr "班主任"
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:174
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate_print.php:134
 msgid "All roll groups have been registered."
-msgstr ""
+msgstr "所有班級已記錄了。"
 
 #: modules/Attendance/report_studentHistory.php:182
 #: modules/Planner/planner.php:165 modules/Planner/planner_deadlines.php:148
@@ -40314,12 +40309,12 @@ msgstr ""
 #: modules/Attendance/report_studentHistory.php:182
 #: modules/Planner/planner.php:165 modules/Planner/planner_deadlines.php:150
 msgid "Choose"
-msgstr ""
+msgstr "選擇"
 
 #: modules/Attendance/report_studentHistory_print.php:49
 #: modules/Attendance/report_studentHistory_print.php:49
 msgid "Attendance History for"
-msgstr ""
+msgstr "這個出席表歷史是"
 
 #: modules/Attendance/report_studentsNotOnsite_byDate.php:223
 #: modules/Attendance/report_studentsNotOnsite_byDate_print.php:183
@@ -40330,7 +40325,7 @@ msgstr ""
 #: modules/Attendance/report_studentsNotPresent_byDate.php:223
 #: modules/Attendance/report_studentsNotPresent_byDate_print.php:183
 msgid "All students are present."
-msgstr ""
+msgstr "所有學生也到達"
 
 #: modules/Behaviour/behaviour_manage.php:177
 #: modules/Behaviour/behaviour_manage_add.php:163
@@ -40341,7 +40336,7 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage_addMulti.php:144
 #: modules/Behaviour/behaviour_manage_edit.php:189
 msgid "Positive"
-msgstr ""
+msgstr "肯定"
 
 #: modules/Behaviour/behaviour_manage.php:192
 #: modules/Behaviour/behaviour_pattern.php:238
@@ -40369,7 +40364,7 @@ msgstr ""
 #: modules/Roll Groups/rollGroups_details.php:147 modules/Timetable/tt.php:94
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson.php:133
 msgid "Clear Filters"
-msgstr ""
+msgstr "清除過濾器"
 
 #: modules/Behaviour/behaviour_manage.php:201
 #: modules/Behaviour/behaviour_pattern.php:248
@@ -40392,21 +40387,21 @@ msgstr "需後更新："
 #: modules/Behaviour/behaviour_manage.php:324
 #: modules/Behaviour/moduleFunctions.php:111
 msgid "Incident:"
-msgstr ""
+msgstr "事件:"
 
 #: modules/Behaviour/behaviour_manage_add.php:347
 #: modules/Behaviour/behaviour_manage_edit.php:318
 #: modules/Behaviour/behaviour_manage_add.php:347
 #: modules/Behaviour/behaviour_manage_edit.php:318
 msgid "Link To Lesson?"
-msgstr ""
+msgstr "連繫到課堂"
 
 #: modules/Behaviour/behaviour_manage_add.php:348
 #: modules/Behaviour/behaviour_manage_edit.php:319
 #: modules/Behaviour/behaviour_manage_add.php:348
 #: modules/Behaviour/behaviour_manage_edit.php:319
 msgid "From last 30 days"
-msgstr ""
+msgstr "從上30天"
 
 #: modules/Behaviour/behaviour_manage_edit.php:224
 #: modules/Behaviour/behaviour_manage_edit.php:224
@@ -40420,7 +40415,7 @@ msgstr "星"
 #: modules/Students/report_students_left.php:59
 #: modules/Students/report_students_new.php:90
 msgid "From Date"
-msgstr ""
+msgstr "從日期"
 
 #: modules/Behaviour/behaviour_pattern.php:217
 #: modules/Behaviour/behaviour_pattern.php:217
@@ -41028,7 +41023,7 @@ msgstr "設定"
 #: modules/Finance/invoiceReceiptSettings.php:94 modules/School
 #: Admin/financeSettings.php:158 modules/School Admin/financeSettings.php:158
 msgid "Invoices"
-msgstr ""
+msgstr "發票"
 
 #: modules/Finance/invoiceReceiptSettings.php:171 modules/School
 #: Admin/financeSettings.php:235 modules/School Admin/financeSettings.php:235
@@ -41038,7 +41033,7 @@ msgstr ""
 #: modules/Finance/invoiceReceiptSettings.php:215 modules/School
 #: Admin/financeSettings.php:279 modules/School Admin/financeSettings.php:279
 msgid "Reminders"
-msgstr ""
+msgstr "提示"
 
 #: modules/Finance/invoices_manage.php:43
 #: modules/Finance/invoices_manage.php:85
@@ -41098,12 +41093,12 @@ msgstr ""
 #: modules/Finance/invoices_manage_edit.php:263
 #: modules/Finance/invoices_manage_edit.php:269
 msgid "Paid"
-msgstr ""
+msgstr "已支付"
 
 #: modules/Finance/invoices_manage.php:215
 #: modules/Finance/invoices_manage.php:215
 msgid "Paid - Late"
-msgstr ""
+msgstr "以支付－遲"
 
 #: modules/Finance/invoices_manage.php:220
 #: modules/Finance/invoices_manage_edit.php:264
@@ -41492,22 +41487,22 @@ msgstr ""
 #: modules/Finance/invoices_manage_print.php:126
 #: modules/Finance/invoices_manage_print_print.php:133
 msgid "Invoice"
-msgstr ""
+msgstr "發票"
 
 #: modules/Finance/invoices_manage_print.php:149
 #: modules/Finance/invoices_manage_print.php:149
 msgid "Reminder 1"
-msgstr ""
+msgstr "提示1"
 
 #: modules/Finance/invoices_manage_print.php:170
 #: modules/Finance/invoices_manage_print.php:170
 msgid "Reminder 2"
-msgstr ""
+msgstr "提示2"
 
 #: modules/Finance/invoices_manage_print.php:191
 #: modules/Finance/invoices_manage_print.php:191
 msgid "Reminder 3"
-msgstr ""
+msgstr "題詩3"
 
 #: modules/Finance/invoices_manage_print.php:206
 #: modules/Finance/invoices_manage_print_print.php:149
@@ -41551,22 +41546,22 @@ msgstr ""
 #: modules/Library/library_manage_catalog_duplicate.php:294
 #: modules/Library/library_manage_catalog_edit.php:205
 msgid "Invoice Number"
-msgstr ""
+msgstr "發票號碼"
 
 #: modules/Finance/invoices_manage_processBulkExportContents.php:111
 #: modules/Finance/invoices_manage_processBulkExportContents.php:111
 msgid "Total Value"
-msgstr ""
+msgstr "總共價值"
 
 #: modules/Finance/moduleFunctions.php:78
 #: modules/Finance/moduleFunctions.php:78
 msgid "Fee Name"
-msgstr ""
+msgstr "費用名稱"
 
 #: modules/Finance/moduleFunctions.php:117
 #: modules/Finance/moduleFunctions.php:117
 msgid "Show/Hide"
-msgstr ""
+msgstr "觀看/隱藏"
 
 #: modules/Finance/moduleFunctions.php:257
 #: modules/Finance/moduleFunctions.php:527
@@ -41574,7 +41569,7 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:257
 #: modules/Finance/moduleFunctions.php:553
 msgid "Fees For"
-msgstr ""
+msgstr "費用"
 
 #: modules/Finance/moduleFunctions.php:313
 #: modules/Finance/moduleFunctions.php:583
@@ -41582,7 +41577,7 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:313
 #: modules/Finance/moduleFunctions.php:609
 msgid "Fee Table"
-msgstr ""
+msgstr "費用表"
 
 #: modules/Finance/moduleFunctions.php:339
 #: modules/Finance/moduleFunctions.php:597
@@ -41590,26 +41585,26 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:339
 #: modules/Finance/moduleFunctions.php:623
 msgid "There are no records to display"
-msgstr ""
+msgstr "沒有可以觀看的紀錄。"
 
 #: modules/Finance/moduleFunctions.php:466
 #: modules/Finance/moduleFunctions.php:492
 #: modules/Finance/moduleFunctions.php:492
 msgid "Receipt To"
-msgstr ""
+msgstr "收據"
 
 #: modules/Finance/moduleFunctions.php:663
 #: modules/Finance/moduleFunctions.php:689
 #: modules/Finance/moduleFunctions.php:689
 msgid "Amount Paid:"
-msgstr ""
+msgstr "已支付的數量"
 
 #: modules/Individual Needs/in_edit.php:44 Needs/in_edit.php:47
 #: Needs/in_edit.php:50 modules/Individual Needs/in_edit.php:44
 #: modules/Individual Needs/in_edit.php:47
 #: modules/Individual Needs/in_edit.php:50
 msgid "All Student Records"
-msgstr ""
+msgstr "所有學生的紀錄"
 
 #: modules/Individual Needs/in_edit.php:47
 #: modules/Individual Needs/in_edit.php:47
@@ -41672,7 +41667,7 @@ msgstr ""
 #: modules/Messenger/messenger_post.php:322
 #: modules/Students/student_view_details.php:2304
 msgid "Targets"
-msgstr ""
+msgstr "目標"
 
 #: modules/Individual Needs/in_summary.php:102
 #: modules/Individual Needs/in_summary.php:102
@@ -41682,7 +41677,7 @@ msgstr ""
 #: modules/Individual Needs/in_summary.php:197
 #: modules/Individual Needs/in_summary.php:197
 msgid "Students With Records"
-msgstr ""
+msgstr "有記錄的學生"
 
 #: modules/Individual Needs/in_summary.php:200
 #: modules/Individual Needs/in_summary.php:200
@@ -41695,7 +41690,7 @@ msgstr ""
 #: modules/Individual Needs/in_view.php:38
 #: modules/Individual Needs/in_view.php:38
 msgid "View Student Records"
-msgstr ""
+msgstr "觀看學生的記錄"
 
 #: modules/Individual Needs/in_view.php:84
 #: modules/Individual Needs/in_view.php:84
@@ -41717,12 +41712,12 @@ msgstr ""
 
 #: modules/Library/library_browse.php:95 modules/Library/library_browse.php:95
 msgid "Monthly Top 5"
-msgstr ""
+msgstr "每月的頂5"
 
 #: modules/Library/library_browse.php:134
 #: modules/Library/library_browse.php:134
 msgid "New Titles"
-msgstr ""
+msgstr "新的題目"
 
 #: modules/Library/library_browse.php:223
 #: modules/Library/library_browse.php:358
@@ -41733,7 +41728,7 @@ msgstr ""
 #: modules/Library/moduleFunctions.php:43
 #: modules/Library/report_viewOverdueItems.php:63
 msgid "Author/Producer"
-msgstr ""
+msgstr "作者/創作人"
 
 #: modules/Library/library_browse.php:229
 #: i18n/dbStringsForTranslation.php:1047 i18n/dbStringsForTranslation.php:858
@@ -41741,7 +41736,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:878 i18n/dbStringsForTranslation.php:881
 #: i18n/dbStringsForTranslation.php:881 modules/Library/library_browse.php:229
 msgid "Collection"
-msgstr ""
+msgstr "系列"
 
 #: modules/Library/library_lending.php:48
 #: modules/Library/library_manage_catalog.php:48
@@ -41836,7 +41831,7 @@ msgstr ""
 #: modules/Library/report_catalogSummary.php:240
 #: modules/Library/report_catalogSummaryExportContents.php:87
 msgid "School ID"
-msgstr ""
+msgstr "學校編號"
 
 #: modules/Library/library_lending.php:256
 #: modules/Library/library_manage_catalog.php:328
@@ -41889,7 +41884,7 @@ msgstr ""
 #: modules/Library/library_lending_item_return.php:95
 #: modules/Library/library_lending_item_signout.php:131
 msgid "Item Details"
-msgstr ""
+msgstr "項目詳情"
 
 #: modules/Library/library_lending_item.php:143
 #: modules/Library/library_manage_catalog_add.php:185
@@ -41904,7 +41899,7 @@ msgstr ""
 #: modules/Library/library_manage_catalog_duplicate.php:254
 #: modules/Library/library_manage_catalog_edit.php:165
 msgid "Author/Brand"
-msgstr ""
+msgstr "作者/品牌"
 
 #: modules/Library/library_lending_item.php:151
 #: modules/Library/library_manage_catalog.php:339
@@ -41915,24 +41910,24 @@ msgstr ""
 #: modules/Library/report_catalogSummary.php:256
 #: modules/Library/report_catalogSummaryExportContents.php:105
 msgid "Borrowable"
-msgstr ""
+msgstr "可借"
 
 #: modules/Library/library_lending_item.php:179
 #: modules/Library/library_lending_item_signout.php:57
 #: modules/Library/library_lending_item.php:179
 #: modules/Library/library_lending_item_signout.php:57
 msgid "Sign Out"
-msgstr ""
+msgstr "登出"
 
 #: modules/Library/library_lending_item.php:182
 #: modules/Library/library_lending_item.php:182
 msgid "This item has already been signed out."
-msgstr ""
+msgstr "這趟項目已經借出。"
 
 #: modules/Library/library_lending_item.php:199
 #: modules/Library/library_lending_item.php:199
 msgid "User"
-msgstr ""
+msgstr "用戶"
 
 #: modules/Library/library_lending_item.php:203
 #: modules/Library/library_lending_item.php:203
@@ -41964,7 +41959,7 @@ msgstr ""
 #: modules/Library/library_lending_item_edit.php:58
 #: modules/Library/library_manage_catalog_edit.php:35
 msgid "Edit Item"
-msgstr ""
+msgstr "編輯項目"
 
 #: modules/Library/library_lending_item_edit.php:81
 #: modules/Library/library_lending_item_renew.php:81
@@ -41974,7 +41969,7 @@ msgstr ""
 #: modules/Library/library_manage_catalog_duplicate.php:59
 #: modules/User Admin/role_manage.php:65
 msgid "Your request was successful."
-msgstr ""
+msgstr "你的要求成功。"
 
 #: modules/Library/library_lending_item_edit.php:132
 #: modules/Library/library_lending_item_signout.php:163
@@ -42103,7 +42098,7 @@ msgstr ""
 #: modules/Library/library_manage_catalog_duplicate.php:370
 #: modules/Library/library_manage_catalog_edit.php:357
 msgid "Students By Roll Group"
-msgstr ""
+msgstr "用班級找找學生"
 
 #: modules/Library/library_lending_item_renew.php:58
 #: modules/Library/library_lending_item_renew.php:58
@@ -42727,7 +42722,7 @@ msgstr "編輯信息"
 #: modules/Students/student_view_details_notes_add.php:161
 #: modules/Students/student_view_details_notes_edit.php:174
 msgid "Note"
-msgstr ""
+msgstr "筆記"
 
 #: modules/Messenger/messenger_manage_edit.php:104
 #: modules/Messenger/messenger_manage_edit.php:104
@@ -42799,7 +42794,7 @@ msgstr ""
 #: modules/Messenger/messenger_manage_edit.php:225
 #: modules/Messenger/messenger_post.php:293
 msgid "Message Details"
-msgstr ""
+msgstr "信息詳情"
 
 #: modules/Messenger/messenger_manage_edit.php:243
 #: modules/Messenger/messenger_post.php:298
@@ -42855,7 +42850,7 @@ msgstr ""
 #: modules/Messenger/messenger_manage_edit.php:464
 #: modules/Messenger/messenger_post.php:457
 msgid "Select Year Groups"
-msgstr ""
+msgstr "選擇年紀"
 
 #: modules/Messenger/messenger_manage_edit.php:418
 #: modules/Messenger/messenger_manage_edit.php:577
@@ -42987,7 +42982,7 @@ msgstr "包括家長?"
 #: modules/Messenger/messenger_manage_edit.php:583
 #: modules/Messenger/messenger_post.php:549
 msgid "Tutees and tutors."
-msgstr ""
+msgstr "學生和老師"
 
 #: modules/Messenger/messenger_manage_edit.php:539
 #: modules/Messenger/messenger_post.php:495
@@ -42998,7 +42993,7 @@ msgstr ""
 #: modules/Messenger/messenger_manage_edit.php:611
 #: modules/Messenger/messenger_post.php:558
 msgid "Select Roll Groups"
-msgstr ""
+msgstr "選擇班級"
 
 #: modules/Messenger/messenger_manage_edit.php:594
 #: modules/Messenger/messenger_post.php:542
@@ -43031,7 +43026,7 @@ msgstr ""
 #: modules/Messenger/messenger_manage_edit.php:770
 #: modules/Messenger/messenger_post.php:671
 msgid "Select Courses"
-msgstr ""
+msgstr "選擇課程"
 
 #: modules/Messenger/messenger_manage_edit.php:823
 #: modules/Messenger/messenger_post.php:706
@@ -43053,7 +43048,7 @@ msgstr ""
 #: modules/Messenger/messenger_manage_edit.php:923
 #: modules/Messenger/messenger_post.php:778
 msgid "Select Classes"
-msgstr ""
+msgstr "選擇課堂"
 
 #: modules/Messenger/messenger_manage_edit.php:976
 #: modules/Messenger/messenger_post.php:813
@@ -43075,7 +43070,7 @@ msgstr ""
 #: modules/Messenger/messenger_manage_edit.php:1076
 #: modules/Messenger/messenger_post.php:885
 msgid "Select Activities"
-msgstr ""
+msgstr "選擇活動"
 
 #: modules/Messenger/messenger_manage_edit.php:1125
 #: modules/Messenger/messenger_post.php:916
@@ -43185,7 +43180,7 @@ msgstr ""
 #: modules/Messenger/messenger_manage_edit.php:1363
 #: modules/Messenger/messenger_post.php:1094
 msgid "Select Individuals"
-msgstr ""
+msgstr "選擇個体"
 
 #: modules/Messenger/messenger_post.php:34
 #: modules/Messenger/messenger_post.php:43
@@ -43193,7 +43188,7 @@ msgstr ""
 msgid ""
 "You do not have a personal email address set in Gibbon, and so cannot send "
 "out emails."
-msgstr ""
+msgstr "你在Gibbon中沒有定個人的電郵地址，所以不能送出電郵。"
 
 #: modules/Messenger/messenger_post.php:57
 #: modules/Messenger/messenger_post.php:66
@@ -43201,7 +43196,7 @@ msgstr ""
 msgid ""
 "Your request was completed successfully, but some or all messages could not "
 "be delivered."
-msgstr ""
+msgstr "你的請求成功地完成，但是有些或所有的信息不能送出。"
 
 #: modules/Messenger/messenger_post.php:63
 #: modules/Messenger/messenger_post.php:72
@@ -43209,14 +43204,14 @@ msgstr ""
 msgid ""
 "Your request was completed successfully: not all messages may arrive at "
 "their destination, but an attempt has been made to get them all out."
-msgstr ""
+msgstr "你的請求成功地完成：但不是所有的消息會到達目的地，但是已經嘗試了送出。"
 
 #: modules/Messenger/messenger_post.php:65
 #: modules/Messenger/messenger_post.php:74
 #: modules/Messenger/messenger_post.php:74
 #, php-format
 msgid "%1$s email(s) were dispatched."
-msgstr ""
+msgstr "%1$s 件電郵已送出。"
 
 #: modules/Messenger/messenger_post.php:68
 #: modules/Messenger/messenger_post.php:77
@@ -43235,13 +43230,13 @@ msgstr ""
 #: modules/Messenger/messenger_post.php:127
 #: modules/Messenger/messenger_post.php:127
 msgid "Email From"
-msgstr ""
+msgstr "電郵從"
 
 #: modules/Messenger/messenger_post.php:138
 #: modules/Messenger/messenger_post.php:148
 #: modules/Messenger/messenger_post.php:148
 msgid "Reply To"
-msgstr ""
+msgstr "回覆給"
 
 #: modules/Messenger/messenger_post.php:250
 #: modules/Messenger/messenger_post.php:260
@@ -43258,7 +43253,7 @@ msgstr ""
 #: modules/Messenger/messenger_post.php:257
 #, php-format
 msgid "Current balance: %1$s credits."
-msgstr ""
+msgstr "現在的結餘: %1$s分"
 
 #: modules/Messenger/messenger_post.php:270
 #: modules/Messenger/messenger_post.php:273
@@ -43287,20 +43282,20 @@ msgstr ""
 #: modules/Messenger/messenger_postProcess.php:1547
 #, php-format
 msgid "Email sent via %1$s at %2$s."
-msgstr ""
+msgstr "電郵經 %1$s 在 %2$s。"
 
 #: modules/Planner/moduleFunctions.php:119
 #: modules/Planner/moduleFunctions.php:123
 #: modules/Planner/moduleFunctions.php:123
 #, php-format
 msgid "Block %1$s"
-msgstr ""
+msgstr "阻塞%1$s"
 
 #: modules/Planner/moduleFunctions.php:120
 #: modules/Planner/moduleFunctions.php:124
 #: modules/Planner/moduleFunctions.php:124
 msgid "type (e.g. discussion, outcome)"
-msgstr ""
+msgstr "類別 (例如: 討論，結果)"
 
 #: modules/Planner/moduleFunctions.php:121
 #: modules/Planner/moduleFunctions.php:125
@@ -43313,13 +43308,13 @@ msgstr "長度(分鐘）"
 #: modules/Planner/moduleFunctions.php:145
 msgid ""
 "Are you sure you want to leave this page? Any unsaved changes will be lost."
-msgstr ""
+msgstr "你肯定又離開這一頁嗎? 沒有保存的改變會刪除"
 
 #: modules/Planner/moduleFunctions.php:169
 #: modules/Planner/moduleFunctions.php:173
 #: modules/Planner/moduleFunctions.php:173
 msgid "Block Contents"
-msgstr ""
+msgstr "阻塞內容"
 
 #: modules/Planner/moduleFunctions.php:177 modules/Planner/planner_add.php:535
 #: modules/Planner/planner_edit.php:609
@@ -43347,7 +43342,7 @@ msgstr ""
 #: modules/Planner/units_dump.php:221 modules/Planner/units_dump.php:451
 #: modules/Planner/units_dump.php:471
 msgid "Teacher's Notes"
-msgstr ""
+msgstr "老師的筆記"
 
 #: modules/Planner/moduleFunctions.php:232
 #: modules/Planner/moduleFunctions.php:294
@@ -43359,7 +43354,7 @@ msgstr "說"
 #: modules/Planner/moduleFunctions.php:295
 #: modules/Planner/moduleFunctions.php:295
 msgid "Posted at"
-msgstr ""
+msgstr "發佈在"
 
 #: modules/Planner/moduleFunctions.php:287
 #: modules/Planner/moduleFunctions.php:351
@@ -43395,13 +43390,13 @@ msgstr "選擇課堂"
 #: modules/Planner/planner_deadlines.php:589
 #: modules/Students/student_view_details.php:2564
 msgid "No upcoming deadlines!"
-msgstr ""
+msgstr "將來沒有限期!\t"
 
 #: modules/Planner/moduleFunctions.php:591
 #: modules/Planner/moduleFunctions.php:655
 #: modules/Planner/moduleFunctions.php:655
 msgid "Choose A Course"
-msgstr ""
+msgstr "選擇一個課程"
 
 #: modules/Planner/outcomes.php:136 modules/Planner/planner_add.php:884
 #: modules/Planner/planner_add.php:900 modules/Planner/planner_edit.php:1054
@@ -43426,20 +43421,20 @@ msgstr ""
 #: modules/Planner/units_edit.php:344
 #: modules/Planner/units_public_view.php:100
 msgid "Outcomes"
-msgstr ""
+msgstr "結果"
 
 #: modules/Planner/outcomes_add.php:48 modules/Planner/outcomes_add.php:48
 msgid "Add Outcome"
-msgstr ""
+msgstr "加入結果"
 
 #: modules/Planner/outcomes_delete.php:48
 #: modules/Planner/outcomes_delete.php:48
 msgid "Delete Outcome"
-msgstr ""
+msgstr "刪除結果"
 
 #: modules/Planner/outcomes_edit.php:49 modules/Planner/outcomes_edit.php:49
 msgid "Edit Outcome"
-msgstr ""
+msgstr "編輯結果"
 
 #: modules/Planner/planner.php:90 modules/Planner/planner_deadlines.php:94
 #: modules/Planner/planner_deadlines.php:96 modules/Planner/planner.php:90
@@ -43463,11 +43458,12 @@ msgid "School is closed on the specified day."
 msgstr "學校在指定日期關門。"
 
 #: modules/Planner/planner.php:902 modules/Planner/planner.php:918
+#, fuzzy
 msgid ""
 "Bump was successful. It is possible that some lessons have not been moved "
 "forward (if there was no space for them), but a reasonable effort has been "
 "made."
-msgstr ""
+msgstr "推前成功。 有可能有些課堂沒有推前(如果沒有位置)， 但是一個合理的"
 
 #: modules/Planner/planner.php:938 modules/Planner/planner.php:954
 #: modules/Planner/planner.php:954
@@ -43482,7 +43478,7 @@ msgstr "年度"
 #: modules/Planner/planner.php:1094 modules/Planner/planner.php:1366
 #: modules/Planner/planner.php:1115 modules/Planner/planner.php:1387
 msgid "Bump Forward"
-msgstr ""
+msgstr "推前"
 
 #: modules/Planner/planner.php:1194
 #: modules/Planner/units_edit_working_add.php:291
@@ -44288,7 +44284,7 @@ msgstr "信息"
 #: modules/Planner/planner_view_full.php:1574
 #: modules/Planner/planner_view_full.php:1574
 msgid "Refresh"
-msgstr ""
+msgstr "更新"
 
 #: modules/Planner/planner_view_full.php:1337
 #: modules/Planner/planner_view_full.php:1338
@@ -44736,7 +44732,7 @@ msgstr ""
 #: modules/Planner/units_edit_deploy.php:364
 #: modules/Planner/units_edit_working_add.php:353
 msgid "Month"
-msgstr ""
+msgstr "月"
 
 #: modules/Planner/units_edit_deploy.php:370
 #: modules/Planner/units_edit_working_add.php:359
@@ -44801,12 +44797,12 @@ msgstr ""
 #: modules/Planner/units_edit_working_add.php:53
 #: modules/Planner/units_edit_working_add.php:53
 msgid "Add Lessons"
-msgstr ""
+msgstr "加入課堂"
 
 #: modules/Planner/units_edit_working_add.php:195
 #: modules/Planner/units_edit_working_add.php:195
 msgid "Choose Lessons"
-msgstr ""
+msgstr "選擇課堂"
 
 #: modules/Planner/units_edit_working_add.php:356
 #: modules/Planner/units_edit_working_add.php:356
@@ -44874,7 +44870,7 @@ msgstr ""
 #: modules/Resources/resources_manage_add.php:201
 #: modules/Resources/resources_manage_edit.php:198
 msgid "Resource Details"
-msgstr ""
+msgstr "資源詳情"
 
 #: modules/Resources/resources_add_ajax.php:285
 #: modules/Resources/resources_insert_ajax.php:163
@@ -44894,7 +44890,7 @@ msgstr ""
 #: modules/Resources/resources_view.php:151
 #: modules/Resources/resources_view.php:300
 msgid "Purpose"
-msgstr ""
+msgstr "目的"
 
 #: modules/Resources/resources_add_ajax.php:302
 #: modules/Resources/resources_insert_ajax.php:115
@@ -44985,17 +44981,17 @@ msgstr ""
 #: modules/Resources/resources_insert_ajax.php:331
 #: modules/Resources/resources_insert_ajax.php:438
 msgid "Insert"
-msgstr ""
+msgstr "加入"
 
 #: modules/Resources/resources_manage.php:78
 #: modules/Resources/resources_manage.php:78
 msgid "Resource name."
-msgstr ""
+msgstr "資源名稱"
 
 #: modules/Resources/resources_manage_add.php:41
 #: modules/Resources/resources_manage_add.php:41
 msgid "Add Resource"
-msgstr ""
+msgstr "加入資源"
 
 #: modules/Resources/resources_manage_add.php:179
 #: modules/Resources/resources_manage_edit.php:171
@@ -45017,7 +45013,7 @@ msgstr ""
 
 #: modules/Roll Groups/rollGroups.php:63 modules/Roll Groups/rollGroups.php:63
 msgid "Room"
-msgstr ""
+msgstr "房間"
 
 #: modules/Roll Groups/rollGroups.php:98 Groups/rollGroups_details.php:91
 #: modules/Students/student_view_details.php:417
@@ -45034,7 +45030,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:438
 #: modules/Students/student_view_details.php:912
 msgid "Main Tutor"
-msgstr ""
+msgstr "主要老師"
 
 #: modules/Staff/staff_view.php:39 modules/Staff/staff_view_details.php:74
 #: modules/Staff/staff_view_details.php:160
@@ -45043,12 +45039,12 @@ msgstr ""
 #: modules/Staff/staff_view_details.php:78
 #: modules/Staff/staff_view_details.php:169
 msgid "View Staff Profiles"
-msgstr ""
+msgstr "觀看員工檔案"
 
 #: modules/Staff/staff_view.php:78 modules/Staff/staff_view.php:99
 #: modules/Staff/staff_view.php:99
 msgid "Choose A Staff Member"
-msgstr ""
+msgstr "選擇員工"
 
 #: modules/Staff/staff_view.php:120 modules/Staff/staff_view_details.php:90
 #: modules/Staff/staff_view_details.php:197
@@ -45060,7 +45056,7 @@ msgstr ""
 #: modules/Staff/staff_view_details.php:206
 #: modules/Staff/staff_view_details.php:270
 msgid "Staff Type"
-msgstr ""
+msgstr "員工類別"
 
 #: modules/Staff/staff_view_details.php:390
 #: modules/Students/student_view_details.php:1191
@@ -45115,7 +45111,7 @@ msgstr ""
 #: modules/Staff/staff_view_details.php:483
 #: modules/Students/student_view_details.php:1393
 msgid "Contact 1"
-msgstr ""
+msgstr "聯繫人1"
 
 #: modules/Staff/staff_view_details.php:483
 #: modules/Staff/staff_view_details.php:502
@@ -45142,7 +45138,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:1400
 #: modules/Students/student_view_details.php:1419
 msgid "Number 1"
-msgstr ""
+msgstr "電話號碼 1"
 
 #: modules/Staff/staff_view_details.php:487
 #: modules/Staff/staff_view_details.php:506
@@ -45177,7 +45173,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:1404
 #: modules/Students/student_view_details.php:1423
 msgid "Number 2"
-msgstr ""
+msgstr "電話號碼 2"
 
 #: modules/Staff/staff_view_details.php:495
 #: modules/Students/student_view_details.php:1299
@@ -45192,7 +45188,7 @@ msgstr ""
 #: modules/Staff/staff_view_details.php:502
 #: modules/Students/student_view_details.php:1412
 msgid "Contact 2"
-msgstr ""
+msgstr "聯繫人2"
 
 #: modules/Staff/staff_view_details.php:563
 #: modules/Students/student_view_details.php:2632
@@ -45219,7 +45215,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2894
 #: modules/Students/student_view_details.php:2905
 msgid "Personal"
-msgstr ""
+msgstr "個人"
 
 #: modules/Students/report_familyAddress_byStudent.php:39
 #: modules/Students/report_familyAddress_byStudent.php:39
@@ -45237,27 +45233,27 @@ msgstr ""
 #: modules/Students/report_student_emergencySummary.php:43
 #: modules/Students/report_student_medicalSummary.php:43
 msgid "Choose Students"
-msgstr ""
+msgstr "選擇學生"
 
 #: modules/Students/report_familyAddress_byStudent.php:144
 #: modules/Students/report_familyAddress_byStudent.php:144
 msgid "Selected Students"
-msgstr ""
+msgstr "已選擇的學生"
 
 #: modules/Students/report_lettersHome_byRollGroup.php:71
 #: modules/Students/report_lettersHome_byRollGroup.php:71
 msgid "Total Count"
-msgstr ""
+msgstr "總共數目"
 
 #: modules/Students/report_lettersHome_byRollGroup.php:74
 #: modules/Students/report_lettersHome_byRollGroup.php:74
 msgid "Form Count"
-msgstr ""
+msgstr "班級數目"
 
 #: modules/Students/report_lettersHome_byRollGroup.php:80
 #: modules/Students/report_lettersHome_byRollGroup.php:80
 msgid "Sibling Count"
-msgstr ""
+msgstr "兄弟姊妹數目"
 
 #: modules/Students/report_privacy_student.php:52
 #: modules/Students/report_privacy_student.php:52
@@ -45267,12 +45263,12 @@ msgstr ""
 #: modules/Students/report_rollGroupSummary.php:78
 #: modules/Students/report_rollGroupSummary.php:78
 msgid "Mean Age"
-msgstr ""
+msgstr "平均年齡"
 
 #: modules/Students/report_rollGroupSummary.php:157
 #: modules/Students/report_rollGroupSummary.php:157
 msgid "All Roll Groups"
-msgstr ""
+msgstr "所有班機"
 
 #: modules/Students/report_student_dataUpdaterHistory.php:37
 #: modules/Students/report_student_dataUpdaterHistory.php:37
@@ -45300,19 +45296,19 @@ msgstr ""
 #: modules/Students/report_student_dataUpdaterHistory.php:174
 #: modules/Students/report_student_dataUpdaterHistory.php:174
 msgid "Medical Data"
-msgstr ""
+msgstr "醫療資料"
 
 #: modules/Students/report_student_dataUpdaterHistory.php:177
 #: modules/Students/report_student_dataUpdaterHistory.php:177
 msgid "Parent Emails"
-msgstr ""
+msgstr "家長的電郵"
 
 #: modules/Students/report_student_emergencySummary.php:36
 #: modules/Students/report_student_emergencySummary_print.php:36
 #: modules/Students/report_student_emergencySummary.php:36
 #: modules/Students/report_student_emergencySummary_print.php:36
 msgid "Student Emergency Data Summary"
-msgstr ""
+msgstr "學生緊急資料總結"
 
 #: modules/Students/report_student_emergencySummary.php:39
 #: modules/Students/report_student_emergencySummary_print.php:39
@@ -45333,35 +45329,35 @@ msgstr ""
 #: modules/Students/report_student_medicalSummary.php:145
 #: modules/Students/report_student_medicalSummary_print.php:76
 msgid "Last Update"
-msgstr ""
+msgstr "上一個更新"
 
 #: modules/Students/report_student_emergencySummary.php:220
 #: modules/Students/report_student_emergencySummary_print.php:154
 #: modules/Students/report_student_emergencySummary.php:220
 #: modules/Students/report_student_emergencySummary_print.php:154
 msgid "No number available."
-msgstr ""
+msgstr "沒有可用的電話號碼"
 
 #: modules/Students/report_student_emergencySummary.php:226
 #: modules/Students/report_student_emergencySummary_print.php:160
 #: modules/Students/report_student_emergencySummary.php:226
 #: modules/Students/report_student_emergencySummary_print.php:160
 msgid "Emergency Contact 1"
-msgstr ""
+msgstr "緊急聯繫 1"
 
 #: modules/Students/report_student_emergencySummary.php:237
 #: modules/Students/report_student_emergencySummary_print.php:171
 #: modules/Students/report_student_emergencySummary.php:237
 #: modules/Students/report_student_emergencySummary_print.php:171
 msgid "Emergency Contact 2"
-msgstr ""
+msgstr "緊急聯繫 2"
 
 #: modules/Students/report_student_medicalSummary.php:36
 #: modules/Students/report_student_medicalSummary_print.php:36
 #: modules/Students/report_student_medicalSummary.php:36
 #: modules/Students/report_student_medicalSummary_print.php:36
 msgid "Student Medical Data Summary"
-msgstr ""
+msgstr "學生緊急資料總結"
 
 #: modules/Students/report_student_medicalSummary.php:39
 #: modules/Students/report_student_medicalSummary.php:39
@@ -45373,7 +45369,7 @@ msgstr ""
 #: modules/Students/report_student_medicalSummary.php:135
 #: modules/Students/report_student_medicalSummary_print.php:66
 msgid "Medical Form?"
-msgstr ""
+msgstr "醫療表？"
 
 #: modules/Students/report_student_medicalSummary.php:242
 #: modules/Students/report_student_medicalSummary_print.php:174
@@ -45384,7 +45380,7 @@ msgstr ""
 #: modules/Students/report_students_byRollGroup.php:277
 #: modules/Students/report_students_byRollGroup_print.php:220
 msgid "Condition"
-msgstr ""
+msgstr "狀態"
 
 #: modules/Students/report_students_ageGenderSummary.php:76
 #: modules/Students/report_students_byRollGroup.php:170
@@ -45403,34 +45399,34 @@ msgstr ""
 #: modules/Students/student_view_details.php:451
 #: modules/Students/student_view_details.php:607
 msgid "Age"
-msgstr ""
+msgstr "年齡"
 
 #: modules/Students/report_students_ageGenderSummary.php:77
 #: modules/Students/report_students_ageGenderSummary.php:77
 msgid "As of today"
-msgstr ""
+msgstr "截至今日"
 
 #: modules/Students/report_students_ageGenderSummary.php:180
 #: modules/Students/report_students_ageGenderSummary.php:180
 msgid "All Ages"
-msgstr ""
+msgstr "所有年齡"
 
 #: modules/Students/report_students_byRollGroup.php:183
 #: modules/Students/report_students_byRollGroup_print.php:126
 #: modules/Students/report_students_byRollGroup.php:183
 #: modules/Students/report_students_byRollGroup_print.php:126
 msgid "Locker"
-msgstr ""
+msgstr "儲物櫃"
 
 #: modules/Students/report_students_byRollGroup.php:289
 #: modules/Students/report_students_byRollGroup.php:289
 msgid "No medical data"
-msgstr ""
+msgstr "沒有醫療資料"
 
 #: modules/Students/report_students_IDCards.php:34
 #: modules/Students/report_students_IDCards.php:34
 msgid "Student ID Cards"
-msgstr ""
+msgstr "學生身分證"
 
 #: modules/Students/report_students_IDCards.php:37
 #: modules/Students/report_students_IDCards.php:37
@@ -45462,7 +45458,7 @@ msgstr ""
 #: modules/Students/report_students_IDCards.php:209
 #: modules/Students/report_students_IDCards.php:209
 msgid "Year/Roll"
-msgstr ""
+msgstr "年級/班級"
 
 #: modules/Students/report_students_left.php:38
 #: modules/Students/report_students_new.php:38
@@ -45473,7 +45469,7 @@ msgstr ""
 #: modules/Timetable/report_viewAvailableSpaces.php:37
 #: modules/Timetable/report_viewAvailableTeachers.php:37
 msgid "Choose Options"
-msgstr ""
+msgstr "選擇選項"
 
 #: modules/Students/report_students_left.php:60
 #: modules/Students/report_students_left.php:60
@@ -45511,7 +45507,7 @@ msgstr ""
 #: modules/Library/library_import.php:355
 #: modules/Students/report_students_left.php:116
 msgid "Results"
-msgstr ""
+msgstr "結果"
 
 #: modules/Students/report_students_left.php:233
 #: modules/Students/report_students_left.php:233
@@ -45655,7 +45651,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:616
 #: modules/Students/student_view_details.php:616
 msgid "Contacts"
-msgstr ""
+msgstr "聯絡人"
 
 #: modules/Students/student_view_details.php:690
 #: modules/Students/student_view_details.php:706
@@ -45664,7 +45660,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:758
 #: modules/Students/student_view_details.php:758
 msgid "Background"
-msgstr ""
+msgstr "背景"
 
 #: modules/Students/student_view_details.php:872
 #: modules/Students/student_view_details.php:894
@@ -45673,7 +45669,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:946
 #: modules/Students/student_view_details.php:946
 msgid "System Data"
-msgstr ""
+msgstr "系統資料"
 
 #: modules/Students/student_view_details.php:886
 #: modules/Students/student_view_details.php:908
@@ -45726,7 +45722,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:1515
 #: modules/Students/student_view_details.php:1515
 msgid "Medical Conditions?"
-msgstr ""
+msgstr "醫療狀況？"
 
 #: modules/Students/student_view_details.php:1404
 #: modules/Students/student_view_details.php:1402
@@ -45737,7 +45733,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:1517
 #: modules/Students/student_view_details.php:1517
 msgid "Details below."
-msgstr ""
+msgstr "詳情以下"
 
 #: modules/Students/student_view_details.php:1456
 #: modules/Students/student_view_details.php:1454
@@ -45750,7 +45746,7 @@ msgstr ""
 #: modules/Crowd Assessment/crowdAssess_view.php:150
 #: modules/Students/student_view_details.php:1569
 msgid "Comments"
-msgstr ""
+msgstr "意見"
 
 #: modules/Students/student_view_details.php:1485
 #: modules/Students/student_view_details.php:1483
@@ -45843,7 +45839,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2546
 #: modules/Students/student_view_details.php:2589
 msgid "Homework History"
-msgstr ""
+msgstr "功課歷史"
 
 #: modules/Students/student_view_details.php:2596
 #: modules/Students/student_view_details.php:2594
@@ -45869,7 +45865,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2839
 #: modules/Students/student_view_details.php:2882
 msgid "No Current Alerts"
-msgstr ""
+msgstr "沒有現在的通知"
 
 #: modules/Students/student_view_details.php:2622
 #: modules/Students/student_view_details.php:2620
@@ -45882,7 +45878,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2842
 #: modules/Students/student_view_details.php:2885
 msgid "Current Alerts:"
-msgstr ""
+msgstr "現在的通知"
 
 #: modules/Students/student_view_details.php:2671
 #: modules/Students/student_view_details.php:2669
@@ -45895,7 +45891,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2890
 #: modules/Students/student_view_details.php:2933
 msgid "School Attendance"
-msgstr ""
+msgstr "學校出席"
 
 #: modules/Students/student_view_details.php:2727
 #: modules/Students/student_view_details.php:2725
@@ -45940,12 +45936,13 @@ msgstr "編輯學生紀錄"
 
 #: modules/System Admin/i18n_manage.php:67
 #: modules/System Admin/i18n_manage.php:67
-#, fuzzy
 msgid ""
 "Inactive languages are not yet ready for use within the system as they are "
 "still under development. They cannot be set to default, nor selected by "
 "users."
-msgstr "還沒行動的語言還沒可以在系統上用，因為它們還沒發展。他們不可以是"
+msgstr ""
+"還沒行動的語言還沒可以在系統上用，因為它們還沒發展。他們不可以定做自動，或給"
+"用戶選擇。"
 
 #: modules/System Admin/module_manage_update.php:129
 #: modules/System Admin/module_manage_update.php:129
@@ -46145,19 +46142,19 @@ msgstr "星期"
 #: modules/Timetable/report_viewAvailableSpaces.php:651
 #: modules/Timetable/report_viewAvailableTeachers.php:565
 msgid "School Closed"
-msgstr ""
+msgstr "學校關門"
 
 #: modules/Timetable/tt.php:104 modules/Timetable/tt.php:104
 msgid "Choose A Person"
-msgstr ""
+msgstr "選擇人員"
 
 #: modules/Timetable/tt_space.php:64 modules/Timetable/tt_space.php:64
 msgid "Space name."
-msgstr ""
+msgstr "空間名稱"
 
 #: modules/Timetable/tt_space.php:85 modules/Timetable/tt_space.php:85
 msgid "Choose A Space"
-msgstr ""
+msgstr "選擇空間"
 
 #: modules/User Admin/applicationForm_manage.php:134
 #: modules/User Admin/applicationForm_manage.php:134
@@ -46218,7 +46215,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:62 i18n/dbStringsForTranslation.php:62
 #: modules/Activities/activities_copy.php:34
 msgid "Copy Activities"
-msgstr ""
+msgstr "複製活動"
 
 #: i18n/dbStringsForTranslation.php:83
 msgid "Edit Markbook_everything"
@@ -46974,19 +46971,19 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:310 i18n/dbStringsForTranslation.php:320
 #: i18n/dbStringsForTranslation.php:323 i18n/dbStringsForTranslation.php:323
 msgid "Edit all messages"
-msgstr ""
+msgstr "編輯所有信息"
 
 #: i18n/dbStringsForTranslation.php:494 i18n/dbStringsForTranslation.php:310
 #: i18n/dbStringsForTranslation.php:311 i18n/dbStringsForTranslation.php:321
 #: i18n/dbStringsForTranslation.php:324 i18n/dbStringsForTranslation.php:324
 msgid "Edit all messages created by the user"
-msgstr ""
+msgstr "編輯所有用戶創造的信息"
 
 #: i18n/dbStringsForTranslation.php:495 i18n/dbStringsForTranslation.php:311
 #: i18n/dbStringsForTranslation.php:312 i18n/dbStringsForTranslation.php:322
 #: i18n/dbStringsForTranslation.php:325 i18n/dbStringsForTranslation.php:325
 msgid "Edit any user within the system"
-msgstr ""
+msgstr "編輯在系統裡任何的學生"
 
 #: i18n/dbStringsForTranslation.php:496 i18n/dbStringsForTranslation.php:312
 #: i18n/dbStringsForTranslation.php:313 i18n/dbStringsForTranslation.php:323
@@ -47014,13 +47011,13 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:316 i18n/dbStringsForTranslation.php:326
 #: i18n/dbStringsForTranslation.php:329 i18n/dbStringsForTranslation.php:329
 msgid "Edit settings for the planner"
-msgstr ""
+msgstr "編輯計畫表的設定"
 
 #: i18n/dbStringsForTranslation.php:500 i18n/dbStringsForTranslation.php:316
 #: i18n/dbStringsForTranslation.php:317 i18n/dbStringsForTranslation.php:327
 #: i18n/dbStringsForTranslation.php:330 i18n/dbStringsForTranslation.php:330
 msgid "Edit staff within the system"
-msgstr ""
+msgstr "編輯在系統裡的員工"
 
 #: i18n/dbStringsForTranslation.php:501 i18n/dbStringsForTranslation.php:317
 #: i18n/dbStringsForTranslation.php:318 i18n/dbStringsForTranslation.php:329
@@ -47078,7 +47075,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:326 i18n/dbStringsForTranslation.php:337
 #: i18n/dbStringsForTranslation.php:341 i18n/dbStringsForTranslation.php:341
 msgid "Main system settings"
-msgstr ""
+msgstr "系統主要設定"
 
 #: i18n/dbStringsForTranslation.php:510 i18n/dbStringsForTranslation.php:326
 #: i18n/dbStringsForTranslation.php:327 i18n/dbStringsForTranslation.php:338
@@ -47098,19 +47095,19 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:329 i18n/dbStringsForTranslation.php:340
 #: i18n/dbStringsForTranslation.php:344 i18n/dbStringsForTranslation.php:344
 msgid "Manage all behaviour records"
-msgstr ""
+msgstr "管理所有的行為記錄"
 
 #: i18n/dbStringsForTranslation.php:513 i18n/dbStringsForTranslation.php:329
 #: i18n/dbStringsForTranslation.php:330 i18n/dbStringsForTranslation.php:341
 #: i18n/dbStringsForTranslation.php:345 i18n/dbStringsForTranslation.php:345
 msgid "Manage all outcomes in the school"
-msgstr ""
+msgstr "管理學校中所有的結果"
 
 #: i18n/dbStringsForTranslation.php:514 i18n/dbStringsForTranslation.php:330
 #: i18n/dbStringsForTranslation.php:331 i18n/dbStringsForTranslation.php:342
 #: i18n/dbStringsForTranslation.php:346 i18n/dbStringsForTranslation.php:346
 msgid "Manage all resources"
-msgstr ""
+msgstr "管理所有的資源"
 
 #: i18n/dbStringsForTranslation.php:515 i18n/dbStringsForTranslation.php:331
 #: i18n/dbStringsForTranslation.php:332 i18n/dbStringsForTranslation.php:343
@@ -47129,13 +47126,13 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:334 i18n/dbStringsForTranslation.php:345
 #: i18n/dbStringsForTranslation.php:349 i18n/dbStringsForTranslation.php:349
 msgid "Manage all units within the school"
-msgstr ""
+msgstr "管理在學校中所有的單元"
 
 #: i18n/dbStringsForTranslation.php:518 i18n/dbStringsForTranslation.php:334
 #: i18n/dbStringsForTranslation.php:335 i18n/dbStringsForTranslation.php:346
 #: i18n/dbStringsForTranslation.php:350 i18n/dbStringsForTranslation.php:350
 msgid "Manage behaviour records create by the user"
-msgstr ""
+msgstr "管理用戶所創造的的行為紀錄"
 
 #: i18n/dbStringsForTranslation.php:519 i18n/dbStringsForTranslation.php:335
 #: i18n/dbStringsForTranslation.php:336 i18n/dbStringsForTranslation.php:347
@@ -47165,7 +47162,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:340 i18n/dbStringsForTranslation.php:351
 #: i18n/dbStringsForTranslation.php:355 i18n/dbStringsForTranslation.php:355
 msgid "Manage medical form information for users "
-msgstr ""
+msgstr "管理給用戶的醫療表資料"
 
 #: i18n/dbStringsForTranslation.php:524 i18n/dbStringsForTranslation.php:340
 #: i18n/dbStringsForTranslation.php:341 i18n/dbStringsForTranslation.php:352
@@ -47231,7 +47228,7 @@ msgstr ""
 msgid ""
 "Print a report of all attendance data in the current school year for a "
 "student"
-msgstr ""
+msgstr "印出一位學生在這個學年所有的出席資料"
 
 #: i18n/dbStringsForTranslation.php:534 i18n/dbStringsForTranslation.php:350
 #: i18n/dbStringsForTranslation.php:351 i18n/dbStringsForTranslation.php:362
@@ -47239,14 +47236,14 @@ msgstr ""
 msgid ""
 "Print a report of all attendance data in the current school yearfor my "
 "children"
-msgstr ""
+msgstr "印出我的兒童在這個學年所有的出席資料"
 
 #: i18n/dbStringsForTranslation.php:535 i18n/dbStringsForTranslation.php:351
 #: i18n/dbStringsForTranslation.php:352 i18n/dbStringsForTranslation.php:363
 #: i18n/dbStringsForTranslation.php:367 i18n/dbStringsForTranslation.php:367
 msgid ""
 "Print a report of roll groups who have not been registered on a given day"
-msgstr ""
+msgstr "印出所有在指定日期沒有登記的班級"
 
 #: i18n/dbStringsForTranslation.php:536 i18n/dbStringsForTranslation.php:352
 #: i18n/dbStringsForTranslation.php:353 i18n/dbStringsForTranslation.php:364
@@ -47254,31 +47251,31 @@ msgstr ""
 msgid ""
 "Print a report of students who are not physically on the school campus on a "
 "given day"
-msgstr ""
+msgstr "印出所有在指定日期時個人沒有在學校的學生名單"
 
 #: i18n/dbStringsForTranslation.php:537 i18n/dbStringsForTranslation.php:353
 #: i18n/dbStringsForTranslation.php:354 i18n/dbStringsForTranslation.php:365
 #: i18n/dbStringsForTranslation.php:369 i18n/dbStringsForTranslation.php:369
 msgid "Print a report of students who are not present on a given day"
-msgstr ""
+msgstr "印出所有在指定日期沒有上學的學生名單"
 
 #: i18n/dbStringsForTranslation.php:538 i18n/dbStringsForTranslation.php:354
 #: i18n/dbStringsForTranslation.php:355 i18n/dbStringsForTranslation.php:366
 #: i18n/dbStringsForTranslation.php:370 i18n/dbStringsForTranslation.php:370
 msgid "Print attendance lists"
-msgstr ""
+msgstr "打印出席表"
 
 #: i18n/dbStringsForTranslation.php:539 i18n/dbStringsForTranslation.php:355
 #: i18n/dbStringsForTranslation.php:356 i18n/dbStringsForTranslation.php:367
 #: i18n/dbStringsForTranslation.php:371 i18n/dbStringsForTranslation.php:371
 msgid "Print participant lists"
-msgstr ""
+msgstr "印出參加者的名單"
 
 #: i18n/dbStringsForTranslation.php:540 i18n/dbStringsForTranslation.php:356
 #: i18n/dbStringsForTranslation.php:357 i18n/dbStringsForTranslation.php:368
 #: i18n/dbStringsForTranslation.php:372 i18n/dbStringsForTranslation.php:372
 msgid "Print payment list"
-msgstr ""
+msgstr "印出費用名單"
 
 #: i18n/dbStringsForTranslation.php:541 i18n/dbStringsForTranslation.php:357
 #: i18n/dbStringsForTranslation.php:358 i18n/dbStringsForTranslation.php:369
@@ -47290,7 +47287,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:359 i18n/dbStringsForTranslation.php:370
 #: i18n/dbStringsForTranslation.php:374 i18n/dbStringsForTranslation.php:374
 msgid "Print student roll group lists"
-msgstr ""
+msgstr "印出學生班級的名單"
 
 #: i18n/dbStringsForTranslation.php:543 i18n/dbStringsForTranslation.php:359
 #: i18n/dbStringsForTranslation.php:360 i18n/dbStringsForTranslation.php:371
@@ -47314,19 +47311,19 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:363 i18n/dbStringsForTranslation.php:374
 #: i18n/dbStringsForTranslation.php:378 i18n/dbStringsForTranslation.php:378
 msgid "Send messages by email."
-msgstr ""
+msgstr "用電郵送出信息"
 
 #: i18n/dbStringsForTranslation.php:547 i18n/dbStringsForTranslation.php:363
 #: i18n/dbStringsForTranslation.php:364 i18n/dbStringsForTranslation.php:375
 #: i18n/dbStringsForTranslation.php:379 i18n/dbStringsForTranslation.php:379
 msgid "Send messages by message wall."
-msgstr ""
+msgstr "用信息牆送出信息"
 
 #: i18n/dbStringsForTranslation.php:548 i18n/dbStringsForTranslation.php:364
 #: i18n/dbStringsForTranslation.php:365 i18n/dbStringsForTranslation.php:376
 #: i18n/dbStringsForTranslation.php:380 i18n/dbStringsForTranslation.php:380
 msgid "Send messages by SMS."
-msgstr ""
+msgstr "用SMS送出信息"
 
 #: i18n/dbStringsForTranslation.php:549 i18n/dbStringsForTranslation.php:365
 #: i18n/dbStringsForTranslation.php:366 i18n/dbStringsForTranslation.php:377
@@ -47384,13 +47381,13 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:374 i18n/dbStringsForTranslation.php:385
 #: i18n/dbStringsForTranslation.php:389 i18n/dbStringsForTranslation.php:389
 msgid "Take attendance, one person at a time"
-msgstr ""
+msgstr "用一個一個人來點出席表"
 
 #: i18n/dbStringsForTranslation.php:558 i18n/dbStringsForTranslation.php:374
 #: i18n/dbStringsForTranslation.php:375 i18n/dbStringsForTranslation.php:386
 #: i18n/dbStringsForTranslation.php:390 i18n/dbStringsForTranslation.php:390
 msgid "Take attendance, one roll group at a time"
-msgstr ""
+msgstr "用一個班級點出席表"
 
 #: i18n/dbStringsForTranslation.php:559
 #: modules/Activities/activities_copy.php:65
@@ -47413,19 +47410,19 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:379 i18n/dbStringsForTranslation.php:390
 #: i18n/dbStringsForTranslation.php:395 i18n/dbStringsForTranslation.php:395
 msgid "View a brief profile of roll groups in school."
-msgstr ""
+msgstr "觀看在學校中的班級的檔案"
 
 #: i18n/dbStringsForTranslation.php:562 i18n/dbStringsForTranslation.php:378
 #: i18n/dbStringsForTranslation.php:380 i18n/dbStringsForTranslation.php:391
 #: i18n/dbStringsForTranslation.php:396 i18n/dbStringsForTranslation.php:396
 msgid "View all markbook information for all users"
-msgstr ""
+msgstr "觀看所有用戶的分數表資料"
 
 #: i18n/dbStringsForTranslation.php:563 i18n/dbStringsForTranslation.php:379
 #: i18n/dbStringsForTranslation.php:381 i18n/dbStringsForTranslation.php:392
 #: i18n/dbStringsForTranslation.php:397 i18n/dbStringsForTranslation.php:397
 msgid "View all outcomes in the school"
-msgstr ""
+msgstr "觀看學校中的所有結果"
 
 #: i18n/dbStringsForTranslation.php:564 i18n/dbStringsForTranslation.php:380
 #: i18n/dbStringsForTranslation.php:382 i18n/dbStringsForTranslation.php:393
@@ -47482,43 +47479,43 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:389 i18n/dbStringsForTranslation.php:400
 #: i18n/dbStringsForTranslation.php:405 i18n/dbStringsForTranslation.php:405
 msgid "View behaviour records by student"
-msgstr ""
+msgstr "用行為紀錄找學生"
 
 #: i18n/dbStringsForTranslation.php:572 i18n/dbStringsForTranslation.php:388
 #: i18n/dbStringsForTranslation.php:390 i18n/dbStringsForTranslation.php:401
 #: i18n/dbStringsForTranslation.php:406 i18n/dbStringsForTranslation.php:406
 msgid "View brief profile of any staff member in the school."
-msgstr ""
+msgstr "觀看在任何學校的員工的基本檔案"
 
 #: i18n/dbStringsForTranslation.php:573 i18n/dbStringsForTranslation.php:389
 #: i18n/dbStringsForTranslation.php:391 i18n/dbStringsForTranslation.php:402
 #: i18n/dbStringsForTranslation.php:407 i18n/dbStringsForTranslation.php:407
 msgid "View brief profile of any student in the school."
-msgstr ""
+msgstr "觀看在任何學校的學生的基本檔案"
 
 #: i18n/dbStringsForTranslation.php:574 i18n/dbStringsForTranslation.php:390
 #: i18n/dbStringsForTranslation.php:392 i18n/dbStringsForTranslation.php:403
 #: i18n/dbStringsForTranslation.php:408 i18n/dbStringsForTranslation.php:408
 msgid "View family addresses by student"
-msgstr ""
+msgstr "用家庭地址觀看學生"
 
 #: i18n/dbStringsForTranslation.php:575 i18n/dbStringsForTranslation.php:391
 #: i18n/dbStringsForTranslation.php:393 i18n/dbStringsForTranslation.php:404
 #: i18n/dbStringsForTranslation.php:409 i18n/dbStringsForTranslation.php:409
 msgid "View full profile of any staff member in the school."
-msgstr ""
+msgstr "觀看在任何學校的員工的完整檔案"
 
 #: i18n/dbStringsForTranslation.php:576 i18n/dbStringsForTranslation.php:392
 #: i18n/dbStringsForTranslation.php:394 i18n/dbStringsForTranslation.php:405
 #: i18n/dbStringsForTranslation.php:410 i18n/dbStringsForTranslation.php:410
 msgid "View full profile of any student in the school."
-msgstr ""
+msgstr "觀看在任何學校的學生的完整檔案"
 
 #: i18n/dbStringsForTranslation.php:577 i18n/dbStringsForTranslation.php:393
 #: i18n/dbStringsForTranslation.php:395 i18n/dbStringsForTranslation.php:406
 #: i18n/dbStringsForTranslation.php:411 i18n/dbStringsForTranslation.php:411
 msgid "View items borrowed by an individual student."
-msgstr ""
+msgstr "觀看以為學生借的項目"
 
 #: i18n/dbStringsForTranslation.php:578 i18n/dbStringsForTranslation.php:394
 #: i18n/dbStringsForTranslation.php:396 i18n/dbStringsForTranslation.php:407
@@ -47530,7 +47527,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:397 i18n/dbStringsForTranslation.php:408
 #: i18n/dbStringsForTranslation.php:413 i18n/dbStringsForTranslation.php:413
 msgid "View resources"
-msgstr ""
+msgstr "觀看資源"
 
 #: i18n/dbStringsForTranslation.php:580 i18n/dbStringsForTranslation.php:396
 #: i18n/dbStringsForTranslation.php:398 i18n/dbStringsForTranslation.php:409
@@ -47560,7 +47557,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:403 i18n/dbStringsForTranslation.php:414
 #: i18n/dbStringsForTranslation.php:419 i18n/dbStringsForTranslation.php:419
 msgid "View your own marks"
-msgstr ""
+msgstr "遠看個人的分數"
 
 #: i18n/dbStringsForTranslation.php:593 i18n/dbStringsForTranslation.php:409
 #: i18n/dbStringsForTranslation.php:411 i18n/dbStringsForTranslation.php:422
@@ -47591,7 +47588,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:767 i18n/dbStringsForTranslation.php:772
 #: i18n/dbStringsForTranslation.php:775 i18n/dbStringsForTranslation.php:775
 msgid "Target Grade"
-msgstr ""
+msgstr "目標分數"
 
 #: i18n/dbStringsForTranslation.php:933 i18n/dbStringsForTranslation.php:938
 #: i18n/dbStringsForTranslation.php:939 i18n/dbStringsForTranslation.php:754
@@ -47599,7 +47596,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:773 i18n/dbStringsForTranslation.php:776
 #: i18n/dbStringsForTranslation.php:776
 msgid "Final Grade"
-msgstr ""
+msgstr "終極分數"
 
 #: i18n/dbStringsForTranslation.php:934 i18n/dbStringsForTranslation.php:939
 #: i18n/dbStringsForTranslation.php:941 i18n/dbStringsForTranslation.php:755
@@ -47607,7 +47604,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:774 i18n/dbStringsForTranslation.php:777
 #: i18n/dbStringsForTranslation.php:777
 msgid "Scores"
-msgstr ""
+msgstr "分數"
 
 #: i18n/dbStringsForTranslation.php:935 i18n/dbStringsForTranslation.php:940
 #: i18n/dbStringsForTranslation.php:943 i18n/dbStringsForTranslation.php:756
@@ -47615,7 +47612,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:775 i18n/dbStringsForTranslation.php:778
 #: i18n/dbStringsForTranslation.php:778
 msgid "KS3 Target Grades"
-msgstr ""
+msgstr "KS3目標分數"
 
 #: i18n/dbStringsForTranslation.php:936 i18n/dbStringsForTranslation.php:941
 #: i18n/dbStringsForTranslation.php:945 i18n/dbStringsForTranslation.php:757
@@ -47623,7 +47620,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:776 i18n/dbStringsForTranslation.php:779
 #: i18n/dbStringsForTranslation.php:779
 msgid "GCSE Target Grades"
-msgstr ""
+msgstr "GCSE目標分數"
 
 #: modules/Activities/activities_copy.php:65
 #: modules/Activities/activities_copy.php:65
@@ -47635,7 +47632,7 @@ msgstr ""
 #: modules/Activities/activities_copy.php:80
 #: modules/Activities/activities_copy.php:80
 msgid "Target School Year"
-msgstr ""
+msgstr "目標的學年"
 
 #: modules/Messenger/messenger_post.php:260
 #: modules/Messenger/messenger_post.php:270
@@ -47690,7 +47687,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:857 i18n/dbStringsForTranslation.php:893
 #: i18n/dbStringsForTranslation.php:857 i18n/dbStringsForTranslation.php:893
 msgid "Serial Number"
-msgstr ""
+msgstr "編號"
 
 #: i18n/dbStringsForTranslation.php:1024 i18n/dbStringsForTranslation.php:1060
 #: i18n/dbStringsForTranslation.php:835 i18n/dbStringsForTranslation.php:871
@@ -47963,7 +47960,7 @@ msgstr ""
 #: index.php:1488 index.php:1508 index.php:1511 index.php:1470 index.php:1473
 #: index.php:1087 index.php:1090 index.php:916 index.php:919 index.php:970
 #: index.php:973 index.php:969 index.php:972 index.php:964 index.php:967
-#: index.php:986 index.php:989
+#: index.php:1032 index.php:1035
 msgid "Translation led by"
 msgstr ""
 
@@ -47972,21 +47969,21 @@ msgstr ""
 #: installer/install.php:153 installer/install.php:156
 #: installer/install.php:156
 msgid "Database Information"
-msgstr ""
+msgstr "數據庫資料"
 
 #: installer/install.php:107 installer/install.php:152
 #: installer/install.php:153 installer/install.php:154
 #: installer/install.php:158 installer/install.php:161
 #: installer/install.php:161
 msgid "Database Type"
-msgstr ""
+msgstr "數據庫類型"
 
 #: installer/install.php:116 installer/install.php:161
 #: installer/install.php:162 installer/install.php:163
 #: installer/install.php:167 installer/install.php:170
 #: installer/install.php:170
 msgid "Database Server"
-msgstr ""
+msgstr "數據庫伺服器"
 
 #: installer/install.php:117 installer/install.php:162
 #: installer/install.php:163 installer/install.php:164
@@ -48000,7 +47997,7 @@ msgstr ""
 #: installer/install.php:180 installer/install.php:183
 #: installer/install.php:183
 msgid "Database Name"
-msgstr ""
+msgstr "數據庫名稱"
 
 #: installer/install.php:130 installer/install.php:175
 #: installer/install.php:176 installer/install.php:177
@@ -48013,14 +48010,14 @@ msgstr ""
 #: installer/install.php:193 installer/install.php:196
 #: installer/install.php:196
 msgid "Database Username"
-msgstr ""
+msgstr "數據庫用戶名稱"
 
 #: installer/install.php:154 installer/install.php:199
 #: installer/install.php:200 installer/install.php:201
 #: installer/install.php:205 installer/install.php:208
 #: installer/install.php:208
 msgid "Database Password"
-msgstr ""
+msgstr "數據庫密碼"
 
 #: installer/install.php:423 installer/install.php:425
 #: installer/install.php:640 installer/install.php:627
@@ -48167,7 +48164,7 @@ msgstr ""
 #: installer/install.php:1294 installer/install.php:1346
 #: installer/install.php:1437 installer/install.php:1437
 msgid "Welcome To Gibbon"
-msgstr ""
+msgstr "歡迎來到Gibbon"
 
 #: installer/install.php:1138 installer/install.php:1393
 #: installer/install.php:1290 installer/install.php:1277
@@ -48206,7 +48203,7 @@ msgstr ""
 #: installer/install.php:364 installer/install.php:416
 #: installer/install.php:443 installer/install.php:443
 msgid "User Account"
-msgstr ""
+msgstr "用戶的帳戶"
 
 #: installer/install.php:1367 installer/install.php:1264
 #: installer/install.php:1251 installer/install.php:1252
@@ -48370,7 +48367,7 @@ msgstr "關係不明"
 #: modules/User Admin/role_manage_duplicate.php:34
 #: modules/User Admin/role_manage_duplicate.php:34
 msgid "Duplicate Role"
-msgstr ""
+msgstr "複製角色"
 
 #: modules/User Admin/role_manage_duplicate.php:125
 #: modules/User Admin/role_manage_duplicate.php:125
@@ -48409,14 +48406,14 @@ msgstr ""
 #: cli/planner_parentWeeklyEmailSummary.php:152
 #: cli/planner_parentWeeklyEmailSummary.php:152
 msgid "Positive behaviour records this week"
-msgstr ""
+msgstr "這一星期的積極行為"
 
 #: cli/planner_parentWeeklyEmailSummary.php:137
 #: cli/planner_parentWeeklyEmailSummary.php:151
 #: cli/planner_parentWeeklyEmailSummary.php:153
 #: cli/planner_parentWeeklyEmailSummary.php:153
 msgid "Negative behaviour records this week"
-msgstr ""
+msgstr "這一星期的消極行為"
 
 #: cli/planner_parentWeeklyEmailSummary.php:246
 #: cli/planner_parentWeeklyEmailSummary.php:252
@@ -48462,7 +48459,7 @@ msgstr "每週計畫總結用%2$s在%3$s給%1$s。"
 #: cli/planner_parentWeeklyEmailSummary.php:306
 #: cli/planner_parentWeeklyEmailSummary.php:306
 msgid "Student Count"
-msgstr ""
+msgstr "學生統計"
 
 #: cli/planner_parentWeeklyEmailSummary.php:291
 #: cli/planner_parentWeeklyEmailSummary.php:305
@@ -48493,7 +48490,7 @@ msgstr ""
 #: modules/Planner/planner.php:1058 index.php:729 index.php:1157 index.php:732
 #: index.php:1166 functions.php:125 index.php:774 functions.php:334
 #: index.php:603 index.php:657 index.php:663 index.php:658 functions.php:334
-#: index.php:680 modules/Planner/planner.php:337
+#: index.php:726 modules/Planner/planner.php:337
 #: modules/Planner/planner.php:524 modules/Planner/planner.php:747
 #: modules/Planner/planner.php:1058
 msgid "Teacher Recorded"
@@ -48504,7 +48501,7 @@ msgstr "老師已紀錄"
 #: modules/Planner/planner.php:1067 index.php:738 index.php:1166 index.php:741
 #: index.php:1175 functions.php:134 index.php:783 functions.php:343
 #: index.php:612 index.php:666 index.php:672 index.php:667 functions.php:343
-#: index.php:689 modules/Planner/planner.php:346
+#: index.php:735 modules/Planner/planner.php:346
 #: modules/Planner/planner.php:533 modules/Planner/planner.php:756
 #: modules/Planner/planner.php:1067
 msgid "Student Recorded"
@@ -49100,7 +49097,7 @@ msgstr ""
 #: modules/External Assessment/import_results.php:31
 #: modules/External Assessment/import_results.php:31
 msgid "Sync Results"
-msgstr ""
+msgstr "同步結果"
 
 #: modules/External Assessment/import_results.php:52
 #: modules/External Assessment/import_results.php:52
@@ -49353,14 +49350,14 @@ msgstr "每天重覆"
 #: modules/Timetable/spaceBooking_manage_add.php:207
 #: modules/Timetable/spaceBooking_manage_add.php:207
 msgid "Repeat daily for this many days."
-msgstr ""
+msgstr "每天重覆許多天"
 
 #: modules/Timetable/spaceBooking_manage_add.php:207
 #: modules/Timetable/spaceBooking_manage_add.php:222
 #: modules/Timetable/spaceBooking_manage_add.php:207
 #: modules/Timetable/spaceBooking_manage_add.php:222
 msgid "Does not include non-school days."
-msgstr ""
+msgstr "不包括非學校天"
 
 #: modules/Timetable/spaceBooking_manage_add.php:221
 #: modules/Timetable/spaceBooking_manage_add.php:221
@@ -49370,7 +49367,7 @@ msgstr "每週重覆"
 #: modules/Timetable/spaceBooking_manage_add.php:222
 #: modules/Timetable/spaceBooking_manage_add.php:222
 msgid "Repeat weekly for this many days."
-msgstr ""
+msgstr "每星期重覆許多天"
 
 #: modules/Timetable/spaceBooking_manage_add.php:250
 #: modules/Timetable/spaceBooking_manage_add.php:250
@@ -49470,7 +49467,7 @@ msgid "Learning Overview"
 msgstr "學習慨覧"
 
 #: index.php:1093 index.php:922 index.php:976 index.php:963 index.php:958
-#: index.php:980
+#: index.php:1026
 msgid "Credits"
 msgstr ""
 
@@ -49840,7 +49837,7 @@ msgstr ""
 msgid "Incomplete Attendance Report"
 msgstr ""
 
-#: index.php:392 index.php:425 index.php:431 index.php:419 index.php:419
+#: index.php:392 index.php:425 index.php:431 index.php:419 index.php:486
 #, php-format
 msgid ""
 "Please feel free to %1$sbrowse our departmental information%2$s, to learn "
@@ -49909,7 +49906,7 @@ msgstr ""
 #: modules/Roll Groups/rollGroups_details.php:134
 #: modules/Roll Groups/rollGroups_details.php:134
 msgid "Normal (Roll Order, Surname, Preferred Name)"
-msgstr ""
+msgstr "正常 (出席表秩序，姓，首選名稱)"
 
 #: modules/Roll Groups/rollGroups_details.php:135
 #: modules/Roll Groups/rollGroups_details.php:135
@@ -50031,7 +50028,7 @@ msgstr ""
 #: modules/User Admin/studentEnrolment_manage_add.php:194
 #: modules/User Admin/studentEnrolment_manage_edit.php:210
 msgid "Roll Order"
-msgstr ""
+msgstr "出席表秩序"
 
 #: modules/User Admin/studentEnrolment_manage_add.php:203
 #: Admin/studentEnrolment_manage_edit.php:211
@@ -50039,7 +50036,7 @@ msgstr ""
 #: modules/User Admin/studentEnrolment_manage_add.php:195
 #: modules/User Admin/studentEnrolment_manage_edit.php:211
 msgid "Must be unique to roll gorup if set."
-msgstr ""
+msgstr "如果班級已定，一定要獨特"
 
 #: preferences.php:214 preferences.php:214
 msgid "Personal Google Calendar ID"
@@ -50063,11 +50060,11 @@ msgstr "還有%1$s 天到 %2$s 的生日!"
 msgid "%1$s day until %2$s birthday!"
 msgstr "還有%1$s 天到 %2$s 的生日!"
 
-#: index.php:215 index.php:217 index.php:217
+#: index.php:215 index.php:217 index.php:216
 msgid "Your session is about to expire: you will be logged out shortly."
 msgstr ""
 
-#: index.php:384 index.php:390 index.php:389 index.php:389
+#: index.php:384 index.php:390 index.php:389 index.php:456
 msgid ""
 "Your session expired, so you were automatically logged out of the system."
 msgstr ""
@@ -50094,13 +50091,13 @@ msgstr ""
 #: modules/Timetable Admin/ttDates.php:320
 #: modules/Timetable Admin/ttDates.php:320
 msgid "Multi Add"
-msgstr ""
+msgstr "同期加入"
 
 #: modules/User Admin/user_manage_add.php:879 Admin/user_manage_edit.php:1129
 #: modules/User Admin/user_manage_add.php:879
 #: modules/User Admin/user_manage_edit.php:1129
 msgid "Citizenship 1 Passport Scan"
-msgstr ""
+msgstr "國籍1 護照掃描"
 
 #: modules/User Admin/user_manage_add.php:880 Admin/user_manage_add.php:954
 #: Admin/user_manage_edit.php:1130 Admin/user_manage_edit.php:1219
@@ -50126,7 +50123,7 @@ msgstr "身分證掃描"
 #: functions.php:1807 functions.php:1824 functions.php:1824
 #, php-format
 msgid "Too many failed logins: please %1$sreset password%2$s."
-msgstr ""
+msgstr "太多失敗的登入: 請%1$s重置密碼%2$s"
 
 #: functions.php:896 functions.php:896
 #, php-format
@@ -50150,8 +50147,8 @@ msgstr "天到%1$s的生日!"
 msgid "day until %1$s birthday!"
 msgstr "天到%1$s的生日!"
 
-#: index.php:982 index.php:985 index.php:977 index.php:980 index.php:999
-#: index.php:1002
+#: index.php:982 index.php:985 index.php:977 index.php:980 index.php:1045
+#: index.php:1048
 msgid "Theme by"
 msgstr "主題裝作人"
 
@@ -50208,11 +50205,11 @@ msgstr ""
 
 #: preferences.php:309 preferences.php:309
 msgid "Receive Email Notifications?"
-msgstr ""
+msgstr "接受電郵通知?"
 
 #: preferences.php:310 preferences.php:310
 msgid "Notifications can always be viewed on screen."
-msgstr ""
+msgstr "總值可以在螢幕上觀看"
 
 #: error.php:22 error.php:22
 msgid "Oh no!"
@@ -50279,13 +50276,13 @@ msgid ""
 msgstr ""
 
 #: index.php:426 modules/Planner/units_public.php:35
-#: modules/Planner/units_public_view.php:34 index.php:427
+#: modules/Planner/units_public_view.php:34 index.php:494
 #: modules/Planner/units_public.php:35
 #: modules/Planner/units_public_view.php:34
 msgid "Learn With Us"
 msgstr "和我們一起學習"
 
-#: index.php:429 index.php:430
+#: index.php:429 index.php:497
 #, php-format
 msgid ""
 "We are sharing some of our units of study with members of the public, so you "
@@ -50339,17 +50336,17 @@ msgstr "版權"
 #: modules/Planner/units_add.php:191 modules/Planner/units_edit.php:279
 #: modules/Planner/units_add.php:191 modules/Planner/units_edit.php:279
 msgid "Creative Commons BY"
-msgstr ""
+msgstr "共享創意  姓名標示"
 
 #: modules/Planner/units_add.php:192 modules/Planner/units_edit.php:280
 #: modules/Planner/units_add.php:192 modules/Planner/units_edit.php:280
 msgid "Creative Commons BY-SA"
-msgstr ""
+msgstr "共享創意 姓名標示-相同方式分享"
 
 #: modules/Planner/units_add.php:193 modules/Planner/units_edit.php:281
 #: modules/Planner/units_add.php:193 modules/Planner/units_edit.php:281
 msgid "Creative Commons BY-SA-NC"
-msgstr ""
+msgstr "共享創意  姓名標示-非商業性-相同方式分享"
 
 #: modules/Planner/units_add.php:194 modules/Planner/units_edit.php:282
 #: modules/Planner/units_add.php:194 modules/Planner/units_edit.php:282
