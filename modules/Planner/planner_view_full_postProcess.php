@@ -89,8 +89,12 @@ else {
 				if ($_POST["replyTo"]=="") {
 					$replyTo=NULL ;
 				}
+				//Attempt to prevent XSS attack
+				$comment=$_POST["comment"] ;
+				$comment=tinymceStyleStripTags($comment, $connection2) ;
+				
 				try {
-					$dataInsert=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "comment"=>$_POST["comment"], "replyTo"=>$replyTo); 
+					$dataInsert=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "comment"=>$comment, "replyTo"=>$replyTo); 
 					$sqlInsert="INSERT INTO gibbonPlannerEntryDiscuss SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, comment=:comment, gibbonPlannerEntryDiscussIDReplyTo=:replyTo" ;
 					$resultInsert=$connection2->prepare($sqlInsert);
 					$resultInsert->execute($dataInsert);

@@ -302,7 +302,7 @@ else {
 				toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, |, cut, copy, paste, undo, redo, fullscreen',
 				plugins: 'table, template, paste, visualchars, image, link, template, textcolor, hr, charmap, fullscreen, media',
 			 	statusbar: false,
-			 	extended_valid_elements: '<?php print getSettingByScope($connection2, "System", "allowableHTML") ?>',
+			 	valid_elements: '<?php print getSettingByScope($connection2, "System", "allowableHTML") ?>',
 			 	apply_source_formatting : true,
 			 	browser_spellcheck: true,
 			 	convert_urls: false,

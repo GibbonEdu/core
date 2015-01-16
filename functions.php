@@ -17,6 +17,24 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//Takes the provided string, and uses a tinymce style valid_elements string to strip out unwanted tags
+//Not complete, as it does not strip out unwanted options, just whole tags.
+function tinymceStyleStripTags($string, $connection2) {
+	$return="" ;
+	
+	$comment=html_entity_decode($string) ;
+	$allowableTags=getSettingByScope($connection2, "System", "allowableHTML") ;
+	$allowableTags=preg_replace("/\[([^\[\]]|(?0))*]/" , "" , $allowableTags) ;
+	$allowableTagTokens=explode(",", $allowableTags) ;
+	$allowableTags="" ;
+	foreach ($allowableTagTokens AS $allowableTagToken) {
+		$allowableTags.="&lt;" . $allowableTagToken . "&gt;" ;
+	}
+	$allowableTags=html_entity_decode($allowableTags) ;
+	$comment=strip_tags($comment, $allowableTags) ;
+				
+	return $comment ;
+}
 
 function getMinorLinks($connection2, $guid, $cacheLoad) {
 	$return=FALSE ;

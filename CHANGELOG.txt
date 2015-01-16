@@ -225,7 +225,14 @@ Tinymce: removed annoying popup which covers part of editing menu
 
 Planner: fixed double update confirm on homepage when starring a lesson plan
 	Edited file /index.php
-	
+
+General: reduced risk of XSS attack launched by student user of system
+	Edited file /index.php
+	Edited value in table gibbonSetting
+	Edited files /modules/Planner/planner_view_full_postProcess.php, /Applications/MAMP/htdocs/github_gibbonEdu/core/modules/Planner/planner_view_full_myHomeworkProcess.php
+	Edited files /modules/Crowd Assessment/crowdAssess_view_discuss_postProcess.php
+
+
 v8.3.00
 -------
 General: added footer link to credits on Gibbon website
