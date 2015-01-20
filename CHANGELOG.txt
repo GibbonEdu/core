@@ -232,6 +232,8 @@ General: reduced risk of XSS attack launched by student user of system
 	Edited files /modules/Planner/planner_view_full_postProcess.php, /Applications/MAMP/htdocs/github_gibbonEdu/core/modules/Planner/planner_view_full_myHomeworkProcess.php
 	Edited files /modules/Crowd Assessment/crowdAssess_view_discuss_postProcess.php
 
+System Admin: added cache refresh on active theme change to make new theme active immediately for changing user
+	Edited file /modules/System Admin/theme_manageProcess.php
 
 v8.3.00
 -------

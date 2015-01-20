@@ -100,6 +100,7 @@ else {
 			}
 
 			//Success 0
+			$_SESSION[$guid]["pageLoads"]=NULL ;
 			$URL.="&updateReturn=success0" ;
 			header("Location: {$URL}");
 		}
