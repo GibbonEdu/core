@@ -682,13 +682,11 @@ _('Wednesday') ;
 _('Cognitive Abilities Test') ;
 _('GCSE/iGCSE') ;
 _('IB Diploma') ;
-_('Test') ;
 
 //gibbonExternalAssessment - nameShort
 _('CAT') ;
 _('GCSE') ;
 _('IB Diploma') ;
-_('TST') ;
 
 //gibbonExternalAssessment - description
 _('International Baccalaureate Diploma') ;

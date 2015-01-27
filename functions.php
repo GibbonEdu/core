@@ -41,7 +41,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 	
 	if (isset($_SESSION[$guid]["username"])) {
 		$return.=$_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"] . " . " ;
-		$return.="<a href='./logout.php'>Logout</a> . <a href='./index.php?q=preferences.php'>" . _('Preferences') . "</a>" ;
+		$return.="<a href='./logout.php'>" . _("Logout") . "</a> . <a href='./index.php?q=preferences.php'>" . _('Preferences') . "</a>" ;
 		if ($_SESSION[$guid]["emailLink"]!="") {
 			$return.=" . <a target='_blank' href='" . $_SESSION[$guid]["emailLink"] . "'>" . _('Email') . "</a>" ;
 		}

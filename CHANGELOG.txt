@@ -235,6 +235,10 @@ General: reduced risk of XSS attack launched by student user of system
 System Admin: added cache refresh on active theme change to make new theme active immediately for changing user
 	Edited file /modules/System Admin/theme_manageProcess.php
 
+General: fixed WebKit (Chrome/Safari/etc) issue with floating drop down menu on full screen pages
+	Edited file /index.php
+	
+
 v8.3.00
 -------
 General: added footer link to credits on Gibbon website

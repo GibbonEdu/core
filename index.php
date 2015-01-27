@@ -417,17 +417,23 @@ else {
 													if ($_GET["q"]=="/modules/" . $row["moduleName"] . "/" . $row["entryURL"]) {
 														$selected="selected" ;
 													}
-													$menu.="<option onclick=\"javascript:location.href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'\" $selected>" . _($currentName) . "</option>" ;
+													$menu.="<option value='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "' $selected>" . _($currentName) . "</option>" ;
 													$links++ ;
 												}
 												$lastCategory=$currentCategory ;
 												$lastName=$currentName ;
 												$count++ ;
 											}
+											
+											$menu.="<script>
+												$(\"#floatingModuleMenu\").change(function() {
+													document.location.href = $(this).val();
+												});
+											</script>" ;
 		
 											if ($links>1) {
 												print "<div class='linkTop'>" ;
-													print "<select style='width: 200px'>" ;
+													print "<select id='floatingModuleMenu' style='width: 200px'>" ;
 														print $menu ;
 													print "</select>" ;
 													print "<div style='float: right; padding-top: 10px'>" ;
