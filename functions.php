@@ -17,13 +17,31 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//Takes the provided string, and uses a tinymce style valid_elements string to strip out unwanted tags
+//Not complete, as it does not strip out unwanted options, just whole tags.
+function tinymceStyleStripTags($string, $connection2) {
+	$return="" ;
+	
+	$comment=html_entity_decode($string) ;
+	$allowableTags=getSettingByScope($connection2, "System", "allowableHTML") ;
+	$allowableTags=preg_replace("/\[([^\[\]]|(?0))*]/" , "" , $allowableTags) ;
+	$allowableTagTokens=explode(",", $allowableTags) ;
+	$allowableTags="" ;
+	foreach ($allowableTagTokens AS $allowableTagToken) {
+		$allowableTags.="&lt;" . $allowableTagToken . "&gt;" ;
+	}
+	$allowableTags=html_entity_decode($allowableTags) ;
+	$comment=strip_tags($comment, $allowableTags) ;
+				
+	return $comment ;
+}
 
 function getMinorLinks($connection2, $guid, $cacheLoad) {
 	$return=FALSE ;
 	
 	if (isset($_SESSION[$guid]["username"])) {
 		$return.=$_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"] . " . " ;
-		$return.="<a href='./logout.php'>Logout</a> . <a href='./index.php?q=preferences.php'>" . _('Preferences') . "</a>" ;
+		$return.="<a href='./logout.php'>" . _("Logout") . "</a> . <a href='./index.php?q=preferences.php'>" . _('Preferences') . "</a>" ;
 		if ($_SESSION[$guid]["emailLink"]!="") {
 			$return.=" . <a target='_blank' href='" . $_SESSION[$guid]["emailLink"] . "'>" . _('Email') . "</a>" ;
 		}
@@ -2427,7 +2445,7 @@ function getMaxUpload( $multiple="" ) {
 	$post=substr(ini_get("post_max_size"),0,(strlen(ini_get("post_max_size"))-1)) ;
 	$file=substr(ini_get("upload_max_filesize"),0,(strlen(ini_get("upload_max_filesize"))-1)) ;
 	
-	$output.="<div style='margin-top: 5px; font-style: italic; color: #c00'>" ;
+	$output.="<div style='margin-top: 10px; font-style: italic; color: #c00'>" ;
 	if ($multiple==TRUE) {
 		if ($post<$file) {
 			$output.=sprintf(_('Maximum size for all files: %1$sMB'), $post) . "<br/>" ;

@@ -133,8 +133,7 @@ if (isset($_SESSION[$guid]["passwordForceReset"])) {
 	}
 }
 
-
-if ($_SESSION[$guid]["address"]!="") {
+if ($_SESSION[$guid]["address"]!="" AND $sidebar!=true) {
 	try {
 		$dataSidebar=array("action"=>"%" . $_SESSION[$guid]["action"] . "%", "name"=>$_SESSION[$guid]["module"]); 
 		$sqlSidebar="SELECT gibbonAction.name FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonAction.URLList LIKE :action AND entrySidebar='N' AND gibbonModule.name=:name" ;
@@ -303,7 +302,7 @@ else {
 				toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, |, cut, copy, paste, undo, redo, fullscreen',
 				plugins: 'table, template, paste, visualchars, image, link, template, textcolor, hr, charmap, fullscreen, media',
 			 	statusbar: false,
-			 	extended_valid_elements: '<?php print getSettingByScope($connection2, "System", "allowableHTML") ?>',
+			 	valid_elements: '<?php print getSettingByScope($connection2, "System", "allowableHTML") ?>',
 			 	apply_source_formatting : true,
 			 	browser_spellcheck: true,
 			 	convert_urls: false,
@@ -373,6 +372,80 @@ else {
 						//Allow for wide pages (no sidebar)
 						if ($sidebar=="false") {
 							print "<div id='content-wide'>" ;
+								//Get floating module menu
+								if (substr($_SESSION[$guid]["address"],0,8)=="/modules") {
+									$moduleID=checkModuleReady($_SESSION[$guid]["address"], $connection2 );
+									if ($moduleID!=FALSE) {
+										$gibbonRoleIDCurrent=NULL ;
+										if (isset($_SESSION[$guid]["gibbonRoleIDCurrent"])) {
+											$gibbonRoleIDCurrent=$_SESSION[$guid]["gibbonRoleIDCurrent"] ;
+										}
+										try {
+											$data=array("gibbonModuleID"=>$moduleID, "gibbonRoleID"=>$gibbonRoleIDCurrent); 
+											$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule, gibbonAction, gibbonPermission WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
+											$result=$connection2->prepare($sql);
+											$result->execute($data);
+										}
+										catch(PDOException $e) { }
+	
+										if ($result->rowCount()>0) {			
+											
+											$currentCategory="" ;
+											$lastCategory="" ;
+											$currentName="" ;
+											$lastName="" ;
+											$count=0;
+											$links=0 ;
+											$menu="" ;
+											while ($row=$result->fetch()) {
+												$moduleName=$row["moduleName"] ;
+												$moduleEntry=$row["moduleEntry"] ;
+			
+												$currentCategory=$row["category"] ;
+												if (strpos($row["name"],"_")>0) {
+													$currentName=_(substr($row["name"],0,strpos($row["name"],"_"))) ;
+												}
+												else {
+													$currentName=_($row["name"]) ;
+												}
+					
+												if ($currentName!=$lastName) {
+													if ($currentCategory!=$lastCategory) {
+														$menu.="<optgroup label='--" .  _($currentCategory) . "--'/>" ;
+													}
+													$selected="" ;
+													if ($_GET["q"]=="/modules/" . $row["moduleName"] . "/" . $row["entryURL"]) {
+														$selected="selected" ;
+													}
+													$menu.="<option value='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "' $selected>" . _($currentName) . "</option>" ;
+													$links++ ;
+												}
+												$lastCategory=$currentCategory ;
+												$lastName=$currentName ;
+												$count++ ;
+											}
+											
+											$menu.="<script>
+												$(\"#floatingModuleMenu\").change(function() {
+													document.location.href = $(this).val();
+												});
+											</script>" ;
+		
+											if ($links>1) {
+												print "<div class='linkTop'>" ;
+													print "<select id='floatingModuleMenu' style='width: 200px'>" ;
+														print $menu ;
+													print "</select>" ;
+													print "<div style='float: right; padding-top: 10px'>" ;
+														print _("Module Menu") ;
+													print "</div>" ;
+												print "</div>" ;
+											}
+										}
+									}
+								}
+								
+							//No closing </div> required here
 						}
 						else {
 							print "<div id='content'>" ;
@@ -399,40 +472,58 @@ else {
 									print "</p>" ;
 									
 									//Public applications permitted?
-									try {
-										$sqlIntro="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='publicApplications'" ;
-										$resultIntro=$connection2->query($sqlIntro);  
-										if (count($resultIntro)==1) {
-											$rowIntro=$resultIntro->fetch() ;
-											if ($rowIntro["value"]=="Y") {
-												print "<h2 style='margin-top: 30px'>" ;
-												print _("Applications") ;
-												print "</h2>" ;
-												print "<p>" ;
-												print sprintf(_('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]["organisationName"], "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Application Form/applicationForm.php'>", "</a>") ;
-												print "</p>" ;
-											}
-										}
+									$publicApplications=getSettingByScope($connection2, "Application Form", "publicApplications" ) ; 
+									if ($publicApplications=="Y") {
+										print "<h2 style='margin-top: 30px'>" ;
+											print _("Applications") ;
+										print "</h2>" ;
+										print "<p>" ;
+											print sprintf(_('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]["organisationName"], "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Application Form/applicationForm.php'>", "</a>") ;
+										print "</p>" ;
 									}
-									catch(PDOException $e) { }
 									
-									//Public applications permitted?
+									//Public departments permitted?
+									$makeDepartmentsPublic=getSettingByScope($connection2, "Departments", "makeDepartmentsPublic" ) ; 
+									if ($makeDepartmentsPublic=="Y") {
+										print "<h2 style='margin-top: 30px'>" ;
+											print _("Departments") ;
+										print "</h2>" ;
+										print "<p>" ;
+											print sprintf(_('Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Departments/departments.php'>", "</a>", $_SESSION[$guid]["organisationName"]) ;
+										print "</p>" ;
+									}
+									
+									//Public units permitted?
+									$makeUnitsPublic=getSettingByScope($connection2, "Planner", "makeUnitsPublic" ) ; 
+									if ($makeUnitsPublic=="Y") {
+										print "<h2 style='margin-top: 30px'>" ;
+											print _("Learn With Us") ;
+										print "</h2>" ;
+										print "<p>" ;
+											print sprintf(_('We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Planner/units_public.php&sidebar=false'>", "</a>", $_SESSION[$guid]["organisationName"]) ;
+										print "</p>" ;
+									}
+									
+									//Get any elements hooked into public home page, checking if they are turned on
 									try {
-										$sqlIntro="SELECT * FROM gibbonSetting WHERE scope='Departments' AND name='makeDepartmentsPublic'" ;
-										$resultIntro=$connection2->query($sqlIntro);  
-										if (count($resultIntro)==1) {
-											$rowIntro=$resultIntro->fetch() ;
-											if ($rowIntro["value"]=="Y") {
-												print "<h2 style='margin-top: 30px'>" ;
-												print _("Departments") ;
-												print "</h2>" ;
-												print "<p>" ;
-												print sprintf(_('Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Departments/departments.php'>", "</a>", $_SESSION[$guid]["organisationName"]) ;
-												print "</p>" ;
-											}
-										}
+										$dataHook=array(); 
+										$sqlHook="SELECT * FROM gibbonHook WHERE type='Public Home Page' ORDER BY name" ;
+										$resultHook=$connection2->prepare($sqlHook);
+										$resultHook->execute($dataHook);
 									}
 									catch(PDOException $e) { }
+									while ($rowHook=$resultHook->fetch()) {
+										$options=unserialize(str_replace("'", "\'", $rowHook["options"])) ;
+										$check=getSettingByScope($connection2, $options["toggleSettingScope"], $options["toggleSettingName"]) ;
+										if ($check==$options["toggleSettingValue"]) { //If its turned on, display it
+											print "<h2 style='margin-top: 30px'>" ;
+												print $options["title"] ;
+											print "</h2>" ;
+											print "<p>" ;
+												print stripslashes($options["text"]) ;
+											print "</p>" ;
+										}
+									}
 								}
 								else {
 									$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
@@ -549,27 +640,6 @@ else {
 												print "</h2>" ;
 												
 												if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-												$updateReturnMessage="" ;
-												$class="error" ;
-												if (!($updateReturn=="")) {
-													if ($updateReturn=="fail0") {
-														$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-													}
-													else if ($updateReturn=="fail1") {
-														$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-													}
-													else if ($updateReturn=="fail2") {
-														$updateReturnMessage=_("Your request failed due to a database error.") ;	
-													}
-													else if ($updateReturn=="success0") {
-														$updateReturnMessage=_("Your request was completed successfully.") ;	
-														$class="success" ;
-													}
-													print "<div class='$class'>" ;
-														print $updateReturnMessage;
-													print "</div>" ;
-												} 
-												
 												$updateReturnMessage="" ;
 												$class="error" ;
 												if (!($updateReturn=="")) {

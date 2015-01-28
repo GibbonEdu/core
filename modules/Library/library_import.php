@@ -268,7 +268,7 @@ else {
 							}
 							if ($resultType->rowCount()!=1) {
 								print "<div class='error'>" ;
-									print sprintf(_('Type with name %1$s in import cannot be found.'), $result["type"]) ;
+									print sprintf(_('Type with name %1$s in import cannot be found.'), $data[0]) ;
 								print "</div>" ;
 								$types=NULL ;
 								$typeFields=NULL ;
@@ -303,11 +303,13 @@ else {
 							$results[$resultSuccessCount]["fields"]="" ;
 							$typeFieldValues=array() ;
 							$totalFieldCount=15 ;
-							foreach ($typeFields AS $typeField) {
-								if (isset($data[$totalFieldCount])) { 
-									$typeFieldValues[$typeField["name"]]=$data[$totalFieldCount] ; 
+							if (is_array($typeFields)) {
+								foreach ($typeFields AS $typeField) {
+									if (isset($data[$totalFieldCount])) { 
+										$typeFieldValues[$typeField["name"]]=$data[$totalFieldCount] ; 
+									}
+									$totalFieldCount++ ;
 								}
-								$totalFieldCount++ ;
 							}
 							if (count($typeFieldValues)>0) {
 								$results[$resultSuccessCount]["fields"]=serialize($typeFieldValues) ;

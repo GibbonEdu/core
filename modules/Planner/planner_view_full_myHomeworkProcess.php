@@ -89,7 +89,9 @@ else {
 			$homework=$_POST["homework"] ;
 			if ($_POST["homework"]=="Yes") {
 				$homework="Y" ;
+				//Attempt to prevent XSS attack
 				$homeworkDetails=$_POST["homeworkDetails"] ;
+				$homeworkDetails=tinymceStyleStripTags($homeworkDetails, $connection2) ;
 				if ($_POST["homeworkDueDateTime"]!="") {
 					$homeworkDueDateTime=$_POST["homeworkDueDateTime"] . ":59" ;
 				}

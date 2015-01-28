@@ -316,7 +316,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 	
 	//link to other TTs
 	if ($result->rowcount()>1) {
-		$output.="<table class='noIntBorder' style='width: 100%'>" ;
+		$output.="<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
 			$output.="<tr>" ; 
 				$output.="<td>" ; 
 					$output.="<span style='font-size: 115%; font-weight: bold'>" . _('Timetable Chooser') . "</span>: " ;
@@ -362,7 +362,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 		if ($title!=FALSE) {
 			$output.="<h2>" . $row["name"] . "</h2>" ;
 		}
-		$output.="<table cellspacing='0' class='noIntBorder' cellspacing='0' style='width: 100%; margin: 10px 0 10px 0'>" ;	
+		$output.="<table cellspacing='0' class='noIntBorder' style='width: 100%; margin: 10px 0 10px 0'>" ;	
 			$output.="<tr>" ;
 				$output.="<td style='vertical-align: top'>" ; 
 					$output.="<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=$q" . $params . "&gibbonTTID=" . $row["gibbonTTID"] . "'>" ;
@@ -1016,14 +1016,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 		$output.="</table>" ;
 	}
 	
-	
-	
-	if ($blank==TRUE) {
-		return FALSE ;
-	}
-	else {
-		return $output ;
-	}
+	return $output ;
 }
 
 function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, $specialDayStart="", $specialDayEnd="") {
@@ -2050,12 +2043,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 		$output.="</table>" ;
 	}
 	
-	if ($blank==TRUE) {
-		return FALSE ;
-	}
-	else {
-		return $output ;
-	}
+	return $output ;
 }
 
 function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $daysInWeek, $gibbonSpaceID, $gridTimeStart, $diffTime, $eventsSpaceBooking, $specialDayStart="", $specialDayEnd="") {

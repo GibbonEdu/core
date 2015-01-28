@@ -133,7 +133,7 @@ body {
 	margin: 0 0 0 -1px;
 	padding: 0 25px 0 25px;
 	min-height: 470px;
-	width: 1072px;
+	width: 1052px;
 	position:relative;
     overflow:hidden;
 }
@@ -493,9 +493,6 @@ table {
 	-moz-border-radius:3px;
 	-webkit-border-radius:3px;
 	border-radius:3px;
-	-moz-box-shadow: 0 1px 2px #d1d1d1;
-	-webkit-box-shadow: 0 1px 2px #d1d1d1;
-	box-shadow: 0 1px 2px #d1d1d1;
 	margin: 5px 0 5px 0;
 }
 table th {

@@ -65,6 +65,11 @@ else {
 			$name=$_POST["name"] ;
 			$description=$_POST["description"] ;
 			$details=$_POST["details"] ;
+			$license=$_POST["license"] ;
+			$sharedPublic=NULL ;
+			if (isset($_POST["sharedPublic"])) {
+				$sharedPublic=$_POST["sharedPublic"] ;
+			}
 			
 			if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $name=="" OR $description=="") {
 				//Fail 3
@@ -159,26 +164,26 @@ else {
 					
 					//ADD CLASS RECORDS
 					$partialFail=FALSE ;
-						if ($classCount>0) {
-							for ($i=0;$i<$classCount;$i++) {
-								$running=$_POST["running" . $i] ;
-								if ($running!="Y" AND $running!="N") {
-									$running="N" ;
-								}
-								
-								try {
-									$dataClass=array("gibbonUnitID"=>$AI, "gibbonCourseClassID"=>$_POST["gibbonCourseClassID" . $i], "running"=>$running); 
-									$sqlClass="INSERT INTO gibbonUnitClass SET gibbonUnitID=:gibbonUnitID, gibbonCourseClassID=:gibbonCourseClassID, running=:running" ;
-									$resultClass=$connection2->prepare($sqlClass);
-									$resultClass->execute($dataClass);
-								}
-								catch(PDOException $e) { 
-									$partialFail=TRUE ;
-								}
+					if ($classCount>0) {
+						for ($i=0;$i<$classCount;$i++) {
+							$running=$_POST["running" . $i] ;
+							if ($running!="Y" AND $running!="N") {
+								$running="N" ;
+							}
+							
+							try {
+								$dataClass=array("gibbonUnitID"=>$AI, "gibbonCourseClassID"=>$_POST["gibbonCourseClassID" . $i], "running"=>$running); 
+								$sqlClass="INSERT INTO gibbonUnitClass SET gibbonUnitID=:gibbonUnitID, gibbonCourseClassID=:gibbonCourseClassID, running=:running" ;
+								$resultClass=$connection2->prepare($sqlClass);
+								$resultClass->execute($dataClass);
+							}
+							catch(PDOException $e) { 
+								$partialFail=TRUE ;
 							}
 						}
+					}
 					
-					//ADD BLOCKS IF SMART
+					//ADD BLOCKS
 					$blockCount=($_POST["blockCount"]-1) ;
 					$sequenceNumber=0 ;
 					if ($blockCount>0) {
@@ -243,8 +248,8 @@ else {
 					
 					//Write to database
 					try {
-						$data=array("gibbonCourseID"=>$gibbonCourseID, "name"=>$name, "description"=>$description, "attachment"=>$attachment, "details"=>$details, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"], ); 
-						$sql="INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+						$data=array("gibbonCourseID"=>$gibbonCourseID, "name"=>$name, "description"=>$description, "license"=>$license, "sharedPublic"=>$sharedPublic, "attachment"=>$attachment, "details"=>$details, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"], ); 
+						$sql="INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, license=:license, sharedPublic=:sharedPublic, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

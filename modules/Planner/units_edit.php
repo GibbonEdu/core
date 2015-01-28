@@ -269,6 +269,39 @@ else {
 									
 									<tr>
 										<td> 
+											<b><?php print _("License") ?></b><br/>
+											<span style="font-size: 90%"><i><?php print _("Under what conditions can this work be reused?") ; ?></i></span>
+										</td>
+										<td class="right">
+											<select name="license" id="license" style="width: 302px">
+												<option <?php if ($row["license"]=="") {print "selected ";} ?>value=""></option>
+												<option <?php if ($row["license"]=="Copyright") {print "selected ";} ?>value="Copyright"><?php print _('Copyright') ?></option>
+												<option <?php if ($row["license"]=="Creative Commons BY") {print "selected ";} ?>value="Creative Commons BY"><?php print _('Creative Commons BY') ?></option>
+												<option <?php if ($row["license"]=="Creative Commons BY-SA") {print "selected ";} ?>value="Creative Commons BY-SA"><?php print _('Creative Commons BY-SA') ?></option>
+												<option <?php if ($row["license"]=="Creative Commons BY-SA-NC") {print "selected ";} ?>value="Creative Commons BY-SA-NC"><?php print _('Creative Commons BY-SA-NC') ?></option>
+												<option <?php if ($row["license"]=="Public Domain") {print "selected ";} ?>value="Public Domain"><?php print _('Public Domain') ?></option>
+											</select>
+										</td>
+									</tr>
+									<?php
+									$makeUnitsPublic=getSettingByScope($connection2, "Planner", "makeUnitsPublic" ) ; 
+									if ($makeUnitsPublic=="Y") {
+										?>
+										<tr>
+											<td> 
+												<b><?php print _("Shared Publically") ?> * </b><br/>
+												<span style="font-size: 90%"><i><?php print _("Share this unit via the public listing of units? Useful for building MOOCS.") ; ?></i></span>
+											</td>
+											<td class="right">
+												<input <?php if ($row["sharedPublic"]=="Y") { print "checked" ; } ?> type="radio" name="sharedPublic" value="Y" /> <?php print _('Yes') ?>
+												<input <?php if ($row["sharedPublic"]=="N" OR $row["sharedPublic"]=="") { print "checked" ; } ?> type="radio" name="sharedPublic" value="N" /> <?php print _('No') ?>
+											</td>
+										</tr>
+										<?php
+									}
+									?>
+									<tr>
+										<td> 
 											<b><?php print _('Embeddable') ?> *</b><br/>
 											<span style="font-size: 90%"><i><?php print _('Can this unit be embedded and shared publicly in other websites?') ?></i></span>
 										</td>

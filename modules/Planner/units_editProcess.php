@@ -64,6 +64,11 @@ else {
 			$name=$_POST["name"] ;
 			$description=$_POST["description"] ;
 			$details=$_POST["details"] ;
+			$license=$_POST["license"] ;
+			$sharedPublic=NULL ;
+			if (isset($_POST["sharedPublic"])) {
+				$sharedPublic=$_POST["sharedPublic"] ;
+			}
 			$embeddable=$_POST["embeddable"] ;
 			
 			if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $gibbonUnitID=="" OR $name=="" OR $description=="" OR $embeddable=="") {
@@ -324,8 +329,8 @@ else {
 					
 						//Write to database
 						try {
-							$data=array("name"=>$name, "attachment"=>$attachment, "description"=>$description, "details"=>$details, "embeddable"=>$embeddable, "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonUnitID"=>$gibbonUnitID); 
-							$sql="UPDATE gibbonUnit SET name=:name, attachment=:attachment, description=:description, details=:details, embeddable=:embeddable, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonUnitID=:gibbonUnitID" ;
+							$data=array("name"=>$name, "attachment"=>$attachment, "description"=>$description, "details"=>$details, "license"=>$license, "sharedPublic"=>$sharedPublic, "embeddable"=>$embeddable, "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonUnitID"=>$gibbonUnitID); 
+							$sql="UPDATE gibbonUnit SET name=:name, attachment=:attachment, description=:description, details=:details, license=:license, sharedPublic=:sharedPublic, embeddable=:embeddable, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonUnitID=:gibbonUnitID" ;
 							$result=$connection2->prepare($sql);
 							$result->execute($data);
 						}

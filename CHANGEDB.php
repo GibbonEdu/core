@@ -622,6 +622,18 @@ ALTER TABLE `gibbonPerson` ADD `googleAPIRefreshToken` VARCHAR(255) NOT NULL ;en
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'sessionDuration', 'Session Duration', 'Time, in seconds, before system logs a user out. Should be less than PHP\'s session.gc_maxlifetime option.', '1200');end
 UPDATE gibbonSetting SET value='themes/Default/img/logo.png' WHERE value='themes/Default/img/logo.jpg' AND scope='System' AND name='organisationLogo';end
 ALTER TABLE `gibbonPerson` ADD `receiveNoticiationEmails` ENUM('N','Y') NOT NULL DEFAULT 'N' ;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Planner', 'makeUnitsPublic', 'Make Units Public', 'Enables a public listing of units, with teachers able to opt in to share units.', 'N');end
+ALTER TABLE `gibbonUnit` ADD `license` VARCHAR(50) NULL DEFAULT NULL AFTER `embeddable`, ADD `sharedPublic` ENUM('Y','N') NULL DEFAULT NULL AFTER `license`;end
+UPDATE gibboni18n SET maintainerName='Jasmine Chan & Charlie Chow' WHERE code='zh_HK';end
+ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Unit') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+UPDATE gibboni18n SET maintainerName='Dicky Widhyatmoko' WHERE code='id_ID';end
+ALTER TABLE gibbonSetting DROP INDEX name;end
+ALTER TABLE gibbonSetting DROP INDEX nameDisplay;end
+ALTER TABLE gibbonSetting ADD UNIQUE (scope, nameDisplay) COMMENT '';end
+ALTER TABLE gibbonSetting ADD UNIQUE (scope,name) COMMENT '';end
+ALTER TABLE `gibbonModule` CHANGE `description` `description` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+UPDATE gibbonSetting SET value='strong,em,span,p,address,pre,h1,h2,h3,h4,h5,h6,table,thead,tbody,tfoot,tr,td,ol,ul,li,blockquote,a,img,video,source,hr,iframe,embed' WHERE name='allowableHTML' AND scope='System';end
+UPDATE gibbonSetting SET value='br,strong[*],em[*],span[*],p[*],address[*],pre[*],h1[*],h2[*],h3[*],h4[*],h5[*],h6[*],table[*],thead[*],tbody[*],tfoot[*],tr[*],td[*],ol[*],ul[*],li[*],blockquote[*],a[*],img[*],video[*],source[*],hr[*],iframe[*],embed[*]' WHERE name='allowableHTML' AND scope='System';end
 ";
 
 ?>

@@ -171,6 +171,73 @@ Installer: added ability to install demo data
 Crowd Assessment: added fields to listing to make it more usable
 	Edited file /modules/Crowd Assessment/crowdAssess_view.php, crowdAssess_view_discuss.php
 
+Installer: added ability to join mailing list and request support team welcome email
+	Edited file /installer/install.php
+
+Installer: added ability to create database if it does not exist
+	Edited file /installer/install.php
+
+Installer: added check of gibbonedu.org services to see if code is development or otherwise: set's Cutting Edge Code automatically on result
+	Edited file /installer/install.php
+
+Planner: added public listing of units
+	New value in table gibbonSetting
+	Edited table gibbonUnit
+	Edited files /modules/School Admin/plannerSettings.php
+	Edited files /modules/Planner/units_edit*.php, units_add*.php
+	Edited file /index.php
+	New files /modules/Planner/units_public*.php
+
+Timetable: fixed bug with timetable display during the holidays
+	Edited file /modules/Timetable/moduleFunctions.php
+
+Library: fixed item duplication issue for items on loan or for some other reason not available
+	Edited file /modules/Library/library_manage_catalog_duplicateProcess.php
+	
+Students: adjusted minor sidebar menu link display issue
+	Edited file /modules/Students/student_view_details.php
+
+System Admin: fixed bug preventing module version number for additional modules from displaying
+	Edited file /core/modules/System Admin/module_manage.php
+
+General: added new hook to allow an additional module to insert content into the public home page
+	Edited table gibbonHook
+	Edited /index.php
+
+Attendance: added function to calculate late days for a student
+	Edited file /modules/Attendance/moduleFunctions.php
+
+System Admin: made module installer aware of sidebarEntry paramater
+	Edited file /modules/System Admin/module_manage_installProcess.php
+
+Markbook: added filter based on markbook type
+	Edited file /modules/Students/student_view_details.php
+	Edited file /modules/Markbook/markbook_view.php
+
+General: added floating top-right module menu to full width pages
+	Edited file /index.php
+
+General: fixed minor display issue in max file size display
+	Edited file /functions.php
+
+Tinymce: removed annoying popup which covers part of editing menu
+	Edited file /lib/tinymce/tinymce.min.js
+
+Planner: fixed double update confirm on homepage when starring a lesson plan
+	Edited file /index.php
+
+General: reduced risk of XSS attack launched by student user of system
+	Edited file /index.php
+	Edited value in table gibbonSetting
+	Edited files /modules/Planner/planner_view_full_postProcess.php, /Applications/MAMP/htdocs/github_gibbonEdu/core/modules/Planner/planner_view_full_myHomeworkProcess.php
+	Edited files /modules/Crowd Assessment/crowdAssess_view_discuss_postProcess.php
+
+System Admin: added cache refresh on active theme change to make new theme active immediately for changing user
+	Edited file /modules/System Admin/theme_manageProcess.php
+
+General: fixed WebKit (Chrome/Safari/etc) issue with floating drop down menu on full screen pages
+	Edited file /index.php
+	
 
 v8.3.00
 -------

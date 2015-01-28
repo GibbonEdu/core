@@ -138,6 +138,7 @@ else {
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Student</span><br/>" ;
 									print "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowList["gibbonPersonID"] . "'>" . formatName("", $rowList["preferredName"], $rowList["surname"], "Student") . "</a>" ;
+								print "</td>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Version</span><br/>" ;
 									if ($rowWork["version"]=="Final") {
@@ -153,7 +154,6 @@ else {
 									else {
 										print "<span title='" . $rowWork["version"] . ". Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "'><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
 									}
-								print "</td>" ;
 								print "</td>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Like Count</span><br/>" ;

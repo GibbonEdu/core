@@ -179,6 +179,39 @@ else {
 										</script>
 									</td>
 								</tr>
+								<tr>
+									<td> 
+										<b><?php print _("License") ?></b><br/>
+										<span style="font-size: 90%"><i><?php print _("Under what conditions can this work be reused?") ; ?></i></span>
+									</td>
+									<td class="right">
+										<select name="license" id="license" style="width: 302px">
+											<option value=""></option>
+											<option value="Copyright"><?php print _('Copyright') ?></option>
+											<option value="Creative Commons BY"><?php print _('Creative Commons BY') ?></option>
+											<option value="Creative Commons BY-SA"><?php print _('Creative Commons BY-SA') ?></option>
+											<option value="Creative Commons BY-SA-NC"><?php print _('Creative Commons BY-SA-NC') ?></option>
+											<option value="Public Domain"><?php print _('Public Domain') ?></option>
+										</select>
+									</td>
+								</tr>
+								<?php
+								$makeUnitsPublic=getSettingByScope($connection2, "Planner", "makeUnitsPublic" ) ; 
+								if ($makeUnitsPublic=="Y") {
+									?>
+									<tr>
+										<td> 
+											<b><?php print _("Shared Publically") ?> * </b><br/>
+											<span style="font-size: 90%"><i><?php print _("Share this unit via the public listing of units? Useful for building MOOCS.") ; ?></i></span>
+										</td>
+										<td class="right">
+											<input type="radio" name="sharedPublic" value="Y" /> <?php print _('Yes') ?>
+											<input checked type="radio" name="sharedPublic" value="N" /> <?php print _('No') ?>
+										</td>
+									</tr>
+									<?php
+								}
+								?>
 								
 								<tr class='break'>
 									<td colspan=2> 
@@ -476,8 +509,6 @@ else {
 								</tr>
 								
 								
-								
-								
 								<tr class='break'>
 									<td colspan=2> 
 										<h3><?php print _('Smart Blocks') ?></h3>
@@ -498,7 +529,7 @@ else {
 										<script>
 											$(function() {
 												$( "#sortable" ).sortable({
-													placeholder: "ui-state-highlight";
+													placeholder: "ui-state-highlight",
 													axis: 'y'
 												});
 											});

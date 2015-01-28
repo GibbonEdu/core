@@ -113,8 +113,12 @@ else {
 							$replyTo=$_GET["replyTo"] ;
 						}
 						
+						//Attempt to prevent XSS attack
+						$comment=$_POST["comment"] ;
+						$comment=tinymceStyleStripTags($comment, $connection2) ;
+						
 						try {
-							$data=array("gibbonPlannerEntryHomeworkID"=>$gibbonPlannerEntryHomeworkID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "comment"=>$_POST["comment"], "replyTo"=>$replyTo); 
+							$data=array("gibbonPlannerEntryHomeworkID"=>$gibbonPlannerEntryHomeworkID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "comment"=>$comment, "replyTo"=>$replyTo); 
 							$sql="INSERT INTO gibbonCrowdAssessDiscuss SET gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID, gibbonPersonID=:gibbonPersonID, comment=:comment, gibbonCrowdAssessDiscussIDReplyTo=:replyTo" ;
 							$result=$connection2->prepare($sql);
 							$result->execute($data);

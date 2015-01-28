@@ -204,7 +204,7 @@ else {
 							print ynExpander($modulesSQL[$moduleName][0]["active"]) ;
 						print "</td>" ;
 						print "<td>" ;
-							if ($row["type"]=="Additional") {
+							if ($modulesSQL[$moduleName][0]["type"]=="Additional") {
 								print "v" . $modulesSQL[$moduleName][0]["version"] ;
 							}
 							else {
