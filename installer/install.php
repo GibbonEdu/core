@@ -393,7 +393,7 @@ include "../functions.php" ;
 														print "</div>" ;
 													}
 													else {
-														$query=@fread(@fopen("../gibbon_demo.sql", 'r'), @filesize("../gibbon.sql")) or die('Encountered a problem.');
+														$query=@fread(@fopen("../gibbon_demo.sql", 'r'), @filesize("../gibbon_demo.sql")) or die('Encountered a problem.');
 														$query=remove_remarks($query);
 														$query=split_sql_file($query, ';');
 										

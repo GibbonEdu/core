@@ -240,6 +240,10 @@ General: fixed WebKit (Chrome/Safari/etc) issue with floating drop down menu on 
 i18n: Chinese Traditional complete and set to active
 	Edited value in table gibboni18n
 
+Installer: fixed issue which prevented all demo data from being installed
+	Edited file /installer/install.php
+
+
 v8.3.00
 -------
 General: added footer link to credits on Gibbon website
