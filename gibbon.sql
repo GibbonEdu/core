@@ -3,21 +3,15 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Nov 09, 2014 at 12:08 PM
+-- Generation Time: Feb 04, 2015 at 12:59 AM
 -- Server version: 5.5.38
 -- PHP Version: 5.6.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
 --
--- Database: `update`
+-- Database: `gibbon`
 --
 
 -- --------------------------------------------------------
@@ -994,17 +988,18 @@ CREATE TABLE `gibbonExternalAssessment` (
   `nameShort` varchar(10) NOT NULL,
   `description` varchar(255) NOT NULL,
   `website` text NOT NULL,
-  `active` enum('Y','N') NOT NULL
+  `active` enum('Y','N') NOT NULL,
+  `allowFileUpload` enum('Y','N') NOT NULL DEFAULT 'N'
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonExternalAssessment`
 --
 
-INSERT INTO `gibbonExternalAssessment` (`gibbonExternalAssessmentID`, `name`, `nameShort`, `description`, `website`, `active`) VALUES
-(0001, 'Cognitive Abilities Test', 'CAT', 'UK-based standardised tests that provides scores in maths, verbal and non-verbal skills, as well as KS3 and GCSE predicted grades.', '', 'Y'),
-(0002, 'GCSE/iGCSE', 'GCSE', 'UK-based General Certificate of Secondary Education', '', 'Y'),
-(0003, 'IB Diploma', 'IB Diploma', 'International Baccalaureate Diploma', 'http://www.ibo.org/', 'Y');
+INSERT INTO `gibbonExternalAssessment` (`gibbonExternalAssessmentID`, `name`, `nameShort`, `description`, `website`, `active`, `allowFileUpload`) VALUES
+(0001, 'Cognitive Abilities Test', 'CAT', 'UK-based standardised tests that provides scores in maths, verbal and non-verbal skills, as well as KS3 and GCSE predicted grades.', '', 'Y', 'N'),
+(0002, 'GCSE/iGCSE', 'GCSE', 'UK-based General Certificate of Secondary Education', '', 'Y', 'N'),
+(0003, 'IB Diploma', 'IB Diploma', 'International Baccalaureate Diploma', 'http://www.ibo.org/', 'Y', 'N');
 
 -- --------------------------------------------------------
 
@@ -1166,7 +1161,8 @@ CREATE TABLE `gibbonExternalAssessmentStudent` (
 `gibbonExternalAssessmentStudentID` int(12) unsigned zerofill NOT NULL,
   `gibbonExternalAssessmentID` int(4) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `date` date NOT NULL
+  `date` date NOT NULL,
+  `attachment` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1255,6 +1251,7 @@ CREATE TABLE `gibbonFamilyRelationship` (
 
 CREATE TABLE `gibbonFamilyUpdate` (
 `gibbonFamilyUpdateID` int(9) unsigned zerofill NOT NULL,
+  `gibbonSchoolYearID` int(3) unsigned zerofill DEFAULT NULL,
   `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
   `gibbonFamilyID` int(7) unsigned zerofill NOT NULL,
   `nameAddress` varchar(100) NOT NULL DEFAULT '',
@@ -1447,6 +1444,7 @@ CREATE TABLE `gibbonFinanceInvoicee` (
 
 CREATE TABLE `gibbonFinanceInvoiceeUpdate` (
 `gibbonFinanceInvoiceeUpdateID` int(12) unsigned zerofill NOT NULL,
+  `gibbonSchoolYearID` int(3) unsigned zerofill DEFAULT NULL,
   `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
   `gibbonFinanceInvoiceeID` int(10) unsigned zerofill NOT NULL,
   `invoiceTo` enum('Family','Company') NOT NULL,
@@ -1490,7 +1488,7 @@ CREATE TABLE `gibbonFinanceInvoiceFee` (
 CREATE TABLE `gibbonHook` (
 `gibbonHookID` int(4) unsigned zerofill NOT NULL,
   `name` varchar(50) NOT NULL,
-  `type` enum('Student Profile','Unit') DEFAULT NULL,
+  `type` enum('Public Home Page','Student Profile','Unit') DEFAULT NULL,
   `options` text NOT NULL,
   `gibbonModuleID` int(4) unsigned zerofill NOT NULL COMMENT 'The module which installed this hook.'
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
@@ -1525,7 +1523,7 @@ CREATE TABLE `gibboni18n` (
   `dateFormatRegEx` text NOT NULL,
   `dateFormatPHP` varchar(20) NOT NULL,
   `rtl` enum('Y','N') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibboni18n`
@@ -1534,13 +1532,14 @@ CREATE TABLE `gibboni18n` (
 INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `rtl`) VALUES
 (0001, 'en_GB', 'English - United Kingdom', 'Y', 'Y', 'Gibbon', 'http://gibbonedu.org', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
 (0002, 'en_US', 'English - United States', 'Y', 'N', 'Gibbon', 'http://gibbonedu.org', 'mm/dd/yyyy', '/(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20\\d\\d)/', 'm/d/Y', 'N'),
-(0003, 'es_ES', 'Español', 'Y', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
+(0003, 'es_ES', 'Español', 'Y', 'N', 'Guillermo Bautista Fuerte', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
 (0004, 'zh_CN', '汉语 - 中国', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'yyyy-mm-dd', '/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/', 'Y-m-d', 'N'),
-(0005, 'zh_HK', '體字 - 香港', 'N', 'N', 'International College Hong Kong (ICHK)', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
+(0005, 'zh_HK', '體字 - 香港', 'Y', 'N', 'Jasmine Chan & Charlie Chow', 'http://www.ichk.edu.hk', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
 (0007, 'pl_PL', 'Język polski - Polska', 'N', 'N', 'Arek Gladki', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\\d\\\\d$/i', 'd/m/Y', 'N'),
 (0008, 'it_IT', 'Italiano - Italia', 'Y', 'N', 'Carmine Sirignano', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
-(0010, 'id_ID', 'Bahasa Indonesia - Indonesia', 'N', 'N', 'Adrian Hodson', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
-(0011, 'ar_SA', 'العربية - المملكة العربية السعودية', 'N', 'N', 'Abdul Rahman Yousef', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'Y');
+(0010, 'id_ID', 'Bahasa Indonesia - Indonesia', 'N', 'N', 'Dicky Widhyatmoko', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
+(0011, 'ar_SA', 'العربية - المملكة العربية السعودية', 'N', 'N', 'Abdul Rahman Yousef', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'Y'),
+(0012, 'fr_FR', 'Français - France', 'N', 'N', 'Jean-Baptiste Tamegnon', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');
 
 -- --------------------------------------------------------
 
@@ -1690,7 +1689,7 @@ CREATE TABLE `gibbonMarkbookColumn` (
   `groupingID` int(8) unsigned zerofill DEFAULT NULL COMMENT 'A value used to group multiple markbook columns.',
   `type` varchar(50) NOT NULL,
   `name` varchar(20) NOT NULL,
-  `description` varchar(255) NOT NULL,
+  `description` text NOT NULL,
   `attachment` varchar(255) NOT NULL,
   `attainment` enum('Y','N') NOT NULL DEFAULT 'Y',
   `gibbonScaleIDAttainment` int(5) unsigned zerofill NOT NULL,
@@ -1832,7 +1831,7 @@ CREATE TABLE `gibbonMessengerTarget` (
 CREATE TABLE `gibbonModule` (
 `gibbonModuleID` int(4) unsigned zerofill NOT NULL COMMENT 'This number is assigned at install, and is only unique to the installation',
   `name` varchar(30) NOT NULL DEFAULT '' COMMENT 'This name should be globally unique preferably, but certainly locally unique',
-  `description` varchar(100) NOT NULL,
+  `description` varchar(255) NOT NULL,
   `entryURL` varchar(255) NOT NULL DEFAULT 'index.php',
   `type` enum('Core','Additional') NOT NULL DEFAULT 'Core',
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
@@ -2300,13 +2299,15 @@ CREATE TABLE `gibbonPerson` (
   `languageSecond` varchar(30) NOT NULL,
   `languageThird` varchar(30) NOT NULL,
   `countryOfBirth` varchar(30) NOT NULL,
-  `ethnicity` varchar(40) NOT NULL,
+  `ethnicity` varchar(255) NOT NULL,
   `citizenship1` varchar(255) NOT NULL,
   `citizenship1Passport` varchar(30) NOT NULL,
+  `citizenship1PassportScan` varchar(255) NOT NULL,
   `citizenship2` varchar(255) NOT NULL,
   `citizenship2Passport` varchar(30) NOT NULL,
   `religion` varchar(30) NOT NULL,
   `nationalIDCardNumber` varchar(30) NOT NULL,
+  `nationalIDCardScan` varchar(255) NOT NULL,
   `residencyStatus` varchar(255) NOT NULL,
   `visaExpiryDate` date DEFAULT NULL,
   `profession` varchar(30) NOT NULL,
@@ -2342,7 +2343,9 @@ CREATE TABLE `gibbonPerson` (
   `dayType` varchar(255) DEFAULT NULL COMMENT 'Student day type, as specified in the application form.',
   `gibbonThemeIDPersonal` int(4) unsigned zerofill DEFAULT NULL,
   `gibboni18nIDPersonal` int(4) unsigned zerofill DEFAULT NULL,
-  `studentAgreements` text
+  `studentAgreements` text,
+  `googleAPIRefreshToken` varchar(255) NOT NULL,
+  `receiveNoticiationEmails` enum('N','Y') NOT NULL DEFAULT 'N'
 ) ENGINE=MyISAM AUTO_INCREMENT=1099 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2412,6 +2415,7 @@ CREATE TABLE `gibbonPersonMedicalConditionUpdate` (
 
 CREATE TABLE `gibbonPersonMedicalUpdate` (
 `gibbonPersonMedicalUpdateID` int(12) unsigned zerofill NOT NULL,
+  `gibbonSchoolYearID` int(3) unsigned zerofill DEFAULT NULL,
   `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
   `gibbonPersonMedicalID` int(10) unsigned zerofill DEFAULT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
@@ -2431,6 +2435,7 @@ CREATE TABLE `gibbonPersonMedicalUpdate` (
 
 CREATE TABLE `gibbonPersonUpdate` (
 `gibbonPersonUpdateID` int(12) unsigned zerofill NOT NULL,
+  `gibbonSchoolYearID` int(3) unsigned zerofill DEFAULT NULL,
   `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `title` varchar(5) NOT NULL,
@@ -2464,7 +2469,7 @@ CREATE TABLE `gibbonPersonUpdate` (
   `languageSecond` varchar(30) NOT NULL,
   `languageThird` varchar(30) NOT NULL,
   `countryOfBirth` varchar(30) NOT NULL,
-  `ethnicity` varchar(40) NOT NULL,
+  `ethnicity` varchar(255) NOT NULL,
   `citizenship1` varchar(255) NOT NULL,
   `citizenship1Passport` varchar(30) NOT NULL,
   `citizenship2` varchar(255) NOT NULL,
@@ -3287,7 +3292,7 @@ CREATE TABLE `gibbonSetting` (
   `nameDisplay` varchar(60) NOT NULL,
   `description` varchar(255) NOT NULL,
   `value` text NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=144 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=147 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonSetting`
@@ -3313,8 +3318,8 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 (00019, 'System', 'organisationAdmissionsName', 'Admissions Officer', '', ''),
 (00020, 'System', 'organisationAdmissionsEmail', 'Admissions Officer Email', '', ''),
 (00021, 'System', 'country', 'Country', 'The country the school is located in', ''),
-(00022, 'System', 'organisationLogo', 'Logo', 'Relative path to site logo (250x107px)', 'themes/Default/img/logo.jpg'),
-(00023, 'System', 'calendarFeed', 'Calendar Feed', 'XML feed for the school calendar (Google Calendar only)', ''),
+(00022, 'System', 'organisationLogo', 'Logo', 'Relative path to site logo (400 x 100px)', 'themes/Default/img/logo.png'),
+(00023, 'System', 'calendarFeed', 'School Google Calendar ID', 'Google Calendar ID for your school calendar. Only enables timetable integration when logging in via Google.', ''),
 (00024, 'Activities', 'access', 'Access', 'System-wide access control', 'Register'),
 (00025, 'Activities', 'payment', 'Payment', 'Payment system', 'Per Activity'),
 (00026, 'Activities', 'enrolmentType', 'Enrolment Type', 'Enrolment process type', 'Competitive'),
@@ -3356,7 +3361,7 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 (00063, 'User Admin', 'personalDataUpdaterRequiredFields', 'Personal Data Updater Required Fields', 'Serialized array listed personal fields in data updater, and whether or not they are required.', 'a:47:{s:5:"title";s:1:"N";s:7:"surname";s:1:"Y";s:9:"firstName";s:1:"N";s:10:"otherNames";s:1:"N";s:13:"preferredName";s:1:"Y";s:12:"officialName";s:1:"Y";s:16:"nameInCharacters";s:1:"N";s:3:"dob";s:1:"N";s:5:"email";s:1:"N";s:14:"emailAlternate";s:1:"N";s:8:"address1";s:1:"Y";s:16:"address1District";s:1:"N";s:15:"address1Country";s:1:"N";s:8:"address2";s:1:"N";s:16:"address2District";s:1:"N";s:15:"address2Country";s:1:"N";s:10:"phone1Type";s:1:"N";s:17:"phone1CountryCode";s:1:"N";s:6:"phone1";s:1:"N";s:6:"phone2";s:1:"N";s:6:"phone3";s:1:"N";s:6:"phone4";s:1:"N";s:13:"languageFirst";s:1:"N";s:14:"languageSecond";s:1:"N";s:13:"languageThird";s:1:"N";s:14:"countryOfBirth";s:1:"N";s:9:"ethnicity";s:1:"N";s:12:"citizenship1";s:1:"N";s:20:"citizenship1Passport";s:1:"N";s:12:"citizenship2";s:1:"N";s:20:"citizenship2Passport";s:1:"N";s:8:"religion";s:1:"N";s:20:"nationalIDCardNumber";s:1:"N";s:15:"residencyStatus";s:1:"N";s:14:"visaExpiryDate";s:1:"N";s:10:"profession";s:1:"N";s:8:"employer";s:1:"N";s:8:"jobTitle";s:1:"N";s:14:"emergency1Name";s:1:"N";s:17:"emergency1Number1";s:1:"N";s:17:"emergency1Number2";s:1:"N";s:22:"emergency1Relationship";s:1:"N";s:14:"emergency2Name";s:1:"N";s:17:"emergency2Number1";s:1:"N";s:17:"emergency2Number2";s:1:"N";s:22:"emergency2Relationship";s:1:"N";s:19:"vehicleRegistration";s:1:"N";}'),
 (00065, 'School Admin', 'primaryExternalAssessmentByYearGroup', 'Primary External Assessment By Year Group', 'Serialized array connected gibbonExternalAssessmentID to gibbonYearGroupID, and specify which field set to use.', 'a:7:{s:3:"001";s:1:"-";s:3:"002";s:1:"-";s:3:"003";s:1:"-";s:3:"004";s:1:"-";s:3:"005";s:1:"-";s:3:"006";s:1:"-";s:3:"007";s:1:"-";}'),
 (00066, 'Markbook', 'markbookType', 'Markbook Type', 'Comma-separated list of types to make available in the Markbook.', 'Essay,Exam,Homework,Reflection,Test,Unit,End of Year,Other'),
-(00067, 'System', 'allowableHTML', 'Allowable HTML', 'TinyMCE-style list of acceptable HTML tags and options.', 'article[*],aside[*],audio[*],canvas[*],command[*],datalist[*],details[*],embed[*],figcaption[*],figure[*],footer[*],header[*],hgroup[*],iframe[*],keygen[*],mark[*],meter[*],nav[*],object[*],output[*],param[*],progress[*],script[*],section[*],source[*],summary,time[*],video[*],wbr'),
+(00067, 'System', 'allowableHTML', 'Allowable HTML', 'TinyMCE-style list of acceptable HTML tags and options.', 'br,strong[*],em[*],span[*],p[*],address[*],pre[*],h1[*],h2[*],h3[*],h4[*],h5[*],h6[*],table[*],thead[*],tbody[*],tfoot[*],tr[*],td[*],ol[*],ul[*],li[*],blockquote[*],a[*],img[*],video[*],source[*],hr[*],iframe[*],embed[*]'),
 (00068, 'Application Form', 'howDidYouHear', 'How Did Your Hear?', 'Comma-separated list', 'Advertisement,Personal Recommendation,World Wide Web,Others'),
 (00070, 'Messenger', 'smsUsername', 'SMS Username', 'SMS gateway username.', ''),
 (00071, 'Messenger', 'smsPassword', 'SMS Password', 'SMS gateway password.', ''),
@@ -3403,12 +3408,12 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 (00117, 'Application Form', 'notificationStudentMessage', 'Student Notification Message', 'A custom message to add to the standard email to students on acceptance.', ''),
 (00118, 'Finance', 'invoiceNumber', 'Invoice Number Style', 'How should invoice numbers be constructed?', 'Invoice ID'),
 (00119, 'User Admin', 'departureReasons', 'Departure Reasons', 'Comma-separated list of reasons for departure from school. If blank, user can enter any text.', ''),
-(00120, 'User Admin', 'googleOAuth', 'Google OAuth', 'Enable OAuth login via a Google Account.', 'N'),
-(00122, 'User Admin', 'googleClientName', 'Google Developers Client Name', 'Name of Google Project in Devlopers Console.', ''),
-(00123, 'User Admin', 'googleClientID', 'Google Developers Client ID', 'Client ID for Google Project In Developers Console.', ''),
-(00124, 'User Admin', 'googleClientSecret', 'Google Developers Client Secret', 'Client Secret for Google Project In Developers Console.', ''),
-(00125, 'User Admin', 'googleRedirectUri', 'Google Developers Redirect Url', 'Google Redirect on sucessful auth.', ''),
-(00126, 'User Admin', 'googleDeveloperKey', 'Google Developers Developer Key', 'Google project Developer Key.', ''),
+(00120, 'System', 'googleOAuth', 'Google Integration', 'Enable Gibbon-wide integration with the Google APIs?', 'N'),
+(00122, 'System', 'googleClientName', 'Google Developers Client Name', 'Name of Google Project in Devlopers Console.', ''),
+(00123, 'System', 'googleClientID', 'Google Developers Client ID', 'Client ID for Google Project In Developers Console.', ''),
+(00124, 'System', 'googleClientSecret', 'Google Developers Client Secret', 'Client Secret for Google Project In Developers Console.', ''),
+(00125, 'System', 'googleRedirectUri', 'Google Developers Redirect Url', 'Google Redirect on sucessful auth.', ''),
+(00126, 'System', 'googleDeveloperKey', 'Google Developers Developer Key', 'Google project Developer Key.', ''),
 (00127, 'Markbook', 'personalisedWarnings', 'Personalised Warnings', 'Should markbook warnings be based on personal targets, if they are available?', 'Y'),
 (00128, 'Activities', 'disableExternalProviderSignup', 'Disable External Provider Signup', 'Should we turn off the option to sign up for activities provided by an outside agency?', 'N'),
 (00129, 'Activities', 'hideExternalProviderCost', 'Hide External Provider Cost', 'Should we hide the cost of activities provided by an outside agency from the Activities View?', 'N'),
@@ -3425,7 +3430,10 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 (00140, 'Markbook', 'effortAlternativeNameAbrev', 'Effort Alternative Name Abbreviation', 'A short name to use isntead of "Effort" in the second grade column of the markbook.', ''),
 (00141, 'Planner', 'parentWeeklyEmailSummaryIncludeBehaviour', 'Parent Weekly Email Summary Include Behaviour', 'Should behaviour information be included in the weekly planner email summary that goes out to parents?', 'Y'),
 (00142, 'Finance', 'financeOnlinePaymentEnabled', 'Enable Online Payment', 'Should invoices be payable online, via an encrypted link in the invoice? Requires correctly configured payment gateway in System Settings.', 'N'),
-(00143, 'Finance', 'financeOnlinePaymentThreshold', 'Online Payment Threshold', 'If invoices are payable online, what is the maximum payment allowed? Useful for controlling payment fees. No value means unlimited.', '');
+(00143, 'Finance', 'financeOnlinePaymentThreshold', 'Online Payment Threshold', 'If invoices are payable online, what is the maximum payment allowed? Useful for controlling payment fees. No value means unlimited.', ''),
+(00144, 'Departments', 'makeDepartmentsPublic', 'Make Departments Public', 'Should department information be made available to the public, via the Gibbon homeoage?', 'N'),
+(00145, 'System', 'sessionDuration', 'Session Duration', 'Time, in seconds, before system logs a user out. Should be less than PHP''s session.gc_maxlifetime option.', '1200'),
+(00146, 'Planner', 'makeUnitsPublic', 'Make Units Public', 'Enables a public listing of units, with teachers able to opt in to share units.', 'N');
 
 -- --------------------------------------------------------
 
@@ -3486,7 +3494,8 @@ CREATE TABLE `gibbonStudentEnrolment` (
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
   `gibbonYearGroupID` int(3) unsigned zerofill NOT NULL,
-  `gibbonRollGroupID` int(5) unsigned zerofill NOT NULL
+  `gibbonRollGroupID` int(5) unsigned zerofill NOT NULL,
+  `rollOrder` int(2) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -3499,6 +3508,7 @@ CREATE TABLE `gibbonStudentNote` (
 `gibbonStudentNoteID` int(12) unsigned zerofill NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `gibbonStudentNoteCategoryID` int(5) unsigned zerofill DEFAULT NULL,
+  `title` varchar(50) NOT NULL,
   `note` text NOT NULL,
   `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
   `timestamp` timestamp NULL DEFAULT NULL
@@ -3541,15 +3551,14 @@ CREATE TABLE `gibbonTheme` (
   `version` varchar(6) NOT NULL,
   `author` varchar(40) NOT NULL,
   `url` varchar(255) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonTheme`
 --
 
 INSERT INTO `gibbonTheme` (`gibbonThemeID`, `name`, `description`, `active`, `version`, `author`, `url`) VALUES
-(0001, 'Default', 'Gibbon''s native appearance', 'Y', '0.1.00', 'Ross Parker', 'http://rossparker.org'),
-(0012, 'Olden', 'Gibbon''s 2012 look and feel.', 'N', '1.0.00', 'Ross Parker', 'http://rossparker.org');
+(0013, 'Default', 'Gibbon''s 2015 look and feel.', 'Y', '1.0.00', 'Ross Parker', 'http://rossparker.org');
 
 -- --------------------------------------------------------
 
@@ -3705,6 +3714,8 @@ CREATE TABLE `gibbonUnit` (
   `attachment` varchar(255) NOT NULL,
   `details` text NOT NULL,
   `embeddable` enum('N','Y') NOT NULL DEFAULT 'N',
+  `license` varchar(50) DEFAULT NULL,
+  `sharedPublic` enum('Y','N') DEFAULT NULL,
   `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
   `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -4355,7 +4366,7 @@ ALTER TABLE `gibbonSchoolYearTerm`
 -- Indexes for table `gibbonSetting`
 --
 ALTER TABLE `gibbonSetting`
- ADD PRIMARY KEY (`gibbonSystemSettingsID`), ADD UNIQUE KEY `name` (`name`), ADD UNIQUE KEY `nameDisplay` (`nameDisplay`);
+ ADD PRIMARY KEY (`gibbonSystemSettingsID`), ADD UNIQUE KEY `scope` (`scope`,`nameDisplay`), ADD UNIQUE KEY `scope_2` (`scope`,`name`);
 
 --
 -- Indexes for table `gibbonSpace`
@@ -4707,7 +4718,7 @@ MODIFY `gibbonHouseID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `gibboni18n`
 --
 ALTER TABLE `gibboni18n`
-MODIFY `gibboni18nID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
+MODIFY `gibboni18nID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT for table `gibbonIN`
 --
@@ -4952,7 +4963,7 @@ MODIFY `gibbonSchoolYearTermID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT
 -- AUTO_INCREMENT for table `gibbonSetting`
 --
 ALTER TABLE `gibbonSetting`
-MODIFY `gibbonSystemSettingsID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=144;
+MODIFY `gibbonSystemSettingsID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=147;
 --
 -- AUTO_INCREMENT for table `gibbonSpace`
 --
@@ -4982,7 +4993,7 @@ MODIFY `gibbonStudentNoteCategoryID` int(5) unsigned zerofill NOT NULL AUTO_INCR
 -- AUTO_INCREMENT for table `gibbonTheme`
 --
 ALTER TABLE `gibbonTheme`
-MODIFY `gibbonThemeID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=13;
+MODIFY `gibbonThemeID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=14;
 --
 -- AUTO_INCREMENT for table `gibbonTT`
 --
@@ -5063,6 +5074,3 @@ MODIFY `gibbonUnitOutcomeID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
 --
 ALTER TABLE `gibbonYearGroup`
 MODIFY `gibbonYearGroupID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

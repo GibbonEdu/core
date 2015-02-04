@@ -634,6 +634,7 @@ ALTER TABLE gibbonSetting ADD UNIQUE (scope,name) COMMENT '';end
 ALTER TABLE `gibbonModule` CHANGE `description` `description` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 UPDATE gibbonSetting SET value='strong,em,span,p,address,pre,h1,h2,h3,h4,h5,h6,table,thead,tbody,tfoot,tr,td,ol,ul,li,blockquote,a,img,video,source,hr,iframe,embed' WHERE name='allowableHTML' AND scope='System';end
 UPDATE gibbonSetting SET value='br,strong[*],em[*],span[*],p[*],address[*],pre[*],h1[*],h2[*],h3[*],h4[*],h5[*],h6[*],table[*],thead[*],tbody[*],tfoot[*],tr[*],td[*],ol[*],ul[*],li[*],blockquote[*],a[*],img[*],video[*],source[*],hr[*],iframe[*],embed[*]' WHERE name='allowableHTML' AND scope='System';end
+UPDATE gibboni18n SET active='Y' WHERE code='zh_HK';end
 ";
 
 ?>
