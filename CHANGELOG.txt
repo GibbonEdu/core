@@ -18,7 +18,11 @@ CHANGELOG
 =========
 v9.1.00
 -------
-
+Installer: removed orphaned debug output
+	Edited /installer/install.php
+	
+System Admin: added database update script that does not require login
+	New file /update.php
 
 v9.0.00
 -------
