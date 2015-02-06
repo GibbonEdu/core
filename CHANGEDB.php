@@ -637,4 +637,11 @@ UPDATE gibbonSetting SET value='br,strong[*],em[*],span[*],p[*],address[*],pre[*
 UPDATE gibboni18n SET active='Y' WHERE code='zh_HK';end
 ";
 
+//v9.1.00
+$count++ ;
+$sql[$count][0]="9.1.00" ;
+$sql[$count][1]="
+
+";
+
 ?>
