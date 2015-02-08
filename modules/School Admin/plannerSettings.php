@@ -143,7 +143,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3>Access Settings</h3>
+					<h3><?php print _('Access Settings') ?></h3>
 				</td>
 			</tr>
 			<tr>

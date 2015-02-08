@@ -98,6 +98,8 @@ else {
 							$("#gibbonDepartmentIDRow").slideDown("fast", $("#gibbonDepartmentIDRow").css("display","table-row"));
 							$("#borrowableRow").slideDown("fast", $("#borrowableRow").css("display","table-row"));
 							$("#statusRow").slideDown("fast", $("#statusRow").css("display","table-row"));
+							$("#gibbonSchoolYearIDReplacement").slideDown("fast", $("#gibbonSchoolYearIDReplacement").css("display","table-row"));
+							$("#replacementCostRow").slideDown("fast", $("#replacementCostRow").css("display","table-row"));
 							$("#commentRow").slideDown("fast", $("#commentRow").css("display","table-row"));
 							$("#entryDisplayTitleRow").slideDown("fast", $("#entryDisplayTitleRow").css("display","table-row"));
 							$("#entryDisplayRow").slideDown("fast", $("#entryDisplayRow").css("display","table-row"));
@@ -145,9 +147,9 @@ else {
 					<span style="font-size: 90%"><i><?php print _('Volume or product name.') ?></i></span>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=255 value="" type="text" style="width: 300px">
+					<input name="name" id="name2" maxlength=255 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var name2=new LiveValidation('name');
+						var name2=new LiveValidation('name2');
 						name2.add(Validate.Presence);
 					 </script>
 				</td>
@@ -462,6 +464,53 @@ else {
 						<option value="Lost" /> <?php print _('Lost') ?>
 						<option value="Repair" /> <?php print _('Repair') ?>
 					</select>
+				</td>
+			</tr>
+			<tr id='gibbonSchoolYearIDReplacement' style='display: none'>
+				<td> 
+					<b><?php print _("Replacement Year") ; ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('When is this item scheduled for replacement.') ?></i></span>
+				</td>
+				<td class="right">
+					<select name="gibbonSchoolYearIDReplacement" id="gibbonSchoolYearIDReplacement" style="width: 302px">
+						<?php
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber DESC" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }
+						print "<option value=''></option>" ;
+						while ($rowSelect=$resultSelect->fetch()) {
+							print "<option value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+						}
+						?>				
+					</select>
+				</td>
+			</tr>
+			<tr id='replacementCostRow' style='display: none'>
+				<td> 
+					<b><?php print _("Replacement Cost") ; ?></b><br/>
+					<span style="font-size: 90%">
+						<i>
+						<?php
+						if ($_SESSION[$guid]["currency"]!="") {
+							print sprintf(_('Numeric value of the replacement cost in %1$s.'), $_SESSION[$guid]["currency"]) ;
+						}
+						else {
+							print _("Numeric value of the replacement cost.") ;
+						}
+						?>
+						</i>
+					</span>
+				</td>
+				<td class="right">
+					<input name="replacementCost" id="replacementCost" maxlength=13 value="" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var replacementCost=new LiveValidation('replacementCost');
+						replacementCost.add(Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
+					</script>
 				</td>
 			</tr>
 			

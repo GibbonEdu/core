@@ -48,7 +48,10 @@ else {
 	$_SESSION[$guid]["pageLoads"]=0 ;
 }
 $cacheLoad=FALSE ;
-if ($caching>0 AND is_numeric($caching)) {
+if ($caching==0) {
+	$cacheLoad=TRUE ;
+}
+else if ($caching>0 AND is_numeric($caching)) {
 	if ($_SESSION[$guid]["pageLoads"]%$caching==0) {
 		$cacheLoad=TRUE ;
 	}

@@ -144,16 +144,16 @@ else {
 					<li><b><?php print _('Address 2') ?></b> - <?php print _('Unit, Building, Street') ?></li>
 					<li><b><?php print _('Address 2 (District)') ?></b>< - County, State, District') ?>/li>
 					<li><b><?php print _('Address 2 (Country)') ?></b></li>
-					<li><b><?php print _('Phone 1 (Type)') ?></b> - <?php print _('Mobile, Home, Work, Fax, Page, Other') ?></li>
+					<li><b><?php print _('Phone 1 (Type)') ?></b> - <?php print _('Mobile, Home, Work, Fax, Pager, Other') ?></li>
 					<li><b><?php print _('Phone 1 (Country Code)') ?></b> - <?php print _('IDD code, without 00 or +') ?></li>
 					<li><b><?php print _('Phone 1') ?></b> - <?php print _('No spaces or punctuation, just numbers') ?></li>
-					<li><b><?php print _('Phone 2 (Type)') ?></b> - <?php print _('Mobile, Home, Work, Fax, Page, Other') ?></li>
+					<li><b><?php print _('Phone 2 (Type)') ?></b> - <?php print _('Mobile, Home, Work, Fax, Pager, Other') ?></li>
 					<li><b><?php print _('Phone 2 (Country Code)') ?></b> - <?php print _('IDD code, without 00 or +') ?></li>
 					<li><b><?php print _('Phone 2') ?></b> - <?php print _('No spaces or punctuation, just numbers') ?></li>
-					<li><b><?php print _('Phone 3 (Type)') ?></b> - <?php print _('Mobile, Home, Work, Fax, Page, Other') ?></li>
+					<li><b><?php print _('Phone 3 (Type)') ?></b> - <?php print _('Mobile, Home, Work, Fax, Pager, Other') ?></li>
 					<li><b><?php print _('Phone 3 (Country Code)') ?></b> - <?php print _('IDD code, without 00 or +') ?></li>
 					<li><b><?php print _('Phone 3') ?></b> - <?php print _('No spaces or punctuation, just numbers') ?></li>
-					<li><b><?php print _('Phone 4 (Type)') ?></b> - <?php print _('Mobile, Home, Work, Fax, Page, Other') ?></li>
+					<li><b><?php print _('Phone 4 (Type)') ?></b> - <?php print _('Mobile, Home, Work, Fax, Pager, Other') ?></li>
 					<li><b><?php print _('Phone 4 (Country Code)') ?></b> - <?php print _('IDD code, without 00 or +') ?></li>
 					<li><b><?php print _('Phone 4') ?></b> - <?php print _('No spaces or punctuation, just numbers') ?></li>
 					<li><b><?php print _('Website') ?></b> - <?php print _('Must start with http:// or https://') ?></li>
