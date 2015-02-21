@@ -288,7 +288,7 @@ else {
 									<?php
 									//List basic and smart units
 									try {
-										$dataSelect=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"]); 
+										$dataSelect=array(); 
 										$sqlSelect="SELECT * FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE running='Y' ORDER BY name" ;
 										$resultSelect=$connection2->prepare($sqlSelect);
 										$resultSelect->execute($dataSelect);
