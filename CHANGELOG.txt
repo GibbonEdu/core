@@ -92,7 +92,6 @@ Data Updater: changed to show only current year, instead of all updates
 	Edited files /modules/User Admin/data_family.php, data_finance.php, data_medical.php, data_personal.php
 	Edited files /modules/Data Updater/data_*.php
 	
-	
 System Admin: improved ease-of-use for installing modules and themes
 	Edited files /modules/System Admin/module_manage.php, module_manage_installProcess.php
 	Deleted file /modules/System Admin/module_manage_install.php
@@ -238,6 +237,12 @@ System Admin: added cache refresh on active theme change to make new theme activ
 General: fixed WebKit (Chrome/Safari/etc) issue with floating drop down menu on full screen pages
 	Edited file /index.php
 	
+i18n: Chinese Traditional complete and set to active
+	Edited value in table gibboni18n
+
+Installer: fixed issue which prevented all demo data from being installed
+	Edited file /installer/install.php
+
 
 v8.3.00
 -------
