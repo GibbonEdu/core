@@ -141,7 +141,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 			if (isset($_GET["deleteReturn"])) {
 				$deleteReturn=$_GET["deleteReturn"] ;
 			}
-			if ($cacheLoad OR (@$_GET["q"]=="/modules/Messenger/messenger_post.php" AND $addReturn=="success0") OR (@$_GET["q"]=="/modules/Messenger/messenger_manage_edit.php" AND $updateReturn=="success0") OR (@$_GET["q"]=="/modules/Messenger/messenger_manage.php" AND $deleteReturn=="success0")) {
+			if ($cacheLoad OR (@$_GET["q"]=="/modules/Messenger/messenger_post.php" AND $addReturn=="success0") OR (@$_GET["q"]=="/modules/Messenger/messenger_postQuickWall.php" AND $addReturn=="success0") OR (@$_GET["q"]=="/modules/Messenger/messenger_manage_edit.php" AND $updateReturn=="success0") OR (@$_GET["q"]=="/modules/Messenger/messenger_manage.php" AND $deleteReturn=="success0")) {
 				$messages=getMessages($guid, $connection2, "result") ;					
 				$messages=unserialize($messages) ;
 				try {
@@ -157,7 +157,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 					$last="" ;
 					while ($rowPosts=$resultPosts->fetch()) {
 						if ($last==$rowPosts["gibbonMessengerID"]) {
-							@$output[($count-1)]["source"]=$output[($count-1)]["source"] . "<br/>" .$rowPosts["source"] ;
+							$output[($count-1)]["source"]=$output[($count-1)]["source"] . "<br/>" .$rowPosts["source"] ;
 						}
 						else {
 							$output[$_SESSION[$guid]["messageWallCount"]]["photo"]=$rowPosts["image_75"] ;
@@ -168,12 +168,13 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 
 							$_SESSION[$guid]["messageWallCount"]++ ;
 							$last=$rowPosts["gibbonMessengerID"] ;
+							$count++ ;
 						}	
-						$count++ ;
 					}
 				}
 			}
-	
+			
+			
 			$URL=$_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Messenger/messageWall_view_full.php&width=1000&height=550" ;
 			if (isset($_SESSION[$guid]["messageWallCount"])==FALSE) {
 				$return.=" . 0 x <img style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
@@ -185,8 +186,24 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 				else {
 					$return.=" . <a title='" . _('Message Wall') . "'class='thickbox' href='$URL'>" . $_SESSION[$guid]["messageWallCount"] . " x <img style='margin-left: 4px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall.png'></a>" ;
 					if ($_SESSION[$guid]["pageLoads"]==0 AND ($_SESSION[$guid]["messengerLastBubble"]==NULL OR $_SESSION[$guid]["messengerLastBubble"]<date("Y-m-d"))) {
+						print $messageBubbleBGColor=getSettingByScope($connection2, "Messenger", "messageBubbleBGColor") ;
+						$bubbleBG="" ;
+						if ($messageBubbleBGColor!="") {
+							$bubbleBG="; background-color: rgba(" . $messageBubbleBGColor . ")!important" ;
+							$return.="<style>" ;
+								$return.=".ui-tooltip, .arrow:after { $bubbleBG }" ;
+							$return.="</style>" ;
+							
+						}
+						$messageBubbleWidthType=getSettingByScope($connection2, "Messenger", "messageBubbleWidthType") ;
+						$bubbleWidth=300 ;
+						$bubbleLeft=770 ;
+						if ($messageBubbleWidthType=="Wide") {
+							$bubbleWidth=700 ;
+							$bubbleLeft=370 ;
+						}
 						$return.="<div id='messageBubbleArrow' style=\"left: 1089px; top: 38px; z-index: 9999\" class='arrow top'></div>" ;
-						$return.="<div id='messageBubble' style=\"left: 770px; top: 54px; width: 300px; min-width: 300px; max-width: 300px; min-height: 100px; text-align: center; padding-bottom: 10px\" class=\"ui-tooltip ui-widget ui-corner-all ui-widget-content\" role=\"tooltip\">" ;
+						$return.="<div id='messageBubble' style=\"left: " . $bubbleLeft . "px; top: 54px; width: " . $bubbleWidth . "px; min-width: " . $bubbleWidth . "px; max-width: " . $bubbleWidth . "px; min-height: 100px; text-align: center; padding-bottom: 10px\" class=\"ui-tooltip ui-widget ui-corner-all ui-widget-content\" role=\"tooltip\">" ;
 							$return.="<div class=\"ui-tooltip-content\">" ;
 								$return.="<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>" . _('New Messages') . "</div>" ;
 								$test=count($output) ;
@@ -215,18 +232,21 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 							$return.="</div>" ;
 						$return.="</div>" ;
 		
-						$return.="<script type=\"text/javascript\">" ;
-							$return.="$(function() {" ;
-								$return.="setTimeout(function() {" ;
-									$return.="$(\"#messageBubble\").hide('fade', {}, 3000)" ;
-								$return.="}, 10000);" ;
-							$return.="});" ;
-							$return.="$(function() {" ;
-								$return.="setTimeout(function() {" ;
-									$return.="$(\"#messageBubbleArrow\").hide('fade', {}, 3000)" ;
-								$return.="}, 10000);" ;
-							$return.="});" ;
-						$return.="</script>" ;
+						$messageBubbleAutoHide=getSettingByScope($connection2, "Messenger", "messageBubbleAutoHide") ;
+						if ($messageBubbleAutoHide!="N") {
+							$return.="<script type=\"text/javascript\">" ;
+								$return.="$(function() {" ;
+									$return.="setTimeout(function() {" ;
+										$return.="$(\"#messageBubble\").hide('fade', {}, 3000)" ;
+									$return.="}, 10000);" ;
+								$return.="});" ;
+								$return.="$(function() {" ;
+									$return.="setTimeout(function() {" ;
+										$return.="$(\"#messageBubbleArrow\").hide('fade', {}, 3000)" ;
+									$return.="}, 10000);" ;
+								$return.="});" ;
+							$return.="</script>" ;
+						}
 						
 						try {
 							$data=array("messengerLastBubble"=>date("Y-m-d"), "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"] ); 

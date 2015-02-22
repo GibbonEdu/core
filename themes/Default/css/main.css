@@ -572,26 +572,26 @@ div.odd {
 	background-color: #E2DDCA ;
 	background:#E2DDCA url("../img/tdOdd.png") repeat-x;
 }
-tr.current, tr.current td, div.current {
+tr.current, tr.current td, div.current, td.current {
 	background-color: #B3EFC2!important ;
 	background: -webkit-gradient(linear, left top, left bottom, from(#B5F1C4), to(#B3EFC2))!important;
 	background: -moz-linear-gradient(top,  #B5F1C4,  #B3EFC2)!important;
 }
-tr.past, tr.past td, div.past {
+tr.past, tr.past td, div.past, td.past {
 	background-color: #F6CECB!important ;
 	background: -webkit-gradient(linear, left top, left bottom, from(#F8D1CD), to(#F6CECB))!important;
 	background: -moz-linear-gradient(top,  #F8D1CD,  #F6CECB)!important;	
 }
-tr.error, tr.error td, div.erorr {
+tr.error, tr.error td, div.erorr, td.error {
 	background-color: #F6CECB!important ;
 	background: -webkit-gradient(linear, left top, left bottom, from(#F8D1CD), to(#F6CECB))!important;
 	background: -moz-linear-gradient(top,  #F8D1CD,  #F6CECB)!important;
 }
-tr.warning, tr.warning td, div.warning {
+tr.warning, tr.warning td, div.warning, td.warning {
 	background: none!important ;
 	background-color: #FFD2A9!important ;
 }
-tr.dull, tr.dull td, div.dull {
+tr.dull, tr.dull td, div.dull, td.dull {
 	background: none!important ;
 	background-color: #c6c6c6!important ;
 }

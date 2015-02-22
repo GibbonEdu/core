@@ -25298,7 +25298,7 @@ msgstr "Telefono 1 (Tipo)"
 #: modules/User Admin/import_users.php:150
 #: modules/User Admin/import_users.php:153
 #: modules/User Admin/import_users.php:156
-msgid "Mobile, Home, Work, Fax, Page, Other"
+msgid "Mobile, Home, Work, Fax, Pager, Other"
 msgstr "Cellulare, Casa, Lavoro, Fax, Page, Altro"
 
 #: modules/User Admin/import_users.php:148

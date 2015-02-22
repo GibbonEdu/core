@@ -16,3 +16,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+td.current {
+	background-color: #B3EFC2!important ;
+	background: -webkit-gradient(linear, left top, left bottom, from(#B5F1C4), to(#B3EFC2))!important;
+	background: -moz-linear-gradient(top,  #B5F1C4,  #B3EFC2)!important;
+}
+tr.warning {
+	background: none!important ;
+	background-color: #FFD2A9!important ;
+}

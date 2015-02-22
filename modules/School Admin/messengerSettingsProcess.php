@@ -35,9 +35,9 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/smsSettings.php" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messengerSettings.php" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/smsSettings.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/School Admin/messengerSettings.php")==FALSE) {
 	//Fail 0
 	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
@@ -48,6 +48,9 @@ else {
 	$smsPassword=$_POST["smsPassword"] ;
 	$smsURL=$_POST["smsURL"] ;
 	$smsURLCredit=$_POST["smsURLCredit"] ;
+	$messageBubbleWidthType=$_POST["messageBubbleWidthType"] ;
+	$messageBubbleBGColor=$_POST["messageBubbleBGColor"] ;
+	$messageBubbleAutoHide=$_POST["messageBubbleAutoHide"] ;
 	
 	//Write to database
 	$fail=FALSE ;
@@ -85,6 +88,36 @@ else {
 	try {
 		$data=array("value"=>$smsURLCredit); 
 		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='smsURLCredit'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ;
+	}
+	
+	try {
+		$data=array("value"=>$messageBubbleWidthType); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='messageBubbleWidthType'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ;
+	}
+	
+	try {
+		$data=array("value"=>$messageBubbleBGColor); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='messageBubbleBGColor'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ;
+	}
+	
+	try {
+		$data=array("value"=>$messageBubbleAutoHide); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='messageBubbleAutoHide'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
