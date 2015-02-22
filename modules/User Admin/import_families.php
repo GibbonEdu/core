@@ -123,7 +123,6 @@ else {
 						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 					</td>
 					<td class="right">
-						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 						<input type="submit" value="<?php print _("Submit") ; ?>">
 					</td>

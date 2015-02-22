@@ -24718,7 +24718,7 @@ msgstr "電話 1 (類型) "
 #: modules/User Admin/import_users.php:150
 #: modules/User Admin/import_users.php:153
 #: modules/User Admin/import_users.php:156
-msgid "Mobile, Home, Work, Fax, Page, Other"
+msgid "Mobile, Home, Work, Fax, Pager, Other"
 msgstr "手提電話，住宅電話，工作，傳真，傳呼機，其他"
 
 #: modules/User Admin/import_users.php:148

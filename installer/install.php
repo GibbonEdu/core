@@ -259,7 +259,6 @@ include "../functions.php" ;
 									$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 								}
 								catch(PDOException $e) {
-									print "here" . $e->getMessage() ;
 									$connected=FALSE ;
 								}
 								
@@ -283,7 +282,6 @@ include "../functions.php" ;
 									$result->execute($data);
 								}
 								catch(PDOException $e) { 
-									print "here" . $e->getMessage() ;
 									$connected=FALSE ;
 								}
 								
