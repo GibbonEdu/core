@@ -43,7 +43,13 @@ Messenger: added quick add function for message wall, goes out to all school mem
 	New values in tables gibbonAction, gibbonPermission
 	Edited file /function.php
 	
-		
+Planner: added Unit Overview link to lesson plan edit screen
+	Edited file /modules/Planner/planner_edit.php	
+	
+General: updated TinyMCE to v4.1.7
+	Edited files /lib/tinymce/*
+
+
 v9.0.00
 -------
 i18n: fixed name details of Spanish translator
