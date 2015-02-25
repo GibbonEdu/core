@@ -1099,7 +1099,11 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+										$selected="" ;
+										if ($rowSelect["printable_name"]==$row["citizenship1"]) {
+											$selected="selected" ;
+										}
+										print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 									}
 								}
 								else {
@@ -1166,7 +1170,11 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+										$selected="" ;
+										if ($rowSelect["printable_name"]==$row["citizenship2"]) {
+											$selected="selected" ;
+										}
+										print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 									}
 								}
 								else {

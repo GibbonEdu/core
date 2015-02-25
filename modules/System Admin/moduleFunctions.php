@@ -17,6 +17,23 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+function getThemeVersion($themeName, $guid) {
+	$return=FALSE ;
+	
+	
+	$file=file($_SESSION[$guid]["absolutePath"] . "/themes/$themeName/manifest.php") ;
+	foreach($file AS $fileEntry) {
+		if (substr($fileEntry,1,7)=="version") {
+			$temp="" ;
+			$temp=substr($fileEntry,10,-1) ;
+			$temp=substr($temp, 0, strpos($temp, "\"")) ;
+			$return=$temp ;
+		}
+	}
+	
+	return $return ;
+}
+
 
 function getCurrentVersion($guid, $connection2, $version) {
 	$output="" ;

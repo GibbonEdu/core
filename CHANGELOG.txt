@@ -49,6 +49,12 @@ Planner: added Unit Overview link to lesson plan edit screen
 General: updated TinyMCE to v4.1.7
 	Edited files /lib/tinymce/*
 
+System Admin: made theme version number self-updating based on manifest file
+	Edited file /modules/System Admin/theme_manage.php
+
+User Admin: fixed bug with citizenship field saving, but not showing, when using standard country list
+	Edited file /modules/User Admin/user_manage_edit.php
+	
 
 v9.0.00
 -------
