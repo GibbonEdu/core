@@ -156,9 +156,21 @@ else {
 			}
 			
 			?>
-			<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+
 				<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 					<tr><td style="width: 30%"></td><td></td></tr>
+<tr>
+			<span><?php print _("Sort by: "); ?></span>
+			<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+				<select name="sort" style="float:left">
+					<option value="surname">Surname</option>
+					<option value="preferredName">Given Name</option>
+					<option value="rollGroup">Roll Group</option>
+					<option value="yearGroup">Year Group</option>
+				</select>
+				<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"]."/student_view.php" ?>">
+</form>
+</tr>
 					<tr>
 						<td> 
 							<b><?php print _('Search For') ?></b><br/>
@@ -199,18 +211,6 @@ else {
 			</form>
 			
 			<h2><?php print _("Choose A Student"); ?></h2>
-
-			<span><?php print _("Sort by: "); ?></span>
-			<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-				<select name="sort" style="float:left">
-					<option value="surname">Surname</option>
-					<option value="preferredName">Given Name</option>
-					<option value="rollGroup">Roll Group</option>
-					<option value="yearGroup">Year Group</option>
-				</select>
-				<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"]."/student_view.php" ?>">
-				<input type="submit" value="<?php print _("Submit"); ?>">
-			</form>
 
 			<?php
 			//Set pagination variable
