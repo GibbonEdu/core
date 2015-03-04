@@ -110,6 +110,14 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 						$('#block<?php print $i ?>').fadeOut(600, function(){ $('#block<?php print $i ?>').remove(); });
 					}
 				});
+				
+				$('#star<?php print $i ?>').unbind('click').click(function() {
+					$("#starBox<?php print $i ?>").load("<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Planner/units_edit_starAjax.php",{"gibbonPersonID": "<?php print $_SESSION[$guid]["gibbonPersonID"] ?>", "gibbonUnitBlockID": "<?php print $gibbonUnitBlockID ?>", "action": "star", "i": "<?php print $i ?>" }) ;
+				});
+				
+				$('#unstar<?php print $i ?>').unbind('click').click(function() {
+					$("#starBox<?php print $i ?>").load("<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Planner/units_edit_starAjax.php",{"gibbonPersonID": "<?php print $_SESSION[$guid]["gibbonPersonID"] ?>", "gibbonUnitBlockID": "<?php print $gibbonUnitBlockID ?>", "action": "unstar", "i": "<?php print $i ?>" }) ;
+				});
 			});
 		</script>
 		<?php
@@ -127,8 +135,24 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 				<td style='text-align: right; width: 50%'>
 					<div style='margin-bottom: 5px'>
 						<?php
+						if ($mode=="masterEdit") {
+							//Check if starred
+							try {
+								$dataCheck=array("gibbonUnitBlockID"=>$gibbonUnitBlockID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+								$sqlCheck="SELECT * FROM gibbonUnitBlockStar WHERE gibbonPersonID=:gibbonPersonID AND gibbonUnitBlockID=:gibbonUnitBlockID" ;
+								$resultCheck=$connection2->prepare($sqlCheck);
+								$resultCheck->execute($dataCheck);
+							}
+							catch(PDOException $e) { }
+							if ($resultCheck->rowCount()==1) {
+								print "<div style='float: right; margin-top: -2px' id='starBox$i'><img id='unstar$i' title='" . _('Unstar') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'/></div> " ;
+							}
+							else {
+								print "<div style='float: right; margin-top: -2px' id='starBox$i'><img id='star$i' title='" . _('Star') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'/></div> " ;
+							}
+						}
 						if ($mode!="plannerEdit" AND $mode!="embed") {
-							print "<img id='delete$i' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
+							print "<img style='margin-top: 2px' id='delete$i' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
 						}
 						if ($mode=="workingEdit") {
 							//Check that block is still connected to master (poor design in original smart units means that they might be disconnected, and so copyback will not work.
@@ -146,7 +170,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 							}
 						}
 						if ($mode!="embed") {
-							print "<div title='" . _('Show/Hide Details') . "' id='show$i' style='margin-right: 3px; margin-top: -1px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\"); background-repeat: no-repeat'></div></br>" ;
+							print "<div title='" . _('Show/Hide Details') . "' id='show$i' style='margin-right: 3px; margin-top: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\"); background-repeat: no-repeat'></div></br>" ;
 						}
 						?>
 					</div>
