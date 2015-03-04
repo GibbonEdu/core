@@ -55,7 +55,10 @@ System Admin: made theme version number self-updating based on manifest file
 User Admin: fixed bug with citizenship field saving, but not showing, when using standard country list
 	Edited file /modules/User Admin/user_manage_edit.php
 	
-
+Planner: added import for outcomes
+	New values in tables gibbonAction, gibbonPermission
+	New file /modules/Planner/outcomes_import.php
+	
 v9.0.00
 -------
 i18n: fixed name details of Spanish translator
