@@ -63,6 +63,7 @@ Planner: added ability to star/fav smart blocks for reuse
 	New table gibbonUnitBlockStar
 	Edited file /modules/Planner/moduleFunctions.php
 	New file /modules/Planner/units_edit_starAjax.php
+	Edited files /modules/Planner/units_edit_working.php, units_edit_deploy.php
 	
 v9.0.00
 -------

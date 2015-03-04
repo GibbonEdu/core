@@ -158,7 +158,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 							//Check that block is still connected to master (poor design in original smart units means that they might be disconnected, and so copyback will not work.
 							try {
 								$dataCheck=array("gibbonUnitBlockID"=>$gibbonUnitBlockID, "gibbonUnitClassBlockID"=>$gibbonUnitClassBlockID); 
-								$sqlCheck="SELECT * FROM gibbonUnitBlock JOIN gibbonUnitClassBlock ON (gibbonUnitClassBlock.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID AND gibbonUnitBlock.gibbonUnitBlockID=:gibbonUnitBlockID" ;
+								$sqlCheck="SELECT * FROM gibbonUnitBlock JOIN gibbonUnitClassBlock ON (gibbonUnitClassBlock.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) LEFT JOIN gibbonUnitBlockStar ON (gibbonUnitBlockStar.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID AND gibbonUnitBlock.gibbonUnitBlockID=:gibbonUnitBlockID" ;
 								$resultCheck=$connection2->prepare($sqlCheck);
 								$resultCheck->execute($dataCheck);
 							}
@@ -166,7 +166,13 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
 							if ($resultCheck->rowCount()==1) {
-								print "<a onclick='return confirm(\"" . _('Are you sure you want to leave this page? Any unsaved changes will be lost.') . "\")' style='font-weight: normal; font-style: normal; color: #fff' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=" . $_GET["gibbonUnitClassID"] . "'><img id='copyback$i' title='Copy Back' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copyback.png'/></a>" ;
+								$rowCheck=$resultCheck->fetch() ;
+								if (is_null($rowCheck["gibbonUnitBlockStarID"])) {
+									print "<a onclick='return confirm(\"" . _('Are you sure you want to leave this page? Any unsaved changes will be lost.') . "\")' style='margin-right: 2px; font-weight: normal; font-style: normal; color: #fff' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=" . $_GET["gibbonUnitClassID"] . "'><img id='copyback$i' title='Copy Back' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copyback.png'/></a>" ;
+								}
+								else {
+									print "<img style='margin-left: -2px; margin-right: 2px' title='" . _('This is a Star Block') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'/> " ;
+								}
 							}
 						}
 						if ($mode!="embed") {
