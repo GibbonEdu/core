@@ -64,7 +64,11 @@ Planner: added ability to star/fav smart blocks for reuse
 	Edited file /modules/Planner/moduleFunctions.php
 	New file /modules/Planner/units_edit_starAjax.php
 	Edited files /modules/Planner/units_edit_working.php, units_edit_deploy.php
+
+School Admin: fixed bug preventing Special Days from working with US-style dates
+	Edited files /modules/School Admin/schoolYearSpecialDay_manage.php, specialDay_manage_add.php
 	
+
 v9.0.00
 -------
 i18n: fixed name details of Spanish translator
