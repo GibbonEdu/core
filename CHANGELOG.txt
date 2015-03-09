@@ -88,9 +88,13 @@ User Admin: removed trailing spaces from title values (this was a very bad decis
 System Admin: added support for all currencies (although not all will work with PayPal
 	Updated value in table gibbonSetting
 	Edited file /lib/paypal/expresscheckout.php
-	Edited file /modules/Application Form/applicationForm.php
+	Edited files /modules/Application Form/applicationForm*.php
 	Edited file /modules/System Admin/systemSettings.php
 	Edited file /installer/install.php
+	Edited files /modules/Finance/invoices_payOnline*.php
+
+Finance: minor cosmetic enhancement to button layout
+	Edited file /modules/Finance/invoices_manage.php
 
 v9.0.00
 -------

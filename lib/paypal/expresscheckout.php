@@ -79,8 +79,8 @@ else
 	$ErrorLongMsg=urldecode($resArray["L_LONGMESSAGE0"]);
 	$ErrorSeverityCode=urldecode($resArray["L_SEVERITYCODE0"]);
 	
-	if ($ErrorCode==10605) {
-		$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Application Form/applicationForm.php&addReturn=success4" ;
+	if ($ErrorLongMsg="Currency is not supported") {
+		$URL=$_SESSION[$guid]["gatewayCurrencyNoSupportReturnURL"] ;
 		header("Location: {$URL}");
 	}
 	else {

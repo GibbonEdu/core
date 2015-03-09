@@ -120,6 +120,7 @@ if ($paid!="Y") { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 					if ($financeOnlinePaymentEnabled=="Y") {
 						if  ($financeOnlinePaymentThreshold=="" OR $financeOnlinePaymentThreshold>=$feeTotal) {
 							//Let's call for the payment to be done!
+							$_SESSION[$guid]["gatewayCurrencyNoSupportReturnURL"]=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_payOnline.php&addReturn=fail5" ;
 							$URL=$_SESSION[$guid]["absoluteURL"] . "/lib/paypal/expresscheckout.php?Payment_Amount=$feeTotal&return=" . urlencode("modules/Finance/invoices_payOnlineProcess.php?addReturn=success1&paid=Y&feeTotal=$feeTotal&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key") . "&fail=" . urlencode("modules/Finance/invoices_payOnlineProcess?addReturn=success2&paid=N&feeTotal=$feeTotal&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key") ;
 							header("Location: {$URL}");
 						}
