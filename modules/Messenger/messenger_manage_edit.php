@@ -34,8 +34,13 @@ else {
 		print "</div>" ;
 	}
 	else {
+		$search=NULL ;
+		if (isset($_GET["search"])) {
+			$search=$_GET["search"] ;
+		}
+		
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/messenger_manage.php'>" . _('Manage Messages') . "</a> > </div><div class='trailEnd'>" . _('Edit Message') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/messenger_manage.php&search=$search'>" . _('Manage Messages') . "</a> > </div><div class='trailEnd'>" . _('Edit Message') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -104,7 +109,7 @@ else {
 					<b><u><?php print _('Note') ?></u></b>: <?php print _('Changes made here do not apply to emails and SMS messages (which have already been sent), but only to message wall messages.') ?>
 				</div>
 				
-				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_editProcess.php?gibbonMessengerID=$gibbonMessengerID&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_editProcess.php?gibbonMessengerID=$gibbonMessengerID&search=$search&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr class='break'>
 							<td colspan=2> 

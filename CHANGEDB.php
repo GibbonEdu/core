@@ -655,6 +655,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Planner' AND gibbonAction.name='Import Outcomes'));end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '2', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Planner' AND gibbonAction.name='Import Outcomes'));end
 CREATE TABLE `gibbonUnitBlockStar` (`gibbonUnitBlockStarID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,  `gibbonUnitBlockID` int(12) unsigned zerofill NOT NULL,  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,    PRIMARY KEY (`gibbonUnitBlockStarID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+UPDATE gibbonAction SET entrySidebar='N' WHERE name LIKE 'Manage Messages%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Messenger');end
 ";
 
 ?>

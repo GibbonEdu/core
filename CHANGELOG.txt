@@ -68,7 +68,16 @@ Planner: added ability to star/fav smart blocks for reuse
 School Admin: fixed bug preventing Special Days from working with US-style dates
 	Edited files /modules/School Admin/schoolYearSpecialDay_manage.php, specialDay_manage_add.php
 	
+Messenger: made message manage screen full width, improved usability of columns
+	Edited values in table gibbonAction
+	Edited files /messenger_manage*.php
 
+General: tweaked alignment of table header text to improve appearance
+	Edited file /themes/Default/css/main.css
+
+Messenger: added subject/body search
+	Edited files /messenger_manage*.php
+	
 v9.0.00
 -------
 i18n: fixed name details of Spanish translator

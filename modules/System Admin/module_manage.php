@@ -189,7 +189,7 @@ else {
 						}
 						else {
 							print "<td colspan=7>" ;
-								print _("Module Error") ;
+								print _("Module error due to incorrect manifest file or folder name.") ;
 							print "</td>" ;
 						}
 					}
