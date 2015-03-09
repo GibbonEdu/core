@@ -89,11 +89,11 @@ else {
 				<td class="right">
 					<select style="width: 302px" name="title">
 						<option value=""></option>
-						<option value="Ms. "><?php print _('Ms.') ?></option>
-						<option value="Miss "><?php print _('Miss') ?></option>
-						<option value="Mr. "><?php print _('Mr.') ?></option>
-						<option value="Mrs. "><?php print _('Mrs.') ?></option>
-						<option value="Dr. "><?php print _('Dr.') ?></option>
+						<option value="Ms."><?php print _('Ms.') ?></option>
+						<option value="Miss"><?php print _('Miss') ?></option>
+						<option value="Mr."><?php print _('Mr.') ?></option>
+						<option value="Mrs."><?php print _('Mrs.') ?></option>
+						<option value="Dr."><?php print _('Dr.') ?></option>
 					</select>
 				</td>
 			</tr>

@@ -1161,11 +1161,11 @@ else {
 											<?php
 										}
 										?>
-										<option <?php if ($row["parent$i" . "title"]=="Ms. ") { print "selected" ; } ?> value="Ms. "><?php print _('Ms') ?></option>
-										<option <?php if ($row["parent$i" . "title"]=="Miss ") { print "selected" ; } ?> value="Miss "><?php print _('Miss') ?></option>
-										<option <?php if ($row["parent$i" . "title"]=="Mr. ") { print "selected" ; } ?> value="Mr. "><?php print _('Mr.') ?></option>
-										<option <?php if ($row["parent$i" . "title"]=="Mrs. ") { print "selected" ; } ?> value="Mrs. "><?php print _('Mrs.') ?></option>
-										<option <?php if ($row["parent$i" . "title"]=="Dr. ") { print "selected" ; } ?> value="Dr. "><?php print _('Dr.') ?></option>
+										<option <?php if ($row["parent$i" . "title"]=="Ms.") { print "selected" ; } ?> value="Ms."><?php print _('Ms.') ?></option>
+										<option <?php if ($row["parent$i" . "title"]=="Miss") { print "selected" ; } ?> value="Miss"><?php print _('Miss') ?></option>
+										<option <?php if ($row["parent$i" . "title"]=="Mr.") { print "selected" ; } ?> value="Mr."><?php print _('Mr.') ?></option>
+										<option <?php if ($row["parent$i" . "title"]=="Mrs.") { print "selected" ; } ?> value="Mrs."><?php print _('Mrs.') ?></option>
+										<option <?php if ($row["parent$i" . "title"]=="Dr.") { print "selected" ; } ?> value="Dr."><?php print _('Dr.') ?></option>
 									</select>
 									
 									<?php

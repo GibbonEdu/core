@@ -77,6 +77,13 @@ General: tweaked alignment of table header text to improve appearance
 
 Messenger: added subject/body search
 	Edited files /messenger_manage*.php
+
+User Admin: removed trailing spaces from title values (this was a very bad decision made very early on ; )
+	Edited values in table gibbonPerson, gibbonPersonUpdate, gibbonApplicationForm
+	Edited file /functions.php
+	Edited file /modules/User Admin/applicationForm_manage_edit.php 
+	Edited files /modules/User Admin/applicationForm_manage_edit.php, user_manage_add.php, user_manage_edit.php
+	Edited file /modules/Data Updater/data_personal.php
 	
 v9.0.00
 -------

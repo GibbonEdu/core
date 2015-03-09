@@ -1058,11 +1058,11 @@ else {
 						<td class="right">
 							<select style="width: 302px" id="<?php print "parent$i" ?>title" name="<?php print "parent$i" ?>title">
 								<option value="Please select..."><?php print _('Please select...') ?></option>
-								<option value="Ms. ">Ms.</option>
-								<option value="Miss ">Miss</option>
-								<option value="Mr. ">Mr.</option>
-								<option value="Mrs. ">Mrs.</option>
-								<option value="Dr. ">Dr.</option>
+								<option value="Ms.">Ms.</option>
+								<option value="Miss">Miss</option>
+								<option value="Mr.">Mr.</option>
+								<option value="Mrs.">Mrs.</option>
+								<option value="Dr.">Dr.</option>
 							</select>
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>title=new LiveValidation('<?php print "parent$i" ?>title');
