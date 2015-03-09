@@ -79,10 +79,16 @@ else
 	$ErrorLongMsg=urldecode($resArray["L_LONGMESSAGE0"]);
 	$ErrorSeverityCode=urldecode($resArray["L_SEVERITYCODE0"]);
 	
-	echo "SetExpressCheckout API call failed. ";
-	echo "Detailed Error Message: " . $ErrorLongMsg;
-	echo "Short Error Message: " . $ErrorShortMsg;
-	echo "Error Code: " . $ErrorCode;
-	echo "Error Severity Code: " . $ErrorSeverityCode;
+	if ($ErrorCode==10605) {
+		$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Application Form/applicationForm.php&addReturn=success4" ;
+		header("Location: {$URL}");
+	}
+	else {
+		echo "SetExpressCheckout API call failed. ";
+		echo "Detailed Error Message: " . $ErrorLongMsg;
+		echo "Short Error Message: " . $ErrorShortMsg;
+		echo "Error Code: " . $ErrorCode;
+		echo "Error Severity Code: " . $ErrorSeverityCode;
+	}
 }
 ?>

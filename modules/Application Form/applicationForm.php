@@ -92,7 +92,7 @@ else {
 		else if ($addReturn=="fail4") {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
-		else if ($addReturn=="success0" OR $addReturn=="success1" OR $addReturn=="success2" ) {
+		else if ($addReturn=="success0" OR $addReturn=="success1" OR $addReturn=="success2"  OR $addReturn=="success4") {
 			if ($addReturn=="success0") {
 				$addReturnMessage=_("Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.") ;
 			}
@@ -105,8 +105,13 @@ else {
 			else if ($addReturn=="success3") {
 				$addReturnMessage=_("Your application was successfully submitted, payment has been made to your credit card, but there has been an error recording your payment. Please print this screen and contact the school ASAP. Our admissions team will review your application and be in touch in due course.") ;
 			}
-			if ($_GET["id"]!="") {
-				$addReturnMessage=$addReturnMessage . "<br/><br/>" . _('If you need to contact the school in reference to this application, please quote the following number:') . " <b><u>" . $_GET["id"] . "</b></u>." ;
+			else if ($addReturn=="success4") {
+				$addReturnMessage=_("Your application was successfully submitted, but payment could not be made as the payment gateway does not support the system's currency. Our admissions team will review your application and be in touch in due course.") ;
+			}
+			if (isset($_GET["id"])) {
+				if ($_GET["id"]!="") {
+					$addReturnMessage=$addReturnMessage . "<br/><br/>" . _('If you need to contact the school in reference to this application, please quote the following number:') . " <b><u>" . $_GET["id"] . "</b></u>." ;
+				}
 			}
 			if ($_SESSION[$guid]["organisationAdmissionsName"]!="" AND $_SESSION[$guid]["organisationAdmissionsEmail"]!="") {
 				$addReturnMessage=$addReturnMessage . "<br/><br/>Please contact <a href='mailto:" . $_SESSION[$guid]["organisationAdmissionsEmail"] . "'>" . $_SESSION[$guid]["organisationAdmissionsName"] . "</a> if you have any questions, comments or complaints." ;	
