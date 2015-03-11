@@ -37,6 +37,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/update.php" ;
 $partialFail=FALSE;
+$_SESSION[$guid]["systemUpdateError"]="" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/update.php")==FALSE) {
 	//Fail 0
@@ -70,10 +71,11 @@ else {
 					foreach ($sqlTokens AS $sqlToken) {
 						if (trim($sqlToken)!="") {
 							try {
-								$result=$connection2->query($sqlToken);   
+								$result=$connection2->query($sqlToken);  
 							}
 							catch(PDOException $e) { 
 								$partialFail=TRUE;
+								$_SESSION[$guid]["systemUpdateError"].=$sqlToken . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ;  
 							}
 						}
 					}
@@ -146,6 +148,7 @@ else {
 										}
 										catch(PDOException $e) { 
 											$partialFail=TRUE;
+											$_SESSION[$guid]["systemUpdateError"].=$sqlToken . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
 										}
 									}
 								}
@@ -156,10 +159,11 @@ else {
 							foreach ($sqlTokens AS $sqlToken) {
 								if (trim($sqlToken)!="") { //Decide whether this has been run or not
 									try {
-										$result=$connection2->query($sqlToken);   
+										$result=$connection2->query($sqlToken);  
 									}
 									catch(PDOException $e) { 
 										$partialFail=TRUE;
+										$_SESSION[$guid]["systemUpdateError"].=$sqlToken . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ;   
 									}
 								}
 							}
@@ -178,6 +182,7 @@ else {
 								if (trim($sqlToken)!="") { //Decide whether this has been run or not
 									try {
 										$result=$connection2->query($sqlToken);   
+										$_SESSION[$guid]["systemUpdateError"].=$sqlToken . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
 									}
 									catch(PDOException $e) { 
 										$partialFail=TRUE;

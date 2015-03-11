@@ -75,7 +75,7 @@ else {
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
-			print $addReturnMessage;
+			print $addReturnMessage . "<br/><br/>" ;
 			if (isset($_SESSION[$guid]["moduleInstallError"])) {
 				if ($_SESSION[$guid]["moduleInstallError"]!="") {
 					print _("The following SQL statements caused errors:") . " " . $_SESSION[$guid]["moduleInstallError"] ;

@@ -118,6 +118,12 @@ Library: minor cosmetic enhancement to button layout
 School Admin: added database locking to Special Day creation, to prevent accidental duplicate creation
 	Edited file /modules/School Admin/schoolYearSpecialDay_manage_addProcess.php	
 
+System Admin: added SQL error messages to module update fail information for user
+	Edited files /modules/System Admin/module_manage_update*.php
+
+System Admin: added SQL error messages to system update fail information for user
+	Edited files /modules/System Admin/_update*.php
+
 
 v9.0.00
 -------
