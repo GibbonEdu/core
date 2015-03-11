@@ -96,6 +96,20 @@ System Admin: added support for all currencies (although not all will work with 
 Finance: minor cosmetic enhancement to button layout
 	Edited file /modules/Finance/invoices_manage.php
 
+Planner: minor cosmetic enhancement to button layout
+	Edited file /modules/Planner/units.php
+
+User Admin: changed rules to make home language compulsory across the system
+	Edited table gibbonFamilyUpdate
+	Edited files /modules/Data Updater/data_family*.php
+	Edited files /modules/User Admin/data_family_edit*.php
+
+General: improved themeability of chat boxes in Planner and Crowd Assessment
+	Edited file /modules/Planner/moduleFunctions.php
+	Edited file /modules/Crowd Assessment/moduleFunctions.php
+	Edited file /themes/Default/css/main.css
+
+	
 v9.0.00
 -------
 i18n: fixed name details of Spanish translator

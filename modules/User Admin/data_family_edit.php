@@ -45,7 +45,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonFamilyUpdateID"=>$gibbonFamilyUpdateID); 
-			$sql="SELECT gibbonFamilyUpdate.gibbonFamilyID, gibbonFamily.name AS name, gibbonFamily.nameAddress AS nameAddress, gibbonFamily.homeAddress AS homeAddress, gibbonFamily.homeAddressDistrict AS homeAddressDistrict, gibbonFamily.homeAddressCountry AS homeAddressCountry, gibbonFamilyUpdate.nameAddress AS newnameAddress, gibbonFamilyUpdate.homeAddress AS newhomeAddress, gibbonFamilyUpdate.homeAddressDistrict AS newhomeAddressDistrict, gibbonFamilyUpdate.homeAddressCountry AS newhomeAddressCountry FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID" ;
+			$sql="SELECT gibbonFamilyUpdate.gibbonFamilyID, gibbonFamily.name AS name, gibbonFamily.nameAddress AS nameAddress, gibbonFamily.homeAddress AS homeAddress, gibbonFamily.homeAddressDistrict AS homeAddressDistrict, gibbonFamily.homeAddressCountry AS homeAddressCountry, gibbonFamily.languageHome AS languageHome, gibbonFamilyUpdate.nameAddress AS newnameAddress, gibbonFamilyUpdate.homeAddress AS newhomeAddress, gibbonFamilyUpdate.homeAddressDistrict AS newhomeAddressDistrict, gibbonFamilyUpdate.homeAddressCountry AS newhomeAddressCountry, gibbonFamilyUpdate.languageHome AS newlanguageHome FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -185,6 +185,26 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["homeAddressCountry"]!=$row["newhomeAddressCountry"]) { print "<input checked type='checkbox' name='newhomeAddressCountryOn'><input name='newhomeAddressCountry' type='hidden' value='" . htmlprep($row["newhomeAddressCountry"]) . "'>" ; }
+						print "</td>" ;
+					print "</tr>" ;
+					
+					print "<tr class='even'>" ;
+						print "<td>" ;
+							print _("Home Language") ;
+						print "</td>" ;
+						print "<td>" ;
+							print $row["languageHome"] ;
+						print "</td>" ;
+						print "<td>" ;
+							$style="" ;
+							if ($row["languageHome"]!=$row["newlanguageHome"]) {
+								$style="style='color: #ff0000'" ;
+							}
+							print "<span $style>" ;
+							print $row["newlanguageHome"] ;
+						print "</td>" ;
+						print "<td>" ;
+							if ($row["languageHome"]!=$row["newlanguageHome"]) { print "<input checked type='checkbox' name='newlanguageHomeOn'><input name='newlanguageHome' type='hidden' value='" . htmlprep($row["newlanguageHome"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
 					print "<tr>" ;

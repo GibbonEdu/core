@@ -250,7 +250,7 @@ else {
 								print "<th style='width: 450px'>" ;
 									print _("Description") ;
 								print "</th>" ;
-								print "<th style='width: 120px'>" ;
+								print "<th style='width: 140px'>" ;
 									print _("Actions") ;
 								print "</th>" ;
 							print "</tr>" ;

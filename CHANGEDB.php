@@ -659,6 +659,7 @@ UPDATE gibbonAction SET entrySidebar='N' WHERE name LIKE 'Manage Messages%' AND 
 UPDATE gibbonPerson SET title=RTRIM(title);end
 UPDATE gibbonPersonUpdate SET title=RTRIM(title);end
 UPDATE gibbonApplicationForm SET parent1title=RTRIM(parent1title), parent2title=RTRIM(parent2title);end
+ALTER TABLE `gibbonFamilyUpdate` ADD `languageHome` VARCHAR(30) NOT NULL AFTER `homeAddressCountry`;end
 UPDATE gibbonSetting SET description='System-wde currency for financial transactions. Support for online payment in this currency depends on your credit card gateway: please consult their support documentation.' WHERE scope='System' AND name='currency';end
 ";
 

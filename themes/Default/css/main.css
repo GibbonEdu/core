@@ -1149,3 +1149,22 @@ div.ttPeriodCurrent {
 	border: 1px solid rgb(136,136,136) ;
 	background-color: rgb(179, 239, 194) ;
 }
+
+table.chatBox {
+	margin-top: 0px ;
+	padding: 0px ; 
+	margin-bottom: -1px ;
+	border: 1px solid #333 ; 
+	background-color: #f9f9f9;
+	border-radius:0px;
+}
+
+table.chatBoxFirst {
+	margin-top: 25px ;
+}
+
+table.chatBox tr td {
+	color: #444 ;
+	word-wrap: break-word ;
+	padding: 1px 4px
+}
