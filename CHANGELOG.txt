@@ -109,6 +109,12 @@ General: improved themeability of chat boxes in Planner and Crowd Assessment
 	Edited file /modules/Crowd Assessment/moduleFunctions.php
 	Edited file /themes/Default/css/main.css
 
+Library: added storage type field to Computer type
+	Edited value in table gibbonLibraryType
+
+Library: minor cosmetic enhancement to button layout
+	Edited file /modules/Library/library_manage_catalog.php
+
 	
 v9.0.00
 -------
