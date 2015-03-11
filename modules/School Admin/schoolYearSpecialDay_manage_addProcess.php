@@ -76,6 +76,18 @@ else {
 		header("Location: {$URL}");
 	}
 	else {
+		//Lock table
+		try {
+			$sql="LOCK TABLE gibbonSchoolYearSpecialDay WRITE" ;
+			$result=$connection2->query($sql);   
+		}
+		catch(PDOException $e) { 
+			//Fail 2
+			$URL.="&duplicateReturn=fail2" ;
+			header("Location: {$URL}");
+			break ;
+		}		
+			
 		//Check unique inputs for uniquness
 		try {
 			$data=array("date"=>dateConvert($guid, $date)); 
@@ -115,6 +127,13 @@ else {
 					header("Location: {$URL}");
 					break ;
 				}
+				
+				//Unlock locked database tables
+				try {
+					$sql="UNLOCK TABLES" ;
+					$result=$connection2->query($sql);   
+				}
+				catch(PDOException $e) { }	
 				
 				//Success 0
 				$URL.="&addReturn=success0" ;

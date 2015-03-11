@@ -115,7 +115,10 @@ Library: added storage type field to Computer type
 Library: minor cosmetic enhancement to button layout
 	Edited file /modules/Library/library_manage_catalog.php
 
-	
+School Admin: added database locking to Special Day creation, to prevent accidental duplicate creation
+	Edited file /modules/School Admin/schoolYearSpecialDay_manage_addProcess.php	
+
+
 v9.0.00
 -------
 i18n: fixed name details of Spanish translator
