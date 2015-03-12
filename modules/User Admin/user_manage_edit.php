@@ -152,11 +152,11 @@ else {
 						<td class="right">
 							<select style="width: 302px" name="title">
 								<option value=""></option>
-								<option <?php if ($row["title"]=="Ms. ") {print "selected ";}?>value="Ms. "><?php print _('Ms.') ?></option>
-								<option <?php if ($row["title"]=="Miss ") {print "selected ";}?>value="Miss "><?php print _('Miss') ?></option>
-								<option <?php if ($row["title"]=="Mr. ") {print "selected ";}?>value="Mr. "><?php print _('Mr.') ?></option>
-								<option <?php if ($row["title"]=="Mrs. ") {print "selected ";}?>value="Mrs. "><?php print _('Mrs.') ?></option>
-								<option <?php if ($row["title"]=="Dr. ") {print "selected ";}?>value="Dr. "><?php print _('Dr.') ?></option>
+								<option <?php if ($row["title"]=="Ms.") {print "selected ";}?>value="Ms."><?php print _('Ms.') ?></option>
+								<option <?php if ($row["title"]=="Miss") {print "selected ";}?>value="Miss"><?php print _('Miss') ?></option>
+								<option <?php if ($row["title"]=="Mr.") {print "selected ";}?>value="Mr."><?php print _('Mr.') ?></option>
+								<option <?php if ($row["title"]=="Mrs.") {print "selected ";}?>value="Mrs."><?php print _('Mrs.') ?></option>
+								<option <?php if ($row["title"]=="Dr.") {print "selected ";}?>value="Dr."><?php print _('Dr.') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -1099,7 +1099,11 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+										$selected="" ;
+										if ($rowSelect["printable_name"]==$row["citizenship1"]) {
+											$selected="selected" ;
+										}
+										print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 									}
 								}
 								else {
@@ -1166,7 +1170,11 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+										$selected="" ;
+										if ($rowSelect["printable_name"]==$row["citizenship2"]) {
+											$selected="selected" ;
+										}
+										print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 									}
 								}
 								else {

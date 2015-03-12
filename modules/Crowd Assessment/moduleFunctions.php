@@ -198,7 +198,8 @@ function getCARole($guid, $connection2, $gibbonCourseClassID) {
 }
 
 function getStudents($guid, $connection2, $role, $gibbonCourseClassID, $homeworkCrowdAssessOtherTeachersRead, $homeworkCrowdAssessOtherParentsRead, $homeworkCrowdAssessSubmitterParentsRead, $homeworkCrowdAssessClassmatesParentsRead, $homeworkCrowdAssessOtherStudentsRead, $homeworkCrowdAssessClassmatesRead, $and="") {
-	
+	$data=NULL ;
+	$sqlList=NULL ;
 	//Fetch and display assessible submissions
 	$sqlList="" ;
 	if (($role=="Teacher" AND $homeworkCrowdAssessOtherTeachersRead=="Y") OR ($role=="Teacher - In Class")) {
@@ -306,26 +307,19 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
 	}
 	else {
 		 while ($rowDiscuss=$resultDiscuss->fetch()) {
+			$classExtra="" ;
 			if ($level==0) {
-				$border="2px solid #333" ;
-				$margintop="25px" ; 
+				$classExtra="chatBoxFirst" ;
 			}
-			else {
-				$border="2px solid #333" ;
-				$margintop="0px" ;
-			}
+			
 			$output.="<a name='" . $rowDiscuss["gibbonCrowdAssessDiscussID"] . "'></a>" ; 
-			$output.="<table class='noIntBorder' cellspacing='0' style='width: " . (760-($level*15)) . "px ; padding: 1px 3px; margin-bottom: -2px; margin-top: $margintop; margin-left: " . ($level*15) . "px; border: $border ; background-color: #f9f9f9'>" ;
+			$output.="<table class='noIntBorder chatBox $classExtra' cellspacing='0' style='width: " . (755-($level*15)) . "px; margin-left: " . ($level*15) . "px'>" ;
 				$output.="<tr>" ;
-					$output.="<td style='color: #777'><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) ." said</i>:</td>" ;
-					$output.="<td style='color: #777; text-align: right'><i>Posted at <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack($guid, substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;
+					$output.="<td><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) ." said</i>:</td>" ;
+					$output.="<td style='text-align: right'><i>Posted at <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack($guid, substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;
 				$output.="</tr>" ;
 				$output.="<tr>" ;
-					$borderleft="4px solid #1B9F13" ;
-					if ($rowDiscuss["timestamp"]>=$_SESSION[$guid]["lastTimestamp"]) {
-						$borderleft="4px solid #c00" ;
-					}
-					$output.="<td style='padding: 1px 4px; border-left: $borderleft' colspan=2><b>" . $rowDiscuss["comment"] . "</b></td>" ;
+					$output.="<td style='padding: 1px 4px' colspan=2><b>" . $rowDiscuss["comment"] . "</b></td>" ;
 				$output.="</tr>" ;
 				$output.="<tr>" ;
 					$output.="<td style='text-align: right' colspan=2><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss_post.php&gibbonPersonID=$gibbonPersonID&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&replyTo=" . $rowDiscuss["gibbonCrowdAssessDiscussID"] . "'>Reply</a></td>" ;

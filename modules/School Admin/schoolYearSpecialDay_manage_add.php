@@ -73,7 +73,7 @@ else {
 							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?> <?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="date" id="date" maxlength=10 value="<?php print date("d/m/Y",$dateStamp) ?>" type="text" style="width: 300px">
+							<input readonly name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, date("Y-m-d",$dateStamp)) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var date=new LiveValidation('date');
 								date.add(Validate.Presence);

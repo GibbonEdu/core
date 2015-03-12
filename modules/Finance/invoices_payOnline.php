@@ -45,6 +45,9 @@ if (!($addReturn=="")) {
 	else if ($addReturn=="fail4") {
 		$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 	}
+	else if ($addReturn=="fail5") {
+		$addReturnMessage=_("Your payment could not be made as the payment gateway does not support the system's currency.") ;	
+	}
 	else if ($addReturn=="success1") {
 		$class="success" ;
 		$addReturnMessage=_("Your payment has been successfully made to your credit card. A receipt has been emailed to you.") ;

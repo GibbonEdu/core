@@ -99,6 +99,12 @@ else {
 					$set.="gibbonFamily.homeAddressCountry=:homeAddressCountry, " ;
 				}
 			}
+			if (isset($_POST["newlanguageHomeOn"])) {
+				if ($_POST["newlanguageHomeOn"]=="on") {
+					$data["languageHome"]=$_POST["newlanguageHome"] ;
+					$set.="gibbonFamily.languageHome=:languageHome, " ;
+				}
+			}
 			
 			if (strlen($set)>1) {
 				//Write to database

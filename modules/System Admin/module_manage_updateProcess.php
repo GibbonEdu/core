@@ -37,6 +37,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonModuleID=$_GET["gibbonModuleID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/module_manage_update.php&gibbonModuleID=" . $gibbonModuleID ;
+$_SESSION[$guid]["moduleUpdateError"]="" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/module_manage_update.php")==FALSE) {
 	//Fail 0
@@ -96,6 +97,7 @@ else {
 									$result=$connection2->query($sqlToken);   
 								}
 								catch(PDOException $e) { 
+									$_SESSION[$guid]["moduleUpdateError"].=$sqlToken . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
 									$partialFail=TRUE;
 								}
 							}

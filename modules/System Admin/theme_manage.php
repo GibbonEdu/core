@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+include "./modules/System Admin/moduleFunctions.php" ;
+
 @session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/theme_manage.php")==FALSE) {
@@ -215,9 +217,27 @@ else {
 									print "v" . $version ;
 								}
 								else {
-									print "v" . $themesSQL[$themeName][0]["version"] ;
+									$themeVerison=getThemeVersion($themeName, $guid) ;
+									if ($themeVerison>$themesSQL[$themeName][0]["version"]) {
+										//Update database
+										try {
+											$data=array("version"=>$themeVerison, "gibbonThemeID"=>$themesSQL[$themeName][0]["gibbonThemeID"] ); 
+											$sql="UPDATE gibbonTheme SET version=:version WHERE gibbonThemeID=:gibbonThemeID" ; 
+											$result=$connection2->prepare($sql);
+											$result->execute($data);
+										}
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										
+									}
+									else {
+										$themeVerison=$themesSQL[$themeName][0]["version"] ;
+									}
+									
+									
+									print "v" . $themeVerison ;
 								}
-							
 							print "</td>" ;
 							print "<td>" ;
 								if ($themesSQL[$themeName][0]["url"]!="") {

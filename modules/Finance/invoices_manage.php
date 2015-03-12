@@ -653,7 +653,7 @@ else {
 										print "});" ;
 									print "</script>" ;
 									if ($row["notes"]!="") {
-										print "<a title='View Notes' class='show_hide-$count' onclick='false' href='#'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
+										print "<a title='View Notes' class='show_hide-$count' onclick='false' href='#'><img style='margin-left: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
 									}
 								print "</td>" ;
 								print "<td>" ;

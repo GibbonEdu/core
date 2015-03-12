@@ -496,7 +496,7 @@ table {
 	margin: 5px 0 5px 0;
 }
 table th {
-	padding:15px 15px 15px 5px;
+	padding:15px 15px 15px 15px;
 	border-top:1px solid #fafafa;
 	border-bottom:1px solid #e0e0e0;
 	font-size: 110% ;
@@ -510,7 +510,7 @@ table tr:first-child th:first-child {
 	-webkit-border-top-left-radius:3px;
 	border-top-left-radius:3px;
 	text-align: left;
-	padding-left: 5px;
+	padding-left: 15px;
 }
 table tr:first-child th:last-child {
 	-moz-border-radius-topright:3px;
@@ -1148,4 +1148,23 @@ div.ttPeriodCurrent {
 	color: rgb(0,0,0);
 	border: 1px solid rgb(136,136,136) ;
 	background-color: rgb(179, 239, 194) ;
+}
+
+table.chatBox {
+	margin-top: 0px ;
+	padding: 0px ; 
+	margin-bottom: -1px ;
+	border: 1px solid #333 ; 
+	background-color: #f9f9f9;
+	border-radius:0px;
+}
+
+table.chatBoxFirst {
+	margin-top: 25px ;
+}
+
+table.chatBox tr td {
+	color: #444 ;
+	word-wrap: break-word ;
+	padding: 1px 4px
 }

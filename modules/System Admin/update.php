@@ -50,12 +50,21 @@ else {
 		else if ($updateReturn=="fail3") {
 			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
+		else if ($updateReturn=="fail5") {
+			$updateReturnMessage=_("Some aspects of your request failed, but others were successful. The elements that failed are shown below:") ;	
+		}
 		else if ($updateReturn=="success0") {
 			$updateReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
-			print $updateReturnMessage;
+			print $updateReturnMessage . "<br/><br/>" ;
+			if (isset($_SESSION[$guid]["systemUpdateError"])) {
+				if ($_SESSION[$guid]["systemUpdateError"]!="") {
+					print _("The following SQL statements caused errors:") . " " . $_SESSION[$guid]["systemUpdateError"] ;
+				}
+				$_SESSION[$guid]["systemUpdateError"]=NULL ;
+			}
 		print "</div>" ;
 	} 
 	
