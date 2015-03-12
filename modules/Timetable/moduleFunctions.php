@@ -708,7 +708,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 									if ($_SESSION[$guid]["viewCalendarSpaceBooking"]=="Y") {
 										$checked="checked" ;
 									}
-									$output.="<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'>Space Booking " ;
+									$output.="<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'>" . _('Space Booking') . " " ;
 									$output.="<input $checked style='margin-left: 3px' type='checkbox' name='spaceBookingCalendar' onclick='submit();'/>" ;
 									$output.="</span>" ;
 								}
@@ -995,7 +995,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 								$day=$day . "<div style='position: relative'>" ;
 									$day=$day . "<div class='ttClosure' style='z-index: $zCount; position: absolute; width: $width ; height: " . ceil($diffTime/60) . "px; margin: 0px; padding: 0px; opacity: $ttAlpha'>" ;
 										$day=$day . "<div style='position: relative; top: 50%'>" ;
-											$day=$day . "<span style='color: rgba(255,0,0,$ttAlpha);'>School Closed</span>" ;
+											$day=$day . "<span style='color: rgba(255,0,0,$ttAlpha);'>" . _('School Closed') . "</span>" ;
 										$day=$day . "</div>" ;
 									$day=$day . "</div>" ;
 								$day=$day . "</div>" ;
@@ -1748,7 +1748,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 								if ($_SESSION[$guid]["viewCalendarSpaceBooking"]=="Y") {
 									$checked="checked" ;
 								}
-								$output.="<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'>Space Booking " ;
+								$output.="<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'>" . _('Space Booking') . " " ;
 								$output.="<input $checked style='margin-left: 3px' type='checkbox' name='spaceBookingCalendar' onclick='submit();'/>" ;
 								$output.="</span>" ;
 							}
@@ -1766,7 +1766,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 					//Calculate week number
 					$week=getWeekNumber ($startDayStamp, $connection2, $guid) ;
 					if ($week!=false) {
-						$output.="Week " . $week ."<br/>" ;
+						$output.=sprintf(_('Week %1$s'), $week) . "<br/>" ;
 					}
 					$output.="<span style='font-weight: normal; font-style: italic;'>" . _('Time') ."<span>" ;
 				$output.="</th>" ;
@@ -2003,7 +2003,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 										$day=$day . "<div style='position: relative'>" ;
 											$day=$day . "<div class='ttClosure' style='z-index: $zCount; position: absolute; width: $width ; height: " . ceil($diffTime/60) . "px; margin: 0px; padding: 0px; opacity: $ttAlpha'>" ;
 												$day=$day . "<div style='position: relative; top: 50%'>" ;
-													$day=$day . "<span'>" . $rowClosure["name"] . "</span>" ;
+													$day=$day . "<span>" . $rowClosure["name"] . "</span>" ;
 												$day=$day . "</div>" ;
 											$day=$day . "</div>" ;
 										$day=$day . "</div>" ;
@@ -2022,7 +2022,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 								$day=$day . "<div style='position: relative'>" ;
 									$day=$day . "<div class='ttClosure' style='z-index: $zCount; position: absolute; top: $top; width: $width; height: " . ceil($diffTime/60) . "px; margin: 0px; padding: 0px; opacity: $ttAlpha'>" ;
 										$day=$day . "<div style='position: relative; top: 50%'>" ;
-											$day=$day . "<span style='color: rgba(255,0,0,$ttAlpha);'>School Closed</span>" ;
+											$day=$day . "<span style='color: rgba(255,0,0,$ttAlpha);'>" . _('School Closed') . "</span>" ;
 										$day=$day . "</div>" ;
 									$day=$day . "</div>" ;
 								$day=$day . "</div>" ;

@@ -124,6 +124,11 @@ System Admin: added SQL error messages to module update fail information for use
 System Admin: added SQL error messages to system update fail information for user
 	Edited files /modules/System Admin/_update*.php
 
+User Admin: minor cosmetic enhancement to button layout in Manage Districts
+	Edited file /modules/User Admin/district_manage.php
+
+Library: minor cosmetic enhancement to button layout
+	Edited file /modules/Library/library_lending_item.php
 
 v9.0.00
 -------
