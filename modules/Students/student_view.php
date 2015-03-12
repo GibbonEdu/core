@@ -244,13 +244,11 @@ else {
 		    $searchSql=" AND (preferredName LIKE :search1 OR surname LIKE :search2 OR username LIKE :search3)";
 		}
 
-		if ($sort!="") {
-		    $data+=array("sort"=>$sort);
-			$sortSql="ORDER BY :sort";
-		    // this works: $sortSql=" ORDER BY ".$sort;
+		if ($sort!="surname, preferredName" && $sort!="preferredName" && $sort!="rollGroup" && $sort!="yearGroup") {
+		    $sort="surname, preferredName";
 		}
-		
-		$sql=$sql.$searchSql.$sortSql;
+	
+		$sql=$sql.$searchSql . " ORDER BY " . $sort;
 		$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]);
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
