@@ -130,6 +130,11 @@ User Admin: minor cosmetic enhancement to button layout in Manage Districts
 Library: minor cosmetic enhancement to button layout
 	Edited file /modules/Library/library_lending_item.php
 
+i18n: set French to active language
+	Edited value in table gibboni18n
+	Edited file /installer/install.php
+
+
 v9.0.00
 -------
 i18n: fixed name details of Spanish translator
