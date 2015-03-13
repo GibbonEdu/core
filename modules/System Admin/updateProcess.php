@@ -182,10 +182,10 @@ else {
 								if (trim($sqlToken)!="") { //Decide whether this has been run or not
 									try {
 										$result=$connection2->query($sqlToken);   
-										$_SESSION[$guid]["systemUpdateError"].=$sqlToken . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
 									}
 									catch(PDOException $e) { 
 										$partialFail=TRUE;
+										$_SESSION[$guid]["systemUpdateError"].=$sqlToken . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
 									}
 								}
 							}
