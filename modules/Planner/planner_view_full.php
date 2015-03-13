@@ -1319,9 +1319,15 @@ else {
 								print "</tr>" ;
 								
 								if ($row["role"]=="Student") { //MY HOMEWORK
+									$roleCategory=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 									$myHomeworkFail=FALSE ;
 									try {
-										$dataMyHomework=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
+										if ($roleCategory!="Student") { //Parent
+											$dataMyHomework=array("gibbonPersonID"=>$gibbonPersonID, "gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
+										}
+										else { //Student
+											$dataMyHomework=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
+										}
 										$sqlMyHomework="SELECT * FROM gibbonPlannerEntryStudentHomework WHERE gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
 										$resultMyHomework=$connection2->prepare($sqlMyHomework);
 										$resultMyHomework->execute($dataMyHomework); 
@@ -1329,8 +1335,6 @@ else {
 									catch(PDOException $e) { 
 										$myHomeworkFail=TRUE ;
 									}
-									
-									$roleCategory=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 									
 									print "<tr class='break'>" ;
 										print "<td style='padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
@@ -1346,7 +1350,6 @@ else {
 										print "</div>" ;
 									}
 									else {
-										
 										if ($resultMyHomework->rowCount()==1) {
 											$rowMyHomework=$resultMyHomework->fetch() ;
 											$rowMyHomework["homework"]="Y" ;
@@ -1365,7 +1368,7 @@ else {
 												</td>
 												<td>
 													<?php
-													if ($rowMyHomework["homework"]) {
+													if ($rowMyHomework["homework"]=="Y") {
 														print _('Yes')  ;
 													}
 													else {
@@ -1375,34 +1378,38 @@ else {
 												</td>
 											</tr>
 											
-											<tr>
-												<td> 
-													<b><?php print _('Homework Due Date') ?> *</b><br/>
-												</td>
-												<td>
-													<?php if ($rowMyHomework["homework"]=="Y") { print dateConvertBack($guid, substr($rowMyHomework["homeworkDueDateTime"],0,10)) ; } ?>
-												</td>
-											</tr>
-											<tr >
-												<td> 
-													<b><?php print _('Homework Due Date Time') ?></b><br/>
-													<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
-												</td>
-												<td >
-													<?php if ($rowMyHomework["homework"]=="Y") { print substr($rowMyHomework["homeworkDueDateTime"],11,5) ; } ?>
-												</td>
-											</tr>
-											
-											
-											<tr>
-												<td> 
-													<b><?php print _('Homework Details') ?></b><br/>
-												</td>
-												<td class="right">
-													<?php print $rowMyHomework["homeworkDetails"] ?>
-												</td>
-											</tr>
 											<?php
+											if ($rowMyHomework["homework"]=="Y") {
+												?>
+												<tr>
+													<td> 
+														<b><?php print _('Homework Due Date') ?> *</b><br/>
+													</td>
+													<td>
+														<?php if ($rowMyHomework["homework"]=="Y") { print dateConvertBack($guid, substr($rowMyHomework["homeworkDueDateTime"],0,10)) ; } ?>
+													</td>
+												</tr>
+												<tr >
+													<td> 
+														<b><?php print _('Homework Due Date Time') ?></b><br/>
+														<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
+													</td>
+													<td >
+														<?php if ($rowMyHomework["homework"]=="Y") { print substr($rowMyHomework["homeworkDueDateTime"],11,5) ; } ?>
+													</td>
+												</tr>
+											
+											
+												<tr>
+													<td> 
+														<b><?php print _('Homework Details') ?></b><br/>
+													</td>
+													<td class="right">
+														<?php print $rowMyHomework["homeworkDetails"] ?>
+													</td>
+												</tr>
+											<?php
+											}
 										}	
 										else { //Student so show edit view
 											$checkedYes="" ;

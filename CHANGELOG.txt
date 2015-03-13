@@ -134,6 +134,12 @@ i18n: set French to active language
 	Edited value in table gibboni18n
 	Edited file /installer/install.php
 
+Planner: fixed bug in lesson plan view that always showed student recorded homework as Yes for parents.
+	Edited file /modules/Planner/planner_view_full.php
+
+Planner: fixed bug preventing parent from viewing homework deadlines full view
+	Edited file /modules/Planner/planner_deadlines.php
+
 
 v9.0.00
 -------
