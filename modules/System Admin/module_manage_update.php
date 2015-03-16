@@ -55,9 +55,10 @@ else {
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
-			print $updateReturnMessage . "<br/><br/>" ;
+			print $updateReturnMessage ;
 			if (isset($_SESSION[$guid]["moduleUpdateError"])) {
 				if ($_SESSION[$guid]["moduleUpdateError"]!="") {
+					print "<br/><br/>" ;
 					print _("The following SQL statements caused errors:") . " " . $_SESSION[$guid]["moduleUpdateError"] ;
 				}
 				$_SESSION[$guid]["moduleUpdateError"]=NULL ;
