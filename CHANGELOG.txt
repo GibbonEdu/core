@@ -140,6 +140,9 @@ Planner: fixed bug in lesson plan view that always showed student recorded homew
 Planner: fixed bug preventing parent from viewing homework deadlines full view
 	Edited file /modules/Planner/planner_deadlines.php
 
+i18n: fixed bug preventing home page timetable from being translated
+	Edited file /index_tt_ajax.php
+
 
 v9.0.00
 -------
