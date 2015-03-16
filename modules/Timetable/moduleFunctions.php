@@ -689,7 +689,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 								if ($_SESSION[$guid]["viewCalendarSchool"]=="Y") {
 									$checked="checked" ;
 								}
-								$output.="<span class='ttSchoolCalendar' style='opacity: $schoolCalendarAlpha'>School Calendar " ;
+								$output.="<span class='ttSchoolCalendar' style='opacity: $schoolCalendarAlpha'>" . _('School Calendar') ;
 								$output.="<input $checked style='margin-left: 3px' type='checkbox' name='schoolCalendar' onclick='submit();'/>" ;
 								$output.="</span>" ;
 							}
@@ -698,7 +698,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 								if ($_SESSION[$guid]["viewCalendarPersonal"]=="Y") {
 									$checked="checked" ;
 								}
-								$output.="<span class='ttPersonalCalendar' style='opacity: $schoolCalendarAlpha'>Personal Calendar " ;
+								$output.="<span class='ttPersonalCalendar' style='opacity: $schoolCalendarAlpha'>" . _('Personal Calendar') ;
 								$output.="<input $checked style='margin-left: 3px' type='checkbox' name='personalCalendar' onclick='submit();'/>" ;
 								$output.="</span>" ;
 							}
@@ -727,7 +727,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 					//Calculate week number
 					$week=getWeekNumber ($startDayStamp, $connection2, $guid) ;
 					if ($week!=false) {
-						$output.="Week " . $week ."<br/>" ;
+						$output.=sprintf(_('Week %1$s'), $week) . "<br/>" ;
 					}
 					$output.="<span style='font-weight: normal; font-style: italic;'>" . _('Time') . "<span>" ;
 				$output.="</th>" ;
@@ -870,7 +870,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 			if (($eventsSchool==TRUE OR $eventsPersonal==TRUE) AND $allDay==TRUE AND $eventsCombined!=NULL) {
 				$output.="<tr style='height: " . ((31*$maxAllDays)+5) . "px'>" ;
 					$output.="<td style='vertical-align: top; width: 70px; text-align: center; border-top: 1px solid #888; border-bottom: 1px solid #888'>" ;
-						$output.="<span style='font-size: 80%'><b>All Day<br/>Events</b></span>" ;
+						$output.="<span style='font-size: 80%'><b>" . sprintf(_('All Day%1$s Events'), "<br/>") . "</b></span>" ;
 					$output.="</td>" ;
 					$output.="<td colspan=$daysInWeek style='vertical-align: top; width: 70px; text-align: center; border-top: 1px solid #888; border-bottom: 1px solid #888'>" ;
 					$output.="</td>" ;
