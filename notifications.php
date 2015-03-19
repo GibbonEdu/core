@@ -93,7 +93,7 @@ print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<th>" ;
 			print _("Count") ;
 		print "</th>" ;
-		print "<th>" ;
+		print "<th style='width: 60px'>" ;
 			print _("Actions") ;
 		print "</th>" ;
 	print "</tr>" ;

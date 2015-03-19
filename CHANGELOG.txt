@@ -143,6 +143,8 @@ Planner: fixed bug preventing parent from viewing homework deadlines full view
 i18n: fixed bug preventing home page timetable from being translated
 	Edited file /index_tt_ajax.php
 
+Notifications: minor cosmetic enhancement to button layout
+	Edited file /notifications.php
 
 v9.0.00
 -------
