@@ -128,9 +128,17 @@ else {
 		
 		$sqlPage=$sql ." LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
 		
-		if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE) {
+		if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE OR isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_postQuickWall.php")==TRUE) {
 			print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_post.php'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+				if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE) {
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_post.php'>" .  _('New Message') . "<img style='margin-left: 5px' title='" . _('New Message') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+				}
+				if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_postQuickWall.php")==TRUE) {
+					if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE) {
+						print " | " ;
+					}
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_postQuickWall.php'>" .  _('New Quick Wall Message') . "<img style='margin-left: 5px' title='" . _('New Quick Wall Message') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+				}
 			print "</div>" ;
 		}
 		
