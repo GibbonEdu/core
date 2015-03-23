@@ -902,8 +902,8 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
 	}
 	
 	//Check for existence of notification
-	$dataCheck=array("gibbonPersonID"=>$gibbonPersonID, "text"=>$text, "name"=>$moduleName); 
-	$sqlCheck="SELECT * FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name)" ;
+	$dataCheck=array("gibbonPersonID"=>$gibbonPersonID, "text"=>$text, "actionLink"=>$actionLink, "name"=>$moduleName); 
+	$sqlCheck="SELECT * FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND actionLink=:actionLink AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name)" ;
 	$resultCheck=$connection2->prepare($sqlCheck);
 	$resultCheck->execute($dataCheck);
 	
@@ -932,7 +932,8 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
 		//Attempt email send
 		$to=$rowSelect["email"] ;
 		$subject=sprintf(_('You have received a notification on %1$s at %2$s'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationNameShort"]) ;
-		$body=sprintf(_('Login to %1$s and use the noticiation icon to check your new notification, or use the link below:'), $_SESSION[$guid]["systemName"]) . "\n\n" ;
+		$body=_('Notification') . ": " . $text . "\n\n" ;
+		$body.=sprintf(_('Login to %1$s and use the noticiation icon to check your new notification, or use the link below:'), $_SESSION[$guid]["systemName"]) . "\n\n" ;
 		$body.=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php\n\n" ;
 		$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
 		mail($to, $subject, $body, $headers) ;

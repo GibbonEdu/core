@@ -149,6 +149,9 @@ Notifications: minor cosmetic enhancement to button layout
 Planner: fixed bug prevening Unit Overview from opening for many teachers from lesson plan view
 	Edited file /modules/Planner/planner_unitOverview.php
 
+Notifications: improved uniqueness test for notifications, to avoid fake duplicates
+	Edited file /functions.php
+
 
 v9.0.00
 -------
