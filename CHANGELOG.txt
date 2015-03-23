@@ -152,6 +152,9 @@ Planner: fixed bug prevening Unit Overview from opening for many teachers from l
 Notifications: improved uniqueness test for notifications, to avoid fake duplicates
 	Edited file /functions.php
 
+Notifications: fixed security bug which leaks notifications without login
+	Edited file /notifications.php
+
 
 v9.0.00
 -------
