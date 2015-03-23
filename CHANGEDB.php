@@ -665,4 +665,11 @@ UPDATE gibbonLibraryType SET fields='a:17:{i:0;a:6:{s:4:\"name\";s:11:\"Form Fac
 UPDATE gibboni18n SET active='Y' WHERE code='fr_FR';end
 ";
 
+//v9.2.00
+$count++ ;
+$sql[$count][0]="9.2.00" ;
+$sql[$count][1]="
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('ur_IN', 'اُردُو', 'N', 'N', 'Rizwan Mohammad', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'Y');end
+";
+
 ?>

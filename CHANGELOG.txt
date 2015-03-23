@@ -16,6 +16,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v9.2.00
+-------
+i18n: added Urdu as inactive development language
+	Added value to table gibboni18n
+
+
 v9.1.00
 -------
 Installer: removed orphaned debug output
