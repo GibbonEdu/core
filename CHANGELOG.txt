@@ -16,6 +16,146 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v9.1.00
+-------
+Installer: removed orphaned debug output
+	Edited /installer/install.php
+	
+System Admin: added database update script that does not require login
+	New file /update.php
+
+Library: added replacement cost and year as fields (useful for budget control)
+	Edited table gibbonLibraryItem
+	Edited files /modules/Library/library_manage_catalog_add*.php, library_manage_catalog_edit*.php
+
+User Admin: fixed typo in import interface
+	Edited file /modules/User Admin/import_users.php
+
+Messenger: added new options for the display of the homepage message bubble
+	Edited values in table gibbonAction
+	New values in table gibbonSetting
+	Renamed files /modules/School Admin/smsSettings*.php to messengerSettings*.php
+	Edited files /modules/School Admin/messengerSettings*.php
+	Edited files /index.php, functions.php
+
+Messenger: added quick add function for message wall, goes out to all school members
+	New files /modules/Messenger/messenger_postQuickWall*.php
+	New values in tables gibbonAction, gibbonPermission
+	Edited file /function.php
+	
+Planner: added Unit Overview link to lesson plan edit screen
+	Edited file /modules/Planner/planner_edit.php	
+	
+General: updated TinyMCE to v4.1.7
+	Edited files /lib/tinymce/*
+
+System Admin: made theme version number self-updating based on manifest file
+	Edited file /modules/System Admin/theme_manage.php
+
+User Admin: fixed bug with citizenship field saving, but not showing, when using standard country list
+	Edited file /modules/User Admin/user_manage_edit.php
+	
+Planner: added import for outcomes
+	New values in tables gibbonAction, gibbonPermission
+	New file /modules/Planner/outcomes_import.php
+
+Planner: added ability to star/fav smart blocks for reuse
+	New table gibbonUnitBlockStar
+	Edited file /modules/Planner/moduleFunctions.php
+	New file /modules/Planner/units_edit_starAjax.php
+	Edited files /modules/Planner/units_edit_working.php, units_edit_deploy.php
+
+School Admin: fixed bug preventing Special Days from working with US-style dates
+	Edited files /modules/School Admin/schoolYearSpecialDay_manage.php, specialDay_manage_add.php
+	
+Messenger: made message manage screen full width, improved usability of columns
+	Edited values in table gibbonAction
+	Edited files /messenger_manage*.php
+
+General: tweaked alignment of table header text to improve appearance
+	Edited file /themes/Default/css/main.css
+
+Messenger: added subject/body search
+	Edited files /messenger_manage*.php
+
+User Admin: removed trailing spaces from title values (this was a very bad decision made very early on ; )
+	Edited values in table gibbonPerson, gibbonPersonUpdate, gibbonApplicationForm
+	Edited file /functions.php
+	Edited file /modules/User Admin/applicationForm_manage_edit.php 
+	Edited files /modules/User Admin/applicationForm_manage_edit.php, user_manage_add.php, user_manage_edit.php
+	Edited file /modules/Data Updater/data_personal.php
+
+System Admin: added support for all currencies (although not all will work with PayPal
+	Updated value in table gibbonSetting
+	Edited file /lib/paypal/expresscheckout.php
+	Edited files /modules/Application Form/applicationForm*.php
+	Edited file /modules/System Admin/systemSettings.php
+	Edited file /installer/install.php
+	Edited files /modules/Finance/invoices_payOnline*.php
+
+Finance: minor cosmetic enhancement to button layout
+	Edited file /modules/Finance/invoices_manage.php
+
+Planner: minor cosmetic enhancement to button layout
+	Edited file /modules/Planner/units.php
+
+User Admin: changed rules to make home language compulsory across the system
+	Edited table gibbonFamilyUpdate
+	Edited files /modules/Data Updater/data_family*.php
+	Edited files /modules/User Admin/data_family_edit*.php
+
+General: improved themeability of chat boxes in Planner and Crowd Assessment
+	Edited file /modules/Planner/moduleFunctions.php
+	Edited file /modules/Crowd Assessment/moduleFunctions.php
+	Edited file /themes/Default/css/main.css
+
+Library: added storage type field to Computer type
+	Edited value in table gibbonLibraryType
+
+Library: minor cosmetic enhancement to button layout
+	Edited file /modules/Library/library_manage_catalog.php
+
+School Admin: added database locking to Special Day creation, to prevent accidental duplicate creation
+	Edited file /modules/School Admin/schoolYearSpecialDay_manage_addProcess.php	
+
+System Admin: added SQL error messages to module update fail information for user
+	Edited files /modules/System Admin/module_manage_update*.php
+
+System Admin: added SQL error messages to system update fail information for user
+	Edited files /modules/System Admin/_update*.php
+
+User Admin: minor cosmetic enhancement to button layout in Manage Districts
+	Edited file /modules/User Admin/district_manage.php
+
+Library: minor cosmetic enhancement to button layout
+	Edited file /modules/Library/library_lending_item.php
+
+i18n: set French to active language
+	Edited value in table gibboni18n
+	Edited file /installer/install.php
+
+Planner: fixed bug in lesson plan view that always showed student recorded homework as Yes for parents.
+	Edited file /modules/Planner/planner_view_full.php
+
+Planner: fixed bug preventing parent from viewing homework deadlines full view
+	Edited file /modules/Planner/planner_deadlines.php
+
+i18n: fixed bug preventing home page timetable from being translated
+	Edited file /index_tt_ajax.php
+
+Notifications: minor cosmetic enhancement to button layout
+	Edited file /notifications.php
+
+Planner: fixed bug prevening Unit Overview from opening for many teachers from lesson plan view
+	Edited file /modules/Planner/planner_unitOverview.php
+
+Notifications: improved uniqueness test for notifications, to avoid fake duplicates
+	Edited file /functions.php
+
+Notifications: fixed security bug which leaks notifications without login
+	Edited file /notifications.php
+
+
 v9.0.00
 -------
 i18n: fixed name details of Spanish translator

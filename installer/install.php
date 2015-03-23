@@ -129,6 +129,7 @@ include "../functions.php" ;
 															<option value='en_GB'>English - United Kingdom</option>
 															<option value='en_US'>English - United States</option>
 															<option value='es_ES'>Español</option>
+															<option value='fr_FR'>Français - France</option>
 															<option value='it_IT'>Italiano - Italia</option>
 															<option value='zh_HK'>體字 - 香港</option>
 														</select>
@@ -259,7 +260,6 @@ include "../functions.php" ;
 									$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 								}
 								catch(PDOException $e) {
-									print "here" . $e->getMessage() ;
 									$connected=FALSE ;
 								}
 								
@@ -283,7 +283,6 @@ include "../functions.php" ;
 									$result->execute($data);
 								}
 								catch(PDOException $e) { 
-									print "here" . $e->getMessage() ;
 									$connected=FALSE ;
 								}
 								
@@ -866,29 +865,36 @@ include "../functions.php" ;
 														</td>
 														<td class="right">
 															<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-																<option <?php if ($row["value"]=="AUD $") { print "selected" ; } ?> value='AUD $'>Australian Dollar (A$)</option>
-																<option <?php if ($row["value"]=="BRL R$") { print "selected" ; } ?> value='BRL R$'>Brazilian Real</option>
-																<option <?php if ($row["value"]=="GBP £") { print "selected" ; } ?> value='GBP £'>British Pound (£)</option>
-																<option <?php if ($row["value"]=="CAD $") { print "selected" ; } ?> value='CAD $'>Canadian Dollar (C$)</option>
-																<option <?php if ($row["value"]=="CZK Kč") { print "selected" ; } ?> value='CZK Kč'>Czech Koruna</option>
-																<option <?php if ($row["value"]=="DKK kr") { print "selected" ; } ?> value='DKK kr'>Danish Krone</option>
-																<option <?php if ($row["value"]=="EUR €") { print "selected" ; } ?> value='EUR €'>Euro (€)</option>
-																<option <?php if ($row["value"]=="HKD $") { print "selected" ; } ?> value='HKD $'>Hong Kong Dollar ($)</option>
-																<option <?php if ($row["value"]=="HUF Ft") { print "selected" ; } ?> value='HUF Ft'>Hungarian Forint</option>
-																<option <?php if ($row["value"]=="ILS ₪") { print "selected" ; } ?> value='ILS ₪'>Israeli New Shekel</option>
-																<option <?php if ($row["value"]=="JPY ¥") { print "selected" ; } ?> value='JPY ¥'>Japanese Yen (¥)</option>
-																<option <?php if ($row["value"]=="MYR RM") { print "selected" ; } ?> value='MYR RM'>Malaysian Ringgit</option>
-																<option <?php if ($row["value"]=="MXN $") { print "selected" ; } ?> value='MXN $'>Mexican Peso</option>
-																<option <?php if ($row["value"]=="TWD $") { print "selected" ; } ?> value='TWD $'>New Taiwan Dollar</option>
-																<option <?php if ($row["value"]=="NZD $") { print "selected" ; } ?> value='NZD $'>New Zealand Dollar ($)</option>
-																<option <?php if ($row["value"]=="NOK kr") { print "selected" ; } ?> value='NOK kr'>Norwegian Krone</option>
-																<option <?php if ($row["value"]=="PHP ₱") { print "selected" ; } ?> value='PHP ₱'>Philippine Peso</option>
-																<option <?php if ($row["value"]=="PLN zł") { print "selected" ; } ?> value='PLN zł'>Polish Zloty</option>
-																<option <?php if ($row["value"]=="SGD $") { print "selected" ; } ?> value='SGD $'>Singapore Dollar ($)</option>
-																<option <?php if ($row["value"]=="CHF") { print "selected" ; } ?> value='CHF'>Swiss Franc</option>
-																<option <?php if ($row["value"]=="THB ฿") { print "selected" ; } ?> value='THB ฿'>Thai Baht</option>
-																<option <?php if ($row["value"]=="TRY") { print "selected" ; } ?> value='TRY'>Turkish Lira</option>
-																<option <?php if ($row["value"]=="USD $") { print "selected" ; } ?> value='USD $'>U.S. Dollar ($)</option>
+																<optgroup label='--<?php print _('PAYPAL SUPPORTED') ?>--'/>
+																	<option value='AUD $'>Australian Dollar (A$)</option>
+																	<option value='BRL R$'>Brazilian Real</option>
+																	<option value='GBP £'>British Pound (£)</option>
+																	<option value='CAD $'>Canadian Dollar (C$)</option>
+																	<option value='CZK Kč'>Czech Koruna</option>
+																	<option value='DKK kr'>Danish Krone</option>
+																	<option value='EUR €'>Euro (€)</option>
+																	<option value='HKD $'>Hong Kong Dollar ($)</option>
+																	<option value='HUF Ft'>Hungarian Forint</option>
+																	<option value='ILS ₪'>Israeli New Shekel</option>
+																	<option value='JPY ¥'>Japanese Yen (¥)</option>
+																	<option value='MYR RM'>Malaysian Ringgit</option>
+																	<option value='MXN $'>Mexican Peso</option>
+																	<option value='TWD $'>New Taiwan Dollar</option>
+																	<option value='NZD $'>New Zealand Dollar ($)</option>
+																	<option value='NOK kr'>Norwegian Krone</option>
+																	<option value='PHP ₱'>Philippine Peso</option>
+																	<option value='PLN zł'>Polish Zloty</option>
+																	<option value='SGD $'>Singapore Dollar ($)</option>
+																	<option value='CHF'>Swiss Franc</option>
+																	<option value='THB ฿'>Thai Baht</option>
+																	<option value='TRY'>Turkish Lira</option>
+																	<option value='USD $'>U.S. Dollar ($)</option>
+																</optgroup>
+																<optgroup label='--<?php print _('OTHERS') ?>--'/>
+																	<option value='INR ₹'>Indian Rupee (₹)</option>
+																	<option value='IDR Rp'>Indonesian Rupiah (Rp)</option>
+																	<option value='BTC'>Bitcoin</option>
+																</optgroup>
 															</select>
 														</td>
 													</tr>

@@ -211,7 +211,7 @@ else {
 						print "<th>" ;
 							print _("Recorded By") ;
 						print "</th>" ;
-						print "<th style='width: 80px'>" ;
+						print "<th style='width: 110px'>" ;
 							print _("Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
@@ -315,7 +315,7 @@ else {
 								if ($count==1 AND $rowEvent["status"]!="Returned") {
 									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item_edit.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=" . $rowEvent["gibbonLibraryItemEventID"] . "&name=" . $name . "&gibbonLibraryTypeID=" . $gibbonLibraryTypeID . "&gibbonSpaceID=" . $gibbonSpaceID . "&status=" . $status . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item_return.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=" . $rowEvent["gibbonLibraryItemEventID"] . "&name=" . $name . "&gibbonLibraryTypeID=" . $gibbonLibraryTypeID . "&gibbonSpaceID=" . $gibbonSpaceID . "&status=" . $status . "'><img title='Return' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_left.png'/></a>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item_renew.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=" . $rowEvent["gibbonLibraryItemEventID"] . "&name=" . $name . "&gibbonLibraryTypeID=" . $gibbonLibraryTypeID . "&gibbonSpaceID=" . $gibbonSpaceID . "&status=" . $status . "'><img title='Renew' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_right.png'/></a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item_renew.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=" . $rowEvent["gibbonLibraryItemEventID"] . "&name=" . $name . "&gibbonLibraryTypeID=" . $gibbonLibraryTypeID . "&gibbonSpaceID=" . $gibbonSpaceID . "&status=" . $status . "'><img style='margin-left: 3px' title='Renew' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_right.png'/></a>" ;
 								}
 							print "</td>" ;
 						print "</tr>" ;

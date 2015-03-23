@@ -33,6 +33,17 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
+//Set up for i18n via gettext
+if (isset($_SESSION[$guid]["i18n"]["code"])) {
+	if ($_SESSION[$guid]["i18n"]["code"]!=NULL) {
+		putenv("LC_ALL=" . $_SESSION[$guid]["i18n"]["code"]);
+		setlocale(LC_ALL, $_SESSION[$guid]["i18n"]["code"]);
+		bindtextdomain("gibbon", "./i18n");
+		textdomain("gibbon");
+		bind_textdomain_codeset("gibbon", 'UTF-8');
+	}
+}
+
 //Setup variables
 $output="" ;
 if (isset($_GET["id"])) {

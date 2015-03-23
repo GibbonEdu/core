@@ -657,6 +657,7 @@ else {
 			$paypalAPISignature=getSettingByScope($connection2, "System", "paypalAPISignature") ;
 	
 			if ($applicationFee>0 AND is_numeric($applicationFee) AND $enablePayments=="Y" AND $paypalAPIUsername!="" AND $paypalAPIPassword!="" AND $paypalAPISignature!="") {
+				$_SESSION[$guid]["gatewayCurrencyNoSupportReturnURL"]=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Application Form/applicationForm.php&addReturn=success4&id=$AI" ;
 				$URL=$_SESSION[$guid]["absoluteURL"] . "/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=" . urlencode("modules/Application Form/applicationFormProcess.php?addReturn=success1&id=$AI&applicationFee=$applicationFee") . "&fail=" . urlencode("modules/Application Form/applicationFormProcess.php?addReturn=success2&id=$AI&applicationFee=$applicationFee") ;
 				header("Location: {$URL}");
 			}

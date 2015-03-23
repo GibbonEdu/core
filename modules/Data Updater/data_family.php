@@ -210,21 +210,10 @@ else {
 				}
 				else if ($result->rowCount()==1) {
 					$existing=TRUE ;
-					$proceed=FALSE;
-					if ($updateReturn=="") {
-						print "<div class='warning'>" ;
-							print _("You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.") ;
-						print "</div>" ;
-					}
-					if ($highestAction!="Update Personal Data_any") {
-						$required=unserialize(getSettingByScope( $connection2, "User Admin", "personalDataUpdaterRequiredFields")) ;
-						if (is_array($required)) {
-							$proceed=TRUE;
-						}
-					}
-					else {
-						$proceed=TRUE;
-					}
+					print "<div class='warning'>" ;
+						print _("You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.") ;
+					print "</div>" ;
+					$proceed=TRUE;
 				}
 				else {
 					//Get user's data
@@ -341,7 +330,38 @@ else {
 									 </script>
 								</td>
 							</tr>
-							
+							<tr>
+								<td> 
+									<b><?php print _('Home Language') ?> *</b><br/>
+									<span style="font-size: 90%"><i><?php print _('The primary language used in the student\'s home.') ?></i></span>
+								</td>
+								<td class="right">
+									<input name="languageHome" id="languageHome" maxlength=30 value="<?php print htmlPrep($row["languageHome"]) ?>" type="text" style="width: 300px">
+								</td>
+								<script type="text/javascript">
+									$(function() {
+										var availableTags=[
+											<?php
+											try {
+												$dataAuto=array(); 
+												$sqlAuto="SELECT DISTINCT languageHome FROM gibbonApplicationForm ORDER BY languageHome" ;
+												$resultAuto=$connection2->prepare($sqlAuto);
+												$resultAuto->execute($dataAuto);
+											}
+											catch(PDOException $e) { }
+											while ($rowAuto=$resultAuto->fetch()) {
+												print "\"" . $rowAuto["languageHome"] . "\", " ;
+											}
+											?>
+										];
+										$( "#languageHome" ).autocomplete({source: availableTags});
+									});
+								</script>
+								<script type="text/javascript">
+									var languageHome=new LiveValidation('languageHome');
+									languageHome.add(Validate.Presence);
+								</script>
+							</tr>
 							<tr>
 								<td>
 									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>

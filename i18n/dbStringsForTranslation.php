@@ -45,117 +45,118 @@ _('View Timetables') ;
 _('Years, Days & Times') ;
 
 //gibbonAction - name
-_('Activity Choices by Student')
-_('Activity Enrolment Summary')
-_('Activity Spread by Roll Group')
-_('Activity Type by Roll Group')
-_('Age & Gender Summary')
-_('Application Form Settings')
-_('Apply')
-_('Assess')
-_('Attendance by Activity')
-_('Attendance By Person')
-_('Attendance By Roll')
-_('Browse The Library')
-_('Catalog Summary')
-_('Class Enrolment by Roll Group')
-_('Copy Activities')
-_('Course Enrolment by Class')
-_('Course Enrolment by Person')
-_('Data Updater Settings')
+_('Activity Choices by Student') ;
+_('Activity Enrolment Summary') ;
+_('Activity Spread by Roll Group') ;
+_('Activity Type by Roll Group') ;
+_('Age & Gender Summary') ;
+_('Application Form Settings') ;
+_('Apply') ;
+_('Assess') ;
+_('Attendance by Activity') ;
+_('Attendance By Person') ;
+_('Attendance By Roll') ;
+_('Browse The Library') ;
+_('Catalog Summary') ;
+_('Class Enrolment by Roll Group') ;
+_('Copy Activities') ;
+_('Course Enrolment by Class') ;
+_('Course Enrolment by Person') ;
+_('Data Updater Settings') ;
 _('Edit Markbook') ;
 _('Edit Markbook') ;
 _('Edit Markbook') ;
 _('Edit Markbook') ;
-_('Emergency Data Summary')
-_('Emergency SMS by Transport')
-_('Emergency SMS by Year Group')
+_('Emergency Data Summary') ;
+_('Emergency SMS by Transport') ;
+_('Emergency SMS by Year Group') ;
 _('External Assessment Data') ;
 _('External Assessment Data') ;
-_('External Assessment Settings')
-_('Family Address by Student')
-_('Family Data Updates')
-_('Finance Data Updates')
-_('Find Behaviour Patterns')
-_('Import Assessment Results')
-_('Import Records')
+_('External Assessment Settings') ;
+_('Family Address by Student') ;
+_('Family Data Updates') ;
+_('Finance Data Updates') ;
+_('Find Behaviour Patterns') ;
+_('Import Assessment Results') ;
+_('Import Outcomes') ;
+_('Import Records') ;
 _('Individual Needs Records') ;
 _('Individual Needs Records') ;
 _('Individual Needs Records') ;
-_('Individual Needs Summary')
-_('Language Settings')
-_('Left Students')
-_('Lending & Activity Log')
+_('Individual Needs Summary') ;
+_('Language Settings') ;
+_('Left Students') ;
+_('Lending & Activity Log') ;
 _('Lesson Planner') ;
 _('Lesson Planner') ;
 _('Lesson Planner') ;
 _('Lesson Planner') ;
-_('Letters Home by Roll Group')
-_('Manage Activities')
-_('Manage Activity Settings')
-_('Manage Alert Levels')
-_('Manage Applications')
+_('Letters Home by Roll Group') ;
+_('Manage Activities') ;
+_('Manage Activity Settings') ;
+_('Manage Alert Levels') ;
+_('Manage Applications') ;
 _('Manage Behaviour Records') ;
 _('Manage Behaviour Records') ;
-_('Manage Behaviour Settings')
-_('Manage Billing Schedule')
-_('Manage Catalog')
-_('Manage Columns')
-_('Manage Courses & Classes')
-_('Manage Days of the Week')
-_('Manage Departments')
-_('Manage Districts')
-_('Manage External Assessments')
-_('Manage Families')
-_('Manage Fee Categories')
-_('Manage Fees')
-_('Manage File Extensions')
-_('Manage Finance Settings')
-_('Manage Grade Scales')
-_('Manage Houses')
-_('Manage IN Descriptors')
-_('Manage Invoicees')
-_('Manage Invoices')
-_('Manage Library Settings')
-_('Manage Medical Forms')
+_('Manage Behaviour Settings') ;
+_('Manage Billing Schedule') ;
+_('Manage Catalog') ;
+_('Manage Columns') ;
+_('Manage Courses & Classes') ;
+_('Manage Days of the Week') ;
+_('Manage Departments') ;
+_('Manage Districts') ;
+_('Manage External Assessments') ;
+_('Manage Families') ;
+_('Manage Fee Categories') ;
+_('Manage Fees') ;
+_('Manage File Extensions') ;
+_('Manage Finance Settings') ;
+_('Manage Grade Scales') ;
+_('Manage Houses') ;
+_('Manage IN Descriptors') ;
+_('Manage Invoicees') ;
+_('Manage Invoices') ;
+_('Manage Library Settings') ;
+_('Manage Medical Forms') ;
 _('Manage Messages') ;
 _('Manage Messages') ;
-_('Manage Modules')
+_('Manage Messenger Settings') ;
+_('Manage Modules') ;
 _('Manage Outcomes') ;
 _('Manage Outcomes') ;
 _('Manage Outcomes') ;
-_('Manage Permissions')
-_('Manage Planner Settings')
-_('Manage Resource Settings')
+_('Manage Permissions') ;
+_('Manage Planner Settings') ;
+_('Manage Resource Settings') ;
 _('Manage Resources') ;
 _('Manage Resources') ;
-_('Manage Roles')
-_('Manage Roll Groups')
+_('Manage Roles') ;
+_('Manage Roll Groups') ;
 _('Manage Rubrics') ;
 _('Manage Rubrics') ;
-_('Manage School Years')
-_('Manage SMS Settings')
+_('Manage School Years') ;
 _('Manage Space Bookings') ;
 _('Manage Space Bookings') ;
 _('Manage Space Changes') ;
 _('Manage Space Changes') ;
-_('Manage Spaces')
-_('Manage Special Days')
-_('Manage Staff')
-_('Manage Students Settings')
-_('Manage Terms')
-_('Manage Themes')
-_('Manage Timetables')
+_('Manage Spaces') ;
+_('Manage Special Days') ;
+_('Manage Staff') ;
+_('Manage Students Settings') ;
+_('Manage Terms') ;
+_('Manage Themes') ;
+_('Manage Timetables') ;
 _('Manage Units') ;
 _('Manage Units') ;
-_('Manage User Settings')
-_('Manage Users')
-_('Manage Year Groups')
-_('Markbook Settings')
+_('Manage User Settings') ;
+_('Manage Users') ;
+_('Manage Year Groups') ;
+_('Markbook Settings') ;
 _('Markbook') ;
-_('Medical Data Summary')
-_('Medical Form Updates ')
-_('My Activities')
+_('Medical Data Summary') ;
+_('Medical Form Updates ') ;
+_('My Activities') ;
 _('New Message') ;
 _('New Message') ;
 _('New Message') ;
@@ -179,34 +180,35 @@ _('New Message') ;
 _('New Message') ;
 _('New Message') ;
 _('New Message') ;
-_('New Students')
-_('Outcomes By Course')
-_('Parent Weekly Email Summary')
-_('Participants by Activity')
-_('Payment')
-_('Personal Data Updates ')
-_('Privacy Choices by Student')
-_('Roll Group Summary')
-_('Roll Groups Not Registered')
-_('Rollover')
-_('Set Future Absence')
-_('Staff Gold Stars')
-_('Student Borrowing Record')
-_('Student Data Updater History')
-_('Student Enrolment')
+_('New Quick Wall Message') ;
+_('New Students') ;
+_('Outcomes By Course') ;
+_('Parent Weekly Email Summary') ;
+_('Participants by Activity') ;
+_('Payment') ;
+_('Personal Data Updates ') ;
+_('Privacy Choices by Student') ;
+_('Roll Group Summary') ;
+_('Roll Groups Not Registered') ;
+_('Rollover') ;
+_('Set Future Absence') ;
+_('Staff Gold Stars') ;
+_('Student Borrowing Record') ;
+_('Student Data Updater History') ;
+_('Student Enrolment') ;
 _('Student History') ;
 _('Student History') ;
-_('Student ID Cards ')
-_('Student Transport')
-_('Students by Roll Group')
-_('Students Not Onsite')
-_('Students Not Present')
-_('Sync Families')
-_('Sync Student Enrolment')
-_('Sync Users')
-_('System Settings')
-_('Tie Days To Dates')
-_('Update')
+_('Student ID Cards ') ;
+_('Student Transport') ;
+_('Students by Roll Group') ;
+_('Students Not Onsite') ;
+_('Students Not Present') ;
+_('Sync Families') ;
+_('Sync Student Enrolment') ;
+_('Sync Users') ;
+_('System Settings') ;
+_('Tie Days To Dates') ;
+_('Update') ;
 _('Update Family Data') ;
 _('Update Family Data') ;
 _('Update Finance Data') ;
@@ -218,25 +220,25 @@ _('Update Personal Data') ;
 _('View Activities') ;
 _('View Activities') ;
 _('View Activities') ;
-_('View Available Spaces')
-_('View Available Teachers')
-_('View Behaviour Records')
-_('View Departments')
+_('View Available Spaces') ;
+_('View Available Teachers') ;
+_('View Behaviour Records') ;
+_('View Departments') ;
 _('View Markbook') ;
 _('View Markbook') ;
-_('View Message Wall')
-_('View Overdue Items')
-_('View Resources')
-_('View Roll Groups')
-_('View Rubrics')
+_('View Message Wall') ;
+_('View Overdue Items') ;
+_('View Resources') ;
+_('View Roll Groups') ;
+_('View Rubrics') ;
 _('View Staff Profile') ;
 _('View Staff Profile') ;
 _('View Student Profile') ;
 _('View Student Profile') ;
 _('View Student Profile') ;
-_('View Timetable by Person')
-_('View Timetable by Space')
-_('Work Summary by Roll Group')
+_('View Timetable by Person') ;
+_('View Timetable by Space') ;
+_('Work Summary by Roll Group') ;
 
 //gibbonAction - description
 _('A leaque table of staff gold stars...just for fun.') ;
@@ -251,6 +253,7 @@ _('Allows a user to book a room for on-off use, and manage bookings made by all 
 _('Allows a user to book a room for on-off use, and manage their own bookings.') ;
 _('Allows a user to create and manage one-off location changes for all classes within the timetable.') ;
 _('Allows a user to create and manage one-off location changes for their own classes within the timetable.') ;
+_('Allows a user to import outcomes into the system, based on their Manage Outcomes rights.') ;
 _('Allows a user to view the activities they are involved in') ;
 _('Allows administrators to control system-wide language and localisation settings.') ;
 _('Allows admins to control the application form') ;
@@ -264,6 +267,7 @@ _('Allows admins to view and action applications') ;
 _('Allows adults in a family to create data update request for their family.') ;
 _('Allows adults in a family to create finance data update request for their family.') ;
 _('Allows editing of any column in any class.') ;
+_('Allows for the quick posting of a Message Wall message to all users.') ;
 _('Allows managers to build activity program') ;
 _('Allows parents to register their children for activities') ;
 _('Allows parents to view their children\'s classes') ;
@@ -690,7 +694,6 @@ _('IB Diploma') ;
 
 //gibbonExternalAssessment - description
 _('International Baccalaureate Diploma') ;
-_('This is a test') ;
 _('UK-based General Certificate of Secondary Education') ;
 _('UK-based standardised tests that provides scores in maths, verbal and non-verbal skills, as well as KS3 and GCSE predicted grades.') ;
 
@@ -822,6 +825,7 @@ _('Rich Text Format') ;
 _('Scalable Vector Graphics') ;
 _('Scratch') ;
 _('Scratch 2') ;
+_('SQL') ;
 _('Vorbis Ogg') ;
 _('Windows Media Audio') ;
 _('Windows Media Video') ;
@@ -858,6 +862,7 @@ _('Model ID') ;
 _('CPU Type') ;
 _('CPU Speed') ;
 _('Memory') ;
+_('Storage Type') ;
 _('Storage') ;
 _('Wireless MAC Address') ;
 _('Wired MAC Address') ;
@@ -887,6 +892,13 @@ _('Width') ;
 _('Thickness') ;
 _('Language') ;
 _('Link') ;
+_('Version') ;
+_('Operating System') ;
+_('License Type') ;
+_('License Name') ;
+_('License Serial Number') ;
+_('License Expiry') ;
+_('License Management Link') ;
 _('Type') ;
 _('Serial Number') ;
 _('Model Name') ;
@@ -895,14 +907,6 @@ _('Accessories') ;
 _('Warranty Number') ;
 _('Warranty Expiry') ;
 _('Repair Log/Notes') ;
-_('Version') ;
-_('Operating System') ;
-_('License Type') ;
-_('License Name') ;
-_('License Serial Number') ;
-_('License Expiry') ;
-_('License Management Link') ;
-_('License Management Link') ;
 
 //gibbonMedicalCondition - name
 _('Allergy - Animal') ;
@@ -996,27 +1000,68 @@ _('People') ;
 _('Staff') ;
 _('Student') ;
 _('Parent') ;
+_('Other') ;
 
 //gibbonRole - name
+_('Activities Coord.') ;
 _('Administrator') ;
+_('Board Members') ;
+_('Cover Teacher') ;
+_('EA') ;
+_('Finance') ;
+_('Finance Director') ;
+_('Head Of Department') ;
+_('Higher Education') ;
+_('Inventory') ;
+_('New Teacher') ;
+_('Nurse') ;
 _('Parent') ;
+_('Parent Helper') ;
+_('SLT') ;
 _('Student') ;
 _('Support Staff') ;
 _('Teacher') ;
+_('WHAT') ;
 
 //gibbonRole - nameShort
+_('AcCo') ;
 _('Admn') ;
+_('Bmem') ;
+_('COV') ;
+_('EA') ;
+_('FN') ;
+_('FND') ;
+_('HE') ;
+_('HOD') ;
+_('Inv') ;
+_('Nrs') ;
+_('NT') ;
+_('PaH') ;
 _('Prnt') ;
+_('SLT') ;
 _('Stud') ;
 _('SuSt') ;
 _('Tchr') ;
+_('WHAT') ;
 
 //gibbonRole - description
+_('Access to financial functionality') ;
+_('Board Members') ;
 _('Controls all aspects of the system') ;
+_('Cover teachers') ;
+_('Educational Assistant') ;
+_('Higher Education Coordinator') ;
 _('Parent or guardian of person studying in') ;
+_('Parents who come to school to help out') ;
 _('Person studying in the school') ;
 _('Regular, classroom teacher') ;
+_('Runs the school\'s activitiy programs') ;
+_('School Nurse') ;
+_('Senior Leadership Team') ;
+_('Staff plus Library permissions.') ;
 _('Staff who support teaching and learning') ;
+_('Teachers new to ICHK') ;
+_('Welfare, Holistic, Achievement Team') ;
 
 //gibbonScale - name
 _('Bloom\'s Modified') ;
@@ -1028,6 +1073,8 @@ _('IB Diploma (Total)') ;
 _('International Baccalaureate') ;
 _('International Baccalaureate EE') ;
 _('International College HK') ;
+_('Learning Security') ;
+_('One To Four') ;
 _('Percentage') ;
 _('Simple Letter Grade') ;
 _('UK National Curriculum KS3') ;
@@ -1037,6 +1084,7 @@ _('United Kingdom GCSE/iGCSE Predicted') ;
 
 //gibbonScale - nameShort
 _('%') ;
+_('1-4') ;
 _('BloM') ;
 _('CAT') ;
 _('Comp') ;
@@ -1050,9 +1098,11 @@ _('IBEE') ;
 _('ICHK') ;
 _('KS3') ;
 _('KS3S') ;
+_('LS') ;
 _('SLG') ;
 
 //gibbonScale - usage
+_('1 (low) to 4 (high)') ;
 _('100 (highest) to 0 (lowest)') ;
 _('140 (highest) to 60 (lowest)') ;
 _('45 (highest) to 0') ;
@@ -1063,6 +1113,7 @@ _('A (highest) to F (lowest)') ;
 _('A* (highest) to U (lowest)') ;
 _('A+ (highest) to F (lowest)') ;
 _('Has task has been completed?') ;
+_('Indicates how secure a student\'s learning is') ;
 _('Level 8 (highest) to Level 3 (lowest)') ;
 _('Non-numeric scale aiming to reduce mark obsession') ;
 
@@ -1076,6 +1127,8 @@ _('IB Diploma (Total)') ;
 _('International Baccalaureate') ;
 _('International Baccalaureate EE') ;
 _('International College HK') ;
+_('Learning Security') ;
+_('One To Four') ;
 _('Percentage') ;
 _('Simple Letter Grade') ;
 _('UK National Curriculum KS3') ;
@@ -1352,12 +1405,16 @@ _('E') ;
 _('E+') ;
 _('E-') ;
 _('E/F') ;
+_('EP') ;
 _('F') ;
 _('G') ;
 _('Incomplete') ;
 _('Ju') ;
 _('Kn') ;
 _('Late') ;
+_('NYS') ;
+_('S') ;
+_('SIP') ;
 _('U') ;
 _('Un') ;
 
@@ -1638,16 +1695,22 @@ _('E+') ;
 _('E-') ;
 _('E/F') ;
 _('Exceptional Performance') ;
+_('Exceptional Performance') ;
 _('F') ;
 _('G') ;
 _('Judging') ;
 _('Knowing') ;
+_('Level 1') ;
+_('Level 2') ;
 _('Level 3') ;
 _('Level 4') ;
 _('Level 5') ;
 _('Level 6') ;
 _('Level 7') ;
 _('Level 8') ;
+_('Not Yet Secure') ;
+_('Secure') ;
+_('Secure In Parts') ;
 _('Unclassified') ;
 _('Understanding') ;
 _('Well Above Expected Level') ;
@@ -1680,9 +1743,12 @@ _('Currency') ;
 _('Cutting Edge Code') ;
 _('Cutting Edge Code Line') ;
 _('Date Type') ;
+_('Day-Type Options') ;
+_('Day-Type Text') ;
 _('DBA') ;
 _('DBA Email') ;
 _('Default Loan Length') ;
+_('Departure Reasons') ;
 _('Disable External Provider Signup') ;
 _('Effort Alternative Name') ;
 _('Effort Alternative Name Abbreviation') ;
@@ -1690,6 +1756,7 @@ _('Email') ;
 _('Enable Online Payment') ;
 _('Enable Payments') ;
 _('Enrolment Type') ;
+_('Ethnicity') ;
 _('Extended Brief Profile') ;
 _('gibbonedu.com Organisation Key') ;
 _('gibbonedu.com Organisation Name') ;
@@ -1719,8 +1786,12 @@ _('Make Departments Public') ;
 _('Make Units Public') ;
 _('Markbook Type') ;
 _('Maximum Activities per Term') ;
+_('Message Bubble Auto Hide') ;
+_('Message Bubble Background Color') ;
+_('Message Bubble Width Type') ;
 _('Milestones') ;
 _('Minimum Length') ;
+_('Nationality') ;
 _('Negative Descriptors') ;
 _('Non-Alphanumeric Requirement') ;
 _('Numeric Requirement') ;
@@ -1736,12 +1807,17 @@ _('Payment') ;
 _('PayPal API Password') ;
 _('PayPal API Signature') ;
 _('PayPal API Username') ;
+_('Personal Background') ;
+_('Personal Data Updater Required Fields') ;
 _('Personalised Warnings') ;
 _('Policy Link') ;
 _('Positive Descriptors') ;
 _('Postscript') ;
 _('Primary Assessment Scale') ;
 _('Primary External Assessment By Year Group') ;
+_('Privacy') ;
+_('Privacy Blurb') ;
+_('Privacy Options') ;
 _('Public Applications?') ;
 _('Purposes (General)') ;
 _('Purposes (Restricted)') ;
@@ -1753,6 +1829,7 @@ _('Reminder 3 Text') ;
 _('Required Documents') ;
 _('Required Documents Compulsory?') ;
 _('Required Documents Text') ;
+_('Residency Status') ;
 _('Scholarships') ;
 _('School Google Calendar ID') ;
 _('Session Duration') ;
@@ -1806,17 +1883,25 @@ _('Client ID for Google Project In Developers Console.') ;
 _('Client Secret for Google Project In Developers Console.') ;
 _('Comma-separated list of agreements that students might be asked to sign in school (e.g. ICT Policy).') ;
 _('Comma-separated list of available language selections if Language Options section is turned on.') ;
+_('Comma-separated list of choices to make available if privacy options are turned on. If blank, privacy fields will not be displayed.') ;
 _('Comma-separated list of documents which must be submitted electronically with the application form.') ;
+_('Comma-separated list of ethnicities available in system') ;
+_('Comma-separated list of nationalities available in system. If blank, system will default to list of countries') ;
+_('Comma-separated list of options to make available (e.g. half-day, full-day). If blank, this field will not show up in the application form. ') ;
+_('Comma-separated list of reasons for departure from school. If blank, user can enter any text.') ;
+_('Comma-separated list of residency status available in system. If blank, system will allow text input') ;
 _('Comma-separated list of sources where people might have heard about the school from.') ;
 _('Comma-separated list of the major steps in the application process. Applicants can be tracked through the various stages.') ;
 _('Comma-separated list of types to make available in the Markbook.') ;
 _('Comma-seperated list of the different activity types available in school. Leave blank to disalbe this feature.') ;
 _('Database Administrator') ;
+_('Descriptive text to accompany image privacy option when shown to users.') ;
 _('Email address to send finance emails from.') ;
 _('Enable Gibbon-wide integration with the Google APIs?') ;
 _('Enables a public listing of units, with teachers able to opt in to share units.') ;
 _('Enrolment process type') ;
 _('Explanatory text to appear with the required documents?') ;
+_('Explanatory text to include with Day-Type Otpions.') ;
 _('General email address for the school') ;
 _('Google Calendar ID for your school calendar. Only enables timetable integration when logging in via Google.') ;
 _('Google project Developer Key.') ;
@@ -1829,6 +1914,7 @@ _('Information to display before the form') ;
 _('Information to display before the scholarship options') ;
 _('Introductory text if Language Options section is turned on.') ;
 _('Javascript code to integrate statistics, such as Google Analytics') ;
+_('Message bubble background color in RGBA (e.g. 100,100,100,0.50). If blank, theme default will be used.') ;
 _('Minimum acceptable password length.') ;
 _('Must be numeric. Number of records shown per page.') ;
 _('Name of Google Project in Devlopers Console.') ;
@@ -1841,6 +1927,7 @@ _('Require at least one numeric character?') ;
 _('Require both upper and lower case alpha characters?') ;
 _('RGB Hex value, without leading #. Background color used behind library browsing screen.') ;
 _('Serialized array connected gibbonExternalAssessmentID to gibbonYearGroupID, and specify which field set to use.') ;
+_('Serialized array listed personal fields in data updater, and whether or not they are required.') ;
 _('Set default email for students on acceptance, using [username] to insert username.') ;
 _('Set default website for students on acceptance, using [username] to insert username.') ;
 _('Should activities be organised around dates (flexible) or terms (easy)?') ;
@@ -1848,11 +1935,15 @@ _('Should behaviour information be included in the weekly planner email summary 
 _('Should department information be made available to the public, via the Gibbon homeoage?') ;
 _('Should invoices be payable online, via an encrypted link in the invoice? Requires correctly configured payment gateway in System Settings.') ;
 _('Should markbook warnings be based on personal targets, if they are available?') ;
+_('Should message bubble fade out automatically?') ;
 _('Should parent acceptance email be turned on or off by default.') ;
 _('Should payments be enabled across the system?') ;
+_('Should privacy options be turned on across the system?') ;
 _('Should student acceptance email be turned on or off by default.') ;
 _('Should the Language Options section be turned on?') ;
+_('Should the message bubble be regular or wide?') ;
 _('Should the text within outcomes be editable when planning lessons and units?') ;
+_('Should users be allowed to set their own personal backgrounds?') ;
 _('Should we hide the cost of activities provided by an outside agency from the Activities View?') ;
 _('Should we turn off the option to sign up for activities provided by an outside agency?') ;
 _('Show low attainment grade visual warning to parents?') ;
@@ -1863,7 +1954,7 @@ _('SMS gateway password.') ;
 _('SMS gateway URL for checking credit.') ;
 _('SMS gateway URL for send requests.') ;
 _('SMS gateway username.') ;
-_('System-wde currency for financial transactions.') ;
+_('System-wde currency for financial transactions. Support for online payment in this currency depends on your credit card gateway: please consult their support documentation.') ;
 _('System-wide access control') ;
 _('Template to be inserted into Lesson Details field') ;
 _('Template to be inserted into new block in Smart Unit') ;

@@ -141,7 +141,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 			if (isset($_GET["deleteReturn"])) {
 				$deleteReturn=$_GET["deleteReturn"] ;
 			}
-			if ($cacheLoad OR (@$_GET["q"]=="/modules/Messenger/messenger_post.php" AND $addReturn=="success0") OR (@$_GET["q"]=="/modules/Messenger/messenger_manage_edit.php" AND $updateReturn=="success0") OR (@$_GET["q"]=="/modules/Messenger/messenger_manage.php" AND $deleteReturn=="success0")) {
+			if ($cacheLoad OR (@$_GET["q"]=="/modules/Messenger/messenger_post.php" AND $addReturn=="success0") OR (@$_GET["q"]=="/modules/Messenger/messenger_postQuickWall.php" AND $addReturn=="success0") OR (@$_GET["q"]=="/modules/Messenger/messenger_manage_edit.php" AND $updateReturn=="success0") OR (@$_GET["q"]=="/modules/Messenger/messenger_manage.php" AND $deleteReturn=="success0")) {
 				$messages=getMessages($guid, $connection2, "result") ;					
 				$messages=unserialize($messages) ;
 				try {
@@ -157,7 +157,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 					$last="" ;
 					while ($rowPosts=$resultPosts->fetch()) {
 						if ($last==$rowPosts["gibbonMessengerID"]) {
-							@$output[($count-1)]["source"]=$output[($count-1)]["source"] . "<br/>" .$rowPosts["source"] ;
+							$output[($count-1)]["source"]=$output[($count-1)]["source"] . "<br/>" .$rowPosts["source"] ;
 						}
 						else {
 							$output[$_SESSION[$guid]["messageWallCount"]]["photo"]=$rowPosts["image_75"] ;
@@ -168,12 +168,13 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 
 							$_SESSION[$guid]["messageWallCount"]++ ;
 							$last=$rowPosts["gibbonMessengerID"] ;
+							$count++ ;
 						}	
-						$count++ ;
 					}
 				}
 			}
-	
+			
+			
 			$URL=$_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Messenger/messageWall_view_full.php&width=1000&height=550" ;
 			if (isset($_SESSION[$guid]["messageWallCount"])==FALSE) {
 				$return.=" . 0 x <img style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
@@ -185,8 +186,24 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 				else {
 					$return.=" . <a title='" . _('Message Wall') . "'class='thickbox' href='$URL'>" . $_SESSION[$guid]["messageWallCount"] . " x <img style='margin-left: 4px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall.png'></a>" ;
 					if ($_SESSION[$guid]["pageLoads"]==0 AND ($_SESSION[$guid]["messengerLastBubble"]==NULL OR $_SESSION[$guid]["messengerLastBubble"]<date("Y-m-d"))) {
+						print $messageBubbleBGColor=getSettingByScope($connection2, "Messenger", "messageBubbleBGColor") ;
+						$bubbleBG="" ;
+						if ($messageBubbleBGColor!="") {
+							$bubbleBG="; background-color: rgba(" . $messageBubbleBGColor . ")!important" ;
+							$return.="<style>" ;
+								$return.=".ui-tooltip, .arrow:after { $bubbleBG }" ;
+							$return.="</style>" ;
+							
+						}
+						$messageBubbleWidthType=getSettingByScope($connection2, "Messenger", "messageBubbleWidthType") ;
+						$bubbleWidth=300 ;
+						$bubbleLeft=770 ;
+						if ($messageBubbleWidthType=="Wide") {
+							$bubbleWidth=700 ;
+							$bubbleLeft=370 ;
+						}
 						$return.="<div id='messageBubbleArrow' style=\"left: 1089px; top: 38px; z-index: 9999\" class='arrow top'></div>" ;
-						$return.="<div id='messageBubble' style=\"left: 770px; top: 54px; width: 300px; min-width: 300px; max-width: 300px; min-height: 100px; text-align: center; padding-bottom: 10px\" class=\"ui-tooltip ui-widget ui-corner-all ui-widget-content\" role=\"tooltip\">" ;
+						$return.="<div id='messageBubble' style=\"left: " . $bubbleLeft . "px; top: 54px; width: " . $bubbleWidth . "px; min-width: " . $bubbleWidth . "px; max-width: " . $bubbleWidth . "px; min-height: 100px; text-align: center; padding-bottom: 10px\" class=\"ui-tooltip ui-widget ui-corner-all ui-widget-content\" role=\"tooltip\">" ;
 							$return.="<div class=\"ui-tooltip-content\">" ;
 								$return.="<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>" . _('New Messages') . "</div>" ;
 								$test=count($output) ;
@@ -215,18 +232,21 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 							$return.="</div>" ;
 						$return.="</div>" ;
 		
-						$return.="<script type=\"text/javascript\">" ;
-							$return.="$(function() {" ;
-								$return.="setTimeout(function() {" ;
-									$return.="$(\"#messageBubble\").hide('fade', {}, 3000)" ;
-								$return.="}, 10000);" ;
-							$return.="});" ;
-							$return.="$(function() {" ;
-								$return.="setTimeout(function() {" ;
-									$return.="$(\"#messageBubbleArrow\").hide('fade', {}, 3000)" ;
-								$return.="}, 10000);" ;
-							$return.="});" ;
-						$return.="</script>" ;
+						$messageBubbleAutoHide=getSettingByScope($connection2, "Messenger", "messageBubbleAutoHide") ;
+						if ($messageBubbleAutoHide!="N") {
+							$return.="<script type=\"text/javascript\">" ;
+								$return.="$(function() {" ;
+									$return.="setTimeout(function() {" ;
+										$return.="$(\"#messageBubble\").hide('fade', {}, 3000)" ;
+									$return.="}, 10000);" ;
+								$return.="});" ;
+								$return.="$(function() {" ;
+									$return.="setTimeout(function() {" ;
+										$return.="$(\"#messageBubbleArrow\").hide('fade', {}, 3000)" ;
+									$return.="}, 10000);" ;
+								$return.="});" ;
+							$return.="</script>" ;
+						}
 						
 						try {
 							$data=array("messengerLastBubble"=>date("Y-m-d"), "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"] ); 
@@ -882,8 +902,8 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
 	}
 	
 	//Check for existence of notification
-	$dataCheck=array("gibbonPersonID"=>$gibbonPersonID, "text"=>$text, "name"=>$moduleName); 
-	$sqlCheck="SELECT * FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name)" ;
+	$dataCheck=array("gibbonPersonID"=>$gibbonPersonID, "text"=>$text, "actionLink"=>$actionLink, "name"=>$moduleName); 
+	$sqlCheck="SELECT * FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND actionLink=:actionLink AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name)" ;
 	$resultCheck=$connection2->prepare($sqlCheck);
 	$resultCheck->execute($dataCheck);
 	
@@ -912,7 +932,8 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
 		//Attempt email send
 		$to=$rowSelect["email"] ;
 		$subject=sprintf(_('You have received a notification on %1$s at %2$s'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationNameShort"]) ;
-		$body=sprintf(_('Login to %1$s and use the noticiation icon to check your new notification, or use the link below:'), $_SESSION[$guid]["systemName"]) . "\n\n" ;
+		$body=_('Notification') . ": " . $text . "\n\n" ;
+		$body.=sprintf(_('Login to %1$s and use the noticiation icon to check your new notification, or use the link below:'), $_SESSION[$guid]["systemName"]) . "\n\n" ;
 		$body.=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php\n\n" ;
 		$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
 		mail($to, $subject, $body, $headers) ;
@@ -1486,10 +1507,10 @@ function formatName( $title, $preferredName, $surname, $roleCategory, $reverse=F
 	if ($roleCategory=="Staff" OR $roleCategory=="Other") {
 		if ($informal==FALSE) {
 			if ($reverse==TRUE) {
-				$output=$title . $surname . ", " . strtoupper(substr($preferredName,0,1)) ;
+				$output=$title . " " . $surname . ", " . strtoupper(substr($preferredName,0,1)) ;
 			}
 			else {
-				$output=$title . strtoupper(substr($preferredName,0,1)) . ". " . $surname ;
+				$output=$title . " " . strtoupper(substr($preferredName,0,1)) . ". " . $surname ;
 			}
 		}
 		else {
@@ -1504,10 +1525,10 @@ function formatName( $title, $preferredName, $surname, $roleCategory, $reverse=F
 	else if ($roleCategory=="Parent") {
 		if ($informal==FALSE) {
 			if ($reverse==TRUE) {
-				$output=$title . $surname . ", " . $preferredName ;
+				$output=$title . " " . $surname . ", " . $preferredName ;
 			}
 			else {
-				$output=$title . $preferredName . " " . $surname ;
+				$output=$title . " " . $preferredName . " " . $surname ;
 			}
 		}
 		else {

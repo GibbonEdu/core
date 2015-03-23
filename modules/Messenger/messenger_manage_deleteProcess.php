@@ -36,8 +36,12 @@ catch(PDOException $e) {
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonMessengerID=$_GET["gibbonMessengerID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_manage_delete.php&gibbonMessengerID=" . $gibbonMessengerID ;
-$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_manage.php" ;
+$search=NULL ;
+if (isset($_GET["search"])) {
+	$search=$_GET["search"] ;
+}
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_manage_delete.php&search=$search&gibbonMessengerID=" . $gibbonMessengerID ;
+$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_manage.php&search=$search" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_delete.php")==FALSE) {
 	//Fail 0

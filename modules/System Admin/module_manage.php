@@ -75,9 +75,10 @@ else {
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
-			print $addReturnMessage;
+			print $addReturnMessage ;
 			if (isset($_SESSION[$guid]["moduleInstallError"])) {
 				if ($_SESSION[$guid]["moduleInstallError"]!="") {
+					print "<br/><br/>" ;
 					print _("The following SQL statements caused errors:") . " " . $_SESSION[$guid]["moduleInstallError"] ;
 				}
 				$_SESSION[$guid]["moduleInstallError"]=NULL ;
@@ -137,7 +138,7 @@ else {
 				print "<th>" ;
 					print _("Author") ;
 				print "</th>" ;
-				print "<th>" ;
+				print "<th style='width: 140px!important'>" ;
 					print _("Action") ;
 				print "</th>" ;
 			print "</tr>" ;
@@ -189,7 +190,7 @@ else {
 						}
 						else {
 							print "<td colspan=7>" ;
-								print _("Module Error") ;
+								print _("Module error due to incorrect manifest file or folder name.") ;
 							print "</td>" ;
 						}
 					}

@@ -110,6 +110,14 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 						$('#block<?php print $i ?>').fadeOut(600, function(){ $('#block<?php print $i ?>').remove(); });
 					}
 				});
+				
+				$('#star<?php print $i ?>').unbind('click').click(function() {
+					$("#starBox<?php print $i ?>").load("<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Planner/units_edit_starAjax.php",{"gibbonPersonID": "<?php print $_SESSION[$guid]["gibbonPersonID"] ?>", "gibbonUnitBlockID": "<?php print $gibbonUnitBlockID ?>", "action": "star", "i": "<?php print $i ?>" }) ;
+				});
+				
+				$('#unstar<?php print $i ?>').unbind('click').click(function() {
+					$("#starBox<?php print $i ?>").load("<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Planner/units_edit_starAjax.php",{"gibbonPersonID": "<?php print $_SESSION[$guid]["gibbonPersonID"] ?>", "gibbonUnitBlockID": "<?php print $gibbonUnitBlockID ?>", "action": "unstar", "i": "<?php print $i ?>" }) ;
+				});
 			});
 		</script>
 		<?php
@@ -127,14 +135,30 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 				<td style='text-align: right; width: 50%'>
 					<div style='margin-bottom: 5px'>
 						<?php
+						if ($mode=="masterEdit") {
+							//Check if starred
+							try {
+								$dataCheck=array("gibbonUnitBlockID"=>$gibbonUnitBlockID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+								$sqlCheck="SELECT * FROM gibbonUnitBlockStar WHERE gibbonPersonID=:gibbonPersonID AND gibbonUnitBlockID=:gibbonUnitBlockID" ;
+								$resultCheck=$connection2->prepare($sqlCheck);
+								$resultCheck->execute($dataCheck);
+							}
+							catch(PDOException $e) { }
+							if ($resultCheck->rowCount()==1) {
+								print "<div style='float: right; margin-top: -2px' id='starBox$i'><img id='unstar$i' title='" . _('Unstar') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'/></div> " ;
+							}
+							else {
+								print "<div style='float: right; margin-top: -2px' id='starBox$i'><img id='star$i' title='" . _('Star') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'/></div> " ;
+							}
+						}
 						if ($mode!="plannerEdit" AND $mode!="embed") {
-							print "<img id='delete$i' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
+							print "<img style='margin-top: 2px' id='delete$i' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
 						}
 						if ($mode=="workingEdit") {
 							//Check that block is still connected to master (poor design in original smart units means that they might be disconnected, and so copyback will not work.
 							try {
 								$dataCheck=array("gibbonUnitBlockID"=>$gibbonUnitBlockID, "gibbonUnitClassBlockID"=>$gibbonUnitClassBlockID); 
-								$sqlCheck="SELECT * FROM gibbonUnitBlock JOIN gibbonUnitClassBlock ON (gibbonUnitClassBlock.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID AND gibbonUnitBlock.gibbonUnitBlockID=:gibbonUnitBlockID" ;
+								$sqlCheck="SELECT * FROM gibbonUnitBlock JOIN gibbonUnitClassBlock ON (gibbonUnitClassBlock.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) LEFT JOIN gibbonUnitBlockStar ON (gibbonUnitBlockStar.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID AND gibbonUnitBlock.gibbonUnitBlockID=:gibbonUnitBlockID" ;
 								$resultCheck=$connection2->prepare($sqlCheck);
 								$resultCheck->execute($dataCheck);
 							}
@@ -142,11 +166,17 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
 							if ($resultCheck->rowCount()==1) {
-								print "<a onclick='return confirm(\"" . _('Are you sure you want to leave this page? Any unsaved changes will be lost.') . "\")' style='font-weight: normal; font-style: normal; color: #fff' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=" . $_GET["gibbonUnitClassID"] . "'><img id='copyback$i' title='Copy Back' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copyback.png'/></a>" ;
+								$rowCheck=$resultCheck->fetch() ;
+								if (is_null($rowCheck["gibbonUnitBlockStarID"])) {
+									print "<a onclick='return confirm(\"" . _('Are you sure you want to leave this page? Any unsaved changes will be lost.') . "\")' style='margin-right: 2px; font-weight: normal; font-style: normal; color: #fff' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=" . $_GET["gibbonUnitClassID"] . "'><img id='copyback$i' title='Copy Back' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copyback.png'/></a>" ;
+								}
+								else {
+									print "<img style='margin-left: -2px; margin-right: 2px' title='" . _('This is a Star Block') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'/> " ;
+								}
 							}
 						}
 						if ($mode!="embed") {
-							print "<div title='" . _('Show/Hide Details') . "' id='show$i' style='margin-right: 3px; margin-top: -1px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\"); background-repeat: no-repeat'></div></br>" ;
+							print "<div title='" . _('Show/Hide Details') . "' id='show$i' style='margin-right: 3px; margin-top: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\"); background-repeat: no-repeat'></div></br>" ;
 						}
 						?>
 					</div>
@@ -280,26 +310,18 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 	}
 	else {
 		 while ($rowDiscuss=$resultDiscuss->fetch()) {
+			$classExtra="" ;
 			if ($level==0) {
-				$border="2px solid #333" ;
-				$margintop="25px" ; 
-			}
-			else {
-				$border="2px solid #333" ;
-				$margintop="0px" ;
+				$classExtra="chatBoxFirst" ;
 			}
 			$output.="<a name='" . $rowDiscuss["gibbonPlannerEntryDiscussID"] . "'></a>" ; 
-			$output.="<table class='noIntBorder' cellspacing='0' style='width: " . (755-($level*15)) . "px ; padding: 1px 3px; margin-bottom: -2px; margin-top: $margintop; margin-left: " . ($level*15) . "px; border: $border ; background-color: #f9f9f9'>" ;
+			$output.="<table class='noIntBorder chatBox $classExtra' cellspacing='0' style='width: " . (755-($level*15)) . "px; margin-left: " . ($level*15) . "px'>" ;
 				$output.="<tr>" ;
-					$output.="<td style='color: #777'><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) . " " . _('said') . "</i>:</td>" ;
-					$output.="<td style='color: #777; text-align: right'><i>" . _('Posted at') . " <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack($guid, substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;
+					$output.="<td><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) . " " . _('said') . "</i>:</td>" ;
+					$output.="<td style='text-align: right'><i>" . _('Posted at') . " <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack($guid, substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;
 				$output.="</tr>" ;
 				$output.="<tr>" ;
-					$borderleft="4px solid #1B9F13" ;
-					if ($rowDiscuss["timestamp"]>=$_SESSION[$guid]["lastTimestamp"]) {
-						$borderleft="4px solid #c00" ;
-					}
-					$output.="<td style='max-width: " . (700-($level*15)) . "px; padding: 1px 4px; border-left: $borderleft; word-wrap: break-word;' colspan=2><b>" . $rowDiscuss["comment"] . "</b></td>" ;
+					$output.="<td style='max-width: " . (700-($level*15)) . "px;' colspan=2><b>" . $rowDiscuss["comment"] . "</b></td>" ;
 				$output.="</tr>" ;
 				$output.="<tr>" ;
 					if ($links==TRUE) {

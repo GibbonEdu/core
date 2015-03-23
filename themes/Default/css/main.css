@@ -496,7 +496,7 @@ table {
 	margin: 5px 0 5px 0;
 }
 table th {
-	padding:15px 15px 15px 5px;
+	padding:15px 15px 15px 15px;
 	border-top:1px solid #fafafa;
 	border-bottom:1px solid #e0e0e0;
 	font-size: 110% ;
@@ -510,7 +510,7 @@ table tr:first-child th:first-child {
 	-webkit-border-top-left-radius:3px;
 	border-top-left-radius:3px;
 	text-align: left;
-	padding-left: 5px;
+	padding-left: 15px;
 }
 table tr:first-child th:last-child {
 	-moz-border-radius-topright:3px;
@@ -572,26 +572,26 @@ div.odd {
 	background-color: #E2DDCA ;
 	background:#E2DDCA url("../img/tdOdd.png") repeat-x;
 }
-tr.current, tr.current td, div.current {
+tr.current, tr.current td, div.current, td.current {
 	background-color: #B3EFC2!important ;
 	background: -webkit-gradient(linear, left top, left bottom, from(#B5F1C4), to(#B3EFC2))!important;
 	background: -moz-linear-gradient(top,  #B5F1C4,  #B3EFC2)!important;
 }
-tr.past, tr.past td, div.past {
+tr.past, tr.past td, div.past, td.past {
 	background-color: #F6CECB!important ;
 	background: -webkit-gradient(linear, left top, left bottom, from(#F8D1CD), to(#F6CECB))!important;
 	background: -moz-linear-gradient(top,  #F8D1CD,  #F6CECB)!important;	
 }
-tr.error, tr.error td, div.erorr {
+tr.error, tr.error td, div.erorr, td.error {
 	background-color: #F6CECB!important ;
 	background: -webkit-gradient(linear, left top, left bottom, from(#F8D1CD), to(#F6CECB))!important;
 	background: -moz-linear-gradient(top,  #F8D1CD,  #F6CECB)!important;
 }
-tr.warning, tr.warning td, div.warning {
+tr.warning, tr.warning td, div.warning, td.warning {
 	background: none!important ;
 	background-color: #FFD2A9!important ;
 }
-tr.dull, tr.dull td, div.dull {
+tr.dull, tr.dull td, div.dull, td.dull {
 	background: none!important ;
 	background-color: #c6c6c6!important ;
 }
@@ -1148,4 +1148,23 @@ div.ttPeriodCurrent {
 	color: rgb(0,0,0);
 	border: 1px solid rgb(136,136,136) ;
 	background-color: rgb(179, 239, 194) ;
+}
+
+table.chatBox {
+	margin-top: 0px ;
+	padding: 0px ; 
+	margin-bottom: -1px ;
+	border: 1px solid #333 ; 
+	background-color: #f9f9f9;
+	border-radius:0px;
+}
+
+table.chatBoxFirst {
+	margin-top: 25px ;
+}
+
+table.chatBox tr td {
+	color: #444 ;
+	word-wrap: break-word ;
+	padding: 1px 4px
 }

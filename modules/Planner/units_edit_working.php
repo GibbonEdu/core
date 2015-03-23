@@ -224,7 +224,7 @@ else {
 						print _("You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.") ;
 						print "</p>" ;
 						
-						//Store blocks in array
+						//Store UNIT BLOCKS in array
 						$blocks=array() ;
 						try {
 							if ($hooked==FALSE) {
@@ -263,6 +263,29 @@ else {
 								$blocks[$blockCount][5]=$rowBlocks[$hookOptions["unitSmartBlockTeachersNotesField"]];
 							}
 							$blockCount++ ;
+						}
+						
+						//Store STAR BLOCKS in array
+						$blocks2=array() ;
+						try {
+							$dataBlocks2=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+							$sqlBlocks2="SELECT * FROM gibbonUnitBlockStar JOIN gibbonUnitBlock ON (gibbonUnitBlockStar.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) ORDER BY title" ;
+							$resultBlocks2=$connection2->prepare($sqlBlocks2);
+							$resultBlocks2->execute($dataBlocks2);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+						$blockCount2=0 ;
+						while ($rowBlocks2=$resultBlocks2->fetch()) {
+							$blocks2[$blockCount2][0]=$rowBlocks2["gibbonUnitBlockID"] ;
+							$blocks2[$blockCount2][1]=$rowBlocks2["title"];
+							$blocks2[$blockCount2][2]=$rowBlocks2["type"];
+							$blocks2[$blockCount2][3]=$rowBlocks2["length"];
+							$blocks2[$blockCount2][4]=$rowBlocks2["contents"];
+							$blocks2[$blockCount2][5]=$rowBlocks2["teachersNotes"];
+							$blocks2[$blockCount2][6]=$rowBlocks2["gibbonOutcomeIDList"];
+							$blockCount2++ ;
 						}
 							
 						
@@ -343,11 +366,18 @@ else {
 														print "</script>" ;
 														print "<select name='blockAdd$i' id='blockAdd$i' style='width: 150px'>" ;
 															print "<option value=''></option>" ;
-															$blockSelectCount=0 ;
-															foreach ($blocks AS $block) {
-																print "<option value='" . $block[0] . "'>" . ($blockSelectCount+1) . ") " . htmlPrep($block[1]) . "</option>" ;
-																$blockSelectCount++ ;
-															}
+															print "<optgroup label='--" . _('Unit Blocks') . "--'>" ;
+																$blockSelectCount=0 ;
+																foreach ($blocks AS $block) {
+																	print "<option value='" . $block[0] . "'>" . ($blockSelectCount+1) . ") " . htmlPrep($block[1]) . "</option>" ;
+																	$blockSelectCount++ ;
+																}
+															print "</optgroup>" ;
+															print "<optgroup label='--" . _('Star Blocks') . "--'>" ;
+																foreach ($blocks2 AS $block2) {
+																	print "<option value='" . $block2[0] . "'>" . htmlPrep($block2[1]) . "</option>" ;
+																}
+															print "</optgroup>" ;
 														print "</select>" ;
 													print "</div>" ;
 												print "</div>" ;

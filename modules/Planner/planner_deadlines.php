@@ -132,7 +132,7 @@ else {
 						$select="selected" ;
 					}
 					$options=$options . "<option $select value='" . $rowChild["gibbonPersonID"] . "'>" . $rowChild["surname"] . ", " . $rowChild["preferredName"] . "</option>" ;
-					$gibbonPersonID[$count]=$rowChild["gibbonPersonID"] ;
+					$gibbonPersonIDArray[$count]=$rowChild["gibbonPersonID"] ;
 					$count++ ;
 				}
 			}
@@ -143,7 +143,7 @@ else {
 				print "</div>" ;
 			}
 			else if ($count==1) {
-				$gibbonPersonID=$gibbonPersonID[0] ;
+				$gibbonPersonID=$gibbonPersonIDArray[0] ;
 			}
 			else {
 				print "<h3>" ;
@@ -193,7 +193,6 @@ else {
 				catch(PDOException $e) { 
 					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 				}
-				
 				if ($resultChild->rowCount()<1) {
 					print "<div class='error'>" ;
 					print _("The selected record does not exist, or you do not have access to it.") ;
