@@ -21,6 +21,9 @@ v9.2.00
 i18n: added Urdu as inactive development language
 	Added value to table gibboni18n
 
+School Admin: added form checking to make sure sequence number is unique
+	Edited file /modules/School Admin/schoolYearTerm_manage_add.php
+
 
 v9.1.00
 -------
