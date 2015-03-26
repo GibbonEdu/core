@@ -24,6 +24,13 @@ i18n: added Urdu as inactive development language
 School Admin: added form checking to make sure sequence number is unique
 	Edited file /modules/School Admin/schoolYearTerm_manage_add.php
 
+Students: added timetable to Summary view, which is now called Overview...for fewer clicks
+	Edited file /modules/Timetable/moduleFunctions.php
+	Edited file /modules/Students/student_view_details.php
+	
+Staff: added timetable to Summary view, which is now called Overview...for fewer clicks
+	Edited file /modules/Staff/staff_view_details.php
+
 
 v9.1.00
 -------

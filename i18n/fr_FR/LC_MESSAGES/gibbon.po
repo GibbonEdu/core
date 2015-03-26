@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: Gibbon v9.0.00\n"
 "Report-Msgid-Bugs-To: support@gibbonedu.org\n"
 "POT-Creation-Date: 2014-03-05 09:36+0800\n"
-"PO-Revision-Date: 2015-03-13 08:47+0800\n"
+"PO-Revision-Date: 2015-03-25 12:31+0800\n"
 "Last-Translator: \n"
 "Language-Team: Jean-Baptiste Tamegnon <jeanbaptistamegnon@gmail.com>\n"
 "Language: fr_FR\n"
@@ -28,7 +28,7 @@ msgstr ""
 #: index.php:1084 index.php:1102 index.php:1064 index.php:1073 index.php:681
 #: index.php:510 index.php:543 index.php:545 index.php:642 index.php:642
 msgid "Today's Lessons"
-msgstr "Leçon du jour"
+msgstr "Leçons du jour"
 
 #: index.php:1227 index.php:1222 index.php:1229 index.php:1232 index.php:1238
 #: index.php:1236 index.php:1242 index.php:1265 index.php:844 index.php:673
@@ -77,6 +77,9 @@ msgid ""
 "If you cannot solve this problem by retyping the address, or through other "
 "means, please contact your system administrator."
 msgstr ""
+"Si vous ne pouvez pas résoudre ce problème en saisissant à nouveau "
+"l'adresse, ou par d'autre moyens, veuillez contacter voutre administrateur "
+"système."
 
 #: fullscreen.php:44 index.php:110 report.php:43 index.php:116 index.php:122
 #: index.php:124 index.php:129 index.php:151 index.php:152 index.php:154
@@ -1966,7 +1969,7 @@ msgstr ""
 #: modules/School Admin/schoolYear_manage_edit.php:174
 #: modules/School Admin/schoolYearSpecialDay_manage_add.php:305
 #: modules/School Admin/schoolYearSpecialDay_manage_edit.php:322
-#: modules/School Admin/schoolYearTerm_manage_add.php:175
+#: modules/School Admin/schoolYearTerm_manage_add.php:191
 #: modules/School Admin/schoolYearTerm_manage_edit.php:206
 #: modules/School Admin/space_manage_add.php:283
 #: modules/School Admin/space_manage_edit.php:321
@@ -2411,7 +2414,7 @@ msgstr "Confirmer le nouveau mot de passe"
 #: modules/School Admin/schoolYear_manage_edit.php:170
 #: modules/School Admin/schoolYearSpecialDay_manage_add.php:296
 #: modules/School Admin/schoolYearSpecialDay_manage_edit.php:317
-#: modules/School Admin/schoolYearTerm_manage_add.php:171
+#: modules/School Admin/schoolYearTerm_manage_add.php:187
 #: modules/School Admin/schoolYearTerm_manage_edit.php:202
 #: modules/School Admin/space_manage_add.php:279
 #: modules/School Admin/space_manage_edit.php:317
@@ -2918,7 +2921,7 @@ msgstr "Photo"
 #: modules/School Admin/schoolYearSpecialDay_manage_add.php:102
 #: modules/School Admin/schoolYearSpecialDay_manage_edit.php:123
 #: modules/School Admin/schoolYearTerm_manage.php:76
-#: modules/School Admin/schoolYearTerm_manage_add.php:107
+#: modules/School Admin/schoolYearTerm_manage_add.php:123
 #: modules/School Admin/schoolYearTerm_manage_edit.php:138
 #: modules/School Admin/space_manage.php:81
 #: modules/School Admin/space_manage_add.php:64
@@ -3002,7 +3005,7 @@ msgstr "Photo"
 #: modules/User Admin/user_manage.php:126 stars.php:47 stars.php:116
 #: stars.php:181
 msgid "Name"
-msgstr "Nom"
+msgstr "Intitulé"
 
 #: stars.php:50 stars.php:50
 msgid "Class/Lesson"
@@ -3535,6 +3538,8 @@ msgid ""
 "Parents of students interested in study at %1$s may use our %2$s online form"
 "%3$s to initiate the application process."
 msgstr ""
+"Les parents d'élèves interessés à étudier à %1$s peuvent utiliser notre "
+"formulaire en ligne %2$s %3$s pour entamer la procédure d'inscription."
 
 #: index.php:579 index.php:585 index.php:591 index.php:589 index.php:595
 #: index.php:600 index.php:562 index.php:565 index.php:574 index.php:403
@@ -6990,7 +6995,7 @@ msgstr "Notes récentes"
 #: modules/Markbook/moduleFunctions.php:80
 #: modules/Markbook/moduleFunctions.php:83
 msgid "View Markbook"
-msgstr "Consulter la fiche de note"
+msgstr "Consulter le registre de note"
 
 #: index.php:796 index.php:802 modules/Markbook/markbook_view.php:839
 #: i18n/dbStringsForTranslation.php:732
@@ -9849,11 +9854,11 @@ msgid ""
 "\" button (below this message, on the right) to add a new outcome, which can "
 "either be school-wide, or attached to a particular department."
 msgstr ""
-"<b>Résultats </b> fournissent un moyen de planifier et de suivre ce qui est "
-"enseigné dans l'école, et sont donc un excellent endroit pour commencer.<br/"
-">Cliquez sur le bouton \"Ajouter\" (en dessous de ce message, sur la droite) "
-"pour ajouter un nouveau résultat, qui peut être soit, adressé à l'endroit de "
-"l'école ou a un département particuler."
+"<b>Les Résultats</b> fournissent un moyen de planifier et de suivre ce qui "
+"est enseigné dans l'école, et sont donc un excellent endroit pour commencer."
+"<br/>Cliquez sur le bouton \"Ajouter\" (en dessous de ce message, sur la "
+"droite) pour ajouter un nouveau résultat, qui peut être soit, adressé à "
+"l'endroit de l'école ou a un département particuler."
 
 #: functions.php:124 functions.php:128 functions.php:145 functions.php:149
 #: functions.php:172 functions.php:176 functions.php:803 functions.php:807
@@ -9944,6 +9949,13 @@ msgid ""
 "><br/>Homework can be assigned using the %1$sPlanner%2$s, which also allows "
 "teachers to view all submitted work, and records late and incomplete work."
 msgstr ""
+"<b>Devoir + Dates limites</b> permet aux enseignants et aux élèves de voir "
+"les prochaines dates limites, clairement affichées à un seul endroit. "
+"Cliquez sur une entrée pour consulter les détails d'un devoir en "
+"partiiculier, et la leçon à laquelle il fait référence.<br/><br/>Un devoir "
+"peut être assigné en utilisant le %1$sPlannificateur%2$s, qui permet "
+"également aux enseignants de consulter tout mes devoirs soumis, et "
+"enregistrer les travaux tardifs et incomplets."
 
 #: functions.php:139 functions.php:160 functions.php:187 functions.php:818
 #: functions.php:1027 functions.php:1082 functions.php:1083
@@ -9956,6 +9968,14 @@ msgid ""
 "menu on the right, and then click on the \"Add\" button (below this message, "
 "on the right) to create a new markbook column."
 msgstr ""
+"<b>Un régistre de note</b> fournit une méthode organisée pour évaluer, "
+"enregistrer et afficher l'etat sur le progrès d'un élève. Utiliser les "
+"échelles d'appréciation, les commentaires et les uploads de fichier pour "
+"garder les élèves et les parents à jour. Lier un registre de note au "
+"%1$sPlannificateur%2$s, et consulter le travail d'un élève tel que vous "
+"l'avez évalué.<br/><br/>Choisissez un module à partir du menu de droite, "
+"cliquez ensuite le bouton \"Ajouter\" (en dessous de ce message, sur la "
+"droite) pour créer une nouvelle colonne de régistre de note."
 
 #: functions.php:147 functions.php:168 functions.php:195 functions.php:826
 #: functions.php:1035 functions.php:1090 functions.php:1091
@@ -10587,7 +10607,7 @@ msgstr "Mes chapitres"
 #: modules/Planner/planner_add.php:1091
 #: modules/Students/student_view_details.php:2951
 msgid "Markbook"
-msgstr "Fiche de note"
+msgstr "Régistre de note"
 
 #: functions.php:1388 functions.php:1392 i18n/dbStringsForTranslation.php:35
 #: i18n/dbStringsForTranslation.php:735
@@ -10693,6 +10713,8 @@ msgstr "Profil échangé avec succès."
 msgid ""
 "You have multiple roles within the system. Use the list below to switch role:"
 msgstr ""
+"Vous avez plusieurs profils au sein du système. Utilsez la liste ci-dessous "
+"pour passer d'un profil à un autre :"
 
 #: functions.php:1487 functions.php:1491 functions.php:1495 functions.php:1516
 #: functions.php:1605 functions.php:1609 functions.php:1442 functions.php:1441
@@ -10806,6 +10828,8 @@ msgstr "BE"
 msgid ""
 "Student has a %1$s alert for academic concern in the current academic year."
 msgstr ""
+"Un élève a %1$s alerte concernant son année académique pour l'année scolaire "
+"en cours."
 
 #: functions.php:2026 functions.php:2030 i18n/dbStringsForTranslation.php:1072
 #: i18n/dbStringsForTranslation.php:1349 i18n/dbStringsForTranslation.php:1433
@@ -10956,7 +10980,7 @@ msgstr "Dernier"
 #: index.php:540 index.php:543 index.php:552 index.php:371 index.php:404
 #: index.php:406 index.php:481 index.php:481
 msgid "Applications"
-msgstr "Applications"
+msgstr "Demandes d'inscriptions"
 
 #: modules/Activities/activities_manage.php:28
 #: modules/Activities/activities_manage_add.php:28
@@ -13358,6 +13382,8 @@ msgid ""
 "This operation cannot be undone, and may lead to loss of vital data in your "
 "system. PROCEED WITH CAUTION!"
 msgstr ""
+"Cette opération ne peut pas être annulée, et peut conduire à une perte de "
+"données vitales dans votre système. PROCEDEZ AVEC PRECAUTION !"
 
 #: modules/Activities/activities_manage_edit.php:58
 #: modules/Activities/activities_manage_enrolment.php:57
@@ -15716,7 +15742,7 @@ msgstr "Description"
 #: modules/School Admin/rollGroup_manage_add.php:115
 #: modules/School Admin/rollGroup_manage_edit.php:120
 #: modules/School Admin/schoolYearTerm_manage.php:79
-#: modules/School Admin/schoolYearTerm_manage_add.php:120
+#: modules/School Admin/schoolYearTerm_manage_add.php:136
 #: modules/School Admin/schoolYearTerm_manage_edit.php:151
 #: modules/School Admin/yearGroup_manage.php:76
 #: modules/School Admin/yearGroup_manage_add.php:77
@@ -15744,7 +15770,7 @@ msgstr "Description"
 #: modules/User Admin/role_manage_add.php:95
 #: modules/User Admin/role_manage_edit.php:124
 msgid "Short Name"
-msgstr "Nom diminué"
+msgstr "Abbréviation"
 
 #: modules/Finance/invoiceReceiptSettings.php:45 modules/School
 #: Admin/activitySettings.php:45 Admin/behaviourSettings.php:45
@@ -16920,7 +16946,7 @@ msgstr "Doit etre unque"
 #: modules/School Admin/externalAssessments_manage_add.php:97
 msgid "Brief description of assessment and how it is used."
 msgstr ""
-"Brèqve description d'une évaluation et la manière dont il est est utilisé."
+"Brève description d'une évaluation et la manière dont il est est utilisé."
 
 #: modules/School Admin/externalAssessments_manage_delete.php:31
 #: modules/School Admin/externalAssessments_manage_delete.php:31
@@ -17232,7 +17258,7 @@ msgstr "Feuille de donnée"
 #: modules/School Admin/fileExtensions_manage_add.php:98
 #: modules/School Admin/fileExtensions_manage_edit.php:127
 msgid "Presentation"
-msgstr ""
+msgstr "Présentation"
 
 #: modules/School Admin/fileExtensions_manage_add.php:99
 #: Admin/fileExtensions_manage_edit.php:128
@@ -17256,7 +17282,7 @@ msgstr "Graphics/Design"
 #: modules/School Admin/fileExtensions_manage_add.php:100
 #: modules/School Admin/fileExtensions_manage_edit.php:129
 msgid "Video"
-msgstr ""
+msgstr "Vidéo"
 
 #: modules/School Admin/fileExtensions_manage_add.php:101
 #: Admin/fileExtensions_manage_edit.php:130
@@ -17499,7 +17525,7 @@ msgstr "Gérer les paramètres de librairie"
 #: i18n/dbStringsForTranslation.php:155
 #: modules/School Admin/markbookSettings.php:31
 msgid "Markbook Settings"
-msgstr "Paramètres de fiches de notes"
+msgstr "Paramètres de régistres de notes"
 
 #: modules/School Admin/markbookSettings.php:104 modules/User
 #: Admin/applicationFormSettings.php:294 Admin/applicationFormSettings.php:339
@@ -17735,7 +17761,7 @@ msgstr "Doit être unique. Contrôle l'ordre chronologique."
 #: Admin/schoolYearTerm_manage_edit.php:164 modules/User
 #: Admin/rollover.php:228 modules/School Admin/schoolYear_manage_add.php:103
 #: modules/School Admin/schoolYear_manage_edit.php:132
-#: modules/School Admin/schoolYearTerm_manage_add.php:133
+#: modules/School Admin/schoolYearTerm_manage_add.php:149
 #: modules/School Admin/schoolYearTerm_manage_edit.php:164
 #: modules/User Admin/rollover.php:228
 msgid "First Day"
@@ -17747,7 +17773,7 @@ msgstr "Premier jour"
 #: Admin/schoolYearTerm_manage_edit.php:183 modules/User
 #: Admin/rollover.php:247 modules/School Admin/schoolYear_manage_add.php:122
 #: modules/School Admin/schoolYear_manage_edit.php:151
-#: modules/School Admin/schoolYearTerm_manage_add.php:152
+#: modules/School Admin/schoolYearTerm_manage_add.php:168
 #: modules/School Admin/schoolYearTerm_manage_edit.php:183
 #: modules/User Admin/rollover.php:247
 msgid "Last Day"
@@ -18395,7 +18421,7 @@ msgid ""
 "was a problem with the uploads folder"
 msgstr ""
 "L'installation a échoué car le fichier manifeste est invalide ou alors parce "
-"qu' un problème est survenu avec le dossier uploads de chargement"
+"qu'un problème est survenu avec le dossier uploads de chargement"
 
 #: modules/System Admin/module_manage_install.php:51
 #: Admin/module_manage.php:64 Admin/module_manage.php:68
@@ -18403,7 +18429,7 @@ msgstr ""
 msgid "Install failed, but module was added to the system and set non-active."
 msgstr ""
 "L'installation a échoué, mais un module a été ajouté au système et a été "
-"désactivé"
+"désactivé."
 
 #: modules/System Admin/module_manage_install.php:54
 #: Admin/module_manage.php:67 Admin/module_manage.php:71
@@ -18463,8 +18489,8 @@ msgid ""
 msgstr ""
 "1. Décompresser le module dans le serveur /modules.<br/>2. Faites une copie "
 "locale du fichier manifest.php.<br/>3. Ouvrez le fichier manifest.php and "
-"vérifier le nom du module.<br/>4. Renommez le dossier décompressé dans le "
-"serveur pour finaliser.<br/>5. Rassurer vous d'avoir un dossier nommé "
+"vérifier l'intitulé du module.<br/>4. Renommez le dossier décompressé dans "
+"le serveur pour finaliser.<br/>5. Rassurer vous d'avoir un dossier nommé "
 "uploads à la racine de votre installation du système Gibbon.<br/>6. Verifier "
 "que le dossier uploads is inscriptible par _www.<br/>7. Sélectionner le "
 "fichier manifest.php."
@@ -18749,7 +18775,8 @@ msgstr "V otre requête a échoué car votre manifeste est invalide."
 msgid ""
 "Your request failed because a theme with the same name is already installed."
 msgstr ""
-"Votre requête a échoué car un thème portant le même nom est déjà installé."
+"Votre requête a échoué car un thème portant le même Intitulé est déjà "
+"installé."
 
 #: modules/System Admin/theme_manage_install.php:64
 msgid "Theme Manifest"
@@ -20117,12 +20144,12 @@ msgstr "Abbréviation de la leçon</b> - e.g 1 pour M10.1"
 #: modules/Timetable Admin/tt_import.php:170
 #: modules/Timetable Admin/tt_import.php:170
 msgid "Day Name</b> - as used in the target timetable"
-msgstr "Nom du jour</b> - Tel que défini dans l'emploi du temps cible"
+msgstr "Intitulé du jour</b> - Tel que défini dans l'emploi du temps cible"
 
 #: modules/Timetable Admin/tt_import.php:171
 #: modules/Timetable Admin/tt_import.php:171
 msgid "Row Long Name</b> - as used in the target timetable"
-msgstr "Nom complet</b> - Tel que défini dans l'emploi du temps cible"
+msgstr "Intitulé complet</b> - Tel que défini dans l'emploi du temps cible"
 
 #: modules/Timetable Admin/tt_import.php:172
 #: modules/Timetable Admin/tt_import.php:172
@@ -20138,7 +20165,8 @@ msgstr ""
 msgid ""
 "Space Name</b> - the Gibbon name for the room the lesson takes place in."
 msgstr ""
-"Nom d'espace</b> - le nom de la salle dans laquelle la leçon est dispoensé."
+"Intitulé d'espace</b> - l'intitulé de la salle dans laquelle la leçon est "
+"dispoensé."
 
 #: modules/Timetable Admin/tt_import.php:176 modules/User
 #: Admin/import_families.php:167 Admin/import_studentEnrolment.php:124
@@ -20520,9 +20548,9 @@ msgid ""
 "2."
 msgstr ""
 "L'ajout/la mise à jour des périodes du fichier d'import s'est éffectué avec "
-"succès. Vous pouvez maintenant, si vous le souhaitez, spécifier un nom, une "
-"zone d'apprentissage et des groupes d'année pour tout nouveau cours ajouté "
-"dans l'étape 2."
+"succès. Vous pouvez maintenant, si vous le souhaitez, spécifier un intitulé, "
+"une zone d'apprentissage et des groupes d'année pour tout nouveau cours "
+"ajouté dans l'étape 2."
 
 #: modules/Timetable Admin/tt_import.php:1028 Admin/tt_import.php:1040
 #: Admin/tt_import.php:1041 modules/Timetable Admin/tt_import.php:1041
@@ -21238,7 +21266,7 @@ msgstr "Détails de la famille"
 #: modules/User Admin/family_manage_edit.php:188
 #: modules/User Admin/import_families.php:145
 msgid "Address Name"
-msgstr "Nom de l'adresse"
+msgstr "Intitulé de l'adresse"
 
 #: modules/User Admin/applicationForm_manage_accept.php:696
 #: Admin/applicationForm_manage_accept.php:741
@@ -21312,7 +21340,7 @@ msgstr "Email de bienvenue de l'élève"
 #: modules/User Admin/applicationForm_manage_accept.php:1181
 #, php-format
 msgid "Welcome to %1$s at %2$s"
-msgstr ""
+msgstr "Bienvenue à %1$s sur %2$s"
 
 #: modules/User Admin/applicationForm_manage_accept.php:1090
 #: Admin/applicationForm_manage_accept.php:1135
@@ -21390,6 +21418,16 @@ msgid ""
 "This can be done by using the Preferences page after logging in (top-right "
 "of the screen).\\n\\n"
 msgstr ""
+"Cher(e) %1$s, \\n\\nBienvenue à %2$s, le système %3$s de gestion "
+"d'information scolaire. Vous pouvez accéder au système en naviguant à %4$s "
+"et vous connectez avec votre votre nouveau login (%5$s) et votre votre mot "
+"de passe (%6$s). Vous pouvez en apprendre d'avantages en utilisant %7$s sur "
+"le site officiel du support (http://gibbonedu.org/support/parents). \\n"
+"\\nDans le but de maintenir la sécurité de vos données, il est fortement "
+"recommandé de modifier votre mot de passe par quelques chose de facile à "
+"retenir mais difficile à déchiffrer. Ceci peut être fait en utilisant la "
+"page des préférences après que vous soyez connecté (côté supérieur droit de "
+"l'écran).\\n\\n"
 
 #: modules/User Admin/applicationForm_manage_accept.php:1158
 #: Admin/applicationForm_manage_accept.php:1203
@@ -22409,7 +22447,7 @@ msgstr ""
 #: modules/Application Form/applicationForm.php:716
 #: modules/User Admin/applicationForm_manage_edit.php:874
 msgid "School Name"
-msgstr "Nom de l'école"
+msgstr "Intitulé de l'école"
 
 #: modules/User Admin/applicationForm_manage_edit.php:877 modules/Application
 #: Form/applicationForm.php:714
@@ -23119,7 +23157,7 @@ msgstr "Société"
 #: modules/User Admin/applicationForm_manage_edit.php:1912
 #: modules/User Admin/data_finance_edit.php:135
 msgid "Company Name"
-msgstr "Nom de la société"
+msgstr "Intitulé de la société"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1920
 #: Admin/data_finance_edit.php:154 modules/Application
@@ -24555,7 +24593,7 @@ msgstr "De facto"
 #: modules/User Admin/family_manage_add.php:116
 #: modules/User Admin/family_manage_edit.php:189
 msgid "Formal name to address parents with."
-msgstr "Nom formel à utiliser comme adresse pour les parents."
+msgstr "Intitulé formel à utiliser comme adresse pour les parents."
 
 #: modules/User Admin/family_manage_delete.php:31
 #: modules/User Admin/family_manage_delete.php:31
@@ -24632,7 +24670,7 @@ msgstr "Ajouter un enfant"
 #: modules/User Admin/family_manage_edit.php:508
 #: modules/User Admin/family_manage_edit_editChild.php:101
 msgid "Child's Name"
-msgstr "Nom de l enfant"
+msgstr "Nom de l'enfant"
 
 #: modules/User Admin/family_manage_edit.php:516
 #: modules/User Admin/family_manage_edit.php:516
@@ -24750,14 +24788,14 @@ msgstr "Ajouter un adulte"
 #: modules/User Admin/family_manage_edit.php:685
 #: modules/User Admin/family_manage_edit_editAdult.php:101
 msgid "Adult's Name"
-msgstr "Nom de l adulte"
+msgstr "Nom de l'adulte"
 
 #: modules/User Admin/family_manage_edit.php:717
 #: Admin/family_manage_edit_editAdult.php:111
 #: modules/User Admin/family_manage_edit.php:717
 #: modules/User Admin/family_manage_edit_editAdult.php:111
 msgid "Data displayed in full Student Profile"
-msgstr "Data affichée en profil d élève plein"
+msgstr "Donnée affichée sur le profil Complet d'un  élève"
 
 #: modules/User Admin/family_manage_edit.php:729
 #: Admin/family_manage_edit_editAdult.php:119
@@ -24779,7 +24817,7 @@ msgstr "Accéder aux données des enfants des familles ?"
 #: modules/User Admin/family_manage_edit_editAdult.php:132
 msgid "The order in which school should contact family members."
 msgstr ""
-"L ordre dans lequel l école devrait contacter les membres de la famille"
+"L'ordre dans lequel l'école devrait contacter les membres de la famille"
 
 #: modules/User Admin/family_manage_edit.php:784
 #: Admin/family_manage_edit_editAdult.php:175
@@ -24878,11 +24916,11 @@ msgid ""
 "the synchronise operation."
 msgstr ""
 "Cette page vous permet d importer des données d inscription d élève à partir "
-"d un fichier. L import inclus la totalité des élèves, en leur attribuant une "
-"année scolaire et un groupe de liste. Le système supprimera toutes les "
-"inscriptions dans l année en cours, et ajoutera ceux fournis par le fichier "
-"d import. Sélectionner le fichier CSV que vous souhaitez utiliser pour l "
-"opération de synchronisation."
+"d un fichier. L'importation inclus la totalité des élèves, en leur "
+"attribuant une année scolaire et un groupe de liste. Le système supprimera "
+"toutes les inscriptions dans l année en cours, et ajoutera ceux fournis par "
+"le fichier d import. Sélectionner le fichier CSV que vous souhaitez utiliser "
+"pour l opération de synchronisation."
 
 #: modules/User Admin/import_families.php:58
 #: modules/User Admin/import_families.php:58
@@ -24996,13 +25034,13 @@ msgid ""
 "The submitted <b><u>child file</u></b> must have the following fields in the "
 "following order (* denotes required field):"
 msgstr ""
-"Le <b><u>fichier enfant</u></b> soumi doit avoir les champs suivants dans l "
+"Le <b><u>fichier enfant</u></b> soumi doit avoir les champs suivants dans l' "
 "ordre suivant (* indiques quue le champ est requis)"
 
 #: modules/User Admin/import_families.php:164 Admin/import_families.php:163
 #: modules/User Admin/import_families.php:163
 msgid "Child username."
-msgstr "Login enfant"
+msgstr "Login enfant."
 
 #: modules/User Admin/import_families.php:183 Admin/import_families.php:182
 #: modules/User Admin/import_families.php:182
@@ -25011,8 +25049,8 @@ msgid ""
 "Import cannot proceed, as the submitted family file has a MIME-TYPE of %1$s, "
 "and as such does not appear to be a CSV file."
 msgstr ""
-"L import ne peut continuer, le fichier de la famille envoyée possède un MIME-"
-"TYPE de %1$s, et semble donc ne pas être un fichier CSV."
+"L'importation ne peut continuer, le fichier de la famille envoyée possède un "
+"MIME-TYPE de %1$s, et semble donc ne pas être un fichier CSV."
 
 #: modules/User Admin/import_families.php:190 Admin/import_families.php:197
 #: Admin/import_families.php:189 Admin/import_families.php:196
@@ -25023,8 +25061,8 @@ msgid ""
 "Import cannot proceed, as the submitted parent file has a MIME-TYPE of %1$s, "
 "and as such does not appear to be a CSV file."
 msgstr ""
-"L import ne peut continuer, le fichier de parent envoyé possède un MIME-TYPE "
-"de %1$s, et semble donc ne pas être un fichier CSV."
+"L'importation ne peut continuer, le fichier de parent envoyé possède un MIME-"
+"TYPE de %1$s, et semble donc ne pas être un fichier CSV."
 
 #: modules/User Admin/import_families.php:264 Admin/import_families.php:263
 #: modules/User Admin/import_families.php:263
@@ -25700,6 +25738,8 @@ msgstr ""
 #: modules/User Admin/import_users.php:317
 msgid "All users could be read and used, so the import will proceed."
 msgstr ""
+"Tous les utilisateurs ont pu être lus et utilisés, l'importation pourra "
+"s'exécuter."
 
 #: modules/User Admin/import_users.php:334 Admin/import_users.php:332
 #: modules/User Admin/import_users.php:332
@@ -25887,7 +25927,7 @@ msgstr "Ajouter une condition"
 #: modules/User Admin/medicalForm_manage_condition_add.php:113
 #: modules/User Admin/medicalForm_manage_condition_edit.php:120
 msgid "Condition Name"
-msgstr "Nom de la condition"
+msgstr "Intitulé de la condition"
 
 #: modules/User Admin/medicalForm_manage_condition_add.php:198
 #: Admin/medicalForm_manage_condition_edit.php:214 modules/Data
@@ -26030,6 +26070,11 @@ msgid ""
 "This will change data in numerous tables across the system! %3$sYou are "
 "really, very strongly advised to backup all data before you proceed%4$s."
 msgstr ""
+"En cliquant sur le bouton \"Exécuter\" ci-dessous vous lancerez le "
+"déplacement de %1$s à %2$s. Dans une grande écolecette opération peut "
+"prendre un certain temps avant de s'achever. Ceci modifiera les données de "
+"plusieurs tables au sein du système ! %3$sIl est fortement recommendé "
+"d'éffectuer la sauvegarde de toute vos données avant lancer la procédure%4$s."
 
 #: modules/User Admin/rollover.php:124
 #: modules/Behaviour/behaviour_manage_add.php:308
@@ -26728,7 +26773,7 @@ msgstr "Leçon de"
 #: Admin/user_manage_edit.php:821 modules/User Admin/user_manage_add.php:673
 #: modules/User Admin/user_manage_edit.php:821
 msgid "When is the student expected to graduate?"
-msgstr ""
+msgstr "Quand est-ce que l'élève sera-t-il admis ?"
 
 #: modules/User Admin/user_manage_add.php:694 Admin/user_manage_edit.php:940
 #: modules/Data Updater/data_personal.php:1070 Admin/user_manage_edit.php:931
@@ -26920,7 +26965,7 @@ msgstr "Epouse"
 #: modules/User Admin/user_manage_edit.php:1371
 #: modules/User Admin/user_manage_edit.php:1412
 msgid "Offspring"
-msgstr ""
+msgstr "Portée"
 
 #: modules/User Admin/user_manage_add.php:1041 Admin/user_manage_add.php:1081
 #: Admin/user_manage_edit.php:1318 Admin/user_manage_edit.php:1359
@@ -27142,6 +27187,10 @@ msgid ""
 "parents do not get Emergency Contact fields, and stunders/staff do not get "
 "Employment fields."
 msgstr ""
+"Noter que certains champs sont masqués ou affichés dépendant de la catégorie "
+"du profil (Personnel, Elève, Parent) auquel un utilisateur est assigné. Par "
+"exemple, les parents n'ont pas de champs de contact, et les élèves/le "
+"personnel n'ont pas de champs d'emploi."
 
 #: modules/User Admin/user_manage_edit.php:257 Admin/user_manage_edit.php:261
 #: modules/User Admin/user_manage_edit.php:261
@@ -27446,7 +27495,7 @@ msgstr "Rechercher une activité"
 #: modules/Activities/activities_manage.php:66
 #: modules/Activities/activities_view.php:193
 msgid "Activity name."
-msgstr "Nom de l'activité"
+msgstr "Intitulé de l'activité"
 
 #: modules/Activities/activities_manage.php:87
 #: modules/Activities/activities_view.php:214
@@ -28721,6 +28770,8 @@ msgstr "Final"
 msgid ""
 "Items in %1$sred%2$s are new since your last login. Items in green are older."
 msgstr ""
+"Les éléments en %1$sRouge%2$s sont récents depuis votre dernière connexion. "
+"Ceux en vert sont plus anciens."
 
 #: modules/Crowd Assessment/crowdAssess_view_discuss_post.php:33
 #: modules/Crowd Assessment/crowdAssess_view_discuss_post.php:33
@@ -28927,8 +28978,8 @@ msgstr "Donnée Insuffisatnte"
 #: modules/Markbook/markbook_edit.php:64 modules/Markbook/markbook_edit.php:64
 msgid "Use the class listing on the right to choose a Markbook to edit."
 msgstr ""
-"Utiliser le listing de module sur la droite pour choisir une fiche de note à "
-"modifier."
+"Utiliser le listing de module sur la droite pour choisir un registre de note "
+"à modifier."
 
 #: modules/Markbook/markbook_edit.php:81
 #: modules/Markbook/moduleFunctions.php:89
@@ -28943,7 +28994,7 @@ msgstr ""
 #: modules/Markbook/moduleFunctions.php:89
 #: modules/Markbook/moduleFunctions.php:92
 msgid "Edit Markbook"
-msgstr "Modifier une fiche de note"
+msgstr "Modifier un registre de note"
 
 #: modules/Markbook/markbook_edit.php:90
 #: modules/Activities/activities_manage.php:272
@@ -29138,12 +29189,12 @@ msgstr "Enseignants"
 #: modules/Markbook/markbook_edit.php:140
 #: modules/Markbook/markbook_edit.php:140
 msgid "Markbook Columns"
-msgstr "Colonnes de fiches de note"
+msgstr "Colonnes de régistre de note"
 
 #: modules/Markbook/markbook_edit.php:174
 #: modules/Markbook/markbook_edit.php:174
 msgid "Name/Unit"
-msgstr "Nom/Unité"
+msgstr "Intitulé/Unité"
 
 #: modules/Markbook/markbook_edit.php:180
 #: modules/Markbook/markbook_edit.php:180
@@ -29198,7 +29249,7 @@ msgid ""
 "and you can now do so below."
 msgstr ""
 "Le plannificateur a été ajouté avec succès : Vous pouvez choisir de lier une "
-"colone de fiche de note, et vous pouvez le faire ci-dessous maintenant."
+"colone de régistre de note, et vous pouvez le faire ci-dessous maintenant."
 
 #: modules/Markbook/markbook_edit_add.php:282
 #: modules/Markbook/markbook_edit_addMulti.php:191
@@ -30039,7 +30090,7 @@ msgid ""
 msgstr ""
 "La colonne de base est renseignée sur la base de la performance de l'élève "
 "dans les évaluations externes, et ppeut être utilisée comme point de "
-"référence pour les notes dans la la fiche de note."
+"référence pour les notes dans la le registre de note."
 
 #: modules/Markbook/markbook_view.php:260
 msgid "Full Screen"
@@ -30264,7 +30315,7 @@ msgstr "Enseigné par :"
 
 #: modules/Markbook/markbook_view_full.php:98
 msgid "The markbook cannot be displayed."
-msgstr "La fiche de note ne peut être affichée."
+msgstr "Le régistre de note ne peut être affichée."
 
 #: modules/Markbook/markbook_view_full.php:104
 #: modules/Markbook/markbook_view_full.php:107
@@ -30299,12 +30350,12 @@ msgstr "Ancien"
 #: modules/Markbook/moduleFunctions.php:45
 #: modules/Markbook/moduleFunctions.php:45
 msgid "View<br/>Markbook"
-msgstr "Consulter<br/>Une fiche de note"
+msgstr "Consulter<br/>Un régistre de note"
 
 #: modules/Markbook/moduleFunctions.php:48
 #: modules/Markbook/moduleFunctions.php:48
 msgid "Edit<br/>Markbook"
-msgstr "Modifier<br/>Une fiche de note"
+msgstr "Modifier<br/>Un régistre de note"
 
 #: modules/Markbook/moduleFunctions.php:112
 #: modules/Markbook/moduleFunctions.php:112
@@ -30474,7 +30525,7 @@ msgstr "Rubriques"
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:127
 #: modules/Rubrics/rubrics_view.php:159
 msgid "Scope"
-msgstr ""
+msgstr "Portée"
 
 #: modules/Rubrics/rubrics_add.php:48 modules/Rubrics/rubrics_add.php:58
 #: modules/Rubrics/rubrics_add.php:58
@@ -38994,7 +39045,7 @@ msgstr "URL de base"
 #: i18n/dbStringsForTranslation.php:1660 i18n/dbStringsForTranslation.php:1674
 #: i18n/dbStringsForTranslation.php:1738 i18n/dbStringsForTranslation.php:1738
 msgid "Browse Library BG Color"
-msgstr "Parcourir la librairie de couleur BG"
+msgstr "Couleur BG de parcours de la librairie"
 
 #: i18n/dbStringsForTranslation.php:1406 i18n/dbStringsForTranslation.php:1767
 #: i18n/dbStringsForTranslation.php:1772 i18n/dbStringsForTranslation.php:1824
@@ -39002,7 +39053,7 @@ msgstr "Parcourir la librairie de couleur BG"
 #: i18n/dbStringsForTranslation.php:1661 i18n/dbStringsForTranslation.php:1675
 #: i18n/dbStringsForTranslation.php:1739 i18n/dbStringsForTranslation.php:1739
 msgid "Browse Library BG Image"
-msgstr "Parcourir la librairie d'image BG"
+msgstr "Image BG de parcours de la librairie"
 
 #: i18n/dbStringsForTranslation.php:1407 i18n/dbStringsForTranslation.php:1768
 #: i18n/dbStringsForTranslation.php:1773 i18n/dbStringsForTranslation.php:1825
@@ -39145,7 +39196,7 @@ msgstr "Clé d'organisation gibbonedu.com"
 #: i18n/dbStringsForTranslation.php:1684 i18n/dbStringsForTranslation.php:1699
 #: i18n/dbStringsForTranslation.php:1762 i18n/dbStringsForTranslation.php:1762
 msgid "gibbonedu.com Organisation Name"
-msgstr "Nom d'organisation gibbonedu.com"
+msgstr "Intitulé de l'organisation pour gibbonedu.com"
 
 #: i18n/dbStringsForTranslation.php:1428 i18n/dbStringsForTranslation.php:1789
 #: i18n/dbStringsForTranslation.php:1794 i18n/dbStringsForTranslation.php:1846
@@ -39318,7 +39369,7 @@ msgstr "lier au Web"
 #: i18n/dbStringsForTranslation.php:1707 i18n/dbStringsForTranslation.php:1722
 #: i18n/dbStringsForTranslation.php:1787 i18n/dbStringsForTranslation.php:1787
 msgid "Markbook Type"
-msgstr "Type de Fiche de Note"
+msgstr "Type de Régistre de Note"
 
 #: i18n/dbStringsForTranslation.php:1451 i18n/dbStringsForTranslation.php:1812
 #: i18n/dbStringsForTranslation.php:1817 i18n/dbStringsForTranslation.php:1869
@@ -39395,7 +39446,7 @@ msgstr "Initiales de  l'organisation"
 #: i18n/dbStringsForTranslation.php:1717 i18n/dbStringsForTranslation.php:1733
 #: i18n/dbStringsForTranslation.php:1801 i18n/dbStringsForTranslation.php:1801
 msgid "Organisation Name"
-msgstr "Nom de l'organisation"
+msgstr "Intitulé de l'organisation"
 
 #: i18n/dbStringsForTranslation.php:1461 i18n/dbStringsForTranslation.php:1822
 #: i18n/dbStringsForTranslation.php:1827 i18n/dbStringsForTranslation.php:1879
@@ -39731,7 +39782,7 @@ msgstr "Email de l'Administrateur Système"
 #: i18n/dbStringsForTranslation.php:1768 i18n/dbStringsForTranslation.php:1785
 #: i18n/dbStringsForTranslation.php:1855 i18n/dbStringsForTranslation.php:1855
 msgid "System Name"
-msgstr "Nom du système"
+msgstr "Intitulé du système"
 
 #: i18n/dbStringsForTranslation.php:1509 i18n/dbStringsForTranslation.php:1870
 #: i18n/dbStringsForTranslation.php:1875 i18n/dbStringsForTranslation.php:1927
@@ -40216,8 +40267,8 @@ msgid ""
 "Name of organisation, as registered with gibbonedu.com, for access to value-"
 "added services."
 msgstr ""
-"Nom de l'organisation, tel que défini sur gibbonedu.com, pour accéder aux "
-"services à valeur ajoutée."
+"Intitulé de l'organisation, tel que défini sur gibbonedu.com, pour accéder "
+"aux services à valeur ajoutée."
 
 #: i18n/dbStringsForTranslation.php:1566 i18n/dbStringsForTranslation.php:1927
 #: i18n/dbStringsForTranslation.php:1932 i18n/dbStringsForTranslation.php:1984
@@ -40328,7 +40379,7 @@ msgstr ""
 msgid ""
 "Should markbook warnings be based on personal targets, if they are available?"
 msgstr ""
-"Les avertisseurs de fiches de notes doivent-ils être basés sur les cibles "
+"Les avertisseurs de régistre de notes doivent-ils être basés sur les cibles "
 "personnelles, si elles sont disponible ?"
 
 #: i18n/dbStringsForTranslation.php:1577 i18n/dbStringsForTranslation.php:1938
@@ -40417,7 +40468,7 @@ msgid ""
 "Should we turn off the option to sign up for activities provided by an "
 "outside agency?"
 msgstr ""
-"Devont-nous désactiverl'option d'inscription aux activités fournies par une "
+"Devons-nous désactiverl'option d'inscription aux activités fournies par une "
 "agence externe ?"
 
 #: i18n/dbStringsForTranslation.php:1586 i18n/dbStringsForTranslation.php:1947
@@ -40743,7 +40794,7 @@ msgid ""
 "type, organisation name) on each install. Do you want to help?"
 msgstr ""
 "Pour suivre  les attractions de Gibbon, le système enregistre les données "
-"basiques (URL actuelle, type d'installation, nom de l'organisation) de "
+"basiques (URL actuelle, type d'installation, Intitulé de l'organisation) de "
 "chaque installation. Voulez-vous nous faire bénéficier de votre aide ?"
 
 #: i18n/dbStringsForTranslation.php:1623 i18n/dbStringsForTranslation.php:1984
@@ -41296,7 +41347,7 @@ msgstr "Enregistré à %1$s le  %2$s par %3$s"
 #: modules/Attendance/attendance_take_byPerson.php:224
 #: modules/Attendance/attendance_take_byPerson.php:224
 msgid "Recent Attendance Summary"
-msgstr "Etat récent de présence"
+msgstr "Résumé de Présence récent"
 
 #: modules/Attendance/attendance_take_byPerson.php:294
 #: modules/Attendance/attendance_take_byRollGroup.php:283
@@ -41731,7 +41782,7 @@ msgstr "Choisir"
 #: modules/Attendance/report_studentHistory_print.php:49
 #: modules/Attendance/report_studentHistory_print.php:49
 msgid "Attendance History for"
-msgstr "Historique de présence pour"
+msgstr "Régistre de présence pour"
 
 #: modules/Attendance/report_studentsNotOnsite_byDate.php:223
 #: modules/Attendance/report_studentsNotOnsite_byDate_print.php:183
@@ -42231,7 +42282,7 @@ msgstr "Nnouvelle ressource %1$s."
 #: modules/Departments/department_edit.php:437
 #, php-format
 msgid "Resource %1$s Name"
-msgstr "Nom de la ressource %1$s"
+msgstr "Intitulé de la ressource %1$s"
 
 #: modules/Departments/department_edit.php:322
 #: modules/Departments/department_edit.php:390
@@ -42284,7 +42335,7 @@ msgstr ""
 #: modules/Finance/billingSchedule_manage.php:101
 #: modules/Finance/billingSchedule_manage.php:101
 msgid "Billing schedule name."
-msgstr "Nom du programme de relance."
+msgstr "Intitulé du programme de relance."
 
 #: modules/Finance/billingSchedule_manage.php:169
 #: modules/Finance/billingSchedule_manage_add.php:146
@@ -42395,7 +42446,7 @@ msgstr ""
 
 #: modules/Finance/fees_manage.php:101 modules/Finance/fees_manage.php:101
 msgid "Fee name, category name."
-msgstr "Nom du frais, nom de la catégorie."
+msgstr "Intitulé du frais, Intitulé de la catégorie."
 
 #: modules/Finance/fees_manage.php:173 modules/Finance/fees_manage_add.php:185
 #: modules/Finance/fees_manage_edit.php:211
@@ -43074,7 +43125,7 @@ msgstr "Numéro de la facture"
 #: modules/Finance/moduleFunctions.php:78
 #: modules/Finance/moduleFunctions.php:78
 msgid "Fee Name"
-msgstr "Nom du frais"
+msgstr "Intitulé du frais"
 
 #: modules/Finance/moduleFunctions.php:117
 #: modules/Finance/moduleFunctions.php:117
@@ -43774,7 +43825,7 @@ msgstr "Détails généraux"
 #: modules/Library/library_manage_catalog_add.php:147
 #: modules/Library/library_manage_catalog_edit.php:125
 msgid "Volume or product name."
-msgstr "Volume ou nom du produit"
+msgstr "Volume ou intitulé du produit"
 
 #: modules/Library/library_manage_catalog_add.php:186
 #: modules/Library/library_manage_catalog_duplicate.php:255
@@ -44681,7 +44732,7 @@ msgstr "Sélectionner les cours"
 #: modules/Messenger/messenger_manage_edit.php:900
 #: modules/Messenger/messenger_post.php:769
 msgid "Members of a class within a course."
-msgstr ""
+msgstr "Les  membres d'un module dans un cours."
 
 #: modules/Messenger/messenger_manage_edit.php:851
 #: modules/Messenger/messenger_post.php:715
@@ -45127,7 +45178,7 @@ msgstr "Ajouter un résultat"
 #: modules/Planner/outcomes_delete.php:48
 #: modules/Planner/outcomes_delete.php:48
 msgid "Delete Outcome"
-msgstr ""
+msgstr "Supprimer un résultat"
 
 #: modules/Planner/outcomes_edit.php:49 modules/Planner/outcomes_edit.php:49
 msgid "Edit Outcome"
@@ -45178,7 +45229,7 @@ msgstr "Aperçu de l'année"
 #: modules/Planner/planner.php:1094 modules/Planner/planner.php:1366
 #: modules/Planner/planner.php:1115 modules/Planner/planner.php:1387
 msgid "Bump Forward"
-msgstr ""
+msgstr "Déplacer vers avant"
 
 #: modules/Planner/planner.php:1194
 #: modules/Planner/units_edit_working_add.php:291
@@ -45348,7 +45399,7 @@ msgstr "Classmates"
 #: modules/Planner/planner_edit.php:997 modules/Planner/planner_add.php:833
 #: modules/Planner/planner_edit.php:997
 msgid "Other Students"
-msgstr ""
+msgstr "Autres élèves"
 
 #: modules/Planner/planner_add.php:841 modules/Planner/planner_edit.php:1004
 #: modules/Planner/planner_edit.php:1007 modules/Planner/planner_add.php:841
@@ -45420,7 +45471,7 @@ msgstr "RESULTATS"
 
 #: modules/Planner/planner_add.php:1096 modules/Planner/planner_add.php:1096
 msgid "Create Markbook Column?"
-msgstr "Créer une colonne de fiche de note ?"
+msgstr "Créer une colonne de Régistre de note ?"
 
 #: modules/Planner/planner_add.php:1097 modules/Planner/planner_add.php:1097
 msgid "Linked to this lesson by default."
@@ -45638,7 +45689,7 @@ msgstr "Modul cible"
 #: modules/Planner/planner_duplicate.php:235
 #: modules/Planner/planner_duplicate.php:235
 msgid "Duplicate Markbook Columns?"
-msgstr "Dupliquer les colonnnes de fiche de note ?"
+msgstr "Dupliquer les colonnnes de régistre de note ?"
 
 #: modules/Planner/planner_duplicate.php:236
 #: modules/Planner/planner_duplicate.php:236
@@ -45837,7 +45888,7 @@ msgstr "Prochaine leçon"
 #: modules/Planner/planner_view_full.php:438
 #: modules/Planner/planner_view_full.php:438
 msgid "Linked Markbook"
-msgstr "Fiche de note associée"
+msgstr "Régistre de note associé"
 
 #: modules/Planner/planner_view_full.php:432
 #: modules/Planner/planner_view_full.php:433
@@ -45845,7 +45896,7 @@ msgstr "Fiche de note associée"
 #: modules/Planner/planner_view_full.php:441
 #: modules/Planner/planner_view_full.php:441
 msgid "Includes student data & teacher's notes"
-msgstr "Inclure les données d'élève et les nnotes d'enseignants"
+msgstr "Inclure les données d'élève et les notes d'enseignants"
 
 #: modules/Planner/planner_view_full.php:500
 #: modules/Planner/planner_view_full.php:501
@@ -46170,8 +46221,8 @@ msgid ""
 "give an overview of student performance and work completion. It only counts "
 "Online Submission data when submission is set to compulsory."
 msgstr ""
-"Cet etat affiche les données de la fiche de note, le plannificateur et les "
-"modules de comportement afin de donner un aperçu de la performance de "
+"Cet etat affiche les données de le registre de note, le plannificateur et "
+"les modules de comportement afin de donner un aperçu de la performance de "
 "l'élève et les réalisations de travaux. il compte uniquement les données de "
 "soumissions envoyés en ligne lorsque la soumission est défini à compulsory."
 
@@ -46183,7 +46234,7 @@ msgstr "Satisfaction"
 #: modules/Planner/report_workSummary_byRollGroup.php:113
 #: modules/Planner/report_workSummary_byRollGroup.php:113
 msgid "Unsatisfactory"
-msgstr ""
+msgstr "Insatisfaction"
 
 #: modules/Planner/units_add.php:42 modules/Planner/units_add.php:42
 msgid "Add Unit"
@@ -46345,7 +46396,7 @@ msgstr "Aperçu d'une unité"
 
 #: modules/Planner/units_dump.php:122
 msgid "Unit Smart Blocks"
-msgstr ""
+msgstr "Blocs intélligents d'unité"
 
 #: modules/Planner/units_dump.php:172
 msgid "Unit Lessons"
@@ -46426,6 +46477,8 @@ msgstr "Peut être iintégré"
 #: modules/Planner/units_edit.php:306
 msgid "Can this unit be embedded and shared publicly in other websites?"
 msgstr ""
+"Cette unité peut-elle être intégrée et partagée publiquement sur d'autres "
+"sites ?"
 
 #: modules/Planner/units_edit.php:301 modules/Planner/units_edit.php:334
 #: modules/Planner/units_edit.php:334
@@ -46492,7 +46545,7 @@ msgstr ""
 #: modules/Planner/units_edit_copyBack.php:157
 #: modules/Planner/units_edit_copyBack.php:157
 msgid "Are you sure you want to proceed with this request?"
-msgstr ""
+msgstr "Voulez-vous procéder avec la requête ?"
 
 #: modules/Planner/units_edit_copyForward.php:131
 #: modules/Planner/units_edit_copyForward.php:131
@@ -46503,11 +46556,16 @@ msgid ""
 "this way you can use your refined and improved unit as a new master unit "
 "whilst leaving your existing master unit untouched."
 msgstr ""
+"Cette fonction vous permet de sélectionner une unité fonctionnelle (%1$s en "
+"%2$s) et d'utiliser ses blocs, et les détails de l'unité principale, pour "
+"créer une nouvelle unité. De cette façon vous pouvez utiliser l'unité "
+"retouchée et améliorée en tant qu'unité principale en laissant intouchée "
+"votre unité principale d'origine."
 
 #: modules/Planner/units_edit_copyForward.php:246
 #: modules/Planner/units_edit_copyForward.php:246
 msgid "New Unit Name"
-msgstr "Nom de la nouvelle unité"
+msgstr "Intitulé de la nouvelle unité"
 
 #: modules/Planner/units_edit_deploy.php:53
 #: modules/Planner/units_edit_deploy.php:53
@@ -46617,7 +46675,7 @@ msgstr ""
 #: modules/Planner/units_edit_working_add.php:53
 #: modules/Planner/units_edit_working_add.php:53
 msgid "Add Lessons"
-msgstr ""
+msgstr "Ajouter des leçons"
 
 #: modules/Planner/units_edit_working_add.php:195
 #: modules/Planner/units_edit_working_add.php:195
@@ -46800,6 +46858,10 @@ msgid ""
 "section of Gibbon. You will see the 50 most recent resources that match the "
 "filters you have used."
 msgstr ""
+"Le tableau ci-ddessous affiche les ressources partagées conçues à partir de "
+"la section des %1$sRessources%2$s de Gibbon. Vous verrez les 50 plus "
+"récentes ressources qui correspondent aux critères de filtres que vous "
+"utilisez."
 
 #: modules/Resources/resources_insert_ajax.php:315
 #: modules/Resources/resources_manage.php:146
@@ -46820,7 +46882,7 @@ msgstr "Insérer"
 #: modules/Resources/resources_manage.php:78
 #: modules/Resources/resources_manage.php:78
 msgid "Resource name."
-msgstr ""
+msgstr "Intitulé de la ressource."
 
 #: modules/Resources/resources_manage_add.php:41
 #: modules/Resources/resources_manage_add.php:41
@@ -46844,6 +46906,7 @@ msgstr "Modifier une ressource"
 #: modules/Roll Groups/rollGroups.php:35 modules/Roll Groups/rollGroups.php:35
 msgid "This page shows all roll groups in the current school year."
 msgstr ""
+"Cette page affiche tout les groupes de liste dans l'année scolaire en cours."
 
 #: modules/Roll Groups/rollGroups.php:63 modules/Roll Groups/rollGroups.php:63
 msgid "Room"
@@ -47086,7 +47149,7 @@ msgstr "ELèves sélectionnés"
 #: modules/Students/report_lettersHome_byRollGroup.php:71
 #: modules/Students/report_lettersHome_byRollGroup.php:71
 msgid "Total Count"
-msgstr ""
+msgstr "Nombre total"
 
 #: modules/Students/report_lettersHome_byRollGroup.php:74
 #: modules/Students/report_lettersHome_byRollGroup.php:74
@@ -47301,13 +47364,16 @@ msgid ".png or .jpg file, 448 x 268px."
 msgstr "Fichier .png ou .jpg, 448px X 268px."
 
 #: modules/Students/report_students_IDCards.php:155
-#: modules/Students/report_students_IDCards.php:155
 #, php-format
 msgid ""
 "These cards are designed to be printed to credit-card size, however, they "
 "will look bigger on screen. To print in high quality (144dpi) and at true "
-"size, save the cards as an image, and print to 50% scale."
+"size, save the cards as an image, and print to 50 per cent scale."
 msgstr ""
+"Ces cartes sont conçues pour être imprimées au format de carte de crédit, "
+"cependant, elles auront l'air plus grandes sur un écran. Pour imprimer en "
+"qualité élevée (144dpi) en taille réelle, veuillez enregistrer sous forme "
+"d'image, et imprimer avec une échelle de 50 pour cent."
 
 #: modules/Students/report_students_IDCards.php:207
 #: modules/Students/report_students_IDCards.php:209
@@ -47354,8 +47420,8 @@ msgid ""
 "This is useful for picking up students who have not yet left, but have an "
 "End Date set."
 msgstr ""
-"Utilie pour cocher les élèves qui ne sont pas encore partis, mais qui ont "
-"une date de fin définie"
+"Utile pour cocher les élèves qui ne sont pas encore partis, mais qui ont une "
+"date de fin définie"
 
 #: modules/Students/report_students_left.php:116 modules/External
 #: Assessment/import_results.php:241 modules/Library/library_import.php:353
@@ -47487,7 +47553,7 @@ msgstr "Adulte"
 #: modules/Students/student_view_details.php:355
 #, php-format
 msgid "This student has one or more %1$s risk medical conditions."
-msgstr ""
+msgstr "Cet élève a un ou plusieurs conditions médicales de %1$s à risque."
 
 #: modules/Students/student_view_details.php:478
 #: modules/Students/student_view_details.php:494
@@ -47873,6 +47939,12 @@ msgid ""
 "<b>Click \"Submit\" below to continue. This operation cannot be undone: "
 "backup your entire database prior to running the update!"
 msgstr ""
+"Il semble que vous ayez mis à jour le code de votre installation de Gibbon "
+"ver une nouvelle version, et  et vous êtes prêts à mettre à jour votre base "
+"de donnée de la v%1$s ligne %2$s à la v%3$s ligne %4$s. <b>Cliquer le bouton "
+"\"Envoyer\" ci-dessous pour continuer. Cette opération ne peut être "
+"annulée : veuillez procéder à la sauvegarde de toute votre base de donnée "
+"avant lancer la procédure !"
 
 #: modules/Timetable/moduleFunctions.php:144
 #: modules/Timetable/moduleFunctions.php:1205
@@ -48049,7 +48121,7 @@ msgstr "Choisir une personne"
 
 #: modules/Timetable/tt_space.php:64 modules/Timetable/tt_space.php:64
 msgid "Space name."
-msgstr "Nom de l'espace"
+msgstr "Intitulé de l'espace"
 
 #: modules/Timetable/tt_space.php:85 modules/Timetable/tt_space.php:85
 msgid "Choose A Space"
@@ -48127,19 +48199,19 @@ msgstr "Copier les activités"
 
 #: i18n/dbStringsForTranslation.php:83
 msgid "Edit Markbook_everything"
-msgstr "Modifier une fiche de note_everything"
+msgstr "Modifier un registre de note_everything"
 
 #: i18n/dbStringsForTranslation.php:85
 msgid "Edit Markbook_multipleClassesAcrossSchool"
-msgstr "Modifier une fiche de note_multipleClassesAcrossSchool"
+msgstr "Modifier un registre de note_multipleClassesAcrossSchool"
 
 #: i18n/dbStringsForTranslation.php:87
 msgid "Edit Markbook_multipleClassesInDepartment"
-msgstr "Modifier une fiche de note_multipleClassesInDepartment"
+msgstr "Modifier un registre de note_multipleClassesInDepartment"
 
 #: i18n/dbStringsForTranslation.php:89
 msgid "Edit Markbook_singleClass"
-msgstr "Modifier une fiche de note_singleClass"
+msgstr "Modifier un registre de note_singleClass"
 
 #: i18n/dbStringsForTranslation.php:97
 msgid "External Assessment Data_manage"
@@ -48231,7 +48303,7 @@ msgstr "Gérer les unités_learningAreas"
 
 #: i18n/dbStringsForTranslation.php:249
 msgid "Markbook_viewMyChildrensClasses"
-msgstr "Fiche de note_viewMyChildrensClasses"
+msgstr "Régistre de note_viewMyChildrensClasses"
 
 #: i18n/dbStringsForTranslation.php:257
 msgid "New Message_activities_any"
@@ -48379,11 +48451,11 @@ msgstr "Consulter les activites_view"
 
 #: i18n/dbStringsForTranslation.php:385
 msgid "View Markbook_allClassesAllData"
-msgstr "Consulter une fiche de note"
+msgstr "Consulter un registre de note"
 
 #: i18n/dbStringsForTranslation.php:387
 msgid "View Markbook_myMarks"
-msgstr "Consulter une fiche de note_myMarks"
+msgstr "Consulter un registre de note_myMarks"
 
 #: i18n/dbStringsForTranslation.php:399
 msgid "View Staff Profile_brief"
@@ -48961,7 +49033,7 @@ msgstr "Configurer les optons le module de mise à jour de donnée"
 #: i18n/dbStringsForTranslation.php:315 i18n/dbStringsForTranslation.php:319
 #: i18n/dbStringsForTranslation.php:319
 msgid "Configure options for the Markbook module"
-msgstr "Configurer les options du module de fiche de note"
+msgstr "Configurer les options du module de régistre de note"
 
 #: i18n/dbStringsForTranslation.php:486 i18n/dbStringsForTranslation.php:302
 #: i18n/dbStringsForTranslation.php:303 i18n/dbStringsForTranslation.php:313
@@ -49162,7 +49234,7 @@ msgstr "Paramètres du système principal"
 #: i18n/dbStringsForTranslation.php:342 i18n/dbStringsForTranslation.php:346
 #: i18n/dbStringsForTranslation.php:346
 msgid "Manage a list of districts for address autocomplete."
-msgstr ""
+msgstr "Gerer une liste de districts pour l'autocompletion d'une adresse."
 
 #: i18n/dbStringsForTranslation.php:511 i18n/dbStringsForTranslation.php:327
 #: i18n/dbStringsForTranslation.php:328 i18n/dbStringsForTranslation.php:339
@@ -49311,7 +49383,7 @@ msgstr "Gérer les paramètres du module des ressources"
 #: i18n/dbStringsForTranslation.php:362 i18n/dbStringsForTranslation.php:366
 #: i18n/dbStringsForTranslation.php:366
 msgid "Manage settings for the Student module"
-msgstr ""
+msgstr "Gérer les paramètres du module Elève"
 
 #: i18n/dbStringsForTranslation.php:531 i18n/dbStringsForTranslation.php:347
 #: i18n/dbStringsForTranslation.php:348 i18n/dbStringsForTranslation.php:359
@@ -49332,7 +49404,7 @@ msgid ""
 "Output all parental first mobile numbers by year group: if there are no "
 "details, then show emergency details."
 msgstr ""
-"afficher les premiers numéros de téléphone de parents par groupe d'année : "
+"Afficher les premiers numéros de téléphone de parents par groupe d'année : "
 "S'ils n y a aucun détails, alors afficher les détaills d'urgence."
 
 #: i18n/dbStringsForTranslation.php:533 i18n/dbStringsForTranslation.php:349
@@ -49582,7 +49654,7 @@ msgstr "Voir un bref profil de groupe de liste dans l'école."
 #: i18n/dbStringsForTranslation.php:396 i18n/dbStringsForTranslation.php:400
 #: i18n/dbStringsForTranslation.php:400
 msgid "View all markbook information for all users"
-msgstr "Consulter toutes les fiches de notes pour tout les utilisateurs"
+msgstr "Consulter toutes les registres de notes pour tout les utilisateurs"
 
 #: i18n/dbStringsForTranslation.php:563 i18n/dbStringsForTranslation.php:379
 #: i18n/dbStringsForTranslation.php:381 i18n/dbStringsForTranslation.php:392
@@ -49918,7 +49990,7 @@ msgstr "Numéro de série"
 #: i18n/dbStringsForTranslation.php:860 i18n/dbStringsForTranslation.php:904
 #: i18n/dbStringsForTranslation.php:860 i18n/dbStringsForTranslation.php:904
 msgid "Model Name"
-msgstr "Nom du modèle"
+msgstr "Intitulé du modèle"
 
 #: i18n/dbStringsForTranslation.php:1025 i18n/dbStringsForTranslation.php:1061
 #: i18n/dbStringsForTranslation.php:836 i18n/dbStringsForTranslation.php:872
@@ -50101,7 +50173,7 @@ msgstr "Age du lecteur (Adulte)"
 #: i18n/dbStringsForTranslation.php:883 i18n/dbStringsForTranslation.php:889
 #: i18n/dbStringsForTranslation.php:889
 msgid "Page Count"
-msgstr ""
+msgstr "Pag total"
 
 #: i18n/dbStringsForTranslation.php:1053 i18n/dbStringsForTranslation.php:864
 #: i18n/dbStringsForTranslation.php:866 i18n/dbStringsForTranslation.php:878
@@ -50228,12 +50300,14 @@ msgstr "Localhost, Adresse IP ou domaine"
 #: installer/install.php:175 installer/install.php:176
 #: installer/install.php:185 installer/install.php:185
 msgid "Database Name"
-msgstr "Nom de la base de donnée"
+msgstr "Intitulé de la base de donnée"
 
 #: installer/install.php:130 installer/install.php:175
 #: installer/install.php:176 installer/install.php:177
 msgid "This database must already exist. Collation should be utf8_general_ci."
 msgstr ""
+"Cette base de donnée doit d'aboir exister. La collation doit être "
+"utf8_general_ci."
 
 #: installer/install.php:142 installer/install.php:187
 #: installer/install.php:188 installer/install.php:189
@@ -50266,8 +50340,8 @@ msgid ""
 "../config.php already exists, which suggests this system is already "
 "installed. The installer cannot proceed."
 msgstr ""
-"/le fichier config.php existe déjà, ce qui signifie que le système est déjà "
-"installé. L'installateur ne peut pas se s'exécuter."
+"Le fichier ../config.php existe déjà, ce qui signifie que le système est "
+"déjà installé. L'installateur ne peut pas se s'exécuter."
 
 #: installer/install.php:88 installer/install.php:98 installer/install.php:106
 #: installer/install.php:106
@@ -50301,6 +50375,8 @@ msgstr ""
 msgid ""
 "A database connection could not be established. Please %1$stry again%2$s."
 msgstr ""
+"Une connexion à la base de donnée ne peut être établie. Veuillez %1$sessayer "
+"à nouvveau%2$s."
 
 #: installer/install.php:205 installer/install.php:249
 #: installer/install.php:250 installer/install.php:251
@@ -50503,7 +50579,7 @@ msgstr ""
 "Ces paramètres permettent à un type particulier d'évaluation externe d'être "
 "associées à chaque groupe d'année. L'évaluation sélectionnée sera utilisée "
 "comme évaluation principale à être utilisée comme ligne de base de "
-"comparaison (par exemple, au sein d'une fiche de note). En plus, une "
+"comparaison (par exemple, au sein d'un registre de note). En plus, une "
 "catégorie de champ particulier peut être choisie à partir de laquelle "
 "concevoir les données (si aucune catégorie n'est choisie, le système "
 "essaiera de sélectionner la meilleure donnée automatiquement). "
@@ -50651,7 +50727,7 @@ msgstr "Profil dupliqué"
 #: modules/User Admin/role_manage_duplicate.php:125
 #: modules/User Admin/role_manage_duplicate.php:125
 msgid "Name Short"
-msgstr "Nom court"
+msgstr "Intitulé abrégé"
 
 #: modules/User Admin/user_manage_add.php:64 Admin/user_manage_edit.php:61
 #: modules/User Admin/user_manage_add.php:64
@@ -50738,7 +50814,7 @@ msgstr ""
 #: cli/planner_parentWeeklyEmailSummary.php:273
 #, php-format
 msgid "Weekly Planner Summary for %1$s via %2$s at %3$s"
-msgstr ""
+msgstr "Résumé du plannificateur hebdomadaire de %1$s via %2$s à %3$s"
 
 #: cli/planner_parentWeeklyEmailSummary.php:290
 #: cli/planner_parentWeeklyEmailSummary.php:304
@@ -50746,7 +50822,7 @@ msgstr ""
 #: cli/planner_parentWeeklyEmailSummary.php:306
 #: cli/planner_parentWeeklyEmailSummary.php:306
 msgid "Student Count"
-msgstr "Compteur d'élève"
+msgstr "Total d'élève"
 
 #: cli/planner_parentWeeklyEmailSummary.php:291
 #: cli/planner_parentWeeklyEmailSummary.php:305
@@ -50890,7 +50966,7 @@ msgstr "Confirmé"
 #: modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php:181
 #: modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php:181
 msgid "Not Sent"
-msgstr ""
+msgstr "Non envoyé"
 
 #: modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php:193
 #: modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php:193
@@ -51257,6 +51333,8 @@ msgstr ""
 msgid ""
 "Allows a user to book a room for on-off use, and manage their own bookings."
 msgstr ""
+"Permet à un utilisateur de réserver une salle pour une utilisation "
+"personnelle, et gérer leurs propres résevations"
 
 #: i18n/dbStringsForTranslation.php:249 i18n/dbStringsForTranslation.php:252
 #: i18n/dbStringsForTranslation.php:254 i18n/dbStringsForTranslation.php:254
@@ -51264,6 +51342,8 @@ msgid ""
 "Allows a user to create and manage one-off location changes for all classes "
 "within the timetable."
 msgstr ""
+"Permet à un utilisateur de créer et gérer des changements personnelle de "
+"localisation pour tout les modules d'un emploi du temps."
 
 #: i18n/dbStringsForTranslation.php:250 i18n/dbStringsForTranslation.php:253
 #: i18n/dbStringsForTranslation.php:255 i18n/dbStringsForTranslation.php:255
@@ -51271,6 +51351,8 @@ msgid ""
 "Allows a user to create and manage one-off location changes for their own "
 "classes within the timetable."
 msgstr ""
+"Permet à un utilisateur de créer et gérer des changements personnelle de "
+"localisation pour leur propre modules au sein d'un emploi du temps."
 
 #: i18n/dbStringsForTranslation.php:328 i18n/dbStringsForTranslation.php:331
 #: i18n/dbStringsForTranslation.php:335 i18n/dbStringsForTranslation.php:335
@@ -51278,108 +51360,111 @@ msgid ""
 "Import CSV file of results, to update matching records and create new "
 "records where none exist."
 msgstr ""
+"Importer le fichier CSV des résultats, pour mettre à jour les "
+"enregistrements associés et en créer de nouveau."
 
 #: i18n/dbStringsForTranslation.php:729 i18n/dbStringsForTranslation.php:734
 #: i18n/dbStringsForTranslation.php:738 i18n/dbStringsForTranslation.php:738
 msgid "Information & Communication Technology"
-msgstr ""
+msgstr "Technologie de l'Information et de la Communication"
 
 #: i18n/dbStringsForTranslation.php:1007 i18n/dbStringsForTranslation.php:1055
 #: i18n/dbStringsForTranslation.php:1021 i18n/dbStringsForTranslation.php:1069
 #: i18n/dbStringsForTranslation.php:1067 i18n/dbStringsForTranslation.php:1121
 #: i18n/dbStringsForTranslation.php:1067 i18n/dbStringsForTranslation.php:1121
 msgid "Bloom's Modified"
-msgstr ""
+msgstr "Bloom modifié"
 
 #: i18n/dbStringsForTranslation.php:1025 i18n/dbStringsForTranslation.php:1039
 #: i18n/dbStringsForTranslation.php:1088 i18n/dbStringsForTranslation.php:1088
 msgid "BloM"
-msgstr ""
+msgstr "BloM"
 
 #: i18n/dbStringsForTranslation.php:1052 i18n/dbStringsForTranslation.php:1066
 #: i18n/dbStringsForTranslation.php:1118 i18n/dbStringsForTranslation.php:1118
 msgid "Non-numeric scale aiming to reduce mark obsession"
 msgstr ""
+"Les échelles non-numériques permettent de réduire l'obsession aux points"
 
 #: i18n/dbStringsForTranslation.php:1330 i18n/dbStringsForTranslation.php:1344
 #: i18n/dbStringsForTranslation.php:1398 i18n/dbStringsForTranslation.php:1398
 msgid "Cr"
-msgstr ""
+msgstr "Cr"
 
 #: i18n/dbStringsForTranslation.php:1335 i18n/dbStringsForTranslation.php:1349
 #: i18n/dbStringsForTranslation.php:1403 i18n/dbStringsForTranslation.php:1403
 msgid "Do"
-msgstr ""
+msgstr "Do"
 
 #: i18n/dbStringsForTranslation.php:1343 i18n/dbStringsForTranslation.php:1357
 #: i18n/dbStringsForTranslation.php:1412 i18n/dbStringsForTranslation.php:1412
 msgid "Ju"
-msgstr ""
+msgstr "Ju"
 
 #: i18n/dbStringsForTranslation.php:1344 i18n/dbStringsForTranslation.php:1358
 #: i18n/dbStringsForTranslation.php:1413 i18n/dbStringsForTranslation.php:1413
 msgid "Kn"
-msgstr ""
+msgstr "Kn"
 
 #: i18n/dbStringsForTranslation.php:1347 i18n/dbStringsForTranslation.php:1361
 #: i18n/dbStringsForTranslation.php:1419 i18n/dbStringsForTranslation.php:1419
 msgid "Un"
-msgstr ""
+msgstr "Un"
 
 #: i18n/dbStringsForTranslation.php:1615 i18n/dbStringsForTranslation.php:1629
 #: i18n/dbStringsForTranslation.php:1687 i18n/dbStringsForTranslation.php:1687
 msgid "Creating"
-msgstr ""
+msgstr "Création"
 
 #: i18n/dbStringsForTranslation.php:1620 i18n/dbStringsForTranslation.php:1634
 #: i18n/dbStringsForTranslation.php:1692 i18n/dbStringsForTranslation.php:1692
 msgid "Doing"
-msgstr ""
+msgstr "Action"
 
 #: i18n/dbStringsForTranslation.php:1628 i18n/dbStringsForTranslation.php:1642
 #: i18n/dbStringsForTranslation.php:1701 i18n/dbStringsForTranslation.php:1701
 msgid "Judging"
-msgstr ""
+msgstr "Jugement"
 
 #: i18n/dbStringsForTranslation.php:1629 i18n/dbStringsForTranslation.php:1643
 #: i18n/dbStringsForTranslation.php:1702 i18n/dbStringsForTranslation.php:1702
 msgid "Knowing"
-msgstr ""
+msgstr "Connaissance"
 
 #: i18n/dbStringsForTranslation.php:1637 i18n/dbStringsForTranslation.php:1651
 #: i18n/dbStringsForTranslation.php:1715 i18n/dbStringsForTranslation.php:1715
 msgid "Understanding"
-msgstr ""
+msgstr "Compréhension"
 
 #: i18n/dbStringsForTranslation.php:1655 i18n/dbStringsForTranslation.php:1669
 #: i18n/dbStringsForTranslation.php:1733 i18n/dbStringsForTranslation.php:1733
 msgid "Attainment Alternative Name"
-msgstr ""
+msgstr "Intitulé alternatif du niveau de réalisation"
 
 #: i18n/dbStringsForTranslation.php:1656 i18n/dbStringsForTranslation.php:1670
 #: i18n/dbStringsForTranslation.php:1734 i18n/dbStringsForTranslation.php:1734
 msgid "Attainment Alternative Name Abbreviation"
-msgstr ""
+msgstr "Abbréviation du niveau alternatif de réalisation"
 
 #: i18n/dbStringsForTranslation.php:1676 i18n/dbStringsForTranslation.php:1690
 #: i18n/dbStringsForTranslation.php:1753 i18n/dbStringsForTranslation.php:1753
 msgid "Effort Alternative Name"
-msgstr ""
+msgstr "Intitulé alternatif d'éffort"
 
 #: i18n/dbStringsForTranslation.php:1677 i18n/dbStringsForTranslation.php:1691
 #: i18n/dbStringsForTranslation.php:1754 i18n/dbStringsForTranslation.php:1754
 msgid "Effort Alternative Name Abbreviation"
-msgstr ""
+msgstr "Abbréviation de l'Intitulé alternatif d'éffort"
 
 #: i18n/dbStringsForTranslation.php:1689 i18n/dbStringsForTranslation.php:1704
 #: i18n/dbStringsForTranslation.php:1767 i18n/dbStringsForTranslation.php:1767
 msgid "Google Developers Redirect Url"
-msgstr ""
+msgstr "URL de redirection pour développeurs Google"
 
 #: i18n/dbStringsForTranslation.php:1761 i18n/dbStringsForTranslation.php:1778
 #: i18n/dbStringsForTranslation.php:1848 i18n/dbStringsForTranslation.php:1848
 msgid "Student Agreement Options"
-msgstr ""
+msgstr "Options d'accord d'élève"
 
 #: i18n/dbStringsForTranslation.php:1779 i18n/dbStringsForTranslation.php:1796
 #: i18n/dbStringsForTranslation.php:1866 i18n/dbStringsForTranslation.php:1866
@@ -51387,6 +51472,8 @@ msgid ""
 "A name to use isntead of \\\"Attainment\\\" in the first grade column of the "
 "markbook."
 msgstr ""
+"Un Intitulé à utiliser à la place de \\\"Niveau de réalisation\\\" dans la "
+"première colonne de diplôme de la régistre de note."
 
 #: i18n/dbStringsForTranslation.php:1780 i18n/dbStringsForTranslation.php:1797
 #: i18n/dbStringsForTranslation.php:1867 i18n/dbStringsForTranslation.php:1867
@@ -51394,6 +51481,8 @@ msgid ""
 "A name to use isntead of \\\"Effort\\\" in the second grade column of the "
 "markbook."
 msgstr ""
+"Un Intitulé à utiliser à la place de \\\"Effort\\\" dans la première colonne "
+"de diplôme de la régistre de note."
 
 #: i18n/dbStringsForTranslation.php:1781 i18n/dbStringsForTranslation.php:1798
 #: i18n/dbStringsForTranslation.php:1868 i18n/dbStringsForTranslation.php:1868
@@ -51401,6 +51490,8 @@ msgid ""
 "A short name to use isntead of \\\"Attainment\\\" in the first grade column "
 "of the markbook."
 msgstr ""
+"Une abbréviation de l'intitulé à utiliser à la place de \\\"Niveau de "
+"réalisation\\\" dans la première colonne de diplôme de la régistre de note."
 
 #: i18n/dbStringsForTranslation.php:1782 i18n/dbStringsForTranslation.php:1799
 #: i18n/dbStringsForTranslation.php:1869 i18n/dbStringsForTranslation.php:1869
@@ -51408,6 +51499,8 @@ msgid ""
 "A short name to use isntead of \\\"Effort\\\" in the second grade column of "
 "the markbook."
 msgstr ""
+"Une abbréviation de l'intitulé à utiliser à la place de \\\"Effort\\\" dans "
+"la première colonne de diplôme de la régistre de note."
 
 #: i18n/dbStringsForTranslation.php:1797 i18n/dbStringsForTranslation.php:1814
 #: i18n/dbStringsForTranslation.php:1884 i18n/dbStringsForTranslation.php:1884
@@ -51415,6 +51508,8 @@ msgid ""
 "Comma-separated list of agreements that students might be asked to sign in "
 "school (e.g. ICT Policy)."
 msgstr ""
+"Liste d'éléments séparés d'accords auxquels il sera demander aux élèves de "
+"ratifier au sein de l'école (Ex. Conditions TIC)."
 
 #: i18n/dbStringsForTranslation.php:1804 i18n/dbStringsForTranslation.php:1821
 #: i18n/dbStringsForTranslation.php:1891 i18n/dbStringsForTranslation.php:1891
@@ -51422,6 +51517,8 @@ msgid ""
 "Comma-separated list of reasons for departure from school. If blank, user "
 "can enter any text."
 msgstr ""
+"Liste d'éléments séparés de raisons de départ de l'école. Si vide, alors "
+"l'utilisateur pourra saisir n'importe quel texte."
 
 #: i18n/dbStringsForTranslation.php:1806 i18n/dbStringsForTranslation.php:1823
 #: i18n/dbStringsForTranslation.php:1893 i18n/dbStringsForTranslation.php:1893
@@ -51429,11 +51526,13 @@ msgid ""
 "Comma-separated list of sources where people might have heard about the "
 "school from."
 msgstr ""
+"Liste d'éléments séparés de sources qui ont permi aux personnes de connaître "
+"l'école."
 
 #: modules/External Assessment/import_results.php:31
 #: modules/External Assessment/import_results.php:31
 msgid "Sync Results"
-msgstr ""
+msgstr "Synchroniser les résultats"
 
 #: modules/External Assessment/import_results.php:52
 #: modules/External Assessment/import_results.php:52
@@ -51443,6 +51542,11 @@ msgid ""
 "assessments by type and date, updating any matching results, whilst creating "
 "new results not already existing in the system."
 msgstr ""
+"Cette page vous permet d'importer les résultats d'une évaluation externe à "
+"partir d'un fichier CSV. L'importation inclus une ligne pour chaque élève. "
+"Le système retrouvera les évaluations par type et pare date, la mise à jour "
+"de tout les résultats, en créant les nouveaux résultas inexistants du "
+"système."
 
 #: modules/External Assessment/import_results.php:116
 #: modules/External Assessment/import_results.php:116
@@ -51450,48 +51554,57 @@ msgid ""
 "Your import can only include users whose status is set \"Expected\", \"Full"
 "\" or \"Left\" (e.g. all users)."
 msgstr ""
+"Votre importation peut uniquement  inclure les utilisateurs dont le status "
+"est défini à \"Requis\", \"Complet\" ou \"Parti\" (e.g. tout les "
+"utilisateurs)."
 
 #: modules/External Assessment/import_results.php:119
 #: modules/External Assessment/import_results.php:119
 msgid "Assessment Name"
-msgstr ""
+msgstr "Intitulé de l'évaluation"
 
 #: modules/External Assessment/import_results.php:119
 #: modules/External Assessment/import_results.php:119
 msgid "Must match value of gibbonExternalAssessment.name in database."
 msgstr ""
+"Doit être conforme à la valeur de gibbonExternalAssessment.name dans la base "
+"de donnée."
 
 #: modules/External Assessment/import_results.php:120
 #: modules/External Assessment/import_results.php:120
 msgid "Must match value of gibbonPerson.officialName in database,"
 msgstr ""
+"Doit être conforme à la valeur de gibbonPerson.officialName dans la base de "
+"donnée,"
 
 #: modules/External Assessment/import_results.php:121
 #: modules/External Assessment/import_results.php:121
 msgid "Assessment Date"
-msgstr ""
+msgstr "Date d'évaluation"
 
 #: modules/External Assessment/import_results.php:121
 #: modules/Library/library_import.php:145
 #: modules/External Assessment/import_results.php:121
 #: modules/Library/library_import.php:145
 msgid "dd/mm/yyyy"
-msgstr ""
+msgstr "jj/mm/aaaa"
 
 #: modules/External Assessment/import_results.php:122
 #: modules/External Assessment/import_results.php:122
 msgid "Field Name"
-msgstr ""
+msgstr "Intitulé du champ"
 
 #: modules/External Assessment/import_results.php:122
 #: modules/External Assessment/import_results.php:122
 msgid "Must match value of gibbonExternalAssessmentField.name in database."
 msgstr ""
+"Doit être conforme à la valeur de gibbonExternalAssessmentField.name dans la "
+"base de donnée"
 
 #: modules/External Assessment/import_results.php:123
 #: modules/External Assessment/import_results.php:123
 msgid "Field Name Category"
-msgstr ""
+msgstr "Catégorie de Intitulé de champ"
 
 #: modules/External Assessment/import_results.php:123
 #: modules/External Assessment/import_results.php:123
@@ -51499,6 +51612,8 @@ msgid ""
 "Must match value of gibbonExternalAssessmentField.category in database, less "
 "[numeric_] prefix."
 msgstr ""
+"Doit être conforme à la valeur de gibbonExternalAssessmentField.category "
+"dans la base de donnée, sans le préfixe [numeric_]."
 
 #: modules/External Assessment/import_results.php:124
 #: Assessment/import_results.php:125
@@ -51506,22 +51621,26 @@ msgstr ""
 #: modules/External Assessment/import_results.php:125
 msgid "Must match value of gibbonScaleGrade.value in database."
 msgstr ""
+"Doit être conforme à la valeur de gibbonScaleGrade.value dans la base de "
+"donnée."
 
 #: modules/External Assessment/import_results.php:125
 #: modules/External Assessment/import_results.php:125
 msgid "PAS Result"
-msgstr ""
+msgstr "Résultat PAS"
 
 #: modules/External Assessment/import_results.php:125
 #: modules/External Assessment/import_results.php:125
 msgid "The Primary Assessment Scale equivalent grade."
-msgstr ""
+msgstr "Le diplôme équivalent de l'échelle d'évaluation principale."
 
 #: modules/External Assessment/import_results.php:207
 #: modules/External Assessment/import_results.php:207
 #, php-format
 msgid "User with official Name %1$s had some information malformations."
 msgstr ""
+"L'utilisateur dont le nom officiel est %1$s avait certaines informations "
+"déformées."
 
 #: modules/External Assessment/import_results.php:215
 #: modules/Library/library_import.php:328
@@ -51532,6 +51651,9 @@ msgid ""
 "No useful results were detected in the import file (perhaps they did not "
 "meet minimum requirements), so the import will be aborted."
 msgstr ""
+"Aucun résultats utiles n'ont été detectés dans le fichier d'importation "
+"(peut-être parce qu'ils ne remplissent pas les conditions minimales "
+"requises), l'importation sera donc annulée."
 
 #: modules/External Assessment/import_results.php:221
 #: modules/Library/library_import.php:334
@@ -51542,6 +51664,8 @@ msgid ""
 "Some results could not be successfully read or used, so the import will be "
 "aborted."
 msgstr ""
+"Certains résultats n'ont pas pu être lus et utilisés convenablement, "
+"l'importation sera donc abandonnée."
 
 #: modules/External Assessment/import_results.php:227
 #: modules/Library/library_import.php:340
@@ -51550,24 +51674,32 @@ msgstr ""
 #: modules/Library/library_import.php:342
 msgid "All results could be read and used, so the import will proceed."
 msgstr ""
+"Tout les résultats ont pu êtrre lus et utilisés convenablement, "
+"l'importation peut donc se poursuivre."
 
 #: modules/External Assessment/import_results.php:267
 #: modules/External Assessment/import_results.php:267
 #, php-format
 msgid "User with official name %1$s in import cannot be found."
 msgstr ""
+"L'utilisateur dont l'Intitulé officiel est %1$s dans le fichier "
+"d'importation n'a pu être retrouvé."
 
 #: modules/External Assessment/import_results.php:296
 #: modules/External Assessment/import_results.php:296
 #, php-format
 msgid "External Assessment with name %1$s in import cannot be found."
 msgstr ""
+"L'évaluation externe dont l'Intitulé est %1$s dans le fichier d'importation "
+"n'a pu être retrouvé."
 
 #: modules/External Assessment/import_results.php:326
 #: modules/External Assessment/import_results.php:326
 #, php-format
 msgid "External Assessment field with name %1$s in import cannot be found."
 msgstr ""
+"Le champ d'évaluation externe dont l'Intitulé est %1$s dans le fichier "
+"d'importation n'a pu être retrouvé."
 
 #: modules/External Assessment/import_results.php:391
 #: Assessment/import_results.php:421 Assessment/import_results.php:475
@@ -51576,7 +51708,7 @@ msgstr ""
 #: modules/External Assessment/import_results.php:475
 #, php-format
 msgid "%1$s %2$s grade %3$s was successfully recorded for %4$s."
-msgstr ""
+msgstr "%1$s %2$s diplôme %3$s a été enregistré pour %4$s."
 
 #: modules/Markbook/markbook_edit_add.php:318
 #: modules/Markbook/markbook_edit_add.php:418
@@ -51593,24 +51725,24 @@ msgstr ""
 #: modules/Markbook/markbook_edit_edit.php:356
 #: modules/Markbook/markbook_edit_edit.php:464
 msgid "Rubric"
-msgstr ""
+msgstr "Rubriquue"
 
 #: modules/Resources/resources_add_ajax.php:94
 #: modules/Resources/resources_addQuick_ajax.php:77
 #: modules/Resources/resources_add_ajax.php:94
 #: modules/Resources/resources_addQuick_ajax.php:77
 msgid "Uploading"
-msgstr ""
+msgstr "Upload"
 
 #: modules/School Admin/markbookSettings.php:64
 #: modules/School Admin/markbookSettings.php:64
 msgid "Interface Settings"
-msgstr ""
+msgstr "Paramètres d'interfaces"
 
 #: modules/School Admin/markbookSettings.php:168
 #: modules/School Admin/markbookSettings.php:168
 msgid "Warnings"
-msgstr ""
+msgstr "Avertissments"
 
 #: modules/Students/student_view_details.php:532
 #: modules/Students/student_view_details.php:989
@@ -51619,7 +51751,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:535
 #: modules/Students/student_view_details.php:1015
 msgid "Agreements Signed:"
-msgstr ""
+msgstr "Accords signés :"
 
 #: modules/Timetable/moduleFunctions.php:1189
 #: modules/Timetable/moduleFunctions.php:1245
@@ -51628,7 +51760,7 @@ msgstr ""
 #: modules/Timetable/moduleFunctions.php:1280
 #: modules/Timetable/moduleFunctions.php:1280
 msgid "No Space Allocated"
-msgstr ""
+msgstr "Aucun espace alloué"
 
 #: modules/Timetable/report_viewAvailableSpaces.php:148
 #: modules/Timetable/report_viewAvailableSpaces.php:148
@@ -51636,6 +51768,9 @@ msgid ""
 "This report does not take space bookings into account: please confirm that "
 "an available space has not been booked by looking at View Timetable by Space."
 msgstr ""
+"Cet etat n'enregistre pas des réservations pour le compte : veuillez "
+"confirmer qu'un espace disponible n'a pas été enregistré en consultatnt "
+"l'emploi du temps par espace."
 
 #: modules/Timetable/spaceBooking_manage.php:43
 #: modules/Timetable/spaceBooking_manage.php:43
@@ -51644,6 +51779,10 @@ msgid ""
 "bookings created by all users. Only current and future bookings are shown: "
 "past bookings are hidden."
 msgstr ""
+"Cette page vous permet de créer une salle et des réservations de zones, "
+"pendant la gestion des réservations créées par tout les utilisateurs. Seules "
+"les réservations actuelles et futures sont affichées :les réservations "
+"passées sont masquées."
 
 #: modules/Timetable/spaceBooking_manage.php:46
 #: modules/Timetable/spaceBooking_manage.php:46
@@ -51651,63 +51790,66 @@ msgid ""
 "This page allows you to create and manage room and location bookings. Only "
 "current and future changes are shown: past bookings are hidden."
 msgstr ""
+"Cette page vous permet de créer et de gérer une salle et des réservations de "
+"zones. Seules les changements auctuels et prochains sont affichés : les "
+"réservatons passées sont masquées."
 
 #: modules/Timetable/spaceBooking_manage_add.php:43
 #: modules/Timetable/spaceBooking_manage_add.php:43
 msgid "Add Space Booking"
-msgstr ""
+msgstr "Ajouter une réservation d'espace"
 
 #: modules/Timetable/spaceBooking_manage_add.php:85
 #: modules/Timetable/spaceBooking_manage_add.php:85
 msgid "Step 1 - Choose Space"
-msgstr ""
+msgstr "Etape 1 - Choisir un espace"
 
 #: modules/Timetable/spaceBooking_manage_add.php:195
 #: modules/Timetable/spaceBooking_manage_add.php:195
 msgid "Repeat?"
-msgstr ""
+msgstr "Repéter ?"
 
 #: modules/Timetable/spaceBooking_manage_add.php:200
 #: modules/Timetable/spaceBooking_manage_add.php:200
 msgid "Daily"
-msgstr ""
+msgstr "Journalier"
 
 #: modules/Timetable/spaceBooking_manage_add.php:201
 #: modules/Timetable/spaceBooking_manage_add.php:201
 msgid "Weekly"
-msgstr ""
+msgstr "Hebdomadaire"
 
 #: modules/Timetable/spaceBooking_manage_add.php:206
 #: modules/Timetable/spaceBooking_manage_add.php:206
 msgid "Repeat Daily"
-msgstr ""
+msgstr "Repetition journalière"
 
 #: modules/Timetable/spaceBooking_manage_add.php:207
 #: modules/Timetable/spaceBooking_manage_add.php:207
 msgid "Repeat daily for this many days."
-msgstr ""
+msgstr "Repétition journalière pour tout ces jours."
 
 #: modules/Timetable/spaceBooking_manage_add.php:207
 #: modules/Timetable/spaceBooking_manage_add.php:222
 #: modules/Timetable/spaceBooking_manage_add.php:207
 #: modules/Timetable/spaceBooking_manage_add.php:222
 msgid "Does not include non-school days."
-msgstr ""
+msgstr "N'inclut pas les jours non ouvrés."
 
 #: modules/Timetable/spaceBooking_manage_add.php:221
 #: modules/Timetable/spaceBooking_manage_add.php:221
 msgid "Repeat Weekly"
-msgstr ""
+msgstr "Repetition hebdomadaire"
 
 #: modules/Timetable/spaceBooking_manage_add.php:222
 #: modules/Timetable/spaceBooking_manage_add.php:222
 msgid "Repeat weekly for this many days."
-msgstr ""
+msgstr "Repetion hebdomadaire pour tout ces jours."
 
 #: modules/Timetable/spaceBooking_manage_add.php:250
 #: modules/Timetable/spaceBooking_manage_add.php:250
 msgid "Step 2 - Availability Check"
-msgstr ""
+msgstr "Etape 2 - Vérification de la disponibilité"
 
 #: modules/Timetable/spaceBooking_manage_add.php:325
 #: modules/Timetable/spaceBooking_manage_add.php:371
@@ -51716,17 +51858,19 @@ msgstr ""
 #: modules/Timetable/spaceBooking_manage_add.php:371
 #: modules/Timetable/spaceBooking_manage_add.php:422
 msgid "Not Available"
-msgstr ""
+msgstr "Non disponible"
 
 #: modules/Timetable/spaceBooking_manage_add.php:467
 #: modules/Timetable/spaceBooking_manage_add.php:467
 msgid "There are no sessions available, and so this form cannot be submitted."
 msgstr ""
+"Il n y a aucune sessions disponible, ce formulaire ne peut donc pas être "
+"envoyé."
 
 #: modules/Timetable/spaceBooking_manage_delete.php:39
 #: modules/Timetable/spaceBooking_manage_delete.php:39
 msgid "Delete Space Booking"
-msgstr ""
+msgstr "Supprimer une réservation d'espace"
 
 #: modules/Timetable/spaceChange_manage.php:43
 #: modules/Timetable/spaceChange_manage.php:43
@@ -51735,6 +51879,9 @@ msgid ""
 "any class in the timetable. Only current and future changes are shown: past "
 "changes are hidden."
 msgstr ""
+"Cette page permet de créer et de gérer les changements de zones personnelles "
+"au sein de chaque de module de l'emploi du temps. Seules les changements "
+"actuels et futurs sont affichés : les changements passés sont masqués."
 
 #: modules/Timetable/spaceChange_manage.php:46
 #: modules/Timetable/spaceChange_manage.php:46
@@ -51743,31 +51890,35 @@ msgid ""
 "any of your classes in the timetable. Only current and future changes are "
 "shown: past changes are hidden."
 msgstr ""
+"Cette page vous permet de créer et gérer les modifications personnelles de "
+"zone au sein de chacun de vos modules dans l'emploi du temps. Seules les "
+"modifications actuelles et prochaines sont afficheés : les modifications "
+"passées sont masquées."
 
 #: modules/Timetable/spaceChange_manage.php:108
 #: modules/Timetable/spaceChange_manage.php:108
 msgid "Original Space"
-msgstr ""
+msgstr "Espace d'origine"
 
 #: modules/Timetable/spaceChange_manage.php:111
 #: modules/Timetable/spaceChange_manage.php:111
 msgid "New Space"
-msgstr ""
+msgstr "Nouvel espace"
 
 #: modules/Timetable/spaceChange_manage_add.php:39
 #: modules/Timetable/spaceChange_manage_add.php:39
 msgid "Add Space Change"
-msgstr ""
+msgstr "Ajouter un changement d'espace"
 
 #: modules/Timetable/spaceChange_manage_add.php:78
 #: modules/Timetable/spaceChange_manage_add.php:78
 msgid "Step 1 - Choose Class"
-msgstr ""
+msgstr "Etape 1 - Choisir un module"
 
 #: modules/Timetable/spaceChange_manage_add.php:130
 #: modules/Timetable/spaceChange_manage_add.php:130
 msgid "Step 2 - Choose Options"
-msgstr ""
+msgstr "Etape 2 - Choisir les options"
 
 #: modules/Timetable/spaceChange_manage_add.php:133
 #: modules/Timetable/spaceChange_manage_add.php:133
@@ -51778,39 +51929,46 @@ msgid ""
 "below are not necessarily free at the requested time: please use the View "
 "Available Spaces report to check availability."
 msgstr ""
+"Lorsque vous choisissez un espace, vous devez vous rappeler qu'ils ne sont "
+"pas mutuellement exclusif : vous pouvez modifier deux modules au sein d'un "
+"espace, modifier un module à associerr à un autre module dans leur salle "
+"principale, ou décider de n'assigner aucun module. Les espaces listés ci-"
+"dessous ne sont pas necessairement libre à l'heure demandée : veuillez "
+"utiliser l'etat de Consultation d'Espaces Disponible afin de vérifier la "
+"disponibilité."
 
 #: modules/Timetable/spaceChange_manage_add.php:180
 #: modules/Timetable/spaceChange_manage_add.php:180
 msgid "Upcoming Class Slots"
-msgstr ""
+msgstr "Prochain module à venir"
 
 #: modules/Timetable/spaceChange_manage_delete.php:39
 #: modules/Timetable/spaceChange_manage_delete.php:39
 msgid "Delete Space Change"
-msgstr ""
+msgstr "Supprimer un changement d'espace "
 
 #: functions.php:446 functions.php:655 functions.php:693 functions.php:693
 msgid "View All Timetables"
-msgstr ""
+msgstr "Consulter tout les emplois du temps"
 
 #: functions.php:467 functions.php:676 functions.php:714 functions.php:714
 msgid "View Available Activities"
-msgstr ""
+msgstr "Consulter les activités disponible"
 
 #: functions.php:618 functions.php:827 functions.php:865 functions.php:865
 msgid "Learning Overview"
-msgstr ""
+msgstr "Aperçu d'apprentissage"
 
 #: index.php:1093 index.php:922 index.php:976 index.php:978 index.php:1035
 #: index.php:1035
 msgid "Credits"
-msgstr ""
+msgstr "Crédits"
 
 #: modules/Library/library_import.php:31 i18n/dbStringsForTranslation.php:81
 #: i18n/dbStringsForTranslation.php:82 i18n/dbStringsForTranslation.php:82
 #: modules/Library/library_import.php:31
 msgid "Import Records"
-msgstr ""
+msgstr "Importer les enregistrements"
 
 #: modules/Library/library_import.php:52 modules/Library/library_import.php:52
 msgid ""
@@ -51819,6 +51977,11 @@ msgid ""
 "updating any matching results, whilst creating new records not already "
 "existing in the system."
 msgstr ""
+"Cette page vous permet d'importer les enregistrements de la librairie à "
+"partir d'un fichier CSV. L'importation inclus une ligne par enregistrement. "
+"Le système retrouvera les enregsitrements par ID, en mettant à jour chacun "
+"des résultats retrouvés, et en créant les nouveaux enregistrements non "
+"existant dans le système."
 
 #: modules/Library/library_import.php:116
 #: modules/Library/library_import.php:116
@@ -51827,46 +51990,49 @@ msgid ""
 "The type of the first item in the import will be applied to all other "
 "entries."
 msgstr ""
+"Les importations peuvent être d'un seul type (Ex. Publication,Ordinateur, "
+"etc). Le type du premier element de l'importation sera appliqué à toutes les "
+"autres entrées."
 
 #: modules/Library/library_import.php:121
 #: modules/Library/library_import.php:121
 msgid "One of:"
-msgstr ""
+msgstr "Un de :"
 
 #: modules/Library/library_import.php:142
 #: modules/Library/library_import.php:142
 msgid "Must be unique, or will lead to update not insert."
-msgstr ""
+msgstr "Doit être unique, ou sera mis à jour et non inséré."
 
 #: modules/Library/library_import.php:147
 #: modules/Library/library_import.php:147
 msgid "Space 'Name' field."
-msgstr ""
+msgstr "Intitulé de l'espace"
 
 #: modules/Library/library_import.php:149
 #: modules/Library/library_import.php:149
 msgid "One of: 'School' or 'Individual'."
-msgstr ""
+msgstr "On de : 'Ecole' ou 'Individuel'."
 
 #: modules/Library/library_import.php:150
 #: modules/Library/library_import.php:150
 msgid "Username of person the device is assigned to."
-msgstr ""
+msgstr "login de la personne à qui le l'équipement est assigné"
 
 #: modules/Library/library_import.php:151
 #: modules/Library/library_import.php:151
 msgid "'Name' filed for department responsible for the item."
-msgstr ""
+msgstr "'Intitulé' renseigné pour le responsable du département de l'article."
 
 #: modules/Library/library_import.php:152
 #: modules/Library/library_import.php:152
 msgid "One of: 'Y' or 'N'."
-msgstr ""
+msgstr "Un de : 'O' ou 'N'"
 
 #: modules/Library/library_import.php:152
 #: modules/Library/library_import.php:152
 msgid "Is item available for loan? "
-msgstr ""
+msgstr "L'élément est-il disponible pour emprunt ?"
 
 #: modules/Library/library_import.php:153
 #: modules/Library/library_import.php:153
@@ -51874,12 +52040,16 @@ msgid ""
 "Initial availability. One of: 'Available','In "
 "Use','Decommissioned','Lost','On Loan','Repair' or 'Reserved'."
 msgstr ""
+"Disponibilité initiale. Un de : 'Disponible', 'En cours d-utilisation', "
+"Décomissionné, 'Perdu', 'En emprunt', 'Réparer', ou 'Réservé'."
 
 #: modules/Library/library_import.php:271
 #: modules/Library/library_import.php:271
 #, php-format
 msgid "Type with name %1$s in import cannot be found."
 msgstr ""
+"Le type dont l'Intitulé est %1$s dans le fichier d'importation est "
+"introuvabble."
 
 #: modules/Library/library_import.php:320
 #: modules/Library/library_import.php:451
@@ -51890,6 +52060,8 @@ msgstr ""
 #, php-format
 msgid "Record with ID %1$s had some information malformations."
 msgstr ""
+"L'enregistrement portant le N° %1$s possèdde certaines informations "
+"déformées."
 
 #: modules/Library/library_import.php:380
 #: modules/Library/library_import.php:382
@@ -51897,6 +52069,8 @@ msgstr ""
 #, php-format
 msgid "Location with name %1$s in import cannot be found."
 msgstr ""
+"La zone dont l'Intitulé est %1$s dans le fichier d'importation est "
+"introuvable."
 
 #: modules/Library/library_import.php:409
 #: modules/Library/library_import.php:411
@@ -51904,6 +52078,8 @@ msgstr ""
 #, php-format
 msgid "User with username %1$s in import cannot be found."
 msgstr ""
+"L'utilisateur avec le login %1$s dans le fichier d'importation est "
+"introuvable."
 
 #: modules/Library/library_import.php:437
 #: modules/Library/library_import.php:439
@@ -51911,20 +52087,22 @@ msgstr ""
 #, php-format
 msgid "Department with name %1$s in import cannot be found."
 msgstr ""
+"Le dapartement dont l'Intitulé est %1$s dans le fichier d'importation est "
+"introuvable."
 
 #: modules/Library/library_import.php:510
 #: modules/Library/library_import.php:512
 #: modules/Library/library_import.php:512
 #, php-format
 msgid "%1$s was successfully updated."
-msgstr ""
+msgstr "%1$s a été mis à jour avec succès."
 
 #: modules/Library/library_import.php:532
 #: modules/Library/library_import.php:534
 #: modules/Library/library_import.php:534
 #, php-format
 msgid "%1$s was successfully inserted into the system."
-msgstr ""
+msgstr "%1$s a été inséré avec succès dans le système."
 
 #: modules/Planner/moduleFunctions.php:195
 #: modules/Planner/moduleFunctions.php:225
@@ -51934,12 +52112,15 @@ msgid ""
 "outcomes to individual blocks. These will then become lesson outcomes when "
 "you deploy a unit."
 msgstr ""
+"Après la création de cette unité, vous serez capable de modifier l'unité et "
+"assigner les résultats d'une unité à des blocs individuels. Ils pourront "
+"devenir des résultats de leçon lorsque vous déploierez une unité."
 
 #: modules/Planner/moduleFunctions.php:215
 #: modules/Planner/moduleFunctions.php:245
 #: modules/Planner/moduleFunctions.php:245
 msgid "Include"
-msgstr ""
+msgstr "Inclure"
 
 #: modules/Planner/planner_unitOverview.php:189
 #: modules/Planner/planner_unitOverview.php:195
@@ -51949,21 +52130,23 @@ msgid ""
 "including all the outcomes, resources, lessons and chats for the classes you "
 "have access to."
 msgstr ""
+"Cette page affiche un aperçu de l'unité à laquelle la leçon actuelle "
+"appartient, incluant tout ses résuutats, ses ressources, ses leçons et les "
+"chats pour les modules auxquels vous avez accès."
 
-#: modules/Staff/staff_view.php:70 modules/Staff/staff_view.php:70
-msgid "All Staff"
-msgstr ""
-
-#: modules/Staff/staff_view.php:71 modules/Staff/staff_view.php:71
+#: modules/Staff/staff_view.php:70 modules/Staff/staff_view.php:71
+#: modules/Staff/staff_view.php:71
 msgid "Include all staff, regardless of status, start date, end date, etc."
 msgstr ""
+"Inclure tout le personnel, sans tenir du status, de la date de début, de la "
+"date de fin, etc."
 
 #: modules/Students/report_student_dataUpdaterHistory.php:205
 #: modules/Students/report_student_dataUpdaterHistory.php:232
 #: modules/Students/report_student_dataUpdaterHistory.php:205
 #: modules/Students/report_student_dataUpdaterHistory.php:232
 msgid "No data"
-msgstr ""
+msgstr "Aucune donnée"
 
 #: modules/Timetable Admin/tt_import.php:768
 #: modules/Timetable Admin/tt_import.php:768
@@ -51972,28 +52155,31 @@ msgid ""
 "Teacher sync failed. The following classes/teachers (and possibly some "
 "others) had problems: %1$s."
 msgstr ""
+"La synchronisation d'enseignant a échoué. Les modules/enseignants suivants "
+"(et certainement d'autres utilisateurs) ont rencontré des problèmes : %1$s."
 
 #: i18n/dbStringsForTranslation.php:28 i18n/dbStringsForTranslation.php:28
 msgid "Curriculum Mapping"
-msgstr ""
+msgstr "Génération du Curriculum"
 
 #: i18n/dbStringsForTranslation.php:113 i18n/dbStringsForTranslation.php:114
 #: i18n/dbStringsForTranslation.php:114
 msgid "Manage Finance Settings"
-msgstr ""
+msgstr "Gérer les Paramètres Financiers"
 
 #: i18n/dbStringsForTranslation.php:183
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:34
 #: i18n/dbStringsForTranslation.php:185 i18n/dbStringsForTranslation.php:185
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:34
 msgid "Outcomes By Course"
-msgstr ""
+msgstr "Résultats par cours"
 
 #: i18n/dbStringsForTranslation.php:335 i18n/dbStringsForTranslation.php:339
 #: i18n/dbStringsForTranslation.php:339
 msgid ""
 "Import records of different types (e.g. Print Publications, Computer, etc)"
 msgstr ""
+"Importer les enregistrements de types (Ex Publications, Ordinateur, etc)"
 
 #: i18n/dbStringsForTranslation.php:393
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:37
@@ -52004,56 +52190,59 @@ msgid ""
 "are covered by classes in a given course, allowing for curriculum mapping by "
 "outcome and course."
 msgstr ""
+"Cette vue donne un aperçu de la façon dont l'école et les résultats d'espace "
+"d'apprentissage sont organisés par modules dans un cours donné, permettant "
+"de générer le curriculum par résultat et par cours."
 
 #: i18n/dbStringsForTranslation.php:849 i18n/dbStringsForTranslation.php:854
 #: i18n/dbStringsForTranslation.php:854
 msgid "Software"
-msgstr ""
+msgstr "Logiciel"
 
 #: i18n/dbStringsForTranslation.php:899 i18n/dbStringsForTranslation.php:897
 #: i18n/dbStringsForTranslation.php:897
 msgid "License Type"
-msgstr ""
+msgstr "Type de license"
 
 #: i18n/dbStringsForTranslation.php:900 i18n/dbStringsForTranslation.php:898
 #: i18n/dbStringsForTranslation.php:898
 msgid "License Name"
-msgstr ""
+msgstr "Intitulé de la license"
 
 #: i18n/dbStringsForTranslation.php:901 i18n/dbStringsForTranslation.php:899
 #: i18n/dbStringsForTranslation.php:899
 msgid "License Serial Number"
-msgstr ""
+msgstr "N° de série de la license"
 
 #: i18n/dbStringsForTranslation.php:902 i18n/dbStringsForTranslation.php:900
 #: i18n/dbStringsForTranslation.php:900
 msgid "License Expiry"
-msgstr ""
+msgstr "Date d'expiration de la license"
 
 #: i18n/dbStringsForTranslation.php:903 i18n/dbStringsForTranslation.php:904
 #: i18n/dbStringsForTranslation.php:901 i18n/dbStringsForTranslation.php:901
 msgid "License Management Link"
-msgstr ""
+msgstr "lien de gestion de la license"
 
 #: i18n/dbStringsForTranslation.php:990 i18n/dbStringsForTranslation.php:995
 #: i18n/dbStringsForTranslation.php:995
 msgid "Learn"
-msgstr ""
+msgstr "Apprentissage"
 
 #: i18n/dbStringsForTranslation.php:1693 i18n/dbStringsForTranslation.php:1756
 #: i18n/dbStringsForTranslation.php:1756
 msgid "Enable Online Payment"
-msgstr ""
+msgstr "Activer le paiement en ligne"
 
 #: i18n/dbStringsForTranslation.php:1730 i18n/dbStringsForTranslation.php:1798
 #: i18n/dbStringsForTranslation.php:1798
 msgid "Online Payment Threshold"
-msgstr ""
+msgstr "Threshold paiement en ligne"
 
 #: i18n/dbStringsForTranslation.php:1735 i18n/dbStringsForTranslation.php:1803
 #: i18n/dbStringsForTranslation.php:1803
 msgid "Parent Weekly Email Summary Include Behaviour"
-msgstr ""
+msgstr "Résumé hebdomadaire d'email parents incluant le comportement"
 
 #: i18n/dbStringsForTranslation.php:1838 i18n/dbStringsForTranslation.php:1910
 #: i18n/dbStringsForTranslation.php:1910
@@ -52061,6 +52250,9 @@ msgid ""
 "If invoices are payable online, what is the maximum payment allowed? Useful "
 "for controlling payment fees. No value means unlimited."
 msgstr ""
+"Si les factures sont payable en ligne, quel est le paiement maximum "
+"autorisé ? Utile pour le contrôle des paiements de frais. Aucune valeur se "
+"signifie illimitée."
 
 #: i18n/dbStringsForTranslation.php:1861 i18n/dbStringsForTranslation.php:1934
 #: i18n/dbStringsForTranslation.php:1934
@@ -52068,6 +52260,8 @@ msgid ""
 "Should behaviour information be included in the weekly planner email summary "
 "that goes out to parents?"
 msgstr ""
+"Les informations de comportement doivent-elles être inclues dans le résumé "
+"du plannificateur hebdomadaire d'email qui est expédié aux parents ?"
 
 #: i18n/dbStringsForTranslation.php:1862 i18n/dbStringsForTranslation.php:1936
 #: i18n/dbStringsForTranslation.php:1936
@@ -52075,6 +52269,9 @@ msgid ""
 "Should invoices be payable online, via an encrypted link in the invoice? "
 "Requires correctly configured payment gateway in System Settings."
 msgstr ""
+"Les factures peuvent-elles être payable en ligne, via un lien crypté dans la "
+"facture ?Requiert une plateforme de paiemant correctement configurée dans "
+"les paramètres système."
 
 #: modules/Finance/invoices_payOnline.php:50
 #: modules/Finance/invoices_payOnline.php:53
@@ -52083,6 +52280,8 @@ msgid ""
 "Your payment has been successfully made to your credit card. A receipt has "
 "been emailed to you."
 msgstr ""
+"Votre paiement a été éffectué avec succès à partir de votre carte de crédit. "
+"Un message vous a été expédié par email."
 
 #: modules/Finance/invoices_payOnline.php:53
 #: modules/Finance/invoices_payOnline.php:56
@@ -52091,6 +52290,8 @@ msgid ""
 "Your payment could not be made to your credit card. Please try an "
 "alternative payment method."
 msgstr ""
+"Votre paiement n'a pas pu être éffectué à partir de votre carte de crédit. "
+"Veuillez essayer une méthode de paiement alternative."
 
 #: modules/Finance/invoices_payOnline.php:56
 #: modules/Finance/invoices_payOnline.php:59
@@ -52101,6 +52302,10 @@ msgid ""
 "been an error recording your payment in %1$s. Please print this screen and "
 "contact the school ASAP, quoting code %2$s."
 msgstr ""
+"Votre paiement a été éffectué avec succès à partir de votre carte de crédit, "
+"mais une erreur est survenue pendant l'enregistrement du paiement dans %1$s. "
+"Veuillez imprimer cet écran et contacter un administrateur de l'école, en "
+"notant le code %2$s."
 
 #: modules/Finance/invoices_payOnline.php:125
 #: modules/Finance/moduleFunctions.php:418
@@ -52108,7 +52313,7 @@ msgstr ""
 #: modules/Finance/invoices_payOnline.php:128
 #: modules/Finance/moduleFunctions.php:418
 msgid "Online Payment"
-msgstr ""
+msgstr "Paiement en ligne"
 
 #: modules/Finance/invoices_payOnline.php:129
 #: modules/Finance/invoices_payOnline.php:132
@@ -52120,6 +52325,12 @@ msgid ""
 "make payment. During this process we do not see or store your credit card "
 "details. Once the transaction is complete you will be returned to %1$s."
 msgstr ""
+"Le paiement peut être éffectué par carte de crédit, en utilisant notre "
+"plateforme de paiement PayPal sécurisé. Lorsque vous cliquez le bouton Payez "
+"en Ligne Maintenant, vous serez redirigé vers PayPal dans le but de procéder "
+"au paiement. Pendant la procédure nous ne voyons ni n'enregistrons aucun "
+"détails sur votre carte de crédit. Une fois que la transaction est achevée "
+"vous serez redirigé à %1$s."
 
 #: modules/Finance/invoices_payOnline.php:139
 #: modules/Finance/moduleFunctions.php:426
@@ -52130,6 +52341,8 @@ msgid ""
 "Payment is not permitted for this invoice, as the total amount is greater "
 "than the permitted online payment threshold."
 msgstr ""
+"Le paiement n'est pas permis pour cette facture, car le motant total est "
+"supérieur à la valeur autorisée pour le paiement en ligne."
 
 #: modules/Finance/moduleFunctions.php:422
 #: modules/Finance/moduleFunctions.php:422
@@ -52141,22 +52354,29 @@ msgid ""
 "through %1$s whether you are logged in or not. During this process we do not "
 "see or store your credit card details."
 msgstr ""
+"Le paiement peut être éffectué par carte de crédit, en utilisant notre "
+"plateforme de paiement PayPal sécurisé. Lorsque vous cliquez le bouton Payez "
+"en Ligne Maintenant, vous serez redirigé vers PayPal sur une %1$s page à "
+"partir de laquelle vous pouvez utiliser PayPal pour procéder au paiement. "
+"Vous pouvez éffectuer le paiement à partir de %1$s que vous soyez connecté "
+"ou non. Pendant la procédure nous ne voyons ni n'enregistrons aucun détails "
+"sur votre carte de crédit."
 
 #: modules/Finance/moduleFunctions.php:423
 #: modules/Finance/moduleFunctions.php:423
 msgid "Pay Now"
-msgstr ""
+msgstr "Payez Maintenant"
 
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:41
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:41
 msgid "Choose Course"
-msgstr ""
+msgstr "Choisir un Cours"
 
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:282
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:282
 #, php-format
 msgid "%1$s Outcomes"
-msgstr ""
+msgstr "%1$s Résultats"
 
 #: modules/School Admin/financeSettings.php:141 modules/User
 #: Admin/applicationFormSettings.php:171
@@ -52164,24 +52384,25 @@ msgstr ""
 #: modules/User Admin/applicationFormSettings.php:171
 #, php-format
 msgid "In %1$s."
-msgstr ""
+msgstr "Dans %1$s."
 
 #: cli/attendance_dailyIncompleteEmail.php:123
 #: cli/attendance_dailyIncompleteEmail.php:123
 #, php-format
 msgid "All form groups have been registered today (%1$s)."
-msgstr ""
+msgstr "Tout les groupes de formulaire ont été enregistrés aujourd'hui (%1$s)."
 
 #: cli/attendance_dailyIncompleteEmail.php:126
 #: cli/attendance_dailyIncompleteEmail.php:126
 #, php-format
 msgid "%1$s form groups have not been registered today  (%2$s)."
 msgstr ""
+"%1$s groupes de formulaires n'ont pas été enregistrés aujourd'hui (%2$s)."
 
 #: cli/attendance_dailyIncompleteEmail.php:152
 #: cli/attendance_dailyIncompleteEmail.php:152
 msgid "Incomplete Attendance Report"
-msgstr ""
+msgstr "Rapport de Présence Incomplet"
 
 #: index.php:392 index.php:425 index.php:427 index.php:495 index.php:495
 #, php-format
@@ -52189,20 +52410,22 @@ msgid ""
 "Please feel free to %1$sbrowse our departmental information%2$s, to learn "
 "more about %3$s."
 msgstr ""
+"Vous êtes libre de %1$sconsulter nos informations départementales%2$s, pour "
+"apprendre d'avantages sur %3$s."
 
 #: modules/Behaviour/behaviour_manage.php:256
 #: modules/Behaviour/behaviour_manage_addMulti.php:34
 #: modules/Behaviour/behaviour_manage.php:256
 #: modules/Behaviour/behaviour_manage_addMulti.php:34
 msgid "Add Multiple"
-msgstr ""
+msgstr "Ajout multiple"
 
 #: modules/External Assessment/externalAssessment_manage_details_add.php:504
 #: Assessment/externalAssessment_manage_details_edit.php:135
 #: modules/External Assessment/externalAssessment_manage_details_add.php:504
 #: modules/External Assessment/externalAssessment_manage_details_edit.php:135
 msgid "Upload File"
-msgstr ""
+msgstr "Uploader un Fichier"
 
 #: modules/External Assessment/externalAssessment_manage_details_add.php:505
 #: Assessment/externalAssessment_manage_details_edit.php:136
@@ -52210,6 +52433,7 @@ msgstr ""
 #: modules/External Assessment/externalAssessment_manage_details_edit.php:136
 msgid "Use this to attach raw data, graphical summary, etc."
 msgstr ""
+"Utiliser ceci pour joindre une ligne de donnée, un résumé graphique, etc."
 
 #: modules/External Assessment/externalAssessment_manage_details_add.php:549
 #: Assessment/externalAssessment_manage_details_edit.php:223
@@ -52218,12 +52442,12 @@ msgstr ""
 #: modules/External Assessment/externalAssessment_manage_details_add.php:547
 #: modules/External Assessment/externalAssessment_manage_details_edit.php:221
 msgid "There are no fields in this assessment."
-msgstr ""
+msgstr "Il n y a aucun champs dans cette évaluation."
 
 #: modules/External Assessment/moduleFunctions.php:51
 #: modules/External Assessment/moduleFunctions.php:51
 msgid "Uploaded File"
-msgstr ""
+msgstr "Fichier uploadé"
 
 #: modules/Markbook/markbook_edit_add.php:513
 #: modules/Markbook/markbook_edit_addMulti.php:422
@@ -52235,7 +52459,7 @@ msgstr ""
 #: modules/Markbook/markbook_edit_data.php:577
 #: modules/Markbook/markbook_edit_edit.php:565
 msgid "Go Live Date"
-msgstr ""
+msgstr "Aller à la Date en Direct"
 
 #: modules/Markbook/markbook_edit_add.php:514
 #: modules/Markbook/markbook_edit_addMulti.php:423
@@ -52247,39 +52471,39 @@ msgstr ""
 #: modules/Markbook/markbook_edit_data.php:578
 #: modules/Markbook/markbook_edit_edit.php:566
 msgid "2. Column is hidden until date is reached."
-msgstr ""
+msgstr "2. La colonne est masquée jusqu'à la date soit renseignée."
 
 #: modules/Roll Groups/rollGroups_details.php:134
 #: modules/Roll Groups/rollGroups_details.php:134
 msgid "Normal (Roll Order, Surname, Preferred Name)"
-msgstr ""
+msgstr "Normal (Commande de liste, Surnom, Nom Préféré)"
 
 #: modules/Roll Groups/rollGroups_details.php:135
 #: modules/Roll Groups/rollGroups_details.php:135
 msgid "Surname (Surname, Preferred Name)"
-msgstr ""
+msgstr "Surnom (Surnom, Nom préféré)"
 
 #: modules/Roll Groups/rollGroups_details.php:136
 #: modules/Roll Groups/rollGroups_details.php:136
 msgid "Preferred Name (PreferredName, Surname)"
-msgstr ""
+msgstr "Nom préféré (Nom préféré, Surnom)"
 
 #: modules/School Admin/department_manage.php:75
 #: modules/School Admin/department_manage.php:75
 msgid "Department Access"
-msgstr ""
+msgstr "Accès département"
 
 #: modules/School Admin/externalAssessments_manage.php:107
 #: modules/School Admin/externalAssessments_manage.php:107
 msgid "File Upload"
-msgstr ""
+msgstr "Chargement de fichier"
 
 #: modules/School Admin/externalAssessments_manage_add.php:121
 #: Admin/externalAssessments_manage_edit.php:159
 #: modules/School Admin/externalAssessments_manage_add.php:121
 #: modules/School Admin/externalAssessments_manage_edit.php:159
 msgid "Allow File Upload"
-msgstr ""
+msgstr "Autoriser le chargement de fichier"
 
 #: modules/School Admin/externalAssessments_manage_add.php:122
 #: Admin/externalAssessments_manage_edit.php:160
@@ -52287,6 +52511,8 @@ msgstr ""
 #: modules/School Admin/externalAssessments_manage_edit.php:160
 msgid "Should the student record include the option of a file upload?"
 msgstr ""
+"L'enregistrement de l'élève doit-il inclure l'option de chargement de "
+"fichier ?"
 
 #: modules/System Admin/module_manage.php:58 Admin/module_manage.php:62
 #: modules/System Admin/module_manage.php:62
@@ -52294,6 +52520,8 @@ msgid ""
 "Install failed because either the module name was not given or the manifest "
 "file was invalid."
 msgstr ""
+"L'installation a échouée car soit le nom du module n'a pas été défini ou que "
+"le fichier manifeste était invalide."
 
 #: modules/System Admin/module_manage.php:103 Admin/module_manage.php:108
 #: modules/System Admin/module_manage.php:109
@@ -52303,47 +52531,51 @@ msgid ""
 "then refresh this page. After refresh, the module should appear in the list "
 "below: use the install button in the Actions column to set it up."
 msgstr ""
+"Pour installer un module, veuillez charger le dossier de module vers %1$s "
+"sur votre serveur et enseuite actualiser cette page. Après l'actualisation, "
+"le module devra apparaître dans la liste ci-dessous: utiliser le bbouton "
+"installer dans la colonne des actions pour le faire."
 
 #: modules/System Admin/module_manage.php:166 Admin/theme_manage.php:179
 #: Admin/module_manage.php:172 Admin/theme_manage.php:187
 #: modules/System Admin/module_manage.php:173
 #: modules/System Admin/theme_manage.php:187
 msgid "Installed"
-msgstr ""
+msgstr "Installé"
 
 #: modules/System Admin/module_manage.php:181 Admin/theme_manage.php:194
 #: Admin/module_manage.php:187 Admin/theme_manage.php:202
 #: modules/System Admin/module_manage.php:188
 #: modules/System Admin/theme_manage.php:202
 msgid "Not Installed"
-msgstr ""
+msgstr "Non installé"
 
 #: modules/System Admin/module_manage.php:186 Admin/theme_manage.php:199
 msgid "Module Error"
-msgstr ""
+msgstr "Module Erreur"
 
 #: modules/System Admin/module_manage.php:227 Admin/theme_manage.php:241
 #: Admin/module_manage.php:233 Admin/theme_manage.php:267
 #: modules/System Admin/module_manage.php:234
 #: modules/System Admin/theme_manage.php:267
 msgid "Install"
-msgstr ""
+msgstr "Installer"
 
 #: modules/System Admin/systemSettings.php:707 Admin/systemSettings.php:734
 #: modules/System Admin/systemSettings.php:734
 msgid "Third-Party Integration"
-msgstr ""
+msgstr "Intégration de Troisième Partie"
 
 #: modules/System Admin/systemSettings.php:713 Admin/systemSettings.php:740
 #: modules/System Admin/systemSettings.php:740
 msgid "gibbonedu.com Value Added Services"
-msgstr ""
+msgstr "Services à Valeur Ajoutée gibbonedu.com"
 
 #: modules/System Admin/systemSettings.php:761 Admin/systemSettings.php:788
 #: i18n/dbStringsForTranslation.php:1768 i18n/dbStringsForTranslation.php:1768
 #: modules/System Admin/systemSettings.php:788
 msgid "Google Integration"
-msgstr ""
+msgstr "Intégration Google"
 
 #: modules/System Admin/systemSettings.php:762 Admin/systemSettings.php:789
 #: modules/System Admin/systemSettings.php:789
@@ -52355,6 +52587,12 @@ msgid ""
 "that their listed email address is a Google account to which they have "
 "access. For configuration instructions, %1$sclick here%2$s."
 msgstr ""
+"Si votre école utilise Google Apps, vous pouvez activer l'accès unique et "
+"l'intégration de calendrier avec Gibbon. Cette procédure favorise "
+"l'utilisation de Google Apps, et permet à un utilisateur d'accéder à Gibbon "
+"sans un login et un mot de passe, en spécifiant que leur adresse email est "
+"un compte Google auquel ils ont accès. Pour les instructions de "
+"configuration, %1$scliquez ici%2$s"
 
 #: modules/System Admin/theme_manage.php:117 Admin/theme_manage.php:124
 #: modules/System Admin/theme_manage.php:124
@@ -52364,6 +52602,10 @@ msgid ""
 "refresh this page. After refresh, the theme should appear in the list below: "
 "use the install button in the Actions column to set it up."
 msgstr ""
+"Pour installer un thème, chargez le ddossier de thème vers %1$s sur votre "
+"serveur et ensuite actualiser cette page. Après l'actualisation, le thème "
+"doit apparaître dans la liste ci-dessous: utiliser le bouton installer dans "
+"la colonne des Actions pour le définir."
 
 #: modules/User Admin/studentEnrolment_manage.php:187
 #: Admin/studentEnrolment_manage_add.php:202
@@ -52373,7 +52615,7 @@ msgstr ""
 #: modules/User Admin/studentEnrolment_manage_add.php:194
 #: modules/User Admin/studentEnrolment_manage_edit.php:210
 msgid "Roll Order"
-msgstr ""
+msgstr "Commande de liste"
 
 #: modules/User Admin/studentEnrolment_manage_add.php:203
 #: Admin/studentEnrolment_manage_edit.php:211
@@ -52381,38 +52623,41 @@ msgstr ""
 #: modules/User Admin/studentEnrolment_manage_add.php:195
 #: modules/User Admin/studentEnrolment_manage_edit.php:211
 msgid "Must be unique to roll gorup if set."
-msgstr ""
+msgstr "Doit être unique pour un groupe de liste si défini."
 
 #: preferences.php:214 preferences.php:214
 msgid "Personal Google Calendar ID"
-msgstr ""
+msgstr "N° de Calendrier Google Personnel"
 
 #: preferences.php:215 preferences.php:215
 msgid "Google Calendar ID for your personal calendar."
-msgstr ""
+msgstr "N° de Calendrier Google pour votre calendrier personnel."
 
 #: preferences.php:215 preferences.php:215
 msgid "Only enables timetable integration when logging in via Google."
 msgstr ""
+"Active uniquement une intégration d'emploi du temps lorsque vous vous "
+"connectez via Google."
 
 #: functions.php:2676 functions.php:2731 functions.php:2732
 #, php-format
 msgid "%1$s days until %2$s birthday!"
-msgstr ""
+msgstr "%1$s jours avant l'anniversaire de %2$s !"
 
 #: functions.php:2679 functions.php:2734 functions.php:2735
 #, php-format
 msgid "%1$s day until %2$s birthday!"
-msgstr ""
+msgstr "%1$s jour avant l'anniversaire de %2$s !"
 
 #: index.php:215 index.php:217 index.php:219 index.php:219
 msgid "Your session is about to expire: you will be logged out shortly."
-msgstr ""
+msgstr "Votre session va expirer : vous serez déconnecté bientôt."
 
 #: index.php:384 index.php:386 index.php:465 index.php:465
 msgid ""
 "Your session expired, so you were automatically logged out of the system."
 msgstr ""
+"Votre session a expiré, vous avez été déconnecté automatiquement du système."
 
 #: modules/Markbook/markbook_edit_edit.php:105
 #: modules/Markbook/markbook_edit_edit.php:105
@@ -52420,10 +52665,12 @@ msgid ""
 "This column is part of a set of columns, which you did not create, and so "
 "cannot be individually edited."
 msgstr ""
+"Cette colonne fait partie d'un ensemble de colonnes, que vous n'avez pas "
+"créé, et ne peuvent donc pas être modifié individuellement."
 
 #: modules/Rubrics/rubrics.php:114 modules/Rubrics/rubrics.php:114
 msgid "Rubric name."
-msgstr ""
+msgstr "Intitulé de la rubrique."
 
 #: modules/Timetable Admin/ttDates.php:114
 #: modules/Timetable Admin/ttDates.php:114
@@ -52432,11 +52679,14 @@ msgid ""
 "the relevant dates, and then press the Submit button at the bottom of the "
 "page."
 msgstr ""
+"Pour l'ajout multiple d'un jour d'emploi du temps à plusieurs dates, "
+"utilisez les cases à cocher des dates indiquées, et appuyer ensuite le "
+"bouton envoyer au bas de la page."
 
 #: modules/Timetable Admin/ttDates.php:320
 #: modules/Timetable Admin/ttDates.php:320
 msgid "Multi Add"
-msgstr ""
+msgstr "Ajout multiple"
 
 #: modules/User Admin/user_manage_add.php:879 Admin/user_manage_edit.php:1129
 #: Admin/user_manage_edit.php:1133 modules/User Admin/user_manage_add.php:879
@@ -52478,20 +52728,20 @@ msgstr "jour avant l'anniversaire de %1$s !"
 
 #: error.php:22 error.php:22
 msgid "Oh no!"
-msgstr ""
+msgstr "Oh non !"
 
 #: error.php:25 error.php:25
 msgid "Something has gone wrong: the Gibbons have escaped!"
-msgstr ""
+msgstr "Un problème a été détecté : les singes se sont évadés"
 
 #: functions.php:44 functions.php:44
 msgid "Logout"
-msgstr ""
+msgstr "Se déconnecter"
 
 #: functions.php:934 functions.php:934
 #, php-format
 msgid "You have received a notification on %1$s at %2$s"
-msgstr ""
+msgstr "Vous avez reçu une notification sur %1$s à %2$s"
 
 #: functions.php:935 functions.php:936
 #, php-format
@@ -52499,15 +52749,17 @@ msgid ""
 "Login to %1$s and use the noticiation icon to check your new notification, "
 "or use the link below:"
 msgstr ""
+"Connectez-vous à %1$s et utiliser l'icône de notification pour vérifier "
+"votre nouvelle notification, ou utiliser le lien ci-dessous :"
 
 #: i18n/dbStringsForTranslation.php:81 modules/Planner/outcomes_import.php:48
 #: i18n/dbStringsForTranslation.php:81 modules/Planner/outcomes_import.php:48
 msgid "Import Outcomes"
-msgstr ""
+msgstr "Importer les résultats"
 
 #: i18n/dbStringsForTranslation.php:124 i18n/dbStringsForTranslation.php:124
 msgid "Manage Messenger Settings"
-msgstr ""
+msgstr "Gérer les paramètres de message"
 
 #: i18n/dbStringsForTranslation.php:183
 #: modules/Messenger/messenger_postQuickWall.php:43
@@ -52515,299 +52767,312 @@ msgstr ""
 #: modules/Messenger/messenger_manage.php:140
 #: modules/Messenger/messenger_postQuickWall.php:43
 msgid "New Quick Wall Message"
-msgstr ""
+msgstr "Nouveau message rapide sur le mûr"
 
 #: i18n/dbStringsForTranslation.php:256 i18n/dbStringsForTranslation.php:256
 msgid ""
 "Allows a user to import outcomes into the system, based on their Manage "
 "Outcomes rights."
 msgstr ""
+"Permet à un utilisateur d'importer les résultas dans le système, basé sur "
+"leur droits de gestion de résultats."
 
 #: i18n/dbStringsForTranslation.php:270 i18n/dbStringsForTranslation.php:270
 msgid "Allows for the quick posting of a Message Wall message to all users."
 msgstr ""
+"Permet de poster un message rapidement sur le mur de messagerie de tout les "
+"utilisateurs."
 
 #: i18n/dbStringsForTranslation.php:828 i18n/dbStringsForTranslation.php:828
 msgid "SQL"
-msgstr ""
+msgstr "SQL"
 
 #: i18n/dbStringsForTranslation.php:865 i18n/dbStringsForTranslation.php:865
 msgid "Storage Type"
-msgstr ""
+msgstr "Type de Stockage"
 
 #: i18n/dbStringsForTranslation.php:1006 i18n/dbStringsForTranslation.php:1006
 msgid "Activities Coord."
-msgstr ""
+msgstr "Coordinateur des activités"
 
 #: i18n/dbStringsForTranslation.php:1008 i18n/dbStringsForTranslation.php:1049
 #: i18n/dbStringsForTranslation.php:1008 i18n/dbStringsForTranslation.php:1049
 msgid "Board Members"
-msgstr ""
+msgstr "Membres du tableau de bord"
 
 #: i18n/dbStringsForTranslation.php:1009 i18n/dbStringsForTranslation.php:1009
 msgid "Cover Teacher"
-msgstr ""
+msgstr "Enseignant Editorial"
 
 #: i18n/dbStringsForTranslation.php:1010 i18n/dbStringsForTranslation.php:1031
 #: i18n/dbStringsForTranslation.php:1010 i18n/dbStringsForTranslation.php:1031
 msgid "EA"
-msgstr ""
+msgstr "EA"
 
 #: i18n/dbStringsForTranslation.php:1012 i18n/dbStringsForTranslation.php:1012
 msgid "Finance Director"
-msgstr ""
+msgstr "Directeur Financier"
 
 #: i18n/dbStringsForTranslation.php:1013 i18n/dbStringsForTranslation.php:1013
 msgid "Head Of Department"
-msgstr ""
+msgstr "Chef de Département"
 
 #: i18n/dbStringsForTranslation.php:1014 i18n/dbStringsForTranslation.php:1014
 msgid "Higher Education"
-msgstr ""
+msgstr "Haute Etude"
 
 #: i18n/dbStringsForTranslation.php:1015 i18n/dbStringsForTranslation.php:1015
 msgid "Inventory"
-msgstr ""
+msgstr "Inventaire"
 
 #: i18n/dbStringsForTranslation.php:1016 i18n/dbStringsForTranslation.php:1016
 msgid "New Teacher"
-msgstr ""
+msgstr "Nouvel Enseignant"
 
 #: i18n/dbStringsForTranslation.php:1017 i18n/dbStringsForTranslation.php:1017
 msgid "Nurse"
-msgstr ""
+msgstr "Infirmière"
 
 #: i18n/dbStringsForTranslation.php:1019 i18n/dbStringsForTranslation.php:1019
 msgid "Parent Helper"
-msgstr ""
+msgstr "Parent d'aide"
 
 #: i18n/dbStringsForTranslation.php:1020 i18n/dbStringsForTranslation.php:1041
 #: i18n/dbStringsForTranslation.php:1020 i18n/dbStringsForTranslation.php:1041
 msgid "SLT"
-msgstr ""
+msgstr "SLT"
 
 #: i18n/dbStringsForTranslation.php:1024 i18n/dbStringsForTranslation.php:1045
 #: i18n/dbStringsForTranslation.php:1024 i18n/dbStringsForTranslation.php:1045
 msgid "WHAT"
-msgstr ""
+msgstr "WHAT"
 
 #: i18n/dbStringsForTranslation.php:1027 i18n/dbStringsForTranslation.php:1027
 msgid "AcCo"
-msgstr ""
+msgstr "AcCo"
 
 #: i18n/dbStringsForTranslation.php:1029 i18n/dbStringsForTranslation.php:1029
 msgid "Bmem"
-msgstr ""
+msgstr "Bmen"
 
 #: i18n/dbStringsForTranslation.php:1030 i18n/dbStringsForTranslation.php:1030
 msgid "COV"
-msgstr ""
+msgstr "COV"
 
 #: i18n/dbStringsForTranslation.php:1032 i18n/dbStringsForTranslation.php:1032
 msgid "FN"
-msgstr ""
+msgstr "EN"
 
 #: i18n/dbStringsForTranslation.php:1033 i18n/dbStringsForTranslation.php:1033
 msgid "FND"
-msgstr ""
+msgstr "FND"
 
 #: i18n/dbStringsForTranslation.php:1034 i18n/dbStringsForTranslation.php:1034
 msgid "HE"
-msgstr ""
+msgstr "HE"
 
 #: i18n/dbStringsForTranslation.php:1035 i18n/dbStringsForTranslation.php:1035
 msgid "HOD"
-msgstr ""
+msgstr "HOD"
 
 #: i18n/dbStringsForTranslation.php:1036 i18n/dbStringsForTranslation.php:1036
 msgid "Inv"
-msgstr ""
+msgstr "Inv"
 
 #: i18n/dbStringsForTranslation.php:1037 i18n/dbStringsForTranslation.php:1037
 msgid "Nrs"
-msgstr ""
+msgstr "Nrs"
 
 #: i18n/dbStringsForTranslation.php:1038 i18n/dbStringsForTranslation.php:1038
 msgid "NT"
-msgstr ""
+msgstr "NT"
 
 #: i18n/dbStringsForTranslation.php:1039 i18n/dbStringsForTranslation.php:1039
 msgid "PaH"
-msgstr ""
+msgstr "PaH"
 
 #: i18n/dbStringsForTranslation.php:1048 i18n/dbStringsForTranslation.php:1048
 msgid "Access to financial functionality"
-msgstr ""
+msgstr "Acceder aux fonctionnalités financières"
 
 #: i18n/dbStringsForTranslation.php:1051 i18n/dbStringsForTranslation.php:1051
 msgid "Cover teachers"
-msgstr ""
+msgstr "Enseignants Editorialistes"
 
 #: i18n/dbStringsForTranslation.php:1052 i18n/dbStringsForTranslation.php:1052
 msgid "Educational Assistant"
-msgstr ""
+msgstr "Assistant d'éducation"
 
 #: i18n/dbStringsForTranslation.php:1053 i18n/dbStringsForTranslation.php:1053
 msgid "Higher Education Coordinator"
-msgstr ""
+msgstr "Coordinateur de Haute Etude"
 
 #: i18n/dbStringsForTranslation.php:1055 i18n/dbStringsForTranslation.php:1055
 msgid "Parents who come to school to help out"
-msgstr ""
+msgstr "Les parents qui viennent à l'école pour de l'aide"
 
 #: i18n/dbStringsForTranslation.php:1058 i18n/dbStringsForTranslation.php:1058
 msgid "Runs the school's activitiy programs"
-msgstr ""
+msgstr "Exécuter les programmes d'activités scolaire"
 
 #: i18n/dbStringsForTranslation.php:1059 i18n/dbStringsForTranslation.php:1059
 msgid "School Nurse"
-msgstr ""
+msgstr "Intitulé de l'école"
 
 #: i18n/dbStringsForTranslation.php:1060 i18n/dbStringsForTranslation.php:1060
 msgid "Senior Leadership Team"
-msgstr ""
+msgstr "Equipe Leadership Senior"
 
 #: i18n/dbStringsForTranslation.php:1061 i18n/dbStringsForTranslation.php:1061
 msgid "Staff plus Library permissions."
-msgstr ""
+msgstr "Permissions de librairie plus du personnel."
 
 #: i18n/dbStringsForTranslation.php:1063 i18n/dbStringsForTranslation.php:1063
 msgid "Teachers new to ICHK"
-msgstr ""
+msgstr "Enseignants nouvellement arrivé à ICHK"
 
 #: i18n/dbStringsForTranslation.php:1064 i18n/dbStringsForTranslation.php:1064
 msgid "Welfare, Holistic, Achievement Team"
-msgstr ""
+msgstr "Welfare, Holistic, Achievement Team"
 
 #: i18n/dbStringsForTranslation.php:1076 i18n/dbStringsForTranslation.php:1130
 #: i18n/dbStringsForTranslation.php:1076 i18n/dbStringsForTranslation.php:1130
 msgid "Learning Security"
-msgstr ""
+msgstr "Sécurité d'apprentissage"
 
 #: i18n/dbStringsForTranslation.php:1077 i18n/dbStringsForTranslation.php:1131
 #: i18n/dbStringsForTranslation.php:1077 i18n/dbStringsForTranslation.php:1131
 msgid "One To Four"
-msgstr ""
+msgstr "Un à Quatre"
 
 #: i18n/dbStringsForTranslation.php:1087 i18n/dbStringsForTranslation.php:1087
 msgid "1-4"
-msgstr ""
+msgstr "1-4"
 
 #: i18n/dbStringsForTranslation.php:1101 i18n/dbStringsForTranslation.php:1101
 msgid "LS"
-msgstr ""
+msgstr "LS"
 
 #: i18n/dbStringsForTranslation.php:1105 i18n/dbStringsForTranslation.php:1105
 msgid "1 (low) to 4 (high)"
-msgstr ""
+msgstr "1 (Faible) à 4 (Elevé)"
 
 #: i18n/dbStringsForTranslation.php:1116 i18n/dbStringsForTranslation.php:1116
 msgid "Indicates how secure a student's learning is"
-msgstr ""
+msgstr "Indiques la façon dont l'apprentissage d'un élève est sécurisé"
 
 #: i18n/dbStringsForTranslation.php:1408 i18n/dbStringsForTranslation.php:1408
 msgid "EP"
-msgstr ""
+msgstr "EP"
 
 #: i18n/dbStringsForTranslation.php:1415 i18n/dbStringsForTranslation.php:1415
 msgid "NYS"
-msgstr ""
+msgstr "NYS"
 
 #: i18n/dbStringsForTranslation.php:1416 i18n/dbStringsForTranslation.php:1416
 msgid "S"
-msgstr ""
+msgstr "S"
 
 #: i18n/dbStringsForTranslation.php:1417 i18n/dbStringsForTranslation.php:1417
 msgid "SIP"
-msgstr ""
+msgstr "SIP"
 
 #: i18n/dbStringsForTranslation.php:1703 i18n/dbStringsForTranslation.php:1703
 msgid "Level 1"
-msgstr ""
+msgstr "Niveau 1"
 
 #: i18n/dbStringsForTranslation.php:1704 i18n/dbStringsForTranslation.php:1704
 msgid "Level 2"
-msgstr ""
+msgstr "Niveau 2"
 
 #: i18n/dbStringsForTranslation.php:1711 i18n/dbStringsForTranslation.php:1711
 msgid "Not Yet Secure"
-msgstr ""
+msgstr "Pas encore sécurisé"
 
 #: i18n/dbStringsForTranslation.php:1712 i18n/dbStringsForTranslation.php:1712
 msgid "Secure"
-msgstr ""
+msgstr "Sécurisé"
 
 #: i18n/dbStringsForTranslation.php:1713 i18n/dbStringsForTranslation.php:1713
 msgid "Secure In Parts"
-msgstr ""
+msgstr "Sécurisé en parties"
 
 #: i18n/dbStringsForTranslation.php:1785 i18n/dbStringsForTranslation.php:1785
 msgid "Make Departments Public"
-msgstr ""
+msgstr "Rend les départements public"
 
 #: i18n/dbStringsForTranslation.php:1786 i18n/dbStringsForTranslation.php:1786
 msgid "Make Units Public"
-msgstr ""
+msgstr "Rend les unités publiques"
 
 #: i18n/dbStringsForTranslation.php:1789 i18n/dbStringsForTranslation.php:1789
 msgid "Message Bubble Auto Hide"
-msgstr ""
+msgstr "Masquer automatiquement des bulles de message"
 
 #: i18n/dbStringsForTranslation.php:1790 i18n/dbStringsForTranslation.php:1790
 msgid "Message Bubble Background Color"
-msgstr ""
+msgstr "Couleur d'arrière des bulles de message"
 
 #: i18n/dbStringsForTranslation.php:1791 i18n/dbStringsForTranslation.php:1791
 msgid "Message Bubble Width Type"
-msgstr ""
+msgstr "Type de largeur des bulles de message"
 
 #: i18n/dbStringsForTranslation.php:1834 i18n/dbStringsForTranslation.php:1834
 msgid "School Google Calendar ID"
-msgstr ""
+msgstr "ID du calendrier Google de l'école"
 
 #: i18n/dbStringsForTranslation.php:1835 i18n/dbStringsForTranslation.php:1835
 msgid "Session Duration"
-msgstr ""
+msgstr "Durée de la session"
 
 #: i18n/dbStringsForTranslation.php:1900 i18n/dbStringsForTranslation.php:1900
 msgid "Enable Gibbon-wide integration with the Google APIs?"
-msgstr ""
+msgstr "Activer l'intégration de google aux applications Google ?"
 
 #: i18n/dbStringsForTranslation.php:1901 i18n/dbStringsForTranslation.php:1901
 msgid ""
 "Enables a public listing of units, with teachers able to opt in to share "
 "units."
 msgstr ""
+"Activer la liste public des unités, avec lesquels les ensignants peuvent "
+"partager les unités."
 
 #: i18n/dbStringsForTranslation.php:1906 i18n/dbStringsForTranslation.php:1906
 msgid ""
 "Google Calendar ID for your school calendar. Only enables timetable "
 "integration when logging in via Google."
 msgstr ""
+"ID du calendrier Google pour le calendrier de l'école. Permet d'activer "
+"uniquement l'intégration d'un emploi du temps lorsque vous vous connecter "
+"via Google."
 
 #: i18n/dbStringsForTranslation.php:1917 i18n/dbStringsForTranslation.php:1917
 msgid ""
 "Message bubble background color in RGBA (e.g. 100,100,100,0.50). If blank, "
 "theme default will be used."
 msgstr ""
+"Couleur d'arrière plan de la bulle de message en RGBA (Ex. 100,100,100,100). "
+"Si vide, celui du thème par défaut sera utilisé."
 
 #: i18n/dbStringsForTranslation.php:1924 i18n/dbStringsForTranslation.php:1924
 msgid "Relative path to site logo (400 x 100px)"
-msgstr ""
+msgstr "Chemin relatif vers le logo du site (400px X 100px)"
 
 #: i18n/dbStringsForTranslation.php:1935 i18n/dbStringsForTranslation.php:1935
 msgid ""
 "Should department information be made available to the public, via the "
 "Gibbon homeoage?"
 msgstr ""
+"Le département d'information doit-il disponible au public, via la page "
+"d'accueil de Gibbon ?"
 
 #: i18n/dbStringsForTranslation.php:1938 i18n/dbStringsForTranslation.php:1938
 msgid "Should message bubble fade out automatically?"
-msgstr ""
+msgstr "Les bulles de message doivent-ils disparaitre automatiquement ?"
 
 #: i18n/dbStringsForTranslation.php:1944 i18n/dbStringsForTranslation.php:1944
 msgid "Should the message bubble be regular or wide?"
-msgstr ""
+msgstr "La bulle de message doit-elle être régulière ou sur le côté ?"
 
 #: i18n/dbStringsForTranslation.php:1957 i18n/dbStringsForTranslation.php:1957
 msgid ""
@@ -52815,19 +53080,25 @@ msgid ""
 "in this currency depends on your credit card gateway: please consult their "
 "support documentation."
 msgstr ""
+"Monnaie par défaut du système pour les transactions financières. Le support "
+"pour les paiements en ligne dans cette monnaie dépend de la passerelle de "
+"votre carte de crédit : Veuillez la documentation de leur support."
 
 #: i18n/dbStringsForTranslation.php:1984 i18n/dbStringsForTranslation.php:1984
 msgid ""
 "Time, in seconds, before system logs a user out. Should be less than PHP's "
 "session.gc_maxlifetime option."
 msgstr ""
+"Temps en seconde, avant que le système n'enregistre la déconnexxion d'un "
+"utilisateur. Cette valeur peut être inférieure à à la valeur de l'option "
+"session.gc_maxlifetime de PHP."
 
 #: index.php:503 modules/Planner/units_public.php:35
 #: modules/Planner/units_public_view.php:34 index.php:503
 #: modules/Planner/units_public.php:35
 #: modules/Planner/units_public_view.php:34
 msgid "Learn With Us"
-msgstr ""
+msgstr "Apprendre avec nous"
 
 #: index.php:506 index.php:506
 #, php-format
@@ -52835,61 +53106,71 @@ msgid ""
 "We are sharing some of our units of study with members of the public, so you "
 "can learn with us. Feel free to %1$sbrowse our public units%2$s."
 msgstr ""
+"Nous partageons quelques unes de nos unités avec le public, vous pouvez donc "
+"étudiez avec nous. Vous êtes libre de parcourir %1$snos unités publiques%2$s."
 
 #: index.php:1054 index.php:1057 index.php:1054 index.php:1057
 msgid "Theme by"
-msgstr ""
+msgstr "Thème conçu par"
 
 #: installer/install.php:186 installer/install.php:186
 msgid ""
 "This database will be created if it does not already exist. Collation should "
 "be utf8_general_ci."
 msgstr ""
+"Cette base de donnée sera créée si elle n'existe pas encore. La collation "
+"doit être utf8_general_ci."
 
 #: installer/install.php:223 installer/install.php:223
 msgid "Install Demo Data?"
-msgstr ""
+msgstr "Installer les données de démonstration ?"
 
 #: installer/install.php:391 installer/install.php:391
 msgid ""
 "../gibbon_demo.sql does not exist, so we will conintue without demo data."
 msgstr ""
+"Le fichier ../gibbon_demo.sql n'existe pas, l'installation continuerar sans "
+"les données de démonstation."
 
 #: installer/install.php:414 installer/install.php:414
 msgid ""
 "There were some issues installing the demo data, but we will conintue anyway."
 msgstr ""
+"Certains problèmes se sont produits pendant l'installation des données de "
+"démonstration, l'installation se poursuivra mais autrement."
 
 #: installer/install.php:502 installer/install.php:502
 msgid "Receive Support?"
-msgstr ""
+msgstr "Recevoir le soupport d'aide ?"
 
 #: installer/install.php:503 installer/install.php:503
 msgid "Join our mailing list and recieve a welcome email from the team."
 msgstr ""
+"Rejoindre notre newsletter et recevoir un email de bienvenue de la part de "
+"notre équipe."
 
 #: installer/install.php:708 installer/install.php:708
 msgid "Checking for Cutting Edge Code."
-msgstr ""
+msgstr "Vérifier la nature du code."
 
 #: installer/install.php:751 installer/install.php:754
 #: installer/install.php:751 installer/install.php:754
 msgid "Cutting Edge Code check successful."
-msgstr ""
+msgstr "Nature du code férifié aavec succès."
 
 #: installer/install.php:760 installer/install.php:760
 msgid "Cutting Edge Code check failed"
-msgstr ""
+msgstr "Vérification de la nature du code échoué."
 
 #: installer/install.php:868 modules/System Admin/systemSettings.php:940
 #: installer/install.php:868 modules/System Admin/systemSettings.php:940
 msgid "PAYPAL SUPPORTED"
-msgstr ""
+msgstr "ACCEPTE PAYPAL"
 
 #: installer/install.php:893 modules/System Admin/systemSettings.php:965
 #: installer/install.php:893 modules/System Admin/systemSettings.php:965
 msgid "OTHERS"
-msgstr ""
+msgstr "AUTRES"
 
 #: modules/Application Form/applicationForm.php:109
 #: modules/Application Form/applicationForm.php:109
@@ -52898,16 +53179,20 @@ msgid ""
 "as the payment gateway does not support the system's currency. Our "
 "admissions team will review your application and be in touch in due course."
 msgstr ""
+"Votre demande a été envouyée avec succès, mais le paiement n'a  pas être "
+"éffectué car la passerelle de paiement ne supporte pas la monnaie du "
+"système. Notre équipe d'adminssions revérifiera votre demande et vous "
+"préviendra en cas cours."
 
 #: modules/Departments/department.php:245
 #: modules/Departments/department.php:245
 msgid "Useful Reading"
-msgstr ""
+msgstr "A lire attentivement"
 
 #: modules/Finance/invoices_manage_processBulkExportContents.php:111
 #: modules/Finance/invoices_manage_processBulkExportContents.php:111
 msgid "Total Value"
-msgstr ""
+msgstr "Valeur total"
 
 #: modules/Finance/invoices_payOnline.php:49
 #: modules/Finance/invoices_payOnline.php:49
@@ -52915,34 +53200,36 @@ msgid ""
 "Your payment could not be made as the payment gateway does not support the "
 "system's currency."
 msgstr ""
+"Votre paiement n'as pas pu être éffectué car la passerelle de paiement ne "
+"supporte pas la monnaie du système."
 
 #: modules/Library/library_manage_catalog_add.php:76
 #: modules/Library/library_manage_catalog_edit.php:103
 #: modules/Library/library_manage_catalog_add.php:76
 #: modules/Library/library_manage_catalog_edit.php:103
 msgid "Catalog Type"
-msgstr ""
+msgstr "Type de catalogue"
 
 #: modules/Library/library_manage_catalog_add.php:471
 #: modules/Library/library_manage_catalog_edit.php:492
 #: modules/Library/library_manage_catalog_add.php:471
 #: modules/Library/library_manage_catalog_edit.php:492
 msgid "Replacement Year"
-msgstr ""
+msgstr "Année de remplacement"
 
 #: modules/Library/library_manage_catalog_add.php:472
 #: modules/Library/library_manage_catalog_edit.php:493
 #: modules/Library/library_manage_catalog_add.php:472
 #: modules/Library/library_manage_catalog_edit.php:493
 msgid "When is this item scheduled for replacement."
-msgstr ""
+msgstr "Quand est-ce que cet élément a-t-il été programmé pour remplacement."
 
 #: modules/Library/library_manage_catalog_add.php:494
 #: modules/Library/library_manage_catalog_edit.php:519
 #: modules/Library/library_manage_catalog_add.php:494
 #: modules/Library/library_manage_catalog_edit.php:519
 msgid "Replacement Cost"
-msgstr ""
+msgstr "Coût de remplacement"
 
 #: modules/Library/library_manage_catalog_add.php:499
 #: modules/Library/library_manage_catalog_edit.php:524
@@ -52950,29 +53237,29 @@ msgstr ""
 #: modules/Library/library_manage_catalog_edit.php:524
 #, php-format
 msgid "Numeric value of the replacement cost in %1$s."
-msgstr ""
+msgstr "Valeur numérique du coût de remplacement en %1$s."
 
 #: modules/Library/library_manage_catalog_add.php:502
 #: modules/Library/library_manage_catalog_edit.php:527
 #: modules/Library/library_manage_catalog_add.php:502
 #: modules/Library/library_manage_catalog_edit.php:527
 msgid "Numeric value of the replacement cost."
-msgstr ""
+msgstr "Valeur numérique du coût de remplacement."
 
 #: modules/Messenger/messenger_manage.php:70
 #: modules/Messenger/messenger_manage.php:70
 msgid "Search In"
-msgstr ""
+msgstr "Rechercher dans"
 
 #: modules/Messenger/messenger_manage.php:71
 #: modules/Messenger/messenger_manage.php:71
 msgid "Subject, body."
-msgstr ""
+msgstr "Sujet, Corps"
 
 #: modules/Messenger/messenger_manage.php:92
 #: modules/Messenger/messenger_manage.php:92
 msgid "Messages"
-msgstr ""
+msgstr "Messages"
 
 #: modules/Messenger/messenger_postQuickWall.php:75
 #: modules/Messenger/messenger_postQuickWall.php:75
@@ -52981,16 +53268,19 @@ msgid ""
 "without needing to set a range of options, making it a quick wal to post to "
 "the Message Wall."
 msgstr ""
+"Cette page vous permet de poster rapidement un message sur le mûr à "
+"l'attention de tous les utilisateurs, sans avoir besoin de définir des "
+"d'options, permettant de poster automatiquement sur le mûr de messagerie."
 
 #: modules/Planner/moduleFunctions.php:148
 #: modules/Planner/moduleFunctions.php:148
 msgid "Unstar"
-msgstr ""
+msgstr "Sans étoile"
 
 #: modules/Planner/moduleFunctions.php:174
 #: modules/Planner/moduleFunctions.php:174
 msgid "This is a Star Block"
-msgstr ""
+msgstr "Bloc d'étoile"
 
 #: modules/Planner/outcomes_import.php:71
 #: modules/Planner/outcomes_import.php:71
@@ -52998,28 +53288,32 @@ msgid ""
 "This page allows you to import outcomes from a CSV file, based on your "
 "access level in Manage Outcomes."
 msgstr ""
+"Cette page vous permet d'importer les résultats à partir d'un fichier CSV, "
+"basé sur votre niveau d'accès dans l'administration des Résultas."
 
 #: modules/Planner/outcomes_import.php:140
 #: modules/Planner/outcomes_import.php:140
 msgid "School or Learning Area"
-msgstr ""
+msgstr "Ecole ou espace 'apprentissage"
 
 #: modules/Planner/outcomes_import.php:143
 #: modules/Planner/outcomes_import.php:143
 msgid "Learning Area name, or blank if scope is School"
 msgstr ""
+"Intitulé de l'espace d'apprentissage, ou laisser vide si non necessaire pour "
+"l'école"
 
 #: modules/Planner/outcomes_import.php:155
 #: modules/Planner/outcomes_import.php:155
 #, php-format
 msgid "Comma separated list, e.g: %1$s"
-msgstr ""
+msgstr "Liste d'éléments séparés, Ex : %1$s"
 
 #: modules/Planner/outcomes_import.php:210
 #: modules/Planner/outcomes_import.php:210
 #, php-format
 msgid "Outcome with name %1$s had some information malformations."
-msgstr ""
+msgstr "Le résultat intitulé %1$s a certaines informations déformations."
 
 #: modules/Planner/outcomes_import.php:218
 #: modules/Planner/outcomes_import.php:218
@@ -53027,6 +53321,9 @@ msgid ""
 "No useful outcomes were detected in the import file (perhaps they did not "
 "meet minimum requirements), so the import will be aborted."
 msgstr ""
+"Auucun résultats utiles n'ont été détectés dans le fichier d'inportation "
+"(peut être parce qu'ils ne remplissent pas les codtions minimales requises), "
+"l'importation sera donc abandonée."
 
 #: modules/Planner/outcomes_import.php:224
 #: modules/Planner/outcomes_import.php:224
@@ -53034,140 +53331,148 @@ msgid ""
 "Some outcomes could not be successfully read or used, so the import will be "
 "aborted."
 msgstr ""
+"Certains résultats n'ont pu être lus et utilisé correctement, l'importation "
+"sera donc abandonnée."
 
 #: modules/Planner/outcomes_import.php:230
 #: modules/Planner/outcomes_import.php:230
 msgid "All outcomes could be read and used, so the import will proceed."
 msgstr ""
+"Tout les résultats peuvent être lus et utilisés, l'importation peut donc se "
+"poursuivre"
 
 #: modules/Planner/outcomes_import.php:250
 #: modules/Planner/outcomes_import.php:296
 #: modules/Planner/outcomes_import.php:250
 #: modules/Planner/outcomes_import.php:296
 msgid "There was an error creating outcome:"
-msgstr ""
+msgstr "Une erreur est survenue pendant la création du résultat :"
 
 #: modules/Planner/outcomes_import.php:301
 #: modules/Planner/outcomes_import.php:301
 #, php-format
 msgid "Outcome %1$s was successfully created."
-msgstr ""
+msgstr "Le résultat intitulé %1$s a été créé avec succès."
 
 #: modules/Planner/units_add.php:184 modules/Planner/units_edit.php:272
 #: modules/Planner/units_public_view.php:121 modules/Planner/units_add.php:184
 #: modules/Planner/units_edit.php:272
 #: modules/Planner/units_public_view.php:121
 msgid "License"
-msgstr ""
+msgstr "License"
 
 #: modules/Planner/units_add.php:185 modules/Planner/units_edit.php:273
 #: modules/Planner/units_add.php:185 modules/Planner/units_edit.php:273
 msgid "Under what conditions can this work be reused?"
 msgstr ""
+"Sous les termes de quelles conditions ce travail peut-il être réutilisé ?"
 
 #: modules/Planner/units_add.php:190 modules/Planner/units_edit.php:278
 #: modules/Planner/units_add.php:190 modules/Planner/units_edit.php:278
 msgid "Copyright"
-msgstr ""
+msgstr "Copyright"
 
 #: modules/Planner/units_add.php:191 modules/Planner/units_edit.php:279
 #: modules/Planner/units_add.php:191 modules/Planner/units_edit.php:279
 msgid "Creative Commons BY"
-msgstr ""
+msgstr "Creative Commons PAR"
 
 #: modules/Planner/units_add.php:192 modules/Planner/units_edit.php:280
 #: modules/Planner/units_add.php:192 modules/Planner/units_edit.php:280
 msgid "Creative Commons BY-SA"
-msgstr ""
+msgstr "Creative Commons PAR-SA"
 
 #: modules/Planner/units_add.php:193 modules/Planner/units_edit.php:281
 #: modules/Planner/units_add.php:193 modules/Planner/units_edit.php:281
 msgid "Creative Commons BY-SA-NC"
-msgstr ""
+msgstr "Creative Commons PAR-SA-NC"
 
 #: modules/Planner/units_add.php:194 modules/Planner/units_edit.php:282
 #: modules/Planner/units_add.php:194 modules/Planner/units_edit.php:282
 msgid "Public Domain"
-msgstr ""
+msgstr "Domaine Public"
 
 #: modules/Planner/units_add.php:204 modules/Planner/units_edit.php:292
 #: modules/Planner/units_add.php:204 modules/Planner/units_edit.php:292
 msgid "Shared Publically"
-msgstr ""
+msgstr "Partagé Publiquement"
 
 #: modules/Planner/units_add.php:205 modules/Planner/units_edit.php:293
 #: modules/Planner/units_add.php:205 modules/Planner/units_edit.php:293
 msgid ""
 "Share this unit via the public listing of units? Useful for building MOOCS."
 msgstr ""
+"Partager cette unité via la liste des unités publiques ? Utiles pour la "
+"construction de MOOCS."
 
 #: modules/Planner/units_edit_deploy.php:644
 #: modules/Planner/units_edit_working.php:369
 #: modules/Planner/units_edit_deploy.php:644
 #: modules/Planner/units_edit_working.php:369
 msgid "Unit Blocks"
-msgstr ""
+msgstr "Blocs d'unité"
 
 #: modules/Planner/units_edit_deploy.php:651
 #: modules/Planner/units_edit_working.php:376
 #: modules/Planner/units_edit_deploy.php:651
 #: modules/Planner/units_edit_working.php:376
 msgid "Star Blocks"
-msgstr ""
+msgstr "Blocs d'étoile"
 
 #: modules/Planner/units_public_view.php:34
 #: modules/Planner/units_public_view.php:34
 msgid "View Unit"
-msgstr ""
+msgstr "Consulter l'unité"
 
 #: modules/Planner/units_public_view.php:98
 #: modules/Planner/units_public_view.php:98
 msgid "Content"
-msgstr ""
+msgstr "Contenu"
 
 #: modules/Planner/units_public_view.php:124
 #: modules/Planner/units_public_view.php:124
 msgid "This work is shared under the following license:"
-msgstr ""
+msgstr "Ce travail est partagé sous les termes de la license suivante :"
 
 #: modules/School Admin/messengerSettings.php:64
 #: modules/School Admin/messengerSettings.php:64
 msgid "SMS Settings"
-msgstr ""
+msgstr "Paramètres SMS"
 
 #: modules/School Admin/messengerSettings.php:156
 #: modules/School Admin/messengerSettings.php:156
 msgid "Message Wall Settings"
-msgstr ""
+msgstr "Paramètres du mûr de Messagerie"
 
 #: modules/School Admin/messengerSettings.php:176
 #: modules/School Admin/messengerSettings.php:176
 msgid "Regular"
-msgstr ""
+msgstr "Regulier"
 
 #: modules/School Admin/messengerSettings.php:177
 #: modules/School Admin/messengerSettings.php:177
 msgid "Wide"
-msgstr ""
+msgstr "Sur le côté"
 
 #: modules/School Admin/plannerSettings.php:146
 #: modules/School Admin/plannerSettings.php:146
 msgid "Access Settings"
-msgstr ""
+msgstr "Paramètres d'accès"
 
 #: modules/Students/student_view.php:176 modules/Students/student_view.php:176
 msgid "Sort By"
-msgstr ""
+msgstr "Trier par"
 
 #: modules/System Admin/module_manage.php:192
 #: modules/System Admin/module_manage.php:193
 msgid "Module error due to incorrect manifest file or folder name."
 msgstr ""
+"Erreur de module due à un fichier manifeste ou un nom de dossier incorrect."
 
 #: modules/System Admin/module_manage.php:252
 #: modules/System Admin/module_manage.php:253
 msgid "Orphaned Modules"
-msgstr ""
+msgstr "Modules orphelins"
 
 #: modules/System Admin/module_manage.php:255
 #: modules/System Admin/module_manage.php:256
@@ -53175,26 +53480,28 @@ msgid ""
 "These modules are installed in the database, but are missing from within the "
 "file system."
 msgstr ""
+"Ces modules sont installés dans la base de donnée, mais les fichiers système "
+"requis n'existent pas."
 
 #: modules/System Admin/moduleFunctions.php:76
 #: modules/System Admin/moduleFunctions.php:76
 msgid "Checking for Gibbon updates."
-msgstr ""
+msgstr "Vérification de mises à jour pour Gibbon."
 
 #: modules/System Admin/theme_manage.php:45
 #: modules/System Admin/theme_manage.php:45
 msgid "Uninstall was successful."
-msgstr ""
+msgstr "Désinstallation éffectuée avec succès."
 
 #: modules/System Admin/theme_manage.php:207
 #: modules/System Admin/theme_manage.php:207
 msgid "Theme Error"
-msgstr ""
+msgstr "Erreur de Thème"
 
 #: modules/System Admin/theme_manage.php:296
 #: modules/System Admin/theme_manage.php:296
 msgid "Orphaned Themes"
-msgstr ""
+msgstr "Thèmes orphelins"
 
 #: modules/System Admin/theme_manage.php:299
 #: modules/System Admin/theme_manage.php:299
@@ -53202,26 +53509,31 @@ msgid ""
 "These themes are installed in the database, but are missing from within the "
 "file system."
 msgstr ""
+"Ces thèmes sont installés dans la base de donnée, mais les fichiers système "
+"requis n'existent pas."
 
 #: modules/System Admin/update.php:54 modules/System Admin/update.php:54
 msgid ""
 "Some aspects of your request failed, but others were successful. The "
 "elements that failed are shown below:"
 msgstr ""
+"Certains aspects de votre requête ont échoué, mais d'autres au contraire ont "
+"été exécuttés avec succès. Les éléments ayant échoués sont affichés ci-"
+"dessous :"
 
 #: modules/Timetable/moduleFunctions.php:711
 #: modules/Timetable/moduleFunctions.php:1751
 #: modules/Timetable/moduleFunctions.php:711
 #: modules/Timetable/moduleFunctions.php:1751
 msgid "Space Booking"
-msgstr ""
+msgstr "Réservation d'espace"
 
 #: modules/Timetable/moduleFunctions.php:1769
 #: modules/Timetable/moduleFunctions.php:730
 #: modules/Timetable/moduleFunctions.php:1769
 #, php-format
 msgid "Week %1$s"
-msgstr ""
+msgstr "Semaine %1$s"
 
 #: modules/User Admin/import_users.php:147 Admin/import_users.php:150
 #: Admin/import_users.php:153 Admin/import_users.php:156
@@ -53230,30 +53542,49 @@ msgstr ""
 #: modules/User Admin/import_users.php:153
 #: modules/User Admin/import_users.php:156
 msgid "Mobile, Home, Work, Fax, Pager, Other"
-msgstr ""
+msgstr "Mobile, Domicile, Bureau, Fax, Pager, Autre"
 
 #: preferences.php:309 preferences.php:309
 msgid "Receive Email Notifications?"
-msgstr ""
+msgstr "Recevoir les notifications d'Email"
 
 #: preferences.php:310 preferences.php:310
 msgid "Notifications can always be viewed on screen."
-msgstr ""
+msgstr "Les notifications peuvent toujours être consultées sur l'écran."
 
 #: update.php:74 update.php:74
 msgid ""
 "Your request failed because your inputs were invalid, or no update was "
 "required."
 msgstr ""
+"Votre requête a échoué car vos saisies sont invalides, ou aucune mises à "
+"jour n'était requise."
 
 #: update.php:98 update.php:111 update.php:143 update.php:208 update.php:221
 #: update.php:235 update.php:98 update.php:111 update.php:143 update.php:208
 #: update.php:221 update.php:235
 msgid "Some aspects of your update failed."
-msgstr ""
+msgstr "Certains aspects de votre mise à jour ont échoué."
 
 #: functions.php:935
 msgid "Notification"
+msgstr ""
+
+#: modules/School Admin/schoolYearTerm_manage_add.php:116
+#: modules/User Admin/user_manage_add.php:249
+msgid "Value already in use!"
+msgstr ""
+
+#: modules/Staff/staff_view.php:70
+msgid "All Staff"
+msgstr ""
+
+#: modules/Students/report_students_IDCards.php:155
+#, php-format
+msgid ""
+"These cards are designed to be printed to credit-card size, however, they "
+"will look bigger on screen. To print in high quality (144dpi) and at true "
+"size, save the cards as an image, and print to 50% scale."
 msgstr ""
 
 #: modules/Timetable/moduleFunctions.php:692

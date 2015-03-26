@@ -320,7 +320,7 @@ else {
 					}
 					
 					if ($subpage=="" AND ($hook=="" OR $module=="" OR $action=="")) {
-						$subpage="Summary" ;
+						$subpage="Overview" ;
 					}
 					
 					if ($search!="") {
@@ -338,12 +338,16 @@ else {
 						}
 					print "</h2>" ;
 					
-					if ($subpage=="Summary") {
+					if ($subpage=="Overview") {
 						if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==TRUE) {
 							print "<div class='linkTop'>" ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>" . _('Edit') . "<img style='margin: 0 0 -4px 5px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "</div>" ;
 						}
+						
+						print "<h4>" ;
+							print _("General Information") ;
+						print "</h4>" ;
 					
 						//Medical alert!
 						$alert=getHighestMedicalRisk( $gibbonPersonID, $connection2 ) ;
@@ -536,30 +540,64 @@ else {
 									print "</td>" ;
 								print "</tr>" ;
 							}
-							//Get list of teachers
-							try {
-								$dataDetail=array("gibbonPersonID"=>$gibbonPersonID); 
-								$sqlDetail="SELECT DISTINCT teacher.surname, teacher.preferredName, teacher.email FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email ;" ;
-								$resultDetail=$connection2->prepare($sqlDetail);
-								$resultDetail->execute($dataDetail);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							if ($resultDetail->rowCount()>0) {
-								print "<tr>" ;
-									print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
-										print "<span style='font-size: 115%; font-weight: bold'>" . _('Teachers') . "</span><br/>" ;
-										print "<ul>" ;
-											while ($rowDetail=$resultDetail->fetch()) {
-												print "<li>" . htmlPrep(formatName("", $rowDetail["preferredName"], $rowDetail["surname"], "Student", FALSE) . " <" . $rowDetail["email"] . ">") . "</li>" ;
-											}
-										print "</ul>" ;
-									print "</td>" ;
-								print "</tr>" ;
-							}
-							
 						print "</table>" ;
+						
+						//Get list of teachers
+						print "<h4>" ;
+							print _("Student's Teachers") ;
+						print "</h4>" ;
+						try {
+							$dataDetail=array("gibbonPersonID"=>$gibbonPersonID); 
+							$sqlDetail="SELECT DISTINCT teacher.surname, teacher.preferredName, teacher.email FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email ;" ;
+							$resultDetail=$connection2->prepare($sqlDetail);
+							$resultDetail->execute($dataDetail);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+						if ($resultDetail->rowCount()<1) {
+							print "<div class='error'>" ;
+								print _("There are no records to display.") ;
+							print "</div>" ;
+						}
+						else {
+							print "<ul>" ;
+								while ($rowDetail=$resultDetail->fetch()) {
+									print "<li>" . htmlPrep(formatName("", $rowDetail["preferredName"], $rowDetail["surname"], "Student", FALSE) . " <" . $rowDetail["email"] . ">") . "</li>" ;
+								}
+							print "</ul>" ;
+						}
+						
+						//Show timetable 
+						print "<a name='timetable'></a>" ;
+						print "<h4>" ;
+							print _("Timetable") ;
+						print "</h4>" ;
+						if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php")==TRUE) {
+							if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php")==TRUE) {
+								$role=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2) ;
+								if ($role=="Student" OR $role=="Staff") {
+									print "<div class='linkTop'>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=$role'>" . _('Edit') . "<img style='margin: 0 0 -4px 5px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+									print "</div>" ;
+								}
+							}
+					
+							include "./modules/Timetable/moduleFunctions.php" ;
+							$ttDate=NULL ;
+							if (isset($_POST["ttDate"])) {
+								$ttDate=dateConvertToTimestamp(dateConvert($guid, $_POST["ttDate"]));
+							}
+							$tt=renderTT($guid, $connection2,$gibbonPersonID, "", FALSE, $ttDate, "/modules/Students/student_view_details.php", "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents#timetable") ;
+							if ($tt!=FALSE) {
+								print $tt ;
+							}
+							else {
+								print "<div class='error'>" ;
+									print _("There are no records to display.") ;
+								print "</div>" ;
+							}
+						}
 					}
 					else if ($subpage=="Personal") {
 						if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==TRUE) {
@@ -1700,7 +1738,7 @@ else {
 										print "</th>" ;
 										print "<th>" ;
 											print _("Title") . "<br/>" ;
-											print "<span style='font-size: 75%; font-style: italic'>" . _('Summary') . "</span>" ;
+											print "<span style='font-size: 75%; font-style: italic'>" . _('Overview') . "</span>" ;
 										print "</th>" ;
 										print "<th>" ;
 											print _("Note Taker") ;
@@ -2898,10 +2936,10 @@ else {
 					$_SESSION[$guid]["sidebarExtra"].="<h4>" . _('Personal') . "</h4>" ;
 					$_SESSION[$guid]["sidebarExtra"].="<ul class='moduleMenu'>" ;
 					$style="" ;
-					if ($subpage=="Summary") {
+					if ($subpage=="Overview") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Summary'>" . _('Summary') . "</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Overview'>" . _('Overview') . "</a></li>" ;
 					$style="" ;
 					if ($subpage=="Personal") {
 						$style="style='font-weight: bold'" ;
