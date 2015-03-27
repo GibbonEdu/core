@@ -39,6 +39,10 @@ Messenger: added ability to target messenges based on transport type
 Messenger: fixed minor error in recipient report
 	Edited file /modules/Messenger/messenger_manage.php
 
+Students: added transport notes field
+	Edited table gibbonPerson
+	Edited files /modules/User Admin/user_manage_add*.php, user_manage_edit*.php
+	Edited file /modules/Students/student_view_details.php
 
 v9.1.00
 -------

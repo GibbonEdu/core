@@ -1237,6 +1237,15 @@ else {
 			</script>
 			<tr>
 				<td> 
+					<b><?php print _('Transport Notes') ?></b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<textarea name="transportNotes" id="transportNotes" rows=4 value="" style="width: 300px"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td> 
 					<b><?php print _('Locker Number') ?></b><br/>
 					<span style="font-size: 90%"></span>
 				</td>

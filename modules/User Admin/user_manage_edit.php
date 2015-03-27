@@ -1566,6 +1566,15 @@ else {
 								$( "#transport" ).autocomplete({source: availableTags});
 							});
 						</script>
+						<tr>
+							<td> 
+								<b><?php print _('Transport Notes') ?></b><br/>
+								<span style="font-size: 90%"><i></i></span>
+							</td>
+							<td class="right">
+								<textarea name="transportNotes" id="transportNotes" rows=4 style="width: 300px"><?php print htmlPrep($row["transportNotes"]) ?></textarea>
+							</td>
+						</tr>
 					<?php
 					}
 					if ($student OR $staff) {

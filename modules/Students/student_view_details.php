@@ -1014,12 +1014,16 @@ else {
 								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>" . _('Transport') . "</span><br/>" ;
 									print $row["transport"] ;
+									if ($row["transportNotes"]!="") {
+										print "<br/>" ;
+										print $row["transportNotes"] ; 
+									}
 								print "</td>" ;
-								print "<td style='width: 33%'>" ;
+								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>" . _('Vehicle Registration') . "</span><br/>" ;
 									print $row["vehicleRegistration"] ;
 								print "</td>" ;
-								print "<td style='width: 33%'>" ;
+								print "<td style='width: 33%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>" . _('Locker Number') . "</span><br/>" ;
 									print $row["lockerNumber"] ;
 								print "</td>" ;

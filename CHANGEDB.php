@@ -675,6 +675,7 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 INSERT INTO `gibbonAction` (`gibbonModuleID` ,`name` ,`precedence` ,`category` ,`description` ,`URLList` ,`entryURL` ,`defaultPermissionAdmin` ,`defaultPermissionTeacher` ,`defaultPermissionStudent` ,`defaultPermissionParent` ,`defaultPermissionSupport` ,`categoryPermissionStaff` ,`categoryPermissionStudent` ,`categoryPermissionParent` ,`categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Messenger'), 'New Message_transport_parents', 0, '', 'Send messages parents of users by transport field.', 'messenger_post.php', 'messenger_post.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'N', 'N');end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Messenger' AND gibbonAction.name='New Message_transport_parents'));end
 ALTER TABLE `gibbonMessengerTarget` CHANGE `type` `type` ENUM('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonPerson` ADD `transportNotes` TEXT NOT NULL AFTER `transport`;end
 ";
 
 ?>
