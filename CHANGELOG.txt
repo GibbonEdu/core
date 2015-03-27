@@ -31,6 +31,14 @@ Students: added timetable to Summary view, which is now called Overview...for fe
 Staff: added timetable to Summary view, which is now called Overview...for fewer clicks
 	Edited file /modules/Staff/staff_view_details.php
 
+Messenger: added ability to target messenges based on transport type
+	New values in tables gibbonAction, gibbonPermission
+	Edited table gibbonMessengerTarget
+	Edited files /modules/Messenger/messenger_post*.php
+
+Messenger: fixed minor error in recipient report
+	Edited file /modules/Messenger/messenger_manage.php
+
 
 v9.1.00
 -------
