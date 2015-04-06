@@ -1564,6 +1564,7 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 	}
 	
 	$output.="<a name='" . $id . "editor'>" ;
+	
 	$output.="<div id='editor-toolbar'>" ;
 		$output.="<a style='margin-top:-4px' id='" . $id . "edButtonHTML' class='hide-if-no-js edButtonHTML'>HTML</a>" ;
 		$output.="<a style='margin-top:-4px' id='" . $id . "edButtonPreview' class='active hide-if-no-js edButtonPreview'>" . _('Visual') . "</a>" ;
@@ -1612,7 +1613,7 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 						if ($allowUpload==true) {
 							$output.="<a title='" . _('Create & Insert New Resource') . "' style='float: left' class='" . $id . "show_hideAdd' onclick='\$(\"." .$id . "resourceAddSlider\").load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Resources/resources_add_ajax.php?alpha=" . $resourceAlphaSort . "&" . $initialFilter . "\",\"id=" . $id . "&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/upload_mini.png' alt='" . _('Create & Insert New Resource') . "' onclick='return false;' /></a>" ;
 						}
-						$output.="<div style='float: left; padding-top:1px; margin-right: 5px'><u>" . _('Quick Add') . "</u>:</div> " ;
+						$output.="<div style='float: left; padding-top:1px; margin-right: 5px'><u>" . _('Quick File Upload') . "</u>:</div> " ;
 						$output.="<a title='" . _('Quick Add') . "' style='float: left' class='" . $id . "show_hideQuickAdd' onclick='\$(\"." .$id . "resourceQuickSlider\").load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Resources/resources_addQuick_ajax.php?alpha=" . $resourceAlphaSort . "&" . $initialFilter . "\",\"id=" . $id . "&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_new_mini.png' alt='" . _('Quick Add') . "' onclick='return false;' /></a>" ;
 					$output.="</div>" ;
 				}
@@ -1648,6 +1649,7 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 		}
 		
 		$output.="<div id='editorcontainer' style='margin-top: 4px'>" ;
+			
 			$output.="<textarea class='tinymce' name='" . $id . "' id='" . $id . "' style='height: " . ($rows*18) . "px; width: 100%; margin-left: 0px'>" . htmlPrep($value) . "</textarea>" ;
 			if ($required) {
 				$output.="<script type='text/javascript'>" ;

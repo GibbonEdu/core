@@ -44,6 +44,20 @@ Students: added transport notes field
 	Edited files /modules/User Admin/user_manage_add*.php, user_manage_edit*.php
 	Edited file /modules/Students/student_view_details.php
 
+Timetable: fixed PHP notice issue when viewing individual with all users option on
+	Edited file /modules/Timetable/tt_view.php
+
+General: improved Quick File Upload experience in rich text editor
+	Edited file /functions.php
+	Edited files /modules/Resources/resources_addQuick_ajax*.php
+	
+System Admin: improved translatability of Y/N files in system settings
+	Edited file /modules/System Admin/systemSettings.php
+
+Messenger: added publish dates to manage listing
+	Edited file /modules/Messenger/messenger_manage.php
+
+
 v9.1.00
 -------
 Installer: removed orphaned debug output

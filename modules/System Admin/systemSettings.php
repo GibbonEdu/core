@@ -253,7 +253,7 @@ else {
 					<span style="font-size: 90%"><i><?php print _($row["description"]) ?>. <?php print _('This value cannot be changed.') ?></i></span>
 				</td>
 				<td class="right">
-					<input readonly value='<?php print _($row["value"]) ?>'  style="width: 300px"\>
+					<input readonly value='<?php print ynExpander($row["value"]) ?>'  style="width: 300px"\>
 				</td>
 			</tr>
 			<tr>
@@ -278,10 +278,10 @@ else {
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>Y</option>" ;
+						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>N</option>" ;
+						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
 						?>			
 					</select>
 				</td>
@@ -607,10 +607,10 @@ else {
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>Y</option>" ;
+						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>N</option>" ;
+						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
 						?>			
 					</select>
 				</td>
@@ -637,10 +637,10 @@ else {
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>Y</option>" ;
+						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>N</option>" ;
+						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
 						?>			
 					</select>
 				</td>
@@ -667,10 +667,10 @@ else {
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>Y</option>" ;
+						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>N</option>" ;
+						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
 						?>			
 					</select>
 				</td>
@@ -992,10 +992,10 @@ else {
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>Y</option>" ;
+						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>N</option>" ;
+						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
 						?>			
 					</select>
 				</td>

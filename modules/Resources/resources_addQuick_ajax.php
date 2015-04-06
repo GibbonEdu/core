@@ -39,28 +39,6 @@ include $_SESSION[$guid]["absolutePath"] . "/modules/" . $_SESSION[$guid]["modul
 //Setup variables
 $output="" ;
 $id=$_GET["id"] ;
-$action=NULL ;
-if (isset($_GET["action"])) {
-	$action=$_GET["action"] ;
-}
-$category=NULL ;
-if (isset($_GET["category"])) {
-	$category=$_GET["category"] ;
-}
-$purpose=NULL ;
-if (isset($_GET["purpose"])) {
-	$purpose=$_GET["purpose"] ;
-}
-$tag=NULL ;
-if (isset($_GET["tag" . $id])) {
-	$tag=$_GET["tag" . $id] ;
-}
-$gibbonYearGroupID=NULL ;
-if (isset($_GET["gibbonYearGroupID"])) {
-	$gibbonYearGroupID=$_GET["gibbonYearGroupID"] ;
-}
-$allowUpload=$_GET["allowUpload"] ;
-$alpha=$_GET["alpha"] ;
 
 $output.="<script type='text/javascript'>" ;
 	$output.="$(document).ready(function() {" ; 
@@ -89,124 +67,60 @@ $output.="<table cellspacing='0' style='width: 100%'>" ;
 	$output.="<tr id='" . $id . "resourceQuick'>" ;
 		$output.="<td colspan=2 style='padding-top: 0px'>" ; 
 			$output.="<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formReset(); \$(\"." .$id . "resourceQuickSlider\").slideUp();'><img title='" . _('Close') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a></div>" ;
-			$output.="<h3 style='margin-top: 0px; font-size: 140%'>" . _('Quick Insert') . "</h3>" ;
-			$output.="<p>" . _('Use the form below to quickly add a resource to this field, without having to set up a shared resource in Gibbon. If the addition is successful, then it will be automatically inserted into your work above. <b>You are encouraged to create shared resources whenever you think a resource might be useful to others.') . "</b></p>" ;
+			$output.="<h3 style='margin-top: 0px; font-size: 140%'>" . _('Quick File Upload') . "</h3>" ;
 			$output.="<form id='" . $id . "ajaxForm'>" ;
 				$output.="<table cellspacing='0' style='width: 100%'>" ;
 					$output.="<tr><td style='width: 30%'></td><td></td></tr>" ;
 					$output.="<tr>" ;
-						$output.="<td colspan=2> " ;
-							$output.="<h4>" . _('Resource Contents') . "</h4>" ;
-						$output.="</td>" ;
-					$output.="</tr>" ;
-					
-					$output.="<script type='text/javascript'>" ;
-						$output.="$(document).ready(function(){" ;
-							$output.="$('#" . $id . "resourceFile').css('display','none');" ;
-							$output.="$('#" . $id . "resourceLink').css('display','none');" ;
-									
-							$output.="$('#" . $id . "type').change(function(){" ;
-								$output.="if ($('select." . $id . "type option:selected').val()=='Link' ) {" ;
-									$output.="$('#" . $id . "resourceFile').css('display','none');" ;
-									$output.="$('#" . $id . "resourceLink').slideDown('fast', $('#" . $id . "resourceLink').css('display','table-row'));" ;
-									$output.=$id . "file.disable();" ;
-									$output.=$id . "link.enable();" ;
-								$output.="} else if ($('select." . $id . "type option:selected').val()=='File' ) {" ;
-									$output.="$('#" . $id . "resourceLink').css('display','none');" ;
-									$output.="$('#" . $id . "resourceFile').slideDown('fast', $('#" . $id . "resourceFile').css('display','table-row'));" ;
-									$output.=$id . "file.enable();" ;
-									$output.=$id . "link.disable();" ;
-								$output.="}" ;
-								$output.="else {" ;
-									$output.="$('#" . $id . "resourceFile').css('display','none');" ;
-									$output.="$('#" . $id . "resourceLink').css('display','none');" ;
-									$output.=$id . "file.disable();" ;
-									$output.=$id . "link.disable();" ;
-								$output.="}" ;
-							$output.="});" ;
-						$output.="});" ;
-					$output.="</script>" ;
-					
-					$output.="<tr>" ;
 						$output.="<td>" ;
-							$output.="<b>" . _('Type') . " *</b><br/>" ;
+							$output.="<b>" . _("Insert Images As Links?") . "*</b><br/>" ;
+							$output.="<span style=\"font-size: 90%\"><i>" . _('If not, they will be inserted as images.') . "</i></span>" ;
 						$output.="</td>" ;
-						$output.="<td class='right'>" ;
-							$output.="<select name='" . $id . "type' id='" . $id . "type' class='" . $id . "type' style='width: 302px'>" ;
-								$output.="<option value='Please select...'>Please select...</option>" ;
-								$output.="<option id='type' name='type' value='File'>" . _('File') . "</option>" ;
-								$output.="<option id='type' name='type' value='Link'>" . _('Link') . "</option>" ;
+						$output.="<td class=\"right\">" ;
+							$output.="<select name=\"imagesAsLinks\" id=\"imagesAsLinks\" style=\"width: 302px\">" ;
+								$output.="<option value='Y'>" . ynExpander('Y') . "</option>" ;
+								$output.="<option value='N'>" . ynExpander('N') . "</option>" ;			
 							$output.="</select>" ;
-							$output.="<script type='text/javascript'>" ;
-								$output.="var " . $id . "type=new LiveValidation('" . $id . "type');" ;
-								$output.="" . $id . "type.add(Validate.Inclusion, { within: ['File','Link'], failureMessage: 'Select something!'});" ;
-							$output.="</script>" ;
 						$output.="</td>" ;
 					$output.="</tr>" ;
-					$output.="<tr id='" . $id . "resourceFile'>" ;
-						$output.="<td>" ;
-							$output.="<b>" . _('File') . " *</b><br/>" ;
-						$output.="</td>" ;
-						$output.="<td class='right'>" ;
-							$output.="<input type='file' name='" . $id . "file' id='" . $id . "file'><br/><br/>" ;
-							$output.="<script type='text/javascript'>" ;
-								//Get list of acceptable file extensions
-								try {
-									$dataExt=array(); 
-									$sqlExt="SELECT * FROM gibbonFileExtension" ;
-									$resultExt=$connection2->prepare($sqlExt);
-									$resultExt->execute($dataExt);
-								}
-								catch(PDOException $e) { }
-								$ext="" ;
-								while ($rowExt=$resultExt->fetch()) {
-									$ext=$ext . "'." . $rowExt["extension"] . "'," ;
-								}
-								$output.="var " . $id . "file=new LiveValidation('" . $id . "file');" ;
-								$output.=$id . "file.add( Validate.Inclusion, { within: [" . $ext . "], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );" ;
-								$output.=$id . "file.add(Validate.Presence);" ;
-								$output.=$id . "file.disable();" ;
-							$output.="</script>" ;
-							$output.=getMaxUpload() ;
-						$output.="</td>" ;
-					$output.="</tr>" ;
-					$output.="<tr id='" . $id . "resourceLink'>" ;
-						$output.="<td>" ;
-							$output.="<b>" . _('Link') . " *</b><br/>" ;
-						$output.="</td>" ;
-						$output.="<td class='right'>" ;
-							$output.="<input name='" . $id . "link' id='" . $id . "link' maxlength=255 value='' type='text' style='width: 300px'>" ;
-							$output.="<script type='text/javascript'>" ;
-								$output.="var " . $id . "link=new LiveValidation('" . $id . "link');" ;
-								$output.=$id . "link.add(Validate.Presence);" ;
-								$output.=$id . "link.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: 'Must start with http://' } );" ;
-								$output.=$id . "link.disable();" ;
-							$output.="</script>" ;	
-						$output.="</td>" ;
-					$output.="</tr>" ;
+					
+					
+					//Get list of acceptable file extensions
+					try {
+						$dataExt=array(); 
+						$sqlExt="SELECT * FROM gibbonFileExtension" ;
+						$resultExt=$connection2->prepare($sqlExt);
+						$resultExt->execute($dataExt);
+					}
+					catch(PDOException $e) { }
+					$ext="" ;
+					while ($rowExt=$resultExt->fetch()) {
+						$ext=$ext . "'." . $rowExt["extension"] . "'," ;
+					}
+							
+					//Produce 4 file input boxes
+					for ($i=1; $i<5; $i++) {
+						$output.="<tr id='" . $id . "resourceFile'>" ;
+							$output.="<td>" ;
+								$output.="<b>" . sprintf(_('File %1$s'), $i) . "</b><br/>" ;
+							$output.="</td>" ;
+							$output.="<td class='right'>" ;
+								$output.="<input type='file' name='" . $id . "file" . $i . "' id='" . $id . "file" . $i . "' style='max-width: 235px'><br/><br/>" ;
+								$output.="<script type='text/javascript'>" ;
+								$output.="var " . $id . "file" . $i . "=new LiveValidation('" . $id . "file" . $i . "');" ;
+									$output.=$id . "file" . $i . ".add( Validate.Inclusion, { within: [" . $ext . "], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );" ;
+								$output.="</script>" ;
+							$output.="</td>" ;
+						$output.="</tr>" ;
+					}
 					$output.="<tr>" ;
-						$output.="<td> " ;
-							$output.="<b>" . _('Name') ." *</b><br/>" ;
-							$output.="<span style='font-size: 90%'><i></i></span>" ;
+						$output.="<td>" ;
+							$output.=getMaxUpload(TRUE) ;
 						$output.="</td>" ;
 						$output.="<td class='right'>" ;
-							$output.="<input name='" . $id . "name' id='" . $id . "name' maxlength=60 value='' type='text' style='width: 300px'>" ;
-							$output.="<script type='text/javascript'>" ;
-								$output.="var " . $id . "name=new LiveValidation('" . $id . "name');" ;
-								$output.=$id . "name2.add(Validate.Presence);" ;
-							 $output.="</script>" ;
-						$output.="</td>" ;
-					$output.="</tr>" ;
-					$output.="<tr>" ;
-						$output.="<td class='right' colspan=2>" ;
 							$output.="<input type='hidden' name='id' value='" . $id . "'>" ;
 							$output.="<input type='hidden' name='" . $id . "address' value='" . $_SESSION[$guid]["address"] . "'>" ;
 							$output.="<input type='submit' value='Submit'>" ;
-						$output.="</td>" ;
-					$output.="</tr>" ;
-					$output.="<tr>" ;
-						$output.="<td class='right' colspan=2>" ;
-							$output.="<span style='font-size: 90%'><i>* " . _("denotes a required field") . "</i></span>" ;
 						$output.="</td>" ;
 					$output.="</tr>" ;
 				
