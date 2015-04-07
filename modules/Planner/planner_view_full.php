@@ -747,7 +747,7 @@ else {
 														if ($rowBlocksView["contents"]!="") {
 															print "<div style='padding: 15px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'>" . $rowBlocksView["contents"] . "</div>" ;
 														}
-														if ($rowBlocksView["teachersNotes"]!="" AND ($highestAction=="Lesson Planner_viewAllEditMyClasses" OR $highestAction=="Lesson Planner_viewEditAllClasses")) {
+														if ($rowBlocksView["teachersNotes"]!="" AND ($highestAction=="Lesson Planner_viewAllEditMyClasses" OR $highestAction=="Lesson Planner_viewEditAllClasses") AND ($row["role"]=="Teacher" OR $row["role"]=="Assistant" OR $row["role"]=="Technician")) {
 															print "<div class='teachersNotes' style='background-color: #F6CECB; display: none; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><i>" . _("Teacher's Notes") . ":</i> " . $rowBlocksView["teachersNotes"] . "</div>" ;
 														}
 														$checked="" ;
@@ -797,7 +797,7 @@ else {
 							}
 						
 						
-							if ($row["teachersNotes"]!="" AND ($highestAction=="Lesson Planner_viewAllEditMyClasses" OR $highestAction=="Lesson Planner_viewEditAllClasses")) {
+							if ($row["teachersNotes"]!="" AND ($highestAction=="Lesson Planner_viewAllEditMyClasses" OR $highestAction=="Lesson Planner_viewEditAllClasses") AND ($row["role"]=="Teacher" OR $row["role"]=="Assistant" OR $row["role"]=="Technician")) {
 								print "<tr class='break' id='teachersNotes'>" ;
 									print "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>" ;
 										print "<h3>" . _('Teacher\'s Notes') . "</h3>" ;
@@ -1751,7 +1751,7 @@ else {
 						$columns=2 ;
 						try {
 							$dataClassGroup=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
-							$sqlClassGroup="SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND (NOT role='Student - Left') AND (NOT role='Teacher - Left') ORDER BY role DESC, surname, preferredName" ;
+							$sqlClassGroup="SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND (NOT role='Student - Left') AND (NOT role='Teacher - Left') ORDER BY FIELD(role, 'Teacher', 'Assistant', 'Technician', 'Student', 'Parent'), surname, preferredName" ;
 							$resultClassGroup=$connection2->prepare($sqlClassGroup);
 							$resultClassGroup->execute($dataClassGroup);
 						}

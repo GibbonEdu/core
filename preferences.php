@@ -316,12 +316,12 @@ if ($result->rowCount()==1) {
 					if ($_SESSION[$guid]["receiveNoticiationEmails"]=="N") {
 						print " selected " ;
 					}
-					print "value='N'>N</option>" ;
+					print "value='N'>" . ynExpander('N') . "</option>" ;
 					print "<option " ;
 					if ($_SESSION[$guid]["receiveNoticiationEmails"]=="Y") {
 						print " selected " ;
 					}
-					print "value='Y'>Y</option>" ;
+					print "value='Y'>" . ynExpander('Y') . "</option>" ;
 					?>				
 				</select>
 			</td>
