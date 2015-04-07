@@ -676,6 +676,7 @@ INSERT INTO `gibbonAction` (`gibbonModuleID` ,`name` ,`precedence` ,`category` ,
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Messenger' AND gibbonAction.name='New Message_transport_parents'));end
 ALTER TABLE `gibbonMessengerTarget` CHANGE `type` `type` ENUM('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ALTER TABLE `gibbonPerson` ADD `transportNotes` TEXT NOT NULL AFTER `transport`;end
+UPDATE gibbonAction SET URLList='units.php, units_add.php, units_delete.php, units_edit.php, units_duplicate.php, units_edit_deploy.php, units_edit_working.php, units_edit_working_copyback.php, units_edit_working_add.php, units_edit_copyBack.php, units_edit_copyForward.php, units_dump.php,units_edit_smartBlockify.php' WHERE name LIKE 'Manage Units%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner');end
 ";
 
 ?>
