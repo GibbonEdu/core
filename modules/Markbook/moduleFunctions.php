@@ -36,25 +36,25 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 		$output.=_("My Classes") ;
 		$output.="</h2>" ;
 		
-		$output.="<table class='mini' cellspacing='0' style='width: 100%'>" ;
+		$output.="<table class='mini' cellspacing='0' style='width: 100%; table-layout: fixed'>" ;
 			$output.="<tr class='head'>" ;
-					$output.="<th style='width: 40%'>" ;
+					$output.="<th style='width: 36%'>" ;
 					$output.=_("Class") ;
 				$output.="</th>" ;
-				$output.="<th style='width: 20%; font-size: 75%; text-align: center'>" ;
-					$output.=_("View<br/>Markbook") ;
+				$output.="<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
+					$output.=_("View") ;
 				$output.="</th>" ;
-				$output.="<th style='width: 20%; font-size: 75%; text-align: center'>" ;
-					$output.=_("Edit<br/>Markbook") ;
+				$output.="<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
+					$output.=_("Edit") ;
 				$output.="</th>" ;
 				if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
-					$output.="<th style='width: 20%; font-size: 75%; text-align: center'>" ;
-						$output.=_("Planner") ;
+					$output.="<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
+						$output.=_("Plan") ;
 					$output.="</th>" ;
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
-					$output.="<th style='width: 20%; font-size: 75%; text-align: center'>" ;
-						$output.=_("Homework") ;
+					$output.="<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
+						$output.=_("Tasks") ;
 					$output.="</th>" ;
 				}
 			$output.="</tr>" ;
@@ -72,7 +72,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID) {
 				
 				//COLOR ROW BY STATUS!
 				$output.="<tr class=$rowNum>" ;
-					$output.="<td>" ;
+					$output.="<td style='word-wrap: break-word'>" ;
 						$output.=$row["course"] . "." . $row["class"] ;
 					$output.="</td>" ;
 					$output.="<td style='text-align: center'>" ;

@@ -2238,27 +2238,27 @@ function sidebar($connection2, $guid) {
 			print _("My Classes") ;
 			print "</h2>" ;
 			
-			print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
+			print "<table class='mini' cellspacing='0' style='width: 100%; table-layout: fixed;'>" ;
 				print "<tr class='head'>" ;
-						print "<th style='width: 40%; font-size: 85%; text-transform: uppercase'>" ;
+						print "<th style='width: 36%; font-size: 85%; text-transform: uppercase'>" ;
 						print _("Class") ;
 					print "</th>" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
-						print "<th style='width: 20%; font-size: 65%; text-align: center; text-transform: uppercase'>" ;
-							print _("Planner") ;
+						print "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
+							print _("Plan") ;
 						print "</th>" ;
 					}
 					if (getHighestGroupedAction($guid, "/modules/Markbook/markbook_view.php", $connection2)=="View Markbook_allClassesAllData") {
-						print "<th style='width: 20%; font-size: 65%; text-align: center; text-transform: uppercase'>" ;
-							print _("Markbook") ;
+						print "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
+							print _("Mark") ;
 						print "</th>" ;
 					}
-					print "<th style='width: 20%; font-size: 65%; text-align: center; text-transform: uppercase'>" ;
+					print "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
 						print _("People") ;
 					print "</th>" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
-						print "<th style='width: 20%; font-size: 65%; text-align: center; text-transform: uppercase'>" ;
-							print _("Homework") ;
+						print "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
+							print _("Tasks") ;
 						print "</th>" ;
 					}
 				print "</tr>" ;
@@ -2276,7 +2276,7 @@ function sidebar($connection2, $guid) {
 					
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
-						print "<td>" ;
+						print "<td style='word-wrap: break-word'>" ;
 							print $row["course"] . "." . $row["class"] ;
 						print "</td>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {

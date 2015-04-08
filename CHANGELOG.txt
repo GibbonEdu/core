@@ -82,6 +82,10 @@ Planner: fixed shonky wonky alignment of loading gif in resources loaders
 	Edited file /modules/Resources/resources_add_ajax.php
 	Edited file /modules/Resources/resources_addQuick_ajax.php
 
+General: fixed table layout issue in sidebar, caused by classes with longer names
+	Edited file /functions.php
+	Edited file /modules/Markbook/moduleFunctions.php
+
 
 v9.1.00
 -------
