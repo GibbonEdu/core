@@ -52,7 +52,7 @@ $output.="<script type='text/javascript'>" ;
 	 
 		$output.="$('#" . $id . "ajaxForm').submit(function() {" ; 
 			$output.="$(this).ajaxSubmit(options);" ; 
-			$output.="$(\"." .$id . "resourceQuickSlider\").html(\"<div style='text-align: center'><img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Uploading') . "' onclick='return false;' /><br/>" . _('Loading') . "</div>\");" ;
+			$output.="$(\"." .$id . "resourceQuickSlider\").html(\"<div style='text-align: center; width: 100%; margin-top: 5px'><img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Uploading') . "' onclick='return false;' /><br/>" . _('Loading') . "</div>\");" ;
 			$output.="return false;" ; 
 		$output.="});" ; 
 	$output.="});" ; 
@@ -63,14 +63,11 @@ $output.="<script type='text/javascript'>" ;
 $output.="</script>" ;
 
 $output.="<table cellspacing='0' style='width: 100%'>" ;	
-	$output.="<tr><td style='width: 30%; height: 1px; padding-top: 0px; padding-bottom: 0px'></td><td style='padding-top: 0px; padding-bottom: 0px'></td></tr>" ;
 	$output.="<tr id='" . $id . "resourceQuick'>" ;
-		$output.="<td colspan=2 style='padding-top: 0px'>" ; 
+		$output.="<td colspan=2 style='border: none; padding-top: 0px'>" ; 
 			$output.="<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formReset(); \$(\"." .$id . "resourceQuickSlider\").slideUp();'><img title='" . _('Close') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a></div>" ;
-			$output.="<h3 style='margin-top: 0px; font-size: 140%'>" . _('Quick File Upload') . "</h3>" ;
 			$output.="<form id='" . $id . "ajaxForm'>" ;
-				$output.="<table cellspacing='0' style='width: 100%'>" ;
-					$output.="<tr><td style='width: 30%'></td><td></td></tr>" ;
+				$output.="<table cellspacing='0' style='border: none; width: 100%'>" ;
 					$output.="<tr>" ;
 						$output.="<td>" ;
 							$output.="<b>" . _("Insert Images As Links?") . "*</b><br/>" ;

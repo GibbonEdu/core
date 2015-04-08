@@ -77,6 +77,11 @@ Planner: added Smart Blockify to take a unit, and turn all of the current lesson
 	Edited file /modules/Planner/units_edit.php
 	Added files /modules/Planner/units_edit_smartBlockify*.php
 
+Planner: fixed shonky wonky alignment of loading gif in resources loaders
+	Edited file /functions.php
+	Edited file /modules/Resources/resources_add_ajax.php
+	Edited file /modules/Resources/resources_addQuick_ajax.php
+
 
 v9.1.00
 -------

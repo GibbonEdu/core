@@ -1622,16 +1622,16 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 		
 		if ($showMedia==TRUE) {
 			//DEFINE MEDIA INPUT DISPLAY
-			$output.="<div class='" . $id . "resourceSlider' style='width: 100%; min-height: 60px;'>" ;
-				$output.="<div style='text-align: center'>" ;
+			$output.="<div class='" . $id . "resourceSlider' style='display: none; width: 100%; min-height: 60px;'>" ;
+				$output.="<div style='text-align: center; width: 100%; margin-top: 5px'>" ;
 					$output.="<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Loading') . "' onclick='return false;' /><br/>" ;
 					$output.=_('Loading') ;
 				$output.="</div>" ;
 			$output.="</div>" ;
 			
 			//DEFINE QUICK INSERT
-			$output.="<div class='" . $id . "resourceQuickSlider' style='width: 100%; min-height: 60px;'>" ;
-				$output.="<div style='text-align: center'>" ;
+			$output.="<div class='" . $id . "resourceQuickSlider' style='display: none; width: 100%; min-height: 60px;'>" ;
+				$output.="<div style='text-align: center; width: 100%; margin-top: 5px'>" ;
 					$output.="<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Loading') . "' onclick='return false;' /><br/>" ;
 					$output.=_("Loading") ;
 				$output.="</div>" ;
@@ -1640,8 +1640,8 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 		
 		if ($showMedia==TRUE AND $allowUpload==TRUE) {
 			//DEFINE MEDIA ADD DISPLAY
-			$output.="<div class='" . $id . "resourceAddSlider' style='width: 100%; min-height: 60px;'>" ;
-				$output.="<div style='text-align: center'>" ;
+			$output.="<div class='" . $id . "resourceAddSlider' style='display: none; width: 100%; min-height: 60px;'>" ;
+				$output.="<div style='text-align: center; width: 100%; margin-top: 5px'>" ;
 					$output.="<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Loading') . "' onclick='return false;' /><br/>" ;
 					$output.=_("Loading") ;
 				$output.="</div>" ;
