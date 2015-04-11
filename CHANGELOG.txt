@@ -86,6 +86,16 @@ General: fixed table layout issue in sidebar, caused by classes with longer name
 	Edited file /functions.php
 	Edited file /modules/Markbook/moduleFunctions.php
 
+General: adjusted failure return message caused by non-unique value to make feedback more useable
+	Edited various files across the system
+
+Individual Needs: added ability to archive and view old IENs
+	Edited values in table gibbonAction
+	New values in tables gibbonAction, gibbonPermission
+	New table gibbonINArchive
+	New files /modules/Individual Needs/in_archive*.php
+	Edited file /modules/Individual Needs/in_edit.php
+
 
 v9.1.00
 -------

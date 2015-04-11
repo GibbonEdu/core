@@ -154,106 +154,176 @@ else {
 				print "</tr>" ;
 			print "</table>" ;
 			
-			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>" ;
-				print "<h3>" ;
-					print _("Individual Needs Status") ;
-				print "</h3>" ;
-				if ($highestAction=="Individual Needs Records_view" OR $highestAction=="Individual Needs Records_viewContribute") {
-					$statusTable=printINStatusTable($connection2, $gibbonPersonID, "disabled") ;
-				}
-				else if ($highestAction=="Individual Needs Records_viewEdit") {
-					$statusTable=printINStatusTable($connection2, $gibbonPersonID) ;
-				}
-				
-				
-				if ($statusTable==FALSE) {
-					print "<div class='error'>" ;
-					print _("Your request failed due to a database error.") ;
-					print "</div>" ;
-				}
-				else {
-					print $statusTable ;
-				}
-				
-				
-				print "<h3>" ;
-					print _("Individual Education Plan") ;
-				print "</h3>" ;
-								
-				try {
-					$dataIEP=array("gibbonPersonID"=>$gibbonPersonID); 
-					$sqlIEP="SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID" ;
-					$resultIEP=$connection2->prepare($sqlIEP);
-					$resultIEP->execute($dataIEP);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				if ($resultIEP->rowCount()>1) {
-					print "<div class='error'>" ;
-					print _("Your request failed due to a database error.") ;
-					print "</div>" ;
-				}
-				else {
-					$rowIEP=$resultIEP->fetch() ;
-					?>	
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
-						<tr>
-							<td colspan=2 style='padding-top: 25px'> 
-								<span style='font-weight: bold; font-size: 135%'><?php print _('Targets') ?></span><br/>
-								<?php
-								if ($highestAction=="Individual Needs Records_viewEdit") {
-									print getEditor($guid,  TRUE, "targets", $rowIEP["targets"], 20, true ) ;
+			
+			print "<h3>" ;
+				print _("Individual Needs Status") ;
+			print "</h3>" ;
+			if ($highestAction=="Individual Needs Records_view" OR $highestAction=="Individual Needs Records_viewContribute") {
+				$statusTable=printINStatusTable($connection2, $gibbonPersonID, "disabled") ;
+			}
+			else if ($highestAction=="Individual Needs Records_viewEdit") {
+				$statusTable=printINStatusTable($connection2, $gibbonPersonID) ;
+			}
+			
+			
+			if ($statusTable==FALSE) {
+				print "<div class='error'>" ;
+				print _("Your request failed due to a database error.") ;
+				print "</div>" ;
+			}
+			else {
+				print $statusTable ;
+			}
+			
+			
+			print "<h3>" ;
+				print _("Individual Education Plan") ;
+			print "</h3>" ;
+			
+			$gibbonINArchiveID=NULL ;
+			if (isset($_POST["gibbonINArchiveID"])) {
+				$gibbonINArchiveID=$_POST["gibbonINArchiveID"] ;
+			}
+			$archiveStrategies=NULL ;
+			$archiveTargets=NULL ;
+			$archiveNotes=NULL ;
+			
+			try {
+				$dataArchive=array("gibbonPersonID"=>$gibbonPersonID); 
+				$sqlArchive="SELECT * FROM gibbonINArchive WHERE gibbonPersonID=:gibbonPersonID ORDER BY archiveTimestamp DESC" ; 
+				$resultArchive=$connection2->prepare($sqlArchive);
+				$resultArchive->execute($dataArchive);
+			}
+			catch(PDOException $e) { }
+			if ($resultArchive->rowCount()>0) {
+				print "<div class='linkTop'>" ;
+					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/in_edit.php&gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>" ;
+						print _("Archived Plans") . " " ;
+						print "<select name=\"gibbonINArchiveID\" style=\"float: none; width: 200px; margin-top: -10px; margin-bottom: 5px\">" ;
+							print "<option value=''></option>" ;
+							while ($rowArchive=$resultArchive->fetch()) {
+								$selected="" ;
+								if ($rowArchive["gibbonINArchiveID"]==$gibbonINArchiveID) {
+									$selected="selected" ;
+									$archiveStrategies=$rowArchive["strategies"] ;
+									$archiveTargets=$rowArchive["targets"] ;
+									$archiveNotes=$rowArchive["notes"] ;
 								}
-								else {
-									print "<p>" . $rowIEP["targets"] . "</p>" ;
-								}
-								?>
-							</td>
-						</tr>
-						<tr>
-							<td colspan=2> 
-								<span style='font-weight: bold; font-size: 135%'><?php print _('Teaching Strategies') ?></span><br/>
-								<?php
-								if ($highestAction=="Individual Needs Records_viewEdit" OR $highestAction=="Individual Needs Records_viewContribute") {
-									print getEditor($guid,  TRUE, "strategies", $rowIEP["strategies"], 20, true ) ;
-								}
-								else {
-									print "<p>" . $rowIEP["strategies"] . "</p>" ;
-								}
-								?>
-							</td>
-						</tr>
-						<tr>
-							<td colspan=2 style='padding-top: 25px'> 
-								<span style='font-weight: bold; font-size: 135%'><?php print _('Notes & Review') ?></span><br/>
-								<?php
-								if ($highestAction=="Individual Needs Records_viewEdit") {
-									print getEditor($guid,  TRUE, "notes", $rowIEP["notes"], 20, true ) ;
-								}
-								else {
-									print "<p>" . $rowIEP["notes"] . "</p>" ;
-								}
-								?>
-							</td>
-						</tr>
-						<?php
-						if ($highestAction=="Individual Needs Records_viewEdit" OR $highestAction=="Individual Needs Records_viewContribute") {
+								print "<option $selected value='" . $rowArchive["gibbonINArchiveID"] . "'>" . $rowArchive["archiveTitle"] . " (" . dateConvertBack($guid, substr($rowArchive["archiveTimestamp"], 0, 10)) . ")</option>" ;
+							}
+						print "</select>" ;
+						print "<input style='margin-top: 0px; margin-right: -2px' type='submit' value='" . _('Go') . "'>" ;
+					print "</form>" ;
+				print "</div>" ;
+			}
+		
+			if (is_null($gibbonINArchiveID)==FALSE) { //SHOW ARCHIVE
+				?>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr>
+						<td colspan=2 style='padding-top: 25px'> 
+							<span style='font-weight: bold; font-size: 135%'><?php print _('Targets') ?></span><br/>
+							<?php
+							print "<p>" . $archiveTargets . "</p>" ;
 							?>
+						</td>
+					</tr>
+					<tr>
+						<td colspan=2> 
+							<span style='font-weight: bold; font-size: 135%'><?php print _('Teaching Strategies') ?></span><br/>
+							<?php
+							print "<p>" . $archiveStrategies . "</p>" ;
+							?>
+						</td>
+					</tr>
+					<tr>
+						<td colspan=2 style='padding-top: 25px'> 
+							<span style='font-weight: bold; font-size: 135%'><?php print _('Notes & Review') ?></span><br/>
+							<?php
+							print "<p>" . $archiveNotes . "</p>" ;
+							?>
+						</td>
+					</tr>
+				</table>
+				<?php
+			}
+			else { //SHOW CURRENT
+				print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>" ;				
+					try {
+						$dataIEP=array("gibbonPersonID"=>$gibbonPersonID); 
+						$sqlIEP="SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID" ;
+						$resultIEP=$connection2->prepare($sqlIEP);
+						$resultIEP->execute($dataIEP);
+					}
+					catch(PDOException $e) { 
+						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					}
+					if ($resultIEP->rowCount()>1) {
+						print "<div class='error'>" ;
+						print _("Your request failed due to a database error.") ;
+						print "</div>" ;
+					}
+					else {
+						$rowIEP=$resultIEP->fetch() ;
+						?>	
+						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
-								<td class="right" colspan=2>
-									<input type="hidden" name="gibbonPersonID" value="<?php print $gibbonPersonID ?>">
-									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<?php print _("Submit") ; ?>">
+								<td colspan=2 style='padding-top: 25px'> 
+									<span style='font-weight: bold; font-size: 135%'><?php print _('Targets') ?></span><br/>
+									<?php
+									if ($highestAction=="Individual Needs Records_viewEdit") {
+										print getEditor($guid,  TRUE, "targets", $rowIEP["targets"], 20, true ) ;
+									}
+									else {
+										print "<p>" . $rowIEP["targets"] . "</p>" ;
+									}
+									?>
+								</td>
+							</tr>
+							<tr>
+								<td colspan=2> 
+									<span style='font-weight: bold; font-size: 135%'><?php print _('Teaching Strategies') ?></span><br/>
+									<?php
+									if ($highestAction=="Individual Needs Records_viewEdit" OR $highestAction=="Individual Needs Records_viewContribute") {
+										print getEditor($guid,  TRUE, "strategies", $rowIEP["strategies"], 20, true ) ;
+									}
+									else {
+										print "<p>" . $rowIEP["strategies"] . "</p>" ;
+									}
+									?>
+								</td>
+							</tr>
+							<tr>
+								<td colspan=2 style='padding-top: 25px'> 
+									<span style='font-weight: bold; font-size: 135%'><?php print _('Notes & Review') ?></span><br/>
+									<?php
+									if ($highestAction=="Individual Needs Records_viewEdit") {
+										print getEditor($guid,  TRUE, "notes", $rowIEP["notes"], 20, true ) ;
+									}
+									else {
+										print "<p>" . $rowIEP["notes"] . "</p>" ;
+									}
+									?>
 								</td>
 							</tr>
 							<?php
-						}
-						?>
-					</table>
-					<?php
+							if ($highestAction=="Individual Needs Records_viewEdit" OR $highestAction=="Individual Needs Records_viewContribute") {
+								?>
+								<tr>
+									<td class="right" colspan=2>
+										<input type="hidden" name="gibbonPersonID" value="<?php print $gibbonPersonID ?>">
+										<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+										<input type="submit" value="<?php print _("Submit") ; ?>">
+									</td>
+								</tr>
+								<?php
+							}
+							?>
+						</table>
+						<?php
+					print "</form>" ;
 				}
-			print "</form>" ;
+			}
 		}
 	}
 	//Set sidebar

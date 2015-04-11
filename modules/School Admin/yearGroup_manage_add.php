@@ -45,7 +45,7 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($addReturn=="success0") {
 			$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	

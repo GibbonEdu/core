@@ -677,6 +677,15 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 ALTER TABLE `gibbonMessengerTarget` CHANGE `type` `type` ENUM('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ALTER TABLE `gibbonPerson` ADD `transportNotes` TEXT NOT NULL AFTER `transport`;end
 UPDATE gibbonAction SET URLList='units.php, units_add.php, units_delete.php, units_edit.php, units_duplicate.php, units_edit_deploy.php, units_edit_working.php, units_edit_working_copyback.php, units_edit_working_add.php, units_edit_copyBack.php, units_edit_copyForward.php, units_dump.php,units_edit_smartBlockify.php' WHERE name LIKE 'Manage Units%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner');end
+UPDATE gibbonAction SET category='Individual Needs' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs') AND name LIKE 'Individual Needs Records%';end
+UPDATE gibbonAction SET category='Individual Needs' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs') AND name='Individual Needs Summary';end
+INSERT INTO `gibbonAction` (`gibbonModuleID` ,`name` ,`precedence` ,`category` ,`description` ,`URLList` ,`entryURL` ,`defaultPermissionAdmin` ,`defaultPermissionTeacher` ,`defaultPermissionStudent` ,`defaultPermissionParent` ,`defaultPermissionSupport` ,`categoryPermissionStaff` ,`categoryPermissionStudent` ,`categoryPermissionParent` ,`categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'), 'Archive Records', 0, 'Other', 'Allows for current records to be archived for viewing in the future.', 'in_archive.php', 'in_archive.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Individual Needs' AND gibbonAction.name='Archive Records'));end
+CREATE TABLE `gibbonINArchive` (`gibbonINArchiveID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,  `strategies` text NOT NULL,  `targets` text NOT NULL,  `notes` text NOT NULL,  `archiveTitle` varchar(50) NOT NULL,  `archiveTimestamp` timestamp NULL DEFAULT NULL, PRIMARY KEY (`gibbonINArchiveID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;end
+ALTER TABLE `gibbonNotification` ENGINE = MyISAM;end
+ALTER TABLE `gibbonUnitBlockStar` ENGINE = MyISAM;end
 ";
+
+
 
 ?>

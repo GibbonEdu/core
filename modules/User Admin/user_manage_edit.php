@@ -48,7 +48,7 @@ else {
 			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($updateReturn=="fail5") {
 			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
