@@ -684,6 +684,9 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 CREATE TABLE `gibbonINArchive` (`gibbonINArchiveID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,  `strategies` text NOT NULL,  `targets` text NOT NULL,  `notes` text NOT NULL,  `archiveTitle` varchar(50) NOT NULL,  `archiveTimestamp` timestamp NULL DEFAULT NULL, PRIMARY KEY (`gibbonINArchiveID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;end
 ALTER TABLE `gibbonNotification` ENGINE = MyISAM;end
 ALTER TABLE `gibbonUnitBlockStar` ENGINE = MyISAM;end
+INSERT INTO `gibbonAction` (`gibbonModuleID` ,`name` ,`precedence` ,`category` ,`description` ,`URLList` ,`entryURL` ,`defaultPermissionAdmin` ,`defaultPermissionTeacher` ,`defaultPermissionStudent` ,`defaultPermissionParent` ,`defaultPermissionSupport` ,`categoryPermissionStaff` ,`categoryPermissionStudent` ,`categoryPermissionParent` ,`categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable'), 'View Timetable by Person_allYears', 0, 'View Timetables', 'Allows users to view timetables in all school years.', 'tt.php, tt_view.php', 'tt.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N');end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Timetable' AND gibbonAction.name='View Timetable by Person_allYears'));end
+
 ";
 
 

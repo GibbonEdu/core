@@ -100,6 +100,10 @@ General: made notification count update periodically
 	Edited file /functions.php
 	New file /index_notification_ajax.php
 
+Timetable: added new action to prevent timetable viewing in non-current years for users without the action
+	New values in tables gibbonAction, gibbonPermission
+	Edited /modules/Timetable/moduleFunctions.php
+
 
 v9.1.00
 -------
