@@ -118,12 +118,23 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 		}
 		catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
 
-		if ($resultNotifications->rowCount()>0) {
-			$return.=" . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
-		}
-		else {
-			$return.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
-		}
+		//Refresh notifications periodically
+		$return.="<script type=\"text/javascript\">
+			$(document).ready(function(){
+				setInterval(function() {
+					$(\"#notifications\").load(\"index_notification_ajax.php\");
+				}, 300000);
+			});
+		</script>" ;
+
+		$return.="<div id='notifications' style='display: inline'>" ;
+			if ($resultNotifications->rowCount()>0) {
+				$return.=" . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
+			}
+			else {
+				$return.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
+			}
+		$return.="</div>" ;
 
 		//MESSAGE WALL!
 		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messageWall_view.php")) {

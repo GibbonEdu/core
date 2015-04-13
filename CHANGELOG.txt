@@ -96,6 +96,10 @@ Individual Needs: added ability to archive and view old IENs
 	New files /modules/Individual Needs/in_archive*.php
 	Edited file /modules/Individual Needs/in_edit.php
 
+General: made notification count update periodically
+	Edited file /functions.php
+	New file /index_notification_ajax.php
+
 
 v9.1.00
 -------
