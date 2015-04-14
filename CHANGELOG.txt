@@ -102,7 +102,12 @@ General: made notification count update periodically
 
 Timetable: added new action to prevent timetable viewing in non-current years for users without the action
 	New values in tables gibbonAction, gibbonPermission
-	Edited /modules/Timetable/moduleFunctions.php
+	Edited file /modules/Timetable/moduleFunctions.php
+
+User Admin: added ability to prevent roles from being able to log in to non-current year
+	Edited table gibbonRole
+	Edited files /modules/User Admin/role_manage*.php
+	Edited files /functions.php, login.php
 
 
 v9.1.00

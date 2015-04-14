@@ -126,6 +126,18 @@ else {
 				</td>
 			</tr>
 			<tr>
+				<td> 
+					<b><?php print _('Login To Non-Current Years') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _("If set to No, logins are limited to current year.") ?></i></span>
+				</td>
+				<td class="right">
+					<select name="nonCurrentYearLogin" id="nonCurrentYearLogin" style="width: 302px">
+						<option value="Y"><?php print _('Yes') ?></option>
+						<option value="N"><?php print _('No') ?></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
 				<td>
 					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 				</td>

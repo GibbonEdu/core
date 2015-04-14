@@ -85,64 +85,129 @@ else {
 		else {
 			//Let's go!
 			$row=$result->fetch() ;
+			$type=$row["type"] ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/role_manage_editProcess.php?gibbonRoleID=$gibbonRoleID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print _('Category') ?> *</b><br/>
+							<?php
+							if ($type=="Core") {
+								print "<span style=\"font-size: 90%\"><i>" . _('This value cannot be changed.'). "</i></span>" ;
+							}
+							?>
 						</td>
 						<td class="right">
-							<select name="category" id="category" style="width: 302px">
-								<option value="Please select..."><?php print _('Please select...') ?></option>
-								<option <?php if ($row["category"]=="Staff") { print "selected " ; } ?>value="Staff"><?php print _('Staff') ?></option>
-								<option <?php if ($row["category"]=="Student") { print "selected " ; } ?>value="Student"><?php print _('Student') ?></option>
-								<option <?php if ($row["category"]=="Parent") { print "selected " ; } ?>value="Parent"><?php print _('Parent') ?></option>
-								<option <?php if ($row["category"]=="Other") { print "selected " ; } ?>value="Other"><?php print _('Other') ?></option>
-							</select>
-							<script type="text/javascript">
-								var category=new LiveValidation('category');
-								category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							<?php
+							if ($type=="Core") {
+								?>
+								<input name="category" id="category" readonly="readonly" maxlength=20 value="<?php print _($row["category"]) ?>" type="text" style="width: 300px">
+								<?php
+							}
+							else {
+								?>
+								<select name="category" id="category" style="width: 302px">
+									<option value="Please select..."><?php print _('Please select...') ?></option>
+									<option <?php if ($row["category"]=="Staff") { print "selected " ; } ?>value="Staff"><?php print _('Staff') ?></option>
+									<option <?php if ($row["category"]=="Student") { print "selected " ; } ?>value="Student"><?php print _('Student') ?></option>
+									<option <?php if ($row["category"]=="Parent") { print "selected " ; } ?>value="Parent"><?php print _('Parent') ?></option>
+									<option <?php if ($row["category"]=="Other") { print "selected " ; } ?>value="Other"><?php print _('Other') ?></option>
+								</select>
+								<script type="text/javascript">
+									var category=new LiveValidation('category');
+									category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								</script>
+								<?php
+							}
+							?>
 						</td>
 					</tr>
 					<tr>
 						<td> 
 							<b><?php print _('Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span><br/>
+							<?php
+							if ($type=="Core") {
+								print "<span style=\"font-size: 90%\"><i>" . _('This value cannot be changed.'). "</i></span>" ;
+							}
+							?>
+							
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=20 value="<?php print htmlPrep(_($row["name"])) ?>" type="text" style="width: 300px">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							 </script> 
+							<?php
+							if ($type=="Core") {
+								?>
+								<input name="name" id="name" readonly="readonly" maxlength=20 value="<?php print _($row["name"]) ?>" type="text" style="width: 300px">
+								<?php
+							}
+							else {
+								?>
+								<input name="name" id="name" maxlength=20 value="<?php print htmlPrep(_($row["name"])) ?>" type="text" style="width: 300px">
+								<script type="text/javascript">
+									var name2=new LiveValidation('name');
+									name2.add(Validate.Presence);
+								</script> 
+								<?php
+							}
+							?>
 						</td>
 					</tr>
 					<tr>
 						<td> 
 							<b><?php print _('Short Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span><br/>
+							<?php
+							if ($type=="Core") {
+								print "<span style=\"font-size: 90%\"><i>" . _('This value cannot be changed.'). "</i></span>" ;
+							}
+							?>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="<?php print htmlPrep(_($row["nameShort"])) ?>" type="text" style="width: 300px">
-							<script type="text/javascript">
-								var nameShort=new LiveValidation('nameShort');
-								nameShort.add(Validate.Presence);
-							 </script> 
+							<?php
+							if ($type=="Core") {
+								?>
+								<input name="nameShort" id="nameShort" readonly="readonly" maxlength=20 value="<?php print _($row["nameShort"]) ?>" type="text" style="width: 300px">
+								<?php
+							}
+							else {
+								?>
+								<input name="nameShort" id="nameShort" maxlength=4 value="<?php print htmlPrep(_($row["nameShort"])) ?>" type="text" style="width: 300px">
+								<script type="text/javascript">
+									var nameShort=new LiveValidation('nameShort');
+									nameShort.add(Validate.Presence);
+								</script> 
+								<?php
+							}
+							?>
 						</td>
 					</tr>
 					<tr>
 						<td> 
 							<b><?php print _('Description') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<?php
+							if ($type=="Core") {
+								print "<span style=\"font-size: 90%\"><i>" . _('This value cannot be changed.'). "</i></span>" ;
+							}
+							?>
 						</td>
 						<td class="right">
-							<input name="description" id="description" maxlength=60 value="<?php print htmlPrep(_($row["description"])) ?>" type="text" style="width: 300px">
-							<script type="text/javascript">
-								var description=new LiveValidation('description');
-								description.add(Validate.Presence);
-							 </script> 
+							<?php
+							if ($type=="Core") {
+								?>
+								<input name="description" id="description" readonly="readonly" maxlength=60 value="<?php print _($row["description"]) ?>" type="text" style="width: 300px">
+								<?php
+							}
+							else {
+								?>
+								<input name="description" id="description" maxlength=60 value="<?php print htmlPrep(_($row["description"])) ?>" type="text" style="width: 300px">
+								<script type="text/javascript">
+									var description=new LiveValidation('description');
+									description.add(Validate.Presence);
+								</script> 
+								<?php
+							}
+							?>
 						</td>
 					</tr>
 					<tr>
@@ -151,7 +216,19 @@ else {
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="type" id="type" readonly="readonly" maxlength=20 value="<?php print _('Additional') ?>" type="text" style="width: 300px">
+							<input name="type" id="type" readonly="readonly" maxlength=20 value="<?php print _($row["type"]) ?>" type="text" style="width: 300px">
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print _('Login To Non-Current Years') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _("If set to No, logins are limited to current year.") ?></i></span>
+						</td>
+						<td class="right">
+							<select name="nonCurrentYearLogin" id="nonCurrentYearLogin" style="width: 302px">
+								<option <?php if ($row["nonCurrentYearLogin"]=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["nonCurrentYearLogin"]=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
+							</select>
 						</td>
 					</tr>
 					<tr>

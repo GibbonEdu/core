@@ -1881,6 +1881,9 @@ function sidebar($connection2, $guid) {
 		else if ($loginReturn=="fail8") {
 			$loginReturnMessage=sprintf(_('Gmail account does not match the email stored in %1$s. If you have logged in with your school Gmail account please contact %2$s if you have any questions.'), $_SESSION[$guid]["systemName"], "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
 		}
+		else if ($loginReturn=="fail9") {
+			$loginReturnMessage=_('Your primary role does not support the ability to log in to non-current years.') ;	
+		}
 		
 		print "<div class='error'>" ;
 			print $loginReturnMessage;
