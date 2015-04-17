@@ -45,100 +45,108 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_deta
 	header("Location: {$URL}");
 }
 else {
-	if ($gibbonPersonID=="" OR $subpage=="") {
-		print "Fatal error loading this page!" ;
+	$enableStudentNotes=getSettingByScope($connection2, "Students", "enableStudentNotes") ;
+	if ($enableStudentNotes!="Y") {
+		//Fail 0
+		$URL.="&addReturn=fail0" ;
+		header("Location: {$URL}");
 	}
 	else {
-		//Check for existence of student
-		try {
-			$data=array("gibbonPersonID"=>$gibbonPersonID) ;
-			$sql="SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
-		
-		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
+		if ($gibbonPersonID=="" OR $subpage=="") {
+			print "Fatal error loading this page!" ;
 		}
 		else {
-			$row=$result->fetch() ;
-			$name=formatName("", $row["preferredName"], $row["surname"], "Student", false) ;
-			
-			//Proceed!
-			//Validate Inputs
-			$title=$_POST["title"] ;
-			$gibbonStudentNoteCategoryID=$_POST["gibbonStudentNoteCategoryID"] ;
-			if ($gibbonStudentNoteCategoryID=="") {
-				$gibbonStudentNoteCategoryID=NULL ;
+			//Check for existence of student
+			try {
+				$data=array("gibbonPersonID"=>$gibbonPersonID) ;
+				$sql="SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+				$result=$connection2->prepare($sql);
+				$result->execute($data);
 			}
-			$note=$_POST["note"] ;
-		
-			if ($note=="" OR $title=="") {
-				//Fail 3
-				$URL.="&addReturn=fail3" ;
+			catch(PDOException $e) { 
+				//Fail 2
+				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
+				break ;
+			}
+		
+			if ($result->rowCount()!=1) {
+				//Fail 2
+				$URL.="&addReturn=fail2" ;
+				header("Location: {$URL}");
+				break ;
 			}
 			else {
-				//Write to database
-				try {
-					$data=array("gibbonStudentNoteCategoryID"=>$gibbonStudentNoteCategoryID, "title"=>$title, "note"=>$note, "gibbonPersonID"=>$gibbonPersonID, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "timestamp"=>date('Y-m-d H:i:s', time())); 
-					$sql="INSERT INTO gibbonStudentNote SET gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID, title=:title, note=:note, gibbonPersonID=:gibbonPersonID, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
+				$row=$result->fetch() ;
+				$name=formatName("", $row["preferredName"], $row["surname"], "Student", false) ;
+			
+				//Proceed!
+				//Validate Inputs
+				$title=$_POST["title"] ;
+				$gibbonStudentNoteCategoryID=$_POST["gibbonStudentNoteCategoryID"] ;
+				if ($gibbonStudentNoteCategoryID=="") {
+					$gibbonStudentNoteCategoryID=NULL ;
 				}
-				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+				$note=$_POST["note"] ;
+		
+				if ($note=="" OR $title=="") {
+					//Fail 3
+					$URL.="&addReturn=fail3" ;
 					header("Location: {$URL}");
-					break ;
 				}
-			
-				//Attempt to alert form tutor(s)
-				try {
-					$data=array("gibbonPersonID"=>$gibbonPersonID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-					$sql="SELECT tutor1.gibbonPersonID AS tutor1gibbonPersonID, tutor2.gibbonPersonID AS tutor2gibbonPersonID, tutor3.gibbonPersonID AS tutor3gibbonPersonID 
-						FROM gibbonStudentEnrolment 
-						JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) 
-						LEFT JOIN gibbonPerson AS tutor1 ON (tutor1.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor AND tutor1.status='Full') 
-						LEFT JOIN gibbonPerson AS tutor2 ON (tutor2.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor2 AND tutor2.status='Full') 
-						LEFT JOIN gibbonPerson AS tutor3 ON (tutor3.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor3 AND tutor3.status='Full') 
-						WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				if ($result->rowCount()==1) {
-					$row=$result->fetch() ;
-					$notificationText=sprintf(_('Someone has added a note ("%1$s") about your tutee, %2$s.'), $title, $name) ;
-					if ($row["tutor1gibbonPersonID"]!="") {
-						if ($row["tutor1gibbonPersonID"]!=$_SESSION[$guid]["gibbonPersonID"]) {
-							setNotification($connection2, $guid, $row["tutor1gibbonPersonID"], $notificationText, "Students", "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"]) ;
-						}
+				else {
+					//Write to database
+					try {
+						$data=array("gibbonStudentNoteCategoryID"=>$gibbonStudentNoteCategoryID, "title"=>$title, "note"=>$note, "gibbonPersonID"=>$gibbonPersonID, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "timestamp"=>date('Y-m-d H:i:s', time())); 
+						$sql="INSERT INTO gibbonStudentNote SET gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID, title=:title, note=:note, gibbonPersonID=:gibbonPersonID, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp" ;
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
 					}
-					if ($row["tutor2gibbonPersonID"]!="") {
-						if ($row["tutor2gibbonPersonID"]!=$_SESSION[$guid]["gibbonPersonID"]) {
-							setNotification($connection2, $guid, $row["tutor2gibbonPersonID"], $notificationText, "Students", "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"]) ;
-						}
+					catch(PDOException $e) { 
+						//Fail 2
+						$URL.="&addReturn=fail2" ;
+						header("Location: {$URL}");
+						break ;
 					}
-					if ($row["tutor3gibbonPersonID"]!="") {
-						if ($row["tutor3gibbonPersonID"]!=$_SESSION[$guid]["gibbonPersonID"]) {
-							setNotification($connection2, $guid, $row["tutor3gibbonPersonID"], $notificationText, "Students", "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"]) ;
-						}
-					}				
-				}
 			
-				//Success 0
-				$URL.="&addReturn=success0" ;
-				header("Location: {$URL}");
+					//Attempt to alert form tutor(s)
+					try {
+						$data=array("gibbonPersonID"=>$gibbonPersonID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+						$sql="SELECT tutor1.gibbonPersonID AS tutor1gibbonPersonID, tutor2.gibbonPersonID AS tutor2gibbonPersonID, tutor3.gibbonPersonID AS tutor3gibbonPersonID 
+							FROM gibbonStudentEnrolment 
+							JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) 
+							LEFT JOIN gibbonPerson AS tutor1 ON (tutor1.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor AND tutor1.status='Full') 
+							LEFT JOIN gibbonPerson AS tutor2 ON (tutor2.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor2 AND tutor2.status='Full') 
+							LEFT JOIN gibbonPerson AS tutor3 ON (tutor3.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor3 AND tutor3.status='Full') 
+							WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID" ;
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
+					}
+					catch(PDOException $e) { }
+					if ($result->rowCount()==1) {
+						$row=$result->fetch() ;
+						$notificationText=sprintf(_('Someone has added a note ("%1$s") about your tutee, %2$s.'), $title, $name) ;
+						if ($row["tutor1gibbonPersonID"]!="") {
+							if ($row["tutor1gibbonPersonID"]!=$_SESSION[$guid]["gibbonPersonID"]) {
+								setNotification($connection2, $guid, $row["tutor1gibbonPersonID"], $notificationText, "Students", "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"]) ;
+							}
+						}
+						if ($row["tutor2gibbonPersonID"]!="") {
+							if ($row["tutor2gibbonPersonID"]!=$_SESSION[$guid]["gibbonPersonID"]) {
+								setNotification($connection2, $guid, $row["tutor2gibbonPersonID"], $notificationText, "Students", "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"]) ;
+							}
+						}
+						if ($row["tutor3gibbonPersonID"]!="") {
+							if ($row["tutor3gibbonPersonID"]!=$_SESSION[$guid]["gibbonPersonID"]) {
+								setNotification($connection2, $guid, $row["tutor3gibbonPersonID"], $notificationText, "Students", "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"]) ;
+							}
+						}				
+					}
+			
+					//Success 0
+					$URL.="&addReturn=success0" ;
+					header("Location: {$URL}");
+				}
 			}
 		}
 	}

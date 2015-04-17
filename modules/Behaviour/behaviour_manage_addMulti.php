@@ -232,12 +232,15 @@ else {
 			}
 			?>
 			<tr>
-				<td> 
-					<b><?php print _('Comment') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+				<td colspan=2> 
+					<b><?php print _('Incident') ?></b><br/>
+					<textarea name="comment" id="comment" rows=8 style="width: 100%"></textarea>
 				</td>
-				<td class="right">
-					<textarea name="comment" id="comment" rows=8 style="width: 300px"></textarea>
+			</tr>
+			<tr>
+				<td colspan=2> 
+					<b><?php print _('Follow Up') ?></b><br/>
+					<textarea name="followup" id="followup" rows=8 style="width: 100%"></textarea>
 				</td>
 			</tr>
 			<tr>

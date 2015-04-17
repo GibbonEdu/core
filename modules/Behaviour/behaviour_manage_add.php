@@ -250,13 +250,22 @@ else {
 						<?php
 					}
 					?>
+					<script type='text/javascript'>
+						$(document).ready(function(){
+							$('#comment').autosize();
+							$('#followup').autosize();
+						});
+					</script>
 					<tr>
-						<td> 
-							<b><?php print _('Comment') ?></b><br/>
-							<span style="font-size: 90%"><i></i></span>
+						<td colspan=2> 
+							<b><?php print _('Incident') ?></b><br/>
+							<textarea name="comment" id="comment" rows=8 style="width: 100%"></textarea>
 						</td>
-						<td class="right">
-							<textarea name="comment" id="comment" rows=8 style="width: 300px"></textarea>
+					</tr>
+					<tr>
+						<td colspan=2> 
+							<b><?php print _('Follow Up') ?></b><br/>
+							<textarea name="followup" id="followup" rows=8 style="width: 100%"></textarea>
 						</td>
 					</tr>
 					<tr>
@@ -293,6 +302,7 @@ else {
 			$descriptor=$_POST["descriptor"] ; 
 			$level=$_POST["level"] ; 
 			$comment=$_POST["comment"] ; 
+			$followup=$_POST["followup"] ; 
 			
 			if ($gibbonPersonID=="" OR $date=="" OR $type=="" OR $descriptor=="") {
 				print "<div class='error'>" ;
@@ -403,6 +413,7 @@ else {
 								<input type="hidden" name="descriptor" value="<?php print $descriptor ?>">
 								<input type="hidden" name="level" value="<?php print $level ?>">
 								<input type="hidden" name="comment" value="<?php print $comment ?>">
+								<input type="hidden" name="followup" value="<?php print $followup ?>">
 								
 							
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

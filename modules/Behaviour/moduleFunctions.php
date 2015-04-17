@@ -141,12 +141,12 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 										print "});" ;
 									print "});" ;
 								print "</script>" ;
-								if ($row["comment"]!="") {
+								if ($row["comment"]!="" OR $row["followup"]!="") {
 									print "<a title='" . _('View Description') . "' class='show_hide-$count-$yearCount' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
 								}
 							print "</td>" ;
 						print "</tr>" ;
-						if ($row["comment"]!="") {
+						if ($row["comment"]!="" OR $row["followup"]!="") {
 							if ($row["type"]=="Positive") {
 								$bg="background-color: #D4F6DC;" ;
 							}
@@ -155,7 +155,14 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 							}
 							print "<tr class='comment-$count-$yearCount' id='comment-$count-$yearCount'>" ;
 								print "<td style='$bg' colspan=6>" ;
-									print $row["comment"] ;
+									if ($row["comment"]!="") {
+										print "<b>" . _('Incident') . "</b><br/>" ;
+										print nl2brr($row["comment"]) . "<br/><br/>" ;
+									}
+									if ($row["followup"]!="") {
+										print "<b>" . _('Follow Up') . "</b><br/>" ;
+										print nl2brr($row["followup"]) . "<br/><br/>" ;
+									}
 								print "</td>" ;
 							print "</tr>" ;
 						}

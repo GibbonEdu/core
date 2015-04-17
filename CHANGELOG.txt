@@ -109,6 +109,13 @@ User Admin: added ability to prevent roles from being able to log in to non-curr
 	Edited files /modules/User Admin/role_manage*.php
 	Edited files /functions.php, login.php
 
+Students: added switch to turn Student Notes feature on and off
+	New value in table gibbonSetting
+	Edited files /modules/School Admin/studentsSettings*.php
+	Edited files /modules/Students/student_view_details*.php
+
+Behaviour: added field to record follow up details
+	Edited table gibbonBehaviour
 
 v9.1.00
 -------

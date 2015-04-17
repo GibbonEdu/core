@@ -57,6 +57,7 @@ else {
 			print "</div>" ;
 		}
 		else {
+			$enableStudentNotes=getSettingByScope($connection2, "Students", "enableStudentNotes") ;
 			$skipBrief=FALSE ;
 			//Test if View Student Profile_brief and View Student Profile_myChildren are both available and parent has access to this student...if so, skip brief, and go to full. 
 			if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details.php", "View Student Profile_brief") AND isActionAccessible($guid, $connection2, "/modules/Students/student_view_details.php", "View Student Profile_myChildren")) {
@@ -1621,193 +1622,200 @@ else {
 						}
 					}
 					else if ($subpage=="Notes") {
-						if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details_notes_add.php")==FALSE) {
+						if ($enableStudentNotes!="Y") {
 							print "<div class='error'>" ;
-								print _("Your request failed because you do not have access to this action.") ;
-							print "</div>" ; 
+								print _("You do not have access to this action.") ;
+							print "</div>" ;
 						}
 						else {
-							if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-							$deleteReturnMessage="" ;
-							$class="error" ;
-							if (!($deleteReturn=="")) {
-								if ($deleteReturn=="success0") {
-									$deleteReturnMessage=_("Your request was completed successfully.") ;		
-									$class="success" ;
-								}
-								print "<div class='$class'>" ;
-									print $deleteReturnMessage;
-								print "</div>" ;
-							} 
-							
-							print "<p>" ;
-								print _("Student Notes provide a way to store information on students which does not fit elsewhere in the system, or which you want to be able to see quickly in one place.") . " <b>" . _('Please remember that notes are visible to other users who have access to full student profiles (this should not generally include parents).') . "</b>" ;
-							print "</p>" ;
-							
-							$categories=FALSE ;
-							$category=NULL ;
-							if (isset($_GET["category"])) {
-								$category=$_GET["category"] ;
-							}
-							
-							try {
-								$dataCategories=array(); 
-								$sqlCategories="SELECT * FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name" ;
-								$resultCategories=$connection2->prepare($sqlCategories);
-								$resultCategories->execute($dataCategories);
-							}
-							catch(PDOException $e) { }
-							if ($resultCategories->rowCount()>0) {
-								$categories=TRUE ;
-								
-								print "<h3>" ;
-								print _("Filter") ;
-								print "</h3>" ;
-								?>
-								<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-									<table class='noIntBorder' cellspacing='0' style="width: 100%">	
-										<tr><td style="width: 30%"></td><td></td></tr>
-										<tr>
-											<td> 
-												<b><?php print _('Category') ?></b><br/>
-											</td>
-											<td class="right">
-												<?php
-												print "<select name='category' id='category' style='width:302px'>" ;
-													print "<option $selected value=''></option>" ;
-													while ($rowCategories=$resultCategories->fetch()) {
-														$selected="" ;
-														if ($category==$rowCategories["gibbonStudentNoteCategoryID"]) {
-															$selected="selected" ;
-														}
-														print "<option $selected value='" . $rowCategories["gibbonStudentNoteCategoryID"] . "'>" . $rowCategories["name"] . "</option>" ;
-													}
-												print "</select>" ;
-												?>
-											</td>
-										</tr>
-										<tr>
-											<td colspan=2 class="right">
-												<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/student_view_details.php">
-												<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-												<?php
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes'>" . _('Clear Search') . "</a>" ;
-												?>
-												<input type="hidden" name="gibbonPersonID" value="<?php print $gibbonPersonID ?>">
-												<input type="hidden" name="allStudents" value="<?php print $allStudents ?>">
-												<input type="hidden" name="search" value="<?php print $search ?>">
-												<input type="hidden" name="subpage" value="Notes">
-												<input type="submit" value="<?php print _("Submit") ; ?>">
-											</td>
-										</tr>
-									</table>
-								</form>
-							<?php
-							}
-						
-							try {
-								if ($category==NULL) {
-									$data=array("gibbonPersonID"=>$gibbonPersonID); 
-									$sql="SELECT gibbonStudentNote.*, gibbonStudentNoteCategory.name AS category, surname, preferredName FROM gibbonStudentNote LEFT JOIN gibbonStudentNoteCategory ON (gibbonStudentNote.gibbonStudentNoteCategoryID=gibbonStudentNoteCategory.gibbonStudentNoteCategoryID) JOIN gibbonPerson ON (gibbonStudentNote.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) WHERE gibbonStudentNote.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC" ; 
-								}
-								else {
-									$data=array("gibbonPersonID"=>$gibbonPersonID, "gibbonStudentNoteCategoryID"=>$category); 
-									$sql="SELECT gibbonStudentNote.*, gibbonStudentNoteCategory.name AS category, surname, preferredName FROM gibbonStudentNote LEFT JOIN gibbonStudentNoteCategory ON (gibbonStudentNote.gibbonStudentNoteCategoryID=gibbonStudentNoteCategory.gibbonStudentNoteCategoryID) JOIN gibbonPerson ON (gibbonStudentNote.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) WHERE gibbonStudentNote.gibbonPersonID=:gibbonPersonID AND gibbonStudentNote.gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID ORDER BY timestamp DESC" ; 
-								}
-								$result=$connection2->prepare($sql);
-								$result->execute($data);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							
-							print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&search=$search&allStudents=$allStudents&subpage=Notes&category=$category'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
-							print "</div>" ;
-							
-							if ($result->rowCount()<1) {
+							if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details_notes_add.php")==FALSE) {
 								print "<div class='error'>" ;
-								print _("There are no records to display.") ;
-								print "</div>" ;
+									print _("Your request failed because you do not have access to this action.") ;
+								print "</div>" ; 
 							}
 							else {
-								print "<table cellspacing='0' style='width: 100%'>" ;
-									print "<tr class='head'>" ;
-										print "<th>" ;
-											print _("Date") . "<br/>" ;
-											print "<span style='font-size: 75%; font-style: italic'>" . _('Time') . "</span>" ;
-										print "</th>" ;
-										print "<th>" ;
-											print _("Category") ;
-										print "</th>" ;
-										print "<th>" ;
-											print _("Title") . "<br/>" ;
-											print "<span style='font-size: 75%; font-style: italic'>" . _('Overview') . "</span>" ;
-										print "</th>" ;
-										print "<th>" ;
-											print _("Note Taker") ;
-										print "</th>" ;
-										print "<th>" ;
-											print _("Actions") ;
-										print "</th>" ;
-									print "</tr>" ;
-									
-									$count=0;
-									$rowNum="odd" ;
-									while ($row=$result->fetch()) {
-										if ($count%2==0) {
-											$rowNum="even" ;
-										}
-										else {
-											$rowNum="odd" ;
-										}
-										$count++ ;
-										
-										//COLOR ROW BY STATUS!
-										print "<tr class=$rowNum>" ;
-											print "<td>" ;
-												print dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
-												print "<span style='font-size: 75%; font-style: italic'>" . substr($row["timestamp"],11,5) . "</span>" ;
-											print "</td>" ;
-											print "<td>" ;
-												print $row["category"] ;
-											print "</td>" ;
-											print "<td>" ;
-												if ($row["title"]=="") {
-													print "<i>" . _('NA') . "</i><br/>" ;
-												}
-												else {
-													print $row["title"] . "<br/>" ;
-												}
-												print "<span style='font-size: 75%; font-style: italic'>" .  substr(strip_tags($row["note"]),0,60)  . "</span>" ;
-											print "</td>" ;
-											print "<td>" ;
-												print formatName("", $row["preferredName"], $row["surname"], "Staff", false, true) ;
-											print "</td>" ;
-											print "<td>" ;
-												if ($row["gibbonPersonIDCreator"]==$_SESSION[$guid]["gibbonPersonID"]) {
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_edit.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes&category=$category'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_delete.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes&category=$category'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
-												}
-												print "<script type='text/javascript'>" ;	
-													print "$(document).ready(function(){" ;
-														print "\$(\".note-$count\").hide();" ;
-														print "\$(\".show_hide-$count\").fadeIn(1000);" ;
-														print "\$(\".show_hide-$count\").click(function(){" ;
-														print "\$(\".note-$count\").fadeToggle(1000);" ;
-														print "});" ;
-													print "});" ;
-												print "</script>" ;
-												print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='return false;' href='#'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png'/></a></span><br/>" ;
-											print "</td>" ;
-										print "</tr>" ;
-										print "<tr class='note-$count' id='note-$count'>" ;
-											print "<td colspan=6>" ;
-												print $row["note"] ;
-											print "</td>" ;
-										print "</tr>" ;
+								if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
+								$deleteReturnMessage="" ;
+								$class="error" ;
+								if (!($deleteReturn=="")) {
+									if ($deleteReturn=="success0") {
+										$deleteReturnMessage=_("Your request was completed successfully.") ;		
+										$class="success" ;
 									}
-								print "</table>" ;
+									print "<div class='$class'>" ;
+										print $deleteReturnMessage;
+									print "</div>" ;
+								} 
+							
+								print "<p>" ;
+									print _("Student Notes provide a way to store information on students which does not fit elsewhere in the system, or which you want to be able to see quickly in one place.") . " <b>" . _('Please remember that notes are visible to other users who have access to full student profiles (this should not generally include parents).') . "</b>" ;
+								print "</p>" ;
+							
+								$categories=FALSE ;
+								$category=NULL ;
+								if (isset($_GET["category"])) {
+									$category=$_GET["category"] ;
+								}
+							
+								try {
+									$dataCategories=array(); 
+									$sqlCategories="SELECT * FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name" ;
+									$resultCategories=$connection2->prepare($sqlCategories);
+									$resultCategories->execute($dataCategories);
+								}
+								catch(PDOException $e) { }
+								if ($resultCategories->rowCount()>0) {
+									$categories=TRUE ;
+								
+									print "<h3>" ;
+									print _("Filter") ;
+									print "</h3>" ;
+									?>
+									<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+										<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+											<tr><td style="width: 30%"></td><td></td></tr>
+											<tr>
+												<td> 
+													<b><?php print _('Category') ?></b><br/>
+												</td>
+												<td class="right">
+													<?php
+													print "<select name='category' id='category' style='width:302px'>" ;
+														print "<option $selected value=''></option>" ;
+														while ($rowCategories=$resultCategories->fetch()) {
+															$selected="" ;
+															if ($category==$rowCategories["gibbonStudentNoteCategoryID"]) {
+																$selected="selected" ;
+															}
+															print "<option $selected value='" . $rowCategories["gibbonStudentNoteCategoryID"] . "'>" . $rowCategories["name"] . "</option>" ;
+														}
+													print "</select>" ;
+													?>
+												</td>
+											</tr>
+											<tr>
+												<td colspan=2 class="right">
+													<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/student_view_details.php">
+													<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+													<?php
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes'>" . _('Clear Search') . "</a>" ;
+													?>
+													<input type="hidden" name="gibbonPersonID" value="<?php print $gibbonPersonID ?>">
+													<input type="hidden" name="allStudents" value="<?php print $allStudents ?>">
+													<input type="hidden" name="search" value="<?php print $search ?>">
+													<input type="hidden" name="subpage" value="Notes">
+													<input type="submit" value="<?php print _("Submit") ; ?>">
+												</td>
+											</tr>
+										</table>
+									</form>
+								<?php
+								}
+						
+								try {
+									if ($category==NULL) {
+										$data=array("gibbonPersonID"=>$gibbonPersonID); 
+										$sql="SELECT gibbonStudentNote.*, gibbonStudentNoteCategory.name AS category, surname, preferredName FROM gibbonStudentNote LEFT JOIN gibbonStudentNoteCategory ON (gibbonStudentNote.gibbonStudentNoteCategoryID=gibbonStudentNoteCategory.gibbonStudentNoteCategoryID) JOIN gibbonPerson ON (gibbonStudentNote.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) WHERE gibbonStudentNote.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC" ; 
+									}
+									else {
+										$data=array("gibbonPersonID"=>$gibbonPersonID, "gibbonStudentNoteCategoryID"=>$category); 
+										$sql="SELECT gibbonStudentNote.*, gibbonStudentNoteCategory.name AS category, surname, preferredName FROM gibbonStudentNote LEFT JOIN gibbonStudentNoteCategory ON (gibbonStudentNote.gibbonStudentNoteCategoryID=gibbonStudentNoteCategory.gibbonStudentNoteCategoryID) JOIN gibbonPerson ON (gibbonStudentNote.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) WHERE gibbonStudentNote.gibbonPersonID=:gibbonPersonID AND gibbonStudentNote.gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID ORDER BY timestamp DESC" ; 
+									}
+									$result=$connection2->prepare($sql);
+									$result->execute($data);
+								}
+								catch(PDOException $e) { 
+									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+								}
+							
+								print "<div class='linkTop'>" ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&search=$search&allStudents=$allStudents&subpage=Notes&category=$category'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+								print "</div>" ;
+							
+								if ($result->rowCount()<1) {
+									print "<div class='error'>" ;
+									print _("There are no records to display.") ;
+									print "</div>" ;
+								}
+								else {
+									print "<table cellspacing='0' style='width: 100%'>" ;
+										print "<tr class='head'>" ;
+											print "<th>" ;
+												print _("Date") . "<br/>" ;
+												print "<span style='font-size: 75%; font-style: italic'>" . _('Time') . "</span>" ;
+											print "</th>" ;
+											print "<th>" ;
+												print _("Category") ;
+											print "</th>" ;
+											print "<th>" ;
+												print _("Title") . "<br/>" ;
+												print "<span style='font-size: 75%; font-style: italic'>" . _('Overview') . "</span>" ;
+											print "</th>" ;
+											print "<th>" ;
+												print _("Note Taker") ;
+											print "</th>" ;
+											print "<th>" ;
+												print _("Actions") ;
+											print "</th>" ;
+										print "</tr>" ;
+									
+										$count=0;
+										$rowNum="odd" ;
+										while ($row=$result->fetch()) {
+											if ($count%2==0) {
+												$rowNum="even" ;
+											}
+											else {
+												$rowNum="odd" ;
+											}
+											$count++ ;
+										
+											//COLOR ROW BY STATUS!
+											print "<tr class=$rowNum>" ;
+												print "<td>" ;
+													print dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
+													print "<span style='font-size: 75%; font-style: italic'>" . substr($row["timestamp"],11,5) . "</span>" ;
+												print "</td>" ;
+												print "<td>" ;
+													print $row["category"] ;
+												print "</td>" ;
+												print "<td>" ;
+													if ($row["title"]=="") {
+														print "<i>" . _('NA') . "</i><br/>" ;
+													}
+													else {
+														print $row["title"] . "<br/>" ;
+													}
+													print "<span style='font-size: 75%; font-style: italic'>" .  substr(strip_tags($row["note"]),0,60)  . "</span>" ;
+												print "</td>" ;
+												print "<td>" ;
+													print formatName("", $row["preferredName"], $row["surname"], "Staff", false, true) ;
+												print "</td>" ;
+												print "<td>" ;
+													if ($row["gibbonPersonIDCreator"]==$_SESSION[$guid]["gibbonPersonID"]) {
+														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_edit.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes&category=$category'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_delete.php&search=" . $search . "&gibbonStudentNoteID=" . $row["gibbonStudentNoteID"] . "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes&category=$category'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+													}
+													print "<script type='text/javascript'>" ;	
+														print "$(document).ready(function(){" ;
+															print "\$(\".note-$count\").hide();" ;
+															print "\$(\".show_hide-$count\").fadeIn(1000);" ;
+															print "\$(\".show_hide-$count\").click(function(){" ;
+															print "\$(\".note-$count\").fadeToggle(1000);" ;
+															print "});" ;
+														print "});" ;
+													print "</script>" ;
+													print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='return false;' href='#'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png'/></a></span><br/>" ;
+												print "</td>" ;
+											print "</tr>" ;
+											print "<tr class='note-$count' id='note-$count'>" ;
+												print "<td colspan=6>" ;
+													print $row["note"] ;
+												print "</td>" ;
+											print "</tr>" ;
+										}
+									print "</table>" ;
+								}
 							}
 						}
 					}
@@ -2965,11 +2973,13 @@ else {
 					}
 					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Medical'>" . _('Medical') . "</a></li>" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details_notes_add.php")) {
-						$style="" ;
-						if ($subpage=="Notes") {
-							$style="style='font-weight: bold'" ;
+						if ($enableStudentNotes=="Y") {
+							$style="" ;
+							if ($subpage=="Notes") {
+								$style="style='font-weight: bold'" ;
+							}
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Notes'>" . _('Notes') . "</a></li>" ;
 						}
-						$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Notes'>" . _('Notes') . "</a></li>" ;
 					}
 					if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentHistory.php")) {
 						$style="" ;

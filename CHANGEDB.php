@@ -687,6 +687,8 @@ ALTER TABLE `gibbonUnitBlockStar` ENGINE = MyISAM;end
 INSERT INTO `gibbonAction` (`gibbonModuleID` ,`name` ,`precedence` ,`category` ,`description` ,`URLList` ,`entryURL` ,`defaultPermissionAdmin` ,`defaultPermissionTeacher` ,`defaultPermissionStudent` ,`defaultPermissionParent` ,`defaultPermissionSupport` ,`categoryPermissionStaff` ,`categoryPermissionStudent` ,`categoryPermissionParent` ,`categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable'), 'View Timetable by Person_allYears', 0, 'View Timetables', 'Allows users to view timetables in all school years.', 'tt.php, tt_view.php', 'tt.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N');end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Timetable' AND gibbonAction.name='View Timetable by Person_allYears'));end
 ALTER TABLE `gibbonRole` ADD `nonCurrentYearLogin` ENUM('Y','N') NOT NULL DEFAULT 'Y' ;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Students', 'enableStudentNotes', 'Enable Student Notes', 'Should student notes be turned on?', 'Y');end
+ALTER TABLE `gibbonBehaviour` ADD `followup` TEXT NOT NULL AFTER `comment`;end
 ";
 
 

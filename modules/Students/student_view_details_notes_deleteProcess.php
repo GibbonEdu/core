@@ -47,35 +47,22 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_deta
 	header("Location: {$URL}");
 }
 else {
-	//Proceed!
-	//Check if note specified
-	if ($gibbonStudentNoteID=="" OR $gibbonPersonID=="" OR $subpage=="") {
-		print "Fatal error loading this page!" ;
+	$enableStudentNotes=getSettingByScope($connection2, "Students", "enableStudentNotes") ;
+	if ($enableStudentNotes!="Y") {
+		//Fail 0
+		$URL.="&addReturn=fail0" ;
+		header("Location: {$URL}");
 	}
 	else {
-		try {
-			$data=array("gibbonStudentNoteID"=>$gibbonStudentNoteID); 
-			$sql="SELECT * FROM gibbonStudentNote WHERE gibbonStudentNoteID=:gibbonStudentNoteID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&deleteReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
-		
-		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&deleteReturn=fail2" ;
-			header("Location: {$URL}");
+		//Proceed!
+		//Check if note specified
+		if ($gibbonStudentNoteID=="" OR $gibbonPersonID=="" OR $subpage=="") {
+			print "Fatal error loading this page!" ;
 		}
 		else {
-			//Write to database
 			try {
 				$data=array("gibbonStudentNoteID"=>$gibbonStudentNoteID); 
-				$sql="DELETE FROM gibbonStudentNote WHERE gibbonStudentNoteID=:gibbonStudentNoteID" ;
+				$sql="SELECT * FROM gibbonStudentNote WHERE gibbonStudentNoteID=:gibbonStudentNoteID" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -85,10 +72,31 @@ else {
 				header("Location: {$URL}");
 				break ;
 			}
+		
+			if ($result->rowCount()!=1) {
+				//Fail 2
+				$URL.="&deleteReturn=fail2" ;
+				header("Location: {$URL}");
+			}
+			else {
+				//Write to database
+				try {
+					$data=array("gibbonStudentNoteID"=>$gibbonStudentNoteID); 
+					$sql="DELETE FROM gibbonStudentNote WHERE gibbonStudentNoteID=:gibbonStudentNoteID" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					//Fail2
+					$URL.="&deleteReturn=fail2" ;
+					header("Location: {$URL}");
+					break ;
+				}
 			
-			//Success 0
-			$URLDelete=$URLDelete . "&deleteReturn=success0" ;
-			header("Location: {$URLDelete}");
+				//Success 0
+				$URLDelete=$URLDelete . "&deleteReturn=success0" ;
+				header("Location: {$URLDelete}");
+			}
 		}
 	}
 }
