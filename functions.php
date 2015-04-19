@@ -942,7 +942,7 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
 		
 		//Attempt email send
 		$to=$rowSelect["email"] ;
-		$subject=sprintf(_('You have received a notification on %1$s at %2$s'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationNameShort"]) ;
+		$subject=sprintf(_('You have received a notification on %1$s at %2$s (%3$s %4$s)'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationNameShort"], date("H:i"), dateConvertBack($guid, date("Y-m-d"))) ;
 		$body=_('Notification') . ": " . $text . "\n\n" ;
 		$body.=sprintf(_('Login to %1$s and use the noticiation icon to check your new notification, or use the link below:'), $_SESSION[$guid]["systemName"]) . "\n\n" ;
 		$body.=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php\n\n" ;

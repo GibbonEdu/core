@@ -117,6 +117,22 @@ Students: added switch to turn Student Notes feature on and off
 Behaviour: added field to record follow up details
 	Edited table gibbonBehaviour
 
+General: added date and time to notification emails to prevent Gmail turning them into conversations and autohiding content.
+	Edited file /functions.php
+
+Behaviour: prevented parents, students and others accidentally getting permission to view all behaviour records
+	Edited value in table gibbonAction
+
+Behaviour: changed student names to links to Behaviour subpage in Behaviour module in student lists
+	Edited files /behaviour*.php
+
+Finance: added ability to specify budget areas, getting ready for purchase requisitions and expenses
+	New tables gibbonFinanceBudget, gibbonFinanceBudgetPeriod, gibbonFinanceBudgetPerson
+	New value in table gibbonSetting
+	Update values in table gibbonAction
+	Edited files /modules/School Admin/financeSettings*.php
+	New files /modules/Finance/budgets_manage*.php
+
 v9.1.00
 -------
 Installer: removed orphaned debug output

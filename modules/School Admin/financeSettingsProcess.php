@@ -55,6 +55,8 @@ else {
 	$reminder1Text=$_POST["reminder1Text"] ;
 	$reminder2Text=$_POST["reminder2Text"] ;
 	$reminder3Text=$_POST["reminder3Text"] ;
+	$budgetCategories=$_POST["budgetCategories"] ;
+	$budgetStartDate=$_POST["budgetStartDate"] ;	
 
 	if ($email=="") {
 		//Fail 3
@@ -168,6 +170,26 @@ else {
 		try {
 			$data=array("value"=>$reminder3Text); 
 			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='reminder3Text'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$budgetCategories); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='budgetCategories'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$budgetStartDate); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='budgetStartDate'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

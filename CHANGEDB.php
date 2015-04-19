@@ -689,6 +689,19 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 ALTER TABLE `gibbonRole` ADD `nonCurrentYearLogin` ENUM('Y','N') NOT NULL DEFAULT 'Y' ;end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Students', 'enableStudentNotes', 'Enable Student Notes', 'Should student notes be turned on?', 'Y');end
 ALTER TABLE `gibbonBehaviour` ADD `followup` TEXT NOT NULL AFTER `comment`;end
+CREATE TABLE `gibbonFinanceBudget` (  `gibbonFinanceBudgetID` int(4) unsigned zerofill NOT NULL,  `name` varchar(30) NOT NULL,  `nameShort` varchar(8) NOT NULL,  `active` enum('Y','N') NOT NULL DEFAULT 'Y',  `category` varchar(255) NOT NULL,  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,  `timestampCreator` timestamp NULL DEFAULT NULL,  `gibbonPersonIDUpdate` int(10) unsigned zerofill DEFAULT NULL,  `timestampUpdate` timestamp NULL DEFAULT NULL) ENGINE=MyISAM DEFAULT CHARSET=utf8;end
+ALTER TABLE `gibbonFinanceBudget` ADD PRIMARY KEY (`gibbonFinanceBudgetID`), ADD UNIQUE KEY `name` (`name`), ADD UNIQUE KEY `nameShort` (`nameShort`);end
+ALTER TABLE `gibbonFinanceBudget` MODIFY `gibbonFinanceBudgetID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT;end
+CREATE TABLE `gibbonFinanceBudgetPerson` (  `gibbonFinanceBudgetPersonID` int(8) unsigned zerofill NOT NULL,  `gibbonFinanceBudgetID` int(4) unsigned zerofill NOT NULL,  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,  `access` enum('Full','Write','Read') NOT NULL) ENGINE=MyISAM DEFAULT CHARSET=utf8;en
+ALTER TABLE `gibbonFinanceBudgetPerson` ADD UNIQUE KEY `gibbonFinanceBudgetPersonID` (`gibbonFinanceBudgetPersonID`);end
+ALTER TABLE `gibbonFinanceBudgetPerson` MODIFY `gibbonFinanceBudgetPersonID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Finance', 'budgetCategories', 'Budget Categories', 'Comma-separated list of budget categories.', 'Academic, Administration, Capital');end
+UPDATE gibbonAction SET categoryPermissionStudent='N', categoryPermissionParent='N', categoryPermissionOther='N'  WHERE name='View Behaviour Records' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Behaviour');end
+UPDATE gibbonAction SET category='Billing' WHERE category='Admin' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Finance');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Finance'), 'Manage Budgets', 0, 'Expenses', 'Allows users to create, edit and delete budgets.', 'budgets_manage.php,budgets_manage_add.php,budgets_manage_edit.php,budgets_manage_delete.php', 'budgets_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Finance' AND gibbonAction.name='Manage Budgets'));end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Finance', 'budgetStartDate', 'Budget Start Date', 'Initial start date of your first budget. Will be used as start of budget each year.', '');end
+
 ";
 
 

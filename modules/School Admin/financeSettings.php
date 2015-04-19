@@ -337,6 +337,77 @@ else {
 				</td>
 			</tr>
 			
+			<tr class='break'>
+				<td colspan=2> 
+					<h3><?php print _('Budgets') ?></h3>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='budgetCategories'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i>
+						<?php 
+						if ($row["description"]!="") { print _($row["description"]) ; } 
+						?> 
+					</i></span>
+				</td>
+				<td class="right">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
+					 </script>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='budgetStartDate'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i>
+						<?php 
+						if ($row["description"]!="") { print _($row["description"]) ; } 
+						?> 
+					</i></span>
+				</td>
+				<td class="right">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+					 </script>
+					  <script type="text/javascript">
+						$(function() {
+							<?php print "$( \"#" . $row["name"] . "\" ).datepicker();" ; ?>
+						});
+					</script>
+				</td>
+			</tr>
+			
+			
+			
 			<tr>
 				<td>
 					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>

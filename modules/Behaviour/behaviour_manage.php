@@ -318,7 +318,7 @@ else {
 						else {
 							print "<td>" ;
 						}
-							print "<b>" . formatName("", $row["preferredNameStudent"], $row["surnameStudent"], "Student", true) . "</b><br/>" ;
+							print "<div style='padding: 2px 0px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&subpage=Behaviour Record&search=&allStudents=&sort=surname, preferredName'>" . formatName("", $row["preferredNameStudent"], $row["surnameStudent"], "Student", true) . "</a><br/></div>" ;
 							if (substr($row["timestamp"],0,10)>$row["date"]) {
 								print _("Updated:") . " " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
 								print _("Incident:") . " " . dateConvertBack($guid, $row["date"]) . "<br/>" ;

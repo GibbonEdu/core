@@ -23,7 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/department_manage_edit.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/Finance/budgets_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
 		print _("You do not have access to this action.") ;
@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/department_ma
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_manage.php'>" . _('Manage Departments') . "</a> > </div><div class='trailEnd'>" . _('Edit Department') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/budgets_manage.php'>" . _('Manage Budgets') . "</a> > </div><div class='trailEnd'>" . _('Edit Category') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -52,7 +52,7 @@ else {
 			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($updateReturn=="fail5") {
 			$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
@@ -66,139 +66,123 @@ else {
 		print "</div>" ;
 	} 
 	
-	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage="" ;
-	$class="error" ;
-	if (!($deleteReturn=="")) {
-		if ($deleteReturn=="fail0") {
-			$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($deleteReturn=="fail1") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($deleteReturn=="fail2") {
-			$deleteReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($deleteReturn=="fail3") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $deleteReturnMessage;
-		print "</div>" ;
-	} 
-	
 	//Check if school year specified
-	$gibbonDepartmentID=$_GET["gibbonDepartmentID"];
-	if ($gibbonDepartmentID=="Y") {
+	$gibbonFinanceBudgetID=$_GET["gibbonFinanceBudgetID"];
+	if ($gibbonFinanceBudgetID=="") {
 		print "<div class='error'>" ;
 			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
 		try {
-			$data=array("gibbonDepartmentID"=>$gibbonDepartmentID); 
-			$sql="SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID" ;
+			$data=array("gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID); 
+			$sql="SELECT * FROM gibbonFinanceBudget WHERE gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
 			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 		}
-
+		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print _("The specified record does not exist.") ;
 			print "</div>" ;
 		}
 		else {
 			//Let's go!
 			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_manage_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/budgets_manage_editProcess.php?gibbonFinanceBudgetID=$gibbonFinanceBudgetID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
-						<td colspan=2>
-							<h3><?php print _('General Information') ?></h3>
+						<td colspan=2> 
+							<h3><?php print _('General Settings') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Type') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i><br/></span>
-						</td>
-						<td class="right">
-							<?php $type=$row["type"] ; ?>
-							<input readonly name="type" id="type" value="<?php print $type ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
-					<tr>
-						<td> 
 							<b><?php print _('Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=100 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
 						<td> 
 							<b><?php print _('Short Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=14 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
-							 </script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php print _('Subject Listing') ?></b><br/>
-						</td>
-						<td class="right">
-							<input name="subjectListing" id="subjectListing" maxlength=255 value="<?php print $row["subjectListing"] ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2> 
-							<b><?php print _('Blurb') ?></b> 
-							<?php print getEditor($guid,  TRUE, "blurb", $row["blurb"], 20 ) ?>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php print _('Logo') ?></b><br/>
-							<span style="font-size: 90%"><i>125x125px jpg/png/gif</i><br/></span>
-							<?php if ($row["logo"]!="") { ?>
-							<span style="font-size: 90%"><i><?php print _('Will overwrite existing attachment.') ?></i></span>
-							<?php } ?>
-						</td>
-						<td class="right">
-							<?php
-							if ($row["logo"]!="") {
-								print _("Current attachment:") . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["logo"] . "'>" . $row["logo"] . "</a><br/><br/>" ;
-							}
-							?>
-							<input type="file" name="file" id="file"><br/><br/>
-							<?php
-							print getMaxUpload() ;
-							$ext="'.png','.jpeg','.jpg','.gif'" ;
-							?>
-							
-							<script type="text/javascript">
-								var file=new LiveValidation('file');
-								file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "<?php print _('Illegal file type!') ?>", partialMatch: true, caseSensitive: false } );
 							</script>
 						</td>
 					</tr>
+					<tr>
+						<td> 
+							<b><?php print _('Active') ?> *</b><br/>
+							<span style="font-size: 90%"><i></i></span>
+						</td>
+						<td class="right">
+							<select name="active" id="active" style="width: 302px">
+								<option <?php if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["active"]=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
+							</select>
+						</td>
+					</tr>
+					<?php
+					$categories=getSettingByScope($connection2, "Finance", "budgetCategories") ;
+					if ($categories!=FALSE) {
+						$categories=explode(",", $categories) ;
+						?>
+						<tr>
+							<td> 
+								<b><?php print _('Category') ?> *</b><br/>
+								<span style="font-size: 90%"><i></i></span>
+							</td>
+							<td class="right">
+								<select name="category" id="category" style="width: 302px">
+									<option value="Please select..."><?php print _('Please select...') ?></option>
+									<?php
+									for ($i=0; $i<count($categories); $i++) {
+										$selected="" ;
+										if (trim($categories[$i])==$row["category"]) {
+											$selected="selected" ;
+										}
+										print "<option $selected value=\"" . trim($categories[$i]) . "\">" . trim($categories[$i]) . "</option>" ;
+									}
+									?>
+								</select>
+								<script type="text/javascript">
+									var category=new LiveValidation('category');
+									category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								 </script>
+							</td>
+						</tr>
+						<?php
+					}
+					else {
+						?>
+						<tr>
+							<td> 
+								<b><?php print _('Category') ?> *</b><br/>
+								<span style="font-size: 90%"><i></i></span>
+							</td>
+							<td class="right">
+								<input readonly name="category" id="category" value="Other" type="text" style="width: 300px">
+							</td>
+						</tr>
+						<?php
+					}
+					?>
 					<tr class='break'>
 						<td colspan=2> 
 							<h3><?php print _('Current Staff') ?></h3>
@@ -208,8 +192,8 @@ else {
 						<td colspan=2> 
 							<?php
 							try {
-								$data=array("gibbonDepartmentID"=>$gibbonDepartmentID); 
-								$sql="SELECT preferredName, surname, gibbonDepartmentStaff.* FROM gibbonDepartmentStaff JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonDepartmentID=:gibbonDepartmentID AND gibbonPerson.status='Full' ORDER BY surname, preferredName" ; 
+								$data=array("gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID); 
+								$sql="SELECT preferredName, surname, gibbonFinanceBudgetPerson.* FROM gibbonFinanceBudgetPerson JOIN gibbonPerson ON (gibbonFinanceBudgetPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND gibbonPerson.status='Full' ORDER BY FIELD(access,'Full','Write','Read'), surname, preferredName" ; 
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}
@@ -230,7 +214,7 @@ else {
 											print _("Name") ;
 										print "</th>" ;
 										print "<th>" ;
-											print _("Role") ;
+											print _("Access") ;
 										print "</th>" ;
 										print "<th>" ;
 											print _("Action") ;
@@ -254,10 +238,10 @@ else {
 												print formatName("", $row["preferredName"], $row["surname"], "Staff", true, true) ;
 											print "</td>" ;
 											print "<td>" ;
-												print $row["role"] ;
+												print $row["access"] ;
 											print "</td>" ;
 											print "<td>" ;
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_manage_edit_staff_deleteProcess.php?address=" . $_GET["q"] . "&gibbonDepartmentStaffID=" . $row["gibbonDepartmentStaffID"] . "&gibbonDepartmentID=$gibbonDepartmentID'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/budgets_manage_edit_staff_deleteProcess.php?address=" . $_GET["q"] . "&gibbonFinanceBudgetPersonID=" . $row["gibbonFinanceBudgetPersonID"] . "&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 											print "</td>" ;
 										print "</tr>" ;
 									}
@@ -298,40 +282,19 @@ else {
 							<b><?php print _('Role') ?></b><br/>
 						</td>
 						<td class="right">
-							<select name="role" id="role" style="width: 302px">
-								<?php
-								if ($type=="Learning Area") {
-									?>
-									<option value="Coordinator"><?php print _('Coordinator') ?></option>
-									<option value="Assistant Coordinator"><?php print _('Assistant Coordinator') ?></option>
-									<option value="Teacher (Curriculum)"><?php print _('Teacher (Curriculum)') ?></option>
-									<option value="Teacher"><?php print _('Teacher') ?></option>
-									<option value="Other"><?php print _('Other') ?></option>
-									<?php
-								}
-								else if ($type=="Administration") {
-									?>
-									<option value="Director"><?php print _('Director') ?></option>
-									<option value="Manager"><?php print _('Manager') ?></option>
-									<option value="Administrator"><?php print _('Administrator') ?></option>
-									<option value="Other"><?php print _('Other') ?></option>
-									<?php
-								}
-								else {
-									?>
-									<option value="Other"><?php print _('Other') ?></option>
-									<?php
-								}
-								?>
+							<select name="access" id="access" style="width: 302px">
+								<option value="Full"><?php print _('Full') ?></option>
+								<option value="Write"><?php print _('Write') ?></option>
+								<option value="Read"><?php print _('Read') ?></option>
 							</select>
 						</td>
 					</tr>
-					
 					<tr>
 						<td>
 							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 							<input type="submit" value="<?php print _("Submit") ; ?>">
 						</td>
 					</tr>
