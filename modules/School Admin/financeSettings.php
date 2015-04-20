@@ -110,10 +110,10 @@ else {
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>Y</option>" ;
+						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>N</option>" ;
+						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
 						?>			
 					</select>
 				</td>
@@ -132,7 +132,7 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
 					<span style="font-size: 90%"><i>
 						<?php 
 							if ($row["description"]!="") { print _($row["description"]) ; } 
@@ -339,7 +339,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Budgets') ?></h3>
+					<h3><?php print _('Expenses') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -375,7 +375,7 @@ else {
 				<?php
 				try {
 					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='budgetStartDate'" ;
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='expenseApprovalType'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -385,27 +385,74 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i>
-						<?php 
-						if ($row["description"]!="") { print _($row["description"]) ; } 
-						?> 
-					</i></span>
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
-					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-					 </script>
-					  <script type="text/javascript">
-						$(function() {
-							<?php print "$( \"#" . $row["name"] . "\" ).datepicker();" ; ?>
-						});
-					</script>
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
+						$selected="" ;
+						if ($row["value"]=="One Of" ) { $selected="selected" ; }
+						print "<option $selected value='One Of'>One Of</option>" ;
+						$selected="" ;
+						if ($row["value"]=="Two Of" ) { $selected="selected" ; }
+						print "<option $selected value='Two Of'>Two Of</option>" ;
+						$selected="" ;
+						if ($row["value"]=="Chain Of All" ) { $selected="selected" ; }
+						print "<option $selected value='Chain Of All'>Chain Of All</option>" ;
+						?>			
+					</select>
 				</td>
 			</tr>
-			
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='budgetLevelExpenseApproval'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
+						$selected="" ;
+						if ($row["value"]=="Y" ) { $selected="selected" ; }
+						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
+						$selected="" ;
+						if ($row["value"]=="N" ) { $selected="selected" ; }
+						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
+						?>			
+					</select>
+				</td>
+			</tr>
+				<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='expenseRequestTemplate'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+				</td>
+			</tr>
 			
 			
 			<tr>

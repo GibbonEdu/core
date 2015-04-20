@@ -129,9 +129,29 @@ Behaviour: changed student names to links to Behaviour subpage in Behaviour modu
 Finance: added ability to specify budget areas, getting ready for purchase requisitions and expenses
 	New tables gibbonFinanceBudget, gibbonFinanceBudgetPeriod, gibbonFinanceBudgetPerson
 	New value in table gibbonSetting
-	Update values in table gibbonAction
+	New values in table gibbonAction, gibbonPermission
+	Updated values in table gibbonAction
 	Edited files /modules/School Admin/financeSettings*.php
 	New files /modules/Finance/budgets_manage*.php
+
+Finance: added ability to define who can approve expenses
+	New table gibbonFinanceExpenseApprover
+	New value in tables gibbonSetting, gibbonAction, gibbonPermission
+	Edited files /modules/School Admin/financeSettings*.php
+	New files /modules/Finance/expenseApprovers_manage.php
+	
+Finance: added ability define budget cycles
+	New table gibbonFinanceBudgetCycle
+	New value in tables gibbonAction, gibbonPermission
+	New files /modules/Finance/budgetCycles_manage.php
+
+Finance: added ability to make expense requests
+	New tables gibbonFinanceExpense, gibbonFinanceExpenseLog
+	New value in tables gibbonSetting, gibbonAction, gibbonPermission
+	Edited files /modules/School Admin/financeSettings*.php
+	New files /modules/Finance/expenseRequest_manage.php
+	Edited file /modules/Finance/moduleFunctions.php
+	
 
 v9.1.00
 -------

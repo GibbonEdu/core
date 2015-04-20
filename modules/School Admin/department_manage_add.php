@@ -166,6 +166,7 @@ else {
 						?>
 					</select>
 				</td>
+			</tr>
 			<tr id='roleLARow'>
 				<td> 
 					<b><?php print _('Role') ?></b><br/>

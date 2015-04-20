@@ -56,9 +56,11 @@ else {
 	$reminder2Text=$_POST["reminder2Text"] ;
 	$reminder3Text=$_POST["reminder3Text"] ;
 	$budgetCategories=$_POST["budgetCategories"] ;
-	$budgetStartDate=$_POST["budgetStartDate"] ;	
-
-	if ($email=="") {
+	$expenseApprovalType=$_POST["expenseApprovalType"] ;
+	$budgetLevelExpenseApproval=$_POST["budgetLevelExpenseApproval"] ;
+	$expenseRequestTemplate=$_POST["expenseRequestTemplate"] ;
+	
+	if ($email=="" OR $financeOnlinePaymentEnabled=="" OR $invoiceNumber=="" OR $budgetCategories=="" OR $expenseApprovalType=="" OR $budgetLevelExpenseApproval=="") {
 		//Fail 3
 		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
@@ -188,15 +190,34 @@ else {
 		}
 		
 		try {
-			$data=array("value"=>$budgetStartDate); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='budgetStartDate'" ;
+			$data=array("value"=>$expenseApprovalType); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='expenseApprovalType'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
 			$fail=TRUE ;
 		}
-	
+		
+		try {
+			$data=array("value"=>$budgetLevelExpenseApproval); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='budgetLevelExpenseApproval'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$expenseRequestTemplate); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='expenseRequestTemplate'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
 	
 		if ($fail==TRUE) {
 			//Fail 2

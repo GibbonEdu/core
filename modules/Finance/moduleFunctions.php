@@ -17,6 +17,93 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//Returns all budgets a person is linked to, as well as their access rights to that budget
+function getBudgetsByPerson($connection2, $gibbonPersonID) {
+	$return=FALSE ;
+	
+	try {
+		$data=array("gibbonPersonID"=>$gibbonPersonID); 
+		$sql="SELECT * FROM gibbonFinanceBudget JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY name" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { }
+	
+	$count=0 ;
+	if ($result->rowCount()>0) {
+		$return=array() ;
+		while ($row=$result->fetch()) {
+			$return[$count][0]=$row["gibbonFinanceBudgetID"] ;
+			$return[$count][1]=$row["name"] ;
+			$return[$count][2]=$row["access"] ;
+			$count++ ;
+		}
+	}
+	
+	return $return ;
+}
+
+
+//Take a budget cycle, and return the previous one, or false if none
+function getPreviousBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2) {
+	$output=FALSE ;
+	
+	try {
+		$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID); 
+		$sql="SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data); 
+	}
+	catch(PDOException $e) { }
+	if ($result->rowcount()==1) {
+		$row=$result->fetch() ;
+		try {
+			$dataPrevious=array("sequenceNumber"=>$row["sequenceNumber"]); 
+			$sqlPrevious="SELECT * FROM gibbonFinanceBudgetCycle WHERE sequenceNumber<:sequenceNumber ORDER BY sequenceNumber DESC" ;
+			$resultPrevious=$connection2->prepare($sqlPrevious);
+			$resultPrevious->execute($dataPrevious); 
+		}
+		catch(PDOException $e) { }
+		if ($resultPrevious->rowCount()>=1) {
+			$rowPrevious=$resultPrevious->fetch() ;
+			$output=$rowPrevious["gibbonFinanceBudgetCycleID"] ;	
+		}
+	}
+	
+	return $output ;
+}
+
+
+//Take a budget cycle, and return the previous one, or false if none
+function getNextBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2) {		
+	$output=FALSE ;
+	
+	try {
+		$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID); 
+		$sql="SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { }
+	if ($result->rowcount()==1) {
+		$row=$result->fetch() ;
+		try {
+			$dataPrevious=array("sequenceNumber"=>$row["sequenceNumber"]); 
+			$sqlPrevious="SELECT * FROM gibbonFinanceBudgetCycle WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC" ;
+			$resultPrevious=$connection2->prepare($sqlPrevious);
+			$resultPrevious->execute($dataPrevious); 
+		}
+		catch(PDOException $e) { }
+		if ($resultPrevious->rowCount()>=1) {
+			$rowPrevious=$resultPrevious->fetch() ;
+			$output=$rowPrevious["gibbonFinanceBudgetCycleID"] ;	
+		}
+	}
+	
+	return $output ;
+}
+
+
 //Make the display for a block, according to the input provided, where $i is a unique number appended to the block's field ids.
 //Mode can be add, edit
 function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFinanceFeeID, $name="", $description="", $gibbonFinanceFeeCategoryID="", $fee="", $category="", $outerBlock=TRUE) {	

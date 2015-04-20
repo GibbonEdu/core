@@ -19,10 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
-//Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
-
-if (isActionAccessible($guid, $connection2, "/modules/Finance/budgets_manage_delete.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/Finance/expenseApprovers_manage_delete.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
 		print _("You do not have access to this action.") ;
@@ -31,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/budgets_manage_del
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/budgets_manage.php'>" . _('Manage Budgets') . "</a> > </div><div class='trailEnd'>" . _('Delete Budget') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/expenseApprovers_manage.php'>" . _('Manage Expense Approvers') . "</a> > </div><div class='trailEnd'>" . _('Delete Expense Approver') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -56,33 +53,33 @@ else {
 	} 
 	
 	//Check if school year specified
-	$gibbonFinanceBudgetID=$_GET["gibbonFinanceBudgetID"];
-	if ($gibbonFinanceBudgetID=="") {
+	$gibbonFinanceExpenseApproverID=$_GET["gibbonFinanceExpenseApproverID"] ;
+	if ($gibbonFinanceExpenseApproverID=="") {
 		print "<div class='error'>" ;
 			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
 		try {
-			$data=array("gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID); 
-			$sql="SELECT * FROM gibbonFinanceBudget WHERE gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
+			$data=array("gibbonFinanceExpenseApproverID"=>$gibbonFinanceExpenseApproverID); 
+			$sql="SELECT * FROM gibbonFinanceExpenseApprover WHERE gibbonFinanceExpenseApproverID=:gibbonFinanceExpenseApproverID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
 			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 		}
-
+		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print _("The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
 			//Let's go!
-			$row=$result->fetch() 
+			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/budgets_manage_deleteProcess.php?gibbonFinanceBudgetID=$gibbonFinanceBudgetID" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/expenseApprovers_manage_deleteProcess.php?gibbonFinanceExpenseApproverID=$gibbonFinanceExpenseApproverID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
@@ -95,7 +92,6 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<input name="gibbonFinanceBudgetID" id="gibbonFinanceBudgetID" value="<?php print $gibbonFinanceBudgetID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 							<input type="submit" value="<?php print _('Yes') ; ?>">
 						</td>
@@ -108,5 +104,5 @@ else {
 			<?php
 		}
 	}
-}	
+}
 ?>
