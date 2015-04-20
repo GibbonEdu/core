@@ -725,7 +725,7 @@ CREATE TABLE `gibbonFinanceExpenseLog` (  `gibbonFinanceExpenseLogID` int(16) un
 ALTER TABLE `gibbonFinanceExpenseLog`  ADD PRIMARY KEY (`gibbonFinanceExpenseLogID`);end
 ALTER TABLE `gibbonFinanceExpenseLog` MODIFY `gibbonFinanceExpenseLogID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Finance', 'expenseRequestTemplate', 'Expense Request Template', 'An HTML template to be used in the description field of expense requests.', '');end
-
+ALTER TABLE `gibbonFinanceExpenseLog` CHANGE `status` `action` ENUM('Request','Approval - Partial','Approval - Final','Rejection','Cancellation','Order','Payment') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ";
 
 

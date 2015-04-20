@@ -17,6 +17,92 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//Returns log associated with a particular expense
+function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2) {
+	try {
+		$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID); 
+		$sql="SELECT gibbonFinanceExpenseLog.*, surname, preferredName FROM gibbonFinanceExpense JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonFinanceExpenseID=gibbonFinanceExpense.gibbonFinanceExpenseID) JOIN gibbonPerson ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID ORDER BY timestamp DESC" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+	}
+
+	if ($result->rowCount()<1) {
+		print "<div class='error'>" ;
+		print _("There are no records to display.") ;
+		print "</div>" ;
+	}
+	else {
+		print "<table cellspacing='0' style='width: 100%'>" ;
+			print "<tr class='head'>" ;
+				print "<th>" ;
+					print _("Person") ;
+				print "</th>" ;
+				print "<th>" ;
+					print _("Date") ;
+				print "</th>" ;
+				print "<th>" ;
+					print _("Action Taken") ;
+				print "</th>" ;
+				print "<th>" ;
+					print _("Actions") ;
+				print "</th>" ;
+			print "</tr>" ;
+			
+			$rowNum="odd" ;
+			$count=0;
+			while ($row=$result->fetch()) {
+				if ($count%2==0) {
+					$rowNum="even" ;
+				}
+				else {
+					$rowNum="odd" ;
+				}
+				$count++ ;
+				
+				//COLOR ROW BY STATUS!
+				print "<tr class=$rowNum>" ;
+					print "<td>" ;
+						print formatName("", $row["preferredName"], $row["surname"], "Staff", false, true) ;
+					print "</td>" ;
+					print "<td>" ;
+						print dateConvertBack($guid, substr($row["timestamp"],0 , 10)) ;
+					print "</td>" ;
+					print "<td>" ;
+						print $row["action"] ;
+					print "</td>" ;
+					print "<td>" ;
+						print "<script type='text/javascript'>" ;	
+							print "$(document).ready(function(){" ;
+								print "\$(\".comment-$count\").hide();" ;
+								print "\$(\".show_hide-$count\").fadeIn(1000);" ;
+								print "\$(\".show_hide-$count\").click(function(){" ;
+								print "\$(\".comment-$count\").fadeToggle(1000);" ;
+								print "});" ;
+							print "});" ;
+						print "</script>" ;
+						if ($row["comment"]!="") {
+							print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
+						}
+					print "</td>" ;
+				print "</tr>" ;
+				if ($row["comment"]!="") {
+					print "<tr class='comment-$count' id='comment-$count'>" ;
+						print "<td colspan=4>" ;
+							if ($row["comment"]!="") {
+								print nl2brr($row["comment"]) . "<br/><br/>" ;
+							}
+						print "</td>" ;
+					print "</tr>" ;
+				}
+			}
+		print "</table>" ;
+	}
+}
+
+
 //Returns all budgets a person is linked to, as well as their access rights to that budget
 function getBudgetsByPerson($connection2, $gibbonPersonID) {
 	$return=FALSE ;

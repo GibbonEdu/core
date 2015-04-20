@@ -74,6 +74,23 @@ else {
 				header("Location: {$URL}");
 				break ;
 			}
+			
+			$gibbonFinanceExpenseID=$connection2->lastInsertID() ;
+			
+			//Add log entry
+			try {
+				$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+				$sql="INSERT INTO gibbonFinanceExpenseLog SET gibbonFinanceExpenseID=:gibbonFinanceExpenseID, gibbonPersonID=:gibbonPersonID, timestamp='" . date("Y-m-d H:i:s") . "', action='Request', comment=''" ;
+				$result=$connection2->prepare($sql);
+				$result->execute($data);
+			}
+			catch(PDOException $e) { 
+				//Fail2
+				print $e->getMessage() ;
+				$URL.="&addReturn=fail2" ;
+				header("Location: {$URL}");
+				break ;
+			}
 	
 			//Success 0
 			$URL.="&addReturn=success0" ;

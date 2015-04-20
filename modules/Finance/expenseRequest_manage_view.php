@@ -210,7 +210,9 @@ else {
 								</tr>
 								<tr>
 									<td colspan=2> 
-										<div class='warning'><?php print _('Coming soon...') ?></div>
+										<?php
+										print getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2) ;
+										?>
 									</td>
 								</tr>
 							</table>
