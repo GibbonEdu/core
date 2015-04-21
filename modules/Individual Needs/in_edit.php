@@ -135,50 +135,6 @@ else {
 					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_summary.php&gibbonINDescriptorID=" . $gibbonINDescriptorID . "&gibbonAlertLevelID=" . $gibbonAlertLevelID . "&=gibbonRollGroupID" . $gibbonRollGroupID . "&gibbonYearGroupID=" . $gibbonYearGroupID . "'>" . _('Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
-
-		
-			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
-				print "<tr>" ;
-					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
-						print formatName("", $row["preferredName"], $row["surname"], "Student") ;
-					print "</td>" ;
-					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
-						print "<i>" . _($row["yearGroup"]) . "</i>" ;
-					print "</td>" ;
-					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;
-						print "<i>" . $row["rollGroup"] . "</i>" ;
-					print "</td>" ;
-				print "</tr>" ;
-			print "</table>" ;
-			
-			
-			print "<h3>" ;
-				print _("Individual Needs Status") ;
-			print "</h3>" ;
-			if ($highestAction=="Individual Needs Records_view" OR $highestAction=="Individual Needs Records_viewContribute") {
-				$statusTable=printINStatusTable($connection2, $gibbonPersonID, "disabled") ;
-			}
-			else if ($highestAction=="Individual Needs Records_viewEdit") {
-				$statusTable=printINStatusTable($connection2, $gibbonPersonID) ;
-			}
-			
-			
-			if ($statusTable==FALSE) {
-				print "<div class='error'>" ;
-				print _("Your request failed due to a database error.") ;
-				print "</div>" ;
-			}
-			else {
-				print $statusTable ;
-			}
-			
-			
-			print "<h3>" ;
-				print _("Individual Education Plan") ;
-			print "</h3>" ;
 			
 			$gibbonINArchiveID=NULL ;
 			if (isset($_POST["gibbonINArchiveID"])) {
@@ -187,7 +143,7 @@ else {
 			$archiveStrategies=NULL ;
 			$archiveTargets=NULL ;
 			$archiveNotes=NULL ;
-			
+		
 			try {
 				$dataArchive=array("gibbonPersonID"=>$gibbonPersonID); 
 				$sqlArchive="SELECT * FROM gibbonINArchive WHERE gibbonPersonID=:gibbonPersonID ORDER BY archiveTimestamp DESC" ; 
@@ -216,39 +172,87 @@ else {
 					print "</form>" ;
 				print "</div>" ;
 			}
+
 		
-			if (is_null($gibbonINArchiveID)==FALSE) { //SHOW ARCHIVE
-				?>
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
-					<tr>
-						<td colspan=2 style='padding-top: 25px'> 
-							<span style='font-weight: bold; font-size: 135%'><?php print _('Targets') ?></span><br/>
-							<?php
-							print "<p>" . $archiveTargets . "</p>" ;
-							?>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2> 
-							<span style='font-weight: bold; font-size: 135%'><?php print _('Teaching Strategies') ?></span><br/>
-							<?php
-							print "<p>" . $archiveStrategies . "</p>" ;
-							?>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2 style='padding-top: 25px'> 
-							<span style='font-weight: bold; font-size: 135%'><?php print _('Notes & Review') ?></span><br/>
-							<?php
-							print "<p>" . $archiveNotes . "</p>" ;
-							?>
-						</td>
-					</tr>
-				</table>
-				<?php
-			}
-			else { //SHOW CURRENT
-				print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>" ;				
+			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
+				print "<tr>" ;
+					print "<td style='width: 34%; vertical-align: top'>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
+						print formatName("", $row["preferredName"], $row["surname"], "Student") ;
+					print "</td>" ;
+					print "<td style='width: 33%; vertical-align: top'>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
+						print "<i>" . _($row["yearGroup"]) . "</i>" ;
+					print "</td>" ;
+					print "<td style='width: 34%; vertical-align: top'>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;
+						print "<i>" . $row["rollGroup"] . "</i>" ;
+					print "</td>" ;
+				print "</tr>" ;
+			print "</table>" ;
+			
+			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>" ;				
+				print "<h3>" ;
+					print _("Individual Needs Status") ;
+				print "</h3>" ;
+				if ($highestAction=="Individual Needs Records_view" OR $highestAction=="Individual Needs Records_viewContribute") {
+					$statusTable=printINStatusTable($connection2, $gibbonPersonID, "disabled") ;
+				}
+				else if ($highestAction=="Individual Needs Records_viewEdit") {
+					if ($gibbonINArchiveID!="") {
+						$statusTable=printINStatusTable($connection2, $gibbonPersonID, "disabled") ;
+					}
+					else {
+						$statusTable=printINStatusTable($connection2, $gibbonPersonID) ;
+					}
+				}
+			
+			
+				if ($statusTable==FALSE) {
+					print "<div class='error'>" ;
+					print _("Your request failed due to a database error.") ;
+					print "</div>" ;
+				}
+				else {
+					print $statusTable ;
+				}
+			
+			
+				print "<h3>" ;
+					print _("Individual Education Plan") ;
+				print "</h3>" ;
+			
+				if (is_null($gibbonINArchiveID)==FALSE) { //SHOW ARCHIVE
+					?>
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<tr>
+							<td colspan=2 style='padding-top: 25px'> 
+								<span style='font-weight: bold; font-size: 135%'><?php print _('Targets') ?></span><br/>
+								<?php
+								print "<p>" . $archiveTargets . "</p>" ;
+								?>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2> 
+								<span style='font-weight: bold; font-size: 135%'><?php print _('Teaching Strategies') ?></span><br/>
+								<?php
+								print "<p>" . $archiveStrategies . "</p>" ;
+								?>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2 style='padding-top: 25px'> 
+								<span style='font-weight: bold; font-size: 135%'><?php print _('Notes & Review') ?></span><br/>
+								<?php
+								print "<p>" . $archiveNotes . "</p>" ;
+								?>
+							</td>
+						</tr>
+					</table>
+					<?php
+				}
+				else { //SHOW CURRENT
 					try {
 						$dataIEP=array("gibbonPersonID"=>$gibbonPersonID); 
 						$sqlIEP="SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID" ;
@@ -321,9 +325,10 @@ else {
 							?>
 						</table>
 						<?php
-					print "</form>" ;
+						
+					}
 				}
-			}
+			print "</form>" ;
 		}
 	}
 	//Set sidebar
