@@ -118,9 +118,54 @@ else {
 						break ;
 					}
 					
-					//Success 0
-					$URL.="&updateReturn=success0" ;
-					header("Location: {$URL}");
+					//UPDATE CYCLE ALLOCATION VALUES
+					$partialFail=FALSE ;
+					$values=$_POST["values"] ;
+					$gibbonFinanceBudgetIDs=$_POST["gibbonFinanceBudgetIDs"] ;
+					$count=0 ;
+					foreach ($values AS $value) {
+						$failThis=FALSE ;
+						
+						try {
+							$dataCheck=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetIDs[$count]); 
+							$sqlCheck="SELECT * FROM gibbonFinanceBudgetCycleAllocation WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
+							$resultCheck=$connection2->prepare($sqlCheck);
+							$resultCheck->execute($dataCheck);
+						}
+						catch(PDOException $e) {
+							$partialFail=TRUE ;
+							$failThis=TRUE ;
+						}
+						
+						if ($failThis==FALSE) {
+							try {
+								$data=array("value"=>$value, "gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetIDs[$count]); 
+								if ($resultCheck->rowCount()==0) { //INSERT
+									$sql="INSERT INTO gibbonFinanceBudgetCycleAllocation SET value=:value, gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
+								}	
+								else { //UPDATE
+									$sql="UPDATE gibbonFinanceBudgetCycleAllocation SET value=:value WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
+								}
+								$result=$connection2->prepare($sql);
+								$result->execute($data);
+							}
+							catch(PDOException $e) {
+								$partialFail=TRUE ;
+							}
+						}
+						$count++ ;
+					}
+					
+					if ($partialFail==TRUE) {
+						//Fail 5
+						$URL.="&updateReturn=fail5" ;
+						header("Location: {$URL}");
+					}
+					else {
+						//Success 0
+						$URL.="&updateReturn=success0" ;
+						header("Location: {$URL}");
+					}
 				}
 			}
 		}

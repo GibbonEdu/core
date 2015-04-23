@@ -85,6 +85,14 @@ else {
 				header("Location: {$URL}");
 				break ;
 			}
+			
+			try {
+				$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID); 
+				$sql="DELETE FROM gibbonFinanceBudgetCycleAllocation WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID" ;
+				$result=$connection2->prepare($sql);
+				$result->execute($data);
+			}
+			catch(PDOException $e) { }
 
 			//Success 0
 			$URLDelete=$URLDelete . "&deleteReturn=success0" ;

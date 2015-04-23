@@ -50,6 +50,9 @@ else {
 		else if ($updateReturn=="fail4") {
 			$updateReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
+		else if ($updateReturn=="fail5") {
+			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
+		}
 		else if ($updateReturn=="success0") {
 			$updateReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
@@ -88,6 +91,11 @@ else {
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/budgetCycles_manage_editProcess.php?gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr class='break'>
+						<td colspan=2> 
+							<h3><?php print _('Basic Information') ?></h3>
+						</td>
+					</tr>
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print _('Name') ?> *</b><br/>
@@ -165,6 +173,66 @@ else {
 							</script>
 						</td>
 					</tr>
+					
+					<tr class='break'>
+						<td colspan=2> 
+							<h3><?php print _('Budget Allocations') ?></h3>
+						</td>
+					</tr>
+					<?
+					try {
+						$dataBudget=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID); 
+						$sqlBudget="SELECT gibbonFinanceBudget.*, value FROM gibbonFinanceBudget LEFT JOIN gibbonFinanceBudgetCycleAllocation ON (gibbonFinanceBudgetCycleAllocation.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID) ORDER BY name" ; 
+						$resultBudget=$connection2->prepare($sqlBudget);
+						$resultBudget->execute($dataBudget);
+					}
+					catch(PDOException $e) { 
+						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					}
+					if ($resultBudget->rowCount()<1) {
+						print "<tr>" ;
+							print "<td colspan=2>" ;
+								print "<div class='error'>" ;
+									print _("There are no records to display.") ;
+								print "</div>" ;
+							print "</td>" ;
+						print "</tr>" ;
+					}
+					else {
+						while ($rowBudget=$resultBudget->fetch()) {
+							?>
+							<tr>
+								<td> 
+									<b><?php print $rowBudget["name"] ?> *</b><br/>
+									<span style="font-size: 90%">
+										<i>
+										<?php
+										if ($_SESSION[$guid]["currency"]!="") {
+											print sprintf(_('Numeric value in %1$s.'), $_SESSION[$guid]["currency"]) ;
+										}
+										else {
+											print _("Numeric value.") ;
+										}
+										?>
+										</i>
+									</span>
+								</td>
+								<td class="right">
+									<input name="values[]" id="values" maxlength=15 value="<?php if (is_null($rowBudget["value"])) { print "0.00" ; } else { print $rowBudget["value"] ; } ?>" type="text" style="width: 300px">
+									<input type="hidden" name="gibbonFinanceBudgetIDs[]" value="<?php print $rowBudget["gibbonFinanceBudgetID"] ?>">
+									<script type="text/javascript">
+										var values=new LiveValidation('values');
+										values.add(Validate.Presence);
+										values.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
+									</script>
+								</td>
+							</tr>
+							<?php
+						}
+					}
+					?>
+			
+			
 					<tr>
 						<td>
 							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>

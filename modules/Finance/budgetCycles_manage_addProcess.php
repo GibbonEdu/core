@@ -91,9 +91,36 @@ else {
 				header("Location: {$URL}");
 			}
 			
-			//Success 0
-			$URL.="&addReturn=success0" ;
-			header("Location: {$URL}");
+			$gibbonFinanceBudgetCycleID=$connection2->lastInsertID() ;
+			
+			//UPDATE CYCLE ALLOCATION VALUES
+			$partialFail=FALSE ;
+			$values=$_POST["values"] ;
+			$gibbonFinanceBudgetIDs=$_POST["gibbonFinanceBudgetIDs"] ;
+			$count=0 ;
+			foreach ($values AS $value) {
+				try {
+					$data=array("value"=>$value, "gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetIDs[$count]); 
+					$sql="INSERT INTO gibbonFinanceBudgetCycleAllocation SET value=:value, gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) {
+					$partialFail=TRUE ;
+				}
+			$count++ ;
+			}
+			
+			if ($partialFail==TRUE) {
+				//Fail 5
+				$URL.="&addReturn=fail5" ;
+				header("Location: {$URL}");
+			}
+			else {
+				//Success 0
+				$URL.="&addReturn=success0" ;
+				header("Location: {$URL}");
+			}
 		}
 	}
 }
