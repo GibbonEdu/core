@@ -47,6 +47,10 @@ else {
 		else if ($addReturn=="fail3") {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
+		else if ($addReturn=="success1") {
+			$addReturnMessage=_("Your request was completed successfully, but notifications could not be sent out.") ;	
+			$class="success" ;
+		}
 		else if ($addReturn=="success0") {
 			$addReturnMessage=_("Your request was completed successfully.") ;	
 			$class="success" ;
@@ -220,7 +224,7 @@ else {
 									</span>
 								</td>
 								<td class="right">
-									<input name="cost" id="cost" maxlength=15 value="0.00" type="text" style="width: 300px">
+									<input name="cost" id="cost" maxlength=15 value="" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var cost=new LiveValidation('cost');
 										cost.add(Validate.Presence);
@@ -228,7 +232,27 @@ else {
 									</script>
 								</td>
 							</tr>
-				
+							
+							<tr>
+								<td style='width: 275px'> 
+									<b><?php print _('Purchase By') ?> *</b><br/>
+								</td>
+								<td class="right">
+									<?php
+									print "<select name='purchaseBy' id='purchaseBy' style='width:302px'>" ;
+										print "<option value='School'>School</option>" ;
+										print "<option value='Self'>Self</option>" ;
+									print "</select>" ;
+									?>
+								</td>
+							</tr>
+							
+							<tr>
+								<td colspan=2> 
+									<b><?php print _('Purchase Details') ?></b><br/>
+									<textarea name="purchaseDetails" id="purchaseDetails" rows=8 style="width: 100%"></textarea>
+								</td>
+							</tr>
 				
 							<tr>
 								<td>

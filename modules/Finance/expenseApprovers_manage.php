@@ -55,10 +55,10 @@ else {
 	try {
 		$data=array(); 
 		if ($expenseApprovalType=="Chain Of All") {
-			$sql="SELECT gibbonFinanceExpenseApprover.*, surname, preferredName FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) ORDER BY sequenceNumber, surname, preferredName" ; 
+			$sql="SELECT gibbonFinanceExpenseApprover.*, surname, preferredName FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' ORDER BY sequenceNumber, surname, preferredName" ; 
 		}
 		else {
-			$sql="SELECT gibbonFinanceExpenseApprover.*, surname, preferredName FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) ORDER BY surname, preferredName" ; 
+			$sql="SELECT gibbonFinanceExpenseApprover.*, surname, preferredName FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName" ; 
 		}
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
@@ -86,10 +86,10 @@ else {
 		}
 		else if ($expenseApprovalType=="Chain Of All") {
 			if ($budgetLevelExpenseApproval=="Y") {
-				print _("Expense approval has been set as 'Chain Of All', which means that all of the people listed below (as well as someone with Full budget access) need to approve an expense,in order from lowest to highest, before it can go ahead.") ;
+				print _("Expense approval has been set as 'Chain Of All', which means that all of the people listed below (as well as someone with Full budget access) need to approve an expense, in order from lowest to highest, before it can go ahead.") ;
 			}
 			else {
-				print _("Expense approval has been set as 'Chain Of All', which means that all of the people listed below need to approve an expense,in order from lowest to highest, before it can go ahead.") ;
+				print _("Expense approval has been set as 'Chain Of All', which means that all of the people listed below need to approve an expense, in order from lowest to highest, before it can go ahead.") ;
 			}
 		}
 		else {

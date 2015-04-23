@@ -106,6 +106,12 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
+							<?php 
+								$gibbonPersonID=NULL ;
+								if (isset($_GET["gibbonPersonID"])) {
+									$gibbonPersonID=$_GET["gibbonPersonID"] ; 
+								} 
+							?>
 							<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
 								<option value="Please select..."><?php print _('Please select...') ?></option>
 								<?php
@@ -120,7 +126,7 @@ else {
 								}
 								while ($rowSelect=$resultSelect->fetch()) {
 									if ($gibbonPersonID==$rowSelect["gibbonPersonID"]) {
-										print "<option selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;
+										print "<option selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;
 									}
 									else {
 										print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;

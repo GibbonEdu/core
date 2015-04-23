@@ -120,7 +120,6 @@ else {
 								<tr>
 									<td style='width: 275px'> 
 										<b><?php print _('Budget Cycle') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<?php
@@ -166,13 +165,12 @@ else {
 								<tr>
 									<td> 
 										<b><?php print _('Status') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<input readonly name="name" id="name" maxlength=60 value="<?php print $row["status"] ; ?>" type="text" style="width: 300px">
 									</td>
 								</tr>
-								<tr id="teachersNotesRow">
+								<tr>
 									<td colspan=2> 
 										<b><?php print _('Description') ?></b>
 										<?php 
@@ -200,6 +198,24 @@ else {
 									</td>
 									<td class="right">
 										<input readonly name="name" id="name" maxlength=60 value="<?php print $row["cost"] ; ?>" type="text" style="width: 300px">
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b><?php print _('Purchase By') ?> *</b><br/>
+									</td>
+									<td class="right">
+										<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php print $row["purchaseBy"] ; ?>" type="text" style="width: 300px">
+									</td>
+								</tr>
+								<tr>
+									<td colspan=2> 
+										<b><?php print _('Purchase Details') ?></b>
+										<?php 
+											print "<p>" ;
+												print $row["purchaseDetails"] ;
+											print "</p>"	
+										?>
 									</td>
 								</tr>
 							

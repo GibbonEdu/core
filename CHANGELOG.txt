@@ -152,6 +152,13 @@ Finance: added ability to make expense requests
 	New files /modules/Finance/expenseRequest_manage.php
 	Edited file /modules/Finance/moduleFunctions.php
 	
+Behaviour: added shortcut to add behaviour record from Student profile Behaviour Record page
+	Edited file /modules/Students/student_view_details.php
+	Edited file /modules/Students/behaviour_manage_add.php, moduleFunctions.php
+
+Finance: added ability to manage expenses
+	New value in tables gibbonAction, gibbonPermission
+	New files /modules/Finance/expenses*_manage.php
 
 v9.1.00
 -------

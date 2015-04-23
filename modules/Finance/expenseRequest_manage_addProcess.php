@@ -20,6 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include "../../functions.php" ;
 include "../../config.php" ;
 
+//Module includes
+include "./moduleFunctions.php" ;
+
 //New PDO DB connection
 try {
   	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
@@ -54,17 +57,42 @@ else {
 		$title=$_POST["title"] ;
 		$body=$_POST["body"] ;
 		$cost=$_POST["cost"] ;
+		$purchaseBy=$_POST["purchaseBy"] ;
+		$purchaseDetails=$_POST["purchaseDetails"] ;
 			
-		if ($title=="" OR $body=="" OR $cost=="") {
+		if ($title=="" OR $body=="" OR $cost=="" OR $purchaseBy=="") {
 			//Fail 3
 			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
 		}
 		else {
+			//Prepare approval settings
+			$budgetLevelExpenseApproval=getSettingByScope($connection2, "Finance", "budgetLevelExpenseApproval") ;
+			if ($budgetLevelExpenseApproval=="") {
+				//Fail2
+				$URL.="&addReturn=fail2" ;
+				header("Location: {$URL}");
+				break ;
+			}
+			else {
+				if ($budgetLevelExpenseApproval=="N") { //Skip budget-level approval
+					$statusApprovalBudgetCleared="Y" ;
+				}
+				else {
+					$budgets=getBudgetsByPerson($connection2, $_SESSION[$guid]["gibbonPersonID"], $gibbonFinanceBudgetID) ;
+					if (@$budgets[0][2]=="Full") { //I can self-approve budget-level, as have Full access
+						$statusApprovalBudgetCleared="Y" ;
+					}
+					else { //I cannot self-approve budget-level
+						$statusApprovalBudgetCleared="N" ;
+					}
+				}
+			}
+			
 			//Write to database
 			try {
-				$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID, "title"=>$title, "body"=>$body, "status"=>$status, "cost"=>$cost, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"]); 
-				$sql="INSERT INTO gibbonFinanceExpense SET gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID, title=:title, body=:body, status=:status, cost=:cost, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator='" . date("Y-m-d H:i:s") . "'" ;
+				$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID, "title"=>$title, "body"=>$body, "status"=>$status, "statusApprovalBudgetCleared"=>$statusApprovalBudgetCleared, "cost"=>$cost, "purchaseBy"=>$purchaseBy, "purchaseDetails"=>$purchaseDetails, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"]); 
+				$sql="INSERT INTO gibbonFinanceExpense SET gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID, title=:title, body=:body, status=:status, statusApprovalBudgetCleared=:statusApprovalBudgetCleared, cost=:cost, purchaseBy=:purchaseBy, purchaseDetails=:purchaseDetails, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator='" . date("Y-m-d H:i:s") . "'" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -91,10 +119,24 @@ else {
 				header("Location: {$URL}");
 				break ;
 			}
+			
+			//Do notifications
+			$partialFail=FALSE ;
+			if (setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBudgetCycleID, $connection2)==FALSE) {
+				$partialFail=TRUE ;
+			}
 	
-			//Success 0
-			$URL.="&addReturn=success0" ;
-			header("Location: {$URL}");
+			if ($partialFail==TRUE) {
+				//Success 1
+				$URL.="&addReturn=success1" ;
+				header("Location: {$URL}");
+			}
+			else {
+				//Success 0
+				$URL.="&addReturn=success0" ;
+				header("Location: {$URL}");
+			}
+			
 		}
 	}
 }

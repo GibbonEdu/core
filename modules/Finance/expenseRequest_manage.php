@@ -41,9 +41,11 @@ else {
 	//Check if have Full or Write in any budgets
 	$budgets=getBudgetsByPerson($connection2, $_SESSION[$guid]["gibbonPersonID"]) ;
 	$budgetsAccess=FALSE ;
-	foreach ($budgets AS $budget) {
-		if ($budget[2]=="Full" OR $budget[2]=="Write") {
-			$budgetsAccess=TRUE ;
+	if (is_array($budgets)>0) {
+		foreach ($budgets AS $budget) {
+			if ($budget[2]=="Full" OR $budget[2]=="Write") {
+				$budgetsAccess=TRUE ;
+			}
 		}
 	}
 	if ($budgetsAccess==FALSE) {
@@ -260,7 +262,7 @@ else {
 							$whereStatus.=" AND status=:status" ;
 						}
 						//SQL for billing schedule AND pending
-						$sql="SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudget.gibbonPersonIDCreator=:gibbonPersonIDCreator $whereBudget $whereStatus" ; 
+						$sql="SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceExpense.gibbonPersonIDCreator=:gibbonPersonIDCreator $whereBudget $whereStatus" ; 
 						$sql.=" ORDER BY FIND_IN_SET(status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC" ; 
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
@@ -275,7 +277,7 @@ else {
 						print "</h3>" ;
 			
 						print "<div class='linkTop' style='text-align: right'>" ;
-							print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenseRequest_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a><br/>" ;
+							print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenseRequest_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a><br/>" ;
 						print "</div>" ;
 			
 						print "<div class='error'>" ;

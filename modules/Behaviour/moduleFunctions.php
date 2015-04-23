@@ -36,6 +36,12 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 	else {
 		print "<div class='linkTop'>" ;
 			$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
+			if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage.php")==TRUE) {
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=&gibbonYearGroupID=&type='>" . _('Add') . "<img style='margin: 0 0 -4px 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+				if ($policyLink!="") {
+					print " | " ;
+				}
+			}
 			if ($policyLink!="") {
 				print "<a href='$policyLink'>" . _('View Behaviour Policy') . "</a>" ;
 			}
