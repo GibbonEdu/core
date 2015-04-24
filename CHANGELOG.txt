@@ -164,6 +164,11 @@ Finance: added ability to assign a money value to each budget in each cycle
 	New table gibbonFinanceBudgetCycleAllocation
 	Edited files /modules/Finance/budgetCycles_manage*.php, expenses_manage_approve.php
 
+Finance: added ability to print and export expenses
+	Edited values it table gibbonAction
+	Edited file /modules/Finance/expenses_manage.php
+	New files /modules/Finance/expenses_manage_print*.php, expenses_manage_processBulk*.php
+
 
 v9.1.00
 -------

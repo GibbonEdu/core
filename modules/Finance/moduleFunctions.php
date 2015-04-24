@@ -404,7 +404,7 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
 }
 
 //Returns log associated with a particular expense
-function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2) {
+function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2, $commentsOpen=FALSE) {
 	try {
 		$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID); 
 		$sql="SELECT gibbonFinanceExpenseLog.*, surname, preferredName FROM gibbonFinanceExpense JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonFinanceExpenseID=gibbonFinanceExpense.gibbonFinanceExpenseID) JOIN gibbonPerson ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID ORDER BY timestamp" ;
@@ -432,9 +432,11 @@ function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2) {
 				print "<th>" ;
 					print _("Event") ;
 				print "</th>" ;
-				print "<th>" ;
-					print _("Actions") ;
-				print "</th>" ;
+				if ($commentsOpen==FALSE) {
+					print "<th>" ;
+						print _("Actions") ;
+					print "</th>" ;
+				}
 			print "</tr>" ;
 			
 			$rowNum="odd" ;
@@ -459,20 +461,22 @@ function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2) {
 					print "<td>" ;
 						print $row["action"] ;
 					print "</td>" ;
-					print "<td>" ;
-						print "<script type='text/javascript'>" ;	
-							print "$(document).ready(function(){" ;
-								print "\$(\".comment-$count\").hide();" ;
-								print "\$(\".show_hide-$count\").fadeIn(1000);" ;
-								print "\$(\".show_hide-$count\").click(function(){" ;
-								print "\$(\".comment-$count\").fadeToggle(1000);" ;
+					if ($commentsOpen==FALSE) {
+						print "<td>" ;
+							print "<script type='text/javascript'>" ;	
+								print "$(document).ready(function(){" ;
+									print "\$(\".comment-$count\").hide();" ;
+									print "\$(\".show_hide-$count\").fadeIn(1000);" ;
+									print "\$(\".show_hide-$count\").click(function(){" ;
+									print "\$(\".comment-$count\").fadeToggle(1000);" ;
+									print "});" ;
 								print "});" ;
-							print "});" ;
-						print "</script>" ;
-						if ($row["comment"]!="") {
-							print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
-						}
-					print "</td>" ;
+							print "</script>" ;
+							if ($row["comment"]!="") {
+								print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
+							}
+						print "</td>" ;
+					}
 				print "</tr>" ;
 				if ($row["comment"]!="") {
 					print "<tr class='comment-$count' id='comment-$count'>" ;

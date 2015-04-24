@@ -387,6 +387,7 @@ UPDATE gibbonAction SET name='My Expense Requests' WHERE name='Manage My Expense
 CREATE TABLE `gibbonFinanceBudgetCycleAllocation` (  `gibbonFinanceBudgetCycleAllocationID` int(10) unsigned zerofill NOT NULL,  `gibbonFinanceBudgetID` int(5) unsigned zerofill NOT NULL,  `gibbonFinanceBudgetCycleID` int(6) unsigned zerofill NOT NULL,  `value` decimal(14,2) NOT NULL DEFAULT '0.00') ENGINE=InnoDB DEFAULT CHARSET=utf8;end
 ALTER TABLE `gibbonFinanceBudgetCycleAllocation`  ADD PRIMARY KEY (`gibbonFinanceBudgetCycleAllocationID`);end
 ALTER TABLE `gibbonFinanceBudgetCycleAllocation` MODIFY `gibbonFinanceBudgetCycleAllocationID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;end
-
+UPDATE gibbonAction SET URLList='expenses_manage.php, expenses_manage_add.php, expenses_manage_edit.php, expenses_manage_print.php, expenses_manage_approve.php, expenses_manage_view.php' WHERE name='Manage Expenses_all' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Finance');end
+UPDATE gibbonAction SET URLList='expenses_manage.php, expenses_manage_edit.php, expenses_manage_print.php, expenses_manage_approve.php, expenses_manage_view.php' WHERE name='Manage Expenses_myBudgets' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Finance');end
 ";
 ?>
