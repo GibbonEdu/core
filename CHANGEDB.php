@@ -389,5 +389,6 @@ ALTER TABLE `gibbonFinanceBudgetCycleAllocation`  ADD PRIMARY KEY (`gibbonFinanc
 ALTER TABLE `gibbonFinanceBudgetCycleAllocation` MODIFY `gibbonFinanceBudgetCycleAllocationID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;end
 UPDATE gibbonAction SET URLList='expenses_manage.php, expenses_manage_add.php, expenses_manage_edit.php, expenses_manage_print.php, expenses_manage_approve.php, expenses_manage_view.php' WHERE name='Manage Expenses_all' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Finance');end
 UPDATE gibbonAction SET URLList='expenses_manage.php, expenses_manage_edit.php, expenses_manage_print.php, expenses_manage_approve.php, expenses_manage_view.php' WHERE name='Manage Expenses_myBudgets' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Finance');end
+ALTER TABLE `gibbonFinanceExpenseLog` CHANGE `action` `action` ENUM('Request','Approval - Partial - Budget','Approval - Partial - School','Approval - Final','Approval - Exempt','Rejection','Cancellation','Order','Payment') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ";
 ?>

@@ -217,7 +217,7 @@ else {
 											break ;
 										}
 										
-										//Notify original creator that it is approved
+										//Notify original creator that it is rejected
 										$notificationText=sprintf(_('Your expense request for "%1$s" in budget "%2$s" has been rejected.'), $row["title"], $row["budget"]) ;
 										setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"]) ;
 										

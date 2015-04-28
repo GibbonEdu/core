@@ -500,11 +500,11 @@ function getBudgetsByPerson($connection2, $gibbonPersonID, $gibbonFinanceBudgetI
 	try {
 		$data=array("gibbonPersonID"=>$gibbonPersonID);
 		if ($gibbonFinanceBudgetID=="") {
-			$sql="SELECT * FROM gibbonFinanceBudget JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY name" ;
+			$sql="SELECT * FROM gibbonFinanceBudget JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonPersonID=:gibbonPersonID AND active='Y' ORDER BY name" ;
 		}
 		else {
 			$data["gibbonFinanceBudgetID"]=$gibbonFinanceBudgetID ;
-			$sql="SELECT * FROM gibbonFinanceBudget JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonFinanceBudget.gibbonFinanceBudgetID=:gibbonFinanceBudgetID ORDER BY name" ;
+			$sql="SELECT * FROM gibbonFinanceBudget JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonFinanceBudget.gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND active='Y' ORDER BY name" ;
 		}
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
