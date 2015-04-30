@@ -60,8 +60,22 @@ else {
 		$cost=$_POST["cost"] ;
 		$purchaseBy=$_POST["purchaseBy"] ;
 		$purchaseDetails=$_POST["purchaseDetails"] ;
+		if ($status=="Paid") {
+			$paymentDate=dateConvert($guid, $_POST["paymentDate"]) ;
+			$paymentAmount=$_POST["paymentAmount"] ;
+			$gibbonPersonIDPayment=$_POST["gibbonPersonIDPayment"] ;
+			$paymentMethod=$_POST["paymentMethod"] ;
+			$paymentID=$_POST["paymentID"] ;
+		}
+		else {
+			$paymentDate=NULL ;
+			$paymentAmount=NULL ;
+			$gibbonPersonIDPayment=NULL ;
+			$paymentMethod=NULL ;
+			$paymentID=NULL ;
+		}
 			
-		if ($status=="" OR $title=="" OR $body=="" OR $cost=="" OR $purchaseBy=="") {
+		if ($status=="" OR $title=="" OR $body=="" OR $cost=="" OR $purchaseBy=="" OR ($status=="Paid" AND ($paymentDate=="" OR $paymentAmount=="" OR $gibbonPersonIDPayment=="" OR $paymentMethod==""))) {
 			//Fail 3
 			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
@@ -69,8 +83,8 @@ else {
 		else {
 			//Write to database
 			try {
-				$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID, "title"=>$title, "body"=>$body, "status"=>$status, "statusApprovalBudgetCleared"=>'Y', "cost"=>$cost, "purchaseBy"=>$purchaseBy, "purchaseDetails"=>$purchaseDetails, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"]); 
-				$sql="INSERT INTO gibbonFinanceExpense SET gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID, title=:title, body=:body, status=:status, statusApprovalBudgetCleared=:statusApprovalBudgetCleared, cost=:cost, purchaseBy=:purchaseBy, purchaseDetails=:purchaseDetails, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator='" . date("Y-m-d H:i:s") . "'" ;
+				$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID, "title"=>$title, "body"=>$body, "status"=>$status, "statusApprovalBudgetCleared"=>'Y', "cost"=>$cost, "purchaseBy"=>$purchaseBy, "purchaseDetails"=>$purchaseDetails, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "paymentDate"=>$paymentDate, "paymentAmount"=>$paymentAmount, "gibbonPersonIDPayment"=>$gibbonPersonIDPayment, "paymentMethod"=>$paymentMethod, "paymentID"=>$paymentID); 
+				$sql="INSERT INTO gibbonFinanceExpense SET gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID, title=:title, body=:body, status=:status, statusApprovalBudgetCleared=:statusApprovalBudgetCleared, cost=:cost, purchaseBy=:purchaseBy, purchaseDetails=:purchaseDetails, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator='" . date("Y-m-d H:i:s") . "', paymentDate=:paymentDate, paymentAmount=:paymentAmount, gibbonPersonIDPayment=:gibbonPersonIDPayment, paymentMethod=:paymentMethod, paymentID=:paymentID" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -92,10 +106,25 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				print $e->getMessage() ;
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
+			}
+			
+			//Add Payment log entry if needed
+			if ($status=="Paid") {
+				try {
+					$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+					$sql="INSERT INTO gibbonFinanceExpenseLog SET gibbonFinanceExpenseID=:gibbonFinanceExpenseID, gibbonPersonID=:gibbonPersonID, timestamp='" . date("Y-m-d H:i:s") . "', action='Payment', comment=''" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					//Fail2
+					$URL.="&addReturn=fail2" ;
+					header("Location: {$URL}");
+					break ;
+				}
 			}
 			
 			//Success 0

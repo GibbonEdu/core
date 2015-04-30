@@ -83,6 +83,12 @@ else {
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_addProcess.php" ?>">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
+					<tr class='break'>
+						<td colspan=2> 
+							<h3><?php print _('Basic Information') ?></h3>
+						</td>
+					</tr>
+					
 					<td style='width: 275px'> 
 						<b><?php print _('Budget Cycle') ?> *</b><br/>
 						<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
@@ -178,7 +184,7 @@ else {
 						</script>
 					</td>
 				</tr>
-				<tr id="teachersNotesRow">
+				<tr>
 					<td colspan=2> 
 						<b><?php print _('Description') ?></b>
 						<?php $expenseRequestTemplate=getSettingByScope($connection2, "Finance", "expenseRequestTemplate" ) ?>
@@ -231,6 +237,147 @@ else {
 						<textarea name="purchaseDetails" id="purchaseDetails" rows=8 style="width: 100%"></textarea>
 					</td>
 				</tr>
+				<script type="text/javascript">
+					$(document).ready(function(){
+						$("#paidTitle").css("display","none");
+						$("#paymentDateRow").css("display","none");
+						$("#paymentAmountRow").css("display","none");
+						$("#payeeRow").css("display","none");
+						$("#paymentMethodRow").css("display","none");
+						$("#paymentIDRow").css("display","none");
+						paymentDate.disable() ;
+						paymentAmount.disable() ;
+						gibbonPersonIDPayment.disable() ;
+						paymentMethod.disable() ;
+						$("#status").change(function(){
+							if ($('#status option:selected').val()=="Paid" ) {
+								$("#paidTitle").slideDown("fast", $("#paidTitle").css("display","table-row")); 
+								$("#paymentDateRow").slideDown("fast", $("#paymentDateRow").css("display","table-row")); 
+								$("#paymentAmountRow").slideDown("fast", $("#paymentAmountRow").css("display","table-row")); 
+								$("#payeeRow").slideDown("fast", $("#payeeRow").css("display","table-row")); 
+								$("#paymentMethodRow").slideDown("fast", $("#paymentMethodRow").css("display","table-row")); 
+								$("#paymentIDRow").slideDown("fast", $("#paymentIDRow").css("display","table-row")); 
+								paymentDate.enable() ;
+								paymentAmount.enable() ;
+								gibbonPersonIDPayment.enable() ;
+								paymentMethod.enable() ;
+							} else {
+								$("#paidTitle").css("display","none");
+								$("#paymentDateRow").css("display","none");
+								$("#paymentAmountRow").css("display","none");
+								$("#payeeRow").css("display","none");
+								$("#paymentMethodRow").css("display","none");
+								$("#paymentIDRow").css("display","none");
+								paymentDate.disable() ;
+								paymentAmount.disable() ;
+								gibbonPersonIDPayment.disable() ;
+								paymentMethod.disable() ;
+							}
+						 });
+					});
+				</script>
+				<tr class='break' id="paidTitle">
+					<td colspan=2> 
+						<h3><?php print _('Payment Information') ?></h3>
+					</td>
+				</tr>
+				<tr id="paymentDateRow">
+					<td> 
+						<b><?php print _('Date Paid') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('Date of payment, not entry to system.') ?></i></span>
+					</td>
+					<td class="right">
+						<input name="paymentDate" id="paymentDate" maxlength=10 value="" type="text" style="width: 300px">
+						<script type="text/javascript">
+							var paymentDate=new LiveValidation('paymentDate');
+							paymentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+							paymentDate.add(Validate.Presence);
+						 </script>
+						 <script type="text/javascript">
+							$(function() {
+								$( "#paymentDate" ).datepicker();
+							});
+						</script>
+					</td>
+				</tr>
+				<tr id="paymentAmountRow">
+					<td> 
+						<b><?php print _('Amount Paid') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('Final amount paid.') ?>
+						<?php
+						if ($_SESSION[$guid]["currency"]!="") {
+							print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
+						}
+						?>
+						</i></span>
+					</td>
+					<td class="right">
+						<input name="paymentAmount" id="paymentAmount" maxlength=15 value="" type="text" style="width: 300px">
+						<script type="text/javascript">
+							var paymentAmount=new LiveValidation('paymentAmount');
+							paymentAmount.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
+							paymentAmount.add(Validate.Presence);
+						 </script>
+					</td>
+				</tr>
+				<tr id="payeeRow">
+					<td> 
+						<b><?php print _('Payee') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('Staff who made, or arranged, the payment.') ?></i></span>
+					</td>
+					<td class="right">
+						<select name="gibbonPersonIDPayment" id="gibbonPersonIDPayment" style="width: 302px">
+							<?php
+							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+							try {
+								$dataSelect=array(); 
+								$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
+								$resultSelect=$connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							}
+							catch(PDOException $e) { }	
+							while ($rowSelect=$resultSelect->fetch()) {
+								print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) . "</option>" ;
+							}
+							?>
+						</select>
+						<script type="text/javascript">
+							var gibbonPersonIDPayment=new LiveValidation('gibbonPersonIDPayment');
+							gibbonPersonIDPayment.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						</script>
+					</td>
+				</tr>
+				<tr id="paymentMethodRow">
+					<td> 
+						<b><?php print _('Payment Method') ?> *</b><br/>
+					</td>
+					<td class="right">
+						<?
+						print "<select name='paymentMethod' id='paymentMethod' style='width:302px'>" ;
+							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+							print "<option value='Bank Transfer'>Bank Transfer</option>" ;
+							print "<option value='Cash'>Cash</option>" ;
+							print "<option value='Cheque'>Cheque</option>" ;
+							print "<option value='Credit Card'>Credit Card</option>" ;
+							print "<option value='Other'>Other</option>" ;
+						print "</select>" ;
+						?>
+						<script type="text/javascript">
+							var paymentMethod=new LiveValidation('paymentMethod');
+							paymentMethod.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						</script>
+					</td>
+				</tr>
+				<tr id="paymentIDRow">
+					<td> 
+						<b><?php print _('Payment ID') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print _('Transaction ID to identify this payment.') ?></i></span>
+					</td>
+					<td class="right">
+						<input name="paymentID" id="paymentID" maxlength=100 value="" type="text" style="width: 300px">
+					</td>
+				</tr>
+				
 	
 				<tr>
 					<td>

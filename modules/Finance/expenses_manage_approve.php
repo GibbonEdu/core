@@ -321,7 +321,7 @@ else {
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Amount Already Approved For Spending') ?> *</b><br/>
+											<b><?php print _('Amount already approved or spent') ?> *</b><br/>
 											<span style="font-size: 90%">
 												<i>
 												<?php
@@ -341,7 +341,10 @@ else {
 											$budgetAllocatedFail=FALSE ;
 											try {
 												$dataCheck=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID); 
-												$sqlCheck="SELECT * FROM gibbonFinanceExpense WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Approved', 'Order', 'Paid')" ;
+												$sqlCheck="(SELECT cost FROM gibbonFinanceExpense WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Approved', 'Order'))
+												UNION
+												(SELECT paymentAmount AS cost FROM gibbonFinanceExpense WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Paid'))
+												" ;
 												$resultCheck=$connection2->prepare($sqlCheck);
 												$resultCheck->execute($dataCheck);
 											}

@@ -2981,13 +2981,6 @@ else {
 							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Notes'>" . _('Notes') . "</a></li>" ;
 						}
 					}
-					if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentHistory.php")) {
-						$style="" ;
-						if ($subpage=="School Attendance") {
-							$style="style='font-weight: bold'" ;
-						}
-						$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=School Attendance'>" . _('School Attendance') . "</a></li>" ;
-					}
 					$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					
 					
@@ -3055,7 +3048,7 @@ else {
 					}
 					
 					//PEOPLE MENU ITEMS
-					if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_view.php")) {
+					if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_view.php") OR isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentHistory.php")) {
 						$_SESSION[$guid]["sidebarExtra"].="<h4>" . _('People') . "</h4>" ;
 						$_SESSION[$guid]["sidebarExtra"].="<ul class='moduleMenu'>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_view.php")) {
@@ -3064,6 +3057,13 @@ else {
 								$style="style='font-weight: bold'" ;
 							}
 							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Behaviour Record'>" . _('Behaviour Record') . "</a></li>" ;
+						}
+						if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentHistory.php")) {
+							$style="" ;
+							if ($subpage=="School Attendance") {
+								$style="style='font-weight: bold'" ;
+							}
+							$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=School Attendance'>" . _('School Attendance') . "</a></li>" ;
 						}
 						$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					}

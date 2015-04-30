@@ -202,8 +202,6 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 				}
 			}
 			
-			//!=
-			
 			if ($multiDay) { //This event spans multiple days
 				if ($entry["start"]["date"]!=$entry["start"]["end"]) {
 					$days=(strtotime($entry["end"]["date"])-strtotime($entry["start"]["date"]))/(60*60*24) ;

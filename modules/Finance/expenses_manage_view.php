@@ -153,7 +153,7 @@ else {
 									</tr>
 									<tr>
 										<td style='width: 275px'> 
-											<b><?php print _('Budget Cycle') ?> *</b><br/>
+											<b><?php print _('Budget Cycle') ?></b><br/>
 										</td>
 										<td class="right">
 											<?php
@@ -182,7 +182,7 @@ else {
 									</tr>
 									<tr>
 										<td style='width: 275px'> 
-											<b><?php print _('Budget') ?> *</b><br/>
+											<b><?php print _('Budget') ?></b><br/>
 										</td>
 										<td class="right">
 											<input readonly name="name" id="name" maxlength=20 value="<?php print $row["budget"] ; ?>" type="text" style="width: 300px">
@@ -190,7 +190,7 @@ else {
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Title') ?> *</b><br/>
+											<b><?php print _('Title') ?></b><br/>
 										</td>
 										<td class="right">
 											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["title"] ; ?>" type="text" style="width: 300px">
@@ -198,7 +198,7 @@ else {
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Status') ?> *</b><br/>
+											<b><?php print _('Status') ?></b><br/>
 										</td>
 										<td class="right">
 											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["status"] ; ?>" type="text" style="width: 300px">
@@ -216,7 +216,7 @@ else {
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Total Cost') ?> *</b><br/>
+											<b><?php print _('Total Cost') ?></b><br/>
 											<span style="font-size: 90%">
 												<i>
 												<?php
@@ -236,7 +236,7 @@ else {
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Purchase By') ?> *</b><br/>
+											<b><?php print _('Purchase By') ?></b><br/>
 										</td>
 										<td class="right">
 											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php print $row["purchaseBy"] ; ?>" type="text" style="width: 300px">
@@ -265,6 +265,82 @@ else {
 											?>
 										</td>
 									</tr>
+									
+									<?php
+									if ($row["status"]=="Paid") {
+										?>
+										<tr class='break' id="paidTitle">
+											<td colspan=2> 
+												<h3><?php print _('Payment Information') ?></h3>
+											</td>
+										</tr>
+										<tr id="paymentDateRow">
+											<td> 
+												<b><?php print _('Date Paid') ?></b><br/>
+												<span style="font-size: 90%"><i><?php print _('Date of payment, not entry to system.') ?></i></span>
+											</td>
+											<td class="right">
+												<input readonly name="paymentDate" id="paymentDate" maxlength=10 value="<?php print dateConvertBack($guid, $row["paymentDate"]) ?>" type="text" style="width: 300px">
+											</td>
+										</tr>
+										<tr id="paymentAmountRow">
+											<td> 
+												<b><?php print _('Amount Paid') ?></b><br/>
+												<span style="font-size: 90%"><i><?php print _('Final amount paid.') ?>
+												<?php
+												if ($_SESSION[$guid]["currency"]!="") {
+													print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
+												}
+												?>
+												</i></span>
+											</td>
+											<td class="right">
+												<input readonly name="paymentAmount" id="paymentAmount" maxlength=10 value="<?php print number_format($row["paymentAmount"] , 2, ".", ",") ?>" type="text" style="width: 300px">
+											</td>
+										</tr>
+										<tr id="payeeRow">
+											<td> 
+												<b><?php print _('Payee') ?></b><br/>
+												<span style="font-size: 90%"><i><?php print _('Staff who made, or arranged, the payment.') ?></i></span>
+											</td>
+											<td class="right">
+												<?php
+												try {
+													$dataSelect=array("gibbonPersonID"=>$row["gibbonPersonIDPayment"]); 
+													$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName" ;
+													$resultSelect=$connection2->prepare($sqlSelect);
+													$resultSelect->execute($dataSelect);
+												}
+												catch(PDOException $e) { }	
+												if ($resultSelect->rowCount()==1) {
+													$rowSelect=$resultSelect->fetch() ;
+													?>
+													<input readonly name="payee" id="payee" maxlength=10 value="<?php print formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) ?>" type="text" style="width: 300px">
+													<?php
+												}
+												?>	
+											</td>
+										</tr>
+										<tr id="paymentMethodRow">
+											<td> 
+												<b><?php print _('Payment Method') ?></b><br/>
+											</td>
+											<td class="right">
+												<input readonly name="paymentMethod" id="paymentMethod" maxlength=10 value="<?php print $row["paymentMethod"] ?>" type="text" style="width: 300px">
+											</td>
+										</tr>
+										<tr id="paymentIDRow">
+											<td> 
+												<b><?php print _('Payment ID') ?></b><br/>
+												<span style="font-size: 90%"><i><?php print _('Transaction ID to identify this payment.') ?></i></span>
+											</td>
+											<td class="right">
+												<input readonly name="paymentID" id="paymentID" maxlength=100 value="<?php print $row["paymentID"] ?>" type="text" style="width: 300px">
+											</td>
+										</tr>
+										<?php
+									}
+									?>
 								</table>
 							</form>
 							<?php

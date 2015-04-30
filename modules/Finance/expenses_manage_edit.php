@@ -325,148 +325,154 @@ else {
 										</td>
 									</tr>
 							
-									
-									<tr class='break'>
-										<td colspan=2> 
-											<h3><?php print _('Budget Tracking') ?></h3>
-										</td>
-									</tr>
-									<tr>
-										<td> 
-											<b><?php print _('Total Cost') ?> *</b><br/>
-											<span style="font-size: 90%">
-												<i>
-												<?php
-												if ($_SESSION[$guid]["currency"]!="") {
-													print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
-												}
-												else {
-													print _("Numeric value of the fee.") ;
-												}
-												?>
-												</i>
-											</span>
-										</td>
-										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($row["cost"], 2, ".", ",") ; ?>" type="text" style="width: 300px">
-										</td>
-									</tr>
-									<tr>
-										<td> 
-											<b><?php print _('Budget For Cycle') ?> *</b><br/>
-											<span style="font-size: 90%">
-												<i>
-												<?php
-												if ($_SESSION[$guid]["currency"]!="") {
-													print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
-												}
-												else {
-													print _("Numeric value of the fee.") ;
-												}
-												?>
-												</i>
-											</span>
-										</td>
-										<td class="right">
-											<?php
-											$budgetAllocation=NULL ;
-											$budgetAllocationFail=FALSE ;
-											try {
-												$dataCheck=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID); 
-												$sqlCheck="SELECT * FROM gibbonFinanceBudgetCycleAllocation WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
-												$resultCheck=$connection2->prepare($sqlCheck);
-												$resultCheck->execute($dataCheck);
-											}
-											catch(PDOException $e) {
-												print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-												$budgetAllocationFail=TRUE ;
-											}
-											if ($resultCheck->rowCount()!=1) {
-												print "<i>" . _('NA') . "</i>" ;
-												$budgetAllocationFail=TRUE ;
-											}
-											else {
-												$rowCheck=$resultCheck->fetch() ;
-												$budgetAllocation=$rowCheck["value"] ;
-												?>
-												<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocation, 2, ".", ",") ; ?>" type="text" style="width: 300px">
-												<?php
-											}
-											?>
-										</td>
-									</tr>
-									<tr>
-										<td> 
-											<b><?php print _('Amount Already Approved For Spending') ?> *</b><br/>
-											<span style="font-size: 90%">
-												<i>
-												<?php
-												if ($_SESSION[$guid]["currency"]!="") {
-													print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
-												}
-												else {
-													print _("Numeric value of the fee.") ;
-												}
-												?>
-												</i>
-											</span>
-										</td>
-										<td class="right">
-											<?php
-											$budgetAllocated=0 ;
-											$budgetAllocatedFail=FALSE ;
-											try {
-												$dataCheck=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID); 
-												$sqlCheck="SELECT * FROM gibbonFinanceExpense WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Approved', 'Order', 'Paid')" ;
-												$resultCheck=$connection2->prepare($sqlCheck);
-												$resultCheck->execute($dataCheck);
-											}
-											catch(PDOException $e) {
-												print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-												$budgetAllocatedFail=TRUE ;
-											}
-											if ($budgetAllocatedFail==FALSE) {
-												while ($rowCheck=$resultCheck->fetch()) {
-													$budgetAllocated=$budgetAllocated+$rowCheck["cost"] ;
-												}
-												?>
-												<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocated, 2, ".", ",") ; ?>" type="text" style="width: 300px">
-												<?php
-											}
-											
-											?>
-										</td>
-									</tr>
 									<?php
-									if ($budgetAllocationFail==FALSE AND $budgetAllocatedFail==FALSE) {
+									if ($row["status"]=="Requested" OR $row["status"]=="Approved" OR $row["status"]=="Ordered" OR $row["status"]=="Paid") {
 										?>
+										<tr class='break'>
+											<td colspan=2> 
+												<h3><?php print _('Budget Tracking') ?></h3>
+											</td>
+										</tr>
 										<tr>
-										<td> 
-											<b><?php print _('Budget Remaining For Cycle') ?> *</b><br/>
-											<span style="font-size: 90%">
-												<i>
+											<td> 
+												<b><?php print _('Total Cost') ?> *</b><br/>
+												<span style="font-size: 90%">
+													<i>
+													<?php
+													if ($_SESSION[$guid]["currency"]!="") {
+														print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+													}
+													else {
+														print _("Numeric value of the fee.") ;
+													}
+													?>
+													</i>
+												</span>
+											</td>
+											<td class="right">
+												<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($row["cost"], 2, ".", ",") ; ?>" type="text" style="width: 300px">
+											</td>
+										</tr>
+										<tr>
+											<td> 
+												<b><?php print _('Budget For Cycle') ?> *</b><br/>
+												<span style="font-size: 90%">
+													<i>
+													<?php
+													if ($_SESSION[$guid]["currency"]!="") {
+														print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+													}
+													else {
+														print _("Numeric value of the fee.") ;
+													}
+													?>
+													</i>
+												</span>
+											</td>
+											<td class="right">
 												<?php
-												if ($_SESSION[$guid]["currency"]!="") {
-													print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+												$budgetAllocation=NULL ;
+												$budgetAllocationFail=FALSE ;
+												try {
+													$dataCheck=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID); 
+													$sqlCheck="SELECT * FROM gibbonFinanceBudgetCycleAllocation WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
+													$resultCheck=$connection2->prepare($sqlCheck);
+													$resultCheck->execute($dataCheck);
+												}
+												catch(PDOException $e) {
+													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+													$budgetAllocationFail=TRUE ;
+												}
+												if ($resultCheck->rowCount()!=1) {
+													print "<i>" . _('NA') . "</i>" ;
+													$budgetAllocationFail=TRUE ;
 												}
 												else {
-													print _("Numeric value of the fee.") ;
+													$rowCheck=$resultCheck->fetch() ;
+													$budgetAllocation=$rowCheck["value"] ;
+													?>
+													<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocation, 2, ".", ",") ; ?>" type="text" style="width: 300px">
+													<?php
 												}
 												?>
-												</i>
-											</span>
-										</td>
-										<td class="right">
-											<?php
-											$color="red" ;
-											if (($budgetAllocation-$budgetAllocated)-$row["cost"]>0) {
-												$color="green" ;
-											}
+											</td>
+										</tr>
+										<tr>
+											<td> 
+												<b><?php print _('Amount already approved or spent') ?> *</b><br/>
+												<span style="font-size: 90%">
+													<i>
+													<?php
+													if ($_SESSION[$guid]["currency"]!="") {
+														print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+													}
+													else {
+														print _("Numeric value of the fee.") ;
+													}
+													?>
+													</i>
+												</span>
+											</td>
+											<td class="right">
+												<?php
+												$budgetAllocated=0 ;
+												$budgetAllocatedFail=FALSE ;
+												try {
+													$dataCheck=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID); 
+													$sqlCheck="(SELECT cost FROM gibbonFinanceExpense WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Approved', 'Order'))
+													UNION
+													(SELECT paymentAmount AS cost FROM gibbonFinanceExpense WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Paid'))
+													" ;
+													$resultCheck=$connection2->prepare($sqlCheck);
+													$resultCheck->execute($dataCheck);
+												}
+												catch(PDOException $e) {
+													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+													$budgetAllocatedFail=TRUE ;
+												}
+												if ($budgetAllocatedFail==FALSE) {
+													while ($rowCheck=$resultCheck->fetch()) {
+														$budgetAllocated=$budgetAllocated+$rowCheck["cost"] ;
+													}
+													?>
+													<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocated, 2, ".", ",") ; ?>" type="text" style="width: 300px">
+													<?php
+												}
+											
+												?>
+											</td>
+										</tr>
+										<?php
+										if ($budgetAllocationFail==FALSE AND $budgetAllocatedFail==FALSE) {
 											?>
-											<input readonly name="name" id="name" maxlength=60 value="<?php print number_format(($budgetAllocation-$budgetAllocated), 2, ".", ",") ; ?>" type="text" style="width: 300px; font-weight: bold; color: <?php print $color ?>">
-										</td>
-									</tr>
-									<?php
+											<tr>
+											<td> 
+												<b><?php print _('Budget Remaining For Cycle') ?> *</b><br/>
+												<span style="font-size: 90%">
+													<i>
+													<?php
+													if ($_SESSION[$guid]["currency"]!="") {
+														print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+													}
+													else {
+														print _("Numeric value of the fee.") ;
+													}
+													?>
+													</i>
+												</span>
+											</td>
+											<td class="right">
+												<?php
+												$color="red" ;
+												if (($budgetAllocation-$budgetAllocated)-$row["cost"]>0) {
+													$color="green" ;
+												}
+												?>
+												<input readonly name="name" id="name" maxlength=60 value="<?php print number_format(($budgetAllocation-$budgetAllocated), 2, ".", ",") ; ?>" type="text" style="width: 300px; font-weight: bold; color: <?php print $color ?>">
+											</td>
+										</tr>
+										<?php
+										}
 									}
 									?>
 									
@@ -482,6 +488,227 @@ else {
 											?>
 										</td>
 									</tr>
+									
+									<?php 
+									if ($row["status"]=="Approved" OR $row["status"]=="Ordered") {
+										?>
+										<script type="text/javascript">
+											$(document).ready(function(){
+												$("#paidTitle").css("display","none");
+												$("#paymentDateRow").css("display","none");
+												$("#paymentAmountRow").css("display","none");
+												$("#payeeRow").css("display","none");
+												$("#paymentMethodRow").css("display","none");
+												$("#paymentIDRow").css("display","none");
+												paymentDate.disable() ;
+												paymentAmount.disable() ;
+												gibbonPersonIDPayment.disable() ;
+												paymentMethod.disable() ;
+												$("#status").change(function(){
+													if ($('#status option:selected').val()=="Paid" ) {
+														$("#paidTitle").slideDown("fast", $("#paidTitle").css("display","table-row")); 
+														$("#paymentDateRow").slideDown("fast", $("#paymentDateRow").css("display","table-row")); 
+														$("#paymentAmountRow").slideDown("fast", $("#paymentAmountRow").css("display","table-row")); 
+														$("#payeeRow").slideDown("fast", $("#payeeRow").css("display","table-row")); 
+														$("#paymentMethodRow").slideDown("fast", $("#paymentMethodRow").css("display","table-row")); 
+														$("#paymentIDRow").slideDown("fast", $("#paymentIDRow").css("display","table-row")); 
+														paymentDate.enable() ;
+														paymentAmount.enable() ;
+														gibbonPersonIDPayment.enable() ;
+														paymentMethod.enable() ;
+													} else {
+														$("#paidTitle").css("display","none");
+														$("#paymentDateRow").css("display","none");
+														$("#paymentAmountRow").css("display","none");
+														$("#payeeRow").css("display","none");
+														$("#paymentMethodRow").css("display","none");
+														$("#paymentIDRow").css("display","none");
+														paymentDate.disable() ;
+														paymentAmount.disable() ;
+														gibbonPersonIDPayment.disable() ;
+														paymentMethod.disable() ;
+													}
+												 });
+											});
+										</script>
+										<tr class='break' id="paidTitle">
+											<td colspan=2> 
+												<h3><?php print _('Payment Information') ?></h3>
+											</td>
+										</tr>
+										<tr id="paymentDateRow">
+											<td> 
+												<b><?php print _('Date Paid') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print _('Date of payment, not entry to system.') ?></i></span>
+											</td>
+											<td class="right">
+												<input name="paymentDate" id="paymentDate" maxlength=10 value="" type="text" style="width: 300px">
+												<script type="text/javascript">
+													var paymentDate=new LiveValidation('paymentDate');
+													paymentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+													paymentDate.add(Validate.Presence);
+												 </script>
+												 <script type="text/javascript">
+													$(function() {
+														$( "#paymentDate" ).datepicker();
+													});
+												</script>
+											</td>
+										</tr>
+										<tr id="paymentAmountRow">
+											<td> 
+												<b><?php print _('Amount Paid') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print _('Final amount paid.') ?>
+												<?php
+												if ($_SESSION[$guid]["currency"]!="") {
+													print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
+												}
+												?>
+												</i></span>
+											</td>
+											<td class="right">
+												<input name="paymentAmount" id="paymentAmount" maxlength=15 value="" type="text" style="width: 300px">
+												<script type="text/javascript">
+													var paymentAmount=new LiveValidation('paymentAmount');
+													paymentAmount.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
+													paymentAmount.add(Validate.Presence);
+												 </script>
+											</td>
+										</tr>
+										<tr id="payeeRow">
+											<td> 
+												<b><?php print _('Payee') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print _('Staff who made, or arranged, the payment.') ?></i></span>
+											</td>
+											<td class="right">
+												<select name="gibbonPersonIDPayment" id="gibbonPersonIDPayment" style="width: 302px">
+													<?php
+													print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+													try {
+														$dataSelect=array(); 
+														$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
+														$resultSelect=$connection2->prepare($sqlSelect);
+														$resultSelect->execute($dataSelect);
+													}
+													catch(PDOException $e) { }	
+													while ($rowSelect=$resultSelect->fetch()) {
+														print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) . "</option>" ;
+													}
+													?>
+												</select>
+												<script type="text/javascript">
+													var gibbonPersonIDPayment=new LiveValidation('gibbonPersonIDPayment');
+													gibbonPersonIDPayment.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+												</script>
+											</td>
+										</tr>
+										<tr id="paymentMethodRow">
+											<td> 
+												<b><?php print _('Payment Method') ?> *</b><br/>
+											</td>
+											<td class="right">
+												<?
+												print "<select name='paymentMethod' id='paymentMethod' style='width:302px'>" ;
+													print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+													print "<option value='Bank Transfer'>Bank Transfer</option>" ;
+													print "<option value='Cash'>Cash</option>" ;
+													print "<option value='Cheque'>Cheque</option>" ;
+													print "<option value='Credit Card'>Credit Card</option>" ;
+													print "<option value='Other'>Other</option>" ;
+												print "</select>" ;
+												?>
+												<script type="text/javascript">
+													var paymentMethod=new LiveValidation('paymentMethod');
+													paymentMethod.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+												</script>
+											</td>
+										</tr>
+										<tr id="paymentIDRow">
+											<td> 
+												<b><?php print _('Payment ID') ?></b><br/>
+												<span style="font-size: 90%"><i><?php print _('Transaction ID to identify this payment.') ?></i></span>
+											</td>
+											<td class="right">
+												<input name="paymentID" id="paymentID" maxlength=100 value="" type="text" style="width: 300px">
+											</td>
+										</tr>
+										<?php
+									}
+									else if ($row["status"]=="Paid") {
+										?>
+										<tr class='break' id="paidTitle">
+											<td colspan=2> 
+												<h3><?php print _('Payment Information') ?></h3>
+											</td>
+										</tr>
+										<tr id="paymentDateRow">
+											<td> 
+												<b><?php print _('Date Paid') ?></b><br/>
+												<span style="font-size: 90%"><i><?php print _('Date of payment, not entry to system.') ?></i></span>
+											</td>
+											<td class="right">
+												<input readonly name="paymentDate" id="paymentDate" maxlength=10 value="<?php print dateConvertBack($guid, $row["paymentDate"]) ?>" type="text" style="width: 300px">
+											</td>
+										</tr>
+										<tr id="paymentAmountRow">
+											<td> 
+												<b><?php print _('Amount Paid') ?></b><br/>
+												<span style="font-size: 90%"><i><?php print _('Final amount paid.') ?>
+												<?php
+												if ($_SESSION[$guid]["currency"]!="") {
+													print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
+												}
+												?>
+												</i></span>
+											</td>
+											<td class="right">
+												<input readonly name="paymentAmount" id="paymentAmount" maxlength=10 value="<?php print number_format($row["paymentAmount"] , 2, ".", ",") ?>" type="text" style="width: 300px">
+											</td>
+										</tr>
+										<tr id="payeeRow">
+											<td> 
+												<b><?php print _('Payee') ?></b><br/>
+												<span style="font-size: 90%"><i><?php print _('Staff who made, or arranged, the payment.') ?></i></span>
+											</td>
+											<td class="right">
+												<?php
+												try {
+													$dataSelect=array("gibbonPersonID"=>$row["gibbonPersonIDPayment"]); 
+													$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName" ;
+													$resultSelect=$connection2->prepare($sqlSelect);
+													$resultSelect->execute($dataSelect);
+												}
+												catch(PDOException $e) { }	
+												if ($resultSelect->rowCount()==1) {
+													$rowSelect=$resultSelect->fetch() ;
+													?>
+													<input readonly name="payee" id="payee" maxlength=10 value="<?php print formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) ?>" type="text" style="width: 300px">
+													<?php
+												}
+												?>	
+											</td>
+										</tr>
+										<tr id="paymentMethodRow">
+											<td> 
+												<b><?php print _('Payment Method') ?></b><br/>
+											</td>
+											<td class="right">
+												<input readonly name="paymentMethod" id="paymentMethod" maxlength=10 value="<?php print $row["paymentMethod"] ?>" type="text" style="width: 300px">
+											</td>
+										</tr>
+										<tr id="paymentIDRow">
+											<td> 
+												<b><?php print _('Payment ID') ?></b><br/>
+												<span style="font-size: 90%"><i><?php print _('Transaction ID to identify this payment.') ?></i></span>
+											</td>
+											<td class="right">
+												<input readonly name="paymentID" id="paymentID" maxlength=100 value="<?php print $row["paymentID"] ?>" type="text" style="width: 300px">
+											</td>
+										</tr>
+										<?php
+									}
+									?>
+									
 									<tr>
 										<td>
 											<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>

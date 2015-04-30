@@ -62,7 +62,6 @@ else {
 			header("Location: {$URL}");
 		}
 		else {
-			//Check if params are specified
 			if ($gibbonFinanceExpenseID=="" OR $status=="") {
 				//Fail 0
 				$URL.="&editReturn=fail0" ;
@@ -122,10 +121,26 @@ else {
 							$row=$result->fetch() ;
 							$statusOld=$row["status"] ;
 							
+							//Check if params are specified
+							if ($status=="Paid" AND ($row["status"]=="Approved" OR $row["status"]=="Ordered")) {
+								$paymentDate=dateConvert($guid, $_POST["paymentDate"]) ;
+								$paymentAmount=$_POST["paymentAmount"] ;
+								$gibbonPersonIDPayment=$_POST["gibbonPersonIDPayment"] ;
+								$paymentMethod=$_POST["paymentMethod"] ;
+								$paymentID=$_POST["paymentID"] ;
+							}
+							else {
+									$paymentDate=$row["paymentDate"] ;
+									$paymentAmount=$row["paymentAmount"] ;
+									$gibbonPersonIDPayment=$row["gibbonPersonIDPayment"] ;
+									$paymentMethod=$row["paymentMethod"] ;
+									$paymentID=$row["paymentID"] ;
+							}
+			
 							//Write back to gibbonFinanceExpense
 							try {
-								$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "status"=>$status); 
-								$sql="UPDATE gibbonFinanceExpense SET status=:status WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID" ;
+								$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "status"=>$status, "paymentDate"=>$paymentDate, "paymentAmount"=>$paymentAmount, "gibbonPersonIDPayment"=>$gibbonPersonIDPayment, "paymentMethod"=>$paymentMethod, "paymentID"=>$paymentID); 
+								$sql="UPDATE gibbonFinanceExpense SET status=:status, paymentDate=:paymentDate, paymentAmount=:paymentAmount, gibbonPersonIDPayment=:gibbonPersonIDPayment, paymentMethod=:paymentMethod, paymentID=:paymentID WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID" ;
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}
