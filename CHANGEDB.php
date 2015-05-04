@@ -403,6 +403,11 @@ $count++ ;
 $sql[$count][0]="10.0.00" ;
 $sql[$count][1]="
 ALTER TABLE `gibbonMarkbookColumn` ADD `uploadedResponse` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `comment`;end
+ALTER TABLE `gibbonMarkbookColumn` CHANGE `gibbonScaleIDAttainment` `gibbonScaleIDAttainment` INT(5) UNSIGNED ZEROFILL NULL DEFAULT NULL, CHANGE `gibbonScaleIDEffort` `gibbonScaleIDEffort` INT(5) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
+ALTER TABLE `gibbonMarkbookEntry` CHANGE `attainmentDescriptor` `attainmentDescriptor` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `attainmentConcern` `attainmentConcern` ENUM('N','Y','P') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '''P'' denotes that student has exceed their personal target', CHANGE `effortDescriptor` `effortDescriptor` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `effortConcern` `effortConcern` ENUM('N','Y') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `comment` `comment` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonMarkbookEntry` CHANGE `attainmentValue` `attainmentValue` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `effortValue` `effortValue` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+
+
 " ;
 
 ?>

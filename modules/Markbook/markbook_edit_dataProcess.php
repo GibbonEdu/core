@@ -83,12 +83,40 @@ else {
 				$name=$row["name" ] ; 
 				$count=$_POST["count"] ;
 				$partialFail=FALSE ;
+				$attainment=$row["attainment"] ;
+				$gibbonScaleIDAttainment=$row["gibbonScaleIDAttainment"] ;
+				$effort=$row["effort"] ;
+				$gibbonScaleIDEffort=$row["gibbonScaleIDEffort"] ;
+				$comment=$row["comment"] ;
+				$uploadedResponse=$row["uploadedResponse"] ;
 				
 				for ($i=1;$i<=$count;$i++) {
 					$gibbonPersonIDStudent=$_POST["$i-gibbonPersonID"] ;
-					$attainmentValue=$_POST["$i-attainmentValue"] ;
-					$effortValue=$_POST["$i-effortValue"] ;
-					$comment=$_POST["comment$i"] ;
+					//Attainment
+					if ($attainment=="N" OR $gibbonScaleIDAttainment=="") {
+						$attainmentValue=NULL ;
+						$attainmentDescriptor=NULL ;
+						$attainmentConcern=NULL ;
+					}
+					else {
+						$attainmentValue=$_POST["$i-attainmentValue"] ;
+					}
+					//Effort
+					if ($effort=="N" OR $gibbonScaleIDEffort=="") {
+						$effortValue=NULL ;
+						$effortDescriptor=NULL ;
+						$effortConcern=NULL ;
+					}
+					else {
+						$effortValue=$_POST["$i-effortValue"] ;
+					}
+					//Comment
+					if ($comment!="Y") {
+						$commentValue=NULL ;
+					}
+					else {
+						$commentValue=$_POST["comment$i"] ;
+					}
 					$gibbonPersonIDLastEdit=$_SESSION[$guid]["gibbonPersonID"] ;
 					$wordpressCommentPushID=NULL ;
 					$wordpressCommentPushAction=NULL ;
@@ -97,52 +125,86 @@ else {
 						$wordpressCommentPushAction=substr($_POST["$i-wordpressCommentPush"], (strpos($_POST["$i-wordpressCommentPush"],"-")+1)) ;
 					}
 					
+					
 					//SET AND CALCULATE FOR ATTAINMENT
-					//Check for target grade
-					try {
-						$dataTarget=array("gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent); 
-						$sqlTarget="SELECT * FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonIDStudent=:gibbonPersonIDStudent" ;
-						$resultTarget=$connection2->prepare($sqlTarget);
-						$resultTarget->execute($dataTarget);
-					}
-					catch(PDOException $e) { 
-						$partialFail=TRUE ;
-					}
-					
-					
-					//With personal warnings
-					if ($personalisedWarnings=="Y" AND $resultTarget->rowCount()==1 AND $attainmentValue!="") {
-						$attainmentConcern="N" ;
-						$attainmentDescriptor="" ;
-						$rowTarget=$resultTarget->fetch() ;
-						//Test against target grade and set values accordingly	
-						//On target
-						if ($rowTarget["value"]==$attainmentValue) {
+					if ($attainment=="Y" AND $gibbonScaleIDAttainment!="") {
+						//Check for target grade
+						try {
+							$dataTarget=array("gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent); 
+							$sqlTarget="SELECT * FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonIDStudent=:gibbonPersonIDStudent" ;
+							$resultTarget=$connection2->prepare($sqlTarget);
+							$resultTarget->execute($dataTarget);
+						}
+						catch(PDOException $e) { 
+							$partialFail=TRUE ;
+						}
+						//With personal warnings
+						if ($personalisedWarnings=="Y" AND $resultTarget->rowCount()==1 AND $attainmentValue!="") {
 							$attainmentConcern="N" ;
-							$attainmentDescriptor="Attainment is on personalised target" ;
-						}
-						//Below target
-						else if ($rowTarget["value"]>$attainmentValue) {
-							$attainmentConcern="Y" ;
-							$attainmentDescriptor="Attainment is below personalised target of " . $rowTarget["value"] ;
-						}
-						//Above target
-						else if ($rowTarget["value"]<$attainmentValue) {
-							$attainmentConcern="P" ;
-							$attainmentDescriptor="Attainment is above personalised target of " . $rowTarget["value"] ;
-						}
+							$attainmentDescriptor="" ;
+							$rowTarget=$resultTarget->fetch() ;
+							//Test against target grade and set values accordingly	
+							//On target
+							if ($rowTarget["value"]==$attainmentValue) {
+								$attainmentConcern="N" ;
+								$attainmentDescriptor="Attainment is on personalised target" ;
+							}
+							//Below target
+							else if ($rowTarget["value"]>$attainmentValue) {
+								$attainmentConcern="Y" ;
+								$attainmentDescriptor="Attainment is below personalised target of " . $rowTarget["value"] ;
+							}
+							//Above target
+							else if ($rowTarget["value"]<$attainmentValue) {
+								$attainmentConcern="P" ;
+								$attainmentDescriptor="Attainment is above personalised target of " . $rowTarget["value"] ;
+							}
 					
+						}
+						//Without personal warnings
+						else {
+							$attainmentConcern="N" ;
+							$attainmentDescriptor="" ;
+							if ($attainmentValue!="") {
+								$lowestAcceptableAttainment=$_POST["lowestAcceptableAttainment"] ;
+								$scaleAttainment=$_POST["scaleAttainment"] ;
+								try {
+									$dataScale=array("attainmentValue"=>$attainmentValue, "scaleAttainment"=>$scaleAttainment); 
+									$sqlScale="SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:attainmentValue AND gibbonScaleGrade.gibbonScaleID=:scaleAttainment" ;
+									$resultScale=$connection2->prepare($sqlScale);
+									$resultScale->execute($dataScale);
+								}
+								catch(PDOException $e) { 
+									$partialFail=TRUE ;
+								}
+								if ($resultScale->rowCount()!=1) {
+									$partialFail=TRUE ;
+								}
+								else {
+									$rowScale=$resultScale->fetch() ;
+									$sequence=$rowScale["sequenceNumber"] ;
+									$attainmentDescriptor=$rowScale["descriptor"] ;
+								}
+						
+								if ($lowestAcceptableAttainment!="" AND $sequence!="" AND $attainmentValue!="") {
+									if ($sequence>$lowestAcceptableAttainment) {
+										$attainmentConcern="Y" ;
+									}
+								}
+							}
+						}
 					}
-					//Without personal warnings
-					else {
-						$attainmentConcern="N" ;
-						$attainmentDescriptor="" ;
-						if ($attainmentValue!="") {
-							$lowestAcceptableAttainment=$_POST["lowestAcceptableAttainment"] ;
-							$scaleAttainment=$_POST["scaleAttainment"] ;
+					
+					//SET AND CALCULATE FOR EFFORT
+					if ($effort=="Y" AND $gibbonScaleIDEffort!="") {
+						$effortConcern="N" ;
+						$effortDescriptor="" ;
+						if ($effortValue!="") {
+							$lowestAcceptableEffort=$_POST["lowestAcceptableEffort"] ;
+							$scaleEffort=$_POST["scaleEffort"] ;
 							try {
-								$dataScale=array("attainmentValue"=>$attainmentValue, "scaleAttainment"=>$scaleAttainment); 
-								$sqlScale="SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:attainmentValue AND gibbonScaleGrade.gibbonScaleID=:scaleAttainment" ;
+								$dataScale=array("effortValue"=>$effortValue, "scaleEffort"=>$scaleEffort); 
+								$sqlScale="SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:effortValue AND gibbonScaleGrade.gibbonScaleID=:scaleEffort" ;
 								$resultScale=$connection2->prepare($sqlScale);
 								$resultScale->execute($dataScale);
 							}
@@ -155,76 +217,50 @@ else {
 							else {
 								$rowScale=$resultScale->fetch() ;
 								$sequence=$rowScale["sequenceNumber"] ;
-								$attainmentDescriptor=$rowScale["descriptor"] ;
+								$effortDescriptor=$rowScale["descriptor"] ;
 							}
 						
-							if ($lowestAcceptableAttainment!="" AND $sequence!="" AND $attainmentValue!="") {
-								if ($sequence>$lowestAcceptableAttainment) {
-									$attainmentConcern="Y" ;
+							if ($lowestAcceptableEffort!="" AND $sequence!="" AND $effortValue!="") {
+								if ($sequence>$lowestAcceptableEffort) {
+									$effortConcern="Y" ;
 								}
-							}
-						}
-					}
-					
-					//SET AND CALCULATE FOR EFFORT
-					$effortConcern="N" ;
-					$effortDescriptor="" ;
-					if ($effortValue!="") {
-						$lowestAcceptableEffort=$_POST["lowestAcceptableEffort"] ;
-						$scaleEffort=$_POST["scaleEffort"] ;
-						try {
-							$dataScale=array("effortValue"=>$effortValue, "scaleEffort"=>$scaleEffort); 
-							$sqlScale="SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:effortValue AND gibbonScaleGrade.gibbonScaleID=:scaleEffort" ;
-							$resultScale=$connection2->prepare($sqlScale);
-							$resultScale->execute($dataScale);
-						}
-						catch(PDOException $e) { 
-							$partialFail=TRUE ;
-						}
-						if ($resultScale->rowCount()!=1) {
-							$partialFail=TRUE ;
-						}
-						else {
-							$rowScale=$resultScale->fetch() ;
-							$sequence=$rowScale["sequenceNumber"] ;
-							$effortDescriptor=$rowScale["descriptor"] ;
-						}
-						
-						if ($lowestAcceptableEffort!="" AND $sequence!="" AND $effortValue!="") {
-							if ($sequence>$lowestAcceptableEffort) {
-								$effortConcern="Y" ;
 							}
 						}
 					}
 					
 					$time=time() ;
 					//Move attached file, if there is one
-					if ($_FILES["response$i"]["tmp_name"]!="") {
-						//Check for folder in uploads based on today's date
-						$path=$_SESSION[$guid]["absolutePath"] ;
-						if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
-							mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
-						}
-						$unique=FALSE;
-						$count=0 ;
-						while ($unique==FALSE AND $count<100) {
-							$suffix=randomPassword(16) ;
-							$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $name) . "_Uploaded Response_$suffix" . strrchr($_FILES["response$i"]["name"], ".") ;
-							if (!(file_exists($path . "/" . $attachment))) {
-								$unique=TRUE ;
+					if ($uploadedResponse=="Y") {
+						if (@$_FILES["response$i"]["tmp_name"]!="") {
+							//Check for folder in uploads based on today's date
+							$path=$_SESSION[$guid]["absolutePath"] ;
+							if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
+								mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
 							}
-							$count++ ;
-						}
+							$unique=FALSE;
+							$count=0 ;
+							while ($unique==FALSE AND $count<100) {
+								$suffix=randomPassword(16) ;
+								$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $name) . "_Uploaded Response_$suffix" . strrchr($_FILES["response$i"]["name"], ".") ;
+								if (!(file_exists($path . "/" . $attachment))) {
+									$unique=TRUE ;
+								}
+								$count++ ;
+							}
 						
-						if (!(move_uploaded_file($_FILES["response$i"]["tmp_name"],$path . "/" . $attachment))) {
-							$partialFail=TRUE ;
+							if (!(move_uploaded_file($_FILES["response$i"]["tmp_name"],$path . "/" . $attachment))) {
+								$partialFail=TRUE ;
+							}
+						}
+						else {
+							$attachment=NULL ;
+							if (isset($_POST["response$i"])) {
+								$attachment=$_POST["response$i"] ;
+							}
 						}
 					}
 					else {
 						$attachment=NULL ;
-						if (isset($_POST["response$i"])) {
-							$attachment=$_POST["response$i"] ;
-						}
 					}
 					
 					$selectFail=false ;
@@ -241,13 +277,12 @@ else {
 					if (!($selectFail)) {
 						if ($result->rowCount()<1) {
 							try {
-								$data=array("gibbonMarkbookColumnID"=>$gibbonMarkbookColumnID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent, "attainmentValue"=>$attainmentValue, "attainmentDescriptor"=>$attainmentDescriptor, "attainmentConcern"=>$attainmentConcern, "effortValue"=>$effortValue, "effortDescriptor"=>$effortDescriptor, "effortConcern"=>$effortConcern, "comment"=>$comment, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit, "attachment"=>$attachment); 
+								$data=array("gibbonMarkbookColumnID"=>$gibbonMarkbookColumnID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent, "attainmentValue"=>$attainmentValue, "attainmentDescriptor"=>$attainmentDescriptor, "attainmentConcern"=>$attainmentConcern, "effortValue"=>$effortValue, "effortDescriptor"=>$effortDescriptor, "effortConcern"=>$effortConcern, "comment"=>$commentValue, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit, "attachment"=>$attachment); 
 								$sql="INSERT INTO gibbonMarkbookEntry SET gibbonMarkbookColumnID=:gibbonMarkbookColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, attainmentValue=:attainmentValue, attainmentDescriptor=:attainmentDescriptor, attainmentConcern=:attainmentConcern, effortValue=:effortValue, effortDescriptor=:effortDescriptor, effortConcern=:effortConcern, comment=:comment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit, response=:attachment" ;
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}
 							catch(PDOException $e) { 
-								print $e->getMessage() . "here<br/>" ;
 								$partialFail=TRUE ;
 							}
 						}
@@ -255,7 +290,7 @@ else {
 							$row=$result->fetch() ;
 							//Update
 							try {
-								$data=array("gibbonMarkbookColumnID"=>$gibbonMarkbookColumnID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent, "attainmentValue"=>$attainmentValue, "attainmentDescriptor"=>$attainmentDescriptor, "attainmentConcern"=>$attainmentConcern, "effortValue"=>$effortValue, "effortDescriptor"=>$effortDescriptor, "effortConcern"=>$effortConcern, "comment"=>$comment, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit, "attachment"=>$attachment, "gibbonMarkbookEntryID"=>$row["gibbonMarkbookEntryID"]); 
+								$data=array("gibbonMarkbookColumnID"=>$gibbonMarkbookColumnID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent, "attainmentValue"=>$attainmentValue, "attainmentDescriptor"=>$attainmentDescriptor, "attainmentConcern"=>$attainmentConcern, "effortValue"=>$effortValue, "effortDescriptor"=>$effortDescriptor, "effortConcern"=>$effortConcern, "comment"=>$commentValue, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit, "attachment"=>$attachment, "gibbonMarkbookEntryID"=>$row["gibbonMarkbookEntryID"]); 
 								$sql="UPDATE gibbonMarkbookEntry SET gibbonMarkbookColumnID=:gibbonMarkbookColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, attainmentValue=:attainmentValue, attainmentDescriptor=:attainmentDescriptor, attainmentConcern=:attainmentConcern, effortValue=:effortValue, effortDescriptor=:effortDescriptor, effortConcern=:effortConcern, comment=:comment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit, response=:attachment WHERE gibbonMarkbookEntryID=:gibbonMarkbookEntryID" ;
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
@@ -268,7 +303,7 @@ else {
 					
 					//Attempt WordPress Comment Push
 					if ($wordpressCommentPushAction!="" AND $wordpressCommentPushID!="") {
-						$data="comment_post_ID=" . urlencode($wordpressCommentPushID) . "&author=" . urlencode(formatName($_SESSION[$guid]["title"], $_SESSION[$guid]["preferredName"], $_SESSION[$guid]["surname"], "Staff")) . "&email=" . urlencode($_SESSION[$guid]["email"]) . "&url=" . urlencode($_SESSION[$guid]["website"]) . "&comment=" . urlencode($comment) ;
+						$data="comment_post_ID=" . urlencode($wordpressCommentPushID) . "&author=" . urlencode(formatName($_SESSION[$guid]["title"], $_SESSION[$guid]["preferredName"], $_SESSION[$guid]["surname"], "Staff")) . "&email=" . urlencode($_SESSION[$guid]["email"]) . "&url=" . urlencode($_SESSION[$guid]["website"]) . "&comment=" . urlencode($commentValue) ;
 						$params=array('http'=> array('method'=> 'POST','content'=> $data));
 						$ctx=stream_context_create($params);
 						$fp=@fopen($wordpressCommentPushAction, 'rb', false, $ctx);

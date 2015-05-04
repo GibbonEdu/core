@@ -593,7 +593,7 @@ tr.warning, tr.warning td, div.warning, td.warning {
 }
 tr.dull, tr.dull td, div.dull, td.dull {
 	background: none!important ;
-	background-color: #c6c6c6!important ;
+	background-color: #dddddd!important ;
 }
 
 

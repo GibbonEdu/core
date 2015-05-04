@@ -18,14 +18,6 @@ CHANGELOG
 =========
 v10.0.00
 --------
-System Admin: fixed update code to recognsize 10 as higher than 9 (cast to float, instead of string) to allow upgrade
-	Edited files /modules/System Admin/update*.php
-
-Markbook: added ability to show hide attainment, effort, comment and uploaded response, on a per-column basis
-	Edited table gibbonMarkbookColumn
-
-v9.2.00
--------
 i18n: added Urdu as inactive development language
 	Added value to table gibboni18n
 
@@ -199,6 +191,16 @@ Finance: added ability to request reimbursement of expenses
 	New files /modules/Finance/expenseRequest_manage_reimburse*.php
 	Edited file modules/Finance/expenseRequest_manage.php
 	Edited files /modules/Finance/expenses_manage_edit*.php
+
+System Admin: fixed update code to recognsize 10 as higher than 9 (cast to float, instead of string) to allow upgrade
+	Edited files /modules/System Admin/update*.php
+
+Markbook: added ability to show hide attainment, effort, comment and uploaded response, on a per-column basis
+	Edited table gibbonMarkbookColumn
+	Edited table gibbonMarkbookEntry
+	Edited files /modules/Markbook/*
+	Edited file /modules/Students/student_view_details.php
+	Edited file /functions.php
 
 v9.1.00
 -------

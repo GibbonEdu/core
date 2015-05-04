@@ -2039,10 +2039,10 @@ else {
 											$dataEntry["gibbonPersonID"]=$gibbonPersonID ;
 											$dataEntry["gibbonCourseClassID"]=$rowList["gibbonCourseClassID"] ;
 											if ($highestAction=="Markbook_viewMyChildrensClasses") {
-												$sqlEntry="SELECT *, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND viewableParents='Y' $and2 ORDER BY completeDate" ;
+												$sqlEntry="SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND viewableParents='Y' $and2 ORDER BY completeDate" ;
 											}
 											else {
-												$sqlEntry="SELECT *, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' $and2 ORDER BY completeDate" ;
+												$sqlEntry="SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' $and2 ORDER BY completeDate" ;
 											}
 											$resultEntry=$connection2->prepare($sqlEntry);
 											$resultEntry->execute($dataEntry);
@@ -2133,101 +2133,132 @@ else {
 														}
 														print "</span><br/>" ;
 													print "</td>" ;
-													print "<td style='text-align: center'>" ;
-														$attainmentExtra="" ;
-														try {
-															$dataAttainment=array("gibbonScaleIDAttainment"=>$rowEntry["gibbonScaleIDAttainment"]); 
-															$sqlAttainment="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleIDAttainment" ;
-															$resultAttainment=$connection2->prepare($sqlAttainment);
-															$resultAttainment->execute($dataAttainment);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														if ($resultAttainment->rowCount()==1) {
-															$rowAttainment=$resultAttainment->fetch() ;
-															$attainmentExtra="<br/>" . _($rowAttainment["usage"]) ;
-														}
-														$styleAttainment="style='font-weight: bold'" ;
-														if ($rowEntry["attainmentConcern"]=="Y" AND $showParentAttainmentWarning=="Y") {
-															$styleAttainment="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
-														}
-														else if ($rowEntry["attainmentConcern"]=="P" AND $showParentAttainmentWarning=="Y") {
-															$styleAttainment="style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'" ;
-														}
-														print "<div $styleAttainment>" . $rowEntry["attainmentValue"] ;
-															if ($rowEntry["gibbonRubricIDAttainment"]!="") {
-																print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID=" . $rowEntry["gibbonRubricIDAttainment"] . "&gibbonCourseClassID=" . $rowList["gibbonCourseClassID"] . "&gibbonMarkbookColumnID=" . $rowEntry["gibbonMarkbookColumnID"] . "&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
-															}
-														print "</div>" ;
-														if ($rowEntry["attainmentValue"]!="") {
-															print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowEntry["attainmentDescriptor"])) . "</b>" . _($attainmentExtra) . "</div>" ;
-														}
-													print "</td>" ;
-													print "<td style='text-align: center'>" ;
-														$effortExtra="" ;
-														try {
-															$dataEffort=array("gibbonScaleIDEffort"=>$rowEntry["gibbonScaleIDEffort"]); 
-															$sqlEffort="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleIDEffort" ;
-															$resultEffort=$connection2->prepare($sqlEffort);
-															$resultEffort->execute($dataEffort);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-	
-														if ($resultEffort->rowCount()==1) {
-															$rowEffort=$resultEffort->fetch() ;
-															$effortExtra="<br/>" . _($rowEffort["usage"]) ;
-														}
-														$styleEffort="style='font-weight: bold'" ;
-														if ($rowEntry["effortConcern"]=="Y" AND $showParentEffortWarning=="Y") {
-															$styleEffort="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
-														}
-														print "<div $styleEffort>" . $rowEntry["effortValue"] ;
-															if ($rowEntry["gibbonRubricIDEffort"]!="") {
-																print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID=" . $rowEntry["gibbonRubricIDEffort"] . "&gibbonCourseClassID=" . $rowList["gibbonCourseClassID"] . "&gibbonMarkbookColumnID=" . $rowEntry["gibbonMarkbookColumnID"] . "&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
-															}
-														print "</div>" ;
-														if ($rowEntry["effortValue"]!="") {
-															print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowEntry["effortDescriptor"])) . "</b>" . _($effortExtra) . "</div>" ;
-														}
-													print "</td>" ;
-													print "<td>" ;
-														if ($rowEntry["comment"]!="") {
-															if (strlen($rowEntry["comment"])>50) {
-																print "<script type='text/javascript'>" ;	
-																	print "$(document).ready(function(){" ;
-																		print "\$(\".comment-$entryCount\").hide();" ;
-																		print "\$(\".show_hide-$entryCount\").fadeIn(1000);" ;
-																		print "\$(\".show_hide-$entryCount\").click(function(){" ;
-																		print "\$(\".comment-$entryCount\").fadeToggle(1000);" ;
-																		print "});" ;
-																	print "});" ;
-																print "</script>" ;
-																print "<span>" . substr($rowEntry["comment"], 0, 50) . "...<br/>" ;
-																print "<a title='" . _('View Description') . "' class='show_hide-$entryCount' onclick='return false;' href='#'>" . _('Read more') . "</a></span><br/>" ;
-															}
-															else {
-																print $rowEntry["comment"] ;
-															}
-															if ($rowEntry["response"]!="") {
-																print "<a title='Uploaded Response' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a><br/>" ;
-															}
-														}
-													print "</td>" ;
-													print "<td>" ;
-														if ($rowEntry["gibbonPlannerEntryID"]!="") {
+													if ($rowEntry["attainment"]=="N" OR ($rowEntry["gibbonScaleIDAttainment"]=="" AND $rowEntry["gibbonRubricIDAttainment"]=="")) {
+														print "<td class='dull' style='text-align: center'>" ;
+														
+														print "</td>" ;
+													}
+													else {
+														print "<td style='text-align: center'>" ;
+															$attainmentExtra="" ;
 															try {
-																$dataSub=array("gibbonPlannerEntryID"=>$rowEntry["gibbonPlannerEntryID"]); 
-																$sqlSub="SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'" ;
-																$resultSub=$connection2->prepare($sqlSub);
-																$resultSub->execute($dataSub);
+																$dataAttainment=array("gibbonScaleIDAttainment"=>$rowEntry["gibbonScaleIDAttainment"]); 
+																$sqlAttainment="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleIDAttainment" ;
+																$resultAttainment=$connection2->prepare($sqlAttainment);
+																$resultAttainment->execute($dataAttainment);
 															}
 															catch(PDOException $e) { 
 																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 															}
-															if ($resultSub->rowCount()==1) {
+															if ($resultAttainment->rowCount()==1) {
+																$rowAttainment=$resultAttainment->fetch() ;
+																$attainmentExtra="<br/>" . _($rowAttainment["usage"]) ;
+															}
+															$styleAttainment="style='font-weight: bold'" ;
+															if ($rowEntry["attainmentConcern"]=="Y" AND $showParentAttainmentWarning=="Y") {
+																$styleAttainment="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
+															}
+															else if ($rowEntry["attainmentConcern"]=="P" AND $showParentAttainmentWarning=="Y") {
+																$styleAttainment="style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'" ;
+															}
+															print "<div $styleAttainment>" . $rowEntry["attainmentValue"] ;
+																if ($rowEntry["gibbonRubricIDAttainment"]!="") {
+																	print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID=" . $rowEntry["gibbonRubricIDAttainment"] . "&gibbonCourseClassID=" . $rowList["gibbonCourseClassID"] . "&gibbonMarkbookColumnID=" . $rowEntry["gibbonMarkbookColumnID"] . "&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
+																}
+															print "</div>" ;
+															if ($rowEntry["attainmentValue"]!="") {
+																print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowEntry["attainmentDescriptor"])) . "</b>" . _($attainmentExtra) . "</div>" ;
+															}
+														print "</td>" ;
+													}
+													if ($rowEntry["effort"]=="N" OR ($rowEntry["gibbonScaleIDEffort"]=="" AND $rowEntry["gibbonRubricIDEffort"]=="")) {
+														print "<td class='dull' style='text-align: center'>" ;
+														
+														print "</td>" ;
+													}
+													else {
+														print "<td style='text-align: center'>" ;
+															$effortExtra="" ;
+															try {
+																$dataEffort=array("gibbonScaleIDEffort"=>$rowEntry["gibbonScaleIDEffort"]); 
+																$sqlEffort="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleIDEffort" ;
+																$resultEffort=$connection2->prepare($sqlEffort);
+																$resultEffort->execute($dataEffort);
+															}
+															catch(PDOException $e) { 
+																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+															}
+	
+															if ($resultEffort->rowCount()==1) {
+																$rowEffort=$resultEffort->fetch() ;
+																$effortExtra="<br/>" . _($rowEffort["usage"]) ;
+															}
+															$styleEffort="style='font-weight: bold'" ;
+															if ($rowEntry["effortConcern"]=="Y" AND $showParentEffortWarning=="Y") {
+																$styleEffort="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
+															}
+															print "<div $styleEffort>" . $rowEntry["effortValue"] ;
+																if ($rowEntry["gibbonRubricIDEffort"]!="") {
+																	print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID=" . $rowEntry["gibbonRubricIDEffort"] . "&gibbonCourseClassID=" . $rowList["gibbonCourseClassID"] . "&gibbonMarkbookColumnID=" . $rowEntry["gibbonMarkbookColumnID"] . "&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
+																}
+															print "</div>" ;
+															if ($rowEntry["effortValue"]!="") {
+																print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowEntry["effortDescriptor"])) . "</b>" . _($effortExtra) . "</div>" ;
+															}
+														print "</td>" ;
+													}
+													if ($rowEntry["commentOn"]=="N" AND $rowEntry["uploadedResponseOn"]=="N") {
+														print "<td class='dull' style='text-align: center'>" ;
+	
+														print "</td>" ;
+													}
+													else {
+														print "<td>" ;
+															if ($rowEntry["comment"]!="") {
+																if (strlen($rowEntry["comment"])>50) {
+																	print "<script type='text/javascript'>" ;	
+																		print "$(document).ready(function(){" ;
+																			print "\$(\".comment-$entryCount\").hide();" ;
+																			print "\$(\".show_hide-$entryCount\").fadeIn(1000);" ;
+																			print "\$(\".show_hide-$entryCount\").click(function(){" ;
+																			print "\$(\".comment-$entryCount\").fadeToggle(1000);" ;
+																			print "});" ;
+																		print "});" ;
+																	print "</script>" ;
+																	print "<span>" . substr($rowEntry["comment"], 0, 50) . "...<br/>" ;
+																	print "<a title='" . _('View Description') . "' class='show_hide-$entryCount' onclick='return false;' href='#'>" . _('Read more') . "</a></span><br/>" ;
+																}
+																else {
+																	print $rowEntry["comment"] ;
+																}
+																if ($rowEntry["response"]!="") {
+																	print "<a title='Uploaded Response' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a><br/>" ;
+																}
+															}
+														print "</td>" ;
+													}
+													if ($rowEntry["gibbonPlannerEntryID"]==0) {
+														print "<td class='dull' style='text-align: center'>" ;
+	
+														print "</td>" ;
+													}
+													else {
+														try {
+															$dataSub=array("gibbonPlannerEntryID"=>$rowEntry["gibbonPlannerEntryID"]); 
+															$sqlSub="SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'" ;
+															$resultSub=$connection2->prepare($sqlSub);
+															$resultSub->execute($dataSub);
+														}
+														catch(PDOException $e) { 
+															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+														}
+														if ($resultSub->rowCount()!=1) {
+															print "<td class='dull' style='text-align: center'>" ;
+	
+															print "</td>" ;
+														}
+														else {
+															print "<td>" ;
 																$rowSub=$resultSub->fetch() ;
 																
 																try {
@@ -2289,10 +2320,10 @@ else {
 																			}
 																		}
 																	}
-																}
-															}
+																}	
+															print "</td>" ;
 														}
-													print "</td>" ;
+													}
 												print "</tr>" ;
 												if (strlen($rowEntry["comment"])>50) {
 													print "<tr class='comment-$entryCount' id='comment-$entryCount'>" ;
