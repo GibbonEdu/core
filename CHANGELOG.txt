@@ -179,6 +179,18 @@ Behaviour: added edit button to student behaviour record for viewing
 Students: tweaked menu to move School Attendance into move relevant spot
 	Edited file /modules/Students/student_view_details.php
 
+School Admin: prevent creation of two years with status 'Current', as this breaks login...and rest of system.
+	Edited files /modules/School Admin/schoolYear_manage_add*.php, schoolYear_manage_edit*.php
+
+Planner: tightened access to confidential student data for viewing of lesson plans to include only teachers, not technicians, etc.
+	Edited file /modules/Planner/planner_view_full.php
+
+Finance: added ability to request reimbursement of expenses
+	Edited values in table gibbonAction
+	Edited table gibbonFinanceExpense
+	New files /modules/Finance/expenseRequest_manage_reimburse*.php
+	Edited file modules/Finance/expenseRequest_manage.php
+
 
 v9.1.00
 -------

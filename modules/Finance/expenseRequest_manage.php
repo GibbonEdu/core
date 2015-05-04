@@ -31,8 +31,21 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/expenseRequest_man
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage My Expense Requests') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('My Expense Requests') . "</div>" ;
 	print "</div>" ;
+	
+	if (isset($_GET["editReturn"])) { $editReturn=$_GET["editReturn"] ; } else { $editReturn="" ; }
+	$editReturnMessage="" ;
+	$class="error" ;
+	if (!($editReturn=="")) {
+		if ($editReturn=="success0") {
+			$editReturnMessage=_("Your request was completed successfully.") ;		
+			$class="success" ;
+		}
+		print "<div class='$class'>" ;
+			print $editReturnMessage;
+		print "</div>" ;
+	} 
 	
 	print "<p>" ;
 		print _("This action allows you to create and manage expense requests, which will be submitted for approval to the relevant individuals. You will be notified when a request has been approved.") . "<br/>" ;
@@ -353,6 +366,9 @@ else {
 									print "</td>" ;
 									print "<td>" ;
 										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenseRequest_manage_view.php&gibbonFinanceExpenseID=" . $row["gibbonFinanceExpenseID"] . "&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='" . _('View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+										if ($row["status"]=="Approved" AND $row["purchaseBy"]=="Self") {
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenseRequest_manage_reimburse.php&gibbonFinanceExpenseID=" . $row["gibbonFinanceExpenseID"] . "&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='" . _('Request Reimbursement') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/gift.png'/></a> " ;
+										}
 									print "</td>" ;
 								print "</tr>" ;
 							}
