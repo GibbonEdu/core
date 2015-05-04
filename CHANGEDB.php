@@ -396,6 +396,13 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 UPDATE gibbonAction SET URLList='expenseRequest_manage.php,expenseRequest_manage_add.php,expenseRequest_manage_view.php,expenseRequest_manage_reimburse.php' WHERE name='My Expense Requests' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Finance');end
 ALTER TABLE `gibbonFinanceExpense` ADD `paymentReimbursementReceipt` VARCHAR(255) NOT NULL AFTER `paymentID`, ADD `paymentReimbursementStatus` ENUM('Requested','Complete') NULL DEFAULT NULL AFTER `paymentReimbursementReceipt`;end
 ALTER TABLE `gibbonFinanceExpenseLog` CHANGE `action` `action` ENUM('Request','Approval - Partial - Budget','Approval - Partial - School','Approval - Final','Approval - Exempt','Rejection','Cancellation','Order','Payment','Reimbursement Request','Reimbursement Completion') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
-
 ";
+
+//v10.0.00
+$count++ ;
+$sql[$count][0]="10.0.00" ;
+$sql[$count][1]="
+ALTER TABLE `gibbonMarkbookColumn` ADD `uploadedResponse` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `comment`;end
+" ;
+
 ?>
