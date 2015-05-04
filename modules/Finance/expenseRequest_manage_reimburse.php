@@ -256,6 +256,7 @@ else {
 											paymentDate.enable() ;
 											paymentAmount.enable() ;
 											paymentMethod.enable() ;
+											file.enable() ;
 										} else {
 											$("#paidTitle").css("display","none");
 											$("#paymentDateRow").css("display","none");
@@ -266,6 +267,7 @@ else {
 											paymentDate.disable() ;
 											paymentAmount.disable() ;
 											paymentMethod.disable() ;
+											file.disable() ;
 										}
 									 });
 								});

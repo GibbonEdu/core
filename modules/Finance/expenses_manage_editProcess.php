@@ -136,11 +136,41 @@ else {
 									$paymentMethod=$row["paymentMethod"] ;
 									$paymentID=$row["paymentID"] ;
 							}
+							
+							
+							//Do Reimbursement work
+							$paymentReimbursementStatus=NULL ;
+							$reimbursementComment="" ;
+							if (isset($_POST["paymentReimbursementStatus"])) {
+								$paymentReimbursementStatus=$_POST["paymentReimbursementStatus"] ;
+								if ($paymentReimbursementStatus!="Requested" AND $paymentReimbursementStatus!="Complete") {
+									$paymentReimbursementStatus=NULL ;
+								}
+								if ($row["status"]=="Paid" AND $row["purchaseBy"]=="Self" AND $row["paymentReimbursementStatus"]=="Requested" AND $paymentReimbursementStatus=="Complete") {
+									$paymentID=$_POST["paymentID"] ;
+									$reimbursementComment=$_POST["reimbursementComment"] ;
+									$notificationText=sprintf(_('Your reimbursement expense request for "%1$s" in budget "%2$s" has been completed.'), $row["title"], $row["budget"]) ;
+									setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenseRequest_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"]) ;
+									//Write change to log
+									try {
+										$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "action"=>"Reimbursement Completion", "comment"=>$reimbursementComment); 
+										$sql="INSERT INTO gibbonFinanceExpenseLog SET gibbonFinanceExpenseID=:gibbonFinanceExpenseID, gibbonPersonID=:gibbonPersonID, timestamp='" . date("Y-m-d H:i:s") . "', action=:action, comment=:comment" ;
+										$result=$connection2->prepare($sql);
+										$result->execute($data);
+									}
+									catch(PDOException $e) { 
+										//Fail2
+										$URL.="&editReturn=fail2" ;
+										header("Location: {$URL}");
+										break ;
+									}
+								}
+							}
 			
 							//Write back to gibbonFinanceExpense
 							try {
-								$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "status"=>$status, "paymentDate"=>$paymentDate, "paymentAmount"=>$paymentAmount, "gibbonPersonIDPayment"=>$gibbonPersonIDPayment, "paymentMethod"=>$paymentMethod, "paymentID"=>$paymentID); 
-								$sql="UPDATE gibbonFinanceExpense SET status=:status, paymentDate=:paymentDate, paymentAmount=:paymentAmount, gibbonPersonIDPayment=:gibbonPersonIDPayment, paymentMethod=:paymentMethod, paymentID=:paymentID WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID" ;
+								$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "status"=>$status, "paymentDate"=>$paymentDate, "paymentAmount"=>$paymentAmount, "gibbonPersonIDPayment"=>$gibbonPersonIDPayment, "paymentMethod"=>$paymentMethod, "paymentID"=>$paymentID, "paymentReimbursementStatus"=>$paymentReimbursementStatus); 
+								$sql="UPDATE gibbonFinanceExpense SET status=:status, paymentDate=:paymentDate, paymentAmount=:paymentAmount, gibbonPersonIDPayment=:gibbonPersonIDPayment, paymentMethod=:paymentMethod, paymentID=:paymentID, paymentReimbursementStatus=:paymentReimbursementStatus WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID" ;
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}

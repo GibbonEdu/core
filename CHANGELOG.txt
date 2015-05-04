@@ -190,6 +190,7 @@ Finance: added ability to request reimbursement of expenses
 	Edited table gibbonFinanceExpense
 	New files /modules/Finance/expenseRequest_manage_reimburse*.php
 	Edited file modules/Finance/expenseRequest_manage.php
+	Edited files /modules/Finance/expenses_manage_edit*.php
 
 
 v9.1.00

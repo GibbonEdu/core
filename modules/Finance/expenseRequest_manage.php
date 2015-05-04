@@ -316,7 +316,7 @@ else {
 									print _("Budget") ;
 								print "</th>" ;
 								print "<th style='width: 100px'>" ;
-									print _("Status") ;
+									print _("Status") . "<br/><span style='font-style: italic; font-size: 75%'>" . _("Reimbursement") . "</span><br/>" ;
 								print "</th>" ;
 								print "<th style='width: 90px'>" ;
 									print _("Cost") . "<br/><span style='font-style: italic; font-size: 75%'>(" . $_SESSION[$guid]["currency"] . ")</span><br/>" ;
@@ -356,7 +356,10 @@ else {
 										print $row["budget"] ;
 									print "</td>" ;
 									print "<td>" ;
-										print $row["status"] ;
+										print $row["status"] . "<br/>" ;
+										if ($row["paymentReimbursementStatus"]!="") {
+											print "<span style='font-style: italic; font-size: 75%'>" . $row["paymentReimbursementStatus"] . "</span><br/>" ;
+										}
 									print "</td>" ;
 									print "<td>" ;
 										print number_format($row["cost"] , 2, ".", ",") ;

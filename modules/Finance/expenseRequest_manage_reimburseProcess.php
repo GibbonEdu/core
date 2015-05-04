@@ -167,7 +167,21 @@ else {
 							setNotification($connection2, $guid, $reimbursementOfficer, $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_edit.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"]) ;
 						}
 						
-						//Write change to log
+						//Write paid change to log
+						try {
+							$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "action"=>"Payment"); 
+							$sql="INSERT INTO gibbonFinanceExpenseLog SET gibbonFinanceExpenseID=:gibbonFinanceExpenseID, gibbonPersonID=:gibbonPersonID, timestamp='" . date("Y-m-d H:i:s") . "', action=:action" ;
+							$result=$connection2->prepare($sql);
+							$result->execute($data);
+						}
+						catch(PDOException $e) { 
+							//Fail2
+							$URL.="&editReturn=fail2" ;
+							header("Location: {$URL}");
+							break ;
+						}
+						
+						//Write reimbursement request change to log
 						try {
 							$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "action"=>"Reimbursement Request"); 
 							$sql="INSERT INTO gibbonFinanceExpenseLog SET gibbonFinanceExpenseID=:gibbonFinanceExpenseID, gibbonPersonID=:gibbonPersonID, timestamp='" . date("Y-m-d H:i:s") . "', action=:action" ;

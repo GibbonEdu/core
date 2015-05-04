@@ -500,6 +500,8 @@ else {
 												$("#payeeRow").css("display","none");
 												$("#paymentMethodRow").css("display","none");
 												$("#paymentIDRow").css("display","none");
+												$("#reimbursementRow").css("display","none");
+												$("#reimbursementCommentRow").css("display","none");
 												paymentDate.disable() ;
 												paymentAmount.disable() ;
 												gibbonPersonIDPayment.disable() ;
@@ -512,6 +514,8 @@ else {
 														$("#payeeRow").slideDown("fast", $("#payeeRow").css("display","table-row")); 
 														$("#paymentMethodRow").slideDown("fast", $("#paymentMethodRow").css("display","table-row")); 
 														$("#paymentIDRow").slideDown("fast", $("#paymentIDRow").css("display","table-row")); 
+														$("#reimbursementRow").slideDown("fast", $("#reimbursementRow").css("display","table-row")); 
+														$("#reimbursementCommentRow").slideDown("fast", $("#reimbursementCommentRow").css("display","table-row")); 
 														paymentDate.enable() ;
 														paymentAmount.enable() ;
 														gibbonPersonIDPayment.enable() ;
@@ -523,6 +527,8 @@ else {
 														$("#payeeRow").css("display","none");
 														$("#paymentMethodRow").css("display","none");
 														$("#paymentIDRow").css("display","none");
+														$("#reimbursementRow").css("display","none");
+														$("#reimbursementCommentRow").css("display","none");
 														paymentDate.disable() ;
 														paymentAmount.disable() ;
 														gibbonPersonIDPayment.disable() ;
@@ -702,10 +708,69 @@ else {
 												<span style="font-size: 90%"><i><?php print _('Transaction ID to identify this payment.') ?></i></span>
 											</td>
 											<td class="right">
-												<input readonly name="paymentID" id="paymentID" maxlength=100 value="<?php print $row["paymentID"] ?>" type="text" style="width: 300px">
+												<?php
+												if ($row["paymentReimbursementReceipt"]!="") {
+													if(is_file("./" . $row["paymentReimbursementReceipt"])) {
+														print "<a target='_blank' href=\"./" . $row["paymentReimbursementReceipt"] . "\">" . _("Payment Receipt") . "</a><br/>" ;
+													}
+												}
+												
+												if ($row["paymentID"]=="" AND $row["status"]=="Paid" AND $row["purchaseBy"]=="Self" AND $row["paymentReimbursementStatus"]=="Requested") {
+													?>
+													<input name="paymentID" id="paymentID" maxlength=100 value="" type="text" style="width: 300px">
+													<?php
+												}
+												else {
+													?>
+													<input readonly name="paymentID" id="paymentID" maxlength=100 value="<?php print $row["paymentID"] ?>" type="text" style="width: 300px">
+													<?php
+												}
+												?>
 											</td>
 										</tr>
 										<?php
+										if ($row["status"]=="Paid" AND $row["purchaseBy"]=="Self" AND $row["paymentReimbursementStatus"]!="") {
+											?>
+											<tr id="reimbursementRow">
+												<td> 
+													<b><?php print _('Reimbursement Status') ?></b><br/>
+												</td>
+												<td class="right">
+													<?php
+													if ($row["paymentReimbursementStatus"]=="Requested") {
+														print "<select name='paymentReimbursementStatus' id='paymentReimbursementStatus' style='width:302px'>" ;
+															$selected="" ;
+															if ($row["status"]=="Requested") {
+																$selected="selected" ;
+															}
+															print "<option $selected value='Requested'>" . _('Requested') . "</option>" ;
+															$selected="" ;
+															if ($row["status"]=="Complete") {
+																$selected="selected" ;
+															}
+															print "<option $selected value='Complete'>" . _('Complete') . "</option>" ;
+														print "</select>" ;
+													}
+													else {
+														?>
+														<input readonly name="paymentReimbursementStatus" id="paymentReimbursementStatus" maxlength=60 value="<?php print $row["paymentReimbursementStatus"] ; ?>" type="text" style="width: 300px">
+														<?php
+													}
+													?>
+												</td>
+											</tr>
+											<?php
+											if ($row["paymentReimbursementStatus"]=="Requested") {
+												?>
+												<tr id="reimbursementCommentRow">
+													<td colspan=2> 
+														<b><?php print _('Reimbursement Comment') ?></b><br/>
+														<textarea name="reimbursementComment" id="reimbursementComment" rows=4 style="width: 100%"></textarea>
+													</td>
+												</tr>
+												<?php
+											}
+										}
 									}
 									?>
 									
