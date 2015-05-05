@@ -202,6 +202,11 @@ Markbook: added ability to show hide attainment, effort, comment and uploaded re
 	Edited file /modules/Students/student_view_details.php
 	Edited file /functions.php
 
+System Admin: spun third party settings out of System Settings and into separate action
+	New values in table gibbonAction, gibbonPermission
+	Edited files /modules/System Admin/systemSettings*.php
+	New filed /modules/System Admin/thirdPartySettings*.php
+
 v9.1.00
 -------
 Installer: removed orphaned debug output

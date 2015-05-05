@@ -731,13 +731,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Third-Party Integration') ?></h3>
-				</td>
-			</tr>
-			
-			<tr>
-				<td colspan=2> 
-					<h4><?php print _('gibbonedu.com Value Added Services') ?></h4>
+					<h3><?php print _('gibbonedu.com Value Added Services') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -783,393 +777,10 @@ else {
 				</td>
 			</tr>
 			
-			<tr>
-				<td colspan=2> 
-					<h4><?php print _('Google Integration') ?></h4>
-					<?php print sprintf(_('If your school uses Google Apps, you can enable single sign on and calendar integreation with Gibbon. This process makes use of Google\'s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s.'), "<a href='https://gibbonedu.org/support/administrators/authenticating-with-google-oauth/' target='_blank'>", "</a>") ?>
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='googleOAuth'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print _('No') ?></option>
-						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
-					</select>
-				</td>
-			</tr>
-            
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='googleClientName'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
-				</td>
-			</tr>
-            
-            <tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='googleClientID'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
-				</td>
-			</tr>
-            
-            <tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='googleClientSecret'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
-				</td>
-			</tr>
-			
-            <tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='googleRedirectUri'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
-				</td>
-			</tr>
-            
-            <tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='googleDeveloperKey'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
-				</td>
-			</tr>
-			
-			<tr>
-				<td colspan=2> 
-					<h4><?php print _('PayPal Payment Gateway') ?></h4>
-				</td>
-			</tr>
-			
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='currency'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-						<optgroup label='--<?php print _('PAYPAL SUPPORTED') ?>--'/>
-							<option <?php if ($row["value"]=="AUD $") { print "selected" ; } ?> value='AUD $'>Australian Dollar (A$)</option>
-							<option <?php if ($row["value"]=="BRL R$") { print "selected" ; } ?> value='BRL R$'>Brazilian Real</option>
-							<option <?php if ($row["value"]=="GBP £") { print "selected" ; } ?> value='GBP £'>British Pound (£)</option>
-							<option <?php if ($row["value"]=="CAD $") { print "selected" ; } ?> value='CAD $'>Canadian Dollar (C$)</option>
-							<option <?php if ($row["value"]=="CZK Kč") { print "selected" ; } ?> value='CZK Kč'>Czech Koruna</option>
-							<option <?php if ($row["value"]=="DKK kr") { print "selected" ; } ?> value='DKK kr'>Danish Krone</option>
-							<option <?php if ($row["value"]=="EUR €") { print "selected" ; } ?> value='EUR €'>Euro (€)</option>
-							<option <?php if ($row["value"]=="HKD $") { print "selected" ; } ?> value='HKD $'>Hong Kong Dollar ($)</option>
-							<option <?php if ($row["value"]=="HUF Ft") { print "selected" ; } ?> value='HUF Ft'>Hungarian Forint</option>
-							<option <?php if ($row["value"]=="ILS ₪") { print "selected" ; } ?> value='ILS ₪'>Israeli New Shekel</option>
-							<option <?php if ($row["value"]=="JPY ¥") { print "selected" ; } ?> value='JPY ¥'>Japanese Yen (¥)</option>
-							<option <?php if ($row["value"]=="MYR RM") { print "selected" ; } ?> value='MYR RM'>Malaysian Ringgit</option>
-							<option <?php if ($row["value"]=="MXN $") { print "selected" ; } ?> value='MXN $'>Mexican Peso</option>
-							<option <?php if ($row["value"]=="TWD $") { print "selected" ; } ?> value='TWD $'>New Taiwan Dollar</option>
-							<option <?php if ($row["value"]=="NZD $") { print "selected" ; } ?> value='NZD $'>New Zealand Dollar ($)</option>
-							<option <?php if ($row["value"]=="NOK kr") { print "selected" ; } ?> value='NOK kr'>Norwegian Krone</option>
-							<option <?php if ($row["value"]=="PHP ₱") { print "selected" ; } ?> value='PHP ₱'>Philippine Peso</option>
-							<option <?php if ($row["value"]=="PLN zł") { print "selected" ; } ?> value='PLN zł'>Polish Zloty</option>
-							<option <?php if ($row["value"]=="SGD $") { print "selected" ; } ?> value='SGD $'>Singapore Dollar ($)</option>
-							<option <?php if ($row["value"]=="CHF") { print "selected" ; } ?> value='CHF'>Swiss Franc</option>
-							<option <?php if ($row["value"]=="THB ฿") { print "selected" ; } ?> value='THB ฿'>Thai Baht</option>
-							<option <?php if ($row["value"]=="TRY") { print "selected" ; } ?> value='TRY'>Turkish Lira</option>
-							<option <?php if ($row["value"]=="USD $") { print "selected" ; } ?> value='USD $'>U.S. Dollar ($)</option>
-						</optgroup>
-						<optgroup label='--<?php print _('OTHERS') ?>--'/>
-							<option <?php if ($row["value"]=="INR ₹") { print "selected" ; } ?> value='INR ₹'>Indian Rupee (₹)</option>
-							<option <?php if ($row["value"]=="IDR Rp") { print "selected" ; } ?> value='IDR Rp'>Indonesian Rupiah (Rp)</option>
-							<option <?php if ($row["value"]=="BTC") { print "selected" ; } ?> value='BTC'>Bitcoin</option>
-						</optgroup>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='enablePayments'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-						<?php
-						$selected="" ;
-						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
-						$selected="" ;
-						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
-						?>			
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='paypalAPIUsername'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='paypalAPIPassword'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='paypalAPISignature'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
-				</td>
-			</tr>
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Calendar, Web & Email') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='calendarFeed'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='emailLink'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
-					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-					</script>	
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='webLink'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
-					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-					</script>	
-				</td>
-			</tr>
-			
-			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php print _('Miscellaneous') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='pagination'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
-					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Numericality);
-						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					<h3><?php print _('Localisation') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -1234,6 +845,140 @@ else {
 					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
+					 </script> 
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='currency'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<optgroup label='--<?php print _('PAYPAL SUPPORTED') ?>--'/>
+							<option <?php if ($row["value"]=="AUD $") { print "selected" ; } ?> value='AUD $'>Australian Dollar (A$)</option>
+							<option <?php if ($row["value"]=="BRL R$") { print "selected" ; } ?> value='BRL R$'>Brazilian Real</option>
+							<option <?php if ($row["value"]=="GBP £") { print "selected" ; } ?> value='GBP £'>British Pound (£)</option>
+							<option <?php if ($row["value"]=="CAD $") { print "selected" ; } ?> value='CAD $'>Canadian Dollar (C$)</option>
+							<option <?php if ($row["value"]=="CZK Kč") { print "selected" ; } ?> value='CZK Kč'>Czech Koruna</option>
+							<option <?php if ($row["value"]=="DKK kr") { print "selected" ; } ?> value='DKK kr'>Danish Krone</option>
+							<option <?php if ($row["value"]=="EUR €") { print "selected" ; } ?> value='EUR €'>Euro (€)</option>
+							<option <?php if ($row["value"]=="HKD $") { print "selected" ; } ?> value='HKD $'>Hong Kong Dollar ($)</option>
+							<option <?php if ($row["value"]=="HUF Ft") { print "selected" ; } ?> value='HUF Ft'>Hungarian Forint</option>
+							<option <?php if ($row["value"]=="ILS ₪") { print "selected" ; } ?> value='ILS ₪'>Israeli New Shekel</option>
+							<option <?php if ($row["value"]=="JPY ¥") { print "selected" ; } ?> value='JPY ¥'>Japanese Yen (¥)</option>
+							<option <?php if ($row["value"]=="MYR RM") { print "selected" ; } ?> value='MYR RM'>Malaysian Ringgit</option>
+							<option <?php if ($row["value"]=="MXN $") { print "selected" ; } ?> value='MXN $'>Mexican Peso</option>
+							<option <?php if ($row["value"]=="TWD $") { print "selected" ; } ?> value='TWD $'>New Taiwan Dollar</option>
+							<option <?php if ($row["value"]=="NZD $") { print "selected" ; } ?> value='NZD $'>New Zealand Dollar ($)</option>
+							<option <?php if ($row["value"]=="NOK kr") { print "selected" ; } ?> value='NOK kr'>Norwegian Krone</option>
+							<option <?php if ($row["value"]=="PHP ₱") { print "selected" ; } ?> value='PHP ₱'>Philippine Peso</option>
+							<option <?php if ($row["value"]=="PLN zł") { print "selected" ; } ?> value='PLN zł'>Polish Zloty</option>
+							<option <?php if ($row["value"]=="SGD $") { print "selected" ; } ?> value='SGD $'>Singapore Dollar ($)</option>
+							<option <?php if ($row["value"]=="CHF") { print "selected" ; } ?> value='CHF'>Swiss Franc</option>
+							<option <?php if ($row["value"]=="THB ฿") { print "selected" ; } ?> value='THB ฿'>Thai Baht</option>
+							<option <?php if ($row["value"]=="TRY") { print "selected" ; } ?> value='TRY'>Turkish Lira</option>
+							<option <?php if ($row["value"]=="USD $") { print "selected" ; } ?> value='USD $'>U.S. Dollar ($)</option>
+						</optgroup>
+						<optgroup label='--<?php print _('OTHERS') ?>--'/>
+							<option <?php if ($row["value"]=="INR ₹") { print "selected" ; } ?> value='INR ₹'>Indian Rupee (₹)</option>
+							<option <?php if ($row["value"]=="IDR Rp") { print "selected" ; } ?> value='IDR Rp'>Indonesian Rupiah (Rp)</option>
+							<option <?php if ($row["value"]=="BTC") { print "selected" ; } ?> value='BTC'>Bitcoin</option>
+						</optgroup>
+					</select>
+				</td>
+			</tr>
+			
+			<tr class='break'>
+				<td colspan=2> 
+					<h3><?php print _('Miscellaneous') ?></h3>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='emailLink'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
+					</script>	
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='webLink'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
+					</script>	
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='pagination'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Numericality);
 						<?php print $row["name"] ?>.add(Validate.Presence);
 					 </script> 
 				</td>
