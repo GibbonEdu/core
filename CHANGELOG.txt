@@ -207,6 +207,14 @@ System Admin: spun third party settings out of System Settings and into separate
 	Edited files /modules/System Admin/systemSettings*.php
 	New filed /modules/System Admin/thirdPartySettings*.php
 
+Messenger: added optional home page message widget showing current messages
+	New value in table gibbonSetting
+	Edited files /modules/School Admin/messengerSettings*.php
+	Edited file /functions.php
+	New file /index_messenger_ajax.php
+	Edited file /modules/Messenger/moduleFunctions.php
+	Deleted file /modules/Messenger/messageWall_view_full.php
+
 v9.1.00
 -------
 Installer: removed orphaned debug output

@@ -176,17 +176,18 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 							$output[$_SESSION[$guid]["messageWallCount"]]["details"]=$rowPosts["body"] ;
 							$output[$_SESSION[$guid]["messageWallCount"]]["author"]=formatName($rowPosts["title"], $rowPosts["preferredName"], $rowPosts["surname"], $rowPosts["category"]) ;
 							$output[$_SESSION[$guid]["messageWallCount"]]["source"]=$rowPosts["source"] ;
+							$output[$_SESSION[$guid]["messageWallCount"]]["gibbonMessengerID"]=$rowPosts["gibbonMessengerID"] ;
 
 							$_SESSION[$guid]["messageWallCount"]++ ;
 							$last=$rowPosts["gibbonMessengerID"] ;
 							$count++ ;
 						}	
 					}
+					$_SESSION[$guid]["messageWallOutput"]=$output ;
 				}
 			}
 			
-			
-			$URL=$_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Messenger/messageWall_view_full.php&width=1000&height=550" ;
+			$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messageWall_view.php" ;
 			if (isset($_SESSION[$guid]["messageWallCount"])==FALSE) {
 				$return.=" . 0 x <img style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
 			}
@@ -195,7 +196,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 					$return.=" . 0 x <img style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
 				}
 				else {
-					$return.=" . <a title='" . _('Message Wall') . "'class='thickbox' href='$URL'>" . $_SESSION[$guid]["messageWallCount"] . " x <img style='margin-left: 4px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall.png'></a>" ;
+					$return.=" . <a title='" . _('Message Wall') . "' href='$URL'>" . $_SESSION[$guid]["messageWallCount"] . " x <img style='margin-left: 4px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall.png'></a>" ;
 					if ($_SESSION[$guid]["pageLoads"]==0 AND ($_SESSION[$guid]["messengerLastBubble"]==NULL OR $_SESSION[$guid]["messengerLastBubble"]<date("Y-m-d"))) {
 						print $messageBubbleBGColor=getSettingByScope($connection2, "Messenger", "messageBubbleBGColor") ;
 						$bubbleBG="" ;
@@ -2151,6 +2152,45 @@ function sidebar($connection2, $guid) {
 		}
 	}
 	
+	//Show homescreen widget for message wall
+	if ($_SESSION[$guid]["address"]=="") {
+		if (isset($_SESSION[$guid]["messageWallOutput"])) {
+			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messageWall_view.php")) {
+				$attainmentAlternativeName=getSettingByScope($connection2, "Messenger", "enableHomeScreenWidget") ;
+				if ($attainmentAlternativeName=="Y") {
+					print "<h2>" ;
+					print _("Message Wall") ;
+					print "</h2>" ;
+				
+					if (count($_SESSION[$guid]["messageWallOutput"])<1) {
+						print "<div class='warning'>" ;
+							print _("There are no records to display.") ;
+						print "</div>" ;
+					}
+					else if (is_array($_SESSION[$guid]["messageWallOutput"])==FALSE) {
+						print "<div class='error'>" ;
+							print _("An error occurred.") ;
+						print "</div>" ;
+					}
+					else {
+						print "<script type=\"text/javascript\">
+							$(document).ready(function(){
+								var count=1 ;
+								setInterval(function() {
+									$(\"#messageWallWidget\").load(\"index_messenger_ajax.php\", \"count=\" + count); 
+									count=count+1 ;
+								}, 5000);
+							});
+						</script>" ;
+						print "<table id='messageWallWidget' style='width: 100%; height: 213px; border: 1px solid grey; padding: 6px; background-color: #eeeeee'>" ;
+							include "index_messenger_ajax.php" ;
+						print "</table>" ;
+					}
+				}
+			}
+		}
+	}
+	
 	//Show upcoming deadlines
 	if ($_SESSION[$guid]["address"]=="" AND isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
 		$highestAction=getHighestGroupedAction($guid, "/modules/Planner/planner.php", $connection2) ;
@@ -2503,12 +2543,12 @@ function addressFormat( $address, $addressDistrict, $addressCountry ) {
 	$return=FALSE ;
 	
 	if ($address!="") {
-		$return=$return . $address ;
+		$return.= $address ;
 		if ($addressDistrict!="") {
-			$return=$return . ", " . $addressDistrict ;
+			$return.= ", " . $addressDistrict ;
 		}
 		if ($addressCountry!="") {
-			$return=$return . ", " . $addressCountry ;
+			$return.= ", " . $addressCountry ;
 		}
 	}
 	

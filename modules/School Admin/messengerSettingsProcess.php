@@ -51,6 +51,7 @@ else {
 	$messageBubbleWidthType=$_POST["messageBubbleWidthType"] ;
 	$messageBubbleBGColor=$_POST["messageBubbleBGColor"] ;
 	$messageBubbleAutoHide=$_POST["messageBubbleAutoHide"] ;
+	$enableHomeScreenWidget=$_POST["enableHomeScreenWidget"] ;
 	
 	//Write to database
 	$fail=FALSE ;
@@ -125,6 +126,15 @@ else {
 		$fail=TRUE ;
 	}
 	
+	try {
+		$data=array("value"=>$enableHomeScreenWidget); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='enableHomeScreenWidget'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ;
+	}
 	if ($fail==TRUE) {
 		//Fail 2
 		$URL.="&updateReturn=fail2" ;

@@ -142,7 +142,7 @@ else {
 					<li><b><?php print _('Address 1 (District)') ?></b> - <?php print _('County, State, District') ?></li>
 					<li><b><?php print _('Address 1 (Country)') ?></b></li>
 					<li><b><?php print _('Address 2') ?></b> - <?php print _('Unit, Building, Street') ?></li>
-					<li><b><?php print _('Address 2 (District)') ?></b>< - County, State, District') ?>/li>
+					<li><b><?php print _('Address 2 (District)') ?></b> - <?php print _('County, State, District') ?></li>
 					<li><b><?php print _('Address 2 (Country)') ?></b></li>
 					<li><b><?php print _('Phone 1 (Type)') ?></b> - <?php print _('Mobile, Home, Work, Fax, Pager, Other') ?></li>
 					<li><b><?php print _('Phone 1 (Country Code)') ?></b> - <?php print _('IDD code, without 00 or +') ?></li>
