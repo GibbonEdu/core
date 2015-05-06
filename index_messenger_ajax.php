@@ -31,7 +31,11 @@ else {
 
 $total=count($_SESSION[$guid]["messageWallOutput"]) ;
 $rowCount=0 ;
-for ($i=0 ; $i<3 ; $i++) {
+$output=3 ; 
+if ($total<$output) {
+	$output=$total ;
+}
+for ($i=0 ; $i<$output ; $i++) {
 	$offset=($count+$i)%$total ;
 	$message=$_SESSION[$guid]["messageWallOutput"][$offset] ;
 	if ($rowCount%2==0) {

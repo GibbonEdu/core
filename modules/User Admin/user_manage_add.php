@@ -167,6 +167,8 @@ else {
 						<option value="Please select..."><?php print _('Please select...') ?></option>
 						<option value="F"><?php print _('Female') ?></option>
 						<option value="M"><?php print _('Male') ?></option>
+						<option value="F"><?php print _('Other') ?></option>
+						<option value="M"><?php print _('Unspecified') ?></option>
 					</select>
 					<script type="text/javascript">
 						var gender=new LiveValidation('gender');

@@ -215,6 +215,15 @@ Messenger: added optional home page message widget showing current messages
 	Edited file /modules/Messenger/moduleFunctions.php
 	Deleted file /modules/Messenger/messageWall_view_full.php
 
+User Admin: added ability to enable public registration
+	New values in tables gibbonAction, gibbonPermission
+	New files /modules/User Admin/publicRegistrationSettings*.php
+	Edited table gibbonPerson
+	Edited files /modules/User Admin/user_manage_add, user_manage_edit.php
+	New files /publicRegistration*.php
+	Edited file /functions.php
+
+
 v9.1.00
 -------
 Installer: removed orphaned debug output

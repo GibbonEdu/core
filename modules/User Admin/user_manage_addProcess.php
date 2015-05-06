@@ -239,7 +239,7 @@ else {
 				$passwordMatch=doesPasswordMatchPolicy($connection2, $password) ;
 				
 				if ($passwordMatch==FALSE) {
-					//Fail 6
+					//Fail 7
 					$URL.="&addReturn=fail7" ;
 					header("Location: {$URL}");
 				}

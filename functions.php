@@ -2065,7 +2065,16 @@ function sidebar($connection2, $guid) {
 					</tr>
 				</table>
 			</form>
-		<?php
+			<?php
+			$enablePublicRegistration=getSettingByScope($connection2, "User Admin", "enablePublicRegistration") ;
+			if ($enablePublicRegistration=="Y") {
+				print "<h2>" ;
+					print _("Register") ;
+				print "</h2>" ;
+				print "<p>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/publicRegistration.php'>" . _('Register Now') . "</a>. " . _("It's free!") ;
+				print "</p>" ;
+			}
 		}
 	}
 
@@ -2182,7 +2191,14 @@ function sidebar($connection2, $guid) {
 								}, 5000);
 							});
 						</script>" ;
-						print "<table id='messageWallWidget' style='width: 100%; height: 213px; border: 1px solid grey; padding: 6px; background-color: #eeeeee'>" ;
+						$height=213 ;
+						if (count($_SESSION[$guid]["messageWallOutput"])==1) {
+							$height=71 ;
+						}
+						else if (count($_SESSION[$guid]["messageWallOutput"])==2) {
+							$height=142 ;
+						}
+						print "<table id='messageWallWidget' style='width: 100%; height: " . $height . "px; border: 1px solid grey; padding: 6px; background-color: #eeeeee'>" ;
 							include "index_messenger_ajax.php" ;
 						print "</table>" ;
 					}
@@ -2616,7 +2632,7 @@ function getHighestMedicalRisk( $gibbonPersonID, $connection2 ) {
 }
 
 //Gets age from date of birth, in days and months, from Unix timestamp
-function getAge($stamp, $short=FALSE) {
+function getAge($stamp, $short=FALSE, $yearsOnly=FALSE) {
 	$output="" ;
 	$diff=time()-$stamp ;
 	$years=floor($diff/31556926); 
@@ -2626,6 +2642,9 @@ function getAge($stamp, $short=FALSE) {
 	}
 	else {
 		$output=$years . " " . _("years") . ", " . $months . " " . _("months") ;
+	}
+	if ($yearsOnly==TRUE) {
+		$output=$years ;
 	}
 	return $output ;
 }

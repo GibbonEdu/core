@@ -230,6 +230,8 @@ else {
 								<option value="Please select..."><?php print _('Please select...') ?></option>
 								<option <?php if ($row["gender"]=="F") {print "selected ";}?>value="F"><?php print _('Female') ?></option>
 								<option <?php if ($row["gender"]=="M") {print "selected ";}?>value="M"><?php print _('Male') ?></option>
+								<option <?php if ($row["gender"]=="Other") {print "selected ";}?>value="Other"><?php print _('Other') ?></option>
+								<option <?php if ($row["gender"]=="Unspecified") {print "selected ";}?>value="Unspecified"><?php print _('Unspecified') ?></option>
 							</select>
 							<script type="text/javascript">
 								var gender=new LiveValidation('gender');
@@ -371,6 +373,7 @@ else {
 								<option <?php if ($row["status"]=="Full") {print "selected ";}?>value="Full"><?php print _('Full') ?></option>
 								<option <?php if ($row["status"]=="Expected") {print "selected ";}?>value="Expected"><?php print _('Expected') ?></option>
 								<option <?php if ($row["status"]=="Left") {print "selected ";}?>value="Left"><?php print _('Left') ?></option>
+								<option <?php if ($row["status"]=="Pending Approval") {print "selected ";}?>value="Pending Approval"><?php print _('Pending Approval') ?></option>
 							</select>
 						</td>
 					</tr>

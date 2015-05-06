@@ -252,7 +252,12 @@ else {
 			
 			
 					if (isset($_GET["q"])) {
-						$URL="./index.php?q=" . $_GET["q"] ;
+						if ($_GET["q"]=="/publicRegistration.php") {
+							$URL="./index.php" ;
+						}
+						else {
+							$URL="./index.php?q=" . $_GET["q"] ;
+						}
 					}
 					else {
 						$URL="./index.php" ;
