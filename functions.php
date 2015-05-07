@@ -2182,24 +2182,26 @@ function sidebar($connection2, $guid) {
 						print "</div>" ;
 					}
 					else {
+						$rand=rand(0, count($_SESSION[$guid]["messageWallOutput"])) ;
 						print "<script type=\"text/javascript\">
 							$(document).ready(function(){
-								var count=1 ;
+								var count=" . ($rand) . " ; 
+								$(\"#messageWallWidget\").load(\"index_messenger_ajax.php\", \"count=\" + count);
 								setInterval(function() {
-									$(\"#messageWallWidget\").load(\"index_messenger_ajax.php\", \"count=\" + count); 
 									count=count+1 ;
-								}, 5000);
+									$(\"#messageWallWidget\").load(\"index_messenger_ajax.php\", \"count=\" + count); 
+								}, 8000);
 							});
 						</script>" ;
-						$height=213 ;
+						$height=283 ;
 						if (count($_SESSION[$guid]["messageWallOutput"])==1) {
-							$height=71 ;
+							$height=94 ;
 						}
 						else if (count($_SESSION[$guid]["messageWallOutput"])==2) {
-							$height=142 ;
+							$height=197 ;
 						}
 						print "<table id='messageWallWidget' style='width: 100%; height: " . $height . "px; border: 1px solid grey; padding: 6px; background-color: #eeeeee'>" ;
-							include "index_messenger_ajax.php" ;
+							//Content added by JS	
 						print "</table>" ;
 					}
 				}

@@ -22,6 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Gibbon system-wide includes
 include "./config.php" ;
 
+$total=count($_SESSION[$guid]["messageWallOutput"]) ;
+
 if (isset($_GET["count"])) {
 	$count=$_GET["count"] ;
 }
@@ -29,7 +31,6 @@ else {
 	$count=0 ;
 }
 
-$total=count($_SESSION[$guid]["messageWallOutput"]) ;
 $rowCount=0 ;
 $output=3 ; 
 if ($total<$output) {
