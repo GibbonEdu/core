@@ -422,6 +422,7 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'User Admin', 'publicRegistrationAgreement', 'Public Registration Agreement', 'Agreement that user must confirm before joining. Blank for no agreement.', 'In joining this site, and checking the box below, I agree to act lawfully, ethically and with respect for others. I agree to use this site for learning purposes only, and understand that access may be withdrawn at any time, at the discretion of the site\'s administrators.');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'User Admin', 'publicRegistrationPostscript', 'Public Registration Postscript', 'HTML text that will appear underneath the public registration form.', '');end
 UPDATE gibbonMarkbookColumn set gibbonPlannerEntryID=NULL WHERE gibbonPlannerEntryID=0 ;end
+ALTER TABLE `gibbonFinanceExpense` CHANGE `gibbonSchoolYearID` `gibbonFinanceBudgetCycleID` INT(6) UNSIGNED ZEROFILL NOT NULL;end
 " ;
 
 ?>
