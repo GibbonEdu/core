@@ -36,9 +36,16 @@ catch(PDOException $e) {
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonStaffID=$_GET["gibbonStaffID"] ;
-$search=$_GET["search"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/staff_manage_delete.php&gibbonStaffID=$gibbonStaffID&search=$search" ;
-$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/staff_manage.php&search=$search" ;
+$allStaff="" ;
+if (isset($_GET["allStaff"])) {
+	$allStaff=$_GET["allStaff"] ;
+}
+$search="" ;
+if (isset($_GET["search"])) {
+	$search=$_GET["search"] ;
+}
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/staff_manage_delete.php&gibbonStaffID=$gibbonStaffID&search=$search&allStaff=$allStaff" ;
+$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/staff_manage.php&search=$search&allStaff=$allStaff" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/staff_manage_delete.php")==FALSE) {
 	//Fail 0

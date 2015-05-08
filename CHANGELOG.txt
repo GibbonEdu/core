@@ -223,6 +223,13 @@ User Admin: added ability to enable public registration
 	New files /publicRegistration*.php
 	Edited file /functions.php
 
+User Admin: added filter to staff management to display staff whose status is not Full
+	Edited files /modules/User Admin/staff_manage.php
+
+Markbook: fixed fake-link to lesson plan issue.
+	Edited values in table gibbonMarkbookColumn
+	Edited files /modules/Markbook/markbook_edit_editProcess.php, markbook_edit_addProcess.php, markbook_edit_adMultiProcess.php
+
 
 v9.1.00
 -------

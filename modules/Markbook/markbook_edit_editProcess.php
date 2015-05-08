@@ -106,7 +106,9 @@ else {
 					}
 					$gibbonPlannerEntryID=NULL ;
 					if (isset($_POST["gibbonPlannerEntryID"])) {
-						$gibbonPlannerEntryID=$_POST["gibbonPlannerEntryID"] ;
+						if ($_POST["gibbonPlannerEntryID"]!="") {
+							$gibbonPlannerEntryID=$_POST["gibbonPlannerEntryID"] ;
+						}
 					}
 					$name=$_POST["name"] ;
 					$description=$_POST["description"] ;

@@ -2066,15 +2066,6 @@ function sidebar($connection2, $guid) {
 				</table>
 			</form>
 			<?php
-			$enablePublicRegistration=getSettingByScope($connection2, "User Admin", "enablePublicRegistration") ;
-			if ($enablePublicRegistration=="Y") {
-				print "<h2>" ;
-					print _("Register") ;
-				print "</h2>" ;
-				print "<p>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/publicRegistration.php'>" . _('Register Now') . "</a>. " . _("It's free!") ;
-				print "</p>" ;
-			}
 		}
 	}
 
