@@ -230,6 +230,8 @@ Markbook: fixed fake-link to lesson plan issue.
 	Edited values in table gibbonMarkbookColumn
 	Edited files /modules/Markbook/markbook_edit_editProcess.php, markbook_edit_addProcess.php, markbook_edit_adMultiProcess.php
 
+Students: made student profile menu dynamically reflect ordering in main menu (where categories can be changed)
+	Edited file /modules/Students/student_view_details.php
 
 v9.1.00
 -------
