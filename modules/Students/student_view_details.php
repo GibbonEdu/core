@@ -2397,7 +2397,7 @@ else {
 							}
 						}
 					}
-					else if ($subpage=="Library Borrowing Record") {
+					else if ($subpage=="Library Borrowing") {
 						if (isActionAccessible($guid, $connection2, "/modules/Library/report_studentBorrowingRecord.php")==FALSE) {
 							print "<div class='error'>" ;
 								print _("Your request failed because you do not have access to this action.");
@@ -2892,7 +2892,7 @@ else {
 							}
 						}								
 					}
-					else if ($subpage=="Behaviour Record") {
+					else if ($subpage=="Behaviour") {
 						if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_view.php")==FALSE) {
 							print "<div class='error'>" ;
 								print _("Your request failed because you do not have access to this action.");
@@ -3088,12 +3088,12 @@ else {
 					}
 					if (isActionAccessible($guid, $connection2, "/modules/Library/report_studentBorrowingRecord.php")) {
 						$style="" ;
-						if ($subpage=="Library Borrowing Record") {
+						if ($subpage=="Library Borrowing") {
 							$style="style='font-weight: bold'" ;
 						}
 						$studentMenuCategory[$studentMenuCount]=$mainMenu["Library"] ;
-						$studentMenuName[$studentMenuCount]=_('Library Borrowing Record') ;
-						$studentMenuLink[$studentMenuCount]="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Library Borrowing Record'>" . _('Library Borrowing Record') . "</a></li>" ;
+						$studentMenuName[$studentMenuCount]=_('Library Borrowing') ;
+						$studentMenuLink[$studentMenuCount]="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Library Borrowing'>" . _('Library Borrowing') . "</a></li>" ;
 						$studentMenuCount++ ;
 					}
 					if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php")) {
@@ -3108,12 +3108,12 @@ else {
 					}
 					if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_view.php")) {
 						$style="" ;
-						if ($subpage=="Behaviour Record") {
+						if ($subpage=="Behaviour") {
 							$style="style='font-weight: bold'" ;
 						}
 						$studentMenuCategory[$studentMenuCount]=$mainMenu["Behaviour"] ;
-						$studentMenuName[$studentMenuCount]=_('Behaviour Record') ;
-						$studentMenuLink[$studentMenuCount]="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Behaviour Record'>" . _('Behaviour Record') . "</a></li>" ;
+						$studentMenuName[$studentMenuCount]=_('Behaviour') ;
+						$studentMenuLink[$studentMenuCount]="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Behaviour'>" . _('Behaviour') . "</a></li>" ;
 						$studentMenuCount++ ;
 					}
 					if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentHistory.php")) {
@@ -3127,37 +3127,10 @@ else {
 						$studentMenuCount++ ;
 					}
 					
-					//Sort array
-					array_multisort($studentMenuCategory, $studentMenuName, $studentMenuLink);
-					
-					//Spit out array
-					if (count($studentMenuCategory)>0) {
-						$categoryCurrent="" ;
-						$categoryLast="" ;
-						for ($i=0; $i<count($studentMenuCategory); $i++) {
-							$categoryCurrent=_($studentMenuCategory[$i]) ;
-						
-							if ($categoryCurrent!=$categoryLast AND $categoryLast!="") {
-								$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
-							}
-							if ($categoryCurrent!=$categoryLast) {
-								$_SESSION[$guid]["sidebarExtra"].="<h4>" . _($studentMenuCategory[$i]) . "</h4>" ;
-								$_SESSION[$guid]["sidebarExtra"].="<ul class='moduleMenu'>" ;
-							}
-						
-							$_SESSION[$guid]["sidebarExtra"].=$studentMenuLink[$i] ;
-						
-							$categoryLast=_($studentMenuCategory[$i]) ;
-						}
-						$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
-					}
-					
-					
-					//GET HOOKS AND DISPLAY LINKS
-					//Check for hooks
+					//Check for hooks, and slot them into array
 					try {
 						$dataHooks=array(); 
-						$sqlHooks="SELECT * FROM gibbonHook WHERE type='Student Profile'" ;
+						$sqlHooks="SELECT *FROM gibbonHook WHERE type='Student Profile'" ;
 						$resultHooks=$connection2->prepare($sqlHooks);
 						$resultHooks->execute($dataHooks);
 					}
@@ -3184,19 +3157,38 @@ else {
 								if ($hook==$rowHooks["name"] AND $_GET["module"]==$options["sourceModuleName"]) {
 									$style="style='font-weight: bold'" ;
 								}
-								$hooks[$count]="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&hook=" . $rowHooks["name"] . "&module=" . $options["sourceModuleName"] . "&action=" . $options["sourceModuleAction"] . "&gibbonHookID=" . $rowHooks["gibbonHookID"] . "'>" . $rowHooks["name"] . "</a></li>" ;
+								$studentMenuCategory[$studentMenuCount]=$mainMenu[$options["sourceModuleName"]] ;
+								$studentMenuName[$studentMenuCount]=_($rowHooks["name"]) ;
+								$studentMenuLink[$studentMenuCount]="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&hook=" . $rowHooks["name"] . "&module=" . $options["sourceModuleName"] . "&action=" . $options["sourceModuleAction"] . "&gibbonHookID=" . $rowHooks["gibbonHookID"] . "'>" . _($rowHooks["name"]) . "</a></li>" ;
+								$studentMenuCount++ ;
 								$count++ ;
 							}
 						}
+					}
+					
+					//Sort array
+					array_multisort($studentMenuCategory, $studentMenuName, $studentMenuLink);
+					
+					//Spit out array
+					if (count($studentMenuCategory)>0) {
+						$categoryCurrent="" ;
+						$categoryLast="" ;
+						for ($i=0; $i<count($studentMenuCategory); $i++) {
+							$categoryCurrent=_($studentMenuCategory[$i]) ;
 						
-						if (count($hooks)>0) {
-							$_SESSION[$guid]["sidebarExtra"].="<h4>Extras</h4>" ;
-							$_SESSION[$guid]["sidebarExtra"].="<ul class='moduleMenu'>" ;
-								foreach ($hooks as $hook) {
-									$_SESSION[$guid]["sidebarExtra"].=$hook ;
-								}
-							$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
+							if ($categoryCurrent!=$categoryLast AND $categoryLast!="") {
+								$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
+							}
+							if ($categoryCurrent!=$categoryLast) {
+								$_SESSION[$guid]["sidebarExtra"].="<h4>" . _($studentMenuCategory[$i]) . "</h4>" ;
+								$_SESSION[$guid]["sidebarExtra"].="<ul class='moduleMenu'>" ;
+							}
+						
+							$_SESSION[$guid]["sidebarExtra"].=$studentMenuLink[$i] ;
+						
+							$categoryLast=_($studentMenuCategory[$i]) ;
 						}
+						$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					}
 				}
 			}
