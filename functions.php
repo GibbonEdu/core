@@ -911,8 +911,41 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 		}
 	}
 	
+	//GET HOOKS INTO DASHBOARD
+	$hooks=array() ;
+	try {
+		$dataHooks=array(); 
+		$sqlHooks="SELECT * FROM gibbonHook WHERE type='Parental Dashboard'" ;
+		$resultHooks=$connection2->prepare($sqlHooks);
+		$resultHooks->execute($dataHooks);
+	}
+	catch(PDOException $e) { 
+		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+	}
+	if ($resultHooks->rowCount()>0) {
+		$count=0 ;
+		while ($rowHooks=$resultHooks->fetch()) {
+			$options=unserialize($rowHooks["options"]) ;
+			//Check for permission to hook
+			try {
+				$dataHook=array("gibbonRoleIDCurrent"=>$_SESSION[$guid]["gibbonRoleIDCurrent"], "sourceModuleName"=>$options["sourceModuleName"]); 
+				$sqlHook="SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonModule.name='" . $options["sourceModuleName"] . "') JOIN gibbonAction ON (gibbonAction.name='" . $options["sourceModuleAction"] . "') JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Parental Dashboard' ORDER BY name" ;
+				$resultHook=$connection2->prepare($sqlHook);
+				$resultHook->execute($dataHook);
+			}
+			catch(PDOException $e) { }
+			if ($resultHook->rowCount()==1) {
+				$rowHook=$resultHook->fetch() ;
+				$hooks[$count]["name"]=$rowHooks["name"] ;
+				$hooks[$count]["sourceModuleName"]=$rowHook["module"] ;
+				$hooks[$count]["sourceModuleInclude"]=$options["sourceModuleInclude"] ;
+				$count++ ;
+			}
+		}
+	}
 	
-	if ($classes==FALSE AND $grades==FALSE AND $deadlines==FALSE AND $timetable==FALSE AND $activities==FALSE) {
+	
+	if ($classes==FALSE AND $grades==FALSE AND $deadlines==FALSE AND $timetable==FALSE AND $activities==FALSE AND count($hooks)<1) {
 		$return.="<div class='warning'>" ;
 			$return.=_("There are no records to display.") ;
 		$return.="</div>" ;
@@ -942,6 +975,11 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 				if ($activities!=FALSE) {
 					$return.="<li><a href='#tabs3'>" . _('Activities') . "</a></li>" ;
 				}
+				$tabCountExtra=3 ;
+				foreach ($hooks AS $hook) {
+					$tabCountExtra++ ;
+					$return.="<li><a href='#tabs" . $tabCountExtra . "'>" . _($hook["name"]) . "</a></li>" ;
+				}
 			$return.="</ul>" ;
 		
 			if ($classes!=FALSE OR $grades!=FALSE OR $deadlines!=FALSE) {
@@ -959,6 +997,21 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 			if ($activities!=FALSE) {
 				$return.="<div id='tabs3'>" ;
 					$return.=$activitiesOutput ;				
+				$return.="</div>" ;
+			}
+			$tabCountExtra=3 ;
+			foreach ($hooks AS $hook) {
+				$tabCountExtra++ ;
+				$return.="<div style='min-height: 100px' id='tabs" . $tabCountExtra . "'>" ;
+					$include=$_SESSION[$guid]["absolutePath"] . "/modules/" . $hook["sourceModuleName"] . "/" . $hook["sourceModuleInclude"] ;
+					if (!file_exists($include)) {
+						$return.="<div class='error'>" ;
+							$return.=_("The selected page cannot be displayed due to a hook error.") ;
+						$return.="</div>" ;
+					}
+					else {
+						$return.=include $include ;
+					}
 				$return.="</div>" ;
 			}
 		$return.="</div>" ;

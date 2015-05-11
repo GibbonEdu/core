@@ -238,6 +238,9 @@ General: added ability to issue General and Lockdown alarms via Gibobn
 	Edited values in table gibbonAction
 	New values in tables gibbonAction, gibbonPermission, gibbonSetting
 	New folder /audio
+
+General: added new hook into Parental Dashboard
+	Edited table gibbonHook
 	
 v9.1.00
 -------

@@ -546,7 +546,7 @@ else {
 										print _("Your current role type cannot be determined.") ;
 										print "</div>" ;
 									}
-									//Display Parent Dashboard
+									//Display Parental Dashboard
 									else if ($category=="Parent") {
 										$count=0 ;
 										try {
