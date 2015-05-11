@@ -34,9 +34,6 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Third Party Settings') . "</div>" ;
 	print "</div>" ;
 	
-	//Check for new version of Gibbon
-	print getCurrentVersion($guid, $connection2, $version) ;
-	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage="" ;
 	$class="error" ;

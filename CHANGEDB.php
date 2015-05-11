@@ -423,6 +423,12 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'User Admin', 'publicRegistrationPostscript', 'Public Registration Postscript', 'HTML text that will appear underneath the public registration form.', '');end
 UPDATE gibbonMarkbookColumn set gibbonPlannerEntryID=NULL WHERE gibbonPlannerEntryID=0 ;end
 ALTER TABLE `gibbonFinanceExpense` CHANGE `gibbonSchoolYearID` `gibbonFinanceBudgetCycleID` INT(6) UNSIGNED ZEROFILL NOT NULL;end
+UPDATE gibbonAction SET category='Settings' WHERE (name='Language Settings' OR name='System Settings' OR name='Third Party Settings') AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+UPDATE gibbonAction SET category='Extend & Update' WHERE (name='Manage Modules' OR name='Manage Themes' OR name='Update') AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin'), 'Sound Alarm', 0, 'Alarm', 'Allows user to issue a system-wide audio alert to all staff.', 'alarm.php', 'alarm.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Sound Alarm'));end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'alarm', 'Alarm', 'Sound a system wide alarm to all staff.', 'None');end
+
 " ;
 
 ?>

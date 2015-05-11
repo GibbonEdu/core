@@ -105,7 +105,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 				$return.=" . " . $_SESSION[$guid]["likeCount"] . " x <img title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' style='margin-left: 2px; opacity: 0.8; vertical-align: -60%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'>" ;
 			}
 		}
-
+		
 		//GET & SHOW NOTIFICATIONS
 		try {
 			$dataNotifications=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
@@ -118,16 +118,37 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 		}
 		catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
 
-		//Refresh notifications periodically
+		//Refresh notifications every 20 seconds
 		$return.="<script type=\"text/javascript\">
 			$(document).ready(function(){
 				setInterval(function() {
 					$(\"#notifications\").load(\"index_notification_ajax.php\");
-				}, 300000);
+				}, 20000);
 			});
 		</script>" ;
 
 		$return.="<div id='notifications' style='display: inline'>" ;
+			//CHECK FOR SYSTEM ALARM
+			if (isset($_SESSION[$guid]["gibbonRoleIDCurrentCategory"])) {
+				if ($_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=="Staff") {
+					$alarm=getSettingByScope($connection2, "System", "alarm") ;
+					if ($alarm=="General" OR $alarm=="Lockdown") {
+						if ($alarm=="General") {
+							$return.="<audio loop autoplay>
+								<source src=\"./audio/alarm_general.mp3\" type=\"audio/mpeg\">
+							</audio>" ; 
+							$return.="<script>alert('" . _('General Alarm!') . "') ;</script>" ;
+						}
+						else {
+							$return.="<audio loop autoplay>
+								<source src=\"./audio/alarm_lockdown.mp3\" type=\"audio/mpeg\">
+							</audio>" ; 
+							$return.="<script>alert('" . _('Lockdown Alarm!') . "') ;</script>" ;
+						}
+					}
+				}
+			}
+			
 			if ($resultNotifications->rowCount()>0) {
 				$return.=" . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
 			}

@@ -35,6 +35,27 @@ catch(PDOException $e) {
 
 $output="" ;
 
+//CHECK FOR SYSTEM ALARM
+if (isset($_SESSION[$guid]["gibbonRoleIDCurrentCategory"])) {
+	if ($_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=="Staff") {
+		$alarm=getSettingByScope($connection2, "System", "alarm") ;
+		if ($alarm=="General" OR $alarm=="Lockdown") {
+			if ($alarm=="General") {
+				$output.="<audio loop autoplay>
+					<source src=\"./audio/alarm_general.mp3\" type=\"audio/mpeg\">
+				</audio>" ; 
+				$output.="<script>alert('" . _('General Alarm!') . "') ;</script>" ;
+			}
+			else {
+				$output.="<audio loop autoplay>
+					<source src=\"./audio/alarm_lockdown.mp3\" type=\"audio/mpeg\">
+				</audio>" ; 
+				$output.="<script>alert('" . _('Lockdown Alarm!') . "') ;</script>" ;
+			}
+		}
+	}
+}
+
 //GET & SHOW NOTIFICATIONS
 try {
 	$dataNotifications=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
