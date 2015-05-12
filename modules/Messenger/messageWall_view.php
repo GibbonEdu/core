@@ -30,10 +30,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messageWall_view
 }
 else {
 	if (isset($_POST["date"])==FALSE) {
-		$date=date("d/m/Y") ;
+		$date=date($_SESSION[$guid]["i18n"]["dateFormatPHP"]) ;
 	}
 	else {
-		$date=$_POST["date"] ;
+		$date=dateConvertBack($guid, $_POST["date"]) ;
 	}
 	
 	$extra="" ;

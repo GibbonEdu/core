@@ -118,12 +118,16 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 		}
 		catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
 
-		//Refresh notifications every 20 seconds
+		//Refresh notifications every 15 seconds for staff, 120 seconds for everyone else
+		$interval=120000 ;
+		if ($_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=="Staff") {
+			$interval=15000 ;
+		}
 		$return.="<script type=\"text/javascript\">
 			$(document).ready(function(){
 				setInterval(function() {
 					$(\"#notifications\").load(\"index_notification_ajax.php\");
-				}, 20000);
+				}, " . $interval . ");
 			});
 		</script>" ;
 

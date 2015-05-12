@@ -241,6 +241,9 @@ General: added ability to issue General and Lockdown alarms via Gibobn
 
 General: added new hook into Parental Dashboard
 	Edited table gibbonHook
+
+Messenger: fixed bug stopping US English from displaying messages properly
+	Edited file /modules/Messenger/messageWall_view.php
 	
 v9.1.00
 -------

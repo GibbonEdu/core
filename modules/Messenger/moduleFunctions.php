@@ -425,6 +425,7 @@ function getMessages($guid, $connection2, $mode="", $date="") {
 			$resultPosts->execute($dataPosts);  
 		}
 		catch(PDOException $e) { print $e->getMessage() ; }	
+		
 		if ($resultPosts->rowCount()<1) {
 			$return.= "<div class='warning'>" ;
 				$return.= _("There are no records to display.") ;
