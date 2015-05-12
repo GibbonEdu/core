@@ -69,10 +69,20 @@ try {
 catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
 
 if ($resultNotifications->rowCount()>0) {
-	$output.=" . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
+	if (is_file($_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png")) {
+		$output.=" . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
+	}
+	else {
+		$output.=" . <a title='" . _('Notifications') . "' href='./index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='./themes/Default/img/notifications_on.png'></a>" ;
+	}
 }
 else {
-	$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
+	if (is_file($_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png")) {
+		$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
+	}
+	else {
+		$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='./themes/Default/img/notifications_off.png'>" ;
+	}
 }
 
 print $output ;
