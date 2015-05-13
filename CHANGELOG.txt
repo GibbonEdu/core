@@ -251,6 +251,9 @@ General: fixed US-date bug across the system
 	Edited files /modules/Timetable/report_viewAvailableSpaces.php, report_viewAvailableTeachers.php
 	Edited file /report.php
 
+Students: fixed minor display error in New Students report
+	Edited file /modules/Students/report_students_new.php
+
 v9.1.00
 -------
 Installer: removed orphaned debug output
