@@ -244,7 +244,13 @@ General: added new hook into Parental Dashboard
 
 Messenger: fixed bug stopping US English from displaying messages properly
 	Edited file /modules/Messenger/messageWall_view.php
-	
+
+General: fixed US-date bug across the system
+	Edited files /modules/Behaviour/behaviour_manage_add.php, behaviour_manage_addMulti.php
+	Edited file /modules/Messenger/messageWall_view.php
+	Edited files /modules/Timetable/report_viewAvailableSpaces.php, report_viewAvailableTeachers.php
+	Edited file /report.php
+
 v9.1.00
 -------
 Installer: removed orphaned debug output

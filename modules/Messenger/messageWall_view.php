@@ -37,7 +37,7 @@ else {
 	}
 	
 	$extra="" ;
-	if ($date==date("d/m/Y")) {
+	if ($date==date($_SESSION[$guid]["i18n"]["dateFormatPHP"])) {
 		$extra=_("Today's Messages") . " (" . $date . ")" ;
 	}
 	else {

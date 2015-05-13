@@ -152,7 +152,7 @@ else {
 					?>
 				</div>
 				<div id="footer-report">
-					<?php print sprintf(_('Created by %1$s (%2$s) at %3$s on %4$s.'), $_SESSION[$guid]["username"], $_SESSION[$guid]["organisationNameShort"], date("H:i"), date("d/m/Y")) ; ?>
+					<?php print sprintf(_('Created by %1$s (%2$s) at %3$s on %4$s.'), $_SESSION[$guid]["username"], $_SESSION[$guid]["organisationNameShort"], date("H:i"), date($_SESSION[$guid]["i18n"]["dateFormatPHP"])) ; ?>
 				</div>
 			</div>
 		</body>
