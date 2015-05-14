@@ -167,7 +167,7 @@ else {
 					print "<th>" ;
 						print _("Provider") ;
 					print "</th>" ;
-					print "<th style='width: 80px'>" ;
+					print "<th style='width: 100px'>" ;
 						print _("Actions") ;
 					print "</th>" ;
 				print "</tr>" ;

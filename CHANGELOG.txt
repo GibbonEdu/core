@@ -254,6 +254,12 @@ General: fixed US-date bug across the system
 Students: fixed minor display error in New Students report
 	Edited file /modules/Students/report_students_new.php
 
+General: minor table layout fixes
+	Edited file /modules/Library/library_manage_catalog.php
+	Edited file /modules/Activities/activities_manage.php
+
+Activities: made it possible to add any user as "Staff" for an activity.
+	Edited files /modules/Activities/activities_manage_add.php, activities_manage_edit.php
 v9.1.00
 -------
 Installer: removed orphaned debug output

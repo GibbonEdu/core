@@ -33,7 +33,7 @@ else {
 		$date=date($_SESSION[$guid]["i18n"]["dateFormatPHP"]) ;
 	}
 	else {
-		$date=dateConvertBack($guid, $_POST["date"]) ;
+		$date=$_POST["date"] ;
 	}
 	
 	$extra="" ;
