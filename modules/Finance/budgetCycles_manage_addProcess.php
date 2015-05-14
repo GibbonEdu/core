@@ -95,20 +95,22 @@ else {
 			
 			//UPDATE CYCLE ALLOCATION VALUES
 			$partialFail=FALSE ;
-			$values=$_POST["values"] ;
-			$gibbonFinanceBudgetIDs=$_POST["gibbonFinanceBudgetIDs"] ;
-			$count=0 ;
-			foreach ($values AS $value) {
-				try {
-					$data=array("value"=>$value, "gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetIDs[$count]); 
-					$sql="INSERT INTO gibbonFinanceBudgetCycleAllocation SET value=:value, gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
+			if (isset($_POST["values"])) {
+				$values=$_POST["values"] ;
+				$gibbonFinanceBudgetIDs=$_POST["gibbonFinanceBudgetIDs"] ;
+				$count=0 ;
+				foreach ($values AS $value) {
+					try {
+						$data=array("value"=>$value, "gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetIDs[$count]); 
+						$sql="INSERT INTO gibbonFinanceBudgetCycleAllocation SET value=:value, gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
+					}
+					catch(PDOException $e) {
+						$partialFail=TRUE ;
+					}
+					$count++ ;
 				}
-				catch(PDOException $e) {
-					$partialFail=TRUE ;
-				}
-			$count++ ;
 			}
 			
 			if ($partialFail==TRUE) {
