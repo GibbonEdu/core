@@ -44,6 +44,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/studentsSetti
 }
 else {
 	//Proceed!
+	$enableStudentNotes=$_POST["enableStudentNotes"] ;
 	$extendedBriefProfile=$_POST["extendedBriefProfile"] ;
 	$studentAgreementOptions="" ; 
 	foreach (explode(",", $_POST["studentAgreementOptions"]) as $agreement) {
@@ -53,6 +54,18 @@ else {
 	
 	//Write to database
 	$fail=FALSE ;
+	
+	
+	
+	try {
+		$data=array("value"=>$enableStudentNotes); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='enableStudentNotes'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ;
+	}
 	
 	try {
 		$data=array("value"=>$extendedBriefProfile); 

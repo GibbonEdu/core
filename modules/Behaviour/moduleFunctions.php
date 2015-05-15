@@ -36,6 +36,12 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 	else {
 		print "<div class='linkTop'>" ;
 			$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
+			if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage.php")==TRUE) {
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=&gibbonYearGroupID=&type='>" . _('Add') . "<img style='margin: 0 0 -4px 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+				if ($policyLink!="") {
+					print " | " ;
+				}
+			}
 			if ($policyLink!="") {
 				print "<a href='$policyLink'>" . _('View Behaviour Policy') . "</a>" ;
 			}
@@ -132,6 +138,12 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 								print formatName($row["title"], $row["preferredName"], $row["surname"], "Staff", false, true) . "</b><br/>" ;
 							print "</td>" ;
 							print "<td>" ;
+								if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage.php", "Manage Behaviour Records_all") AND $row["gibbonSchoolYearID"]==$_SESSION[$guid]["gibbonSchoolYearID"]) {
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID=" . $row["gibbonBehaviourID"] . "&gibbonPersonID=" . $row["gibbonPersonID"] . "&gibbonRollGroupID=&gibbonYearGroupID=&type='><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								}
+								else if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage.php", "Manage Behaviour Records_my") AND $row["gibbonSchoolYearID"]==$_SESSION[$guid]["gibbonSchoolYearID"]  AND $row["gibbonPersonIDCreator"]==$_SESSION[$guid]["gibbonPersonID"]) {
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID=" . $row["gibbonBehaviourID"] . "&gibbonPersonID=" . $row["gibbonPersonID"] . "&gibbonRollGroupID=&gibbonYearGroupID=&type='><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								}
 								print "<script type='text/javascript'>" ;	
 									print "$(document).ready(function(){" ;
 										print "\$(\".comment-$count-$yearCount\").hide();" ;
@@ -141,12 +153,12 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 										print "});" ;
 									print "});" ;
 								print "</script>" ;
-								if ($row["comment"]!="") {
+								if ($row["comment"]!="" OR $row["followup"]!="") {
 									print "<a title='" . _('View Description') . "' class='show_hide-$count-$yearCount' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
 								}
 							print "</td>" ;
 						print "</tr>" ;
-						if ($row["comment"]!="") {
+						if ($row["comment"]!="" OR $row["followup"]!="") {
 							if ($row["type"]=="Positive") {
 								$bg="background-color: #D4F6DC;" ;
 							}
@@ -155,7 +167,14 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 							}
 							print "<tr class='comment-$count-$yearCount' id='comment-$count-$yearCount'>" ;
 								print "<td style='$bg' colspan=6>" ;
-									print $row["comment"] ;
+									if ($row["comment"]!="") {
+										print "<b>" . _('Incident') . "</b><br/>" ;
+										print nl2brr($row["comment"]) . "<br/><br/>" ;
+									}
+									if ($row["followup"]!="") {
+										print "<b>" . _('Follow Up') . "</b><br/>" ;
+										print nl2brr($row["followup"]) . "<br/><br/>" ;
+									}
 								print "</td>" ;
 							print "</tr>" ;
 						}

@@ -774,6 +774,7 @@ else {
 					<td class="right">
 						<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
 							<?php
+							print "<optgroup label='--" . _('Staff') . "--'>" ;
 							try {
 								$dataSelect=array(); 
 								$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
@@ -784,6 +785,23 @@ else {
 							while ($rowSelect=$resultSelect->fetch()) {
 								print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) . "</option>" ;
 							}
+							print "</optgroup>" ;
+							print "<optgroup label='--" . _('All Users') . "--'>" ;
+							try {
+								$dataSelect=array(); 
+								$sqlSelect="SELECT gibbonPersonID, surname, preferredName, status FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName" ;
+								$resultSelect=$connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							}
+							catch(PDOException $e) { }
+							while ($rowSelect=$resultSelect->fetch()) {
+								$selected="" ;
+								if ($row["gibbonPersonIDStatusResponsible"]==$rowSelect["gibbonPersonID"]) {
+									$selected="selected" ;
+								}
+								print "<option $selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "$expected</option>" ;
+							}
+							print "</optgroup>" ;
 							?>
 						</select>
 					</td>

@@ -55,6 +55,7 @@ else {
 	$descriptor=$_POST["descriptor"] ; 
 	$level=$_POST["level"] ; 
 	$comment=$_POST["comment"] ; 
+	$followup=$_POST["followup"] ; 
 		
 	if (is_null($gibbonPersonIDMulti)==TRUE OR $date=="" OR $type=="" OR $descriptor=="") {
 		//Fail 3
@@ -67,8 +68,8 @@ else {
 		foreach ($gibbonPersonIDMulti AS $gibbonPersonID) {
 			//Write to database
 			try {
-				$data=array("gibbonPersonID"=>$gibbonPersonID, "date"=>dateConvert($guid, $date), "type"=>$type, "descriptor"=>$descriptor, "level"=>$level, "comment"=>$comment, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-				$sql="INSERT INTO gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonSchoolYearID=:gibbonSchoolYearID" ;
+				$data=array("gibbonPersonID"=>$gibbonPersonID, "date"=>dateConvert($guid, $date), "type"=>$type, "descriptor"=>$descriptor, "level"=>$level, "comment"=>$comment, "followup"=>$followup, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+				$sql="INSERT INTO gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, followup=:followup, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonSchoolYearID=:gibbonSchoolYearID" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}

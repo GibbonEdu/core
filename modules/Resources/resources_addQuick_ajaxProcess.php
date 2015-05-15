@@ -36,9 +36,8 @@ catch(PDOException $e) {
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $time=time() ;
-
-
-if (empty($_POST)) {
+	
+if (empty($_POST) OR empty($_FILES)) {
 	//Fail 5
 	print "<span style='font-weight: bold; color: #ff0000'>" ;
 		print "Your request failed due to an attachment error." ;
@@ -47,70 +46,72 @@ if (empty($_POST)) {
 else {
 	//Proceed!
 	$id=$_POST["id"] ;
-	$type=$_POST[$id . "type"] ; 
-	if ($type=="File") {
-		$content=$_FILES[$id . 'file'] ;
+	$imagesAsLinks=FALSE ;
+	if ($_POST["imagesAsLinks"]=="Y") {
+		$imagesAsLinks=TRUE ;
 	}
-	else if ($type=="Link") {
-		$content=$_POST[$id . 'link'] ;
-	}
-	$name=$_POST[$id . "name"] ; 
 	
-	if (($type!="File" AND $type!="Link") OR is_null($content) OR $name=="" OR $id=="") {
+	if ($id=="") {
 		//Fail 3
 		print "<span style='font-weight: bold; color: #ff0000'>" ;
 			print _("Your request failed because your inputs were invalid.") ;
 		print "</span>" ;
 	}
 	else {
-		if ($type=="File") {
-			if ($_FILES[$id . 'file']["tmp_name"]!="") {
-				//Check for folder in uploads based on today's date
-				$path=$_SESSION[$guid]["absolutePath"] ; ;
-				if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
-					mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
-				}
-				$unique=FALSE;
-				$count=0 ;
-				while ($unique==FALSE AND $count<100) {
-					$suffix=randomPassword(16) ;
-					$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $name) . "_$suffix" . strrchr($_FILES[$id . "file"]["name"], ".") ;
-					if (!(file_exists($path . "/" . $attachment))) {
-						$unique=TRUE ;
-					}
-					$count++ ;
-				}
-				if (!(move_uploaded_file($_FILES[$id . "file"]["tmp_name"],$path . "/" . $attachment))) {
-					//Fail 5
-					print "<span style='font-weight: bold; color: #ff0000'>" ;
-						print "Your request failed due to an attachment error." ;
-					print "</span>" ;
-				}
+		//Check if multiple files
+		$multiple=FALSE ;
+		$multipleCount=0 ;
+		for ($i=1; $i<5; $i++) {
+			if (isset($_FILES[$id . "file" . $i])) { 
+				$multipleCount++ ;
 			}
-			$content=$attachment ;
+		}
+		if ($multipleCount>1) {
+			$multiple=TRUE ;
 		}
 		
-		$html="" ;
-		$extension="" ;
-		if ($type=="Link") {
-			$extension=strrchr($content, ".") ;
-			if (strcasecmp($extension, ".gif")==0 OR strcasecmp($extension, ".jpg")==0 OR strcasecmp($extension, ".jpeg")==0 OR strcasecmp($extension, ".png")==0) {
-				$html="<a target='_blank' style='font-weight: bold' href='" . $content . "'><img class='resource' style='max-width: 500px' src='" . $content . "'></a>" ;
+		//Insert files
+		for ($i=1; $i<5; $i++) {
+			$html="" ;
+			if (isset($_FILES[$id . "file" . $i])) { 
+				$name=substr($_FILES[$id . "file" . $i]["name"], 0, strrpos($_FILES[$id . "file" . $i]["name"], ".")) ;
+				if ($_FILES[$id . "file" . $i]["tmp_name"]!="") {
+					//Check for folder in uploads based on today's date
+					$path=$_SESSION[$guid]["absolutePath"] ; ;
+					if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
+						mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
+					}
+					$unique=FALSE;
+					$count=0 ;
+					while ($unique==FALSE AND $count<100) {
+						$suffix=randomPassword(16) ;
+						$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $name) . "_$suffix" . strrchr($_FILES[$id . "file" . $i]["name"], ".") ;
+						if (!(file_exists($path . "/" . $attachment))) {
+							$unique=TRUE ;
+						}
+						$count++ ;
+					}
+					if (!(move_uploaded_file($_FILES[$id . "file" . $i]["tmp_name"],$path . "/" . $attachment))) {
+						//Fail 5
+						print "<span style='font-weight: bold; color: #ff0000'>" ;
+							print "Your request failed due to an attachment error." ;
+						print "</span>" ;
+					}
+				} 
+				
+				$extension=strrchr($attachment, ".") ;
+				if ((strcasecmp($extension, ".gif")==0 OR strcasecmp($extension, ".jpg")==0 OR strcasecmp($extension, ".jpeg")==0 OR strcasecmp($extension, ".png")==0) AND $imagesAsLinks==FALSE) {
+					$html="<a target='_blank' style='font-weight: bold' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $attachment . "'><img class='resource' style='max-width: 500px' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $attachment . "'></a>" ;
+				}
+				else {
+					$html="<a target='_blank' style='font-weight: bold' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $attachment . "'>" . $name . "</a>" ;
+				}
 			}
-			else {
-				$html="<a target='_blank' style='font-weight: bold' href='" . $content . "'>" . $name . "</a>" ;
+			if ($multiple) {
+				print "<br/>" ;
 			}
+			print $html ;
 		}
-		else if ($type=="File") {
-			$extension=strrchr($content, ".") ;
-			if (strcasecmp($extension, ".gif")==0 OR strcasecmp($extension, ".jpg")==0 OR strcasecmp($extension, ".jpeg")==0 OR strcasecmp($extension, ".png")==0) {
-				$html="<a target='_blank' style='font-weight: bold' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $content . "'><img class='resource' style='max-width: 500px' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $content . "'></a>" ;
-			}
-			else {
-				$html="<a target='_blank' style='font-weight: bold' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $content . "'>" . $name . "</a>" ;
-			}
-		}
-		print $html ;
 	}
 }
 ?>

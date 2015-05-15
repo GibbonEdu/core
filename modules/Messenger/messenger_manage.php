@@ -157,8 +157,9 @@ else {
 					print "<th>" ;
 						print _("Subject") ;
 					print "</th>" ;
-					print "<th>" ;
-						print _('Date Sent') ;
+					print "<th style='width: 100px'>" ;
+						print _('Date Sent'). "<br/>" ;
+						print "<span style='font-style: italic; font-size: 85%'>" . _('Dates Published') . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
 						print _("Author") ;
@@ -204,7 +205,20 @@ else {
 							print "<b>" . $row["subject"] . "</b><br/>" ;
 						print "</td>" ;
 						print "<td>" ;
-							print dateConvertBack($guid, substr($row["timestamp"],0,10)) ;
+							print dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
+							if ($row["messageWall"]=="Y") {
+								print "<span style='font-style: italic; font-size: 85%'>" ;
+									if ($row["messageWall_date1"]!="") {
+										print dateConvertBack($guid, $row["messageWall_date1"]) . "<br/>" ;
+									}
+									if ($row["messageWall_date2"]!="") {
+										print dateConvertBack($guid, $row["messageWall_date2"]) . "<br/>" ;
+									}
+									if ($row["messageWall_date3"]!="") {
+										print dateConvertBack($guid, $row["messageWall_date3"]) . "<br/>" ;
+									}
+								print "</span>" ;
+							}
 						print "</td>" ;
 						print "<td>" ;
 							print formatName($row["title"], $row["preferredName"], $row["surname"], $row["category"]) ;
@@ -405,7 +419,7 @@ else {
 					print "</tr>" ;
 					if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
 						print "<tr class='comment-$count' id='comment-$count'>" ;
-							print "<td style='background-color: #fff' colspan=7>" ;
+							print "<td style='background-color: #fff' colspan=8>" ;
 								if ($row["emailReport"]!="") {
 									print "<b><u>Email Report</u></b><br/>" ;
 									$emails=explode(",",$row["emailReport"]) ;

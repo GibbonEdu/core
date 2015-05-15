@@ -106,6 +106,12 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
+							<?php 
+								$gibbonPersonID=NULL ;
+								if (isset($_GET["gibbonPersonID"])) {
+									$gibbonPersonID=$_GET["gibbonPersonID"] ; 
+								} 
+							?>
 							<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
 								<option value="Please select..."><?php print _('Please select...') ?></option>
 								<?php
@@ -120,7 +126,7 @@ else {
 								}
 								while ($rowSelect=$resultSelect->fetch()) {
 									if ($gibbonPersonID==$rowSelect["gibbonPersonID"]) {
-										print "<option selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;
+										print "<option selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;
 									}
 									else {
 										print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;
@@ -141,7 +147,7 @@ else {
 							<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 						</td>
 						<td class="right">
-							<input name="date" id="date" maxlength=10 value="<?php print date("d/m/Y") ?>" type="text" style="width: 300px">
+							<input name="date" id="date" maxlength=10 value="<?php print date($_SESSION[$guid]["i18n"]["dateFormatPHP"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var date=new LiveValidation('date');
 								date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -250,13 +256,22 @@ else {
 						<?php
 					}
 					?>
+					<script type='text/javascript'>
+						$(document).ready(function(){
+							$('#comment').autosize();
+							$('#followup').autosize();
+						});
+					</script>
 					<tr>
-						<td> 
-							<b><?php print _('Comment') ?></b><br/>
-							<span style="font-size: 90%"><i></i></span>
+						<td colspan=2> 
+							<b><?php print _('Incident') ?></b><br/>
+							<textarea name="comment" id="comment" rows=8 style="width: 100%"></textarea>
 						</td>
-						<td class="right">
-							<textarea name="comment" id="comment" rows=8 style="width: 300px"></textarea>
+					</tr>
+					<tr>
+						<td colspan=2> 
+							<b><?php print _('Follow Up') ?></b><br/>
+							<textarea name="followup" id="followup" rows=8 style="width: 100%"></textarea>
 						</td>
 					</tr>
 					<tr>
@@ -293,6 +308,7 @@ else {
 			$descriptor=$_POST["descriptor"] ; 
 			$level=$_POST["level"] ; 
 			$comment=$_POST["comment"] ; 
+			$followup=$_POST["followup"] ; 
 			
 			if ($gibbonPersonID=="" OR $date=="" OR $type=="" OR $descriptor=="") {
 				print "<div class='error'>" ;
@@ -403,6 +419,7 @@ else {
 								<input type="hidden" name="descriptor" value="<?php print $descriptor ?>">
 								<input type="hidden" name="level" value="<?php print $level ?>">
 								<input type="hidden" name="comment" value="<?php print $comment ?>">
+								<input type="hidden" name="followup" value="<?php print $followup ?>">
 								
 							
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

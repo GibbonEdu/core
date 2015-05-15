@@ -57,7 +57,7 @@ else {
 		$versionCode=$_POST["versionCode"] ;
 	
 		//Validate Inputs
-		if ($versionDB=="" OR $versionCode=="" OR $versionDB>=$versionCode) {
+		if ($versionDB=="" OR $versionCode=="" OR (float)$versionDB>=(float)$versionCode) {
 			//Fail 3
 			$URL.="&updateReturn=fail3" ;
 			header("Location: {$URL}");
@@ -66,7 +66,7 @@ else {
 			include "../../CHANGEDB.php" ;
 		
 			foreach ($sql AS $version) {
-				if ($version[0]>$versionDB AND $version[0]<=$versionCode) {
+				if ((float)$version[0]>(float)$versionDB AND (float)$version[0]<=(float)$versionCode) {
 					$sqlTokens=explode(";end", $version[1]) ;
 					foreach ($sqlTokens AS $sqlToken) {
 						if (trim($sqlToken)!="") {
@@ -118,7 +118,7 @@ else {
 		$sqlTokens=explode(";end", $sql[(count($sql))][1]) ;
 		$versionMaxLinesMax=(count($sqlTokens)-1) ;	
 		$update=FALSE ;
-		if ($versionMax>$versionDB) {
+		if ((float)$versionMax>(float)$versionDB) {
 			$update=TRUE ;
 		}
 		else {
@@ -134,14 +134,14 @@ else {
 			break ;
 		}
 		else { //Let's do it
-			if ($versionMax>$versionDB) { //At least one whole verison needs to be done
+			if ((float)$versionMax>(float)$versionDB) { //At least one whole verison needs to be done
 				foreach ($sql AS $version) {
 					$tokenCount=0 ;		
-					if ($version[0]>=$versionDB AND $version[0]<=$versionCode) {
+					if ((float)$version[0]>=(float)$versionDB AND (float)$version[0]<=(float)$versionCode) {
 						$sqlTokens=explode(";end", $version[1]) ;
 						if ($version[0]==$versionDB) { //Finish current version
 							foreach ($sqlTokens AS $sqlToken) {
-								if ($tokenCount>=$cuttingEdgeCodeLine) {
+								if ((float)$tokenCount>=(float)$cuttingEdgeCodeLine) {
 									if (trim($sqlToken)!="") { //Decide whether this has been run or not
 										try {
 											$result=$connection2->query($sqlToken);   
@@ -175,10 +175,10 @@ else {
 				//Get up to speed in max version
 				foreach ($sql AS $version) {
 					$tokenCount=0 ;
-					if ($version[0]>=$versionDB AND $version[0]<=$versionCode) {
+					if ((float)$version[0]>=(float)$versionDB AND (float)$version[0]<=(float)$versionCode) {
 						$sqlTokens=explode(";end", $version[1]) ;
 						foreach ($sqlTokens AS $sqlToken) {
-							if ($tokenCount>=$cuttingEdgeCodeLine) {
+							if ((float)$tokenCount>=(float)$cuttingEdgeCodeLine) {
 								if (trim($sqlToken)!="") { //Decide whether this has been run or not
 									try {
 										$result=$connection2->query($sqlToken);   

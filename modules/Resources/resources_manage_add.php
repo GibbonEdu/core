@@ -72,12 +72,6 @@ else {
 			print "</div>" ;
 		} 
 		
-		if ($_GET["search"]!="") {
-			print "<div class='linkTop'>" ;
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_manage.php&search=" . $_GET["search"] . "'>" . _('Back to Search Results') . "</a>" ;
-			print "</div>" ;
-		}
-		
 		?>
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_addProcess.php?search=" . $_GET["search"] ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	

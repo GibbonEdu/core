@@ -338,7 +338,7 @@ else {
 					print _("Status") . "<br/>" ;
 					print "<span style='font-size: 85%; font-style: italic'>" . _('Borrowable') . "</span>" ;
 				print "</th>" ;
-				print "<th style='width: 115px'>" ;
+				print "<th style='width: 125px'>" ;
 					print _("Actions") ;
 				print "</th>" ;
 			print "</tr>" ;

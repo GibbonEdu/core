@@ -474,6 +474,17 @@ else {
 									print $_SESSION[$guid]["indexText"] ;
 									print "</p>" ;
 									
+									//Publc registration permitted?
+									$enablePublicRegistration=getSettingByScope($connection2, "User Admin", "enablePublicRegistration") ;
+									if ($enablePublicRegistration=="Y") {
+										print "<h2 style='margin-top: 30px'>" ;
+											print _("Register") ;
+										print "</h2>" ;
+										print "<p>" ;
+											print sprintf(_('%1$sRegister now%2$s to join our online learning community.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/publicRegistration.php'>", "</a>") . " " . _("It's free!") ;
+										print "</p>" ;
+									}
+								
 									//Public applications permitted?
 									$publicApplications=getSettingByScope($connection2, "Application Form", "publicApplications" ) ; 
 									if ($publicApplications=="Y") {
@@ -535,7 +546,7 @@ else {
 										print _("Your current role type cannot be determined.") ;
 										print "</div>" ;
 									}
-									//Display Parent Dashboard
+									//Display Parental Dashboard
 									else if ($category=="Parent") {
 										$count=0 ;
 										try {

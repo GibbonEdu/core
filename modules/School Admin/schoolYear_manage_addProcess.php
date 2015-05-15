@@ -77,22 +77,47 @@ else {
 			header("Location: {$URL}");
 		}
 		else {	
-			//Write to database
-			try {
-				$data=array("name"=>$name, "status"=>$status, "sequenceNumber"=>$sequenceNumber, "firstDay"=>$firstDay, "lastDay"=>$lastDay); 
-				$sql="INSERT INTO gibbonSchoolYear SET name=:name, status=:status, sequenceNumber=:sequenceNumber, firstDay=:firstDay, lastDay=:lastDay" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
-				header("Location: {$URL}");
+			//Check for other currents
+			$currentFail=FALSE ;
+			if ($status=="Current") {
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSchoolYear WHERE status='Current'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					//Fail 2
+					$URL.="&addReturn=fail2" ;
+					header("Location: {$URL}");
+					break ;
+				}
+				if ($result->rowCount()>0) {
+					//Fail 4
+					$URL.="&addReturn=fail4" ;
+					header("Location: {$URL}");
+					break ;
+				}
 			}
 			
-			//Success 0
-			$URL.="&addReturn=success0" ;
-			header("Location: {$URL}");
+			if ($currentFail==FALSE) {	
+				//Write to database
+				try {
+					$data=array("name"=>$name, "status"=>$status, "sequenceNumber"=>$sequenceNumber, "firstDay"=>$firstDay, "lastDay"=>$lastDay); 
+					$sql="INSERT INTO gibbonSchoolYear SET name=:name, status=:status, sequenceNumber=:sequenceNumber, firstDay=:firstDay, lastDay=:lastDay" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					//Fail 2
+					$URL.="&addReturn=fail2" ;
+					header("Location: {$URL}");
+				}
+			
+				//Success 0
+				$URL.="&addReturn=success0" ;
+				header("Location: {$URL}");
+			}
 		}
 	}
 }

@@ -31,6 +31,15 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/staff_manage.php'>" . _('Manage Staff') . "</a> > </div><div class='trailEnd'>" . _('Delete Staff') . "</div>" ;
 	print "</div>" ;
 	
+	$allStaff="" ;
+	if (isset($_GET["allStaff"])) {
+		$allStaff=$_GET["allStaff"] ;
+	}
+	$search="" ;
+	if (isset($_GET["search"])) {
+		$search=$_GET["search"] ;
+	}
+
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 	$deleteReturnMessage="" ;
 	$class="error" ;
@@ -54,7 +63,6 @@ else {
 	
 	//Check if school year specified
 	$gibbonStaffID=$_GET["gibbonStaffID"] ;
-	$search=$_GET["search"] ;
 	if ($gibbonStaffID=="") {
 		print "<div class='error'>" ;
 			print _("You have not specified one or more required parameters.") ;
@@ -79,13 +87,13 @@ else {
 		else {
 			//Let's go!
 			$row=$result->fetch() ;
-			if ($search!="") {
+			if ($search!="" OR $allStaff!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/staff_manage.php&search=$search'>" . _('Back to Search Results') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/staff_manage.php&search=$search&allStaff=$allStaff'>" . _('Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_deleteProcess.php?gibbonStaffID=$gibbonStaffID&search=$search" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_deleteProcess.php?gibbonStaffID=$gibbonStaffID&search=$search&allStaff=$allStaff" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 

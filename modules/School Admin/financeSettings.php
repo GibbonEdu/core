@@ -110,10 +110,10 @@ else {
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>Y</option>" ;
+						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>N</option>" ;
+						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
 						?>			
 					</select>
 				</td>
@@ -132,7 +132,7 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
 					<span style="font-size: 90%"><i>
 						<?php 
 							if ($row["description"]!="") { print _($row["description"]) ; } 
@@ -336,6 +336,198 @@ else {
 					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
+			
+			<tr class='break'>
+				<td colspan=2> 
+					<h3><?php print _('Expenses') ?></h3>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='budgetCategories'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i>
+						<?php 
+						if ($row["description"]!="") { print _($row["description"]) ; } 
+						?> 
+					</i></span>
+				</td>
+				<td class="right">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
+					 </script>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='expenseApprovalType'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
+						$selected="" ;
+						if ($row["value"]=="One Of" ) { $selected="selected" ; }
+						print "<option $selected value='One Of'>One Of</option>" ;
+						$selected="" ;
+						if ($row["value"]=="Two Of" ) { $selected="selected" ; }
+						print "<option $selected value='Two Of'>Two Of</option>" ;
+						$selected="" ;
+						if ($row["value"]=="Chain Of All" ) { $selected="selected" ; }
+						print "<option $selected value='Chain Of All'>Chain Of All</option>" ;
+						?>			
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='budgetLevelExpenseApproval'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
+						$selected="" ;
+						if ($row["value"]=="Y" ) { $selected="selected" ; }
+						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
+						$selected="" ;
+						if ($row["value"]=="N" ) { $selected="selected" ; }
+						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
+						?>			
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='expenseRequestTemplate'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='purchasingOfficer'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
+						print "<option value=''></option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }	
+						while ($rowSelect=$resultSelect->fetch()) {
+							$selected="" ;
+							if ($row["value"]==$rowSelect["gibbonPersonID"]) {
+								$selected="selected" ;
+							}
+							print "<option $selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) . "</option>" ;
+						}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='reimbursementOfficer'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
+						print "<option value=''></option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }	
+						while ($rowSelect=$resultSelect->fetch()) {
+							$selected="" ;
+							if ($row["value"]==$rowSelect["gibbonPersonID"]) {
+								$selected="selected" ;
+							}
+							print "<option $selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) . "</option>" ;
+						}
+						?>
+					</select>
+				</td>
+			</tr>
+			
 			
 			<tr>
 				<td>

@@ -922,7 +922,7 @@ else {
 						<script>
 							$(function() {
 								$( "#<?php print $type ?>" ).sortable({
-									placeholder: "<?php print $type ?>-ui-state-highlight";
+									placeholder: "<?php print $type ?>-ui-state-highlight",
 									axis: 'y'
 								});
 							});

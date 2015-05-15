@@ -162,7 +162,7 @@ else {
 									print _("Student") ;
 								print "</th>" ;
 								
-								print "<th rowspan=2 style='width: 20px'>" ;
+								print "<th rowspan=2 style='width: 20px; text-align: center'>" ;
 									$title=_("Personalised target grade") ;
 								
 									//Get PAS
@@ -180,7 +180,7 @@ else {
 									}
 								
 									print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>" ;
-										print _("Target") . "<br/>" ;
+										print _("Target") ;
 									print "</div>" ;
 								print "</th>" ;
 							
@@ -221,14 +221,26 @@ else {
 											$lessonDate[$i]=$rowSub["date"] ;
 										}
 									}
-								
-									if ($submission==FALSE) {
-										$span=4 ;
+									
+									//Column count
+									$span=2 ;
+									if ($submission==TRUE) {
+										$span++ ;
 									}
-									else {
-										$span=5 ;
+									if ($row2["attainment"]=="Y") {
+										$span++ ;
 									}
-									print "<th style='text-align: center' colspan=$span>" ;
+									if ($row2["effort"]=="Y") {
+										$span++ ;
+									}
+									if ($row2["comment"]=="Y" OR $row2["uploadedResponse"]=="Y") {
+										$span++ ;
+									}
+									if ($span==2) {
+										$span++ ;
+									}
+									
+									print "<th style='text-align: center' colspan=$span-2>" ;
 										print "<span title='" . htmlPrep($row2["description"]) . "'>" . $row2["name"] . "<br/>" ;
 										print "<span style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
 										if ($row2["gibbonUnitID"]!="") {
@@ -264,65 +276,76 @@ else {
 							print "<tr class='head'>" ;
 								for ($i=0;$i<$columns;$i++) {
 									if ($submission==TRUE) {
-										print "<th style='text-align: center; width: 30px'>" ;
+										print "<th style='text-align: center; max-width: 30px'>" ;
 											print "<span title='" . _('Submitted Work') . "'>" . _('Sub') . "</span>" ;
 										print "</th>" ;
 									}
-									print "<th style='text-align: center; width: 30px'>" ;
-										try {
-											$dataScale=array("gibbonScaleID"=>$attainmentID[$i]); 
-											$sqlScale="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
-											$resultScale=$connection2->prepare($sqlScale);
-											$resultScale->execute($dataScale);
-										}
-										catch(PDOException $e) { }
-										$scale="" ;
-										if ($resultScale->rowCount()==1) {
-											$rowScale=$resultScale->fetch() ;
-											$scale=" - " . $rowScale["name"] ;
-											if ($rowScale["usage"]!="") {
-												$scale=$scale . ": " . $rowScale["usage"] ;
+									if ($row2["attainment"]=="Y") {
+										print "<th style='text-align: center; width: 30px'>" ;
+											$scale="" ;
+											if ($attainmentID[$i]!="") {
+												try {
+													$dataScale=array("gibbonScaleID"=>$attainmentID[$i]); 
+													$sqlScale="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
+													$resultScale=$connection2->prepare($sqlScale);
+													$resultScale->execute($dataScale);
+												}
+												catch(PDOException $e) { }
+												if ($resultScale->rowCount()==1) {
+													$rowScale=$resultScale->fetch() ;
+													$scale=" - " . $rowScale["name"] ;
+													if ($rowScale["usage"]!="") {
+														$scale=$scale . ": " . $rowScale["usage"] ;
+													}
+												}
+												$gibbonScaleIDAttainment=$rowScale["gibbonScaleID"] ;
+												print "<input name='scaleAttainment' id='scaleAttainment' value='" . $attainmentID[$i] . "' type='hidden'>" ;
+												print "<input name='lowestAcceptableAttainment' id='lowestAcceptableAttainment' value='" . $rowScale["lowestAcceptable"] . "' type='hidden'>" ;
 											}
-										}
-										$gibbonScaleIDAttainment=$rowScale["gibbonScaleID"] ;
-										print "<input name='scaleAttainment' id='scaleAttainment' value='" . $attainmentID[$i] . "' type='hidden'>" ;
-										print "<input name='lowestAcceptableAttainment' id='lowestAcceptableAttainment' value='" . $rowScale["lowestAcceptable"] . "' type='hidden'>" ;
-										if ($attainmentAlternativeName!="" AND $attainmentAlternativeNameAbrev!="") {
-											print "<span title='" . $attainmentAlternativeName . "$scale'>" . $attainmentAlternativeNameAbrev . "</span>" ;
-										}
-										else {
-											print "<span title='" . _('Attainment') . "$scale'>" . _('Att') . "</span>" ;
-										}
-									print "</th>" ;
-									print "<th style='text-align: center; width: 30px'>" ;
-										try {
-											$dataScale=array("gibbonScaleID"=>$effortID[$i]); 
-											$sqlScale="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
-											$resultScale=$connection2->prepare($sqlScale);
-											$resultScale->execute($dataScale);
-										}
-										catch(PDOException $e) { }
-										$scale="" ;
-										if ($resultScale->rowCount()==1) {
-											$rowScale=$resultScale->fetch() ;
-											$scale=" - " . $rowScale["name"] ;
-											if ($rowScale["usage"]!="") {
-												$scale=$scale . ": " . $rowScale["usage"] ;
+											if ($attainmentAlternativeName!="" AND $attainmentAlternativeNameAbrev!="") {
+												print "<span title='" . $attainmentAlternativeName . htmlPrep($scale) . "'>" . $attainmentAlternativeNameAbrev . "</span>" ;
 											}
-										}
-										$gibbonScaleIDEffort=$rowScale["gibbonScaleID"] ;
-										print "<input name='scaleEffort' id='scaleEffort' value='" . $effortID[$i] . "' type='hidden'>" ;
-										print "<input name='lowestAcceptableEffort' id='lowestAcceptableEffort' value='" . $rowScale["lowestAcceptable"] . "' type='hidden'>" ;
-										if ($effortAlternativeName!="" AND $effortAlternativeNameAbrev!="") {
-											print "<span title='" . $effortAlternativeName . "$scale'>" . $effortAlternativeNameAbrev . "</span>" ;
-										}
-										else {
-											print "<span title='" . _('Effort') . "$scale'>" . _('Eff') . "</span>" ;
-										}
-									print "</th>" ;
-									print "<th style='text-align: center; width: 80'>" ;
-										print "<span title='" . _('Comment') . "'>" . _('Com') . "</span>" ;
-									print "</th>" ;
+											else {
+												print "<span title='" . _('Attainment') . htmlPrep($scale) . "'>" . _('Att') . "</span>" ;
+											}
+										print "</th>" ;
+									}
+									if ($row2["effort"]=="Y") {
+										print "<th style='text-align: center; width: 30px'>" ;
+											$scale="" ;
+											if ($effortID[$i]!="") {
+												try {
+													$dataScale=array("gibbonScaleID"=>$effortID[$i]); 
+													$sqlScale="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
+													$resultScale=$connection2->prepare($sqlScale);
+													$resultScale->execute($dataScale);
+												}
+												catch(PDOException $e) { }
+												$scale="" ;
+												if ($resultScale->rowCount()==1) {
+													$rowScale=$resultScale->fetch() ;
+													$scale=" - " . $rowScale["name"] ;
+													if ($rowScale["usage"]!="") {
+														$scale=$scale . ": " . $rowScale["usage"] ;
+													}
+												}
+												$gibbonScaleIDEffort=$rowScale["gibbonScaleID"] ;
+												print "<input name='scaleEffort' id='scaleEffort' value='" . $effortID[$i] . "' type='hidden'>" ;
+												print "<input name='lowestAcceptableEffort' id='lowestAcceptableEffort' value='" . $rowScale["lowestAcceptable"] . "' type='hidden'>" ;
+											}
+											if ($effortAlternativeName!="" AND $effortAlternativeNameAbrev!="") {
+												print "<span title='" . $effortAlternativeName . htmlPrep($scale) . "'>" . $effortAlternativeNameAbrev . "</span>" ;
+											}
+											else {
+												print "<span title='" . _('Effort') . htmlPrep($scale) . "'>" . _('Eff') . "</span>" ;
+											}
+										print "</th>" ;
+									}
+									if ($row2["comment"]=="Y" OR $row2["uploadedResponse"]=="Y") {
+										print "<th style='text-align: center; width: 80'>" ;
+											print "<span title='" . _('Comment') . "'>" . _('Com') . "</span>" ;
+										print "</th>" ;
+									}
 								}
 							print "</tr>" ;
 					
@@ -464,88 +487,101 @@ else {
 													}
 												print "</td>" ;
 											}
-											print "<td style='text-align: center'>" ;
-												//Create attainment grade select
-												print "<select name='$count-attainmentValue' id='$count-attainmentValue' style='width:50px'>" ;
-													try {
-														$dataSelect=array("gibbonScaleID"=>$gibbonScaleIDAttainment); 
-														$sqlSelect="SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber" ;
-														$resultSelect=$connection2->prepare($sqlSelect);
-														$resultSelect->execute($dataSelect);
+											if ($row2["attainment"]=="Y") {
+												print "<td style='text-align: center'>" ;
+													//Create attainment grade select
+													if ($row2["gibbonScaleIDAttainment"]!="") {
+														print "<select name='$count-attainmentValue' id='$count-attainmentValue' style='width:50px'>" ;
+															try {
+																$dataSelect=array("gibbonScaleID"=>$gibbonScaleIDAttainment); 
+																$sqlSelect="SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber" ;
+																$resultSelect=$connection2->prepare($sqlSelect);
+																$resultSelect->execute($dataSelect);
+															}
+															catch(PDOException $e) { }
+															print "<option value=''></option>" ;
+															$sequence="" ;
+															$descriptor="" ;
+															while ($rowSelect=$resultSelect->fetch()) {
+																if ($rowEntry["attainmentValue"]==$rowSelect["value"]) {
+																	print "<option selected value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
+																}
+																else {
+																	print "<option value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
+																}
+															}			
+														print "</select>" ;
 													}
-													catch(PDOException $e) { }
-													print "<option value=''></option>" ;
-													$sequence="" ;
-													$descriptor="" ;
-													while ($rowSelect=$resultSelect->fetch()) {
-														if ($rowEntry["attainmentValue"]==$rowSelect["value"]) {
-															print "<option selected value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
+													print "<div style='height: 20px'>" ;
+														if ($row2["gibbonRubricIDAttainment"]!="") {
+															print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view_rubric.php&gibbonRubricID=" . $row2["gibbonRubricIDAttainment"] . "&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&type=attainment&width=1100&height=550'><img style='margin-top: 3px' title='" . _('Mark Rubric') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
 														}
-														else {
-															print "<option value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
+													print "</div>" ;
+												print "</td>" ;
+											}
+											if ($row2["effort"]=="Y") {
+												print "<td style='text-align: center'>" ;
+													if ($row2["gibbonScaleIDEffort"]!="") {
+														print "<select name='$count-effortValue' id='$count-effortValue' style='width:50px'>" ;
+															try {
+																$dataSelect=array("gibbonScaleID"=>$gibbonScaleIDEffort); 
+																$sqlSelect="SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber" ;
+																$resultSelect=$connection2->prepare($sqlSelect);
+																$resultSelect->execute($dataSelect);
+															}
+															catch(PDOException $e) { }
+															print "<option value=''></option>" ;
+															$sequence="" ;
+															$descriptor="" ;
+															while ($rowSelect=$resultSelect->fetch()) {
+																if ($rowEntry["effortValue"]==$rowSelect["value"]) {
+																	print "<option selected value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
+																}
+																else {
+																	print "<option value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
+																}
+															}
+														print "</select>" ;
+													}
+													print "<div style='height: 20px'>" ;
+														if ($row2["gibbonRubricIDEffort"]!="") {
+															print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view_rubric.php&gibbonRubricID=" . $row2["gibbonRubricIDEffort"] . "&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&type=effort&width=1100&height=550'><img style='margin-top: 3px' title='" . _('Mark Rubric') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
 														}
-													}			
-												print "</select>" ;
-												print "<div style='height: 20px'>" ;
-													if ($row2["gibbonRubricIDAttainment"]!="") {
-														print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view_rubric.php&gibbonRubricID=" . $row2["gibbonRubricIDAttainment"] . "&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&type=attainment&width=1100&height=550'><img style='margin-top: 3px' title='" . _('Mark Rubric') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
-													}
-												print "</div>" ;
-											print "</td>" ;
-											print "<td style='text-align: center'>" ;
-												print "<select name='$count-effortValue' id='$count-effortValue' style='width:50px'>" ;
-													try {
-														$dataSelect=array("gibbonScaleID"=>$gibbonScaleIDEffort); 
-														$sqlSelect="SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber" ;
-														$resultSelect=$connection2->prepare($sqlSelect);
-														$resultSelect->execute($dataSelect);
-													}
-													catch(PDOException $e) { }
-													print "<option value=''></option>" ;
-													$sequence="" ;
-													$descriptor="" ;
-													while ($rowSelect=$resultSelect->fetch()) {
-														if ($rowEntry["effortValue"]==$rowSelect["value"]) {
-															print "<option selected value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
-														}
-														else {
-															print "<option value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
-														}
-													}
-												print "</select>" ;
-												print "<div style='height: 20px'>" ;
-													if ($row2["gibbonRubricIDEffort"]!="") {
-														print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view_rubric.php&gibbonRubricID=" . $row2["gibbonRubricIDEffort"] . "&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&type=effort&width=1100&height=550'><img style='margin-top: 3px' title='" . _('Mark Rubric') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
-													}
-												print "</div>" ;
-											print "</td>" ;
-										
-											print "<td style='text-align: right'>" ;
-											
-												print "<script type='text/javascript'>" ;
-													print "$(document).ready(function(){" ;
-														print "$('textarea').autosize();" ;    
-													print "});" ;
-												print "</script>" ;
+													print "</div>" ;
+												print "</td>" ;
+											}
+											if ($row2["comment"]=="Y" OR $row2["uploadedResponse"]=="Y") {
+												print "<td style='text-align: right'>" ;
+													if ($row2["comment"]=="Y") {
+														print "<script type='text/javascript'>" ;
+															print "$(document).ready(function(){" ;
+																print "$('textarea').autosize();" ;    
+															print "});" ;
+														print "</script>" ;
 												
-												print "<textarea name='comment" . $count . "' id='comment" . $count . "' rows=6 style='width: 330px'>" . $rowEntry["comment"] . "</textarea>" ;
-												print "<br/>" ;
-												if ($rowEntry["response"]!="") {
-													print "<input type='hidden' name='response$count' id='response$count' value='" . $rowEntry["response"] . "'>" ;														
-													print "<div style='width: 330px; float: right'><a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Markbook/markbook_edit_data_responseDeleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "' onclick='return confirm(\"" . _('Are you sure you want to delete this record? Unsaved changes will be lost.') . "\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/></div>" ;
-												}
-												else {
-													print "<input style='margin-top: 5px' type='file' name='response$count' id='response$count'>" ;														
-													?>
-													<script type="text/javascript">
-														var <?php print "response$count" ?>=new LiveValidation('<?php print "response$count" ?>');
-														<?php print "response$count" ?>.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-													</script>
-													<?php
-												}
-											
-												print "<input name='$count-gibbonPersonID' id='$count-gibbonPersonID' value='" . $rowStudents["gibbonPersonID"] . "' type='hidden'>" ;
-											print "</td>" ;
+														print "<textarea name='comment" . $count . "' id='comment" . $count . "' rows=6 style='width: 330px'>" . $rowEntry["comment"] . "</textarea>" ;
+														if ($row2["uploadedResponse"]=="Y") {
+															print "<br/>" ;
+														}
+													}
+													if ($row2["uploadedResponse"]=="Y") {
+														if ($rowEntry["response"]!="") {
+															print "<input type='hidden' name='response$count' id='response$count' value='" . $rowEntry["response"] . "'>" ;														
+															print "<div style='width: 330px; float: right'><a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Markbook/markbook_edit_data_responseDeleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "' onclick='return confirm(\"" . _('Are you sure you want to delete this record? Unsaved changes will be lost.') . "\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/></div>" ;
+														}
+														else {
+															print "<input style='margin-top: 5px' type='file' name='response$count' id='response$count'>" ;														
+															?>
+															<script type="text/javascript">
+																var <?php print "response$count" ?>=new LiveValidation('<?php print "response$count" ?>');
+																<?php print "response$count" ?>.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+															</script>
+															<?php
+														}
+													}
+												print "</td>" ;
+											}
+											print "<input name='$count-gibbonPersonID' id='$count-gibbonPersonID' value='" . $rowStudents["gibbonPersonID"] . "' type='hidden'>" ;
 										}
 									print "</tr>" ;
 								}
@@ -553,31 +589,19 @@ else {
 							?>
 							<tr class='break'>
 								<?php
-								if ($submission==FALSE) {
-									$span=5 ;
-									if (isset($row2["gibbonRubricID"])) {
-										$span=6 ;
-									}
-								}
-								else {
-									$span=6 ;
-									if (isset($row2["gibbonRubricID"])) {
-										$span=7 ;
-									}
-								}
-								print "<td colspan=$span>" ;
+								print "<td colspan=" . ($span) . ">" ;
 								?>
 									<h3>Assessment Complete?</h3>
 								</td>
 							</tr>
 							<tr>
 								<?php
-								print "<td colspan=" . ($span-1) . ">" ;
+								print "<td>" ;
 								?>
 									<b><?php print _('Go Live Date') ?></b><br/>
 								<span style="font-size: 90%"><i><?php print _('1. Format') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print _('2. Column is hidden until date is reached.') ?></i></span>
 								</td>
-								<td class="right">
+								<td class="right" colspan="<?php print $span-1 ?>">
 									<input name="completeDate" id="completeDate" maxlength=10 value="<?php print dateConvertBack($guid, $row2["completeDate"]) ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var completeDate=new LiveValidation('completeDate');
@@ -592,10 +616,10 @@ else {
 							</tr>
 							<tr>
 								<?php
-								print "<td style='text-align: left' colspan='2'>" ;
+								print "<td style='text-align: left'>" ;
 									print getMaxUpload(TRUE) ;
 								print "</td>" ;
-								print "<td class='right' colspan=" . ($span-2) . ">" ;
+								print "<td class='right' colspan=" . ($span-1) . ">" ;
 								?>
 									<input name="count" id="count" value="<?php print $count ?>" type="hidden">
 									<input type="submit" value="<?php print _("Submit") ; ?>">

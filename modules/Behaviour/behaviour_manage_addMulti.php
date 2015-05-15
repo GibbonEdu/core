@@ -122,7 +122,7 @@ else {
 					<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 				</td>
 				<td class="right">
-					<input name="date" id="date" maxlength=10 value="<?php print date("d/m/Y") ?>" type="text" style="width: 300px">
+					<input name="date" id="date" maxlength=10 value="<?php print date($_SESSION[$guid]["i18n"]["dateFormatPHP"]) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var date=new LiveValidation('date');
 						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -232,12 +232,15 @@ else {
 			}
 			?>
 			<tr>
-				<td> 
-					<b><?php print _('Comment') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+				<td colspan=2> 
+					<b><?php print _('Incident') ?></b><br/>
+					<textarea name="comment" id="comment" rows=8 style="width: 100%"></textarea>
 				</td>
-				<td class="right">
-					<textarea name="comment" id="comment" rows=8 style="width: 300px"></textarea>
+			</tr>
+			<tr>
+				<td colspan=2> 
+					<b><?php print _('Follow Up') ?></b><br/>
+					<textarea name="followup" id="followup" rows=8 style="width: 100%"></textarea>
 				</td>
 			</tr>
 			<tr>

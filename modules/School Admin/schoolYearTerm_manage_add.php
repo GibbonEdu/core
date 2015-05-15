@@ -45,7 +45,7 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($addReturn=="success0") {
 			$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
@@ -95,10 +95,26 @@ else {
 				</td>
 				<td class="right">
 					<input name="sequenceNumber" id="sequenceNumber" maxlength=3 value="<?php print $row["sequenceNumber"] ?>" type="text" style="width: 300px">
+					<?php
+					$idList="" ;
+					try {
+						$dataSelect=array(); 
+						$sqlSelect="SELECT sequenceNumber FROM gibbonSchoolYearTerm ORDER BY sequenceNumber" ;
+						$resultSelect=$connection2->prepare($sqlSelect);
+						$resultSelect->execute($dataSelect);
+					}
+					catch(PDOException $e) { }
+					while ($rowSelect=$resultSelect->fetch()) {
+						$idList.="'" . $rowSelect["sequenceNumber"]  . "'," ;
+					}
+					?>
+					
 					<script type="text/javascript">
 						var sequenceNumber=new LiveValidation('sequenceNumber');
 						sequenceNumber.add(Validate.Numericality);
 						sequenceNumber.add(Validate.Presence);
+						sequenceNumber.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "<?php print _('Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
+						
 					 </script>
 				</td>
 			</tr>

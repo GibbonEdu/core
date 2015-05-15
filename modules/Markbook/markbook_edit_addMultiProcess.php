@@ -55,23 +55,48 @@ else {
 		$name=$_POST["name"] ;
 		$description=$_POST["description"] ;
 		$type=$_POST["type"] ;
-		$attainment="Y" ;
-		$gibbonScaleIDAttainment=$_POST["gibbonScaleIDAttainment"] ;
-		$effort="Y" ;
-		$gibbonScaleIDEffort=$_POST["gibbonScaleIDEffort"] ;
-		if ($_POST["gibbonRubricIDAttainment"]=="") {
+		//Sort out attainment
+		$attainment=$_POST["attainment"] ;
+		if ($attainment=="N") {
+			$gibbonScaleIDAttainment=NULL ;
 			$gibbonRubricIDAttainment=NULL ;
 		}
 		else {
-			$gibbonRubricIDAttainment=$_POST["gibbonRubricIDAttainment"] ;
+			if ($_POST["gibbonScaleIDAttainment"]=="") {
+				$gibbonScaleIDAttainment=NULL ;
+			}
+			else {
+				$gibbonScaleIDAttainment=$_POST["gibbonScaleIDAttainment"] ;
+			}
+			if ($_POST["gibbonRubricIDAttainment"]=="") {
+				$gibbonRubricIDAttainment=NULL ;
+			}
+			else {
+				$gibbonRubricIDAttainment=$_POST["gibbonRubricIDAttainment"] ;
+			}
 		}
-		if ($_POST["gibbonRubricIDEffort"]=="") {
+		//Sort out effort
+		$effort=$_POST["effort"] ;
+		if ($effort=="N") {
+			$gibbonScaleIDEffort=NULL ;
 			$gibbonRubricIDEffort=NULL ;
 		}
 		else {
-			$gibbonRubricIDEffort=$_POST["gibbonRubricIDEffort"] ;
+			if ($_POST["gibbonScaleIDEffort"]=="") {
+				$gibbonScaleIDEffort=NULL ;
+			}
+			else {
+				$gibbonScaleIDEffort=$_POST["gibbonScaleIDEffort"] ;
+			}
+			if ($_POST["gibbonRubricIDEffort"]=="") {
+				$gibbonRubricIDEffort=NULL ;
+			}
+			else {
+				$gibbonRubricIDEffort=$_POST["gibbonRubricIDEffort"] ;
+			}
 		}
-		$comment="Y" ;
+		$comment=$_POST["comment"] ;
+		$uploadedResponse=$_POST["uploadedResponse"] ;
 		$completeDate=$_POST["completeDate"] ;
 		if ($completeDate=="") {
 			$completeDate=NULL ;
@@ -146,7 +171,7 @@ else {
 			$attachment="" ;
 		}
 		
-		if (count($gibbonCourseClassIDMulti)<1 OR is_numeric($groupingID)==FALSE or $groupingID<1 OR $name=="" OR $description=="" OR $type=="" OR $gibbonScaleIDAttainment=="" OR $gibbonScaleIDEffort=="" OR $viewableStudents=="" OR $viewableParents=="") {
+		if (count($gibbonCourseClassIDMulti)<1 OR is_numeric($groupingID)==FALSE or $groupingID<1 OR $name=="" OR $description=="" OR $type=="" OR $viewableStudents=="" OR $viewableParents=="") {
 			//Fail 3
 			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
@@ -157,8 +182,8 @@ else {
 			foreach ($gibbonCourseClassIDMulti AS $gibbonCourseClassIDSingle) {
 				//Write to database
 				try {
-					$data=array("groupingID"=>$groupingID, "gibbonCourseClassID"=>$gibbonCourseClassIDSingle, "name"=>$name, "description"=>$description, "type"=>$type, "attainment"=>$attainment, "gibbonScaleIDAttainment"=>$gibbonScaleIDAttainment, "effort"=>$effort, "gibbonScaleIDEffort"=>$gibbonScaleIDEffort, "gibbonRubricIDAttainment"=>$gibbonRubricIDAttainment, "gibbonRubricIDEffort"=>$gibbonRubricIDEffort, "comment"=>$comment, "completeDate"=>$completeDate, "complete"=>$complete, "viewableStudents"=>$viewableStudents, "viewableParents"=>$viewableParents, "attachment"=>$attachment, "gibbonPersonIDCreator"=>$gibbonPersonIDCreator, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit); 
-					$sql="INSERT INTO gibbonMarkbookColumn SET groupingID=:groupingID, gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, gibbonRubricIDAttainment=:gibbonRubricIDAttainment, gibbonRubricIDEffort=:gibbonRubricIDEffort, comment=:comment, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+					$data=array("groupingID"=>$groupingID, "gibbonCourseClassID"=>$gibbonCourseClassIDSingle, "name"=>$name, "description"=>$description, "type"=>$type, "attainment"=>$attainment, "gibbonScaleIDAttainment"=>$gibbonScaleIDAttainment, "effort"=>$effort, "gibbonScaleIDEffort"=>$gibbonScaleIDEffort, "gibbonRubricIDAttainment"=>$gibbonRubricIDAttainment, "gibbonRubricIDEffort"=>$gibbonRubricIDEffort, "comment"=>$comment, "uploadedResponse"=>$uploadedResponse, "completeDate"=>$completeDate, "complete"=>$complete, "viewableStudents"=>$viewableStudents, "viewableParents"=>$viewableParents, "attachment"=>$attachment, "gibbonPersonIDCreator"=>$gibbonPersonIDCreator, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit); 
+					$sql="INSERT INTO gibbonMarkbookColumn SET groupingID=:groupingID, gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, gibbonRubricIDAttainment=:gibbonRubricIDAttainment, gibbonRubricIDEffort=:gibbonRubricIDEffort, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}

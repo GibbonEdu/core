@@ -49,8 +49,9 @@ else {
 	$name=$_POST["name"] ;
 	$nameShort=$_POST["nameShort"] ;
 	$description=$_POST["description"] ;
+	$nonCurrentYearLogin=$_POST["nonCurrentYearLogin"] ;
 	
-	if ($category=="" OR $name=="" OR $nameShort=="" OR $description=="") {
+	if ($category=="" OR $name=="" OR $nameShort=="" OR $description=="" OR $nonCurrentYearLogin=="") {
 		//Fail 3
 		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
@@ -78,8 +79,8 @@ else {
 		else {	
 			//Write to database
 			try {
-				$data=array("category"=>$category, "name"=>$name, "nameShort"=>$nameShort, "description"=>$description); 
-				$sql="INSERT INTO gibbonRole SET category=:category, name=:name, nameShort=:nameShort, description=:description, type='Additional'" ;
+				$data=array("category"=>$category, "name"=>$name, "nameShort"=>$nameShort, "description"=>$description, "nonCurrentYearLogin"=>$nonCurrentYearLogin); 
+				$sql="INSERT INTO gibbonRole SET category=:category, name=:name, nameShort=:nameShort, description=:description, type='Additional', nonCurrentYearLogin=:nonCurrentYearLogin" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}

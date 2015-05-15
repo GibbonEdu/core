@@ -46,7 +46,7 @@ else {
 		$ttDate=$_GET["ttDate"] ;
 	}
 	if ($ttDate=="") {
-		$ttDate=date("d/m/Y") ;
+		$ttDate=date($_SESSION[$guid]["i18n"]["dateFormatPHP"]) ;
 	}
 
 	?>

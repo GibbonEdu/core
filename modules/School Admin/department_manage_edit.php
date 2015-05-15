@@ -223,7 +223,7 @@ else {
 								print "</div>" ;
 							}
 							else {
-								print "<i><b>Warning</b>: If you delete a guest, any unsaved changes to this planner entry will be lost!</i>" ;
+								print "<i><b>Warning</b>: If you delete a member of staff, any unsaved changes to this record will be lost!</i>" ;
 								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;

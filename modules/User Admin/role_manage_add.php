@@ -45,7 +45,7 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($addReturn=="success0") {
 			$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
@@ -123,6 +123,18 @@ else {
 				</td>
 				<td class="right">
 					<input name="type" id="type" readonly="readonly" maxlength=20 value="Additional" type="text" style="width: 300px">
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b><?php print _('Login To Non-Current Years') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print _("If set to No, logins are limited to current year.") ?></i></span>
+				</td>
+				<td class="right">
+					<select name="nonCurrentYearLogin" id="nonCurrentYearLogin" style="width: 302px">
+						<option value="Y"><?php print _('Yes') ?></option>
+						<option value="N"><?php print _('No') ?></option>
+					</select>
 				</td>
 			</tr>
 			<tr>

@@ -30,14 +30,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messageWall_view
 }
 else {
 	if (isset($_POST["date"])==FALSE) {
-		$date=date("d/m/Y") ;
+		$date=date($_SESSION[$guid]["i18n"]["dateFormatPHP"]) ;
 	}
 	else {
 		$date=$_POST["date"] ;
 	}
 	
 	$extra="" ;
-	if ($date==date("d/m/Y")) {
+	if ($date==date($_SESSION[$guid]["i18n"]["dateFormatPHP"])) {
 		$extra=_("Today's Messages") . " (" . $date . ")" ;
 	}
 	else {

@@ -101,7 +101,7 @@ else {
 			print "<th>" ;
 				print _("Count") ;
 			print "</th>" ;
-			print "<th style='width: 60px'>" ;
+			print "<th style='width: 100px'>" ;
 				print _("Actions") ;
 			print "</th>" ;
 		print "</tr>" ;

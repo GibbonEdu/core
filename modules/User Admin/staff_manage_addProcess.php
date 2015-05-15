@@ -35,8 +35,15 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$search=$_GET["search"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/staff_manage_add.php&search=$search" ;
+$allStaff="" ;
+if (isset($_GET["allStaff"])) {
+	$allStaff=$_GET["allStaff"] ;
+}
+$search="" ;
+if (isset($_GET["search"])) {
+	$search=$_GET["search"] ;
+}
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/staff_manage_add.php&search=$search&allStaff=$allStaff" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/staff_manage_add.php")==FALSE) {
 	//Fail 0

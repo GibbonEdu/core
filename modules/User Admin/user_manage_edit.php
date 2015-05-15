@@ -48,7 +48,7 @@ else {
 			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($updateReturn=="fail5") {
 			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
@@ -230,6 +230,8 @@ else {
 								<option value="Please select..."><?php print _('Please select...') ?></option>
 								<option <?php if ($row["gender"]=="F") {print "selected ";}?>value="F"><?php print _('Female') ?></option>
 								<option <?php if ($row["gender"]=="M") {print "selected ";}?>value="M"><?php print _('Male') ?></option>
+								<option <?php if ($row["gender"]=="Other") {print "selected ";}?>value="Other"><?php print _('Other') ?></option>
+								<option <?php if ($row["gender"]=="Unspecified") {print "selected ";}?>value="Unspecified"><?php print _('Unspecified') ?></option>
 							</select>
 							<script type="text/javascript">
 								var gender=new LiveValidation('gender');
@@ -371,6 +373,7 @@ else {
 								<option <?php if ($row["status"]=="Full") {print "selected ";}?>value="Full"><?php print _('Full') ?></option>
 								<option <?php if ($row["status"]=="Expected") {print "selected ";}?>value="Expected"><?php print _('Expected') ?></option>
 								<option <?php if ($row["status"]=="Left") {print "selected ";}?>value="Left"><?php print _('Left') ?></option>
+								<option <?php if ($row["status"]=="Pending Approval") {print "selected ";}?>value="Pending Approval"><?php print _('Pending Approval') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -1566,6 +1569,15 @@ else {
 								$( "#transport" ).autocomplete({source: availableTags});
 							});
 						</script>
+						<tr>
+							<td> 
+								<b><?php print _('Transport Notes') ?></b><br/>
+								<span style="font-size: 90%"><i></i></span>
+							</td>
+							<td class="right">
+								<textarea name="transportNotes" id="transportNotes" rows=4 style="width: 300px"><?php print htmlPrep($row["transportNotes"]) ?></textarea>
+							</td>
+						</tr>
 					<?php
 					}
 					if ($student OR $staff) {
