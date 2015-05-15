@@ -2251,17 +2251,6 @@ function sidebar($connection2, $guid) {
 						print "</div>" ;
 					}
 					else {
-						$rand=rand(0, count($_SESSION[$guid]["messageWallOutput"])) ;
-						print "<script type=\"text/javascript\">
-							$(document).ready(function(){
-								var count=" . ($rand) . " ; 
-								$(\"#messageWallWidget\").load(\"index_messenger_ajax.php\", \"count=\" + count);
-								setInterval(function() {
-									count=count+1 ;
-									$(\"#messageWallWidget\").load(\"index_messenger_ajax.php\", \"count=\" + count); 
-								}, 8000);
-							});
-						</script>" ;
 						$height=283 ;
 						if (count($_SESSION[$guid]["messageWallOutput"])==1) {
 							$height=94 ;
@@ -2271,7 +2260,95 @@ function sidebar($connection2, $guid) {
 						}
 						print "<table id='messageWallWidget' style='width: 100%; height: " . $height . "px; border: 1px solid grey; padding: 6px; background-color: #eeeeee'>" ;
 							//Content added by JS	
+						$rand=rand(0, count($_SESSION[$guid]["messageWallOutput"]));
+						$total=count($_SESSION[$guid]["messageWallOutput"]) ;
+						$order = "";
+						for($i=0; $i < $total; $i++) {
+							$pos=($rand+$i)%$total;
+							$order.="$pos, ";
+							$message=$_SESSION[$guid]["messageWallOutput"][$pos];
+
+							//COLOR ROW BY STATUS!
+							print "<tr id='messageWall" . $pos . "'>" ;
+								print "<td style='font-size: 95%; letter-spacing: 85%'>" ;
+									//Image
+									$style="style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'" ;
+									if ($message["photo"]=="" OR file_exists($_SESSION[$guid]["absolutePath"] . "/" . $message["photo"])==FALSE) {    
+										print "<img $style  src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_75.jpg'/>" ;
+									}
+									else {
+										print "<img $style src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $message["photo"] . "'/>" ;
+									}
+			
+									//Message number
+									print "<div style='margin-bottom: 4px; text-transform: uppercase; font-size: 70%; color: #888'>Message " . ($pos+1) . "</div>" ;
+			
+									//Title
+									$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messageWall_view.php#" . $message["gibbonMessengerID"] ;
+									if (strlen($message["subject"])<=16) {
+										print "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>"  . $message["subject"] . "</a><br/>" ;
+									}
+									else {
+										print "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>"  . substr($message["subject"], 0, 16) . "...</a><br/>" ;
+									}
+			
+									//Text
+									print "<div style='margin-top: 5px'>" ;
+										if (strlen(strip_tags($message["details"]))<=40) {
+											print strip_tags($message["details"]) . "<br/>" ;
+										}
+										else {
+											print substr(strip_tags($message["details"]), 0, 40) . "...<br/>" ;
+										}
+									print "</div>" ;
+								print "</td>" ;
+							print "</tr>" ;
+						}
 						print "</table>" ;
+						$order = substr($order, 0, strlen($order)-2);
+						print "<script type=\"text/javascript\">
+							$(document).ready(function(){
+								var order=[". $order . "];
+								if(order.length > 3) {
+								
+									var fRow = $(\"#messageWall\".concat(order[0].toString()));
+									var lRow = $(\"#messageWall\".concat(order[order.length-1].toString()));
+									fRow.insertAfter(lRow);
+									order.push(order.shift());
+									
+									$(\"#messageWall\".concat(order[0].toString())).attr('class', 'even');
+									$(\"#messageWall\".concat(order[1].toString())).attr('class', 'odd');
+									$(\"#messageWall\".concat(order[2].toString())).attr('class', 'even');
+									
+									for(var i=3; i<order.length; i++) {
+										$(\"#messageWall\".concat(order[i].toString())).hide();
+									}		
+									
+								}
+								setInterval(function() {
+									if(order.length > 3) {
+									
+										for(var i=0; i<order.length; i++) {
+											$(\"#messageWall\".concat(order[i].toString())).show();
+										}
+										
+										var fRow = $(\"#messageWall\".concat(order[0].toString()));
+										var lRow = $(\"#messageWall\".concat(order[order.length-1].toString()));
+										fRow.insertAfter(lRow);
+										order.push(order.shift());
+										
+										$(\"#messageWall\".concat(order[0].toString())).attr('class', 'even');
+										$(\"#messageWall\".concat(order[1].toString())).attr('class', 'odd');
+										$(\"#messageWall\".concat(order[2].toString())).attr('class', 'even');
+										
+										for(var i=3; i<order.length; i++) {
+											$(\"#messageWall\".concat(order[i].toString())).hide();
+										}	
+									}
+								}, 8000);
+							});
+						</script>" ;
+						
 					}
 				}
 			}
