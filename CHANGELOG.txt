@@ -272,7 +272,11 @@ Messenger: fixed bubble Read All link to prevent thickbox issue
 
 Finance: fixed 2 PHP Notice issues when adding/editing an invoice
 	Edited files /modules/Finance/invoices_manage_edit.php, invoices_manage_add.php
-	
+
+System Admin: fixed update checking so it does not freak on v10.
+	Edited file /modules/System Admin/moduleFunctions.php
+
+
 v9.1.00
 -------
 Installer: removed orphaned debug output
