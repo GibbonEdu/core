@@ -279,6 +279,8 @@ System Admin: fixed update checking so it does not freak on v10.
 Installer: fixed PHP Notice issue in Step 3 when database connection details from Step 2 are incorrect
 	Edited file /installer/install.php
 
+Installer: fixed pernicious column wobble in field table in Step 3
+	Edited file /installer/install.php
 
 v9.1.00
 -------

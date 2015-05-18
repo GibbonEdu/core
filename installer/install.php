@@ -716,7 +716,7 @@ include "../functions.php" ;
 																			print _("Checking for Cutting Edge Code.") ;
 																		print "</div>" ;
 																	print "</div>" ;
-																print "<td>" ;
+																print "</td>" ;
 															print "</tr>"
 															?>
 															<tr>
