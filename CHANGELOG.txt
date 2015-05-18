@@ -270,7 +270,9 @@ General: made public registration save email (duh!)
 Messenger: fixed bubble Read All link to prevent thickbox issue
 	Edited file /functions.php
 
-
+Finance: fixed 2 PHP Notice issues when adding/editing an invoice
+	Edited files /modules/Finance/invoices_manage_edit.php, invoices_manage_add.php
+	
 v9.1.00
 -------
 Installer: removed orphaned debug output
