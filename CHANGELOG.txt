@@ -264,6 +264,10 @@ Activities: made it possible to add any user as "Staff" for an activity.
 Markbook: fixed column span display issue when no student data exists in a column
 	Edited file /modules/Markbook/markbook_view.php
 
+General: made public registration save email (duh!)
+	Edited file /publicRegistrationProcess.php
+
+
 v9.1.00
 -------
 Installer: removed orphaned debug output
