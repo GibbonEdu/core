@@ -282,6 +282,10 @@ Installer: fixed PHP Notice issue in Step 3 when database connection details fro
 Installer: fixed pernicious column wobble in field table in Step 3
 	Edited file /installer/install.php
 
+i18n: added Swahili as a development language
+	New values in table gibboni18n
+	New folder /i18n/sw_KE
+
 v9.1.00
 -------
 Installer: removed orphaned debug output
