@@ -276,6 +276,9 @@ Finance: fixed 2 PHP Notice issues when adding/editing an invoice
 System Admin: fixed update checking so it does not freak on v10.
 	Edited file /modules/System Admin/moduleFunctions.php
 
+Installer: fixed PHP Notice issue in Step 3 when database connection details from Step 2 are incorrect
+	Edited file /installer/install.php
+
 
 v9.1.00
 -------
