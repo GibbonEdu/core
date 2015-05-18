@@ -260,6 +260,10 @@ General: minor table layout fixes
 
 Activities: made it possible to add any user as "Staff" for an activity.
 	Edited files /modules/Activities/activities_manage_add.php, activities_manage_edit.php
+
+Markbook: fixed column span display issue when no student data exists in a column
+	Edited file /modules/Markbook/markbook_view.php
+
 v9.1.00
 -------
 Installer: removed orphaned debug output

@@ -714,12 +714,22 @@ else {
 													print "</td>" ;
 												}
 												else {
-													$span=4 ;
-													if (isset($gibbonRubricID[$i])) {
-														$span=5 ;
+													$emptySpan=0 ;
+													if ($attainmentOn[$i]=="Y" AND ($attainmentID[$i]!="" OR $gibbonRubricIDAttainment[$i]!="")) {
+														$emptySpan++ ;
 													}
-													print "<td style='text-align: center' colspan=$span>" ;
-													print "</td>" ;
+													if ($effortOn[$i]=="Y" AND ($effortID[$i]!="" OR $gibbonRubricIDEffort[$i]!="")) {
+														$emptySpan++ ;
+													}
+													if ($comment[$i]=="Y") {
+														$emptySpan++ ;
+													}
+													if ($uploadedResponse[$i]=="Y") {
+														$emptySpan++ ;
+													}
+													if ($emptySpan>0) {
+														print "<td style='text-align: center' colspan=$emptySpan></td>" ;
+													}
 												}
 												if (isset($submission[$i])) {
 													if ($submission[$i]==TRUE) {
