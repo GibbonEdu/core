@@ -540,6 +540,20 @@ else {
 									}
 								}
 								else {
+									//Custom content loader
+									if (isset($_SESSION[$guid]["index_custom.php"])==FALSE) {
+										if (is_file("./index_custom.php")) {
+											$_SESSION[$guid]["index_custom.php"]=include "./index_custom.php" ;
+										}
+										else {
+											$_SESSION[$guid]["index_custom.php"]=NULL ;
+										}
+									}
+									if (isset($_SESSION[$guid]["index_custom.php"])) {
+										print $_SESSION[$guid]["index_custom.php"] ;
+									}
+									
+									//Get role category
 									$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 									if ($category==FALSE) {
 										print "<div class='error'>" ;

@@ -2222,6 +2222,21 @@ function sidebar($connection2, $guid) {
 		}
 	}
 	
+	//Show custom sidebar content on homepage for logged in users
+	if ($_SESSION[$guid]["address"]=="" AND isset($_SESSION[$guid]["username"])) {
+		if (isset($_SESSION[$guid]["index_customSidebar.php"])==FALSE) {
+			if (is_file("./index_customSidebar.php")) {
+				$_SESSION[$guid]["index_customSidebar.php"]=include "./index_customSidebar.php" ;
+			}
+			else {
+				$_SESSION[$guid]["index_customSidebar.php"]=NULL ;
+			}
+		}
+		if (isset($_SESSION[$guid]["index_customSidebar.php"])) {
+			print $_SESSION[$guid]["index_customSidebar.php"] ;
+		}
+	}
+	
 	//Show parent photo uploader
 	if ($_SESSION[$guid]["address"]=="" AND isset($_SESSION[$guid]["username"])) {
 		$sidebar=getParentPhotoUploader($connection2, $guid) ;

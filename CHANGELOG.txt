@@ -286,6 +286,10 @@ i18n: added Swahili as a development language
 	New values in table gibboni18n
 	New folder /i18n/sw_KE
 
+General: added custom content loading to top of logged in homepage (index_custom.php) and top of logged in homepage sidebar (index_customSidebar.php)
+	Edited files /index.php, functions.php
+
+
 v9.1.00
 -------
 Installer: removed orphaned debug output

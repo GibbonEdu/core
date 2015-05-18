@@ -17,6 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 THEME CREDITS
 -------------
-Default background image (Aurora Borealis stock) by Smattila on DeviantArt
-	Shared under CC BY
-	Downloaded from http://smattila.deviantart.com/art/Aurora-Borealis-stock-82049584?moodonly=123#skins 
+Default background image by Joseluz R, Delgado on Flickr
+	Shared under CC BY-SA
+	Downloaded from https://www.flickr.com/photos/luzyamor/6880061238

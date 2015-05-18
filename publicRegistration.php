@@ -88,24 +88,12 @@ else {
 		print "</p>" ;
 	}
 	
-	//Privacy statement
-	$privacyStatement=getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement') ;
-	if ($privacyStatement!="") {
-		print "<tr class='break'>" ;
-			print "<td colspan=2 class='warning'>" ; 
-				print "<h3>" ; 
-					print _("Privacy Statement") ;
-				print "</h3>" ;
-				print "<p>" ;
-					print $privacyStatement ;
-				print "</p>" ;
-			print "</td>" ;
-		print "</tr>" ;
-	}
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/publicRegistrationProcess.php" ?>" enctype="multipart/form-data">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			
+			
 			<tr class='break'>
 				<th colspan=2> 
 					<?php print _("Account Details") ; ?>
@@ -260,6 +248,23 @@ else {
 			</tr>
 			
 			<?php
+			//Privacy statement
+			$privacyStatement=getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement') ;
+			if ($privacyStatement!="") {
+				print "<tr class='break'>" ;
+					print "<th colspan=2>" ; 
+						print _("Privacy Statement") ;
+					print "</th>" ;
+				print "</tr>" ;
+				print "<tr>" ;
+					print "<td colspan=2>" ; 
+						print "<p>" ;
+							print $privacyStatement ;
+						print "</p>" ;
+					print "</td>" ;
+				print "</tr>" ;
+			}
+	
 			//Get agreement
 			$agreement=getSettingByScope($connection2, 'User Admin', 'publicRegistrationAgreement') ;
 			if ($agreement!="") {
