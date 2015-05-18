@@ -84,6 +84,9 @@ else {
 		$_SESSION[$guid]["image_240"]="" ;
 		$_SESSION[$guid]["image_75"]="" ;
 		
+		//Clear cusotm sidebar
+		unset($_SESSION[$guid]["index_customSidebar.php"]) ;
+		
 		$URL.="?deleteReturn=success0" ;
 		//Success 0
 		header("Location: {$URL}");
