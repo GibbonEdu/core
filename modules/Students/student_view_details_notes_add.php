@@ -94,9 +94,12 @@ else {
 				$sort=$_GET["sort"];
 			}
 
+
+			if(search!="") {
 			print "<div class='linkTop'>" ;
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . "&search=$search&allStudents=$allStudents&sort=$sort&subpage=$subpage&category=" . $_GET["category"] . "'>" . _('Back to Search Results') . "</a>" ;
 			print "</div>" ;
+			}
 
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_addProcess.php?gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"] ?>">
