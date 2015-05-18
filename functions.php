@@ -264,7 +264,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 								}
 							$return.="</div>" ;
 							$return.="<div style='text-align: right; margin-top: 20px; color: #666'>" ;
-								$return.="<a onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1)' style='text-decoration: none; color: #666' class='thickbox' href='" . $URL . "'>" . _('Read All') . "</a> . " ;
+								$return.="<a onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1)' style='text-decoration: none; color: #666' href='" . $URL . "'>" . _('Read All') . "</a> . " ;
 								$return.="<a style='text-decoration: none; color: #666' onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1000); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1000)' href='#'>" . _('Dismiss') . "</a>" ;
 							$return.="</div>" ;
 						$return.="</div>" ;

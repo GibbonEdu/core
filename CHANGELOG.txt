@@ -267,6 +267,9 @@ Markbook: fixed column span display issue when no student data exists in a colum
 General: made public registration save email (duh!)
 	Edited file /publicRegistrationProcess.php
 
+Messenger: fixed bubble Read All link to prevent thickbox issue
+	Edited file /functions.php
+
 
 v9.1.00
 -------
