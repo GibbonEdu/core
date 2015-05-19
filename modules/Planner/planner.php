@@ -988,7 +988,7 @@ else {
 										print "<th>" ;
 											print _("Like") ;
 										print "</th>" ;
-										print "<th style='min-width: 140px'>" ;
+										print "<th style='min-width: 150px'>" ;
 											print _("Actions") ;
 										print "</th>" ;
 									print "</tr>" ;
