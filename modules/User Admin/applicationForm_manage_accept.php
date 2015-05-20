@@ -208,7 +208,7 @@ else {
 				$failStudent=TRUE ;
 				$lock=true ;
 				try {
-					$sql="LOCK TABLES gibbonPerson WRITE, gibbonSetting WRITE" ;
+					$sql="LOCK TABLES gibbonPerson WRITE, gibbonSetting WRITE, gibbonSchoolYear WRITE, gibbonYearGroup WRITE, gibbonRollGroup WRITE" ;
 					$result=$connection2->query($sql);   
 				}
 				catch(PDOException $e) { 
@@ -299,6 +299,22 @@ else {
 							if ($studentDefaultWebsite!="") {
 								$body.=_("Website") . ": " . $website . "\n" ;
 							}
+							if ($row["gibbonSchoolYearIDEntry"]!="") {
+								try {
+									$dataYearGroup=array("gibbonSchoolYearID"=>$row["gibbonSchoolYearIDEntry"]); 
+									$sqlYearGroup="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
+									$resultYearGroup=$connection2->prepare($sqlYearGroup);
+									$resultYearGroup->execute($dataYearGroup);
+								}
+								catch(PDOException $e) { }
+								
+								if ($resultYearGroup->rowCount()==1) {
+									$rowYearGroup=$resultYearGroup->fetch() ;
+									if ($rowYearGroup["name"]!="") {
+											$body.=_("School Year") . ": " . $rowYearGroup["name"] . "\n" ;
+									}
+								}
+							}
 							if ($row["gibbonYearGroupIDEntry"]!="") {
 								try {
 									$dataYearGroup=array("gibbonYearGroupID"=>$row["gibbonYearGroupIDEntry"]); 
@@ -315,6 +331,23 @@ else {
 									}
 								}
 							}
+							if ($row["gibbonRollGroupID"]!="") {
+								try {
+									$dataYearGroup=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
+									$sqlYearGroup="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
+									$resultYearGroup=$connection2->prepare($sqlYearGroup);
+									$resultYearGroup->execute($dataYearGroup);
+								}
+								catch(PDOException $e) { }
+								
+								if ($resultYearGroup->rowCount()==1) {
+									$rowYearGroup=$resultYearGroup->fetch() ;
+									if ($rowYearGroup["name"]!="") {
+											$body.=_("Roll Group") . ": " . $rowYearGroup["name"] . "\n" ;
+									}
+								}
+							}
+							
 							$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
 
 							if (mail($to, $subject, $body, $headers)) {
