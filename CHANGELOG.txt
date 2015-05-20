@@ -299,6 +299,9 @@ General: fixed bug causing issues with special characters in mysql password, for
 Application Form: fixed issue preventing some details being added to email/website creation request email on application accept
 	Edited file /modules/User Admin/applicationForm_manage_accept.php
 
+General: preparing themes for responsiveness in v11
+	Edited file /themes/Default/manifest.php
+
 
 v9.1.00
 -------
