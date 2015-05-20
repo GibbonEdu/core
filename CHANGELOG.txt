@@ -289,6 +289,10 @@ i18n: added Swahili as a development language
 General: added custom content loading to top of logged in homepage (index_custom.php) and top of logged in homepage sidebar (index_customSidebar.php)
 	Edited files /index.php, functions.php
 
+General: added Kenyan Shilling as currency option
+	Edited file /modules/System Admin/systemSettings.php
+	Edited file /installer/install.php
+
 
 v9.1.00
 -------

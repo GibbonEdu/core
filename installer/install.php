@@ -899,9 +899,10 @@ include "../functions.php" ;
 																		<option value='USD $'>U.S. Dollar ($)</option>
 																	</optgroup>
 																	<optgroup label='--<?php print _('OTHERS') ?>--'/>
+																		<option value='BTC'>Bitcoin</option>
 																		<option value='INR ₹'>Indian Rupee (₹)</option>
 																		<option value='IDR Rp'>Indonesian Rupiah (Rp)</option>
-																		<option value='BTC'>Bitcoin</option>
+																		<option value='KES KSh'>Kenyan Shilling (KSh)</option>
 																	</optgroup>
 																</select>
 															</td>
