@@ -347,6 +347,9 @@ else {
 									}
 								}
 							}
+							if ($row["dateStart"]!="") {
+									$body.=_("Start Date") . ": " .  dateConvertBack($guid, $row["dateStart"]) . "\n" ;
+							}
 							
 							$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
 
