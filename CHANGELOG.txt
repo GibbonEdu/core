@@ -293,6 +293,9 @@ General: added Kenyan Shilling as currency option
 	Edited file /modules/System Admin/systemSettings.php
 	Edited file /installer/install.php
 
+General: fixed bug causing issues with special characters in mysql password, for new installs
+	Edited file /installer/install.php
+
 
 v9.1.00
 -------

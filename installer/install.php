@@ -340,7 +340,7 @@ include "../functions.php" ;
 										$config.="//Sets database connection information\n" ;
 										$config.="\$databaseServer=\"" . $databaseServer . "\" ;\n" ; 
 										$config.="\$databaseUsername=\"" . $databaseUsername . "\" ;\n" ;
-										$config.="\$databasePassword=\"" . $databasePassword . "\" ;\n" ;
+										$config.="\$databasePassword='" . $databasePassword . "' ;\n" ;
 										$config.="\$databaseName=\"" . $databaseName . "\" ;\n" ; 
 										$config.="\n" ;
 										$config.="//Sets globally unique id, to allow multiple installs on the server server.\n" ;
