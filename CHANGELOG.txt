@@ -302,6 +302,10 @@ Application Form: fixed issue preventing some details being added to email/websi
 General: preparing themes for responsiveness in v11
 	Edited file /themes/Default/manifest.php
 
+i18n: added Portugese as a development language
+	New values in table gibboni18n
+	New folder /i18n/pt_PT
+
 
 v9.1.00
 -------
