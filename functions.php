@@ -2284,8 +2284,8 @@ function sidebar($connection2, $guid) {
 							$message=$_SESSION[$guid]["messageWallOutput"][$pos];
 
 							//COLOR ROW BY STATUS!
-							print "<tr id='messageWall" . $pos . "'>" ;
-								print "<td style='font-size: 95%; letter-spacing: 85%'>" ;
+							print "<tr id='messageWall" . $pos . "' style='z-index: 1;'>" ;
+								print "<td style='font-size: 95%; letter-spacing: 85%;'>" ;
 									//Image
 									$style="style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'" ;
 									if ($message["photo"]=="" OR file_exists($_SESSION[$guid]["absolutePath"] . "/" . $message["photo"])==FALSE) {    
@@ -2318,47 +2318,55 @@ function sidebar($connection2, $guid) {
 									print "</div>" ;
 								print "</td>" ;
 							print "</tr>" ;
+							print "
+						<script type=\"text/javascript\">
+							$(document).ready(function(){									
+								$(\"#messageWall$pos\").hide();
+							});
+						</script>" ;
 						}
 						print "</table>" ;
 						$order = substr($order, 0, strlen($order)-2);
-						print "<script type=\"text/javascript\">
+						print "
+						<script type=\"text/javascript\">
 							$(document).ready(function(){
-								var order=[". $order . "];
-								if(order.length > 3) {
-								
-									var fRow = $(\"#messageWall\".concat(order[0].toString()));
-									var lRow = $(\"#messageWall\".concat(order[order.length-1].toString()));
-									fRow.insertAfter(lRow);
-									order.push(order.shift());
+								var order=[". $order . "];	
+								var interval = 1;								
 									
+									for(var i=0; i<order.length; i++) {
+										var tRow = $(\"#messageWall\".concat(order[i].toString()));
+										if(i<3) {
+											tRow.show();
+										}		
+										else {
+											tRow.hide();
+										} 
+									}
 									$(\"#messageWall\".concat(order[0].toString())).attr('class', 'even');
 									$(\"#messageWall\".concat(order[1].toString())).attr('class', 'odd');
 									$(\"#messageWall\".concat(order[2].toString())).attr('class', 'even');
 									
-									for(var i=3; i<order.length; i++) {
-										$(\"#messageWall\".concat(order[i].toString())).hide();
-									}		
-									
-								}
 								setInterval(function() {
 									if(order.length > 3) {
-									
-										for(var i=0; i<order.length; i++) {
-											$(\"#messageWall\".concat(order[i].toString())).show();
-										}
-										
+										$(\"#messageWall\".concat(order[0].toString())).hide();
 										var fRow = $(\"#messageWall\".concat(order[0].toString()));
 										var lRow = $(\"#messageWall\".concat(order[order.length-1].toString()));
 										fRow.insertAfter(lRow);
 										order.push(order.shift());
+										$(\"#messageWall\".concat(order[2].toString())).show();
 										
-										$(\"#messageWall\".concat(order[0].toString())).attr('class', 'even');
-										$(\"#messageWall\".concat(order[1].toString())).attr('class', 'odd');
-										$(\"#messageWall\".concat(order[2].toString())).attr('class', 'even');
+										if(interval%2===0) {
+											$(\"#messageWall\".concat(order[0].toString())).attr('class', 'even');
+											$(\"#messageWall\".concat(order[1].toString())).attr('class', 'odd');
+											$(\"#messageWall\".concat(order[2].toString())).attr('class', 'even');
+										}
+										else {
+											$(\"#messageWall\".concat(order[0].toString())).attr('class', 'odd');
+											$(\"#messageWall\".concat(order[1].toString())).attr('class', 'even');
+											$(\"#messageWall\".concat(order[2].toString())).attr('class', 'odd');
+										}
 										
-										for(var i=3; i<order.length; i++) {
-											$(\"#messageWall\".concat(order[i].toString())).hide();
-										}	
+										interval++;
 									}
 								}, 8000);
 							});
