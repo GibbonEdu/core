@@ -306,6 +306,10 @@ i18n: added Portugese as a development language
 	New values in table gibboni18n
 	New folder /i18n/pt_PT
 
+General: fixed PHP Notice issues that where flooding logs
+	Edited file /modules/Library/library_lending_item_signout.php
+	Edited file /index_notification_ajax.php
+
 
 v9.1.00
 -------

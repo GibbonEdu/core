@@ -2962,7 +2962,7 @@ function getUserPhoto($guid, $path, $size) {
 }
 
 //Gets Members of a roll group and prints them as a table.
-//Three modes: normal (roll order, surnema, firstName), surname (surname, preferredName), preferredName (preferredNam, surname)
+//Three modes: normal (roll order, surname, firstName), surname (surname, preferredName), preferredName (preferredNam, surname)
 function printRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $confidential=TRUE, $orderBy="Normal") {
 	try {
 		$dataRollGroup=array("gibbonRollGroupID"=>$gibbonRollGroupID); 

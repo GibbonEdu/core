@@ -58,7 +58,7 @@ if (isset($_SESSION[$guid]["gibbonRoleIDCurrentCategory"])) {
 
 //GET & SHOW NOTIFICATIONS
 try {
-	$dataNotifications=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
+	$dataNotifications=array("gibbonPersonID"=>@$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>@$_SESSION[$guid]["gibbonPersonID"]); 
 	$sqlNotifications="(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID)
 	UNION
 	(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2)
@@ -78,7 +78,7 @@ if ($resultNotifications->rowCount()>0) {
 }
 else {
 	if (is_file($_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png")) {
-		$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
+		$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . @$_SESSION[$guid]["absoluteURL"] . "/themes/" . @$_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
 	}
 	else {
 		$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='./themes/Default/img/notifications_off.png'>" ;
