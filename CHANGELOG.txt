@@ -310,6 +310,8 @@ General: fixed PHP Notice issues that where flooding logs
 	Edited file /modules/Library/library_lending_item_signout.php
 	Edited file /index_notification_ajax.php
 
+Messenger: fixed fatal error when composing messages on Windows servers
+	Edited files /modules/Messenger/messenger_post.php, messenger_postQuickWall.php
 
 v9.1.00
 -------
