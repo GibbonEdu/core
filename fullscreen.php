@@ -102,10 +102,14 @@ else {
 			print $themeJS ;
 			
 			//Set module CSS & JS
-			$moduleCSS="<link rel='stylesheet' type='text/css' href='./modules/" . $_SESSION[$guid]["module"] . "/css/module.css' />" ;
-			$moduleJS="<script type='text/javascript' src='./modules/" . $_SESSION[$guid]["module"] . "/js/module.js'></script>" ;
-			print $moduleCSS ;
-			print $moduleJS ;
+			if (isset($_GET["q"])) {
+				if ($_GET["q"]!="") {
+					$moduleCSS="<link rel='stylesheet' type='text/css' href='./modules/" . $_SESSION[$guid]["module"] . "/css/module.css' />" ;
+					$moduleJS="<script type='text/javascript' src='./modules/" . $_SESSION[$guid]["module"] . "/js/module.js'></script>" ;
+					print $moduleCSS ;
+					print $moduleJS ;
+				}
+			}
 			
 			//Set timezone from session variable
 			date_default_timezone_set($_SESSION[$guid]["timezone"]);

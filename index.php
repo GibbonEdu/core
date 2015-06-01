@@ -274,10 +274,12 @@ else {
 			
 			//Set module CSS & JS
 			if (isset($_GET["q"])) {
-				$moduleCSS="<link rel='stylesheet' type='text/css' href='./modules/" . $_SESSION[$guid]["module"] . "/css/module.css' />" ;
-				$moduleJS="<script type='text/javascript' src='./modules/" . $_SESSION[$guid]["module"] . "/js/module.js'></script>" ;
-				print $moduleCSS ;
-				print $moduleJS ;
+				if ($_GET["q"]!="") {
+					$moduleCSS="<link rel='stylesheet' type='text/css' href='./modules/" . $_SESSION[$guid]["module"] . "/css/module.css' />" ;
+					$moduleJS="<script type='text/javascript' src='./modules/" . $_SESSION[$guid]["module"] . "/js/module.js'></script>" ;
+					print $moduleCSS ;
+					print $moduleJS ;
+				}
 			}
 			
 			//Set personalised background, if permitted

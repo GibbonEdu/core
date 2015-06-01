@@ -401,12 +401,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 								$output.="var ttDate=new LiveValidation('ttDate');" ;
 								$output.="ttDate.add( Validate.Format, {pattern:" ; if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  $output.="/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { $output.=$_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } $output.=", failureMessage: \"Use " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { $output.="dd/mm/yyyy" ; } else { $output.=$_SESSION[$guid]["i18n"]["dateFormat"] ; } $output.=".\" } );" ;
 								$output.="ttDate.add(Validate.Presence);" ;
-							 $output.="</script>" ;
-							 $output.="<script type=\"text/javascript\">" ;
-								$output.="$(function() {" ;
-									$output.="$(\"#ttDate\").datepicker();" ;
-								$output.="});" ;
+								$output.="$(\"#ttDate\").datepicker();" ;
 							$output.="</script>" ;
+							
 							$output.="<input style='margin-top: 0px; margin-right: -2px' type='submit' value='" . _('Go') . "'>" ;
 							$output.="<input name='schoolCalendar' value='" . $_SESSION[$guid]["viewCalendarSchool"] . "' type='hidden'>" ;
 							$output.="<input name='personalCalendar' value='" . $_SESSION[$guid]["viewCalendarPersonal"] . "' type='hidden'>" ;
