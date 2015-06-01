@@ -765,6 +765,16 @@ else {
 			print "</div>" ;
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_deadlinesProcess.php?viewBy=$viewBy&subView=$subView&address=" . $_SESSION[$guid]["address"] . "&gibbonCourseClassIDFilter=$gibbonCourseClassIDFilter'>" ;
 				print "<table cellspacing='0' style='width: 100%; margin-top: 60px'>" ;
+					
+					if ($category=="Student") {
+						?>
+						<tr>
+							<td class="right" colspan=7>
+								<input type="submit" value="<?php print _("Submit") ; ?>">
+							</td>
+						</tr>
+						<?php
+					}
 					print "<tr class='head'>" ;
 						print "<th>" ;
 							print _("Class") . "</br>" ;

@@ -154,6 +154,7 @@ function getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbon
 //Returns events from a Google Calendar XML field, between the time and date specified
 function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDayStamp) {
 	$googleOAuth=getSettingByScope($connection2, "System", "googleOAuth") ;
+	
 	if ($googleOAuth=="Y" AND isset($_SESSION[$guid]['googleAPIAccessToken'])) {
 		$eventsSchool=array() ;
 		$start=date("Y-m-d\TH:i:s", strtotime(date("Y-m-d", $startDayStamp))) ;
@@ -162,11 +163,9 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 		require_once $_SESSION[$guid]["absolutePath"] . '/lib/google/google-api-php-client/autoload.php';
 		
 		$client=new Google_Client();
-		$expires=(json_decode($_SESSION[$guid]['googleAPIAccessToken'])->created) + 3600 ;
-		if ($expires-time()>600) { //Not yet expired, and not expiring imminently, so no need to refresh the token, just use it
-			$client->setAccessToken($_SESSION[$guid]['googleAPIAccessToken']);
-		}
-		else { //Need to refresh the token
+		$client->setAccessToken($_SESSION[$guid]['googleAPIAccessToken']);
+			
+		if ($client->isAccessTokenExpired()) { //Need to refresh the token
 			//Get API details
 			$googleClientName=getSettingByScope($connection2, "System", "googleClientName" ) ; 
 			$googleClientID=getSettingByScope($connection2, "System", "googleClientID" ) ; 
@@ -175,83 +174,97 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 			$googleDeveloperKey=getSettingByScope($connection2, "System", "googleDeveloperKey" ) ;
 			
 			//Re-establish $client
-			$client->setApplicationName($googleClientName); // Set your applicatio name
+			$client->setApplicationName($googleClientName); // Set your application name
 			$client->setScopes(array('https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/calendar')); // set scope during user login
 			$client->setClientId($googleClientID); // paste the client id which you get from google API Console
 			$client->setClientSecret($googleClientSecret); // set the client secret
 			$client->setRedirectUri($googleRedirectUri); // paste the redirect URI where you given in APi Console. You will get the Access Token here during login success
 			$client->setDeveloperKey($googleDeveloperKey); // Developer key
 			$client->setAccessType('offline');	
-			$client->refreshToken($_SESSION[$guid]['googleAPIRefreshToken']);
-			$_SESSION[$guid]['googleAPIAccessToken']=$client->getAccessToken();
+			$client->refreshToken($_SESSION[$guid]["googleAPIRefreshToken"]);
+			$_SESSION[$guid]["googleAPIAccessToken"]=$client->getAccessToken();
 		}
 		
-		$service=new Google_Service_Calendar($client);
-		$optParams = array('timeMin'=>$start . "+00:00", 'timeMax'=>$end . "+00:00", "singleEvents"=>TRUE);
-		$calendarListEntry=$service->events->listEvents($xml, $optParams);
+		$getFail=FALSE ;
+		$calendarListEntry=array() ;
+		try {
+			$service=new Google_Service_Calendar($client);
+			$optParams = array('timeMin'=>$start . "+00:00", 'timeMax'=>$end . "+00:00", "singleEvents"=>TRUE);
+			$calendarListEntry=$service->events->listEvents($xml, $optParams);
+		}
+		catch (Exception $e) {
+			$getFail=TRUE ;
+		}
 		
-		$count=0 ;
-		foreach ($calendarListEntry as $entry) { 
-			$multiDay=FALSE ;
-			if (substr($entry["start"]["dateTime"], 0, 10)!=substr($entry["end"]["dateTime"], 0, 10)) {
-				$multiDay=TRUE ;
-			}
-			if ($entry["start"]["dateTime"]=="") {
-				if ((strtotime($entry["end"]["date"])-strtotime($entry["start"]["date"]))/(60*60*24)>1) {
+		if ($getFail) {
+			$eventsSchool=FALSE ;
+		}
+		else {
+		
+			$count=0 ;
+			foreach ($calendarListEntry as $entry) { 
+				$multiDay=FALSE ;
+				if (substr($entry["start"]["dateTime"], 0, 10)!=substr($entry["end"]["dateTime"], 0, 10)) {
 					$multiDay=TRUE ;
 				}
-			}
+				if ($entry["start"]["dateTime"]=="") {
+					if ((strtotime($entry["end"]["date"])-strtotime($entry["start"]["date"]))/(60*60*24)>1) {
+						$multiDay=TRUE ;
+					}
+				}
 			
-			if ($multiDay) { //This event spans multiple days
-				if ($entry["start"]["date"]!=$entry["start"]["end"]) {
-					$days=(strtotime($entry["end"]["date"])-strtotime($entry["start"]["date"]))/(60*60*24) ;
+				if ($multiDay) { //This event spans multiple days
+					if ($entry["start"]["date"]!=$entry["start"]["end"]) {
+						$days=(strtotime($entry["end"]["date"])-strtotime($entry["start"]["date"]))/(60*60*24) ;
+					}
+					else if (substr($entry["start"]["dateTime"], 0, 10)!=substr($entry["end"]["dateTime"], 0, 10)) {
+						$days=(strtotime(substr($entry["end"]["dateTime"], 0, 10))-strtotime(substr($entry["start"]["dateTime"], 0, 10)))/(60*60*24) ;
+						$days++ ; //A hack for events that span multiple days with times set
+					}
+					for ($i=0; $i<$days; $i++) {
+						//WHAT
+						$eventsSchool[$count][0]=$entry["summary"]; 
+			
+						//WHEN - treat events that span multiple days, but have times set, the same as those without time set
+						$eventsSchool[$count][1]="All Day" ;
+						$eventsSchool[$count][2]=strtotime($entry["start"]["date"])+($i*60*60*24) ;
+						$eventsSchool[$count][3]=NULL ;
+						
+						//WHERE
+						$eventsSchool[$count][4]=$entry["location"];
+		
+						//LINK
+						$eventsSchool[$count][5]=$entry["htmlLink"];
+					
+						$count++ ;
+					}
 				}
-				else if (substr($entry["start"]["dateTime"], 0, 10)!=substr($entry["end"]["dateTime"], 0, 10)) {
-					$days=(strtotime(substr($entry["end"]["dateTime"], 0, 10))-strtotime(substr($entry["start"]["dateTime"], 0, 10)))/(60*60*24) ;
-					$days++ ; //A hack for events that span multiple days with times set
-				}
-				for ($i=0; $i<$days; $i++) {
+				else {  //This event falls on a single day
 					//WHAT
 					$eventsSchool[$count][0]=$entry["summary"]; 
 			
-					//WHEN - treat events that span multiple days, but have times set, the same as those without time set
-					$eventsSchool[$count][1]="All Day" ;
-					$eventsSchool[$count][2]=strtotime($entry["start"]["date"])+($i*60*60*24) ;
-					$eventsSchool[$count][3]=NULL ;
-						
+					//WHEN
+					if ($entry["start"]["dateTime"]!="") { //Part of day
+						$eventsSchool[$count][1]="Specified Time" ;
+						$eventsSchool[$count][2]=strtotime(substr($entry["start"]["dateTime"], 0, 10) . " " . substr($entry["start"]["dateTime"], 11, 8)) ;
+						$eventsSchool[$count][3]=strtotime(substr($entry["end"]["dateTime"], 0, 10) . " " . substr($entry["end"]["dateTime"], 11, 8)) ;
+					}
+					else { //All day
+						$eventsSchool[$count][1]="All Day" ;
+						$eventsSchool[$count][2]=strtotime($entry["start"]["date"]) ;
+						$eventsSchool[$count][3]=NULL ;
+					}
 					//WHERE
 					$eventsSchool[$count][4]=$entry["location"];
 		
 					//LINK
 					$eventsSchool[$count][5]=$entry["htmlLink"];
-					
+				
 					$count++ ;
 				}
 			}
-			else {  //This event falls on a single day
-				//WHAT
-				$eventsSchool[$count][0]=$entry["summary"]; 
-			
-				//WHEN
-				if ($entry["start"]["dateTime"]!="") { //Part of day
-					$eventsSchool[$count][1]="Specified Time" ;
-					$eventsSchool[$count][2]=strtotime(substr($entry["start"]["dateTime"], 0, 10) . " " . substr($entry["start"]["dateTime"], 11, 8)) ;
-					$eventsSchool[$count][3]=strtotime(substr($entry["end"]["dateTime"], 0, 10) . " " . substr($entry["end"]["dateTime"], 11, 8)) ;
-				}
-				else { //All day
-					$eventsSchool[$count][1]="All Day" ;
-					$eventsSchool[$count][2]=strtotime($entry["start"]["date"]) ;
-					$eventsSchool[$count][3]=NULL ;
-				}
-				//WHERE
-				$eventsSchool[$count][4]=$entry["location"];
-		
-				//LINK
-				$eventsSchool[$count][5]=$entry["htmlLink"];
-				
-				$count++ ;
-			}
 		}
+		
 	}
 	else {
 		$eventsSchool=FALSE ;

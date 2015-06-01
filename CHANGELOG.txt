@@ -313,6 +313,9 @@ General: fixed PHP Notice issues that where flooding logs
 Messenger: fixed fatal error when composing messages on Windows servers
 	Edited files /modules/Messenger/messenger_post.php, messenger_postQuickWall.php
 
+Planner: added Submit button to top of homework tracking list for students, to save scrolling to bottom of long, long list.
+	Edited file /modules/Planner/planner_deadlines.php
+
 v9.1.00
 -------
 Installer: removed orphaned debug output
