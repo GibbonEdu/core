@@ -756,7 +756,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 					if ($days["Mon"]=="Y") {
 						$output.="<th style='vertical-align: top; text-align: center; width: " ; if ($narrow) { $output.=(375/$daysInWeek) ; } else { $output.=(550/$daysInWeek) ; } $output.="px'>" ;
 							$output.=_("Mon") . "<br/>" ;
-							$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*0))) . "</span><br/>" ;
+							$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*0))) . "</span><br/>" ;
 							try {
 								$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*0)))); 
 								$sqlSpecial="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'" ;
@@ -775,7 +775,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 					if ($days["Tue"]=="Y") {	
 						$output.="<th style='vertical-align: top; text-align: center; width: " ; if ($narrow) { $output.=(375/$daysInWeek) ; } else { $output.=(550/$daysInWeek) ; } $output.= "px'>" ;
 							$output.=_("Tue") . "<br/>" ;
-							$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*1))) . "</span><br/>" ;
+							$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*1))) . "</span><br/>" ;
 							try {
 								$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*1)))); 
 								$sqlSpecial="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'" ;
@@ -794,7 +794,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 					if ($days["Wed"]=="Y") {
 						$output.="<th style='vertical-align: top; text-align: center; width: " ; if ($narrow) { $output.=(375/$daysInWeek) ; } else { $output.=(550/$daysInWeek) ; } $output.= "px'>" ;
 							$output.=_("Wed") . "<br/>" ;
-							$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*2))) . "</span><br/>" ;
+							$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*2))) . "</span><br/>" ;
 							try {
 								$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*2)))); 
 								$sqlSpecial="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'" ;
@@ -813,7 +813,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 					if ($days["Thu"]=="Y") {
 						$output.="<th style='vertical-align: top; text-align: center; width: " ; if ($narrow) { $output.=(375/$daysInWeek) ; } else { $output.=(550/$daysInWeek) ; } $output.= "px'>" ;
 							$output.=_("Thu") . "<br/>" ;
-							$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*3))) . "</span><br/>" ;
+							$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*3))) . "</span><br/>" ;
 							try {
 								$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*3)))); 
 								$sqlSpecial="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'" ;
@@ -832,7 +832,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 					if ($days["Fri"]=="Y") {
 						$output.="<th style='vertical-align: top; text-align: center; width: " ; if ($narrow) { $output.=(375/$daysInWeek) ; } else { $output.=(550/$daysInWeek) ; } $output.= "px'>" ;
 							$output.=_("Fri") . "<br/>" ;
-							$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*4))) . "</span><br/>" ;
+							$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*4))) . "</span><br/>" ;
 							try {
 								$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*4)))); 
 								$sqlSpecial="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'" ;
@@ -851,7 +851,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 					if ($days["Sat"]=="Y") {
 						$output.="<th style='vertical-align: top; text-align: center; width: " ; if ($narrow) { $output.=(375/$daysInWeek) ; } else { $output.=(550/$daysInWeek) ; } $output.= "px'>" ;
 							$output.=_("Sat") . "<br/>" ;
-							$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*5))) . "</span><br/>" ;
+							$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*5))) . "</span><br/>" ;
 							try {
 								$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*5)))); 
 								$sqlSpecial="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'" ;
@@ -870,7 +870,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 					if ($days["Sun"]=="Y") {
 						$output.="<th style='vertical-align: top; text-align: center; width: " ; if ($narrow) { $output.=(375/$daysInWeek) ; } else { $output.=(550/$daysInWeek) ; } $output.= "px'>" ;
 							$output.=_("Sun") . "<br/>" ;
-							$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*6))) . "</span><br/>" ;
+							$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*6))) . "</span><br/>" ;
 							try {
 								$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*6)))); 
 								$sqlSpecial="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'" ;
@@ -1796,7 +1796,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				if ($days["Mon"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
 						$output.=_("Mon") . "<br/>" ;
-						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*0))) . "</span><br/>" ;
+						$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*0))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*0)))); 
 							$sqlSpecial="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'" ;
@@ -1815,7 +1815,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				if ($days["Tue"]=="Y") {	
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
 						$output.=_("Tue") . "<br/>" ;
-						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*1))) . "</span><br/>" ;
+						$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*1))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*1)))); 
 							$sqlSpecial="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'" ;
@@ -1834,7 +1834,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				if ($days["Wed"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
 						$output.=_("Wed") . "<br/>" ;
-						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*2))) . "</span><br/>" ;
+						$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*2))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*2)))); 
 							$sqlSpecial="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'" ;
@@ -1853,7 +1853,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				if ($days["Thu"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
 						$output.=_("Thu") . "<br/>" ;
-						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*3))) . "</span><br/>" ;
+						$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*3))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*3)))); 
 							$sqlSpecial="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'" ;
@@ -1872,7 +1872,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				if ($days["Fri"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
 						$output.=_("Fri") . "<br/>" ;
-						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*4))) . "</span><br/>" ;
+						$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*4))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*4)))); 
 							$sqlSpecial="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'" ;
@@ -1891,7 +1891,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				if ($days["Sat"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
 						$output.=_("Sat") . "<br/>" ;
-						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*5))) . "</span><br/>" ;
+						$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*5))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*5)))); 
 							$sqlSpecial="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'" ;
@@ -1910,7 +1910,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 				if ($days["Sun"]=="Y") {
 					$output.="<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
 						$output.=_("Sun") . "<br/>" ;
-						$output.="<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*6))) . "</span><br/>" ;
+						$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*6))) . "</span><br/>" ;
 						try {
 							$dataSpecial=array("date"=>date("Y-m-d", ($startDayStamp+(86400*6)))); 
 							$sqlSpecial="SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'" ;

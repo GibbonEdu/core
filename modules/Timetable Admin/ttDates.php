@@ -270,7 +270,7 @@ else {
 							else {
 								if ($i==$specialDayStamp AND $rowSpecial["type"]=="School Closure") {
 									print "<td style='vertical-align: top; text-align: center; background-color: #bbbbbb; font-size: 10px'>" ;
-										print "<span style='color: #fff'>" . date("d/m/Y",$i) . "<br/>" . $rowSpecial["name"] . "</span>" ;
+										print "<span style='color: #fff'>" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/>" . $rowSpecial["name"] . "</span>" ;
 										print "<br/>" ;
 										$rowSpecial=$resultSpecial->fetch() ;
 									print "</td>" ;
@@ -278,10 +278,10 @@ else {
 								else {
 									print "<td style='vertical-align: top; text-align: center; background-color: #eeeeee; font-size: 10px'>" ;
 										if ($i==$specialDayStamp AND $rowSpecial["type"]=="Timing Change") {
-											 print "<span style='color: #000000'>" . date("d/m/Y",$i) . "<br/></span><span style='color: #f00'>" . _('Timing Change') . "</span>" ;
+											 print "<span style='color: #000000'>" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/></span><span style='color: #f00'>" . _('Timing Change') . "</span>" ;
 										}
 										else {
-											print "<span style='color: #000000'>" . date("d/m/Y",$i) . "<br/>" . _('School Day') . "</span>" ;
+											print "<span style='color: #000000'>" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/>" . _('School Day') . "</span>" ;
 										}
 										print "<br/>" ;
 										print "<fieldset class='" . date("D",$i) . "' style='border: none'>" ;

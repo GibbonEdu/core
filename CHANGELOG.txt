@@ -315,6 +315,10 @@ Messenger: fixed fatal error when composing messages on Windows servers
 
 Planner: added Submit button to top of homework tracking list for students, to save scrolling to bottom of long, long list.
 	Edited file /modules/Planner/planner_deadlines.php
+	
+General: fixed outstanding US-style date issues across the system
+	Edited various files
+
 
 v9.1.00
 -------

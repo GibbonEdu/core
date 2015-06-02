@@ -50,13 +50,13 @@ else {
 	print "<div class='linkTop' style='height: 27px'>" ;
 		 print "<div style='text-align: left; width: 40%; float: left;'>" ;
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messageWall_view.php'>" ;
-				print "<input name='date' maxlength=10 value='" . date("d/m/Y", (dateConvertToTimestamp(dateConvert($guid, $date))-(24*60*60))) . "' type='hidden' style='width:100px; float: none; margin-right: 4px;'>" ;
+				print "<input name='date' maxlength=10 value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], (dateConvertToTimestamp(dateConvert($guid, $date))-(24*60*60))) . "' type='hidden' style='width:100px; float: none; margin-right: 4px;'>" ;
 				?>
 				<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Previous Day'>
 				<?php	
 			print "</form>" ;
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messageWall_view.php'>" ;
-				print "<input name='date' maxlength=10 value='" . date("d/m/Y", (dateConvertToTimestamp(dateConvert($guid, $date))+(24*60*60))) . "' type='hidden' style='width:100px; float: none; margin-right: 4px;'>" ;
+				print "<input name='date' maxlength=10 value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], (dateConvertToTimestamp(dateConvert($guid, $date))+(24*60*60))) . "' type='hidden' style='width:100px; float: none; margin-right: 4px;'>" ;
 				?>
 				<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Next Day'>
 				<?php	
