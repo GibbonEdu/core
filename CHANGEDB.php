@@ -431,6 +431,6 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Unit','Parental Dashboard') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('sw_KE', 'Swahili', 'N', 'N', 'James Peru', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('pt_PT', 'Português', 'N', 'N', 'Wilson Canda', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
+CREATE TABLE `gibbonLog` (`gibbonLogID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT,`gibbonModuleID` int(4) unsigned zerofill NOT NULL, `gibbonPersonID` int(10) unsigned zerofill NOT NULL, `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL, `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,`title` varchar(50) NOT NULL, `serialisedArray` text NULL, PRIMARY KEY (`gibbonLogID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;end
 " ;
-
 ?>
