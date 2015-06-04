@@ -118,10 +118,10 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 		}
 		catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
 
-		//Refresh notifications every 15 seconds for staff, 120 seconds for everyone else
+		//Refresh notifications every 10 seconds for staff, 120 seconds for everyone else
 		$interval=120000 ;
 		if ($_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=="Staff") {
-			$interval=15000 ;
+			$interval=10000 ;
 		}
 		$return.="<script type=\"text/javascript\">
 			$(document).ready(function(){
@@ -137,18 +137,19 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 				if ($_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=="Staff") {
 					$alarm=getSettingByScope($connection2, "System", "alarm") ;
 					if ($alarm=="General" OR $alarm=="Lockdown") {
-						if ($alarm=="General") {
-							$return.="<audio loop autoplay>
-								<source src=\"./audio/alarm_general.mp3\" type=\"audio/mpeg\">
-							</audio>" ; 
-							$return.="<script>alert('" . _('General Alarm!') . "') ;</script>" ;
+						$type="general" ;
+						if ($alarm=="Lockdown") {
+							$type="lockdown" ;
 						}
-						else {
-							$return.="<audio loop autoplay>
-								<source src=\"./audio/alarm_lockdown.mp3\" type=\"audio/mpeg\">
-							</audio>" ; 
-							$return.="<script>alert('" . _('Lockdown Alarm!') . "') ;</script>" ;
-						}
+						$return.="<script>
+							if ($('div#TB_window').is(':visible')===false) {
+								var url = '" . $_SESSION[$guid]["absoluteURL"] . "/index_notification_ajax_alarm.php?type=" . $type . "&KeepThis=true&TB_iframe=true&width=1000&height=500';
+								$(document).ready(function() {
+									tb_show('', url);
+									$('div#TB_window').addClass('alarm') ;
+								}) ;
+							}
+						</script>" ;
 					}
 				}
 			}

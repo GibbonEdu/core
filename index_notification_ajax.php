@@ -40,18 +40,29 @@ if (isset($_SESSION[$guid]["gibbonRoleIDCurrentCategory"])) {
 	if ($_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=="Staff") {
 		$alarm=getSettingByScope($connection2, "System", "alarm") ;
 		if ($alarm=="General" OR $alarm=="Lockdown") {
-			if ($alarm=="General") {
-				$output.="<audio loop autoplay>
-					<source src=\"./audio/alarm_general.mp3\" type=\"audio/mpeg\">
-				</audio>" ; 
-				$output.="<script>alert('" . _('General Alarm!') . "') ;</script>" ;
+			$type="general" ;
+			if ($alarm=="Lockdown") {
+				$type="lockdown" ;
 			}
-			else {
-				$output.="<audio loop autoplay>
-					<source src=\"./audio/alarm_lockdown.mp3\" type=\"audio/mpeg\">
-				</audio>" ; 
-				$output.="<script>alert('" . _('Lockdown Alarm!') . "') ;</script>" ;
-			}
+			$output.="<script>
+				if ($('div#TB_window').is(':visible')==true && $('div#TB_window').attr('class')!='alarm') {
+					$(\"#TB_window\").remove();
+					$(\"body\").append(\"<div id='TB_window'></div>\");
+				}
+				if ($('div#TB_window').is(':visible')===false) {
+					var url = '" . $_SESSION[$guid]["absoluteURL"] . "/index_notification_ajax_alarm.php?type=" . $type . "&KeepThis=true&TB_iframe=true&width=1000&height=500';
+					tb_show('', url);
+					$('div#TB_window').addClass('alarm') ;
+				}
+			</script>" ;
+			
+		}
+		else {
+			$output.="<script>
+				if ($('div#TB_window').is(':visible')==true && $('div#TB_window').attr('class')=='alarm') {
+					tb_remove();
+				}
+			</script>" ;
 		}
 	}
 }

@@ -125,7 +125,7 @@ else {
 						<tr>
 							<td> 
 								<b><?php print _('Sequence Number') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Must be unique. Controls chronological ordering.') ?></i></span>
+								<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="sequenceNumber" ID="sequenceNumber" value="<?php print $row["sequenceNumber"] ?>" type="text" style="width: 300px">
