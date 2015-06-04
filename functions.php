@@ -3762,4 +3762,91 @@ function formatPhone($num) { //Function by Zeromatik on StackOverflow
 
     return $num;
 }
+
+function setLog($connection2, $gibbonModuleID, $gibbonPersonID, $title, $array=null) {
+	if((!is_array($array) && $array!=null) || $title == null || $gibbonModuleID == null) {
+		return null;	
+	}
+	
+	if($array!=null) {
+		$serialisedArray=serialize($array);
+	}
+	else {
+		$serialisedArray=null;
+	}
+	try {
+		$dataLog=array("gibbonModuleID"=>$gibbonModuleID, "gibbonPersonID"=>$gibbonPersonID, "title"=>$title, "serialisedArray"=>$serialisedArray); 
+		$sqlLog="INSERT INTO gibbonLog SET gibbonModuleID=:gibbonModuleID, gibbonPersonID=:gibbonPersonID, title=:title, serialisedArray=:serialisedArray;" ;
+		$resultLog=$connection2->prepare($sqlLog);
+		$resultLog->execute($dataLog); 
+	}
+	catch(PDOException $e) {
+		return null;
+	}
+	$gibbonLogID = $connection2->lastInsertId();
+	return $gibbonLogID;
+}
+
+function getLog($connection2, $gibbonSchoolYearID, $gibbonModuleID=null, $gibbonPersonID=null, $title=null, $startDate=null, $endDate=null) {
+	if($gibbonSchoolYearID == null) {
+		return null;
+	}
+	$dataLog=array("gibbonSchoolYearID"=>$gibbonSchoolYearID);
+	$where="";
+	if($gibbonModuleID!=null)  {
+		$dataLog['gibbonModuleID'] = $gibbonModuleID;
+		$where.=" AND gibbonModuleID=:gibbonModuleID";
+	}
+	
+	if($gibbonPersonID!=null)  {
+		$dataLog['gibbonPersonID'] = $gibbonPersonID;
+		$where.=" AND gibbonPersonID=:gibbonPersonID";
+	}
+	
+	if($title!=null)  {
+		$dataLog['title'] = $title;
+		$where.=" AND title=:title";
+	}
+	
+	if($startDate!=null && $endDate==null) {
+		$dataLog['startDate'] = $startDate;
+		$where.=" AND timestamp>=:startDate";
+	}
+	else if($startDate==null && $endDate!=null) {
+		$dataLog['endDate'] = $endDate;
+		$where.=" AND timestamp<=:endDate";
+	}
+	elseif($startDate!=null && $endDate!=null)  {
+		$dataLog['startDate'] = $startDate;
+		$dataLog['endDate'] = $endDate;
+		$where.=" AND timestamp>=:startDate AND  timestamp<=:endDate";
+	}
+ 	 	
+	try {
+		$sqlLog="SELECT * FROM gibbonLog WHERE gibbonSchoolYearID=:gibbonSchoolYearID " . $where ;
+		$resultLog=$connection2->prepare($sqlLog);
+		$resultLog->execute($dataLog); 
+	}
+	catch(PDOException $e) {
+		return null;
+	}
+	return $resultLog;
+}
+
+function getLogByID($connection2, $gibbonLogID) {
+	if($gibbonLogID == null) {
+		return null;
+	}
+	try {
+		$dataLog=array("gibbonLogID"=>$gibbonLogID); 
+		$sqlLog="SELECT * FROM gibbonLog WHERE gibbonLogID=:gibbonLogID" ;
+		$resultLog=$connection2->prepare($sqlLog);
+		$resultLog->execute($dataLog); 
+		$row = $resultLog->fetch();
+	}
+	catch(PDOException $e) {
+		return null;
+	}
+	return $row;
+}
 ?>
