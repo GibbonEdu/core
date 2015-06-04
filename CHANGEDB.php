@@ -429,6 +429,7 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Sound Alarm'));end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'alarm', 'Alarm', 'Sound a system wide alarm to all staff.', 'None');end
 ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Unit','Parental Dashboard') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+CREATE TABLE `gibbonLog` (`gibbonLogID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT,`gibbonModuleID` int(4) unsigned zerofill NOT NULL, `gibbonPersonID` int(10) unsigned zerofill NOT NULL, `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL, `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,`title` varchar(50) NOT NULL, `serialisedArray` text NULL, PRIMARY KEY (`gibbonLogID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;end
 " ;
 
 ?>
