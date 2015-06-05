@@ -3779,8 +3779,8 @@ function formatPhone($num) { //Function by Zeromatik on StackOverflow
     return $num;
 }
 
-function setLog($connection2, $gibbonModuleID, $gibbonPersonID, $title, $array=null) {
-	if((!is_array($array) && $array!=null) || $title == null || $gibbonModuleID == null) {
+function setLog($connection2, $gibbonSchoolYearID, $gibbonModuleID, $gibbonPersonID, $title, $array=null) {
+	if((!is_array($array) && $array!=null) || $title == null || $gibbonModuleID == null || $gibbonSchoolYearID == null) {
 		return null;	
 	}
 	
@@ -3791,8 +3791,8 @@ function setLog($connection2, $gibbonModuleID, $gibbonPersonID, $title, $array=n
 		$serialisedArray=null;
 	}
 	try {
-		$dataLog=array("gibbonModuleID"=>$gibbonModuleID, "gibbonPersonID"=>$gibbonPersonID, "title"=>$title, "serialisedArray"=>$serialisedArray); 
-		$sqlLog="INSERT INTO gibbonLog SET gibbonModuleID=:gibbonModuleID, gibbonPersonID=:gibbonPersonID, title=:title, serialisedArray=:serialisedArray;" ;
+		$dataLog=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonModuleID"=>$gibbonModuleID, "gibbonPersonID"=>$gibbonPersonID, "title"=>$title, "serialisedArray"=>$serialisedArray); 
+		$sqlLog="INSERT INTO gibbonLog SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonModuleID=:gibbonModuleID, gibbonPersonID=:gibbonPersonID, title=:title, serialisedArray=:serialisedArray;" ;
 		$resultLog=$connection2->prepare($sqlLog);
 		$resultLog->execute($dataLog); 
 	}
