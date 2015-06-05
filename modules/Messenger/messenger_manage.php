@@ -176,7 +176,7 @@ else {
 					print "<th>" ;
 						print _("SMS") ;
 					print "</th>" ;
-					print "<th style='width: 100px'>" ;
+					print "<th style='width: 120px'>" ;
 						print _("Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
