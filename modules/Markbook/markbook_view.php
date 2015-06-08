@@ -476,7 +476,9 @@ else {
 											print "</th>" ;
 										}
 										else {
+											$leftBorder=FALSE ;
 											if ($attainmentOn[$i]=="Y" AND ($attainmentID[$i]!="" OR $gibbonRubricIDAttainment[$i]!="")) {
+												$leftBorder=TRUE ;
 												print "<th style='border-left: 2px solid #666; text-align: center; width: 40px'>" ;
 													try {
 														$dataScale=array("gibbonScaleID"=>$attainmentID[$i]); 
@@ -504,7 +506,12 @@ else {
 												print "</th>" ;
 											}
 											if ($effortOn[$i]=="Y" AND ($effortID[$i]!="" OR $gibbonRubricIDEffort[$i]!="")) {
-												print "<th style='text-align: center; width: 40px'>" ;
+												$leftBorderStyle='' ;
+												if ($leftBorder==FALSE) {
+													$leftBorder=TRUE ;
+													$leftBorderStyle="border-left: 2px solid #666;" ;
+												}
+												print "<th style='$leftBorderStyle text-align: center; width: 40px'>" ;
 													try {
 														$dataScale=array("gibbonScaleID"=>$effortID[$i]); 
 														$sqlScale="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
@@ -531,18 +538,33 @@ else {
 												print "</th>" ;
 											}
 											if ($comment[$i]=="Y") {
-												print "<th style='text-align: center; width: 80px'>" ;
+												$leftBorderStyle='' ;
+												if ($leftBorder==FALSE) {
+													$leftBorder=TRUE ;
+													$leftBorderStyle="border-left: 2px solid #666;" ;
+												}
+												print "<th style='$leftBorderStyle text-align: center; width: 80px'>" ;
 													print "<span title='" . _('Comment') . "'>" . _('Com') . "</span>" ;
 												print "</th>" ;
 											}
 											if ($uploadedResponse[$i]=="Y") {
-												print "<th style='text-align: center; width: 30px'>" ;
+												$leftBorderStyle='' ;
+												if ($leftBorder==FALSE) {
+													$leftBorder=TRUE ;
+													$leftBorderStyle="border-left: 2px solid #666;" ;
+												}
+												print "<th style='$leftBorderStyle text-align: center; width: 30px'>" ;
 													print "<span title='" . _('Uploaded Response') . "'>" . _('Upl') . "</span>" ;
 												print "</th>" ;
 											}
 											if (isset($submission[$i])) {
 												if ($submission[$i]==TRUE) {
-													print "<th style='text-align: center; width: 30px'>" ;
+													$leftBorderStyle='' ;
+													if ($leftBorder==FALSE) {
+														$leftBorder=TRUE ;
+														$leftBorderStyle="border-left: 2px solid #666;" ;
+													}
+													print "<th style='$leftBorderStyle text-align: center; width: 30px'>" ;
 														print "<span title='" . _('Submitted Work') . "'>" . _('Sub') . "</span>" ;
 													print "</th>" ;
 												}
@@ -633,8 +655,10 @@ else {
 												}
 												if ($resultEntry->rowCount()==1) {
 													$rowEntry=$resultEntry->fetch() ;
+													$leftBorder=FALSE ;
 													
 													if ($attainmentOn[$i]=="Y" AND ($attainmentID[$i]!="" OR $gibbonRubricIDAttainment[$i]!="")) {
+														$leftBorder=TRUE ;
 														print "<td style='border-left: 2px solid #666; text-align: center'>" ;
 															if ($attainmentID[$i]!="") {
 																$styleAttainment="" ;
@@ -666,7 +690,12 @@ else {
 													}
 													
 													if ($effortOn[$i]=="Y" AND ($effortID[$i]!="" OR $gibbonRubricIDEffort[$i]!="")) {
-														print "<td style='text-align: center;'>" ;
+														$leftBorderStyle='' ;
+														if ($leftBorder==FALSE) {
+															$leftBorder=TRUE ;
+															$leftBorderStyle="border-left: 2px solid #666;" ;
+														}
+														print "<td style='$leftBorderStyle text-align: center;'>" ;
 															if ($effortID[$i]!="") {
 																$styleEffort="" ;
 																if ($rowEntry["effortConcern"]=="Y") {
@@ -693,7 +722,12 @@ else {
 														print "</td>" ;
 													}
 													if ($comment[$i]=="Y") {
-														print "<td style='text-align: center;'>" ;
+														$leftBorderStyle='' ;
+														if ($leftBorder==FALSE) {
+															$leftBorder=TRUE ;
+															$leftBorderStyle="border-left: 2px solid #666;" ;
+														}
+														print "<td style='$leftBorderStyle text-align: center;'>" ;
 															$style="" ;
 															if ($rowEntry["comment"]!="") {
 																if (strlen($rowEntry["comment"])<11) {
@@ -706,7 +740,12 @@ else {
 														print "</td>" ;
 													}
 													if ($uploadedResponse[$i]=="Y") {
-														print "<td style='text-align: center;'>" ;
+														$leftBorderStyle='' ;
+														if ($leftBorder==FALSE) {
+															$leftBorder=TRUE ;
+															$leftBorderStyle="border-left: 2px solid #666;" ;
+														}
+														print "<td style='$leftBorderStyle text-align: center;'>" ;
 														if ($rowEntry["response"]!="") {
 															print "<a title='" . _('Uploaded Response') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>Up</a><br/>" ;
 														}
@@ -728,12 +767,17 @@ else {
 														$emptySpan++ ;
 													}
 													if ($emptySpan>0) {
-														print "<td style='text-align: center' colspan=$emptySpan></td>" ;
+														print "<td style='border-left: 2px solid #666; text-align: center' colspan=$emptySpan></td>" ;
 													}
 												}
 												if (isset($submission[$i])) {
 													if ($submission[$i]==TRUE) {
-														print "<td style='text-align: center; width: 30px'>" ;
+														$leftBorderStyle='' ;
+														if ($leftBorder==FALSE) {
+															$leftBorder=TRUE ;
+															$leftBorderStyle="border-left: 2px solid #666;" ;
+														}
+														print "<td style='$leftBorderStyle text-align: center;'>" ;
 															try {
 																$dataWork=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID[$i], "gibbonPersonID"=>$rowStudents["gibbonPersonID"]); 
 																$sqlWork="SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC" ;

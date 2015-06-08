@@ -3138,13 +3138,20 @@ function printClassGroupTable($guid, $gibbonCourseClassID, $columns, $connection
 	print "</table>" ;	
 }
 
-function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy="", $divExtras="", $div=TRUE) {
+function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy="", $divExtras="", $div=TRUE, $large=FALSE) {
 	$output="" ;
+	
+	$size1="14" ;
+	$size2="12" ;
+	if ($large) {
+		$size1="42" ;
+		$size2="39" ; 
+	}
 	
 	$highestAction=getHighestGroupedAction($guid, "/modules/Students/student_view_details.php", $connection2) ;
 	if ($highestAction=="View Student Profile_full") {
 		if ($div==TRUE) {
-			$output.="<div $divExtras style='width: 83px; text-align: right; height: 16px; padding: 3px 0px; margin: auto'><b>" ;
+			$output.="<div $divExtras style='width: 83px; text-align: right; height: " . ($size1+4) . "; padding: 3px 0px; margin: auto'><b>" ;
 		}
 		
 		//Individual Needs
@@ -3166,7 +3173,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy="", $divExtr
 			else {
 				$title=$resultAlert->rowCount() . " " . sprintf(_('Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $rowAlert["name"]) ;
 			}
-			$output.="<a style='color: #" . $highestColour . "; text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $gibbonPersonID . "&subpage=Individual Needs'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: 14px; height: 14px; width: 14px; border-top: 2px solid #" . $highestColour . "; margin-right: 2px; background-color: #" . $highestColourBG . "'>" . _('IN') . "</div></a>" ; 
+			$output.="<a style='font-size: " . $size2 . "px; color: #" . $highestColour . "; text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $gibbonPersonID . "&subpage=Individual Needs'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: " . ($size1-6) . "px; height: " . ($size1-6) . "px; width: " . $size1 . "px; border-top: 2px solid #" . $highestColour . "; margin-right: 2px; background-color: #" . $highestColourBG . "'>" . _('IN') . "</div></a>" ; 
 		}
 		
 		//Academic
@@ -3193,7 +3200,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy="", $divExtr
 			$alert=getAlert($connection2, $gibbonAlertLevelID) ;
 			if ($alert!=FALSE) {
 				$title=sprintf(_('Student has a %1$s alert for academic concern in the current academic year.'), _($alert["name"])) ;
-				$output.="<a style='color: #" . $alert["color"] . "; text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $gibbonPersonID . "&subpage=Markbook&filter=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: 14px; height: 14px; width: 14px; border-top: 2px solid #" . $alert["color"] . "; margin-right: 2px; background-color: #" . $alert["colorBG"] . "'>" . _('A') . "</div></a>" ; 
+				$output.="<a style='font-size: " . $size2 . "px; color: #" . $alert["color"] . "; text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $gibbonPersonID . "&subpage=Markbook&filter=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: " . ($size1-6) . "px; height: " . ($size1-6) . "px; width: " . $size1 . "px; border-top: 2px solid #" . $alert["color"] . "; margin-right: 2px; background-color: #" . $alert["colorBG"] . "'>" . _('A') . "</div></a>" ; 
 			}
 		}
 		
@@ -3221,7 +3228,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy="", $divExtr
 			$alert=getAlert($connection2, $gibbonAlertLevelID) ;
 			if ($alert!=FALSE) {
 				$title=sprintf(_('Student has a %1$s alert for behaviour over the past 60 days.'), _($alert["name"])) ;
-				$output.="<a style='color: #" . $alert["color"] . "; text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $gibbonPersonID . "&subpage=Behaviour Record'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: 14px; height: 14px; width: 14px; border-top: 2px solid #" . $alert["color"] . "; margin-right: 2px; background-color: #" . $alert["colorBG"] . "'>" . _('B') . "</div></a>" ; 
+				$output.="<a style='font-size: " . $size2 . "px; color: #" . $alert["color"] . "; text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $gibbonPersonID . "&subpage=Behaviour Record'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: " . ($size1-6) . "px; height: " . ($size1-6) . "px; width: " . $size1 . "px; border-top: 2px solid #" . $alert["color"] . "; margin-right: 2px; background-color: #" . $alert["colorBG"] . "'>" . _('B') . "</div></a>" ; 
 			}
 		}
 		
@@ -3232,7 +3239,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy="", $divExtr
 			$highestColour=$alert[3] ;
 			$highestColourBG=$alert[4] ;
 			$title=sprintf(_('Medical alerts are set, up to a maximum of %1$s'), $highestLevel) ;
-			$output.="<a style='color: #" . $highestColour . "; text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $gibbonPersonID . "&subpage=Medical'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: 14px; height: 14px; width: 14px; border-top: 2px solid #" . $highestColour . "; margin-right: 2px; background-color: #" . $highestColourBG . "'><b>" . _('M') . "</b></div></a>" ; 
+			$output.="<a style='font-size: " . $size2 . "px; color: #" . $highestColour . "; text-decoration: none' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $gibbonPersonID . "&subpage=Medical'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: " . ($size1-6) . "px; height: " . ($size1-6) . "px; width: " . $size1 . "px; border-top: 2px solid #" . $highestColour . "; margin-right: 2px; background-color: #" . $highestColourBG . "'><b>" . _('M') . "</b></div></a>" ; 
 		}
 		
 		//Privacy
@@ -3240,7 +3247,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy="", $divExtr
 		if ($privacySetting=="Y" AND $privacy!="") {
 			$alert=getAlert($connection2, 001) ;
 			$title=sprintf(_('Privacy is required: %1$s'), $privacy) ;
-			$output.="<div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: 14px; height: 14px; width: 14px; border-top: 2px solid #" . $alert["color"] . "; margin-right: 2px; color: #" . $alert["color"] . "; background-color: #" . $alert["colorBG"] . "'>" . _('P') . "</div>" ; 
+			$output.="<div title='$title' style='font-size: " . $size2 . "px; float: right; text-align: center; vertical-align: middle; max-height: " . ($size1-6) . "px; height: " . ($size1-6) . "px; width: " . $size1 . "px; border-top: 2px solid #" . $alert["color"] . "; margin-right: 2px; color: #" . $alert["color"] . "; background-color: #" . $alert["colorBG"] . "'>" . _('P') . "</div>" ; 
 		}
 		
 		if ($div==TRUE) {

@@ -323,6 +323,11 @@ General: added Nigerian Naira as currency option
 	Edited file /modules/System Admin/systemSettings.php
 	Edited file /installer/install.php
 
+Students: made alerts on student profile much larger and more obvious:
+	Edited file /functions.php
+	Edited file /modules/Students/student_view_details.php
+
+
 v9.1.00
 -------
 Installer: removed orphaned debug output

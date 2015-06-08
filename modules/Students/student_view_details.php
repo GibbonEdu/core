@@ -2961,13 +2961,13 @@ else {
 					$_SESSION[$guid]["sidebarExtra"]="" ;
 					
 					//Show alerts
-					$alert=getAlertBar($guid, $connection2, $gibbonPersonID, $row["privacy"], "", FALSE) ;
-					$_SESSION[$guid]["sidebarExtra"].="<div style='border-top: 1px solid #c00; background-color: none; font-size: 12px; margin: 3px 0 0px 0; width: 240px; text-align: left; height: 16px; padding: 5px 5px;'>" ;
+					$alert=getAlertBar($guid, $connection2, $gibbonPersonID, $row["privacy"], "", FALSE, TRUE) ;
+					$_SESSION[$guid]["sidebarExtra"].="<div style='background-color: none; font-size: 12px; margin: 3px 0 0px 0; width: 240px; text-align: left; height: 40px; padding: 5px 10px;'>" ;
 					if ($alert=="") {
 						$_SESSION[$guid]["sidebarExtra"].="<b>" . _('No Current Alerts') . "</b>" ; 
 					}
 					else {
-						$_SESSION[$guid]["sidebarExtra"].="<b>" . _('Current Alerts:') . "</b>$alert" ; 
+						$_SESSION[$guid]["sidebarExtra"].=$alert ; 
 					}
 					$_SESSION[$guid]["sidebarExtra"].="</div>" ;
 
