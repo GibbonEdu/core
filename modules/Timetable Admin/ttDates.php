@@ -361,7 +361,7 @@ else {
 				print "<tr>" ;
 					print "<td colspan=2 class=\"right\">" ;
 						print "<input type=\"hidden\" name=\"q\" value=\"/modules/" . $_SESSION[$guid]["module"] . "/ttDates.php\">" ;
-						print "<input type=\"submit\" value=\"Search\">" ;
+						print "<input type=\"submit\" value=\"" . _("Submit") . "\">" ;
 					print "</td>" ;
 				print "</tr>" ;
 			print "</table>" ;
