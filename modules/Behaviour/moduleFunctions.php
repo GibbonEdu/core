@@ -18,6 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
+	$enableDescriptors=getSettingByScope($connection2, "Behaviour", "enableDescriptors") ;
+	$enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
+
 	try {
 		$dataYears=array("gibbonPersonID"=>$gibbonPersonID); 
 		$sqlYears="SELECT * FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC" ;
@@ -84,12 +87,16 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 						print "<th>" ;
 							print _("Type") ;
 						print "</th>" ;
-						print "<th>" ;
-							print _("Descriptor") ;
-						print "</th>" ;
-						print "<th>" ;
-							print _("Level") ;
-						print "</th>" ;
+						if ($enableDescriptors=="Y") {
+							print "<th>" ;
+								print _("Descriptor") ;
+							print "</th>" ;
+						}
+						if ($enableLevels=="Y") {
+							print "<th>" ;
+								print _("Level") ;
+							print "</th>" ;
+						}
 						print "<th>" ;
 							print _("Teacher") ;
 						print "</th>" ;
@@ -128,12 +135,16 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 									print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 								}
 							print "</td>" ;
-							print "<td>" ;
-								print trim($row["descriptor"]) ;
-							print "</td>" ;
-							print "<td>" ;
-								print trim($row["level"]) ;
-							print "</td>" ;
+							if ($enableDescriptors=="Y") {
+								print "<td>" ;
+									print trim($row["descriptor"]) ;
+								print "</td>" ;
+							}
+							if ($enableLevels=="Y") {
+								print "<td>" ;
+									print trim($row["level"]) ;
+								print "</td>" ;
+							}
 							print "<td>" ;
 								print formatName($row["title"], $row["preferredName"], $row["surname"], "Staff", false, true) . "</b><br/>" ;
 							print "</td>" ;

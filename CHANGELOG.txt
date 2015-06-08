@@ -327,6 +327,18 @@ Students: made alerts on student profile much larger and more obvious:
 	Edited file /functions.php
 	Edited file /modules/Students/student_view_details.php
 
+Behaviour: added hidden options (to be added to interface in v11) to allow levels and descriptors to be disabled for simplified use
+	New values in table gibbonSetting
+	Edited table gibbonBehaviour
+	Edited file /modules/Behaviour/behaviour_*.php
+	Edited files /modules/School Admin/behaviourSettings.php
+
+School Admin: fixed PHP Notice errors
+	Edited file /modules/School Admin/schoolYearSpecialDay_manage.php
+
+Timetable Admin: fixed PHP Notice errors
+	Edited file /modules/Timetable Admin/ttDates.php
+
 
 v9.1.00
 -------

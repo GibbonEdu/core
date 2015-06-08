@@ -22,6 +22,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
+$enableDescriptors=getSettingByScope($connection2, "Behaviour", "enableDescriptors") ;
+$enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
+
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -278,12 +281,16 @@ else {
 					print "<th>" ;
 						print _("Type") ;
 					print "</th>" ;
-					print "<th>" ;
-						print _("Descriptor") ;
-					print "</th>" ;
-					print "<th>" ;
-						print _("Level") ;
-					print "</th>" ;
+					if ($enableDescriptors=="Y") {
+						print "<th>" ;
+							print _("Descriptor") ;
+						print "</th>" ;
+					}
+					if ($enableLevels=="Y") {
+						print "<th>" ;
+							print _("Level") ;
+						print "</th>" ;
+					}
 					print "<th>" ;
 						print _("Teacher") ;
 					print "</th>" ;
@@ -335,12 +342,16 @@ else {
 								print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 							}
 						print "</td>" ;
-						print "<td>" ;
-							print trim($row["descriptor"]) ;
-						print "</td>" ;
-						print "<td>" ;
-							print trim($row["level"]) ;
-						print "</td>" ;
+						if ($enableDescriptors=="Y") {
+							print "<td>" ;
+								print trim($row["descriptor"]) ;
+							print "</td>" ;
+						}
+						if ($enableLevels=="Y") {
+							print "<td>" ;
+								print trim($row["level"]) ;
+							print "</td>" ;
+						}
 						print "<td>" ;
 							print formatName($row["title"], $row["preferredNameCreator"], $row["surnameCreator"], "Staff") . "</b><br/>" ;
 						print "</td>" ;

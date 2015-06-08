@@ -32,6 +32,9 @@ catch(PDOException $e) {
 
 @session_start() ;
 
+$enableDescriptors=getSettingByScope($connection2, "Behaviour", "enableDescriptors") ;
+$enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
+
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
@@ -52,12 +55,18 @@ else {
 	}
 	$date=$_POST["date"] ; 
 	$type=$_POST["type"] ; 
-	$descriptor=$_POST["descriptor"] ; 
-	$level=$_POST["level"] ; 
+	$descriptor=NULL ;
+	if (isset($_POST["descriptor"])) {
+		$descriptor=$_POST["descriptor"] ; 
+	}
+	$level=NULL ;
+	if (isset($_POST["level"])) {
+		$level=$_POST["level"] ; 
+	}
 	$comment=$_POST["comment"] ; 
 	$followup=$_POST["followup"] ; 
 		
-	if (is_null($gibbonPersonIDMulti)==TRUE OR $date=="" OR $type=="" OR $descriptor=="") {
+	if (is_null($gibbonPersonIDMulti)==TRUE OR $date=="" OR $type=="" OR ($descriptor=="" AND $enableDescriptors=="Y")) {
 		//Fail 3
 		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");

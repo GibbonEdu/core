@@ -32,6 +32,9 @@ catch(PDOException $e) {
 
 @session_start() ;
 
+$enableDescriptors=getSettingByScope($connection2, "Behaviour", "enableDescriptors") ;
+$enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
+
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
@@ -45,24 +48,29 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/behaviourSett
 else {
 	//Proceed!
 	$positiveDescriptors="" ; 
-	foreach (explode(",", $_POST["positiveDescriptors"]) as $descriptor) {
-		$positiveDescriptors.=trim($descriptor) . "," ;
-	}
-	$positiveDescriptors=substr($positiveDescriptors,0,-1) ;
 	$negativeDescriptors="" ; 
-	foreach (explode(",", $_POST["negativeDescriptors"]) as $descriptor) {
-		$negativeDescriptors.=trim($descriptor) . "," ;
+	if ($enableDescriptors=="Y") {
+		foreach (explode(",", $_POST["positiveDescriptors"]) as $descriptor) {
+			$positiveDescriptors.=trim($descriptor) . "," ;
+		}
+		$positiveDescriptors=substr($positiveDescriptors,0,-1) ;
+		
+		foreach (explode(",", $_POST["negativeDescriptors"]) as $descriptor) {
+			$negativeDescriptors.=trim($descriptor) . "," ;
+		}
+		$negativeDescriptors=substr($negativeDescriptors,0,-1) ;
 	}
-	$negativeDescriptors=substr($negativeDescriptors,0,-1) ;
 	$levels="" ; 
-	foreach (explode(",", $_POST["levels"]) as $level) {
-		$levels.=trim($level) . "," ;
+	if ($enableLevels=="Y") {
+		foreach (explode(",", $_POST["levels"]) as $level) {
+			$levels.=trim($level) . "," ;
+		}
+		$levels=substr($levels,0,-1) ;	
 	}
-	$levels=substr($levels,0,-1) ;	
 	$policyLink=$_POST["policyLink"] ;
 	
 	//Validate Inputs
-	if ($positiveDescriptors=="" OR $negativeDescriptors=="" OR $levels=="") {
+	if (($positiveDescriptors=="" AND $enableDescriptors=="Y") OR ($negativeDescriptors=="" AND $enableDescriptors=="Y") OR ($levels=="" AND $enableLevels=="Y")) {
 		//Fail 3
 		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -71,34 +79,37 @@ else {
 		//Write to database
 		$fail=FALSE ;
 		
-		try {
-			$data=array("value"=>$positiveDescriptors); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='positiveDescriptors'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
+		if ($enableDescriptors=="Y") {
+			try {
+				$data=array("value"=>$positiveDescriptors); 
+				$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='positiveDescriptors'" ;
+				$result=$connection2->prepare($sql);
+				$result->execute($data);
+			}
+			catch(PDOException $e) { 
+				$fail=TRUE ;
+			}
 		
-		try {
-			$data=array("value"=>$negativeDescriptors); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='negativeDescriptors'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
+			try {
+				$data=array("value"=>$negativeDescriptors); 
+				$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='negativeDescriptors'" ;
+				$result=$connection2->prepare($sql);
+				$result->execute($data);
+			}
+			catch(PDOException $e) { 
+				$fail=TRUE ;
+			}
 		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("value"=>$levels); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='levels'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
+		if ($enableLevels=="Y") {
+			try {
+				$data=array("value"=>$levels); 
+				$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='levels'" ;
+				$result=$connection2->prepare($sql);
+				$result->execute($data);
+			}
+			catch(PDOException $e) { 
+				$fail=TRUE ;
+			}
 		}
 		
 		try {
