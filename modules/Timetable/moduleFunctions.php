@@ -1050,8 +1050,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 		$ttAlpha=0.75 ;
 	}
 	
-	
-	$date=date("Y/m/d", ($startDayStamp+(86400*$count))) ;
+	$date=date("Y-m-d", ($startDayStamp+(86400*$count))) ;
 	
 	$self=FALSE ;
 	if ($gibbonPersonID==$_SESSION[$guid]["gibbonPersonID"]) {
@@ -1274,7 +1273,8 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 						}
 						$title=$title . "'" ;
 						$class2="ttPeriod" ;
-						if ((date("H:i:s")>$effectiveStart) AND (date("H:i:s")<$effectiveEnd) AND date("Y-m-d", ($startDayStamp+(84000*$count)))==date("Y-m-d")) {
+						
+						if ((date("H:i:s")>$effectiveStart) AND (date("H:i:s")<$effectiveEnd) AND $date==date("Y-m-d")) {
 							$class2="ttPeriodCurrent" ;	
 						}
 						
@@ -2077,7 +2077,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 		$ttAlpha=0.75 ;
 	}
 	
-	$date=date("Y/m/d", ($startDayStamp+(86400*$count))) ;
+	$date=date("Y-m-d", ($startDayStamp+(86400*$count))) ;
 	
 	$output="" ;
 	$blank=TRUE ;
@@ -2267,7 +2267,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 						}
 						$title=$title . "'" ;
 						$class2="ttPeriod" ;
-						if ((date("H:i:s")>$effectiveStart) AND (date("H:i:s")<$effectiveEnd) AND date("Y-m-d", ($startDayStamp+(84000*$count)))==date("Y-m-d")) {
+						if ((date("H:i:s")>$effectiveStart) AND (date("H:i:s")<$effectiveEnd) AND $date==date("Y-m-d")) {
 							$class2="ttPeriodCurrent" ;	
 						}
 					

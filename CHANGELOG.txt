@@ -339,6 +339,9 @@ School Admin: fixed PHP Notice errors
 Timetable Admin: fixed PHP Notice errors
 	Edited file /modules/Timetable Admin/ttDates.php
 
+Timetable: fixed issue with incorrect current period highlighting on homepage timetable
+	Edited file /modules/Timetable/moduleFunctions.php
+	Edited file /index_tt_ajax.php
 
 v9.1.00
 -------
