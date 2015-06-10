@@ -343,6 +343,10 @@ Timetable: fixed issue with incorrect current period highlighting on homepage ti
 	Edited file /modules/Timetable/moduleFunctions.php
 	Edited file /index_tt_ajax.php
 
+User Admin: fixed i18n gettext issue in rollover
+	Edited file /modules/User Admin/rollover.php
+	
+
 v9.1.00
 -------
 Installer: removed orphaned debug output

@@ -954,7 +954,7 @@ else {
 				if (getNextSchoolYearID($nextYear, $connection2)==FALSE) {
 					//ADD YEAR FOLLOWING NEXT
 					print "<h4>" ;
-					print sprintf(_('Add Year Following %1$s', $nameNext)) ;
+					print sprintf(_('Add Year Following %1$s'), $nameNext) ;
 					print "</h4>" ;
 					
 					$name=$_POST["nextname"] ;
