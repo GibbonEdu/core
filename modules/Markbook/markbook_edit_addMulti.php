@@ -114,7 +114,13 @@ else {
 						<tr>
 							<td style='width: 275px'> 
 								<b><?php print _('Class') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?> The current class (<?php print $row["course"] . "." . $row["class"] ?>) has already been selected).</i></span>
+								<span style="font-size: 90%"><i>
+									<?php 
+									print _('Use Control, Command and/or Shift to select multiple.') ;
+									print " " ;
+									print sprintf(_('The current class (%1$s.%2$s) has already been selected.'), $row["course"], $row["class"]) ;
+									?>
+								</i></span>
 							</td>
 							<td class="right">
 								<?php

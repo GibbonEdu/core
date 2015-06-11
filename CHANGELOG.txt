@@ -346,6 +346,8 @@ Timetable: fixed issue with incorrect current period highlighting on homepage ti
 User Admin: fixed i18n gettext issue in rollover
 	Edited file /modules/User Admin/rollover.php
 	
+i18n: fixed non-translatable string in Markbook
+	Edited file /modules/Markbook/markbook_edit_addMulti.php
 
 v9.1.00
 -------
