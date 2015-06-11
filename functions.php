@@ -3879,7 +3879,7 @@ function getLogByID($connection2, $gibbonLogID) {
 
 function getModuleID($connection2, $address) {
 	$name = getModuleName($address);
-	return getModuleIDByName($connection2, $name);
+	return getModuleIDFromName($connection2, $name);
 }
 
 function getModuleIDFromName($connection2, $name) {
