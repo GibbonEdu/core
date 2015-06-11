@@ -3876,4 +3876,23 @@ function getLogByID($connection2, $gibbonLogID) {
 	}
 	return $row;
 }
+
+function getModuleID($connection2, $address) {
+	$name = getModuleName($address);
+	return getModuleIDByName($connection2, $name);
+}
+
+function getModuleIDByName($connection2, $name) {
+	try {
+		$dataModuleID=array("name"=>$name); 
+		$sqlModuleID="SELECT gibbonModuleID FROM gibbonModule WHERE name=:name" ;
+		$resultModuleID=$connection2->prepare($sqlModuleID);
+		$resultModuleID->execute($dataModuleID); 
+		$row = $resultModuleID->fetch();
+	}
+	catch(PDOException $e) {
+
+	}
+	return $row['gibbonModuleID'];
+}
 ?>
