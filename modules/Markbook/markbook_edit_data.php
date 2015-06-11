@@ -266,7 +266,7 @@ else {
 										}
 										print $row2["type"] ;
 										if ($row2["attachment"]!="" AND file_exists($_SESSION[$guid]["absolutePath"] . "/" . $row2["attachment"])) {
-											print " | <a style='color: #ffffff' 'title='" . _('Download more information') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row2["attachment"] . "'>" . _('More info') . "</a>"; 
+											print " | <a title='" . _('Download more information') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row2["attachment"] . "'>" . _('More info') . "</a>"; 
 										}
 										print "</span><br/>" ;
 									print "</th>" ;
@@ -591,7 +591,7 @@ else {
 								<?php
 								print "<td colspan=" . ($span) . ">" ;
 								?>
-									<h3>Assessment Complete?</h3>
+									<h3><?php print _('Assessment Complete?') ?></h3>
 								</td>
 							</tr>
 							<tr>
@@ -599,7 +599,7 @@ else {
 								print "<td>" ;
 								?>
 									<b><?php print _('Go Live Date') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('1. Format') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print _('2. Column is hidden until date is reached.') ?></i></span>
+									<span style="font-size: 90%"><i><?php print _('1. Format') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print _('2. Column is hidden until date is reached.') ?></i></span>
 								</td>
 								<td class="right" colspan="<?php print $span-1 ?>">
 									<input name="completeDate" id="completeDate" maxlength=10 value="<?php print dateConvertBack($guid, $row2["completeDate"]) ?>" type="text" style="width: 300px">
