@@ -3882,7 +3882,7 @@ function getModuleID($connection2, $address) {
 	return getModuleIDByName($connection2, $name);
 }
 
-function getModuleIDByName($connection2, $name) {
+function getModuleIDFromName($connection2, $name) {
 	try {
 		$dataModuleID=array("name"=>$name); 
 		$sqlModuleID="SELECT gibbonModuleID FROM gibbonModule WHERE name=:name" ;
