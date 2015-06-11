@@ -1033,68 +1033,27 @@ _('Parent') ;
 _('Other') ;
 
 //gibbonRole - name
-_('Activities Coord.') ;
 _('Administrator') ;
-_('Board Members') ;
-_('Cover Teacher') ;
-_('EA') ;
-_('Finance') ;
-_('Finance Director') ;
-_('Head Of Department') ;
-_('Higher Education') ;
-_('Inventory') ;
-_('New Teacher') ;
-_('Nurse') ;
 _('Parent') ;
-_('Parent Helper') ;
-_('SLT') ;
 _('Student') ;
 _('Support Staff') ;
 _('Teacher') ;
-_('WHAT') ;
 
 //gibbonRole - nameShort
-_('AcCo') ;
 _('Admn') ;
-_('Bmem') ;
-_('COV') ;
-_('EA') ;
-_('FN') ;
-_('FND') ;
-_('HE') ;
-_('HOD') ;
-_('Inv') ;
-_('Nrs') ;
-_('NT') ;
-_('PaH') ;
 _('Prnt') ;
-_('SLT') ;
 _('Stud') ;
 _('SuSt') ;
 _('Tchr') ;
-_('WHAT') ;
 
 //gibbonRole - description
-_('Access to financial functionality') ;
-_('Board Members') ;
 _('Controls all aspects of the system') ;
-_('Cover teachers') ;
-_('Educational Assistant') ;
-_('Higher Education Coordinator') ;
 _('Parent or guardian of person studying in') ;
-_('Parents who come to school to help out') ;
 _('Person studying in the school') ;
 _('Regular, classroom teacher') ;
-_('Runs the school\'s activitiy programs') ;
-_('School Nurse') ;
-_('Senior Leadership Team') ;
-_('Staff plus Library permissions.') ;
 _('Staff who support teaching and learning') ;
-_('Teachers new to ICHK') ;
-_('Welfare, Holistic, Achievement Team') ;
 
 //gibbonScale - name
-_('Bloom\'s Modified') ;
 _('Cognitive Abilities Test') ;
 _('Completion') ;
 _('Full Letter Grade') ;
@@ -1103,7 +1062,6 @@ _('IB Diploma (Total)') ;
 _('International Baccalaureate') ;
 _('International Baccalaureate EE') ;
 _('International College HK') ;
-_('Learning Security') ;
 _('One To Four') ;
 _('Percentage') ;
 _('Simple Letter Grade') ;
@@ -1115,7 +1073,6 @@ _('United Kingdom GCSE/iGCSE Predicted') ;
 //gibbonScale - nameShort
 _('%') ;
 _('1-4') ;
-_('BloM') ;
 _('CAT') ;
 _('Comp') ;
 _('FLG') ;
@@ -1128,7 +1085,6 @@ _('IBEE') ;
 _('ICHK') ;
 _('KS3') ;
 _('KS3S') ;
-_('LS') ;
 _('SLG') ;
 
 //gibbonScale - usage
@@ -1143,12 +1099,9 @@ _('A (highest) to F (lowest)') ;
 _('A* (highest) to U (lowest)') ;
 _('A+ (highest) to F (lowest)') ;
 _('Has task has been completed?') ;
-_('Indicates how secure a student\'s learning is') ;
 _('Level 8 (highest) to Level 3 (lowest)') ;
-_('Non-numeric scale aiming to reduce mark obsession') ;
 
 //gibbonScale - name
-_('Bloom\'s Modified') ;
 _('Cognitive Abilities Test') ;
 _('Completion') ;
 _('Full Letter Grade') ;
@@ -1157,7 +1110,6 @@ _('IB Diploma (Total)') ;
 _('International Baccalaureate') ;
 _('International Baccalaureate EE') ;
 _('International College HK') ;
-_('Learning Security') ;
 _('One To Four') ;
 _('Percentage') ;
 _('Simple Letter Grade') ;
@@ -1439,14 +1391,9 @@ _('EP') ;
 _('F') ;
 _('G') ;
 _('Incomplete') ;
-_('Ju') ;
-_('Kn') ;
 _('Late') ;
-_('NYS') ;
-_('S') ;
-_('SIP') ;
 _('U') ;
-_('Un') ;
+
 
 //gibbonScaleGrade - descriptor
 _('0%') ;
@@ -1728,8 +1675,6 @@ _('Exceptional Performance') ;
 _('Exceptional Performance') ;
 _('F') ;
 _('G') ;
-_('Judging') ;
-_('Knowing') ;
 _('Level 1') ;
 _('Level 2') ;
 _('Level 3') ;
@@ -1738,11 +1683,7 @@ _('Level 5') ;
 _('Level 6') ;
 _('Level 7') ;
 _('Level 8') ;
-_('Not Yet Secure') ;
-_('Secure') ;
-_('Secure In Parts') ;
 _('Unclassified') ;
-_('Understanding') ;
 _('Well Above Expected Level') ;
 _('Well Below Expected Level') ;
 _('Work complete') ;
