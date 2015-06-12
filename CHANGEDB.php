@@ -435,6 +435,6 @@ CREATE TABLE `gibbonLog` (`gibbonLogID` int(16) unsigned zerofill NOT NULL AUTO_
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Behaviour', 'enableDescriptors', 'Enable Descriptors', 'Setting to No reduces complexity of behaviour tracking.', 'Y');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Behaviour', 'enableLevels', 'Enable Levels', 'Setting to No reduces complexity of behaviour tracking.', 'Y');end
 ALTER TABLE `gibbonBehaviour` CHANGE `descriptor` `descriptor` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `level` `level` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
-
+UPDATE gibboni18n SET active='Y' WHERE code='pt_PT';end
 " ;
 ?>

@@ -351,6 +351,10 @@ i18n: fixed non-translatable string in Markbook
 
 Markbook: fixed incorrect default class (when none specified) in Markbook edit
 	Edited file /modules/Markbook/markbook_edit.php
+
+i18n: set Portuguese to active (there are some issues to iron out, but this will happen before release)
+	Edited value in table gibboni18n
+	
 v9.1.00
 -------
 Installer: removed orphaned debug output
