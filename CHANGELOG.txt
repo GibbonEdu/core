@@ -354,7 +354,14 @@ Markbook: fixed incorrect default class (when none specified) in Markbook edit
 
 i18n: set Portuguese to active (there are some issues to iron out, but this will happen before release)
 	Edited value in table gibboni18n
-	
+
+General: added username to select box listings of all users, in some people have the same name
+	Edited file /modules/Activities/activities_manage_enrolment_add.php
+	Edited files /modules/Library/library_manage_catalog_add.php, library_manage_catalog_edit.php
+	Edited file /modules/Timetable Admin/courseEnrolment_manage_class_edit.php
+	Edited file /modules/User Admin/family_manage_edit.php
+
+
 v9.1.00
 -------
 Installer: removed orphaned debug output
