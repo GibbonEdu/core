@@ -364,6 +364,12 @@ General: added username to select box listings of all users, in some people have
 Finance: fixed expense management filter issue
 	Edited files /modules/Finance/expenses_manage.php, moduleFunctions.php
 
+General: fixed database engine
+	Edited table gibbonFinanceBudgetCycleAllocation
+
+Students: fixed missing non-enroled students
+	Edited file /modules/Students/student_view.php
+
 
 v9.1.00
 -------
