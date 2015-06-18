@@ -525,6 +525,31 @@ function getBudgetsByPerson($connection2, $gibbonPersonID, $gibbonFinanceBudgetI
 	return $return ;
 }
 
+//Returns all active budgets
+function getBudgets($connection2) {
+	$return=FALSE ;
+	
+	try {
+		$data=array();
+		$sql="SELECT * FROM gibbonFinanceBudget WHERE active='Y' ORDER BY name" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { print $e->getMessage() ;}
+	
+	$count=0 ;
+	if ($result->rowCount()>0) {
+		$return=array() ;
+		while ($row=$result->fetch()) {
+			$return[$count][0]=$row["gibbonFinanceBudgetID"] ;
+			$return[$count][1]=$row["name"] ;
+			$count++ ;
+		}
+	}
+	
+	return $return ;
+}
+
 
 //Take a budget cycle, and return the previous one, or false if none
 function getPreviousBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2) {

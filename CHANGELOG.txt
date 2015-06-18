@@ -361,6 +361,9 @@ General: added username to select box listings of all users, in some people have
 	Edited file /modules/Timetable Admin/courseEnrolment_manage_class_edit.php
 	Edited file /modules/User Admin/family_manage_edit.php
 
+Finance: fixed expense management filter issue
+	Edited files /modules/Finance/expenses_manage.php, moduleFunctions.php
+
 
 v9.1.00
 -------

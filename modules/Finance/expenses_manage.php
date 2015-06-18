@@ -69,9 +69,11 @@ else {
 		print "</p>" ;
 	
 		//Check if have Full, Write or Read access in any budgets
-		$budgets=getBudgetsByPerson($connection2, $_SESSION[$guid]["gibbonPersonID"]) ;
 		$budgetsAccess=FALSE ;
+		$budgets=getBudgetsByPerson($connection2, $_SESSION[$guid]["gibbonPersonID"]) ;
+		$budgetsAll=NULL ;
 		if ($highestAction=="Manage Expenses_all") {
+			$budgetsAll=getBudgets($connection2) ;
 			$budgetsAccess=TRUE ;
 		}
 		else {
@@ -256,7 +258,10 @@ else {
 												$selected="selected" ;
 											}
 											print "<option $selected value=''>" . _('All') . "</option>" ;
-											foreach ($budgets AS $budget) {
+											if ($budgetsAll==NULL) {
+												$budgetsAll=$budgets ;
+											}
+											foreach ($budgetsAll AS $budget) {
 												$selected="" ;
 												if ($gibbonFinanceBudgetID==$budget[0]) {
 													$selected="selected" ;
