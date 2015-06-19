@@ -151,7 +151,7 @@ else {
 			}
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;
-					print "<td colspan=2>" ;
+					print "<td colspan=3>" ;
 						print _("There are no records to display.") ;
 					print "</td>" ;
 				print "</tr>" ;
