@@ -3836,21 +3836,29 @@ function getLog($connection2, $gibbonSchoolYearID, $gibbonModuleID=null, $gibbon
 	}
 	
 	if($startDate!=null && $endDate==null) {
+		$startDate = str_replace('/', '-', $startDate);
+		$startDate = date("Y-m-d", strtotime($startDate));
 		$dataLog['startDate'] = $startDate;
 		$where.=" AND timestamp>=:startDate";
 	}
 	else if($startDate==null && $endDate!=null) {
+		$endDate = str_replace('/', '-', $endDate);
+		$endDate = date("Y-m-d", strtotime($endDate));
 		$dataLog['endDate'] = $endDate;
 		$where.=" AND timestamp<=:endDate";
 	}
 	elseif($startDate!=null && $endDate!=null)  {
+		$startDate = str_replace('/', '-', $startDate);
+		$startDate = date("Y-m-d", strtotime($startDate));
 		$dataLog['startDate'] = $startDate;
+		$endDate = str_replace('/', '-', $endDate);
+		$endDate = date("Y-m-d", strtotime($endDate));
 		$dataLog['endDate'] = $endDate;
 		$where.=" AND timestamp>=:startDate AND  timestamp<=:endDate";
 	}
  	 	
 	try {
-		$sqlLog="SELECT * FROM gibbonLog WHERE gibbonSchoolYearID=:gibbonSchoolYearID " . $where ;
+		$sqlLog="SELECT * FROM gibbonLog WHERE gibbonSchoolYearID=:gibbonSchoolYearID " . $where . " ORDER BY timestamp DESC" ;
 		$resultLog=$connection2->prepare($sqlLog);
 		$resultLog->execute($dataLog); 
 	}
