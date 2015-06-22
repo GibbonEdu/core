@@ -1637,7 +1637,7 @@ function formatName( $title, $preferredName, $surname, $roleCategory, $reverse=F
 	if ($roleCategory=="Staff" OR $roleCategory=="Other") {
 		if ($informal==FALSE) {
 			if ($reverse==TRUE) {
-				$output=$title . " " . $surname . ", " . strtoupper(substr($preferredName,0,1)) ;
+				$output=$title . " " . $surname . ", " . strtoupper(substr($preferredName,0,1)) . "." ;
 			}
 			else {
 				$output=$title . " " . strtoupper(substr($preferredName,0,1)) . ". " . $surname ;

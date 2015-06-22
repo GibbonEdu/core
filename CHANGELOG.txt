@@ -373,6 +373,8 @@ Students: fixed missing non-enroled students
 Timetable Admin: fixed minor display issue in report
 	Edited file /modules/Timetable Admin/report_classEnrolment_byRollGroup.php
 
+General: added trailing full stop to formal staff names in reverse
+	Edited file /functions.php
 
 v9.1.00
 -------
