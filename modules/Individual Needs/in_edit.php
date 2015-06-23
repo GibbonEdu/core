@@ -138,7 +138,9 @@ else {
 			
 			$gibbonINArchiveID=NULL ;
 			if (isset($_POST["gibbonINArchiveID"])) {
-				$gibbonINArchiveID=$_POST["gibbonINArchiveID"] ;
+				if ($_POST["gibbonINArchiveID"]!="") {
+					$gibbonINArchiveID=$_POST["gibbonINArchiveID"] ;
+				}
 			}
 			$archiveStrategies=NULL ;
 			$archiveTargets=NULL ;

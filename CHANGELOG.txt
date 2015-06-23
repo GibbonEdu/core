@@ -376,6 +376,10 @@ Timetable Admin: fixed minor display issue in report
 General: added trailing full stop to formal staff names in reverse
 	Edited file /functions.php
 
+Individual Needs: fixed bug preventing switch back form archive view to current view
+	Edited file /modules/Individual Needs/in_edit.php
+
+
 v9.1.00
 -------
 Installer: removed orphaned debug output
