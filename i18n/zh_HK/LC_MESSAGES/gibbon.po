@@ -2053,7 +2053,7 @@ msgstr ""
 #: modules/Planner/planner_deadlines.php:773
 #: modules/Planner/planner_deadlines.php:1017 Admin/behaviourSettings.php:174
 #: Admin/systemSettings.php:1062 Admin/ttDates.php:364
-#: publicRegistration.php:305 installer/install.php:143
+#: publicRegistration.php:305 Needs/in_edit.php:322 installer/install.php:143
 #: installer/install.php:240 installer/install.php:1083
 #: modules/Activities/activities_copy.php:110
 #: modules/Activities/activities_manage.php:79
@@ -3133,6 +3133,8 @@ msgstr "照片"
 #: Admin/applicationForm_manage_accept.php:795
 #: Admin/applicationForm_manage_accept.php:951
 #: Admin/applicationForm_manage_accept.php:1114
+#: modules/Finance/moduleFunctions.php:940
+#: modules/Finance/moduleFunctions.php:1224 Needs/in_edit.php:182
 #: modules/Activities/activities_manage_add.php:79
 #: modules/Activities/activities_manage_edit.php:135
 #: modules/Activities/activities_manage_edit.php:435
@@ -3431,6 +3433,7 @@ msgstr "課堂/課程"
 #: modules/Behaviour/behaviour_manage_edit.php:177
 #: modules/Behaviour/moduleFunctions.php:85
 #: modules/Planner/planner_deadlines.php:781
+#: modules/Finance/expenses_manage.php:385
 #: modules/Attendance/attendance_take_byPerson.php:123
 #: modules/Attendance/attendance_take_byRollGroup.php:140
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:53
@@ -4081,8 +4084,10 @@ msgstr "學生檔案"
 #: modules/Behaviour/behaviour_pattern.php:350
 #: modules/Behaviour/behaviour_view.php:116
 #: modules/Behaviour/behaviour_view_details.php:91
-#: Admin/applicationForm_manage_accept.php:346 index.php:625
-#: modules/Activities/report_activitySpread_rollGroup.php:51
+#: Admin/applicationForm_manage_accept.php:346
+#: modules/Finance/moduleFunctions.php:852
+#: modules/Finance/moduleFunctions.php:1148 Needs/in_edit.php:190
+#: index.php:625 modules/Activities/report_activitySpread_rollGroup.php:51
 #: modules/Activities/report_activitySpread_rollGroup.php:128
 #: modules/Activities/report_activityType_rollGroup.php:51
 #: modules/Activities/report_activityType_rollGroup.php:128
@@ -5708,8 +5713,8 @@ msgstr "你的請求失敗了因為你的輸入無效"
 #: modules/Behaviour/behaviour_manage_add.php:55
 #: modules/Behaviour/behaviour_manage_addMulti.php:48
 #: modules/Behaviour/behaviour_manage_edit.php:59
-#: modules/Behaviour/behaviour_manage_edit.php:90
-#: cli/attendance_dailyIncompleteEmail.php:77
+#: modules/Behaviour/behaviour_manage_edit.php:90 Needs/in_edit.php:215
+#: Needs/in_edit.php:269 cli/attendance_dailyIncompleteEmail.php:77
 #: cli/attendance_dailyIncompleteEmail.php:93
 #: cli/planner_parentWeeklyEmailSummary.php:86 functions.php:325
 #: functions.php:1414 functions.php:1433 functions.php:1992 functions.php:3590
@@ -7460,6 +7465,7 @@ msgstr "觀看詳情"
 #: modules/Behaviour/moduleFunctions.php:78
 #: modules/Markbook/markbook_view.php:591
 #: modules/Markbook/markbook_view.php:1961
+#: modules/Finance/expenses_manage.php:339
 #: cli/attendance_dailyIncompleteEmail.php:99
 #: cli/attendance_dailyIncompleteEmail.php:101
 #: cli/planner_parentWeeklyEmailSummary.php:103
@@ -10349,7 +10355,9 @@ msgstr "導出到 Excel"
 #: index.php:913 modules/Behaviour/behaviour_manage.php:258
 #: modules/Behaviour/behaviour_manage_add.php:44
 #: modules/Behaviour/moduleFunctions.php:43
-#: Admin/schoolYearSpecialDay_manage.php:283 index.php:913
+#: Admin/schoolYearSpecialDay_manage.php:283
+#: modules/Finance/expenses_manage.php:334
+#: modules/Finance/expenses_manage.php:350 index.php:913
 #: modules/Activities/activities_manage.php:131
 #: modules/Activities/activities_manage_enrolment.php:204
 #: modules/Behaviour/behaviour_manage.php:258
@@ -11423,8 +11431,8 @@ msgstr "總招生:"
 #: Admin/role_manage_edit.php:112 functions.php:1329
 #: modules/Activities/activities_manage_add.php:589
 #: modules/Activities/activities_manage_edit.php:777 functions.php:1330
-#: functions.php:1330 i18n/dbStringsForTranslation.php:989
-#: i18n/dbStringsForTranslation.php:1030
+#: modules/Finance/expenses_manage.php:376 functions.php:1330
+#: i18n/dbStringsForTranslation.php:989 i18n/dbStringsForTranslation.php:1030
 #: modules/Activities/activities_manage_add.php:578
 #: modules/Activities/activities_manage_add.php:583
 #: modules/Activities/activities_manage_add.php:589
@@ -11554,8 +11562,11 @@ msgstr "員工"
 #: modules/Markbook/markbook_view.php:1013
 #: modules/Markbook/markbook_view.php:1613
 #: modules/Timetable/moduleFunctions.php:420
-#: modules/Timetable/moduleFunctions.php:1600 functions.php:1378
-#: functions.php:1459 modules/Behaviour/behaviour_manage.php:196
+#: modules/Timetable/moduleFunctions.php:1600
+#: modules/Finance/expenses_manage.php:282
+#: modules/Finance/expenses_manage.php:358 Needs/in_edit.php:173
+#: functions.php:1378 functions.php:1459
+#: modules/Behaviour/behaviour_manage.php:196
 #: modules/Behaviour/behaviour_pattern.php:250
 #: modules/Departments/department.php:224
 #: modules/Departments/department_course_class.php:562
@@ -13504,7 +13515,7 @@ msgstr "清除搜索"
 #: modules/Behaviour/behaviour_view.php:119
 #: modules/Behaviour/moduleFunctions.php:104
 #: modules/Planner/planner_deadlines.php:806
-#: i18n/dbStringsForTranslation.php:21
+#: modules/Finance/expenses_manage.php:388 i18n/dbStringsForTranslation.php:21
 #: modules/Activities/activities_manage.php:171
 #: modules/Activities/activities_manage_edit.php:444
 #: modules/Activities/activities_manage_edit.php:731
@@ -15369,7 +15380,11 @@ msgstr "你的請求失敗由於復健錯誤。"
 #: modules/Students/student_view_details.php:2550 Admin/staff_manage.php:157
 #: Admin/user_manage_add.php:315 Admin/user_manage_edit.php:368
 #: functions.php:852 functions.php:853
-#: Admin/applicationForm_manage_accept.php:1263 functions.php:853
+#: Admin/applicationForm_manage_accept.php:1263
+#: modules/Finance/expenses_manage.php:203
+#: modules/Finance/expenses_manage.php:379
+#: modules/Finance/moduleFunctions.php:855
+#: modules/Finance/moduleFunctions.php:1151 functions.php:853
 #: modules/Activities/activities_manage_enrolment.php:219
 #: modules/Activities/activities_manage_enrolment_add.php:222
 #: modules/Activities/activities_manage_enrolment_edit.php:120
@@ -16785,8 +16800,8 @@ msgstr "請選擇..."
 #: modules/Library/library_lending_item_signout.php:219
 #: modules/Markbook/markbook_edit_addMulti.php:199
 #: Admin/systemSettings.php:1051 publicRegistration.php:156
-#: installer/install.php:1002 installer/install.php:1068
-#: modules/Activities/activities_copy.php:100
+#: modules/Finance/expenses_manage.php:365 installer/install.php:1002
+#: installer/install.php:1068 modules/Activities/activities_copy.php:100
 #: modules/Activities/activities_view_register.php:371
 #: modules/Application Form/applicationForm.php:231
 #: modules/Application Form/applicationForm.php:625
@@ -17463,7 +17478,7 @@ msgstr "搜索"
 #: modules/Behaviour/behaviour_pattern.php:347
 #: modules/Behaviour/behaviour_view.php:113
 #: modules/Behaviour/behaviour_view_details.php:75
-#: Admin/applicationForm_manage_accept.php:330
+#: Admin/applicationForm_manage_accept.php:330 Needs/in_edit.php:186
 #: modules/Behaviour/behaviour_manage.php:141
 #: modules/Behaviour/behaviour_pattern.php:200
 #: modules/Behaviour/behaviour_pattern.php:347
@@ -17714,6 +17729,8 @@ msgstr "明年"
 #: modules/Resources/resources_manage_add.php:379
 #: Admin/role_manage_edit.php:187
 #: modules/Markbook/markbook_edit_addMulti.php:166
+#: modules/Finance/moduleFunctions.php:946
+#: modules/Finance/moduleFunctions.php:1230
 #: i18n/dbStringsForTranslation.php:912
 #: modules/Activities/activities_manage_add.php:371
 #: modules/Activities/activities_manage_edit.php:402
@@ -17901,6 +17918,7 @@ msgstr "由於數據庫錯誤而失敗了在你的請求的一個或多個領域
 #: modules/Finance/invoices_manage.php:474
 #: Admin/courseEnrolment_manage_byPerson_edit.php:255
 #: modules/Finance/expenses_manage.php:355
+#: modules/Finance/expenses_manage.php:360
 #: modules/Finance/expenses_manage.php:360
 #: modules/Finance/invoices_manage.php:474
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:255
@@ -18105,6 +18123,8 @@ msgstr "課程"
 #: modules/Finance/expenseRequest_manage.php:239
 #: modules/Finance/expenses_manage.php:211
 #: modules/Finance/expenses_manage.php:258
+#: modules/Finance/expenses_manage.php:213
+#: modules/Finance/expenses_manage.php:260
 #: modules/Application Form/applicationForm.php:1890
 #: modules/Data Updater/data_finance.php:424
 #: modules/Finance/expenseRequest_manage.php:192
@@ -18402,7 +18422,10 @@ msgstr "5"
 #: modules/Planner/planner_view_full.php:1124
 #: modules/Planner/planner_view_full.php:1206 Admin/staff_manage.php:102
 #: functions.php:440 functions.php:441 index.php:806
-#: modules/Planner/planner_deadlines.php:1008 functions.php:441 index.php:806
+#: modules/Planner/planner_deadlines.php:1008
+#: modules/Finance/expenses_manage.php:329
+#: modules/Finance/expenses_manage.php:344
+#: modules/Finance/expenses_manage.php:441 functions.php:441 index.php:806
 #: modules/Crowd Assessment/crowdAssess_view.php:248
 #: modules/Finance/billingSchedule_manage.php:122
 #: modules/Finance/expenseRequest_manage.php:289
@@ -18873,10 +18896,10 @@ msgstr "老師 (課程)"
 #: Admin/user_manage_edit.php:1419 publicRegistration.php:163
 #: modules/Activities/activities_manage_add.php:629
 #: modules/Activities/activities_manage_edit.php:817
-#: publicRegistration.php:151 i18n/dbStringsForTranslation.php:37
-#: i18n/dbStringsForTranslation.php:819 i18n/dbStringsForTranslation.php:882
-#: i18n/dbStringsForTranslation.php:959 i18n/dbStringsForTranslation.php:1026
-#: i18n/dbStringsForTranslation.php:1033
+#: publicRegistration.php:151 modules/Finance/moduleFunctions.php:688
+#: i18n/dbStringsForTranslation.php:37 i18n/dbStringsForTranslation.php:819
+#: i18n/dbStringsForTranslation.php:882 i18n/dbStringsForTranslation.php:959
+#: i18n/dbStringsForTranslation.php:1026 i18n/dbStringsForTranslation.php:1033
 #: modules/Activities/activities_manage_add.php:629
 #: modules/Activities/activities_manage_edit.php:817
 #: modules/Application Form/applicationForm.php:564
@@ -19287,7 +19310,9 @@ msgstr "編輯領域"
 #: modules/Students/student_view_details.php:1748
 #: modules/Students/student_view_details_notes_add.php:126
 #: modules/Students/student_view_details_notes_edit.php:154
-#: Admin/role_manage_edit.php:94 modules/Finance/budgets_manage.php:91
+#: Admin/role_manage_edit.php:94 modules/Finance/moduleFunctions.php:943
+#: modules/Finance/moduleFunctions.php:1227
+#: modules/Finance/budgets_manage.php:91
 #: modules/Finance/budgets_manage_add.php:118
 #: modules/Finance/budgets_manage_add.php:144
 #: modules/Finance/budgets_manage_edit.php:148
@@ -19683,6 +19708,7 @@ msgstr "編輯成績"
 #: Admin/gradeScales_manage_edit_grade_edit.php:102
 #: modules/Finance/moduleFunctions.php:106
 #: modules/Finance/moduleFunctions.php:675
+#: modules/Finance/moduleFunctions.php:700
 #: modules/Finance/moduleFunctions.php:700
 #: modules/School Admin/gradeScales_manage_edit.php:238
 #: modules/School Admin/gradeScales_manage_edit_grade_add.php:101
@@ -21426,6 +21452,7 @@ msgstr "按照人士來招生的過程"
 #: Groups/rollGroups_details.php:116
 #: modules/Finance/expenseRequest_manage.php:175
 #: modules/Finance/expenses_manage.php:194
+#: modules/Finance/expenses_manage.php:196
 #: modules/Finance/expenseRequest_manage.php:175
 #: modules/Finance/expenses_manage.php:196
 #: modules/Finance/invoicees_manage.php:82
@@ -21684,7 +21711,8 @@ msgstr "被標記為離開"
 #: Admin/user_manage_edit.php:1235 Admin/user_manage_edit.php:1460
 #: Admin/user_manage_edit.php:1483 functions.php:1468 functions.php:1469
 #: modules/Behaviour/behaviour_manage.php:360
-#: Admin/schoolYearSpecialDay_manage.php:277 functions.php:1469
+#: Admin/schoolYearSpecialDay_manage.php:277
+#: modules/Finance/moduleFunctions.php:710 functions.php:1469
 #: modules/Activities/activities_manage.php:273
 #: modules/Activities/activities_manage_edit.php:489
 #: modules/Activities/activities_manage_edit.php:755
@@ -22404,6 +22432,8 @@ msgstr "線機殼"
 #: modules/Finance/moduleFunctions.php:1005
 #: modules/Finance/moduleFunctions.php:1274
 #: modules/Students/student_view_details.php:3012
+#: modules/Finance/moduleFunctions.php:1030
+#: modules/Finance/moduleFunctions.php:1299
 #: modules/External Assessment/import_results.php:110
 #: modules/Finance/invoices_manage_add.php:273
 #: modules/Finance/invoices_manage_edit.php:388
@@ -23890,6 +23920,7 @@ msgstr "等候名單"
 #: modules/Finance/expenseRequest_manage.php:207
 #: modules/Finance/expenses_manage.php:226
 #: modules/Finance/expenses_manage_edit.php:229
+#: modules/Finance/expenses_manage.php:228
 #: modules/Finance/expenseRequest_manage.php:207
 #: modules/Finance/expenses_manage.php:228
 #: modules/Finance/expenses_manage_edit.php:229
@@ -25236,8 +25267,8 @@ msgstr "家長/監護人 %1$s 個人資料"
 #: modules/Students/student_view_details.php:1751
 #: modules/Students/student_view_details_notes_add.php:103
 #: modules/Students/student_view_details_notes_edit.php:131
-#: installer/install.php:456 installer/install.php:456
-#: modules/Application Form/applicationForm.php:1060
+#: installer/install.php:456 modules/Finance/expenses_manage.php:372
+#: installer/install.php:456 modules/Application Form/applicationForm.php:1060
 #: modules/Data Updater/data_personal.php:351
 #: modules/Finance/expenseRequest_manage.php:313
 #: modules/Finance/expenseRequest_manage_add.php:180
@@ -26245,6 +26276,7 @@ msgstr "目標用戶"
 #: modules/Finance/moduleFunctions.php:196
 #: modules/Finance/invoices_manage.php:497
 #: modules/Finance/moduleFunctions.php:765
+#: modules/Finance/moduleFunctions.php:790
 #: modules/Data Updater/data_finance.php:276
 #: modules/Finance/invoicees_manage.php:183
 #: modules/Finance/invoices_manage.php:497
@@ -30197,6 +30229,7 @@ msgstr "年"
 #: modules/Finance/expenseRequest_manage.php:322
 #: modules/Finance/expenses_manage.php:377
 #: modules/Finance/expenses_manage_processBulkExportContents.php:99
+#: modules/Finance/expenses_manage.php:382
 #: modules/Activities/activities_manage.php:164
 #: modules/Activities/activities_manage_add.php:345
 #: modules/Activities/activities_manage_edit.php:376
@@ -31786,6 +31819,7 @@ msgstr "編輯成績表"
 #: modules/Behaviour/moduleFunctions.php:153
 #: modules/Behaviour/moduleFunctions.php:156
 #: Admin/schoolYearSpecialDay_manage.php:276 Admin/ttDates.php:294
+#: modules/Finance/expenses_manage.php:449
 #: modules/Activities/activities_manage.php:272
 #: modules/Activities/activities_manage_enrolment.php:252
 #: modules/Behaviour/behaviour_manage.php:359
@@ -46927,6 +46961,7 @@ msgstr "肯定"
 #: modules/Finance/expenses_manage.php:276
 #: modules/Behaviour/behaviour_manage.php:195
 #: modules/Behaviour/behaviour_pattern.php:249
+#: modules/Finance/expenses_manage.php:281
 #: modules/Behaviour/behaviour_manage.php:195
 #: modules/Behaviour/behaviour_pattern.php:249
 #: modules/Finance/expenseRequest_manage.php:257
@@ -47460,6 +47495,7 @@ msgstr "付錢時間表名稱"
 #: modules/Finance/billingSchedule_manage_edit.php:163
 #: modules/Finance/moduleFunctions.php:288
 #: modules/Finance/moduleFunctions.php:857
+#: modules/Finance/moduleFunctions.php:882
 #: modules/Finance/billingSchedule_manage.php:169
 #: modules/Finance/billingSchedule_manage_add.php:146
 #: modules/Finance/billingSchedule_manage_edit.php:163
@@ -47570,6 +47606,8 @@ msgstr "費用名稱，類型名稱"
 #: modules/Finance/moduleFunctions.php:639
 #: modules/Finance/moduleFunctions.php:924
 #: modules/Finance/moduleFunctions.php:1208
+#: modules/Finance/moduleFunctions.php:949
+#: modules/Finance/moduleFunctions.php:1233
 #: modules/Finance/fees_manage.php:173 modules/Finance/fees_manage_add.php:185
 #: modules/Finance/fees_manage_edit.php:211
 #: modules/Finance/invoices_manage_edit.php:538
@@ -47819,6 +47857,7 @@ msgstr "以發行-過期"
 #: modules/Finance/expenses_manage_edit.php:239
 #: modules/Finance/expenses_manage_edit.php:261
 #: modules/Finance/expenses_manage_edit.php:278
+#: modules/Finance/expenses_manage.php:243
 #: modules/Finance/expenseRequest_manage.php:222
 #: modules/Finance/expenseRequest_manage_reimburse.php:188
 #: modules/Finance/expenses_manage.php:243
@@ -47845,6 +47884,7 @@ msgstr "以支付－遲"
 #: modules/Finance/expenses_manage_edit.php:244
 #: modules/Finance/expenses_manage_edit.php:266
 #: modules/Finance/expenses_manage_edit.php:283
+#: modules/Finance/expenses_manage.php:233
 #: modules/Finance/expenseRequest_manage.php:212
 #: modules/Finance/expenses_manage.php:233
 #: modules/Finance/expenses_manage_edit.php:244
@@ -47884,6 +47924,8 @@ msgstr "付錢時間表"
 #: modules/Finance/moduleFunctions.php:563
 #: modules/Finance/moduleFunctions.php:836
 #: modules/Finance/moduleFunctions.php:1132
+#: modules/Finance/moduleFunctions.php:861
+#: modules/Finance/moduleFunctions.php:1157
 #: modules/Finance/invoices_manage.php:306
 #: modules/Finance/moduleFunctions.php:861
 #: modules/Finance/moduleFunctions.php:1157
@@ -47900,6 +47942,7 @@ msgstr "現在可見有%1$s 個發票"
 #: modules/Finance/invoices_manage.php:464
 #: modules/Finance/invoices_manage.php:465
 #: modules/Finance/expenses_manage.php:349
+#: modules/Finance/expenses_manage.php:354
 #: modules/Finance/expenses_manage.php:354
 #: modules/Finance/invoices_manage.php:465
 msgid "Are you sure you wish to process this action? It cannot be undone."
@@ -47921,6 +47964,7 @@ msgstr "發行提醒"
 #: modules/Planner/units.php:280 modules/Finance/invoices_manage.php:483
 #: modules/Finance/expenses_manage.php:356
 #: modules/Finance/expenses_manage.php:361
+#: modules/Finance/expenses_manage.php:361
 #: modules/Finance/invoices_manage.php:483 modules/Planner/units.php:280
 msgid "Export"
 msgstr "輸出"
@@ -47933,6 +47977,8 @@ msgstr "輸出"
 #: modules/Finance/moduleFunctions.php:561
 #: modules/Finance/moduleFunctions.php:834
 #: modules/Finance/moduleFunctions.php:1130
+#: modules/Finance/moduleFunctions.php:859
+#: modules/Finance/moduleFunctions.php:1155
 #: modules/Finance/invoices_manage.php:506
 #: modules/Finance/invoices_manage_processBulkExportContents.php:108
 #: modules/Finance/moduleFunctions.php:859
@@ -47958,6 +48004,8 @@ msgstr "發行日期"
 #: modules/Finance/moduleFunctions.php:584
 #: modules/Finance/moduleFunctions.php:861
 #: modules/Finance/moduleFunctions.php:1153
+#: modules/Finance/moduleFunctions.php:886
+#: modules/Finance/moduleFunctions.php:1178
 #: modules/Finance/invoices_manage.php:514
 #: modules/Finance/invoices_manage_processBulkExportContents.php:117
 #: modules/Finance/moduleFunctions.php:886
@@ -48115,6 +48163,7 @@ msgstr "根據現在的狀態，可用的選項有限。"
 #: modules/Finance/expenses_manage_edit.php:652
 #: modules/Finance/expenses_manage_view.php:279
 #: modules/Finance/moduleFunctions.php:1157
+#: modules/Finance/moduleFunctions.php:1182
 #: modules/Finance/expenseRequest_manage_reimburse.php:282
 #: modules/Finance/expenses_manage_add.php:286
 #: modules/Finance/expenses_manage_edit.php:547
@@ -48186,6 +48235,8 @@ msgstr "最終合計"
 #: modules/Finance/moduleFunctions.php:678
 #: modules/Finance/moduleFunctions.php:963
 #: modules/Finance/moduleFunctions.php:1247
+#: modules/Finance/moduleFunctions.php:988
+#: modules/Finance/moduleFunctions.php:1272
 #: modules/Finance/invoices_manage_edit.php:577
 #: modules/Finance/moduleFunctions.php:988
 #: modules/Finance/moduleFunctions.php:1272
@@ -48215,6 +48266,8 @@ msgstr "因為在發票和收據的設定中還沒有定電郵地址，所以沒
 #: modules/Finance/moduleFunctions.php:517
 #: modules/Finance/moduleFunctions.php:790
 #: modules/Finance/moduleFunctions.php:1086
+#: modules/Finance/moduleFunctions.php:815
+#: modules/Finance/moduleFunctions.php:1111
 #: modules/Finance/invoices_manage_edit.php:655
 #: modules/Finance/invoices_manage_edit.php:692
 #: modules/Finance/invoices_manage_edit.php:793
@@ -48350,6 +48403,8 @@ msgstr "輸出發票"
 #: modules/Library/library_manage_catalog_add.php:227
 #: modules/Finance/moduleFunctions.php:865
 #: modules/Finance/moduleFunctions.php:1161
+#: modules/Finance/moduleFunctions.php:890
+#: modules/Finance/moduleFunctions.php:1186
 #: modules/Finance/invoices_manage_processBulkExportContents.php:87
 #: modules/Finance/moduleFunctions.php:890
 #: modules/Finance/moduleFunctions.php:1186
@@ -48368,11 +48423,13 @@ msgstr "總共價值"
 #: modules/Finance/moduleFunctions.php:78
 #: modules/Finance/moduleFunctions.php:647
 #: modules/Finance/moduleFunctions.php:672
+#: modules/Finance/moduleFunctions.php:672
 msgid "Fee Name"
 msgstr "費用名稱"
 
 #: modules/Finance/moduleFunctions.php:117
 #: modules/Finance/moduleFunctions.php:686
+#: modules/Finance/moduleFunctions.php:711
 #: modules/Finance/moduleFunctions.php:711
 msgid "Show/Hide"
 msgstr "觀看/隱藏"
@@ -48382,6 +48439,8 @@ msgstr "觀看/隱藏"
 #: modules/Finance/moduleFunctions.php:553
 #: modules/Finance/moduleFunctions.php:826
 #: modules/Finance/moduleFunctions.php:1122
+#: modules/Finance/moduleFunctions.php:851
+#: modules/Finance/moduleFunctions.php:1147
 #: modules/Finance/moduleFunctions.php:851
 #: modules/Finance/moduleFunctions.php:1147
 msgid "Fees For"
@@ -48394,6 +48453,8 @@ msgstr "費用"
 #: modules/Finance/moduleFunctions.php:1178
 #: modules/Finance/moduleFunctions.php:907
 #: modules/Finance/moduleFunctions.php:1203
+#: modules/Finance/moduleFunctions.php:907
+#: modules/Finance/moduleFunctions.php:1203
 msgid "Fee Table"
 msgstr "費用表"
 
@@ -48404,6 +48465,8 @@ msgstr "費用表"
 #: modules/Finance/moduleFunctions.php:1192
 #: modules/Finance/moduleFunctions.php:933
 #: modules/Finance/moduleFunctions.php:1217
+#: modules/Finance/moduleFunctions.php:933
+#: modules/Finance/moduleFunctions.php:1217
 msgid "There are no records to display"
 msgstr "沒有可以觀看的紀錄。"
 
@@ -48411,12 +48474,14 @@ msgstr "沒有可以觀看的紀錄。"
 #: modules/Finance/moduleFunctions.php:492
 #: modules/Finance/moduleFunctions.php:1061
 #: modules/Finance/moduleFunctions.php:1086
+#: modules/Finance/moduleFunctions.php:1086
 msgid "Receipt To"
 msgstr "收據"
 
 #: modules/Finance/moduleFunctions.php:663
 #: modules/Finance/moduleFunctions.php:689
 #: modules/Finance/moduleFunctions.php:1258
+#: modules/Finance/moduleFunctions.php:1283
 #: modules/Finance/moduleFunctions.php:1283
 msgid "Amount Paid:"
 msgstr "已支付的數量"
@@ -48434,7 +48499,7 @@ msgid "View & Contribute To Record"
 msgstr "觀看和加入進記錄"
 
 #: modules/Individual Needs/in_edit.php:159 Needs/in_edit.php:196
-#: modules/Individual Needs/in_edit.php:198
+#: Needs/in_edit.php:198 modules/Individual Needs/in_edit.php:198
 msgid "Individual Needs Status"
 msgstr "個人需要狀態"
 
@@ -48450,7 +48515,7 @@ msgstr "個人需要狀態"
 #: modules/Students/student_view_details.php:2241
 #: modules/Students/student_view_details.php:2284
 #: modules/Students/student_view_details.php:2288 Needs/in_edit.php:222
-#: modules/Students/student_view_details.php:2369
+#: modules/Students/student_view_details.php:2369 Needs/in_edit.php:224
 #: modules/Individual Needs/in_edit.php:224
 #: modules/Students/student_view_details.php:2369
 msgid "Individual Education Plan"
@@ -48469,6 +48534,7 @@ msgstr "個人學習計畫"
 #: modules/Students/student_view_details.php:2307
 #: modules/Students/student_view_details.php:2311 Needs/in_edit.php:238
 #: Needs/in_edit.php:289 modules/Students/student_view_details.php:2392
+#: Needs/in_edit.php:240 Needs/in_edit.php:291
 #: modules/Individual Needs/in_edit.php:240
 #: modules/Individual Needs/in_edit.php:291
 #: modules/Students/student_view_details.php:2392
@@ -48494,8 +48560,8 @@ msgstr "教學戰略"
 #: modules/Messenger/messenger_manage_edit.php:255
 #: modules/Students/student_view_details.php:2308 Needs/in_edit.php:230
 #: Needs/in_edit.php:276 modules/Markbook/markbook_view.php:299
-#: modules/Students/student_view_details.php:2389
-#: modules/Individual Needs/in_edit.php:232
+#: modules/Students/student_view_details.php:2389 Needs/in_edit.php:232
+#: Needs/in_edit.php:278 modules/Individual Needs/in_edit.php:232
 #: modules/Individual Needs/in_edit.php:278
 #: modules/Markbook/markbook_view.php:299
 #: modules/Messenger/messenger_manage_edit.php:255
@@ -56263,6 +56329,7 @@ msgstr "替代缺席數量:"
 #: modules/Students/student_view_details.php:2310
 #: modules/Students/student_view_details.php:2314 Needs/in_edit.php:246
 #: Needs/in_edit.php:302 modules/Students/student_view_details.php:2395
+#: Needs/in_edit.php:248 Needs/in_edit.php:304
 #: modules/Individual Needs/in_edit.php:248
 #: modules/Individual Needs/in_edit.php:304
 #: modules/Students/student_view_details.php:2395
@@ -57696,6 +57763,7 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:418
 #: modules/Finance/invoices_payOnline.php:128
 #: modules/Finance/moduleFunctions.php:987
+#: modules/Finance/moduleFunctions.php:1012
 #: modules/Finance/invoices_payOnline.php:128
 #: modules/Finance/moduleFunctions.php:1012
 msgid "Online Payment"
@@ -57719,6 +57787,7 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:426
 #: modules/Finance/invoices_payOnline.php:142
 #: modules/Finance/moduleFunctions.php:995
+#: modules/Finance/moduleFunctions.php:1020
 #: modules/Finance/invoices_payOnline.php:142
 #: modules/Finance/moduleFunctions.php:1020
 msgid ""
@@ -57728,6 +57797,7 @@ msgstr "這一份發票不能付款，因為總共的數量是多於網上付款
 
 #: modules/Finance/moduleFunctions.php:422
 #: modules/Finance/moduleFunctions.php:991
+#: modules/Finance/moduleFunctions.php:1016
 #: modules/Finance/moduleFunctions.php:1016
 #, php-format
 msgid ""
@@ -57743,6 +57813,7 @@ msgstr ""
 
 #: modules/Finance/moduleFunctions.php:423
 #: modules/Finance/moduleFunctions.php:992
+#: modules/Finance/moduleFunctions.php:1017
 #: modules/Finance/moduleFunctions.php:1017
 msgid "Pay Now"
 msgstr "現在繳錢"
@@ -58556,11 +58627,12 @@ msgstr "學習安全"
 #: i18n/dbStringsForTranslation.php:1077 i18n/dbStringsForTranslation.php:1131
 #: i18n/dbStringsForTranslation.php:1107 i18n/dbStringsForTranslation.php:1161
 #: i18n/dbStringsForTranslation.php:1065 i18n/dbStringsForTranslation.php:1113
+#: i18n/dbStringsForTranslation.php:1065 i18n/dbStringsForTranslation.php:1113
 msgid "One To Four"
 msgstr "一到四"
 
 #: i18n/dbStringsForTranslation.php:1087 i18n/dbStringsForTranslation.php:1117
-#: i18n/dbStringsForTranslation.php:1075
+#: i18n/dbStringsForTranslation.php:1075 i18n/dbStringsForTranslation.php:1075
 msgid "1-4"
 msgstr "1-4"
 
@@ -58569,7 +58641,7 @@ msgid "LS"
 msgstr "LS"
 
 #: i18n/dbStringsForTranslation.php:1105 i18n/dbStringsForTranslation.php:1135
-#: i18n/dbStringsForTranslation.php:1091
+#: i18n/dbStringsForTranslation.php:1091 i18n/dbStringsForTranslation.php:1091
 msgid "1 (low) to 4 (high)"
 msgstr "1 (低) 到 4 (高)"
 
@@ -58578,7 +58650,7 @@ msgid "Indicates how secure a student's learning is"
 msgstr "表示學生掌握了多少"
 
 #: i18n/dbStringsForTranslation.php:1408 i18n/dbStringsForTranslation.php:1438
-#: i18n/dbStringsForTranslation.php:1390
+#: i18n/dbStringsForTranslation.php:1390 i18n/dbStringsForTranslation.php:1390
 msgid "EP"
 msgstr "卓越的表現"
 
@@ -58595,12 +58667,12 @@ msgid "SIP"
 msgstr "部分掌握"
 
 #: i18n/dbStringsForTranslation.php:1703 i18n/dbStringsForTranslation.php:1733
-#: i18n/dbStringsForTranslation.php:1678
+#: i18n/dbStringsForTranslation.php:1678 i18n/dbStringsForTranslation.php:1678
 msgid "Level 1"
 msgstr "第一級"
 
 #: i18n/dbStringsForTranslation.php:1704 i18n/dbStringsForTranslation.php:1734
-#: i18n/dbStringsForTranslation.php:1679
+#: i18n/dbStringsForTranslation.php:1679 i18n/dbStringsForTranslation.php:1679
 msgid "Level 2"
 msgstr "第二級"
 
@@ -58617,22 +58689,22 @@ msgid "Secure In Parts"
 msgstr "部分掌握"
 
 #: i18n/dbStringsForTranslation.php:1789 i18n/dbStringsForTranslation.php:1827
-#: i18n/dbStringsForTranslation.php:1768
+#: i18n/dbStringsForTranslation.php:1768 i18n/dbStringsForTranslation.php:1768
 msgid "Message Bubble Auto Hide"
 msgstr "自動隱藏信息泡泡"
 
 #: i18n/dbStringsForTranslation.php:1790 i18n/dbStringsForTranslation.php:1828
-#: i18n/dbStringsForTranslation.php:1769
+#: i18n/dbStringsForTranslation.php:1769 i18n/dbStringsForTranslation.php:1769
 msgid "Message Bubble Background Color"
 msgstr "信息泡泡背景顏色"
 
 #: i18n/dbStringsForTranslation.php:1791 i18n/dbStringsForTranslation.php:1829
-#: i18n/dbStringsForTranslation.php:1770
+#: i18n/dbStringsForTranslation.php:1770 i18n/dbStringsForTranslation.php:1770
 msgid "Message Bubble Width Type"
 msgstr "信息泡泡寬度類型"
 
 #: i18n/dbStringsForTranslation.php:1917 i18n/dbStringsForTranslation.php:1973
-#: i18n/dbStringsForTranslation.php:1914
+#: i18n/dbStringsForTranslation.php:1914 i18n/dbStringsForTranslation.php:1914
 msgid ""
 "Message bubble background color in RGBA (e.g. 100,100,100,0.50). If blank, "
 "theme default will be used."
@@ -58641,7 +58713,7 @@ msgstr ""
 "色。"
 
 #: i18n/dbStringsForTranslation.php:1938 i18n/dbStringsForTranslation.php:1995
-#: i18n/dbStringsForTranslation.php:1936
+#: i18n/dbStringsForTranslation.php:1936 i18n/dbStringsForTranslation.php:1936
 msgid "Should message bubble fade out automatically?"
 msgstr "信息泡泡應該自動隱藏嗎？"
 
@@ -58651,7 +58723,7 @@ msgid "Should the message bubble be regular or wide?"
 msgstr "信息泡泡應該一般還是很寬？"
 
 #: i18n/dbStringsForTranslation.php:1957 i18n/dbStringsForTranslation.php:2018
-#: i18n/dbStringsForTranslation.php:1959
+#: i18n/dbStringsForTranslation.php:1959 i18n/dbStringsForTranslation.php:1959
 msgid ""
 "System-wde currency for financial transactions. Support for online payment "
 "in this currency depends on your credit card gateway: please consult their "
@@ -58884,6 +58956,8 @@ msgstr "你的要求有些地方有錯誤，但其他的成功。以下是有錯
 #: modules/Timetable/moduleFunctions.php:1764
 #: modules/Timetable/moduleFunctions.php:733
 #: modules/Timetable/moduleFunctions.php:1774
+#: modules/Timetable/moduleFunctions.php:733
+#: modules/Timetable/moduleFunctions.php:1774
 msgid "Space Booking"
 msgstr "地方預定"
 
@@ -58891,6 +58965,8 @@ msgstr "地方預定"
 #: modules/Timetable/moduleFunctions.php:730
 #: modules/Timetable/moduleFunctions.php:742
 #: modules/Timetable/moduleFunctions.php:1782
+#: modules/Timetable/moduleFunctions.php:752
+#: modules/Timetable/moduleFunctions.php:1792
 #: modules/Timetable/moduleFunctions.php:752
 #: modules/Timetable/moduleFunctions.php:1792
 #, php-format
@@ -58910,11 +58986,13 @@ msgid "Some aspects of your update failed."
 msgstr "你的更新中有一些地方有錯誤。"
 
 #: functions.php:935 functions.php:1060 functions.php:1064 functions.php:1065
+#: functions.php:1065
 msgid "Notification"
 msgstr "通知"
 
 #: modules/Timetable/moduleFunctions.php:692
 #: modules/Timetable/moduleFunctions.php:704
+#: modules/Timetable/moduleFunctions.php:714
 #: modules/Timetable/moduleFunctions.php:714
 msgid "School Calendar"
 msgstr "學校月曆"
@@ -58922,11 +59000,13 @@ msgstr "學校月曆"
 #: modules/Timetable/moduleFunctions.php:701
 #: modules/Timetable/moduleFunctions.php:713
 #: modules/Timetable/moduleFunctions.php:723
+#: modules/Timetable/moduleFunctions.php:723
 msgid "Personal Calendar"
 msgstr "私人月曆"
 
 #: modules/Timetable/moduleFunctions.php:873
 #: modules/Timetable/moduleFunctions.php:885
+#: modules/Timetable/moduleFunctions.php:895
 #: modules/Timetable/moduleFunctions.php:895
 #, php-format
 msgid "All Day%1$s Events"
@@ -58934,14 +59014,14 @@ msgstr "全日%1$s的事件"
 
 #: modules/School Admin/schoolYearTerm_manage_add.php:116 modules/User
 #: Admin/user_manage_add.php:249 Admin/user_manage_add.php:251
-#: publicRegistration.php:213
+#: publicRegistration.php:213 publicRegistration.php:201
 #: modules/School Admin/schoolYearTerm_manage_add.php:116
 #: modules/User Admin/user_manage_add.php:251 publicRegistration.php:201
 msgid "Value already in use!"
 msgstr "價值已經啟用!"
 
 #: functions.php:140 index_notification_ajax.php:47 functions.php:144
-#: index_notification_ajax_alarm.php:46
+#: index_notification_ajax_alarm.php:46 index_notification_ajax_alarm.php:46
 msgid "General Alarm!"
 msgstr "一般警報!"
 
@@ -58981,43 +59061,55 @@ msgstr "鎖定警報!"
 #: modules/Markbook/markbook_view.php:1762
 #: modules/Markbook/markbook_view.php:1802
 #: modules/Markbook/markbook_view.php:1832
+#: modules/Markbook/markbook_view.php:1847 functions.php:517 functions.php:553
+#: functions.php:586 functions.php:616 functions.php:631
+#: modules/Markbook/markbook_view.php:1125
+#: modules/Markbook/markbook_view.php:1163
+#: modules/Markbook/markbook_view.php:1203
+#: modules/Markbook/markbook_view.php:1233
+#: modules/Markbook/markbook_view.php:1248
+#: modules/Markbook/markbook_view.php:1724
+#: modules/Markbook/markbook_view.php:1762
+#: modules/Markbook/markbook_view.php:1802
+#: modules/Markbook/markbook_view.php:1832
 #: modules/Markbook/markbook_view.php:1847
 msgid "N/A"
 msgstr "無法使用"
 
-#: functions.php:1059 functions.php:1063 functions.php:1064
+#: functions.php:1059 functions.php:1063 functions.php:1064 functions.php:1064
 #, php-format
 msgid "You have received a notification on %1$s at %2$s (%3$s %4$s)"
 msgstr "你在%1$s的%2$s分(%3$s %4$s) 收到了通知。"
 
-#: functions.php:1741 functions.php:1745 functions.php:1746
+#: functions.php:1741 functions.php:1745 functions.php:1746 functions.php:1746
 msgid "Quick File Upload"
 msgstr "快捷上載文件"
 
-#: functions.php:1999 functions.php:2003 functions.php:2004
+#: functions.php:1999 functions.php:2003 functions.php:2004 functions.php:2004
 msgid ""
 "Your primary role does not support the ability to log in to non-current "
 "years."
 msgstr "你的主角色不允許你登入進不是今年的學年。"
 
 #: functions.php:2424 modules/Markbook/moduleFunctions.php:52
-#: functions.php:2505 functions.php:2529
+#: functions.php:2505 functions.php:2529 functions.php:2529
 #: modules/Markbook/moduleFunctions.php:52
 msgid "Plan"
 msgstr "計畫"
 
-#: functions.php:2429 functions.php:2510 functions.php:2534
+#: functions.php:2429 functions.php:2510 functions.php:2534 functions.php:2534
 msgid "Mark"
 msgstr "批改"
 
 #: functions.php:2437 modules/Markbook/moduleFunctions.php:57
-#: functions.php:2518 functions.php:2542
+#: functions.php:2518 functions.php:2542 functions.php:2542
 #: modules/Markbook/moduleFunctions.php:57
 msgid "Tasks"
 msgstr "工作"
 
 #: i18n/dbStringsForTranslation.php:23 i18n/dbStringsForTranslation.php:1758
-#: i18n/dbStringsForTranslation.php:23 i18n/dbStringsForTranslation.php:1699
+#: i18n/dbStringsForTranslation.php:1699 i18n/dbStringsForTranslation.php:23
+#: i18n/dbStringsForTranslation.php:1699
 msgid "Alarm"
 msgstr "警報"
 
@@ -59178,217 +59270,39 @@ msgid "Send messages users by transport field."
 msgstr "根據用戶的交通工具傳播信息."
 
 #: i18n/dbStringsForTranslation.php:1771 i18n/dbStringsForTranslation.php:1712
+#: i18n/dbStringsForTranslation.php:1712
 msgid "Budget Categories"
 msgstr "預算類別"
 
 #: i18n/dbStringsForTranslation.php:1772 i18n/dbStringsForTranslation.php:1713
+#: i18n/dbStringsForTranslation.php:1713
 msgid "Budget Level Expense Approval"
 msgstr "預算及別費用的批准"
 
 #: i18n/dbStringsForTranslation.php:1789 i18n/dbStringsForTranslation.php:1730
+#: i18n/dbStringsForTranslation.php:1730
 msgid "Enable Home Screen Widget"
 msgstr "啟用主頁微件"
 
 #: i18n/dbStringsForTranslation.php:1792 i18n/dbStringsForTranslation.php:1733
+#: i18n/dbStringsForTranslation.php:1733
 msgid "Enable Public Registration"
 msgstr "啟用公開註冊"
 
 #: i18n/dbStringsForTranslation.php:1793 i18n/dbStringsForTranslation.php:1734
+#: i18n/dbStringsForTranslation.php:1734
 msgid "Enable Student Notes"
 msgstr "啟用學生筆記"
 
 #: i18n/dbStringsForTranslation.php:1796 i18n/dbStringsForTranslation.php:1737
+#: i18n/dbStringsForTranslation.php:1737
 msgid "Expense Approval Type"
 msgstr "費用批准類型"
 
 #: i18n/dbStringsForTranslation.php:1797 i18n/dbStringsForTranslation.php:1738
+#: i18n/dbStringsForTranslation.php:1738
 msgid "Expense Request Template"
 msgstr "費用請求模式"
-
-#: i18n/dbStringsForTranslation.php:1860 i18n/dbStringsForTranslation.php:1801
-#: i18n/dbStringsForTranslation.php:1801
-msgid "Public Registration Agreement"
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1861 i18n/dbStringsForTranslation.php:1802
-#: i18n/dbStringsForTranslation.php:1802
-msgid "Public Registration Default Role"
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1862 i18n/dbStringsForTranslation.php:1803
-#: i18n/dbStringsForTranslation.php:1803
-msgid "Public Registration Default Status"
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1863 i18n/dbStringsForTranslation.php:1804
-#: i18n/dbStringsForTranslation.php:1804
-msgid "Public Registration Introductory Text"
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1864 i18n/dbStringsForTranslation.php:1805
-#: i18n/dbStringsForTranslation.php:1805
-msgid "Public Registration Minimum Age"
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1865 i18n/dbStringsForTranslation.php:1806
-#: i18n/dbStringsForTranslation.php:1806
-msgid "Public Registration Postscript"
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1866 i18n/dbStringsForTranslation.php:1807
-#: i18n/dbStringsForTranslation.php:1807
-msgid "Public Registration Privacy Statement"
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1867 i18n/dbStringsForTranslation.php:1808
-#: i18n/dbStringsForTranslation.php:1808
-msgid "Purchasing Officer"
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1872 i18n/dbStringsForTranslation.php:1813
-#: i18n/dbStringsForTranslation.php:1813
-msgid "Reimbursement Officer"
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1918 i18n/dbStringsForTranslation.php:1859
-#: i18n/dbStringsForTranslation.php:1859
-msgid ""
-"Adds a Message Wall widget to the home page, hihglighting current messages."
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1919 i18n/dbStringsForTranslation.php:1860
-#: i18n/dbStringsForTranslation.php:1860
-msgid ""
-"Agreement that user must confirm before joining. Blank for no agreement."
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1926 i18n/dbStringsForTranslation.php:1867
-#: i18n/dbStringsForTranslation.php:1867
-msgid "Allows members of the public to register to use the system."
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1927 i18n/dbStringsForTranslation.php:1868
-#: i18n/dbStringsForTranslation.php:1868
-msgid ""
-"An HTML template to be used in the description field of expense requests."
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1937 i18n/dbStringsForTranslation.php:1878
-#: i18n/dbStringsForTranslation.php:1878
-msgid "Comma-separated list of budget categories."
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1961 i18n/dbStringsForTranslation.php:1902
-#: i18n/dbStringsForTranslation.php:1902
-msgid "How should expense approval be dealt with?"
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1963 i18n/dbStringsForTranslation.php:1904
-#: i18n/dbStringsForTranslation.php:1904
-msgid "HTML text that will appear above the public registration form."
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1964 i18n/dbStringsForTranslation.php:1905
-#: i18n/dbStringsForTranslation.php:1905
-msgid ""
-"HTML text that will appear above the Submit button, explaining privacy "
-"policy."
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1965 i18n/dbStringsForTranslation.php:1906
-#: i18n/dbStringsForTranslation.php:1906
-msgid "HTML text that will appear underneath the public registration form."
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1990 i18n/dbStringsForTranslation.php:1931
-#: i18n/dbStringsForTranslation.php:1931
-msgid "Should approval from a budget member with Full access be required?"
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:1996 i18n/dbStringsForTranslation.php:1937
-#: i18n/dbStringsForTranslation.php:1937
-msgid "Should new users be 'Full' or 'Pending Approval'?"
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:2001 i18n/dbStringsForTranslation.php:1942
-#: i18n/dbStringsForTranslation.php:1942
-msgid "Should student notes be turned on?"
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:2016 i18n/dbStringsForTranslation.php:1957
-#: i18n/dbStringsForTranslation.php:1957
-msgid "Sound a system wide alarm to all staff."
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:2017 i18n/dbStringsForTranslation.php:1958
-#: i18n/dbStringsForTranslation.php:1958
-msgid "System role to be assigned to registering members of the public."
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:2040 i18n/dbStringsForTranslation.php:1981
-#: i18n/dbStringsForTranslation.php:1981
-msgid "The minimum age, in years, permitted to register."
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:2050 i18n/dbStringsForTranslation.php:1991
-#: i18n/dbStringsForTranslation.php:1991
-msgid "User responsible for purchasing for the school."
-msgstr ""
-
-#: i18n/dbStringsForTranslation.php:2051 i18n/dbStringsForTranslation.php:1992
-#: i18n/dbStringsForTranslation.php:1992
-msgid "User responsible for reimbursing expenses."
-msgstr ""
-
-#: index.php:484 index.php:486 index.php:486
-#, php-format
-msgid "%1$sRegister now%2$s to join our online learning community."
-msgstr ""
-
-#: index.php:484 index.php:486 index.php:486
-msgid "It's free!"
-msgstr ""
-
-#: modules/Behaviour/behaviour_manage.php:374
-#: modules/Behaviour/behaviour_manage_add.php:267
-#: modules/Behaviour/behaviour_manage_addMulti.php:236
-#: modules/Behaviour/behaviour_manage_edit.php:309
-#: modules/Behaviour/moduleFunctions.php:171
-#: modules/Behaviour/behaviour_manage.php:385
-#: modules/Behaviour/behaviour_manage_add.php:273
-#: modules/Behaviour/behaviour_manage_addMulti.php:243
-#: modules/Behaviour/behaviour_manage_edit.php:316
-#: modules/Behaviour/moduleFunctions.php:182
-#: modules/Behaviour/behaviour_manage.php:385
-#: modules/Behaviour/behaviour_manage_add.php:273
-#: modules/Behaviour/behaviour_manage_addMulti.php:243
-#: modules/Behaviour/behaviour_manage_edit.php:316
-#: modules/Behaviour/moduleFunctions.php:182
-msgid "Incident"
-msgstr ""
-
-#: modules/Behaviour/behaviour_manage.php:378
-#: modules/Behaviour/behaviour_manage_add.php:273
-#: modules/Behaviour/behaviour_manage_addMulti.php:242
-#: modules/Behaviour/behaviour_manage_edit.php:315
-#: modules/Behaviour/moduleFunctions.php:175
-#: modules/Behaviour/behaviour_manage.php:389
-#: modules/Behaviour/behaviour_manage_add.php:279
-#: modules/Behaviour/behaviour_manage_addMulti.php:249
-#: modules/Behaviour/behaviour_manage_edit.php:322
-#: modules/Behaviour/moduleFunctions.php:186
-#: modules/Behaviour/behaviour_manage.php:389
-#: modules/Behaviour/behaviour_manage_add.php:279
-#: modules/Behaviour/behaviour_manage_addMulti.php:249
-#: modules/Behaviour/behaviour_manage_edit.php:322
-#: modules/Behaviour/moduleFunctions.php:186
-msgid "Follow Up"
-msgstr ""
-
-#: modules/Finance/budgetCycles_manage_add.php:31
-#: modules/Finance/budgetCycles_manage_add.php:31
-msgid "Add Budget Cycle"
-msgstr ""
 
 #: modules/Finance/budgetCycles_manage_add.php:48
 #: modules/Finance/budgetCycles_manage_edit.php:51
@@ -59486,14 +59400,14 @@ msgstr ""
 msgid ""
 "Your request failed because some inputs did not meet a requirement for "
 "uniqueness."
-msgstr ""
+msgstr "你的請求失敗因為有些輸入沒有達到獨特的要求"
 
 #: modules/Finance/budgetCycles_manage_add.php:150
 #: modules/Finance/budgetCycles_manage_edit.php:179
 #: modules/Finance/budgetCycles_manage_add.php:150
 #: modules/Finance/budgetCycles_manage_edit.php:179
 msgid "Budget Allocations"
-msgstr ""
+msgstr "預算分配"
 
 #: modules/Finance/budgetCycles_manage_add.php:182
 #: modules/Finance/budgetCycles_manage_edit.php:211
@@ -59501,52 +59415,52 @@ msgstr ""
 #: modules/Finance/budgetCycles_manage_edit.php:211
 #, php-format
 msgid "Numeric value in %1$s."
-msgstr ""
+msgstr "在數值的 %1$s"
 
 #: modules/Finance/budgetCycles_manage_add.php:185
 #: modules/Finance/budgetCycles_manage_edit.php:214
 #: modules/Finance/budgetCycles_manage_add.php:185
 #: modules/Finance/budgetCycles_manage_edit.php:214
 msgid "Numeric value."
-msgstr ""
+msgstr "數值"
 
 #: modules/Finance/budgetCycles_manage_delete.php:31
 #: modules/Finance/budgetCycles_manage_delete.php:31
 msgid "Delete Budget Cycle"
-msgstr ""
+msgstr "刪除預算循環"
 
 #: modules/Finance/budgetCycles_manage_edit.php:31
 #: modules/Finance/budgetCycles_manage_edit.php:31
 msgid "Edit Budget Cycle"
-msgstr ""
+msgstr "編輯預算循環"
 
 #: modules/Finance/budgets_manage.php:65 modules/Finance/budgets_manage.php:65
 msgid ""
 "Budgets are used within purchase requisitions and expense records in order "
 "to segregate records into different areas."
-msgstr ""
+msgstr "為了分離記錄進不同的類別，預算被使用在採購申請和費用記錄."
 
 #: modules/Finance/budgets_manage_add.php:34
 #: modules/Finance/budgets_manage_add.php:34
 msgid "Add Budget"
-msgstr ""
+msgstr "加入預選"
 
 #: modules/Finance/budgets_manage_add.php:187
 #: modules/Finance/budgets_manage_edit.php:287
 #: modules/Finance/budgets_manage_add.php:187
 #: modules/Finance/budgets_manage_edit.php:287
 msgid "Write"
-msgstr ""
+msgstr "寫"
 
 #: modules/Finance/budgets_manage_delete.php:34
 #: modules/Finance/budgets_manage_delete.php:34
 msgid "Delete Budget"
-msgstr ""
+msgstr "刪除預算"
 
 #: modules/Finance/budgets_manage_edit.php:35
 #: modules/Finance/budgets_manage_edit.php:35
 msgid "Edit Budget"
-msgstr ""
+msgstr "編輯預算"
 
 #: modules/Finance/expenseApprovers_manage.php:73
 #: modules/Finance/expenseApprovers_manage.php:73
@@ -59555,13 +59469,15 @@ msgid ""
 "people listed below (as well as someone with Full budget access) needs to "
 "approve an expense before it can go ahead."
 msgstr ""
+"費用的批准已經定了“其中一個”這代表在一下只有一個人(以及有全預算的許可的人) 批"
+"准後就可以繼續。"
 
 #: modules/Finance/expenseApprovers_manage.php:76
 #: modules/Finance/expenseApprovers_manage.php:76
 msgid ""
 "Expense approval has been set as 'One Of', which means that only one of the "
 "people listed below needs to approve an expense before it can go ahead."
-msgstr ""
+msgstr "費用的批准已經定了“其中一個”，這代表在以下只有一個人批准後就可以繼續。"
 
 #: modules/Finance/expenseApprovers_manage.php:81
 #: modules/Finance/expenseApprovers_manage.php:81
@@ -59570,13 +59486,15 @@ msgid ""
 "people listed below (as well as someone with Full budget access) need to "
 "approve an expense before it can go ahead."
 msgstr ""
+"費用的批准已經定了“其中兩個”這代表在一下只有兩個人(以及有全預算的許可的人) 批"
+"准後就可以繼續。"
 
 #: modules/Finance/expenseApprovers_manage.php:84
 #: modules/Finance/expenseApprovers_manage.php:84
 msgid ""
 "Expense approval has been set as 'Two Of', which means that only two of the "
 "people listed below need to approve an expense before it can go ahead."
-msgstr ""
+msgstr "費用的批准已經定了“其中兩個，”這代表在以下只有兩個人批准後就可以繼續。"
 
 #: modules/Finance/expenseApprovers_manage.php:89
 #: modules/Finance/expenseApprovers_manage.php:89
@@ -59585,6 +59503,8 @@ msgid ""
 "people listed below (as well as someone with Full budget access) need to "
 "approve an expense, in order from lowest to highest, before it can go ahead."
 msgstr ""
+"費用的批准要在繼續之前需要定“所有人”，這代表以下的所有人(以及有全預算的許可的"
+"人) 需要批准一個費用，還有從小到大排列。"
 
 #: modules/Finance/expenseApprovers_manage.php:92
 #: modules/Finance/expenseApprovers_manage.php:92
@@ -59593,6 +59513,8 @@ msgid ""
 "people listed below need to approve an expense, in order from lowest to "
 "highest, before it can go ahead."
 msgstr ""
+"費用的批准要在繼續之前需要定“所有人”，這代表以下的所有人需要批准一個費用，還"
+"有從小到大排列。"
 
 #: modules/Finance/expenseApprovers_manage.php:96
 #: modules/Finance/expenseApprovers_manage.php:96
@@ -59600,21 +59522,22 @@ msgid ""
 "Expense Approval policies have not been set up: this should be done under "
 "Admin > School Admin > Manage Finance Settings."
 msgstr ""
+"費用的批准的政策還沒有設定: 這應該在 管理員 > 學校管理員 > 管理設定 裏改變。"
 
 #: modules/Finance/expenseApprovers_manage_add.php:31
 #: modules/Finance/expenseApprovers_manage_add.php:31
 msgid "Add Expense Approver"
-msgstr ""
+msgstr "加入費用批准者"
 
 #: modules/Finance/expenseApprovers_manage_delete.php:31
 #: modules/Finance/expenseApprovers_manage_delete.php:31
 msgid "Delete Expense Approver"
-msgstr ""
+msgstr "刪除費用批准者"
 
 #: modules/Finance/expenseApprovers_manage_edit.php:31
 #: modules/Finance/expenseApprovers_manage_edit.php:31
 msgid "Edit Expense Approver"
-msgstr ""
+msgstr "編輯費用贊同者"
 
 #: modules/Finance/expenseRequest_manage.php:51
 #: modules/Finance/expenseRequest_manage.php:51
@@ -59623,6 +59546,8 @@ msgid ""
 "submitted for approval to the relevant individuals. You will be notified "
 "when a request has been approved."
 msgstr ""
+"這一個行動允許你創作和管理費用的批准，那就會報批照應的人。要求批准後你會受到"
+"一個通知。"
 
 #: modules/Finance/expenseRequest_manage.php:66
 #: modules/Finance/expenseRequest_manage_add.php:83
@@ -59643,7 +59568,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_print_print.php:83
 #: modules/Finance/expenses_manage_view.php:73
 msgid "You do not have Full or Write access to any budgets."
-msgstr ""
+msgstr "你對任何預算沒充分有或寫的許可"
 
 #: modules/Finance/expenseRequest_manage.php:76
 #: modules/Finance/expenseRequest_manage.php:91
@@ -59686,21 +59611,21 @@ msgstr ""
 #: modules/Finance/expenses_manage_view.php:83
 #: modules/Finance/expenses_manage_view.php:98
 msgid "An error has occurred with your expense and budget settings."
-msgstr ""
+msgstr "你的費用和預算設定出現了錯誤。"
 
 #: modules/Finance/expenseRequest_manage.php:113
 #: modules/Finance/expenses_manage.php:132
 #: modules/Finance/expenseRequest_manage.php:113
 #: modules/Finance/expenses_manage.php:134
 msgid "The Current budget cycle cannot be determined."
-msgstr ""
+msgstr "不能確定目前的預算循環"
 
 #: modules/Finance/expenseRequest_manage.php:134
 #: modules/Finance/expenses_manage.php:153
 #: modules/Finance/expenseRequest_manage.php:134
 #: modules/Finance/expenses_manage.php:155
 msgid "The specified budget cycle cannot be determined."
-msgstr ""
+msgstr "不能確定指定的預算循環"
 
 #: modules/Finance/expenseRequest_manage.php:150
 #: modules/Finance/expenseRequest_manage.php:153
@@ -59711,7 +59636,7 @@ msgstr ""
 #: modules/Finance/expenses_manage.php:171
 #: modules/Finance/expenses_manage.php:174
 msgid "Previous Cycle"
-msgstr ""
+msgstr "之前的循環"
 
 #: modules/Finance/expenseRequest_manage.php:158
 #: modules/Finance/expenseRequest_manage.php:161
@@ -59722,7 +59647,7 @@ msgstr ""
 #: modules/Finance/expenses_manage.php:179
 #: modules/Finance/expenses_manage.php:182
 msgid "Next Cycle"
-msgstr ""
+msgstr "下一個循環"
 
 #: modules/Finance/expenseRequest_manage.php:197
 #: modules/Finance/expenses_manage.php:216
@@ -59733,7 +59658,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:219
 #: modules/Finance/expenses_manage_edit.php:746
 msgid "Requested"
-msgstr ""
+msgstr "請求"
 
 #: modules/Finance/expenseRequest_manage.php:202
 #: modules/Finance/expenseRequest_manage_reimburse.php:187
@@ -59748,7 +59673,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:224
 #: modules/Finance/expenses_manage_edit.php:251
 msgid "Approved"
-msgstr ""
+msgstr "批准"
 
 #: modules/Finance/expenseRequest_manage.php:217
 #: modules/Finance/expenses_manage.php:236
@@ -59763,7 +59688,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:256
 #: modules/Finance/expenses_manage_edit.php:273
 msgid "Ordered"
-msgstr ""
+msgstr "訂購"
 
 #: modules/Finance/expenseRequest_manage.php:229
 #: modules/Finance/expenseRequest_manage.php:316
@@ -59794,7 +59719,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_processBulkExportContents.php:87
 #: modules/Finance/expenses_manage_view.php:185
 msgid "Budget"
-msgstr ""
+msgstr "預算"
 
 #: modules/Finance/expenseRequest_manage.php:303
 #: modules/Finance/expenses_manage.php:340
@@ -59802,24 +59727,24 @@ msgstr ""
 #: modules/Finance/expenses_manage.php:345
 #, php-format
 msgid "%1$s expense requests in current view"
-msgstr ""
+msgstr "在觀看目前的 %1$s 費用請求"
 
 #: modules/Finance/expenseRequest_manage.php:319
 #: modules/Finance/expenseRequest_manage.php:319
 msgid "Reimbursement"
-msgstr ""
+msgstr "報銷"
 
 #: modules/Finance/expenseRequest_manage.php:373
 #: modules/Finance/expenseRequest_manage_reimburse.php:34
 #: modules/Finance/expenseRequest_manage.php:373
 #: modules/Finance/expenseRequest_manage_reimburse.php:34
 msgid "Request Reimbursement"
-msgstr ""
+msgstr "請求報銷"
 
 #: modules/Finance/expenseRequest_manage_add.php:34
 #: modules/Finance/expenseRequest_manage_add.php:34
 msgid "Add Expense Request"
-msgstr ""
+msgstr "加入費用請求"
 
 #: modules/Finance/expenseRequest_manage_add.php:51
 #: modules/Finance/expenses_manage.php:54
@@ -59830,7 +59755,7 @@ msgstr ""
 msgid ""
 "Your request was completed successfully, but notifications could not be sent "
 "out."
-msgstr ""
+msgstr "成功的完成你的請求，但不能送出通知."
 
 #: modules/Finance/expenseRequest_manage_add.php:123
 #: modules/Finance/expenseRequest_manage_reimburse.php:134
@@ -59853,7 +59778,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_processBulkExportContents.php:90
 #: modules/Finance/expenses_manage_view.php:156
 msgid "Budget Cycle"
-msgstr ""
+msgstr "預算循環"
 
 #: modules/Finance/expenseRequest_manage_add.php:212
 #: modules/Finance/expenseRequest_manage_view.php:185
@@ -59872,7 +59797,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_print_print.php:254
 #: modules/Finance/expenses_manage_view.php:219
 msgid "Total Cost"
-msgstr ""
+msgstr "總費用"
 
 #: modules/Finance/expenseRequest_manage_add.php:238
 #: modules/Finance/expenseRequest_manage_reimburse.php:216
@@ -59893,7 +59818,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_print_print.php:226
 #: modules/Finance/expenses_manage_view.php:239
 msgid "Purchase By"
-msgstr ""
+msgstr "購買者"
 
 #: modules/Finance/expenseRequest_manage_add.php:252
 #: modules/Finance/expenseRequest_manage_reimburse.php:224
@@ -59914,7 +59839,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_print_print.php:234
 #: modules/Finance/expenses_manage_view.php:247
 msgid "Purchase Details"
-msgstr ""
+msgstr "購買詳情"
 
 #: modules/Finance/expenseRequest_manage_reimburse.php:235
 #: modules/Finance/expenseRequest_manage_view.php:224
@@ -59931,7 +59856,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_print_print.php:399
 #: modules/Finance/expenses_manage_view.php:258
 msgid "Log"
-msgstr ""
+msgstr "目錄"
 
 #: modules/Finance/expenseRequest_manage_reimburse.php:277
 #: modules/Finance/expenses_manage_add.php:281
@@ -59944,7 +59869,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:647
 #: modules/Finance/expenses_manage_view.php:274
 msgid "Payment Information"
-msgstr ""
+msgstr "付款資料"
 
 #: modules/Finance/expenseRequest_manage_reimburse.php:321
 #: modules/Finance/expenses_manage_add.php:325
@@ -59957,7 +59882,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:676
 #: modules/Finance/expenses_manage_view.php:303
 msgid "Payee"
-msgstr ""
+msgstr "付款者"
 
 #: modules/Finance/expenseRequest_manage_reimburse.php:322
 #: modules/Finance/expenses_manage_add.php:326
@@ -59970,7 +59895,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:677
 #: modules/Finance/expenses_manage_view.php:304
 msgid "Staff who made, or arranged, the payment."
-msgstr ""
+msgstr "製造或安排付款的員工"
 
 #: modules/Finance/expenseRequest_manage_reimburse.php:331
 #: modules/Finance/expenses_manage_add.php:352
@@ -59983,61 +59908,61 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:699
 #: modules/Finance/expenses_manage_view.php:326
 msgid "Payment Method"
-msgstr ""
+msgstr "付款方式"
 
 #: modules/Finance/expenseRequest_manage_reimburse.php:352
 #: modules/Finance/expenses_manage_edit.php:714
 #: modules/Finance/expenseRequest_manage_reimburse.php:352
 #: modules/Finance/expenses_manage_edit.php:714
 msgid "Payment Receipt"
-msgstr ""
+msgstr "付款收據"
 
 #: modules/Finance/expenseRequest_manage_reimburse.php:353
 #: modules/Finance/expenseRequest_manage_reimburse.php:353
 msgid "Digital copy of the receipt for this payment."
-msgstr ""
+msgstr "付款的收據的電子複本"
 
 #: modules/Finance/expenseRequest_manage_reimburseProcess.php:166
 #: modules/Finance/expenseRequest_manage_reimburseProcess.php:166
 #, php-format
 msgid "Someone has requested reimbursement for \"%1$s\" in budget \"%2$s\"."
-msgstr ""
+msgstr "有人請求了報銷在預算 \"%2$s\" 裏的\"%1$s\" "
 
 #: modules/Finance/expenseRequest_manage_view.php:34
 #: modules/Finance/expenseRequest_manage_view.php:34
 msgid "View Expense Request"
-msgstr ""
+msgstr "觀看費用請求"
 
 #: modules/Finance/expenses_manage.php:64
 #: modules/Finance/expenses_manage.php:64
 msgid ""
 "This action allows you to manage all expenses for all budgets, regardless of "
 "your access rights to individual budgets."
-msgstr ""
+msgstr "無論你的許可權利對個人的預算，這個行動允許你管理全部預算的費用，無論"
 
 #: modules/Finance/expenses_manage.php:67
 #: modules/Finance/expenses_manage.php:67
 msgid ""
 "This action allows you to manage expenses for the budgets in which you have "
 "relevant access rights."
-msgstr ""
+msgstr "因為你有相應的許可權利，這個行動允許你管理給預算的費用"
 
 #: modules/Finance/expenses_manage.php:439
 #: modules/Finance/expenses_manage.php:444
 msgid "Approve/Reject"
-msgstr ""
+msgstr "批准/拒絕"
 
 #: modules/Finance/expenses_manage_add.php:34
 #: modules/Finance/expenses_manage_add.php:34
 msgid "Add Expense"
-msgstr ""
+msgstr "加入費用"
 
 #: modules/Finance/expenses_manage_add.php:38
 #: modules/Finance/expenses_manage_add.php:38
 msgid ""
 "Expenses added here do not require authorisation: this is for pre-"
 "authorised, or recurring expenses only."
-msgstr ""
+msgstr "被加入這裏的費用不要求授權"
 
 #: modules/Finance/expenses_manage_add.php:373
 #: modules/Finance/expenses_manage_edit.php:634
@@ -60048,7 +59973,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:707
 #: modules/Finance/expenses_manage_view.php:334
 msgid "Payment ID"
-msgstr ""
+msgstr "付款身分"
 
 #: modules/Finance/expenses_manage_add.php:374
 #: modules/Finance/expenses_manage_edit.php:635
@@ -60059,12 +59984,12 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:708
 #: modules/Finance/expenses_manage_view.php:335
 msgid "Transaction ID to identify this payment."
-msgstr ""
+msgstr "交易身分來鑑定這個付款"
 
 #: modules/Finance/expenses_manage_approve.php:41
 #: modules/Finance/expenses_manage_approve.php:41
 msgid "Approve/Reject Expense"
-msgstr ""
+msgstr "批准/拒絕費用"
 
 #: modules/Finance/expenses_manage_approve.php:255
 #: modules/Finance/expenses_manage_edit.php:333
@@ -60075,7 +60000,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_print.php:258
 #: modules/Finance/expenses_manage_print_print.php:249
 msgid "Budget Tracking"
-msgstr ""
+msgstr "預算跟蹤"
 
 #: modules/Finance/expenses_manage_approve.php:280
 #: modules/Finance/expenses_manage_edit.php:358
@@ -60086,7 +60011,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_print.php:283
 #: modules/Finance/expenses_manage_print_print.php:274
 msgid "Budget For Cycle"
-msgstr ""
+msgstr "給循環的預算"
 
 #: modules/Finance/expenses_manage_approve.php:324
 #: modules/Finance/expenses_manage_edit.php:402
@@ -60097,7 +60022,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_print.php:327
 #: modules/Finance/expenses_manage_print_print.php:318
 msgid "Amount already approved or spent"
-msgstr ""
+msgstr "合計已經被批准或用了"
 
 #: modules/Finance/expenses_manage_approve.php:372
 #: modules/Finance/expenses_manage_edit.php:450
@@ -60108,24 +60033,24 @@ msgstr ""
 #: modules/Finance/expenses_manage_print.php:375
 #: modules/Finance/expenses_manage_print_print.php:366
 msgid "Budget Remaining For Cycle"
-msgstr ""
+msgstr "給循環剩餘的預算"
 
 #: modules/Finance/expenses_manage_approve.php:425
 #: modules/Finance/expenses_manage_approve.php:425
 msgid ""
 "Your approval is not currently required: it is possible somone beat you to "
 "it, or you have already approved it."
-msgstr ""
+msgstr "現在不需要你的贊同 : 可能有人打敗了你，或你已經贊同了"
 
 #: modules/Finance/expenses_manage_approve.php:434
 #: modules/Finance/expenses_manage_approve.php:434
 msgid "Approval"
-msgstr ""
+msgstr "批准"
 
 #: modules/Finance/expenses_manage_approve.php:440
 #: modules/Finance/expenses_manage_approve.php:440
 msgid "Approve"
-msgstr ""
+msgstr "批准"
 
 #: modules/Finance/expenses_manage_approveProcess.php:221
 #: modules/Finance/expenses_manage_editProcess.php:198
@@ -60133,21 +60058,21 @@ msgstr ""
 #: modules/Finance/expenses_manage_editProcess.php:198
 #, php-format
 msgid "Your expense request for \"%1$s\" in budget \"%2$s\" has been rejected."
-msgstr ""
+msgstr "你的費用請求為在 預算 \"%2$s\" 裏的  \"%1$s\" 被拒絕"
 
 #: modules/Finance/expenses_manage_approveProcess.php:343
 #: modules/Finance/expenses_manage_approveProcess.php:343
 #, php-format
 msgid ""
 "A newly approved expense (%1$s) needs to be purchased from budget \"%2$s\"."
-msgstr ""
+msgstr "一個信批准的費用 (%1$s) 需要在預算 \"%2$s\" 購買"
 
 #: modules/Finance/expenses_manage_approveProcess.php:345
 #: modules/Finance/expenses_manage_approveProcess.php:345
 msgid ""
 "The Purchasing Officer has been alerted, and will purchase the item on your "
 "behalf."
-msgstr ""
+msgstr "購買人員被警告了，和會以您的名義購買物品"
 
 #: modules/Finance/expenses_manage_approveProcess.php:349
 #: modules/Finance/expenses_manage_editProcess.php:192
@@ -60156,22 +60081,22 @@ msgstr ""
 #, php-format
 msgid ""
 "Your expense request for \"%1$s\" in budget \"%2$s\" has been fully approved."
-msgstr ""
+msgstr "你的費用請求為在 預算 \"%2$s\" 裏的  \"%1$s\" 完全被贊同"
 
 #: modules/Finance/expenses_manage_edit.php:41
 #: modules/Finance/expenses_manage_edit.php:41
 msgid "Edit Expense"
-msgstr ""
+msgstr "編輯費用"
 
 #: modules/Finance/expenses_manage_edit.php:736
 #: modules/Finance/expenses_manage_edit.php:736
 msgid "Reimbursement Status"
-msgstr ""
+msgstr "報銷狀態"
 
 #: modules/Finance/expenses_manage_edit.php:767
 #: modules/Finance/expenses_manage_edit.php:767
 msgid "Reimbursement Comment"
-msgstr ""
+msgstr "報銷評論"
 
 #: modules/Finance/expenses_manage_editProcess.php:152
 #: modules/Finance/expenses_manage_editProcess.php:152
@@ -60179,72 +60104,72 @@ msgstr ""
 msgid ""
 "Your reimbursement expense request for \"%1$s\" in budget \"%2$s\" has been "
 "completed."
-msgstr ""
+msgstr "你的報銷費用請求為在 預算 \"%2$s\" 裏的  \"%1$s\" 已經完成"
 
 #: modules/Finance/expenses_manage_print.php:41
 #: modules/Finance/expenses_manage_print.php:41
 msgid "Print Expense"
-msgstr ""
+msgstr "打印費用"
 
 #: modules/Finance/expenses_manage_processBulkExportContents.php:47
 #: modules/Finance/expenses_manage_processBulkExportContents.php:47
 msgid ""
 "List of invoices or budget cycle have not been specified, and so this export "
 "cannot be completed."
-msgstr ""
+msgstr "發表或預選循環的列表沒有被指定，所以這個輸出本鞥被完成"
 
 #: modules/Finance/expenses_manage_processBulkExportContents.php:52
 #: modules/Finance/expenses_manage_processBulkExportContents.php:52
 msgid "Expense Export"
-msgstr ""
+msgstr "輸出費用"
 
 #: modules/Finance/expenses_manage_processBulkExportContents.php:84
 #: modules/Finance/expenses_manage_processBulkExportContents.php:84
 msgid "Expense Number"
-msgstr ""
+msgstr "費用號碼"
 
 #: modules/Finance/expenses_manage_processBulkExportContents.php:105
 #: modules/Finance/expenses_manage_processBulkExportContents.php:105
 msgid "Timestamp"
-msgstr ""
+msgstr "時間戳"
 
 #: modules/Finance/expenses_manage_view.php:41
 #: modules/Finance/expenses_manage_view.php:41
 msgid "View Expense"
-msgstr ""
+msgstr "觀看費用"
 
 #: modules/Finance/moduleFunctions.php:316
 #: modules/Finance/moduleFunctions.php:316
 #, php-format
 msgid "Someone has requested expense approval for \"%1$s\" in budget \"%2$s\"."
-msgstr ""
+msgstr "有人請求了用費的批准在預算 \"%2$s\" 裏的 \"%1$s\""
 
 #: modules/Finance/moduleFunctions.php:433
 #: modules/Finance/moduleFunctions.php:433
 msgid "Event"
-msgstr ""
+msgstr "事件"
 
 #: modules/Individual Needs/in_archive.php:72
 #: modules/Individual Needs/in_archive.php:72
 msgid "Delete Current Plans?"
-msgstr ""
+msgstr "刪除目前的計劃?"
 
 #: modules/Individual Needs/in_archive.php:73
 #: modules/Individual Needs/in_archive.php:73
 msgid ""
 "Deletes Individual Education Plan fields only, not Individual Needs Status "
 "fields."
-msgstr ""
+msgstr "只是刪除個人教育計畫領域，而不是個人需求狀態領域"
 
 #: modules/Individual Needs/in_archive.php:84
 #: modules/Individual Needs/in_archive.php:84
 msgid "Archive Title"
-msgstr ""
+msgstr "存檔標題"
 
 #: modules/Individual Needs/in_edit.php:157
 #: modules/Individual Needs/in_edit.php:159
 msgid "Archived Plans"
-msgstr ""
+msgstr "存檔計畫"
 
 #: modules/Markbook/markbook_edit_add.php:342
 #: modules/Markbook/markbook_edit_add.php:459
@@ -60252,8 +60177,6 @@ msgstr ""
 #: modules/Markbook/markbook_edit_addMulti.php:373
 #: modules/Markbook/markbook_edit_edit.php:390
 #: modules/Markbook/markbook_edit_edit.php:515
-#: modules/Markbook/markbook_edit_addMulti.php:260
-#: modules/Markbook/markbook_edit_addMulti.php:379
 #: modules/Markbook/markbook_edit_add.php:342
 #: modules/Markbook/markbook_edit_add.php:459
 #: modules/Markbook/markbook_edit_addMulti.php:260
@@ -60262,76 +60185,72 @@ msgstr ""
 #: modules/Markbook/markbook_edit_edit.php:515
 #, php-format
 msgid "Assess %1$s?"
-msgstr ""
+msgstr "評估 %1$s?"
 
 #: modules/Markbook/markbook_edit_add.php:342
 #: modules/Markbook/markbook_edit_addMulti.php:254
 #: modules/Markbook/markbook_edit_edit.php:390
-#: modules/Markbook/markbook_edit_addMulti.php:260
 #: modules/Markbook/markbook_edit_add.php:342
 #: modules/Markbook/markbook_edit_addMulti.php:260
 #: modules/Markbook/markbook_edit_edit.php:390
 msgid "Assess Attainment?"
-msgstr ""
+msgstr "評估成績?"
 
 #: modules/Markbook/markbook_edit_add.php:459
 #: modules/Markbook/markbook_edit_addMulti.php:373
 #: modules/Markbook/markbook_edit_edit.php:515
-#: modules/Markbook/markbook_edit_addMulti.php:379
 #: modules/Markbook/markbook_edit_add.php:459
 #: modules/Markbook/markbook_edit_addMulti.php:379
 #: modules/Markbook/markbook_edit_edit.php:515
 msgid "Assess Effort?"
-msgstr ""
+msgstr "評估成就"
 
 #: modules/Markbook/markbook_edit_add.php:560
 #: modules/Markbook/markbook_edit_addMulti.php:474
 #: modules/Markbook/markbook_edit_edit.php:624
-#: modules/Markbook/markbook_edit_addMulti.php:480
 #: modules/Markbook/markbook_edit_add.php:560
 #: modules/Markbook/markbook_edit_addMulti.php:480
 #: modules/Markbook/markbook_edit_edit.php:624
 msgid "Include Comment?"
-msgstr ""
+msgstr "包括評論"
 
 #: modules/Markbook/markbook_edit_add.php:569
 #: modules/Markbook/markbook_edit_addMulti.php:483
 #: modules/Markbook/markbook_edit_edit.php:633
-#: modules/Markbook/markbook_edit_addMulti.php:489
 #: modules/Markbook/markbook_edit_add.php:569
 #: modules/Markbook/markbook_edit_addMulti.php:489
 #: modules/Markbook/markbook_edit_edit.php:633
 msgid "Include Uploaded Response?"
-msgstr ""
+msgstr "包括上載的回應"
 
 #: modules/Messenger/messenger_manage.php:162
 #: modules/Messenger/messenger_manage.php:162
 msgid "Dates Published"
-msgstr ""
+msgstr "公布的日期"
 
 #: modules/Messenger/messenger_post.php:1094
 #: modules/Messenger/messenger_post.php:1094
 msgid "Applies to all staff and students who have transport set."
-msgstr ""
+msgstr "試用期給全部有運輸設置的員工和學生"
 
 #: modules/Messenger/messenger_post.php:1103
 #: modules/Messenger/messenger_post.php:1103
 msgid "Select Transport"
-msgstr ""
+msgstr "選擇運輸"
 
 #: modules/Messenger/moduleFunctions.php:456
 #: modules/Messenger/moduleFunctions.php:457
 #: modules/Messenger/moduleFunctions.php:457
 msgid "Sharing"
-msgstr ""
+msgstr "共享"
 
 #: modules/Planner/units_edit.php:141 modules/Planner/units_edit.php:141
 msgid "Smart Blockify was successful."
-msgstr ""
+msgstr "成功智能方塊"
 
 #: modules/Planner/units_edit_smartBlockify.php:150
 #: modules/Planner/units_edit_smartBlockify.php:150
-#, php-format
+#, fuzzy, php-format
 msgid ""
 "This function allows you to take all of the lesson content (Details and "
 "Teacher's Notes) from the selected working unit (%1$s in %2$s) and use them "
@@ -60339,140 +60258,289 @@ msgid ""
 "replace the original content in the working unit. In this way you can quickl "
 "\"smart blockify\" an existing unit."
 msgstr ""
+"這一個功能允許你把所有的課堂資料(詳情和老師的筆記)從選擇的正在工作的單元"
+"(在%2$的%1$s)然後用它們創作在主單元裏面的只能方塊，這些方塊會用來更換在工作單"
+"元的原創內容。用了這一個方法你可以快一點\"智能方塊\"一個現有的單元。"
 
 #: modules/Resources/resources_addQuick_ajax.php:73
 #: modules/Resources/resources_addQuick_ajax.php:73
 msgid "Insert Images As Links?"
-msgstr ""
+msgstr "用鏈接上載圖片?"
 
 #: modules/Resources/resources_addQuick_ajax.php:74
 #: modules/Resources/resources_addQuick_ajax.php:74
 msgid "If not, they will be inserted as images."
-msgstr ""
+msgstr "如果否，他們會被輸入成圖片."
 
 #: modules/Resources/resources_addQuick_ajax.php:102
 #: modules/Resources/resources_addQuick_ajax.php:102
 #, php-format
 msgid "File %1$s"
-msgstr ""
+msgstr "文件 %1$s"
 
 #: modules/Students/student_view_details.php:548
 #: modules/Students/student_view_details.php:548
 msgid "Student's Teachers"
-msgstr ""
+msgstr "學生的老師"
 
 #: modules/Students/student_view_details.php:3095
 #: modules/Students/student_view_details.php:3096
 #: modules/Students/student_view_details.php:3095
 #: modules/Students/student_view_details.php:3096
 msgid "Library Borrowing"
-msgstr ""
+msgstr "借書"
 
 #: modules/Students/student_view_details_notes_addProcess.php:128
 #: modules/Students/student_view_details_notes_addProcess.php:128
 #, php-format
 msgid "Someone has added a note (\"%1$s\") about your tutee, %2$s."
-msgstr ""
+msgstr "有人加入了一個筆記 (\"%1$s\") 關於你的學生，%2$s"
 
 #: modules/System Admin/alarm.php:83 modules/System Admin/alarm.php:83
 msgid "General"
-msgstr ""
+msgstr "一般"
 
 #: modules/System Admin/alarm.php:84 modules/System Admin/alarm.php:84
 msgid "Lockdown"
-msgstr ""
+msgstr "鎖定"
 
 #: modules/System Admin/systemSettings.php:783
 #: modules/System Admin/systemSettings.php:783
 msgid "Localisation"
-msgstr ""
+msgstr "本土化"
 
 #: modules/Timetable/moduleFunctions.php:280
 #: modules/Timetable/moduleFunctions.php:293
-#: modules/Timetable/moduleFunctions.php:293
 msgid "You do not have permission to access this timetable at this time."
-msgstr ""
+msgstr "你沒有權利現在觀看時間表."
 
 #: modules/User Admin/publicRegistrationSettings.php:137
 #: Admin/user_manage_edit.php:376
 #: modules/User Admin/publicRegistrationSettings.php:137
 #: modules/User Admin/user_manage_edit.php:376
 msgid "Pending Approval"
-msgstr ""
+msgstr "待決批准"
 
 #: modules/User Admin/publicRegistrationSettings.php:185
 #: modules/User Admin/publicRegistrationSettings.php:185
 msgid "Interface Options"
-msgstr ""
+msgstr "界面選項"
 
 #: modules/User Admin/role_manage.php:111 Admin/role_manage_add.php:130
 #: Admin/role_manage_edit.php:224 modules/User Admin/role_manage.php:111
 #: modules/User Admin/role_manage_add.php:130
 #: modules/User Admin/role_manage_edit.php:224
 msgid "Login To Non-Current Years"
-msgstr ""
+msgstr "登入非目前的年份"
 
 #: modules/User Admin/role_manage_add.php:131 Admin/role_manage_edit.php:225
 #: modules/User Admin/role_manage_add.php:131
 #: modules/User Admin/role_manage_edit.php:225
 msgid "If set to No, logins are limited to current year."
-msgstr ""
+msgstr "如果被設置到不，"
 
 #: modules/User Admin/staff_manage.php:75
 #: modules/User Admin/staff_manage.php:75
 msgid "Include Expected and Left."
-msgstr ""
+msgstr "包括期待和離開"
 
 #: modules/User Admin/user_manage_add.php:1242 Admin/user_manage_edit.php:1574
 #: modules/User Admin/user_manage_add.php:1242
 #: modules/User Admin/user_manage_edit.php:1574
 msgid "Transport Notes"
-msgstr ""
+msgstr "運輸筆記"
 
 #: publicRegistration.php:40 publicRegistration.php:40
 msgid "Public Registration"
-msgstr ""
+msgstr "公開註冊"
 
 #: publicRegistration.php:62 publicRegistration.php:62
 #, php-format
 msgid ""
 "Your request failed because you do not meet the minimum age for joining this "
 "site (%1$s years of age)."
-msgstr ""
+msgstr "你的請求失敗了因為你的年齡沒有達到這個網頁的允許 (%1$s 歲)"
 
 #: publicRegistration.php:68 publicRegistration.php:68
 msgid ""
 "Your registration was successfully submitted and is now pending approval. "
 "Our team will review your registration and be in touch in due course."
 msgstr ""
+"成功得提交了你的註冊而現在在等待贊同。我們的團隊會檢閱你的註冊後會在這個過程"
+"中聯絡你."
 
 #: publicRegistration.php:72 publicRegistration.php:72
 msgid ""
 "Your registration was successfully submitted, and you may now log into the "
 "system using your new username and password."
-msgstr ""
+msgstr "成功得提交了你的註冊，現在您可以使用你的新用戶名後密碼登入系統裡"
 
 #: publicRegistration.php:97 publicRegistration.php:256
-#: publicRegistration.php:256
 msgid "Privacy Statement"
-msgstr ""
+msgstr "私人聲明"
 
 #: publicRegistration.php:111 publicRegistration.php:99
-#: publicRegistration.php:99
 msgid "Account Details"
-msgstr ""
+msgstr "帳戶詳情"
 
-#: index_notification_ajax_alarm.php:52 index_notification_ajax_alarm.php:52
+#: i18n/dbStringsForTranslation.php:1860 i18n/dbStringsForTranslation.php:1801
+msgid "Public Registration Agreement"
+msgstr "公開註冊協議"
+
+#: i18n/dbStringsForTranslation.php:1861 i18n/dbStringsForTranslation.php:1802
+msgid "Public Registration Default Role"
+msgstr "公開註冊的自動角色"
+
+#: i18n/dbStringsForTranslation.php:1862 i18n/dbStringsForTranslation.php:1803
+msgid "Public Registration Default Status"
+msgstr "公開註冊預設狀態"
+
+#: i18n/dbStringsForTranslation.php:1863 i18n/dbStringsForTranslation.php:1804
+msgid "Public Registration Introductory Text"
+msgstr "公開註冊介紹文字"
+
+#: i18n/dbStringsForTranslation.php:1864 i18n/dbStringsForTranslation.php:1805
+msgid "Public Registration Minimum Age"
+msgstr "公開註冊最低年齡"
+
+#: i18n/dbStringsForTranslation.php:1865 i18n/dbStringsForTranslation.php:1806
+msgid "Public Registration Postscript"
+msgstr "公開註冊後記"
+
+#: i18n/dbStringsForTranslation.php:1866 i18n/dbStringsForTranslation.php:1807
+msgid "Public Registration Privacy Statement"
+msgstr "公開註冊隱私聲明"
+
+#: i18n/dbStringsForTranslation.php:1867 i18n/dbStringsForTranslation.php:1808
+msgid "Purchasing Officer"
+msgstr "購買主任"
+
+#: i18n/dbStringsForTranslation.php:1872 i18n/dbStringsForTranslation.php:1813
+msgid "Reimbursement Officer"
+msgstr "報銷主任"
+
+#: i18n/dbStringsForTranslation.php:1918 i18n/dbStringsForTranslation.php:1859
+msgid ""
+"Adds a Message Wall widget to the home page, hihglighting current messages."
+msgstr "加入信息牆到主頁，強調着目前的信息"
+
+#: i18n/dbStringsForTranslation.php:1919 i18n/dbStringsForTranslation.php:1860
+msgid ""
+"Agreement that user must confirm before joining. Blank for no agreement."
+msgstr "用戶加入前一定要確認協議。沒有協議就空白"
+
+#: i18n/dbStringsForTranslation.php:1926 i18n/dbStringsForTranslation.php:1867
+msgid "Allows members of the public to register to use the system."
+msgstr "為了使用系統，允許公眾的成員註冊"
+
+#: i18n/dbStringsForTranslation.php:1927 i18n/dbStringsForTranslation.php:1868
+msgid ""
+"An HTML template to be used in the description field of expense requests."
+msgstr "一個 HTML模型是使用在描述領域的費用請求"
+
+#: i18n/dbStringsForTranslation.php:1937 i18n/dbStringsForTranslation.php:1878
+msgid "Comma-separated list of budget categories."
+msgstr "預算類別逗號分隔列表"
+
+#: i18n/dbStringsForTranslation.php:1961 i18n/dbStringsForTranslation.php:1902
+msgid "How should expense approval be dealt with?"
+msgstr "怎樣處理費用的批准?"
+
+#: i18n/dbStringsForTranslation.php:1963 i18n/dbStringsForTranslation.php:1904
+msgid "HTML text that will appear above the public registration form."
+msgstr "HTML 文件會在公眾註冊表格以上出現"
+
+#: i18n/dbStringsForTranslation.php:1964 i18n/dbStringsForTranslation.php:1905
+msgid ""
+"HTML text that will appear above the Submit button, explaining privacy "
+"policy."
+msgstr "HTML 文件會在提交安啾以上出現，說明隱私政策"
+
+#: i18n/dbStringsForTranslation.php:1965 i18n/dbStringsForTranslation.php:1906
+msgid "HTML text that will appear underneath the public registration form."
+msgstr "HTML 文件會在公眾註冊以下出現."
+
+#: i18n/dbStringsForTranslation.php:1990 i18n/dbStringsForTranslation.php:1931
+msgid "Should approval from a budget member with Full access be required?"
+msgstr "應不應該需求一個有許可的預算成員的批准?"
+
+#: i18n/dbStringsForTranslation.php:1996 i18n/dbStringsForTranslation.php:1937
+msgid "Should new users be 'Full' or 'Pending Approval'?"
+msgstr "新用戶應不應該是 '滿' 或 '待決批准'?"
+
+#: i18n/dbStringsForTranslation.php:2001 i18n/dbStringsForTranslation.php:1942
+msgid "Should student notes be turned on?"
+msgstr "學生的筆記應不應該關上?"
+
+#: i18n/dbStringsForTranslation.php:2016 i18n/dbStringsForTranslation.php:1957
+msgid "Sound a system wide alarm to all staff."
+msgstr "聲音系統級警報給全部的員工"
+
+#: i18n/dbStringsForTranslation.php:2017 i18n/dbStringsForTranslation.php:1958
+msgid "System role to be assigned to registering members of the public."
+msgstr "系統角色要分配為公眾的註冊成員"
+
+#: i18n/dbStringsForTranslation.php:2040 i18n/dbStringsForTranslation.php:1981
+msgid "The minimum age, in years, permitted to register."
+msgstr "極少年齡，在年獲准才能註冊"
+
+#: i18n/dbStringsForTranslation.php:2050 i18n/dbStringsForTranslation.php:1991
+msgid "User responsible for purchasing for the school."
+msgstr "用戶有責任幫學校購買"
+
+#: i18n/dbStringsForTranslation.php:2051 i18n/dbStringsForTranslation.php:1992
+msgid "User responsible for reimbursing expenses."
+msgstr "用戶有責任報銷費用"
+
+#: index.php:484 index.php:486
+#, php-format
+msgid "%1$sRegister now%2$s to join our online learning community."
+msgstr "%1$s現在註冊%2$s 讓你加入我們的網上學習社區."
+
+#: index.php:484 index.php:486
+msgid "It's free!"
+msgstr "免費!"
+
+#: modules/Behaviour/behaviour_manage.php:374
+#: modules/Behaviour/behaviour_manage_add.php:267
+#: modules/Behaviour/behaviour_manage_addMulti.php:236
+#: modules/Behaviour/behaviour_manage_edit.php:309
+#: modules/Behaviour/moduleFunctions.php:171
+#: modules/Behaviour/behaviour_manage.php:385
+#: modules/Behaviour/behaviour_manage_add.php:273
+#: modules/Behaviour/behaviour_manage_addMulti.php:243
+#: modules/Behaviour/behaviour_manage_edit.php:316
+#: modules/Behaviour/moduleFunctions.php:182
+msgid "Incident"
+msgstr "意外"
+
+#: modules/Behaviour/behaviour_manage.php:378
+#: modules/Behaviour/behaviour_manage_add.php:273
+#: modules/Behaviour/behaviour_manage_addMulti.php:242
+#: modules/Behaviour/behaviour_manage_edit.php:315
+#: modules/Behaviour/moduleFunctions.php:175
+#: modules/Behaviour/behaviour_manage.php:389
+#: modules/Behaviour/behaviour_manage_add.php:279
+#: modules/Behaviour/behaviour_manage_addMulti.php:249
+#: modules/Behaviour/behaviour_manage_edit.php:322
+#: modules/Behaviour/moduleFunctions.php:186
+msgid "Follow Up"
+msgstr "根據"
+
+#: modules/Finance/budgetCycles_manage_add.php:31
+#: modules/Finance/budgetCycles_manage_add.php:31
+msgid "Add Budget Cycle"
+msgstr "加入預算循環"
+
+#: index_notification_ajax_alarm.php:52
 msgid "Lockdown!"
 msgstr ""
 
-#: modules/Markbook/markbook_edit_addMulti.php:121
 #: modules/Markbook/markbook_edit_addMulti.php:121
 #, php-format
 msgid "The current class (%1$s.%2$s) has already been selected."
 msgstr ""
 
-#: modules/Markbook/markbook_edit_data.php:594
 #: modules/Markbook/markbook_edit_data.php:594
 msgid "Assessment Complete?"
 msgstr ""
