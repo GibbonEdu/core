@@ -2117,7 +2117,7 @@ msgstr ""
 #: modules/Finance/invoices_manage_edit.php:876
 #: modules/Finance/invoices_manage_issue.php:374
 #: modules/Individual Needs/in_archive.php:142
-#: modules/Individual Needs/in_edit.php:320
+#: modules/Individual Needs/in_edit.php:322
 #: modules/Individual Needs/in_view.php:73
 #: modules/Library/library_import.php:101
 #: modules/Library/library_manage_catalog_add.php:543
@@ -3170,9 +3170,9 @@ msgstr "Foto"
 #: modules/Finance/invoicees_manage.php:177
 #: modules/Finance/invoicees_manage_edit.php:105
 #: modules/Finance/invoices_manage_edit.php:529
-#: modules/Finance/moduleFunctions.php:915
-#: modules/Finance/moduleFunctions.php:1199
-#: modules/Individual Needs/in_edit.php:180
+#: modules/Finance/moduleFunctions.php:940
+#: modules/Finance/moduleFunctions.php:1224
+#: modules/Individual Needs/in_edit.php:182
 #: modules/Individual Needs/in_summary.php:256
 #: modules/Individual Needs/in_view.php:121
 #: modules/Library/library_browse.php:357
@@ -3448,7 +3448,7 @@ msgstr ""
 #: modules/External Assessment/externalAssessment_manage_details_add.php:482
 #: modules/External Assessment/externalAssessment_manage_details_edit.php:113
 #: modules/Finance/expenseRequest_manage.php:325
-#: modules/Finance/expenses_manage.php:380
+#: modules/Finance/expenses_manage.php:385
 #: modules/Finance/moduleFunctions.php:430 modules/Planner/planner.php:453
 #: modules/Planner/planner.php:973 modules/Planner/planner.php:1273
 #: modules/Planner/planner_add.php:432
@@ -4109,9 +4109,9 @@ msgstr ""
 #: modules/External Assessment/externalAssessment_manage_details_add.php:117
 #: modules/Finance/invoices_manage.php:500
 #: modules/Finance/invoices_manage_processBulkExportContents.php:93
-#: modules/Finance/moduleFunctions.php:827
-#: modules/Finance/moduleFunctions.php:1123
-#: modules/Individual Needs/in_edit.php:188
+#: modules/Finance/moduleFunctions.php:852
+#: modules/Finance/moduleFunctions.php:1148
+#: modules/Individual Needs/in_edit.php:190
 #: modules/Individual Needs/in_summary.php:130
 #: modules/Individual Needs/in_summary.php:262
 #: modules/Individual Needs/in_view.php:127
@@ -5810,8 +5810,8 @@ msgstr ""
 #: modules/Finance/invoices_payOnline.php:154
 #: modules/Individual Needs/in_archive.php:47
 #: modules/Individual Needs/in_edit.php:65
-#: modules/Individual Needs/in_edit.php:213
-#: modules/Individual Needs/in_edit.php:267
+#: modules/Individual Needs/in_edit.php:215
+#: modules/Individual Needs/in_edit.php:269
 #: modules/Library/library_import.php:264
 #: modules/Library/library_import.php:376
 #: modules/Library/library_import.php:405
@@ -7533,7 +7533,7 @@ msgstr ""
 #: modules/Finance/budgets_manage_edit.php:206
 #: modules/Finance/expenseApprovers_manage.php:106
 #: modules/Finance/expenseRequest_manage.php:297
-#: modules/Finance/expenses_manage.php:334
+#: modules/Finance/expenses_manage.php:339
 #: modules/Finance/expenses_manage_processBulkExportContents.php:143
 #: modules/Finance/feeCategories_manage.php:74
 #: modules/Finance/fees_manage.php:155
@@ -10381,8 +10381,8 @@ msgstr ""
 #: modules/Finance/expenseApprovers_manage.php:101
 #: modules/Finance/expenseRequest_manage.php:293
 #: modules/Finance/expenseRequest_manage.php:307
-#: modules/Finance/expenses_manage.php:329
-#: modules/Finance/expenses_manage.php:345
+#: modules/Finance/expenses_manage.php:334
+#: modules/Finance/expenses_manage.php:350
 #: modules/Finance/feeCategories_manage.php:69
 #: modules/Finance/fees_manage.php:150 modules/Finance/invoices_manage.php:452
 #: modules/Finance/invoices_manage.php:469
@@ -11451,7 +11451,7 @@ msgstr ""
 #: modules/Finance/budgets_manage_add.php:161
 #: modules/Finance/expenseApprovers_manage_add.php:64
 #: modules/Finance/expenseApprovers_manage_edit.php:93
-#: modules/Finance/expenses_manage.php:371
+#: modules/Finance/expenses_manage.php:376
 #: modules/Finance/expenses_manage_processBulkExportContents.php:102
 #: modules/School Admin/department_manage.php:152
 #: modules/School Admin/department_manage_add.php:150
@@ -11581,11 +11581,11 @@ msgstr ""
 #: modules/Departments/department.php:224
 #: modules/Departments/department_course_class.php:562
 #: modules/Finance/expenseRequest_manage.php:258
-#: modules/Finance/expenses_manage.php:277
-#: modules/Finance/expenses_manage.php:353
+#: modules/Finance/expenses_manage.php:282
+#: modules/Finance/expenses_manage.php:358
 #: modules/Finance/invoices_manage.php:318
 #: modules/Finance/invoices_manage.php:472
-#: modules/Individual Needs/in_edit.php:171
+#: modules/Individual Needs/in_edit.php:173
 #: modules/Individual Needs/in_summary.php:189
 #: modules/Library/library_browse.php:293
 #: modules/Library/library_lending.php:184
@@ -13557,7 +13557,7 @@ msgstr ""
 #: modules/Finance/budgets_manage.php:97
 #: modules/Finance/expenseApprovers_manage.php:121
 #: modules/Finance/expenseRequest_manage.php:328
-#: modules/Finance/expenses_manage.php:383
+#: modules/Finance/expenses_manage.php:388
 #: modules/Finance/feeCategories_manage.php:97
 #: modules/Finance/fees_manage.php:177
 #: modules/Finance/invoicees_manage.php:186
@@ -15425,8 +15425,8 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage_add.php:192
 #: modules/Finance/expenseRequest_manage_reimburse.php:179
 #: modules/Finance/expenseRequest_manage_view.php:167
-#: modules/Finance/expenses_manage.php:201
-#: modules/Finance/expenses_manage.php:374
+#: modules/Finance/expenses_manage.php:203
+#: modules/Finance/expenses_manage.php:379
 #: modules/Finance/expenses_manage_add.php:170
 #: modules/Finance/expenses_manage_approve.php:217
 #: modules/Finance/expenses_manage_edit.php:207
@@ -15441,8 +15441,8 @@ msgstr ""
 #: modules/Finance/invoices_manage_edit.php:245
 #: modules/Finance/invoices_manage_issue.php:219
 #: modules/Finance/invoices_manage_processBulkExportContents.php:105
-#: modules/Finance/moduleFunctions.php:830
-#: modules/Finance/moduleFunctions.php:1126
+#: modules/Finance/moduleFunctions.php:855
+#: modules/Finance/moduleFunctions.php:1151
 #: modules/Library/library_browse.php:362
 #: modules/Library/library_lending.php:265
 #: modules/Library/library_lending_item.php:147
@@ -16851,7 +16851,7 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage_add.php:174
 #: modules/Finance/expenseRequest_manage_reimburse.php:200
 #: modules/Finance/expenseRequest_manage_reimburse.php:346
-#: modules/Finance/expenses_manage.php:360
+#: modules/Finance/expenses_manage.php:365
 #: modules/Finance/expenses_manage_add.php:152
 #: modules/Finance/expenses_manage_add.php:183
 #: modules/Finance/expenses_manage_add.php:346
@@ -17507,7 +17507,7 @@ msgstr ""
 #: modules/External Assessment/externalAssessment.php:146
 #: modules/External Assessment/externalAssessment_details.php:105
 #: modules/External Assessment/externalAssessment_manage_details_add.php:111
-#: modules/Individual Needs/in_edit.php:184
+#: modules/Individual Needs/in_edit.php:186
 #: modules/Individual Needs/in_summary.php:158
 #: modules/Individual Needs/in_summary.php:259
 #: modules/Individual Needs/in_view.php:124
@@ -17769,8 +17769,8 @@ msgstr ""
 #: modules/Finance/fees_manage_add.php:149
 #: modules/Finance/fees_manage_edit.php:167
 #: modules/Finance/invoices_manage_edit.php:535
-#: modules/Finance/moduleFunctions.php:921
-#: modules/Finance/moduleFunctions.php:1205
+#: modules/Finance/moduleFunctions.php:946
+#: modules/Finance/moduleFunctions.php:1230
 #: modules/Markbook/markbook_edit_add.php:251
 #: modules/Markbook/markbook_edit_addMulti.php:166
 #: modules/Markbook/markbook_edit_edit.php:284
@@ -17934,7 +17934,7 @@ msgstr ""
 #: modules/Finance/invoices_manage.php:474
 #: Admin/courseEnrolment_manage_byPerson_edit.php:255
 #: modules/Finance/expenses_manage.php:355
-#: modules/Finance/expenses_manage.php:355
+#: modules/Finance/expenses_manage.php:360
 #: modules/Finance/invoices_manage.php:474
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:255
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:227
@@ -18142,8 +18142,8 @@ msgstr ""
 #: modules/Data Updater/data_finance.php:424
 #: modules/Finance/expenseRequest_manage.php:192
 #: modules/Finance/expenseRequest_manage.php:239
-#: modules/Finance/expenses_manage.php:211
-#: modules/Finance/expenses_manage.php:258
+#: modules/Finance/expenses_manage.php:213
+#: modules/Finance/expenses_manage.php:260
 #: modules/Finance/invoicees_manage_edit.php:263
 #: modules/Finance/invoices_manage.php:190
 #: modules/School Admin/externalAssessments_manage_edit_field_add.php:181
@@ -18445,9 +18445,9 @@ msgstr "5"
 #: modules/Finance/expenseRequest_manage.php:289
 #: modules/Finance/expenseRequest_manage.php:302
 #: modules/Finance/expenseRequest_manage.php:371
-#: modules/Finance/expenses_manage.php:324
-#: modules/Finance/expenses_manage.php:339
-#: modules/Finance/expenses_manage.php:436 modules/Finance/fees_manage.php:122
+#: modules/Finance/expenses_manage.php:329
+#: modules/Finance/expenses_manage.php:344
+#: modules/Finance/expenses_manage.php:441 modules/Finance/fees_manage.php:122
 #: modules/Finance/invoicees_manage.php:136
 #: modules/Finance/invoices_manage.php:448
 #: modules/Finance/invoices_manage.php:461
@@ -18930,7 +18930,7 @@ msgstr "Pengajar (Kurikulum)"
 #: modules/Data Updater/data_personal.php:614
 #: modules/Data Updater/data_personal.php:1052
 #: modules/Data Updater/data_personal.php:1259
-#: modules/Finance/moduleFunctions.php:663
+#: modules/Finance/moduleFunctions.php:688
 #: modules/School Admin/department_manage_add.php:180
 #: modules/School Admin/department_manage_add.php:193
 #: modules/School Admin/department_manage_edit.php:309
@@ -19333,8 +19333,8 @@ msgstr ""
 #: modules/Finance/fees_manage.php:170 modules/Finance/fees_manage_add.php:157
 #: modules/Finance/fees_manage_edit.php:175
 #: modules/Finance/invoices_manage_edit.php:532
-#: modules/Finance/moduleFunctions.php:918
-#: modules/Finance/moduleFunctions.php:1202
+#: modules/Finance/moduleFunctions.php:943
+#: modules/Finance/moduleFunctions.php:1227
 #: modules/Library/library_browse.php:226
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:160
 #: modules/Planner/moduleFunctions.php:239 modules/Planner/outcomes.php:160
@@ -19719,7 +19719,7 @@ msgstr ""
 #: Admin/gradeScales_manage_edit_grade_edit.php:102
 #: modules/Finance/moduleFunctions.php:106
 #: modules/Finance/moduleFunctions.php:675
-#: modules/Finance/moduleFunctions.php:675
+#: modules/Finance/moduleFunctions.php:700
 #: modules/School Admin/gradeScales_manage_edit.php:238
 #: modules/School Admin/gradeScales_manage_edit_grade_add.php:101
 #: modules/School Admin/gradeScales_manage_edit_grade_edit.php:102
@@ -21439,7 +21439,7 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage.php:175
 #: modules/Finance/expenses_manage.php:194
 #: modules/Finance/expenseRequest_manage.php:175
-#: modules/Finance/expenses_manage.php:194
+#: modules/Finance/expenses_manage.php:196
 #: modules/Finance/invoicees_manage.php:82
 #: modules/Finance/invoices_manage.php:173
 #: modules/Resources/resources_view.php:37
@@ -21715,7 +21715,7 @@ msgstr ""
 #: modules/Finance/feeCategories_manage.php:143
 #: modules/Finance/invoices_manage.php:477
 #: modules/Finance/invoices_manage.php:640
-#: modules/Finance/moduleFunctions.php:685
+#: modules/Finance/moduleFunctions.php:710
 #: modules/Library/library_manage_catalog.php:435
 #: modules/Markbook/markbook_edit.php:231
 #: modules/Markbook/markbook_edit_data.php:570
@@ -22423,8 +22423,8 @@ msgstr ""
 #: modules/Finance/invoices_manage_add.php:273
 #: modules/Finance/invoices_manage_edit.php:388
 #: modules/Finance/invoices_manage_issue.php:242
-#: modules/Finance/moduleFunctions.php:1005
-#: modules/Finance/moduleFunctions.php:1274
+#: modules/Finance/moduleFunctions.php:1030
+#: modules/Finance/moduleFunctions.php:1299
 #: modules/Library/library_import.php:110
 #: modules/Planner/outcomes_import.php:128
 #: modules/Students/student_view_details.php:3012
@@ -23867,7 +23867,7 @@ msgstr ""
 #: modules/Finance/expenses_manage.php:226
 #: modules/Finance/expenses_manage_edit.php:229
 #: modules/Finance/expenseRequest_manage.php:207
-#: modules/Finance/expenses_manage.php:226
+#: modules/Finance/expenses_manage.php:228
 #: modules/Finance/expenses_manage_edit.php:229
 #: modules/User Admin/applicationForm_manage_edit.php:160
 msgid "Rejected"
@@ -25215,7 +25215,7 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage_add.php:180
 #: modules/Finance/expenseRequest_manage_reimburse.php:171
 #: modules/Finance/expenseRequest_manage_view.php:159
-#: modules/Finance/expenses_manage.php:367
+#: modules/Finance/expenses_manage.php:372
 #: modules/Finance/expenses_manage_add.php:158
 #: modules/Finance/expenses_manage_approve.php:209
 #: modules/Finance/expenses_manage_edit.php:199
@@ -26218,7 +26218,7 @@ msgstr ""
 #: modules/Finance/invoicees_manage.php:183
 #: modules/Finance/invoices_manage.php:497
 #: modules/Finance/invoices_manage_processBulkExportContents.php:96
-#: modules/Finance/moduleFunctions.php:765
+#: modules/Finance/moduleFunctions.php:790
 #: modules/User Admin/data_finance_edit.php:116
 msgid "Invoice To"
 msgstr ""
@@ -30135,7 +30135,7 @@ msgstr ""
 #: modules/Activities/activities_view_register.php:322
 #: modules/Activities/report_payment.php:67
 #: modules/Finance/expenseRequest_manage.php:322
-#: modules/Finance/expenses_manage.php:377
+#: modules/Finance/expenses_manage.php:382
 #: modules/Finance/expenses_manage_processBulkExportContents.php:99
 msgid "Cost"
 msgstr ""
@@ -31729,7 +31729,7 @@ msgstr ""
 #: modules/Finance/budgetCycles_manage.php:114
 #: modules/Finance/budgets_manage.php:138
 #: modules/Finance/expenseApprovers_manage.php:149
-#: modules/Finance/expenses_manage.php:444
+#: modules/Finance/expenses_manage.php:449
 #: modules/Finance/feeCategories_manage.php:142
 #: modules/Finance/fees_manage.php:219
 #: modules/Finance/invoicees_manage.php:235
@@ -46868,7 +46868,7 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage.php:195
 #: modules/Behaviour/behaviour_pattern.php:249
 #: modules/Finance/expenseRequest_manage.php:257
-#: modules/Finance/expenses_manage.php:276
+#: modules/Finance/expenses_manage.php:281
 #: modules/Finance/invoicees_manage.php:126
 #: modules/Finance/invoices_manage.php:317
 #: modules/Individual Needs/in_summary.php:188
@@ -47389,7 +47389,7 @@ msgstr ""
 #: modules/Finance/billingSchedule_manage.php:169
 #: modules/Finance/billingSchedule_manage_add.php:146
 #: modules/Finance/billingSchedule_manage_edit.php:163
-#: modules/Finance/moduleFunctions.php:857
+#: modules/Finance/moduleFunctions.php:882
 msgid "Invoice Issue Date"
 msgstr ""
 
@@ -47494,8 +47494,8 @@ msgstr ""
 #: modules/Finance/fees_manage.php:173 modules/Finance/fees_manage_add.php:185
 #: modules/Finance/fees_manage_edit.php:211
 #: modules/Finance/invoices_manage_edit.php:538
-#: modules/Finance/moduleFunctions.php:924
-#: modules/Finance/moduleFunctions.php:1208
+#: modules/Finance/moduleFunctions.php:949
+#: modules/Finance/moduleFunctions.php:1233
 msgid "Fee"
 msgstr ""
 
@@ -47732,7 +47732,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:278
 #: modules/Finance/expenseRequest_manage.php:222
 #: modules/Finance/expenseRequest_manage_reimburse.php:188
-#: modules/Finance/expenses_manage.php:241
+#: modules/Finance/expenses_manage.php:243
 #: modules/Finance/expenses_manage_add.php:178
 #: modules/Finance/expenses_manage_edit.php:239
 #: modules/Finance/expenses_manage_edit.php:261
@@ -47757,7 +47757,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:266
 #: modules/Finance/expenses_manage_edit.php:283
 #: modules/Finance/expenseRequest_manage.php:212
-#: modules/Finance/expenses_manage.php:231
+#: modules/Finance/expenses_manage.php:233
 #: modules/Finance/expenses_manage_edit.php:244
 #: modules/Finance/expenses_manage_edit.php:266
 #: modules/Finance/expenses_manage_edit.php:283
@@ -47796,8 +47796,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:836
 #: modules/Finance/moduleFunctions.php:1132
 #: modules/Finance/invoices_manage.php:306
-#: modules/Finance/moduleFunctions.php:836
-#: modules/Finance/moduleFunctions.php:1132
+#: modules/Finance/moduleFunctions.php:861
+#: modules/Finance/moduleFunctions.php:1157
 msgid "Ad Hoc"
 msgstr ""
 
@@ -47811,7 +47811,7 @@ msgstr ""
 #: modules/Finance/invoices_manage.php:464
 #: modules/Finance/invoices_manage.php:465
 #: modules/Finance/expenses_manage.php:349
-#: modules/Finance/expenses_manage.php:349
+#: modules/Finance/expenses_manage.php:354
 #: modules/Finance/invoices_manage.php:465
 msgid "Are you sure you wish to process this action? It cannot be undone."
 msgstr ""
@@ -47831,7 +47831,7 @@ msgstr ""
 #: modules/Finance/invoices_manage.php:482 modules/Planner/units.php:233
 #: modules/Planner/units.php:280 modules/Finance/invoices_manage.php:483
 #: modules/Finance/expenses_manage.php:356
-#: modules/Finance/expenses_manage.php:356
+#: modules/Finance/expenses_manage.php:361
 #: modules/Finance/invoices_manage.php:483 modules/Planner/units.php:280
 msgid "Export"
 msgstr ""
@@ -47846,8 +47846,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:1130
 #: modules/Finance/invoices_manage.php:506
 #: modules/Finance/invoices_manage_processBulkExportContents.php:108
-#: modules/Finance/moduleFunctions.php:834
-#: modules/Finance/moduleFunctions.php:1130
+#: modules/Finance/moduleFunctions.php:859
+#: modules/Finance/moduleFunctions.php:1155
 msgid "Schedule"
 msgstr ""
 
@@ -47871,8 +47871,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:1153
 #: modules/Finance/invoices_manage.php:514
 #: modules/Finance/invoices_manage_processBulkExportContents.php:117
-#: modules/Finance/moduleFunctions.php:861
-#: modules/Finance/moduleFunctions.php:1153
+#: modules/Finance/moduleFunctions.php:886
+#: modules/Finance/moduleFunctions.php:1178
 #: modules/Library/library_lending_item.php:206
 #: modules/Library/report_viewOverdueItems.php:66
 msgid "Due Date"
@@ -48032,7 +48032,7 @@ msgstr ""
 #: modules/Finance/invoices_manage_edit.php:302
 #: modules/Finance/invoices_manage_edit.php:361
 #: modules/Finance/invoices_manage_processBulkExportContents.php:120
-#: modules/Finance/moduleFunctions.php:1157
+#: modules/Finance/moduleFunctions.php:1182
 msgid "Date Paid"
 msgstr ""
 
@@ -48096,8 +48096,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:963
 #: modules/Finance/moduleFunctions.php:1247
 #: modules/Finance/invoices_manage_edit.php:577
-#: modules/Finance/moduleFunctions.php:963
-#: modules/Finance/moduleFunctions.php:1247
+#: modules/Finance/moduleFunctions.php:988
+#: modules/Finance/moduleFunctions.php:1272
 msgid "Invoice Total:"
 msgstr ""
 
@@ -48128,8 +48128,8 @@ msgstr ""
 #: modules/Finance/invoices_manage_edit.php:692
 #: modules/Finance/invoices_manage_edit.php:793
 #: modules/Finance/invoices_manage_edit.php:830
-#: modules/Finance/moduleFunctions.php:790
-#: modules/Finance/moduleFunctions.php:1086
+#: modules/Finance/moduleFunctions.php:815
+#: modules/Finance/moduleFunctions.php:1111
 msgid "There are no family members available to send this receipt to."
 msgstr ""
 
@@ -48256,8 +48256,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:865
 #: modules/Finance/moduleFunctions.php:1161
 #: modules/Finance/invoices_manage_processBulkExportContents.php:87
-#: modules/Finance/moduleFunctions.php:865
-#: modules/Finance/moduleFunctions.php:1161
+#: modules/Finance/moduleFunctions.php:890
+#: modules/Finance/moduleFunctions.php:1186
 #: modules/Library/library_import.php:146
 #: modules/Library/library_manage_catalog_add.php:227
 #: modules/Library/library_manage_catalog_duplicate.php:294
@@ -48272,13 +48272,13 @@ msgstr ""
 
 #: modules/Finance/moduleFunctions.php:78
 #: modules/Finance/moduleFunctions.php:647
-#: modules/Finance/moduleFunctions.php:647
+#: modules/Finance/moduleFunctions.php:672
 msgid "Fee Name"
 msgstr ""
 
 #: modules/Finance/moduleFunctions.php:117
 #: modules/Finance/moduleFunctions.php:686
-#: modules/Finance/moduleFunctions.php:686
+#: modules/Finance/moduleFunctions.php:711
 msgid "Show/Hide"
 msgstr ""
 
@@ -48287,8 +48287,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:553
 #: modules/Finance/moduleFunctions.php:826
 #: modules/Finance/moduleFunctions.php:1122
-#: modules/Finance/moduleFunctions.php:826
-#: modules/Finance/moduleFunctions.php:1122
+#: modules/Finance/moduleFunctions.php:851
+#: modules/Finance/moduleFunctions.php:1147
 msgid "Fees For"
 msgstr ""
 
@@ -48297,8 +48297,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:609
 #: modules/Finance/moduleFunctions.php:882
 #: modules/Finance/moduleFunctions.php:1178
-#: modules/Finance/moduleFunctions.php:882
-#: modules/Finance/moduleFunctions.php:1178
+#: modules/Finance/moduleFunctions.php:907
+#: modules/Finance/moduleFunctions.php:1203
 msgid "Fee Table"
 msgstr ""
 
@@ -48307,22 +48307,22 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:623
 #: modules/Finance/moduleFunctions.php:908
 #: modules/Finance/moduleFunctions.php:1192
-#: modules/Finance/moduleFunctions.php:908
-#: modules/Finance/moduleFunctions.php:1192
+#: modules/Finance/moduleFunctions.php:933
+#: modules/Finance/moduleFunctions.php:1217
 msgid "There are no records to display"
 msgstr ""
 
 #: modules/Finance/moduleFunctions.php:466
 #: modules/Finance/moduleFunctions.php:492
 #: modules/Finance/moduleFunctions.php:1061
-#: modules/Finance/moduleFunctions.php:1061
+#: modules/Finance/moduleFunctions.php:1086
 msgid "Receipt To"
 msgstr ""
 
 #: modules/Finance/moduleFunctions.php:663
 #: modules/Finance/moduleFunctions.php:689
 #: modules/Finance/moduleFunctions.php:1258
-#: modules/Finance/moduleFunctions.php:1258
+#: modules/Finance/moduleFunctions.php:1283
 msgid "Amount Paid:"
 msgstr ""
 
@@ -48339,7 +48339,7 @@ msgid "View & Contribute To Record"
 msgstr ""
 
 #: modules/Individual Needs/in_edit.php:159 Needs/in_edit.php:196
-#: modules/Individual Needs/in_edit.php:196
+#: modules/Individual Needs/in_edit.php:198
 msgid "Individual Needs Status"
 msgstr ""
 
@@ -48356,7 +48356,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2284
 #: modules/Students/student_view_details.php:2288 Needs/in_edit.php:222
 #: modules/Students/student_view_details.php:2369
-#: modules/Individual Needs/in_edit.php:222
+#: modules/Individual Needs/in_edit.php:224
 #: modules/Students/student_view_details.php:2369
 msgid "Individual Education Plan"
 msgstr ""
@@ -48374,8 +48374,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2307
 #: modules/Students/student_view_details.php:2311 Needs/in_edit.php:238
 #: Needs/in_edit.php:289 modules/Students/student_view_details.php:2392
-#: modules/Individual Needs/in_edit.php:238
-#: modules/Individual Needs/in_edit.php:289
+#: modules/Individual Needs/in_edit.php:240
+#: modules/Individual Needs/in_edit.php:291
 #: modules/Students/student_view_details.php:2392
 msgid "Teaching Strategies"
 msgstr ""
@@ -48400,8 +48400,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2308 Needs/in_edit.php:230
 #: Needs/in_edit.php:276 modules/Markbook/markbook_view.php:299
 #: modules/Students/student_view_details.php:2389
-#: modules/Individual Needs/in_edit.php:230
-#: modules/Individual Needs/in_edit.php:276
+#: modules/Individual Needs/in_edit.php:232
+#: modules/Individual Needs/in_edit.php:278
 #: modules/Markbook/markbook_view.php:299
 #: modules/Messenger/messenger_manage_edit.php:255
 #: modules/Messenger/messenger_post.php:322
@@ -56142,8 +56142,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:2310
 #: modules/Students/student_view_details.php:2314 Needs/in_edit.php:246
 #: Needs/in_edit.php:302 modules/Students/student_view_details.php:2395
-#: modules/Individual Needs/in_edit.php:246
-#: modules/Individual Needs/in_edit.php:302
+#: modules/Individual Needs/in_edit.php:248
+#: modules/Individual Needs/in_edit.php:304
 #: modules/Students/student_view_details.php:2395
 msgid "Notes & Review"
 msgstr ""
@@ -57540,7 +57540,7 @@ msgstr ""
 #: modules/Finance/invoices_payOnline.php:128
 #: modules/Finance/moduleFunctions.php:987
 #: modules/Finance/invoices_payOnline.php:128
-#: modules/Finance/moduleFunctions.php:987
+#: modules/Finance/moduleFunctions.php:1012
 msgid "Online Payment"
 msgstr ""
 
@@ -57560,7 +57560,7 @@ msgstr ""
 #: modules/Finance/invoices_payOnline.php:142
 #: modules/Finance/moduleFunctions.php:995
 #: modules/Finance/invoices_payOnline.php:142
-#: modules/Finance/moduleFunctions.php:995
+#: modules/Finance/moduleFunctions.php:1020
 msgid ""
 "Payment is not permitted for this invoice, as the total amount is greater "
 "than the permitted online payment threshold."
@@ -57568,7 +57568,7 @@ msgstr ""
 
 #: modules/Finance/moduleFunctions.php:422
 #: modules/Finance/moduleFunctions.php:991
-#: modules/Finance/moduleFunctions.php:991
+#: modules/Finance/moduleFunctions.php:1016
 #, php-format
 msgid ""
 "Payment can be made by credit card, using our secure PayPal payment gateway. "
@@ -57580,7 +57580,7 @@ msgstr ""
 
 #: modules/Finance/moduleFunctions.php:423
 #: modules/Finance/moduleFunctions.php:992
-#: modules/Finance/moduleFunctions.php:992
+#: modules/Finance/moduleFunctions.php:1017
 msgid "Pay Now"
 msgstr ""
 
@@ -59439,7 +59439,7 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage.php:66
 #: modules/Finance/expenseRequest_manage_add.php:83
 #: modules/Finance/expenseRequest_manage_view.php:58
-#: modules/Finance/expenses_manage.php:87
+#: modules/Finance/expenses_manage.php:89
 #: modules/Finance/expenses_manage_approve.php:89
 #: modules/Finance/expenses_manage_edit.php:93
 #: modules/Finance/expenses_manage_print.php:89
@@ -59476,8 +59476,8 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage_reimburse.php:90
 #: modules/Finance/expenseRequest_manage_view.php:68
 #: modules/Finance/expenseRequest_manage_view.php:83
-#: modules/Finance/expenses_manage.php:96
-#: modules/Finance/expenses_manage.php:111
+#: modules/Finance/expenses_manage.php:98
+#: modules/Finance/expenses_manage.php:113
 #: modules/Finance/expenses_manage_approve.php:99
 #: modules/Finance/expenses_manage_approve.php:114
 #: modules/Finance/expenses_manage_edit.php:103
@@ -59494,14 +59494,14 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage.php:113
 #: modules/Finance/expenses_manage.php:132
 #: modules/Finance/expenseRequest_manage.php:113
-#: modules/Finance/expenses_manage.php:132
+#: modules/Finance/expenses_manage.php:134
 msgid "The Current budget cycle cannot be determined."
 msgstr ""
 
 #: modules/Finance/expenseRequest_manage.php:134
 #: modules/Finance/expenses_manage.php:153
 #: modules/Finance/expenseRequest_manage.php:134
-#: modules/Finance/expenses_manage.php:153
+#: modules/Finance/expenses_manage.php:155
 msgid "The specified budget cycle cannot be determined."
 msgstr ""
 
@@ -59511,8 +59511,8 @@ msgstr ""
 #: modules/Finance/expenses_manage.php:172
 #: modules/Finance/expenseRequest_manage.php:150
 #: modules/Finance/expenseRequest_manage.php:153
-#: modules/Finance/expenses_manage.php:169
-#: modules/Finance/expenses_manage.php:172
+#: modules/Finance/expenses_manage.php:171
+#: modules/Finance/expenses_manage.php:174
 msgid "Previous Cycle"
 msgstr ""
 
@@ -59522,8 +59522,8 @@ msgstr ""
 #: modules/Finance/expenses_manage.php:180
 #: modules/Finance/expenseRequest_manage.php:158
 #: modules/Finance/expenseRequest_manage.php:161
-#: modules/Finance/expenses_manage.php:177
-#: modules/Finance/expenses_manage.php:180
+#: modules/Finance/expenses_manage.php:179
+#: modules/Finance/expenses_manage.php:182
 msgid "Next Cycle"
 msgstr ""
 
@@ -59532,7 +59532,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:219
 #: modules/Finance/expenses_manage_edit.php:746
 #: modules/Finance/expenseRequest_manage.php:197
-#: modules/Finance/expenses_manage.php:216
+#: modules/Finance/expenses_manage.php:218
 #: modules/Finance/expenses_manage_edit.php:219
 #: modules/Finance/expenses_manage_edit.php:746
 msgid "Requested"
@@ -59546,7 +59546,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:251
 #: modules/Finance/expenseRequest_manage.php:202
 #: modules/Finance/expenseRequest_manage_reimburse.php:187
-#: modules/Finance/expenses_manage.php:221
+#: modules/Finance/expenses_manage.php:223
 #: modules/Finance/expenses_manage_add.php:176
 #: modules/Finance/expenses_manage_edit.php:224
 #: modules/Finance/expenses_manage_edit.php:251
@@ -59560,7 +59560,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:256
 #: modules/Finance/expenses_manage_edit.php:273
 #: modules/Finance/expenseRequest_manage.php:217
-#: modules/Finance/expenses_manage.php:236
+#: modules/Finance/expenses_manage.php:238
 #: modules/Finance/expenses_manage_add.php:177
 #: modules/Finance/expenses_manage_edit.php:234
 #: modules/Finance/expenses_manage_edit.php:256
@@ -59587,8 +59587,8 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage_add.php:153
 #: modules/Finance/expenseRequest_manage_reimburse.php:163
 #: modules/Finance/expenseRequest_manage_view.php:151
-#: modules/Finance/expenses_manage.php:248
-#: modules/Finance/expenses_manage.php:368
+#: modules/Finance/expenses_manage.php:250
+#: modules/Finance/expenses_manage.php:373
 #: modules/Finance/expenses_manage_add.php:123
 #: modules/Finance/expenses_manage_approve.php:201
 #: modules/Finance/expenses_manage_edit.php:191
@@ -59602,7 +59602,7 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage.php:303
 #: modules/Finance/expenses_manage.php:340
 #: modules/Finance/expenseRequest_manage.php:303
-#: modules/Finance/expenses_manage.php:340
+#: modules/Finance/expenses_manage.php:345
 #, php-format
 msgid "%1$s expense requests in current view"
 msgstr ""
@@ -59826,7 +59826,7 @@ msgid ""
 msgstr ""
 
 #: modules/Finance/expenses_manage.php:439
-#: modules/Finance/expenses_manage.php:439
+#: modules/Finance/expenses_manage.php:444
 msgid "Approve/Reject"
 msgstr ""
 
@@ -60045,7 +60045,7 @@ msgid "Archive Title"
 msgstr ""
 
 #: modules/Individual Needs/in_edit.php:157
-#: modules/Individual Needs/in_edit.php:157
+#: modules/Individual Needs/in_edit.php:159
 msgid "Archived Plans"
 msgstr ""
 

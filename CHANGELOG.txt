@@ -352,7 +352,7 @@ i18n: fixed non-translatable string in Markbook
 Markbook: fixed incorrect default class (when none specified) in Markbook edit
 	Edited file /modules/Markbook/markbook_edit.php
 
-i18n: set Portuguese to active (there are some issues to iron out, but this will happen before release)
+i18n: set Portuguese to active
 	Edited value in table gibboni18n
 
 General: added username to select box listings of all users, in some people have the same name
@@ -379,6 +379,8 @@ General: added trailing full stop to formal staff names in reverse
 Individual Needs: fixed bug preventing switch back form archive view to current view
 	Edited file /modules/Individual Needs/in_edit.php
 
+i18n: set Arabic (Saudi Arabia) to active
+	Edited value in table gibboni18n
 
 v9.1.00
 -------

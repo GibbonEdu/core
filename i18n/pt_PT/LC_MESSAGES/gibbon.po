@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: Gibbon v9.0.00\n"
 "Report-Msgid-Bugs-To: support@gibbonedu.org\n"
 "POT-Creation-Date: 2014-03-05 09:36+0800\n"
-"PO-Revision-Date: 2015-06-12 16:09+0800\n"
+"PO-Revision-Date: 2015-06-22 23:04-0000\n"
 "Last-Translator: Mauro Francisco <mauro.francisco@msisangola.com>\n"
 "Language-Team: Gibbon <support@gibbonedu.org>\n"
 "MIME-Version: 1.0\n"
@@ -1597,7 +1597,7 @@ msgid ""
 "Enter your %1$s username, or the email address you have listed in the "
 "system, and press submit: your password will be reset and emailed to you."
 msgstr ""
-"Digite seu nome de usuário%1$s, ou o endereço de email que você tenha "
+"Digite seu %1$s nome de usuário, ou o endereço de email que você tenha "
 "listado no sistema e prima apresentar: sua senha será redefinida e enviada "
 "para você."
 
@@ -1986,7 +1986,7 @@ msgstr ""
 #: modules/Finance/invoices_manage_edit.php:876
 #: modules/Finance/invoices_manage_issue.php:374
 #: modules/Individual Needs/in_archive.php:142
-#: modules/Individual Needs/in_edit.php:320
+#: modules/Individual Needs/in_edit.php:322
 #: modules/Individual Needs/in_view.php:73
 #: modules/Library/library_import.php:101
 #: modules/Library/library_manage_catalog_add.php:543
@@ -2655,15 +2655,15 @@ msgid ""
 "this report, and do not have permission to read it, please return it to %2$s "
 "(%3$s). In the event that it cannot be returned, please destroy it."
 msgstr ""
-"Esta impressão contém informações que são de propriedade de%1$s. Se você "
+"Esta impressão contém informações que são de propriedade de %1$s. Se você "
 "encontrar este relatório e não tiver permissão para lê-lo, por favor, "
-"devolva-o para%2$s (%3$s). No caso em que não pode ser devolvida, por favor "
+"devolva-o para %2$s (%3$s). No caso em que não pode ser devolvida, por favor "
 "destrua-a."
 
 #: report.php:149 report.php:155 report.php:155
 #, php-format
 msgid "Created by %1$s (%2$s) at %3$s on %4$s."
-msgstr "Criado por%1$s (%2$s) em%3$s em%4$s."
+msgstr "Criado por %1$s (%2$s) em %3$s em%4$s."
 
 #: stars.php:21 stars.php:21
 msgid "Stars"
@@ -2968,9 +2968,9 @@ msgstr "Foto"
 #: modules/Finance/invoicees_manage.php:177
 #: modules/Finance/invoicees_manage_edit.php:105
 #: modules/Finance/invoices_manage_edit.php:529
-#: modules/Finance/moduleFunctions.php:915
-#: modules/Finance/moduleFunctions.php:1199
-#: modules/Individual Needs/in_edit.php:180
+#: modules/Finance/moduleFunctions.php:940
+#: modules/Finance/moduleFunctions.php:1224
+#: modules/Individual Needs/in_edit.php:182
 #: modules/Individual Needs/in_summary.php:256
 #: modules/Individual Needs/in_view.php:121
 #: modules/Library/library_browse.php:357
@@ -3231,7 +3231,7 @@ msgstr "Aula"
 #: modules/External Assessment/externalAssessment_manage_details_add.php:482
 #: modules/External Assessment/externalAssessment_manage_details_edit.php:113
 #: modules/Finance/expenseRequest_manage.php:325
-#: modules/Finance/expenses_manage.php:380
+#: modules/Finance/expenses_manage.php:385
 #: modules/Finance/moduleFunctions.php:430 modules/Planner/planner.php:453
 #: modules/Planner/planner.php:973 modules/Planner/planner.php:1273
 #: modules/Planner/planner_add.php:432
@@ -3372,7 +3372,7 @@ msgid ""
 "Warning: you are logged into the system in school year %1$s, which is not "
 "the current year."
 msgstr ""
-"Atenção: você está logado no sistema no ano lectivo%1$s, o que não é o ano "
+"Atenção: você está logado no sistema no ano lectivo %1$s, o que não é o ano "
 "em curso."
 
 #: index.php:311 index.php:317 index.php:323 index.php:321 index.php:325
@@ -3846,9 +3846,9 @@ msgstr "Perfil do Estudante"
 #: modules/External Assessment/externalAssessment_manage_details_add.php:117
 #: modules/Finance/invoices_manage.php:500
 #: modules/Finance/invoices_manage_processBulkExportContents.php:93
-#: modules/Finance/moduleFunctions.php:827
-#: modules/Finance/moduleFunctions.php:1123
-#: modules/Individual Needs/in_edit.php:188
+#: modules/Finance/moduleFunctions.php:852
+#: modules/Finance/moduleFunctions.php:1148
+#: modules/Individual Needs/in_edit.php:190
 #: modules/Individual Needs/in_summary.php:130
 #: modules/Individual Needs/in_summary.php:262
 #: modules/Individual Needs/in_view.php:127
@@ -5453,8 +5453,8 @@ msgstr "O seu pedido falhou porque os dados introduzidos não estavam válidos."
 #: modules/Finance/invoices_payOnline.php:154
 #: modules/Individual Needs/in_archive.php:47
 #: modules/Individual Needs/in_edit.php:65
-#: modules/Individual Needs/in_edit.php:213
-#: modules/Individual Needs/in_edit.php:267
+#: modules/Individual Needs/in_edit.php:215
+#: modules/Individual Needs/in_edit.php:269
 #: modules/Library/library_import.php:264
 #: modules/Library/library_import.php:376
 #: modules/Library/library_import.php:405
@@ -7071,7 +7071,7 @@ msgstr "Ver detalhes"
 #: modules/Finance/budgets_manage_edit.php:206
 #: modules/Finance/expenseApprovers_manage.php:106
 #: modules/Finance/expenseRequest_manage.php:297
-#: modules/Finance/expenses_manage.php:334
+#: modules/Finance/expenses_manage.php:339
 #: modules/Finance/expenses_manage_processBulkExportContents.php:143
 #: modules/Finance/feeCategories_manage.php:74
 #: modules/Finance/fees_manage.php:155
@@ -7928,7 +7928,7 @@ msgstr "Atrasado"
 #: modules/Students/student_view_details.php:2300
 #, php-format
 msgid "Submitted at %1$s on %2$s"
-msgstr "Enviado em%1$s em%2$s"
+msgstr "Enviado em %1$s em %2$s"
 
 #: index.php:960 modules/Students/student_view_details.php:1972
 #: modules/Students/student_view_details.php:1970 index.php:966 index.php:964
@@ -7946,7 +7946,7 @@ msgstr "Enviado em%1$s em%2$s"
 #: modules/Students/student_view_details.php:2303
 #, php-format
 msgid "Recorded at %1$s on %2$s"
-msgstr "Gravado em%1$s em%2$s"
+msgstr "Gravado em %1$s em %2$s"
 
 #: index.php:965 modules/User Admin/applicationForm_manage_edit.php:158
 #: modules/Activities/activities_manage_enrolment_add.php:233
@@ -8332,7 +8332,7 @@ msgstr "Ver todos os prazos"
 #: functions.php:752 modules/Students/student_view_details.php:2665
 #, php-format
 msgid "Due at %1$s on %2$s"
-msgstr "Prazo às %1$s em%2$s"
+msgstr "Prazo às %1$s em %2$s"
 
 #: index.php:1109 modules/Crowd Assessment/crowdAssess.php:62
 msgid "Lesson/Unit"
@@ -9590,8 +9590,8 @@ msgstr "Exportar para Excel"
 #: modules/Finance/expenseApprovers_manage.php:101
 #: modules/Finance/expenseRequest_manage.php:293
 #: modules/Finance/expenseRequest_manage.php:307
-#: modules/Finance/expenses_manage.php:329
-#: modules/Finance/expenses_manage.php:345
+#: modules/Finance/expenses_manage.php:334
+#: modules/Finance/expenses_manage.php:350
 #: modules/Finance/feeCategories_manage.php:69
 #: modules/Finance/fees_manage.php:150 modules/Finance/invoices_manage.php:452
 #: modules/Finance/invoices_manage.php:469
@@ -10258,7 +10258,7 @@ msgstr "Dois"
 #: functions.php:1017 functions.php:1023 functions.php:1147 functions.php:1153
 #, php-format
 msgid "Plan & Deploy %1$s Smart Units"
-msgstr "Planear e implementar Unidades Inteligentes de%1$s"
+msgstr "Planear e implementar %1$s Unidades Inteligentes"
 
 #: functions.php:84 functions.php:90 functions.php:105 functions.php:111
 #: functions.php:132 functions.php:138 functions.php:763 functions.php:769
@@ -10275,7 +10275,7 @@ msgstr "Três"
 #: functions.php:1029 functions.php:1035 functions.php:1159 functions.php:1165
 #, php-format
 msgid "Share, Teach %1$s & Interact"
-msgstr "Partilhe, Ensine%1$s & Interaja"
+msgstr "Partilhe, Ensine %1$s & Interaja"
 
 #: functions.php:96 functions.php:117 functions.php:144 functions.php:775
 #: functions.php:984 functions.php:1001 functions.php:1019 functions.php:1039
@@ -10290,7 +10290,7 @@ msgstr "Quatro<"
 #: functions.php:1041 functions.php:1047 functions.php:1171 functions.php:1177
 #, php-format
 msgid "Assign & Collect %1$s Work"
-msgstr "Atribuir e Recolher Trabalho de %1$s"
+msgstr "Atribuir e Recolher %1$s Trabalho"
 
 #: functions.php:102 functions.php:123 functions.php:150 functions.php:781
 #: functions.php:990 functions.php:1007 functions.php:1025 functions.php:1045
@@ -10313,7 +10313,7 @@ msgstr "Cinco"
 #: functions.php:1053 functions.php:1059 functions.php:1183 functions.php:1189
 #, php-format
 msgid "Assess & Give %1$s Feedback"
-msgstr "Avaliar e Dar Feedback a %1$s"
+msgstr "Avaliar e Dar %1$s Feedback"
 
 #: functions.php:123 functions.php:144 functions.php:171 functions.php:802
 #: functions.php:1011 functions.php:1028 functions.php:1046 functions.php:1066
@@ -10357,7 +10357,7 @@ msgstr ""
 #: functions.php:1210 functions.php:1214
 #, php-format
 msgid "Please contact %1$s for help."
-msgstr "Entre em contato com%1$s para a ajuda."
+msgstr "Entre em contato com %1$s para a ajuda."
 
 #: functions.php:127 functions.php:148 functions.php:175 functions.php:806
 #: functions.php:1015 functions.php:1032 functions.php:1050 functions.php:1070
@@ -10395,13 +10395,12 @@ msgid ""
 "right) to add a new unit."
 msgstr ""
 "<b>Planificador</b> suporta aulas on-line que se podem compartilhar com os "
-"estudantes, pais e outros professores. Crie suas aulas &agrave m&atildeo, ou "
-"automaticamente atrav&eacutes de %1$sUnidades Inteligentes%2$s. Os planos de "
-"aulas facilitam a partilha de conte&uacutedos das disciplinas, "
-"atribui&ccedil&atildeo e submiss&atildeo de TPC, chat de texto, e "
-"marca&ccedil&atildeo de presen&ccedils. <br/><br/> Selecione uma data ou "
-"aula, usando o men&uacute da direita, e clique no bot&atildeo “Adicionar "
-"“(por baixo desta mensagem, &agrave direita) para adicionar uma nova unidade."
+"estudantes, pais e outros professores. Crie suas aulasmanualmente, ou "
+"automaticamente através de %1$sUnidades Inteligentes%2$s. Os planos de aulas "
+"facilitam a partilha de conteúdos das disciplinas, atribuição e submissão de "
+"TPC, chat de texto, e marcação de presenças. <br/><br/> Selecione uma data "
+"ou aula, usando o menú da direita, e clique no botão “Adicionar” (por baixo "
+"desta mensagem, à direita) para adicionar uma nova unidade."
 
 #: functions.php:132 functions.php:136 functions.php:140 functions.php:153
 #: functions.php:157 functions.php:161 functions.php:180 functions.php:184
@@ -10431,10 +10430,10 @@ msgid ""
 msgstr ""
 "<b>Tarefas + Prazos</b> permite que os professores e os alunos possam ver "
 "prazos programados, exibidos organizadamente em um só lugar. Clique em uma "
-"entrada para ver os detalhes daquela tarefa, e a aula a que está anexada. "
-"<br/><br/> Lição de casa pode ser atribuído usando os %1$sPlanificador%2$s, "
-"o que também permite que os professores possam ver todos as tarefas "
-"apresentadas, e registros de quem entregou tarde e/ou incompleto."
+"entrada para ver os detalhes daquela tarefa, e a aula a que está anexada.<br/"
+"><br/>Lição de casa pode ser atribuído usando os %1$sPlanificador%2$s, o que "
+"também permite que os professores possam ver todos as tarefas apresentadas, "
+"e registros de quem entregou tarde e/ou incompleto."
 
 #: functions.php:139 functions.php:160 functions.php:187 functions.php:818
 #: functions.php:1027 functions.php:1044 functions.php:1062 functions.php:1082
@@ -10448,13 +10447,13 @@ msgid ""
 "menu on the right, and then click on the \"Add\" button (below this message, "
 "on the right) to create a new markbook column."
 msgstr ""
-"<b>Markbook</b> fornece uma maneira organizada para avaliar, registrar e "
+"<b>Caderneta</b> fornece uma maneira organizada para avaliar, registrar e "
 "informar sobre o progresso do aluno. Use escalas grau, rubricas, comentários "
 "e uploads de arquivos para manter os alunos e pais até à data. Fazer a "
-"ligação markbooks às %1$sPlanner%2$s, e ver o trabalho do aluno como você "
-"está marcando-a. <br/><br/> Escolha uma classe a partir do menu à direita, e "
-"em seguida, clique no botão “Adicionar” (inferior a esta mensagem, à "
-"direita) para criar uma nova coluna Markbook."
+"ligação markbooks às %1$sPlanificador%2$s, e ver o trabalho do aluno como "
+"você está marcando-a.<br/><br/>Escolha uma classe a partir do menu à "
+"direita, e em seguida, clique no botão “Adicionar” (inferior a esta "
+"mensagem, à direita) para criar uma nova coluna na Caderneta."
 
 #: functions.php:147 functions.php:168 functions.php:195 functions.php:826
 #: functions.php:1035 functions.php:1052 functions.php:1070 functions.php:1090
@@ -10574,7 +10573,7 @@ msgstr "Total de Alunos Inscritos:"
 #: modules/Finance/budgets_manage_add.php:161
 #: modules/Finance/expenseApprovers_manage_add.php:64
 #: modules/Finance/expenseApprovers_manage_edit.php:93
-#: modules/Finance/expenses_manage.php:371
+#: modules/Finance/expenses_manage.php:376
 #: modules/Finance/expenses_manage_processBulkExportContents.php:102
 #: modules/School Admin/department_manage.php:152
 #: modules/School Admin/department_manage_add.php:150
@@ -10686,11 +10685,11 @@ msgstr "Staff"
 #: modules/Departments/department.php:224
 #: modules/Departments/department_course_class.php:562
 #: modules/Finance/expenseRequest_manage.php:258
-#: modules/Finance/expenses_manage.php:277
-#: modules/Finance/expenses_manage.php:353
+#: modules/Finance/expenses_manage.php:282
+#: modules/Finance/expenses_manage.php:358
 #: modules/Finance/invoices_manage.php:318
 #: modules/Finance/invoices_manage.php:472
-#: modules/Individual Needs/in_edit.php:171
+#: modules/Individual Needs/in_edit.php:173
 #: modules/Individual Needs/in_summary.php:189
 #: modules/Library/library_browse.php:293
 #: modules/Library/library_lending.php:184
@@ -10780,7 +10779,7 @@ msgstr "Você não tem privilégios suficientes para iniciar sessão."
 #: functions.php:1862 functions.php:1863 functions.php:1995
 #, php-format
 msgid "Too many failed logins: please %1$sreset password%2$s."
-msgstr "Muitos logins que falharam: por favor %1$sreset senha %2$s."
+msgstr "Muitos logins que falharam: por favor %1$sredefinir senha%2$s."
 
 #: functions.php:817 functions.php:821 functions.php:825 functions.php:846
 #: functions.php:927 functions.php:954 functions.php:953 functions.php:1584
@@ -11353,7 +11352,9 @@ msgstr "Hoje é o aniversário de %1$s!"
 #: functions.php:3175
 #, php-format
 msgid "Individual Needs alert is set, with an alert level of %1$s."
-msgstr "Individual precisa alerta é definida, com um nível de alerta de %1$s."
+msgstr ""
+"Alerta para Necessidades Individuais é definida, com um nível de alerta de "
+"%1$s."
 
 #: functions.php:1997 functions.php:2001 functions.php:2005 functions.php:2026
 #: functions.php:2027 functions.php:2116 functions.php:2120 functions.php:1958
@@ -11383,7 +11384,7 @@ msgstr "ENTRADA"
 msgid ""
 "Student has a %1$s alert for academic concern in the current academic year."
 msgstr ""
-"Aluno tem uma alerta %1$s preocupação acadêmica no corrente ano lectivo."
+"Aluno tem um alerta %1$s preocupação acadêmica no corrente ano lectivo."
 
 #: functions.php:2026 functions.php:2030 i18n/dbStringsForTranslation.php:1072
 #: i18n/dbStringsForTranslation.php:1349 i18n/dbStringsForTranslation.php:1433
@@ -12525,7 +12526,7 @@ msgstr "Barra de Procura"
 #: modules/Finance/budgets_manage.php:97
 #: modules/Finance/expenseApprovers_manage.php:121
 #: modules/Finance/expenseRequest_manage.php:328
-#: modules/Finance/expenses_manage.php:383
+#: modules/Finance/expenses_manage.php:388
 #: modules/Finance/feeCategories_manage.php:97
 #: modules/Finance/fees_manage.php:177
 #: modules/Finance/invoicees_manage.php:186
@@ -14258,8 +14259,8 @@ msgstr "Seu pedido falhou devido a um erro de ligação."
 #: modules/Finance/expenseRequest_manage_add.php:192
 #: modules/Finance/expenseRequest_manage_reimburse.php:179
 #: modules/Finance/expenseRequest_manage_view.php:167
-#: modules/Finance/expenses_manage.php:201
-#: modules/Finance/expenses_manage.php:374
+#: modules/Finance/expenses_manage.php:203
+#: modules/Finance/expenses_manage.php:379
 #: modules/Finance/expenses_manage_add.php:170
 #: modules/Finance/expenses_manage_approve.php:217
 #: modules/Finance/expenses_manage_edit.php:207
@@ -14274,8 +14275,8 @@ msgstr "Seu pedido falhou devido a um erro de ligação."
 #: modules/Finance/invoices_manage_edit.php:245
 #: modules/Finance/invoices_manage_issue.php:219
 #: modules/Finance/invoices_manage_processBulkExportContents.php:105
-#: modules/Finance/moduleFunctions.php:830
-#: modules/Finance/moduleFunctions.php:1126
+#: modules/Finance/moduleFunctions.php:855
+#: modules/Finance/moduleFunctions.php:1151
 #: modules/Library/library_browse.php:362
 #: modules/Library/library_lending.php:265
 #: modules/Library/library_lending_item.php:147
@@ -15557,7 +15558,7 @@ msgstr "Por favor, selecione…"
 #: modules/Finance/expenseRequest_manage_add.php:174
 #: modules/Finance/expenseRequest_manage_reimburse.php:200
 #: modules/Finance/expenseRequest_manage_reimburse.php:346
-#: modules/Finance/expenses_manage.php:360
+#: modules/Finance/expenses_manage.php:365
 #: modules/Finance/expenses_manage_add.php:152
 #: modules/Finance/expenses_manage_add.php:183
 #: modules/Finance/expenses_manage_add.php:346
@@ -16181,7 +16182,7 @@ msgstr "Barra de Procura"
 #: modules/External Assessment/externalAssessment.php:146
 #: modules/External Assessment/externalAssessment_details.php:105
 #: modules/External Assessment/externalAssessment_manage_details_add.php:111
-#: modules/Individual Needs/in_edit.php:184
+#: modules/Individual Needs/in_edit.php:186
 #: modules/Individual Needs/in_summary.php:158
 #: modules/Individual Needs/in_summary.php:259
 #: modules/Individual Needs/in_view.php:124
@@ -16428,8 +16429,8 @@ msgstr "Próximo"
 #: modules/Finance/fees_manage_add.php:149
 #: modules/Finance/fees_manage_edit.php:167
 #: modules/Finance/invoices_manage_edit.php:535
-#: modules/Finance/moduleFunctions.php:921
-#: modules/Finance/moduleFunctions.php:1205
+#: modules/Finance/moduleFunctions.php:946
+#: modules/Finance/moduleFunctions.php:1230
 #: modules/Markbook/markbook_edit_add.php:251
 #: modules/Markbook/markbook_edit_addMulti.php:166
 #: modules/Markbook/markbook_edit_edit.php:284
@@ -16588,7 +16589,7 @@ msgstr ""
 #: modules/Finance/invoices_manage.php:473
 #: modules/Finance/invoices_manage.php:474
 #: Admin/courseEnrolment_manage_byPerson_edit.php:255
-#: modules/Finance/expenses_manage.php:355
+#: modules/Finance/expenses_manage.php:360
 #: modules/Finance/invoices_manage.php:474
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:255
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:227
@@ -16773,15 +16774,7 @@ msgstr "A Tempo"
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:117
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:108
 msgid "Course"
-msgstr ""
-"<b>Planificador</b> suporta aulas on-line que se podem compartilhar com os "
-"estudantes, pais e outros professores. Crie suas aulas &agrave m&atildeo, ou "
-"automaticamente atrav&eacutes de %1$sUnidades Inteligentes%2$s. Os planos de "
-"aulas facilitam a partilha de conte&uacutedos das disciplinas, "
-"atribui&ccedil&atildeo e submiss&atildeo de TPC, chat de texto, e "
-"marca&ccedil&atildeo de presen&ccedils. <br/><br/> Selecione uma data ou "
-"aula, usando o men&uacute da direita, e clique no bot&atildeo “Adicionar "
-"“(por baixo desta mensagem, &agrave direita) para adicionar uma nova unidade."
+msgstr "Curso"
 
 #: modules/Resources/resources_manage_edit.php:382 modules/School
 #: Admin/externalAssessments_manage_edit_field_add.php:181
@@ -16798,8 +16791,8 @@ msgstr ""
 #: modules/Data Updater/data_finance.php:424
 #: modules/Finance/expenseRequest_manage.php:192
 #: modules/Finance/expenseRequest_manage.php:239
-#: modules/Finance/expenses_manage.php:211
-#: modules/Finance/expenses_manage.php:258
+#: modules/Finance/expenses_manage.php:213
+#: modules/Finance/expenses_manage.php:260
 #: modules/Finance/invoicees_manage_edit.php:263
 #: modules/Finance/invoices_manage.php:190
 #: modules/School Admin/externalAssessments_manage_edit_field_add.php:181
@@ -16931,7 +16924,7 @@ msgstr "0"
 #: modules/User Admin/family_manage_edit.php:746
 #: modules/User Admin/family_manage_edit_editAdult.php:136
 msgid "1"
-msgstr "Gravado em%1$s em%2$s"
+msgstr "1"
 
 #: modules/School Admin/activitySettings.php:119 modules/User
 #: Admin/family_manage_edit.php:747 Admin/family_manage_edit_editAdult.php:137
@@ -16951,7 +16944,7 @@ msgstr "Gravado em%1$s em%2$s"
 #: modules/User Admin/family_manage_edit.php:747
 #: modules/User Admin/family_manage_edit_editAdult.php:137
 msgid "2"
-msgstr "Criado por%1$s (%2$s) em%3$s em%4$s."
+msgstr "2"
 
 #: modules/School Admin/activitySettings.php:120 modules/User
 #: Admin/family_manage_edit.php:748 Admin/family_manage_edit_editAdult.php:138
@@ -16971,9 +16964,7 @@ msgstr "Criado por%1$s (%2$s) em%3$s em%4$s."
 #: modules/User Admin/family_manage_edit.php:748
 #: modules/User Admin/family_manage_edit_editAdult.php:138
 msgid "3"
-msgstr ""
-"Os país dos alunos interessados em estudar em %1$s podem utilizar o nosso "
-"%2$s formulário online %3$s para iniciar o processo de candidatura."
+msgstr "3"
 
 #: modules/School Admin/activitySettings.php:121
 #: i18n/dbStringsForTranslation.php:939 i18n/dbStringsForTranslation.php:1214
@@ -16990,7 +16981,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1232 i18n/dbStringsForTranslation.php:1511
 #: modules/School Admin/activitySettings.php:121
 msgid "4"
-msgstr "Criado por%1$s (%2$s) em%3$s em%4$s."
+msgstr "4"
 
 #: modules/School Admin/activitySettings.php:122
 #: i18n/dbStringsForTranslation.php:960 i18n/dbStringsForTranslation.php:1237
@@ -17074,9 +17065,9 @@ msgstr "5"
 #: modules/Finance/expenseRequest_manage.php:289
 #: modules/Finance/expenseRequest_manage.php:302
 #: modules/Finance/expenseRequest_manage.php:371
-#: modules/Finance/expenses_manage.php:324
-#: modules/Finance/expenses_manage.php:339
-#: modules/Finance/expenses_manage.php:436 modules/Finance/fees_manage.php:122
+#: modules/Finance/expenses_manage.php:329
+#: modules/Finance/expenses_manage.php:344
+#: modules/Finance/expenses_manage.php:441 modules/Finance/fees_manage.php:122
 #: modules/Finance/invoicees_manage.php:136
 #: modules/Finance/invoices_manage.php:448
 #: modules/Finance/invoices_manage.php:461
@@ -17300,7 +17291,7 @@ msgstr "Horas"
 #: modules/School Admin/schoolYearSpecialDay_manage_add.php:167
 #: modules/School Admin/schoolYearSpecialDay_manage_edit.php:188
 msgid "School Starts"
-msgstr "Calendário Escolar"
+msgstr "Início das aulas"
 
 #: modules/School Admin/daysOfWeek_manage.php:198
 #: Admin/schoolYearSpecialDay_manage_add.php:210
@@ -17309,7 +17300,7 @@ msgstr "Calendário Escolar"
 #: modules/School Admin/schoolYearSpecialDay_manage_add.php:210
 #: modules/School Admin/schoolYearSpecialDay_manage_edit.php:231
 msgid "School Ends"
-msgstr "Ano letivo"
+msgstr "Fim das Aulas"
 
 #: modules/School Admin/daysOfWeek_manage.php:241
 #: Admin/schoolYearSpecialDay_manage_add.php:253
@@ -17318,7 +17309,7 @@ msgstr "Ano letivo"
 #: modules/School Admin/schoolYearSpecialDay_manage_add.php:253
 #: modules/School Admin/schoolYearSpecialDay_manage_edit.php:274
 msgid "School Closes"
-msgstr "Calendário Escolar"
+msgstr "Escola fecha em"
 
 #: modules/School Admin/department_manage.php:33
 #: Admin/department_manage_add.php:33 Admin/department_manage_delete.php:34
@@ -17420,7 +17411,7 @@ msgstr "Logótipo"
 #: modules/User Admin/import_users.php:137
 #: modules/User Admin/role_manage_duplicate.php:104
 msgid "Role"
-msgstr "ID de papel não especificado."
+msgstr "Função"
 
 #: modules/School Admin/department_manage_add.php:175
 #: Admin/department_manage_edit.php:306 Admin/department_manage_edit.php:305
@@ -17532,7 +17523,7 @@ msgstr "Professor"
 #: modules/Data Updater/data_personal.php:614
 #: modules/Data Updater/data_personal.php:1052
 #: modules/Data Updater/data_personal.php:1259
-#: modules/Finance/moduleFunctions.php:663
+#: modules/Finance/moduleFunctions.php:688
 #: modules/School Admin/department_manage_add.php:180
 #: modules/School Admin/department_manage_add.php:193
 #: modules/School Admin/department_manage_edit.php:309
@@ -17565,11 +17556,7 @@ msgstr "Professor"
 #: modules/User Admin/user_manage_edit.php:1378
 #: modules/User Admin/user_manage_edit.php:1419 publicRegistration.php:151
 msgid "Other"
-msgstr ""
-"Seus dados podem não parecer muito certo (por exemplo, os alunos que "
-"deixaram a escola não vão aparecer em anos anteriores), mas você deve ser "
-"capaz de editar as informações de outros anos, o que não está disponível no "
-"ano em curso."
+msgstr "Outro"
 
 #: modules/School Admin/department_manage_add.php:189
 #: Admin/department_manage_edit.php:315 Admin/department_manage_edit.php:314
@@ -17604,9 +17591,7 @@ msgstr "Gerente"
 #: modules/School Admin/department_manage_add.php:192
 #: modules/School Admin/department_manage_edit.php:316
 msgid "Administrator"
-msgstr ""
-"Se você não pode resolver este problema redigitando o endereço, ou através "
-"de outros meios, por favor contacte o administrador do sistema."
+msgstr "Administrador"
 
 #: modules/School Admin/department_manage_delete.php:34
 #: modules/School Admin/department_manage_delete.php:34
@@ -17904,8 +17889,8 @@ msgstr "Editar o Registo"
 #: modules/Finance/fees_manage.php:170 modules/Finance/fees_manage_add.php:157
 #: modules/Finance/fees_manage_edit.php:175
 #: modules/Finance/invoices_manage_edit.php:532
-#: modules/Finance/moduleFunctions.php:918
-#: modules/Finance/moduleFunctions.php:1202
+#: modules/Finance/moduleFunctions.php:943
+#: modules/Finance/moduleFunctions.php:1227
 #: modules/Library/library_browse.php:226
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:160
 #: modules/Planner/moduleFunctions.php:239 modules/Planner/outcomes.php:160
@@ -18076,12 +18061,12 @@ msgstr "indica um campo obrigatório"
 #: modules/School Admin/fileExtensions_manage_delete.php:31
 #: modules/School Admin/fileExtensions_manage_edit.php:31
 msgid "Manage File Extensions"
-msgstr "Tamanho máximo do arquivo: %1$sMB"
+msgstr "Gerenciar extensões de arquivo"
 
 #: modules/School Admin/fileExtensions_manage_add.php:31
 #: modules/School Admin/fileExtensions_manage_add.php:31
 msgid "Add File Extension"
-msgstr "Tamanho máximo do arquivo: %1$sMB"
+msgstr "Adicionar extensão de arquivo"
 
 #: modules/School Admin/fileExtensions_manage_add.php:64
 #: Admin/fileExtensions_manage_edit.php:93 Admin/space_manage_add.php:253
@@ -18180,7 +18165,7 @@ msgstr "Eliminar registo"
 #: modules/School Admin/fileExtensions_manage_edit.php:31
 #: modules/School Admin/fileExtensions_manage_edit.php:31
 msgid "Edit File Extensions"
-msgstr "Tamanho máximo do arquivo: %1$sMB"
+msgstr "Editar Extensões de Arquivos"
 
 #: modules/School Admin/gradeScales_manage.php:31
 #: Admin/gradeScales_manage_add.php:34 Admin/gradeScales_manage_delete.php:31
@@ -18296,7 +18281,7 @@ msgstr "Notas (Classificações) Recentes"
 #: Admin/gradeScales_manage_edit_grade_add.php:101
 #: Admin/gradeScales_manage_edit_grade_edit.php:102
 #: modules/Finance/moduleFunctions.php:106
-#: modules/Finance/moduleFunctions.php:675
+#: modules/Finance/moduleFunctions.php:700
 #: modules/School Admin/gradeScales_manage_edit.php:238
 #: modules/School Admin/gradeScales_manage_edit_grade_add.php:101
 #: modules/School Admin/gradeScales_manage_edit_grade_edit.php:102
@@ -18609,7 +18594,7 @@ msgstr "Ano letivo"
 #: modules/School Admin/schoolYear_manage_add.php:81
 #: modules/School Admin/schoolYear_manage_edit.php:110
 msgid "Past"
-msgstr "Aluno tem um alerta de %1$s para o comportamento nos últimos 60 dias."
+msgstr "Passado"
 
 #: modules/School Admin/schoolYear_manage_add.php:82
 #: Admin/schoolYear_manage_edit.php:111
@@ -18788,7 +18773,7 @@ msgstr ""
 #: modules/School Admin/schoolYearSpecialDay_manage_add.php:31
 #: modules/School Admin/schoolYearSpecialDay_manage_add.php:31
 msgid "Add Special Day"
-msgstr "Todos Dia%1$s Eventos"
+msgstr "Adicionar dia especial"
 
 #: modules/School Admin/schoolYearSpecialDay_manage_add.php:63
 #: modules/School Admin/schoolYearSpecialDay_manage_add.php:63
@@ -18870,12 +18855,11 @@ msgid ""
 "the Messenger module. It is possible that completing the fields below with "
 "details from other gateways may work."
 msgstr ""
-"Gibbon foi projetado para usar o %1$s One Way SMS%2$s gateway para enviar "
-"mensagens SMS. Este &eacute um servi&ccedilo pago, sem vinculo com Gibbon, e "
-"voc&ecirc deve criar sua pr&oacutepria conta com eles antes de ser capaz de "
-"enviar SMSs usando o m&oacutedulo Messenger. &Eacute poss&iacutevel que "
-"possa trabalhar com outros gateways, preenchendo os campos abaixo com os "
-"respetivos detalhes."
+"Gibbon foi projetado para usar o %1$sOne Way SMS%2$s gateway para enviar "
+"mensagens SMS. Este é um serviço pago, sem vinculo com Gibbon, e você deve "
+"criar sua própria conta com eles antes de ser capaz de enviar SMSs usando o "
+"módulo Messenger. É possível que possa trabalhar com outros gateways, "
+"preenchendo os campos abaixo com os respetivos detalhes."
 
 #: modules/School Admin/space_manage.php:31 Admin/space_manage_add.php:31
 #: Admin/space_manage_delete.php:31 Admin/space_manage_edit.php:31
@@ -19050,9 +19034,7 @@ msgstr "Sala de professores"
 #: modules/School Admin/space_manage_edit.php:131
 #: modules/Timetable/report_viewAvailableSpaces.php:108
 msgid "Study"
-msgstr ""
-"Os país dos alunos interessados em estudar em %1$s podem utilizar o nosso "
-"%2$s formulário online %3$s para iniciar o processo de candidatura."
+msgstr "Pesquisa"
 
 #: modules/School Admin/space_manage_add.php:90
 #: Admin/space_manage_edit.php:132 i18n/dbStringsForTranslation.php:689
@@ -19074,7 +19056,7 @@ msgstr "Biblioteca"
 #: modules/School Admin/space_manage_add.php:97
 #: modules/School Admin/space_manage_edit.php:139
 msgid "User 1"
-msgstr "Criar %1$s objectivos"
+msgstr "Usuário 1"
 
 #: modules/School Admin/space_manage_add.php:121
 #: Admin/space_manage_edit.php:161
@@ -19471,7 +19453,7 @@ msgstr "- Instruções de atualização"
 #: modules/System Admin/module_manage_update.php:123
 #, php-format
 msgid "You are currently using %1$s v%2$s."
-msgstr "Você está usando %1$s v %2$s."
+msgstr "Você está usando %1$s v%2$s."
 
 #: modules/System Admin/module_manage_update.php:117
 #: Admin/module_manage_update.php:123 Admin/module_manage_update.php:124
@@ -19531,8 +19513,8 @@ msgid ""
 "database prior to running the update!"
 msgstr ""
 "Parece que você atualizou o seu código de módulo %1$s para uma nova versão e "
-"está pronto para atualizar seu databse de v %2$s de v %3$s. <b>clique \\"
-"\"Submit\\\" abaixo para continuar. Esta operação não pode ser desfeita: "
+"está pronto para atualizar sua base de dados de v%2$s para v%3$s. <b>clique "
+"\\\"Submit\\\" abaixo para continuar. Esta operação não pode ser desfeita: "
 "fazer backup de seu banco de dados inteiro antes de executar a atualização!</"
 "b>"
 
@@ -19753,7 +19735,7 @@ msgstr "Você parece ser tudo até à data, bom trabalho amigo!"
 #: Admin/update.php:96 Admin/update.php:97 modules/System Admin/update.php:97
 #, php-format
 msgid "You are currently using Gibbon v%1$s."
-msgstr "Você está usando atualmente Gibbon v %1$s."
+msgstr "Você está usando atualmente Gibbon v%1$s."
 
 #: modules/System Admin/update.php:82 Admin/update.php:89 Admin/update.php:88
 #: Admin/update.php:97 Admin/update.php:98 modules/System Admin/update.php:98
@@ -19782,9 +19764,9 @@ msgid ""
 "database prior to running the update!"
 msgstr ""
 "Parece que você atualizou o seu código de Gibbon para uma nova versão e está "
-"pronto para atualizar seu databse de v %1$s para v %2$s. <b>clique \\\"Submit"
-"\\\" abaixo para continuar. Esta operação não pode ser desfeita: fazer "
-"backup de seu banco de dados inteiro antes de executar a atualização!</b>"
+"pronto para atualizar seu databse de v%1$s para v%2$s. <b>clique \\\"Submit\\"
+"\" abaixo para continuar. Esta operação não pode ser desfeita: fazer backup "
+"de seu banco de dados inteiro antes de executar a atualização!</b>"
 
 #: modules/System Admin/update.php:141 Admin/update.php:148
 #: Admin/update.php:147 Admin/update.php:156 Admin/update.php:157
@@ -19803,7 +19785,7 @@ msgstr ""
 #: modules/System Admin/update.php:171
 #, php-format
 msgid "You are currently using Cutting Edge Gibbon v%1$s"
-msgstr "Você está usando atualmente a vanguarda Gibbon v %1$s"
+msgstr "Você está usando atualmente a vanguarda Gibbon v%1$s"
 
 #: modules/System Admin/update.php:156 Admin/update.php:163
 #: Admin/update.php:162 Admin/update.php:171 Admin/update.php:172
@@ -20036,7 +20018,7 @@ msgstr "Total de Alunos Inscritos:"
 #: modules/Roll Groups/rollGroups_details.php:108
 #: Groups/rollGroups_details.php:116
 #: modules/Finance/expenseRequest_manage.php:175
-#: modules/Finance/expenses_manage.php:194
+#: modules/Finance/expenses_manage.php:196
 #: modules/Finance/invoicees_manage.php:82
 #: modules/Finance/invoices_manage.php:173
 #: modules/Resources/resources_view.php:37
@@ -20290,7 +20272,7 @@ msgstr "Marcar como desistente"
 #: modules/Finance/feeCategories_manage.php:143
 #: modules/Finance/invoices_manage.php:477
 #: modules/Finance/invoices_manage.php:640
-#: modules/Finance/moduleFunctions.php:685
+#: modules/Finance/moduleFunctions.php:710
 #: modules/Library/library_manage_catalog.php:435
 #: modules/Markbook/markbook_edit.php:231
 #: modules/Markbook/markbook_edit_data.php:570
@@ -20475,7 +20457,7 @@ msgstr "Total de Alunos Inscritos:"
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php:60
 #, php-format
 msgid "Edit %1$s.%2$s Enrolment"
-msgstr "Gravado em%1$s em%2$s"
+msgstr "Editar%1$s.%2$s inscrições"
 
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:106
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:106
@@ -20591,14 +20573,7 @@ msgstr "Editar o Registo"
 #: modules/Timetable Admin/ttColumn_edit_row_add.php:91
 #: modules/Timetable Admin/ttColumn_edit_row_edit.php:93
 msgid "Column"
-msgstr ""
-"<b>Markbook</b> fornece uma maneira organizada para avaliar, registrar e "
-"informar sobre o progresso do aluno. Use escalas grau, rubricas, comentários "
-"e uploads de arquivos para manter os alunos e pais até à data. Fazer a "
-"ligação markbooks às %1$sPlanner%2$s, e ver o trabalho do aluno como você "
-"está marcando-a. <br/><br/> Escolha uma classe a partir do menu à direita, e "
-"em seguida, clique no botão “Adicionar” (inferior a esta mensagem, à "
-"direita) para criar uma nova coluna Markbook."
+msgstr "Coluna"
 
 #: modules/Timetable Admin/tt_edit_day_add.php:57
 #: modules/Timetable Admin/tt_edit_day_add.php:57
@@ -20804,7 +20779,7 @@ msgstr "Aulas de Hoje"
 #: modules/Timetable Admin/ttDates_edit.php:112
 #: modules/Timetable Admin/ttDates_edit_add.php:120
 msgid "Day"
-msgstr "Todos Dia%1$s Eventos"
+msgstr "Dia"
 
 #: modules/Timetable Admin/tt_edit_day_edit_class.php:116
 #: Admin/tt_edit_day_edit_class_add.php:122
@@ -20990,8 +20965,8 @@ msgstr "Delimitador de textos (por exemplo: \")"
 #: modules/Finance/invoices_manage_add.php:273
 #: modules/Finance/invoices_manage_edit.php:388
 #: modules/Finance/invoices_manage_issue.php:242
-#: modules/Finance/moduleFunctions.php:1005
-#: modules/Finance/moduleFunctions.php:1274
+#: modules/Finance/moduleFunctions.php:1030
+#: modules/Finance/moduleFunctions.php:1299
 #: modules/Library/library_import.php:110
 #: modules/Planner/outcomes_import.php:128
 #: modules/Students/student_view_details.php:3012
@@ -21258,7 +21233,7 @@ msgid ""
 "import again."
 msgstr ""
 "A verificação dos funcionários falhou. Os seguintes funcionários estavam no "
-"arquivo de importação, mas não foram encontrados na plataforma:%1$s. "
+"arquivo de importação, mas não foram encontrados na plataforma: %1$s. "
 "Adicione os funcionários à plataforma e tente novamente a importação."
 
 #: modules/Timetable Admin/tt_import.php:352
@@ -21342,7 +21317,7 @@ msgid ""
 "try the import again."
 msgstr ""
 "A verificação das Disciplinas falhou. As seguintes Disciplinas estavam no "
-"arquivo de importação, mas não foram encontrados na plataforma:%1$s. "
+"arquivo de importação, mas não foram encontrados na plataforma: %1$s. "
 "Adicione as Disciplinas na plataforma e tente novamente a importação."
 
 #: modules/Timetable Admin/tt_import.php:564
@@ -21369,7 +21344,7 @@ msgid ""
 "try the import again."
 msgstr ""
 "A verificação das Aulas falhou. As seguintes Aulas estavam no arquivo de "
-"importação, mas não foram encontrados na plataforma:%1$s. Adicione as Aulas "
+"importação, mas não foram encontrados na plataforma: %1$s. Adicione as Aulas "
 "na plataforma e tente novamente a importação."
 
 #: modules/Timetable Admin/tt_import.php:632
@@ -21390,7 +21365,7 @@ msgstr "As seguintes aulas foram adicionadas: %1$s ."
 #: modules/Timetable Admin/tt_import.php:644
 #: modules/Timetable Admin/tt_import.php:644
 msgid "Teacher Sync"
-msgstr "Professor"
+msgstr "Sincronização do Professor"
 
 #: modules/Timetable Admin/tt_import.php:767
 #, php-format
@@ -21430,7 +21405,7 @@ msgid ""
 "timetable will be obliterated%2$s."
 msgstr ""
 "Você está pronto para começar. %1$sClique aqui para importar o horário. Seu "
-"horário antigo será apagado %2$s."
+"horário antigo será apagado%2$s."
 
 #: modules/Timetable Admin/tt_import.php:805 Admin/tt_import.php:806
 #: modules/Timetable Admin/tt_import.php:806
@@ -21748,17 +21723,17 @@ msgstr "ID de papel não especificado."
 #: modules/User Admin/applicationForm_manage.php:191
 #: modules/User Admin/applicationForm_manage.php:191
 msgid "Application Date"
-msgstr "Aluno e Data"
+msgstr "Data de Inscrição"
 
 #: modules/User Admin/applicationForm_manage.php:194
 #: modules/User Admin/applicationForm_manage.php:194
 msgid "Birth Year"
-msgstr "Ano letivo"
+msgstr "Ano De Nascimento"
 
 #: modules/User Admin/applicationForm_manage.php:194
 #: modules/User Admin/applicationForm_manage.php:194
 msgid "Entry Year"
-msgstr "Ano letivo"
+msgstr "Ano de entrada"
 
 #: modules/User Admin/applicationForm_manage.php:197
 #: Admin/applicationForm_manage_edit.php:1636 modules/Planner/planner.php:351
@@ -21784,15 +21759,7 @@ msgstr "Ano letivo"
 #: modules/User Admin/applicationForm_manage.php:197
 #: modules/User Admin/applicationForm_manage_edit.php:1636
 msgid "Parents"
-msgstr ""
-"<b>Planificador</b> suporta aulas on-line que se podem compartilhar com os "
-"estudantes, pais e outros professores. Crie suas aulas &agrave m&atildeo, ou "
-"automaticamente atrav&eacutes de %1$sUnidades Inteligentes%2$s. Os planos de "
-"aulas facilitam a partilha de conte&uacutedos das disciplinas, "
-"atribui&ccedil&atildeo e submiss&atildeo de TPC, chat de texto, e "
-"marca&ccedil&atildeo de presen&ccedils. <br/><br/> Selecione uma data ou "
-"aula, usando o men&uacute da direita, e clique no bot&atildeo “Adicionar "
-"“(por baixo desta mensagem, &agrave direita) para adicionar uma nova unidade."
+msgstr "Pais (progenitores)"
 
 #: modules/User Admin/applicationForm_manage.php:200
 #: Admin/user_manage_add.php:623 Admin/user_manage_edit.php:756
@@ -21813,7 +21780,7 @@ msgstr ""
 #: modules/User Admin/user_manage_add.php:629
 #: modules/User Admin/user_manage_edit.php:754
 msgid "Last School"
-msgstr "Última"
+msgstr "Última Escola"
 
 #: modules/User Admin/applicationForm_manage.php:203
 #: Admin/applicationForm_manage_edit.php:185
@@ -21828,7 +21795,7 @@ msgstr "Última"
 #: modules/User Admin/applicationForm_manage_edit.php:185
 #: modules/User Admin/applicationForm_manage_edit_print.php:143
 msgid "Milestones"
-msgstr "Milestones"
+msgstr "ETAPAS"
 
 #: modules/User Admin/applicationForm_manage.php:206
 #: Admin/applicationForm_manage_edit.php:121
@@ -21864,7 +21831,7 @@ msgstr "Aceitar a Candidatura"
 #: modules/User Admin/applicationForm_manage_accept.php:60
 #: modules/User Admin/applicationForm_manage_accept.php:60
 msgid "The selected application does not exist or has already been processed."
-msgstr "A Candidatura selecionada não existe ou já foi processada."
+msgstr "A inscrição selecionada não existe ou já foi processada."
 
 #: modules/User Admin/applicationForm_manage_accept.php:81
 #: Admin/applicationForm_manage_reject.php:81
@@ -21886,7 +21853,7 @@ msgstr "Passo"
 #: modules/User Admin/applicationForm_manage_accept.php:114
 #, php-format
 msgid "Are you sure you want to accept the application for %1$s?"
-msgstr "Tem certeza que deseja aceitar o pedido de %1$s?"
+msgstr "Tem certeza que deseja aceitar a inscrição de %1$s?"
 
 #: modules/User Admin/applicationForm_manage_accept.php:122
 #: modules/User Admin/applicationForm_manage_accept.php:122
@@ -22213,7 +22180,8 @@ msgstr "Nome"
 #: Admin/applicationForm_manage_accept.php:757
 #: modules/User Admin/applicationForm_manage_accept.php:793
 msgid "Parent 1 already exists in Gibbon, and so does not need a new account."
-msgstr "Pai 1 já existe na plataforma e portanto não necessita uma nova conta."
+msgstr ""
+"Parente 1 já existe na plataforma e portanto não necessita uma nova conta."
 
 #: modules/User Admin/applicationForm_manage_accept.php:736
 #: Admin/applicationForm_manage_accept.php:895
@@ -22224,21 +22192,21 @@ msgstr "Pai 1 já existe na plataforma e portanto não necessita uma nova conta.
 #: modules/User Admin/applicationForm_manage_accept.php:833
 #: modules/User Admin/applicationForm_manage_accept.php:992
 msgid "Parent 1 could not be linked to family!"
-msgstr "Pai 1 não pôde ser ligado à família!"
+msgstr "Parente 1 não pôde ser ligado à família!"
 
 #: modules/User Admin/applicationForm_manage_accept.php:845
 #: Admin/applicationForm_manage_accept.php:890
 #: Admin/applicationForm_manage_accept.php:906
 #: modules/User Admin/applicationForm_manage_accept.php:942
 msgid "Parent 1 could not be created!"
-msgstr "Pai 1 não pôde ser criado!"
+msgstr "Parente 1 não pôde ser criado!"
 
 #: modules/User Admin/applicationForm_manage_accept.php:850
 #: Admin/applicationForm_manage_accept.php:895
 #: Admin/applicationForm_manage_accept.php:911
 #: modules/User Admin/applicationForm_manage_accept.php:947
 msgid "Parent 1"
-msgstr "Criar %1$s objectivos"
+msgstr "Parente 1"
 
 #: modules/User Admin/applicationForm_manage_accept.php:1008
 #: Admin/applicationForm_manage_accept.php:1053
@@ -22278,7 +22246,7 @@ msgstr "Bem-vindo"
 #: modules/User Admin/applicationForm_manage_accept.php:1217
 #, php-format
 msgid "Welcome to %1$s at %2$s"
-msgstr "Gravado em%1$s em%2$s"
+msgstr "Bem-vindo ao %1$s em %2$s"
 
 #: modules/User Admin/applicationForm_manage_accept.php:1090
 #: Admin/applicationForm_manage_accept.php:1135
@@ -22293,6 +22261,13 @@ msgid ""
 "something easy to remember but hard to guess. This can be done by using the "
 "Preferences page after logging in (top-right of the screen).\\n\\n"
 msgstr ""
+"Estimado %1$s, \\n\\nBem-vindo a %2$s, %3$s sistema de gestão de informação "
+"da escola. Você pode acessar o sistema, vá para %4$s e inicie a sessão com o "
+"seu nome de usuário (%5$s) e a senha (%6$s). \\n\n"
+"Para manter a segurança de seus dados, nós recomendamos que você altere a "
+"senha para algo fácil de lembrar, mas de difícil palpite. Isso pode ser "
+"feito usando a página de preferências logo após o início de sessão (canto "
+"superior direito da tela) .\\n\\n"
 
 #: modules/User Admin/applicationForm_manage_accept.php:1090
 #: Admin/applicationForm_manage_accept.php:1122
@@ -22336,10 +22311,10 @@ msgstr "Um email de boas vindas foi enviado com sucesso para"
 msgid "A welcome email could not be sent to"
 msgstr "Um email de boas vindas não pôde ser enviado para"
 
-#: modules/User Admin/applicationForm_manage_accept.php:1158
-#: Admin/applicationForm_manage_accept.php:1203
-#: Admin/applicationForm_manage_accept.php:1219
+#: modules/User Admin/applicationForm_manage_accept.php:1122
+#: Admin/applicationForm_manage_accept.php:1125
 #: modules/User Admin/applicationForm_manage_accept.php:1255
+#, php-format
 msgid ""
 "Student status could not be updated: student is in the system, but "
 "acceptance has failed."
@@ -22463,7 +22438,7 @@ msgstr "lista de espera"
 
 #: modules/User Admin/applicationForm_manage_edit.php:160
 #: modules/Finance/expenseRequest_manage.php:207
-#: modules/Finance/expenses_manage.php:226
+#: modules/Finance/expenses_manage.php:228
 #: modules/Finance/expenses_manage_edit.php:229
 #: modules/User Admin/applicationForm_manage_edit.php:160
 msgid "Rejected"
@@ -22604,7 +22579,7 @@ msgstr "Pagamento"
 #: modules/User Admin/applicationForm_manage_edit.php:366
 #, php-format
 msgid "Has payment (%1$s %2$s) been made for this application."
-msgstr "Pagamento (%1$s %2$s) foi feito para esta aplicação."
+msgstr "Pagamento (%1$s %2$s) foi feito para esta inscrição."
 
 #: modules/User Admin/applicationForm_manage_edit.php:384
 msgid "PayPal Payment Token:"
@@ -23205,7 +23180,7 @@ msgstr "Aluno e Data"
 #: modules/Application Form/applicationForm.php:517
 #: modules/User Admin/applicationForm_manage_edit.php:782
 msgid "Student Contact"
-msgstr "Perfil do Estudante"
+msgstr "Contacto do aluno"
 
 #: modules/User Admin/applicationForm_manage_edit.php:802
 #: Admin/applicationForm_manage_edit.php:1525
@@ -23270,7 +23245,7 @@ msgstr "Telemóvel"
 #: modules/User Admin/user_manage_add.php:572
 #: modules/User Admin/user_manage_edit.php:691
 msgid "Work"
-msgstr "Atribuir e Recolher Trabalho de %1$s"
+msgstr "Trabalho"
 
 #: modules/User Admin/applicationForm_manage_edit.php:831
 #: Admin/applicationForm_manage_edit.php:1564 Admin/user_manage_add.php:567
@@ -23311,7 +23286,7 @@ msgstr "Paginação"
 #: modules/Application Form/applicationForm.php:575
 #: modules/User Admin/applicationForm_manage_edit.php:842
 msgid "Student Medical & Development"
-msgstr "Perfil do Estudante"
+msgstr "Estudante de medicina e desenvolvimento"
 
 #: modules/User Admin/applicationForm_manage_edit.php:847
 #: Admin/applicationForm_manage_edit_print.php:311 modules/Application
@@ -23322,7 +23297,7 @@ msgstr "Perfil do Estudante"
 #: modules/User Admin/applicationForm_manage_edit.php:847
 #: modules/User Admin/applicationForm_manage_edit_print.php:317
 msgid "Medical Information"
-msgstr "Informação Básica"
+msgstr "Informação Médica"
 
 #: modules/User Admin/applicationForm_manage_edit.php:848 modules/Application
 #: Form/applicationForm.php:576 Form/applicationForm.php:581
@@ -23340,7 +23315,7 @@ msgstr "Por favor indica quaisquer condições médicas."
 #: modules/User Admin/applicationForm_manage_edit.php:854
 #: modules/User Admin/applicationForm_manage_edit_print.php:325
 msgid "Development Information"
-msgstr "Informação Básica"
+msgstr "Informações de Desenvolvimento"
 
 #: modules/User Admin/applicationForm_manage_edit.php:855
 msgid ""
@@ -23359,7 +23334,7 @@ msgstr ""
 #: modules/Application Form/applicationForm.php:706
 #: modules/User Admin/applicationForm_manage_edit.php:864
 msgid "Previous Schools"
-msgstr "Anterior"
+msgstr "Escolas anteriores"
 
 #: modules/User Admin/applicationForm_manage_edit.php:865 modules/Application
 #: Form/applicationForm.php:702 Form/applicationForm.php:707
@@ -23376,7 +23351,7 @@ msgstr ""
 #: modules/Application Form/applicationForm.php:716
 #: modules/User Admin/applicationForm_manage_edit.php:874
 msgid "School Name"
-msgstr "Nome"
+msgstr "Nome da escola"
 
 #: modules/User Admin/applicationForm_manage_edit.php:877 modules/Application
 #: Form/applicationForm.php:714
@@ -23388,7 +23363,7 @@ msgstr "Nome"
 #: modules/Students/report_transport_studentExportContents.php:65
 #: modules/User Admin/applicationForm_manage_edit.php:877
 msgid "Address"
-msgstr "Endereço ilegal detectado: Acesso negado."
+msgstr "Morada"
 
 #: modules/User Admin/applicationForm_manage_edit.php:880
 #: modules/User Admin/applicationForm_manage_edit.php:880
@@ -23409,7 +23384,7 @@ msgstr "Idioma"
 #: modules/User Admin/applicationForm_manage_edit.php:886
 #: modules/User Admin/applicationForm_manage_edit.php:1693
 msgid "Joining Date"
-msgstr "Data"
+msgstr "Data de adesão"
 
 #: modules/User Admin/applicationForm_manage_edit.php:962
 #: Admin/applicationForm_manage_edit.php:975
@@ -23446,7 +23421,7 @@ msgstr "Data"
 #: modules/User Admin/family_manage_edit.php:201
 #: modules/User Admin/import_families.php:146
 msgid "Home Address"
-msgstr "Página Inicial"
+msgstr "Endereço de Residência"
 
 #: modules/User Admin/applicationForm_manage_edit.php:969 modules/Application
 #: Form/applicationForm.php:809 Form/applicationForm.php:814
@@ -23481,14 +23456,14 @@ msgstr ""
 #: modules/User Admin/family_manage_edit.php:238
 #: modules/User Admin/import_families.php:148
 msgid "Home Address (Country)"
-msgstr "Página Inicial"
+msgstr "Endereço residencial (país)"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1056 modules/Application
 #: Form/applicationForm.php:892 Form/applicationForm.php:897
 #: modules/Application Form/applicationForm.php:897
 #: modules/User Admin/applicationForm_manage_edit.php:1056
 msgid "Parent/Guardian 1"
-msgstr "Gravado em%1$s em%2$s"
+msgstr "Pais/encarregados de educação 1"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1068
 #: modules/User Admin/applicationForm_manage_edit.php:1068
@@ -23496,8 +23471,8 @@ msgid ""
 "The parent is already a Gibbon user, and so their details cannot be edited "
 "in this view."
 msgstr ""
-"O pai já é um usuário de Gibbon, e então seus detalhes não podem ser "
-"editados neste modo de exibição."
+"O pai já é um usuário da plataforma Gibbon, e então seus detalhes não podem "
+"ser editados neste modo de exibição."
 
 #: modules/User Admin/applicationForm_manage_edit.php:1093
 #: Admin/applicationForm_manage_edit.php:1292 modules/Application
@@ -23530,7 +23505,7 @@ msgstr ""
 #: modules/User Admin/applicationForm_manage_edit.php:1093
 #: modules/User Admin/applicationForm_manage_edit.php:1292
 msgid "Relationship"
-msgstr "Conexão"
+msgstr "Parentesco:"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1098
 #: Admin/applicationForm_manage_edit.php:1303 Admin/family_manage_edit.php:383
@@ -23611,7 +23586,7 @@ msgstr "Padrasto"
 #: modules/User Admin/applicationForm_manage_edit.php:1307
 #: modules/User Admin/family_manage_edit.php:387
 msgid "Adoptive Parent"
-msgstr "pai ou mãe adoptivos"
+msgstr "Pai ou mãe adoptivos"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1103
 #: Admin/applicationForm_manage_edit.php:1308 Admin/family_manage_edit.php:388
@@ -23754,7 +23729,7 @@ msgstr "Pais/encarregados de educação %1$s dados pessoais"
 #: modules/Finance/expenseRequest_manage_add.php:180
 #: modules/Finance/expenseRequest_manage_reimburse.php:171
 #: modules/Finance/expenseRequest_manage_view.php:159
-#: modules/Finance/expenses_manage.php:367
+#: modules/Finance/expenses_manage.php:372
 #: modules/Finance/expenses_manage_add.php:158
 #: modules/Finance/expenses_manage_approve.php:209
 #: modules/Finance/expenses_manage_edit.php:199
@@ -23961,7 +23936,7 @@ msgstr "Empregador"
 #: modules/User Admin/applicationForm_manage_edit.php:1608
 #, php-format
 msgid "The applying family is already a member of %1$s."
-msgstr "A família de aplicação já é um membro de %1$s."
+msgstr "A família em questão já é um membro de %1$s."
 
 #: modules/User Admin/applicationForm_manage_edit.php:1670 modules/Application
 #: Form/applicationForm.php:1528
@@ -23985,28 +23960,28 @@ msgstr "Irmãos"
 #: modules/Application Form/applicationForm.php:1547
 #: modules/User Admin/applicationForm_manage_edit.php:1684
 msgid "Sibling Name"
-msgstr "Nome"
+msgstr "Nome do irmão"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1690 modules/Application
 #: Form/applicationForm.php:1548 Form/applicationForm.php:1553
 #: modules/Application Form/applicationForm.php:1553
 #: modules/User Admin/applicationForm_manage_edit.php:1690
 msgid "School Attending"
-msgstr "Calendário Escolar"
+msgstr "Atendente de escola"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1746 modules/Application
 #: Form/applicationForm.php:1659 Form/applicationForm.php:1664
 #: modules/Application Form/applicationForm.php:1664
 #: modules/User Admin/applicationForm_manage_edit.php:1746
 msgid "Language Selection"
-msgstr "Idioma"
+msgstr "Seleção de idioma"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1759 modules/Application
 #: Form/applicationForm.php:1672 Form/applicationForm.php:1677
 #: modules/Application Form/applicationForm.php:1677
 #: modules/User Admin/applicationForm_manage_edit.php:1759
 msgid "Language Choice"
-msgstr "Idioma"
+msgstr "Escolha de idioma"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1760 modules/Application
 #: Form/applicationForm.php:1673 Form/applicationForm.php:1678
@@ -24020,7 +23995,7 @@ msgstr "Por favor, escolha o idioma preferido de adicional para estudar."
 #: modules/Application Form/applicationForm.php:1699
 #: modules/User Admin/applicationForm_manage_edit.php:1781
 msgid "Language Choice Experience"
-msgstr "Idioma"
+msgstr "Experiência de escolha de idioma"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1782 modules/Application
 #: Form/applicationForm.php:1695 Form/applicationForm.php:1700
@@ -24108,7 +24083,7 @@ msgstr "Empresa"
 #: modules/User Admin/applicationForm_manage_edit.php:1912
 #: modules/User Admin/data_finance_edit.php:135
 msgid "Company Name"
-msgstr "Nome"
+msgstr "Nome da Empresa"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1920
 #: Admin/data_finance_edit.php:154 modules/Application
@@ -24120,7 +24095,7 @@ msgstr "Nome"
 #: modules/User Admin/applicationForm_manage_edit.php:1920
 #: modules/User Admin/data_finance_edit.php:154
 msgid "Company Contact Person"
-msgstr "Entre em contato com%1$s para a ajuda."
+msgstr "Pessoa de contato de empresa"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1928
 #: Admin/data_finance_edit.php:174 modules/Application
@@ -24144,7 +24119,7 @@ msgstr "endereço da empresa."
 #: modules/User Admin/applicationForm_manage_edit.php:1936
 #: modules/User Admin/data_finance_edit.php:194
 msgid "Company Email"
-msgstr "E-mail"
+msgstr "Empresa E-mail"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1948
 #: Admin/data_finance_edit.php:214 modules/Application
@@ -24190,7 +24165,7 @@ msgstr "Telefone da empresa"
 #: modules/User Admin/applicationForm_manage_edit.php:1981
 #: modules/User Admin/data_finance_edit.php:254
 msgid "Company All?"
-msgstr "Ver todos os prazos"
+msgstr "Todos da empresa?"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1982 modules/Application
 #: Form/applicationForm.php:1882 modules/Data Updater/data_finance.php:421
@@ -24288,7 +24263,7 @@ msgstr "O nome de uma pessoa ou um link para um site."
 #: modules/User Admin/user_manage_add.php:1275
 #: modules/User Admin/user_manage_edit.php:1618
 msgid "Privacy"
-msgstr "A privacidade é necessária: %1$s"
+msgstr "Privacidade"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:33
 #: modules/User Admin/applicationForm_manage_edit_print.php:33
@@ -24304,7 +24279,7 @@ msgstr "Não há dados para exibir, ou ocorreu um erro."
 #: Admin/applicationForm_manage_edit_print.php:206
 #: modules/User Admin/applicationForm_manage_edit_print.php:206
 msgid "Current/Last School"
-msgstr "Última"
+msgstr "Escola atual/última"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:220
 #: Admin/applicationForm_manage_edit_print.php:226
@@ -24312,73 +24287,73 @@ msgstr "Última"
 #: modules/User Admin/user_manage_add.php:171
 #: modules/User Admin/user_manage_edit.php:234 publicRegistration.php:152
 msgid "Unspecified"
-msgstr "Desconhecido"
+msgstr "Não Especificada"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:248
 #: Admin/applicationForm_manage_edit_print.php:254
 #: modules/User Admin/applicationForm_manage_edit_print.php:254
 msgid "Passport Number"
-msgstr "Conter pelo menos um número."
+msgstr "Número do Passaporte"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:329
 #: Admin/applicationForm_manage_edit_print.php:335
 #: modules/User Admin/applicationForm_manage_edit_print.php:335
 msgid "Parents/Gaurdians"
-msgstr "Pais/Gaurdians"
+msgstr "Pais/Guardiões"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:369
 #: Admin/applicationForm_manage_edit_print.php:375
 #: modules/User Admin/applicationForm_manage_edit_print.php:375
 msgid "Parent 1 Name"
-msgstr "Nome"
+msgstr "Nome do parente 1"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:373
 #: Admin/applicationForm_manage_edit_print.php:379
 #: modules/User Admin/applicationForm_manage_edit_print.php:379
 msgid "Parent 1 Relationship"
-msgstr "Hoje é o aniversário de %1$s!"
+msgstr "Relação parente 1"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:377
 #: Admin/applicationForm_manage_edit_print.php:383
 #: modules/User Admin/applicationForm_manage_edit_print.php:383
 msgid "Parent 1 Contact Priority"
-msgstr "Entre em contato com%1$s para a ajuda."
+msgstr "Prioridade de contato parente 1"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:383
 #: Admin/applicationForm_manage_edit_print.php:389
 #: modules/User Admin/applicationForm_manage_edit_print.php:389
 msgid "Parent 1 First Language"
-msgstr "Primeira língua pai 1"
+msgstr "Primeira língua do parente 1"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:387
 #: Admin/applicationForm_manage_edit_print.php:393
 #: modules/User Admin/applicationForm_manage_edit_print.php:393
 msgid "Parent 1 Phone"
-msgstr "Gravado em%1$s em%2$s"
+msgstr "Telefone do parente 1"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:403
 #: Admin/applicationForm_manage_edit_print.php:409
 #: modules/User Admin/applicationForm_manage_edit_print.php:409
 msgid "Parent 1 Email"
-msgstr "E-mail"
+msgstr "E-mail do parente 1"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:417
 #: Admin/applicationForm_manage_edit_print.php:423
 #: modules/User Admin/applicationForm_manage_edit_print.php:423
 msgid "Parent 1 Second Langage"
-msgstr "Pai 1 segundo Langage"
+msgstr "Segundo Idioma do parente 1"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:421
 #: Admin/applicationForm_manage_edit_print.php:427
 #: modules/User Admin/applicationForm_manage_edit_print.php:427
 msgid "Parent 1 Profession"
-msgstr "Gravado em%1$s em%2$s"
+msgstr "Profissão do parente 1"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:425
 #: Admin/applicationForm_manage_edit_print.php:431
 #: modules/User Admin/applicationForm_manage_edit_print.php:431
 msgid "Parent 1 Employer"
-msgstr "Gravado em%1$s em%2$s"
+msgstr "Empregador do Parente 1"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:441
 #: Admin/applicationForm_manage_edit_print.php:570
@@ -24388,7 +24363,7 @@ msgstr "Gravado em%1$s em%2$s"
 #: modules/User Admin/applicationForm_manage_edit_print.php:576
 #, php-format
 msgid "Parent %1$s Name"
-msgstr "Criar %1$s objectivos"
+msgstr "Nome do parente 1 de %1$s"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:445
 #: Admin/applicationForm_manage_edit_print.php:574
@@ -24398,7 +24373,7 @@ msgstr "Criar %1$s objectivos"
 #: modules/User Admin/applicationForm_manage_edit_print.php:580
 #, php-format
 msgid "Parent %1$s Relationship"
-msgstr "Criar %1$s objectivos"
+msgstr "Pai de %1$s Relacionamento"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:449
 #: Admin/applicationForm_manage_edit_print.php:579
@@ -24408,7 +24383,7 @@ msgstr "Criar %1$s objectivos"
 #: modules/User Admin/applicationForm_manage_edit_print.php:585
 #, php-format
 msgid "Parent %1$s Contact Priority"
-msgstr "Entre em contato com%1$s para a ajuda."
+msgstr "Pai de %1$s contato prioridade"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:455
 #: Admin/applicationForm_manage_edit_print.php:585
@@ -24418,7 +24393,7 @@ msgstr "Entre em contato com%1$s para a ajuda."
 #: modules/User Admin/applicationForm_manage_edit_print.php:591
 #, php-format
 msgid "Parent %1$s First Language"
-msgstr "%1$s primeira língua"
+msgstr "Primeira língua do parente %1$s"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:459
 #: Admin/applicationForm_manage_edit_print.php:589
@@ -24428,14 +24403,14 @@ msgstr "%1$s primeira língua"
 #: modules/User Admin/applicationForm_manage_edit_print.php:595
 #, php-format
 msgid "Parent %1$s Phone"
-msgstr "Criar %1$s objectivos"
+msgstr "Pai de %1$s telefone"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:475
 #: Admin/applicationForm_manage_edit_print.php:481
 #: modules/User Admin/applicationForm_manage_edit_print.php:481
 #, php-format
 msgid "Parent %1$s Email"
-msgstr "Pai de %1$s Email"
+msgstr "Email do Pai de %1$s "
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:486
 #: Admin/applicationForm_manage_edit_print.php:625
@@ -24445,7 +24420,7 @@ msgstr "Pai de %1$s Email"
 #: modules/User Admin/applicationForm_manage_edit_print.php:631
 #, php-format
 msgid "Parent %1$s Second Langage"
-msgstr "Pai de %1$s segundo Langage"
+msgstr "Segundo idioma do Pai de %1$s "
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:490
 #: Admin/applicationForm_manage_edit_print.php:629
@@ -24455,7 +24430,7 @@ msgstr "Pai de %1$s segundo Langage"
 #: modules/User Admin/applicationForm_manage_edit_print.php:635
 #, php-format
 msgid "Parent %1$s Profession"
-msgstr "Criar %1$s objectivos"
+msgstr "Profissão do Pai de %1$s "
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:494
 #: Admin/applicationForm_manage_edit_print.php:633
@@ -24465,7 +24440,7 @@ msgstr "Criar %1$s objectivos"
 #: modules/User Admin/applicationForm_manage_edit_print.php:639
 #, php-format
 msgid "Parent %1$s Employer"
-msgstr "Criar %1$s objectivos"
+msgstr "Empregador do Pai de %1$s "
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:516
 #: Admin/applicationForm_manage_edit_print.php:522
@@ -24503,7 +24478,7 @@ msgstr "Situação familiar"
 #: modules/Students/student_view_details.php:1195
 #: modules/User Admin/applicationForm_manage_edit_print.php:597
 msgid "Do not contact by phone."
-msgstr "Entre em contato com%1$s para a ajuda."
+msgstr "Não entre em contato por telefone."
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:608
 #: Admin/applicationForm_manage_edit_print.php:614
@@ -24529,7 +24504,7 @@ msgstr "Encarregado de educação %1$s por E-mail"
 #: modules/Students/student_view_details.php:1233
 #: modules/User Admin/applicationForm_manage_edit_print.php:616
 msgid "Do not contact by email."
-msgstr "E-mail"
+msgstr "Não entre em contato por e-mail."
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:653
 #: Admin/applicationForm_manage_edit_print.php:684
@@ -24539,7 +24514,7 @@ msgstr "E-mail"
 #: modules/User Admin/applicationForm_manage_edit_print.php:690
 #, php-format
 msgid "Sibling %1$s Name"
-msgstr "Criar %1$s objectivos"
+msgstr "Nome do irmão de %1$s"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:657
 #: Admin/applicationForm_manage_edit_print.php:688
@@ -24559,7 +24534,7 @@ msgstr "Irmão de %1$s data de nascimento"
 #: modules/User Admin/applicationForm_manage_edit_print.php:698
 #, php-format
 msgid "Sibling %1$s School"
-msgstr "Irmão de %1$s escola"
+msgstr "Escola do irmão de %1$s"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:704
 #: Admin/applicationForm_manage_edit_print.php:710
@@ -24590,23 +24565,23 @@ msgstr "Definições"
 #: modules/User Admin/applicationFormSettings.php:64
 #: modules/User Admin/publicRegistrationSettings.php:64
 msgid "General Options"
-msgstr "Opções"
+msgstr "Opções Gerais"
 
 #: modules/User Admin/applicationFormSettings.php:251
 msgid "Notification Options"
-msgstr "Notificação"
+msgstr "Opções de Notificação"
 
 #: modules/User Admin/applicationFormSettings.php:348
 #: Admin/applicationFormSettings.php:251
 #: modules/User Admin/applicationFormSettings.php:251
 msgid "Required Documents Options"
-msgstr "Opções"
+msgstr "Opções de documentos necessários"
 
 #: modules/User Admin/applicationFormSettings.php:417
 #: Admin/applicationFormSettings.php:320
 #: modules/User Admin/applicationFormSettings.php:320
 msgid "Language Learning Options"
-msgstr "Idioma"
+msgstr "Opções de aprendizado de idiomas"
 
 #: modules/User Admin/applicationFormSettings.php:422
 #: Admin/applicationFormSettings.php:325
@@ -24645,7 +24620,7 @@ msgstr "Usuário solicitante"
 #: modules/User Admin/data_medical.php:83
 #: modules/User Admin/data_personal.php:83
 msgid "Date & Time"
-msgstr "A Tempo"
+msgstr "Data & hora"
 
 #: modules/User Admin/data_family_delete.php:34
 #: Admin/data_finance_delete.php:34 Admin/data_medical_delete.php:34
@@ -24674,7 +24649,7 @@ msgstr "Editar o Registo"
 #: modules/User Admin/data_personal_edit.php:98
 #: modules/User Admin/dataUpdaterSettings.php:71
 msgid "Field"
-msgstr "indica um campo obrigatório"
+msgstr "Campo"
 
 #: modules/User Admin/data_family_edit.php:101 Admin/data_finance_edit.php:101
 #: Admin/data_medical_edit.php:127 Admin/data_personal_edit.php:101
@@ -24683,7 +24658,7 @@ msgstr "indica um campo obrigatório"
 #: modules/User Admin/data_medical_edit.php:127
 #: modules/User Admin/data_personal_edit.php:101
 msgid "Current Value"
-msgstr "Palavra-passe actual:"
+msgstr "Valor atual"
 
 #: modules/User Admin/data_family_edit.php:104 Admin/data_finance_edit.php:104
 #: Admin/data_medical_edit.php:130 Admin/data_personal_edit.php:104
@@ -24692,7 +24667,7 @@ msgstr "Palavra-passe actual:"
 #: modules/User Admin/data_medical_edit.php:130
 #: modules/User Admin/data_personal_edit.php:104
 msgid "New Value"
-msgstr "Nova palavra-chave"
+msgstr "Novo Valor"
 
 #: modules/User Admin/data_family_edit.php:154 Admin/family_manage_add.php:137
 #: Admin/family_manage_edit.php:210 Admin/import_families.php:148
@@ -24712,7 +24687,7 @@ msgstr "Nova palavra-chave"
 #: modules/User Admin/family_manage_edit.php:210
 #: modules/User Admin/import_families.php:147
 msgid "Home Address (District)"
-msgstr "Página Inicial"
+msgstr "Endereço residencial (distrito)"
 
 #: modules/User Admin/data_finance.php:31 Admin/data_finance_delete.php:34
 #: Admin/data_finance_edit.php:35 i18n/dbStringsForTranslation.php:76
@@ -24722,7 +24697,7 @@ msgstr "Página Inicial"
 #: modules/User Admin/data_finance_delete.php:34
 #: modules/User Admin/data_finance_edit.php:35
 msgid "Finance Data Updates"
-msgstr "Mostrar dados confidenciais"
+msgstr "Atualizações de dados de finanças"
 
 #: modules/User Admin/data_finance.php:77 Admin/data_medical.php:77
 #: Admin/data_personal.php:77 modules/User Admin/data_finance.php:77
@@ -24741,7 +24716,7 @@ msgstr "Usuário de destino"
 #: modules/Finance/invoicees_manage.php:183
 #: modules/Finance/invoices_manage.php:497
 #: modules/Finance/invoices_manage_processBulkExportContents.php:96
-#: modules/Finance/moduleFunctions.php:765
+#: modules/Finance/moduleFunctions.php:790
 #: modules/User Admin/data_finance_edit.php:116
 msgid "Invoice To"
 msgstr "Fatura para"
@@ -24751,7 +24726,7 @@ msgstr "Fatura para"
 #: modules/User Admin/data_medical_delete.php:34
 #: modules/User Admin/data_medical_edit.php:35
 msgid "Medical Data Updates"
-msgstr "Mostrar dados confidenciais"
+msgstr "Atualizações de dados médicos"
 
 #: modules/User Admin/data_medical_edit.php:79
 #: modules/User Admin/data_medical_edit.php:79
@@ -24781,7 +24756,7 @@ msgstr "Atualização bem-sucedida, embora alguns campos não foram registrados.
 #: modules/User Admin/medicalForm_manage_add.php:104
 #: modules/User Admin/medicalForm_manage_edit.php:132
 msgid "Blood Type"
-msgstr "Tipo"
+msgstr "Tipo Sanguíneo"
 
 #: modules/User Admin/data_medical_edit.php:177
 #: modules/Students/report_student_medicalSummary.php:217
@@ -24817,7 +24792,7 @@ msgstr "Tétano, dentro de 10 anos"
 #: modules/User Admin/data_medical_edit.php:290
 #: modules/User Admin/data_medical_edit.php:290
 msgid "Existing Condition"
-msgstr "Inserir o recurso existente"
+msgstr "Condição existente"
 
 #: modules/User Admin/data_medical_edit.php:314
 #: Admin/data_medical_edit.php:528
@@ -24881,7 +24856,7 @@ msgstr "Risco"
 #: modules/User Admin/medicalForm_manage_condition_edit.php:182
 #: modules/User Admin/medicalForm_manage_edit.php:263
 msgid "Triggers"
-msgstr "Gatilhos"
+msgstr "Despoleta"
 
 #: modules/User Admin/data_medical_edit.php:363
 #: Admin/data_medical_edit.php:569
@@ -24941,7 +24916,7 @@ msgstr "Reação"
 #: modules/User Admin/medicalForm_manage_condition_edit.php:198
 #: modules/User Admin/medicalForm_manage_edit.php:269
 msgid "Response"
-msgstr "Resposta Uploaded"
+msgstr "Resposta"
 
 #: modules/User Admin/data_medical_edit.php:402
 #: Admin/data_medical_edit.php:608 Admin/medicalForm_manage.php:132
@@ -24985,7 +24960,7 @@ msgstr "Medicamento"
 #: modules/User Admin/data_medical_edit.php:629
 #: modules/User Admin/medicalForm_manage_edit.php:272
 msgid "Last Episode"
-msgstr "Última"
+msgstr "Último episódio"
 
 #: modules/User Admin/data_medical_edit.php:440
 #: Admin/data_medical_edit.php:646
@@ -25011,19 +24986,19 @@ msgstr "Última"
 #: modules/User Admin/medicalForm_manage_condition_edit.php:232
 #: modules/User Admin/medicalForm_manage_edit.php:275
 msgid "Last Episode Treatment"
-msgstr "Última"
+msgstr "Tratamento do Último Episódio"
 
 #: modules/User Admin/data_medical_edit.php:504
 #: modules/User Admin/data_medical_edit.php:504
 msgid "New Condition"
-msgstr "Nova palavra-chave"
+msgstr "Nova condição"
 
 #: modules/User Admin/data_personal.php:31 Admin/data_personal_delete.php:34
 #: Admin/data_personal_edit.php:35 modules/User Admin/data_personal.php:31
 #: modules/User Admin/data_personal_delete.php:34
 #: modules/User Admin/data_personal_edit.php:35
 msgid "Personal Data Updates"
-msgstr "Antecedentes pessoais"
+msgstr "Atualizações de dados pessoais"
 
 #: modules/User Admin/data_personal_edit.php:274
 #: Admin/dataUpdaterSettings.php:195 Admin/user_manage_add.php:364
@@ -25046,7 +25021,7 @@ msgstr "Antecedentes pessoais"
 #: modules/User Admin/user_manage_add.php:370
 #: modules/User Admin/user_manage_edit.php:424
 msgid "Alternate Email"
-msgstr "E-mail"
+msgstr "E-mail alternativo"
 
 #: modules/User Admin/data_personal_edit.php:294
 #: Admin/dataUpdaterSettings.php:209 Admin/import_users.php:141
@@ -25082,7 +25057,7 @@ msgstr "Endereço 1"
 #: modules/User Admin/user_manage_add.php:436
 #: modules/User Admin/user_manage_edit.php:498
 msgid "Address 1 District"
-msgstr "Endereço ilegal detectado: Acesso negado."
+msgstr "Endereço 1 distrito"
 
 #: modules/User Admin/data_personal_edit.php:334
 #: Admin/dataUpdaterSettings.php:225 Admin/user_manage_add.php:458
@@ -25094,7 +25069,7 @@ msgstr "Endereço ilegal detectado: Acesso negado."
 #: modules/User Admin/user_manage_add.php:464
 #: modules/User Admin/user_manage_edit.php:526
 msgid "Address 1 Country"
-msgstr "Endereço ilegal detectado: Acesso negado."
+msgstr "Endereço 1 país"
 
 #: modules/User Admin/data_personal_edit.php:354
 #: Admin/dataUpdaterSettings.php:233 Admin/import_users.php:144
@@ -25130,7 +25105,7 @@ msgstr "Endereço 2"
 #: modules/User Admin/user_manage_add.php:495
 #: modules/User Admin/user_manage_edit.php:604
 msgid "Address 2 District"
-msgstr "Enviado em%1$s em%2$s"
+msgstr "Distrito de endereço 2"
 
 #: modules/User Admin/data_personal_edit.php:394
 #: Admin/dataUpdaterSettings.php:249 Admin/user_manage_add.php:517
@@ -25142,13 +25117,13 @@ msgstr "Enviado em%1$s em%2$s"
 #: modules/User Admin/user_manage_add.php:523
 #: modules/User Admin/user_manage_edit.php:632
 msgid "Address 2 Country"
-msgstr "Enviado em%1$s em%2$s"
+msgstr "País do endereço 2"
 
 #: modules/User Admin/data_personal_edit.php:421
 #: modules/User Admin/data_personal_edit.php:421
 #, php-format
 msgid "Phone %1$s Type"
-msgstr "Criar %1$s objectivos"
+msgstr "Tipo de telefone %1$s"
 
 #: modules/User Admin/data_personal_edit.php:446
 #: modules/User Admin/data_personal_edit.php:446
@@ -25208,7 +25183,7 @@ msgstr "Criar %1$s objectivos"
 #: modules/User Admin/data_personal_edit.php:613
 #: modules/User Admin/dataUpdaterSettings.php:364
 msgid "Citizenship 1 Passport"
-msgstr "Gravado em%1$s em%2$s"
+msgstr "Passaporte de cidadania 1"
 
 #: modules/User Admin/data_personal_edit.php:633
 #: Admin/dataUpdaterSettings.php:378 Admin/user_manage_add.php:874
@@ -25236,7 +25211,7 @@ msgstr "Cidadania 2"
 #: modules/User Admin/data_personal_edit.php:653
 #: modules/User Admin/dataUpdaterSettings.php:392
 msgid "Citizenship 2 Passport"
-msgstr "Gravado em%1$s em%2$s"
+msgstr "Número de passaporte de cidadania 2"
 
 #: modules/User Admin/data_personal_edit.php:673
 #: Admin/dataUpdaterSettings.php:406 Admin/user_manage_add.php:818
@@ -25315,7 +25290,7 @@ msgstr "Cargo"
 #: modules/User Admin/dataUpdaterSettings.php:505
 #: modules/User Admin/import_users.php:165
 msgid "Emergency 1 Name"
-msgstr "Nome"
+msgstr "Nome de emergência 1"
 
 #: modules/User Admin/data_personal_edit.php:833
 #: Admin/dataUpdaterSettings.php:519 Admin/import_users.php:166
@@ -25323,7 +25298,7 @@ msgstr "Nome"
 #: modules/User Admin/dataUpdaterSettings.php:519
 #: modules/User Admin/import_users.php:166
 msgid "Emergency 1 Number 1"
-msgstr "Criar %1$s objectivos"
+msgstr "Emergência 1 número 1"
 
 #: modules/User Admin/data_personal_edit.php:853
 #: Admin/dataUpdaterSettings.php:533 Admin/import_users.php:167
@@ -25331,14 +25306,14 @@ msgstr "Criar %1$s objectivos"
 #: modules/User Admin/dataUpdaterSettings.php:533
 #: modules/User Admin/import_users.php:167
 msgid "Emergency 1 Number 2"
-msgstr "Prazo às %1$s em%2$s"
+msgstr "Emergência 1 número 2"
 
 #: modules/User Admin/data_personal_edit.php:873
 #: Admin/dataUpdaterSettings.php:547
 #: modules/User Admin/data_personal_edit.php:873
 #: modules/User Admin/dataUpdaterSettings.php:547
 msgid "Emergency 1 Relationship"
-msgstr "Gravado em%1$s em%2$s"
+msgstr "Emergência 1 Parentesco"
 
 #: modules/User Admin/data_personal_edit.php:893
 #: Admin/dataUpdaterSettings.php:561 Admin/import_users.php:169
@@ -25346,7 +25321,7 @@ msgstr "Gravado em%1$s em%2$s"
 #: modules/User Admin/dataUpdaterSettings.php:561
 #: modules/User Admin/import_users.php:169
 msgid "Emergency 2 Name"
-msgstr "Nome"
+msgstr "Nome de emergência 2"
 
 #: modules/User Admin/data_personal_edit.php:913
 #: Admin/dataUpdaterSettings.php:575 Admin/import_users.php:170
@@ -25354,7 +25329,7 @@ msgstr "Nome"
 #: modules/User Admin/dataUpdaterSettings.php:575
 #: modules/User Admin/import_users.php:170
 msgid "Emergency 2 Number 1"
-msgstr "Prazo às %1$s em%2$s"
+msgstr "Emergência 2 número 1"
 
 #: modules/User Admin/data_personal_edit.php:933
 #: Admin/dataUpdaterSettings.php:589 Admin/import_users.php:171
@@ -25362,14 +25337,14 @@ msgstr "Prazo às %1$s em%2$s"
 #: modules/User Admin/dataUpdaterSettings.php:589
 #: modules/User Admin/import_users.php:171
 msgid "Emergency 2 Number 2"
-msgstr "Prazo às %1$s em%2$s"
+msgstr "Emergência 2 número 2"
 
 #: modules/User Admin/data_personal_edit.php:953
 #: Admin/dataUpdaterSettings.php:603
 #: modules/User Admin/data_personal_edit.php:953
 #: modules/User Admin/dataUpdaterSettings.php:603
 msgid "Emergency 2 Relationship"
-msgstr "Gravado em%1$s em%2$s"
+msgstr "Emergência 2 Parentesco"
 
 #: modules/User Admin/data_personal_edit.php:973
 #: Admin/dataUpdaterSettings.php:617 Admin/user_manage_add.php:1214
@@ -25399,7 +25374,7 @@ msgstr "Gravado em%1$s em%2$s"
 #: modules/User Admin/user_manage_add.php:1260
 #: modules/User Admin/user_manage_edit.php:1599
 msgid "Vehicle Registration"
-msgstr "DADOS RELATIVOS AO REGISTO DE VEÍCULOS"
+msgstr "Registo de veículos"
 
 #: modules/User Admin/data_personal_edit.php:1016
 #: modules/Students/student_view_details.php:475
@@ -25413,7 +25388,7 @@ msgstr "DADOS RELATIVOS AO REGISTO DE VEÍCULOS"
 #: modules/Students/student_view_details.php:1037
 #: modules/User Admin/data_personal_edit.php:1016
 msgid "Image Privacy"
-msgstr "Por favor, forneça a o link URL da imagem."
+msgstr "Privacidade de imagem"
 
 #: modules/User Admin/dataUpdaterSettings.php:31
 #: i18n/dbStringsForTranslation.php:63 i18n/dbStringsForTranslation.php:80
@@ -25421,7 +25396,7 @@ msgstr "Por favor, forneça a o link URL da imagem."
 #: i18n/dbStringsForTranslation.php:65 i18n/dbStringsForTranslation.php:70
 #: modules/User Admin/dataUpdaterSettings.php:31
 msgid "Data Updater Settings"
-msgstr "Definições"
+msgstr "Configurações de dados Updater"
 
 #: modules/User Admin/dataUpdaterSettings.php:61
 #: modules/User Admin/dataUpdaterSettings.php:61
@@ -25442,7 +25417,7 @@ msgstr ""
 #: modules/User Admin/dataUpdaterSettings.php:74
 #: modules/User Admin/dataUpdaterSettings.php:74
 msgid "Required"
-msgstr "indica um campo obrigatório"
+msgstr "Necessário"
 
 #: modules/User Admin/dataUpdaterSettings.php:125
 #: modules/User Admin/dataUpdaterSettings.php:125
@@ -25460,13 +25435,13 @@ msgstr "Nomes preferidos"
 #: modules/User Admin/dataUpdaterSettings.php:244
 #: modules/User Admin/dataUpdaterSettings.php:252
 msgid "This field cannot be required"
-msgstr "indica um campo obrigatório"
+msgstr "Este campo não pode ser exigido"
 
 #: modules/User Admin/dataUpdaterSettings.php:264
 #: modules/User Admin/dataUpdaterSettings.php:264
 #, php-format
 msgid "Phone %1$s"
-msgstr "Criar %1$s objectivos"
+msgstr "Telefone de %1$s"
 
 #: modules/User Admin/district_manage.php:31
 #: Admin/district_manage_delete.php:31 Admin/district_manage_edit.php:31
@@ -25524,13 +25499,13 @@ msgstr "Gerenciar as famílias"
 #: modules/User Admin/family_manage.php:64
 #: modules/User Admin/family_manage.php:64
 msgid "Family name."
-msgstr "Nome"
+msgstr "Sobrenomes"
 
 #: modules/User Admin/family_manage.php:130 Admin/family_manage_edit.php:357
 #: modules/User Admin/family_manage.php:130
 #: modules/User Admin/family_manage_edit.php:357
 msgid "Adults"
-msgstr "Hóspedes"
+msgstr "Adultos:"
 
 #: modules/User Admin/family_manage.php:133
 #: modules/User Admin/family_manage.php:133
@@ -25540,7 +25515,7 @@ msgstr "Crianças"
 #: modules/User Admin/family_manage_add.php:31
 #: modules/User Admin/family_manage_add.php:31
 msgid "Add Family"
-msgstr "Adicionar"
+msgstr "Adicionar família"
 
 #: modules/User Admin/family_manage_add.php:97
 #: Admin/family_manage_edit.php:170
@@ -25568,7 +25543,7 @@ msgstr "Divorciado(a)"
 #: modules/User Admin/family_manage_add.php:100
 #: modules/User Admin/family_manage_edit.php:173
 msgid "De Facto"
-msgstr "De fato"
+msgstr "De Facto"
 
 #: modules/User Admin/family_manage_add.php:116
 #: Admin/family_manage_edit.php:189 modules/Data Updater/data_family.php:259
@@ -25581,7 +25556,7 @@ msgstr "Nome formal para os pais de endereço com."
 #: modules/User Admin/family_manage_delete.php:31
 #: modules/User Admin/family_manage_delete.php:31
 msgid "Delete Family"
-msgstr "Eliminar registo"
+msgstr "Excluir a família"
 
 #: modules/User Admin/family_manage_edit.php:31
 #: Admin/family_manage_edit.php:110
@@ -25596,7 +25571,7 @@ msgstr "Eliminar registo"
 #: modules/User Admin/family_manage_edit_editAdult.php:31
 #: modules/User Admin/family_manage_edit_editChild.php:31
 msgid "Edit Family"
-msgstr "Editar o Registo"
+msgstr "Editar a família"
 
 #: modules/User Admin/family_manage_edit.php:78
 #: modules/User Admin/family_manage_edit.php:78
@@ -25611,7 +25586,7 @@ msgstr ""
 #: modules/Application Form/applicationForm.php:1463
 #: modules/User Admin/family_manage_edit.php:344
 msgid "Relationships"
-msgstr "Conexões"
+msgstr "Parentesco"
 
 #: modules/User Admin/family_manage_edit.php:347
 #: modules/User Admin/family_manage_edit.php:347
@@ -25630,7 +25605,7 @@ msgstr "Não há gente suficiente nesta família para estabelecer relações."
 #: modules/User Admin/family_manage_edit.php:414
 #: modules/User Admin/family_manage_edit.php:414
 msgid "View Children"
-msgstr "Ver Pauta Classificativa"
+msgstr "Ver Crianças"
 
 #: modules/User Admin/family_manage_edit.php:489
 #: Admin/family_manage_edit.php:666 Admin/user_manage.php:180
@@ -25638,29 +25613,29 @@ msgstr "Ver Pauta Classificativa"
 #: modules/User Admin/family_manage_edit.php:666
 #: modules/User Admin/user_manage.php:182
 msgid "Change Password"
-msgstr "Senha"
+msgstr "Alterar A Senha"
 
 #: modules/User Admin/family_manage_edit.php:502
 #: modules/User Admin/family_manage_edit.php:502
 msgid "Add Child"
-msgstr "Adicionar"
+msgstr "Adicionar filho"
 
 #: modules/User Admin/family_manage_edit.php:508
 #: Admin/family_manage_edit_editChild.php:101
 #: modules/User Admin/family_manage_edit.php:508
 #: modules/User Admin/family_manage_edit_editChild.php:101
 msgid "Child's Name"
-msgstr "Nome"
+msgstr "NOME DA CRIANÇA:"
 
 #: modules/User Admin/family_manage_edit.php:516
 #: modules/User Admin/family_manage_edit.php:516
 msgid "Enroled Students"
-msgstr "Estudantes"
+msgstr "Estudantes matriculados"
 
 #: modules/User Admin/family_manage_edit.php:577
 #: modules/User Admin/family_manage_edit.php:577
 msgid "View Adults"
-msgstr "Ver o Planejador"
+msgstr "Ver Adultos"
 
 #: modules/User Admin/family_manage_edit.php:580
 #: modules/User Admin/family_manage_edit.php:580
@@ -25676,7 +25651,7 @@ msgstr ""
 #: modules/User Admin/family_manage_edit.php:601
 #: modules/User Admin/family_manage_edit.php:601
 msgid "Data Access"
-msgstr "Mostrar dados confidenciais"
+msgstr "Aceder a dados"
 
 #: modules/User Admin/family_manage_edit.php:604
 #: Admin/family_manage_edit.php:741 Admin/family_manage_edit_editAdult.php:131
@@ -25695,7 +25670,7 @@ msgstr "Mostrar dados confidenciais"
 #: modules/User Admin/family_manage_edit_editAdult.php:131
 #: modules/User Admin/import_families.php:157
 msgid "Contact Priority"
-msgstr "Entre em contato com prioridade"
+msgstr "Contacto Prioritário"
 
 #: modules/User Admin/family_manage_edit.php:607
 #: modules/Staff/staff_view_details.php:451
@@ -25757,7 +25732,7 @@ msgstr "Contato por SMS"
 #: modules/Students/student_view_details.php:1231
 #: modules/User Admin/family_manage_edit.php:613
 msgid "Contact By Email"
-msgstr "E-mail"
+msgstr "Contacto por E-mail"
 
 #: modules/User Admin/family_manage_edit.php:616
 #: modules/User Admin/family_manage_edit.php:616
@@ -25767,14 +25742,14 @@ msgstr "Contato por correio"
 #: modules/User Admin/family_manage_edit.php:679
 #: modules/User Admin/family_manage_edit.php:679
 msgid "Add Adult"
-msgstr "Adicionar"
+msgstr "Adicionar Adulto"
 
 #: modules/User Admin/family_manage_edit.php:685
 #: Admin/family_manage_edit_editAdult.php:101
 #: modules/User Admin/family_manage_edit.php:685
 #: modules/User Admin/family_manage_edit_editAdult.php:101
 msgid "Adult's Name"
-msgstr "Nome"
+msgstr "Nome do Adulto"
 
 #: modules/User Admin/family_manage_edit.php:717
 #: Admin/family_manage_edit_editAdult.php:111
@@ -25788,7 +25763,7 @@ msgstr "Dados exibidos no perfil completo do aluno"
 #: modules/User Admin/family_manage_edit.php:729
 #: modules/User Admin/family_manage_edit_editAdult.php:119
 msgid "Data Access?"
-msgstr "Mostrar dados confidenciais"
+msgstr "Acesso a dados?"
 
 #: modules/User Admin/family_manage_edit.php:730
 #: Admin/family_manage_edit_editAdult.php:120
@@ -25809,7 +25784,7 @@ msgstr "A ordem na qual escola deve entrar em contato com membros da família."
 #: modules/User Admin/family_manage_edit.php:784
 #: modules/User Admin/family_manage_edit_editAdult.php:175
 msgid "Call?"
-msgstr "Chamar"
+msgstr "Chamar?"
 
 #: modules/User Admin/family_manage_edit.php:785
 #: Admin/family_manage_edit_editAdult.php:176
@@ -25823,7 +25798,7 @@ msgstr "Receber chamadas de não-emergência da escola?"
 #: modules/User Admin/family_manage_edit.php:796
 #: modules/User Admin/family_manage_edit_editAdult.php:187
 msgid "SMS?"
-msgstr "SMS"
+msgstr "SMS?"
 
 #: modules/User Admin/family_manage_edit.php:797
 #: Admin/family_manage_edit_editAdult.php:188
@@ -25837,7 +25812,7 @@ msgstr "Receber mensagens SMS não emergencial da escola?"
 #: modules/User Admin/family_manage_edit.php:808
 #: modules/User Admin/family_manage_edit_editAdult.php:199
 msgid "Email?"
-msgstr "E-mail"
+msgstr "E-mail?"
 
 #: modules/User Admin/family_manage_edit.php:809
 #: Admin/family_manage_edit_editAdult.php:200
@@ -25851,7 +25826,7 @@ msgstr "Receber e-mails de não-emergência da escola?"
 #: modules/User Admin/family_manage_edit.php:820
 #: modules/User Admin/family_manage_edit_editAdult.php:211
 msgid "Mail?"
-msgstr "Email"
+msgstr "Email?"
 
 #: modules/User Admin/family_manage_edit.php:821
 #: Admin/family_manage_edit_editAdult.php:212
@@ -25863,22 +25838,22 @@ msgstr "Receber correio postal da escola?"
 #: modules/User Admin/family_manage_edit_deleteAdult.php:31
 #: modules/User Admin/family_manage_edit_deleteAdult.php:31
 msgid "Delete Adult"
-msgstr "Eliminar registo"
+msgstr "Eliminar Adulto"
 
 #: modules/User Admin/family_manage_edit_deleteChild.php:31
 #: modules/User Admin/family_manage_edit_deleteChild.php:31
 msgid "Delete Child"
-msgstr "Eliminar registo"
+msgstr "Eliminar Criança"
 
 #: modules/User Admin/family_manage_edit_editAdult.php:31
 #: modules/User Admin/family_manage_edit_editAdult.php:31
 msgid "Edit Adult"
-msgstr "Editar o Registo"
+msgstr "Editar Adulto"
 
 #: modules/User Admin/family_manage_edit_editChild.php:31
 #: modules/User Admin/family_manage_edit_editChild.php:31
 msgid "Edit Child"
-msgstr "Editar o Registo"
+msgstr "Editar a Criança"
 
 #: modules/User Admin/import_families.php:31
 #: i18n/dbStringsForTranslation.php:194 i18n/dbStringsForTranslation.php:342
@@ -25887,7 +25862,7 @@ msgstr "Editar o Registo"
 #: i18n/dbStringsForTranslation.php:206 i18n/dbStringsForTranslation.php:221
 #: modules/User Admin/import_families.php:31
 msgid "Sync Families"
-msgstr "Famílias de sincronização"
+msgstr "Sincronizar Famílias"
 
 #: modules/User Admin/import_families.php:52
 #: Admin/import_studentEnrolment.php:52
@@ -25909,17 +25884,17 @@ msgstr ""
 #: modules/User Admin/import_families.php:58
 #: modules/User Admin/import_families.php:58
 msgid "Family CSV File"
-msgstr "Tamanho máximo do arquivo: %1$sMB"
+msgstr "Arquivo CSV família"
 
 #: modules/User Admin/import_families.php:71
 #: modules/User Admin/import_families.php:71
 msgid "Parent CSV File"
-msgstr "Tamanho máximo do arquivo: %1$sMB"
+msgstr "Arquivo CSV-Parente"
 
 #: modules/User Admin/import_families.php:84
 #: modules/User Admin/import_families.php:84
 msgid "Child CSV File"
-msgstr "Tamanho máximo do arquivo: %1$sMB"
+msgstr "Arquivo CSV da criança"
 
 #: modules/User Admin/import_families.php:138
 #: Admin/import_studentEnrolment.php:113 Admin/import_users.php:122
@@ -25936,7 +25911,7 @@ msgid ""
 "THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. "
 "BACKUP YOUR DATA."
 msgstr ""
-"O SISTEMA NÃO IRÁ PEDIR-LHE PARA CONTINUAR, SÓ FARÁ A IMPORTAÇÃO. FAZER "
+"O SISTEMA NÃO IRÁ PEDIR-LHE PARA CONTINUAR, SÓ FARÁ A IMPORTAÇÃO. FAÇA "
 "BACKUP DE SEUS DADOS."
 
 #: modules/User Admin/import_families.php:141
@@ -26006,7 +25981,7 @@ msgstr ""
 #: modules/User Admin/import_families.php:157 Admin/import_families.php:156
 #: modules/User Admin/import_families.php:156
 msgid "Parent username"
-msgstr "Nome de utilizador"
+msgstr "Sobrenome do pai"
 
 #: modules/User Admin/import_families.php:158 Admin/import_families.php:157
 #: modules/User Admin/import_families.php:157
@@ -26025,7 +26000,7 @@ msgstr ""
 #: modules/User Admin/import_families.php:164 Admin/import_families.php:163
 #: modules/User Admin/import_families.php:163
 msgid "Child username."
-msgstr "Nome de utilizador"
+msgstr "Nome de utilizador da criança"
 
 #: modules/User Admin/import_families.php:183 Admin/import_families.php:182
 #: modules/User Admin/import_families.php:182
@@ -26182,23 +26157,23 @@ msgstr "Inserir o recurso existente"
 #: modules/User Admin/import_families.php:460
 #: modules/User Admin/import_families.php:542
 msgid "There was an error locating family:"
-msgstr "Ocorreu um erro."
+msgstr "Houve um erro ao localizar a família:"
 
 #: modules/User Admin/import_families.php:425 Admin/import_families.php:424
 #: modules/User Admin/import_families.php:424
 msgid "There was an error updating family:"
-msgstr "Ocorreu um erro."
+msgstr "Houve um erro ao atualizar a família:"
 
 #: modules/User Admin/import_families.php:430 Admin/import_families.php:429
 #: modules/User Admin/import_families.php:429
 #, php-format
 msgid "Family %1$s was successfully updated."
-msgstr "%1$s foi atualizado corretamente."
+msgstr "Família de %1$s foi atualizado com sucesso."
 
 #: modules/User Admin/import_families.php:450 Admin/import_families.php:449
 #: modules/User Admin/import_families.php:449
 msgid "There was an error creating family:"
-msgstr "Ocorreu um erro."
+msgstr "Houve um erro ao criar a família:"
 
 #: modules/User Admin/import_families.php:455 Admin/import_families.php:537
 #: Admin/import_families.php:454 Admin/import_families.php:536
@@ -26211,28 +26186,28 @@ msgstr "Família de %1$s foi criado com êxito."
 #: modules/User Admin/import_families.php:469 Admin/import_families.php:468
 #: modules/User Admin/import_families.php:468
 msgid "Update & Insert Parents"
-msgstr "Inserir o recurso existente"
+msgstr "Atualizar e inserir os pais"
 
 #: modules/User Admin/import_families.php:486 Admin/import_families.php:485
 #: modules/User Admin/import_families.php:485
 msgid "There was an error locating parent:"
-msgstr "Ocorreu um erro."
+msgstr "Ocorreu um erro ao localizar o encarregado de educação"
 
 #: modules/User Admin/import_families.php:507 Admin/import_families.php:506
 #: modules/User Admin/import_families.php:506
 msgid "There was an error updating parent:"
-msgstr "Ocorreu um erro."
+msgstr "Ocorreu um erro ao actualizar o encarregado de educação"
 
 #: modules/User Admin/import_families.php:512 Admin/import_families.php:511
 #: modules/User Admin/import_families.php:511
 #, php-format
 msgid "Parent %1$s was successfully updated."
-msgstr "%1$s foi atualizado corretamente."
+msgstr "Encarregado de Educação %1$s foi atualizado corretamente."
 
 #: modules/User Admin/import_families.php:532 Admin/import_families.php:531
 #: modules/User Admin/import_families.php:531
 msgid "There was an error creating parent:"
-msgstr "Ocorreu um erro."
+msgstr "Houve um erro ao criar o encarregado de educação:"
 
 #: modules/User Admin/import_families.php:551 Admin/import_families.php:550
 #: modules/User Admin/import_families.php:550
@@ -26244,18 +26219,18 @@ msgstr "Inserir o recurso existente"
 #: modules/User Admin/import_families.php:567
 #: modules/User Admin/import_families.php:630
 msgid "There was an error locating student:"
-msgstr "Ocorreu um erro."
+msgstr "Ocorreu um erro ao localizar o aluno"
 
 #: modules/User Admin/import_families.php:601 Admin/import_families.php:600
 #: modules/User Admin/import_families.php:600
 #, php-format
 msgid "Student %1$s was successfully updated."
-msgstr "%1$s foi atualizado corretamente."
+msgstr "Estudante %1$s foi atualizado com sucesso."
 
 #: modules/User Admin/import_families.php:620 Admin/import_families.php:619
 #: modules/User Admin/import_families.php:619
 msgid "There was an error creating student:"
-msgstr "Ocorreu um erro."
+msgstr "Houve um erro ao criar o estudante:"
 
 #: modules/User Admin/import_families.php:625 Admin/import_families.php:624
 #: modules/User Admin/import_families.php:624
@@ -26270,7 +26245,7 @@ msgstr "Estudante de %1$s foi criado com êxito."
 #: i18n/dbStringsForTranslation.php:207 i18n/dbStringsForTranslation.php:222
 #: modules/User Admin/import_studentEnrolment.php:31
 msgid "Sync Student Enrolment"
-msgstr "Total de Alunos Inscritos:"
+msgstr "Sincronizar Alunos Inscritos:"
 
 #: modules/User Admin/import_studentEnrolment.php:117
 #: modules/User Admin/import_studentEnrolment.php:117
@@ -26327,7 +26302,7 @@ msgstr ""
 #: modules/User Admin/import_studentEnrolment.php:234
 #: modules/User Admin/import_studentEnrolment.php:234
 msgid "Delete All Enrolments"
-msgstr "Eliminar registo"
+msgstr "Eliminar Todas as Matrículas"
 
 #: modules/User Admin/import_studentEnrolment.php:249
 #: modules/User Admin/import_studentEnrolment.php:249
@@ -26342,18 +26317,18 @@ msgstr "Todas as matrículas foram excluídas."
 #: modules/User Admin/import_studentEnrolment.php:260
 #: modules/User Admin/import_studentEnrolment.php:260
 msgid "Enrol All Students"
-msgstr "Ler tudo"
+msgstr "Matricular todos os alunos"
 
 #: modules/User Admin/import_studentEnrolment.php:279
 #: modules/User Admin/import_studentEnrolment.php:279
 msgid "There was an error enroling student:"
-msgstr "Ocorreu um erro."
+msgstr "Ocorreu um erro ao matricular o aluno"
 
 #: modules/User Admin/import_studentEnrolment.php:284
 #: modules/User Admin/import_studentEnrolment.php:284
 #, php-format
 msgid "User %1$s was successfully enroled."
-msgstr "Usuário %1$s com êxito foi inscreveu."
+msgstr "Usuário %1$s foi matriculado com sucesso."
 
 #: modules/User Admin/import_users.php:31 i18n/dbStringsForTranslation.php:196
 #: i18n/dbStringsForTranslation.php:346 i18n/dbStringsForTranslation.php:347
@@ -26361,7 +26336,7 @@ msgstr "Usuário %1$s com êxito foi inscreveu."
 #: i18n/dbStringsForTranslation.php:206 i18n/dbStringsForTranslation.php:208
 #: i18n/dbStringsForTranslation.php:223 modules/User Admin/import_users.php:31
 msgid "Sync Users"
-msgstr "Sincronização de utilizadores LDAP"
+msgstr "Sincronizar Usuários"
 
 #: modules/User Admin/import_users.php:52
 #: modules/User Admin/import_users.php:52
@@ -26384,7 +26359,7 @@ msgstr ""
 #: modules/User Admin/import_users.php:96
 #: modules/User Admin/import_users.php:96
 msgid "Default Password"
-msgstr "Senha"
+msgstr "Senha Padrão"
 
 #: modules/User Admin/import_users.php:125
 #: modules/User Admin/import_users.php:125
@@ -26417,12 +26392,12 @@ msgstr "por exemplo, senhor, a senhora deputada, Dr"
 #: modules/User Admin/import_users.php:129
 #: modules/User Admin/import_users.php:129
 msgid "Family name"
-msgstr "Nome"
+msgstr "Sobrenomes"
 
 #: modules/User Admin/import_users.php:130
 #: modules/User Admin/import_users.php:130
 msgid "Given name"
-msgstr "Nome"
+msgstr "Nomes próprio"
 
 #: modules/User Admin/import_users.php:131
 #: modules/User Admin/import_users.php:131
@@ -26432,12 +26407,12 @@ msgstr "Mais comum nome, apelido, Alcunha, punho, etc"
 #: modules/User Admin/import_users.php:133
 #: modules/User Admin/import_users.php:133
 msgid "F or M"
-msgstr "m"
+msgstr "F ou M"
 
 #: modules/User Admin/import_users.php:134
 #: modules/User Admin/import_users.php:134
 msgid "Must be unique"
-msgstr "Deve ser &uacutenico."
+msgstr "Deve ser único"
 
 #: modules/User Admin/import_users.php:135 Admin/user_manage_add.php:1146
 #: Admin/user_manage_edit.php:1449
@@ -26524,27 +26499,27 @@ msgstr "caminho de /uploads/ para retrato médio da imagem (240px por 320px)"
 #: modules/User Admin/import_users.php:142
 #: modules/User Admin/import_users.php:142
 msgid "Address 1 (District)"
-msgstr "Endereço ilegal detectado: Acesso negado."
+msgstr "Endereço 1 (distrito)"
 
 #: modules/User Admin/import_users.php:143
 #: modules/User Admin/import_users.php:143
 msgid "Address 1 (Country)"
-msgstr "Endereço ilegal detectado: Acesso negado."
+msgstr "Endereço 1 (país)"
 
 #: modules/User Admin/import_users.php:145
 #: modules/User Admin/import_users.php:145
 msgid "Address 2 (District)"
-msgstr "Enviado em%1$s em%2$s"
+msgstr "Endereço 2 (distrito)"
 
 #: modules/User Admin/import_users.php:146
 #: modules/User Admin/import_users.php:146
 msgid "Address 2 (Country)"
-msgstr "Enviado em%1$s em%2$s"
+msgstr "Endereço 2 (país)"
 
 #: modules/User Admin/import_users.php:147
 #: modules/User Admin/import_users.php:147
 msgid "Phone 1 (Type)"
-msgstr "Tipo"
+msgstr "Telefone 1 (tipo)"
 
 #: modules/User Admin/import_users.php:147 Admin/import_users.php:150
 #: Admin/import_users.php:153 Admin/import_users.php:156
@@ -26558,7 +26533,7 @@ msgstr "Móveis, casa, trabalho, Fax, Pager, outros"
 #: modules/User Admin/import_users.php:148
 #: modules/User Admin/import_users.php:148
 msgid "Phone 1 (Country Code)"
-msgstr "Código do País do Telefone"
+msgstr "Telefone 1 (código de país)"
 
 #: modules/User Admin/import_users.php:148 Admin/import_users.php:151
 #: Admin/import_users.php:154 Admin/import_users.php:157
@@ -26581,12 +26556,12 @@ msgstr "Sem espaços ou pontuação, apenas números"
 #: modules/User Admin/import_users.php:150
 #: modules/User Admin/import_users.php:150
 msgid "Phone 2 (Type)"
-msgstr "Tipo"
+msgstr "Telefone 2 (tipo)"
 
 #: modules/User Admin/import_users.php:151
 #: modules/User Admin/import_users.php:151
 msgid "Phone 2 (Country Code)"
-msgstr "Código do País do Telefone"
+msgstr "Telefone 2 (código de país)"
 
 #: modules/User Admin/import_users.php:152
 #: modules/User Admin/import_users.php:152
@@ -26596,12 +26571,12 @@ msgstr "Telefone 2"
 #: modules/User Admin/import_users.php:153
 #: modules/User Admin/import_users.php:153
 msgid "Phone 3 (Type)"
-msgstr "Tipo"
+msgstr "Telefone 3 (tipo)"
 
 #: modules/User Admin/import_users.php:154
 #: modules/User Admin/import_users.php:154
 msgid "Phone 3 (Country Code)"
-msgstr "Código do País do Telefone"
+msgstr "Telefone 3 (código de país)"
 
 #: modules/User Admin/import_users.php:155
 #: modules/User Admin/import_users.php:155
@@ -26611,12 +26586,12 @@ msgstr "Telefone 3"
 #: modules/User Admin/import_users.php:156
 #: modules/User Admin/import_users.php:156
 msgid "Phone 4 (Type)"
-msgstr "Tipo"
+msgstr "Telefone 4 (tipo)"
 
 #: modules/User Admin/import_users.php:157
 #: modules/User Admin/import_users.php:157
 msgid "Phone 4 (Country Code)"
-msgstr "Código do País do Telefone"
+msgstr "Telefone 4 (Código de País)"
 
 #: modules/User Admin/import_users.php:158
 #: modules/User Admin/import_users.php:158
@@ -26633,7 +26608,7 @@ msgstr "Deve começar com http:// ou https://"
 #: modules/User Admin/import_users.php:163
 #: modules/User Admin/import_users.php:164
 msgid "For parents only"
-msgstr "Para os pais só"
+msgstr "Somente para os pais"
 
 #: modules/User Admin/import_users.php:165 Admin/import_users.php:166
 #: Admin/import_users.php:167 Admin/import_users.php:168
@@ -26648,17 +26623,17 @@ msgstr "Para os pais só"
 #: modules/User Admin/import_users.php:171
 #: modules/User Admin/import_users.php:172
 msgid "For students and staff only"
-msgstr "Encontrar funcionários e alunos"
+msgstr "Somente para os funcionários e alunos"
 
 #: modules/User Admin/import_users.php:168
 #: modules/User Admin/import_users.php:168
 msgid "Emergency 1  Relationship"
-msgstr "A privacidade é necessária: %1$s"
+msgstr "Emergência 1 Parentesco"
 
 #: modules/User Admin/import_users.php:172
 #: modules/User Admin/import_users.php:172
 msgid "Emergency 2  Relationship"
-msgstr "Enviado em%1$s em%2$s"
+msgstr "Emergência 2 Parentesco"
 
 #: modules/User Admin/import_users.php:174
 #: Admin/studentEnrolment_manage_edit.php:231 Admin/user_manage_edit.php:804
@@ -26685,12 +26660,12 @@ msgstr "Enviado em%1$s em%2$s"
 #: modules/User Admin/studentEnrolment_manage_edit.php:244
 #: modules/User Admin/user_manage_edit.php:802
 msgid "End Date"
-msgstr "Data"
+msgstr "Data de Término"
 
 #: modules/User Admin/import_users.php:175 Admin/import_users.php:174
 #: modules/User Admin/import_users.php:174
 msgid "e.g. Chinese name"
-msgstr "Nome"
+msgstr "por exemplo, o nome chinês"
 
 #: modules/User Admin/import_users.php:299 Admin/import_users.php:297
 #: modules/User Admin/import_users.php:297
@@ -26726,7 +26701,7 @@ msgstr ""
 #: modules/User Admin/import_users.php:334 Admin/import_users.php:332
 #: modules/User Admin/import_users.php:332
 msgid "Set To Left"
-msgstr "Nome de utilizador ou senha não definidos."
+msgstr "Defina recuo à esquerda"
 
 #: modules/User Admin/import_users.php:356 Admin/import_users.php:354
 #: modules/User Admin/import_users.php:354
@@ -26752,18 +26727,18 @@ msgstr "Inserir o recurso existente"
 #: modules/User Admin/import_users.php:381
 #: modules/User Admin/import_users.php:489
 msgid "There was an error locating user:"
-msgstr "Ocorreu um erro."
+msgstr "Houve um erro ao localizar usuário:"
 
 #: modules/User Admin/import_users.php:423 Admin/import_users.php:421
 #: modules/User Admin/import_users.php:421
 msgid "There was an error updating user:"
-msgstr "Ocorreu um erro."
+msgstr "Houve um erro ao atualizar o usuário:"
 
 #: modules/User Admin/import_users.php:428 Admin/import_users.php:426
 #: modules/User Admin/import_users.php:426
 #, php-format
 msgid "User %1$s was successfully updated."
-msgstr "%1$s foi atualizado corretamente."
+msgstr "Usuário %1$s foi atualizado corretamente."
 
 #: modules/User Admin/import_users.php:461 Admin/import_users.php:459
 #: modules/User Admin/import_users.php:459
@@ -26773,7 +26748,7 @@ msgstr "Ocorreu um erro."
 #: modules/User Admin/import_users.php:479 Admin/import_users.php:477
 #: modules/User Admin/import_users.php:477
 msgid "There was an error creating user:"
-msgstr "Ocorreu um erro."
+msgstr "Houve um erro ao criar o usuário:"
 
 #: modules/User Admin/import_users.php:484 Admin/import_users.php:482
 #: modules/User Admin/import_users.php:482
@@ -26822,7 +26797,7 @@ msgstr "Tétano"
 #: modules/Students/report_student_medicalSummary_print.php:73
 #: modules/User Admin/medicalForm_manage.php:137
 msgid "10 Years"
-msgstr "anos"
+msgstr "10 Anos"
 
 #: modules/User Admin/medicalForm_manage.php:140
 #: modules/User Admin/medicalForm_manage.php:140
@@ -26832,7 +26807,7 @@ msgstr "Condições"
 #: modules/User Admin/medicalForm_manage_add.php:31
 #: modules/User Admin/medicalForm_manage_add.php:31
 msgid "Add Medical Form"
-msgstr "Quick Add"
+msgstr "Adicionar formulário médico"
 
 #: modules/User Admin/medicalForm_manage_add.php:48
 #: modules/User Admin/medicalForm_manage_add.php:48
@@ -27167,11 +27142,7 @@ msgstr "Completo"
 #: modules/User Admin/user_manage_add.php:322
 #: modules/User Admin/user_manage_edit.php:375
 msgid "Left"
-msgstr ""
-"Seus dados podem não parecer muito certo (por exemplo, os alunos que "
-"deixaram a escola não vão aparecer em anos anteriores), mas você deve ser "
-"capaz de editar as informações de outros anos, o que não está disponível no "
-"ano em curso."
+msgstr "Esquerda"
 
 #: modules/User Admin/rollover.php:349 Admin/rollover.php:1089
 #: Admin/rollover.php:1120 modules/User Admin/rollover.php:349
@@ -28630,7 +28601,7 @@ msgstr "anos"
 #: modules/Activities/activities_view_register.php:322
 #: modules/Activities/report_payment.php:67
 #: modules/Finance/expenseRequest_manage.php:322
-#: modules/Finance/expenses_manage.php:377
+#: modules/Finance/expenses_manage.php:382
 #: modules/Finance/expenses_manage_processBulkExportContents.php:99
 msgid "Cost"
 msgstr "Preço"
@@ -30159,7 +30130,7 @@ msgstr "Markbook"
 #: modules/Finance/budgetCycles_manage.php:114
 #: modules/Finance/budgets_manage.php:138
 #: modules/Finance/expenseApprovers_manage.php:149
-#: modules/Finance/expenses_manage.php:444
+#: modules/Finance/expenses_manage.php:449
 #: modules/Finance/feeCategories_manage.php:142
 #: modules/Finance/fees_manage.php:219
 #: modules/Finance/invoicees_manage.php:235
@@ -30258,13 +30229,7 @@ msgstr "Quick Add"
 #: modules/Markbook/markbook_edit.php:126
 #: modules/Markbook/markbook_view.php:162
 msgid "Teachers"
-msgstr ""
-"<b>Tarefas + Prazos</b> permite que os professores e os alunos possam ver "
-"prazos programados, exibidos organizadamente em um só lugar. Clique em uma "
-"entrada para ver os detalhes daquela tarefa, e a aula a que está anexada. "
-"<br/><br/> Lição de casa pode ser atribuído usando os %1$sPlanificador%2$s, "
-"o que também permite que os professores possam ver todos as tarefas "
-"apresentadas, e registros de quem entregou tarde e/ou incompleto."
+msgstr "Professores"
 
 #: modules/Markbook/markbook_edit.php:140
 #: modules/Markbook/markbook_edit.php:140
@@ -30748,13 +30713,7 @@ msgstr "Mais mais"
 #: modules/Markbook/markbook_edit_data.php:280
 #: modules/Markbook/markbook_view.php:568
 msgid "Submitted Work"
-msgstr ""
-"<b>Tarefas + Prazos</b> permite que os professores e os alunos possam ver "
-"prazos programados, exibidos organizadamente em um só lugar. Clique em uma "
-"entrada para ver os detalhes daquela tarefa, e a aula a que está anexada. "
-"<br/><br/> Lição de casa pode ser atribuído usando os %1$sPlanificador%2$s, "
-"o que também permite que os professores possam ver todos as tarefas "
-"apresentadas, e registros de quem entregou tarde e/ou incompleto."
+msgstr "Trabalho Submetido"
 
 #: modules/Markbook/markbook_edit_data.php:262
 #: modules/Markbook/markbook_view.php:442
@@ -31786,13 +31745,7 @@ msgstr "Ver o Planejador"
 #: modules/Planner/moduleFunctions.php:609 functions.php:2104
 #: functions.php:2387 modules/Planner/moduleFunctions.php:609
 msgid "Homework & Deadlines"
-msgstr ""
-"<b>Tarefas + Prazos</b> permite que os professores e os alunos possam ver "
-"prazos programados, exibidos organizadamente em um só lugar. Clique em uma "
-"entrada para ver os detalhes daquela tarefa, e a aula a que está anexada. "
-"<br/><br/> Lição de casa pode ser atribuído usando os %1$sPlanificador%2$s, "
-"o que também permite que os professores possam ver todos as tarefas "
-"apresentadas, e registros de quem entregou tarde e/ou incompleto."
+msgstr "Tarefas e Prazos"
 
 #: modules/Behaviour/behaviour_manage.php:192
 #: modules/Behaviour/behaviour_pattern.php:238
@@ -31810,7 +31763,7 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage.php:195
 #: modules/Behaviour/behaviour_pattern.php:249
 #: modules/Finance/expenseRequest_manage.php:257
-#: modules/Finance/expenses_manage.php:276
+#: modules/Finance/expenses_manage.php:281
 #: modules/Finance/invoicees_manage.php:126
 #: modules/Finance/invoices_manage.php:317
 #: modules/Individual Needs/in_summary.php:188
@@ -32078,7 +32031,7 @@ msgid "View & Contribute To Record"
 msgstr "Eliminar registo"
 
 #: modules/Individual Needs/in_edit.php:159
-#: modules/Individual Needs/in_edit.php:196
+#: modules/Individual Needs/in_edit.php:198
 msgid "Individual Needs Status"
 msgstr "Necessidades individuais Estado"
 
@@ -32094,7 +32047,7 @@ msgstr "Necessidades individuais Estado"
 #: modules/Students/student_view_details.php:2241
 #: modules/Students/student_view_details.php:2284
 #: modules/Students/student_view_details.php:2288
-#: modules/Individual Needs/in_edit.php:222
+#: modules/Individual Needs/in_edit.php:224
 #: modules/Students/student_view_details.php:2369
 msgid "Individual Education Plan"
 msgstr "Plano de educação individual"
@@ -32111,8 +32064,8 @@ msgstr "Plano de educação individual"
 #: modules/Students/student_view_details.php:2264
 #: modules/Students/student_view_details.php:2307
 #: modules/Students/student_view_details.php:2311
-#: modules/Individual Needs/in_edit.php:238
-#: modules/Individual Needs/in_edit.php:289
+#: modules/Individual Needs/in_edit.php:240
+#: modules/Individual Needs/in_edit.php:291
 #: modules/Students/student_view_details.php:2392
 msgid "Teaching Strategies"
 msgstr "Estratégias de ensino"
@@ -32135,8 +32088,8 @@ msgstr "Estratégias de ensino"
 #: modules/Students/student_view_details.php:2304
 #: modules/Messenger/messenger_manage_edit.php:255
 #: modules/Students/student_view_details.php:2308
-#: modules/Individual Needs/in_edit.php:230
-#: modules/Individual Needs/in_edit.php:276
+#: modules/Individual Needs/in_edit.php:232
+#: modules/Individual Needs/in_edit.php:278
 #: modules/Markbook/markbook_view.php:299
 #: modules/Messenger/messenger_manage_edit.php:255
 #: modules/Messenger/messenger_post.php:322
@@ -32469,8 +32422,8 @@ msgstr "Data"
 #: modules/Finance/moduleFunctions.php:584
 #: modules/Finance/invoices_manage.php:514
 #: modules/Finance/invoices_manage_processBulkExportContents.php:117
-#: modules/Finance/moduleFunctions.php:861
-#: modules/Finance/moduleFunctions.php:1153
+#: modules/Finance/moduleFunctions.php:886
+#: modules/Finance/moduleFunctions.php:1178
 #: modules/Library/library_lending_item.php:206
 #: modules/Library/report_viewOverdueItems.php:66
 msgid "Due Date"
@@ -32880,8 +32833,8 @@ msgstr "Data"
 #: modules/Finance/moduleFunctions.php:592
 #: modules/Library/library_manage_catalog_add.php:227
 #: modules/Finance/invoices_manage_processBulkExportContents.php:87
-#: modules/Finance/moduleFunctions.php:865
-#: modules/Finance/moduleFunctions.php:1161
+#: modules/Finance/moduleFunctions.php:890
+#: modules/Finance/moduleFunctions.php:1186
 #: modules/Library/library_import.php:146
 #: modules/Library/library_manage_catalog_add.php:227
 #: modules/Library/library_manage_catalog_duplicate.php:294
@@ -36290,7 +36243,7 @@ msgstr "Inglês"
 #: i18n/dbStringsForTranslation.php:720 i18n/dbStringsForTranslation.php:723
 #: i18n/dbStringsForTranslation.php:753
 msgid "English A: Language and Literature HL"
-msgstr "Inglesa r: HL de língua e literatura"
+msgstr "Inglês A: Língua e Literatura HL"
 
 #: i18n/dbStringsForTranslation.php:520 i18n/dbStringsForTranslation.php:881
 #: i18n/dbStringsForTranslation.php:886 i18n/dbStringsForTranslation.php:702
@@ -43424,9 +43377,7 @@ msgstr "Notificação"
 #: i18n/dbStringsForTranslation.php:1778 i18n/dbStringsForTranslation.php:1776
 #: i18n/dbStringsForTranslation.php:1853 i18n/dbStringsForTranslation.php:1841
 msgid "System Administrator"
-msgstr ""
-"Se você não pode resolver este problema redigitando o endereço, ou através "
-"de outros meios, por favor contacte o administrador do sistema."
+msgstr "Administrador de sistemas"
 
 #: i18n/dbStringsForTranslation.php:1507 i18n/dbStringsForTranslation.php:1868
 #: i18n/dbStringsForTranslation.php:1873 i18n/dbStringsForTranslation.php:1925
@@ -45868,7 +45819,7 @@ msgstr "Nome"
 #: modules/Finance/billingSchedule_manage.php:169
 #: modules/Finance/billingSchedule_manage_add.php:146
 #: modules/Finance/billingSchedule_manage_edit.php:163
-#: modules/Finance/moduleFunctions.php:857
+#: modules/Finance/moduleFunctions.php:882
 msgid "Invoice Issue Date"
 msgstr "Aluno e Data"
 
@@ -45980,8 +45931,8 @@ msgstr "Nome de taxa, nome da categoria."
 #: modules/Finance/fees_manage_add.php:185
 #: modules/Finance/fees_manage_edit.php:211
 #: modules/Finance/invoices_manage_edit.php:538
-#: modules/Finance/moduleFunctions.php:924
-#: modules/Finance/moduleFunctions.php:1208
+#: modules/Finance/moduleFunctions.php:949
+#: modules/Finance/moduleFunctions.php:1233
 msgid "Fee"
 msgstr "Taxa"
 
@@ -46191,7 +46142,7 @@ msgstr "Emitido - vencido"
 #: modules/Finance/invoices_manage.php:510
 #: modules/Finance/expenseRequest_manage.php:222
 #: modules/Finance/expenseRequest_manage_reimburse.php:188
-#: modules/Finance/expenses_manage.php:241
+#: modules/Finance/expenses_manage.php:243
 #: modules/Finance/expenses_manage_add.php:178
 #: modules/Finance/expenses_manage_edit.php:239
 #: modules/Finance/expenses_manage_edit.php:261
@@ -46211,7 +46162,7 @@ msgstr "Atrasado"
 #: modules/Finance/invoices_manage.php:220
 #: modules/Finance/invoices_manage_edit.php:264
 #: modules/Finance/expenseRequest_manage.php:212
-#: modules/Finance/expenses_manage.php:231
+#: modules/Finance/expenses_manage.php:233
 #: modules/Finance/expenses_manage_edit.php:244
 #: modules/Finance/expenses_manage_edit.php:266
 #: modules/Finance/expenses_manage_edit.php:283
@@ -46248,8 +46199,8 @@ msgstr "Cronograma de faturamento"
 #: modules/Finance/moduleFunctions.php:537
 #: modules/Finance/moduleFunctions.php:563
 #: modules/Finance/invoices_manage.php:306
-#: modules/Finance/moduleFunctions.php:836
-#: modules/Finance/moduleFunctions.php:1132
+#: modules/Finance/moduleFunctions.php:861
+#: modules/Finance/moduleFunctions.php:1157
 msgid "Ad Hoc"
 msgstr "Ad hoc"
 
@@ -46262,7 +46213,7 @@ msgstr "%1$s s em modo de exibição atual"
 
 #: modules/Finance/invoices_manage.php:464
 #: modules/Finance/invoices_manage.php:465
-#: modules/Finance/expenses_manage.php:349
+#: modules/Finance/expenses_manage.php:354
 #: modules/Finance/invoices_manage.php:465
 msgid "Are you sure you wish to process this action? It cannot be undone."
 msgstr "Tem certeza que deseja processar esta ação? Não pode ser desfeito."
@@ -46281,7 +46232,7 @@ msgstr "Lembretes de emissão"
 
 #: modules/Finance/invoices_manage.php:482 modules/Planner/units.php:233
 #: modules/Planner/units.php:280 modules/Finance/invoices_manage.php:483
-#: modules/Finance/expenses_manage.php:356
+#: modules/Finance/expenses_manage.php:361
 #: modules/Finance/invoices_manage.php:483 modules/Planner/units.php:280
 msgid "Export"
 msgstr "Exportar para Excel"
@@ -46294,8 +46245,8 @@ msgstr "Exportar para Excel"
 #: modules/Finance/moduleFunctions.php:561
 #: modules/Finance/invoices_manage.php:506
 #: modules/Finance/invoices_manage_processBulkExportContents.php:108
-#: modules/Finance/moduleFunctions.php:834
-#: modules/Finance/moduleFunctions.php:1130
+#: modules/Finance/moduleFunctions.php:859
+#: modules/Finance/moduleFunctions.php:1155
 msgid "Schedule"
 msgstr "Calendário"
 
@@ -46469,7 +46420,7 @@ msgstr "As opções disponíveis são limitadas de acordo com o status atual."
 #: modules/Finance/invoices_manage_edit.php:302
 #: modules/Finance/invoices_manage_edit.php:361
 #: modules/Finance/invoices_manage_processBulkExportContents.php:120
-#: modules/Finance/moduleFunctions.php:1157
+#: modules/Finance/moduleFunctions.php:1182
 msgid "Date Paid"
 msgstr "Data"
 
@@ -46516,8 +46467,8 @@ msgstr "Montante final pago."
 #: modules/Finance/moduleFunctions.php:652
 #: modules/Finance/moduleFunctions.php:678
 #: modules/Finance/invoices_manage_edit.php:577
-#: modules/Finance/moduleFunctions.php:963
-#: modules/Finance/moduleFunctions.php:1247
+#: modules/Finance/moduleFunctions.php:988
+#: modules/Finance/moduleFunctions.php:1272
 msgid "Invoice Total:"
 msgstr "Total de Alunos Inscritos:"
 
@@ -46548,8 +46499,8 @@ msgstr ""
 #: modules/Finance/invoices_manage_edit.php:692
 #: modules/Finance/invoices_manage_edit.php:793
 #: modules/Finance/invoices_manage_edit.php:830
-#: modules/Finance/moduleFunctions.php:790
-#: modules/Finance/moduleFunctions.php:1086
+#: modules/Finance/moduleFunctions.php:815
+#: modules/Finance/moduleFunctions.php:1111
 msgid "There are no family members available to send this receipt to."
 msgstr ""
 "Não há nenhum disponível para enviar este recibo para membros da família."
@@ -46682,48 +46633,48 @@ msgid "Total Value"
 msgstr "Total de Alunos Inscritos:"
 
 #: modules/Finance/moduleFunctions.php:78
-#: modules/Finance/moduleFunctions.php:647
+#: modules/Finance/moduleFunctions.php:672
 msgid "Fee Name"
 msgstr "Nome"
 
 #: modules/Finance/moduleFunctions.php:117
-#: modules/Finance/moduleFunctions.php:686
+#: modules/Finance/moduleFunctions.php:711
 msgid "Show/Hide"
 msgstr "Mostrar dados confidenciais"
 
 #: modules/Finance/moduleFunctions.php:257
 #: modules/Finance/moduleFunctions.php:527
 #: modules/Finance/moduleFunctions.php:553
-#: modules/Finance/moduleFunctions.php:826
-#: modules/Finance/moduleFunctions.php:1122
+#: modules/Finance/moduleFunctions.php:851
+#: modules/Finance/moduleFunctions.php:1147
 msgid "Fees For"
 msgstr "Taxas de"
 
 #: modules/Finance/moduleFunctions.php:313
 #: modules/Finance/moduleFunctions.php:583
 #: modules/Finance/moduleFunctions.php:609
-#: modules/Finance/moduleFunctions.php:882
-#: modules/Finance/moduleFunctions.php:1178
+#: modules/Finance/moduleFunctions.php:907
+#: modules/Finance/moduleFunctions.php:1203
 msgid "Fee Table"
 msgstr "Tabela de taxa"
 
 #: modules/Finance/moduleFunctions.php:339
 #: modules/Finance/moduleFunctions.php:597
 #: modules/Finance/moduleFunctions.php:623
-#: modules/Finance/moduleFunctions.php:908
-#: modules/Finance/moduleFunctions.php:1192
+#: modules/Finance/moduleFunctions.php:933
+#: modules/Finance/moduleFunctions.php:1217
 msgid "There are no records to display"
 msgstr "Não há registros para mostrar."
 
 #: modules/Finance/moduleFunctions.php:466
 #: modules/Finance/moduleFunctions.php:492
-#: modules/Finance/moduleFunctions.php:1061
+#: modules/Finance/moduleFunctions.php:1086
 msgid "Receipt To"
 msgstr "Para a recepção"
 
 #: modules/Finance/moduleFunctions.php:663
 #: modules/Finance/moduleFunctions.php:689
-#: modules/Finance/moduleFunctions.php:1258
+#: modules/Finance/moduleFunctions.php:1283
 msgid "Amount Paid:"
 msgstr "Valor Pago:"
 
@@ -47669,7 +47620,7 @@ msgstr "Data"
 #: modules/Planner/planner_view_full.php:1409
 #: modules/Planner/planner_view_full.php:1532
 msgid "Homework Due Date Time"
-msgstr "Lição de casa devido data hora"
+msgstr "TPC Prazo"
 
 #: modules/Planner/planner_add.php:716 modules/Planner/planner_edit.php:875
 #: modules/Planner/planner_edit.php:878 modules/Planner/planner_add.php:716
@@ -47950,13 +47901,7 @@ msgstr ""
 #: modules/Planner/planner_deadlines.php:96
 #: modules/Planner/planner_deadlines.php:494
 msgid "Homework + Deadlines"
-msgstr ""
-"<b>Tarefas + Prazos</b> permite que os professores e os alunos possam ver "
-"prazos programados, exibidos organizadamente em um só lugar. Clique em uma "
-"entrada para ver os detalhes daquela tarefa, e a aula a que está anexada. "
-"<br/><br/> Lição de casa pode ser atribuído usando os %1$sPlanificador%2$s, "
-"o que também permite que os professores possam ver todos as tarefas "
-"apresentadas, e registros de quem entregou tarde e/ou incompleto."
+msgstr "Tarefas + Prazos"
 
 #: modules/Planner/planner_deadlines.php:277
 #: modules/Planner/planner_deadlines.php:619
@@ -50592,11 +50537,18 @@ msgstr "ID de papel não especificado."
 msgid "Payment Receipt ID:"
 msgstr "ID de papel não especificado."
 
+#: modules/User Admin/applicationForm_manage_accept.php:1122
+#: Admin/applicationForm_manage_accept.php:1125
+#: Admin/applicationForm_manage_accept.php:1167
+#: Admin/applicationForm_manage_accept.php:1170
+#: Admin/applicationForm_manage_accept.php:1183
+#: Admin/applicationForm_manage_accept.php:1186
 #: i18n/dbStringsForTranslation.php:74 i18n/dbStringsForTranslation.php:75
 #: modules/Activities/activities_copy.php:34
 #: i18n/dbStringsForTranslation.php:60 i18n/dbStringsForTranslation.php:61
 #: i18n/dbStringsForTranslation.php:62 i18n/dbStringsForTranslation.php:67
 #: modules/Activities/activities_copy.php:34
+#, php-format
 msgid "Copy Activities"
 msgstr "Atividades de cópia"
 
@@ -52970,9 +52922,9 @@ msgid ""
 "everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and "
 "login as user <u>admin</u> with password <u>gibbon</u>."
 msgstr ""
-"Algumas configurações não o salvou. O sistema pode funcionar, mas você pode "
-"precisar remover tudo e começar de novo. Tente e %1$sgo para seu gibão "
-"homepage %2$s e login como usuário <u>admin</u> com senha <u>gibão</u>."
+"Algumas configurações não salvaram. O sistema pode funcionar, mas você pode "
+"precisar remover tudo e começar de novo. Tente e %1$svá para a página inicial"
+"%2$s e login como usuário <u>admin</u> com senha <u>gibão</u>."
 
 #: installer/install.php:1374 installer/install.php:1271
 #: installer/install.php:1258 installer/install.php:1259
@@ -52984,8 +52936,9 @@ msgid ""
 "Congratulations, your installation is complete. Feel free to %1$sgo to your "
 "Gibbon homepage%2$s and login with the username and password you created."
 msgstr ""
-"Parabéns, a instalação está concluída. Sinta-se livre para %1$sgo para seu "
-"gibão homepage %2$s e faça o login com o username e a senha que você criou."
+"Parabéns, a instalação está concluída. Sinta-se livre para %1$sir para a "
+"página inicial da Caderneta Escolar%2$s e faça o login com o username e a "
+"senha que você criou."
 
 #: modules/User Admin/user_manage_edit.php:31
 #: modules/User Admin/user_manage_edit.php:31
@@ -53047,7 +53000,7 @@ msgstr ""
 #: modules/User Admin/import_users.php:149
 #: modules/User Admin/import_users.php:149
 msgid "Phone 1"
-msgstr "Criar %1$s objectivos"
+msgstr "Telefone 1"
 
 #: functions.php:385 functions.php:412 functions.php:1043 functions.php:1260
 #: functions.php:1277 functions.php:1295 functions.php:1315 functions.php:1316
@@ -53210,7 +53163,7 @@ msgstr "Registros de comportamento negativo esta semana"
 #: cli/planner_parentWeeklyEmailSummary.php:255
 #, php-format
 msgid "Dear %1$s"
-msgstr "Criar %1$s objectivos"
+msgstr "Prezado %1$s"
 
 #: cli/planner_parentWeeklyEmailSummary.php:247
 #: cli/planner_parentWeeklyEmailSummary.php:253
@@ -53231,7 +53184,7 @@ msgid ""
 "Please %1$sclick here%2$s to confirm that you have received and read this "
 "summary email."
 msgstr ""
-"Por favor, %1$sClique aqui %2$s para confirmar que você tem recebido e ler "
+"Por favor, %1$sClique aqui%2$s para confirmar que você tem recebido e ler "
 "este e-mail Resumo."
 
 #: cli/planner_parentWeeklyEmailSummary.php:264
@@ -53241,7 +53194,7 @@ msgstr ""
 #: cli/planner_parentWeeklyEmailSummary.php:273
 #, php-format
 msgid "Weekly Planner Summary for %1$s via %2$s at %3$s"
-msgstr "Resumo semanal do planejador para %1$s por %2$s em %3$s"
+msgstr "Resumo semanal do planejador para %1$s via %2$s às %3$s"
 
 #: cli/planner_parentWeeklyEmailSummary.php:290
 #: cli/planner_parentWeeklyEmailSummary.php:304
@@ -53312,8 +53265,8 @@ msgstr "Contagem de ausência de alternativa:"
 #: modules/Students/student_view_details.php:2267
 #: modules/Students/student_view_details.php:2310
 #: modules/Students/student_view_details.php:2314
-#: modules/Individual Needs/in_edit.php:246
-#: modules/Individual Needs/in_edit.php:302
+#: modules/Individual Needs/in_edit.php:248
+#: modules/Individual Needs/in_edit.php:304
 #: modules/Students/student_view_details.php:2395
 msgid "Notes & Review"
 msgstr "Notas e revisão"
@@ -53338,7 +53291,7 @@ msgstr "Tarefa"
 #: modules/Planner/planner_view_full.php:1341
 #: modules/Planner/planner_view_full.php:1356
 msgid "Student Recorded Homework"
-msgstr "Gravado em%1$s em%2$s"
+msgstr "Estudante Gravou TPC"
 
 #: modules/Planner/planner_view_full.php:1194
 #: modules/Planner/planner_view_full.php:1218
@@ -53551,7 +53504,7 @@ msgid ""
 "database is up to date in %1$sUpdates%2$s."
 msgstr ""
 "Se você atualizou recentemente seus arquivos de sistema, por favor verifique "
-"se seu banco de dados é atualizado em %1$sUpdates %2$s."
+"se seu banco de dados é atualizado em %1$sUpdates%2$s."
 
 #: index.php:491 notifications.php:21 notifications.php:77 index.php:494
 #: index.php:379 functions.php:104 functions.php:122 notifications.php:29
@@ -54150,8 +54103,7 @@ msgstr ""
 #: modules/External Assessment/import_results.php:267
 #, php-format
 msgid "User with official name %1$s in import cannot be found."
-msgstr ""
-"Tipo com o nome %1$s na importa&ccedil&&atildeo n&atildeo foi encontrado."
+msgstr "Tipo com o nome %1$s na importação não foi encontrado."
 
 #: modules/External Assessment/import_results.php:296
 #: modules/External Assessment/import_results.php:296
@@ -54381,7 +54333,7 @@ msgstr "Quick Add"
 #: modules/Timetable/spaceChange_manage_add.php:78
 #: modules/Timetable/spaceChange_manage_add.php:78
 msgid "Step 1 - Choose Class"
-msgstr "Passo 1 - escolha a classe"
+msgstr "Passo 1 - Escolha a Classe"
 
 #: modules/Timetable/spaceChange_manage_add.php:130
 #: modules/Timetable/spaceChange_manage_add.php:130
@@ -54439,7 +54391,7 @@ msgstr "Créditos"
 #: i18n/dbStringsForTranslation.php:82 i18n/dbStringsForTranslation.php:87
 #: modules/Library/library_import.php:31
 msgid "Import Records"
-msgstr "Registros"
+msgstr "Importação de registros"
 
 #: modules/Library/library_import.php:52 modules/Library/library_import.php:52
 msgid ""
@@ -54468,7 +54420,7 @@ msgstr ""
 #: modules/Library/library_import.php:121
 #: modules/Library/library_import.php:121
 msgid "One of:"
-msgstr "Um"
+msgstr "Um dos:"
 
 #: modules/Library/library_import.php:142
 #: modules/Library/library_import.php:142
@@ -54478,12 +54430,12 @@ msgstr "Deve ser exclusivo, ou levará a não inserção de atualização."
 #: modules/Library/library_import.php:147
 #: modules/Library/library_import.php:147
 msgid "Space 'Name' field."
-msgstr "Nome"
+msgstr "Campo de ‘Nome’ do espaço."
 
 #: modules/Library/library_import.php:149
 #: modules/Library/library_import.php:149
 msgid "One of: 'School' or 'Individual'."
-msgstr "Um"
+msgstr "Um dos: ‘Escola’ ou ‘Individual’."
 
 #: modules/Library/library_import.php:150
 #: modules/Library/library_import.php:150
@@ -54498,12 +54450,12 @@ msgstr "'Nome' arquivado para o departamento responsável para o item."
 #: modules/Library/library_import.php:152
 #: modules/Library/library_import.php:152
 msgid "One of: 'Y' or 'N'."
-msgstr "Um"
+msgstr "Um dos: ’S’ ou ’N’."
 
 #: modules/Library/library_import.php:152
 #: modules/Library/library_import.php:152
 msgid "Is item available for loan? "
-msgstr "Não há grupos de ano disponíveis."
+msgstr "O item está disponível para empréstimo?"
 
 #: modules/Library/library_import.php:153
 #: modules/Library/library_import.php:153
@@ -54518,8 +54470,7 @@ msgstr ""
 #: modules/Library/library_import.php:271
 #, php-format
 msgid "Type with name %1$s in import cannot be found."
-msgstr ""
-"Tipo com o nome %1$s na importa&ccedil&&atildeo n&atildeo foi encontrado."
+msgstr "Tipo com o nome %1$s na importação não foi encontrado."
 
 #: modules/Library/library_import.php:320
 #: modules/Library/library_import.php:451
@@ -54536,33 +54487,28 @@ msgstr "Registo com o ID %1$s tem erros na informa&ccedil&atildeo."
 #: modules/Library/library_import.php:382
 #, php-format
 msgid "Location with name %1$s in import cannot be found."
-msgstr ""
-"Local com o nome %1$s na importa&ccedil&atildeo n&atilde foi encontrado."
+msgstr "Local com o nome %1$s na importação não foi encontrado."
 
 #: modules/Library/library_import.php:409
 #: modules/Library/library_import.php:411
 #: modules/Library/library_import.php:411
 #, php-format
 msgid "User with username %1$s in import cannot be found."
-msgstr ""
-"Utilizador com o Usu&aacuterio %1$s na importa&ccedil&atildeo n&atilde foi "
-"encontrado."
+msgstr "Utilizador com o Usuário %1$s na importação não foi encontrado."
 
 #: modules/Library/library_import.php:437
 #: modules/Library/library_import.php:439
 #: modules/Library/library_import.php:439
 #, php-format
 msgid "Department with name %1$s in import cannot be found."
-msgstr ""
-"Departamento com o nome %1$s na importa&ccedil&atildeo n&atilde foi "
-"encontrado."
+msgstr "Departamento com o nome %1$s na importação não foi encontrado."
 
 #: modules/Library/library_import.php:510
 #: modules/Library/library_import.php:512
 #: modules/Library/library_import.php:512
 #, php-format
 msgid "%1$s was successfully updated."
-msgstr "Criar %1$s objectivos"
+msgstr "%1$s foi atualizado corretamente."
 
 #: modules/Library/library_import.php:532
 #: modules/Library/library_import.php:534
@@ -54628,8 +54574,8 @@ msgid ""
 "Teacher sync failed. The following classes/teachers (and possibly some "
 "others) had problems: %1$s."
 msgstr ""
-"Falhou a Sincroniza&ccedil&atildeo de Professor. As seguintes aulas/"
-"professores (e possivelmente outros) tiveram problemas: %1$s."
+"Falhou a Sincronização de Professor. As seguintes aulas/professores (e "
+"possivelmente outros) tiveram problemas: %1$s."
 
 #: i18n/dbStringsForTranslation.php:28 i18n/dbStringsForTranslation.php:28
 msgid "Curriculum Mapping"
@@ -54645,7 +54591,7 @@ msgstr "Definições"
 #: i18n/dbStringsForTranslation.php:185 i18n/dbStringsForTranslation.php:198
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:34
 msgid "Outcomes By Course"
-msgstr "Criar %1$s objectivos"
+msgstr "Resultados escolares por Curso"
 
 #: i18n/dbStringsForTranslation.php:335 i18n/dbStringsForTranslation.php:339
 #: i18n/dbStringsForTranslation.php:367
@@ -54800,7 +54746,7 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:418
 #: modules/Finance/invoices_payOnline.php:128
 #: modules/Finance/invoices_payOnline.php:128
-#: modules/Finance/moduleFunctions.php:987
+#: modules/Finance/moduleFunctions.php:1012
 msgid "Online Payment"
 msgstr "Não enviadas online"
 
@@ -54825,7 +54771,7 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:426
 #: modules/Finance/invoices_payOnline.php:142
 #: modules/Finance/invoices_payOnline.php:142
-#: modules/Finance/moduleFunctions.php:995
+#: modules/Finance/moduleFunctions.php:1020
 msgid ""
 "Payment is not permitted for this invoice, as the total amount is greater "
 "than the permitted online payment threshold."
@@ -54834,7 +54780,7 @@ msgstr ""
 "montante total &eacute superior ao limite de pagamento on-line permitido."
 
 #: modules/Finance/moduleFunctions.php:422
-#: modules/Finance/moduleFunctions.php:991
+#: modules/Finance/moduleFunctions.php:1016
 #, php-format
 msgid ""
 "Payment can be made by credit card, using our secure PayPal payment gateway. "
@@ -54847,12 +54793,11 @@ msgstr ""
 "gateway seguro de pagamento PayPal. Quando voc&ecirc pressionar Pagar Agora "
 "abaixo, ser&aacute direcionado para a p&aacutegina de %1$s de onde voc&ecirc "
 "pode usar o PayPal, a fim de fazer o pagamento. Voc&ecirc pode continuar com "
-"o pagamento através de %1$s se voc&ecirc est&aacute logado ou n&atildeo. "
-"Durante este processo, n&atildeo vemos ou armazenamos os seus dados do "
-"cart&atildeo de cr&eacutedito."
+"o pagamento através de %1$s se você está logado ou não. Durante este "
+"processo, não vemos ou armazenamos os seus dados do cartão de crédito."
 
 #: modules/Finance/moduleFunctions.php:423
-#: modules/Finance/moduleFunctions.php:992
+#: modules/Finance/moduleFunctions.php:1017
 msgid "Pay Now"
 msgstr "Pagar agora"
 
@@ -54874,7 +54819,7 @@ msgstr ""
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:282
 #, php-format
 msgid "%1$s Outcomes"
-msgstr "Criar %1$s objectivos"
+msgstr "%1$s Resultados"
 
 #: modules/School Admin/financeSettings.php:141 modules/User
 #: Admin/applicationFormSettings.php:171
@@ -54908,7 +54853,7 @@ msgid ""
 "Please feel free to %1$sbrowse our departmental information%2$s, to learn "
 "more about %3$s."
 msgstr ""
-"Sinta-se livre para %1$sbrowse nossas informações departamentais %2$s, para "
+"Sinta-se livre para %1$sbrowse nossas informações departamentais%2$s, para "
 "saber mais sobre %3$s."
 
 #: modules/Behaviour/behaviour_manage.php:256
@@ -55000,7 +54945,7 @@ msgstr "Envio de Arquivo"
 #: modules/School Admin/externalAssessments_manage_add.php:121
 #: modules/School Admin/externalAssessments_manage_edit.php:159
 msgid "Allow File Upload"
-msgstr "Tamanho máximo do arquivo: %1$sMB"
+msgstr "Permitir Carregamento de Arquivo"
 
 #: modules/School Admin/externalAssessments_manage_add.php:122
 #: Admin/externalAssessments_manage_edit.php:160
@@ -55090,7 +55035,7 @@ msgstr ""
 "integreation calendário com gibão. Este processo faz uso de APIs do Google e "
 "permite que um usuário acesse o gibão sem um nome de usuário e senha, desde "
 "que o seu endereço de e-mail listado é uma conta do Google ao qual têm "
-"acesso. Para obter instruções de configuração, %1$sClique aqui %2$s."
+"acesso. Para obter instruções de configuração, %1$sclique aqui%2$s."
 
 #: modules/System Admin/theme_manage.php:117 Admin/theme_manage.php:122
 #: Admin/theme_manage.php:124 modules/System Admin/theme_manage.php:124
@@ -55145,7 +55090,7 @@ msgstr "%1$s dias até ao aniversário de %2$s"
 #: functions.php:2735 functions.php:3021
 #, php-format
 msgid "%1$s day until %2$s birthday!"
-msgstr "%1$s dia até anos e %2$s!"
+msgstr "%1$s dia até o aniversário de %2$s!"
 
 #: index.php:215 index.php:217 index.php:216 index.php:219 index.php:219
 msgid "Your session is about to expire: you will be logged out shortly."
@@ -55416,7 +55361,7 @@ msgid ""
 msgstr ""
 "Estamos compartilhando algumas das nossas unidades de estudo com membros do "
 "público, então você pode aprender com a gente. Sinta-se livre para "
-"%1$sbrowse nossas unidades públicas %2$s."
+"%1$sbrowse nossas unidades públicas%2$s."
 
 #: installer/install.php:184 installer/install.php:186
 #: installer/install.php:186
@@ -55526,7 +55471,7 @@ msgstr "Sair"
 #: i18n/dbStringsForTranslation.php:81 modules/Planner/outcomes_import.php:48
 #: i18n/dbStringsForTranslation.php:86 modules/Planner/outcomes_import.php:48
 msgid "Import Outcomes"
-msgstr "Criar %1$s objectivos"
+msgstr "Importar Resultados"
 
 #: i18n/dbStringsForTranslation.php:124 i18n/dbStringsForTranslation.php:134
 msgid "Manage Messenger Settings"
@@ -55719,7 +55664,7 @@ msgstr "Um"
 
 #: i18n/dbStringsForTranslation.php:1087 i18n/dbStringsForTranslation.php:1075
 msgid "1-4"
-msgstr "1-4."
+msgstr "1-4"
 
 #: i18n/dbStringsForTranslation.php:1101
 msgid "LS"
@@ -55743,7 +55688,7 @@ msgstr "NYS"
 
 #: i18n/dbStringsForTranslation.php:1416
 msgid "S"
-msgstr "Enviado em%1$s em%2$s"
+msgstr "G"
 
 #: i18n/dbStringsForTranslation.php:1417
 msgid "SIP"
@@ -55751,11 +55696,11 @@ msgstr "PMS (em Inglês SIP)"
 
 #: i18n/dbStringsForTranslation.php:1703 i18n/dbStringsForTranslation.php:1678
 msgid "Level 1"
-msgstr "Individual precisa alerta é definida, com um nível de alerta de %1$s."
+msgstr "Nível 1"
 
 #: i18n/dbStringsForTranslation.php:1704 i18n/dbStringsForTranslation.php:1679
 msgid "Level 2"
-msgstr "Nível"
+msgstr "Nível 2"
 
 #: i18n/dbStringsForTranslation.php:1711
 msgid "Not Yet Secure"
@@ -55787,7 +55732,7 @@ msgid ""
 "theme default will be used."
 msgstr ""
 "Cor de fundo da bolha em RGBA da mensagem (por exemplo, 100,100,100,0.50). "
-"Se estiver em branco, padrão de tema será usado."
+"Se estiver em branco, tema padrão será usado."
 
 #: i18n/dbStringsForTranslation.php:1938 i18n/dbStringsForTranslation.php:1936
 msgid "Should message bubble fade out automatically?"
@@ -56609,7 +56554,7 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage.php:66
 #: modules/Finance/expenseRequest_manage_add.php:83
 #: modules/Finance/expenseRequest_manage_view.php:58
-#: modules/Finance/expenses_manage.php:87
+#: modules/Finance/expenses_manage.php:89
 #: modules/Finance/expenses_manage_approve.php:89
 #: modules/Finance/expenses_manage_edit.php:93
 #: modules/Finance/expenses_manage_print.php:89
@@ -56626,8 +56571,8 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage_reimburse.php:90
 #: modules/Finance/expenseRequest_manage_view.php:68
 #: modules/Finance/expenseRequest_manage_view.php:83
-#: modules/Finance/expenses_manage.php:96
-#: modules/Finance/expenses_manage.php:111
+#: modules/Finance/expenses_manage.php:98
+#: modules/Finance/expenses_manage.php:113
 #: modules/Finance/expenses_manage_approve.php:99
 #: modules/Finance/expenses_manage_approve.php:114
 #: modules/Finance/expenses_manage_edit.php:103
@@ -56642,31 +56587,31 @@ msgid "An error has occurred with your expense and budget settings."
 msgstr ""
 
 #: modules/Finance/expenseRequest_manage.php:113
-#: modules/Finance/expenses_manage.php:132
+#: modules/Finance/expenses_manage.php:134
 msgid "The Current budget cycle cannot be determined."
 msgstr ""
 
 #: modules/Finance/expenseRequest_manage.php:134
-#: modules/Finance/expenses_manage.php:153
+#: modules/Finance/expenses_manage.php:155
 msgid "The specified budget cycle cannot be determined."
 msgstr ""
 
 #: modules/Finance/expenseRequest_manage.php:150
 #: modules/Finance/expenseRequest_manage.php:153
-#: modules/Finance/expenses_manage.php:169
-#: modules/Finance/expenses_manage.php:172
+#: modules/Finance/expenses_manage.php:171
+#: modules/Finance/expenses_manage.php:174
 msgid "Previous Cycle"
 msgstr ""
 
 #: modules/Finance/expenseRequest_manage.php:158
 #: modules/Finance/expenseRequest_manage.php:161
-#: modules/Finance/expenses_manage.php:177
-#: modules/Finance/expenses_manage.php:180
+#: modules/Finance/expenses_manage.php:179
+#: modules/Finance/expenses_manage.php:182
 msgid "Next Cycle"
 msgstr ""
 
 #: modules/Finance/expenseRequest_manage.php:197
-#: modules/Finance/expenses_manage.php:216
+#: modules/Finance/expenses_manage.php:218
 #: modules/Finance/expenses_manage_edit.php:219
 #: modules/Finance/expenses_manage_edit.php:746
 msgid "Requested"
@@ -56674,7 +56619,7 @@ msgstr ""
 
 #: modules/Finance/expenseRequest_manage.php:202
 #: modules/Finance/expenseRequest_manage_reimburse.php:187
-#: modules/Finance/expenses_manage.php:221
+#: modules/Finance/expenses_manage.php:223
 #: modules/Finance/expenses_manage_add.php:176
 #: modules/Finance/expenses_manage_edit.php:224
 #: modules/Finance/expenses_manage_edit.php:251
@@ -56682,7 +56627,7 @@ msgid "Approved"
 msgstr ""
 
 #: modules/Finance/expenseRequest_manage.php:217
-#: modules/Finance/expenses_manage.php:236
+#: modules/Finance/expenses_manage.php:238
 #: modules/Finance/expenses_manage_add.php:177
 #: modules/Finance/expenses_manage_edit.php:234
 #: modules/Finance/expenses_manage_edit.php:256
@@ -56695,8 +56640,8 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage_add.php:153
 #: modules/Finance/expenseRequest_manage_reimburse.php:163
 #: modules/Finance/expenseRequest_manage_view.php:151
-#: modules/Finance/expenses_manage.php:248
-#: modules/Finance/expenses_manage.php:368
+#: modules/Finance/expenses_manage.php:250
+#: modules/Finance/expenses_manage.php:373
 #: modules/Finance/expenses_manage_add.php:123
 #: modules/Finance/expenses_manage_approve.php:201
 #: modules/Finance/expenses_manage_edit.php:191
@@ -56708,7 +56653,7 @@ msgid "Budget"
 msgstr ""
 
 #: modules/Finance/expenseRequest_manage.php:303
-#: modules/Finance/expenses_manage.php:340
+#: modules/Finance/expenses_manage.php:345
 #, php-format
 msgid "%1$s expense requests in current view"
 msgstr ""
@@ -56854,7 +56799,7 @@ msgid ""
 "relevant access rights."
 msgstr ""
 
-#: modules/Finance/expenses_manage.php:439
+#: modules/Finance/expenses_manage.php:444
 msgid "Approve/Reject"
 msgstr ""
 
@@ -57021,7 +56966,7 @@ msgstr ""
 msgid "Archive Title"
 msgstr ""
 
-#: modules/Individual Needs/in_edit.php:157
+#: modules/Individual Needs/in_edit.php:159
 msgid "Archived Plans"
 msgstr ""
 

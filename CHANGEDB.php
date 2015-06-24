@@ -437,5 +437,6 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 ALTER TABLE `gibbonBehaviour` CHANGE `descriptor` `descriptor` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `level` `level` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 UPDATE gibboni18n SET active='Y' WHERE code='pt_PT';end
 ALTER TABLE `gibbonFinanceBudgetCycleAllocation` ENGINE = MYISAM ;end
+UPDATE gibboni18n SET active='Y' WHERE code='ar_SA';end
 " ;
 ?>
