@@ -55,7 +55,7 @@ if (($username=="") OR ($password=="")) {
 else {			
 	try {
 		$data=array("username"=>$username); 
-		$sql="SELECT * FROM gibbonPerson WHERE ((username=:username) AND (status='Full') AND (canLogin='Y'))" ;
+		$sql="SELECT gibbonPerson.*, nonCurrentYearLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username) AND (status='Full') AND (canLogin='Y'))" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -72,10 +72,10 @@ else {
 		//Check fail count, reject & alert if 3rd time
 		if ($row["failCount"]>=3) {
 			try {
-				$data=array("lastFailIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastFailTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
+				$dataSecure=array("lastFailIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastFailTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
 				$sqlSecure="UPDATE gibbonPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)";
 				$resultSecure=$connection2->prepare($sqlSecure);
-				$resultSecure->execute($data); 
+				$resultSecure->execute($dataSecure); 
 			}
 			catch(PDOException $e) { }
 		
@@ -146,25 +146,32 @@ else {
 				else {
 					//Allow for non-current school years to be specified
 					if ($_POST["gibbonSchoolYearID"]!=$_SESSION[$guid]["gibbonSchoolYearID"]) {
-						try {
-							$dataYear=array("gibbonSchoolYearID"=>$_POST["gibbonSchoolYearID"]); 
-							$sqlYear="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
-							$resultYear=$connection2->prepare($sqlYear);
-							$resultYear->execute($dataYear);
+						if ($row["nonCurrentYearLogin"]!="Y") { //NOT ALLOWED DUE TO CONTROLS ON ROLE, KICK OUT!
+							$URL.="?loginReturn=fail9" ;
+							header("Location: {$URL}");
+							exit() ;
 						}
-						catch(PDOException $e) { }
+						else { //ALLOWED
+							try {
+								$dataYear=array("gibbonSchoolYearID"=>$_POST["gibbonSchoolYearID"]); 
+								$sqlYear="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
+								$resultYear=$connection2->prepare($sqlYear);
+								$resultYear->execute($dataYear);
+							}
+							catch(PDOException $e) { }
 			
-						//Check number of rows returned.
-						//If it is not 1, show error
-						if (!($resultYear->rowCount()==1)) {
-							die("Configuration Error: there is a problem accessing the current Academic Year from the database.") ;
-						}
-						//Else get schoolYearID
-						else {
-							$rowYear=$resultYear->fetch() ;
-							$_SESSION[$guid]["gibbonSchoolYearID"]=$rowYear["gibbonSchoolYearID"] ;
-							$_SESSION[$guid]["gibbonSchoolYearName"]=$rowYear["name"] ;
-							$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"]=$rowYear["sequenceNumber"] ;
+							//Check number of rows returned.
+							//If it is not 1, show error
+							if (!($resultYear->rowCount()==1)) {
+								die("Configuration Error: there is a problem accessing the current Academic Year from the database.") ;
+							}
+							//Else get schoolYearID
+							else {
+								$rowYear=$resultYear->fetch() ;
+								$_SESSION[$guid]["gibbonSchoolYearID"]=$rowYear["gibbonSchoolYearID"] ;
+								$_SESSION[$guid]["gibbonSchoolYearName"]=$rowYear["name"] ;
+								$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"]=$rowYear["sequenceNumber"] ;
+							}
 						}
 					}
 					
@@ -185,6 +192,7 @@ else {
 					$_SESSION[$guid]["status"]=$row["status"] ;
 					$_SESSION[$guid]["gibbonRoleIDPrimary"]=$row["gibbonRoleIDPrimary"] ;
 					$_SESSION[$guid]["gibbonRoleIDCurrent"]=$row["gibbonRoleIDPrimary"] ;
+					$_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2)  ;
 					$_SESSION[$guid]["gibbonRoleIDAll"]=getRoleList($row["gibbonRoleIDAll"], $connection2) ;
 					$_SESSION[$guid]["image_240"]=$row["image_240"] ;
 					$_SESSION[$guid]["image_75"]=$row["image_75"] ;
@@ -245,7 +253,12 @@ else {
 			
 			
 					if (isset($_GET["q"])) {
-						$URL="./index.php?q=" . $_GET["q"] ;
+						if ($_GET["q"]=="/publicRegistration.php") {
+							$URL="./index.php" ;
+						}
+						else {
+							$URL="./index.php?q=" . $_GET["q"] ;
+						}
 					}
 					else {
 						$URL="./index.php" ;

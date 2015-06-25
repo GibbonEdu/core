@@ -32,6 +32,9 @@ catch(PDOException $e) {
 
 @session_start() ;
 
+$enableDescriptors=getSettingByScope($connection2, "Behaviour", "enableDescriptors") ;
+$enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
+
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
@@ -87,9 +90,16 @@ else {
 				$gibbonPersonID=$_POST["gibbonPersonID"] ; 
 				$date=$_POST["date"] ; 
 				$type=$_POST["type"] ; 
-				$descriptor=$_POST["descriptor"] ; 
-				$level=$_POST["level"] ; 
+				$descriptor=NULL ;
+				if (isset($_POST["descriptor"])) {
+					$descriptor=$_POST["descriptor"] ; 
+				}
+				$level=NULL ;
+				if (isset($_POST["level"])) {
+					$level=$_POST["level"] ; 
+				}
 				$comment=$_POST["comment"] ; 
+				$followup=$_POST["followup"] ; 
 				if ($_POST["gibbonPlannerEntryID"]=="") {
 					$gibbonPlannerEntryID=NULL ; 
 				}
@@ -97,15 +107,15 @@ else {
 					$gibbonPlannerEntryID=$_POST["gibbonPlannerEntryID"] ; 
 				}
 				
-				if ($gibbonPersonID=="" OR $date=="" OR $type=="" OR $descriptor=="") {
+				if ($gibbonPersonID=="" OR $date=="" OR $type=="" OR ($descriptor=="" AND $enableDescriptors=="Y")) {
 					//Fail 3
 					$URL.="&updateReturn=fail3" ;
 					header("Location: {$URL}");
 				}
 				else {
 					try {
-						$data=array("gibbonPersonID"=>$gibbonPersonID, "date"=>dateConvert($guid, $date), "type"=>$type, "descriptor"=>$descriptor, "level"=>$level, "comment"=>$comment, "gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonBehaviourID"=>$gibbonBehaviourID); 
-						$sql="UPDATE gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonSchoolYearID=:gibbonSchoolYearID WHERE gibbonBehaviourID=:gibbonBehaviourID" ;
+						$data=array("gibbonPersonID"=>$gibbonPersonID, "date"=>dateConvert($guid, $date), "type"=>$type, "descriptor"=>$descriptor, "level"=>$level, "comment"=>$comment, "followup"=>$followup, "gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonBehaviourID"=>$gibbonBehaviourID); 
+						$sql="UPDATE gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, followup=:followup, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonSchoolYearID=:gibbonSchoolYearID WHERE gibbonBehaviourID=:gibbonBehaviourID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

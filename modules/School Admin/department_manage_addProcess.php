@@ -50,7 +50,7 @@ else {
 	$subjectListing=$_POST["subjectListing"] ;
 	$blurb=$_POST["blurb"] ;
 	
-	//Lock activities table
+	//Lock table
 	try {
 		$sql="LOCK TABLES gibbonDepartment WRITE, gibbonDepartmentStaff WRITE" ;
 		$result=$connection2->query($sql);   
@@ -173,12 +173,7 @@ else {
 			$sql="UNLOCK TABLES" ;
 			$result=$connection2->query($sql);   
 		}
-		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
+		catch(PDOException $e) { }
 		
 		if ($partialFail==TRUE) {
 			//Fail 5

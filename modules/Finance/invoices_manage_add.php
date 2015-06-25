@@ -310,7 +310,7 @@ else {
 												<option class='all' value='0'><?php print _('Choose a fee to add it') ?></option>
 												<?php
 												print "<option value='Ad Hoc'>Ad Hoc Fee</option>" ;
-												$switchContents.="case \"Ad Hoc\": " ;
+												$switchContents="case \"Ad Hoc\": " ;
 												$switchContents.="$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
 												$switchContents.="$(\"#feeOuter\" + feeCount).load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Finance/invoices_manage_add_blockFeeAjax.php\",\"mode=add&id=\" + feeCount + \"&feeType=" . urlencode("Ad Hoc") . "&gibbonFinanceFeeID=&name=" . urlencode("Ad Hoc Fee") . "&description=&gibbonFinanceFeeCategoryID=1&fee=\") ;" ;
 												$switchContents.="feeCount++ ;" ;
@@ -373,7 +373,6 @@ else {
 						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 					</td>
 					<td class="right">
-						<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<?php print $gibbonFinanceInvoiceID ?>" type="hidden">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 						<input type="submit" value="<?php print _("Submit") ; ?>">
 					</td>

@@ -209,11 +209,7 @@ else {
 								}
 								catch(PDOException $e) { }
 								while ($rowSelect=$resultSelect->fetch()) {
-									$selected="" ;
-									if ($row["gibbonPersonIDStatusResponsible"]==$rowSelect["gibbonPersonID"]) {
-										$selected="selected" ;
-									}
-									print "<option $selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "$expected</option>" ;
+									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
 								}
 								print "</optgroup>" ;
 							print "</select>" ;
@@ -297,7 +293,7 @@ else {
 								}
 								catch(PDOException $e) { }
 								while ($rowSelect=$resultSelect->fetch()) {
-									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "$expected</option>" ;
+									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
 								}
 								print "</optgroup>" ;
 							print "</select>" ;

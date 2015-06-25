@@ -22,6 +22,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
+$enableDescriptors=getSettingByScope($connection2, "Behaviour", "enableDescriptors") ;
+$enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
+
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 

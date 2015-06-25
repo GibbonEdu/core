@@ -45,7 +45,7 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($addReturn=="fail5") {
 			$addReturnMessage=_("Your request failed because your passwords did not match.") ;	
@@ -167,6 +167,8 @@ else {
 						<option value="Please select..."><?php print _('Please select...') ?></option>
 						<option value="F"><?php print _('Female') ?></option>
 						<option value="M"><?php print _('Male') ?></option>
+						<option value="F"><?php print _('Other') ?></option>
+						<option value="M"><?php print _('Unspecified') ?></option>
 					</select>
 					<script type="text/javascript">
 						var gender=new LiveValidation('gender');
@@ -246,7 +248,7 @@ else {
 					?>
 					<script type="text/javascript">
 						var username=new LiveValidation('username');
-						username.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "Username already in use!", partialMatch: false, caseSensitive: false } );
+						username.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "<?php print _('Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
 						username.add(Validate.Presence);
 					 </script>
 				</td>
@@ -1235,6 +1237,15 @@ else {
 					$( "#transport" ).autocomplete({source: availableTags});
 				});
 			</script>
+			<tr>
+				<td> 
+					<b><?php print _('Transport Notes') ?></b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<textarea name="transportNotes" id="transportNotes" rows=4 value="" style="width: 300px"></textarea>
+				</td>
+			</tr>
 			<tr>
 				<td> 
 					<b><?php print _('Locker Number') ?></b><br/>

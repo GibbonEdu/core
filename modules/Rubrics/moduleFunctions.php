@@ -101,7 +101,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="", $search
 									$resultOutcome=$connection2->prepare($sqlOutcome);
 									$resultOutcome->execute($dataOutcome);
 								}
-								catch(PDOException $e) { print "Error" ; }
+								catch(PDOException $e) {}
 								if ($resultOutcome->rowCount()!=1) {
 									 print _("Error") ;
 								}
@@ -130,7 +130,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="", $search
 									$resultOutcome=$connection2->prepare($sqlOutcome);
 									$resultOutcome->execute($dataOutcome); 
 								}
-								catch(PDOException $e) { print "Error" ; }
+								catch(PDOException $e) {}
 								if ($resultOutcome->rowCount()!=1) {
 									 print _("Error") ;
 								}
@@ -329,7 +329,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 										$resultOutcome=$connection2->prepare($sqlOutcome);
 										$resultOutcome->execute($dataOutcome);
 									}
-									catch(PDOException $e) { print "Error" ; }
+									catch(PDOException $e) {}
 									if ($resultOutcome->rowCount()!=1) {
 										 print _("Error") ;
 									}
@@ -375,7 +375,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 										$resultOutcome=$connection2->prepare($sqlOutcome);
 										$resultOutcome->execute($dataOutcome); 
 									}
-									catch(PDOException $e) { print "Error" ; }
+									catch(PDOException $e) {}
 									if ($resultOutcome->rowCount()!=1) {
 										 print _("Error") ;
 									}
@@ -390,7 +390,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 												$resultOutcome2=$connection2->prepare($sqlOutcome2);
 												$resultOutcome2->execute($dataOutcome2); 
 											}
-											catch(PDOException $e) { print "Error" ; }
+											catch(PDOException $e) {}
 											if ($resultOutcome2->rowCount()) {
 												$output.="<img style='float: right' title='This outcome is one of the unit outcomes.' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 											}

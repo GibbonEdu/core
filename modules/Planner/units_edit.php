@@ -137,6 +137,10 @@ else {
 				$copyReturnMessage=_("Copy was successful. The blocks from the selected working unit have replaced those in the master unit (see below for the new block listing).") ;	
 				$class="success" ;
 			}
+			if ($copyReturn=="success1") {
+				$copyReturnMessage=_("Smart Blockify was successful.") ;	
+				$class="success" ;
+			}
 			print "<div class='$class'>" ;
 				print $copyReturnMessage;
 			print "</div>" ;
@@ -648,6 +652,7 @@ else {
 																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&viewBy=class'><img style='margin-top: 3px' title='" . _('View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.png'/></a> " ;
 																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_copyBack.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=" . $rowClassData["gibbonUnitClassID"] . "'><img title='Copy Back' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copyback.png'/></a> " ;
 																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_copyForward.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=" . $rowClassData["gibbonUnitClassID"] . "'><img title='Copy Forward' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copyforward.png'/></a> " ;
+																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_smartBlockify.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=" . $rowClassData["gibbonUnitClassID"] . "'><img title='Smart Blockify' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/run.png'/></a> " ;
 																	}
 																print "</td>" ;
 															print "</tr>" ;

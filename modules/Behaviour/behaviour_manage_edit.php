@@ -22,6 +22,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
+$enableDescriptors=getSettingByScope($connection2, "Behaviour", "enableDescriptors") ;
+$enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
+
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -192,125 +195,132 @@ else {
 							</td>
 						</tr>
 						<?php
-						try {
-							$sqlPositive="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='positiveDescriptors'" ;
-							$resultPositive=$connection2->query($sqlPositive);   
-							$sqlNegative="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'" ;
-							$resultNegative=$connection2->query($sqlNegative);   
-						}
-						catch(PDOException $e) { }
+						if ($enableDescriptors=="Y") {
+							try {
+								$sqlPositive="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='positiveDescriptors'" ;
+								$resultPositive=$connection2->query($sqlPositive);   
+								$sqlNegative="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'" ;
+								$resultNegative=$connection2->query($sqlNegative);   
+							}
+							catch(PDOException $e) { }
 						
-						if ($resultPositive->rowCount()==1 AND $resultNegative->rowCount()==1) {
-							$rowPositive=$resultPositive->fetch() ;
-							$rowNegative=$resultNegative->fetch() ;
+							if ($resultPositive->rowCount()==1 AND $resultNegative->rowCount()==1) {
+								$rowPositive=$resultPositive->fetch() ;
+								$rowNegative=$resultNegative->fetch() ;
 							
-							$optionsPositive=$rowPositive["value"] ;
-							$optionsNegative=$rowNegative["value"] ;
+								$optionsPositive=$rowPositive["value"] ;
+								$optionsNegative=$rowNegative["value"] ;
 							
-							if ($optionsPositive!="" AND $optionsNegative!="") {
-								$optionsPositive=explode(",", $optionsPositive) ;
-								$optionsNegative=explode(",", $optionsNegative) ;
-								?>
-								<tr>
-									<td> 
-										<b><?php print _('Descriptor') ?> *</b><br/>
-										<span style="font-size: 90%"><i></i></span>
-									</td>
-									<td class="right">
-										<select name="descriptor" id="descriptor" style="width: 302px">
-											<option value="Please select..."><?php print _('Please select...') ?></option>
-											<?php
-											if ($row["descriptor"]=="Quick Star") {
-												print "<option class='Positive' value='Quick Star'>" . _('Quick Star') . "</option>" ;
-											}
-											for ($i=0; $i<count($optionsPositive); $i++) {
-												$selected="" ;
-												if ($row["descriptor"]==$optionsPositive[$i]) {
-													$selected="selected" ;
+								if ($optionsPositive!="" AND $optionsNegative!="") {
+									$optionsPositive=explode(",", $optionsPositive) ;
+									$optionsNegative=explode(",", $optionsNegative) ;
+									?>
+									<tr>
+										<td> 
+											<b><?php print _('Descriptor') ?> *</b><br/>
+											<span style="font-size: 90%"><i></i></span>
+										</td>
+										<td class="right">
+											<select name="descriptor" id="descriptor" style="width: 302px">
+												<option value="Please select..."><?php print _('Please select...') ?></option>
+												<?php
+												if ($row["descriptor"]=="Quick Star") {
+													print "<option class='Positive' value='Quick Star'>" . _('Quick Star') . "</option>" ;
+												}
+												for ($i=0; $i<count($optionsPositive); $i++) {
+													$selected="" ;
+													if ($row["descriptor"]==$optionsPositive[$i]) {
+														$selected="selected" ;
+													}
+													?>
+													<option <?php print $selected ?> class='Positive' <?php if ($row["descriptor"]==$optionsPositive[$i]) {print "selected ";}?>value="<?php print trim($optionsPositive[$i]) ?>"><?php print trim($optionsPositive[$i]) ?></option>
+												<?php
 												}
 												?>
-												<option <?php print $selected ?> class='Positive' <?php if ($row["descriptor"]==$optionsPositive[$i]) {print "selected ";}?>value="<?php print trim($optionsPositive[$i]) ?>"><?php print trim($optionsPositive[$i]) ?></option>
-											<?php
-											}
-											?>
-											<?php
-											for ($i=0; $i<count($optionsNegative); $i++) {
-												$selected="" ;
-												if ($row["descriptor"]==$optionsNegative[$i]) {
-													$selected="selected" ;
+												<?php
+												for ($i=0; $i<count($optionsNegative); $i++) {
+													$selected="" ;
+													if ($row["descriptor"]==$optionsNegative[$i]) {
+														$selected="selected" ;
+													}
+													?>
+													<option <?php print $selected ?> class='Negative' <?php if ($row["descriptor"]==$optionsNegative[$i]) {print "selected ";}?>value="<?php print trim($optionsNegative[$i]) ?>"><?php print trim($optionsNegative[$i]) ?></option>
+												<?php
 												}
 												?>
-												<option <?php print $selected ?> class='Negative' <?php if ($row["descriptor"]==$optionsNegative[$i]) {print "selected ";}?>value="<?php print trim($optionsNegative[$i]) ?>"><?php print trim($optionsNegative[$i]) ?></option>
-											<?php
-											}
-											?>
-										</select>
-										<script type="text/javascript">
-											var descriptor=new LiveValidation('descriptor');
-											descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-										 </script>
-										 <script type="text/javascript">
-											$("#descriptor").chainedTo("#type");
-										</script>
-									</td>
-								</tr>
-								<?php
+											</select>
+											<script type="text/javascript">
+												var descriptor=new LiveValidation('descriptor');
+												descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+											 </script>
+											 <script type="text/javascript">
+												$("#descriptor").chainedTo("#type");
+											</script>
+										</td>
+									</tr>
+									<?php
+								}
 							}
 						}
 						?>
 						
 						<?php
-						try {
-							$dataLevels=array(); 
-							$sqlLevels="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='Levels'" ;
-							$resultLevels=$connection2->prepare($sqlLevels);
-							$resultLevels->execute($dataLevels);
-						}
-						catch(PDOException $e) {}
-						if ($resultLevels->rowCount()==1) {
-							$rowLevels=$resultLevels->fetch() ;
-							$optionsLevels=$rowLevels["value"] ;
+						if ($enableDescriptors=="Y") {
+							try {
+								$dataLevels=array(); 
+								$sqlLevels="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='Levels'" ;
+								$resultLevels=$connection2->prepare($sqlLevels);
+								$resultLevels->execute($dataLevels);
+							}
+							catch(PDOException $e) {}
+							if ($resultLevels->rowCount()==1) {
+								$rowLevels=$resultLevels->fetch() ;
+								$optionsLevels=$rowLevels["value"] ;
 							
-							if ($optionsLevels!="") {
-								$optionsLevels=explode(",", $optionsLevels) ;
-								?>
-								<tr>
-									<td> 
-										<b><?php print _('Level') ?> *</b><br/>
-										<span style="font-size: 90%"><i></i></span>
-									</td>
-									<td class="right">
-										<select name="level" id="level" style="width: 302px">
-											<option value="Please select..."><?php print _('Please select...') ?></option>
-											<?php
-											for ($i=0; $i<count($optionsLevels); $i++) {
-												$selected="" ;
-												if ($row["level"]==$optionsLevels[$i]) {
-													$selected="selected" ;
+								if ($optionsLevels!="") {
+									$optionsLevels=explode(",", $optionsLevels) ;
+									?>
+									<tr>
+										<td> 
+											<b><?php print _('Level') ?> *</b><br/>
+											<span style="font-size: 90%"><i></i></span>
+										</td>
+										<td class="right">
+											<select name="level" id="level" style="width: 302px">
+												<option value="Please select..."><?php print _('Please select...') ?></option>
+												<?php
+												for ($i=0; $i<count($optionsLevels); $i++) {
+													$selected="" ;
+													if ($row["level"]==$optionsLevels[$i]) {
+														$selected="selected" ;
+													}
+													?>
+													<option <?php print $selected ?> value="<?php print trim($optionsLevels[$i]) ?>"><?php print trim($optionsLevels[$i]) ?></option>
+												<?php
 												}
 												?>
-												<option <?php print $selected ?> value="<?php print trim($optionsLevels[$i]) ?>"><?php print trim($optionsLevels[$i]) ?></option>
-											<?php
-											}
-											?>
-										</select>
-										<script type="text/javascript">
-											var level=new LiveValidation('level');
-											level.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-										 </script>
-									</td>
-								</tr>
-								<?php
+											</select>
+											<script type="text/javascript">
+												var level=new LiveValidation('level');
+												level.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+											 </script>
+										</td>
+									</tr>
+									<?php
+								}
 							}
 						}
 						?>
 						<tr>
-							<td> 
-								<b><?php print _('Comment') ?></b><br/>
-								<span style="font-size: 90%"><i></i></span>
+							<td colspan=2> 
+								<b><?php print _('Incident') ?></b><br/>
+								<textarea name="comment" id="comment" rows=8 style="width: 100%"><?php print htmlPrep($row["comment"]) ?></textarea>
 							</td>
-							<td class="right">
-								<textarea name="comment" id="comment" rows=8 style="width: 300px"><?php print htmlPrep($row["comment"]) ?></textarea>
+						</tr>
+						<tr>
+							<td colspan=2> 
+								<b><?php print _('Follow Up') ?></b><br/>
+								<textarea name="followup" id="followup" rows=8 style="width: 100%"><?php print htmlPrep($row["followup"]) ?></textarea>
 							</td>
 						</tr>
 						<tr>

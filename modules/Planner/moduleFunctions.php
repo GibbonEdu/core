@@ -520,7 +520,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 							$dateHuman="" ;
 						}
 						else {
-							$dateHuman=date("d/m/Y", $dateStamp) ;
+							$dateHuman=date($_SESSION[$guid]["i18n"]["dateFormatPHP"], $dateStamp) ;
 						}
 						$output.="<input name='dateHuman' id='dateHuman' maxlength=20 type='text' value='$dateHuman' style='width:161px'>" ;
 						$output.="<script type='text/javascript'>" ;

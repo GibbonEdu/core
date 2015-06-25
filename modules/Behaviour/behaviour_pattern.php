@@ -22,6 +22,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
+$enableDescriptors=getSettingByScope($connection2, "Behaviour", "enableDescriptors") ;
+$enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
+
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -81,62 +84,70 @@ else {
 	print "</h3>" ;
 	print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/2Fbehaviour_pattern.php'>" ;
 		print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
-			?>
-			<tr>
-				<td> 
-					<b><?php print _('Descriptor') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
-				</td>
-				<td class="right">
-					<?php
-					try {
-						$sqlNegative="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'" ;
-						$resultNegative=$connection2->query($sqlNegative);   
-					}
-					catch(PDOException $e) { }
+			if ($enableDescriptors=="Y") {
+				?>
+				<tr>
+					<td> 
+						<b><?php print _('Descriptor') ?></b><br/>
+						<span style="font-size: 90%"><i></i></span>
+					</td>
+					<td class="right">
+						<?php
+						try {
+							$sqlNegative="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'" ;
+							$resultNegative=$connection2->query($sqlNegative);   
+						}
+						catch(PDOException $e) { }
 
-					if ($resultNegative->rowCount()==1) {
-						$rowNegative=$resultNegative->fetch() ;
-						$optionsNegative=$rowNegative["value"] ;
-						if ($optionsNegative!="") {
-							$optionsNegative=explode(",", $optionsNegative) ;
+						if ($resultNegative->rowCount()==1) {
+							$rowNegative=$resultNegative->fetch() ;
+							$optionsNegative=$rowNegative["value"] ;
+							if ($optionsNegative!="") {
+								$optionsNegative=explode(",", $optionsNegative) ;
+							}
 						}
-					}
 					
-					print "<select name='descriptor' id='descriptor' style='width:302px;'>" ;
-						print "<option value=''></option>" ;
-						for ($i=0; $i<count($optionsNegative); $i++) {
+						print "<select name='descriptor' id='descriptor' style='width:302px;'>" ;
+							print "<option value=''></option>" ;
+							for ($i=0; $i<count($optionsNegative); $i++) {
+							?>
+								<option <?php if ($descriptor==$optionsNegative[$i]) {print "selected ";}?>value="<?php print trim($optionsNegative[$i]) ?>"><?php print trim($optionsNegative[$i]) ?></option>
+							<?php
+							}
+						print "</select>" ;
 						?>
-							<option <?php if ($descriptor==$optionsNegative[$i]) {print "selected ";}?>value="<?php print trim($optionsNegative[$i]) ?>"><?php print trim($optionsNegative[$i]) ?></option>
+					</td>
+				</tr>
+				<?php
+			}
+			if ($enableLevels=="Y") {	
+				?>
+				<tr>
+					<td> 
+						<b><?php print _('Level') ?></b><br/>
+						<span style="font-size: 90%"><i></i></span>
+					</td>
+					<td class="right">
 						<?php
+						$optionsLevels=getSettingByScope($connection2, "Behaviour", "levels") ;
+						if ($optionsLevels!="") {
+							$optionsLevels=explode(",", $optionsLevels) ;
 						}
-					print "</select>" ;
-					?>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php print _('Level') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
-				</td>
-				<td class="right">
-					<?php
-					$optionsLevels=getSettingByScope($connection2, "Behaviour", "levels") ;
-					if ($optionsLevels!="") {
-						$optionsLevels=explode(",", $optionsLevels) ;
-					}
 					
-					print "<select name='level' id='level' style='width:302px'>" ;
-						print "<option value=''></option>" ;
-						for ($i=0; $i<count($optionsLevels); $i++) {
+						print "<select name='level' id='level' style='width:302px'>" ;
+							print "<option value=''></option>" ;
+							for ($i=0; $i<count($optionsLevels); $i++) {
+							?>
+								<option <?php if ($level==$optionsLevels[$i]) {print "selected ";}?>value="<?php print trim($optionsLevels[$i]) ?>"><?php print trim($optionsLevels[$i]) ?></option>
+							<?php
+							}
+						print "</select>" ;
 						?>
-							<option <?php if ($level==$optionsLevels[$i]) {print "selected ";}?>value="<?php print trim($optionsLevels[$i]) ?>"><?php print trim($optionsLevels[$i]) ?></option>
-						<?php
-						}
-					print "</select>" ;
-					?>
-				</td>
-			</tr>
+					</td>
+				</tr>
+				<?php
+			}
+			?>
 			
 			<tr>
 				<td> 
@@ -369,7 +380,7 @@ else {
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
-						print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
+						print "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&subpage=Behaviour Record&search=&allStudents=&sort=surname, preferredName'>" . formatName("", $row["preferredName"], $row["surname"], "Student", true) . "</a>" ;
 					print "</td>" ;
 					print "<td>" ;
 						print $row["count"] ;

@@ -44,8 +44,17 @@ else {
 		print "</div>" ;
 	} 
 	
+	$search="" ;
+	if (isset($_GET["search"])) {
+		$search=$_GET["search"] ;
+	}
+	$allStaff="" ;
+	if (isset($_GET["allStaff"])) {
+		$allStaff=$_GET["allStaff"] ;
+	}
+
 	print "<h2>" ;
-	print _("Search") ;
+	print _("Search & Filter") ;
 	print "</h2>" ;
 	?>
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -58,6 +67,21 @@ else {
 				</td>
 				<td class="right">
 					<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET["search"])) { print $_GET["search"] ; } ?>" type="text" style="width: 300px">
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b><?php print _('All Staff') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Include Expected and Left.') ?></i></span>
+				</td>
+				<td class="right">
+					<?php
+					$checked="" ;
+					if ($allStaff=="on") {
+						$checked="checked" ;
+					}
+					print "<input $checked name=\"allStaff\" id=\"allStaff\" type=\"checkbox\">" ;
+					?>
 				</td>
 			</tr>
 			<tr>
@@ -84,16 +108,19 @@ else {
 		$page=1 ;
 	}
 	
-	$search="" ;
-	if (isset($_GET["search"])) {
-		$search=$_GET["search"] ;
-	}
 	try {
 		$data=array(); 
-		$sql="SELECT gibbonStaffID, surname, preferredName, initials, type, gibbonStaff.jobTitle FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName" ; 
+		$where="" ;
+		if ($allStaff!="on") {
+			$where="WHERE status='Full'" ;
+		}
+		$sql="SELECT gibbonStaffID, surname, preferredName, initials, type, gibbonStaff.jobTitle, status FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) $where ORDER BY surname, preferredName" ; 
 		if ($search!="") {
+			if ($allStaff!="on") {
+				$where="AND status='Full'" ;
+			}	
 			$data=array("search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%"); 
-			$sql="SELECT gibbonStaffID, surname, preferredName, initials, type, gibbonStaff.jobTitle FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (preferredName LIKE :search1 OR surname LIKE :search2 OR (username LIKE :search3)) ORDER BY surname, preferredName" ; 
+			$sql="SELECT gibbonStaffID, surname, preferredName, initials, type, gibbonStaff.jobTitle, status FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE (preferredName LIKE :search1 OR surname LIKE :search2 OR (username LIKE :search3)) $where ORDER BY surname, preferredName" ; 
 		}
 		$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
 		$result=$connection2->prepare($sql);
@@ -104,7 +131,7 @@ else {
 	}
 	
 	print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_add.php&search=$search'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_add.php&search=$search&allStaff=$allStaff'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 	print "</div>" ;
 
 	if ($result->rowCount()<1) {
@@ -114,7 +141,7 @@ else {
 	}
 	else {
 		if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
+			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "allStaff=$allStaff&search=$search") ;
 		}
 	
 		print "<table cellspacing='0' style='width: 100%'>" ;
@@ -125,6 +152,9 @@ else {
 				print "</th>" ;
 				print "<th>" ;
 					print _("Type") ;
+				print "</th>" ;
+				print "<th>" ;
+					print _("Status") ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Job Title") ;
@@ -150,6 +180,9 @@ else {
 				else {
 					$rowNum="odd" ;
 				}
+				if ($row["status"]!="Full") {
+					$rowNum="error" ;
+				}
 				$count++ ;
 				
 				//COLOR ROW BY STATUS!
@@ -162,18 +195,21 @@ else {
 						print $row["type"] ;
 					print "</td>" ;
 					print "<td>" ;
+						print $row["status"] ;
+					print "</td>" ;
+					print "<td>" ;
 						print $row["jobTitle"] ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_edit.php&gibbonStaffID=" . $row["gibbonStaffID"] . "&search=$search'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_delete.php&gibbonStaffID=" . $row["gibbonStaffID"] . "&search=$search'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_edit.php&gibbonStaffID=" . $row["gibbonStaffID"] . "&search=$search&allStaff=$allStaff'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_delete.php&gibbonStaffID=" . $row["gibbonStaffID"] . "&search=$search&allStaff=$allStaff'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 					print "</td>" ;
 				print "</tr>" ;
 			}
 		print "</table>" ;
 		
 		if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search") ;
+			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "allStaff=$allStaff&search=$search") ;
 		}
 	}
 }

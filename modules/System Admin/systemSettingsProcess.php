@@ -64,7 +64,6 @@ else {
 	$analytics=$_POST["analytics"] ;
 	$emailLink=$_POST["emailLink"] ;
 	$webLink=$_POST["webLink"] ;
-	$calendarFeed=$_POST["calendarFeed"] ;
 	$primaryAssessmentScale=$_POST["primaryAssessmentScale"] ;
 	$installType=$_POST["installType"] ;
 	$statsCollection=$_POST["statsCollection"] ;
@@ -75,21 +74,12 @@ else {
 	$sessionDuration=$_POST["sessionDuration"] ;
 	$allowableHTML=$_POST["allowableHTML"] ;
 	$currency=$_POST["currency"] ;
-	$enablePayments=$_POST["enablePayments"] ;
-	$paypalAPIUsername=$_POST["paypalAPIUsername"] ;
-	$paypalAPIPassword=$_POST["paypalAPIPassword"] ;
-	$paypalAPISignature=$_POST["paypalAPISignature"] ;
 	$gibboneduComOrganisationName=$_POST["gibboneduComOrganisationName"] ;
 	$gibboneduComOrganisationKey=$_POST["gibboneduComOrganisationKey"] ;
-	$googleOAuth=$_POST["googleOAuth"] ; 	
-	$googleClientName=$_POST["googleClientName"] ; 	
-	$googleClientID=$_POST["googleClientID"] ; 
-	$googleClientSecret=$_POST["googleClientSecret"] ;
-	$googleRedirectUri=$_POST["googleRedirectUri"] ;
-	$googleDeveloperKey=$_POST["googleDeveloperKey"] ;
+	
 	
 	//Validate Inputs
-	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $currency=="" OR $enablePayments=="" OR $googleOAuth=="" OR $sessionDuration=="") {
+	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $currency=="") {
 		//Fail 3
 		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -305,106 +295,6 @@ else {
 		}
 		
 		try {
-			$data=array("value"=>$googleOAuth); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleOAuth'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ; 
-		}
-
-		try {
-			$data=array("value"=>$googleClientName); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleClientName'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ; 
-		}
-
-		try {
-			$data=array("value"=>$googleClientID); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleClientID'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ; 
-		}
-
-		try {
-			$data=array("value"=>$googleClientSecret); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleClientSecret'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ; 
-		}
-
-		try {
-			$data=array("value"=>$googleRedirectUri); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleRedirectUri'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ; 
-		}
-
-		try {
-			$data=array("value"=>$googleDeveloperKey); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleDeveloperKey'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ; 
-		}
-	
-		try {
-			$data=array("enablePayments"=>$enablePayments); 
-			$sql="UPDATE gibbonSetting SET value=:enablePayments WHERE scope='System' AND name='enablePayments'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("paypalAPIUsername"=>$paypalAPIUsername); 
-			$sql="UPDATE gibbonSetting SET value=:paypalAPIUsername WHERE scope='System' AND name='paypalAPIUsername'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("paypalAPIPassword"=>$paypalAPIPassword); 
-			$sql="UPDATE gibbonSetting SET value=:paypalAPIPassword WHERE scope='System' AND name='paypalAPIPassword'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("paypalAPISignature"=>$paypalAPISignature); 
-			$sql="UPDATE gibbonSetting SET value=:paypalAPISignature WHERE scope='System' AND name='paypalAPISignature'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
 			$data=array("timezone"=>$timezone); 
 			$sql="UPDATE gibbonSetting SET value=:timezone WHERE scope='System' AND name='timezone'" ;
 			$result=$connection2->prepare($sql);
@@ -440,17 +330,6 @@ else {
 		try {
 			$data=array("webLink"=>$webLink); 
 			$sql="UPDATE gibbonSetting SET value=:webLink WHERE scope='System' AND name='webLink'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		
-		try {
-			$data=array("calendarFeed"=>$calendarFeed); 
-			$sql="UPDATE gibbonSetting SET value=:calendarFeed WHERE scope='System' AND name='calendarFeed'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

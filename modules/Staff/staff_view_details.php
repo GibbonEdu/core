@@ -174,7 +174,7 @@ else {
 						$subpage=$_GET["subpage"] ;
 					}
 					if ($subpage=="") {
-						$subpage="Summary" ;
+						$subpage="Overview" ;
 					}
 					
 					if ($search!="") {
@@ -189,13 +189,17 @@ else {
 						}
 					print "</h2>" ;
 					
-					if ($subpage=="Summary") {
+					if ($subpage=="Overview") {
 						if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==TRUE) {
 							print "<div class='linkTop'>" ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>" . _('Edit') . "<img style='margin: 0 0 -4px 5px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "</div>" ;
 						}
-					
+						
+						//General Information
+						print "<h4>" ;
+							print _("General Information") ;
+						print "</h4>" ;
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
@@ -252,6 +256,38 @@ else {
 								print "</td>" ;
 							print "</tr>" ;
 						print "</table>" ;
+						
+						//Show timetable
+						print "<a name='timetable'></a>" ;
+						print "<h4>" ;
+							print _("Timetable") ;
+						print "</h4>" ;
+						if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php")==TRUE) {
+							if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php")==TRUE) {
+								print "<div class='linkTop'>" ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=Staff&allUsers='>" . _('Edit') . "<img style='margin: 0 0 -4px 5px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "</div>" ;
+							}
+						
+							include "./modules/Timetable/moduleFunctions.php" ;
+							$ttDate="" ;
+							if (isset($_POST["ttDate"])) {
+								$ttDate=dateConvertToTimestamp(dateConvert($guid, $_POST["ttDate"]));
+							}
+							$gibbonTTID=NULL ;
+							if (isset($_GET["gibbonTTID"])) {
+								$gibbonTTID=$_GET["gibbonTTID"] ;
+							}
+							$tt=renderTT($guid, $connection2,$gibbonPersonID, $gibbonTTID, FALSE, $ttDate, "/modules/Staff/staff_view_details.php", "&gibbonPersonID=$gibbonPersonID&search=$search#timetable") ;
+							if ($tt!=FALSE) {
+								print $tt ;
+							}
+							else {
+								print "<div class='error'>" ;
+									print _("The selected record does not exist, or you do not have access to it.");
+								print "</div>" ;
+							}
+						}
 					}
 					else if ($subpage=="Personal") {
 						if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==TRUE) {
@@ -563,10 +599,10 @@ else {
 					$_SESSION[$guid]["sidebarExtra"].="<h4>Personal</h4>" ;
 					$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
 					$style="" ;
-					if ($subpage=="Summary") {
+					if ($subpage=="Overview") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Summary'>" . _('Summary') . "</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Overview'>" . _('Overview') . "</a></li>" ;
 					$style="" ;
 					if ($subpage=="Personal") {
 						$style="style='font-weight: bold'" ;

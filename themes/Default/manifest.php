@@ -25,4 +25,5 @@ $description="Gibbon's 2015 look and feel." ;
 $version="1.0.00" ;
 $author="Ross Parker" ;
 $url="http://rossparker.org" ;
+$responsive="N" ;
 ?>

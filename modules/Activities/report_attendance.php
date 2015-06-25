@@ -155,7 +155,7 @@ else {
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
-							print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
+							print $count . ". " . formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
 						print "</td>" ;
 						print "<td></td>" ;
 						print "<td></td>" ;

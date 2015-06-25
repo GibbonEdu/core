@@ -152,6 +152,28 @@ else {
 				<?php
 				try {
 					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Students' AND name='enableStudentNotes'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td style='width: 275px'> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print _('No') ?></option>
+						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Students' AND name='extendedBriefProfile'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);

@@ -23,7 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 $included=FALSE ;
 $includes=get_included_files() ;
 foreach ($includes AS $include) {
-	if ($include==$_SESSION[$guid]["absolutePath"] . "/modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php") {
+	if (str_replace("\\","/",$include)==str_replace("\\","/",$_SESSION[$guid]["absolutePath"] . "/modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php")) {
 		$included=TRUE ;
 	}
 }
@@ -1063,6 +1063,107 @@ else {
 						</td>
 					</tr>
 					<?php
+				}
+				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_any")) {
+					?>
+					<script type="text/javascript">
+						/* yearGroup Control */
+						$(document).ready(function(){
+							$("#transportRow").css("display","none");
+							$("#transportRow2").css("display","none");
+							$("#transportRow3").css("display","none");
+							$("#transportRow4").css("display","none");
+							$(".transport").click(function(){
+								if ($('input[name=transport]:checked').val()=="Y" ) {
+									$("#transportRow").slideDown("fast", $("#transportRow").css("display","table-row")); 
+									$("#transportRow2").slideDown("fast", $("#transportRow2").css("display","table-row")); 
+									$("#transportRow3").slideDown("fast", $("#transportRow3").css("display","table-row")); 
+									$("#transportRow4").slideDown("fast", $("#transportRow4").css("display","table-row")); 
+								} else {
+									$("#transportRow").css("display","none");
+									$("#transportRow2").css("display","none");
+									$("#transportRow3").css("display","none");
+									$("#transportRow4").css("display","none");
+								}
+							 });
+						});
+					</script>
+					<tr>
+						<td> 
+							<b><?php print _('Transport') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Applies to all staff and students who have transport set.') ?><br/></i></span>
+						</td>
+						<td class="right">
+							<input type="radio" name="transport" class="transport" value="Y"/> <?php print _('Yes') ?>
+							<input checked type="radio" name="transport" class="transport" value="N"/> <?php print _('No') ?>
+						</td>
+					</tr>
+					<tr id="transportRow">
+						<td class='hiddenReveal'> 
+							<b><?php print _('Select Transport') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+						</td>
+						<td class="hiddenReveal right">
+							<select name="transports[]" id="transports[]" multiple style="width: 302px; height: 100px">
+								<?php
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT DISTINCT transport FROM gibbonPerson WHERE status='Full' AND NOT transport='' ORDER BY transport" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									print "<option value='" . htmlPrep($rowSelect["transport"]) . "'>" . htmlPrep(_($rowSelect["transport"])) . "</option>" ;
+								}
+								?>
+							</select>
+						</td>
+					</tr>
+					<tr id="transportRow3">
+						<td class='hiddenReveal'> 
+							<b><?php print _('Include staff?') ?></b><br/>
+						</td>
+						<td class="hiddenReveal right">
+							<select name="transportStaff" id="transportStaff" style="width: 302px">
+								<?php
+								print "<option value='Y'>" . _('Yes') . "</option>" ;
+								print "<option value='N'>" . _('No') . "</option>" ;
+								?>
+							</select>
+						</td>
+					</tr>
+					<tr id="transportRow4">
+						<td class='hiddenReveal'> 
+							<b><?php print _('Include students?') ?></b><br/>
+						</td>
+						<td class="hiddenReveal right">
+							<select name="transportStudents" id="transportStudents" style="width: 302px">
+								<?php
+								print "<option value='Y'>" . _('Yes') . "</option>" ;
+								print "<option value='N'>" . _('No') . "</option>" ;
+								?>
+							</select>
+						</td>
+					</tr>
+					<?php
+					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_parents")) {
+						?>
+						<tr id="transportRow2">
+							<td class='hiddenReveal'> 
+								<b><?php print _('Include parents?') ?></b><br/>
+							</td>
+							<td class="hiddenReveal right">
+								<select name="transportParents" id="transportParents" style="width: 302px">
+									<?php
+									print "<option value='Y'>" . _('Yes') . "</option>" ;
+									print "<option selected value='N'>No</option>" ;
+									?>
+								</select>
+							</td>
+						</tr>
+						<?php
+					}
 				}
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
 					?>

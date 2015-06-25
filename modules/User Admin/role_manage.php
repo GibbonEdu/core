@@ -107,6 +107,9 @@ else {
 				print "<th>" ;
 					print _("Type") ;
 				print "</th>" ;
+				print "<th>" ;
+					print _("Login To Non-Current Years") ;
+				print "</th>" ;
 				print "<th style='width:110px'>" ;
 					print _("Action") ;
 				print "</th>" ;
@@ -141,8 +144,11 @@ else {
 						print _($row["type"]) ;
 					print "</td>" ;
 					print "<td>" ;
+						print ynExpander($row["nonCurrentYearLogin"]) ;
+					print "</td>" ;
+					print "<td>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/role_manage_edit.php&gibbonRoleID=" . $row["gibbonRoleID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 						if ($row["type"]=="Additional") {
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/role_manage_edit.php&gibbonRoleID=" . $row["gibbonRoleID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/role_manage_delete.php&gibbonRoleID=" . $row["gibbonRoleID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 						}
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/role_manage_duplicate.php&gibbonRoleID=" . $row["gibbonRoleID"] . "'><img title='" . _('Duplicate') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a> " ;

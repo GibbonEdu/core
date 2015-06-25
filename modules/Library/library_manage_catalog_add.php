@@ -48,7 +48,7 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($addReturn=="fail5") {
 			$addReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
@@ -380,7 +380,7 @@ else {
 				$selectContents.="<optgroup label='--<?php print _('All Users') ?>--'>" ;
 				try {
 					$dataSelect=array(); 
-					$sqlSelect="SELECT gibbonPersonID, surname, preferredName, status FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName" ;
+					$sqlSelect="SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName" ;
 					$resultSelect=$connection2->prepare($sqlSelect);
 					$resultSelect->execute($dataSelect);
 				}
@@ -390,7 +390,7 @@ else {
 					if ($rowSelect["status"]=="Expected") {
 						$expected=" (" . _('Expected') . ")" ;
 					}
-					$selectContents.="<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "$expected</option>" ;
+					$selectContents.="<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . $rowSelect["username"] . ")" . $expected . "</option>" ;
 				}
 				$selectContents.="</optgroup>" ;
 			?>

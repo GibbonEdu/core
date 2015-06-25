@@ -246,14 +246,17 @@ else {
 					print "</th>" ;
 				print "</tr>" ;
 				
+				$specialDayStamp=NULL ;
 				for ($i=$startDayStamp;$i<=$endDayStamp;$i=$i+86400) {
 					if (date("D",$i)=="Mon") {
 						print "<tr style='height: 60px'>" ;
 					}
 					
-					if ($rowSpecial==TRUE) {
-						list($specialDayYear, $specialDayMonth, $specialDayDay)=explode('-', $rowSpecial["date"]);
-						$specialDayStamp=mktime(0, 0, 0, $specialDayMonth, $specialDayDay, $specialDayYear);
+					if (isset($rowSpecial)) {
+						if ($rowSpecial==TRUE) {
+							list($specialDayYear, $specialDayMonth, $specialDayDay)=explode('-', $rowSpecial["date"]);
+							$specialDayStamp=mktime(0, 0, 0, $specialDayMonth, $specialDayDay, $specialDayYear);
+						}
 					}
 					
 					if ($i<$firstDayStamp OR $i>$lastDayStamp OR $days[date("D",$i)]=="N") {

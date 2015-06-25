@@ -209,6 +209,9 @@ else {
 							print "<th>" ;
 								print _("Last School") ;
 							print "</th>" ;
+							print "<th>" ;
+								print _("Parents") ;
+							print "</th>" ;
 						print "</tr>" ;
 	
 						$count=0;

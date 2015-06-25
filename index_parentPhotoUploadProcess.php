@@ -136,6 +136,9 @@ else {
 			//Update session variables
 			$_SESSION[$guid]["image_240"]=$attachment1 ;
 			$_SESSION[$guid]["image_75"]=$attachment1 ;
+			
+			//Clear cusotm sidebar
+			unset($_SESSION[$guid]["index_customSidebar.php"]) ;
 		
 			$URL.="?uploadReturn=success0" ;
 			//Success 0

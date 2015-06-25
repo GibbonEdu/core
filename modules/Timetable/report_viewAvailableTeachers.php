@@ -46,7 +46,7 @@ else {
 		$ttDate=$_GET["ttDate"] ;
 	}
 	if ($ttDate=="") {
-		$ttDate=date("d/m/Y") ;
+		$ttDate=date($_SESSION[$guid]["i18n"]["dateFormatPHP"]) ;
 	}
 
 	?>
@@ -264,43 +264,43 @@ else {
 					if ($days["Mon"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
 							print _("Mon") . "<br/>" ;
-							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*0))) . "</span><br/>" ;
+							print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*0))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Tue"]=="Y") {	
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
 							print _("Tue") . "<br/>" ;
-							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*1))) . "</span><br/>" ;
+							print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*1))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Wed"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
 							print _("Wed") . "<br/>" ;
-							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*2))) . "</span><br/>" ;
+							print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*2))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Thu"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
 							print _("Thu") . "<br/>" ;
-							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*3))) . "</span><br/>" ;
+							print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*3))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Fri"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
 							print _("Fri") . "<br/>" ;
-							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*4))) . "</span><br/>" ;
+							print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*4))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Sat"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
 							print _("Sat") . "<br/>" ;
-							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*5))) . "</span><br/>" ;
+							print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*5))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 					if ($days["Sun"]=="Y") {
 						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
 							print _("Sun") . "<br/>" ;
-							print "<span style='font-size: 80%; font-style: italic'>". date("d/m", ($startDayStamp+(86400*6))) . "</span><br/>" ;
+							print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*6))) . "</span><br/>" ;
 						print "</th>" ;
 					}
 				print "</tr>" ;

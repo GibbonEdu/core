@@ -248,14 +248,17 @@ else {
 							}
 						print "</tr>" ;
 					
+						$specialDayStamp=NULL ;
 						for ($i=$startDayStamp;$i<=$endDayStamp;$i=$i+86400) {
 							if (date("D",$i)=="Mon") {
 								print "<tr style='height: 60px'>" ;
 							}
 						
-							if ($rowSpecial==TRUE) {
-								list($specialDayYear, $specialDayMonth, $specialDayDay)=explode('-', $rowSpecial["date"]);
-								$specialDayStamp=mktime(0, 0, 0, $specialDayMonth, $specialDayDay, $specialDayYear);
+							if (isset($rowSpecial)) {
+								if ($rowSpecial==TRUE) {
+									list($specialDayYear, $specialDayMonth, $specialDayDay)=explode('-', $rowSpecial["date"]);
+									$specialDayStamp=mktime(0, 0, 0, $specialDayMonth, $specialDayDay, $specialDayYear);
+								}
 							}
 						
 							if ($i<$firstDayStamp OR $i>$lastDayStamp OR $days[date("D",$i)]=="N") {
@@ -270,7 +273,7 @@ else {
 							else {
 								if ($i==$specialDayStamp AND $rowSpecial["type"]=="School Closure") {
 									print "<td style='vertical-align: top; text-align: center; background-color: #bbbbbb; font-size: 10px'>" ;
-										print "<span style='color: #fff'>" . date("d/m/Y",$i) . "<br/>" . $rowSpecial["name"] . "</span>" ;
+										print "<span style='color: #fff'>" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/>" . $rowSpecial["name"] . "</span>" ;
 										print "<br/>" ;
 										$rowSpecial=$resultSpecial->fetch() ;
 									print "</td>" ;
@@ -278,10 +281,10 @@ else {
 								else {
 									print "<td style='vertical-align: top; text-align: center; background-color: #eeeeee; font-size: 10px'>" ;
 										if ($i==$specialDayStamp AND $rowSpecial["type"]=="Timing Change") {
-											 print "<span style='color: #000000'>" . date("d/m/Y",$i) . "<br/></span><span style='color: #f00'>" . _('Timing Change') . "</span>" ;
+											 print "<span style='color: #000000'>" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/></span><span style='color: #f00'>" . _('Timing Change') . "</span>" ;
 										}
 										else {
-											print "<span style='color: #000000'>" . date("d/m/Y",$i) . "<br/>" . _('School Day') . "</span>" ;
+											print "<span style='color: #000000'>" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/>" . _('School Day') . "</span>" ;
 										}
 										print "<br/>" ;
 										print "<fieldset class='" . date("D",$i) . "' style='border: none'>" ;
@@ -358,7 +361,7 @@ else {
 				print "<tr>" ;
 					print "<td colspan=2 class=\"right\">" ;
 						print "<input type=\"hidden\" name=\"q\" value=\"/modules/" . $_SESSION[$guid]["module"] . "/ttDates.php\">" ;
-						print "<input type=\"submit\" value=\"Search\">" ;
+						print "<input type=\"submit\" value=\"" . _("Submit") . "\">" ;
 					print "</td>" ;
 				print "</tr>" ;
 			print "</table>" ;

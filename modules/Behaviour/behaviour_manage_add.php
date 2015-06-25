@@ -22,6 +22,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
+$enableDescriptors=getSettingByScope($connection2, "Behaviour", "enableDescriptors") ;
+$enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
+
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -106,7 +109,13 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
+							<?php 
+								$gibbonPersonID=NULL ;
+								if (isset($_GET["gibbonPersonID"])) {
+									$gibbonPersonID=$_GET["gibbonPersonID"] ; 
+								} 
+							?>
+							<select name="gibbonPersonID" id="gibbonPersonID2" style="width: 302px">
 								<option value="Please select..."><?php print _('Please select...') ?></option>
 								<?php
 								try {
@@ -120,7 +129,7 @@ else {
 								}
 								while ($rowSelect=$resultSelect->fetch()) {
 									if ($gibbonPersonID==$rowSelect["gibbonPersonID"]) {
-										print "<option selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;
+										print "<option selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;
 									}
 									else {
 										print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;
@@ -129,10 +138,9 @@ else {
 								?>			
 							</select>
 							<script type="text/javascript">
-								var gibbonPersonID=new LiveValidation('gibbonPersonID');
-								gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
-									
+								var gibbonPersonID2=new LiveValidation('gibbonPersonID2');
+								gibbonPersonID2.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+							</script>	
 						</td>
 					</tr>
 					<tr>
@@ -141,7 +149,7 @@ else {
 							<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 						</td>
 						<td class="right">
-							<input name="date" id="date" maxlength=10 value="<?php print date("d/m/Y") ?>" type="text" style="width: 300px">
+							<input name="date" id="date" maxlength=10 value="<?php print date($_SESSION[$guid]["i18n"]["dateFormatPHP"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var date=new LiveValidation('date');
 								date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -166,97 +174,110 @@ else {
 						</td>
 					</tr>
 					<?php
-					try {
-						$sqlPositive="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='positiveDescriptors'" ;
-						$resultPositive=$connection2->query($sqlPositive);   
-						$sqlNegative="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'" ;
-						$resultNegative=$connection2->query($sqlNegative);   
-					}
-					catch(PDOException $e) { }
+					if ($enableDescriptors=="Y") {
+						try {
+							$sqlPositive="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='positiveDescriptors'" ;
+							$resultPositive=$connection2->query($sqlPositive);   
+							$sqlNegative="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'" ;
+							$resultNegative=$connection2->query($sqlNegative);   
+						}
+						catch(PDOException $e) { }
 
-					if ($resultPositive->rowCount()==1 AND $resultNegative->rowCount()==1) {
-						$rowPositive=$resultPositive->fetch() ;
-						$rowNegative=$resultNegative->fetch() ;
+						if ($resultPositive->rowCount()==1 AND $resultNegative->rowCount()==1) {
+							$rowPositive=$resultPositive->fetch() ;
+							$rowNegative=$resultNegative->fetch() ;
 						
-						$optionsPositive=$rowPositive["value"] ;
-						$optionsNegative=$rowNegative["value"] ;
+							$optionsPositive=$rowPositive["value"] ;
+							$optionsNegative=$rowNegative["value"] ;
 						
-						if ($optionsPositive!="" AND $optionsNegative!="") {
-							$optionsPositive=explode(",", $optionsPositive) ;
-							$optionsNegative=explode(",", $optionsNegative) ;
+							if ($optionsPositive!="" AND $optionsNegative!="") {
+								$optionsPositive=explode(",", $optionsPositive) ;
+								$optionsNegative=explode(",", $optionsNegative) ;
+								?>
+								<tr>
+									<td> 
+										<b><?php print _('Descriptor') ?> *</b><br/>
+										<span style="font-size: 90%"><i></i></span>
+									</td>
+									<td class="right">
+										<select name="descriptor" id="descriptor" style="width: 302px">
+											<option value="Please select..."><?php print _('Please select...') ?></option>
+											<?php
+											for ($i=0; $i<count($optionsPositive); $i++) {
+											?>
+												<option class='Positive' value="<?php print trim($optionsPositive[$i]) ?>"><?php print trim($optionsPositive[$i]) ?></option>
+											<?php
+											}
+											?>
+											<?php
+											for ($i=0; $i<count($optionsNegative); $i++) {
+											?>
+												<option class='Negative' value="<?php print trim($optionsNegative[$i]) ?>"><?php print trim($optionsNegative[$i]) ?></option>
+											<?php
+											}
+											?>
+										</select>
+										<script type="text/javascript">
+											var descriptor=new LiveValidation('descriptor');
+											descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+										 </script>
+										 <script type="text/javascript">
+											$("#descriptor").chainedTo("#type");
+										</script>
+									</td>
+								</tr>
+								<?php
+							}
+						}
+					}
+					
+					if ($enableLevels=="Y") {
+						$optionsLevels=getSettingByScope($connection2, "Behaviour", "levels") ;
+						if ($optionsLevels!="") {
+							$optionsLevels=explode(",", $optionsLevels) ;
 							?>
 							<tr>
 								<td> 
-									<b><?php print _('Descriptor') ?> *</b><br/>
+									<b><?php print _('Level') ?> *</b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
-									<select name="descriptor" id="descriptor" style="width: 302px">
+									<select name="level" id="level" style="width: 302px">
 										<option value="Please select..."><?php print _('Please select...') ?></option>
 										<?php
-										for ($i=0; $i<count($optionsPositive); $i++) {
+										for ($i=0; $i<count($optionsLevels); $i++) {
 										?>
-											<option class='Positive' value="<?php print trim($optionsPositive[$i]) ?>"><?php print trim($optionsPositive[$i]) ?></option>
-										<?php
-										}
-										?>
-										<?php
-										for ($i=0; $i<count($optionsNegative); $i++) {
-										?>
-											<option class='Negative' value="<?php print trim($optionsNegative[$i]) ?>"><?php print trim($optionsNegative[$i]) ?></option>
+											<option value="<?php print trim($optionsLevels[$i]) ?>"><?php print trim($optionsLevels[$i]) ?></option>
 										<?php
 										}
 										?>
 									</select>
 									<script type="text/javascript">
-										var descriptor=new LiveValidation('descriptor');
-										descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-									 </script>
-									 <script type="text/javascript">
-										$("#descriptor").chainedTo("#type");
+										var level=new LiveValidation('level');
+										level.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
 									</script>
 								</td>
 							</tr>
 							<?php
 						}
 					}
-					
-					$optionsLevels=getSettingByScope($connection2, "Behaviour", "levels") ;
-					if ($optionsLevels!="") {
-						$optionsLevels=explode(",", $optionsLevels) ;
-						?>
-						<tr>
-							<td> 
-								<b><?php print _('Level') ?> *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
-							</td>
-							<td class="right">
-								<select name="level" id="level" style="width: 302px">
-									<option value="Please select..."><?php print _('Please select...') ?></option>
-									<?php
-									for ($i=0; $i<count($optionsLevels); $i++) {
-									?>
-										<option value="<?php print trim($optionsLevels[$i]) ?>"><?php print trim($optionsLevels[$i]) ?></option>
-									<?php
-									}
-									?>
-								</select>
-								<script type="text/javascript">
-									var level=new LiveValidation('level');
-									level.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-								 </script>
-							</td>
-						</tr>
-						<?php
-					}
 					?>
+					<script type='text/javascript'>
+						$(document).ready(function(){
+							$('#comment').autosize();
+							$('#followup').autosize();
+						});
+					</script>
 					<tr>
-						<td> 
-							<b><?php print _('Comment') ?></b><br/>
-							<span style="font-size: 90%"><i></i></span>
+						<td colspan=2> 
+							<b><?php print _('Incident') ?></b><br/>
+							<textarea name="comment" id="comment" rows=8 style="width: 100%"></textarea>
 						</td>
-						<td class="right">
-							<textarea name="comment" id="comment" rows=8 style="width: 300px"></textarea>
+					</tr>
+					<tr>
+						<td colspan=2> 
+							<b><?php print _('Follow Up') ?></b><br/>
+							<textarea name="followup" id="followup" rows=8 style="width: 100%"></textarea>
 						</td>
 					</tr>
 					<tr>
@@ -290,11 +311,18 @@ else {
 			$gibbonPersonID=$_POST["gibbonPersonID"] ; 
 			$date=$_POST["date"] ; 
 			$type=$_POST["type"] ; 
-			$descriptor=$_POST["descriptor"] ; 
-			$level=$_POST["level"] ; 
+			$descriptor=NULL ;
+			if (isset($_POST["descriptor"])) {
+				$descriptor=$_POST["descriptor"] ; 
+			}
+			$level=NULL ;
+			if (isset($_POST["level"])) {
+				$level=$_POST["level"] ; 
+			}
 			$comment=$_POST["comment"] ; 
+			$followup=$_POST["followup"] ; 
 			
-			if ($gibbonPersonID=="" OR $date=="" OR $type=="" OR $descriptor=="") {
+			if ($gibbonPersonID=="" OR $date=="" OR $type=="" OR ($descriptor=="" AND $enableDescriptors=="Y")) {
 				print "<div class='error'>" ;
 					print _("You have not specified one or more required parameters.") ;
 				print "</div>" ;
@@ -403,6 +431,7 @@ else {
 								<input type="hidden" name="descriptor" value="<?php print $descriptor ?>">
 								<input type="hidden" name="level" value="<?php print $level ?>">
 								<input type="hidden" name="comment" value="<?php print $comment ?>">
+								<input type="hidden" name="followup" value="<?php print $followup ?>">
 								
 							
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

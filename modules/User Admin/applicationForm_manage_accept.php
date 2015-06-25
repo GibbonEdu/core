@@ -208,7 +208,7 @@ else {
 				$failStudent=TRUE ;
 				$lock=true ;
 				try {
-					$sql="LOCK TABLES gibbonPerson WRITE, gibbonSetting WRITE" ;
+					$sql="LOCK TABLES gibbonPerson WRITE, gibbonSetting WRITE, gibbonSchoolYear WRITE, gibbonYearGroup WRITE, gibbonRollGroup WRITE" ;
 					$result=$connection2->query($sql);   
 				}
 				catch(PDOException $e) { 
@@ -299,6 +299,22 @@ else {
 							if ($studentDefaultWebsite!="") {
 								$body.=_("Website") . ": " . $website . "\n" ;
 							}
+							if ($row["gibbonSchoolYearIDEntry"]!="") {
+								try {
+									$dataYearGroup=array("gibbonSchoolYearID"=>$row["gibbonSchoolYearIDEntry"]); 
+									$sqlYearGroup="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
+									$resultYearGroup=$connection2->prepare($sqlYearGroup);
+									$resultYearGroup->execute($dataYearGroup);
+								}
+								catch(PDOException $e) { }
+								
+								if ($resultYearGroup->rowCount()==1) {
+									$rowYearGroup=$resultYearGroup->fetch() ;
+									if ($rowYearGroup["name"]!="") {
+											$body.=_("School Year") . ": " . $rowYearGroup["name"] . "\n" ;
+									}
+								}
+							}
 							if ($row["gibbonYearGroupIDEntry"]!="") {
 								try {
 									$dataYearGroup=array("gibbonYearGroupID"=>$row["gibbonYearGroupIDEntry"]); 
@@ -315,6 +331,26 @@ else {
 									}
 								}
 							}
+							if ($row["gibbonRollGroupID"]!="") {
+								try {
+									$dataYearGroup=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
+									$sqlYearGroup="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
+									$resultYearGroup=$connection2->prepare($sqlYearGroup);
+									$resultYearGroup->execute($dataYearGroup);
+								}
+								catch(PDOException $e) { }
+								
+								if ($resultYearGroup->rowCount()==1) {
+									$rowYearGroup=$resultYearGroup->fetch() ;
+									if ($rowYearGroup["name"]!="") {
+											$body.=_("Roll Group") . ": " . $rowYearGroup["name"] . "\n" ;
+									}
+								}
+							}
+							if ($row["dateStart"]!="") {
+									$body.=_("Start Date") . ": " .  dateConvertBack($guid, $row["dateStart"]) . "\n" ;
+							}
+							
 							$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
 
 							if (mail($to, $subject, $body, $headers)) {
@@ -654,15 +690,15 @@ else {
 								$nameAddress="" ;
 								//Parents share same surname and parent 2 has enough information to be added
 								if ($row["parent1surname"]==$row["parent2surname"] AND $row["parent2preferredName"]!="" AND $row["parent2title"]!="") {
-									$nameAddress=$row["parent1title"] . "& " . $row["parent2title"] . $row["parent1surname"] ;
+									$nameAddress=$row["parent1title"] . " & " . $row["parent2title"] . " " . $row["parent1surname"] ;
 								}
 								//Parents have different names, and parent2 is not blank and has enough information to be added
 								else if ($row["parent1surname"]!=$row["parent2surname"] AND $row["parent2surname"]!="" AND $row["parent2preferredName"]!="" AND $row["parent2title"]!="") {
-									$nameAddress=$row["parent1title"] . $row["parent1surname"] . " & " . $row["parent2title"] . $row["parent2surname"] ;
+									$nameAddress=$row["parent1title"] . " " . $row["parent1surname"] . " & " . $row["parent2title"] . " " . $row["parent2surname"] ;
 								}
 								//Just use parent1's name 
 								else {
-									$nameAddress=$row["parent1title"] . $row["parent1surname"] ;
+									$nameAddress=$row["parent1title"] . " " . $row["parent1surname"] ;
 								}
 								$languageHome=$row["languageHome"] ; 
 								

@@ -269,7 +269,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 					//Before student started at school
 					if ($dateStart!="" AND date("Y-m-d", $i)<$dateStart) {
 						$output.="<td style='border: 1px solid #D65602; color: #D65602; background-color: #FFD2A9!important; text-align: center; font-size: 10px'>" ;
-						$output.=date("d/m/Y",$i) . "<br/>" ;
+						$output.=date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/>" ;
 						$output.="Before Start Date" ;
 						$output.="</td>" ;
 						$count++ ;
@@ -278,7 +278,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 					//After student left school
 					else if ($dateEnd!="" AND date("Y-m-d", $i)>$dateEnd) {
 						$output.="<td style='border: 1px solid #D65602; color: #D65602; background-color: #FFD2A9!important; text-align: center; font-size: 10px'>" ;
-						$output.=date("d/m/Y",$i) . "<br/>" ;
+						$output.=date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/>" ;
 						$output.=_("After End Date") ;
 						$output.="</td>" ;
 						$count++ ;
@@ -342,7 +342,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 										}
 									}
 									$output.="<td style='text-align: center; font-size: 10px; $extraStyle'>" ;
-									$output.=date("d/m/Y",$i) . "<br/>" ;
+									$output.=date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/>" ;
 									if (count($log)>0) {
 										$output.="<b>" . $log[0] . "</b><br/>" ;
 										for ($x=count($log); $x>=0; $x--) {

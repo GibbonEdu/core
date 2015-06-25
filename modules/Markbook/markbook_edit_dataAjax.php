@@ -31,7 +31,7 @@ $location=$_POST["location"] ;
 $count=$_POST["count"] ;
 
 if ($location!="") {
-	$site=file_get_contents($location);
+	$site=@file_get_contents($location);
 	if (strstr($site, "<meta name=\"generator\" content=\"WordPress") OR strstr($site, "wp-content")) {
 		$action="" ;
 		$doc=new DOMDocument();

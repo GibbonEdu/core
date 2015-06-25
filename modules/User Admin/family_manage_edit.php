@@ -541,7 +541,7 @@ else {
 									if ($rowSelect["status"]=="Expected") {
 										$expected=" (Expected)" ;
 									}
-									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "$expected</option>" ;
+									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . $rowSelect["username"] . ")" . $expected . "</option>" ;
 								}
 								?>
 							</select>
@@ -691,7 +691,7 @@ else {
 								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								try {
 									$dataSelect=array(); 
-									$sqlSelect="SELECT status, gibbonPersonID, preferredName, surname FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName" ;
+									$sqlSelect="SELECT status, gibbonPersonID, preferredName, surname, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
 								}
@@ -701,7 +701,7 @@ else {
 									if ($rowSelect["status"]=="Expected") {
 										$expected=" (Expected)" ;
 									}
-									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Parent", true, true) . "$expected</option>" ;
+									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Parent", true, true) . " (" . $rowSelect["username"] . ")" . $expected . "</option>" ;
 								}
 								?>				
 							</select>

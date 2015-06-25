@@ -46,62 +46,70 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_deta
 	header("Location: {$URL}");
 }
 else {
-	//Proceed!
-	//Check if note specified
-	if ($gibbonStudentNoteID=="" OR $gibbonPersonID=="" OR $subpage=="") {
-		print "Fatal error loading this page!" ;
+	$enableStudentNotes=getSettingByScope($connection2, "Students", "enableStudentNotes") ;
+	if ($enableStudentNotes!="Y") {
+		//Fail 0
+		$URL.="&addReturn=fail0" ;
+		header("Location: {$URL}");
 	}
 	else {
-		try {
-			$data=array("gibbonStudentNoteID"=>$gibbonStudentNoteID); 
-			$sql="SELECT * FROM gibbonStudentNote WHERE gibbonStudentNoteID=:gibbonStudentNoteID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&updateReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
-		
-		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&updateReturn=fail2" ;
-			header("Location: {$URL}");
+		//Proceed!
+		//Check if note specified
+		if ($gibbonStudentNoteID=="" OR $gibbonPersonID=="" OR $subpage=="") {
+			print "Fatal error loading this page!" ;
 		}
 		else {
-			//Validate Inputs
-			$title=$_POST["title"] ;
-			$gibbonStudentNoteCategoryID=$_POST["gibbonStudentNoteCategoryID"] ;
-			if ($gibbonStudentNoteCategoryID=="") {
-				$gibbonStudentNoteCategoryID=NULL ;
+			try {
+				$data=array("gibbonStudentNoteID"=>$gibbonStudentNoteID); 
+				$sql="SELECT * FROM gibbonStudentNote WHERE gibbonStudentNoteID=:gibbonStudentNoteID" ;
+				$result=$connection2->prepare($sql);
+				$result->execute($data);
 			}
-			$note=$_POST["note"] ;
-			
-			if ($note=="") {
-				//Fail 3
-				$URL.="&updateReturn=fail3" ;
+			catch(PDOException $e) { 
+				//Fail2
+				$URL.="&updateReturn=fail2" ;
+				header("Location: {$URL}");
+				break ;
+			}
+		
+			if ($result->rowCount()!=1) {
+				//Fail 2
+				$URL.="&updateReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
-				//Write to database
-				try {
-					$data=array("gibbonStudentNoteCategoryID"=>$gibbonStudentNoteCategoryID, "title"=>$title, "note"=>$note, "gibbonStudentNoteID"=>$gibbonStudentNoteID); 
-					$sql="UPDATE gibbonStudentNote SET gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID, title=:title, note=:note WHERE gibbonStudentNoteID=:gibbonStudentNoteID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
+				//Validate Inputs
+				$title=$_POST["title"] ;
+				$gibbonStudentNoteCategoryID=$_POST["gibbonStudentNoteCategoryID"] ;
+				if ($gibbonStudentNoteCategoryID=="") {
+					$gibbonStudentNoteCategoryID=NULL ;
 				}
-				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&updateReturn=fail2" ;
+				$note=$_POST["note"] ;
+			
+				if ($note=="") {
+					//Fail 3
+					$URL.="&updateReturn=fail3" ;
 					header("Location: {$URL}");
-					break ;
 				}
+				else {
+					//Write to database
+					try {
+						$data=array("gibbonStudentNoteCategoryID"=>$gibbonStudentNoteCategoryID, "title"=>$title, "note"=>$note, "gibbonStudentNoteID"=>$gibbonStudentNoteID); 
+						$sql="UPDATE gibbonStudentNote SET gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID, title=:title, note=:note WHERE gibbonStudentNoteID=:gibbonStudentNoteID" ;
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
+					}
+					catch(PDOException $e) { 
+						//Fail 2
+						$URL.="&updateReturn=fail2" ;
+						header("Location: {$URL}");
+						break ;
+					}
 				
-				//Success 0
-				$URL.="&updateReturn=success0" ;
-				header("Location: {$URL}");
+					//Success 0
+					$URL.="&updateReturn=success0" ;
+					header("Location: {$URL}");
+				}
 			}
 		}
 	}

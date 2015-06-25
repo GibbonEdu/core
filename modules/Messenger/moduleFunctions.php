@@ -425,10 +425,11 @@ function getMessages($guid, $connection2, $mode="", $date="") {
 			$resultPosts->execute($dataPosts);  
 		}
 		catch(PDOException $e) { print $e->getMessage() ; }	
+		
 		if ($resultPosts->rowCount()<1) {
-			$return=$return. "<div class='warning'>" ;
-				$return=$return. _("There are no records to display.") ;
-			$return=$return. "</div>" ;
+			$return.= "<div class='warning'>" ;
+				$return.= _("There are no records to display.") ;
+			$return.= "</div>" ;
 		}
 		else {
 			$output=array() ;
@@ -443,17 +444,25 @@ function getMessages($guid, $connection2, $mode="", $date="") {
 					$output[$count]["details"]=$rowPosts["body"] ;
 					$output[$count]["author"]=formatName($rowPosts["title"], $rowPosts["preferredName"], $rowPosts["surname"], $rowPosts["category"]) ;
 					$output[$count]["source"]=$rowPosts["source"] ;
+					$output[$count]["gibbonMessengerID"]=$rowPosts["gibbonMessengerID"] ;
 			
 					$count++ ;
 					$last=$rowPosts["gibbonMessengerID"] ;
 				}	
 			}
-	
-			$return=$return. "<table cellspacing='0'>" ;
+			
+			$return.= "<table cellspacing='0' style='margin-top: 10px'>" ;
+				$return.= "<tr>" ;
+					$return.= "<th style='text-align: center'>" ;
+						$return.= _("Sharing") ;
+					$return.= "</th>" ;
+					$return.= "<th>" ;
+						$return.= _("Message") ;
+					$return.= "</th>" ;
+				$return.= "</tr>" ;
 				$rowCount=0;
 				$rowNum="odd" ;
 				for ($i=0; $i<count($output); $i++) {
-			
 					if ($rowCount%2==0) {
 						$rowNum="even" ;
 					}
@@ -461,30 +470,27 @@ function getMessages($guid, $connection2, $mode="", $date="") {
 						$rowNum="odd" ;
 					}
 					$rowCount++ ;
-																
-					$return=$return. "<tr class=$rowNum>" ;
-						$return=$return. "<td style='vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>" ;
-							$return=$return . getUserPhoto($guid, $output[$i]["photo"], 75) ;
-						$return=$return. "</td>" ;
-						$return=$return. "<td style='vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>" ;
-							$return=$return. "<h3 style='margin-top: 0px; border: none'>" ;
-								$return=$return. $output[$i]["subject"] ;
-							$return=$return. "</h3>" ;
-							$return=$return. $output[$i]["details"] ;
-						$return=$return. "</td>" ;
-						$return=$return. "<td style='vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 220px'>" ;
-							$return=$return. "<p style='margin-top: 12px; text-align: right'>" ;
-								$return=$return. "<b><u>Posted By</b></u><br/>" ;
-								$return=$return. $output[$i]["author"] . "<br/><br/>" ;
+					$return.= "<tr class=$rowNum>" ;
+						$return.= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>" ;
+							$return.="<a name='" . $output[$i]["gibbonMessengerID"] . "'></a>" ;											
+							$return.= getUserPhoto($guid, $output[$i]["photo"], 75) . "<br/>" ;
+							$return.= "<b><u>Posted By</b></u><br/>" ;
+								$return.= $output[$i]["author"] . "<br/><br/>" ;
 							
-								$return=$return. "<b><u>Shared Via</b></u><br/>" ;
-								$return=$return. $output[$i]["source"] . "<br/><br/>" ;
-							
-							$return=$return. "</p>" ;
-						$return=$return. "</td>" ;
-					$return=$return. "</tr>" ;
+								$return.= "<b><u>Shared Via</b></u><br/>" ;
+								$return.= $output[$i]["source"] . "<br/><br/>" ;
+						$return.= "</td>" ;
+						$return.= "<td style='border-left: none; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>" ;
+							$return.= "<h3 style='margin-top: 3px'>" ;
+								$return.= $output[$i]["subject"] ;
+							$return.= "</h3>" ;
+							$return.= "</p>" ;
+								$return.= $output[$i]["details"] ;
+							$return.= "</p>" ;
+						$return.= "</td>" ;
+					$return.= "</tr>" ;
 				}
-			$return=$return. "</table>" ;
+			$return.= "</table>" ;
 		}
 		if ($mode=="print") {
 			return $return ;

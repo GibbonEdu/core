@@ -82,7 +82,7 @@ else {
 			
 			if ($resultCheck->rowCount()!=1) {
 				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+				$URL.="&updateReturn=fail2a" ;
 				header("Location: {$URL}");
 			}
 			else {

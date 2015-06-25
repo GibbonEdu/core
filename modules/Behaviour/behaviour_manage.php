@@ -22,6 +22,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
+$enableDescriptors=getSettingByScope($connection2, "Behaviour", "enableDescriptors") ;
+$enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
+
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -278,12 +281,16 @@ else {
 					print "<th>" ;
 						print _("Type") ;
 					print "</th>" ;
-					print "<th>" ;
-						print _("Descriptor") ;
-					print "</th>" ;
-					print "<th>" ;
-						print _("Level") ;
-					print "</th>" ;
+					if ($enableDescriptors=="Y") {
+						print "<th>" ;
+							print _("Descriptor") ;
+						print "</th>" ;
+					}
+					if ($enableLevels=="Y") {
+						print "<th>" ;
+							print _("Level") ;
+						print "</th>" ;
+					}
 					print "<th>" ;
 						print _("Teacher") ;
 					print "</th>" ;
@@ -318,7 +325,7 @@ else {
 						else {
 							print "<td>" ;
 						}
-							print "<b>" . formatName("", $row["preferredNameStudent"], $row["surnameStudent"], "Student", true) . "</b><br/>" ;
+							print "<div style='padding: 2px 0px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&subpage=Behaviour Record&search=&allStudents=&sort=surname, preferredName'>" . formatName("", $row["preferredNameStudent"], $row["surnameStudent"], "Student", true) . "</a><br/></div>" ;
 							if (substr($row["timestamp"],0,10)>$row["date"]) {
 								print _("Updated:") . " " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
 								print _("Incident:") . " " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
@@ -335,19 +342,22 @@ else {
 								print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 							}
 						print "</td>" ;
-						print "<td>" ;
-							print trim($row["descriptor"]) ;
-						print "</td>" ;
-						print "<td>" ;
-							print trim($row["level"]) ;
-						print "</td>" ;
+						if ($enableDescriptors=="Y") {
+							print "<td>" ;
+								print trim($row["descriptor"]) ;
+							print "</td>" ;
+						}
+						if ($enableLevels=="Y") {
+							print "<td>" ;
+								print trim($row["level"]) ;
+							print "</td>" ;
+						}
 						print "<td>" ;
 							print formatName($row["title"], $row["preferredNameCreator"], $row["surnameCreator"], "Staff") . "</b><br/>" ;
 						print "</td>" ;
 						print "<td>" ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_edit.php&gibbonBehaviourID=" . $row["gibbonBehaviourID"] . "&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_delete.php&gibbonBehaviourID=" . $row["gibbonBehaviourID"] . "&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
-							
 							print "<script type='text/javascript'>" ;	
 								print "$(document).ready(function(){" ;
 									print "\$(\".comment-$count\").hide();" ;
@@ -357,12 +367,12 @@ else {
 									print "});" ;
 								print "});" ;
 							print "</script>" ;
-							if ($row["comment"]!="") {
+							if ($row["comment"]!="" OR $row["followup"]!="") {
 								print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;
-					if ($row["comment"]!="") {
+					if ($row["comment"]!="" OR $row["followup"]!="") {
 						if ($row["type"]=="Positive") {
 							$bg="background-color: #D4F6DC;" ;
 						}
@@ -371,7 +381,14 @@ else {
 						}
 						print "<tr class='comment-$count' id='comment-$count'>" ;
 							print "<td style='$bg' colspan=6>" ;
-								print $row["comment"] ;
+								if ($row["comment"]!="") {
+									print "<b>" . _('Incident') . "</b><br/>" ;
+									print nl2brr($row["comment"]) . "<br/><br/>" ;
+								}
+								if ($row["followup"]!="") {
+									print "<b>" . _('Follow Up') . "</b><br/>" ;
+									print nl2brr($row["followup"]) . "<br/><br/>" ;
+								}
 							print "</td>" ;
 						print "</tr>" ;
 					}

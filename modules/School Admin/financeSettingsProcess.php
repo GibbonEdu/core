@@ -55,8 +55,14 @@ else {
 	$reminder1Text=$_POST["reminder1Text"] ;
 	$reminder2Text=$_POST["reminder2Text"] ;
 	$reminder3Text=$_POST["reminder3Text"] ;
-
-	if ($email=="") {
+	$budgetCategories=$_POST["budgetCategories"] ;
+	$expenseApprovalType=$_POST["expenseApprovalType"] ;
+	$budgetLevelExpenseApproval=$_POST["budgetLevelExpenseApproval"] ;
+	$expenseRequestTemplate=$_POST["expenseRequestTemplate"] ;
+	$purchasingOfficer=$_POST["purchasingOfficer"] ;
+	$reimbursementOfficer=$_POST["reimbursementOfficer"] ;
+	
+	if ($email=="" OR $financeOnlinePaymentEnabled=="" OR $invoiceNumber=="" OR $budgetCategories=="" OR $expenseApprovalType=="" OR $budgetLevelExpenseApproval=="") {
 		//Fail 3
 		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
@@ -174,8 +180,67 @@ else {
 		catch(PDOException $e) { 
 			$fail=TRUE ;
 		}
-	
-	
+		
+		try {
+			$data=array("value"=>$budgetCategories); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='budgetCategories'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$expenseApprovalType); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='expenseApprovalType'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$budgetLevelExpenseApproval); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='budgetLevelExpenseApproval'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$expenseRequestTemplate); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='expenseRequestTemplate'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$purchasingOfficer); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='purchasingOfficer'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$reimbursementOfficer); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='reimbursementOfficer'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
 		if ($fail==TRUE) {
 			//Fail 2
 			$URL.="&updateReturn=fail2" ;

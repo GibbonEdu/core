@@ -134,7 +134,7 @@ else {
 					<li><b><?php print _('Username') ?> *</b> - <?php print _('Must be unique') ?></li>
 					<li><b><?php print _('House') ?></b> - <?php print _('House short name, as set in School Admin. Must already exist).') ?>/li>
 					<li><b><?php print _('DOB') ?></b> - <?php print _('Date of birth') ?> (yyyy-mm-dd)</li>
-					<li><b><?php print _('Role') ?></b> - <?php print _('Teacher, Support Staff, Student or Parent') ?></li>
+					<li><b><?php print _('Role') ?> *</b> - <?php print _('Teacher, Support Staff, Student or Parent') ?></li>
 					<li><b><?php print _('Email') ?></b></li>
 					<li><b><?php print _('Image (75)') ?></b> - <?php print _('path from /uploads/ to small portrait image (75px by 100px)') ?></b></li>
 					<li><b><?php print _('Image (240)') ?></b> - <?php print _('path from /uploads/ to medium portrait image (240px by 320px)') ?></li>
@@ -142,7 +142,7 @@ else {
 					<li><b><?php print _('Address 1 (District)') ?></b> - <?php print _('County, State, District') ?></li>
 					<li><b><?php print _('Address 1 (Country)') ?></b></li>
 					<li><b><?php print _('Address 2') ?></b> - <?php print _('Unit, Building, Street') ?></li>
-					<li><b><?php print _('Address 2 (District)') ?></b>< - County, State, District') ?>/li>
+					<li><b><?php print _('Address 2 (District)') ?></b> - <?php print _('County, State, District') ?></li>
 					<li><b><?php print _('Address 2 (Country)') ?></b></li>
 					<li><b><?php print _('Phone 1 (Type)') ?></b> - <?php print _('Mobile, Home, Work, Fax, Pager, Other') ?></li>
 					<li><b><?php print _('Phone 1 (Country Code)') ?></b> - <?php print _('IDD code, without 00 or +') ?></li>

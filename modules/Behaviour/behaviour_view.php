@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
+$enableDescriptors=getSettingByScope($connection2, "Behaviour", "enableDescriptors") ;
+$enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
+
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -138,7 +141,7 @@ else {
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
-						print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
+						print "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&subpage=Behaviour Record&search=&allStudents=&sort=surname, preferredName'>" . formatName("", $row["preferredName"], $row["surname"], "Student", true) . "</a>" ;
 					print "</td>" ;
 					print "<td>" ;
 						print _($row["yearGroup"]) ;

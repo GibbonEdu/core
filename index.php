@@ -274,10 +274,12 @@ else {
 			
 			//Set module CSS & JS
 			if (isset($_GET["q"])) {
-				$moduleCSS="<link rel='stylesheet' type='text/css' href='./modules/" . $_SESSION[$guid]["module"] . "/css/module.css' />" ;
-				$moduleJS="<script type='text/javascript' src='./modules/" . $_SESSION[$guid]["module"] . "/js/module.js'></script>" ;
-				print $moduleCSS ;
-				print $moduleJS ;
+				if ($_GET["q"]!="") {
+					$moduleCSS="<link rel='stylesheet' type='text/css' href='./modules/" . $_SESSION[$guid]["module"] . "/css/module.css' />" ;
+					$moduleJS="<script type='text/javascript' src='./modules/" . $_SESSION[$guid]["module"] . "/js/module.js'></script>" ;
+					print $moduleCSS ;
+					print $moduleJS ;
+				}
 			}
 			
 			//Set personalised background, if permitted
@@ -474,6 +476,17 @@ else {
 									print $_SESSION[$guid]["indexText"] ;
 									print "</p>" ;
 									
+									//Publc registration permitted?
+									$enablePublicRegistration=getSettingByScope($connection2, "User Admin", "enablePublicRegistration") ;
+									if ($enablePublicRegistration=="Y") {
+										print "<h2 style='margin-top: 30px'>" ;
+											print _("Register") ;
+										print "</h2>" ;
+										print "<p>" ;
+											print sprintf(_('%1$sRegister now%2$s to join our online learning community.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/publicRegistration.php'>", "</a>") . " " . _("It's free!") ;
+										print "</p>" ;
+									}
+								
 									//Public applications permitted?
 									$publicApplications=getSettingByScope($connection2, "Application Form", "publicApplications" ) ; 
 									if ($publicApplications=="Y") {
@@ -529,13 +542,27 @@ else {
 									}
 								}
 								else {
+									//Custom content loader
+									if (isset($_SESSION[$guid]["index_custom.php"])==FALSE) {
+										if (is_file("./index_custom.php")) {
+											$_SESSION[$guid]["index_custom.php"]=include "./index_custom.php" ;
+										}
+										else {
+											$_SESSION[$guid]["index_custom.php"]=NULL ;
+										}
+									}
+									if (isset($_SESSION[$guid]["index_custom.php"])) {
+										print $_SESSION[$guid]["index_custom.php"] ;
+									}
+									
+									//Get role category
 									$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 									if ($category==FALSE) {
 										print "<div class='error'>" ;
 										print _("Your current role type cannot be determined.") ;
 										print "</div>" ;
 									}
-									//Display Parent Dashboard
+									//Display Parental Dashboard
 									else if ($category=="Parent") {
 										$count=0 ;
 										try {

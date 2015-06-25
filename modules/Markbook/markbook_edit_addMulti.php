@@ -106,10 +106,21 @@ else {
 
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addMultiProcess.php?gibbonCourseClassID=$gibbonCourseClassID&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<tr class='break'>
+							<td colspan=2> 
+								<h3><?php print _('Basic Information') ?></h3>
+							</td>
+						</tr>
 						<tr>
 							<td style='width: 275px'> 
 								<b><?php print _('Class') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?> The current class (<?php print $row["course"] . "." . $row["class"] ?>) has already been selected).</i></span>
+								<span style="font-size: 90%"><i>
+									<?php 
+									print _('Use Control, Command and/or Shift to select multiple.') ;
+									print " " ;
+									print sprintf(_('The current class (%1$s.%2$s) has already been selected.'), $row["course"], $row["class"]) ;
+									?>
+								</i></span>
 							</td>
 							<td class="right">
 								<?php
@@ -194,6 +205,67 @@ else {
 						?>
 						<tr>
 							<td> 
+								<b><?php print _('Attachment') ?></b><br/>
+							</td>
+							<td class="right">
+								<input type="file" name="file" id="file"><br/><br/>
+								<?php
+								
+								//Get list of acceptable file extensions
+								try {
+									$dataExt=array(); 
+									$sqlExt="SELECT * FROM gibbonFileExtension" ;
+									$resultExt=$connection2->prepare($sqlExt);
+									$resultExt->execute($dataExt);
+								}
+								catch(PDOException $e) { }
+								$ext="" ;
+								while ($rowExt=$resultExt->fetch()) {
+									$ext=$ext . "'." . $rowExt["extension"] . "'," ;
+								}
+								?>
+					
+								<script type="text/javascript">
+									var file=new LiveValidation('file');
+									file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+								</script>
+							</td>
+						</tr>
+						
+						
+						<tr class='break'>
+							<td colspan=2> 
+								<h3>
+									<?php print _("Assessment")  ?>
+								</h3>
+							</td>
+						</tr>
+						<script type="text/javascript">
+							/* Homework Control */
+							$(document).ready(function(){
+								 $(".attainment").click(function(){
+									if ($('input[name=attainment]:checked').val()=="Y" ) {
+										$("#gibbonScaleIDAttainmentRow").slideDown("fast", $("#gibbonScaleIDAttainmentRow").css("display","table-row")); 
+										$("#gibbonRubricIDAttainmentRow").slideDown("fast", $("#gibbonRubricIDAttainmentRow").css("display","table-row")); 
+
+									} else {
+										$("#gibbonScaleIDAttainmentRow").css("display","none");
+										$("#gibbonRubricIDAttainmentRow").css("display","none");
+									}
+								 });
+							});
+						</script>
+						<tr>
+							<td> 
+								<b><?php if ($attainmentAlternativeName!="") { print sprintf(_('Assess %1$s?'), $attainmentAlternativeName) ; } else { print _('Assess Attainment?') ; } ?> *</b><br/>
+							</td>
+							<td class="right">
+								<input checked type="radio" name="attainment" value="Y" class="attainment" /> <?php print _('Yes') ?>
+								<input type="radio" name="attainment" value="N" class="attainment" /> <?php print _('No') ?>
+							</td>
+						</tr>
+						<tr id="gibbonScaleIDAttainmentRow">
+							<td> 
 								<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . _('Scale') ; } else { print _('Attainment Scale') ; } ?> *</b><br/>
 							</td>
 							<td class="right">
@@ -206,7 +278,7 @@ else {
 										$resultSelect->execute($dataSelect);
 									}
 									catch(PDOException $e) { }
-									print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+									print "<option value=''></option>" ;
 									while ($rowSelect=$resultSelect->fetch()) {
 										$selected="" ;
 										if ($rowSelect["gibbonScaleID"]==$_SESSION[$guid]["primaryAssessmentScale"]) {
@@ -216,13 +288,9 @@ else {
 									}
 									?>				
 								</select>
-								<script type="text/javascript">
-									var gibbonScaleIDAttainment=new LiveValidation('gibbonScaleIDAttainment');
-									gibbonScaleIDAttainment.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-								 </script>
 							</td>
 						</tr>
-						<tr>
+						<tr id="gibbonRubricIDAttainment">
 							<td> 
 								<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . _('Rubric') ; } else { print _('Attainment Rubric') ; } ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('Choose predefined rubric, if desired.') ?></i></span>
@@ -286,13 +354,36 @@ else {
 									}
 									?>				
 								</select>
-								<script type="text/javascript">
-									var gibbonScaleIDEffort=new LiveValidation('gibbonScaleIDEffort');
-									gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-								 </script>
 							</td>
 						</tr>
+						
+						
+						
+						<script type="text/javascript">
+							/* Homework Control */
+							$(document).ready(function(){
+								 $(".effort").click(function(){
+									if ($('input[name=effort]:checked').val()=="Y" ) {
+										$("#gibbonScaleIDEffortRow").slideDown("fast", $("#gibbonScaleIDEffortRow").css("display","table-row")); 
+										$("#gibbonRubricIDEffortRow").slideDown("fast", $("#gibbonRubricIDEffortRow").css("display","table-row")); 
+
+									} else {
+										$("#gibbonScaleIDEffortRow").css("display","none");
+										$("#gibbonRubricIDEffortRow").css("display","none");
+									}
+								 });
+							});
+						</script>
 						<tr>
+							<td> 
+								<b><?php if ($effortAlternativeName!="") { print sprintf(_('Assess %1$s?'), $effortAlternativeName) ; } else { print _('Assess Effort?') ; } ?> *</b><br/>
+							</td>
+							<td class="right">
+								<input checked type="radio" name="effort" value="Y" class="effort" /> <?php print _('Yes') ?>
+								<input type="radio" name="effort" value="N" class="effort" /> <?php print _('No') ?>
+							</td>
+						</tr>
+						<tr id="gibbonScaleIDEffortRow">
 							<td> 
 								<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . _('Scale') ; } else { print _('Effort Scale') ; } ?> *</b><br/>
 							</td>
@@ -306,7 +397,7 @@ else {
 										$resultSelect->execute($dataSelect);
 									}
 									catch(PDOException $e) { }
-									print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+									print "<option value=''></option>" ;
 									while ($rowSelect=$resultSelect->fetch()) {
 										$selected="" ;
 										if ($rowSelect["gibbonScaleID"]==$_SESSION[$guid]["primaryAssessmentScale"]) {
@@ -316,13 +407,9 @@ else {
 									}
 									?>				
 								</select>
-								<script type="text/javascript">
-									var gibbonScaleIDEffort=new LiveValidation('gibbonScaleIDEffort');
-									gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-								 </script>
 							</td>
 						</tr>
-						<tr>
+						<tr id="gibbonRubricIDEffortRow">
 							<td> 
 								<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . _('Rubric') ; } else { print _('Effort Rubric') ; } ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('Choose predefined rubric, if desired.') ?></i></span>
@@ -386,13 +473,33 @@ else {
 									}
 									?>				
 								</select>
-								<script type="text/javascript">
-									var gibbonScaleIDEffort=new LiveValidation('gibbonScaleIDEffort');
-									gibbonScaleIDEffort.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-								 </script>
 							</td>
 						</tr>
+						<tr>
+							<td> 
+								<b><?php print _('Include Comment?') ?> *</b><br/>
+							</td>
+							<td class="right">
+								<input checked type="radio" name="comment" value="Y" class="comment" /> <?php print _('Yes') ?>
+								<input type="radio" name="comment" value="N" class="comment" /> <?php print _('No') ?>
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b><?php print _('Include Uploaded Response?') ?> *</b><br/>
+							</td>
+							<td class="right">
+								<input checked type="radio" name="uploadedResponse" value="Y" class="uploadedResponse" /> <?php print _('Yes') ?>
+								<input type="radio" name="uploadedResponse" value="N" class="uploadedResponse" /> <?php print _('No') ?>
+							</td>
+						</tr>
+						
 			
+						<tr class='break'>
+							<td colspan=2> 
+								<h3><?php print _('Access') ?></h3>
+							</td>
+						</tr>
 						<tr>
 							<td> 
 								<b><?php print _('Viewable to Students') ?> *</b><br/>
@@ -432,34 +539,6 @@ else {
 									$(function() {
 										$( "#completeDate" ).datepicker();
 									});
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php print _('Attachment') ?></b><br/>
-							</td>
-							<td class="right">
-								<input type="file" name="file" id="file"><br/><br/>
-								<?php
-								
-								//Get list of acceptable file extensions
-								try {
-									$dataExt=array(); 
-									$sqlExt="SELECT * FROM gibbonFileExtension" ;
-									$resultExt=$connection2->prepare($sqlExt);
-									$resultExt->execute($dataExt);
-								}
-								catch(PDOException $e) { }
-								$ext="" ;
-								while ($rowExt=$resultExt->fetch()) {
-									$ext=$ext . "'." . $rowExt["extension"] . "'," ;
-								}
-								?>
-					
-								<script type="text/javascript">
-									var file=new LiveValidation('file');
-									file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 								</script>
 							</td>
 						</tr>

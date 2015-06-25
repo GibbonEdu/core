@@ -261,7 +261,7 @@ else {
 				print "<th>" ;
 					print _("Name") ;
 				print "</th>" ;
-				print "<th style='width: 50px'>" ;
+				print "<th style='width: 140px!important'>" ;
 					print _("Action") ;
 				print "</th>" ;
 			print "</tr>" ;
