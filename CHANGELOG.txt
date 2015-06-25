@@ -16,6 +16,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v11.0.00
+--------
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

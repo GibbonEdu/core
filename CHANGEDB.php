@@ -440,4 +440,11 @@ ALTER TABLE `gibbonFinanceBudgetCycleAllocation` ENGINE = MYISAM ;end
 UPDATE gibboni18n SET active='Y' WHERE code='ar_SA';end
 UPDATE gibboni18n SET active='N' WHERE code='pt_PT';end
 " ;
+
+//v11.0.00
+$count++ ;
+$sql[$count][0]="11.0.00" ;
+$sql[$count][1]="
+
+";
 ?>
