@@ -382,6 +382,12 @@ Individual Needs: fixed bug preventing switch back form archive view to current 
 i18n: set Arabic (Saudi Arabia) to active
 	Edited value in table gibboni18n
 
+i18n: set Portuguese to inactive (due to bugs)
+	Edited value in table gibboni18n
+
+User Admin: fixed mixing space in Name Address field on Application Form accept
+	Edited file /modules/User Admin/applicationForm_manage_accept.php
+
 v9.1.00
 -------
 Installer: removed orphaned debug output

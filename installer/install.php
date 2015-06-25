@@ -385,6 +385,7 @@ include "../functions.php" ;
 														$partialFail=TRUE ;
 													}
 												}
+												
 										
 												if ($partialFail==TRUE) {
 													print "<div class='error'>" ;
@@ -412,7 +413,6 @@ include "../functions.php" ;
 																	$connection2->query($sql) ;
 																}
 																catch(PDOException $e) {
-																	print $e->getMessage() . "<br/><br/>" ;
 																	$demoFail=TRUE ;
 																}
 															}
@@ -1405,7 +1405,6 @@ include "../functions.php" ;
 																	$result=$connection2->query($sqlToken);   
 																}
 																catch(PDOException $e) { 
-																	print $e->getMessage() ;
 																	$partialFail=TRUE;
 																}
 															}

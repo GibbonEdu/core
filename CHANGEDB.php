@@ -438,5 +438,6 @@ ALTER TABLE `gibbonBehaviour` CHANGE `descriptor` `descriptor` VARCHAR(100) CHAR
 UPDATE gibboni18n SET active='Y' WHERE code='pt_PT';end
 ALTER TABLE `gibbonFinanceBudgetCycleAllocation` ENGINE = MYISAM ;end
 UPDATE gibboni18n SET active='Y' WHERE code='ar_SA';end
+UPDATE gibboni18n SET active='N' WHERE code='pt_PT';end
 " ;
 ?>

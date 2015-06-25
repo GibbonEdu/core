@@ -3,15 +3,21 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: May 14, 2015 at 01:28 PM
+-- Generation Time: Jun 25, 2015 at 12:06 PM
 -- Server version: 5.5.42
 -- PHP Version: 5.6.7
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
 --
--- Database: `gibbon`
+-- Database: `temp`
 --
 
 -- --------------------------------------------------------
@@ -39,7 +45,7 @@ CREATE TABLE `gibbonAction` (
   `categoryPermissionStudent` enum('Y','N') NOT NULL DEFAULT 'Y',
   `categoryPermissionParent` enum('Y','N') NOT NULL DEFAULT 'Y',
   `categoryPermissionOther` enum('Y','N') NOT NULL DEFAULT 'Y'
-) ENGINE=MyISAM AUTO_INCREMENT=830 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=833 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonAction`
@@ -88,19 +94,19 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000031, 0006, 'Student History_all', 1, 'Reports', 'Print a report of all attendance data in the current school year for a student', 'report_studentHistory.php,report_studentHistory_print.php', 'report_studentHistory.php', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y', 'Y'),
 (0000023, 0005, 'View Student Profile_brief', 1, 'Profiles', 'View brief profile of any student in the school.', 'student_view.php,student_view_details.php', 'student_view.php', 'Y', 'N', 'N', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000021, 0002, 'Manage Medical Forms', 0, 'Medical', 'Manage medical form information for users ', 'medicalForm_manage.php,medicalForm_manage_add.php,medicalForm_manage_edit.php,medicalForm_manage_delete.php,medicalForm_manage_condition_add.php,medicalForm_manage_condition_edit.php,medicalForm_manage_condition_delete.php', 'medicalForm_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000020, 0003, 'Manage Themes', 0, '', '', 'theme_manage.php,theme_manage_install.php,theme_manage_edit.php,theme_manage_uninstall.php', 'theme_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000020, 0003, 'Manage Themes', 0, 'Extend & Update', '', 'theme_manage.php,theme_manage_install.php,theme_manage_edit.php,theme_manage_uninstall.php', 'theme_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000019, 0002, 'Manage Families', 0, 'User Management', '', 'family_manage.php,family_manage_add.php,family_manage_edit.php,family_manage_delete.php,family_manage_edit_editChild.php,family_manage_edit_deleteChild.php,family_manage_edit_editAdult.php,family_manage_edit_deleteAdult.php', 'family_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000018, 0013, 'Course Enrolment by Class', 0, 'Courses & Classes', '', 'courseEnrolment_manage.php,courseEnrolment_manage_class_edit.php,courseEnrolment_manage_class_edit_edit.php,courseEnrolment_manage_class_edit_delete.php', 'courseEnrolment_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000017, 0013, 'Manage Courses & Classes', 0, 'Courses & Classes', '', 'course_manage.php,course_manage_add.php,course_manage_edit.php,course_manage_delete.php,course_manage_class_add.php,course_manage_class_edit.phpcourse_manage_class_delete.php', 'course_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000016, 0001, 'Manage Special Days', 0, 'Years, Days & Times', '', 'schoolYearSpecialDay_manage.php,schoolYearSpecialDay_manage_add.php,schoolYearSpecialDay_manage_edit.php,schoolYearSpecialDay_manage_delete.php', 'schoolYearSpecialDay_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000015, 0001, 'Manage Terms', 0, 'Years, Days & Times', '', 'schoolYearTerm_manage.php,schoolYearTerm_manage_add.php,schoolYearTerm_manage_edit.php,schoolYearTerm_manage_delete.php', 'schoolYearTerm_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000013, 0001, 'Manage Days of the Week', 0, 'Years, Days & Times', '', 'daysOfWeek_manage.php', 'daysOfWeek_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000010, 0003, 'Manage Modules', 0, '', '', 'module_manage.php,module_manage_install.php,module_manage_edit.php,module_manage_uninstall.php,module_manage_update.php', 'module_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000010, 0003, 'Manage Modules', 0, 'Extend & Update', '', 'module_manage.php,module_manage_install.php,module_manage_edit.php,module_manage_uninstall.php,module_manage_update.php', 'module_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000012, 0002, 'Manage Permissions', 0, 'User Management', '', 'permission_manage.php,permission_manage_edit.php', 'permission_manage.php', 'N', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000009, 0002, 'Manage Roles', 0, 'User Management', '', 'role_manage.php,role_manage_add.php,role_manage_edit.php,role_manage_delete.php,role_manage_duplicate.php', 'role_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000008, 0001, 'Manage Houses', 0, 'Groupings', '', 'house_manage.php,house_manage_edit.php,house_manage_add.php,house_manage_delete.php', 'house_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000007, 0001, 'Manage Roll Groups', 0, 'Groupings', '', 'rollGroup_manage.php,rollGroup_manage_edit.php,rollGroup_manage_add.php,rollGroup_manage_delete.php', 'rollGroup_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000005, 0003, 'System Settings', 0, '', 'Main system settings', 'systemSettings.php', 'systemSettings.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000005, 0003, 'System Settings', 0, 'Settings', 'Main system settings', 'systemSettings.php', 'systemSettings.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000006, 0001, 'Manage Year Groups', 0, 'Groupings', '', 'yearGroup_manage.php,yearGroup_manage_edit.php,yearGroup_manage_add.php,yearGroup_manage_delete.php', 'yearGroup_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000004, 0002, 'Student Enrolment', 0, 'User Management', 'Allows user to control student enrolment in the current year', 'studentEnrolment_manage.php,studentEnrolment_manage_add.php,studentEnrolment_manage_edit.php,studentEnrolment_manage_delete.php', 'studentEnrolment_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000003, 0001, 'Manage School Years', 0, 'Years, Days & Times', 'Allows user to control the definition of academic years within the system', 'schoolYear_manage.php,schoolYear_manage_edit.php,schoolYear_manage_delete.php,schoolYear_manage_add.php', 'schoolYear_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -157,7 +163,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000628, 0121, 'New Message_role', 8, '', 'Bulk email to a particular role', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
 (0000629, 0121, 'Manage Messages_my', 0, '', 'Edit all messages created by the user', 'messenger_manage.php,messenger_manage_delete.php,messenger_manage_edit.php', 'messenger_manage.php', 'N', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
 (0000630, 0121, 'Manage Messages_all', 1, '', 'Edit all messages', 'messenger_manage.php,messenger_manage_delete.php,messenger_manage_edit.php', 'messenger_manage.php', 'N', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'Y', 'N'),
-(0000631, 0003, 'Update', 0, '', 'Update Gibbon to a new version', 'update.php', 'update.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000631, 0003, 'Update', 0, 'Extend & Update', 'Update Gibbon to a new version', 'update.php', 'update.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000632, 0121, 'New Message_fromSchool', 0, '', 'Bulk email from the school''s email address', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
 (0000662, 0009, 'Manage Units_learningAreas', 0, 'Planning', 'Manage all units within the learning areas I have appropriate permission', 'units.php, units_add.php, units_delete.php, units_edit.php, units_duplicate.php, units_edit_deploy.php, units_edit_working.php, units_edit_working_copyback.php, units_edit_working_add.php, units_edit_copyBack.php, units_edit_copyForward.php, units_dump.php,units_edit_smartBlockify.php', 'units.php', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000660, 0121, 'New Message_houses_all', 15, '', 'Bulk email to members of all houses', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
@@ -226,7 +232,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000803, 0007, 'Edit Markbook_everything', 4, '', 'Allows editing of any column in any class.', 'markbook_edit.php, markbook_edit_add.php,markbook_edit_addMulti.php,markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php', 'markbook_edit.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000804, 0002, 'Manage Districts', 0, 'User Management', 'Manage a list of districts for address autocomplete.', 'district_manage.php, district_manage_add.php, district_manage_edit.php, district_manage_delete.php', 'district_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000805, 0005, 'Letters Home by Roll Group', 0, 'Reports', 'Show students in roll group, less those with an older sibling, so that letters can be carried home by oldest in family.', 'report_lettersHome_byRollGroup.php', 'report_lettersHome_byRollGroup.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000806, 0003, 'Language Settings', 0, '', 'Allows administrators to control system-wide language and localisation settings.', 'i18n_manage.php', 'i18n_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000806, 0003, 'Language Settings', 0, 'Settings', 'Allows administrators to control system-wide language and localisation settings.', 'i18n_manage.php', 'i18n_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000807, 0005, 'Privacy Choices by Student', 0, 'Reports', 'Shows privacy options selected, for those students with a selection made.', 'report_privacy_student.php', 'report_privacy_student.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000808, 0014, 'View Available Teachers', 0, 'Reports', 'View unassigned teachers by timetable.', 'report_viewAvailableTeachers.php', 'report_viewAvailableTeachers.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000809, 0015, 'Copy Activities', 0, 'Actions', 'This action copies all current activities, slots and staff into a specified year.', 'activities_copy.php', 'activities_copy.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -238,9 +244,9 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000815, 0014, 'Manage Space Bookings_myBookings', 0, 'Spaces', 'Allows a user to book a room for on-off use, and manage their own bookings.', 'spaceBooking_manage.php,spaceBooking_manage_add.php,spaceBooking_manage_edit.php,spaceBooking_manage_delete.php', 'spaceBooking_manage.php', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000816, 0130, 'Import Records', 0, 'Catalog', 'Import records of different types (e.g. Print Publications, Computer, etc)', 'library_import.php', 'library_import.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000817, 0009, 'Outcomes By Course', 0, 'Curriculum Mapping', 'This view gives an overview of which whole school and learning area outcomes are covered by classes in a given course, allowing for curriculum mapping by outcome and course.', 'curriculumMapping_outcomesByCourse.php', 'curriculumMapping_outcomesByCourse.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
-(0000818, 0121, 'New Quick Wall Message', 0, '', 'Allows for the quick posting of a Message Wall message to all users.', 'messenger_postQuickWall.php', 'messenger_postQuickWall.php', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y', 'N'),
-(0000819, 0009, 'Import Outcomes', 0, 'Curriculum Mapping', 'Allows a user to import outcomes into the system, based on their Manage Outcomes rights.', 'outcomes_import.php', 'outcomes_import.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'N', 'N');
+(0000818, 0121, 'New Quick Wall Message', 0, '', 'Allows for the quick posting of a Message Wall message to all users.', 'messenger_postQuickWall.php', 'messenger_postQuickWall.php', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y', 'N');
 INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES
+(0000819, 0009, 'Import Outcomes', 0, 'Curriculum Mapping', 'Allows a user to import outcomes into the system, based on their Manage Outcomes rights.', 'outcomes_import.php', 'outcomes_import.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'N', 'N'),
 (0000820, 0121, 'New Message_transport_any', 0, '', 'Send messages users by transport field.', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'N', 'N'),
 (0000821, 0121, 'New Message_transport_parents', 0, '', 'Send messages parents of users by transport field.', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'N', 'N'),
 (0000822, 0011, 'Archive Records', 0, 'Other', 'Allows for current records to be archived for viewing in the future.', 'in_archive.php', 'in_archive.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -250,7 +256,10 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000826, 0135, 'Manage Budget Cycles', 0, 'Expenses', 'Allows a sufficiently priviledged user to create and manage budget cycles.', 'budgetCycles_manage.php,budgetCycles_manage_add.php,budgetCycles_manage_edit.php,budgetCycles_manage_delete.php', 'budgetCycles_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000827, 0135, 'My Expense Requests', 0, 'Expenses', 'Allows a user to request expenses from budgets they have access to.', 'expenseRequest_manage.php,expenseRequest_manage_add.php,expenseRequest_manage_view.php,expenseRequest_manage_reimburse.php', 'expenseRequest_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000828, 0135, 'Manage Expenses_all', 0, 'Expenses', 'Gives access to full control all expenses across all budgets.', 'expenses_manage.php, expenses_manage_add.php, expenses_manage_edit.php, expenses_manage_print.php, expenses_manage_approve.php, expenses_manage_view.php', 'expenses_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000829, 0135, 'Manage Expenses_myBudgets', 0, 'Expenses', 'Gives access to control expenses, according to budget-level access rights.', 'expenses_manage.php, expenses_manage_edit.php, expenses_manage_print.php, expenses_manage_approve.php, expenses_manage_view.php', 'expenses_manage.php', 'Y', 'N', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N');
+(0000829, 0135, 'Manage Expenses_myBudgets', 0, 'Expenses', 'Gives access to control expenses, according to budget-level access rights.', 'expenses_manage.php, expenses_manage_edit.php, expenses_manage_print.php, expenses_manage_approve.php, expenses_manage_view.php', 'expenses_manage.php', 'Y', 'N', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N'),
+(0000830, 0003, 'Third Party Settings', 0, 'Settings', 'Allows administrators to configure and make use of third party services.', 'thirdPartySettings.php', 'thirdPartySettings.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000831, 0002, 'Public Registration Settings', 0, 'Admissions', 'Gives access to enable and configure public registration.', 'publicRegistrationSettings.php', 'publicRegistrationSettings.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000832, 0003, 'Sound Alarm', 0, 'Alarm', 'Allows user to issue a system-wide audio alert to all staff.', 'alarm.php', 'alarm.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
 
 -- --------------------------------------------------------
 
@@ -568,8 +577,8 @@ CREATE TABLE `gibbonBehaviour` (
   `date` date NOT NULL,
   `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
   `type` enum('Positive','Negative') CHARACTER SET utf8 NOT NULL,
-  `descriptor` varchar(100) CHARACTER SET utf8 NOT NULL,
-  `level` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `descriptor` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `level` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `comment` text CHARACTER SET utf8 NOT NULL,
   `followup` text COLLATE utf8_unicode_ci NOT NULL,
   `gibbonPlannerEntryID` int(14) unsigned zerofill DEFAULT NULL,
@@ -1411,7 +1420,7 @@ CREATE TABLE `gibbonFinanceBudgetCycleAllocation` (
   `gibbonFinanceBudgetID` int(5) unsigned zerofill NOT NULL,
   `gibbonFinanceBudgetCycleID` int(6) unsigned zerofill NOT NULL,
   `value` decimal(14,2) NOT NULL DEFAULT '0.00'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1435,7 +1444,7 @@ CREATE TABLE `gibbonFinanceBudgetPerson` (
 CREATE TABLE `gibbonFinanceExpense` (
   `gibbonFinanceExpenseID` int(14) unsigned zerofill NOT NULL,
   `gibbonFinanceBudgetID` int(4) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(6) unsigned zerofill NOT NULL,
+  `gibbonFinanceBudgetCycleID` int(6) unsigned zerofill NOT NULL,
   `title` varchar(60) NOT NULL,
   `body` text NOT NULL,
   `status` enum('Requested','Approved','Rejected','Cancelled','Ordered','Paid') NOT NULL,
@@ -1625,7 +1634,7 @@ CREATE TABLE `gibbonFinanceInvoiceFee` (
 CREATE TABLE `gibbonHook` (
   `gibbonHookID` int(4) unsigned zerofill NOT NULL,
   `name` varchar(50) NOT NULL,
-  `type` enum('Public Home Page','Student Profile','Unit') DEFAULT NULL,
+  `type` enum('Public Home Page','Student Profile','Unit','Parental Dashboard') DEFAULT NULL,
   `options` text NOT NULL,
   `gibbonModuleID` int(4) unsigned zerofill NOT NULL COMMENT 'The module which installed this hook.'
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
@@ -1660,7 +1669,7 @@ CREATE TABLE `gibboni18n` (
   `dateFormatRegEx` text NOT NULL,
   `dateFormatPHP` varchar(20) NOT NULL,
   `rtl` enum('Y','N') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibboni18n`
@@ -1675,9 +1684,11 @@ INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `active`, `systemDefau
 (0007, 'pl_PL', 'Język polski - Polska', 'N', 'N', 'Arek Gladki', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\\d\\\\d$/i', 'd/m/Y', 'N'),
 (0008, 'it_IT', 'Italiano - Italia', 'Y', 'N', 'Carmine Sirignano', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
 (0010, 'id_ID', 'Bahasa Indonesia - Indonesia', 'N', 'N', 'Dicky Widhyatmoko', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
-(0011, 'ar_SA', 'العربية - المملكة العربية السعودية', 'N', 'N', 'Abdul Rahman Yousef', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'Y'),
+(0011, 'ar_SA', 'العربية - المملكة العربية السعودية', 'Y', 'N', 'Abdul Rahman Yousef', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'Y'),
 (0012, 'fr_FR', 'Français - France', 'Y', 'N', 'Jean-Baptiste Tamegnon', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
-(0013, 'ur_IN', 'اُردُو', 'N', 'N', 'Rizwan Mohammad', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'Y');
+(0013, 'ur_IN', 'اُردُو', 'N', 'N', 'Rizwan Mohammad', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'Y'),
+(0014, 'sw_KE', 'Swahili', 'N', 'N', 'James Peru', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
+(0015, 'pt_PT', 'Português', 'N', 'N', 'Wilson Canda', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');
 
 -- --------------------------------------------------------
 
@@ -1833,6 +1844,22 @@ INSERT INTO `gibbonLibraryType` (`gibbonLibraryTypeID`, `name`, `active`, `field
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `gibbonLog`
+--
+
+CREATE TABLE `gibbonLog` (
+  `gibbonLogID` int(16) unsigned zerofill NOT NULL,
+  `gibbonModuleID` int(4) unsigned zerofill NOT NULL,
+  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `title` varchar(50) NOT NULL,
+  `serialisedArray` text
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `gibbonMarkbookColumn`
 --
 
@@ -1848,12 +1875,13 @@ CREATE TABLE `gibbonMarkbookColumn` (
   `description` text NOT NULL,
   `attachment` varchar(255) NOT NULL,
   `attainment` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `gibbonScaleIDAttainment` int(5) unsigned zerofill NOT NULL,
+  `gibbonScaleIDAttainment` int(5) unsigned zerofill DEFAULT NULL,
   `effort` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `gibbonScaleIDEffort` int(5) unsigned zerofill NOT NULL,
+  `gibbonScaleIDEffort` int(5) unsigned zerofill DEFAULT NULL,
   `gibbonRubricIDAttainment` int(8) unsigned zerofill DEFAULT NULL,
   `gibbonRubricIDEffort` int(8) unsigned zerofill DEFAULT NULL,
   `comment` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `uploadedResponse` enum('Y','N') NOT NULL DEFAULT 'Y',
   `complete` enum('N','Y') NOT NULL,
   `completeDate` date DEFAULT NULL,
   `viewableStudents` enum('N','Y') NOT NULL,
@@ -1872,13 +1900,13 @@ CREATE TABLE `gibbonMarkbookEntry` (
   `gibbonMarkbookEntryID` int(12) unsigned zerofill NOT NULL,
   `gibbonMarkbookColumnID` int(10) unsigned zerofill NOT NULL,
   `gibbonPersonIDStudent` int(10) unsigned zerofill NOT NULL,
-  `attainmentValue` varchar(10) NOT NULL,
-  `attainmentDescriptor` varchar(100) NOT NULL,
-  `attainmentConcern` enum('N','Y','P') NOT NULL COMMENT '''P'' denotes that student has exceed their personal target',
-  `effortValue` varchar(10) NOT NULL,
-  `effortDescriptor` varchar(100) NOT NULL,
-  `effortConcern` enum('N','Y') NOT NULL,
-  `comment` text NOT NULL,
+  `attainmentValue` varchar(10) DEFAULT NULL,
+  `attainmentDescriptor` varchar(100) DEFAULT NULL,
+  `attainmentConcern` enum('N','Y','P') DEFAULT NULL COMMENT '''P'' denotes that student has exceed their personal target',
+  `effortValue` varchar(10) DEFAULT NULL,
+  `effortDescriptor` varchar(100) DEFAULT NULL,
+  `effortConcern` enum('N','Y') DEFAULT NULL,
+  `comment` text,
   `response` varchar(255) DEFAULT NULL,
   `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -2091,7 +2119,7 @@ CREATE TABLE `gibbonPermission` (
   `permissionID` int(10) unsigned zerofill NOT NULL,
   `gibbonRoleID` int(3) unsigned zerofill NOT NULL,
   `gibbonActionID` int(7) unsigned zerofill NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=53891 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=53894 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonPermission`
@@ -2414,7 +2442,10 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000053887, 006, 0000827),
 (0000053888, 001, 0000828),
 (0000053889, 002, 0000829),
-(0000053890, 006, 0000829);
+(0000053890, 006, 0000829),
+(0000053891, 001, 0000830),
+(0000053892, 001, 0000831),
+(0000053893, 001, 0000832);
 
 -- --------------------------------------------------------
 
@@ -2430,13 +2461,13 @@ CREATE TABLE `gibbonPerson` (
   `preferredName` varchar(30) NOT NULL DEFAULT '',
   `officialName` varchar(150) NOT NULL,
   `nameInCharacters` varchar(20) NOT NULL,
-  `gender` enum('M','F') NOT NULL DEFAULT 'M',
+  `gender` enum('M','F','Other','Unspecified') NOT NULL DEFAULT 'Unspecified',
   `username` varchar(20) NOT NULL,
   `password` varchar(255) NOT NULL DEFAULT '',
   `passwordStrong` varchar(255) NOT NULL,
   `passwordStrongSalt` varchar(255) NOT NULL,
   `passwordForceReset` enum('N','Y') NOT NULL DEFAULT 'N' COMMENT 'Force user to reset password on next login.',
-  `status` enum('Full','Expected','Left') NOT NULL DEFAULT 'Full',
+  `status` enum('Full','Expected','Left','Pending Approval') NOT NULL DEFAULT 'Full',
   `canLogin` enum('Y','N') NOT NULL DEFAULT 'Y',
   `gibbonRoleIDPrimary` int(3) unsigned zerofill NOT NULL,
   `gibbonRoleIDAll` varchar(255) NOT NULL,
@@ -3417,8 +3448,11 @@ INSERT INTO `gibbonSchoolYear` (`gibbonSchoolYearID`, `name`, `status`, `sequenc
 (008, '2010-2011', 'Past', 2, '2010-08-25', '2011-06-29'),
 (014, '2011-2012', 'Past', 3, '2011-08-25', '2012-06-29'),
 (018, '2012-2013', 'Past', 4, '2012-08-22', '2013-06-28'),
-(019, '2013-2014', 'Current', 5, '2013-08-21', '2014-06-26'),
-(020, '2014-2015', 'Upcoming', 6, '2014-08-25', '2015-06-26');
+(019, '2013-2014', 'Past', 5, '2013-08-21', '2014-06-26'),
+(020, '2014-2015', 'Past', 6, '2014-08-25', '2015-06-26'),
+(021, '2015-2016', 'Current', 7, '2015-08-20', '2016-06-24'),
+(022, '2016-2017', 'Upcoming', 8, '2016-08-20', '2017-06-30');
+
 
 -- --------------------------------------------------------
 
@@ -3468,7 +3502,7 @@ CREATE TABLE `gibbonSetting` (
   `nameDisplay` varchar(60) NOT NULL,
   `description` varchar(255) NOT NULL,
   `value` text NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=158 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=170 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonSetting`
@@ -3619,7 +3653,19 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID`, `scope`, `name`, `nameDis
 (00153, 'Finance', 'expenseApprovalType', 'Expense Approval Type', 'How should expense approval be dealt with?', 'One Of'),
 (00155, 'Finance', 'expenseRequestTemplate', 'Expense Request Template', 'An HTML template to be used in the description field of expense requests.', ''),
 (00156, 'Finance', 'purchasingOfficer', 'Purchasing Officer', 'User responsible for purchasing for the school.', ''),
-(00157, 'Finance', 'reimbursementOfficer', 'Reimbursement Officer', 'User responsible for reimbursing expenses.', '');
+(00157, 'Finance', 'reimbursementOfficer', 'Reimbursement Officer', 'User responsible for reimbursing expenses.', ''),
+(00158, 'Messenger', 'enableHomeScreenWidget', 'Enable Home Screen Widget', 'Adds a Message Wall widget to the home page, hihglighting current messages.', 'N'),
+(00159, 'User Admin', 'enablePublicRegistration', 'Enable Public Registration', 'Allows members of the public to register to use the system.', 'N'),
+(00160, 'User Admin', 'publicRegistrationMinimumAge', 'Public Registration Minimum Age', 'The minimum age, in years, permitted to register.', '13'),
+(00161, 'User Admin', 'publicRegistrationDefaultStatus', 'Public Registration Default Status', 'Should new users be ''Full'' or ''Pending Approval''?', 'Pending Approval'),
+(00162, 'User Admin', 'publicRegistrationDefaultRole', 'Public Registration Default Role', 'System role to be assigned to registering members of the public.', '003'),
+(00163, 'User Admin', 'publicRegistrationIntro', 'Public Registration Introductory Text', 'HTML text that will appear above the public registration form.', ''),
+(00164, 'User Admin', 'publicRegistrationPrivacyStatement', 'Public Registration Privacy Statement', 'HTML text that will appear above the Submit button, explaining privacy policy.', 'By registering for this site you are giving permission for your personal data to be used and shared within this organisation and its websites. We will not share your personal data outside our organisation.'),
+(00165, 'User Admin', 'publicRegistrationAgreement', 'Public Registration Agreement', 'Agreement that user must confirm before joining. Blank for no agreement.', 'In joining this site, and checking the box below, I agree to act lawfully, ethically and with respect for others. I agree to use this site for learning purposes only, and understand that access may be withdrawn at any time, at the discretion of the site''s administrators.'),
+(00166, 'User Admin', 'publicRegistrationPostscript', 'Public Registration Postscript', 'HTML text that will appear underneath the public registration form.', ''),
+(00167, 'System', 'alarm', 'Alarm', 'Sound a system wide alarm to all staff.', 'None'),
+(00168, 'Behaviour', 'enableDescriptors', 'Enable Descriptors', 'Setting to No reduces complexity of behaviour tracking.', 'Y'),
+(00169, 'Behaviour', 'enableLevels', 'Enable Levels', 'Setting to No reduces complexity of behaviour tracking.', 'Y');
 
 -- --------------------------------------------------------
 
@@ -4375,6 +4421,12 @@ ALTER TABLE `gibbonLibraryType`
   ADD PRIMARY KEY (`gibbonLibraryTypeID`);
 
 --
+-- Indexes for table `gibbonLog`
+--
+ALTER TABLE `gibbonLog`
+  ADD PRIMARY KEY (`gibbonLogID`);
+
+--
 -- Indexes for table `gibbonMarkbookColumn`
 --
 ALTER TABLE `gibbonMarkbookColumn`
@@ -4818,7 +4870,7 @@ ALTER TABLE `gibbonYearGroup`
 -- AUTO_INCREMENT for table `gibbonAction`
 --
 ALTER TABLE `gibbonAction`
-  MODIFY `gibbonActionID` int(7) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=830;
+  MODIFY `gibbonActionID` int(7) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=833;
 --
 -- AUTO_INCREMENT for table `gibbonActivity`
 --
@@ -5063,7 +5115,7 @@ ALTER TABLE `gibbonHouse`
 -- AUTO_INCREMENT for table `gibboni18n`
 --
 ALTER TABLE `gibboni18n`
-  MODIFY `gibboni18nID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=14;
+  MODIFY `gibboni18nID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT for table `gibbonIN`
 --
@@ -5099,6 +5151,11 @@ ALTER TABLE `gibbonLibraryItemEvent`
 --
 ALTER TABLE `gibbonLibraryType`
   MODIFY `gibbonLibraryTypeID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+--
+-- AUTO_INCREMENT for table `gibbonLog`
+--
+ALTER TABLE `gibbonLog`
+  MODIFY `gibbonLogID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonMarkbookColumn`
 --
@@ -5153,7 +5210,7 @@ ALTER TABLE `gibbonPayment`
 -- AUTO_INCREMENT for table `gibbonPermission`
 --
 ALTER TABLE `gibbonPermission`
-  MODIFY `permissionID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=53891;
+  MODIFY `permissionID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=53894;
 --
 -- AUTO_INCREMENT for table `gibbonPerson`
 --
@@ -5313,7 +5370,7 @@ ALTER TABLE `gibbonSchoolYearTerm`
 -- AUTO_INCREMENT for table `gibbonSetting`
 --
 ALTER TABLE `gibbonSetting`
-  MODIFY `gibbonSystemSettingsID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=158;
+  MODIFY `gibbonSystemSettingsID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=170;
 --
 -- AUTO_INCREMENT for table `gibbonSpace`
 --
@@ -5429,3 +5486,6 @@ ALTER TABLE `gibbonUnitOutcome`
 --
 ALTER TABLE `gibbonYearGroup`
   MODIFY `gibbonYearGroupID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

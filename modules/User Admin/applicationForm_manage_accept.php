@@ -690,15 +690,15 @@ else {
 								$nameAddress="" ;
 								//Parents share same surname and parent 2 has enough information to be added
 								if ($row["parent1surname"]==$row["parent2surname"] AND $row["parent2preferredName"]!="" AND $row["parent2title"]!="") {
-									$nameAddress=$row["parent1title"] . "& " . $row["parent2title"] . $row["parent1surname"] ;
+									$nameAddress=$row["parent1title"] . " & " . $row["parent2title"] . " " . $row["parent1surname"] ;
 								}
 								//Parents have different names, and parent2 is not blank and has enough information to be added
 								else if ($row["parent1surname"]!=$row["parent2surname"] AND $row["parent2surname"]!="" AND $row["parent2preferredName"]!="" AND $row["parent2title"]!="") {
-									$nameAddress=$row["parent1title"] . $row["parent1surname"] . " & " . $row["parent2title"] . $row["parent2surname"] ;
+									$nameAddress=$row["parent1title"] . " " . $row["parent1surname"] . " & " . $row["parent2title"] . " " . $row["parent2surname"] ;
 								}
 								//Just use parent1's name 
 								else {
-									$nameAddress=$row["parent1title"] . $row["parent1surname"] ;
+									$nameAddress=$row["parent1title"] . " " . $row["parent1surname"] ;
 								}
 								$languageHome=$row["languageHome"] ; 
 								
