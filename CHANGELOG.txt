@@ -18,6 +18,8 @@ CHANGELOG
 =========
 v11.0.00
 --------
+School Admin: added interface to control ebabling/disabling of descriptors and levels in Behaviour
+	Edited files /core/modules/School Admin/behaviourSettings*.php
 
 v10.0.00
 --------
