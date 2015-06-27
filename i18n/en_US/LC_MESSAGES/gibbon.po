@@ -2056,8 +2056,8 @@ msgstr ""
 #: modules/Planner/planner_deadlines.php:773
 #: modules/Planner/planner_deadlines.php:1017 Admin/behaviourSettings.php:174
 #: Admin/systemSettings.php:1062 Admin/ttDates.php:364
-#: publicRegistration.php:305 installer/install.php:143
-#: installer/install.php:240 installer/install.php:1083
+#: publicRegistration.php:305 Needs/in_edit.php:322 installer/install.php:144
+#: installer/install.php:241 installer/install.php:1084
 #: modules/Activities/activities_copy.php:110
 #: modules/Activities/activities_manage.php:79
 #: modules/Activities/activities_manage_add.php:641
@@ -2166,7 +2166,7 @@ msgstr ""
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:411
 #: modules/School Admin/activitySettings.php:289
 #: modules/School Admin/alertLevelSettings.php:162
-#: modules/School Admin/behaviourSettings.php:174
+#: modules/School Admin/behaviourSettings.php:253
 #: modules/School Admin/daysOfWeek_manage.php:292
 #: modules/School Admin/department_manage.php:109
 #: modules/School Admin/department_manage_add.php:202
@@ -2596,8 +2596,8 @@ msgstr ""
 #: modules/Library/library_lending_item_signout.php:305
 #: modules/Markbook/markbook_edit_addMulti.php:547
 #: Admin/behaviourSettings.php:170 Admin/systemSettings.php:1058
-#: publicRegistration.php:301 installer/install.php:140
-#: installer/install.php:236 installer/install.php:1075
+#: publicRegistration.php:301 installer/install.php:141
+#: installer/install.php:237 installer/install.php:1076
 #: modules/Activities/activities_copy.php:106
 #: modules/Activities/activities_manage_add.php:636
 #: modules/Activities/activities_manage_edit.php:824
@@ -2674,7 +2674,7 @@ msgstr ""
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:407
 #: modules/School Admin/activitySettings.php:285
 #: modules/School Admin/alertLevelSettings.php:157
-#: modules/School Admin/behaviourSettings.php:170
+#: modules/School Admin/behaviourSettings.php:249
 #: modules/School Admin/daysOfWeek_manage.php:288
 #: modules/School Admin/department_manage.php:105
 #: modules/School Admin/department_manage_add.php:199
@@ -3137,6 +3137,8 @@ msgstr ""
 #: Admin/applicationForm_manage_accept.php:795
 #: Admin/applicationForm_manage_accept.php:951
 #: Admin/applicationForm_manage_accept.php:1114
+#: modules/Finance/moduleFunctions.php:940
+#: modules/Finance/moduleFunctions.php:1224 Needs/in_edit.php:182
 #: modules/Activities/activities_manage_add.php:79
 #: modules/Activities/activities_manage_edit.php:135
 #: modules/Activities/activities_manage_edit.php:435
@@ -3436,6 +3438,7 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage_edit.php:177
 #: modules/Behaviour/moduleFunctions.php:85
 #: modules/Planner/planner_deadlines.php:781
+#: modules/Finance/expenses_manage.php:385
 #: modules/Attendance/attendance_take_byPerson.php:123
 #: modules/Attendance/attendance_take_byRollGroup.php:140
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:53
@@ -3714,7 +3717,7 @@ msgstr ""
 #: Admin/applicationForm_manage_accept.php:952
 #: Admin/applicationForm_manage_accept.php:1115 publicRegistration.php:129
 #: functions.php:46 i18n/dbStringsForTranslation.php:1729
-#: installer/install.php:497 modules/Application Form/applicationForm.php:522
+#: installer/install.php:498 modules/Application Form/applicationForm.php:522
 #: modules/Application Form/applicationForm.php:1354
 #: modules/Data Updater/data_personal.php:672
 #: modules/Library/report_viewOverdueItems.php:59
@@ -4094,8 +4097,10 @@ msgstr ""
 #: modules/Behaviour/behaviour_pattern.php:350
 #: modules/Behaviour/behaviour_view.php:116
 #: modules/Behaviour/behaviour_view_details.php:91
-#: Admin/applicationForm_manage_accept.php:346 index.php:625
-#: modules/Activities/report_activitySpread_rollGroup.php:51
+#: Admin/applicationForm_manage_accept.php:346
+#: modules/Finance/moduleFunctions.php:852
+#: modules/Finance/moduleFunctions.php:1148 Needs/in_edit.php:190
+#: index.php:625 modules/Activities/report_activitySpread_rollGroup.php:51
 #: modules/Activities/report_activitySpread_rollGroup.php:128
 #: modules/Activities/report_activityType_rollGroup.php:51
 #: modules/Activities/report_activityType_rollGroup.php:128
@@ -5724,8 +5729,8 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage_add.php:55
 #: modules/Behaviour/behaviour_manage_addMulti.php:48
 #: modules/Behaviour/behaviour_manage_edit.php:59
-#: modules/Behaviour/behaviour_manage_edit.php:90
-#: cli/attendance_dailyIncompleteEmail.php:77
+#: modules/Behaviour/behaviour_manage_edit.php:90 Needs/in_edit.php:215
+#: Needs/in_edit.php:269 cli/attendance_dailyIncompleteEmail.php:77
 #: cli/attendance_dailyIncompleteEmail.php:93
 #: cli/planner_parentWeeklyEmailSummary.php:86 functions.php:325
 #: functions.php:1414 functions.php:1433 functions.php:1992 functions.php:3590
@@ -7493,6 +7498,7 @@ msgstr ""
 #: modules/Behaviour/moduleFunctions.php:78
 #: modules/Markbook/markbook_view.php:591
 #: modules/Markbook/markbook_view.php:1961
+#: modules/Finance/expenses_manage.php:339
 #: cli/attendance_dailyIncompleteEmail.php:99
 #: cli/attendance_dailyIncompleteEmail.php:101
 #: cli/planner_parentWeeklyEmailSummary.php:103
@@ -9563,6 +9569,8 @@ msgstr ""
 #: modules/School Admin/activitySettings.php:213
 #: modules/School Admin/activitySettings.php:255
 #: modules/School Admin/activitySettings.php:278
+#: modules/School Admin/behaviourSettings.php:89
+#: modules/School Admin/behaviourSettings.php:178
 #: modules/School Admin/daysOfWeek_manage.php:99
 #: modules/School Admin/daysOfWeek_manage.php:103
 #: modules/School Admin/department_manage.php:99
@@ -10105,6 +10113,8 @@ msgstr ""
 #: modules/School Admin/activitySettings.php:212
 #: modules/School Admin/activitySettings.php:254
 #: modules/School Admin/activitySettings.php:277
+#: modules/School Admin/behaviourSettings.php:90
+#: modules/School Admin/behaviourSettings.php:179
 #: modules/School Admin/daysOfWeek_manage.php:100
 #: modules/School Admin/daysOfWeek_manage.php:104
 #: modules/School Admin/department_manage.php:98
@@ -10411,7 +10421,9 @@ msgstr ""
 #: index.php:913 modules/Behaviour/behaviour_manage.php:258
 #: modules/Behaviour/behaviour_manage_add.php:44
 #: modules/Behaviour/moduleFunctions.php:43
-#: Admin/schoolYearSpecialDay_manage.php:283 index.php:913
+#: Admin/schoolYearSpecialDay_manage.php:283
+#: modules/Finance/expenses_manage.php:334
+#: modules/Finance/expenses_manage.php:350 index.php:913
 #: modules/Activities/activities_manage.php:131
 #: modules/Activities/activities_manage_enrolment.php:204
 #: modules/Behaviour/behaviour_manage.php:258
@@ -11480,8 +11492,8 @@ msgstr ""
 #: Admin/role_manage_edit.php:112 functions.php:1329
 #: modules/Activities/activities_manage_add.php:589
 #: modules/Activities/activities_manage_edit.php:777 functions.php:1330
-#: functions.php:1330 i18n/dbStringsForTranslation.php:989
-#: i18n/dbStringsForTranslation.php:1030
+#: modules/Finance/expenses_manage.php:376 functions.php:1330
+#: i18n/dbStringsForTranslation.php:989 i18n/dbStringsForTranslation.php:1030
 #: modules/Activities/activities_manage_add.php:578
 #: modules/Activities/activities_manage_add.php:583
 #: modules/Activities/activities_manage_add.php:589
@@ -11618,8 +11630,11 @@ msgstr ""
 #: modules/Markbook/markbook_view.php:1013
 #: modules/Markbook/markbook_view.php:1613
 #: modules/Timetable/moduleFunctions.php:420
-#: modules/Timetable/moduleFunctions.php:1600 functions.php:1378
-#: functions.php:1459 modules/Behaviour/behaviour_manage.php:196
+#: modules/Timetable/moduleFunctions.php:1600
+#: modules/Finance/expenses_manage.php:282
+#: modules/Finance/expenses_manage.php:358 Needs/in_edit.php:173
+#: functions.php:1378 functions.php:1459
+#: modules/Behaviour/behaviour_manage.php:196
 #: modules/Behaviour/behaviour_pattern.php:250
 #: modules/Departments/department.php:224
 #: modules/Departments/department_course_class.php:562
@@ -11809,7 +11824,7 @@ msgstr ""
 #: Admin/applicationForm_manage_accept.php:417
 #: Admin/applicationForm_manage_accept.php:953
 #: Admin/applicationForm_manage_accept.php:1116 publicRegistration.php:181
-#: functions.php:2043 installer/install.php:519
+#: functions.php:2043 installer/install.php:520
 #: modules/Application Form/applicationForm.php:908
 #: modules/Staff/staff_view_details.php:220
 #: modules/Students/report_students_left.php:142
@@ -11851,7 +11866,7 @@ msgstr ""
 #: functions.php:2055 Admin/applicationForm_manage_accept.php:418
 #: Admin/applicationForm_manage_accept.php:954
 #: Admin/applicationForm_manage_accept.php:1117 publicRegistration.php:220
-#: functions.php:2055 installer/install.php:557
+#: functions.php:2055 installer/install.php:558
 #: modules/User Admin/applicationForm_manage_accept.php:418
 #: modules/User Admin/applicationForm_manage_accept.php:954
 #: modules/User Admin/applicationForm_manage_accept.php:1117
@@ -13579,7 +13594,7 @@ msgstr ""
 #: modules/Behaviour/behaviour_view.php:119
 #: modules/Behaviour/moduleFunctions.php:104
 #: modules/Planner/planner_deadlines.php:806
-#: i18n/dbStringsForTranslation.php:21
+#: modules/Finance/expenses_manage.php:388 i18n/dbStringsForTranslation.php:21
 #: modules/Activities/activities_manage.php:171
 #: modules/Activities/activities_manage_edit.php:444
 #: modules/Activities/activities_manage_edit.php:731
@@ -15450,7 +15465,11 @@ msgstr ""
 #: modules/Students/student_view_details.php:2550 Admin/staff_manage.php:157
 #: Admin/user_manage_add.php:315 Admin/user_manage_edit.php:368
 #: functions.php:852 functions.php:853
-#: Admin/applicationForm_manage_accept.php:1263 functions.php:853
+#: Admin/applicationForm_manage_accept.php:1263
+#: modules/Finance/expenses_manage.php:203
+#: modules/Finance/expenses_manage.php:379
+#: modules/Finance/moduleFunctions.php:855
+#: modules/Finance/moduleFunctions.php:1151 functions.php:853
 #: modules/Activities/activities_manage_enrolment.php:219
 #: modules/Activities/activities_manage_enrolment_add.php:222
 #: modules/Activities/activities_manage_enrolment_edit.php:120
@@ -16090,7 +16109,7 @@ msgstr ""
 #: Admin/role_manage_edit.php:190 Admin/role_manage_edit.php:216
 #: Admin/staff_manage_edit.php:114
 #: modules/Behaviour/behaviour_manage_add.php:342
-#: modules/Behaviour/behaviour_manage_edit.php:155 installer/install.php:164
+#: modules/Behaviour/behaviour_manage_edit.php:155 installer/install.php:165
 #: modules/Activities/activities_manage_enrolment_edit.php:103
 #: modules/Activities/activities_manage_enrolment_edit.php:112
 #: modules/Attendance/attendance_future_byPerson.php:185
@@ -16552,7 +16571,7 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage_edit.php:290
 #: modules/Markbook/markbook_edit_addMulti.php:188
 #: Admin/systemSettings.php:1029 publicRegistration.php:148
-#: installer/install.php:985 installer/install.php:1051
+#: installer/install.php:986 installer/install.php:1052
 #: modules/Activities/activities_copy.php:84
 #: modules/Activities/activities_view_register.php:348
 #: modules/Application Form/applicationForm.php:225
@@ -16867,8 +16886,8 @@ msgstr ""
 #: modules/Library/library_lending_item_signout.php:219
 #: modules/Markbook/markbook_edit_addMulti.php:199
 #: Admin/systemSettings.php:1051 publicRegistration.php:156
-#: installer/install.php:1002 installer/install.php:1068
-#: modules/Activities/activities_copy.php:100
+#: modules/Finance/expenses_manage.php:365 installer/install.php:1003
+#: installer/install.php:1069 modules/Activities/activities_copy.php:100
 #: modules/Activities/activities_view_register.php:371
 #: modules/Application Form/applicationForm.php:231
 #: modules/Application Form/applicationForm.php:625
@@ -17111,7 +17130,7 @@ msgstr ""
 #: installer/install.php:385 installer/install.php:437
 #: installer/install.php:464 Form/applicationForm.php:161
 #: Form/applicationForm.php:919 Form/applicationForm.php:1081
-#: installer/install.php:472 installer/install.php:472
+#: installer/install.php:472 installer/install.php:473
 #: modules/Application Form/applicationForm.php:161
 #: modules/Application Form/applicationForm.php:919
 #: modules/Application Form/applicationForm.php:1081
@@ -17134,7 +17153,7 @@ msgstr ""
 #: installer/install.php:397 installer/install.php:398
 #: installer/install.php:450 installer/install.php:477
 #: Form/applicationForm.php:174 Form/applicationForm.php:1094
-#: installer/install.php:485 installer/install.php:485
+#: installer/install.php:485 installer/install.php:486
 #: modules/Application Form/applicationForm.php:174
 #: modules/Application Form/applicationForm.php:1094
 #: modules/Data Updater/data_personal.php:394
@@ -17545,7 +17564,7 @@ msgstr ""
 #: modules/Behaviour/behaviour_pattern.php:347
 #: modules/Behaviour/behaviour_view.php:113
 #: modules/Behaviour/behaviour_view_details.php:75
-#: Admin/applicationForm_manage_accept.php:330
+#: Admin/applicationForm_manage_accept.php:330 Needs/in_edit.php:186
 #: modules/Behaviour/behaviour_manage.php:141
 #: modules/Behaviour/behaviour_pattern.php:200
 #: modules/Behaviour/behaviour_pattern.php:347
@@ -17794,6 +17813,8 @@ msgstr ""
 #: modules/Resources/resources_manage_add.php:379
 #: Admin/role_manage_edit.php:187
 #: modules/Markbook/markbook_edit_addMulti.php:166
+#: modules/Finance/moduleFunctions.php:946
+#: modules/Finance/moduleFunctions.php:1230
 #: i18n/dbStringsForTranslation.php:912
 #: modules/Activities/activities_manage_add.php:371
 #: modules/Activities/activities_manage_edit.php:402
@@ -17981,6 +18002,7 @@ msgstr ""
 #: modules/Finance/invoices_manage.php:474
 #: Admin/courseEnrolment_manage_byPerson_edit.php:255
 #: modules/Finance/expenses_manage.php:355
+#: modules/Finance/expenses_manage.php:360
 #: modules/Finance/expenses_manage.php:360
 #: modules/Finance/invoices_manage.php:474
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:255
@@ -18186,6 +18208,8 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage.php:239
 #: modules/Finance/expenses_manage.php:211
 #: modules/Finance/expenses_manage.php:258
+#: modules/Finance/expenses_manage.php:213
+#: modules/Finance/expenses_manage.php:260
 #: modules/Application Form/applicationForm.php:1890
 #: modules/Data Updater/data_finance.php:424
 #: modules/Finance/expenseRequest_manage.php:192
@@ -18484,7 +18508,10 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:1124
 #: modules/Planner/planner_view_full.php:1206 Admin/staff_manage.php:102
 #: functions.php:440 functions.php:441 index.php:806
-#: modules/Planner/planner_deadlines.php:1008 functions.php:441 index.php:806
+#: modules/Planner/planner_deadlines.php:1008
+#: modules/Finance/expenses_manage.php:329
+#: modules/Finance/expenses_manage.php:344
+#: modules/Finance/expenses_manage.php:441 functions.php:441 index.php:806
 #: modules/Crowd Assessment/crowdAssess_view.php:248
 #: modules/Finance/billingSchedule_manage.php:122
 #: modules/Finance/expenseRequest_manage.php:289
@@ -18951,10 +18978,10 @@ msgstr ""
 #: Admin/user_manage_edit.php:1419 publicRegistration.php:163
 #: modules/Activities/activities_manage_add.php:629
 #: modules/Activities/activities_manage_edit.php:817
-#: publicRegistration.php:151 i18n/dbStringsForTranslation.php:37
-#: i18n/dbStringsForTranslation.php:819 i18n/dbStringsForTranslation.php:882
-#: i18n/dbStringsForTranslation.php:959 i18n/dbStringsForTranslation.php:1026
-#: i18n/dbStringsForTranslation.php:1033
+#: publicRegistration.php:151 modules/Finance/moduleFunctions.php:688
+#: i18n/dbStringsForTranslation.php:37 i18n/dbStringsForTranslation.php:819
+#: i18n/dbStringsForTranslation.php:882 i18n/dbStringsForTranslation.php:959
+#: i18n/dbStringsForTranslation.php:1026 i18n/dbStringsForTranslation.php:1033
 #: modules/Activities/activities_manage_add.php:629
 #: modules/Activities/activities_manage_edit.php:817
 #: modules/Application Form/applicationForm.php:564
@@ -19365,7 +19392,9 @@ msgstr ""
 #: modules/Students/student_view_details.php:1748
 #: modules/Students/student_view_details_notes_add.php:126
 #: modules/Students/student_view_details_notes_edit.php:154
-#: Admin/role_manage_edit.php:94 modules/Finance/budgets_manage.php:91
+#: Admin/role_manage_edit.php:94 modules/Finance/moduleFunctions.php:943
+#: modules/Finance/moduleFunctions.php:1227
+#: modules/Finance/budgets_manage.php:91
 #: modules/Finance/budgets_manage_add.php:118
 #: modules/Finance/budgets_manage_add.php:144
 #: modules/Finance/budgets_manage_edit.php:148
@@ -19759,6 +19788,7 @@ msgstr ""
 #: Admin/gradeScales_manage_edit_grade_edit.php:102
 #: modules/Finance/moduleFunctions.php:106
 #: modules/Finance/moduleFunctions.php:675
+#: modules/Finance/moduleFunctions.php:700
 #: modules/Finance/moduleFunctions.php:700
 #: modules/School Admin/gradeScales_manage_edit.php:238
 #: modules/School Admin/gradeScales_manage_edit_grade_add.php:101
@@ -20995,7 +21025,7 @@ msgstr ""
 #: installer/install.php:559 installer/install.php:595
 #: i18n/dbStringsForTranslation.php:209 i18n/dbStringsForTranslation.php:224
 #: installer/install.php:603 i18n/dbStringsForTranslation.php:224
-#: installer/install.php:603 modules/System Admin/systemSettings.php:65
+#: installer/install.php:604 modules/System Admin/systemSettings.php:65
 #: modules/System Admin/systemSettings.php:101
 msgid "System Settings"
 msgstr ""
@@ -21006,7 +21036,7 @@ msgstr ""
 #: installer/install.php:680 installer/install.php:667
 #: installer/install.php:668 installer/install.php:669
 #: installer/install.php:721 installer/install.php:796
-#: installer/install.php:804 installer/install.php:804
+#: installer/install.php:804 installer/install.php:805
 #: modules/System Admin/systemSettings.php:292
 msgid "Organisation Settings"
 msgstr ""
@@ -21053,9 +21083,10 @@ msgstr ""
 #: modules/Students/student_view_details.php:1010 Admin/systemSettings.php:907
 #: Admin/user_manage_add.php:1178 Admin/user_manage_edit.php:1498
 #: installer/install.php:960 installer/install.php:962
-#: Admin/systemSettings.php:909 installer/install.php:962
+#: Admin/systemSettings.php:909 installer/install.php:963
 #: modules/Application Form/applicationForm.php:1987
 #: modules/Data Updater/data_personal.php:1573
+#: modules/School Admin/behaviourSettings.php:220
 #: modules/School Admin/markbookSettings.php:294
 #: modules/School Admin/studentsSettings.php:145
 #: modules/Staff/staff_view_details.php:405
@@ -21083,7 +21114,7 @@ msgstr ""
 #: installer/install.php:770 installer/install.php:822
 #: installer/install.php:897 installer/install.php:904
 #: installer/install.php:912 installer/install.php:914
-#: installer/install.php:914
+#: installer/install.php:915
 msgid "gibbonedu.com Value-Added Services"
 msgstr ""
 
@@ -21474,6 +21505,7 @@ msgstr ""
 #: Groups/rollGroups_details.php:108 Groups/rollGroups_details.php:116
 #: modules/Finance/expenseRequest_manage.php:175
 #: modules/Finance/expenses_manage.php:194
+#: modules/Finance/expenses_manage.php:196
 #: modules/Finance/expenseRequest_manage.php:175
 #: modules/Finance/expenses_manage.php:196
 #: modules/Finance/invoicees_manage.php:82
@@ -21730,7 +21762,8 @@ msgstr ""
 #: Admin/user_manage_edit.php:1235 Admin/user_manage_edit.php:1460
 #: Admin/user_manage_edit.php:1483 functions.php:1468 functions.php:1469
 #: modules/Behaviour/behaviour_manage.php:360
-#: Admin/schoolYearSpecialDay_manage.php:277 functions.php:1469
+#: Admin/schoolYearSpecialDay_manage.php:277
+#: modules/Finance/moduleFunctions.php:710 functions.php:1469
 #: modules/Activities/activities_manage.php:273
 #: modules/Activities/activities_manage_edit.php:489
 #: modules/Activities/activities_manage_edit.php:755
@@ -22458,6 +22491,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:1005
 #: modules/Finance/moduleFunctions.php:1274
 #: modules/Students/student_view_details.php:3012
+#: modules/Finance/moduleFunctions.php:1030
+#: modules/Finance/moduleFunctions.php:1299
 #: modules/External Assessment/import_results.php:110
 #: modules/Finance/invoices_manage_add.php:273
 #: modules/Finance/invoices_manage_edit.php:388
@@ -23908,6 +23943,7 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage.php:207
 #: modules/Finance/expenses_manage.php:226
 #: modules/Finance/expenses_manage_edit.php:229
+#: modules/Finance/expenses_manage.php:228
 #: modules/Finance/expenseRequest_manage.php:207
 #: modules/Finance/expenses_manage.php:228
 #: modules/Finance/expenses_manage_edit.php:229
@@ -24103,7 +24139,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:574
 #: modules/Students/student_view_details.php:613 publicRegistration.php:128
 #: installer/install.php:471 publicRegistration.php:116
-#: installer/install.php:471 modules/Application Form/applicationForm.php:160
+#: installer/install.php:472 modules/Application Form/applicationForm.php:160
 #: modules/Application Form/applicationForm.php:918
 #: modules/Application Form/applicationForm.php:1080
 #: modules/Data Updater/data_personal.php:375
@@ -24136,7 +24172,7 @@ msgstr ""
 #: Form/applicationForm.php:1093 modules/Students/student_view_details.php:578
 #: modules/Students/student_view_details.php:617 publicRegistration.php:116
 #: installer/install.php:484 publicRegistration.php:104
-#: installer/install.php:484 modules/Application Form/applicationForm.php:173
+#: installer/install.php:485 modules/Application Form/applicationForm.php:173
 #: modules/Application Form/applicationForm.php:1093
 #: modules/Data Updater/data_personal.php:393
 #: modules/Students/student_view_details.php:617
@@ -25243,8 +25279,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:1751
 #: modules/Students/student_view_details_notes_add.php:103
 #: modules/Students/student_view_details_notes_edit.php:131
-#: installer/install.php:456 installer/install.php:456
-#: modules/Application Form/applicationForm.php:1060
+#: installer/install.php:456 modules/Finance/expenses_manage.php:372
+#: installer/install.php:457 modules/Application Form/applicationForm.php:1060
 #: modules/Data Updater/data_personal.php:351
 #: modules/Finance/expenseRequest_manage.php:313
 #: modules/Finance/expenseRequest_manage_add.php:180
@@ -25281,7 +25317,7 @@ msgstr ""
 #: Admin/user_manage_add.php:93 Admin/user_manage_edit.php:156
 #: installer/install.php:374 installer/install.php:375
 #: installer/install.php:427 installer/install.php:454
-#: installer/install.php:462 installer/install.php:462
+#: installer/install.php:462 installer/install.php:463
 #: modules/Data Updater/data_personal.php:357
 #: modules/User Admin/applicationForm_manage_edit.php:1165
 #: modules/User Admin/user_manage_add.php:93
@@ -25295,7 +25331,7 @@ msgstr ""
 #: Admin/user_manage_add.php:94 Admin/user_manage_edit.php:157
 #: installer/install.php:375 installer/install.php:376
 #: installer/install.php:428 installer/install.php:455
-#: installer/install.php:463 installer/install.php:463
+#: installer/install.php:463 installer/install.php:464
 #: modules/Data Updater/data_personal.php:358
 #: modules/User Admin/applicationForm_manage_edit.php:1166
 #: modules/User Admin/user_manage_add.php:94
@@ -25309,7 +25345,7 @@ msgstr ""
 #: Admin/user_manage_add.php:95 Admin/user_manage_edit.php:158
 #: installer/install.php:376 installer/install.php:377
 #: installer/install.php:429 installer/install.php:456
-#: installer/install.php:464 installer/install.php:464
+#: installer/install.php:464 installer/install.php:465
 #: modules/Data Updater/data_personal.php:359
 #: modules/User Admin/applicationForm_manage_edit.php:1167
 #: modules/User Admin/user_manage_add.php:95
@@ -25323,7 +25359,7 @@ msgstr ""
 #: Admin/user_manage_add.php:96 Admin/user_manage_edit.php:159
 #: installer/install.php:377 installer/install.php:378
 #: installer/install.php:430 installer/install.php:457
-#: installer/install.php:465 installer/install.php:465
+#: installer/install.php:465 installer/install.php:466
 #: modules/Data Updater/data_personal.php:360
 #: modules/User Admin/applicationForm_manage_edit.php:1168
 #: modules/User Admin/user_manage_add.php:96
@@ -26249,6 +26285,7 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:196
 #: modules/Finance/invoices_manage.php:497
 #: modules/Finance/moduleFunctions.php:765
+#: modules/Finance/moduleFunctions.php:790
 #: modules/Data Updater/data_finance.php:276
 #: modules/Finance/invoicees_manage.php:183
 #: modules/Finance/invoices_manage.php:497
@@ -29008,7 +29045,7 @@ msgstr ""
 #: installer/install.php:1001 installer/install.php:1053
 #: installer/install.php:1133 installer/install.php:1140
 #: installer/install.php:1149 installer/install.php:1151
-#: installer/install.php:1151
+#: installer/install.php:1152
 #: modules/Finance/billingSchedule_manage_add.php:51
 #: modules/User Admin/user_manage_add.php:51
 #: modules/User Admin/user_manage_password.php:54
@@ -29029,7 +29066,7 @@ msgstr ""
 #: installer/install.php:373 installer/install.php:374
 #: installer/install.php:426 installer/install.php:453
 #: Admin/applicationForm_manage_edit.php:1164 installer/install.php:461
-#: installer/install.php:461 modules/Data Updater/data_personal.php:356
+#: installer/install.php:462 modules/Data Updater/data_personal.php:356
 #: modules/User Admin/applicationForm_manage_edit.php:1164
 #: modules/User Admin/user_manage_add.php:92
 #: modules/User Admin/user_manage_edit.php:155
@@ -29056,7 +29093,7 @@ msgstr ""
 #: Admin/user_manage_add.php:230 installer/install.php:423
 #: installer/install.php:424 installer/install.php:476
 #: installer/install.php:512 Admin/user_manage_add.php:232
-#: installer/install.php:520 installer/install.php:520
+#: installer/install.php:520 installer/install.php:521
 #: modules/User Admin/user_manage_add.php:232
 msgid "Must be unique. System login name. Cannot be changed."
 msgstr ""
@@ -29079,8 +29116,8 @@ msgstr ""
 #: publicRegistration.php:251 installer/install.php:572
 #: installer/install.php:576 publicRegistration.php:231
 #: publicRegistration.php:235 publicRegistration.php:239
-#: installer/install.php:568 installer/install.php:572
-#: installer/install.php:576 modules/User Admin/user_manage_add.php:281
+#: installer/install.php:569 installer/install.php:573
+#: installer/install.php:577 modules/User Admin/user_manage_add.php:281
 #: modules/User Admin/user_manage_add.php:285
 #: modules/User Admin/user_manage_add.php:289
 #: modules/User Admin/user_manage_password.php:135
@@ -29096,7 +29133,7 @@ msgstr ""
 #: installer/install.php:491 installer/install.php:492
 #: installer/install.php:544 installer/install.php:580
 #: Admin/user_manage_add.php:301 installer/install.php:588
-#: installer/install.php:588 modules/User Admin/user_manage_add.php:301
+#: installer/install.php:589 modules/User Admin/user_manage_add.php:301
 #: modules/User Admin/user_manage_password.php:155
 msgid "Confirm Password"
 msgstr ""
@@ -30173,6 +30210,7 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage.php:322
 #: modules/Finance/expenses_manage.php:377
 #: modules/Finance/expenses_manage_processBulkExportContents.php:99
+#: modules/Finance/expenses_manage.php:382
 #: modules/Activities/activities_manage.php:164
 #: modules/Activities/activities_manage_add.php:345
 #: modules/Activities/activities_manage_edit.php:376
@@ -31753,6 +31791,7 @@ msgstr ""
 #: modules/Behaviour/moduleFunctions.php:153
 #: modules/Behaviour/moduleFunctions.php:156
 #: Admin/schoolYearSpecialDay_manage.php:276 Admin/ttDates.php:294
+#: modules/Finance/expenses_manage.php:449
 #: modules/Activities/activities_manage.php:272
 #: modules/Activities/activities_manage_enrolment.php:252
 #: modules/Behaviour/behaviour_manage.php:359
@@ -33563,6 +33602,7 @@ msgstr ""
 #: modules/Finance/expenses_manage.php:276
 #: modules/Behaviour/behaviour_manage.php:195
 #: modules/Behaviour/behaviour_pattern.php:249
+#: modules/Finance/expenses_manage.php:281
 #: modules/Behaviour/behaviour_manage.php:195
 #: modules/Behaviour/behaviour_pattern.php:249
 #: modules/Finance/expenseRequest_manage.php:257
@@ -33835,7 +33875,7 @@ msgid "View & Contribute To Record"
 msgstr ""
 
 #: modules/Individual Needs/in_edit.php:159 Needs/in_edit.php:196
-#: modules/Individual Needs/in_edit.php:198
+#: Needs/in_edit.php:198 modules/Individual Needs/in_edit.php:198
 msgid "Individual Needs Status"
 msgstr ""
 
@@ -33851,7 +33891,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2241
 #: modules/Students/student_view_details.php:2284
 #: modules/Students/student_view_details.php:2288 Needs/in_edit.php:222
-#: modules/Students/student_view_details.php:2369
+#: modules/Students/student_view_details.php:2369 Needs/in_edit.php:224
 #: modules/Individual Needs/in_edit.php:224
 #: modules/Students/student_view_details.php:2369
 msgid "Individual Education Plan"
@@ -33870,6 +33910,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2307
 #: modules/Students/student_view_details.php:2311 Needs/in_edit.php:238
 #: Needs/in_edit.php:289 modules/Students/student_view_details.php:2392
+#: Needs/in_edit.php:240 Needs/in_edit.php:291
 #: modules/Individual Needs/in_edit.php:240
 #: modules/Individual Needs/in_edit.php:291
 #: modules/Students/student_view_details.php:2392
@@ -33895,8 +33936,8 @@ msgstr ""
 #: modules/Messenger/messenger_manage_edit.php:255
 #: modules/Students/student_view_details.php:2308 Needs/in_edit.php:230
 #: Needs/in_edit.php:276 modules/Markbook/markbook_view.php:299
-#: modules/Students/student_view_details.php:2389
-#: modules/Individual Needs/in_edit.php:232
+#: modules/Students/student_view_details.php:2389 Needs/in_edit.php:232
+#: Needs/in_edit.php:278 modules/Individual Needs/in_edit.php:232
 #: modules/Individual Needs/in_edit.php:278
 #: modules/Markbook/markbook_view.php:299
 #: modules/Messenger/messenger_manage_edit.php:255
@@ -34230,6 +34271,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:584
 #: modules/Finance/moduleFunctions.php:861
 #: modules/Finance/moduleFunctions.php:1153
+#: modules/Finance/moduleFunctions.php:886
+#: modules/Finance/moduleFunctions.php:1178
 #: modules/Finance/invoices_manage.php:514
 #: modules/Finance/invoices_manage_processBulkExportContents.php:117
 #: modules/Finance/moduleFunctions.php:886
@@ -34933,6 +34976,8 @@ msgstr ""
 #: modules/Library/library_manage_catalog_add.php:227
 #: modules/Finance/moduleFunctions.php:865
 #: modules/Finance/moduleFunctions.php:1161
+#: modules/Finance/moduleFunctions.php:890
+#: modules/Finance/moduleFunctions.php:1186
 #: modules/Finance/invoices_manage_processBulkExportContents.php:87
 #: modules/Finance/moduleFunctions.php:890
 #: modules/Finance/moduleFunctions.php:1186
@@ -36744,6 +36789,7 @@ msgstr ""
 #: modules/Planner/units.php:233 modules/Finance/invoices_manage.php:482
 #: modules/Planner/units.php:280 modules/Finance/invoices_manage.php:483
 #: modules/Finance/expenses_manage.php:356
+#: modules/Finance/expenses_manage.php:361
 #: modules/Finance/expenses_manage.php:361
 #: modules/Finance/invoices_manage.php:483 modules/Planner/units.php:280
 msgid "Export"
@@ -47899,6 +47945,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1716 i18n/dbStringsForTranslation.php:1714
 #: i18n/dbStringsForTranslation.php:1781 i18n/dbStringsForTranslation.php:1819
 #: i18n/dbStringsForTranslation.php:1760 i18n/dbStringsForTranslation.php:1760
+#: modules/School Admin/behaviourSettings.php:156
 msgid "Levels"
 msgstr ""
 
@@ -50795,6 +50842,7 @@ msgstr ""
 #: modules/Finance/billingSchedule_manage_edit.php:163
 #: modules/Finance/moduleFunctions.php:288
 #: modules/Finance/moduleFunctions.php:857
+#: modules/Finance/moduleFunctions.php:882
 #: modules/Finance/billingSchedule_manage.php:169
 #: modules/Finance/billingSchedule_manage_add.php:146
 #: modules/Finance/billingSchedule_manage_edit.php:163
@@ -50900,6 +50948,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:639
 #: modules/Finance/moduleFunctions.php:924
 #: modules/Finance/moduleFunctions.php:1208
+#: modules/Finance/moduleFunctions.php:949
+#: modules/Finance/moduleFunctions.php:1233
 #: modules/Finance/fees_manage.php:173 modules/Finance/fees_manage_add.php:185
 #: modules/Finance/fees_manage_edit.php:211
 #: modules/Finance/invoices_manage_edit.php:538
@@ -51139,6 +51189,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:239
 #: modules/Finance/expenses_manage_edit.php:261
 #: modules/Finance/expenses_manage_edit.php:278
+#: modules/Finance/expenses_manage.php:243
 #: modules/Finance/expenseRequest_manage.php:222
 #: modules/Finance/expenseRequest_manage_reimburse.php:188
 #: modules/Finance/expenses_manage.php:243
@@ -51165,6 +51216,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:244
 #: modules/Finance/expenses_manage_edit.php:266
 #: modules/Finance/expenses_manage_edit.php:283
+#: modules/Finance/expenses_manage.php:233
 #: modules/Finance/expenseRequest_manage.php:212
 #: modules/Finance/expenses_manage.php:233
 #: modules/Finance/expenses_manage_edit.php:244
@@ -51204,6 +51256,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:563
 #: modules/Finance/moduleFunctions.php:836
 #: modules/Finance/moduleFunctions.php:1132
+#: modules/Finance/moduleFunctions.php:861
+#: modules/Finance/moduleFunctions.php:1157
 #: modules/Finance/invoices_manage.php:306
 #: modules/Finance/moduleFunctions.php:861
 #: modules/Finance/moduleFunctions.php:1157
@@ -51220,6 +51274,7 @@ msgstr ""
 #: modules/Finance/invoices_manage.php:464
 #: modules/Finance/invoices_manage.php:465
 #: modules/Finance/expenses_manage.php:349
+#: modules/Finance/expenses_manage.php:354
 #: modules/Finance/expenses_manage.php:354
 #: modules/Finance/invoices_manage.php:465
 msgid "Are you sure you wish to process this action? It cannot be undone."
@@ -51245,6 +51300,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:561
 #: modules/Finance/moduleFunctions.php:834
 #: modules/Finance/moduleFunctions.php:1130
+#: modules/Finance/moduleFunctions.php:859
+#: modules/Finance/moduleFunctions.php:1155
 #: modules/Finance/invoices_manage.php:506
 #: modules/Finance/invoices_manage_processBulkExportContents.php:108
 #: modules/Finance/moduleFunctions.php:859
@@ -51406,6 +51463,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:652
 #: modules/Finance/expenses_manage_view.php:279
 #: modules/Finance/moduleFunctions.php:1157
+#: modules/Finance/moduleFunctions.php:1182
 #: modules/Finance/expenseRequest_manage_reimburse.php:282
 #: modules/Finance/expenses_manage_add.php:286
 #: modules/Finance/expenses_manage_edit.php:547
@@ -51477,6 +51535,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:678
 #: modules/Finance/moduleFunctions.php:963
 #: modules/Finance/moduleFunctions.php:1247
+#: modules/Finance/moduleFunctions.php:988
+#: modules/Finance/moduleFunctions.php:1272
 #: modules/Finance/invoices_manage_edit.php:577
 #: modules/Finance/moduleFunctions.php:988
 #: modules/Finance/moduleFunctions.php:1272
@@ -51506,6 +51566,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:517
 #: modules/Finance/moduleFunctions.php:790
 #: modules/Finance/moduleFunctions.php:1086
+#: modules/Finance/moduleFunctions.php:815
+#: modules/Finance/moduleFunctions.php:1111
 #: modules/Finance/invoices_manage_edit.php:655
 #: modules/Finance/invoices_manage_edit.php:692
 #: modules/Finance/invoices_manage_edit.php:793
@@ -51634,11 +51696,13 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:78
 #: modules/Finance/moduleFunctions.php:647
 #: modules/Finance/moduleFunctions.php:672
+#: modules/Finance/moduleFunctions.php:672
 msgid "Fee Name"
 msgstr ""
 
 #: modules/Finance/moduleFunctions.php:117
 #: modules/Finance/moduleFunctions.php:686
+#: modules/Finance/moduleFunctions.php:711
 #: modules/Finance/moduleFunctions.php:711
 msgid "Show/Hide"
 msgstr ""
@@ -51648,6 +51712,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:553
 #: modules/Finance/moduleFunctions.php:826
 #: modules/Finance/moduleFunctions.php:1122
+#: modules/Finance/moduleFunctions.php:851
+#: modules/Finance/moduleFunctions.php:1147
 #: modules/Finance/moduleFunctions.php:851
 #: modules/Finance/moduleFunctions.php:1147
 msgid "Fees For"
@@ -51660,6 +51726,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:1178
 #: modules/Finance/moduleFunctions.php:907
 #: modules/Finance/moduleFunctions.php:1203
+#: modules/Finance/moduleFunctions.php:907
+#: modules/Finance/moduleFunctions.php:1203
 msgid "Fee Table"
 msgstr ""
 
@@ -51670,6 +51738,8 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:1192
 #: modules/Finance/moduleFunctions.php:933
 #: modules/Finance/moduleFunctions.php:1217
+#: modules/Finance/moduleFunctions.php:933
+#: modules/Finance/moduleFunctions.php:1217
 msgid "There are no records to display"
 msgstr ""
 
@@ -51677,12 +51747,14 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:492
 #: modules/Finance/moduleFunctions.php:1061
 #: modules/Finance/moduleFunctions.php:1086
+#: modules/Finance/moduleFunctions.php:1086
 msgid "Receipt To"
 msgstr ""
 
 #: modules/Finance/moduleFunctions.php:663
 #: modules/Finance/moduleFunctions.php:689
 #: modules/Finance/moduleFunctions.php:1258
+#: modules/Finance/moduleFunctions.php:1283
 #: modules/Finance/moduleFunctions.php:1283
 msgid "Amount Paid:"
 msgstr ""
@@ -55263,35 +55335,35 @@ msgstr ""
 #: installer/install.php:102 installer/install.php:147
 #: installer/install.php:148 installer/install.php:149
 #: installer/install.php:153 installer/install.php:156
-#: installer/install.php:158 installer/install.php:158
+#: installer/install.php:158 installer/install.php:159
 msgid "Database Information"
 msgstr ""
 
 #: installer/install.php:107 installer/install.php:152
 #: installer/install.php:153 installer/install.php:154
 #: installer/install.php:158 installer/install.php:161
-#: installer/install.php:163 installer/install.php:163
+#: installer/install.php:163 installer/install.php:164
 msgid "Database Type"
 msgstr ""
 
 #: installer/install.php:116 installer/install.php:161
 #: installer/install.php:162 installer/install.php:163
 #: installer/install.php:167 installer/install.php:170
-#: installer/install.php:172 installer/install.php:172
+#: installer/install.php:172 installer/install.php:173
 msgid "Database Server"
 msgstr ""
 
 #: installer/install.php:117 installer/install.php:162
 #: installer/install.php:163 installer/install.php:164
 #: installer/install.php:168 installer/install.php:171
-#: installer/install.php:173 installer/install.php:173
+#: installer/install.php:173 installer/install.php:174
 msgid "Localhost, IP address or domain."
 msgstr ""
 
 #: installer/install.php:129 installer/install.php:174
 #: installer/install.php:175 installer/install.php:176
 #: installer/install.php:180 installer/install.php:183
-#: installer/install.php:185 installer/install.php:185
+#: installer/install.php:185 installer/install.php:186
 msgid "Database Name"
 msgstr ""
 
@@ -55304,14 +55376,14 @@ msgstr ""
 #: installer/install.php:142 installer/install.php:187
 #: installer/install.php:188 installer/install.php:189
 #: installer/install.php:193 installer/install.php:196
-#: installer/install.php:198 installer/install.php:198
+#: installer/install.php:198 installer/install.php:199
 msgid "Database Username"
 msgstr ""
 
 #: installer/install.php:154 installer/install.php:199
 #: installer/install.php:200 installer/install.php:201
 #: installer/install.php:205 installer/install.php:208
-#: installer/install.php:210 installer/install.php:210
+#: installer/install.php:210 installer/install.php:211
 msgid "Database Password"
 msgstr ""
 
@@ -55319,7 +55391,7 @@ msgstr ""
 #: installer/install.php:640 installer/install.php:627
 #: installer/install.php:628 installer/install.php:629
 #: installer/install.php:681 installer/install.php:729
-#: installer/install.php:737 installer/install.php:737
+#: installer/install.php:737 installer/install.php:738
 msgid "Not recommended for non-experts!."
 msgstr ""
 
@@ -55364,8 +55436,8 @@ msgstr ""
 #: installer/install.php:251 installer/install.php:1094
 #: installer/install.php:268 installer/install.php:299
 #: installer/install.php:1103 installer/install.php:1105
-#: installer/install.php:251 installer/install.php:268
-#: installer/install.php:299 installer/install.php:1105
+#: installer/install.php:252 installer/install.php:269
+#: installer/install.php:300 installer/install.php:1106
 #, php-format
 msgid ""
 "A database connection could not be established. Please %1$stry again%2$s."
@@ -55374,7 +55446,7 @@ msgstr ""
 #: installer/install.php:205 installer/install.php:249
 #: installer/install.php:250 installer/install.php:251
 #: installer/install.php:269 installer/install.php:296
-#: installer/install.php:304 installer/install.php:304
+#: installer/install.php:304 installer/install.php:305
 msgid ""
 "Your database connection was successful, so the installation may proceed."
 msgstr ""
@@ -55382,7 +55454,7 @@ msgstr ""
 #: installer/install.php:261 installer/install.php:305
 #: installer/install.php:306 installer/install.php:307
 #: installer/install.php:325 installer/install.php:352
-#: installer/install.php:360 installer/install.php:360
+#: installer/install.php:360 installer/install.php:361
 msgid ""
 "../config.php could not be created, and so the installer cannot proceed."
 msgstr ""
@@ -55390,7 +55462,7 @@ msgstr ""
 #: installer/install.php:268 installer/install.php:312
 #: installer/install.php:313 installer/install.php:314
 #: installer/install.php:332 installer/install.php:359
-#: installer/install.php:367 installer/install.php:367
+#: installer/install.php:367 installer/install.php:368
 msgid "../gibbon.sql does not exist, and so the installer cannot proceed."
 msgstr ""
 
@@ -55402,8 +55474,8 @@ msgstr ""
 #: installer/install.php:1071 installer/install.php:383
 #: installer/install.php:1151 installer/install.php:1158
 #: installer/install.php:391 installer/install.php:1167
-#: installer/install.php:1169 installer/install.php:391
-#: installer/install.php:1169
+#: installer/install.php:1169 installer/install.php:393
+#: installer/install.php:1170
 msgid ""
 "Errors occurred in populating the database; empty your database, remove ../"
 "config.php and try again."
@@ -55414,7 +55486,7 @@ msgstr ""
 #: installer/install.php:993 installer/install.php:994
 #: installer/install.php:1046 installer/install.php:1126
 #: installer/install.php:1133 installer/install.php:1142
-#: installer/install.php:1144 installer/install.php:1144
+#: installer/install.php:1144 installer/install.php:1145
 msgid ""
 "Some required fields have not been set, and so installation cannot proceed."
 msgstr ""
@@ -55515,7 +55587,7 @@ msgstr ""
 #: installer/install.php:362 installer/install.php:363
 #: installer/install.php:364 installer/install.php:416
 #: installer/install.php:443 installer/install.php:451
-#: installer/install.php:451
+#: installer/install.php:452
 msgid "User Account"
 msgstr ""
 
@@ -55860,6 +55932,7 @@ msgstr ""
 #: modules/Students/student_view_details.php:2310
 #: modules/Students/student_view_details.php:2314 Needs/in_edit.php:246
 #: Needs/in_edit.php:302 modules/Students/student_view_details.php:2395
+#: Needs/in_edit.php:248 Needs/in_edit.php:304
 #: modules/Individual Needs/in_edit.php:248
 #: modules/Individual Needs/in_edit.php:304
 #: modules/Students/student_view_details.php:2395
@@ -57250,6 +57323,7 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:418
 #: modules/Finance/invoices_payOnline.php:128
 #: modules/Finance/moduleFunctions.php:987
+#: modules/Finance/moduleFunctions.php:1012
 #: modules/Finance/invoices_payOnline.php:128
 #: modules/Finance/moduleFunctions.php:1012
 msgid "Online Payment"
@@ -57270,6 +57344,7 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:426
 #: modules/Finance/invoices_payOnline.php:142
 #: modules/Finance/moduleFunctions.php:995
+#: modules/Finance/moduleFunctions.php:1020
 #: modules/Finance/invoices_payOnline.php:142
 #: modules/Finance/moduleFunctions.php:1020
 msgid ""
@@ -57279,6 +57354,7 @@ msgstr ""
 
 #: modules/Finance/moduleFunctions.php:422
 #: modules/Finance/moduleFunctions.php:991
+#: modules/Finance/moduleFunctions.php:1016
 #: modules/Finance/moduleFunctions.php:1016
 #, php-format
 msgid ""
@@ -57291,6 +57367,7 @@ msgstr ""
 
 #: modules/Finance/moduleFunctions.php:423
 #: modules/Finance/moduleFunctions.php:992
+#: modules/Finance/moduleFunctions.php:1017
 #: modules/Finance/moduleFunctions.php:1017
 msgid "Pay Now"
 msgstr ""
@@ -57714,18 +57791,18 @@ msgid ""
 msgstr ""
 
 #: installer/install.php:218 installer/install.php:221
-#: installer/install.php:223 installer/install.php:223
+#: installer/install.php:223 installer/install.php:224
 msgid "Install Demo Data?"
 msgstr ""
 
 #: installer/install.php:364 installer/install.php:391
-#: installer/install.php:399 installer/install.php:399
+#: installer/install.php:399 installer/install.php:401
 msgid ""
 "../gibbon_demo.sql does not exist, so we will conintue without demo data."
 msgstr ""
 
 #: installer/install.php:387 installer/install.php:414
-#: installer/install.php:422 installer/install.php:422
+#: installer/install.php:422 installer/install.php:423
 msgid ""
 "There were some issues installing the demo data, but we will conintue anyway."
 msgstr ""
@@ -57839,35 +57916,35 @@ msgid ""
 msgstr ""
 
 #: installer/install.php:184 installer/install.php:186
-#: installer/install.php:186
+#: installer/install.php:187
 msgid ""
 "This database will be created if it does not already exist. Collation should "
 "be utf8_general_ci."
 msgstr ""
 
 #: installer/install.php:502 installer/install.php:510
-#: installer/install.php:510
+#: installer/install.php:511
 msgid "Receive Support?"
 msgstr ""
 
 #: installer/install.php:503 installer/install.php:511
-#: installer/install.php:511
+#: installer/install.php:512
 msgid "Join our mailing list and recieve a welcome email from the team."
 msgstr ""
 
 #: installer/install.php:708 installer/install.php:716
-#: installer/install.php:716
+#: installer/install.php:717
 msgid "Checking for Cutting Edge Code."
 msgstr ""
 
 #: installer/install.php:751 installer/install.php:754
 #: installer/install.php:759 installer/install.php:762
-#: installer/install.php:759 installer/install.php:762
+#: installer/install.php:760 installer/install.php:763
 msgid "Cutting Edge Code check successful."
 msgstr ""
 
 #: installer/install.php:760 installer/install.php:768
-#: installer/install.php:768
+#: installer/install.php:769
 msgid "Cutting Edge Code check failed"
 msgstr ""
 
@@ -58149,13 +58226,13 @@ msgstr ""
 
 #: installer/install.php:868 modules/System Admin/systemSettings.php:940
 #: Admin/systemSettings.php:871 installer/install.php:876
-#: installer/install.php:876 modules/System Admin/systemSettings.php:871
+#: installer/install.php:877 modules/System Admin/systemSettings.php:871
 msgid "PAYPAL SUPPORTED"
 msgstr ""
 
 #: installer/install.php:893 modules/System Admin/systemSettings.php:965
 #: Admin/systemSettings.php:896 installer/install.php:901
-#: installer/install.php:901 modules/System Admin/systemSettings.php:896
+#: installer/install.php:902 modules/System Admin/systemSettings.php:896
 msgid "OTHERS"
 msgstr ""
 
@@ -59142,6 +59219,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_print.php:89
 #: modules/Finance/expenses_manage_print_print.php:83
 #: modules/Finance/expenses_manage_view.php:73
+#: modules/Finance/expenses_manage.php:89
 #: modules/Finance/expenseRequest_manage.php:66
 #: modules/Finance/expenseRequest_manage_add.php:83
 #: modules/Finance/expenseRequest_manage_view.php:58
@@ -59174,6 +59252,8 @@ msgstr ""
 #: modules/Finance/expenses_manage_print_print.php:108
 #: modules/Finance/expenses_manage_view.php:83
 #: modules/Finance/expenses_manage_view.php:98
+#: modules/Finance/expenses_manage.php:98
+#: modules/Finance/expenses_manage.php:113
 #: modules/Finance/expenseRequest_manage.php:76
 #: modules/Finance/expenseRequest_manage.php:91
 #: modules/Finance/expenseRequest_manage_add.php:93
@@ -59199,6 +59279,7 @@ msgstr ""
 
 #: modules/Finance/expenseRequest_manage.php:113
 #: modules/Finance/expenses_manage.php:132
+#: modules/Finance/expenses_manage.php:134
 #: modules/Finance/expenseRequest_manage.php:113
 #: modules/Finance/expenses_manage.php:134
 msgid "The Current budget cycle cannot be determined."
@@ -59206,6 +59287,7 @@ msgstr ""
 
 #: modules/Finance/expenseRequest_manage.php:134
 #: modules/Finance/expenses_manage.php:153
+#: modules/Finance/expenses_manage.php:155
 #: modules/Finance/expenseRequest_manage.php:134
 #: modules/Finance/expenses_manage.php:155
 msgid "The specified budget cycle cannot be determined."
@@ -59215,6 +59297,8 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage.php:153
 #: modules/Finance/expenses_manage.php:169
 #: modules/Finance/expenses_manage.php:172
+#: modules/Finance/expenses_manage.php:171
+#: modules/Finance/expenses_manage.php:174
 #: modules/Finance/expenseRequest_manage.php:150
 #: modules/Finance/expenseRequest_manage.php:153
 #: modules/Finance/expenses_manage.php:171
@@ -59226,6 +59310,8 @@ msgstr ""
 #: modules/Finance/expenseRequest_manage.php:161
 #: modules/Finance/expenses_manage.php:177
 #: modules/Finance/expenses_manage.php:180
+#: modules/Finance/expenses_manage.php:179
+#: modules/Finance/expenses_manage.php:182
 #: modules/Finance/expenseRequest_manage.php:158
 #: modules/Finance/expenseRequest_manage.php:161
 #: modules/Finance/expenses_manage.php:179
@@ -59237,6 +59323,7 @@ msgstr ""
 #: modules/Finance/expenses_manage.php:216
 #: modules/Finance/expenses_manage_edit.php:219
 #: modules/Finance/expenses_manage_edit.php:746
+#: modules/Finance/expenses_manage.php:218
 #: modules/Finance/expenseRequest_manage.php:197
 #: modules/Finance/expenses_manage.php:218
 #: modules/Finance/expenses_manage_edit.php:219
@@ -59250,6 +59337,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_add.php:176
 #: modules/Finance/expenses_manage_edit.php:224
 #: modules/Finance/expenses_manage_edit.php:251
+#: modules/Finance/expenses_manage.php:223
 #: modules/Finance/expenseRequest_manage.php:202
 #: modules/Finance/expenseRequest_manage_reimburse.php:187
 #: modules/Finance/expenses_manage.php:223
@@ -59265,6 +59353,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:234
 #: modules/Finance/expenses_manage_edit.php:256
 #: modules/Finance/expenses_manage_edit.php:273
+#: modules/Finance/expenses_manage.php:238
 #: modules/Finance/expenseRequest_manage.php:217
 #: modules/Finance/expenses_manage.php:238
 #: modules/Finance/expenses_manage_add.php:177
@@ -59288,6 +59377,8 @@ msgstr ""
 #: modules/Finance/expenses_manage_print_print.php:192
 #: modules/Finance/expenses_manage_processBulkExportContents.php:87
 #: modules/Finance/expenses_manage_view.php:185
+#: modules/Finance/expenses_manage.php:250
+#: modules/Finance/expenses_manage.php:373
 #: modules/Finance/expenseRequest_manage.php:229
 #: modules/Finance/expenseRequest_manage.php:316
 #: modules/Finance/expenseRequest_manage_add.php:153
@@ -59307,6 +59398,7 @@ msgstr ""
 
 #: modules/Finance/expenseRequest_manage.php:303
 #: modules/Finance/expenses_manage.php:340
+#: modules/Finance/expenses_manage.php:345
 #: modules/Finance/expenseRequest_manage.php:303
 #: modules/Finance/expenses_manage.php:345
 #, php-format
@@ -59533,6 +59625,7 @@ msgstr ""
 
 #: modules/Finance/expenses_manage.php:439
 #: modules/Finance/expenses_manage.php:444
+#: modules/Finance/expenses_manage.php:444
 msgid "Approve/Reject"
 msgstr ""
 
@@ -59750,7 +59843,7 @@ msgstr ""
 msgid "Archive Title"
 msgstr ""
 
-#: modules/Individual Needs/in_edit.php:157
+#: modules/Individual Needs/in_edit.php:157 Needs/in_edit.php:159
 #: modules/Individual Needs/in_edit.php:159
 msgid "Archived Plans"
 msgstr ""
@@ -59984,4 +60077,8 @@ msgstr ""
 #: modules/Markbook/markbook_edit_data.php:594
 #: modules/Markbook/markbook_edit_data.php:594
 msgid "Assessment Complete?"
+msgstr ""
+
+#: modules/School Admin/behaviourSettings.php:67
+msgid "Descriptors"
 msgstr ""

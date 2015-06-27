@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: Gibbon v9.0.00\n"
 "Report-Msgid-Bugs-To: support@gibbonedu.org\n"
 "POT-Creation-Date: 2014-03-05 09:36+0800\n"
-"PO-Revision-Date: 2015-06-22 23:04-0000\n"
+"PO-Revision-Date: 2015-06-25 20:48-0000\n"
 "Last-Translator: Mauro Francisco <mauro.francisco@msisangola.com>\n"
 "Language-Team: Gibbon <support@gibbonedu.org>\n"
 "MIME-Version: 1.0\n"
@@ -1923,8 +1923,8 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:1564
 #: modules/Students/student_view_details.php:1658 Admin/module_manage.php:299
 #: Admin/module_manage_update.php:146 Admin/update.php:126
-#: Admin/update.php:194 installer/install.php:143 installer/install.php:240
-#: installer/install.php:1083 modules/Activities/activities_copy.php:110
+#: Admin/update.php:194 installer/install.php:144 installer/install.php:241
+#: installer/install.php:1084 modules/Activities/activities_copy.php:110
 #: modules/Activities/activities_manage.php:79
 #: modules/Activities/activities_manage_add.php:641
 #: modules/Activities/activities_manage_edit.php:828
@@ -2032,7 +2032,7 @@ msgstr ""
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:411
 #: modules/School Admin/activitySettings.php:289
 #: modules/School Admin/alertLevelSettings.php:162
-#: modules/School Admin/behaviourSettings.php:174
+#: modules/School Admin/behaviourSettings.php:253
 #: modules/School Admin/daysOfWeek_manage.php:292
 #: modules/School Admin/department_manage.php:109
 #: modules/School Admin/department_manage_add.php:202
@@ -2419,8 +2419,8 @@ msgstr "Confirmar nova palavra-chave"
 #: modules/Planner/outcomes_import.php:115
 #: modules/Planner/planner_edit.php:1424 Admin/messengerSettings.php:227
 #: Admin/systemSettings.php:1311 Admin/user_manage_edit.php:1672
-#: modules/Planner/planner_view_full.php:1561 installer/install.php:140
-#: installer/install.php:236 installer/install.php:1075
+#: modules/Planner/planner_view_full.php:1561 installer/install.php:141
+#: installer/install.php:237 installer/install.php:1076
 #: modules/Activities/activities_copy.php:106
 #: modules/Activities/activities_manage_add.php:636
 #: modules/Activities/activities_manage_edit.php:824
@@ -2497,7 +2497,7 @@ msgstr "Confirmar nova palavra-chave"
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:407
 #: modules/School Admin/activitySettings.php:285
 #: modules/School Admin/alertLevelSettings.php:157
-#: modules/School Admin/behaviourSettings.php:170
+#: modules/School Admin/behaviourSettings.php:249
 #: modules/School Admin/daysOfWeek_manage.php:288
 #: modules/School Admin/department_manage.php:105
 #: modules/School Admin/department_manage_add.php:199
@@ -3471,7 +3471,7 @@ msgstr "Preferências"
 #: modules/Students/student_view_details.php:651
 #: modules/Students/student_view_details.php:1194
 #: modules/Students/student_view_details.php:1197 functions.php:46
-#: i18n/dbStringsForTranslation.php:1729 installer/install.php:497
+#: i18n/dbStringsForTranslation.php:1729 installer/install.php:498
 #: modules/Application Form/applicationForm.php:522
 #: modules/Application Form/applicationForm.php:1354
 #: modules/Data Updater/data_personal.php:672
@@ -8802,6 +8802,8 @@ msgstr "Lição / Unit"
 #: modules/School Admin/activitySettings.php:213
 #: modules/School Admin/activitySettings.php:255
 #: modules/School Admin/activitySettings.php:278
+#: modules/School Admin/behaviourSettings.php:89
+#: modules/School Admin/behaviourSettings.php:178
 #: modules/School Admin/daysOfWeek_manage.php:99
 #: modules/School Admin/daysOfWeek_manage.php:103
 #: modules/School Admin/department_manage.php:99
@@ -9300,6 +9302,8 @@ msgstr "Sim"
 #: modules/School Admin/activitySettings.php:212
 #: modules/School Admin/activitySettings.php:254
 #: modules/School Admin/activitySettings.php:277
+#: modules/School Admin/behaviourSettings.php:90
+#: modules/School Admin/behaviourSettings.php:179
 #: modules/School Admin/daysOfWeek_manage.php:100
 #: modules/School Admin/daysOfWeek_manage.php:104
 #: modules/School Admin/department_manage.php:98
@@ -10856,7 +10860,7 @@ msgstr "Login"
 #: Admin/import_families.php:163 functions.php:1908
 #: modules/Students/student_view_details.php:451
 #: modules/Students/student_view_details.php:956 functions.php:2043
-#: installer/install.php:519 modules/Application Form/applicationForm.php:908
+#: installer/install.php:520 modules/Application Form/applicationForm.php:908
 #: modules/Staff/staff_view_details.php:220
 #: modules/Students/report_students_left.php:142
 #: modules/Students/report_students_new.php:204
@@ -10892,7 +10896,7 @@ msgstr "Nome de utilizador"
 #: Admin/applicationForm_manage_accept.php:1081 functions.php:1855
 #: functions.php:1864 functions.php:1881 installer/install.php:513
 #: installer/install.php:549 functions.php:1899 functions.php:1919
-#: functions.php:1920 functions.php:2055 installer/install.php:557
+#: functions.php:1920 functions.php:2055 installer/install.php:558
 #: modules/User Admin/applicationForm_manage_accept.php:418
 #: modules/User Admin/applicationForm_manage_accept.php:954
 #: modules/User Admin/applicationForm_manage_accept.php:1117
@@ -14844,7 +14848,7 @@ msgstr "O registro especificado não pode ser encontrado."
 #: modules/Rubrics/rubrics_edit.php:344 installer/install.php:159
 #: installer/install.php:162 modules/Planner/units_edit.php:895
 #: modules/Planner/units_edit.php:904 modules/Planner/units_edit.php:913
-#: installer/install.php:164 installer/install.php:164
+#: installer/install.php:164 installer/install.php:165
 #: modules/Activities/activities_manage_enrolment_edit.php:103
 #: modules/Activities/activities_manage_enrolment_edit.php:112
 #: modules/Attendance/attendance_future_byPerson.php:185
@@ -15255,7 +15259,7 @@ msgstr "Aluno(a):"
 #: modules/Library/library_manage_catalog_add.php:117
 #: modules/Library/library_manage_catalog_edit.php:597
 #: modules/Planner/planner_edit.php:296 Admin/systemSettings.php:1282
-#: installer/install.php:985 installer/install.php:1051
+#: installer/install.php:986 installer/install.php:1052
 #: modules/Activities/activities_copy.php:84
 #: modules/Activities/activities_view_register.php:348
 #: modules/Application Form/applicationForm.php:225
@@ -15527,7 +15531,7 @@ msgstr "Por favor, selecione…"
 #: Form/applicationForm.php:2011 Updater/data_family.php:329
 #: modules/Library/library_manage_catalog_add.php:134
 #: modules/Planner/planner_edit.php:321 Admin/systemSettings.php:1304
-#: installer/install.php:1002 installer/install.php:1068
+#: installer/install.php:1003 installer/install.php:1069
 #: modules/Activities/activities_copy.php:100
 #: modules/Activities/activities_view_register.php:371
 #: modules/Application Form/applicationForm.php:231
@@ -15768,7 +15772,7 @@ msgstr "Imprimir"
 #: installer/install.php:385 installer/install.php:437
 #: installer/install.php:464 Form/applicationForm.php:161
 #: Form/applicationForm.php:919 Form/applicationForm.php:1081
-#: installer/install.php:472 modules/Application Form/applicationForm.php:161
+#: installer/install.php:473 modules/Application Form/applicationForm.php:161
 #: modules/Application Form/applicationForm.php:919
 #: modules/Application Form/applicationForm.php:1081
 #: modules/Data Updater/data_personal.php:376
@@ -15790,7 +15794,7 @@ msgstr "Nome de família, conforme documentos de ID."
 #: installer/install.php:397 installer/install.php:398
 #: installer/install.php:450 installer/install.php:477
 #: Form/applicationForm.php:174 Form/applicationForm.php:1094
-#: installer/install.php:485 modules/Application Form/applicationForm.php:174
+#: installer/install.php:486 modules/Application Form/applicationForm.php:174
 #: modules/Application Form/applicationForm.php:1094
 #: modules/Data Updater/data_personal.php:394
 #: modules/User Admin/applicationForm_manage_edit.php:438
@@ -18022,14 +18026,14 @@ msgstr "Turmas anuais em que este campo &eacute relevante."
 #: modules/School Admin/externalAssessments_manage_edit_field_delete.php:58
 #: modules/School Admin/gradeScales_manage_edit_grade_delete.php:58
 msgid "Delete Grade"
-msgstr "Eliminar registo"
+msgstr "Eliminar Nota"
 
 #: modules/School Admin/externalAssessments_manage_edit_field_edit.php:58
 #: Admin/gradeScales_manage_edit_grade_edit.php:58
 #: modules/School Admin/externalAssessments_manage_edit_field_edit.php:58
 #: modules/School Admin/gradeScales_manage_edit_grade_edit.php:58
 msgid "Edit Grade"
-msgstr "Editar o Registo"
+msgstr "Editar a Nota"
 
 #: modules/School Admin/externalAssessmentSettings.php:31
 #: i18n/dbStringsForTranslation.php:73 i18n/dbStringsForTranslation.php:100
@@ -18219,7 +18223,7 @@ msgstr "numérico"
 #: modules/School Admin/gradeScales_manage_add.php:34
 #: modules/School Admin/gradeScales_manage_add.php:34
 msgid "Add Grade Scale"
-msgstr "Quick Add"
+msgstr "Adicionar Escala Classificativa"
 
 #: modules/School Admin/gradeScales_manage_add.php:121
 #: modules/School Admin/gradeScales_manage_add.php:121
@@ -18234,7 +18238,7 @@ msgstr ""
 #: modules/School Admin/gradeScales_manage_delete.php:31
 #: modules/School Admin/gradeScales_manage_delete.php:31
 msgid "Delete Grade Scale"
-msgstr "Eliminar registo"
+msgstr "Eliminar Escala Classificativa"
 
 #: modules/School Admin/gradeScales_manage_edit.php:34
 #: Admin/gradeScales_manage_edit_grade_add.php:57
@@ -18245,7 +18249,7 @@ msgstr "Eliminar registo"
 #: modules/School Admin/gradeScales_manage_edit_grade_delete.php:58
 #: modules/School Admin/gradeScales_manage_edit_grade_edit.php:58
 msgid "Edit Grade Scale"
-msgstr "Editar o Registo"
+msgstr "Editar Escala Classificativa"
 
 #: modules/School Admin/gradeScales_manage_edit.php:110 modules/Timetable
 #: Admin/course_manage_add.php:134 Admin/course_manage_edit.php:150
@@ -18269,13 +18273,13 @@ msgstr "Mínimo Aceit&aacutevel"
 msgid ""
 "This is the lowest grade a student can get without being unsatisfactory."
 msgstr ""
-"Esta &eacute a classifica&ccedil&atildeo mais baixa que um estudante pode "
-"obter sem ser insatisfat&oacuteria. (Reprovado)"
+"Esta é a classificação mais baixa que um estudante pode obter sem ser "
+"insatisfatória. (Reprovado)"
 
 #: modules/School Admin/gradeScales_manage_edit.php:212
 #: modules/School Admin/gradeScales_manage_edit.php:212
 msgid "Edit Grades"
-msgstr "Notas (Classificações) Recentes"
+msgstr "Editar Notas"
 
 #: modules/School Admin/gradeScales_manage_edit.php:238
 #: Admin/gradeScales_manage_edit_grade_add.php:101
@@ -18291,7 +18295,7 @@ msgstr "Valor"
 #: modules/School Admin/gradeScales_manage_edit_grade_add.php:57
 #: modules/School Admin/gradeScales_manage_edit_grade_add.php:57
 msgid "Add Grade"
-msgstr "Adicionar"
+msgstr "Adicionar Nota"
 
 #: modules/School Admin/gradeScales_manage_edit_grade_add.php:102
 #: Admin/gradeScales_manage_edit_grade_add.php:128
@@ -18302,7 +18306,7 @@ msgstr "Adicionar"
 #: modules/School Admin/gradeScales_manage_edit_grade_edit.php:103
 #: modules/School Admin/gradeScales_manage_edit_grade_edit.php:129
 msgid "Must be unique for this grade scale."
-msgstr "Deve ser &uacutenica para esta Escala Classificativa."
+msgstr "Deve ser única para esta Escala Classificativa."
 
 #: modules/School Admin/house_manage.php:31 Admin/house_manage_add.php:31
 #: Admin/house_manage_delete.php:31 Admin/house_manage_edit.php:31
@@ -19529,7 +19533,7 @@ msgstr ""
 #: installer/install.php:507 i18n/dbStringsForTranslation.php:207
 #: installer/install.php:559 installer/install.php:595
 #: i18n/dbStringsForTranslation.php:209 i18n/dbStringsForTranslation.php:224
-#: installer/install.php:603 modules/System Admin/systemSettings.php:65
+#: installer/install.php:604 modules/System Admin/systemSettings.php:65
 #: modules/System Admin/systemSettings.php:101
 msgid "System Settings"
 msgstr ""
@@ -19541,7 +19545,7 @@ msgstr ""
 #: installer/install.php:680 installer/install.php:667
 #: installer/install.php:668 installer/install.php:669
 #: installer/install.php:721 installer/install.php:796
-#: installer/install.php:804 modules/System Admin/systemSettings.php:292
+#: installer/install.php:805 modules/System Admin/systemSettings.php:292
 msgid "Organisation Settings"
 msgstr "Definições"
 
@@ -19582,9 +19586,10 @@ msgstr "A política de senhas estabelece que as senhas devem:"
 #: installer/install.php:870 installer/install.php:945
 #: installer/install.php:952 Form/applicationForm.php:1987
 #: Admin/systemSettings.php:1146 Admin/user_manage_edit.php:1495
-#: modules/Students/student_view_details.php:971 installer/install.php:962
+#: modules/Students/student_view_details.php:971 installer/install.php:963
 #: modules/Application Form/applicationForm.php:1987
 #: modules/Data Updater/data_personal.php:1573
+#: modules/School Admin/behaviourSettings.php:220
 #: modules/School Admin/markbookSettings.php:294
 #: modules/School Admin/studentsSettings.php:145
 #: modules/Staff/staff_view_details.php:405
@@ -19611,7 +19616,7 @@ msgstr "Calendário Escolar"
 #: installer/install.php:768 installer/install.php:769
 #: installer/install.php:770 installer/install.php:822
 #: installer/install.php:897 installer/install.php:904
-#: installer/install.php:914
+#: installer/install.php:915
 msgid "gibbonedu.com Value-Added Services"
 msgstr "gibbonedu.com serviços de valor acrescentado"
 
@@ -22622,7 +22627,7 @@ msgstr "Antecedentes pessoais"
 #: modules/Students/student_view_details.php:570 installer/install.php:436
 #: installer/install.php:463 Form/applicationForm.php:160
 #: Form/applicationForm.php:918 Form/applicationForm.php:1080
-#: modules/Students/student_view_details.php:574 installer/install.php:471
+#: modules/Students/student_view_details.php:574 installer/install.php:472
 #: modules/Application Form/applicationForm.php:160
 #: modules/Application Form/applicationForm.php:918
 #: modules/Application Form/applicationForm.php:1080
@@ -22654,7 +22659,7 @@ msgstr "Apelido"
 #: modules/Students/student_view_details.php:574 installer/install.php:449
 #: installer/install.php:476 Form/applicationForm.php:173
 #: Form/applicationForm.php:1093 modules/Students/student_view_details.php:578
-#: installer/install.php:484 modules/Application Form/applicationForm.php:173
+#: installer/install.php:485 modules/Application Form/applicationForm.php:173
 #: modules/Application Form/applicationForm.php:1093
 #: modules/Data Updater/data_personal.php:393
 #: modules/Students/student_view_details.php:617
@@ -23368,7 +23373,7 @@ msgstr "Morada"
 #: modules/User Admin/applicationForm_manage_edit.php:880
 #: modules/User Admin/applicationForm_manage_edit.php:880
 msgid "Grades<br/>Attended"
-msgstr "Notas (Classificações) Recentes"
+msgstr "Notas<br>Com a presença"
 
 #: modules/User Admin/applicationForm_manage_edit.php:883
 #: modules/User Admin/applicationForm_manage_edit.php:883
@@ -23722,7 +23727,7 @@ msgstr "Pais/encarregados de educação %1$s dados pessoais"
 #: modules/Students/student_view_details_notes_edit.php:124
 #: installer/install.php:421 installer/install.php:448
 #: Form/applicationForm.php:1060
-#: modules/Students/student_view_details.php:1702 installer/install.php:456
+#: modules/Students/student_view_details.php:1702 installer/install.php:457
 #: modules/Application Form/applicationForm.php:1060
 #: modules/Data Updater/data_personal.php:351
 #: modules/Finance/expenseRequest_manage.php:313
@@ -23760,7 +23765,7 @@ msgstr "Srta."
 #: Admin/user_manage_add.php:93 Admin/user_manage_edit.php:156
 #: installer/install.php:374 installer/install.php:375
 #: installer/install.php:427 installer/install.php:454
-#: installer/install.php:462 modules/Data Updater/data_personal.php:357
+#: installer/install.php:463 modules/Data Updater/data_personal.php:357
 #: modules/User Admin/applicationForm_manage_edit.php:1165
 #: modules/User Admin/user_manage_add.php:93
 #: modules/User Admin/user_manage_edit.php:156
@@ -23773,7 +23778,7 @@ msgstr "Senhorita"
 #: Admin/user_manage_add.php:94 Admin/user_manage_edit.php:157
 #: installer/install.php:375 installer/install.php:376
 #: installer/install.php:428 installer/install.php:455
-#: installer/install.php:463 modules/Data Updater/data_personal.php:358
+#: installer/install.php:464 modules/Data Updater/data_personal.php:358
 #: modules/User Admin/applicationForm_manage_edit.php:1166
 #: modules/User Admin/user_manage_add.php:94
 #: modules/User Admin/user_manage_edit.php:157
@@ -23786,7 +23791,7 @@ msgstr "Sr."
 #: Admin/user_manage_add.php:95 Admin/user_manage_edit.php:158
 #: installer/install.php:376 installer/install.php:377
 #: installer/install.php:429 installer/install.php:456
-#: installer/install.php:464 modules/Data Updater/data_personal.php:359
+#: installer/install.php:465 modules/Data Updater/data_personal.php:359
 #: modules/User Admin/applicationForm_manage_edit.php:1167
 #: modules/User Admin/user_manage_add.php:95
 #: modules/User Admin/user_manage_edit.php:158
@@ -23799,7 +23804,7 @@ msgstr "Sra."
 #: Admin/user_manage_add.php:96 Admin/user_manage_edit.php:159
 #: installer/install.php:377 installer/install.php:378
 #: installer/install.php:430 installer/install.php:457
-#: installer/install.php:465 modules/Data Updater/data_personal.php:360
+#: installer/install.php:466 modules/Data Updater/data_personal.php:360
 #: modules/User Admin/applicationForm_manage_edit.php:1168
 #: modules/User Admin/user_manage_add.php:96
 #: modules/User Admin/user_manage_edit.php:159
@@ -27512,7 +27517,7 @@ msgstr "Adicionar"
 #: installer/install.php:999 installer/install.php:1000
 #: installer/install.php:1001 installer/install.php:1053
 #: installer/install.php:1133 installer/install.php:1140
-#: installer/install.php:1151
+#: installer/install.php:1152
 #: modules/Finance/billingSchedule_manage_add.php:51
 #: modules/User Admin/user_manage_add.php:51
 #: modules/User Admin/user_manage_password.php:54
@@ -27534,7 +27539,7 @@ msgstr ""
 #: Admin/user_manage_add.php:92 Admin/user_manage_edit.php:155
 #: installer/install.php:373 installer/install.php:374
 #: installer/install.php:426 installer/install.php:453
-#: Admin/applicationForm_manage_edit.php:1164 installer/install.php:461
+#: Admin/applicationForm_manage_edit.php:1164 installer/install.php:462
 #: modules/Data Updater/data_personal.php:356
 #: modules/User Admin/applicationForm_manage_edit.php:1164
 #: modules/User Admin/user_manage_add.php:92
@@ -27560,7 +27565,7 @@ msgstr "Controles que o usuário pode ver e fazer."
 #: installer/install.php:435 installer/install.php:422
 #: Admin/user_manage_add.php:230 installer/install.php:423
 #: installer/install.php:424 installer/install.php:476
-#: installer/install.php:512 installer/install.php:520
+#: installer/install.php:512 installer/install.php:521
 #: modules/User Admin/user_manage_add.php:232
 msgid "Must be unique. System login name. Cannot be changed."
 msgstr "Deve ser exclusivo. Nome de login do sistema. Não pode ser alterado."
@@ -27577,8 +27582,8 @@ msgstr "Deve ser exclusivo. Nome de login do sistema. Não pode ser alterado."
 #: installer/install.php:480 installer/install.php:524
 #: installer/install.php:528 installer/install.php:532
 #: installer/install.php:560 installer/install.php:564
-#: installer/install.php:568 installer/install.php:568
-#: installer/install.php:572 installer/install.php:576
+#: installer/install.php:568 installer/install.php:569
+#: installer/install.php:573 installer/install.php:577
 #: modules/User Admin/user_manage_add.php:281
 #: modules/User Admin/user_manage_add.php:285
 #: modules/User Admin/user_manage_add.php:289
@@ -27594,7 +27599,7 @@ msgstr "A política de senhas estabelece que as senhas devem:"
 #: installer/install.php:490 Admin/user_manage_add.php:299
 #: installer/install.php:491 installer/install.php:492
 #: installer/install.php:544 installer/install.php:580
-#: installer/install.php:588 modules/User Admin/user_manage_add.php:301
+#: installer/install.php:589 modules/User Admin/user_manage_add.php:301
 #: modules/User Admin/user_manage_password.php:155
 msgid "Confirm Password"
 msgstr "Confirmar nova palavra-chave"
@@ -29857,7 +29862,7 @@ msgstr "Avaliação"
 #: Assessment/externalAssessment_manage_details_add.php:187
 #: modules/External Assessment/externalAssessment_manage_details_add.php:187
 msgid "Copy Target Grades?"
-msgstr "Notas (Classificações) Recentes"
+msgstr "Copiar as notas alvo?"
 
 #: modules/External Assessment/externalAssessment_manage_details_add.php:176
 #: Assessment/externalAssessment_manage_details_add.php:188
@@ -29869,7 +29874,7 @@ msgstr "Estas virá do último teste de CAT do aluno."
 #: Assessment/externalAssessment_manage_details_add.php:212
 #: modules/External Assessment/externalAssessment_manage_details_add.php:212
 msgid "Create Target Grades?"
-msgstr "Notas (Classificações) Recentes"
+msgstr "Criar notas alvo?"
 
 #: modules/External Assessment/externalAssessment_manage_details_add.php:201
 #: Assessment/externalAssessment_manage_details_add.php:213
@@ -29887,7 +29892,7 @@ msgstr "De Grades GCSE alvo"
 #: Assessment/externalAssessment_manage_details_add.php:219
 #: modules/External Assessment/externalAssessment_manage_details_add.php:219
 msgid "GCSE Final Grades"
-msgstr "Notas (Classificações) Recentes"
+msgstr "Média Final"
 
 #: modules/External Assessment/externalAssessment_manage_details_add.php:519
 #: Assessment/externalAssessment_manage_details_edit.php:189
@@ -29900,14 +29905,7 @@ msgstr "Notas (Classificações) Recentes"
 #: modules/External Assessment/externalAssessment_manage_details_add.php:568
 #: modules/External Assessment/externalAssessment_manage_details_edit.php:237
 msgid "Grade"
-msgstr ""
-"<b>Markbook</b> fornece uma maneira organizada para avaliar, registrar e "
-"informar sobre o progresso do aluno. Use escalas grau, rubricas, comentários "
-"e uploads de arquivos para manter os alunos e pais até à data. Fazer a "
-"ligação markbooks às %1$sPlanner%2$s, e ver o trabalho do aluno como você "
-"está marcando-a. <br/><br/> Escolha uma classe a partir do menu à direita, e "
-"em seguida, clique no botão “Adicionar” (inferior a esta mensagem, à "
-"direita) para criar uma nova coluna Markbook."
+msgstr "Nota"
 
 #: modules/External Assessment/externalAssessment_manage_details_add.php:522
 #: Assessment/externalAssessment_manage_details_edit.php:192
@@ -29938,12 +29936,12 @@ msgstr "Grau PAS"
 #: modules/External Assessment/externalAssessment_manage_details_delete.php:31
 #: modules/External Assessment/externalAssessment_manage_details_delete.php:31
 msgid "Delete Assessment"
-msgstr "Avaliação"
+msgstr "Excluir Avaliação"
 
 #: modules/External Assessment/externalAssessment_manage_details_edit.php:31
 #: modules/External Assessment/externalAssessment_manage_details_edit.php:31
 msgid "Edit Assessment"
-msgstr "Avaliação"
+msgstr "Editar Avaliação"
 
 #: modules/External Assessment/moduleFunctions.php:81
 #: modules/Library/report_viewOverdueItems.php:62
@@ -30022,7 +30020,7 @@ msgstr "Use a classe listagem à direita para escolher um Markbook para editar."
 #: modules/Markbook/moduleFunctions.php:89
 #: modules/Markbook/moduleFunctions.php:92
 msgid "Edit Markbook"
-msgstr "Markbook"
+msgstr "Editar Caderneta"
 
 #: modules/Markbook/markbook_edit.php:90
 #: modules/Activities/activities_manage.php:272
@@ -30211,7 +30209,7 @@ msgstr "Markbook"
 #: modules/User Admin/studentEnrolment_manage.php:231
 #: modules/User Admin/user_manage.php:180
 msgid "Edit"
-msgstr "Editar o Registo"
+msgstr "Editar"
 
 #: modules/Markbook/markbook_edit.php:107
 #: modules/Markbook/markbook_edit_addMulti.php:66
@@ -30219,7 +30217,7 @@ msgstr "Editar o Registo"
 #: modules/Markbook/markbook_edit.php:107
 #: modules/Markbook/markbook_edit_addMulti.php:72
 msgid "Add Multiple Columns"
-msgstr "Quick Add"
+msgstr "Adicionar várias colunas"
 
 #: modules/Markbook/markbook_edit.php:126
 #: modules/Markbook/markbook_view.php:156
@@ -30234,27 +30232,27 @@ msgstr "Professores"
 #: modules/Markbook/markbook_edit.php:140
 #: modules/Markbook/markbook_edit.php:140
 msgid "Markbook Columns"
-msgstr "Markbook"
+msgstr "Colunas Markbook"
 
 #: modules/Markbook/markbook_edit.php:174
 #: modules/Markbook/markbook_edit.php:174
 msgid "Name/Unit"
-msgstr "Unidade"
+msgstr "Nome/Unidade"
 
 #: modules/Markbook/markbook_edit.php:180
 #: modules/Markbook/markbook_edit.php:180
 msgid "Date<br/>Complete"
-msgstr "Aluno e Data"
+msgstr "Data<br/>Completo"
 
 #: modules/Markbook/markbook_edit.php:183
 #: modules/Markbook/markbook_edit.php:183
 msgid "Viewable <br/>to Students"
-msgstr "Encontrar alunos"
+msgstr "Visível <br/>para Estudantes"
 
 #: modules/Markbook/markbook_edit.php:186
 #: modules/Markbook/markbook_edit.php:186
 msgid "Viewable <br/>to Parents"
-msgstr "Visível<br>para os pais"
+msgstr "Visível <br>para os pais"
 
 #: modules/Markbook/markbook_edit.php:232
 #: modules/Markbook/markbook_edit_edit.php:135
@@ -30270,7 +30268,7 @@ msgstr "Visível<br>para os pais"
 #: modules/Markbook/markbook_edit_edit.php:144
 #: modules/Markbook/markbook_view.php:463
 msgid "Enter Data"
-msgstr "Mostrar dados confidenciais"
+msgstr "Insira os dados"
 
 #: modules/Markbook/markbook_edit_add.php:92
 #: modules/Markbook/markbook_edit_edit.php:123
@@ -30307,13 +30305,13 @@ msgstr ""
 #: modules/Markbook/markbook_edit_addMulti.php:269
 #: modules/Markbook/markbook_edit_edit.php:399
 msgid "Attainment Scale"
-msgstr "Nivel obtido"
+msgstr "Escala de realização"
 
 #: modules/Markbook/markbook_edit_add.php:283
 #: modules/Markbook/markbook_edit_addMulti.php:192
 #: modules/Markbook/markbook_edit_edit.php:317
 msgid "How will attainment be graded?"
-msgstr "Nivel obtido"
+msgstr "Como serão classificadas as realizações?"
 
 #: modules/Markbook/markbook_edit_add.php:313
 #: modules/Markbook/markbook_edit_addMulti.php:222
@@ -30326,7 +30324,7 @@ msgstr "Nivel obtido"
 #: modules/Markbook/markbook_edit_addMulti.php:295
 #: modules/Markbook/markbook_edit_edit.php:426
 msgid "Attainment Rubric"
-msgstr "Nivel obtido"
+msgstr "Realização Rubrica"
 
 #: modules/Markbook/markbook_edit_add.php:314
 #: modules/Markbook/markbook_edit_add.php:415
@@ -30372,7 +30370,7 @@ msgstr "Escolha a rubrica predefinida, se desejado."
 #: modules/Markbook/markbook_edit_edit.php:432
 #: modules/Markbook/markbook_edit_edit.php:557
 msgid "School Rubrics"
-msgstr "Calendário Escolar"
+msgstr "Rubricas escolares"
 
 #: modules/Markbook/markbook_edit_add.php:346
 #: modules/Markbook/markbook_edit_add.php:447
@@ -30408,13 +30406,13 @@ msgstr "Rubricas de área de aprendizagem"
 #: modules/Markbook/markbook_edit_addMulti.php:388
 #: modules/Markbook/markbook_edit_edit.php:524
 msgid "Effort Scale"
-msgstr "Esforço"
+msgstr "Escala de esforço"
 
 #: modules/Markbook/markbook_edit_add.php:384
 #: modules/Markbook/markbook_edit_addMulti.php:293
 #: modules/Markbook/markbook_edit_edit.php:426
 msgid "How will effort be graded?"
-msgstr "Esforço"
+msgstr "Como esforço será avaliado?"
 
 #: modules/Markbook/markbook_edit_add.php:414
 #: modules/Markbook/markbook_edit_addMulti.php:323
@@ -30427,7 +30425,7 @@ msgstr "Esforço"
 #: modules/Markbook/markbook_edit_addMulti.php:414
 #: modules/Markbook/markbook_edit_edit.php:551
 msgid "Effort Rubric"
-msgstr "Esforço"
+msgstr "Esforço Rubrica"
 
 #: modules/Markbook/markbook_edit_add.php:485
 #: modules/Markbook/markbook_edit_addMulti.php:394
@@ -30448,7 +30446,7 @@ msgstr "Esforço"
 #: modules/Planner/planner_add.php:1159 modules/Planner/planner_edit.php:1291
 #: modules/Planner/units_edit_deploy.php:705
 msgid "Viewable to Students"
-msgstr "Estudantes"
+msgstr "Visível para alunos"
 
 #: modules/Markbook/markbook_edit_add.php:497
 #: modules/Markbook/markbook_edit_addMulti.php:406
@@ -30481,7 +30479,7 @@ msgstr "Visível para os pais"
 #: modules/Markbook/markbook_edit_edit.php:562
 #: modules/Markbook/markbook_edit_data.php:577
 msgid "Grading Completion Date"
-msgstr "Aluno e Data"
+msgstr "Grading Data de Conclusão"
 
 #: modules/Markbook/markbook_edit_add.php:510
 #: modules/Markbook/markbook_edit_addMulti.php:419
@@ -30498,7 +30496,7 @@ msgstr "Aluno e Data"
 #: modules/Markbook/markbook_edit_data.php:602
 #: modules/Markbook/markbook_edit_edit.php:674
 msgid "1. Format"
-msgstr "Criar %1$s objectivos"
+msgstr "1. Formato"
 
 #: modules/Markbook/markbook_edit_add.php:510
 #: modules/Markbook/markbook_edit_addMulti.php:419
@@ -30522,7 +30520,7 @@ msgstr "2. Digite a data depois da classificação."
 #: modules/Markbook/markbook_edit_edit.php:563
 #: modules/Markbook/markbook_edit_data.php:578
 msgid "3. Column is hidden without date."
-msgstr "3. a coluna está oculta sem data."
+msgstr "3. A coluna está oculta sem data."
 
 #: modules/Markbook/markbook_edit_add.php:527
 #: modules/Markbook/markbook_edit_addMulti.php:436
@@ -36700,11 +36698,11 @@ msgstr "1_Scores"
 
 #: i18n/dbStringsForTranslation.php:574 i18n/dbStringsForTranslation.php:944
 msgid "2_KS3 Target Grades"
-msgstr "Notas (Classificações) Recentes"
+msgstr "2_KS3 Notas Alvos"
 
 #: i18n/dbStringsForTranslation.php:575 i18n/dbStringsForTranslation.php:946
 msgid "3_GCSE Target Grades"
-msgstr "Notas (Classificações) Recentes"
+msgstr "3_GCSE alvo as notas"
 
 #: i18n/dbStringsForTranslation.php:587 i18n/dbStringsForTranslation.php:948
 #: i18n/dbStringsForTranslation.php:953 i18n/dbStringsForTranslation.php:958
@@ -37916,7 +37914,7 @@ msgstr "Encerramento"
 #: i18n/dbStringsForTranslation.php:1070 i18n/dbStringsForTranslation.php:1124
 #: i18n/dbStringsForTranslation.php:1059 i18n/dbStringsForTranslation.php:1107
 msgid "Full Letter Grade"
-msgstr "Nota escolar"
+msgstr "Nota escolar completa"
 
 #: i18n/dbStringsForTranslation.php:767 i18n/dbStringsForTranslation.php:815
 #: i18n/dbStringsForTranslation.php:1128 i18n/dbStringsForTranslation.php:1176
@@ -42906,6 +42904,7 @@ msgstr "Aula"
 #: i18n/dbStringsForTranslation.php:1703 i18n/dbStringsForTranslation.php:1718
 #: i18n/dbStringsForTranslation.php:1716 i18n/dbStringsForTranslation.php:1714
 #: i18n/dbStringsForTranslation.php:1781 i18n/dbStringsForTranslation.php:1760
+#: modules/School Admin/behaviourSettings.php:156
 msgid "Levels"
 msgstr "Níveis"
 
@@ -52636,35 +52635,35 @@ msgstr "Tradução, liderada por"
 #: installer/install.php:102 installer/install.php:147
 #: installer/install.php:148 installer/install.php:149
 #: installer/install.php:153 installer/install.php:156
-#: installer/install.php:158 installer/install.php:158
+#: installer/install.php:158 installer/install.php:159
 msgid "Database Information"
 msgstr "Informação Básica"
 
 #: installer/install.php:107 installer/install.php:152
 #: installer/install.php:153 installer/install.php:154
 #: installer/install.php:158 installer/install.php:161
-#: installer/install.php:163 installer/install.php:163
+#: installer/install.php:163 installer/install.php:164
 msgid "Database Type"
 msgstr "Tipo"
 
 #: installer/install.php:116 installer/install.php:161
 #: installer/install.php:162 installer/install.php:163
 #: installer/install.php:167 installer/install.php:170
-#: installer/install.php:172 installer/install.php:172
+#: installer/install.php:172 installer/install.php:173
 msgid "Database Server"
 msgstr "Nome do controlador de base de dados"
 
 #: installer/install.php:117 installer/install.php:162
 #: installer/install.php:163 installer/install.php:164
 #: installer/install.php:168 installer/install.php:171
-#: installer/install.php:173 installer/install.php:173
+#: installer/install.php:173 installer/install.php:174
 msgid "Localhost, IP address or domain."
 msgstr "Localhost, endereço IP ou domínio."
 
 #: installer/install.php:129 installer/install.php:174
 #: installer/install.php:175 installer/install.php:176
 #: installer/install.php:180 installer/install.php:183
-#: installer/install.php:185 installer/install.php:185
+#: installer/install.php:185 installer/install.php:186
 msgid "Database Name"
 msgstr "Nome"
 
@@ -52678,14 +52677,14 @@ msgstr ""
 #: installer/install.php:142 installer/install.php:187
 #: installer/install.php:188 installer/install.php:189
 #: installer/install.php:193 installer/install.php:196
-#: installer/install.php:198 installer/install.php:198
+#: installer/install.php:198 installer/install.php:199
 msgid "Database Username"
 msgstr "Nome de utilizador"
 
 #: installer/install.php:154 installer/install.php:199
 #: installer/install.php:200 installer/install.php:201
 #: installer/install.php:205 installer/install.php:208
-#: installer/install.php:210 installer/install.php:210
+#: installer/install.php:210 installer/install.php:211
 msgid "Database Password"
 msgstr "Senha"
 
@@ -52693,7 +52692,7 @@ msgstr "Senha"
 #: installer/install.php:640 installer/install.php:627
 #: installer/install.php:628 installer/install.php:629
 #: installer/install.php:681 installer/install.php:729
-#: installer/install.php:737
+#: installer/install.php:738
 msgid "Not recommended for non-experts!."
 msgstr "Não recomendado para não-especialistas!."
 
@@ -52742,8 +52741,8 @@ msgstr ""
 #: installer/install.php:1013 installer/install.php:249
 #: installer/install.php:291 installer/install.php:1087
 #: installer/install.php:251 installer/install.php:1094
-#: installer/install.php:251 installer/install.php:268
-#: installer/install.php:299 installer/install.php:1105
+#: installer/install.php:252 installer/install.php:269
+#: installer/install.php:300 installer/install.php:1106
 #, php-format
 msgid ""
 "A database connection could not be established. Please %1$stry again%2$s."
@@ -52754,7 +52753,7 @@ msgstr ""
 #: installer/install.php:205 installer/install.php:249
 #: installer/install.php:250 installer/install.php:251
 #: installer/install.php:269 installer/install.php:296
-#: installer/install.php:304
+#: installer/install.php:305
 msgid ""
 "Your database connection was successful, so the installation may proceed."
 msgstr ""
@@ -52764,7 +52763,7 @@ msgstr ""
 #: installer/install.php:261 installer/install.php:305
 #: installer/install.php:306 installer/install.php:307
 #: installer/install.php:325 installer/install.php:352
-#: installer/install.php:360
+#: installer/install.php:361
 msgid ""
 "../config.php could not be created, and so the installer cannot proceed."
 msgstr ""
@@ -52773,7 +52772,7 @@ msgstr ""
 #: installer/install.php:268 installer/install.php:312
 #: installer/install.php:313 installer/install.php:314
 #: installer/install.php:332 installer/install.php:359
-#: installer/install.php:367
+#: installer/install.php:368
 msgid "../gibbon.sql does not exist, and so the installer cannot proceed."
 msgstr ".. /Gibbon.SQL não existe, e então o instalador não pode continuar."
 
@@ -52784,7 +52783,7 @@ msgstr ".. /Gibbon.SQL não existe, e então o instalador não pode continuar."
 #: installer/install.php:1019 installer/install.php:356
 #: installer/install.php:1071 installer/install.php:383
 #: installer/install.php:1151 installer/install.php:1158
-#: installer/install.php:391 installer/install.php:1169
+#: installer/install.php:393 installer/install.php:1170
 msgid ""
 "Errors occurred in populating the database; empty your database, remove ../"
 "config.php and try again."
@@ -52796,7 +52795,7 @@ msgstr ""
 #: installer/install.php:1005 installer/install.php:992
 #: installer/install.php:993 installer/install.php:994
 #: installer/install.php:1046 installer/install.php:1126
-#: installer/install.php:1133 installer/install.php:1144
+#: installer/install.php:1133 installer/install.php:1145
 msgid ""
 "Some required fields have not been set, and so installation cannot proceed."
 msgstr ""
@@ -52907,7 +52906,7 @@ msgstr "Não há conteúdo para mostrar"
 
 #: installer/install.php:362 installer/install.php:363
 #: installer/install.php:364 installer/install.php:416
-#: installer/install.php:443 installer/install.php:451
+#: installer/install.php:443 installer/install.php:452
 msgid "User Account"
 msgstr "Conta de Usuário"
 
@@ -55234,12 +55233,12 @@ msgstr ""
 "notificação, ou use o link abaixo:"
 
 #: installer/install.php:218 installer/install.php:221
-#: installer/install.php:223 installer/install.php:223
+#: installer/install.php:223 installer/install.php:224
 msgid "Install Demo Data?"
 msgstr "Mostrar dados confidenciais"
 
 #: installer/install.php:364 installer/install.php:391
-#: installer/install.php:399
+#: installer/install.php:401
 msgid ""
 "../gibbon_demo.sql does not exist, so we will conintue without demo data."
 msgstr ""
@@ -55247,7 +55246,7 @@ msgstr ""
 "demonstração."
 
 #: installer/install.php:387 installer/install.php:414
-#: installer/install.php:422
+#: installer/install.php:423
 msgid ""
 "There were some issues installing the demo data, but we will conintue anyway."
 msgstr ""
@@ -55364,7 +55363,7 @@ msgstr ""
 "%1$sbrowse nossas unidades públicas%2$s."
 
 #: installer/install.php:184 installer/install.php:186
-#: installer/install.php:186
+#: installer/install.php:187
 msgid ""
 "This database will be created if it does not already exist. Collation should "
 "be utf8_general_ci."
@@ -55372,25 +55371,25 @@ msgstr ""
 "Este banco de dados será criado se ele já não existir. Agrupamento deve ser "
 "utf8_general_ci."
 
-#: installer/install.php:502 installer/install.php:510
+#: installer/install.php:502 installer/install.php:511
 msgid "Receive Support?"
 msgstr "Receber apoio?"
 
-#: installer/install.php:503 installer/install.php:511
+#: installer/install.php:503 installer/install.php:512
 msgid "Join our mailing list and recieve a welcome email from the team."
 msgstr ""
 "Junte-se a nossa mailing list e receber um email de boas vindas da equipe."
 
-#: installer/install.php:708 installer/install.php:716
+#: installer/install.php:708 installer/install.php:717
 msgid "Checking for Cutting Edge Code."
 msgstr "Verificação de código de vanguarda."
 
 #: installer/install.php:751 installer/install.php:754
-#: installer/install.php:759 installer/install.php:762
+#: installer/install.php:760 installer/install.php:763
 msgid "Cutting Edge Code check successful."
 msgstr "Verifique o código de ponta bem sucedida."
 
-#: installer/install.php:760 installer/install.php:768
+#: installer/install.php:760 installer/install.php:769
 msgid "Cutting Edge Code check failed"
 msgstr "Falhado de verificação de código de vanguarda"
 
@@ -55753,12 +55752,12 @@ msgstr ""
 "favor, consulte sua documentação de apoio."
 
 #: installer/install.php:868 modules/System Admin/systemSettings.php:940
-#: installer/install.php:876 modules/System Admin/systemSettings.php:871
+#: installer/install.php:877 modules/System Admin/systemSettings.php:871
 msgid "PAYPAL SUPPORTED"
 msgstr "PAYPAL COM SUPORTE"
 
 #: installer/install.php:893 modules/System Admin/systemSettings.php:965
-#: installer/install.php:901 modules/System Admin/systemSettings.php:896
+#: installer/install.php:902 modules/System Admin/systemSettings.php:896
 msgid "OTHERS"
 msgstr ""
 "Alguns aspectos do seu pedido falharam, mas outros foram bem sucedidos. Os "
@@ -57054,6 +57053,10 @@ msgstr ""
 #: modules/Resources/resources_addQuick_ajax.php:102
 #, php-format
 msgid "File %1$s"
+msgstr ""
+
+#: modules/School Admin/behaviourSettings.php:67
+msgid "Descriptors"
 msgstr ""
 
 #: modules/School Admin/schoolYearTerm_manage_add.php:116

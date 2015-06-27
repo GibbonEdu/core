@@ -2053,8 +2053,8 @@ msgstr ""
 #: modules/Planner/planner_deadlines.php:773
 #: modules/Planner/planner_deadlines.php:1017 Admin/behaviourSettings.php:174
 #: Admin/systemSettings.php:1062 Admin/ttDates.php:364
-#: publicRegistration.php:305 Needs/in_edit.php:322 installer/install.php:143
-#: installer/install.php:240 installer/install.php:1083
+#: publicRegistration.php:305 Needs/in_edit.php:322 installer/install.php:144
+#: installer/install.php:241 installer/install.php:1084
 #: modules/Activities/activities_copy.php:110
 #: modules/Activities/activities_manage.php:79
 #: modules/Activities/activities_manage_add.php:641
@@ -2163,7 +2163,7 @@ msgstr ""
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:411
 #: modules/School Admin/activitySettings.php:289
 #: modules/School Admin/alertLevelSettings.php:162
-#: modules/School Admin/behaviourSettings.php:174
+#: modules/School Admin/behaviourSettings.php:253
 #: modules/School Admin/daysOfWeek_manage.php:292
 #: modules/School Admin/department_manage.php:109
 #: modules/School Admin/department_manage_add.php:202
@@ -2591,8 +2591,8 @@ msgstr "確認新密碼"
 #: modules/Library/library_lending_item_signout.php:305
 #: modules/Markbook/markbook_edit_addMulti.php:547
 #: Admin/behaviourSettings.php:170 Admin/systemSettings.php:1058
-#: publicRegistration.php:301 installer/install.php:140
-#: installer/install.php:236 installer/install.php:1075
+#: publicRegistration.php:301 installer/install.php:141
+#: installer/install.php:237 installer/install.php:1076
 #: modules/Activities/activities_copy.php:106
 #: modules/Activities/activities_manage_add.php:636
 #: modules/Activities/activities_manage_edit.php:824
@@ -2669,7 +2669,7 @@ msgstr "確認新密碼"
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:407
 #: modules/School Admin/activitySettings.php:285
 #: modules/School Admin/alertLevelSettings.php:157
-#: modules/School Admin/behaviourSettings.php:170
+#: modules/School Admin/behaviourSettings.php:249
 #: modules/School Admin/daysOfWeek_manage.php:288
 #: modules/School Admin/department_manage.php:105
 #: modules/School Admin/department_manage_add.php:199
@@ -3713,7 +3713,7 @@ msgstr "設定"
 #: Admin/applicationForm_manage_accept.php:952
 #: Admin/applicationForm_manage_accept.php:1115 publicRegistration.php:129
 #: functions.php:46 i18n/dbStringsForTranslation.php:1729
-#: installer/install.php:497 modules/Application Form/applicationForm.php:522
+#: installer/install.php:498 modules/Application Form/applicationForm.php:522
 #: modules/Application Form/applicationForm.php:1354
 #: modules/Data Updater/data_personal.php:672
 #: modules/Library/report_viewOverdueItems.php:59
@@ -9517,6 +9517,8 @@ msgstr "課/單元"
 #: modules/School Admin/activitySettings.php:213
 #: modules/School Admin/activitySettings.php:255
 #: modules/School Admin/activitySettings.php:278
+#: modules/School Admin/behaviourSettings.php:89
+#: modules/School Admin/behaviourSettings.php:178
 #: modules/School Admin/daysOfWeek_manage.php:99
 #: modules/School Admin/daysOfWeek_manage.php:103
 #: modules/School Admin/department_manage.php:99
@@ -10058,6 +10060,8 @@ msgstr "是"
 #: modules/School Admin/activitySettings.php:212
 #: modules/School Admin/activitySettings.php:254
 #: modules/School Admin/activitySettings.php:277
+#: modules/School Admin/behaviourSettings.php:90
+#: modules/School Admin/behaviourSettings.php:179
 #: modules/School Admin/daysOfWeek_manage.php:100
 #: modules/School Admin/daysOfWeek_manage.php:104
 #: modules/School Admin/department_manage.php:98
@@ -11749,7 +11753,7 @@ msgstr "登錄"
 #: Admin/applicationForm_manage_accept.php:417
 #: Admin/applicationForm_manage_accept.php:953
 #: Admin/applicationForm_manage_accept.php:1116 publicRegistration.php:181
-#: functions.php:2043 installer/install.php:519
+#: functions.php:2043 installer/install.php:520
 #: modules/Application Form/applicationForm.php:908
 #: modules/Staff/staff_view_details.php:220
 #: modules/Students/report_students_left.php:142
@@ -11791,7 +11795,7 @@ msgstr "用戶名"
 #: functions.php:2055 Admin/applicationForm_manage_accept.php:418
 #: Admin/applicationForm_manage_accept.php:954
 #: Admin/applicationForm_manage_accept.php:1117 publicRegistration.php:220
-#: functions.php:2055 installer/install.php:557
+#: functions.php:2055 installer/install.php:558
 #: modules/User Admin/applicationForm_manage_accept.php:418
 #: modules/User Admin/applicationForm_manage_accept.php:954
 #: modules/User Admin/applicationForm_manage_accept.php:1117
@@ -16025,7 +16029,7 @@ msgstr "無法找到指定的記錄"
 #: Admin/role_manage_edit.php:190 Admin/role_manage_edit.php:216
 #: Admin/staff_manage_edit.php:114
 #: modules/Behaviour/behaviour_manage_add.php:342
-#: modules/Behaviour/behaviour_manage_edit.php:155 installer/install.php:164
+#: modules/Behaviour/behaviour_manage_edit.php:155 installer/install.php:165
 #: modules/Activities/activities_manage_enrolment_edit.php:103
 #: modules/Activities/activities_manage_enrolment_edit.php:112
 #: modules/Attendance/attendance_future_byPerson.php:185
@@ -16485,7 +16489,7 @@ msgstr "學生"
 #: modules/Behaviour/behaviour_manage_edit.php:290
 #: modules/Markbook/markbook_edit_addMulti.php:188
 #: Admin/systemSettings.php:1029 publicRegistration.php:148
-#: installer/install.php:985 installer/install.php:1051
+#: installer/install.php:986 installer/install.php:1052
 #: modules/Activities/activities_copy.php:84
 #: modules/Activities/activities_view_register.php:348
 #: modules/Application Form/applicationForm.php:225
@@ -16800,8 +16804,8 @@ msgstr "請選擇..."
 #: modules/Library/library_lending_item_signout.php:219
 #: modules/Markbook/markbook_edit_addMulti.php:199
 #: Admin/systemSettings.php:1051 publicRegistration.php:156
-#: modules/Finance/expenses_manage.php:365 installer/install.php:1002
-#: installer/install.php:1068 modules/Activities/activities_copy.php:100
+#: modules/Finance/expenses_manage.php:365 installer/install.php:1003
+#: installer/install.php:1069 modules/Activities/activities_copy.php:100
 #: modules/Activities/activities_view_register.php:371
 #: modules/Application Form/applicationForm.php:231
 #: modules/Application Form/applicationForm.php:625
@@ -17044,7 +17048,7 @@ msgstr "打印"
 #: installer/install.php:385 installer/install.php:437
 #: installer/install.php:464 Form/applicationForm.php:161
 #: Form/applicationForm.php:919 Form/applicationForm.php:1081
-#: installer/install.php:472 installer/install.php:472
+#: installer/install.php:472 installer/install.php:473
 #: modules/Application Form/applicationForm.php:161
 #: modules/Application Form/applicationForm.php:919
 #: modules/Application Form/applicationForm.php:1081
@@ -17067,7 +17071,7 @@ msgstr "顯示在身分證明文件的名稱。"
 #: installer/install.php:397 installer/install.php:398
 #: installer/install.php:450 installer/install.php:477
 #: Form/applicationForm.php:174 Form/applicationForm.php:1094
-#: installer/install.php:485 installer/install.php:485
+#: installer/install.php:485 installer/install.php:486
 #: modules/Application Form/applicationForm.php:174
 #: modules/Application Form/applicationForm.php:1094
 #: modules/Data Updater/data_personal.php:394
@@ -20958,7 +20962,7 @@ msgstr ""
 #: installer/install.php:559 installer/install.php:595
 #: i18n/dbStringsForTranslation.php:209 i18n/dbStringsForTranslation.php:224
 #: installer/install.php:603 i18n/dbStringsForTranslation.php:224
-#: installer/install.php:603 modules/System Admin/systemSettings.php:65
+#: installer/install.php:604 modules/System Admin/systemSettings.php:65
 #: modules/System Admin/systemSettings.php:101
 msgid "System Settings"
 msgstr "系統設置"
@@ -20969,7 +20973,7 @@ msgstr "系統設置"
 #: installer/install.php:680 installer/install.php:667
 #: installer/install.php:668 installer/install.php:669
 #: installer/install.php:721 installer/install.php:796
-#: installer/install.php:804 installer/install.php:804
+#: installer/install.php:804 installer/install.php:805
 #: modules/System Admin/systemSettings.php:292
 msgid "Organisation Settings"
 msgstr "數據庫設置"
@@ -21016,9 +21020,10 @@ msgstr "密碼策略"
 #: modules/Students/student_view_details.php:1010 Admin/systemSettings.php:907
 #: Admin/user_manage_add.php:1178 Admin/user_manage_edit.php:1498
 #: installer/install.php:960 installer/install.php:962
-#: Admin/systemSettings.php:909 installer/install.php:962
+#: Admin/systemSettings.php:909 installer/install.php:963
 #: modules/Application Form/applicationForm.php:1987
 #: modules/Data Updater/data_personal.php:1573
+#: modules/School Admin/behaviourSettings.php:220
 #: modules/School Admin/markbookSettings.php:294
 #: modules/School Admin/studentsSettings.php:145
 #: modules/Staff/staff_view_details.php:405
@@ -21046,7 +21051,7 @@ msgstr "月曆, 網頁, 電子郵件"
 #: installer/install.php:770 installer/install.php:822
 #: installer/install.php:897 installer/install.php:904
 #: installer/install.php:912 installer/install.php:914
-#: installer/install.php:914
+#: installer/install.php:915
 msgid "gibbonedu.com Value-Added Services"
 msgstr "gibbonedu.com 直-增值服務"
 
@@ -24116,7 +24121,7 @@ msgstr "學生的個人資料"
 #: modules/Students/student_view_details.php:574
 #: modules/Students/student_view_details.php:613 publicRegistration.php:128
 #: installer/install.php:471 publicRegistration.php:116
-#: installer/install.php:471 modules/Application Form/applicationForm.php:160
+#: installer/install.php:472 modules/Application Form/applicationForm.php:160
 #: modules/Application Form/applicationForm.php:918
 #: modules/Application Form/applicationForm.php:1080
 #: modules/Data Updater/data_personal.php:375
@@ -24149,7 +24154,7 @@ msgstr "姓"
 #: Form/applicationForm.php:1093 modules/Students/student_view_details.php:578
 #: modules/Students/student_view_details.php:617 publicRegistration.php:116
 #: installer/install.php:484 publicRegistration.php:104
-#: installer/install.php:484 modules/Application Form/applicationForm.php:173
+#: installer/install.php:485 modules/Application Form/applicationForm.php:173
 #: modules/Application Form/applicationForm.php:1093
 #: modules/Data Updater/data_personal.php:393
 #: modules/Students/student_view_details.php:617
@@ -25268,7 +25273,7 @@ msgstr "家長/監護人 %1$s 個人資料"
 #: modules/Students/student_view_details_notes_add.php:103
 #: modules/Students/student_view_details_notes_edit.php:131
 #: installer/install.php:456 modules/Finance/expenses_manage.php:372
-#: installer/install.php:456 modules/Application Form/applicationForm.php:1060
+#: installer/install.php:457 modules/Application Form/applicationForm.php:1060
 #: modules/Data Updater/data_personal.php:351
 #: modules/Finance/expenseRequest_manage.php:313
 #: modules/Finance/expenseRequest_manage_add.php:180
@@ -25305,7 +25310,7 @@ msgstr "小姐"
 #: Admin/user_manage_add.php:93 Admin/user_manage_edit.php:156
 #: installer/install.php:374 installer/install.php:375
 #: installer/install.php:427 installer/install.php:454
-#: installer/install.php:462 installer/install.php:462
+#: installer/install.php:462 installer/install.php:463
 #: modules/Data Updater/data_personal.php:357
 #: modules/User Admin/applicationForm_manage_edit.php:1165
 #: modules/User Admin/user_manage_add.php:93
@@ -25319,7 +25324,7 @@ msgstr "小姐"
 #: Admin/user_manage_add.php:94 Admin/user_manage_edit.php:157
 #: installer/install.php:375 installer/install.php:376
 #: installer/install.php:428 installer/install.php:455
-#: installer/install.php:463 installer/install.php:463
+#: installer/install.php:463 installer/install.php:464
 #: modules/Data Updater/data_personal.php:358
 #: modules/User Admin/applicationForm_manage_edit.php:1166
 #: modules/User Admin/user_manage_add.php:94
@@ -25333,7 +25338,7 @@ msgstr "先生"
 #: Admin/user_manage_add.php:95 Admin/user_manage_edit.php:158
 #: installer/install.php:376 installer/install.php:377
 #: installer/install.php:429 installer/install.php:456
-#: installer/install.php:464 installer/install.php:464
+#: installer/install.php:464 installer/install.php:465
 #: modules/Data Updater/data_personal.php:359
 #: modules/User Admin/applicationForm_manage_edit.php:1167
 #: modules/User Admin/user_manage_add.php:95
@@ -25347,7 +25352,7 @@ msgstr "夫人"
 #: Admin/user_manage_add.php:96 Admin/user_manage_edit.php:159
 #: installer/install.php:377 installer/install.php:378
 #: installer/install.php:430 installer/install.php:457
-#: installer/install.php:465 installer/install.php:465
+#: installer/install.php:465 installer/install.php:466
 #: modules/Data Updater/data_personal.php:360
 #: modules/User Admin/applicationForm_manage_edit.php:1168
 #: modules/User Admin/user_manage_add.php:96
@@ -29061,7 +29066,7 @@ msgstr "加入用戶"
 #: installer/install.php:1001 installer/install.php:1053
 #: installer/install.php:1133 installer/install.php:1140
 #: installer/install.php:1149 installer/install.php:1151
-#: installer/install.php:1151
+#: installer/install.php:1152
 #: modules/Finance/billingSchedule_manage_add.php:51
 #: modules/User Admin/user_manage_add.php:51
 #: modules/User Admin/user_manage_password.php:54
@@ -29082,7 +29087,7 @@ msgstr "你的要求失敗了因為你的密碼相配強度的最低要求。"
 #: installer/install.php:373 installer/install.php:374
 #: installer/install.php:426 installer/install.php:453
 #: Admin/applicationForm_manage_edit.php:1164 installer/install.php:461
-#: installer/install.php:461 modules/Data Updater/data_personal.php:356
+#: installer/install.php:462 modules/Data Updater/data_personal.php:356
 #: modules/User Admin/applicationForm_manage_edit.php:1164
 #: modules/User Admin/user_manage_add.php:92
 #: modules/User Admin/user_manage_edit.php:155
@@ -29109,7 +29114,7 @@ msgstr "控制用戶可以做和看什麼。"
 #: Admin/user_manage_add.php:230 installer/install.php:423
 #: installer/install.php:424 installer/install.php:476
 #: installer/install.php:512 Admin/user_manage_add.php:232
-#: installer/install.php:520 installer/install.php:520
+#: installer/install.php:520 installer/install.php:521
 #: modules/User Admin/user_manage_add.php:232
 msgid "Must be unique. System login name. Cannot be changed."
 msgstr "一定要獨特。系統登錄。不可以改。"
@@ -29132,8 +29137,8 @@ msgstr "一定要獨特。系統登錄。不可以改。"
 #: publicRegistration.php:251 installer/install.php:572
 #: installer/install.php:576 publicRegistration.php:231
 #: publicRegistration.php:235 publicRegistration.php:239
-#: installer/install.php:568 installer/install.php:572
-#: installer/install.php:576 modules/User Admin/user_manage_add.php:281
+#: installer/install.php:569 installer/install.php:573
+#: installer/install.php:577 modules/User Admin/user_manage_add.php:281
 #: modules/User Admin/user_manage_add.php:285
 #: modules/User Admin/user_manage_add.php:289
 #: modules/User Admin/user_manage_password.php:135
@@ -29149,7 +29154,7 @@ msgstr "不符合密碼的政策。"
 #: installer/install.php:491 installer/install.php:492
 #: installer/install.php:544 installer/install.php:580
 #: Admin/user_manage_add.php:301 installer/install.php:588
-#: installer/install.php:588 modules/User Admin/user_manage_add.php:301
+#: installer/install.php:589 modules/User Admin/user_manage_add.php:301
 #: modules/User Admin/user_manage_password.php:155
 msgid "Confirm Password"
 msgstr "確定密碼"
@@ -44216,6 +44221,7 @@ msgstr "課堂詳情模型"
 #: i18n/dbStringsForTranslation.php:1716 i18n/dbStringsForTranslation.php:1714
 #: i18n/dbStringsForTranslation.php:1781 i18n/dbStringsForTranslation.php:1819
 #: i18n/dbStringsForTranslation.php:1760 i18n/dbStringsForTranslation.php:1760
+#: modules/School Admin/behaviourSettings.php:156
 msgid "Levels"
 msgstr "級"
 
@@ -55715,35 +55721,35 @@ msgstr "翻譯作者"
 #: installer/install.php:102 installer/install.php:147
 #: installer/install.php:148 installer/install.php:149
 #: installer/install.php:153 installer/install.php:156
-#: installer/install.php:158 installer/install.php:158
+#: installer/install.php:158 installer/install.php:159
 msgid "Database Information"
 msgstr "數據庫資料"
 
 #: installer/install.php:107 installer/install.php:152
 #: installer/install.php:153 installer/install.php:154
 #: installer/install.php:158 installer/install.php:161
-#: installer/install.php:163 installer/install.php:163
+#: installer/install.php:163 installer/install.php:164
 msgid "Database Type"
 msgstr "數據庫類型"
 
 #: installer/install.php:116 installer/install.php:161
 #: installer/install.php:162 installer/install.php:163
 #: installer/install.php:167 installer/install.php:170
-#: installer/install.php:172 installer/install.php:172
+#: installer/install.php:172 installer/install.php:173
 msgid "Database Server"
 msgstr "數據庫伺服器"
 
 #: installer/install.php:117 installer/install.php:162
 #: installer/install.php:163 installer/install.php:164
 #: installer/install.php:168 installer/install.php:171
-#: installer/install.php:173 installer/install.php:173
+#: installer/install.php:173 installer/install.php:174
 msgid "Localhost, IP address or domain."
 msgstr "本地主機，IP 地址或域。"
 
 #: installer/install.php:129 installer/install.php:174
 #: installer/install.php:175 installer/install.php:176
 #: installer/install.php:180 installer/install.php:183
-#: installer/install.php:185 installer/install.php:185
+#: installer/install.php:185 installer/install.php:186
 msgid "Database Name"
 msgstr "數據庫名稱"
 
@@ -55756,14 +55762,14 @@ msgstr "這一個數據庫應該已經存在。整理應該是utf8_general_ci。
 #: installer/install.php:142 installer/install.php:187
 #: installer/install.php:188 installer/install.php:189
 #: installer/install.php:193 installer/install.php:196
-#: installer/install.php:198 installer/install.php:198
+#: installer/install.php:198 installer/install.php:199
 msgid "Database Username"
 msgstr "數據庫用戶名稱"
 
 #: installer/install.php:154 installer/install.php:199
 #: installer/install.php:200 installer/install.php:201
 #: installer/install.php:205 installer/install.php:208
-#: installer/install.php:210 installer/install.php:210
+#: installer/install.php:210 installer/install.php:211
 msgid "Database Password"
 msgstr "數據庫密碼"
 
@@ -55771,7 +55777,7 @@ msgstr "數據庫密碼"
 #: installer/install.php:640 installer/install.php:627
 #: installer/install.php:628 installer/install.php:629
 #: installer/install.php:681 installer/install.php:729
-#: installer/install.php:737 installer/install.php:737
+#: installer/install.php:737 installer/install.php:738
 msgid "Not recommended for non-experts!."
 msgstr "不推薦給非專家!"
 
@@ -55816,8 +55822,8 @@ msgstr "包含Gibbon 文件的目錄現在可以寫，所以安裝機可以繼�
 #: installer/install.php:251 installer/install.php:1094
 #: installer/install.php:268 installer/install.php:299
 #: installer/install.php:1103 installer/install.php:1105
-#: installer/install.php:251 installer/install.php:268
-#: installer/install.php:299 installer/install.php:1105
+#: installer/install.php:252 installer/install.php:269
+#: installer/install.php:300 installer/install.php:1106
 #, php-format
 msgid ""
 "A database connection could not be established. Please %1$stry again%2$s."
@@ -55826,7 +55832,7 @@ msgstr "數據庫不能連結。 請 %1$s再嘗試%2$s。"
 #: installer/install.php:205 installer/install.php:249
 #: installer/install.php:250 installer/install.php:251
 #: installer/install.php:269 installer/install.php:296
-#: installer/install.php:304 installer/install.php:304
+#: installer/install.php:304 installer/install.php:305
 msgid ""
 "Your database connection was successful, so the installation may proceed."
 msgstr "你的數據褲簡介成功，所以安裝可以繼續。"
@@ -55834,7 +55840,7 @@ msgstr "你的數據褲簡介成功，所以安裝可以繼續。"
 #: installer/install.php:261 installer/install.php:305
 #: installer/install.php:306 installer/install.php:307
 #: installer/install.php:325 installer/install.php:352
-#: installer/install.php:360 installer/install.php:360
+#: installer/install.php:360 installer/install.php:361
 msgid ""
 "../config.php could not be created, and so the installer cannot proceed."
 msgstr "../config.php 不能創作，所以安裝不能繼續。"
@@ -55842,7 +55848,7 @@ msgstr "../config.php 不能創作，所以安裝不能繼續。"
 #: installer/install.php:268 installer/install.php:312
 #: installer/install.php:313 installer/install.php:314
 #: installer/install.php:332 installer/install.php:359
-#: installer/install.php:367 installer/install.php:367
+#: installer/install.php:367 installer/install.php:368
 msgid "../gibbon.sql does not exist, and so the installer cannot proceed."
 msgstr "../gibbon.sql 不存在，所以安裝不能繼續。"
 
@@ -55854,8 +55860,8 @@ msgstr "../gibbon.sql 不存在，所以安裝不能繼續。"
 #: installer/install.php:1071 installer/install.php:383
 #: installer/install.php:1151 installer/install.php:1158
 #: installer/install.php:391 installer/install.php:1167
-#: installer/install.php:1169 installer/install.php:391
-#: installer/install.php:1169
+#: installer/install.php:1169 installer/install.php:393
+#: installer/install.php:1170
 msgid ""
 "Errors occurred in populating the database; empty your database, remove ../"
 "config.php and try again."
@@ -55867,7 +55873,7 @@ msgstr ""
 #: installer/install.php:993 installer/install.php:994
 #: installer/install.php:1046 installer/install.php:1126
 #: installer/install.php:1133 installer/install.php:1142
-#: installer/install.php:1144 installer/install.php:1144
+#: installer/install.php:1144 installer/install.php:1145
 msgid ""
 "Some required fields have not been set, and so installation cannot proceed."
 msgstr "有一些必須的領域還沒有定，所以安裝不能繼續。"
@@ -55975,7 +55981,7 @@ msgstr "綜合Twitter內容"
 #: installer/install.php:362 installer/install.php:363
 #: installer/install.php:364 installer/install.php:416
 #: installer/install.php:443 installer/install.php:451
-#: installer/install.php:451
+#: installer/install.php:452
 msgid "User Account"
 msgstr "用戶的帳戶"
 
@@ -58215,18 +58221,18 @@ msgid "Theme by"
 msgstr "主題裝作人"
 
 #: installer/install.php:218 installer/install.php:221
-#: installer/install.php:223 installer/install.php:223
+#: installer/install.php:223 installer/install.php:224
 msgid "Install Demo Data?"
 msgstr "安裝樣板資料?"
 
 #: installer/install.php:364 installer/install.php:391
-#: installer/install.php:399 installer/install.php:399
+#: installer/install.php:399 installer/install.php:401
 msgid ""
 "../gibbon_demo.sql does not exist, so we will conintue without demo data."
 msgstr "因為../gibbon_demo.sql 不存在，所以沒有樣板資料， 但是我們會繼續。"
 
 #: installer/install.php:387 installer/install.php:414
-#: installer/install.php:422 installer/install.php:422
+#: installer/install.php:422 installer/install.php:423
 msgid ""
 "There were some issues installing the demo data, but we will conintue anyway."
 msgstr "安裝樣板資料時有一些問題，但是我們會繼續。"
@@ -58376,35 +58382,35 @@ msgstr ""
 "觀看我們的公眾單元%2$s."
 
 #: installer/install.php:184 installer/install.php:186
-#: installer/install.php:186
+#: installer/install.php:187
 msgid ""
 "This database will be created if it does not already exist. Collation should "
 "be utf8_general_ci."
 msgstr "這一個數據庫會創作，如果還沒存在。整理應該是utf8_general_ci。"
 
 #: installer/install.php:502 installer/install.php:510
-#: installer/install.php:510
+#: installer/install.php:511
 msgid "Receive Support?"
 msgstr "接受支援"
 
 #: installer/install.php:503 installer/install.php:511
-#: installer/install.php:511
+#: installer/install.php:512
 msgid "Join our mailing list and recieve a welcome email from the team."
 msgstr "參加我們的郵件列表和獲贈從團隊的歡迎電郵。"
 
 #: installer/install.php:708 installer/install.php:716
-#: installer/install.php:716
+#: installer/install.php:717
 msgid "Checking for Cutting Edge Code."
 msgstr "檢查尖端編號"
 
 #: installer/install.php:751 installer/install.php:754
 #: installer/install.php:759 installer/install.php:762
-#: installer/install.php:759 installer/install.php:762
+#: installer/install.php:760 installer/install.php:763
 msgid "Cutting Edge Code check successful."
 msgstr "檢查尖端編號成功。"
 
 #: installer/install.php:760 installer/install.php:768
-#: installer/install.php:768
+#: installer/install.php:769
 msgid "Cutting Edge Code check failed"
 msgstr "檢查尖端編號失敗。"
 
@@ -58734,13 +58740,13 @@ msgstr ""
 
 #: installer/install.php:868 modules/System Admin/systemSettings.php:940
 #: Admin/systemSettings.php:871 installer/install.php:876
-#: installer/install.php:876 modules/System Admin/systemSettings.php:871
+#: installer/install.php:877 modules/System Admin/systemSettings.php:871
 msgid "PAYPAL SUPPORTED"
 msgstr "支持Paypal"
 
 #: installer/install.php:893 modules/System Admin/systemSettings.php:965
 #: Admin/systemSettings.php:896 installer/install.php:901
-#: installer/install.php:901 modules/System Admin/systemSettings.php:896
+#: installer/install.php:902 modules/System Admin/systemSettings.php:896
 msgid "OTHERS"
 msgstr "其他"
 
@@ -59558,6 +59564,7 @@ msgstr ""
 #: modules/Finance/expenses_manage_print.php:89
 #: modules/Finance/expenses_manage_print_print.php:83
 #: modules/Finance/expenses_manage_view.php:73
+#: modules/Finance/expenses_manage.php:89
 #: modules/Finance/expenseRequest_manage.php:66
 #: modules/Finance/expenseRequest_manage_add.php:83
 #: modules/Finance/expenseRequest_manage_view.php:58
@@ -59590,6 +59597,8 @@ msgstr "你對任何預算沒充分有或寫的許可"
 #: modules/Finance/expenses_manage_print_print.php:108
 #: modules/Finance/expenses_manage_view.php:83
 #: modules/Finance/expenses_manage_view.php:98
+#: modules/Finance/expenses_manage.php:98
+#: modules/Finance/expenses_manage.php:113
 #: modules/Finance/expenseRequest_manage.php:76
 #: modules/Finance/expenseRequest_manage.php:91
 #: modules/Finance/expenseRequest_manage_add.php:93
@@ -59615,6 +59624,7 @@ msgstr "你的費用和預算設定出現了錯誤。"
 
 #: modules/Finance/expenseRequest_manage.php:113
 #: modules/Finance/expenses_manage.php:132
+#: modules/Finance/expenses_manage.php:134
 #: modules/Finance/expenseRequest_manage.php:113
 #: modules/Finance/expenses_manage.php:134
 msgid "The Current budget cycle cannot be determined."
@@ -59622,6 +59632,7 @@ msgstr "不能確定目前的預算循環"
 
 #: modules/Finance/expenseRequest_manage.php:134
 #: modules/Finance/expenses_manage.php:153
+#: modules/Finance/expenses_manage.php:155
 #: modules/Finance/expenseRequest_manage.php:134
 #: modules/Finance/expenses_manage.php:155
 msgid "The specified budget cycle cannot be determined."
@@ -59631,6 +59642,8 @@ msgstr "不能確定指定的預算循環"
 #: modules/Finance/expenseRequest_manage.php:153
 #: modules/Finance/expenses_manage.php:169
 #: modules/Finance/expenses_manage.php:172
+#: modules/Finance/expenses_manage.php:171
+#: modules/Finance/expenses_manage.php:174
 #: modules/Finance/expenseRequest_manage.php:150
 #: modules/Finance/expenseRequest_manage.php:153
 #: modules/Finance/expenses_manage.php:171
@@ -59642,6 +59655,8 @@ msgstr "之前的循環"
 #: modules/Finance/expenseRequest_manage.php:161
 #: modules/Finance/expenses_manage.php:177
 #: modules/Finance/expenses_manage.php:180
+#: modules/Finance/expenses_manage.php:179
+#: modules/Finance/expenses_manage.php:182
 #: modules/Finance/expenseRequest_manage.php:158
 #: modules/Finance/expenseRequest_manage.php:161
 #: modules/Finance/expenses_manage.php:179
@@ -59653,6 +59668,7 @@ msgstr "下一個循環"
 #: modules/Finance/expenses_manage.php:216
 #: modules/Finance/expenses_manage_edit.php:219
 #: modules/Finance/expenses_manage_edit.php:746
+#: modules/Finance/expenses_manage.php:218
 #: modules/Finance/expenseRequest_manage.php:197
 #: modules/Finance/expenses_manage.php:218
 #: modules/Finance/expenses_manage_edit.php:219
@@ -59666,6 +59682,7 @@ msgstr "請求"
 #: modules/Finance/expenses_manage_add.php:176
 #: modules/Finance/expenses_manage_edit.php:224
 #: modules/Finance/expenses_manage_edit.php:251
+#: modules/Finance/expenses_manage.php:223
 #: modules/Finance/expenseRequest_manage.php:202
 #: modules/Finance/expenseRequest_manage_reimburse.php:187
 #: modules/Finance/expenses_manage.php:223
@@ -59681,6 +59698,7 @@ msgstr "批准"
 #: modules/Finance/expenses_manage_edit.php:234
 #: modules/Finance/expenses_manage_edit.php:256
 #: modules/Finance/expenses_manage_edit.php:273
+#: modules/Finance/expenses_manage.php:238
 #: modules/Finance/expenseRequest_manage.php:217
 #: modules/Finance/expenses_manage.php:238
 #: modules/Finance/expenses_manage_add.php:177
@@ -59704,6 +59722,8 @@ msgstr "訂購"
 #: modules/Finance/expenses_manage_print_print.php:192
 #: modules/Finance/expenses_manage_processBulkExportContents.php:87
 #: modules/Finance/expenses_manage_view.php:185
+#: modules/Finance/expenses_manage.php:250
+#: modules/Finance/expenses_manage.php:373
 #: modules/Finance/expenseRequest_manage.php:229
 #: modules/Finance/expenseRequest_manage.php:316
 #: modules/Finance/expenseRequest_manage_add.php:153
@@ -59723,6 +59743,7 @@ msgstr "預算"
 
 #: modules/Finance/expenseRequest_manage.php:303
 #: modules/Finance/expenses_manage.php:340
+#: modules/Finance/expenses_manage.php:345
 #: modules/Finance/expenseRequest_manage.php:303
 #: modules/Finance/expenses_manage.php:345
 #, php-format
@@ -59949,6 +59970,7 @@ msgstr "因為你有相應的許可權利，這個行動允許你管理給預算
 
 #: modules/Finance/expenses_manage.php:439
 #: modules/Finance/expenses_manage.php:444
+#: modules/Finance/expenses_manage.php:444
 msgid "Approve/Reject"
 msgstr "批准/拒絕"
 
@@ -60166,7 +60188,7 @@ msgstr "只是刪除個人教育計畫領域，而不是個人需求狀態領域
 msgid "Archive Title"
 msgstr "存檔標題"
 
-#: modules/Individual Needs/in_edit.php:157
+#: modules/Individual Needs/in_edit.php:157 Needs/in_edit.php:159
 #: modules/Individual Needs/in_edit.php:159
 msgid "Archived Plans"
 msgstr "存檔計畫"
@@ -60177,6 +60199,8 @@ msgstr "存檔計畫"
 #: modules/Markbook/markbook_edit_addMulti.php:373
 #: modules/Markbook/markbook_edit_edit.php:390
 #: modules/Markbook/markbook_edit_edit.php:515
+#: modules/Markbook/markbook_edit_addMulti.php:260
+#: modules/Markbook/markbook_edit_addMulti.php:379
 #: modules/Markbook/markbook_edit_add.php:342
 #: modules/Markbook/markbook_edit_add.php:459
 #: modules/Markbook/markbook_edit_addMulti.php:260
@@ -60190,6 +60214,7 @@ msgstr "評估 %1$s?"
 #: modules/Markbook/markbook_edit_add.php:342
 #: modules/Markbook/markbook_edit_addMulti.php:254
 #: modules/Markbook/markbook_edit_edit.php:390
+#: modules/Markbook/markbook_edit_addMulti.php:260
 #: modules/Markbook/markbook_edit_add.php:342
 #: modules/Markbook/markbook_edit_addMulti.php:260
 #: modules/Markbook/markbook_edit_edit.php:390
@@ -60199,6 +60224,7 @@ msgstr "評估成績?"
 #: modules/Markbook/markbook_edit_add.php:459
 #: modules/Markbook/markbook_edit_addMulti.php:373
 #: modules/Markbook/markbook_edit_edit.php:515
+#: modules/Markbook/markbook_edit_addMulti.php:379
 #: modules/Markbook/markbook_edit_add.php:459
 #: modules/Markbook/markbook_edit_addMulti.php:379
 #: modules/Markbook/markbook_edit_edit.php:515
@@ -60208,6 +60234,7 @@ msgstr "評估成就"
 #: modules/Markbook/markbook_edit_add.php:560
 #: modules/Markbook/markbook_edit_addMulti.php:474
 #: modules/Markbook/markbook_edit_edit.php:624
+#: modules/Markbook/markbook_edit_addMulti.php:480
 #: modules/Markbook/markbook_edit_add.php:560
 #: modules/Markbook/markbook_edit_addMulti.php:480
 #: modules/Markbook/markbook_edit_edit.php:624
@@ -60217,6 +60244,7 @@ msgstr "包括評論"
 #: modules/Markbook/markbook_edit_add.php:569
 #: modules/Markbook/markbook_edit_addMulti.php:483
 #: modules/Markbook/markbook_edit_edit.php:633
+#: modules/Markbook/markbook_edit_addMulti.php:489
 #: modules/Markbook/markbook_edit_add.php:569
 #: modules/Markbook/markbook_edit_addMulti.php:489
 #: modules/Markbook/markbook_edit_edit.php:633
@@ -60311,6 +60339,7 @@ msgstr "本土化"
 
 #: modules/Timetable/moduleFunctions.php:280
 #: modules/Timetable/moduleFunctions.php:293
+#: modules/Timetable/moduleFunctions.php:293
 msgid "You do not have permission to access this timetable at this time."
 msgstr "你沒有權利現在觀看時間表."
 
@@ -60376,128 +60405,156 @@ msgid ""
 msgstr "成功得提交了你的註冊，現在您可以使用你的新用戶名後密碼登入系統裡"
 
 #: publicRegistration.php:97 publicRegistration.php:256
+#: publicRegistration.php:256
 msgid "Privacy Statement"
 msgstr "私人聲明"
 
 #: publicRegistration.php:111 publicRegistration.php:99
+#: publicRegistration.php:99
 msgid "Account Details"
 msgstr "帳戶詳情"
 
 #: i18n/dbStringsForTranslation.php:1860 i18n/dbStringsForTranslation.php:1801
+#: i18n/dbStringsForTranslation.php:1801
 msgid "Public Registration Agreement"
 msgstr "公開註冊協議"
 
 #: i18n/dbStringsForTranslation.php:1861 i18n/dbStringsForTranslation.php:1802
+#: i18n/dbStringsForTranslation.php:1802
 msgid "Public Registration Default Role"
 msgstr "公開註冊的自動角色"
 
 #: i18n/dbStringsForTranslation.php:1862 i18n/dbStringsForTranslation.php:1803
+#: i18n/dbStringsForTranslation.php:1803
 msgid "Public Registration Default Status"
 msgstr "公開註冊預設狀態"
 
 #: i18n/dbStringsForTranslation.php:1863 i18n/dbStringsForTranslation.php:1804
+#: i18n/dbStringsForTranslation.php:1804
 msgid "Public Registration Introductory Text"
 msgstr "公開註冊介紹文字"
 
 #: i18n/dbStringsForTranslation.php:1864 i18n/dbStringsForTranslation.php:1805
+#: i18n/dbStringsForTranslation.php:1805
 msgid "Public Registration Minimum Age"
 msgstr "公開註冊最低年齡"
 
 #: i18n/dbStringsForTranslation.php:1865 i18n/dbStringsForTranslation.php:1806
+#: i18n/dbStringsForTranslation.php:1806
 msgid "Public Registration Postscript"
 msgstr "公開註冊後記"
 
 #: i18n/dbStringsForTranslation.php:1866 i18n/dbStringsForTranslation.php:1807
+#: i18n/dbStringsForTranslation.php:1807
 msgid "Public Registration Privacy Statement"
 msgstr "公開註冊隱私聲明"
 
 #: i18n/dbStringsForTranslation.php:1867 i18n/dbStringsForTranslation.php:1808
+#: i18n/dbStringsForTranslation.php:1808
 msgid "Purchasing Officer"
 msgstr "購買主任"
 
 #: i18n/dbStringsForTranslation.php:1872 i18n/dbStringsForTranslation.php:1813
+#: i18n/dbStringsForTranslation.php:1813
 msgid "Reimbursement Officer"
 msgstr "報銷主任"
 
 #: i18n/dbStringsForTranslation.php:1918 i18n/dbStringsForTranslation.php:1859
+#: i18n/dbStringsForTranslation.php:1859
 msgid ""
 "Adds a Message Wall widget to the home page, hihglighting current messages."
 msgstr "加入信息牆到主頁，強調着目前的信息"
 
 #: i18n/dbStringsForTranslation.php:1919 i18n/dbStringsForTranslation.php:1860
+#: i18n/dbStringsForTranslation.php:1860
 msgid ""
 "Agreement that user must confirm before joining. Blank for no agreement."
 msgstr "用戶加入前一定要確認協議。沒有協議就空白"
 
 #: i18n/dbStringsForTranslation.php:1926 i18n/dbStringsForTranslation.php:1867
+#: i18n/dbStringsForTranslation.php:1867
 msgid "Allows members of the public to register to use the system."
 msgstr "為了使用系統，允許公眾的成員註冊"
 
 #: i18n/dbStringsForTranslation.php:1927 i18n/dbStringsForTranslation.php:1868
+#: i18n/dbStringsForTranslation.php:1868
 msgid ""
 "An HTML template to be used in the description field of expense requests."
 msgstr "一個 HTML模型是使用在描述領域的費用請求"
 
 #: i18n/dbStringsForTranslation.php:1937 i18n/dbStringsForTranslation.php:1878
+#: i18n/dbStringsForTranslation.php:1878
 msgid "Comma-separated list of budget categories."
 msgstr "預算類別逗號分隔列表"
 
 #: i18n/dbStringsForTranslation.php:1961 i18n/dbStringsForTranslation.php:1902
+#: i18n/dbStringsForTranslation.php:1902
 msgid "How should expense approval be dealt with?"
 msgstr "怎樣處理費用的批准?"
 
 #: i18n/dbStringsForTranslation.php:1963 i18n/dbStringsForTranslation.php:1904
+#: i18n/dbStringsForTranslation.php:1904
 msgid "HTML text that will appear above the public registration form."
 msgstr "HTML 文件會在公眾註冊表格以上出現"
 
 #: i18n/dbStringsForTranslation.php:1964 i18n/dbStringsForTranslation.php:1905
+#: i18n/dbStringsForTranslation.php:1905
 msgid ""
 "HTML text that will appear above the Submit button, explaining privacy "
 "policy."
 msgstr "HTML 文件會在提交安啾以上出現，說明隱私政策"
 
 #: i18n/dbStringsForTranslation.php:1965 i18n/dbStringsForTranslation.php:1906
+#: i18n/dbStringsForTranslation.php:1906
 msgid "HTML text that will appear underneath the public registration form."
 msgstr "HTML 文件會在公眾註冊以下出現."
 
 #: i18n/dbStringsForTranslation.php:1990 i18n/dbStringsForTranslation.php:1931
+#: i18n/dbStringsForTranslation.php:1931
 msgid "Should approval from a budget member with Full access be required?"
 msgstr "應不應該需求一個有許可的預算成員的批准?"
 
 #: i18n/dbStringsForTranslation.php:1996 i18n/dbStringsForTranslation.php:1937
+#: i18n/dbStringsForTranslation.php:1937
 msgid "Should new users be 'Full' or 'Pending Approval'?"
 msgstr "新用戶應不應該是 '滿' 或 '待決批准'?"
 
 #: i18n/dbStringsForTranslation.php:2001 i18n/dbStringsForTranslation.php:1942
+#: i18n/dbStringsForTranslation.php:1942
 msgid "Should student notes be turned on?"
 msgstr "學生的筆記應不應該關上?"
 
 #: i18n/dbStringsForTranslation.php:2016 i18n/dbStringsForTranslation.php:1957
+#: i18n/dbStringsForTranslation.php:1957
 msgid "Sound a system wide alarm to all staff."
 msgstr "聲音系統級警報給全部的員工"
 
 #: i18n/dbStringsForTranslation.php:2017 i18n/dbStringsForTranslation.php:1958
+#: i18n/dbStringsForTranslation.php:1958
 msgid "System role to be assigned to registering members of the public."
 msgstr "系統角色要分配為公眾的註冊成員"
 
 #: i18n/dbStringsForTranslation.php:2040 i18n/dbStringsForTranslation.php:1981
+#: i18n/dbStringsForTranslation.php:1981
 msgid "The minimum age, in years, permitted to register."
 msgstr "極少年齡，在年獲准才能註冊"
 
 #: i18n/dbStringsForTranslation.php:2050 i18n/dbStringsForTranslation.php:1991
+#: i18n/dbStringsForTranslation.php:1991
 msgid "User responsible for purchasing for the school."
 msgstr "用戶有責任幫學校購買"
 
 #: i18n/dbStringsForTranslation.php:2051 i18n/dbStringsForTranslation.php:1992
+#: i18n/dbStringsForTranslation.php:1992
 msgid "User responsible for reimbursing expenses."
 msgstr "用戶有責任報銷費用"
 
-#: index.php:484 index.php:486
+#: index.php:484 index.php:486 index.php:486
 #, php-format
 msgid "%1$sRegister now%2$s to join our online learning community."
 msgstr "%1$s現在註冊%2$s 讓你加入我們的網上學習社區."
 
-#: index.php:484 index.php:486
+#: index.php:484 index.php:486 index.php:486
 msgid "It's free!"
 msgstr "免費!"
 
@@ -60506,6 +60563,11 @@ msgstr "免費!"
 #: modules/Behaviour/behaviour_manage_addMulti.php:236
 #: modules/Behaviour/behaviour_manage_edit.php:309
 #: modules/Behaviour/moduleFunctions.php:171
+#: modules/Behaviour/behaviour_manage.php:385
+#: modules/Behaviour/behaviour_manage_add.php:273
+#: modules/Behaviour/behaviour_manage_addMulti.php:243
+#: modules/Behaviour/behaviour_manage_edit.php:316
+#: modules/Behaviour/moduleFunctions.php:182
 #: modules/Behaviour/behaviour_manage.php:385
 #: modules/Behaviour/behaviour_manage_add.php:273
 #: modules/Behaviour/behaviour_manage_addMulti.php:243
@@ -60524,6 +60586,11 @@ msgstr "意外"
 #: modules/Behaviour/behaviour_manage_addMulti.php:249
 #: modules/Behaviour/behaviour_manage_edit.php:322
 #: modules/Behaviour/moduleFunctions.php:186
+#: modules/Behaviour/behaviour_manage.php:389
+#: modules/Behaviour/behaviour_manage_add.php:279
+#: modules/Behaviour/behaviour_manage_addMulti.php:249
+#: modules/Behaviour/behaviour_manage_edit.php:322
+#: modules/Behaviour/moduleFunctions.php:186
 msgid "Follow Up"
 msgstr "根據"
 
@@ -60532,23 +60599,30 @@ msgstr "根據"
 msgid "Add Budget Cycle"
 msgstr "加入預算循環"
 
-#: index_notification_ajax_alarm.php:52
+#: index_notification_ajax_alarm.php:52 index_notification_ajax_alarm.php:52
 msgid "Lockdown!"
 msgstr ""
 
+#: modules/Markbook/markbook_edit_addMulti.php:121
 #: modules/Markbook/markbook_edit_addMulti.php:121
 #, php-format
 msgid "The current class (%1$s.%2$s) has already been selected."
 msgstr ""
 
 #: modules/Markbook/markbook_edit_data.php:594
+#: modules/Markbook/markbook_edit_data.php:594
 msgid "Assessment Complete?"
 msgstr ""
 
+#: modules/Students/report_students_IDCards.php:155
 #: modules/Students/report_students_IDCards.php:155
 #, php-format
 msgid ""
 "These cards are designed to be printed to credit-card size, however, they "
 "will look bigger on screen. To print in high quality (144dpi) and at true "
 "size, save the cards as an image, and print to 50% scale."
+msgstr ""
+
+#: modules/School Admin/behaviourSettings.php:67
+msgid "Descriptors"
 msgstr ""
