@@ -33,7 +33,7 @@ $guid="" ;
 
 
 /**
- * Sets system-wide caching factor, used to baalance performance and freshness. Value represents number of page loads between cache refresh. Must be posititve integer. 1 means no caching.
+ * Sets system-wide caching factor, used to balance performance and freshness. Value represents number of page loads between cache refresh. Must be positive integer. 1 means no caching.
  */
 $caching=10 ; 
 
