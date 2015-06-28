@@ -445,6 +445,8 @@ UPDATE gibboni18n SET active='N' WHERE code='pt_PT';end
 $count++ ;
 $sql[$count][0]="11.0.00" ;
 $sql[$count][1]="
-
+UPDATE gibbonAction SET name='Import Users' WHERE name='Sync Users' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+UPDATE gibbonAction SET name='Import Families' WHERE name='Sync Families' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+UPDATE gibbonAction SET name='Import Student Enrolment' WHERE name='Sync Student Enrolment' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
 ";
 ?>

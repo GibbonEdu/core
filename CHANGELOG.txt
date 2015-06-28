@@ -25,6 +25,11 @@ System Admin: added Saudi Riyal to the list of currencies
 	Edited file /modules/System Admin/systemSettings.php
 	Edited file /installer/install.php
 
+User Admin: updated user sync actions to allow operation in both sync and import modes
+	Updated values in table gibbonAction
+	Edited files /modules/User Admin/import_users.php, import_families.php, import_studentEnrolment.php
+	
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
