@@ -905,6 +905,7 @@ include "../functions.php" ;
 																		<option value='IDR Rp'>Indonesian Rupiah (Rp)</option>
 																		<option value='NGN ₦'>Nigerian Naira (₦)</option>
 																		<option value='KES KSh'>Kenyan Shilling (KSh)</option>
+																		<option value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
 																	</optgroup>
 																</select>
 															</td>
