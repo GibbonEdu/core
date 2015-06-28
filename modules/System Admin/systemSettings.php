@@ -899,6 +899,7 @@ else {
 							<option <?php if ($row["value"]=="IDR Rp") { print "selected" ; } ?> value='IDR Rp'>Indonesian Rupiah (Rp)</option>
 							<option <?php if ($row["value"]=="NGN ₦") { print "selected" ; } ?> value='NGN ₦'>Nigerian Naira (₦)</option>
 							<option <?php if ($row["value"]=="KES KSh") { print "selected" ; } ?> value='KES KSh'>Kenyan Shilling (KSh)</option>
+							<option <?php if ($row["value"]=="SAR ﷼‎") { print "selected" ; } ?> value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
 						</optgroup>
 					</select>
 				</td>
