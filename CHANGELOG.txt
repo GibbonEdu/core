@@ -28,7 +28,9 @@ System Admin: added Saudi Riyal to the list of currencies
 User Admin: updated user sync actions to allow operation in both sync and import modes
 	Updated values in table gibbonAction
 	Edited files /modules/User Admin/import_users.php, import_families.php, import_studentEnrolment.php
-	
+
+Planner: added persistence to filter
+	Edited files /modules/Planner/outcomes*.php
 
 v10.0.00
 --------
