@@ -49,7 +49,7 @@ if ($gibbonPersonID=="") {
 else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=$gibbonExternalAssessmentStudentID&search=$search&allStudents=$allStudents" ;
 	
-	if (isActionAccessible($guid, $connection2, "/modules/External Assessment/externalAssessment_manage_details_edit.php")==FALSE) {
+	if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_manage_details_edit.php")==FALSE) {
 		//Fail 0
 		$URL.="&updateReturn=fail0" ;
 		header("Location: {$URL}");
@@ -92,27 +92,32 @@ else {
 				
 				$time=time() ;
 				//Move attached file, if there is one
-				if ($_FILES['file']["tmp_name"]!="") {
-					//Check for folder in uploads based on today's date
-					$path=$_SESSION[$guid]["absolutePath"] ;
-					if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
-						mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
-					}
-					$unique=FALSE;
-					$count=0 ;
-					while ($unique==FALSE AND $count<100) {
-						$suffix=randomPassword(16) ;
-						$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/externalAssessmentUpload_$suffix" . strrchr($_FILES["file"]["name"], ".") ;
-						if (!(file_exists($path . "/" . $attachment))) {
-							$unique=TRUE ;
+				if (isset($_FILES['file'])) {
+					if ($_FILES['file']["tmp_name"]!="") {
+						//Check for folder in uploads based on today's date
+						$path=$_SESSION[$guid]["absolutePath"] ;
+						if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
+							mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
 						}
-						$count++ ;
-					}
+						$unique=FALSE;
+						$count=0 ;
+						while ($unique==FALSE AND $count<100) {
+							$suffix=randomPassword(16) ;
+							$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/externalAssessmentUpload_$suffix" . strrchr($_FILES["file"]["name"], ".") ;
+							if (!(file_exists($path . "/" . $attachment))) {
+								$unique=TRUE ;
+							}
+							$count++ ;
+						}
 				
-					if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
-						//Fail 5
-						$URL.="&updateReturn=fail5" ;
-						header("Location: {$URL}");
+						if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
+							//Fail 5
+							$URL.="&updateReturn=fail5" ;
+							header("Location: {$URL}");
+						}
+					}
+					else {
+						$attachment=$row["attachment"] ;
 					}
 				}
 				else {

@@ -32,6 +32,12 @@ User Admin: updated user sync actions to allow operation in both sync and import
 Planner: added persistence to filter
 	Edited files /modules/Planner/outcomes*.php
 
+Formal Assessment: changed name of module External Assessment, getting ready to add formal Internal Assessments too
+	Edited value in table gibbonModule
+	Moved folder /modules/External Assessment to /modules/Formal Assessment
+	Edited files /modules/Formal Assessment/externalAssessment*.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

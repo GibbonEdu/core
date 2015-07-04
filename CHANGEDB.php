@@ -448,5 +448,8 @@ $sql[$count][1]="
 UPDATE gibbonAction SET name='Import Users' WHERE name='Sync Users' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
 UPDATE gibbonAction SET name='Import Families' WHERE name='Sync Families' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
 UPDATE gibbonAction SET name='Import Student Enrolment' WHERE name='Sync Student Enrolment' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+UPDATE gibbonModule SET name='Formal Assessment' WHERE name='External Assessment';end
+UPDATE gibbonAction SET category='External Assessment' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment');end
+
 ";
 ?>

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbonYearGroupID=NULL, $manage=FALSE, $search="", $allStudents="" ) {
+function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbonYearGroupID=NULL, $manage=FALSE, $search="", $allStudents="" ) {
 	try {
 		$dataAssessments=array("gibbonPersonID"=>$gibbonPersonID); 
 		$sqlAssessments="SELECT * FROM gibbonExternalAssessmentStudent JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY date" ; 
@@ -122,12 +122,14 @@ function externalAssessmentDetails($guid,  $gibbonPersonID, $connection2, $gibbo
 							print "<span $style title='" . _($rowResults["usage"]) . "'>" . _($rowResults["value"]) . "</span>" ;
 						print "</td>" ;
 						print "<td>" ;
-							if (!is_null($rowResults["gibbonScaleGradeIDPrimaryAssessmentScale"]) AND !is_null($_SESSION[$guid]["primaryAssessmentScale"])) {
-								$style="" ;
-								if ($rowResults["lowestAcceptablePrimary"]!="" AND $rowResults["sequenceNumberPrimary"]>$rowResults["lowestAcceptablePrimary"]) {
-									$style="style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'" ;
+							if ($rowResults["valuePrimary"]!="" AND $rowResults["usagePrimary"]!="") {
+								if (!is_null($rowResults["gibbonScaleGradeIDPrimaryAssessmentScale"]) AND !is_null($_SESSION[$guid]["primaryAssessmentScale"])) {
+									$style="" ;
+									if ($rowResults["lowestAcceptablePrimary"]!="" AND $rowResults["sequenceNumberPrimary"]>$rowResults["lowestAcceptablePrimary"]) {
+										$style="style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'" ;
+									}
+									print "<span $style title='" . _($rowResults["usagePrimary"]) . "'>" . _($rowResults["valuePrimary"]) . "</span>" ;
 								}
-								print "<span $style title='" . _($rowResults["usagePrimary"]) . "'>" . _($rowResults["valuePrimary"]) . "</span>" ;
 							}
 						print "</td>" ;
 						print "<td>" ;
