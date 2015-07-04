@@ -37,6 +37,9 @@ Formal Assessment: changed name of module External Assessment, getting ready to 
 	Moved folder /modules/External Assessment to /modules/Formal Assessment
 	Edited files /modules/Formal Assessment/externalAssessment*.php
 
+Timetable: fixed a US-date bug which caused TT to jump to future date from Space Booking state clicked to change
+	Edited file /modules/Timetable/moduleFunctions.php
+
 
 v10.0.00
 --------

@@ -736,7 +736,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 									}
 								}
 							
-								$output.="<input type='hidden' name='ttDate' value='" . date("d/m/Y", $startDayStamp) . "'>" ;
+								$output.="<input type='hidden' name='ttDate' value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], $startDayStamp) . "'>" ;
 								$output.="<input name='fromTT' value='Y' type='hidden'>" ;
 							$output.="</form>" ;
 						$output.="</th>" ;
@@ -1476,8 +1476,8 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $
 
 //TIMETABLE FOR ROOM
 function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title="", $startDayStamp="", $q="", $params="") {
-			
 	$output="" ;
+	
 	$blank=TRUE ;
 	if ($startDayStamp=="") {
 		$startDayStamp=time() ;
@@ -1776,7 +1776,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 								$output.="</span>" ;
 							}
 							
-							$output.="<input type='hidden' name='ttDate' value='" . date("d/m/Y", $startDayStamp) . "'>" ;
+							$output.="<input type='hidden' name='ttDate' value='" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"], $startDayStamp) . "'>" ;
 							$output.="<input name='fromTT' value='Y' type='hidden'>" ;
 						$output.="</form>" ;
 					$output.="</th>" ;
