@@ -319,13 +319,13 @@ else {
 				</td>
 				<td class="right">
 					<select name="gender" id="gender" style="width: 302px">
-						<option value="Please select..."><?php print bi('Please select...', True) ?></option>
-						<option value="F"><?php print bi('Female', True) ?></option>
-						<option value="M"><?php print bi('Male', True) ?></option>
+						<option value="Please select..."><?php print bi('Please select...', True, ' | ', False) ?></option>
+						<option value="F"><?php print bi('Female', True, ' | ', False) ?></option>
+						<option value="M"><?php print bi('Male', True, ' | ', False) ?></option>
 					</select>
 					<script type="text/javascript">
 						var gender=new LiveValidation('gender');
-						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
+						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True, ' | ', False) ?>"});
 					 </script>
 				</td>
 			</tr>
@@ -489,7 +489,7 @@ else {
 						catch(PDOException $e) { }
 						print "<option value=''></option>" ;
 						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(bi($rowSelect["printable_name"], True)) . "</option>" ;
+							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(bi($rowSelect["printable_name"], True, ' | ', False)) . "</option>" ;
 						}
 						?>				
 					</select>
@@ -513,7 +513,7 @@ else {
 							}
 							catch(PDOException $e) { }
 							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(bi($rowSelect["printable_name"], True)) . "</option>" ;
+								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(bi($rowSelect["printable_name"], True, ' | ', False)) . "</option>" ;
 							}
 						}
 						else {
@@ -647,18 +647,18 @@ else {
 							}
 							catch(PDOException $e) { }
 							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(bi($rowSelect["printable_name"], True)) . "</option>" ;
+								print "<option value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(bi($rowSelect["printable_name"], True, ' | ', False)) . "</option>" ;
 							}
 							?>				
 						</select>
 						<select style="width: 70px" name="phone<?php print $i ?>Type">
 							<option value=""></option>
-							<option value="Mobile"><?php print bi('Mobile', True) ?></option>
-							<option value="Home"><?php print bi('Home', True) ?></option>
-							<option value="Work"><?php print bi('Work', True) ?></option>
-							<option value="Fax"><?php print bi('Fax', True) ?></option>
-							<option value="Pager"><?php print bi('Pager', True) ?></option>
-							<option value="Other"><?php print bi('Other', True) ?></option>
+							<option value="Mobile"><?php print bi('Mobile', True, ' | ', False) ?></option>
+							<option value="Home"><?php print bi('Home', True, ' | ', False) ?></option>
+							<option value="Work"><?php print bi('Work', True, ' | ', False) ?></option>
+							<option value="Fax"><?php print bi('Fax', True, ' | ', False) ?></option>
+							<option value="Pager"><?php print bi('Pager', True, ' | ', False) ?></option>
+							<option value="Other"><?php print bi('Other', True, ' | ', False) ?></option>
 						</select>
 					</td>
 				</tr>
@@ -702,7 +702,7 @@ else {
 				<td class="right">
 					<select name="gibbonSchoolYearIDEntry" id="gibbonSchoolYearIDEntry" style="width: 302px">
 						<?php
-						print "<option value='Please select...'>" . bi('Please select...', True) . "</option>" ;
+						print "<option value='Please select...'>" . bi('Please select...', True, ' | ', False) . "</option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT * FROM gibbonSchoolYear WHERE (status='Current' OR status='Upcoming') ORDER BY sequenceNumber" ;
@@ -719,7 +719,7 @@ else {
 					</select>
 					<script type="text/javascript">
 						var gibbonSchoolYearIDEntry=new LiveValidation('gibbonSchoolYearIDEntry');
-						gibbonSchoolYearIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
+						gibbonSchoolYearIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True, ' | ', False) ?>"});
 					 </script>
 				</td>
 			</tr>
@@ -750,7 +750,7 @@ else {
 				<td class="right">
 					<select name="gibbonYearGroupIDEntry" id="gibbonYearGroupIDEntry" style="width: 302px">
 						<?php
-						print "<option value='Please select...'>" . bi('Please select...', True) . "</option>" ;
+						print "<option value='Please select...'>" . bi('Please select...', True, ' | ', False) . "</option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber" ;
@@ -761,13 +761,13 @@ else {
 							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
 						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep(bi($rowSelect["name"], True)) . "</option>" ;
+							print "<option value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep(bi($rowSelect["name"], True, ' | ', False)) . "</option>" ;
 						}
 						?>				
 					</select>
 					<script type="text/javascript">
 						var gibbonYearGroupIDEntry=new LiveValidation('gibbonYearGroupIDEntry');
-						gibbonYearGroupIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
+						gibbonYearGroupIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True, ' | ', False) ?>"});
 					 </script>
 				</td>
 			</tr>
@@ -971,15 +971,15 @@ else {
 								$resultSelect->execute($dataSelect);
 							}
 							catch(PDOException $e) { }
-							print "<option value='Please select...'>" . bi('Please select...', True) . "</option>" ;
+							print "<option value='Please select...'>" . bi('Please select...', True, ' | ', False) . "</option>" ;
 							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(bi($rowSelect["printable_name"], True)) . "</option>" ;
+								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(bi($rowSelect["printable_name"], True, ' | ', False)) . "</option>" ;
 							}
 							?>				
 						</select>
 						<script type="text/javascript">
 							var homeAddressCountry=new LiveValidation('homeAddressCountry');
-							homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
+							homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True, ' | ', False) ?>"});
 						 </script>
 					</td>
 				</tr>
@@ -1034,23 +1034,23 @@ else {
 						</td>
 						<td class="right">
 							<select name="parent1relationship" id="parent1relationship" style="width: 302px">
-								<option value="Please select..."><?php print bi('Please select...', True) ?></option>
-								<option value="Mother"><?php print bi('Mother', True) ?></option>
-								<option value="Father"><?php print bi('Father', True) ?></option>
-								<option value="Step-Mother"><?php print bi('Step-Mother', True) ?></option>
-								<option value="Step-Father"><?php print bi('Step-Father', True) ?></option>
-								<option value="Adoptive Parent"><?php print bi('Adoptive Parent', True) ?></option>
-								<option value="Guardian"><?php print bi('Guardian', True) ?></option>
-								<option value="Grandmother"><?php print bi('Grandmother', True) ?></option>
-								<option value="Grandfather"><?php print bi('Grandfather', True) ?></option>
-								<option value="Aunt"><?php print bi('Aunt', True) ?></option>
-								<option value="Uncle"><?php print bi('Uncle', True) ?></option>
-								<option value="Nanny/Helper"><?php print bi('Nanny/Helper', True) ?></option>
-								<option value="Other"><?php print bi('Other', True) ?></option>
+								<option value="Please select..."><?php print bi('Please select...', True, ' | ', False) ?></option>
+								<option value="Mother"><?php print bi('Mother', True, ' | ', False) ?></option>
+								<option value="Father"><?php print bi('Father', True, ' | ', False) ?></option>
+								<option value="Step-Mother"><?php print bi('Step-Mother', True, ' | ', False) ?></option>
+								<option value="Step-Father"><?php print bi('Step-Father', True, ' | ', False) ?></option>
+								<option value="Adoptive Parent"><?php print bi('Adoptive Parent', True, ' | ', False) ?></option>
+								<option value="Guardian"><?php print bi('Guardian', True, ' | ', False) ?></option>
+								<option value="Grandmother"><?php print bi('Grandmother', True, ' | ', False) ?></option>
+								<option value="Grandfather"><?php print bi('Grandfather', True, ' | ', False) ?></option>
+								<option value="Aunt"><?php print bi('Aunt', True, ' | ', False) ?></option>
+								<option value="Uncle"><?php print bi('Uncle', True, ' | ', False) ?></option>
+								<option value="Nanny/Helper"><?php print bi('Nanny/Helper', True, ' | ', False) ?></option>
+								<option value="Other"><?php print bi('Other', True, ' | ', False) ?></option>
 							</select>
 							<script type="text/javascript">
 								var parent1relationship=new LiveValidation('parent1relationship');
-								parent1relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
+								parent1relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True, ' | ', False) ?>"});
 							 </script>
 						</td>
 					</tr>
@@ -1159,7 +1159,7 @@ else {
 						</td>
 						<td class="right">
 							<select style="width: 302px" id="<?php print "parent$i" ?>title" name="<?php print "parent$i" ?>title">
-								<option value="Please select..."><?php print bi('Please select...', True) ?></option>
+								<option value="Please select..."><?php print bi('Please select...', True, ' | ', False) ?></option>
 								<option value="Ms.">Ms.</option>
 								<option value="Miss">Miss</option>
 								<option value="Mr.">Mr.</option>
@@ -1168,7 +1168,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>title=new LiveValidation('<?php print "parent$i" ?>title');
-								<?php print "parent$i" ?>title.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
+								<?php print "parent$i" ?>title.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True, ' | ', False) ?>"});
 							 </script>
 						</td>
 					</tr>
@@ -1239,13 +1239,13 @@ else {
 						</td>
 						<td class="right">
 							<select name="<?php print "parent$i" ?>gender" id="<?php print "parent$i" ?>gender" style="width: 302px">
-								<option value="Please select..."><?php print bi('Please select...', True) ?></option>
-								<option value="F"><?php print bi('Female', True) ?></option>
-								<option value="M"><?php print bi('Male', True) ?></option>
+								<option value="Please select..."><?php print bi('Please select...', True, ' | ', False) ?></option>
+                                <option value="F"><?php print bi('Female', True, ' | ', False) ?></option>
+                                <option value="M"><?php print bi('Male', True, ' | ', False) ?></option>
 							</select>
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>gender=new LiveValidation('<?php print "parent$i" ?>gender');
-								<?php print "parent$i" ?>gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
+								<?php print "parent$i" ?>gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True, ' | ', False) ?>"});
 							 </script>
 						</td>
 					</tr>
@@ -1255,23 +1255,23 @@ else {
 						</td>
 						<td class="right">
 							<select name="<?php print "parent$i" ?>relationship" id="<?php print "parent$i" ?>relationship" style="width: 302px">
-								<option value="Please select..."><?php print bi('Please select...', True) ?></option>
-								<option value="Mother"><?php print bi('Mother', True) ?></option>
-								<option value="Father"><?php print bi('Father', True) ?></option>
-								<option value="Step-Mother"><?php print bi('Step-Mother', True) ?></option>
-								<option value="Step-Father"><?php print bi('Step-Father', True) ?></option>
-								<option value="Adoptive Parent"><?php print bi('Adoptive Parent', True) ?></option>
-								<option value="Guardian"><?php print bi('Guardian', True) ?></option>
-								<option value="Grandmother"><?php print bi('Grandmother', True) ?></option>
-								<option value="Grandfather"><?php print bi('Grandfather', True) ?></option>
-								<option value="Aunt"><?php print bi('Aunt', True) ?></option>
-								<option value="Uncle"><?php print bi('Uncle', True) ?></option>
-								<option value="Nanny/Helper"><?php print bi('Nanny/Helper', True) ?></option>
-								<option value="Other"><?php print bi('Other', True) ?></option>
+								<option value="Please select..."><?php print bi('Please select...', True, ' | ', False) ?></option>
+								<option value="Mother"><?php print bi('Mother', True, ' | ', False) ?></option>
+								<option value="Father"><?php print bi('Father', True, ' | ', False) ?></option>
+								<option value="Step-Mother"><?php print bi('Step-Mother', True, ' | ', False) ?></option>
+								<option value="Step-Father"><?php print bi('Step-Father', True, ' | ', False) ?></option>
+								<option value="Adoptive Parent"><?php print bi('Adoptive Parent', True, ' | ', False) ?></option>
+								<option value="Guardian"><?php print bi('Guardian', True, ' | ', False) ?></option>
+								<option value="Grandmother"><?php print bi('Grandmother', True, ' | ', False) ?></option>
+								<option value="Grandfather"><?php print bi('Grandfather', True, ' | ', False) ?></option>
+								<option value="Aunt"><?php print bi('Aunt', True, ' | ', False) ?></option>
+								<option value="Uncle"><?php print bi('Uncle', True, ' | ', False) ?></option>
+								<option value="Nanny/Helper"><?php print bi('Nanny/Helper', True, ' | ', False) ?></option>
+								<option value="Other"><?php print bi('Other', True, ' | ', False) ?></option>
 							</select>
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>relationship=new LiveValidation('<?php print "parent$i" ?>relationship');
-								<?php print "parent$i" ?>relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
+								<?php print "parent$i" ?>relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True, ' | ', False) ?>"});
 							 </script>
 						</td>
 					</tr>
@@ -1353,7 +1353,7 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(bi($rowSelect["printable_name"], True)) . "</option>" ;
+										print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(bi($rowSelect["printable_name"], True, ' | ', False)) . "</option>" ;
 									}
 								}
 								else {
@@ -1493,18 +1493,18 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(bi($rowSelect["printable_name"], True)) . "</option>" ;
+										print "<option value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(bi($rowSelect["printable_name"], True, ' | ', False)) . "</option>" ;
 									}
 									?>				
 								</select>
 								<select style="width: 70px" name="<?php print "parent$i" ?>phone<?php print $y ?>Type">
 									<option value=""></option>
-									<option value="Mobile"><?php print bi('Mobile', True) ?></option>
-									<option value="Home"><?php print bi('Home', True) ?></option>
-									<option value="Work"><?php print bi('Work', True) ?></option>
-									<option value="Fax"><?php print bi('Fax', True) ?></option>
-									<option value="Pager"><?php print bi('Pager', True) ?></option>
-									<option value="Other"><?php print bi('Other', True) ?></option>
+                                    <option value="Mobile"><?php print bi('Mobile', True, ' | ', False) ?></option>
+                                    <option value="Home"><?php print bi('Home', True, ' | ', False) ?></option>
+                                    <option value="Work"><?php print bi('Work', True, ' | ', False) ?></option>
+                                    <option value="Fax"><?php print bi('Fax', True, ' | ', False) ?></option>
+                                    <option value="Pager"><?php print bi('Pager', True, ' | ', False) ?></option>
+                                    <option value="Other"><?php print bi('Other', True, ' | ', False) ?></option>
 								</select>
 							</td>
 						</tr>
@@ -1777,7 +1777,7 @@ else {
 					<td class="right">
 						<select name="languageChoice" id="languageChoice" style="width: 302px">
 							<?php
-							print "<option value='Please select...'>" . bi('Please select...', True) . "</option>" ;
+							print "<option value='Please select...'>" . bi('Please select...', True, ' | ', False) . "</option>" ;
 							$languageOptionsLanguageList=getSettingByScope($connection2, "Application Form", "languageOptionsLanguageList") ;
 							$languages=explode(",", $languageOptionsLanguageList) ;
 							foreach ($languages as $language) {
@@ -1787,7 +1787,7 @@ else {
 						</select>
 						<script type="text/javascript">
 							var languageChoice=new LiveValidation('languageChoice');
-							languageChoice.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
+							languageChoice.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True, ' | ', False) ?>"});
 						 </script>
 					</td>
 				</tr>
@@ -1952,8 +1952,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="companyCCFamily" id="companyCCFamily" style="width: 302px">
-						<option value="N" /> <?php print bi('No', True) ?>
-						<option value="Y" /> <?php print bi('Yes', True) ?>
+						<option value="N" /> <?php print bi('No', True, ' | ', False) ?>
+						<option value="Y" /> <?php print bi('Yes', True, ' | ', False) ?>
 					</select>
 				</td>
 			</tr>
@@ -2096,7 +2096,7 @@ else {
 					}
 					else {
 						print "<select name='howDidYouHear' id='howDidYouHear' style='width: 302px'>" ;
-							print "<option value='Please select...'>" . bi('Please select...', True) . "</option>" ;
+							print "<option value='Please select...'>" . bi('Please select...', True, ' | ', False) . "</option>" ;
 							$howDidYouHears=explode(",", $howDidYouHearList) ;
 							foreach ($howDidYouHears as $howDidYouHear) {
 								print "<option value='" . trim($howDidYouHear) . "'>" . trim($howDidYouHear) . "</option>" ;
@@ -2105,7 +2105,7 @@ else {
 						?>
 						<script type="text/javascript">
 							var howDidYouHear=new LiveValidation('howDidYouHear');
-							howDidYouHear.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
+							howDidYouHear.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True, ' | ', False) ?>"});
 						</script>
 						<?php
 					}
@@ -2195,7 +2195,7 @@ else {
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print bi("Submit", True) ; ?>">
+					<input type="submit" value="<?php print bi("Submit", True, ' | ', false) ; ?>">
 				</td>
 			</tr>
 		</table>
