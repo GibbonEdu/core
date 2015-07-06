@@ -144,17 +144,17 @@ if (isset($_SESSION[$guid]["gibbonPersonID"])) {
 if ($proceed==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print bi("You do not have access to this action.", True) ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
 	if (isset($_SESSION[$guid]["username"])) {
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . $_SESSION[$guid]["organisationNameShort"] . " " . _('Application Form') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . bi("Home", True) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . $_SESSION[$guid]["organisationNameShort"] . " " . bi('Application Form', True) . "</div>" ;
 	}
 	else {
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > </div><div class='trailEnd'>" . $_SESSION[$guid]["organisationNameShort"] . " " . _('Application Form') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . bi("Home", True) . "</a> > </div><div class='trailEnd'>" . $_SESSION[$guid]["organisationNameShort"] . " " . bi('Application Form', True) . "</div>" ;
 	}
 	print "</div>" ;
 	
@@ -170,7 +170,7 @@ else {
 		if ($intro!="") {
 			print "<br/><br/>" ;
 		}
-		print "<p style='font-weight: bold; text-decoration: none; color: #c00'><i><u>" . sprintf(_('If you have an %1$s %2$s account, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Data in the main menu.'), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . "</u></i> " . sprintf(_('If you do not have an %1$s %2$s account, please use the form below.'), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . "</p>" ;
+		print "<p style='font-weight: bold; text-decoration: none; color: #c00'><i><u>" . sprintf(bi('If you have an %1$s %2$s account, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Data in the main menu.', True), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . "</u></i> " . sprintf(bi('If you do not have an %1$s %2$s account, please use the form below.', True), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . "</p>" ;
 	}
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -178,36 +178,36 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=bi("Your request failed because you do not have access to this action.", True) ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
+			$addReturnMessage=bi("Your request failed due to a database error.", True) ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=bi("Your request failed because your inputs were invalid.", True) ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=bi("Your request failed because your inputs were invalid.", True) ;	
 		}
 		else if ($addReturn=="success0" OR $addReturn=="success1" OR $addReturn=="success2"  OR $addReturn=="success4") {
 			if ($addReturn=="success0") {
-				$addReturnMessage=_("Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.") ;
+				$addReturnMessage=bi("Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.", True) ;
 			}
 			else if ($addReturn=="success1") {
-				$addReturnMessage=_("Your application was successfully submitted and payment has been made to your credit card. Our admissions team will review your application and be in touch in due course.") ;
+				$addReturnMessage=bi("Your application was successfully submitted and payment has been made to your credit card. Our admissions team will review your application and be in touch in due course.", True) ;
 			}
 			else if ($addReturn=="success2") {
-				$addReturnMessage=_("Your application was successfully submitted, but payment could not be made to your credit card. Our admissions team will review your application and be in touch in due course.") ;
+				$addReturnMessage=bi("Your application was successfully submitted, but payment could not be made to your credit card. Our admissions team will review your application and be in touch in due course.", True) ;
 			}
 			else if ($addReturn=="success3") {
-				$addReturnMessage=_("Your application was successfully submitted, payment has been made to your credit card, but there has been an error recording your payment. Please print this screen and contact the school ASAP. Our admissions team will review your application and be in touch in due course.") ;
+				$addReturnMessage=bi("Your application was successfully submitted, payment has been made to your credit card, but there has been an error recording your payment. Please print this screen and contact the school ASAP. Our admissions team will review your application and be in touch in due course.", True) ;
 			}
 			else if ($addReturn=="success4") {
-				$addReturnMessage=_("Your application was successfully submitted, but payment could not be made as the payment gateway does not support the system's currency. Our admissions team will review your application and be in touch in due course.") ;
+				$addReturnMessage=bi("Your application was successfully submitted, but payment could not be made as the payment gateway does not support the system's currency. Our admissions team will review your application and be in touch in due course.", True) ;
 			}
 			if (isset($_GET["id"])) {
 				if ($_GET["id"]!="") {
-					$addReturnMessage=$addReturnMessage . "<br/><br/>" . _('If you need to contact the school in reference to this application, please quote the following number:') . " <b><u>" . $_GET["id"] . "</b></u>." ;
+					$addReturnMessage=$addReturnMessage . "<br/><br/>" . bi('If you need to contact the school in reference to this application, please quote the following number:', True) . " <b><u>" . $_GET["id"] . "</b></u>." ;
 				}
 			}
 			if ($_SESSION[$guid]["organisationAdmissionsName"]!="" AND $_SESSION[$guid]["organisationAdmissionsEmail"]!="") {
@@ -230,9 +230,9 @@ else {
 	
 	if ($applicationFee>0 AND is_numeric($applicationFee)) {
 		print "<div class='warning'>" ;
-			print _("Please note that there is an application fee of:") . " <b><u>" . $currency . $applicationFee . "</u></b>." ;
+			print bi("Please note that there is an application fee of:", True) . " <b><u>" . $currency . $applicationFee . "</u></b>." ;
 			if ($enablePayments=="Y" AND $paypalAPIUsername!="" AND $paypalAPIPassword!="" AND $paypalAPISignature!="") {
-				print " " . _('Payment must be made by credit card, using our secure PayPal payment gateway. When you press Submit at the end of this form, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details.') ;
+				print " " . bi('Payment must be made by credit card, using our secure PayPal payment gateway. When you press Submit at the end of this form, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details.', True) ;
 			}
 		print "</div>" ;
 	}
@@ -243,19 +243,19 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Student') ?></h3>
+					<h3><?php print bi('Student', True) ?></h3>
 				</td>
 			</tr>
 			
 			<tr>
 				<td colspan=2> 
-					<h4><?php print _('Student Personal Data') ?></h4>
+					<h4><?php print bi('Student Personal Data', True) ?></h4>
 				</td>
 			</tr>
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Surname') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Family name as shown in ID documents.') ?></i></span>
+					<b><?php print bi('Surname', True) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print bi('Family name as shown in ID documents.', True) ?></i></span>
 				</td>
 				<td class="right">
 					<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
@@ -267,8 +267,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('First Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('First name as shown in ID documents.') ?></i></span>
+					<b><?php print bi('First Name', True) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print bi('First name as shown in ID documents.', True) ?></i></span>
 				</td>
 				<td class="right">
 					<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
@@ -280,8 +280,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Preferred Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Most common name, alias, nickname, etc.') ?></i></span>
+					<b><?php print bi('Preferred Name', True) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print bi('Most common name, alias, nickname, etc.', True) ?></i></span>
 				</td>
 				<td class="right">
 					<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" style="width: 300px">
@@ -293,8 +293,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Official Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Full name as shown in ID documents.') ?></i></span>
+					<b><?php print bi('Official Name', True) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print bi('Full name as shown in ID documents.', True) ?></i></span>
 				</td>
 				<td class="right">
 					<input title='Please enter full name as shown in ID documents' name="officialName" id="officialName" maxlength=150 value="" type="text" style="width: 300px">
@@ -306,8 +306,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Name In Characters') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Chinese or other character-based name.') ?></i></span>
+					<b><?php print bi('Name In Characters', True) ?></b><br/>
+					<span style="font-size: 90%"><i><?php print bi('Chinese or other character-based name.', True) ?></i></span>
 				</td>
 				<td class="right">
 					<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="" type="text" style="width: 300px">
@@ -315,24 +315,24 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Gender') ?> *</b><br/>
+					<b><?php print bi('Gender', True) ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="gender" id="gender" style="width: 302px">
-						<option value="Please select..."><?php print _('Please select...') ?></option>
-						<option value="F"><?php print _('Female') ?></option>
-						<option value="M"><?php print _('Male') ?></option>
+						<option value="Please select..."><?php print bi('Please select...', True) ?></option>
+						<option value="F"><?php print bi('Female', True) ?></option>
+						<option value="M"><?php print bi('Male', True) ?></option>
 					</select>
 					<script type="text/javascript">
 						var gender=new LiveValidation('gender');
-						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
 					 </script>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Date of Birth') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Format:') . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<b><?php print bi('Date of Birth', True) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print bi('Format:', True) . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
 					<input name="dob" id="dob" maxlength=10 value="" type="text" style="width: 300px">
@@ -352,13 +352,13 @@ else {
 			
 			<tr>
 				<td colspan=2> 
-					<h4><?php print _('Student Background') ?></h4>
+					<h4><?php print bi('Student Background', True) ?></h4>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Home Language') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('The primary language used in the student\'s home.') ?></i></span>
+					<b><?php print bi('Home Language', True) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print bi('The primary language used in the student\'s home.', True) ?></i></span>
 				</td>
 				<td class="right">
 					<input name="languageHome" id="languageHome" maxlength=30 value="" type="text" style="width: 300px">
@@ -389,8 +389,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('First Language') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Student\'s native/first/mother language.') ?></i></span>
+					<b><?php print bi('First Language', True) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print bi('Student\'s native/first/mother language.', True) ?></i></span>
 				</td>
 				<td class="right">
 					<input name="languageFirst" id="languageFirst" maxlength=30 value="" type="text" style="width: 300px">
@@ -421,7 +421,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Second Language') ?></b><br/>
+					<b><?php print bi('Second Language', True) ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="languageSecond" id="languageSecond" maxlength=30 value="" type="text" style="width: 300px">
@@ -448,7 +448,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Third Language') ?></b><br/>
+					<b><?php print bi('Third Language', True) ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="languageThird" id="languageThird" maxlength=30 value="" type="text" style="width: 300px">
@@ -475,7 +475,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Country of Birth') ?></b><br/>
+					<b><?php print bi('Country of Birth', True) ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="countryOfBirth" id="countryOfBirth" style="width: 302px">
@@ -497,7 +497,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Citizenship') ?></b><br/>
+					<b><?php print bi('Citizenship', True) ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="citizenship1" id="citizenship1" style="width: 302px">
@@ -528,7 +528,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Citizenship Passport Number') ?></b><br/>
+					<b><?php print bi('Citizenship Passport Number', True) ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="" type="text" style="width: 300px">
@@ -538,10 +538,10 @@ else {
 				<td> 
 					<?php
 					if ($_SESSION[$guid]["country"]=="") {
-						print "<b>" . _('National ID Card Number') . "</b><br/>" ;
+						print "<b>" . bi('National ID Card Number', True) . "</b><br/>" ;
 					}
 					else {
-						print "<b>" . $_SESSION[$guid]["country"] . " " . _('ID Card Number') . "</b><br/>" ;
+						print "<b>" . $_SESSION[$guid]["country"] . " " . bi('ID Card Number', True) . "</b><br/>" ;
 					}
 					?>
 				</td>
@@ -553,10 +553,10 @@ else {
 				<td> 
 					<?php
 					if ($_SESSION[$guid]["country"]=="") {
-						print "<b>" . _('Residency/Visa Type') . "</b><br/>" ;
+						print "<b>" . bi('Residency/Visa Type', True) . "</b><br/>" ;
 					}
 					else {
-						print "<b>" . $_SESSION[$guid]["country"] . " " . _('Residency/Visa Type') . "</b><br/>" ;
+						print "<b>" . $_SESSION[$guid]["country"] . " " . bi('Residency/Visa Type', True) . "</b><br/>" ;
 					}
 					?>
 				</td>
@@ -586,12 +586,12 @@ else {
 				<td> 
 					<?php
 					if ($_SESSION[$guid]["country"]=="") {
-						print "<b>" . _('Visa Expiry Date') . "</b><br/>" ;
+						print "<b>" . bi('Visa Expiry Date', True) . "</b><br/>" ;
 					}
 					else {
-						print "<b>" . $_SESSION[$guid]["country"] . " " . _('Visa Expiry Date') . "</b><br/>" ;
+						print "<b>" . $_SESSION[$guid]["country"] . " " . bi('Visa Expiry Date', True) . "</b><br/>" ;
 					}
-					print "<span style='font-size: 90%'><i>Format: " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . _('If relevant.') . "</i></span>" ;
+					print "<span style='font-size: 90%'><i>Format: " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . bi('If relevant.', True) . "</i></span>" ;
 					?>
 				</td>
 				<td class="right">
@@ -611,12 +611,12 @@ else {
 			
 			<tr>
 				<td colspan=2> 
-					<h4><?php print _('Student Contact') ?></h4>
+					<h4><?php print bi('Student Contact', True) ?></h4>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Email') ?></b><br/>
+					<b><?php print bi('Email', True) ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="email" id="email" maxlength=50 value="" type="text" style="width: 300px">
@@ -631,8 +631,8 @@ else {
 				?>
 				<tr>
 					<td> 
-						<b><?php print _('Phone') ?> <?php print $i ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('Type, country code, number.') ?></i></span>
+						<b><?php print bi('Phone', True) ?> <?php print $i ?></b><br/>
+						<span style="font-size: 90%"><i><?php print bi('Type, country code, number.', True) ?></i></span>
 					</td>
 					<td class="right">
 						<input name="phone<?php print $i ?>" id="phone<?php print $i ?>" maxlength=20 value="" type="text" style="width: 160px">
@@ -653,12 +653,12 @@ else {
 						</select>
 						<select style="width: 70px" name="phone<?php print $i ?>Type">
 							<option value=""></option>
-							<option value="Mobile"><?php print _('Mobile') ?></option>
-							<option value="Home"><?php print _('Home') ?></option>
-							<option value="Work"><?php print _('Work') ?></option>
-							<option value="Fax"><?php print _('Fax') ?></option>
-							<option value="Pager"><?php print _('Pager') ?></option>
-							<option value="Other"><?php print _('Other') ?></option>
+							<option value="Mobile"><?php print bi('Mobile', True) ?></option>
+							<option value="Home"><?php print bi('Home', True) ?></option>
+							<option value="Work"><?php print bi('Work', True) ?></option>
+							<option value="Fax"><?php print bi('Fax', True) ?></option>
+							<option value="Pager"><?php print bi('Pager', True) ?></option>
+							<option value="Other"><?php print bi('Other', True) ?></option>
 						</select>
 					</td>
 				</tr>
@@ -669,20 +669,20 @@ else {
 			
 			<tr>
 				<td colspan=2> 
-					<h4><?php print _('Student Medical & Development') ?></h4>
+					<h4><?php print bi('Student Medical & Development', True) ?></h4>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2 style='padding-top: 15px'> 
-					<b><?php print _('Medical Information') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Please indicate any medical conditions.') ?></i></span><br/>
+					<b><?php print bi('Medical Information', True) ?></b><br/>
+					<span style="font-size: 90%"><i><?php print bi('Please indicate any medical conditions.', True) ?></i></span><br/>
 					<textarea name="medicalInformation" id="medicalInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"></textarea>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2 style='padding-top: 15px'> 
-					<b><?php print _('Development Information') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Provide any comments or information concerning your child\'s development that may be relevant to your child\’s performance in the classroom or elsewhere? (Incorrect or withheld information may affect continued enrolment).') ?></i></span><br/> 					
+					<b><?php print bi('Development Information', True) ?></b><br/>
+					<span style="font-size: 90%"><i><?php print bi('Provide any comments or information concerning your child\'s development that may be relevant to your child\’s performance in the classroom or elsewhere? (Incorrect or withheld information may affect continued enrolment).', True) ?></i></span><br/> 					
 					<textarea name="developmentInformation" id="developmentInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"></textarea>
 				</td>
 			</tr>
@@ -691,18 +691,18 @@ else {
 			
 			<tr>
 				<td colspan=2> 
-					<h4><?php print _('Student Education') ?></h4>
+					<h4><?php print bi('Student Education', True) ?></h4>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Anticipated Year of Entry') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('What school year will the student join in?') ?></i></span>
+					<b><?php print bi('Anticipated Year of Entry', True) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print bi('What school year will the student join in?', True) ?></i></span>
 				</td>
 				<td class="right">
 					<select name="gibbonSchoolYearIDEntry" id="gibbonSchoolYearIDEntry" style="width: 302px">
 						<?php
-						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+						print "<option value='Please select...'>" . bi('Please select...', True) . "</option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT * FROM gibbonSchoolYear WHERE (status='Current' OR status='Upcoming') ORDER BY sequenceNumber" ;
@@ -719,14 +719,14 @@ else {
 					</select>
 					<script type="text/javascript">
 						var gibbonSchoolYearIDEntry=new LiveValidation('gibbonSchoolYearIDEntry');
-						gibbonSchoolYearIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						gibbonSchoolYearIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
 					 </script>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Intended Start Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Student\'s intended first day at school.') ?><br/><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<b><?php print bi('Intended Start Date', True) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print bi('Student\'s intended first day at school.', True) ?><br/><?php print bi('Format:', True) ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 				</td>
 				<td class="right">
 					<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" style="width: 300px">
@@ -744,13 +744,13 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Year Group at Entry') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Which year level will student enter.') ?></i></span>
+					<b><?php print bi('Year Group at Entry', True) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print bi('Which year level will student enter.', True) ?></i></span>
 				</td>
 				<td class="right">
 					<select name="gibbonYearGroupIDEntry" id="gibbonYearGroupIDEntry" style="width: 302px">
 						<?php
-						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+						print "<option value='Please select...'>" . bi('Please select...', True) . "</option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber" ;
@@ -767,7 +767,7 @@ else {
 					</select>
 					<script type="text/javascript">
 						var gibbonYearGroupIDEntry=new LiveValidation('gibbonYearGroupIDEntry');
-						gibbonYearGroupIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						gibbonYearGroupIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
 					 </script>
 				</td>
 			</tr>
@@ -778,7 +778,7 @@ else {
 				?>
 				<tr>
 					<td> 
-						<b><?php print _('Day Type') ?></b><br/>
+						<b><?php print bi('Day Type', True) ?></b><br/>
 						<span style="font-size: 90%"><i><?php print getSettingByScope($connection2, 'User Admin', 'dayTypeText') ; ?></i></span>
 					</td>
 					<td class="right">
@@ -800,8 +800,8 @@ else {
 			
 			<tr>
 				<td colspan=2 style='padding-top: 15px'> 
-					<b><?php print _('Previous Schools') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Please give information on the last two schools attended by the applicant.') ?></i></span>
+					<b><?php print bi('Previous Schools', True) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print bi('Please give information on the last two schools attended by the applicant.', True) ?></i></span>
 				</td>
 			</tr>
 			<tr>
@@ -810,19 +810,19 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print _("School Name") ;
+								print bi("School Name", True) ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Address") ;
+								print bi("Address", True) ;
 							print "</th>" ;
 							print "<th>" ;
-								print sprintf(_('Grades%1$sAttended'), "<br/>") ;
+								print sprintf(bi('Grades%1$sAttended', True), "<br/>") ;
 							print "</th>" ;
 							print "<th>" ;
-								print sprintf(_('Language of%1$sInstruction'), "<br/>") ;
+								print sprintf(bi('Language of%1$sInstruction', True), "<br/>") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Joining Date") . "<br/><span style='font-size: 80%'>" ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print "</span>" ;
+								print bi("Joining Date", True) . "<br/><span style='font-size: 80%'>" ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print "</span>" ;
 							print "</th>" ;
 						print "</tr>" ;
 						
@@ -905,17 +905,17 @@ else {
 				<tr class='break'>
 					<td colspan=2> 
 						<h3>
-							<?php print _('Home Address') ?>
+							<?php print bi('Home Address', True) ?>
 						</h3>
 						<p>
-							<?php print _('This address will be used for all members of the family. If an individual within the family needs a different address, this can be set through Data Updater after admission.') ?>
+							<?php print bi('This address will be used for all members of the family. If an individual within the family needs a different address, this can be set through Data Updater after admission.', True) ?>
 						</p>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Home Address') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Unit, Building, Street') ?></i></span>
+						<b><?php print bi('Home Address', True) ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print bi('Unit, Building, Street', True) ?></i></span>
 					</td>
 					<td class="right">
 						<input name="homeAddress" id="homeAddress" maxlength=255 value="" type="text" style="width: 300px">
@@ -927,8 +927,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Home Address (District)') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('County, State, District') ?></i></span>
+						<b><?php print bi('Home Address (District)', True) ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print bi('County, State, District', True) ?></i></span>
 					</td>
 					<td class="right">
 						<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="" type="text" style="width: 300px">
@@ -959,7 +959,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Home Address (Country)') ?> *</b><br/>
+						<b><?php print bi('Home Address (Country)', True) ?> *</b><br/>
 					</td>
 					<td class="right">
 						<select name="homeAddressCountry" id="homeAddressCountry" style="width: 302px">
@@ -971,7 +971,7 @@ else {
 								$resultSelect->execute($dataSelect);
 							}
 							catch(PDOException $e) { }
-							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+							print "<option value='Please select...'>" . bi('Please select...', True) . "</option>" ;
 							while ($rowSelect=$resultSelect->fetch()) {
 								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 							}
@@ -979,7 +979,7 @@ else {
 						</select>
 						<script type="text/javascript">
 							var homeAddressCountry=new LiveValidation('homeAddressCountry');
-							homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+							homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
 						 </script>
 					</td>
 				</tr>
@@ -991,7 +991,7 @@ else {
 					<tr class='break'>
 						<td colspan=2> 
 							<h3>
-								<?php print _('Parent/Guardian 1') ?>
+								<?php print bi('Parent/Guardian 1', True) ?>
 								<?php
 								if ($i==1) {
 									print "<span style='font-size: 75%'></span>" ;
@@ -1002,8 +1002,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Username') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('System login ID.') ?></i></span>
+							<b><?php print bi('Username', True) ?></b><br/>
+							<span style="font-size: 90%"><i><?php print bi('System login ID.', True) ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name='parent1username' maxlength=30 value="<?php print $_SESSION[$guid]["username"] ?>" type="text" style="width: 300px">
@@ -1012,8 +1012,8 @@ else {
 					
 					<tr>
 						<td> 
-							<b><?php print _('Surname') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Family name as shown in ID documents.') ?></i></span>
+							<b><?php print bi('Surname', True) ?></b><br/>
+							<span style="font-size: 90%"><i><?php print bi('Family name as shown in ID documents.', True) ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name='parent1surname' maxlength=30 value="<?php print $_SESSION[$guid]["surname"] ?>" type="text" style="width: 300px">
@@ -1021,8 +1021,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Preferred Name') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Most common name, alias, nickname, etc.') ?></i></span>
+							<b><?php print bi('Preferred Name', True) ?></b><br/>
+							<span style="font-size: 90%"><i><?php print bi('Most common name, alias, nickname, etc.', True) ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name='parent1preferredName' maxlength=30 value="<?php print $_SESSION[$guid]["preferredName"] ?>" type="text" style="width: 300px">
@@ -1030,27 +1030,27 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Relationship') ?> *</b><br/>
+							<b><?php print bi('Relationship', True) ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="parent1relationship" id="parent1relationship" style="width: 302px">
-								<option value="Please select..."><?php print _('Please select...') ?></option>
-								<option value="Mother"><?php print _('Mother') ?></option>
-								<option value="Father"><?php print _('Father') ?></option>
-								<option value="Step-Mother"><?php print _('Step-Mother') ?></option>
-								<option value="Step-Father"><?php print _('Step-Father') ?></option>
-								<option value="Adoptive Parent"><?php print _('Adoptive Parent') ?></option>
-								<option value="Guardian"><?php print _('Guardian') ?></option>
-								<option value="Grandmother"><?php print _('Grandmother') ?></option>
-								<option value="Grandfather"><?php print _('Grandfather') ?></option>
-								<option value="Aunt"><?php print _('Aunt') ?></option>
-								<option value="Uncle"><?php print _('Uncle') ?></option>
-								<option value="Nanny/Helper"><?php print _('Nanny/Helper') ?></option>
-								<option value="Other"><?php print _('Other') ?></option>
+								<option value="Please select..."><?php print bi('Please select...', True) ?></option>
+								<option value="Mother"><?php print bi('Mother', True) ?></option>
+								<option value="Father"><?php print bi('Father', True) ?></option>
+								<option value="Step-Mother"><?php print bi('Step-Mother', True) ?></option>
+								<option value="Step-Father"><?php print bi('Step-Father', True) ?></option>
+								<option value="Adoptive Parent"><?php print bi('Adoptive Parent', True) ?></option>
+								<option value="Guardian"><?php print bi('Guardian', True) ?></option>
+								<option value="Grandmother"><?php print bi('Grandmother', True) ?></option>
+								<option value="Grandfather"><?php print bi('Grandfather', True) ?></option>
+								<option value="Aunt"><?php print bi('Aunt', True) ?></option>
+								<option value="Uncle"><?php print bi('Uncle', True) ?></option>
+								<option value="Nanny/Helper"><?php print bi('Nanny/Helper', True) ?></option>
+								<option value="Other"><?php print bi('Other', True) ?></option>
 							</select>
 							<script type="text/javascript">
 								var parent1relationship=new LiveValidation('parent1relationship');
-								parent1relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								parent1relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
 							 </script>
 						</td>
 					</tr>
@@ -1065,7 +1065,7 @@ else {
 					<tr class='break'>
 						<td colspan=2> 
 							<h3>
-								<?php print _('Parent/Guardian') ?> <?php print $i ?>
+								<?php print bi('Parent/Guardian', True) ?> <?php print $i ?>
 								<?php
 								if ($i==1) {
 									print "<span style='font-size: 75%'> (e.g. mother)</span>" ;
@@ -1149,17 +1149,17 @@ else {
 					?>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td colspan=2> 
-							<h4><?php print _('Parent/Guardian') ?> <?php print $i ?> <?php print _('Personal Data') ?></h4>
+							<h4><?php print bi('Parent/Guardian', True) ?> <?php print $i ?> <?php print bi('Personal Data', True) ?></h4>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
-							<b><?php print _('Title') ?> *</b><br/>
+							<b><?php print bi('Title', True) ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select style="width: 302px" id="<?php print "parent$i" ?>title" name="<?php print "parent$i" ?>title">
-								<option value="Please select..."><?php print _('Please select...') ?></option>
+								<option value="Please select..."><?php print bi('Please select...', True) ?></option>
 								<option value="Ms.">Ms.</option>
 								<option value="Miss">Miss</option>
 								<option value="Mr.">Mr.</option>
@@ -1168,14 +1168,14 @@ else {
 							</select>
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>title=new LiveValidation('<?php print "parent$i" ?>title');
-								<?php print "parent$i" ?>title.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								<?php print "parent$i" ?>title.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
 							 </script>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
-							<b><?php print _('Surname') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Family name as shown in ID documents.') ?></i></span>
+							<b><?php print bi('Surname', True) ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print bi('Family name as shown in ID documents.', True) ?></i></span>
 						</td>
 						<td class="right">
 							<input name="<?php print "parent$i" ?>surname" id="<?php print "parent$i" ?>surname" maxlength=30 value="" type="text" style="width: 300px">
@@ -1187,8 +1187,8 @@ else {
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
-							<b><?php print _('First Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('First name as shown in ID documents.') ?></i></span>
+							<b><?php print bi('First Name', True) ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print bi('First name as shown in ID documents.', True) ?></i></span>
 						</td>
 						<td class="right">
 							<input name="<?php print "parent$i" ?>firstName" id="<?php print "parent$i" ?>firstName" maxlength=30 value="" type="text" style="width: 300px">
@@ -1200,8 +1200,8 @@ else {
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
-							<b><?php print _('Preferred Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Most common name, alias, nickname, etc.') ?></i></span>
+							<b><?php print bi('Preferred Name', True) ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print bi('Most common name, alias, nickname, etc.', True) ?></i></span>
 						</td>
 						<td class="right">
 							<input name="<?php print "parent$i" ?>preferredName" id="<?php print "parent$i" ?>preferredName" maxlength=30 value="" type="text" style="width: 300px">
@@ -1213,8 +1213,8 @@ else {
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
-							<b><?php print _('Official Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Full name as shown in ID documents.') ?></i></span>
+							<b><?php print bi('Official Name', True) ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print bi('Full name as shown in ID documents.', True) ?></i></span>
 						</td>
 						<td class="right">
 							<input title='Please enter full name as shown in ID documents' name="<?php print "parent$i" ?>officialName" id="<?php print "parent$i" ?>officialName" maxlength=150 value="" type="text" style="width: 300px">
@@ -1226,8 +1226,8 @@ else {
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
-							<b><?php print _('Name In Characters') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Chinese or other character-based name.') ?></i></span>
+							<b><?php print bi('Name In Characters', True) ?></b><br/>
+							<span style="font-size: 90%"><i><?php print bi('Chinese or other character-based name.', True) ?></i></span>
 						</td>
 						<td class="right">
 							<input name="<?php print "parent$i" ?>nameInCharacters" id="<?php print "parent$i" ?>nameInCharacters" maxlength=20 value="" type="text" style="width: 300px">
@@ -1235,55 +1235,55 @@ else {
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
-							<b><?php print _('Gender') ?> *</b><br/>
+							<b><?php print bi('Gender', True) ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="<?php print "parent$i" ?>gender" id="<?php print "parent$i" ?>gender" style="width: 302px">
-								<option value="Please select..."><?php print _('Please select...') ?></option>
-								<option value="F"><?php print _('Female') ?></option>
-								<option value="M"><?php print _('Male') ?></option>
+								<option value="Please select..."><?php print bi('Please select...', True) ?></option>
+								<option value="F"><?php print bi('Female', True) ?></option>
+								<option value="M"><?php print bi('Male', True) ?></option>
 							</select>
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>gender=new LiveValidation('<?php print "parent$i" ?>gender');
-								<?php print "parent$i" ?>gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								<?php print "parent$i" ?>gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
 							 </script>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
-							<b><?php print _('Relationship') ?> *</b><br/>
+							<b><?php print bi('Relationship', True) ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="<?php print "parent$i" ?>relationship" id="<?php print "parent$i" ?>relationship" style="width: 302px">
-								<option value="Please select..."><?php print _('Please select...') ?></option>
-								<option value="Mother"><?php print _('Mother') ?></option>
-								<option value="Father"><?php print _('Father') ?></option>
-								<option value="Step-Mother"><?php print _('Step-Mother') ?></option>
-								<option value="Step-Father"><?php print _('Step-Father') ?></option>
-								<option value="Adoptive Parent"><?php print _('Adoptive Parent') ?></option>
-								<option value="Guardian"><?php print _('Guardian') ?></option>
-								<option value="Grandmother"><?php print _('Grandmother') ?></option>
-								<option value="Grandfather"><?php print _('Grandfather') ?></option>
-								<option value="Aunt"><?php print _('Aunt') ?></option>
-								<option value="Uncle"><?php print _('Uncle') ?></option>
-								<option value="Nanny/Helper"><?php print _('Nanny/Helper') ?></option>
-								<option value="Other"><?php print _('Other') ?></option>
+								<option value="Please select..."><?php print bi('Please select...', True) ?></option>
+								<option value="Mother"><?php print bi('Mother', True) ?></option>
+								<option value="Father"><?php print bi('Father', True) ?></option>
+								<option value="Step-Mother"><?php print bi('Step-Mother', True) ?></option>
+								<option value="Step-Father"><?php print bi('Step-Father', True) ?></option>
+								<option value="Adoptive Parent"><?php print bi('Adoptive Parent', True) ?></option>
+								<option value="Guardian"><?php print bi('Guardian', True) ?></option>
+								<option value="Grandmother"><?php print bi('Grandmother', True) ?></option>
+								<option value="Grandfather"><?php print bi('Grandfather', True) ?></option>
+								<option value="Aunt"><?php print bi('Aunt', True) ?></option>
+								<option value="Uncle"><?php print bi('Uncle', True) ?></option>
+								<option value="Nanny/Helper"><?php print bi('Nanny/Helper', True) ?></option>
+								<option value="Other"><?php print bi('Other', True) ?></option>
 							</select>
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>relationship=new LiveValidation('<?php print "parent$i" ?>relationship');
-								<?php print "parent$i" ?>relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								<?php print "parent$i" ?>relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
 							 </script>
 						</td>
 					</tr>
 					
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td colspan=2> 
-							<h4><?php print _('Parent/Guardian') ?> <?php print $i ?> <?php print _('Personal Background') ?></h4>
+							<h4><?php print bi('Parent/Guardian', True) ?> <?php print $i ?> <?php print bi('Personal Background', True) ?></h4>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
-							<b><?php print _('First Language') ?></b><br/>
+							<b><?php print bi('First Language', True) ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="<?php print "parent$i" ?>languageFirst" id="<?php print "parent$i" ?>languageFirst" maxlength=30 value="" type="text" style="width: 300px">
@@ -1310,7 +1310,7 @@ else {
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
-							<b><?php print _('Second Language') ?></b><br/>
+							<b><?php print bi('Second Language', True) ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="<?php print "parent$i" ?>languageSecond" id="<?php print "parent$i" ?>languageSecond" maxlength=30 value="" type="text" style="width: 300px">
@@ -1337,7 +1337,7 @@ else {
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
-							<b><?php print _('Citizenship') ?></b><br/>
+							<b><?php print bi('Citizenship', True) ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="<?php print "parent$i" ?>citizenship1" id="<?php print "parent$i" ?>citizenship1" style="width: 302px">
@@ -1370,10 +1370,10 @@ else {
 						<td> 
 							<?php
 							if ($_SESSION[$guid]["country"]=="") {
-								print "<b>" . _('National ID Card Number') . "</b><br/>" ;
+								print "<b>" . bi('National ID Card Number', True) . "</b><br/>" ;
 							}
 							else {
-								print "<b>" . $_SESSION[$guid]["country"] . " " . _('ID Card Number') . "</b><br/>" ;
+								print "<b>" . $_SESSION[$guid]["country"] . " " . bi('ID Card Number', True) . "</b><br/>" ;
 							}
 							?>
 						</td>
@@ -1385,10 +1385,10 @@ else {
 						<td> 
 							<?php
 							if ($_SESSION[$guid]["country"]=="") {
-								print "<b>" . _('Residency/Visa Type') . "</b><br/>" ;
+								print "<b>" . bi('Residency/Visa Type', True) . "</b><br/>" ;
 							}
 							else {
-								print "<b>" . $_SESSION[$guid]["country"] . " " . _('Residency/Visa Type') . "</b><br/>" ;
+								print "<b>" . $_SESSION[$guid]["country"] . " " . bi('Residency/Visa Type', True) . "</b><br/>" ;
 							}
 							?>
 						</td>
@@ -1418,12 +1418,12 @@ else {
 						<td> 
 							<?php
 							if ($_SESSION[$guid]["country"]=="") {
-								print "<b>" . _('Visa Expiry Date') . "</b><br/>" ;
+								print "<b>" . bi('Visa Expiry Date', True) . "</b><br/>" ;
 							}
 							else {
-								print "<b>" . $_SESSION[$guid]["country"] . " " . _('Visa Expiry Date') . "</b><br/>" ;
+								print "<b>" . $_SESSION[$guid]["country"] . " " . bi('Visa Expiry Date', True) . "</b><br/>" ;
 							}
-							print "<span style='font-size: 90%'><i>" . _('Format:') . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . _('If relevant.') . "</i></span>" ;
+							print "<span style='font-size: 90%'><i>" . bi('Format:', True) . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . bi('If relevant.', True) . "</i></span>" ;
 							?>
 						</td>
 						<td class="right">
@@ -1443,12 +1443,12 @@ else {
 					
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td colspan=2> 
-							<h4><?php print _('Parent/Guardian') ?> <?php print $i ?> <?php print _('Contact') ?></h4>
+							<h4><?php print bi('Parent/Guardian', True) ?> <?php print $i ?> <?php print bi('Contact', True) ?></h4>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
-							<b><?php print _('Email') ?> *</b><br/>
+							<b><?php print bi('Email', True) ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="<?php print "parent$i" ?>email" id="<?php print "parent$i" ?>email" maxlength=50 value="" type="text" style="width: 300px">
@@ -1467,8 +1467,8 @@ else {
 						?>
 						<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 							<td> 
-								<b><?php print _('Phone') ?> <?php print $y ; if ($y==1) { print " *" ;}?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('Type, country code, number.') ?></i></span>
+								<b><?php print bi('Phone', True) ?> <?php print $y ; if ($y==1) { print " *" ;}?></b><br/>
+								<span style="font-size: 90%"><i><?php print bi('Type, country code, number.', True) ?></i></span>
 							</td>
 							<td class="right">
 								<input name="<?php print "parent$i" ?>phone<?php print $y ?>" id="<?php print "parent$i" ?>phone<?php print $y ?>" maxlength=20 value="" type="text" style="width: 160px">
@@ -1499,12 +1499,12 @@ else {
 								</select>
 								<select style="width: 70px" name="<?php print "parent$i" ?>phone<?php print $y ?>Type">
 									<option value=""></option>
-									<option value="Mobile"><?php print _('Mobile') ?></option>
-									<option value="Home"><?php print _('Home') ?></option>
-									<option value="Work"><?php print _('Work') ?></option>
-									<option value="Fax"><?php print _('Fax') ?></option>
-									<option value="Pager"><?php print _('Pager') ?></option>
-									<option value="Other"><?php print _('Other') ?></option>
+									<option value="Mobile"><?php print bi('Mobile', True) ?></option>
+									<option value="Home"><?php print bi('Home', True) ?></option>
+									<option value="Work"><?php print bi('Work', True) ?></option>
+									<option value="Fax"><?php print bi('Fax', True) ?></option>
+									<option value="Pager"><?php print bi('Pager', True) ?></option>
+									<option value="Other"><?php print bi('Other', True) ?></option>
 								</select>
 							</td>
 						</tr>
@@ -1514,12 +1514,12 @@ else {
 					
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td colspan=2> 
-							<h4><?php print _('Parent/Guardian') ?> <?php print $i ?> <?php print _('Employment') ?></h4>
+							<h4><?php print bi('Parent/Guardian', True) ?> <?php print $i ?> <?php print bi('Employment', True) ?></h4>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
-							<b><?php print _('Profession') ?> *</b><br/>
+							<b><?php print bi('Profession', True) ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="<?php print "parent$i" ?>profession" id="<?php print "parent$i" ?>profession" maxlength=30 value="" type="text" style="width: 300px">
@@ -1531,7 +1531,7 @@ else {
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
-							<b><?php print _('Employer') ?></b><br/>
+							<b><?php print bi('Employer', True) ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="<?php print "parent$i" ?>employer" id="<?php print "parent$i" ?>employer" maxlength=30 value="" type="text" style="width: 300px">
@@ -1545,19 +1545,19 @@ else {
 				<input type="hidden" name="gibbonFamily" value="TRUE">
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><?php print _('Family') ?></h3>
-						<p><?php print _('Choose the family you wish to associate this application with.') ?></p>
+						<h3><?php print bi('Family', True) ?></h3>
+						<p><?php print bi('Choose the family you wish to associate this application with.', True) ?></p>
 						<?php
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
-									print _("Family Name") ;
+									print bi("Family Name", True) ;
 								print "</th>" ;
 								print "<th>" ;
-									print _("Selected") ;
+									print bi("Selected", True) ;
 								print "</th>" ;
 								print "<th>" ;
-									print _("Relationships") ;
+									print bi("Relationships", True) ;
 								print "</th>" ;
 							print "</tr>" ;
 							
@@ -1596,18 +1596,18 @@ else {
 												print formatName($rowRelationships["title"], $rowRelationships["preferredName"], $rowRelationships["surname"], "Parent") ;
 												?>
 												<select name="<?php print $rowSelect["gibbonFamilyID"] ?>-relationships[]" id="relationships[]" style="width: 200px">
-													<option <?php if ($rowRelationships["gender"]=="F") { print "selected" ; } ?> value="Mother"><?php print _('Mother') ?></option>
-													<option <?php if ($rowRelationships["gender"]=="M") { print "selected" ; } ?> value="Father"><?php print _('Father') ?></option>
-													<option value="Step-Mother"><?php print _('Step-Mother') ?></option>
-													<option value="Step-Father"><?php print _('Step-Father') ?></option>
-													<option value="Adoptive Parent"><?php print _('Adoptive Parent') ?></option>
-													<option value="Guardian"><?php print _('Guardian') ?></option>
-													<option value="Grandmother"><?php print _('Grandmother') ?></option>
-													<option value="Grandfather"><?php print _('Grandfather') ?></option>
-													<option value="Aunt"><?php print _('Aunt') ?></option>
-													<option value="Uncle"><?php print _('Uncle') ?></option>
-													<option value="Nanny/Helper"><?php print _('Nanny/Helper') ?></option>
-													<option value="Other"><?php print _('Other') ?></option>
+													<option <?php if ($rowRelationships["gender"]=="F") { print "selected" ; } ?> value="Mother"><?php print bi('Mother', True) ?></option>
+													<option <?php if ($rowRelationships["gender"]=="M") { print "selected" ; } ?> value="Father"><?php print bi('Father', True) ?></option>
+													<option value="Step-Mother"><?php print bi('Step-Mother', True) ?></option>
+													<option value="Step-Father"><?php print bi('Step-Father', True) ?></option>
+													<option value="Adoptive Parent"><?php print bi('Adoptive Parent', True) ?></option>
+													<option value="Guardian"><?php print bi('Guardian', True) ?></option>
+													<option value="Grandmother"><?php print bi('Grandmother', True) ?></option>
+													<option value="Grandfather"><?php print bi('Grandfather', True) ?></option>
+													<option value="Aunt"><?php print bi('Aunt', True) ?></option>
+													<option value="Uncle"><?php print bi('Uncle', True) ?></option>
+													<option value="Nanny/Helper"><?php print bi('Nanny/Helper', True) ?></option>
+													<option value="Other"><?php print bi('Other', True) ?></option>
 												</select>
 												<input type="hidden" name="<?php print $rowSelect["gibbonFamilyID"] ?>-relationshipsGibbonPersonID[]" value="<?php print $rowRelationships["gibbonPersonID"] ?>">
 												<?php
@@ -1627,12 +1627,12 @@ else {
 			?>
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Siblings') ?></h3>
+					<h3><?php print bi('Siblings', True) ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2 style='padding-top: 0px'> 
-					<p><?php print _('Please give information on the applicants\'s siblings.') ?></p>
+					<p><?php print bi('Please give information on the applicants\'s siblings.', True) ?></p>
 				</td>
 			</tr>
 			<tr>
@@ -1641,16 +1641,16 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print _("Sibling Name") ;
+								print bi("Sibling Name", True) ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Date of Birth") . "<br/><span style='font-size: 80%'>" . $_SESSION[$guid]["i18n"]["dateFormat"] . "</span>" ;
+								print bi("Date of Birth", True) . "<br/><span style='font-size: 80%'>" . $_SESSION[$guid]["i18n"]["dateFormat"] . "</span>" ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("School Attending") ;
+								print bi("School Attending", True) ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Joining Date") . "<br/><span style='font-size: 80%'>" . $_SESSION[$guid]["i18n"]["dateFormat"] . "</span>" ;
+								print bi("Joining Date", True) . "<br/><span style='font-size: 80%'>" . $_SESSION[$guid]["i18n"]["dateFormat"] . "</span>" ;
 							print "</th>" ;
 						print "</tr>" ;
 						
@@ -1758,7 +1758,7 @@ else {
 				?>
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><?php print _('Language Selection') ?></h3>
+						<h3><?php print bi('Language Selection', True) ?></h3>
 						<?php
 						$languageOptionsBlurb=getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb') ;
 						if ($languageOptionsBlurb!="") {
@@ -1771,13 +1771,13 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Language Choice') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php  print _('Please choose preferred additional language to study.') ?></i></span>
+						<b><?php print bi('Language Choice', True) ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php  print bi('Please choose preferred additional language to study.', True) ?></i></span>
 					</td>
 					<td class="right">
 						<select name="languageChoice" id="languageChoice" style="width: 302px">
 							<?php
-							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+							print "<option value='Please select...'>" . bi('Please select...', True) . "</option>" ;
 							$languageOptionsLanguageList=getSettingByScope($connection2, "Application Form", "languageOptionsLanguageList") ;
 							$languages=explode(",", $languageOptionsLanguageList) ;
 							foreach ($languages as $language) {
@@ -1787,14 +1787,14 @@ else {
 						</select>
 						<script type="text/javascript">
 							var languageChoice=new LiveValidation('languageChoice');
-							languageChoice.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+							languageChoice.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
 						 </script>
 					</td>
 				</tr>
 				<tr>
 					<td colspan=2 style='padding-top: 15px'> 
-						<b><?php print _('Language Choice Experience') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Has the applicant studied the selected language before? If so, please describe the level and type of experience.') ?></i></span><br/> 					
+						<b><?php print bi('Language Choice Experience', True) ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print bi('Has the applicant studied the selected language before? If so, please describe the level and type of experience.', True) ?></i></span><br/> 					
 						<textarea name="languageChoiceExperience" id="languageChoiceExperience" rows=5 style="width:738px; margin: 5px 0px 0px 0px"></textarea>
 						<script type="text/javascript">
 							var languageChoiceExperience=new LiveValidation('languageChoiceExperience');
@@ -1810,7 +1810,7 @@ else {
 
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Scholarships') ?></h3>
+					<h3><?php print bi('Scholarships', True) ?></h3>
 					<?php
 					//Get scholarships info
 					$scholarship=getSettingByScope($connection2, 'Application Form', 'scholarships') ;
@@ -1824,8 +1824,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Interest') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Indicate if you are interested in a scholarship.') ?></i></span><br/>
+					<b><?php print bi('Interest', True) ?></b><br/>
+					<span style="font-size: 90%"><i><?php print bi('Indicate if you are interested in a scholarship.', True) ?></i></span><br/>
 				</td>
 				<td class="right">
 					<input type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> Yes
@@ -1834,8 +1834,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Required?') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Is a scholarship required for you to take up a place at the school?') ?></i></span><br/>
+					<b><?php print bi('Required?', True) ?></b><br/>
+					<span style="font-size: 90%"><i><?php print bi('Is a scholarship required for you to take up a place at the school?', True) ?></i></span><br/>
 				</td>
 				<td class="right">
 					<input type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> Yes
@@ -1846,7 +1846,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Payment') ?></h3>
+					<h3><?php print bi('Payment', True) ?></h3>
 				</td>
 			</tr>
 			<script type="text/javascript">
@@ -1897,12 +1897,12 @@ else {
 			</script>
 			<tr id="familyRow">
 				<td colspan=2>
-					<p><?php print _('If you choose family, future invoices will be sent according to your family\'s contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.') ?></p>
+					<p><?php print bi('If you choose family, future invoices will be sent according to your family\'s contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.', True) ?></p>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Send Future Invoices To') ?></b><br/>
+					<b><?php print bi('Send Future Invoices To', True) ?></b><br/>
 				</td>
 				<td class="right">
 					<input type="radio" name="payment" value="Family" class="payment" checked /> Family
@@ -1911,7 +1911,7 @@ else {
 			</tr>
 			<tr id="companyNameRow">
 				<td> 
-					<b><?php print _('Company Name') ?></b><br/>
+					<b><?php print bi('Company Name', True) ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="companyName" id="companyName" maxlength=100 value="" type="text" style="width: 300px">
@@ -1919,7 +1919,7 @@ else {
 			</tr>
 			<tr id="companyContactRow">
 				<td> 
-					<b><?php print _('Company Contact Person') ?></b><br/>
+					<b><?php print bi('Company Contact Person', True) ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="companyContact" id="companyContact" maxlength=100 value="" type="text" style="width: 300px">
@@ -1927,7 +1927,7 @@ else {
 			</tr>
 			<tr id="companyAddressRow">
 				<td> 
-					<b><?php print _('Company Address') ?></b><br/>
+					<b><?php print bi('Company Address', True) ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="companyAddress" id="companyAddress" maxlength=255 value="" type="text" style="width: 300px">
@@ -1935,7 +1935,7 @@ else {
 			</tr>
 			<tr id="companyEmailRow">
 				<td> 
-					<b><?php print _('Company Email') ?></b><br/>
+					<b><?php print bi('Company Email', True) ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="companyEmail" id="companyEmail" maxlength=255 value="" type="text" style="width: 300px">
@@ -1947,19 +1947,19 @@ else {
 			</tr>
 			<tr id="companyCCFamilyRow">
 				<td> 
-					<b><?php print _('CC Family?') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Should the family be sent a copy of billing emails?') ?></i></span>
+					<b><?php print bi('CC Family?', True) ?></b><br/>
+					<span style="font-size: 90%"><i><?php print bi('Should the family be sent a copy of billing emails?', True) ?></i></span>
 				</td>
 				<td class="right">
 					<select name="companyCCFamily" id="companyCCFamily" style="width: 302px">
-						<option value="N" /> <?php print _('No') ?>
-						<option value="Y" /> <?php print _('Yes') ?>
+						<option value="N" /> <?php print bi('No', True) ?>
+						<option value="Y" /> <?php print bi('Yes', True) ?>
 					</select>
 				</td>
 			</tr>
 			<tr id="companyPhoneRow">
 				<td> 
-					<b><?php print _('Company Phone') ?></b><br/>
+					<b><?php print bi('Company Phone', True) ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="companyPhone" id="companyPhone" maxlength=20 value="" type="text" style="width: 300px">
@@ -1980,25 +1980,25 @@ else {
 				?>
 				<tr id="companyAllRow">
 					<td> 
-						<b><?php print _('Company All?') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('Should all items be billed to the specified company, or just some?') ?></i></span>
+						<b><?php print bi('Company All?', True) ?></b><br/>
+						<span style="font-size: 90%"><i><?php print bi('Should all items be billed to the specified company, or just some?', True) ?></i></span>
 					</td>
 					<td class="right">
-						<input type="radio" name="companyAll" value="Y" class="companyAll" checked /> <?php print _('All') ?>
-						<input type="radio" name="companyAll" value="N" class="companyAll" /> <?php print _('Selected') ?>
+						<input type="radio" name="companyAll" value="Y" class="companyAll" checked /> <?php print bi('All', True) ?>
+						<input type="radio" name="companyAll" value="N" class="companyAll" /> <?php print bi('Selected', True) ?>
 					</td>
 				</tr>
 				<tr id="companyCategoriesRow">
 					<td> 
-						<b><?php print _('Company Fee Categories') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('If the specified company is not paying all fees, which categories are they paying?') ?></i></span>
+						<b><?php print bi('Company Fee Categories', True) ?></b><br/>
+						<span style="font-size: 90%"><i><?php print bi('If the specified company is not paying all fees, which categories are they paying?', True) ?></i></span>
 					</td>
 					<td class="right">
 						<?php
 						while ($rowCat=$resultCat->fetch()) {
 							print $rowCat["name"] . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='" . $rowCat["gibbonFinanceFeeCategoryID"] . "'/><br/>" ;
 						}
-						print _("Other") . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>" ;
+						print bi("Other", True) . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>" ;
 						?>
 					</td>
 				</tr>
@@ -2012,16 +2012,16 @@ else {
 				?>
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><?php print _('Supporting Documents') ?></h3>
+						<h3><?php print bi('Supporting Documents', True) ?></h3>
 						<?php 
 						if ($requiredDocumentsText!="" OR $requiredDocumentsCompulsory!="") {
 							print "<p>" ;
 								print $requiredDocumentsText . " " ;
 								if ($requiredDocumentsCompulsory=="Y") {
-									print _("These documents must all be included before the application can be submitted.") ;
+									print bi("These documents must all be included before the application can be submitted.", True) ;
 								}
 								else {
-									print _("These documents are all required, but can be submitted separately to this form if preferred. Please note, however, that your application will be processed faster if the documents are included here.") ;
+									print bi("These documents are all required, but can be submitted separately to this form if preferred. Please note, however, that your application will be processed faster if the documents are included here.", True) ;
 								}
 							print "</p>" ;
 						}
@@ -2081,12 +2081,12 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Miscellaneous') ?></h3>
+					<h3><?php print bi('Miscellaneous', True) ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('How Did You Hear About Us?') ?> *</b><br/>
+					<b><?php print bi('How Did You Hear About Us?', True) ?> *</b><br/>
 				</td>
 				<td class="right">
 					<?php
@@ -2096,7 +2096,7 @@ else {
 					}
 					else {
 						print "<select name='howDidYouHear' id='howDidYouHear' style='width: 302px'>" ;
-							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+							print "<option value='Please select...'>" . bi('Please select...', True) . "</option>" ;
 							$howDidYouHears=explode(",", $howDidYouHearList) ;
 							foreach ($howDidYouHears as $howDidYouHear) {
 								print "<option value='" . trim($howDidYouHear) . "'>" . trim($howDidYouHear) . "</option>" ;
@@ -2105,7 +2105,7 @@ else {
 						?>
 						<script type="text/javascript">
 							var howDidYouHear=new LiveValidation('howDidYouHear');
-							howDidYouHear.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+							howDidYouHear.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print bi('Select something!', True) ?>"});
 						</script>
 						<?php
 					}
@@ -2126,8 +2126,8 @@ else {
 			</script>
 			<tr id="tellUsMoreRow" style='display: none'>
 				<td> 
-					<b><?php print _('Tell Us More') ?> </b><br/>
-					<span style="font-size: 90%"><i><?php print _('The name of a person or link to a website, etc.') ?></i></span>
+					<b><?php print bi('Tell Us More', True) ?> </b><br/>
+					<span style="font-size: 90%"><i><?php print bi('The name of a person or link to a website, etc.', True) ?></i></span>
 				</td>
 				<td class="right">
 					<input name="howDidYouHearMore" id="howDidYouHearMore" maxlength=255 value="" type="text" style="width: 300px">
@@ -2141,7 +2141,7 @@ else {
 				?>
 				<tr>
 					<td> 
-						<b><?php print _('Privacy') ?> *</b><br/>
+						<b><?php print bi('Privacy', True) ?> *</b><br/>
 						<span style="font-size: 90%"><i><?php print htmlPrep($privacyBlurb) ?><br/>
 						</i></span>
 					</td>
@@ -2164,7 +2164,7 @@ else {
 				print "<tr class='break'>" ;
 					print "<td colspan=2>" ; 
 						print "<h3>" ; 
-							print _("Agreement") ;
+							print bi("Agreement", True) ;
 						print "</h3>" ;
 						print "<p>" ;
 							print $agreement ;
@@ -2173,7 +2173,7 @@ else {
 				print "</tr>" ;
 				print "<tr>" ;
 					print "<td>" ; 
-						print "<b>" . _('Do you agree to the above?') . "</b><br/>" ;
+						print "<b>" . bi('Do you agree to the above?', True) . "</b><br/>" ;
 					print "</td>" ;
 					print "<td class='right'>" ;
 						print "Yes <input type='checkbox' name='agreement' id='agreement'>" ;
@@ -2191,11 +2191,11 @@ else {
 		
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print bi("denotes a required field", True) ; ?></i></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print bi("Submit", True) ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -2206,7 +2206,7 @@ else {
 	$postscript=getSettingByScope($connection2, 'Application Form', 'postscript') ;
 	if ($postscript!="") {
 		print "<h2>" ; 
-			print _("Further Information") ;
+			print bi("Further Information", True) ;
 		print "</h2>" ;
 		print "<p style='padding-bottom: 15px'>" ;
 			print $postscript ;
