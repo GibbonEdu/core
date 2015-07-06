@@ -1068,10 +1068,10 @@ else {
 								<?php print bi('Parent/Guardian', True, ' | ') ?> <?php print $i ?>
 								<?php
 								if ($i==1) {
-									print "<span style='font-size: 75%'> (e.g. mother)</span>" ;
+									print "<span style='font-size: 75%'> " . bi('(e.g. mother)', True, ' | ') . "</span>" ;
 								}
 								else if ($i==2 AND $gibbonPersonID=="") {
-									print "<span style='font-size: 75%'> (e.g. father)</span>" ;
+									print "<span style='font-size: 75%'> " . bi('(e.g. father)', True, ' | ') . "</span>" ;
 								}
 								?>
 							</h3>
@@ -1160,11 +1160,11 @@ else {
 						<td class="right">
 							<select style="width: 302px" id="<?php print "parent$i" ?>title" name="<?php print "parent$i" ?>title">
 								<option value="Please select..."><?php print bi('Please select...', True, ' | ', False) ?></option>
-								<option value="Ms.">Ms.</option>
-								<option value="Miss">Miss</option>
-								<option value="Mr.">Mr.</option>
-								<option value="Mrs.">Mrs.</option>
-								<option value="Dr.">Dr.</option>
+								<option value="Ms."><?php print bi('Ms.', True, ' | ', False) ?></option>
+								<option value="Miss"><?php print bi('Miss', True, ' | ', False) ?></option>
+								<option value="Mr."><?php print bi('Mr.', True, ' | ', False) ?></option>
+								<option value="Mrs."><?php print bi('Mrs.', True, ' | ', False) ?></option>
+								<option value="Dr."><?php print bi('Dr.', True, ' | ', False) ?></option>
 							</select>
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>title=new LiveValidation('<?php print "parent$i" ?>title');
@@ -1828,8 +1828,8 @@ else {
 					<span style="font-size: 90%"><i><?php print bi('Indicate if you are interested in a scholarship.', True) ?></i></span><br/>
 				</td>
 				<td class="right">
-					<input type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> Yes
-					<input checked type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="N" /> No
+					<input type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> <?php print bi('Yes', True, ' | ') ?>
+					<input checked type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="N" /> <?php print bi('No', True, ' | ') ?>
 				</td>
 			</tr>
 			<tr>
@@ -1838,8 +1838,8 @@ else {
 					<span style="font-size: 90%"><i><?php print bi('Is a scholarship required for you to take up a place at the school?', True) ?></i></span><br/>
 				</td>
 				<td class="right">
-					<input type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> Yes
-					<input checked type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="N" /> No
+					<input type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> <?php print bi('Yes', True, ' | ') ?>
+					<input checked type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="N" /> <?php print bi('No', True, ' | ') ?>
 				</td>
 			</tr>
 			
@@ -1905,8 +1905,8 @@ else {
 					<b><?php print bi('Send Future Invoices To', True) ?></b><br/>
 				</td>
 				<td class="right">
-					<input type="radio" name="payment" value="Family" class="payment" checked /> Family
-					<input type="radio" name="payment" value="Company" class="payment" /> Company
+					<input type="radio" name="payment" value="Family" class="payment" checked /> <?php print bi('Family', True, ' | ') ?>
+					<input type="radio" name="payment" value="Company" class="payment" /> <?php print bi('Company', True, ' | ') ?>
 				</td>
 			</tr>
 			<tr id="companyNameRow">
@@ -1996,7 +1996,7 @@ else {
 					<td class="right">
 						<?php
 						while ($rowCat=$resultCat->fetch()) {
-							print $rowCat["name"] . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='" . $rowCat["gibbonFinanceFeeCategoryID"] . "'/><br/>" ;
+							print bi($rowCat["name"], True, ' | ') . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='" . $rowCat["gibbonFinanceFeeCategoryID"] . "'/><br/>" ;
 						}
 						print bi("Other", True, ' | ') . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>" ;
 						?>
@@ -2099,7 +2099,7 @@ else {
 							print "<option value='Please select...'>" . bi('Please select...', True, ' | ', False) . "</option>" ;
 							$howDidYouHears=explode(",", $howDidYouHearList) ;
 							foreach ($howDidYouHears as $howDidYouHear) {
-								print "<option value='" . trim($howDidYouHear) . "'>" . trim($howDidYouHear) . "</option>" ;
+								print "<option value='" . trim($howDidYouHear) . "'>" . bi(trim($howDidYouHear), True, ' | ', False) . "</option>" ;
 							}
 						print "</select>" ;
 						?>
