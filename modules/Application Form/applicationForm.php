@@ -151,7 +151,7 @@ else {
 	//Proceed!
 	print "<div class='trail'>" ;
 	if (isset($_SESSION[$guid]["username"])) {
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . bi("Home", True) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . $_SESSION[$guid]["organisationNameShort"] . " " . bi('Application Form', True) . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . bi("Home", True) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . bi(getModuleName($_GET["q"]), True) . "</a> > </div><div class='trailEnd'>" . $_SESSION[$guid]["organisationNameShort"] . " " . bi('Application Form', True) . "</div>" ;
 	}
 	else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . bi("Home", True) . "</a> > </div><div class='trailEnd'>" . $_SESSION[$guid]["organisationNameShort"] . " " . bi('Application Form', True) . "</div>" ;
@@ -489,7 +489,7 @@ else {
 						catch(PDOException $e) { }
 						print "<option value=''></option>" ;
 						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(bi($rowSelect["printable_name"], True)) . "</option>" ;
 						}
 						?>				
 					</select>
@@ -513,7 +513,7 @@ else {
 							}
 							catch(PDOException $e) { }
 							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(bi($rowSelect["printable_name"], True)) . "</option>" ;
 							}
 						}
 						else {
@@ -647,7 +647,7 @@ else {
 							}
 							catch(PDOException $e) { }
 							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+								print "<option value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(bi($rowSelect["printable_name"], True)) . "</option>" ;
 							}
 							?>				
 						</select>
@@ -761,7 +761,7 @@ else {
 							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
 						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+							print "<option value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep(bi($rowSelect["name"], True)) . "</option>" ;
 						}
 						?>				
 					</select>
@@ -973,7 +973,7 @@ else {
 							catch(PDOException $e) { }
 							print "<option value='Please select...'>" . bi('Please select...', True) . "</option>" ;
 							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(bi($rowSelect["printable_name"], True)) . "</option>" ;
 							}
 							?>				
 						</select>
@@ -1353,7 +1353,7 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+										print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(bi($rowSelect["printable_name"], True)) . "</option>" ;
 									}
 								}
 								else {
@@ -1493,7 +1493,7 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+										print "<option value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(bi($rowSelect["printable_name"], True)) . "</option>" ;
 									}
 									?>				
 								</select>
