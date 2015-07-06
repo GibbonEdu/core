@@ -17,6 +17,103 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+
+// START SECTION: function bi(...) & form for translation selection
+
+function bi($string, $use_bi = null, $delimeter = null, $use_styling = null) {
+	// Set argument default values, based on method suggested on:
+    // http://stackoverflow.com/questions/9166914/using-default-arguments-in-a-function
+	if (null === $use_bi) {
+		$use_bi = False ;
+	}
+	if (null === $delimeter) {
+		$delimeter = "<br />" ;
+	}
+	if (null === $use_styling) {
+		$use_styling = True ;
+	}
+
+	// Get primary language string and then exit if bi not required
+	$primary = gettext($string) ;
+
+	// Return primary string if bi not required or if
+	// the second language hasn't been set
+	if (! $use_bi || $GLOBALS['bi_lang'] == "") {
+		return $primary ;
+	}
+
+	// Get secondary language string
+	$secondary = dgettext($GLOBALS['bi_lang'], $string) ;
+
+	// Where secondary language string is the same, show alternative to duplicate text
+	// Indicates missing translation or same language being used as bi_lang
+	if ($secondary == $primary) {
+		$secondary = $GLOBALS['bi_lang_missing_string'] ;
+	}
+
+	// Concetanate the complete string to be output
+	$complete = $primary . $delimeter ;
+	if ($use_styling) {
+		$complete .= "<span" ;
+		// $complete .= " dir='rtl'" ;
+        $complete .= " style='color:#" . $GLOBALS['bi_lang_color'] . ";'" ;
+		$complete .= ">" ;
+	}
+	$complete .= $secondary ;
+	if ($use_styling) {
+		$complete .= "</span>" ;
+		// $complete .= "&lrm;" ;
+		// $complete .= "&rlm;" ;
+	}
+
+	// Return the concatenated string
+	return $complete ;
+}
+
+
+// Set the basic values related to bi_lang
+$bi_lang = $_POST["biLang"] ;
+$bi_lang_color = "22b" ;
+$bi_lang_missing_string = "~~~" ;
+
+if (bi_lang != "") {
+    bindtextdomain($bi_lang, "./i18n");
+    bind_textdomain_codeset($bi_lang, "UTF-8");
+}
+
+
+// Display the selection box to allow translation selection
+print "<form method='post'>" ;
+    print "<select name='biLang' id='biLang' style='width: 300px'>" ;
+        try {
+            $dataSelect=array(); 
+            $sqlSelect="SELECT * FROM gibboni18n WHERE active='Y' ORDER BY name" ;
+            $resultSelect=$connection2->prepare($sqlSelect);
+            $resultSelect->execute($dataSelect);
+        }
+        catch(PDOException $e) { 
+            print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+        }
+        print "<option value=''>" . bi('No translation required...', True, ' | ', False) . "</option>" ;
+        while ($rowSelect=$resultSelect->fetch()) {
+            $selected="" ;
+            if ($rowSelect["code"]==$bi_lang) {
+                $selected="selected" ;
+            }
+
+            $code_baseLang = substr($rowSelect["code"], 0, strpos($rowSelect["code"], '_')) ;
+            $session_baseLang = substr($_SESSION[$guid]["i18n"]["code"], 0, strpos($_SESSION[$guid]["i18n"]["code"], '_')) ;
+
+            if ($code_baseLang!=$session_baseLang) {
+                print "<option $selected value='" . $rowSelect["code"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+            }
+        }
+    print "</select>" ;
+    print "<input type='submit' value='" . bi('Submit', True, ' | ', false) . "'>" ;
+print "</form>" ;
+
+// END SECTION: function bi(...) & form for translation selection
+
 @session_start() ;
 
 $proceed=FALSE ;
