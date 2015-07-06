@@ -1,0 +1,1 @@
+../../fr_FR/LC_MESSAGES/gibbon.mo
