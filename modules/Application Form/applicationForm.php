@@ -151,10 +151,10 @@ else {
 	//Proceed!
 	print "<div class='trail'>" ;
 	if (isset($_SESSION[$guid]["username"])) {
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . bi("Home", True) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . bi(getModuleName($_GET["q"]), True) . "</a> > </div><div class='trailEnd'>" . $_SESSION[$guid]["organisationNameShort"] . " " . bi('Application Form', True) . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . bi("Home", True, ' | ') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . bi(getModuleName($_GET["q"]), True, ' | ') . "</a> > </div><div class='trailEnd'>" . $_SESSION[$guid]["organisationNameShort"] . " " . bi('Application Form', True, ' | ') . "</div>" ;
 	}
 	else {
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . bi("Home", True) . "</a> > </div><div class='trailEnd'>" . $_SESSION[$guid]["organisationNameShort"] . " " . bi('Application Form', True) . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . bi("Home", True, ' | ') . "</a> > </div><div class='trailEnd'>" . $_SESSION[$guid]["organisationNameShort"] . " " . bi('Application Form', True, ' | ') . "</div>" ;
 	}
 	print "</div>" ;
 	
@@ -631,7 +631,7 @@ else {
 				?>
 				<tr>
 					<td> 
-						<b><?php print bi('Phone', True) ?> <?php print $i ?></b><br/>
+						<b><?php print bi('Phone', True, ' | ') ?> <?php print $i ?></b><br/>
 						<span style="font-size: 90%"><i><?php print bi('Type, country code, number.', True) ?></i></span>
 					</td>
 					<td class="right">
@@ -1065,7 +1065,7 @@ else {
 					<tr class='break'>
 						<td colspan=2> 
 							<h3>
-								<?php print bi('Parent/Guardian', True) ?> <?php print $i ?>
+								<?php print bi('Parent/Guardian', True, ' | ') ?> <?php print $i ?>
 								<?php
 								if ($i==1) {
 									print "<span style='font-size: 75%'> (e.g. mother)</span>" ;
@@ -1149,7 +1149,7 @@ else {
 					?>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td colspan=2> 
-							<h4><?php print bi('Parent/Guardian', True) ?> <?php print $i ?> <?php print bi('Personal Data', True) ?></h4>
+							<h4><?php print bi('Parent/Guardian', True, ' | ') ?> <?php print $i ?> <?php print bi('Personal Data', True, ' | ') ?></h4>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1278,7 +1278,7 @@ else {
 					
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td colspan=2> 
-							<h4><?php print bi('Parent/Guardian', True) ?> <?php print $i ?> <?php print bi('Personal Background', True) ?></h4>
+							<h4><?php print bi('Parent/Guardian', True, ' | ') ?> <?php print $i ?> <?php print bi('Personal Background', True, ' | ') ?></h4>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1443,7 +1443,7 @@ else {
 					
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td colspan=2> 
-							<h4><?php print bi('Parent/Guardian', True) ?> <?php print $i ?> <?php print bi('Contact', True) ?></h4>
+							<h4><?php print bi('Parent/Guardian', True, ' | ') ?> <?php print $i ?> <?php print bi('Contact', True, ' | ') ?></h4>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1467,7 +1467,7 @@ else {
 						?>
 						<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 							<td> 
-								<b><?php print bi('Phone', True) ?> <?php print $y ; if ($y==1) { print " *" ;}?></b><br/>
+								<b><?php print bi('Phone', True, ' | ') ?> <?php print $y ; if ($y==1) { print " *" ;}?></b><br/>
 								<span style="font-size: 90%"><i><?php print bi('Type, country code, number.', True) ?></i></span>
 							</td>
 							<td class="right">
@@ -1514,7 +1514,7 @@ else {
 					
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td colspan=2> 
-							<h4><?php print bi('Parent/Guardian', True) ?> <?php print $i ?> <?php print bi('Employment', True) ?></h4>
+							<h4><?php print bi('Parent/Guardian', True, ' | ') ?> <?php print $i ?> <?php print bi('Employment', True, ' | ') ?></h4>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1984,8 +1984,8 @@ else {
 						<span style="font-size: 90%"><i><?php print bi('Should all items be billed to the specified company, or just some?', True) ?></i></span>
 					</td>
 					<td class="right">
-						<input type="radio" name="companyAll" value="Y" class="companyAll" checked /> <?php print bi('All', True) ?>
-						<input type="radio" name="companyAll" value="N" class="companyAll" /> <?php print bi('Selected', True) ?>
+						<input type="radio" name="companyAll" value="Y" class="companyAll" checked /> <?php print bi('All', True, ' | ') ?>
+						<input type="radio" name="companyAll" value="N" class="companyAll" /> <?php print bi('Selected', True, ' | ') ?>
 					</td>
 				</tr>
 				<tr id="companyCategoriesRow">
@@ -1998,7 +1998,7 @@ else {
 						while ($rowCat=$resultCat->fetch()) {
 							print $rowCat["name"] . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='" . $rowCat["gibbonFinanceFeeCategoryID"] . "'/><br/>" ;
 						}
-						print bi("Other", True) . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>" ;
+						print bi("Other", True, ' | ') . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>" ;
 						?>
 					</td>
 				</tr>
