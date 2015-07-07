@@ -40,6 +40,17 @@ Formal Assessment: changed name of module External Assessment, getting ready to 
 Timetable: fixed a US-date bug which caused TT to jump to future date from Space Booking state clicked to change
 	Edited file /modules/Timetable/moduleFunctions.php
 
+School Admin: changed External Assessment Settings to Formal Assessment Settings
+	Edited value in table gibbonAction
+	Renamed files /modules/School Admin/externalAssessmentSettings*.php to formalAssessmentSettings*.php
+	Edited files /modules/School Admin/formalAssessmentSettings*.php
+	New value in table gibbonSetting
+
+Formal Assessment: added ability to manage teacher-inputted Internal Assessments
+	New files /modules/Formal Assessment/internalAssessment*.php
+	Edited file /modules/Formal Assessment/modulesFunctions.php
+	New tables internalAssessmentColumn, internalAssessmentEntry
+	New values in tables gibbonAction, gibbonPermission
 
 v10.0.00
 --------

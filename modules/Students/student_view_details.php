@@ -2345,6 +2345,32 @@ else {
 							}
 						}
 					}
+					else if ($subpage=="Formal Assessment") {
+						if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_view.php")==FALSE) {
+							print "<div class='error'>" ;
+								print _("Your request failed because you do not have access to this action.");
+							print "</div>" ;
+						}
+						else {
+							$highestAction=getHighestGroupedAction($guid, "/modules/Formal Assessment/internalAssessment_view.php", $connection2) ;
+							if ($highestAction==FALSE) {
+								print "<div class='error'>" ;
+									print _("The highest grouped action cannot be determined.") ;
+								print "</div>" ;
+							}
+							else {
+								//Module includes
+								include "./modules/Formal Assessment/moduleFunctions.php" ;
+								
+								if ($highestAction=="View Internal Assessments_all") {
+									print getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID) ;
+								}
+								else if ($highestAction=="View Internal Assessments_myChildrens") {
+									print getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, "parent") ;
+								}
+							}
+						}
+					}
 					else if ($subpage=="Individual Needs") {
 						if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentHistory.php")==FALSE) {
 							print "<div class='error'>" ;
@@ -3043,6 +3069,16 @@ else {
 						$studentMenuCategory[$studentMenuCount]=$mainMenu["Markbook"] ;
 						$studentMenuName[$studentMenuCount]=_('Markbook') ;
 						$studentMenuLink[$studentMenuCount]="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Markbook'>" . _('Markbook') . "</a></li>" ;
+						$studentMenuCount++ ;
+					}
+					if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_view.php")) {
+						$style="" ;
+						if ($subpage=="Formal Assessment") {
+							$style="style='font-weight: bold'" ;
+						}
+						$studentMenuCategory[$studentMenuCount]=$mainMenu["Formal Assessment"] ;
+						$studentMenuName[$studentMenuCount]=_('Formal Assessment') ;
+						$studentMenuLink[$studentMenuCount]="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Formal%20Assessment'>" . _('Formal Assessment') . "</a></li>" ;
 						$studentMenuCount++ ;
 					}
 					if (isActionAccessible($guid, $connection2, "/modules/External Assessment/externalAssessment_details.php")) {
