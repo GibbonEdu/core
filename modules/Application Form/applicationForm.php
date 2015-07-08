@@ -1141,7 +1141,7 @@ else {
 										 });
 									});
 								</script>
-								<span style='font-weight: bold; font-style: italic'>Do not include a second parent/gaurdian <input id='secondParent' name='secondParent' type='checkbox' value='No'/></span>
+								<span style='font-weight: bold; font-style: italic'><?php print bi('Do not include a second parent/guardian', True, ' | ') ?> <input id='secondParent' name='secondParent' type='checkbox' value='No'/></span>
 							</td>
 						</tr>
 						<?php
