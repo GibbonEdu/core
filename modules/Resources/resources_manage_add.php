@@ -73,7 +73,7 @@ else {
 		} 
 		
 		?>
-		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_addProcess.php?search=" . $_GET["search"] ?>" enctype="multipart/form-data">
+		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_addProcess.php" ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr class='break'>
 					<td colspan=2> 

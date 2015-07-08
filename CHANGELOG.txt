@@ -52,6 +52,9 @@ Formal Assessment: added ability to manage teacher-inputted Internal Assessments
 	New tables internalAssessmentColumn, internalAssessmentEntry
 	New values in tables gibbonAction, gibbonPermission
 
+Resources: fixed PHP Notice issue when adding a resource
+	Edited files /modules/Resources/resources_manage_add.php
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
