@@ -170,7 +170,7 @@ else {
 		if ($intro!="") {
 			print "<br/><br/>" ;
 		}
-		print "<p style='font-weight: bold; text-decoration: none; color: #c00'><i><u>" . sprintf(bi('If you have an %1$s %2$s account, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Data in the main menu.', True), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . "</u></i> " . sprintf(bi('If you do not have an %1$s %2$s account, please use the form below.', True), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . "</p>" ;
+		print "<p style='font-weight: bold; text-decoration: none; color: #c00'><i><u>" . sprintf(bi('If you have an %1$s %2$s account, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Data in the main menu.', True), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . "</u></i><br /> " . sprintf(bi('If you do not have an %1$s %2$s account, please use the form below.', True), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . "</p>" ;
 	}
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
