@@ -139,7 +139,7 @@ else {
 		
 			try {
 				$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
-				$sql="SELECT * FROM internalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY completeDate DESC, name" ;
+				$sql="SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY completeDate DESC, name" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -187,9 +187,9 @@ else {
 								}
 							print "</td>" ;
 							print "<td>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_manage_edit.php&gibbonCourseClassID=$gibbonCourseClassID&internalAssessmentColumnID=" . $row["internalAssessmentColumnID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_manage_delete.php&gibbonCourseClassID=$gibbonCourseClassID&internalAssessmentColumnID=" . $row["internalAssessmentColumnID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&internalAssessmentColumnID=" . $row["internalAssessmentColumnID"] . "'><img title='" . _('Enter Data') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_manage_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=" . $row["gibbonInternalAssessmentColumnID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_manage_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=" . $row["gibbonInternalAssessmentColumnID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=" . $row["gibbonInternalAssessmentColumnID"] . "'><img title='" . _('Enter Data') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.png'/></a> " ;
 							print "</td>" ;
 						print "</tr>" ;
 					

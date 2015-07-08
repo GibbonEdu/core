@@ -36,8 +36,8 @@ catch(PDOException $e) {
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
-$internalAssessmentColumnID=$_GET["internalAssessmentColumnID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/internalAssessment_write_data.php&internalAssessmentColumnID=$internalAssessmentColumnID&gibbonCourseClassID=$gibbonCourseClassID" ;
+$gibbonInternalAssessmentColumnID=$_GET["gibbonInternalAssessmentColumnID"] ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/internalAssessment_write_data.php&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID&gibbonCourseClassID=$gibbonCourseClassID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_write_data.php")==FALSE) {
 	//Fail 0
@@ -52,15 +52,15 @@ else {
 	else {
 		//Proceed!
 		//Check if school year specified
-		if ($internalAssessmentColumnID=="" OR $gibbonCourseClassID=="") {
+		if ($gibbonInternalAssessmentColumnID=="" OR $gibbonCourseClassID=="") {
 			//Fail1
 			$URL.="&updateReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
 			try {
-				$data=array("internalAssessmentColumnID"=>$internalAssessmentColumnID, "gibbonCourseClassID"=>$gibbonCourseClassID); 
-				$sql="SELECT * FROM internalAssessmentColumn WHERE internalAssessmentColumnID=:internalAssessmentColumnID AND gibbonCourseClassID=:gibbonCourseClassID" ;
+				$data=array("gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID, "gibbonCourseClassID"=>$gibbonCourseClassID); 
+				$sql="SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonCourseClassID=:gibbonCourseClassID" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -177,8 +177,8 @@ else {
 					
 					$selectFail=FALSE ;
 					try {
-						$data=array("internalAssessmentColumnID"=>$internalAssessmentColumnID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent); 
-						$sql="SELECT * FROM internalAssessmentEntry WHERE internalAssessmentColumnID=:internalAssessmentColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent" ;
+						$data=array("gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent); 
+						$sql="SELECT * FROM gibbonInternalAssessmentEntry WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}
@@ -189,8 +189,8 @@ else {
 					if (!($selectFail)) {
 						if ($result->rowCount()<1) {
 							try {
-								$data=array("internalAssessmentColumnID"=>$internalAssessmentColumnID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent, "attainmentValue"=>$attainmentValue, "attainmentDescriptor"=>$attainmentDescriptor, "comment"=>$commentValue, "attachment"=>$attachment, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit); 
-								$sql="INSERT INTO internalAssessmentEntry SET internalAssessmentColumnID=:internalAssessmentColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, attainmentValue=:attainmentValue, attainmentDescriptor=:attainmentDescriptor, comment=:comment, response=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+								$data=array("gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent, "attainmentValue"=>$attainmentValue, "attainmentDescriptor"=>$attainmentDescriptor, "comment"=>$commentValue, "attachment"=>$attachment, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit); 
+								$sql="INSERT INTO gibbonInternalAssessmentEntry SET gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, attainmentValue=:attainmentValue, attainmentDescriptor=:attainmentDescriptor, comment=:comment, response=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}
@@ -202,8 +202,8 @@ else {
 							$row=$result->fetch() ;
 							//Update
 							try {
-								$data=array("internalAssessmentColumnID"=>$internalAssessmentColumnID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent, "attainmentValue"=>$attainmentValue, "attainmentDescriptor"=>$attainmentDescriptor, "comment"=>$commentValue, "attachment"=>$attachment, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit, "internalAssessmentEntryID"=>$row["internalAssessmentEntryID"]); 
-								$sql="UPDATE internalAssessmentEntry SET internalAssessmentColumnID=:internalAssessmentColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, attainmentValue=:attainmentValue, attainmentDescriptor=:attainmentDescriptor, comment=:comment, response=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE internalAssessmentEntryID=:internalAssessmentEntryID" ;
+								$data=array("gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent, "attainmentValue"=>$attainmentValue, "attainmentDescriptor"=>$attainmentDescriptor, "comment"=>$commentValue, "attachment"=>$attachment, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit, "gibbonInternalAssessmentEntryID"=>$row["gibbonInternalAssessmentEntryID"]); 
+								$sql="UPDATE gibbonInternalAssessmentEntry SET gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, attainmentValue=:attainmentValue, attainmentDescriptor=:attainmentDescriptor, comment=:comment, response=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonInternalAssessmentEntryID=:gibbonInternalAssessmentEntryID" ;
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}
@@ -254,8 +254,8 @@ else {
 					$complete="Y" ;
 				}
 				try {
-					$data=array("attachment"=>$attachment, "description"=>$description, "completeDate"=>$completeDate, "complete"=>$complete, "internalAssessmentColumnID"=>$internalAssessmentColumnID); 
-					$sql="UPDATE internalAssessmentColumn SET attachment=:attachment, description=:description, completeDate=:completeDate, complete=:complete WHERE internalAssessmentColumnID=:internalAssessmentColumnID" ;
+					$data=array("attachment"=>$attachment, "description"=>$description, "completeDate"=>$completeDate, "complete"=>$complete, "gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID); 
+					$sql="UPDATE gibbonInternalAssessmentColumn SET attachment=:attachment, description=:description, completeDate=:completeDate, complete=:complete WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}

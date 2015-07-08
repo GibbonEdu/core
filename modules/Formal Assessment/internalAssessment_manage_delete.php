@@ -31,8 +31,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internal
 else {
 	//Check if school year specified
 	$gibbonCourseClassID=$_GET["gibbonCourseClassID"];
-	$internalAssessmentColumnID=$_GET["internalAssessmentColumnID"] ;
-	if ($gibbonCourseClassID=="" OR $internalAssessmentColumnID=="") {
+	$gibbonInternalAssessmentColumnID=$_GET["gibbonInternalAssessmentColumnID"] ;
+	if ($gibbonCourseClassID=="" OR $gibbonInternalAssessmentColumnID=="") {
 		print "<div class='error'>" ;
 			print _("You have not specified one or more required parameters.") ;
 		print "</div>" ;
@@ -55,8 +55,8 @@ else {
 		}
 		else {
 			try {
-				$data2=array("internalAssessmentColumnID"=>$internalAssessmentColumnID); 
-				$sql2="SELECT * FROM internalAssessmentColumn WHERE internalAssessmentColumnID=:internalAssessmentColumnID" ;
+				$data2=array("gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID); 
+				$sql2="SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID" ;
 				$result2=$connection2->prepare($sql2);
 				$result2->execute($data2);
 			}
@@ -99,7 +99,7 @@ else {
 					print "</div>" ;
 				}
 				?>
-				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_manage_deleteProcess.php?internalAssessmentColumnID=$internalAssessmentColumnID" ?>">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_manage_deleteProcess.php?gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID" ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 

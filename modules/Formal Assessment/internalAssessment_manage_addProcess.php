@@ -89,7 +89,7 @@ else {
 		
 		//Lock markbook column table
 		try {
-			$sqlLock="LOCK TABLES internalAssessmentColumn WRITE" ;
+			$sqlLock="LOCK TABLES gibbonInternalAssessmentColumn WRITE" ;
 			$resultLock=$connection2->query($sqlLock);   
 		}
 		catch(PDOException $e) { 
@@ -101,7 +101,7 @@ else {
 
 		//Get next groupingID
 		try {
-			$sqlGrouping="SELECT DISTINCT groupingID FROM internalAssessmentColumn WHERE NOT groupingID IS NULL ORDER BY groupingID DESC";
+			$sqlGrouping="SELECT DISTINCT groupingID FROM gibbonInternalAssessmentColumn WHERE NOT groupingID IS NULL ORDER BY groupingID DESC";
 			$resultGrouping=$connection2->query($sqlGrouping);   
 		}
 		catch(PDOException $e) { 
@@ -159,7 +159,7 @@ else {
 				//Write to database
 				try {
 					$data=array("groupingID"=>$groupingID, "gibbonCourseClassID"=>$gibbonCourseClassIDSingle, "name"=>$name, "description"=>$description, "type"=>$type, "attainment"=>$attainment, "gibbonScaleIDAttainment"=>$gibbonScaleIDAttainment, "comment"=>$comment, "uploadedResponse"=>$uploadedResponse, "completeDate"=>$completeDate, "complete"=>$complete, "viewableStudents"=>$viewableStudents, "viewableParents"=>$viewableParents, "attachment"=>$attachment, "gibbonPersonIDCreator"=>$gibbonPersonIDCreator, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit); 
-					$sql="INSERT INTO internalAssessmentColumn SET groupingID=:groupingID, gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+					$sql="INSERT INTO gibbonInternalAssessmentColumn SET groupingID=:groupingID, gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}

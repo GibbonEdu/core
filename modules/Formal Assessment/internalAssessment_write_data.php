@@ -42,8 +42,8 @@ else {
 	else {
 		//Check if school year specified
 		$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
-		$internalAssessmentColumnID=$_GET["internalAssessmentColumnID"] ;
-		if ($gibbonCourseClassID=="" OR $internalAssessmentColumnID=="") {
+		$gibbonInternalAssessmentColumnID=$_GET["gibbonInternalAssessmentColumnID"] ;
+		if ($gibbonCourseClassID=="" OR $gibbonInternalAssessmentColumnID=="") {
 			print "<div class='error'>" ;
 				print _("You have not specified one or more required parameters.") ;
 			print "</div>" ;
@@ -72,8 +72,8 @@ else {
 			}
 			else {
 				try {
-					$data2=array("internalAssessmentColumnID"=>$internalAssessmentColumnID); 
-					$sql2="SELECT * FROM internalAssessmentColumn WHERE internalAssessmentColumnID=:internalAssessmentColumnID" ;
+					$data2=array("gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID); 
+					$sql2="SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID" ;
 					$result2=$connection2->prepare($sql2);
 					$result2->execute($data2);
 				}
@@ -153,7 +153,7 @@ else {
 						}
 					}
 				
-					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_write_dataProcess.php?gibbonCourseClassID=$gibbonCourseClassID&internalAssessmentColumnID=$internalAssessmentColumnID&address=" . $_SESSION[$guid]["address"] . "' enctype='multipart/form-data'>" ;
+					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_write_dataProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID&address=" . $_SESSION[$guid]["address"] . "' enctype='multipart/form-data'>" ;
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							?>
 							<tr class='break'>
@@ -223,7 +223,7 @@ else {
 								$submission=FALSE ;
 								
 								for ($i=0;$i<$columns;$i++) {
-									$columnID[$i]=$row2["internalAssessmentColumnID"];
+									$columnID[$i]=$row2["gibbonInternalAssessmentColumnID"];
 									$attainmentID[$i]=$row2["gibbonScaleIDAttainment"];
 									
 									print "<th style='text-align: center' colspan=$span-2>" ;
@@ -328,8 +328,8 @@ else {
 											$row=$result->fetch() ;
 										
 											try {
-												$dataEntry=array("internalAssessmentColumnID"=>$columnID[($i)], "gibbonPersonIDStudent"=>$rowStudents["gibbonPersonID"]); 
-												$sqlEntry="SELECT * FROM internalAssessmentEntry WHERE internalAssessmentColumnID=:internalAssessmentColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent" ;
+												$dataEntry=array("gibbonInternalAssessmentColumnID"=>$columnID[($i)], "gibbonPersonIDStudent"=>$rowStudents["gibbonPersonID"]); 
+												$sqlEntry="SELECT * FROM gibbonInternalAssessmentEntry WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent" ;
 												$resultEntry=$connection2->prepare($sqlEntry);
 												$resultEntry->execute($dataEntry);
 											}
@@ -445,7 +445,7 @@ else {
 													if ($row2["uploadedResponse"]=="Y") {
 														if ($rowEntry["response"]!="") {
 															print "<input type='hidden' name='response$count' id='response$count' value='" . $rowEntry["response"] . "'>" ;														
-															print "<div style='width: 330px; float: right'><a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Formal Assessment/internalAssessment_write_data_responseDeleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&internalAssessmentColumnID=$internalAssessmentColumnID&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "' onclick='return confirm(\"" . _('Are you sure you want to delete this record? Unsaved changes will be lost.') . "\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/></div>" ;
+															print "<div style='width: 330px; float: right'><a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Formal Assessment/internalAssessment_write_data_responseDeleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "' onclick='return confirm(\"" . _('Are you sure you want to delete this record? Unsaved changes will be lost.') . "\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/></div>" ;
 														}
 														else {
 															print "<input style='margin-top: 5px' type='file' name='response$count' id='response$count'>" ;														

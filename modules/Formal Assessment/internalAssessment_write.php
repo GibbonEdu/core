@@ -152,7 +152,7 @@ else {
 				//Count number of columns
 				try {
 					$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
-					$sql="SELECT * FROM internalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC" ;
+					$sql="SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -190,7 +190,7 @@ else {
 						}
 						try {
 							$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
-							$sql="SELECT * FROM internalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC LIMIT " . ($x*$columnsPerPage) . ", " . $columnsPerPage ;
+							$sql="SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC LIMIT " . ($x*$columnsPerPage) . ", " . $columnsPerPage ;
 							$result=$connection2->prepare($sql);
 							$result->execute($data);
 						}
@@ -313,7 +313,7 @@ else {
 										$columnID[$i]=FALSE ;
 									}
 									else {
-										$columnID[$i]=$row["internalAssessmentColumnID"];
+										$columnID[$i]=$row["gibbonInternalAssessmentColumnID"];
 										$attainmentOn[$i]=$row["attainment"];
 										$attainmentID[$i]=$row["gibbonScaleIDAttainment"];
 										$comment[$i]=$row["comment"];
@@ -353,7 +353,7 @@ else {
 										}
 										print "</span><br/>" ;
 										if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php")) {
-											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&internalAssessmentColumnID=" . $row["internalAssessmentColumnID"] . "'><img style='margin-top: 3px' title='" . _('Enter Data') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.png'/></a> " ;
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=" . $row["gibbonInternalAssessmentColumnID"] . "'><img style='margin-top: 3px' title='" . _('Enter Data') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.png'/></a> " ;
 										}
 									print "</th>" ;
 								}
@@ -477,8 +477,8 @@ else {
 									for ($i=0; $i<$columnsThisPage; $i++) {
 										$row=$result->fetch() ;
 											try {
-												$dataEntry=array("internalAssessmentColumnID"=>$columnID[($i)], "gibbonPersonIDStudent"=>$rowStudents["gibbonPersonID"]); 
-												$sqlEntry="SELECT * FROM internalAssessmentEntry WHERE internalAssessmentColumnID=:internalAssessmentColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent" ;
+												$dataEntry=array("gibbonInternalAssessmentColumnID"=>$columnID[($i)], "gibbonPersonIDStudent"=>$rowStudents["gibbonPersonID"]); 
+												$sqlEntry="SELECT * FROM gibbonInternalAssessmentEntry WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent" ;
 												$resultEntry=$connection2->prepare($sqlEntry);
 												$resultEntry->execute($dataEntry);
 											}

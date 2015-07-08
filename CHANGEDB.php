@@ -467,6 +467,10 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment'), 'View Internal Assessments_all', 2, 'Internal Assessment', 'Allows staff to see Internal Assessment results for all children.', 'internalAssessment_view.php', 'internalAssessment_view.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Formal Assessment' AND gibbonAction.name='View Internal Assessments_all'));end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '2', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Formal Assessment' AND gibbonAction.name='View Internal Assessments_all'));end
+RENAME TABLE internalAssessmentColumn TO gibbonInternalAssessmentColumn;end
+RENAME TABLE internalAssessmentEntry TO gibbonInternalAssessmentEntry;end
+ALTER TABLE `gibbonInternalAssessmentColumn` CHANGE `internalAssessmentColumnID` `gibbonInternalAssessmentColumnID` INT(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;end
+ALTER TABLE `gibbonInternalAssessmentEntry` CHANGE `internalAssessmentEntryID` `gibbonInternalAssessmentEntryID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, CHANGE `internalAssessmentColumnID` `gibbonInternalAssessmentColumnID` INT(10) UNSIGNED ZEROFILL NOT NULL;end
 ";
 
 ?>

@@ -40,9 +40,9 @@ catch(PDOException $e) {
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
-$internalAssessmentColumnID=$_GET["internalAssessmentColumnID"] ;
+$gibbonInternalAssessmentColumnID=$_GET["gibbonInternalAssessmentColumnID"] ;
 $gibbonPersonID=$_GET["gibbonPersonID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&internalAssessmentColumnID=$internalAssessmentColumnID" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_write_data.php")==FALSE) {
 	//Fail 0
@@ -52,15 +52,15 @@ if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internal
 else {
 	//Proceed!
 	//Check if planner specified
-	if ($gibbonPersonID=="" OR $gibbonCourseClassID=="" OR $internalAssessmentColumnID=="") {
+	if ($gibbonPersonID=="" OR $gibbonCourseClassID=="" OR $gibbonInternalAssessmentColumnID=="") {
 		//Fail1
 		$URL.="&deleteReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
 		try {
-			$data=array("gibbonPersonID"=>$gibbonPersonID, "internalAssessmentColumnID"=>$internalAssessmentColumnID); 
-			$sql="UPDATE internalAssessmentEntry SET response='' WHERE gibbonPersonIDStudent=:gibbonPersonID AND internalAssessmentColumnID=:internalAssessmentColumnID" ;
+			$data=array("gibbonPersonID"=>$gibbonPersonID, "gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID); 
+			$sql="UPDATE gibbonInternalAssessmentEntry SET response='' WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

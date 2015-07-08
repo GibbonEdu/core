@@ -36,8 +36,8 @@ catch(PDOException $e) {
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
-$internalAssessmentColumnID=$_GET["internalAssessmentColumnID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/internalAssessment_manage_delete.php&internalAssessmentColumnID=$internalAssessmentColumnID&gibbonCourseClassID=$gibbonCourseClassID" ;
+$gibbonInternalAssessmentColumnID=$_GET["gibbonInternalAssessmentColumnID"] ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/internalAssessment_manage_delete.php&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID&gibbonCourseClassID=$gibbonCourseClassID" ;
 $URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/internalAssessment_manage.php&gibbonCourseClassID=$gibbonCourseClassID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_manage_delete.php")==FALSE) {
@@ -48,15 +48,15 @@ if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internal
 else {
 	//Proceed!
 	//Check if school year specified
-	if ($internalAssessmentColumnID=="" OR $gibbonCourseClassID=="") {
+	if ($gibbonInternalAssessmentColumnID=="" OR $gibbonCourseClassID=="") {
 		//Fail1
 		$URL.="&deleteReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
 		try {
-			$data=array("internalAssessmentColumnID"=>$internalAssessmentColumnID, "gibbonCourseClassID"=>$gibbonCourseClassID); 
-			$sql="SELECT * FROM internalAssessmentColumn WHERE internalAssessmentColumnID=:internalAssessmentColumnID AND gibbonCourseClassID=:gibbonCourseClassID" ;
+			$data=array("gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID, "gibbonCourseClassID"=>$gibbonCourseClassID); 
+			$sql="SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonCourseClassID=:gibbonCourseClassID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -75,8 +75,8 @@ else {
 		else {
 			//Write to database
 			try {
-				$data=array("internalAssessmentColumnID"=>$internalAssessmentColumnID); 
-				$sql="DELETE FROM internalAssessmentColumn WHERE internalAssessmentColumnID=:internalAssessmentColumnID" ;
+				$data=array("gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID); 
+				$sql="DELETE FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}

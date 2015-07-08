@@ -36,8 +36,8 @@ catch(PDOException $e) {
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
-$internalAssessmentColumnID=$_GET["internalAssessmentColumnID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/internalAssessment_manage_edit.php&internalAssessmentColumnID=$internalAssessmentColumnID&gibbonCourseClassID=$gibbonCourseClassID" ;
+$gibbonInternalAssessmentColumnID=$_GET["gibbonInternalAssessmentColumnID"] ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/internalAssessment_manage_edit.php&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID&gibbonCourseClassID=$gibbonCourseClassID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_manage_edit.php")==FALSE) {
 	//Fail 0
@@ -52,15 +52,15 @@ else {
 	else {
 		//Proceed!
 		//Check if school year specified
-		if ($internalAssessmentColumnID=="" OR $gibbonCourseClassID=="") {
+		if ($gibbonInternalAssessmentColumnID=="" OR $gibbonCourseClassID=="") {
 			//Fail1
 			$URL.="&updateReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
 			try {
-				$data=array("internalAssessmentColumnID"=>$internalAssessmentColumnID, "gibbonCourseClassID"=>$gibbonCourseClassID); 
-				$sql="SELECT * FROM internalAssessmentColumn WHERE internalAssessmentColumnID=:internalAssessmentColumnID AND gibbonCourseClassID=:gibbonCourseClassID" ;
+				$data=array("gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID, "gibbonCourseClassID"=>$gibbonCourseClassID); 
+				$sql="SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonCourseClassID=:gibbonCourseClassID" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -147,8 +147,8 @@ else {
 				else {
 					//Write to database
 					try {
-						$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "name"=>$name, "description"=>$description, "type"=>$type, "attainment"=>$attainment, "gibbonScaleIDAttainment"=>$gibbonScaleIDAttainment, "comment"=>$comment, "uploadedResponse"=>$uploadedResponse, "completeDate"=>$completeDate, "complete"=>$complete, "viewableStudents"=>$viewableStudents, "viewableParents"=>$viewableParents, "attachment"=>$attachment, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit, "internalAssessmentColumnID"=>$internalAssessmentColumnID); 
-						$sql="UPDATE internalAssessmentColumn SET gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE internalAssessmentColumnID=:internalAssessmentColumnID" ;
+						$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "name"=>$name, "description"=>$description, "type"=>$type, "attainment"=>$attainment, "gibbonScaleIDAttainment"=>$gibbonScaleIDAttainment, "comment"=>$comment, "uploadedResponse"=>$uploadedResponse, "completeDate"=>$completeDate, "complete"=>$complete, "viewableStudents"=>$viewableStudents, "viewableParents"=>$viewableParents, "attachment"=>$attachment, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit, "gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID); 
+						$sql="UPDATE gibbonInternalAssessmentColumn SET gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}
