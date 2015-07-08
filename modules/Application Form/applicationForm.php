@@ -297,7 +297,7 @@ else {
 					<span style="font-size: 90%"><i><?php print bi('Full name as shown in ID documents.', True) ?></i></span>
 				</td>
 				<td class="right">
-					<input title='Please enter full name as shown in ID documents' name="officialName" id="officialName" maxlength=150 value="" type="text" style="width: 300px">
+					<input name="officialName" id="officialName" maxlength=150 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var officialName=new LiveValidation('officialName');
 						officialName.add(Validate.Presence);
@@ -1217,7 +1217,7 @@ else {
 							<span style="font-size: 90%"><i><?php print bi('Full name as shown in ID documents.', True) ?></i></span>
 						</td>
 						<td class="right">
-							<input title='Please enter full name as shown in ID documents' name="<?php print "parent$i" ?>officialName" id="<?php print "parent$i" ?>officialName" maxlength=150 value="" type="text" style="width: 300px">
+							<input name="<?php print "parent$i" ?>officialName" id="<?php print "parent$i" ?>officialName" maxlength=150 value="" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>officialName=new LiveValidation('<?php print "parent$i" ?>officialName');
 								<?php print "parent$i" ?>officialName.add(Validate.Presence);
